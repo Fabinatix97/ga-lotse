@@ -4,12 +4,13 @@
  */
 
 import { Grid, Stack, Typography } from "@mui/joy";
+import { isNullish } from "remeda";
 
 import {
   ConfiguratorModuleName,
   configuratorNameMapping,
 } from "@/lib/configurator/api/models/configuratorModuleName";
-import { useGetModuleStatus } from "@/lib/configurator/api/queries/useGetModuleStatus";
+import { useGetAllModulesStatuses } from "@/lib/configurator/api/queries/useGetAllModulesStatuses";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { getAllOtherModules } from "@/lib/configurator/components/shared/modulesStatusUtils";
 
@@ -20,8 +21,11 @@ import { OtherModulesCard } from "./OtherModulesCard";
 export function ConfiguratorOverview(props: {
   module: ConfiguratorModuleName;
 }) {
-  const { data } = useGetModuleStatus();
+  const { data } = useGetAllModulesStatuses();
 
+  if (isNullish(data)) {
+    throw new Error("undefined GA-Konfigurator status response");
+  }
   return (
     <ConfiguratorLayout module={props.module}>
       <Stack gap={2}>
@@ -34,7 +38,7 @@ export function ConfiguratorOverview(props: {
         </Typography>
         <Stack gap={5}>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-            {data[props.module].tabs.map((tab) => (
+            {data[props.module]?.endpointStates.map((tab) => (
               <Grid key={tab.tabButtonName} xxs={12} xs={6}>
                 <ConfiguratorCard
                   title={tab.tabButtonName}

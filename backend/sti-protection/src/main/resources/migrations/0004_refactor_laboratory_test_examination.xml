@@ -1,0 +1,332 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1744811589355-1">
+    <dropColumn columnName="cancer_screening_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-2">
+    <dropColumn columnName="cancer_screening_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-3">
+    <dropColumn columnName="cancer_screening_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-4">
+    <dropColumn columnName="cancer_screening_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-5">
+    <dropColumn columnName="chlamydia_anal_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-6">
+    <dropColumn columnName="chlamydia_anal_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-7">
+    <dropColumn columnName="chlamydia_anal_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-8">
+    <dropColumn columnName="chlamydia_anal_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-9">
+    <dropColumn columnName="chlamydia_oral_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-10">
+    <dropColumn columnName="chlamydia_oral_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-11">
+    <dropColumn columnName="chlamydia_oral_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-12">
+    <dropColumn columnName="chlamydia_oral_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-13">
+    <dropColumn columnName="chlamydia_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-14">
+    <dropColumn columnName="chlamydia_urethral_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-15">
+    <dropColumn columnName="chlamydia_urethral_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-16">
+    <dropColumn columnName="chlamydia_urethral_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-17">
+    <dropColumn columnName="chlamydia_urethral_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-18">
+    <dropColumn columnName="gonorrhea_anal_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-19">
+    <dropColumn columnName="gonorrhea_anal_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-20">
+    <dropColumn columnName="gonorrhea_anal_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-21">
+    <dropColumn columnName="gonorrhea_anal_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-22">
+    <dropColumn columnName="gonorrhea_oral_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-23">
+    <dropColumn columnName="gonorrhea_oral_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-24">
+    <dropColumn columnName="gonorrhea_oral_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-25">
+    <dropColumn columnName="gonorrhea_oral_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-26">
+    <dropColumn columnName="gonorrhea_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-27">
+    <dropColumn columnName="gonorrhea_urethral_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-28">
+    <dropColumn columnName="gonorrhea_urethral_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-29">
+    <dropColumn columnName="gonorrhea_urethral_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-30">
+    <dropColumn columnName="gonorrhea_urethral_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-31">
+    <dropColumn columnName="had_syphilis"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-32">
+    <dropColumn columnName="hepa_infection"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-33">
+    <dropColumn columnName="hepa_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-34">
+    <dropColumn columnName="hepa_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-35">
+    <dropColumn columnName="hepa_vaccine_titre"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-36">
+    <dropColumn columnName="hepa_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-37">
+    <dropColumn columnName="heparequested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-38">
+    <dropColumn columnName="hepb_infection"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-39">
+    <dropColumn columnName="hepb_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-40">
+    <dropColumn columnName="hepb_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-41">
+    <dropColumn columnName="hepb_vaccine_titre"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-42">
+    <dropColumn columnName="hepb_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-43">
+    <dropColumn columnName="hepbrequested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-44">
+    <dropColumn columnName="hepc_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-45">
+    <dropColumn columnName="hepc_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-46">
+    <dropColumn columnName="hepc_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-47">
+    <dropColumn columnName="hepcrequested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-48">
+    <dropColumn columnName="hiv_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-49">
+    <dropColumn columnName="hiv_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-50">
+    <dropColumn columnName="hiv_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-51">
+    <dropColumn columnName="hiv_value" tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-52">
+    <dropColumn columnName="hpv_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-53">
+    <dropColumn columnName="hpv_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-54">
+    <dropColumn columnName="hpv_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-55">
+    <dropColumn columnName="hpv_value" tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-56">
+    <dropColumn columnName="mpox_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-57">
+    <dropColumn columnName="mpox_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-58">
+    <dropColumn columnName="mpox_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-59">
+    <dropColumn columnName="mpox_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-60">
+    <dropColumn columnName="mycoplasma_anal_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-61">
+    <dropColumn columnName="mycoplasma_anal_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-62">
+    <dropColumn columnName="mycoplasma_anal_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-63">
+    <dropColumn columnName="mycoplasma_anal_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-64">
+    <dropColumn columnName="mycoplasma_oral_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-65">
+    <dropColumn columnName="mycoplasma_oral_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-66">
+    <dropColumn columnName="mycoplasma_oral_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-67">
+    <dropColumn columnName="mycoplasma_oral_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-68">
+    <dropColumn columnName="mycoplasma_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-69">
+    <dropColumn columnName="mycoplasma_urethral_sample_data_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-70">
+    <dropColumn columnName="mycoplasma_urethral_sample_data_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-71">
+    <dropColumn columnName="mycoplasma_urethral_sample_data_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-72">
+    <dropColumn columnName="mycoplasma_urethral_sample_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-73">
+    <dropColumn columnName="other_test_name"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-74">
+    <dropColumn columnName="other_test_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-75">
+    <dropColumn columnName="other_test_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-76">
+    <dropColumn columnName="other_test_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-77">
+    <dropColumn columnName="other_test_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-78">
+    <dropColumn columnName="syphilis_remark"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-79">
+    <dropColumn columnName="syphilis_requested"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-80">
+    <dropColumn columnName="syphilis_result"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744811589355-81">
+    <dropColumn columnName="syphilis_value"
+      tableName="laboratory_test_examination"/>
+  </changeSet>
+</databaseChangeLog>

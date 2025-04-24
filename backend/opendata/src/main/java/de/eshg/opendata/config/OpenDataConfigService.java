@@ -12,6 +12,8 @@ import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OpenDataConfigService extends EshgConfigurationService<OpenDataConfiguration> {
@@ -42,8 +44,26 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
     return openDataConfiguration;
   }
 
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void updateConfig(OpenDataConfiguration updateOpenDataConfiguration) {
+    OpenDataConfiguration config = getConfig();
+    config.setInitialized(true);
+    config.setAuthor(updateOpenDataConfiguration.getAuthor());
+    config.setFallbackLicenseUrl(updateOpenDataConfiguration.getFallbackLicenseUrl());
+    config.setTermsOfUse(updateOpenDataConfiguration.getTermsOfUse());
+  }
+
   @Override
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
-    return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE);
+    return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, mapToConfigurationStatus(getConfig()));
+  }
+
+  private ConfigurationStatus mapToConfigurationStatus(OpenDataConfiguration config) {
+    if (config.isInitialized()) {
+      return ConfigurationStatus.COMPLETE;
+    } else {
+      return ConfigurationStatus.INCOMPLETE;
+    }
   }
 }

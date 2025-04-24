@@ -5,6 +5,7 @@
 
 import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { YesOrNoFieldData } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import {
   ApiExamination,
@@ -18,7 +19,6 @@ import {
   ApiVaccination,
 } from "@eshg/sti-protection-api";
 
-import { YesOrNoFieldData } from "@/lib/businessModules/stiProtection/components/shared/formFields/YesOrNoWithFollowUp";
 import { useTranslation } from "@/lib/i18n/client";
 
 export interface StandardRiskFactors {

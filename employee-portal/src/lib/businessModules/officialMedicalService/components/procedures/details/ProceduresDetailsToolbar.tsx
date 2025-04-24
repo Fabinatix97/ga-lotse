@@ -10,10 +10,12 @@ import {
   PROCEDURE_STATUS_COLORS,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
   DescriptionOutlined,
+  ListOutlined,
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
@@ -37,11 +39,8 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
 
   return (
     <TabNavigationToolbar
-      items={tabItems}
-      routeBack={
-        hasOfficialMedicalServiceAdminRole ? routes.procedures.index : undefined
-      }
       header={<ProcedureDetailsTabHeader procedureHeader={procedureHeader} />}
+      items={tabItems}
       afterTabs={
         <Chip
           data-testid="tab-procedure-state"
@@ -50,6 +49,11 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
         >
           {procedureStatusNames[procedureHeader.status]}
         </Chip>
+      }
+      backButton={
+        hasOfficialMedicalServiceAdminRole ? (
+          <ToolbarBackButton href={routes.procedures.index} />
+        ) : null
       }
     />
   );
@@ -66,6 +70,11 @@ function buildTabItems(id: string): TabNavigationItem[] {
       tabButtonName: "Dokumente",
       href: routes.procedures.byId(id).documents,
       decorator: <DescriptionOutlined />,
+    },
+    {
+      tabButtonName: "Anamnese",
+      href: routes.procedures.byId(id).anamnesis,
+      decorator: <ListOutlined />,
     },
     {
       tabButtonName: "Verlaufseinträge",

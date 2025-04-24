@@ -2416,6 +2416,9 @@
           "code" : {
             "type" : "string"
           },
+          "dataPrivacyCategory" : {
+            "$ref" : "#/components/schemas/DataPrivacyCategory"
+          },
           "displayName" : {
             "type" : "string"
           }
@@ -2550,6 +2553,9 @@
           },
           "code" : {
             "type" : "string"
+          },
+          "dataPrivacyCategory" : {
+            "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "name" : {
             "type" : "string"

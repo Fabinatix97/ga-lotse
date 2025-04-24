@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { useQuery } from "@tanstack/react-query";
 
 import { useDepartmentApi } from "@/lib/baseModule/api/clients";
@@ -15,6 +16,7 @@ export function getDepartmentQueryKey() {
 export function useGetDepartment() {
   const departmentApi = useDepartmentApi();
   return useQuery({
+    ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: getDepartmentQueryKey(),
     queryFn: () => departmentApi.getDepartmentInfo(),
     throwOnError: false,

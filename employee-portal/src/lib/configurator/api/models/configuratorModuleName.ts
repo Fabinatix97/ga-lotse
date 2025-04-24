@@ -15,5 +15,6 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   medicalRegistry: "Medizinalaufsicht",
   stiProtection: "HIV-STI Beratung",
   sexWork: "Sexarbeit",
-  officialMedicalService: "Amtsärztliche DIenste",
+  officialMedicalService: "Amtsärztliche Dienste",
+  opendata: "Open Data",
 };

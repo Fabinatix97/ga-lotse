@@ -15,7 +15,7 @@ export interface ManualTableSortingProps {
   onSortingChange?: (state?: SortingState) => void;
 }
 
-export interface AutomaticTableSortingProps {
+interface AutomaticTableSortingProps {
   manualSorting?: false;
   initialSorting?: SortingState;
 }

@@ -87,11 +87,7 @@ export function PresenceProvider({ children }: Readonly<RequiresChildren>) {
     [sharePresence, usersPresence],
   );
 
-  return (
-    <PresenceContext.Provider value={contextValues}>
-      {children}
-    </PresenceContext.Provider>
-  );
+  return <PresenceContext value={contextValues}>{children}</PresenceContext>;
 }
 
 export function usePresenceContext() {

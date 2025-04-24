@@ -10,8 +10,8 @@ import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptio
 import { ValidationRules } from "@eshg/lib-portal/types/form";
 import { Button, Radio } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { useFormikContext } from "formik";
-import { ReactNode } from "react";
+import { FormikContextType, useFormikContext } from "formik";
+import { ReactNode, memo } from "react";
 
 export interface RadioButtonsFieldProps<T extends SelectOption = SelectOption>
   extends ValidationRules<T["value"] | null> {
@@ -75,7 +75,29 @@ interface RadioButtonsProps<T extends SelectOption> {
   additionalField?: ReactNode;
 }
 
-function RadioButtons<T extends SelectOption>({
+function RadioButtons<T extends SelectOption>(props: RadioButtonsProps<T>) {
+  const { getFieldMeta, setFieldValue } = useFormikContext();
+  const { value } = getFieldMeta<T["value"]>(props.name);
+
+  return (
+    <MemoizedRadioButtons
+      inputValue={value}
+      setFieldValue={setFieldValue}
+      {...props}
+    />
+  );
+}
+
+const MemoizedRadioButtons = memo(InnerRadioButtons);
+
+interface InnerRadioButtonsProps<T extends SelectOption>
+  extends RadioButtonsProps<T> {
+  inputValue: T["value"];
+  setFieldValue: FormikContextType<unknown>["setFieldValue"];
+}
+function InnerRadioButtons<T extends SelectOption>({
+  inputValue,
+  setFieldValue,
   name,
   options,
   disabled,
@@ -85,17 +107,14 @@ function RadioButtons<T extends SelectOption>({
   onReset,
   resettable,
   additionalField,
-}: RadioButtonsProps<T>) {
-  const { getFieldMeta, setFieldValue } = useFormikContext();
-  const { value } = getFieldMeta(name);
-
+}: InnerRadioButtonsProps<T>) {
   function handleReset() {
     void setFieldValue(name, null);
     onReset?.();
   }
 
   const showResetButton =
-    resettable && !disabled && !required && !readOnly && !!value;
+    resettable && !disabled && !required && !readOnly && !!inputValue;
 
   const verticalOrientation = orientation === "vertical";
 

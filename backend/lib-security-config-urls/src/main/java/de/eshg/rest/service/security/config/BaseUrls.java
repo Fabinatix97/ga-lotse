@@ -64,6 +64,21 @@ public final class BaseUrls {
     public static final String DEPARTMENT_API_PRIVACY_NOTICE = "/privacy-notice";
     public static final String DEPARTMENT_API_SECURITY_TXT = "/security-txt";
     public static final String DEPARTMENT_API_SECURITY_TXT_PGP_KEY = "/security-txt-public-key";
+    public static final String DEPARTMENT_API_MARKDOWN = "/markdown";
+    public static final String DEPARTMENT_API_MARKDOWN_CITIZEN =
+        DEPARTMENT_API_MARKDOWN + "/citizen";
+    public static final String DEPARTMENT_API_MARKDOWN_EMPLOYEE =
+        DEPARTMENT_API_MARKDOWN + "/employee";
+    public static final String DEPARTMENT_API_MARKDOWN_RELEASE_NOTES =
+        DEPARTMENT_API_MARKDOWN + "/release-notes";
+    public static final String DECLARATION_OF_ACCESSIBILITY_MARKDOWN_CONFIG_API =
+        "/declaration-of-accessibility";
+    public static final String ACKNOWLEDGEMENTS_MARKDOWN_CONFIG_API = "/acknowledgements";
+    public static final String CONTACT_MARKDOWN_CONFIG_API = "/contact";
+    public static final String IMPRINT_MARKDOWN_CONFIG_API = "/imprint";
+    public static final String PRIVACY_POLICY_MARKDOWN_CONFIG_API = "/privacy-policy";
+    public static final String CONFIGURATION_API_MARKDOWN_FILES_CITIZEN = "/markdown/citizen";
+    public static final String CONFIGURATION_API_MARKDOWN_FILES_EMPLOYEE = "/markdown/employee";
     public static final String CONTACT_PARSE_VCARD_URL = "/parse-vcard";
     public static final String GDPR_PROCEDURE_API = "/gdpr-procedures";
     public static final String GDPR_PROCEDURE_CITIZEN_PORTAL_URL = "/citizen-portal";
@@ -276,9 +291,6 @@ public final class BaseUrls {
 
   public static final class DepartmentInfoLibrary {
     public static final String CONFIGURATION_API = "/configuration";
-    public static final String DEPARTMENT_INFO_API = CONFIGURATION_API + "/department-info";
-    public static final String PRIVACY_DOCUMENTS_API = CONFIGURATION_API + "/privacy-documents";
-    public static final String OPENING_HOURS_API = CONFIGURATION_API + "/opening-hours";
   }
 
   public static final class OpenData {

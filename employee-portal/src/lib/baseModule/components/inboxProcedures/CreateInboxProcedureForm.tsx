@@ -4,6 +4,7 @@
  */
 
 import { ApiBaseFeature, ApiBusinessModule } from "@eshg/base-api";
+import { FormSheet } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
@@ -24,7 +25,6 @@ import {
   resolveProcedureTypes,
 } from "@/lib/baseModule/moduleRegister/procedureTypesResolver";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 import { buildOptionsFromProcedureTypes } from "@/lib/shared/components/procedures/helper";
 

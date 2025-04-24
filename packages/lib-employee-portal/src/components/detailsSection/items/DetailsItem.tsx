@@ -59,7 +59,7 @@ export function DetailsItem<
   );
 }
 
-export function DetailsItemLabel({ sx, ...props }: TypographyProps) {
+function DetailsItemLabel({ sx, ...props }: TypographyProps) {
   return (
     <Typography
       level="body-sm"
@@ -91,6 +91,6 @@ export function DetailsItemValue({ sx, ...props }: TypographyProps) {
   );
 }
 
-export function DetailsValueAvoidWrap({ sx, ...props }: TypographyProps) {
+function DetailsValueAvoidWrap({ sx, ...props }: TypographyProps) {
   return <DetailsItemValue sx={{ width: "fit-content", ...sx }} {...props} />;
 }

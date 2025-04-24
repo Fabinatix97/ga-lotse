@@ -1,0 +1,45 @@
+{
+  "title": "Results status",
+  "landing": {
+    "info": {
+      "title": "Your test results - information about collection",
+      "warning": "You do not need an ID document or an insurance card. All test results are only communicated personally.",
+      "welcome": "Welcome to the online portal for test results. Here you can view the current status of your examination.",
+      "more_tests_subtitle": "Depending on relevant history and issues, further tests can be carried out",
+      "more_tests_body": "All test results are strictly confidential and will not be displayed online.",
+      "call_for_results_subtitle": "Receive results",
+      "call_for_results_body": "As soon as your test results are available, you will see the note here: \"Results are available.\" Please contact the health department by phone to find out your results or make an appointment for a personal meeting.",
+      "important_background_subtitle": "Important instructions",
+      "important_background_points": [
+        "Test results are exclusively communicated in person or by telephone.",
+        "If your results are not yet available, try again later.",
+        "In the event of a positive test result, you will receive further information and advisory services."
+      ],
+      "available_for_questions": "We will be happy to answer any questions or to help you make an appointment."
+    },
+    "login_and_view_status_card": {
+      "title": "Would you like to check the status of your results?",
+      "body": "Please login here to view the current status of your results.",
+      "link_label": "See status of results"
+    }
+  },
+  "view": {
+    "findings_title": "Findings",
+    "status": {
+      "not_yet_available_label": "Results not yet available",
+      "not_yet_available_info": "There are no results from your appointment yet. Please try again later.",
+      "available_label": "Results are available",
+      "available_info": "There are results from your appointment. <strong>Please make an appointment in the Health Department</strong> to discuss the findings."
+    },
+    "still_no_results_title": "Don't have any results yet?",
+    "still_no_results_body": "If there are no results yet, we ask for a little patience - the update will take place as soon as possible. If you still have urgent questions, you can reach us by phone.",
+    "get_results_title": "Would you like to make an appointment? Please call us.",
+    "get_results_body": "Appointments for sharing and discussing the results can be arranged by phone.",
+    "go_to_appointments": "My appointments"
+  },
+  "go_to_card": {
+    "title": "Would you like to see your results status?",
+    "body": "After your visit to the office, the tests are processed. You can check the status of your your test results online at any time.",
+    "link_label": "View status of results"
+  }
+}

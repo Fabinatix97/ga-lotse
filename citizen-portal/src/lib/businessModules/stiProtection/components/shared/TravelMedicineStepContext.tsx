@@ -111,11 +111,11 @@ export function StepContextProvider({
   );
 
   return (
-    <TravelMedicineStepContext.Provider value={contextValue}>
+    <TravelMedicineStepContext value={contextValue}>
       {children({
         ...contextValue,
       })}
-    </TravelMedicineStepContext.Provider>
+    </TravelMedicineStepContext>
   );
 }
 

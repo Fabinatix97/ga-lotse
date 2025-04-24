@@ -21,13 +21,13 @@ export const SidecarFormLayout = styled("div")(({ theme }) => ({
 
 export const SidecarSheet = styled(Sheet)(() => ({
   position: "sticky",
-  top: "12rem",
+  top: "1.5rem",
   width: "100%",
 }));
 
 export const SidecarContainer = styled(Stack)(({ theme }) => ({
   position: "sticky",
-  top: "12rem",
+  top: "1.5rem",
   width: "100%",
   gap: theme.spacing(3),
 }));

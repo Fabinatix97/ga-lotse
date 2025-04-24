@@ -10,7 +10,7 @@ import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
 import de.eshg.config.domain.AbstractPrivacyDocumentsConfig;
-import de.eshg.config.domain.PrivacyDocument;
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
@@ -40,19 +40,19 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
   }
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public void updatePrivacyPolicy(PrivacyDocument privacyPolicyUpdate) {
+  public void updatePrivacyPolicy(MultiLangDocument privacyPolicyUpdate) {
     T config = getConfig();
     config.setPrivacyPolicy(updatePrivacyDocument(config.getPrivacyPolicy(), privacyPolicyUpdate));
   }
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public void updatePrivacyNotice(PrivacyDocument privacyNoticeUpdate) {
+  public void updatePrivacyNotice(MultiLangDocument privacyNoticeUpdate) {
     T config = getConfig();
     config.setPrivacyNotice(updatePrivacyDocument(config.getPrivacyNotice(), privacyNoticeUpdate));
   }
 
-  protected PrivacyDocument updatePrivacyDocument(
-      PrivacyDocument persistedDocument, PrivacyDocument documentUpdate) {
+  protected MultiLangDocument updatePrivacyDocument(
+      MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
     persistedDocument.updateDe(documentUpdate.getDe());
     persistedDocument.updateEn(documentUpdate.getEn());
     return persistedDocument;
@@ -69,7 +69,7 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
         toConfigurationStatus(config.getPrivacyPolicy()));
   }
 
-  private ConfigurationStatus toConfigurationStatus(PrivacyDocument privacyPolicy) {
+  private ConfigurationStatus toConfigurationStatus(MultiLangDocument privacyPolicy) {
     if (privacyPolicy == null) {
       return ConfigurationStatus.COMPLETE;
     } else if (privacyPolicy.getEn() != null) {

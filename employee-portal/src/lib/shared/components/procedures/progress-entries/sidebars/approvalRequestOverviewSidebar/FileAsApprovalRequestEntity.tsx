@@ -4,6 +4,7 @@
  */
 
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { ApiAbstractFile } from "@eshg/lib-procedures-api";
 import { Stack, Typography } from "@mui/joy";
 import { useContext } from "react";
@@ -11,7 +12,6 @@ import { isDefined } from "remeda";
 
 import { FileCardWithDownload } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 interface FileAsApprovalRequestEntityProps {
   approvalRequestEntity: ApiAbstractFile;
@@ -29,7 +29,7 @@ export function FileAsApprovalRequestEntity({
         <Typography level={"body-xs"} data-testid="createdAtAndBy">
           {buildLabel(
             approvalRequestEntity.createdAt,
-            fullName(
+            formatUserName(
               isDefined(approvalRequestEntity.createdBy)
                 ? resolvedUsers[approvalRequestEntity.createdBy]
                 : undefined,

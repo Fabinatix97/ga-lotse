@@ -13,16 +13,12 @@ public class GeneralSectionMapper {
 
   public static GeneralSectionDto toInterfaceType(GeneralSection entity) {
     if (entity == null) {
-      return new GeneralSectionDto(
-          null, null, null, null, null, null, null, null, null, null, null, null, null);
+      return new GeneralSectionDto(null, null, null, null, null, null, null, null, null, null);
     }
 
     return new GeneralSectionDto(
         entity.getMainReason(),
         entity.getFurtherGenderInfo(),
-        null,
-        null,
-        entity.getOtherKnownLanguages(),
         entity.getHasHealthInsurance(),
         entity.getHasGermanHealthInsurance(),
         entity.getHasInsecureResidence(),
@@ -41,7 +37,6 @@ public class GeneralSectionMapper {
     GeneralSection entity = new GeneralSection();
     entity.setMainReason(dto.mainReason());
     entity.setFurtherGenderInfo(dto.furtherGenderInfo());
-    entity.setOtherKnownLanguages(dto.otherKnownLanguages());
     entity.setHasHealthInsurance(dto.hasHealthInsurance());
     entity.setHasGermanHealthInsurance(dto.hasGermanHealthInsurance());
     entity.setHasInsecureResidence(dto.hasInsecureResidence());

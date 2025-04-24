@@ -66,7 +66,7 @@ export function PageBanner(props: PageBannerProps) {
       </BannerPicture>
       <PageContent>
         <Box marginInline={3}>
-          <Typography
+          <Title
             sx={{
               backgroundImage:
                 props.type === "general"
@@ -78,16 +78,12 @@ export function PageBanner(props: PageBannerProps) {
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
-            fontSize={byBreakpoint({
-              mobile: "2rem",
-              desktop: "6.25rem",
-            })}
             fontWeight="900"
             lineHeight="0.8"
             textTransform="uppercase"
           >
             {t("health_department_title")}&nbsp;
-          </Typography>
+          </Title>
           <Typography
             fontWeight="700"
             fontSize={byBreakpoint({
@@ -106,3 +102,13 @@ export function PageBanner(props: PageBannerProps) {
     </Box>
   );
 }
+
+const Title = styled(Typography)(({ theme }) => ({
+  fontSize: "6.25rem",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "6rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "2rem",
+  },
+}));

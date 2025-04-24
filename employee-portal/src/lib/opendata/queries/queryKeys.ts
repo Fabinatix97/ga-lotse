@@ -5,7 +5,7 @@
 
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
-const apiQueryKey = queryKeyFactory(["openData"]);
+export const apiQueryKey = queryKeyFactory(["openData"]);
 
 export const openDataApiQueryKey = queryKeyFactory(
   apiQueryKey(["openDataApi"]),

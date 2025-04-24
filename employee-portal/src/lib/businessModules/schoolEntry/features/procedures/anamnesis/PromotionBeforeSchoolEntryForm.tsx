@@ -10,7 +10,7 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validatePastOrTodayDate } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -35,6 +35,7 @@ interface PromotionBeforeSchoolEntryProps {
 export function PromotionBeforeSchoolEntryForm(
   props: PromotionBeforeSchoolEntryProps,
 ) {
+  const { validatePastOrTodayDate } = useValidators();
   const promotionBeforeSchoolEntry = createFieldNameMapper(
     "promotionBeforeSchoolEntry",
   );
@@ -169,6 +170,7 @@ function BooleanWithDateFields(props: {
   nameEndDate: string;
   values: PromotionBeforeSchoolEntryValues;
 }) {
+  const { validatePastOrTodayDate } = useValidators();
   const fieldName = props.nameBoolean.split(".")[1];
 
   return (

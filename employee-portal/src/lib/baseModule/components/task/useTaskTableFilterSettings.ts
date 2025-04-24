@@ -11,7 +11,14 @@ import {
   ApiUser,
   ApiUserGroup,
 } from "@eshg/base-api";
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
+import {
+  EnumFilterDefinition,
+  EnumFilterValue,
+  FilterValue,
+  UseFilterSettings,
+  UseTableControlResult,
+  useFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { Dispatch, SetStateAction, startTransition } from "react";
 import { isDefined } from "remeda";
 
@@ -21,15 +28,6 @@ import { taskTypes as inspectionTaskTypes } from "@/lib/businessModules/inspecti
 import { taskTypes as measlesProtectionTaskTypes } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { taskTypes as schoolEntryTaskTypes } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { taskTypes as travelMedicineTaskTypes } from "@/lib/businessModules/travelMedicine/shared/constants";
-import {
-  EnumFilterDefinition,
-  EnumFilterValue,
-} from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  UseFilterSettings,
-  useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 import {
   buildAssignedByOptions,

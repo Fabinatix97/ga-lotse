@@ -4,10 +4,11 @@
  */
 
 import { AuditLogApi, Configuration } from "@eshg/auditlog-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_AUDITLOG_BACKEND_URL",
   );
   return new Configuration(configurationParameters);

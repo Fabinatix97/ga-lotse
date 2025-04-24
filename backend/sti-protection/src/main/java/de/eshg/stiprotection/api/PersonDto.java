@@ -6,7 +6,6 @@
 package de.eshg.stiprotection.api;
 
 import de.eshg.base.GenderDto;
-import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Year;
@@ -23,12 +22,17 @@ public record PersonDto(
     @Schema(description = "The year of birth of the person.", example = "2000", type = "integer")
         @NotNull
         Year yearOfBirth,
-    CountryCode countryOfBirth,
+    @Schema(description = "The prefered pronouns for the person.", example = "xier / dier")
+        String pronouns,
     @Schema(
-            description = "The year since the person has been residing in Germany.",
-            example = "2010",
-            type = "integer")
-        Year inGermanySince,
+            description = "Flag for if the person has sufficient German language skills.",
+            example = "null",
+            type = "Boolean")
+        Boolean hasSufficientGermanLanguageSkills,
+    @Schema(
+            description = "Other languages besides German that the person can speak.",
+            example = "Russisch und Spanisch")
+        String otherKnownLanguages,
     @Schema(
             description =
                 "Unique code for patient identification and login to the online portal, valid until the procedure is closed.",

@@ -71,7 +71,6 @@ public class StreetService {
             data.cityDistrict(),
             data.cityDistrictPrefecture(),
             data.arbitratorsDistrict(),
-            data.socialTownHallName(),
             data.policeStation(),
             data.postalCode(),
             municipalityDirectoryData.municipalityKey());

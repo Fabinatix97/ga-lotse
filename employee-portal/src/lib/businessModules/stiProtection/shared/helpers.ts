@@ -96,8 +96,10 @@ export function mapOptionalBool(
   return input === true ? input : undefined;
 }
 
-export function areAllValuesUndefined(obj: Record<string, unknown>): boolean {
-  return Object.values(obj).every((value) => value === undefined);
+export function areAllValuesUndefined(obj: unknown): boolean {
+  return (
+    obj == null || Object.values(obj).every((value) => value === undefined)
+  );
 }
 
 export function getOpenAppointmentsFromProcedure(

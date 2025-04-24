@@ -6,7 +6,7 @@
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { IconButton, IconButtonProps, Typography } from "@mui/joy";
 import { addMonths, startOfMonth } from "date-fns";
-import { useId } from "react";
+import { RefObject, useId } from "react";
 
 import { Row } from "../../Row";
 
@@ -22,6 +22,8 @@ export interface MonthSelectionProps {
     arrows?: IconButtonProps;
   };
   locale: string;
+  prevButtonRef?: RefObject<HTMLButtonElement | null>;
+  nextButtonRef?: RefObject<HTMLButtonElement | null>;
 }
 export function MonthSelection({
   currentMonth,
@@ -31,6 +33,8 @@ export function MonthSelection({
   prevMonthLabel,
   slotProps,
   locale,
+  nextButtonRef,
+  prevButtonRef,
 }: MonthSelectionProps) {
   const monthYearId = useId();
   const previousMonth = addMonths(currentMonth, -1);
@@ -43,6 +47,7 @@ export function MonthSelection({
       </Typography>
       <Row gap={2}>
         <IconButton
+          ref={prevButtonRef}
           size="sm"
           color="primary"
           variant="outlined"
@@ -55,6 +60,7 @@ export function MonthSelection({
           <ChevronLeft />
         </IconButton>
         <IconButton
+          ref={nextButtonRef}
           size="sm"
           color="primary"
           variant="outlined"

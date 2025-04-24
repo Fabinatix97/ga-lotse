@@ -190,7 +190,7 @@ export function BookAppointmentTitle() {
   );
 }
 
-function ConflictError({
+export function ConflictError({
   hasConflict,
   scrollToErrorRef,
 }: {
@@ -224,7 +224,7 @@ function ConflictError({
   );
 }
 
-function AppointmentOverview(buttonProps: StepButtonsProps) {
+export function AppointmentOverview(buttonProps: StepButtonsProps) {
   const { t } = useTranslation("stiProtection/forms");
   const [{ concern, ...data }] = useFormData<AppointmentFormData>();
   const locale = useLocale();

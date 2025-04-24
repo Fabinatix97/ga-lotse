@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiOtherServiceTemplate } from "@eshg/travel-medicine-api";
 import { Delete, Edit } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
-
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 interface OtherServiceTemplatesColumnsProps {
   editEntry: (otherServiceTemplateId: ApiOtherServiceTemplate) => void;

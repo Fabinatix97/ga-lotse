@@ -34,9 +34,9 @@ export function DepartmentContextProvider(
   );
 
   return (
-    <DepartmentContext.Provider value={{ department, setDepartment }}>
+    <DepartmentContext value={{ department, setDepartment }}>
       {props.children}
-    </DepartmentContext.Provider>
+    </DepartmentContext>
   );
 }
 

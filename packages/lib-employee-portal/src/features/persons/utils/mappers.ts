@@ -27,7 +27,7 @@ export function normalizeListInputs(input: string[] | undefined): string[] {
   return input === undefined || input.length === 0 ? [""] : input;
 }
 
-export function mapReferencePersonToAddRequest(
+function mapReferencePersonToAddRequest(
   person: ApiGetReferencePersonResponse,
 ): ApiAddPersonFileStateRequest {
   return {
@@ -49,7 +49,7 @@ export function mapReferencePersonToAddRequest(
   };
 }
 
-export function mapCreatePersonToAddRequest(
+function mapCreatePersonToAddRequest(
   person: DefaultPersonFormValues,
 ): ApiAddPersonFileStateRequest {
   return {

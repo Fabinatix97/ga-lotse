@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FilterTemplate } from "@eshg/lib-employee-portal";
 import {
   ApiGetFilterTemplatesForEvaluationResponse,
   FilterTemplateApi,
@@ -11,7 +12,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useFilterTemplateApi } from "@/lib/businessModules/statistics/api/clients";
 import { filterTemplateApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
-import { FilterTemplate } from "@/lib/shared/components/filterSettings/FilterTemplates";
 
 export function createQueryGetFilterTemplates(
   api: FilterTemplateApi,

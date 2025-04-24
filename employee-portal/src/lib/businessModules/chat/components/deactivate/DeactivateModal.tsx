@@ -3,84 +3,80 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { Stack, Typography } from "@mui/joy";
-import { AuthDict, AuthType } from "matrix-js-sdk";
-import { useEffect, useRef } from "react";
+import {
+  BaseModal,
+  BaseModalPropsRequiredClose,
+} from "@eshg/lib-portal/components/BaseModal";
+import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 
-import { SSOAuth } from "@/lib/businessModules/chat/components/deactivate/SSOAuth";
-import { MakeRequest } from "@/lib/businessModules/chat/components/secureBackup/CreateBackupSidebar";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+export type DeactivateModalProps = Omit<
+  BaseModalPropsRequiredClose,
+  "children" | "modalTitle"
+> & {
+  onConfirm: () => void;
+};
 
-export interface DeactivateModalProps {
-  makeRequest: MakeRequest | undefined;
-  session: string | undefined;
-  onFinished: ((confirmed: boolean) => void) | undefined;
-  authData: AuthDict | undefined;
-}
-
-export function DeactivateModal({
-  onFinished,
-  session,
-  makeRequest,
-  authData,
-}: DeactivateModalProps) {
-  const { matrixClient } = useChatClientContext();
-  const popup = useRef<Window | null>(null);
-
-  function handleSSOClick() {
-    if (!session) return;
-    const ssoUrl = matrixClient.getFallbackAuthUrl(AuthType.Sso, session);
-    popup.current = window.open(ssoUrl);
+export function DeactivateModal(props: DeactivateModalProps) {
+  function handleConfirmClick() {
+    props.onConfirm();
   }
 
-  function handleCancel() {
-    onFinished?.(false);
+  function handleCancelClick() {
+    props.onClose();
   }
-
-  useEffect(() => {
-    function onMessage() {
-      popup.current?.close();
-    }
-
-    window.addEventListener("message", onMessage);
-    return () => {
-      window.removeEventListener("message", onMessage);
-    };
-  }, []);
 
   return (
     <BaseModal
-      modalTitle="Account deaktivieren"
-      key="sso-auth-modal"
-      onClose={handleCancel}
-      open={!!makeRequest}
+      {...props}
+      modalTitle="Chat Account Deaktivieren"
+      key="chat-account-deactivation-modal"
+      onClose={handleCancelClick}
     >
       <>
+        <Typography color="danger">WARNUNG!</Typography>
+        <List marker="disc" sx={{ pl: 3 }}>
+          <ListItem color="danger">
+            IHR CHATACCOUNT WIRD DAUERHAFT DEAKTIVIERT!
+          </ListItem>
+          <ListItem color="danger">
+            SIE WERDEN KEINEN ZUGRIFF MEHR AUF DAS CHATMODUL HABEN!
+          </ListItem>
+          <ListItem color="danger">
+            SIE WERDEN KEINE CHATNACHRICHTEN MEHR LESEN KÖNNEN!
+          </ListItem>
+        </List>
         <Typography textColor="text.secondary">
           Wenn Sie Ihren Account deaktivieren, ist keine weitere Nutzung des
-          Chats möglich. Eine Reaktivierung ist nicht möglich. Sie können weder
-          Nachrichten senden noch empfangen und haben keinen Zugriff mehr auf
-          Ihre bestehende Kommunikation. Für Ihre Chatpartner bleiben Ihre
-          gesendeten Nachrichten erhalten. Nutzen Sie bei Bedarf die Funktion,
-          einzelne Nachrichten zu löschen, bevor Sie Ihren Account deaktivieren.
+          Chatmoduls möglich. Eine Reaktivierung ist nicht möglich. Sie können
+          weder Nachrichten senden noch empfangen und haben keinen Zugriff mehr
+          auf Ihre bestehende Kommunikation. Für Ihre Chatpartner bleiben Ihre
+          gesendeten Nachrichten erhalten. Wenn Sie dies verhindern möchten,
+          nutzen Sie die Funktion, einzelne Nachrichten zu löschen, bevor Sie
+          Ihren Account deaktivieren.
         </Typography>
         <Stack
           direction="row"
           spacing={2}
           sx={{ marginLeft: "auto", paddingTop: 2 }}
         >
-          {authData && makeRequest && session && (
-            <SSOAuth
-              matrixClient={matrixClient}
-              authData={authData}
-              makeRequest={makeRequest}
-              handleCancel={handleCancel}
-              handleSSOClick={handleSSOClick}
-              session={session}
-              onFinished={onFinished}
-            />
-          )}
+          <Button
+            size="sm"
+            variant="outlined"
+            color="neutral"
+            onClick={handleCancelClick}
+            data-testid="deactivate-cancel"
+          >
+            Abbrechen
+          </Button>
+          <Button
+            size="sm"
+            color={"danger"}
+            loadingPosition={"start"}
+            onClick={handleConfirmClick}
+            data-testid="deactivate-confirm"
+          >
+            Fortfahren
+          </Button>
         </Stack>
       </>
     </BaseModal>

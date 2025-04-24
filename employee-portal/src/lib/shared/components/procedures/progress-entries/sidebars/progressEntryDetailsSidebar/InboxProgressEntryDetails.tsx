@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiProcessedInboxProgressEntry,
   ApiUser,
@@ -12,7 +13,6 @@ import { isDefined } from "remeda";
 import { inboxProgressEntryTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { DetailsContentWrapper } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsContentWrapper";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function InboxProgressEntryDetails({
   entry,
@@ -25,7 +25,7 @@ export function InboxProgressEntryDetails({
     <DetailsContentWrapper
       entry={entry}
       title={`Details ${inboxProgressEntryTitles[entry.inboxProgressEntryType]}`}
-      creatorName={fullName(resolvedUsers[entry.createdBy])}
+      creatorName={formatUserName(resolvedUsers[entry.createdBy])}
     >
       <LabelValueDisplay
         key="subject"

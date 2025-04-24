@@ -43,5 +43,6 @@ public record AddPersonFileStateResponse(
         Long referenceVersion,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress,
-    @NotNull DataOriginDto dataOrigin)
+    @NotNull DataOriginDto dataOrigin,
+    @NotNull @Size(min = 8, max = 8) String humanReadableId)
     implements PersonDetails {}

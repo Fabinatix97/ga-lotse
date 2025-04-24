@@ -4,6 +4,7 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
+import { FilterValue } from "@eshg/lib-employee-portal";
 import {
   ApiOpenDataFileType,
   GetOpenDocumentsRequest,
@@ -11,7 +12,6 @@ import {
 
 import { openDataFileTypes } from "@/lib/opendata/constants";
 import { buildOpenDataBusinessModuleOptions } from "@/lib/opendata/helper";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
 import {
   getFilterSelectedValue,

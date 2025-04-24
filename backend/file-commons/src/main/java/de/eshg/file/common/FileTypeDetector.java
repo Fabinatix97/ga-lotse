@@ -7,7 +7,6 @@ package de.eshg.file.common;
 
 import de.eshg.rest.service.error.BadRequestException;
 import java.io.IOException;
-import org.apache.tika.Tika;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,14 +15,14 @@ public class FileTypeDetector {
   private FileTypeDetector() {}
 
   public static String detect(byte[] fileContent) {
-    return new Tika().detect(fileContent);
+    return new TikaWrapper().detect(fileContent);
   }
 
   public static FileType getSupportedFileTypeOrThrow(MultipartFile file) throws IOException {
-    String contentType = new Tika().detect(file.getInputStream());
+    String contentType = new TikaWrapper().detect(file.getInputStream());
     if (MediaType.TEXT_PLAIN_VALUE.equals(contentType)) {
       FileType fileType =
-          getFileType(new Tika().detect(file.getInputStream(), file.getOriginalFilename()));
+          getFileType(new TikaWrapper().detect(file.getInputStream(), file.getOriginalFilename()));
       if (isConsistentWithTextFile(fileType)) {
         return fileType;
       }
@@ -32,7 +31,7 @@ public class FileTypeDetector {
   }
 
   public static FileType getSupportedFileTypeOrThrow(byte[] fileContent) {
-    String contentType = new Tika().detect(fileContent);
+    String contentType = new TikaWrapper().detect(fileContent);
     return getFileType(contentType);
   }
 
@@ -47,6 +46,6 @@ public class FileTypeDetector {
   }
 
   private static boolean isConsistentWithTextFile(FileType fileType) {
-    return fileType == FileType.CSV;
+    return (fileType == FileType.CSV) || (fileType == FileType.MD);
   }
 }

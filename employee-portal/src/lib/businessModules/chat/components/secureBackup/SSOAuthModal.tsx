@@ -88,17 +88,6 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
     };
   }, [authLogic]);
 
-  useEffect(() => {
-    function onMessage(e: MessageEvent) {
-      logger.debug("SSOAuthModal - On Window Message", e.data);
-    }
-
-    window.addEventListener("message", onMessage);
-    return () => {
-      window.removeEventListener("message", onMessage);
-    };
-  }, []);
-
   return (
     <BaseModal
       modalTitle="Nutzen Sie Single Sign On um fortzufahren"

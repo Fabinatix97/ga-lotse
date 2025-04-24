@@ -8,7 +8,14 @@ import { FormControl, FormHelperText, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isSameDay } from "date-fns";
 import { useFormikContext } from "formik";
-import { ReactNode, useEffect, useId, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import { isDate } from "remeda";
 
 import { getPropertyIf } from "../../../helpers/getProperty";
@@ -87,7 +94,7 @@ export function AppointmentPickerField<T extends Appointment>({
   active = true,
   currentMonth,
   setCurrentMonth,
-  monthAppointments,
+  monthAppointments: givenMonthAppointments,
   onAppointmentSelected,
   isAppointmentEqual,
   required,
@@ -130,6 +137,14 @@ export function AppointmentPickerField<T extends Appointment>({
     }
   }, [requiredWarningChanged, field.meta.touched, field.helpers]);
 
+  const monthAppointments = useMemo(
+    () =>
+      givenMonthAppointments.sort(
+        (a, b) => a.start.getTime() - b.start.getTime(),
+      ),
+    [givenMonthAppointments],
+  );
+
   const listProps = useAppointmentList({
     selectedDay,
     monthAppointments,
@@ -137,13 +152,16 @@ export function AppointmentPickerField<T extends Appointment>({
     locale,
   });
 
-  function setSelectedDay(d: Date) {
-    setSelectedDayRaw(d);
-    if (!selectedDay || !isSameDay(d, selectedDay)) {
-      void field.helpers.setValue(null);
-    }
-    onDateSelected?.(d);
-  }
+  const setSelectedDay = useCallback(
+    (d: Date) => {
+      setSelectedDayRaw(d);
+      if (!selectedDay || !isSameDay(d, selectedDay)) {
+        void field.helpers.setValue(null);
+      }
+      onDateSelected?.(d);
+    },
+    [selectedDay, field.helpers, onDateSelected, setSelectedDayRaw],
+  );
 
   // When "auto-select first" is on
   // auto-select the first appointment in the list
@@ -166,7 +184,6 @@ export function AppointmentPickerField<T extends Appointment>({
   ]);
 
   const dateAppointments = monthAppointments.map((t) => t.start);
-
   const Layout = layout ?? DefaultLayout;
   const AppointmentList = AppointmentListOverride ?? AppointmentListForDate;
   const calendarErrorId = useId();
@@ -223,11 +240,12 @@ export function AppointmentPickerField<T extends Appointment>({
             }
             locale={locale}
           />
-          {field.helperText != null && (
-            <FormHelperText component="p" sx={{ my: 1 }} aria-live="polite">
-              {field.helperText}
-            </FormHelperText>
-          )}
+          {field.helperText != null &&
+            (field.helperText !== error || !hasCalendarError) && (
+              <FormHelperText component="p" sx={{ my: 1 }} aria-live="polite">
+                {field.helperText}
+              </FormHelperText>
+            )}
         </FormControl>
       }
     />

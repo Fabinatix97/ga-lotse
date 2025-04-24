@@ -10,12 +10,21 @@ import {
   ChipWithTooltip,
   DataTable,
   Pagination,
+  PersonSearchForm,
+  PersonSearchFormValues,
+  PersonSearchParams,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  TogglePersonSearchButton,
   UseTableControlResult,
   formatSchoolYear,
   getSortDirection,
   getSortKey,
+  useFilterDictionary,
+  useGdprValidationTasksAlert,
+  useGetGdprValidationBannerQuery,
+  usePersonSearch,
   useRowSelection,
   useSyncRowSelection,
   useTableControl,
@@ -39,7 +48,10 @@ import {
 import { ReactNode } from "react";
 import { isDefined, isNullish } from "remeda";
 
-import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import {
+  useGdprValidationTaskApi,
+  useSchoolEntryApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { getProceduresQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { ProceduresTableTitle } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/ProcedureTableTitle";
@@ -48,17 +60,6 @@ import {
   PROCEDURE_TYPES,
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import {
-  PersonSearchForm,
-  PersonSearchFormValues,
-  PersonSearchParams,
-  TogglePersonSearchButton,
-  usePersonSearch,
-} from "@/lib/shared/components/personSearch/PersonSearchForm";
 import { UnstyledTabList } from "@/lib/shared/components/unstyledTab/UnstyledTabList";
 import { UnstyledTabPanel } from "@/lib/shared/components/unstyledTab/UnstyledTabPanel";
 import { UnstyledTabs } from "@/lib/shared/components/unstyledTab/UnstyledTabs";
@@ -116,7 +117,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
                   tabListItems={[
                     {
                       component: (
-                        <FilterButton
+                        <ToggleFilterButton
                           {...filterButtonProps}
                           isFilterVisible={currentValue === "filters"}
                         />
@@ -199,8 +200,11 @@ function ProcedureTableSheet({
   });
 
   const schoolEntryApi = useSchoolEntryApi();
+  const gdprValidationTaskApi = useGdprValidationTaskApi();
+
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.SchoolEntry,
+    gdprValidationTaskApi,
   );
   const paginationParams = mapPaginationQueryParams(tableControl);
   const proceduresQuery = getProceduresQuery(

@@ -190,9 +190,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
   );
 
   return (
-    <ChatClientContext.Provider value={contextValues}>
-      {children}
-    </ChatClientContext.Provider>
+    <ChatClientContext value={contextValues}>{children}</ChatClientContext>
   );
 }
 

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ToolbarBackButton } from "@eshg/lib-employee-portal";
+
 import { DepartmentInfo } from "@/lib/configurator/components/shared/ConfiguratorDetails/DepartmentInfo";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { routes } from "@/lib/configurator/shared/routes";
@@ -12,8 +14,8 @@ import { routes } from "@/lib/configurator/shared/routes";
 export default function MedicalRegistryConfiguratorPage() {
   return (
     <ConfiguratorLayout
-      backHref={routes.medicalRegistry.index}
       module={"medicalRegistry"}
+      backButton={<ToolbarBackButton href={routes.medicalRegistry.index} />}
     >
       <DepartmentInfo module="medicalRegistry" />
     </ConfiguratorLayout>

@@ -8,16 +8,13 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  validateLength,
-  validatePastOrTodayDate,
-} from "@eshg/lib-portal/helpers/validators";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Box, FormControl, FormLabel, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
 import { validatePositiveInteger } from "@/lib/businessModules/stiProtection/components/anamnesis/helpers";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/shared/formFields/YesOrNoWithFollowUp";
 import { useTranslation } from "@/lib/i18n/client";
 import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 
@@ -30,6 +27,7 @@ import {
 
 export function GeneralStep() {
   const { t } = useTranslation(["stiProtection/anamnesis"]);
+  const { validateLength, validatePastOrTodayDate } = useValidators();
   const { setFieldValue, initialValues, values } =
     useFormikContext<FormDataWithoutConcern>();
 

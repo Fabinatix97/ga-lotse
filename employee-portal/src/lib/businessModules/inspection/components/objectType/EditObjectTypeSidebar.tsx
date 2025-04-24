@@ -5,6 +5,7 @@
 
 import { ApiObjectType } from "@eshg/inspection-api";
 import {
+  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -23,7 +24,6 @@ import { Grid } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutations/objectTypes";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 export interface EditableObjectType {
   id: string;

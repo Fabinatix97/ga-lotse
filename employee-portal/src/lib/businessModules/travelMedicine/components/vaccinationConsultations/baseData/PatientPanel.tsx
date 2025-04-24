@@ -9,6 +9,7 @@ import {
   CentralFilePersonDetails,
   DetailsSection,
   EditButton,
+  InformationSheet,
   OverlayBoundary,
   SyncBarrier,
   useSyncBarrier,
@@ -32,7 +33,6 @@ import {
   mapToPersonFormData,
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/personSidebarHelper";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

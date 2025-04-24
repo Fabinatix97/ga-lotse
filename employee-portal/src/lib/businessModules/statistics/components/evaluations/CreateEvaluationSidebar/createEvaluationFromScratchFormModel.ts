@@ -10,12 +10,15 @@ import { ChooseDataSourceStepFormModel } from "./ChooseDataSourceStep/chooseData
 import { ConfigureDataSourceStepFormModel } from "./ConfigureDataSourceStep/configureDataSourceStepFormModel";
 import { SummaryStepFormModel } from "./SummaryStep/summaryStepFormModel";
 
-export type ChooseAttributeStepOrChooseEvaluationStepFormModel =
-  ChooseAttributesStepFormModel & ChooseEvaluationTemplateStepFormModel;
+export type ChooseAttributeStepOrConfigureDataSourceStepFormModel =
+  ChooseAttributesStepFormModel & ConfigureDataSourceStepFormModel;
+
+export type ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel =
+  ChooseEvaluationTemplateStepFormModel & ConfigureDataSourceStepFormModel;
 
 export type CreateEvaluationFromScratchFormModel = [
   ChooseDataSourceStepFormModel,
-  ChooseAttributeStepOrChooseEvaluationStepFormModel,
-  ConfigureDataSourceStepFormModel,
+  ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel,
+  ChooseAttributeStepOrConfigureDataSourceStepFormModel,
   SummaryStepFormModel,
 ];

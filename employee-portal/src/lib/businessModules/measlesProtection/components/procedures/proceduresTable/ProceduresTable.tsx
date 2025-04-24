@@ -7,12 +7,15 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  ActionsMenu,
   DataTable,
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
   Pagination,
   TablePage,
   TableSheet,
+  useGdprValidationTasksAlert,
+  useGetGdprValidationBannerQuery,
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -25,6 +28,7 @@ import { Chip } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
+import { useGdprValidationTaskApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { useGetProceduresQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import {
   caseStatusNames,
@@ -32,9 +36,6 @@ import {
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 
 import {
   ProceduresTableFilters,
@@ -207,8 +208,10 @@ export function ProceduresTable() {
     filters,
   );
 
+  const gdprValidationTaskApi = useGdprValidationTaskApi();
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.MeaslesProtection,
+    gdprValidationTaskApi,
   );
 
   const [procedures, gdprBanner] = useSuspenseQueries({

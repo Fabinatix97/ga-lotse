@@ -17,10 +17,10 @@ export function SidebarScope(props: RequiresChildren) {
   const scopeId = useUuid();
 
   return (
-    <SidebarScopeContext.Provider value={scopeId}>
+    <SidebarScopeContext value={scopeId}>
       {props.children}
       <SidebarSlot />
-    </SidebarScopeContext.Provider>
+    </SidebarScopeContext>
   );
 }
 

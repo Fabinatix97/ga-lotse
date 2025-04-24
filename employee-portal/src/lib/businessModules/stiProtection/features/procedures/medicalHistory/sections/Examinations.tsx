@@ -4,11 +4,11 @@
  */
 
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { FormControl, FormLabel, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
 import {
   ExaminableIllnesses,

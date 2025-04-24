@@ -1,0 +1,38 @@
+{
+  "common": {
+    "appointment_booking_title": "Termin umbuchen",
+    "required_title": "* Pflichtfeld",
+    "hiv_sti_consultation": "HIV-STI-Beratung",
+    "sex_work": "Sexarbeit",
+    "overview_title": "Terminübersicht",
+    "timeslot_taken": "Leider ist dieser Termin nicht mehr verfügbar. Bitte wählen Sie einen anderen Termin aus.",
+    "select_new_appointment": "Neuen Termin auswählen",
+    "reset": "Zurücksetzen",
+    "month": "Monat",
+    "year": "Jahr",
+    "yes": "Ja",
+    "no": "Nein",
+    "cancel_button": "Abbrechen",
+    "timeslot_booked": "Termin erfolgreich gebucht"
+  },
+  "time_slot": {
+    "title": "Verfügbare Termine",
+    "no_appointments_available": "Derzeit sind keine Termine verfügbar",
+    "try_later": "Wir schalten in Kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+  },
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar"
+  },
+  "appointment_overview": {
+    "clock": " Uhr",
+    "rebook_appointment_button": "Termin umbuchen",
+    "cancel_button": "Abbrechen"
+  }
+}

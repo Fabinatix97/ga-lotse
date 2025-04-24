@@ -185,6 +185,52 @@
         "tags" : [ "ConfigStatus" ]
       }
     },
+    "/configuration/open-data" : {
+      "get" : {
+        "operationId" : "getOpenDataConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpenDataConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpenDataConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateOpenDataConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "termsOfUse" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "updateOpenDataConfigRequest" : {
+                    "$ref" : "#/components/schemas/UpdateOpenDataConfigRequest"
+                  }
+                },
+                "required" : [ "termsOfUse", "updateOpenDataConfigRequest" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpenDataConfig" ]
+      }
+    },
     "/feature-toggles" : {
       "get" : {
         "operationId" : "getFeatureToggles",
@@ -699,6 +745,19 @@
           }
         }
       },
+      "Document" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "GetConfigurationStatusResponse" : {
         "required" : [ "endpointStates", "moduleState" ],
         "type" : "object",
@@ -720,6 +779,14 @@
         "properties" : {
           "fallbackLicenseUrl" : {
             "type" : "string"
+          }
+        }
+      },
+      "GetOpenDataConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openDataConfig" : {
+            "$ref" : "#/components/schemas/OpenDataConfig"
           }
         }
       },
@@ -784,6 +851,21 @@
       "InterceptionType" : {
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "OpenDataConfig" : {
+        "required" : [ "author", "licenseUrl", "termsOfUse" ],
+        "type" : "object",
+        "properties" : {
+          "author" : {
+            "type" : "string"
+          },
+          "licenseUrl" : {
+            "type" : "string"
+          },
+          "termsOfUse" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
       },
       "OpenDataFeature" : {
         "type" : "string",
@@ -927,6 +1009,18 @@
             "type" : "string"
           },
           "urlPatternFilter" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateOpenDataConfigRequest" : {
+        "required" : [ "author", "fallbackLicenseUrl" ],
+        "type" : "object",
+        "properties" : {
+          "author" : {
+            "type" : "string"
+          },
+          "fallbackLicenseUrl" : {
             "type" : "string"
           }
         }

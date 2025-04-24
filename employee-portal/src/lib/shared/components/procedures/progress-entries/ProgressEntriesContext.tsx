@@ -76,7 +76,7 @@ export function ProgressEntriesProvider(
   }
 
   return (
-    <ProgressEntriesContext.Provider
+    <ProgressEntriesContext
       value={{
         config: props.progressEntriesConfig,
         state: {
@@ -95,7 +95,7 @@ export function ProgressEntriesProvider(
       }}
     >
       {props.children}
-    </ProgressEntriesContext.Provider>
+    </ProgressEntriesContext>
   );
 }
 

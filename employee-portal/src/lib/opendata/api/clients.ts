@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   Configuration,
   OpenDataApi,
   OpenDataFeatureTogglesApi,
 } from "@eshg/opendata-api";
 
-function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
+
+export function useConfiguration() {
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_OPENDATA_BACKEND_URL",
   );
   return new Configuration(configurationParameters);

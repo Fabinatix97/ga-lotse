@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
+import {
+  ActionsMenu,
+  useHeaderHeights,
+  useLayoutConfig,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
@@ -20,7 +24,6 @@ import { getSharedURL } from "@/lib/businessModules/statistics/components/shared
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 import { useCopy } from "@/lib/shared/hooks/useCopy";

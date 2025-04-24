@@ -1,5 +1,4 @@
 {
   "required": "Pflichtfeld",
-  "length": "Bitte eine Textlänge zwischen {{startInclusive}} und {{endInclusive}} Zeichen angeben.",
   "select_country": "Bitte ein {{label}} auswählen."
 }

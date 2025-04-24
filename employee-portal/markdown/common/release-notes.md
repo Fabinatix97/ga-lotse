@@ -2,6 +2,27 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.8
+_23.04.2025_
+
+Neunter Release der Anwendung GA-Lotse.
+
+### Einschulungsuntersuchungen:
+
+* Planung
+  * Entfernen von Untersuchungstermin am Kind
+  * Leere Terminblöcke ohne vergebene Termine löschen
+
+### Masernschutz:
+
+* Planung
+  * Leere Terminblöcke ohne vergebene Termine löschen
+
+### Reisemedizinische Impfberatung:
+
+* Planung
+  * Leere Terminblöcke ohne vergebene Termine löschen
+
 ## GA-Lotse 1.7
 _09.04.2025_
 

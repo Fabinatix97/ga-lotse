@@ -13,6 +13,7 @@ import {
   TabNavigationHeaderTypography,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   hasAnyUserRoles,
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
@@ -49,8 +50,6 @@ export default function EvaluationTemplatesLayout({
     <StickyToolbarLayout
       toolbar={
         <TabNavigationToolbar
-          routeBack={routes.evaluations.index}
-          items={tabNavigationItems}
           header={
             <TabNavigationHeader titleAsH1>
               <TabNavigationHeaderTypography>
@@ -58,6 +57,8 @@ export default function EvaluationTemplatesLayout({
               </TabNavigationHeaderTypography>
             </TabNavigationHeader>
           }
+          items={tabNavigationItems}
+          backButton={<ToolbarBackButton href={routes.evaluations.index} />}
         />
       }
     >

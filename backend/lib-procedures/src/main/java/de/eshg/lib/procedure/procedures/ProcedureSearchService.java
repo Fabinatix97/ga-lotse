@@ -219,6 +219,11 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     }
   }
 
+  public List<ProcedureT> searchProceduresByPersonByHumanReadableId(
+      String humanReadableId, PersonType personType) {
+    return processSearchResult(performSearchByHumanReadableId(humanReadableId), personType);
+  }
+
   private static boolean isFullSearch(ProcedureSearchParameters searchParameters) {
     return StringUtils.hasText(searchParameters.searchFirstName())
         && StringUtils.hasText(searchParameters.searchLastName())
@@ -243,6 +248,10 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
             searchParameters.searchLastName(),
             searchParameters.searchDateOfBirth())
         .persons();
+  }
+
+  private List<GetReferencePersonResponse> performSearchByHumanReadableId(String humanReadableId) {
+    return personApi.searchReferencePersonsByHumanReadableId(humanReadableId).persons();
   }
 
   private List<ProcedureT> processSearchResult(

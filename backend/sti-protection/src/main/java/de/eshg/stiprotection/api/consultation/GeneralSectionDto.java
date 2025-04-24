@@ -21,13 +21,6 @@ public record GeneralSectionDto(
             description = "Additional gender-related information.",
             example = "The patient identifies as non-binary and prefers the pronouns they/them.")
         String furtherGenderInfo,
-    @Schema(description = "Indicates whether the patient has sufficient German language skills.")
-        Boolean hasSufficientGermanLanguageSkills,
-    @Schema(description = "Indicates whether the patient is illiterate.") Boolean isIlliterate,
-    @Schema(
-            description = "Other languages the patient can speak or understand.",
-            example = "Spanish and French.")
-        String otherKnownLanguages,
     @Schema(description = "Indicates whether the patient has any form of health insurance.")
         Boolean hasHealthInsurance,
     @Schema(description = "Indicates whether the patient has German health insurance.")

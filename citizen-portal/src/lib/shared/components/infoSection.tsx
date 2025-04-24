@@ -54,7 +54,7 @@ export function InfoSection(props: InfoSectionProps) {
   const titleId = useId();
 
   return (
-    <InfoSectionTitleIdContext.Provider value={titleId}>
+    <InfoSectionTitleIdContext value={titleId}>
       <SectionStack
         component="section"
         direction="row"
@@ -76,7 +76,7 @@ export function InfoSection(props: InfoSectionProps) {
           {props.children}
         </Stack>
       </SectionStack>
-    </InfoSectionTitleIdContext.Provider>
+    </InfoSectionTitleIdContext>
   );
 }
 

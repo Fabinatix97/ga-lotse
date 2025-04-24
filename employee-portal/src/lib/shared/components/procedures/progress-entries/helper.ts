@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiManualProgressEntryType,
@@ -14,7 +15,6 @@ import {
 import { isDefined, isEmpty } from "remeda";
 
 import { manualProgressEntryFileTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function extractFileDescriptionValue(entry: ApiProgressEntry) {
   if (!isDefined(entry.fileReference)) return undefined;
@@ -34,7 +34,7 @@ export function formatTriggeredBy(
     return "System";
   }
 
-  return fullName(resolvedUsers[entry.triggeredBy]);
+  return formatUserName(resolvedUsers[entry.triggeredBy]);
 }
 
 export function hasFileField(

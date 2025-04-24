@@ -45,7 +45,7 @@ public class ReportExecution {
   @Scheduled(cron = "${de.eshg.statistics.auto-report.schedule:@hourly}")
   @SchedulerLock(
       name = "HandlePlannedReports",
-      lockAtMostFor = "${de.eshg.statistics.auto-report.lock-at-most-for:1h}")
+      lockAtMostFor = "${de.eshg.statistics.auto-report.lock-at-most-for:59m}")
   public void handlePlannedReports() {
     LockAssert.assertLocked();
     log.info("Starting job 'HandlePlannedReports'");

@@ -5,13 +5,13 @@
 
 "use client";
 
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { SxProps } from "@mui/joy/styles/types";
 
 import {
   WEEKDAY_TYPES,
   WeekdayCheckboxOption,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
 
 export interface CheckboxGroupProps {
   name: string;

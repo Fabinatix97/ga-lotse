@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  EnumFilterDefinition,
+  FilterDefinition,
+  NumberFilterDefinition,
+  TextFilterDefinition,
+} from "@eshg/lib-employee-portal";
 import { isNonNullish } from "remeda";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
@@ -10,10 +16,6 @@ import {
   booleanOptions,
   mapEnumOptions,
 } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
-import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { NumberFilterDefinition } from "@/lib/shared/components/filterSettings/models/NumberFilter";
-import { TextFilterDefinition } from "@/lib/shared/components/filterSettings/models/TextFilter";
 
 export function mapAttributesToFilterDefinitions(
   attributes: FlatAttribute[],

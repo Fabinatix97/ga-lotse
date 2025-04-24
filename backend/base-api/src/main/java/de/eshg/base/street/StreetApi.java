@@ -22,7 +22,7 @@ public interface StreetApi {
   String BASE_URL = BaseUrls.Base.STREET_API;
   String AUTOCOMPLETE = BaseUrls.Base.STREET_AUTOCOMPLETE_URL;
   String POST_CODE_AND_CITY = Base.POST_CODE_AND_CITY_URL;
-  String HOUSE_NUMBER_REGEXP = "^(\\d+)([a-zA-Z]*)$|";
+  String HOUSE_NUMBER_REGEXP = "^(\\d+)([ a-zA-Z]*)$|";
 
   @GetExchange
   @ApiResponse(responseCode = "200")

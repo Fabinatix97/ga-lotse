@@ -6,7 +6,8 @@
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { validateEmail } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import AddIcon from "@mui/icons-material/AddOutlined";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Button, Divider, Grid, IconButton, Typography } from "@mui/joy";
@@ -27,7 +28,6 @@ import {
   titleOptions,
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { useTranslation } from "@/lib/i18n/client";
-import { validateEmail } from "@/lib/shared/helpers/validators";
 
 import { NestedFormProps } from "./AffectedPersonForm";
 
@@ -45,6 +45,7 @@ export function createEmptyContactPerson(): FacilityContactPersonFormInputs {
 
 export function ContactPersonForm(props: NestedFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper<FacilityContactPersonFormInputs>(
     props.name,
   );
@@ -94,12 +95,9 @@ export function ContactPersonForm(props: NestedFormProps) {
           name={fieldName("emailAddress")}
           label={t("common.personalDetails.emailAddress")}
           required={t("common.personalDetails.emailAddress_required")}
-          validate={(value) =>
-            validateEmail(
-              value,
-              t("common.personalDetails.emailAddress_required"),
-            )
-          }
+          validate={validateEmail(
+            t("common.personalDetails.emailAddress_required"),
+          )}
         />
       </Grid>
       <Grid xxs={12} xs={6}>

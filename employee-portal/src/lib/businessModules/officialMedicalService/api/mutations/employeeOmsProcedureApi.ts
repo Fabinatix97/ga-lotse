@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -15,12 +16,14 @@ import {
   ApiSyncFacilityRequest,
   CloseOpenProcedureRequest,
   MergeAffectedPersonRequest,
+  PatchAnamnesisRequest,
   PatchMedicalOpinionStatusRequest,
   PatchWaitingRoomRequest,
   PostDocumentRequest,
   UpdateAdditionalInfoRequest,
   UpdateAffectedPersonRequest,
 } from "@eshg/official-medical-service-api";
+import { MutationOptions } from "@tanstack/react-query";
 
 import { useEmployeeOmsProcedureApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
@@ -227,4 +230,26 @@ export function useMergeAffectedPerson() {
       employeeOmsProcedureApi.mergeAffectedPersonRaw(request),
     onSuccess: () => snackbar.confirmation("Personendaten geprüft"),
   });
+}
+
+export function usePatchAnamnesisOptions(): MutationOptions<
+  void,
+  Error,
+  PatchAnamnesisRequest
+> {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+
+  return {
+    mutationFn: (request: PatchAnamnesisRequest) =>
+      employeeOmsProcedureApi
+        .patchAnamnesisRaw(request)
+        .then(unwrapRawResponse),
+    onSuccess: () => {
+      snackbar.confirmation("Die Anamnese wurde erfolgreich gespeichert.");
+    },
+    onError: () => {
+      snackbar.error("Die Anamnese konnte nicht gespeichert werden.");
+    },
+  };
 }

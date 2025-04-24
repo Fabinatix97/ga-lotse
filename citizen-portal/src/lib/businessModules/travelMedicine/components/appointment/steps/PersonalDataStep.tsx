@@ -4,11 +4,9 @@
  */
 
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import {
-  validateLength,
-  validatePastOrTodayDate,
-} from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Stack } from "@mui/joy";
 
 import {
@@ -17,10 +15,10 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { CheckboxField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/CheckboxField";
 import { useTranslation } from "@/lib/i18n/client";
-import { validateEmail } from "@/lib/shared/helpers/validators";
 
 export function PersonalDataStep() {
   const { t } = useTranslation(["travelMedicine/forms"]);
+  const { validateLength, validatePastOrTodayDate } = useValidators();
 
   return (
     <FormSheet data-testid="personal-data-content-form">
@@ -51,13 +49,10 @@ export function PersonalDataStep() {
           label={t("personalDataFormContent.fields.phoneNumbers")}
           // validate={validateLength(1, 23)} // toDo: add validatation
         />
-        <InputField
-          type="email"
+        <EmailField
           name={"patient.emailAddresses"}
           label={t("personalDataFormContent.fields.emailAddresses")}
           required={t("personalDataFormContent.fields.emailAddresses_required")}
-          validate={validateEmail}
-          // onBlur={updateOverview}
         />
         <CheckboxField
           name={"confirmOnlineServices"}

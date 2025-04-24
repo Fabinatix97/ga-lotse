@@ -13,7 +13,7 @@
   "appointment_calendar": {
     "required_appointment": "Please select an appointment",
     "required_day": "Please select a day",
-    "month_selection": "Appointment calendar week",
+    "month_selection": "Appointment calendar month",
     "next_month": "next month",
     "prev_month": "previous month",
     "list_label": "Available times *",

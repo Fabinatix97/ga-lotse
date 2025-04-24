@@ -7,6 +7,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import {
@@ -27,8 +28,10 @@ export default function NewFacilityWebSearchPage() {
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          backHref={routes.facilities.webSearch.index}
           title="Neue Web-Suche anlegen"
+          backButton={
+            <ToolbarBackButton href={routes.facilities.webSearch.index} />
+          }
         />
       }
     >

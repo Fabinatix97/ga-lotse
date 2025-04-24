@@ -99,7 +99,7 @@ export function ChecklistValidationProvider({
   }
 
   return (
-    <ChecklistValidateContext.Provider
+    <ChecklistValidateContext
       value={{
         registerElementForm,
         unregisterElementForm,
@@ -110,7 +110,7 @@ export function ChecklistValidationProvider({
       }}
     >
       {children}
-    </ChecklistValidateContext.Provider>
+    </ChecklistValidateContext>
   );
 }
 

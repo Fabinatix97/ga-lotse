@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DateTimeField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-
-import { DateTimeField } from "./DateTimeField";
 
 export function DateOrDateTimeField({
   wholeDay,

@@ -1326,6 +1326,34 @@
         "tags" : [ "Disease" ]
       }
     },
+    "/diseases/{id}/in-use" : {
+      "get" : {
+        "operationId" : "getDiseaseInUse",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDiseaseInUseResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets names of all vaccines which reference this disease",
+        "tags" : [ "Disease" ]
+      }
+    },
     "/feature-toggles" : {
       "get" : {
         "operationId" : "getFeatureToggles",
@@ -6691,6 +6719,18 @@
           }
         }
       },
+      "GetDiseaseInUseResponse" : {
+        "required" : [ "vaccineNames" ],
+        "type" : "object",
+        "properties" : {
+          "vaccineNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
       "GetDiseasesResponse" : {
         "required" : [ "diseases" ],
         "type" : "object",
@@ -7030,7 +7070,7 @@
         }
       },
       "GetPersonFileStateResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -7076,6 +7116,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",

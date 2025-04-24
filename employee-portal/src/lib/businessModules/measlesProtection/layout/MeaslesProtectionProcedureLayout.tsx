@@ -12,6 +12,7 @@ import {
   StickyToolbarLayout,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { PropsWithChildren } from "react";
@@ -39,13 +40,15 @@ export function MeaslesProtectionProcedureLayout({
     <StickyToolbarLayout
       toolbar={
         <TabNavigationToolbar
-          items={navItems}
-          routeBack={
-            hasMeaslesProtectionAdminRole ? routes.procedures.index : undefined
-          }
-          header={<PersonToolbarHeader person={procedure.affectedPerson} />}
           index={navItems[0]?.href}
+          header={<PersonToolbarHeader person={procedure.affectedPerson} />}
+          items={navItems}
           afterTabs={<CaseStatusSelect procedure={procedure} />}
+          backButton={
+            hasMeaslesProtectionAdminRole ? (
+              <ToolbarBackButton href={routes.procedures.index} />
+            ) : null
+          }
         />
       }
     >

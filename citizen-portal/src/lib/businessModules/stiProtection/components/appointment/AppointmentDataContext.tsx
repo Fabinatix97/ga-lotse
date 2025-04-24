@@ -31,9 +31,9 @@ export function FormDataProvider<T>({
     [data, setData],
   );
   return (
-    <FormDataContext.Provider value={contextValue as FormDataValue<unknown>}>
+    <FormDataContext value={contextValue as FormDataValue<unknown>}>
       {children}
-    </FormDataContext.Provider>
+    </FormDataContext>
   );
 }
 export function useFormData<T>() {

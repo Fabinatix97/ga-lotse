@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ToolbarBackButton } from "@eshg/lib-employee-portal";
+
 import { DepartmentInfo } from "@/lib/configurator/components/shared/ConfiguratorDetails/DepartmentInfo";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { routes } from "@/lib/configurator/shared/routes";
@@ -12,8 +14,8 @@ import { routes } from "@/lib/configurator/shared/routes";
 export default function StiProtectionConfiguratorPage() {
   return (
     <ConfiguratorLayout
-      backHref={routes.stiProtection.index}
       module={"stiProtection"}
+      backButton={<ToolbarBackButton href={routes.stiProtection.index} />}
     >
       <DepartmentInfo module="stiProtection" />
     </ConfiguratorLayout>

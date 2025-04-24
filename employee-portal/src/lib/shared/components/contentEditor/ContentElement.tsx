@@ -50,7 +50,11 @@ export function ContentElement({
     case "TEXT":
     case "EditorElementText":
       return (
-        <Typography level="body-md" whiteSpace="pre-line">
+        <Typography
+          level="body-md"
+          whiteSpace="pre-line"
+          sx={{ overflowWrap: "break-word" }}
+        >
           {element.text}
         </Typography>
       );
@@ -62,7 +66,11 @@ export function ContentElement({
       return (
         <Stack spacing={1}>
           <Typography level="title-md">{element.title}</Typography>
-          <Typography level="body-md" whiteSpace="pre-line">
+          <Typography
+            level="body-md"
+            whiteSpace="pre-line"
+            sx={{ overflowWrap: "break-word" }}
+          >
             {element.text}
           </Typography>
         </Stack>

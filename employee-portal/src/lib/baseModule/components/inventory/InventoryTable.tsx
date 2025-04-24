@@ -8,9 +8,12 @@
 import { ApiUserRole, GetInventoryItemsRequest } from "@eshg/base-api";
 import {
   DataTable,
+  FilterSettingsContent,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -24,9 +27,6 @@ import { useInventoryCountCorrectionSidebar } from "@/lib/baseModule/components/
 import { useInventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
 import { useInventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 import { inventoryColumns } from "./columns";
@@ -81,7 +81,7 @@ export function InventoryTable({ params }: InventoryTableProps) {
             gap={2}
           >
             <Stack direction="row" flexWrap="wrap" gap="inherit">
-              <FilterButton {...filterSettings.filterButtonProps} />
+              <ToggleFilterButton {...filterSettings.filterButtonProps} />
               <SearchFilter
                 tableControl={tableControl}
                 searchParamName={"name"}

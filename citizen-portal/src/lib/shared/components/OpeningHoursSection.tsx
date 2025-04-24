@@ -27,16 +27,26 @@ export function OpeningHoursSection({
   const { t, i18n } = useTranslation([`${localePath}`]);
 
   const hasOpeningHours = isDefined(openingHours);
-  let openingHoursInSelectedLanguage;
+  let openingHoursInSelectedLanguage: string[] = [];
+  let additionalInformation;
+
   if (hasOpeningHours) {
     if (i18n.language === "de") {
       openingHoursInSelectedLanguage = openingHours.de;
     } else {
       openingHoursInSelectedLanguage = openingHours.en;
     }
+
+    const openingHoursLength = openingHoursInSelectedLanguage.length;
+    if (openingHoursLength % 2 !== 0) {
+      additionalInformation =
+        openingHoursInSelectedLanguage[openingHoursLength - 1];
+    }
   }
   const [periods, availabilities] = partition(
-    openingHoursInSelectedLanguage ?? [],
+    openingHoursInSelectedLanguage.length > 1
+      ? openingHoursInSelectedLanguage
+      : [],
     (_, index) => index % 2 === 0,
   );
   const pairedAvailability = pipe(
@@ -52,15 +62,20 @@ export function OpeningHoursSection({
         {t("contact.opening_hours_section.title")}
       </InfoSectionTitle>
       {hasOpeningHours ? (
-        <Stack component="dl" sx={{ margin: 0 }}>
-          {pairedAvailability.map(([period, availabilities]) => (
-            <OpeningTime
-              key={period}
-              period={period}
-              availabilities={availabilities}
-            />
-          ))}
-        </Stack>
+        <>
+          <Stack component="dl" sx={{ margin: 0 }}>
+            {pairedAvailability.map(([period, availabilities]) => (
+              <OpeningTime
+                key={period}
+                period={period}
+                availabilities={availabilities}
+              />
+            ))}
+          </Stack>
+          {additionalInformation && (
+            <Typography>{additionalInformation}</Typography>
+          )}
+        </>
       ) : (
         <Typography>
           {t("contact.opening_hours_section.information")}

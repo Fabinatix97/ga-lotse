@@ -8,10 +8,7 @@ import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  validateLength,
-  validatePastOrTodayDate,
-} from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 import { Grid } from "@mui/joy";
 
@@ -25,10 +22,10 @@ import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
-import { validateEmail } from "@/lib/shared/helpers/validators";
 
 export function AffectedPersonForm(props: { name: string }) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
+  const { validateLength, validatePastOrTodayDate } = useValidators();
   const fieldName = createFieldNameMapper<ApiAffectedPerson>(props.name);
 
   return (
@@ -129,7 +126,6 @@ export function AffectedPersonForm(props: { name: string }) {
             name={fieldName("emailAddresses")}
             label={t("affectedPerson.fields.emailAddresses")}
             required={t("affectedPerson.fields.emailAddresses_required")}
-            validate={validateEmail}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>

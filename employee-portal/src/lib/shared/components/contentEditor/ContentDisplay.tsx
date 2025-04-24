@@ -4,13 +4,13 @@
  */
 
 import { ApiEditorBodyElementsInner } from "@eshg/lib-editor-api";
+import { InformationSheet } from "@eshg/lib-employee-portal";
 import { Box } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { MouseEventHandler, PropsWithChildren } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { ContentElement } from "@/lib/shared/components/contentEditor/ContentElement";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface ContentDisplayProps {
   elements: ApiEditorBodyElementsInner[];

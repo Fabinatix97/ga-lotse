@@ -6,6 +6,8 @@
 "use client";
 
 import {
+  ActionsItem,
+  ActionsMenu,
   DataTable,
   NoSearchResults,
   TablePage,
@@ -20,10 +22,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { EvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";
 import { useDeleteRepositoryEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteRepositoryEvaluationTemplate";
 import { useGetEvaluationTemplatesFromRepository } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesFromRepository";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 
 import { useRepositoryEvaluationTemplateDetailsSidebar } from "./RepositoryEvaluationTemplateDetailsSidebar";
 

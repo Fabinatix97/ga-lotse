@@ -21,7 +21,6 @@ public interface StreetDirectory {
       String cityDistrict,
       String cityDistrictPrefecture,
       String arbitratorsDistrict,
-      String socialTownHallName,
       String policeStation,
       String postalCode) {}
 
@@ -50,8 +49,6 @@ public interface StreetDirectory {
     String cityDistrictPrefecture();
 
     String arbitratorsDistrict();
-
-    String socialTownHallName();
 
     String policeStation();
 

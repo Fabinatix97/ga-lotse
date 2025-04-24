@@ -30,6 +30,7 @@ import de.eshg.base.centralfile.persistence.entity.PersonAddress;
 import de.eshg.base.centralfile.persistence.entity.PersonEmailAddress;
 import de.eshg.base.centralfile.persistence.entity.PersonPhoneNumber;
 import de.eshg.base.util.PersonDiffer;
+import de.eshg.base.util.PersonIdUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -62,7 +63,8 @@ public class PersonMapper {
         person.getReferenceVersion(),
         mapAddressToApi(person.getContactAddress()),
         mapAddressToApi(person.getDifferentBillingAddress()),
-        mapDataOriginToApi(person.getDataOrigin()));
+        mapDataOriginToApi(person.getDataOrigin()),
+        getHumanReadablePersonId(person));
   }
 
   public static PersonDetailsDto mapPersonDetailsToApi(Person person) {
@@ -99,7 +101,8 @@ public class PersonMapper {
         extractStrings(person.getPhoneNumbers(), PersonPhoneNumber::getPhoneNumber),
         mapAddressToApi(person.getContactAddress()),
         mapAddressToApi(person.getDifferentBillingAddress()),
-        mapDataOriginToApi(person.getDataOrigin()));
+        mapDataOriginToApi(person.getDataOrigin()),
+        getHumanReadablePersonId(person));
   }
 
   public static GetPersonFileStateResponse mapPersonToGetPersonFileStateResponse(
@@ -121,7 +124,8 @@ public class PersonMapper {
         mapAddressToApi(person.getContactAddress()),
         mapAddressToApi(person.getDifferentBillingAddress()),
         outdated,
-        mapDataOriginToApi(person.getDataOrigin()));
+        mapDataOriginToApi(person.getDataOrigin()),
+        getHumanReadablePersonId(person));
   }
 
   public static GetPersonFileStatesResponse mapToGetPersonFileStatesResponse(
@@ -269,5 +273,11 @@ public class PersonMapper {
                     AssociatedFileStateIds::fileStateId,
                     association -> Arrays.asList(association.associatedFileStateIds())));
     return new GetFileStateIdsBulkResponse(resultMap);
+  }
+
+  private static String getHumanReadablePersonId(Person person) {
+    return PersonIdUtil.longToPersonId(
+        (person.getReferencePerson() == null ? person : person.getReferencePerson())
+            .getHumanReadableId());
   }
 }

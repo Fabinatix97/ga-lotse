@@ -6,7 +6,6 @@
 package de.eshg.stiprotection.api;
 
 import de.eshg.base.GenderDto;
-import de.eshg.lib.common.CountryCode;
 import java.time.Year;
 
 public interface PersonalDetails {
@@ -18,14 +17,6 @@ public interface PersonalDetails {
   Boolean hasSufficientGermanLanguageSkills();
 
   String otherKnownLanguages();
-
-  default CountryCode countryOfBirth() {
-    return null;
-  }
-
-  default Year inGermanySince() {
-    return null;
-  }
 
   String pronouns();
 }

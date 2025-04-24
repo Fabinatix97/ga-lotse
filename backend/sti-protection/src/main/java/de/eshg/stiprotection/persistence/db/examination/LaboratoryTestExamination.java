@@ -9,14 +9,34 @@ import de.eshg.domain.model.GenericEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
+import de.eshg.stiprotection.persistence.db.examination.labtests.CancerScreeningTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.ChlamydiaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.GonorrheaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HepatitisATest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HepatitisBTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HepatitisCTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HivTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HpvTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.LabTestData;
+import de.eshg.stiprotection.persistence.db.examination.labtests.MpoxTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.MycoplasmaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.OtherTests;
+import de.eshg.stiprotection.persistence.db.examination.labtests.SyphilisTest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class LaboratoryTestExamination extends GenericEntity<Long> {
@@ -43,254 +63,11 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean testsPayed;
 
-  // Tests
+  @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
+  @JoinColumn(name = LabTestData.LAB_TEST_EXAMINATION_ID)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean hivRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean syphilisRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean hepARequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean hepBRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean hepCRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean chlamydiaRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean gonorrheaRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean mycoplasmaRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean cancerScreeningRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean hpvRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean mpoxRequested;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean otherTestRequested;
-
-  @AttributeOverride(name = "result", column = @Column(name = "hiv_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "hiv_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "hiv_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData hivData;
-
-  @AttributeOverride(name = "result", column = @Column(name = "syphilis_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "syphilis_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "syphilis_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData syphilisData;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private Boolean hadSyphilis;
-
-  @AttributeOverride(name = "result", column = @Column(name = "hepA_result"))
-  @AttributeOverride(name = "infection", column = @Column(name = "hepA_infection"))
-  @AttributeOverride(name = "vaccineTitre", column = @Column(name = "hepA_vaccine_titre"))
-  @AttributeOverride(name = "value", column = @Column(name = "hepA_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "hepA_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private HepatitisLaboratoryTestData hepAData;
-
-  @AttributeOverride(name = "result", column = @Column(name = "hepB_result"))
-  @AttributeOverride(name = "infection", column = @Column(name = "hepB_infection"))
-  @AttributeOverride(name = "vaccineTitre", column = @Column(name = "hepB_vaccine_titre"))
-  @AttributeOverride(name = "value", column = @Column(name = "hepB_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "hepB_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private HepatitisLaboratoryTestData hepBData;
-
-  @AttributeOverride(name = "result", column = @Column(name = "hepC_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "hepC_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "hepC_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData hepCData;
-
-  @AttributeOverride(
-      name = "oralSampleRequested",
-      column = @Column(name = "gonorrhea_oral_sample_requested"))
-  @AttributeOverride(name = "oralSampleData", column = @Column(name = "gonorrhea_oral_sample_data"))
-  @AttributeOverride(
-      name = "oralSampleData.result",
-      column = @Column(name = "gonorrhea_oral_sample_data_result"))
-  @AttributeOverride(
-      name = "oralSampleData.value",
-      column = @Column(name = "gonorrhea_oral_sample_data_value"))
-  @AttributeOverride(
-      name = "oralSampleData.remark",
-      column = @Column(name = "gonorrhea_oral_sample_data_remark"))
-  @AttributeOverride(
-      name = "urethralSampleRequested",
-      column = @Column(name = "gonorrhea_urethral_sample_requested"))
-  @AttributeOverride(
-      name = "urethralSampleData",
-      column = @Column(name = "gonorrhea_urethral_sample_data"))
-  @AttributeOverride(
-      name = "urethralSampleData.result",
-      column = @Column(name = "gonorrhea_urethral_sample_data_result"))
-  @AttributeOverride(
-      name = "urethralSampleData.value",
-      column = @Column(name = "gonorrhea_urethral_sample_data_value"))
-  @AttributeOverride(
-      name = "urethralSampleData.remark",
-      column = @Column(name = "gonorrhea_urethral_sample_data_remark"))
-  @AttributeOverride(
-      name = "analSampleRequested",
-      column = @Column(name = "gonorrhea_anal_sample_requested"))
-  @AttributeOverride(name = "analSampleData", column = @Column(name = "gonorrhea_anal_sample_data"))
-  @AttributeOverride(
-      name = "analSampleData.result",
-      column = @Column(name = "gonorrhea_anal_sample_data_result"))
-  @AttributeOverride(
-      name = "analSampleData.value",
-      column = @Column(name = "gonorrhea_anal_sample_data_value"))
-  @AttributeOverride(
-      name = "analSampleData.remark",
-      column = @Column(name = "gonorrhea_anal_sample_data_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestSamplesData gonorrheaTestSamples;
-
-  @AttributeOverride(
-      name = "oralSampleRequested",
-      column = @Column(name = "chlamydia_oral_sample_requested"))
-  @AttributeOverride(name = "oralSampleData", column = @Column(name = "chlamydia_oral_sample_data"))
-  @AttributeOverride(
-      name = "oralSampleData.result",
-      column = @Column(name = "chlamydia_oral_sample_data_result"))
-  @AttributeOverride(
-      name = "oralSampleData.value",
-      column = @Column(name = "chlamydia_oral_sample_data_value"))
-  @AttributeOverride(
-      name = "oralSampleData.remark",
-      column = @Column(name = "chlamydia_oral_sample_data_remark"))
-  @AttributeOverride(
-      name = "urethralSampleRequested",
-      column = @Column(name = "chlamydia_urethral_sample_requested"))
-  @AttributeOverride(
-      name = "urethralSampleData",
-      column = @Column(name = "chlamydia_urethral_sample_data"))
-  @AttributeOverride(
-      name = "urethralSampleData.result",
-      column = @Column(name = "chlamydia_urethral_sample_data_result"))
-  @AttributeOverride(
-      name = "urethralSampleData.value",
-      column = @Column(name = "chlamydia_urethral_sample_data_value"))
-  @AttributeOverride(
-      name = "urethralSampleData.remark",
-      column = @Column(name = "chlamydia_urethral_sample_data_remark"))
-  @AttributeOverride(
-      name = "analSampleRequested",
-      column = @Column(name = "chlamydia_anal_sample_requested"))
-  @AttributeOverride(name = "analSampleData", column = @Column(name = "chlamydia_anal_sample_data"))
-  @AttributeOverride(
-      name = "analSampleData.result",
-      column = @Column(name = "chlamydia_anal_sample_data_result"))
-  @AttributeOverride(
-      name = "analSampleData.value",
-      column = @Column(name = "chlamydia_anal_sample_data_value"))
-  @AttributeOverride(
-      name = "analSampleData.remark",
-      column = @Column(name = "chlamydia_anal_sample_data_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestSamplesData chlamydiaTestSamples;
-
-  @AttributeOverride(
-      name = "oralSampleRequested",
-      column = @Column(name = "mycoplasma_oral_sample_requested"))
-  @AttributeOverride(
-      name = "oralSampleData",
-      column = @Column(name = "mycoplasma_oral_sample_data"))
-  @AttributeOverride(
-      name = "oralSampleData.result",
-      column = @Column(name = "mycoplasma_oral_sample_data_result"))
-  @AttributeOverride(
-      name = "oralSampleData.value",
-      column = @Column(name = "mycoplasma_oral_sample_data_value"))
-  @AttributeOverride(
-      name = "oralSampleData.remark",
-      column = @Column(name = "mycoplasma_oral_sample_data_remark"))
-  @AttributeOverride(
-      name = "urethralSampleRequested",
-      column = @Column(name = "mycoplasma_urethral_sample_requested"))
-  @AttributeOverride(
-      name = "urethralSampleData",
-      column = @Column(name = "mycoplasma_urethral_sample_data"))
-  @AttributeOverride(
-      name = "urethralSampleData.result",
-      column = @Column(name = "mycoplasma_urethral_sample_data_result"))
-  @AttributeOverride(
-      name = "urethralSampleData.value",
-      column = @Column(name = "mycoplasma_urethral_sample_data_value"))
-  @AttributeOverride(
-      name = "urethralSampleData.remark",
-      column = @Column(name = "mycoplasma_urethral_sample_data_remark"))
-  @AttributeOverride(
-      name = "analSampleRequested",
-      column = @Column(name = "mycoplasma_anal_sample_requested"))
-  @AttributeOverride(
-      name = "analSampleData",
-      column = @Column(name = "mycoplasma_anal_sample_data"))
-  @AttributeOverride(
-      name = "analSampleData.result",
-      column = @Column(name = "mycoplasma_anal_sample_data_result"))
-  @AttributeOverride(
-      name = "analSampleData.value",
-      column = @Column(name = "mycoplasma_anal_sample_data_value"))
-  @AttributeOverride(
-      name = "analSampleData.remark",
-      column = @Column(name = "mycoplasma_anal_sample_data_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestSamplesData mycoplasmaTestSamples;
-
-  @AttributeOverride(name = "result", column = @Column(name = "cancerScreening_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "cancerScreening_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "cancerScreening_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData cancerScreeningData;
-
-  @AttributeOverride(name = "result", column = @Column(name = "hpv_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "hpv_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "hpv_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData hpvData;
-
-  @AttributeOverride(name = "result", column = @Column(name = "mpox_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "mpox_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "mpox_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData mpoxData;
-
-  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
-  private String otherTestName;
-
-  @AttributeOverride(name = "result", column = @Column(name = "otherTest_result"))
-  @AttributeOverride(name = "value", column = @Column(name = "otherTest_value"))
-  @AttributeOverride(name = "remark", column = @Column(name = "otherTest_remark"))
-  @Embedded
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private LaboratoryTestData otherTestData;
+  @OrderBy
+  private final List<LabTestData> labTests = new ArrayList<>();
 
   @Override
   public Long getId() {
@@ -340,256 +117,130 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
 
   // Tests
   public Boolean getHivRequested() {
-    return hivRequested;
+    return getLabTest(HivTest.class).isPresent();
   }
 
-  public void setHivRequested(Boolean hivRequested) {
-    this.hivRequested = hivRequested;
+  public boolean getSyphilisRequested() {
+    return getLabTest(SyphilisTest.class).isPresent();
   }
 
-  public Boolean getSyphilisRequested() {
-    return syphilisRequested;
+  public boolean getHepARequested() {
+    return getLabTest(HepatitisATest.class).isPresent();
   }
 
-  public void setSyphilisRequested(Boolean syphilisRequested) {
-    this.syphilisRequested = syphilisRequested;
+  public boolean getHepBRequested() {
+    return getLabTest(HepatitisBTest.class).isPresent();
   }
 
-  public Boolean getHepARequested() {
-    return hepARequested;
+  public boolean getHepCRequested() {
+    return getLabTest(HepatitisCTest.class).isPresent();
   }
 
-  public void setHepARequested(Boolean hepARequested) {
-    this.hepARequested = hepARequested;
+  public boolean getChlamydiaRequested() {
+    return getLabTest(ChlamydiaTest.class).isPresent();
   }
 
-  public Boolean getHepBRequested() {
-    return hepBRequested;
+  public boolean getGonorrheaRequested() {
+    return getLabTest(GonorrheaTest.class).isPresent();
   }
 
-  public void setHepBRequested(Boolean hepBRequested) {
-    this.hepBRequested = hepBRequested;
+  public boolean getMycoplasmaRequested() {
+    return getLabTest(MycoplasmaTest.class).isPresent();
   }
 
-  public Boolean getHepCRequested() {
-    return hepCRequested;
+  public boolean getCancerScreeningRequested() {
+    return getLabTest(CancerScreeningTest.class).isPresent();
   }
 
-  public void setHepCRequested(Boolean hepCRequested) {
-    this.hepCRequested = hepCRequested;
+  public boolean getHpvRequested() {
+    return getLabTest(HpvTest.class).isPresent();
   }
 
-  public Boolean getChlamydiaRequested() {
-    return chlamydiaRequested;
+  public boolean getMpoxRequested() {
+    return getLabTest(MpoxTest.class).isPresent();
   }
 
-  public void setChlamydiaRequested(Boolean chlamydiaRequested) {
-    this.chlamydiaRequested = chlamydiaRequested;
+  public boolean getOtherTestRequested() {
+    return getLabTest(OtherTests.class).isPresent();
   }
 
-  public Boolean getGonorrheaRequested() {
-    return gonorrheaRequested;
+  public Optional<HivTest> getHivData() {
+    return getLabTest(HivTest.class);
   }
 
-  public void setGonorrheaRequested(Boolean gonorrheaRequested) {
-    this.gonorrheaRequested = gonorrheaRequested;
+  public Optional<SyphilisTest> getSyphilisData() {
+    return getLabTest(SyphilisTest.class);
   }
 
-  public Boolean getMycoplasmaRequested() {
-    return mycoplasmaRequested;
+  public Optional<HepatitisATest> getHepAData() {
+    return getLabTest(HepatitisATest.class);
   }
 
-  public void setMycoplasmaRequested(Boolean mycoplasmaRequested) {
-    this.mycoplasmaRequested = mycoplasmaRequested;
+  public Optional<HepatitisBTest> getHepBData() {
+    return getLabTest(HepatitisBTest.class);
   }
 
-  public Boolean getCancerScreeningRequested() {
-    return cancerScreeningRequested;
+  public Optional<HepatitisCTest> getHepCData() {
+    return getLabTest(HepatitisCTest.class);
   }
 
-  public void setCancerScreeningRequested(Boolean cancerScreeningRequested) {
-    this.cancerScreeningRequested = cancerScreeningRequested;
+  public Optional<ChlamydiaTest> getChlamydiaTestSamples() {
+    return getLabTest(ChlamydiaTest.class);
   }
 
-  public Boolean getHpvRequested() {
-    return hpvRequested;
+  public Optional<GonorrheaTest> getGonorrheaTestSamples() {
+    return getLabTest(GonorrheaTest.class);
   }
 
-  public void setHpvRequested(Boolean hpvRequested) {
-    this.hpvRequested = hpvRequested;
+  public Optional<MycoplasmaTest> getMycoplasmaTestSamples() {
+    return getLabTest(MycoplasmaTest.class);
   }
 
-  public Boolean getMpoxRequested() {
-    return mpoxRequested;
+  public Optional<CancerScreeningTest> getCancerScreeningData() {
+    return getLabTest(CancerScreeningTest.class);
   }
 
-  public void setMpoxRequested(Boolean mpoxRequested) {
-    this.mpoxRequested = mpoxRequested;
+  public Optional<HpvTest> getHpvData() {
+    return getLabTest(HpvTest.class);
   }
 
-  public Boolean getOtherTestRequested() {
-    return otherTestRequested;
+  public Optional<MpoxTest> getMpoxData() {
+    return getLabTest(MpoxTest.class);
   }
 
-  public void setOtherTestRequested(Boolean otherTestRequested) {
-    this.otherTestRequested = otherTestRequested;
-  }
-
-  public LaboratoryTestData getHivData() {
-    return hivData;
-  }
-
-  public void setHivData(LaboratoryTestData hivData) {
-    this.hivData = hivData;
-  }
-
-  public LaboratoryTestData getSyphilisData() {
-    return syphilisData;
-  }
-
-  public void setSyphilisData(LaboratoryTestData syphilisData) {
-    this.syphilisData = syphilisData;
-  }
-
-  public Boolean getHadSyphilis() {
-    return hadSyphilis;
-  }
-
-  public void setHadSyphilis(Boolean hadSyphilis) {
-    this.hadSyphilis = hadSyphilis;
-  }
-
-  public HepatitisLaboratoryTestData getHepAData() {
-    return hepAData;
-  }
-
-  public void setHepAData(HepatitisLaboratoryTestData hepAData) {
-    this.hepAData = hepAData;
-  }
-
-  public HepatitisLaboratoryTestData getHepBData() {
-    return hepBData;
-  }
-
-  public void setHepBData(HepatitisLaboratoryTestData hepBData) {
-    this.hepBData = hepBData;
-  }
-
-  public LaboratoryTestData getHepCData() {
-    return hepCData;
-  }
-
-  public void setHepCData(LaboratoryTestData hepCData) {
-    this.hepCData = hepCData;
-  }
-
-  public LaboratoryTestSamplesData getChlamydiaTestSamples() {
-    return chlamydiaTestSamples;
-  }
-
-  public void setChlamydiaTestSamples(LaboratoryTestSamplesData chlamydiaTestSamples) {
-    this.chlamydiaTestSamples = chlamydiaTestSamples;
-  }
-
-  public LaboratoryTestSamplesData getGonorrheaTestSamples() {
-    return gonorrheaTestSamples;
-  }
-
-  public void setGonorrheaTestSamples(LaboratoryTestSamplesData gonorrheaTestSamples) {
-    this.gonorrheaTestSamples = gonorrheaTestSamples;
-  }
-
-  public LaboratoryTestSamplesData getMycoplasmaTestSamples() {
-    return mycoplasmaTestSamples;
-  }
-
-  public void setMycoplasmaTestSamples(LaboratoryTestSamplesData mycoplasmaTestSamples) {
-    this.mycoplasmaTestSamples = mycoplasmaTestSamples;
-  }
-
-  public LaboratoryTestData getCancerScreeningData() {
-    return cancerScreeningData;
-  }
-
-  public void setCancerScreeningData(LaboratoryTestData cancerScreeningData) {
-    this.cancerScreeningData = cancerScreeningData;
-  }
-
-  public LaboratoryTestData getHpvData() {
-    return hpvData;
-  }
-
-  public void setHpvData(LaboratoryTestData hpvData) {
-    this.hpvData = hpvData;
-  }
-
-  public LaboratoryTestData getMpoxData() {
-    return mpoxData;
-  }
-
-  public void setMpoxData(LaboratoryTestData mpoxData) {
-    this.mpoxData = mpoxData;
-  }
-
-  public String getOtherTestName() {
-    return otherTestName;
-  }
-
-  public void setOtherTestName(String otherTestName) {
-    this.otherTestName = otherTestName;
-  }
-
-  public LaboratoryTestData getOtherTestData() {
-    return otherTestData;
-  }
-
-  public void setOtherTestData(LaboratoryTestData otherTestData) {
-    this.otherTestData = otherTestData;
+  public Optional<OtherTests> getOtherTestData() {
+    return getLabTest(OtherTests.class);
   }
 
   public boolean isAnyTestRequested() {
-    return Boolean.TRUE.equals(hivRequested)
-        || Boolean.TRUE.equals(syphilisRequested)
-        || Boolean.TRUE.equals(hepARequested)
-        || Boolean.TRUE.equals(hepBRequested)
-        || Boolean.TRUE.equals(hepCRequested)
-        || Boolean.TRUE.equals(chlamydiaRequested)
-        || Boolean.TRUE.equals(gonorrheaRequested)
-        || Boolean.TRUE.equals(mycoplasmaRequested)
-        || Boolean.TRUE.equals(cancerScreeningRequested)
-        || Boolean.TRUE.equals(hpvRequested)
-        || Boolean.TRUE.equals(mpoxRequested)
-        || Boolean.TRUE.equals(otherTestRequested);
+    return !labTests.isEmpty();
   }
 
   public boolean hasResultsForAllRequestedTests() {
     if (!isAnyTestRequested()) {
       return false;
     }
-
-    return checkTestResults(hivRequested, hivData)
-        && checkTestResults(syphilisRequested, syphilisData)
-        && checkTestResults(hepARequested, hepAData)
-        && checkTestResults(hepBRequested, hepBData)
-        && checkTestResults(hepCRequested, hepCData)
-        && checkTestSamples(chlamydiaRequested, chlamydiaTestSamples)
-        && checkTestSamples(gonorrheaRequested, gonorrheaTestSamples)
-        && checkTestSamples(mycoplasmaRequested, mycoplasmaTestSamples)
-        && checkTestResults(cancerScreeningRequested, cancerScreeningData)
-        && checkTestResults(hpvRequested, hpvData)
-        && checkTestResults(mpoxRequested, mpoxData)
-        && checkTestResults(otherTestRequested, otherTestData);
+    return labTests.stream().allMatch(labTest -> Objects.nonNull(labTest.getResult()));
   }
 
-  private boolean checkTestResults(Boolean requested, LaboratoryTestData testData) {
-    return !Boolean.TRUE.equals(requested) || (testData != null && testData.getResult() != null);
+  public List<LabTestData> getLabTests() {
+    return labTests;
   }
 
-  private boolean checkTestResults(Boolean requested, HepatitisLaboratoryTestData testData) {
-    return !Boolean.TRUE.equals(requested) || (testData != null && testData.getResult() != null);
+  public void setLabTests(Collection<LabTestData> labTests) {
+    this.labTests.clear();
+    if (labTests != null) {
+      this.labTests.addAll(labTests);
+    }
   }
 
-  private boolean checkTestSamples(Boolean requested, LaboratoryTestSamplesData testSamples) {
-    return !Boolean.TRUE.equals(requested) || (testSamples != null && testSamples.hasResult());
+  public void addLabTest(LabTestData testData) {
+    if (testData != null) {
+      labTests.add(testData);
+    }
+  }
+
+  public <T extends LabTestData> Optional<T> getLabTest(Class<T> clazz) {
+    return labTests.stream().filter(clazz::isInstance).map(clazz::cast).findFirst();
   }
 }

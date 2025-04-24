@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OpenModalButton } from "@eshg/lib-employee-portal";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import { Alert, AlertProps, Box, Typography } from "@mui/joy";
 
 import { ChatConsentModal } from "@/lib/businessModules/chat/components/ChatConsentModal";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
 
 interface ChatNoAccessProps {
   color?: AlertProps["color"];

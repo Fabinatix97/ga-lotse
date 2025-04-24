@@ -1,0 +1,59 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1744121614001-1">
+    <addColumn tableName="person">
+      <column name="human_readable_id" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744121614001-2">
+    <!-- Here we want to generate random, but unique human-readable IDs for each reference person.
+    In the database, the human-readable IDs are stored as numbers from 0 to 2^40-1. In order to make
+    sure that the IDs are unique, we calculate them from the "normal" ID which is simply an incrementing
+    number, but in such a way that the output looks random and doesn't make it feasible to calculate the
+    original ID from a human-readable ID. So we first add a random number between 0 and 2^40-1 and make
+    sure that it is always the same random number by using "select * from". The resulting shifted IDs
+    will still look similar if the original IDs looked similar, so we use a linear congruential generator
+    as described on Wikipedia: https://en.wikipedia.org/wiki/Linear_congruential_generator
+    where X_n+1 = (a * X_n + c ) mod m
+    In our case m = 2^40 and we are trying to have m be the period, so we follow the rules for
+    "m a power of 2, c != 0"
+    The exact number of c is not critical except that is needs to be coprime with m, and we simply choose 1.
+    For a we have the condition that a-1 needs to be divisible by 4 but also that a-1 needs to be
+    divisible by all prime factors of m, which is automatically fulfilled by the former condition.
+    Also, for a "good" random number generator, a should not be divisible by the prime factors of m more
+    often that necessary, so in our case we want a-1 to be divisible by 4 but not by 8. To choose our
+    value of a, I simply looked for large prime numbers and found 101111111111, but that is not one more
+    than a multiple of 4, so I multiplied it by 3, giving us 303333333333. The prime factorization for
+    this number minus 1 is 2^2 * 46141 * 1643513, so it should be a good value for a random number generator.
+    These calculations will give large intermediary results, so we cast everything to decimal(24, 0).
+    -->
+    <sql>
+      update person
+      set human_readable_id = (
+        (id + (select *
+               from cast(floor(random() * 1099511627775) as decimal(24, 0)))) *
+        303333333333:: decimal (24, 0) +
+        1:: decimal (24, 0)) % 1099511627776:: decimal (24, 0)
+      where human_readable_id is null and reference_person_id is null;
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744121614001-3">
+    <addUniqueConstraint columnNames="human_readable_id"
+      constraintName="person_human_readable_id_unique"
+      tableName="person"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744121614001-4">
+    <sql>
+      alter table person
+        add constraint human_readable_id_not_null_for_reference_person
+          check (num_nonnulls(reference_person_id, human_readable_id) >= 1)
+    </sql>
+  </changeSet>
+</databaseChangeLog>

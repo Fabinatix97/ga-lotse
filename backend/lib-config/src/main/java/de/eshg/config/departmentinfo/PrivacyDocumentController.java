@@ -8,7 +8,8 @@ package de.eshg.config.departmentinfo;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.config.api.GetPrivacyDocumentConfigResponse;
-import de.eshg.config.mapper.PrivacyDocumentMapper;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
+import de.eshg.file.common.FileValidator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +32,8 @@ public class PrivacyDocumentController {
   public static final String DE = "de";
   public static final String EN = "en";
 
-  public static final String BASE_URL = BaseUrls.DepartmentInfoLibrary.PRIVACY_DOCUMENTS_API;
+  public static final String BASE_URL =
+      BaseUrls.DepartmentInfoLibrary.CONFIGURATION_API + "/privacy-documents";
   public static final String PRIVACY_NOTICE_PATH = "/privacy-notice";
   public static final String PRIVACY_POLICY_PATH = "/privacy-policy";
 
@@ -45,7 +47,7 @@ public class PrivacyDocumentController {
   @Transactional(readOnly = true)
   public GetPrivacyDocumentConfigResponse getPrivacyPolicyConfig() {
     return new GetPrivacyDocumentConfigResponse(
-        PrivacyDocumentMapper.mapToPrivacyPolicyDto(
+        MultiLangDocumentMapper.mapToPrivacyPolicyDto(
             privacyDocumentService.getConfig().getPrivacyPolicy()));
   }
 
@@ -58,16 +60,18 @@ public class PrivacyDocumentController {
     if (privacyPolicyDe == null && privacyPolicyEn != null) {
       throw createMandatoryMissingException();
     }
+    FileValidator.validatePdfFile(privacyPolicyDe);
+    FileValidator.validatePdfFile(privacyPolicyEn);
 
     privacyDocumentService.updatePrivacyPolicy(
-        PrivacyDocumentMapper.mapToDomain(privacyPolicyDe, privacyPolicyEn));
+        MultiLangDocumentMapper.mapToDomain(privacyPolicyDe, privacyPolicyEn));
   }
 
   @GetMapping(PRIVACY_NOTICE_PATH)
   @Transactional(readOnly = true)
   public GetPrivacyDocumentConfigResponse getPrivacyNoticeConfig() {
     return new GetPrivacyDocumentConfigResponse(
-        PrivacyDocumentMapper.mapToPrivacyNoticeDto(
+        MultiLangDocumentMapper.mapToPrivacyNoticeDto(
             privacyDocumentService.getConfig().getPrivacyNotice()));
   }
 
@@ -80,9 +84,11 @@ public class PrivacyDocumentController {
     if (privacyNoticeDe == null && privacyNoticeEn != null) {
       throw createMandatoryMissingException();
     }
+    FileValidator.validatePdfFile(privacyNoticeDe);
+    FileValidator.validatePdfFile(privacyNoticeEn);
 
     privacyDocumentService.updatePrivacyNotice(
-        PrivacyDocumentMapper.mapToDomain(privacyNoticeDe, privacyNoticeEn));
+        MultiLangDocumentMapper.mapToDomain(privacyNoticeDe, privacyNoticeEn));
   }
 
   private BadRequestException createMandatoryMissingException() {

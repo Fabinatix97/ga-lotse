@@ -160,7 +160,7 @@ public class ServiceDirectoryAdminService {
   }
 
   private static void validateCommonName(X509Certificate cert, String commonName) {
-    String certCommonName = X509Utils.extractCommonName(cert);
+    String certCommonName = X509Utils.extractSanOrCommonName(cert);
     if (!certCommonName.equals(commonName)) {
       throw new ServiceDirectoryBadRequestException(
           "certificate CN '"

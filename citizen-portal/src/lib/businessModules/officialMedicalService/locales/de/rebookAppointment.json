@@ -14,10 +14,10 @@
       }
     },
     "appointmentPicker": {
-      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung",
+      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung.",
       "noAppointmentSelected": "Es wurde kein Termin ausgewählt.",
-      "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar",
-      "tryLater": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+      "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar.",
+      "tryLater": "Wir schalten in Kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
     },
     "backToOverview": "Zurück",
     "infoPanelTitle": "Terminverschiebung",
@@ -43,7 +43,7 @@
     "cancel": "Abbrechen"
   },
   "snackbar": {
-    "rebook_success": "Termin wurde erfolgreich umgebucht",
-    "book_success": "Termin wurde erfolgreich gebucht"
+    "rebook_success": "Der Termin wurde umgebucht.",
+    "book_success": "Der Termin wurde gebucht."
   }
 }

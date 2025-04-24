@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection;
 
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.examination.LaboratoryTestExaminationDto;
 import de.eshg.stiprotection.api.examination.RapidTestExaminationDto;
@@ -61,7 +62,9 @@ public class ExaminationController {
         examinationService.getOrCreateRapidTestExamination(procedureId);
     RapidTestExaminationMapper.update(rapidTestExaminationDto, rapidTestExamination);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.RAPID_TEST_EXAMINATION_UPDATED);
+        procedureId,
+        StiProtectionSystemProgressEntryType.RAPID_TEST_EXAMINATION_UPDATED,
+        TriggerType.EMPLOYEE);
   }
 
   @GetMapping("/laboratory-test")
@@ -85,6 +88,8 @@ public class ExaminationController {
     examinationService.updateTestsConductedDate(
         laboratoryExaminationDto.testsConducted(), laboratoryTestExamination);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.LABORATORY_TEST_EXAMINATION_UPDATED);
+        procedureId,
+        StiProtectionSystemProgressEntryType.LABORATORY_TEST_EXAMINATION_UPDATED,
+        TriggerType.EMPLOYEE);
   }
 }

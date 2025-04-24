@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DateSpanFilterValue } from "@eshg/lib-employee-portal";
 import { ApiDateSpan } from "@eshg/statistics-api";
 import { addDays, parseISO, startOfDay } from "date-fns";
-
-import { DateSpanFilterValue } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
 
 export function mapDateSpanFilterToApiDateSpan(
   dateSpanFilter: DateSpanFilterValue | undefined,

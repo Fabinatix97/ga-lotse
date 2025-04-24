@@ -10,6 +10,8 @@ import {
   Pagination,
   TablePage,
   TableSheet,
+  formatDurationFromNowUntil,
+  gdprRoutes,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import {
@@ -24,10 +26,8 @@ import { createColumnHelper } from "@tanstack/react-table";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { typeTranslation } from "@/lib/baseModule/components/gdpr/i18n";
-import { routes } from "@/lib/baseModule/shared/routes";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { getGdprValidationTasksQuery } from "@/lib/shared/api/queries/gdpr";
-import { formatDurationFromNowUntil } from "@/lib/shared/helpers/dateTime";
 
 export function ValidationTasksTable({
   request,
@@ -68,7 +68,7 @@ export function ValidationTasksTable({
           enableSortingRemoval={false}
           rowNavigation={{
             route: (row) =>
-              routes.gdpr
+              gdprRoutes
                 .validationTasks(businessModule)
                 .byId(row.original.gdprProcedureId),
             focusColumnAccessorKey: "identificationData",

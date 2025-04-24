@@ -54,11 +54,11 @@ export function ExpandedNavigationList({
         </Button>
       )}
       <Stack flex={1} sx={{ overflowY: "auto", paddingInline: 2, gap: 3 }}>
-        <NavigationListContext.Provider value={false}>
+        <NavigationListContext value={false}>
           <NavigationItemGroup itemGroup={itemGroups.dashboardItem} />
           <NavigationItemGroup itemGroup={itemGroups.businessItems} />
           <NavigationItemGroup itemGroup={itemGroups.baseItems} />
-        </NavigationListContext.Provider>
+        </NavigationListContext>
       </Stack>
     </Stack>
   );

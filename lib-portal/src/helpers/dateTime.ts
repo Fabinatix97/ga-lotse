@@ -7,10 +7,19 @@ import { differenceInYears, format, isAfter, isEqual, isMatch } from "date-fns";
 
 export const DATE_FORMAT = "yyyy-MM-dd";
 export const DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
+export const TIME_FORMAT = "HH:mm";
 export const MONTH_FORMAT = "yyyy-MM";
 
 export function isDateString(value: string) {
   return isMatch(value, DATE_FORMAT);
+}
+
+export function isTimeString(value: string) {
+  return isMatch(value, TIME_FORMAT);
+}
+
+export function isDateTimeString(value: string) {
+  return isMatch(value, DATE_TIME_FORMAT);
 }
 
 export function isMonthString(value: string) {

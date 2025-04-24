@@ -26,7 +26,7 @@ public class ApprovalRequestMailJob {
   @Scheduled(cron = "${de.eshg.lib.procedure.mailreminder.schedule:0 * * * * *}")
   @SchedulerLock(
       name = "LibProceduresApprovalRequestMailJob",
-      lockAtMostFor = "${de.eshg.lib.procedure.mailreminder.lock-at-most-for:1h}")
+      lockAtMostFor = "${de.eshg.lib.procedure.mailreminder.lock-at-most-for:15m}")
   public void sendApprovalRequestMailRemindersIfNecessary() {
     LockAssert.assertLocked();
     moduleClientAuthenticator.doWithModuleClientAuthentication(

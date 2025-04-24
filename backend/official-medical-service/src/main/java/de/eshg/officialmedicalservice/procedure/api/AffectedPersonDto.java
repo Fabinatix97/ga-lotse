@@ -35,4 +35,5 @@ public record AffectedPersonDto(
     GenderDto gender,
     @NotNull @Valid AddressDto contactAddress,
     @Valid AffectedPersonSyncDto affectedPersonSync,
-    DataOriginDto dataOrigin) {}
+    DataOriginDto dataOrigin,
+    String humanReadableId) {}

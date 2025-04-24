@@ -30,11 +30,9 @@ export function IdContextProvider(props: Readonly<IdContextProviderProps>) {
   );
 
   return (
-    <IdContext.Provider
-      value={{ procedureId, procedureStepId, appointmentDetails }}
-    >
+    <IdContext value={{ procedureId, procedureStepId, appointmentDetails }}>
       {props.children}
-    </IdContext.Provider>
+    </IdContext>
   );
 }
 

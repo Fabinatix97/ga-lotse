@@ -126,7 +126,7 @@ public class CitizenKeycloakClient extends RealmBoundKeycloakClient {
         .toList();
   }
 
-  public void addCredential(UUID userId, CredentialTypeDto type, String secret) {
+  public void updateCredential(UUID userId, CredentialTypeDto type, String secret) {
     keycloakUserApi.resetCredential(
         realmName, userId.toString(), new CredentialRequest(type, secret));
   }

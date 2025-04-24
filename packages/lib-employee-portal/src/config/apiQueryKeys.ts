@@ -11,6 +11,14 @@ export const userApiQueryKey = queryKeyFactory(baseQueryKey(["userApi"]));
 
 export const personApiQueryKey = queryKeyFactory(baseQueryKey(["personApi"]));
 
+export const facilityApiQueryKey = queryKeyFactory(
+  baseQueryKey(["facilityApi"]),
+);
+
 export const contactApiQueryKey = queryKeyFactory(baseQueryKey(["contactApi"]));
 
 export const streetApiQueryKey = queryKeyFactory(baseQueryKey(["streetApi"]));
+
+export const gdprValidationTaskApi = queryKeyFactory(
+  baseQueryKey(["gdprValidationTaskApi"]),
+);

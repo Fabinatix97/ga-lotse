@@ -13,3 +13,10 @@ export const CONCERN_OPTIONS = Object.entries(CONCERN_VALUES).map(
     value: value as ApiConcern,
   }),
 );
+
+export function sufficientText(value: boolean | undefined | null) {
+  if (value == null) {
+    return;
+  }
+  return value ? "Ausreichend" : "Nicht ausreichend";
+}

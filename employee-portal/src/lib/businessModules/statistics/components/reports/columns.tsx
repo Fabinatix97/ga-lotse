@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -15,7 +16,6 @@ import {
   SingleReportOverview,
 } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 import {
   DeleteReportOrSeries,

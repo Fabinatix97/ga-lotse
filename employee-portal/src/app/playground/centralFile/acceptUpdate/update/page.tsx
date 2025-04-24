@@ -6,12 +6,14 @@
 "use client";
 
 import { ApiGetPersonDiffResponse } from "@eshg/base-api";
+import {
+  BasePersonDiffForm,
+  CentralFileSyncForm,
+} from "@eshg/lib-employee-portal";
 import { Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { centralFilePlaygroundRoutes } from "@/app/playground/centralFile/centralFilePlaygroundRoutes";
-import { CentralFileSyncForm } from "@/lib/shared/components/centralFile/sync/CentralFileSyncForm";
-import { BasePersonDiffForm } from "@/lib/shared/components/centralFile/sync/sections/BasePersonDiffForm";
 
 const personUpdate: ApiGetPersonDiffResponse = {
   referenceVersion: 1,

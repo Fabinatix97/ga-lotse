@@ -144,6 +144,7 @@ public class OpenDataController {
 
   @GetMapping("fallback-license-url")
   @Operation(summary = "get the configured fallback license url")
+  @Transactional(readOnly = true)
   public ResponseEntity<GetFallbackLicenseUrlResponse> getFallbackLicenseUrl() {
     return ResponseEntity.ok(
         new GetFallbackLicenseUrlResponse(

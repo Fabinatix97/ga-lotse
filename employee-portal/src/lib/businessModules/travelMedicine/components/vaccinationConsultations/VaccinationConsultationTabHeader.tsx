@@ -6,17 +6,12 @@
 "use client";
 
 import { PersonToolbarHeader } from "@eshg/lib-employee-portal";
-import { useSuspenseQueries } from "@tanstack/react-query";
-
-import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { ApiGetVaccinationConsultationDetailsResponse } from "@eshg/travel-medicine-api";
 
 export function VaccinationConsultationTabHeader({
-  id,
+  detailsResponse,
 }: {
-  readonly id: string;
+  readonly detailsResponse: ApiGetVaccinationConsultationDetailsResponse;
 }) {
-  const [{ data: detailsResponse }] = useSuspenseQueries({
-    queries: [useGetVaccinationConsultationDetailsQuery(id)],
-  });
   return <PersonToolbarHeader person={detailsResponse.patient} showAge />;
 }

@@ -35,14 +35,3 @@ export function useImportChildren() {
         .then(parseImportResult<ApiImportStatistics>),
   });
 }
-
-export function useCloseSchoolYear() {
-  const { childApi } = useDentalApi();
-  const snackbar = useSnackbar();
-  return useHandledMutation({
-    mutationFn: () => childApi.closeSchoolYear(),
-    onSuccess: () => {
-      snackbar.confirmation("Das Schuljahr wurde erfolgreich abgeschlossen");
-    },
-  });
-}

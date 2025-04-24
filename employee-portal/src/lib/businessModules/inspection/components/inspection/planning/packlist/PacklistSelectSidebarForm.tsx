@@ -8,6 +8,7 @@ import {
   ApiInspectionPLDRevision,
 } from "@eshg/inspection-api";
 import {
+  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -22,7 +23,6 @@ import { Formik, FormikErrors } from "formik";
 import { useRef } from "react";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 export interface PacklistSelectSidebarFormProps {
   onClose: () => void;

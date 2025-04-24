@@ -19,9 +19,9 @@ public class UserSettings {
   private Boolean chatConsentAsked = false;
   private Boolean accountRegistered = false;
   private Boolean chatUsageEnabled = false;
-  private Boolean sharePresence = true;
-  private Boolean showTypingNotification = true;
-  private Boolean showReadConfirmation = true;
+  private Boolean sharePresence = false;
+  private Boolean showTypingNotification = false;
+  private Boolean showReadConfirmation = false;
   private Boolean accountDeactivated = false;
 
   public String getUserId() {

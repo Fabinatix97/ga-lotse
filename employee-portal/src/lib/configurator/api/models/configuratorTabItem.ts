@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiConfigurationStatus } from "@eshg/base-api";
 import { TabNavigationItem } from "@eshg/lib-employee-portal";
 
-export type ConfiguratorStatus = "complete" | "warning" | "error";
+export type ConfiguratorStatus = ApiConfigurationStatus;
 
 export type configuratorTabItem = Pick<
   TabNavigationItem,

@@ -5,7 +5,12 @@
 
 "use client";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import {
+  CheckboxField,
+  FormFooter,
+  FormStack,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import {
   FormProps,
   OptionalFieldValue,
@@ -25,14 +30,11 @@ import {
   ExaminationResultFields,
   ExaminationResultFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultFields";
-import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { SetAllExaminationResultsSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { handleChangeExaminationResultValue } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
 import { EyeForm } from "@/lib/businessModules/schoolEntry/features/procedures/eyeExamination/EyeForm";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
-import { FormStack } from "@/lib/shared/components/form/FormStack";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 const CHECKBOX_GROUPS: CheckboxDefinition[][] = [
   [

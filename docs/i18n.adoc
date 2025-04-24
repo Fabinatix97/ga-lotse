@@ -1,0 +1,26 @@
+= Internationalization and Localization (i18n and l10n)
+:source-highlighter: rouge
+
+The citizen and admin portal must be fully internationalised and localised in English and German.
+In contrast to that, the employee portal has not yet been internationalised.
+However, the portal applications share components that are provided in libraries (for example `lib-portal`).
+If necessary, these components are also internationalised so that they can be used in any portal without any problems.
+To make this possible, the employee portal has a minimal i18n setup that only supports the German language at this moment.
+
+|===
+|Portal|Locales
+
+|admin-portal
+|de, en
+
+|citizen-portal
+|de, en
+
+|employee-portal
+|de
+|===
+
+The link:https://www.i18next.com/[`i18next`] library is used for internationalisation in the portal applications and in the shared component libraries.
+The portal applications are responsible for the configuration of i18next.
+This includes detecting the language to be displayed to the user and loading the required language files.
+Component libraries (such as `lib-portal`) provide locale files that must then be loaded by the i18next mechanism in the portal applications when they are needed.

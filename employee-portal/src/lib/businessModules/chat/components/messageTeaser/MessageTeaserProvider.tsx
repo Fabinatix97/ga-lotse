@@ -50,13 +50,13 @@ export function MessageTeaserProvider({
     [snackbarValues],
   );
   return (
-    <SnackbarContext.Provider value={contextValues}>
+    <SnackbarContext value={contextValues}>
       <MessageTeaser
         snackbar={snackbarValues}
         onClose={() => setSnackbar(undefined)}
       />
       {children}
-    </SnackbarContext.Provider>
+    </SnackbarContext>
   );
 }
 

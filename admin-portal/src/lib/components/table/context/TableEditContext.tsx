@@ -14,11 +14,7 @@ export function TableContextProvider({
   children: ReactNode;
   editable: boolean;
 }>) {
-  return (
-    <TableEditContext.Provider value={editable}>
-      {children}
-    </TableEditContext.Provider>
-  );
+  return <TableEditContext value={editable}>{children}</TableEditContext>;
 }
 
 export function useEditableTable() {

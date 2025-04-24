@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AccessRestrictionApi,
   AppointmentBlockApi,
@@ -14,6 +13,7 @@ import {
   Configuration,
   DraftProtectionProcedureApi,
   FileApi,
+  GdprValidationTaskApi,
   InboxProcedureApi,
   MeaslesProtectionFeatureTogglesApi,
   MonetaryFineApi,
@@ -25,8 +25,10 @@ import {
   StatusTransitionApi,
 } from "@eshg/measles-protection-api";
 
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
+
 export function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_MEASLES_PROTECTION_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
@@ -114,4 +116,9 @@ export function useApprovalRequestApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useGdprValidationTaskApi() {
+  const configuration = useConfiguration();
+  return new GdprValidationTaskApi(configuration);
 }

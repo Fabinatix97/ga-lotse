@@ -9,6 +9,7 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
@@ -29,17 +30,21 @@ import { ProcedureTabHeader } from "./ProcedureTabHeader";
 export function ProcedureToolbar({
   procedureId,
 }: Readonly<{ procedureId: string }>) {
-  const hasStiProtectionUserRole = useHasUserRoleCheck(
-    ApiUserRole.StiProtectionUser,
+  const hasStiProtectionAdminRole = useHasUserRoleCheck(
+    ApiUserRole.StiProtectionAdmin,
   );
   const tabItems = buildTabItems(procedureId);
 
   return (
     <TabNavigationToolbar
-      items={tabItems}
-      routeBack={hasStiProtectionUserRole ? routes.procedures.index : undefined}
       header={<ProcedureTabHeader procedureId={procedureId} />}
+      items={tabItems}
       afterTabs={<DisplayLoadingState />}
+      backButton={
+        hasStiProtectionAdminRole ? (
+          <ToolbarBackButton href={routes.procedures.index} />
+        ) : null
+      }
     />
   );
 }

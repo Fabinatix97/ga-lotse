@@ -6,6 +6,7 @@
 "use client";
 
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { isTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
@@ -27,7 +28,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { isTimeString, toLocalDateTime } from "@/lib/shared/helpers/dateTime";
+import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   type: "",

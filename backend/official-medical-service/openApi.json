@@ -915,6 +915,44 @@
         "tags" : [ "CitizenPublic" ]
       }
     },
+    "/citizen-public/validate-files" : {
+      "post" : {
+        "operationId" : "validateFiles",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
+                  }
+                },
+                "required" : [ "files" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateFilesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Validate files",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/configuration" : {
       "get" : {
         "operationId" : "getConfiguration",
@@ -1411,7 +1449,7 @@
           }
         }, {
           "in" : "query",
-          "name" : "highPriority",
+          "name" : "urgentCase",
           "required" : false,
           "schema" : {
             "type" : "boolean"
@@ -1480,6 +1518,13 @@
         }, {
           "in" : "query",
           "name" : "searchLabCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "searchHumanReadableId",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -4350,6 +4395,9 @@
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
           },
+          "humanReadableId" : {
+            "type" : "string"
+          },
           "lastName" : {
             "maxLength" : 120,
             "minLength" : 0,
@@ -5092,7 +5140,7 @@
       },
       "CurrentMedicalCondition" : {
         "type" : "string",
-        "enum" : [ "ATTACKS", "LACK_OF_APPETITE", "JOINT_TROUBLE", "EAR_NOSE_THROAT", "HEART_TROUBLE", "COUGH", "HEADACHE", "NIGHT_SWEATS", "NERVOUS_TROUBLE", "PAINFUL_URINATION", "IMPAIRED_VISION_EYE_TROUBLE", "MOOD_AND_MOTIVATION_SWINGS", "WEIGHT_LOSS_OR_GAIN", "RHEUMATIC_DISORDERS", "BACK_PAIN", "PAIN", "HEARING_DIFFICULTY", "HEARING_LOSS", "INSOMNIA", "VERTIGO", "ADDICTION", "INDIGESTION", "TREMBLING", "OTHER", "NO_SELECTION" ]
+        "enum" : [ "ATTACKS", "LACK_OF_APPETITE", "SHORTNESS_OF_BREATH", "JOINT_TROUBLE", "EAR_NOSE_THROAT", "HEART_TROUBLE", "COUGH", "HEADACHE", "NIGHT_SWEATS", "NERVOUS_TROUBLE", "PAINFUL_URINATION", "IMPAIRED_VISION_EYE_TROUBLE", "MOOD_AND_MOTIVATION_SWINGS", "WEIGHT_LOSS_OR_GAIN", "RHEUMATIC_DISORDERS", "BACK_PAIN", "PAIN", "HEARING_LOSS", "INSOMNIA", "VERTIGO", "ADDICTION", "INDIGESTION", "TREMBLING", "OTHER", "NO_SELECTION" ]
       },
       "CurrentMedicalConditionSegment" : {
         "required" : [ "answer" ],
@@ -6468,7 +6516,7 @@
         }
       },
       "GetPersonFileStateResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -6514,6 +6562,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -8792,6 +8845,18 @@
             "items" : {
               "type" : "string",
               "format" : "uuid"
+            }
+          }
+        }
+      },
+      "ValidateFilesResponse" : {
+        "required" : [ "errorMessages" ],
+        "type" : "object",
+        "properties" : {
+          "errorMessages" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
             }
           }
         }

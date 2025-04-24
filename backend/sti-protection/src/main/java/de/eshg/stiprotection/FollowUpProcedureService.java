@@ -12,7 +12,8 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.consultation.Consultation;
 import de.eshg.stiprotection.persistence.db.diagnosis.Diagnosis;
 import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
-import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestSamplesData;
+import de.eshg.stiprotection.persistence.db.examination.labtests.ChlamydiaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.GonorrheaTest;
 import de.eshg.stiprotection.persistence.db.medicalhistory.Examination;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import de.eshg.stiprotection.persistence.db.medicalhistory.SexWorkMedicalHistory;
@@ -93,44 +94,36 @@ public class FollowUpProcedureService {
         examinations = new Examination();
         followUpProcedure.getMedicalHistory().setExaminations(examinations);
       }
-      if (laboratoryTestExamination.getHepAData() != null) {
-        examinations.setHepA(laboratoryTestExamination.getHepAData().getResult());
+      if (laboratoryTestExamination.getHepAData().isPresent()) {
+        examinations.setHepA(laboratoryTestExamination.getHepAData().get().getResult());
         examinations.setHepADate(laboratoryTestExamination.getTestsConductedDate());
       }
-      if (laboratoryTestExamination.getHepBData() != null) {
-        examinations.setHepB(laboratoryTestExamination.getHepBData().getResult());
+      if (laboratoryTestExamination.getHepBData().isPresent()) {
+        examinations.setHepB(laboratoryTestExamination.getHepBData().get().getResult());
         examinations.setHepBDate(laboratoryTestExamination.getTestsConductedDate());
       }
-      if (laboratoryTestExamination.getHepCData() != null) {
-        examinations.setHepC(laboratoryTestExamination.getHepCData().getResult());
+      if (laboratoryTestExamination.getHepCData().isPresent()) {
+        examinations.setHepC(laboratoryTestExamination.getHepCData().get().getResult());
         examinations.setHepCDate(laboratoryTestExamination.getTestsConductedDate());
       }
-      if (laboratoryTestExamination.getHivData() != null) {
-        examinations.setHiv(laboratoryTestExamination.getHivData().getResult());
+      if (laboratoryTestExamination.getHivData().isPresent()) {
+        examinations.setHiv(laboratoryTestExamination.getHivData().get().getResult());
         examinations.setHivDate(laboratoryTestExamination.getTestsConductedDate());
       }
-      if (laboratoryTestExamination.getSyphilisData() != null) {
-        examinations.setSyphilis(laboratoryTestExamination.getSyphilisData().getResult());
+      if (laboratoryTestExamination.getSyphilisData().isPresent()) {
+        examinations.setSyphilis(laboratoryTestExamination.getSyphilisData().get().getResult());
         examinations.setSyphilisDate(laboratoryTestExamination.getTestsConductedDate());
       }
-      if (laboratoryTestExamination.getGonorrheaTestSamples() != null) {
-        LaboratoryTestSamplesData gonorrheaTestSamples =
-            laboratoryTestExamination.getGonorrheaTestSamples();
-        boolean gonorrhea =
-            gonorrheaTestSamples.getAnalSampleData().getResult()
-                || gonorrheaTestSamples.getOralSampleData().getResult()
-                || gonorrheaTestSamples.getUrethralSampleData().getResult();
-        examinations.setGonorrhea(gonorrhea);
+      if (laboratoryTestExamination.getGonorrheaTestSamples().isPresent()) {
+        GonorrheaTest gonorrheaTestSamples =
+            laboratoryTestExamination.getGonorrheaTestSamples().get();
+        examinations.setGonorrhea(gonorrheaTestSamples.getResult());
         examinations.setGonorrheaDate(laboratoryTestExamination.getTestsConductedDate());
       }
-      if (laboratoryTestExamination.getChlamydiaTestSamples() != null) {
-        LaboratoryTestSamplesData chlamydiaTestSamples =
-            laboratoryTestExamination.getChlamydiaTestSamples();
-        boolean chlamydia =
-            chlamydiaTestSamples.getAnalSampleData().getResult()
-                || chlamydiaTestSamples.getOralSampleData().getResult()
-                || chlamydiaTestSamples.getUrethralSampleData().getResult();
-        examinations.setChlamydia(chlamydia);
+      if (laboratoryTestExamination.getChlamydiaTestSamples().isPresent()) {
+        ChlamydiaTest chlamydiaTestSamples =
+            laboratoryTestExamination.getChlamydiaTestSamples().get();
+        examinations.setChlamydia(chlamydiaTestSamples.getResult());
         examinations.setChlamydiaDate(laboratoryTestExamination.getTestsConductedDate());
       }
     }

@@ -24,4 +24,5 @@ public record GetCitizenProcedureResponse(
     @Valid AppointmentDto appointment,
     @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,
     @Schema(description = "Indicates whether the medical history has been submitted.") @NotNull
-        Boolean medicalHistorySubmitted) {}
+        Boolean medicalHistorySubmitted,
+    @NotNull Boolean hasResults) {}

@@ -8,9 +8,11 @@
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiInspection } from "@eshg/inspection-api";
 import {
+  CheckboxField,
   DetailsItem,
   DetailsSection,
   FormButtonBar,
+  InformationSheet,
   OverlayBoundary,
   Sidebar,
   SidebarActions,
@@ -36,8 +38,6 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/users";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { translateInspectionType } from "@/lib/businessModules/inspection/shared/enums";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 export function InspectionTypeCard({
   inspection,

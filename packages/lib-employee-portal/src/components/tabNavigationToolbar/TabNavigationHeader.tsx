@@ -8,7 +8,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, Typography, TypographyProps } from "@mui/joy";
 import { Children } from "react";
 
-export interface TabNavigationHeaderProps extends RequiresChildren {
+interface TabNavigationHeaderProps extends RequiresChildren {
   titleAsH1?: boolean;
 }
 

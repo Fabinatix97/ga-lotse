@@ -10,10 +10,11 @@ import {
   UserAccountApi,
   UserSettingsApi,
 } from "@eshg/chat-management-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 function useChatManagementConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_CHAT_MANAGEMENT_BACKEND_URL",
   );
 
@@ -21,7 +22,7 @@ function useChatManagementConfiguration() {
 }
 
 function useBaseConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_BASE_BACKEND_URL",
   );
 

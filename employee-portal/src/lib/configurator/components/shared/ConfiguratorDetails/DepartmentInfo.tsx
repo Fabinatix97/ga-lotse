@@ -5,6 +5,7 @@
 
 import { FormikValues } from "formik";
 import { useMemo } from "react";
+import { isDeepEqual } from "remeda";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configuratorModuleName";
 import { useUpdateDepartmentInfo } from "@/lib/configurator/api/mutations/useUpdateDepartmentInfo";
@@ -21,7 +22,6 @@ enum FormNames {
   ABBREVIATION = "abbreviation",
   STREET = "street",
   HOUSE_NUMBER = "houseNumber",
-  country = "country",
   POSTAL_CODE = "postalCode",
   CITY = "city",
   PHONE_NUMBER = "phoneNumber",
@@ -32,12 +32,11 @@ enum FormNames {
 }
 
 export interface DepartmentInfoFormModel extends FormikValues {
-  [FormNames.USE_INFO_OF_HEALTH_DEPARTMENT]?: "DEFAULT" | "CUSTOM";
+  [FormNames.USE_INFO_OF_HEALTH_DEPARTMENT]: "DEFAULT" | "CUSTOM";
   [FormNames.DEPARTMENT_NAME]: string;
   [FormNames.ABBREVIATION]: string;
   [FormNames.STREET]: string;
   [FormNames.HOUSE_NUMBER]: string;
-  [FormNames.country]: string;
   [FormNames.POSTAL_CODE]: string;
   [FormNames.CITY]: string;
   [FormNames.PHONE_NUMBER]: string;
@@ -49,21 +48,29 @@ export interface DepartmentInfoFormModel extends FormikValues {
 
 export type DepartmentInfoModuleName = Exclude<
   ConfiguratorModuleName,
-  "officialMedicalService"
+  "officialMedicalService" | "opendata"
 >;
 
 export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
   const { currentTabStatus } = useTabStatus({
     moduleName: props.module,
-    tabButtonName:
-      props.module === "baseModule"
-        ? "Angaben zum Gesundheitsamt"
-        : "Angaben zur Fachabteilung",
+    endpointName: "DEPARTMENT_INFO",
   });
-  const { baseValues: defaultValues, moduleValues: initialValues } =
-    useGetDepartmentInfo(props.module);
-  const onSubmit = useUpdateDepartmentInfo(props.module);
+  const { baseValues: defaultValues, moduleValues } = useGetDepartmentInfo(
+    props.module,
+  );
+  const updateDepartmentInfo = useUpdateDepartmentInfo(props.module);
   const showChooser = props.module !== "baseModule";
+
+  function onSubmit(model: DepartmentInfoFormModel) {
+    if (
+      !showChooser ||
+      model[FormNames.USE_INFO_OF_HEALTH_DEPARTMENT] === "CUSTOM"
+    ) {
+      return updateDepartmentInfo(model);
+    }
+    return updateDepartmentInfo(defaultValues);
+  }
 
   function title() {
     switch (props.module) {
@@ -134,15 +141,6 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
                   width: {
                     width: "20%",
                   },
-                },
-              ],
-            },
-            {
-              fields: [
-                {
-                  type: "text",
-                  name: FormNames.country,
-                  label: "Adresszusatz",
                 },
               ],
             },
@@ -263,13 +261,6 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
                           content: `${defaultValues.street} ${defaultValues.houseNumber}`,
                         },
                         {
-                          label: "Land",
-                          content:
-                            defaultValues.country.length === 0
-                              ? "Nicht definiert"
-                              : defaultValues.country,
-                        },
-                        {
                           label: "Postleitzahl, Ort",
                           content: `${defaultValues.postalCode} ${defaultValues.city}`,
                         },
@@ -314,6 +305,21 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
     }
     return formSections;
   }, [showChooser, defaultValues]);
+
+  const initialValues = useMemo(() => {
+    if (
+      isDeepEqual(moduleValues, defaultValues) ||
+      Object.values(moduleValues).every(
+        (it) => `${it}` === "" || `${it}` === "DEFAULT",
+      )
+    ) {
+      return moduleValues;
+    }
+    return {
+      ...moduleValues,
+      [FormNames.USE_INFO_OF_HEALTH_DEPARTMENT]: "CUSTOM",
+    } satisfies DepartmentInfoFormModel;
+  }, [moduleValues, defaultValues]);
 
   return (
     <ConfiguratorForm

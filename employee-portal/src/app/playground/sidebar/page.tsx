@@ -15,6 +15,7 @@ import {
   SidebarWithFormRefProps,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
   useSidebar,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -48,7 +49,12 @@ export default function SidebarPlaygroundPage() {
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title="Sidebar" backHref="/playground" />}
+      toolbar={
+        <Toolbar
+          title="Sidebar"
+          backButton={<ToolbarBackButton href="/playground" />}
+        />
+      }
     >
       <MainContentLayout>
         <Grid container spacing={3}>

@@ -9,9 +9,13 @@ import { ApiTaskStatus } from "@eshg/base-api";
 import {
   ButtonBar,
   DataTable,
+  EnumFilterValue,
+  FilterSettings,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   useGetSelfUser,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -32,10 +36,6 @@ import {
   useTaskTableFilterSettings,
 } from "@/lib/baseModule/components/task/useTaskTableFilterSettings";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 
 import { tasksColumns } from "./taskOverviewColumns";
 
@@ -88,7 +88,7 @@ export function TasksTable(props: TasksTableProps) {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
         />
       }
       filterSettings={

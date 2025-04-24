@@ -16,7 +16,7 @@ import {
 export function AllModulesAlert({
   data,
 }: {
-  data: ConfiguratorStatusOverview;
+  data: Partial<ConfiguratorStatusOverview>;
 }) {
   if (isAllModulesCompleted(data)) {
     return (

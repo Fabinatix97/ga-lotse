@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import {
   ApiAddPersonalDetailsRequest,
   ApiBookAppointmentRequest,
@@ -13,6 +11,8 @@ import { useMutation } from "@tanstack/react-query";
 import assert from "assert";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/stiProtection/api/clients";
+
+import { returnConflict } from "./helper";
 
 export function useBookAppointment() {
   const api = useCitizenPublicApi();
@@ -52,12 +52,4 @@ export function useCancelPendingAppointment(procedureId?: string) {
       return api.cancelPendingAppointment(procedureId);
     },
   });
-}
-
-function returnConflict(e: unknown) {
-  const resolved = resolveError(e);
-  if (resolved?.errorCode === PortalErrorCode.UnexpectedError) {
-    return PortalErrorCode.Conflict;
-  }
-  throw e;
 }

@@ -9,7 +9,7 @@ import {
   ApiGetCitizenProcedureDetailsResponse,
 } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";
@@ -27,7 +27,15 @@ interface BookAppointmentWrapperProps {
   procedure: ApiGetCitizenProcedureDetailsResponse;
 }
 
-export function BookAppointmentWrapper({
+export function BookAppointmentWrapper(props: BookAppointmentWrapperProps) {
+  return (
+    <Suspense>
+      <InnerBookAppointmentWrapper {...props} />
+    </Suspense>
+  );
+}
+
+export function InnerBookAppointmentWrapper({
   procedure,
 }: BookAppointmentWrapperProps) {
   const citizenRoutes = useCitizenRoutes();

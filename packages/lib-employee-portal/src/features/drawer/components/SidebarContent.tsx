@@ -16,7 +16,7 @@ const AlertContainer = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export interface SidebarContentProps {
+interface SidebarContentProps {
   title?: string;
   subtitle?: string;
   children?: ReactNode;

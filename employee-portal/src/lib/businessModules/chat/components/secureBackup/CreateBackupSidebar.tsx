@@ -157,7 +157,9 @@ export function CreateBackupSidebar({
       //TODO: check if device is verified and backup ready
       logger.info("Step 6/6 CreateKeyBackupInSecretStorage - FINISHED");
       setClientState(ClientState.Ready);
-      snackbar.confirmation("Sicherheitsbackup erfolgreich eingerichtet");
+      snackbar.confirmation("Sicherheitsbackup erfolgreich eingerichtet", {
+        manualClose: true,
+      });
     } catch (e) {
       handleClose();
       snackbar.error("Einrichten des Sicherheitsbackups fehlgeschlagen");

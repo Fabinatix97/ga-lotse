@@ -7,10 +7,13 @@
 
 import {
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
+  useGdprValidationTasksAlert,
   usePagination,
 } from "@eshg/lib-employee-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
@@ -30,9 +33,6 @@ import { useGetMedicalProceduresTablePage } from "@/lib/businessModules/medicalR
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
 import { useMedicalRegistryFilterSettings } from "@/lib/businessModules/medicalRegistry/shared/hooks/useMedicalRegistryFilterSettings";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 
 import { MedicalRegistryEntryOverviewControls } from "./MedicalRegistryEntryOverviewControls";
 

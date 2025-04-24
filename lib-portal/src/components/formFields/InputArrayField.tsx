@@ -7,7 +7,8 @@ import { DeleteOutlined as DeleteIcon } from "@mui/icons-material";
 import { FormLabel, IconButton, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FieldArray } from "formik";
-import { ComponentType, ReactNode } from "react";
+import { ComponentType, ReactNode, useEffect, useRef, useState } from "react";
+import { isDefined } from "remeda";
 
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
@@ -46,6 +47,37 @@ export function InputArrayField(props: InputArrayFieldProps) {
   const minCount = Math.max(1, props.minCount ?? 1);
   const canRemove = field.input.value.length > minCount;
   const disabled = useIsFormDisabled();
+  const [actionFlag, setActionFlag] = useState<
+    | {
+        action: "delete" | "add";
+        onIndex: number;
+      }
+    | undefined
+  >(undefined);
+  const inputElements = useRef<HTMLInputElement[]>([]);
+
+  useEffect(() => {
+    function focusNthElement(index: number) {
+      inputElements.current.at(index)?.focus();
+    }
+
+    if (isDefined(actionFlag)) {
+      if (actionFlag.action === "add") {
+        // if an element is added, focus the newly created last element
+        focusNthElement(field.input.value.length - 1);
+        setActionFlag(undefined);
+      } else {
+        // if an element is removed, focus the next (or last) element
+        const removedIndex = actionFlag.onIndex;
+        focusNthElement(
+          removedIndex === field.input.value.length
+            ? removedIndex - 1
+            : removedIndex,
+        );
+        setActionFlag(undefined);
+      }
+    }
+  }, [actionFlag, field.input.value.length]);
 
   return (
     <FieldArray name={props.name} validateOnChange={false}>
@@ -53,6 +85,7 @@ export function InputArrayField(props: InputArrayFieldProps) {
         <Stack gap={2}>
           {field.input.value.map((_value, index) => (
             <FieldComponent
+              ref={(el) => (inputElements.current[index] = el)}
               key={index}
               name={`${props.name}.${index}`}
               label={<FormLabel>{props.label(index)}</FormLabel>}
@@ -66,7 +99,10 @@ export function InputArrayField(props: InputArrayFieldProps) {
                   }}
                   color={"danger"}
                   aria-label={"Entfernen"}
-                  onClick={() => remove(index)}
+                  onClick={() => {
+                    setActionFlag({ action: "delete", onIndex: index });
+                    remove(index);
+                  }}
                   disabled={disabled}
                 >
                   <DeleteIcon />
@@ -76,7 +112,16 @@ export function InputArrayField(props: InputArrayFieldProps) {
               disabled={disabled}
             />
           ))}
-          <FormAddMoreButton onClick={() => push("")} disabled={disabled}>
+          <FormAddMoreButton
+            onClick={() => {
+              setActionFlag({
+                action: "add",
+                onIndex: field.input.value.length,
+              });
+              push("");
+            }}
+            disabled={disabled}
+          >
             {props.addMoreLabel}
           </FormAddMoreButton>
         </Stack>

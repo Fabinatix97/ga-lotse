@@ -6,9 +6,12 @@
 import {
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   getSortDirection,
   getSortKey,
   useRowSelection,
@@ -29,9 +32,6 @@ import {
   getArchivableProceduresFilters,
   useArchiveFilterSettings,
 } from "@/lib/shared/components/archiving/hooks/useArchiveFilterSettings";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 
 export type ArchiveTableProps = Omit<ArchiveViewProps, "title">;
 
@@ -76,7 +76,9 @@ export function ArchiveTable(props: ArchiveTableProps) {
           fullHeight
           controls={
             <ButtonBar
-              left={<FilterButton {...filterSettings.filterButtonProps} />}
+              left={
+                <ToggleFilterButton {...filterSettings.filterButtonProps} />
+              }
             />
           }
           filterSettings={
@@ -113,7 +115,7 @@ export function ArchiveTable(props: ArchiveTableProps) {
         </TablePage>
       ) : (
         <>
-          <ButtonBar left={<FilterButton disabled />} />
+          <ButtonBar left={<ToggleFilterButton disabled />} />
           <NoProceduresFallback message="Für dieses Fachmodul liegen keine zu archivierenden Vorgänge vor." />
         </>
       )}

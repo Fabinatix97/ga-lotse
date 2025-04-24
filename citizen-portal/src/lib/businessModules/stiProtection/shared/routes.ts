@@ -26,12 +26,15 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
           bookAppointment: path("/termin-buchen"),
         }),
       ),
+      resultsStatus: stiProtectionPath("/ergebnisstatus"),
       personalArea: defineRoutes(
         stiProtectionPath("/mein-bereich"),
         (path) => ({
           index: accessCodeRoute(path("/")),
           appointments: path("/termine"),
+          rebook: path("/termin-umbuchen"),
           anamnesis: path("/anamnesebogen"),
+          resultsStatus: path("/ergebnisstatus"),
         }),
       ),
     }),

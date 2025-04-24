@@ -143,41 +143,50 @@ public class CertificateValidationService {
       signatory = null;
     }
 
-    boolean allCertsValid =
-        X509Utils.parseMultiPem(cert.value())
-            .allMatch(
-                certificate -> {
-                  try {
-                    certificate = X509Utils.parsePem(cert.value());
-                  } catch (Exception e) {
-                    logInvalidActor(
-                        "Certificate of the {} '{}' in orgUnit '{}' was not parsable: {}",
-                        actor,
-                        cert,
-                        e);
-                    return false;
-                  }
+    boolean allCertsValid;
+    try {
+      allCertsValid =
+          X509Utils.parseMultiPem(cert.value())
+              .allMatch(
+                  certificate -> {
+                    if (X509Utils.isCaCertificate(certificate)) {
+                      logInvalidActor(
+                          "Certificate of the {} '{}' in orgUnit '{}' is a CA certificate: {}",
+                          actor,
+                          cert);
+                      return false;
+                    }
 
-                  if (X509Utils.isCaCertificate(certificate)) {
-                    logInvalidActor(
-                        "Certificate of the {} '{}' in orgUnit '{}' is a CA certificate: {}",
-                        actor,
-                        cert);
-                    return false;
-                  }
+                    if (signatory != null) {
+                      try {
+                        X509Utils.assertOnlySanIsCn(certificate);
+                      } catch (RuntimeException e) {
+                        logInvalidActor(
+                            "Certificate of the {} '{}' in orgUnit '{}' has invalid SAN: {}: "
+                                + e.getMessage(),
+                            actor,
+                            cert);
+                        return false;
+                      }
 
-                  if (signatory != null) {
+                      return true;
+                    }
+
+                    if (trustStore != null
+                        && neitherInTrustStoreNorSignedByOneInTrustStore(certificate)) {
+                      logInvalidActor(
+                          "Certificate of the {} '{}' in orgUnit '{}' is untrusted: {}",
+                          actor,
+                          cert);
+                      return false;
+                    }
                     return true;
-                  }
-
-                  if (trustStore != null
-                      && neitherInTrustStoreNorSignedByOneInTrustStore(certificate)) {
-                    logInvalidActor(
-                        "Certificate of the {} '{}' in orgUnit '{}' is untrusted: {}", actor, cert);
-                    return false;
-                  }
-                  return true;
-                });
+                  });
+    } catch (Exception e) {
+      logInvalidActor(
+          "Certificates of the {} '{}' in orgUnit '{}' was not parsable: {}", actor, cert, e);
+      return false;
+    }
     if (!allCertsValid) {
       return false;
     }
@@ -202,8 +211,8 @@ public class CertificateValidationService {
     log.error(signatoryInvalidMsg, actor.type(), actor.commonName(), actor.orgUnitId(), cert, e);
   }
 
-  private boolean neitherInTrustStoreNorSignedByOneInTrustStore(X509Certificate certificateAsPem) {
-    return !X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, certificateAsPem);
+  private boolean neitherInTrustStoreNorSignedByOneInTrustStore(X509Certificate certificate) {
+    return !X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, certificate);
   }
 
   private boolean isSignatureFromSignatory(CertificateDto certificateDTO) {

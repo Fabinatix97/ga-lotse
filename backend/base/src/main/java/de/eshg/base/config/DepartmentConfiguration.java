@@ -6,6 +6,7 @@
 package de.eshg.base.config;
 
 import de.eshg.config.domain.Document;
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
@@ -26,16 +27,6 @@ public class DepartmentConfiguration extends BaseEntity {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false)
-  private Document securityTxt;
-
-  @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-  @JoinColumn(nullable = false)
-  private Document securityTxtPublicKey;
-
-  @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-  @JoinColumn(nullable = false)
   private Document streetDirectory;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -43,28 +34,47 @@ public class DepartmentConfiguration extends BaseEntity {
   @JoinColumn(nullable = false)
   private Document municipalityDirectory;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument citizenPortalAccessibilityStatementMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument employeePortalAccessibilityStatementMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument acknowledgementsMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument contactMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument imprintMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument citizenPortalPrivacyPolicyMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private MultiLangDocument employeePortalPrivacyPolicyMarkdown;
+
   public Document getLogo() {
     return logo;
   }
 
   public void setLogo(Document logo) {
     this.logo = logo;
-  }
-
-  public Document getSecurityTxt() {
-    return securityTxt;
-  }
-
-  public void setSecurityTxt(Document securityTxt) {
-    this.securityTxt = securityTxt;
-  }
-
-  public Document getSecurityTxtPublicKey() {
-    return securityTxtPublicKey;
-  }
-
-  public void setSecurityTxtPublicKey(Document securityTxtPublicKey) {
-    this.securityTxtPublicKey = securityTxtPublicKey;
   }
 
   public Document getStreetDirectory() {
@@ -81,5 +91,63 @@ public class DepartmentConfiguration extends BaseEntity {
 
   public void setMunicipalityDirectory(Document municipalityDirectory) {
     this.municipalityDirectory = municipalityDirectory;
+  }
+
+  public MultiLangDocument getCitizenPortalAccessibilityStatementMarkdown() {
+    return citizenPortalAccessibilityStatementMarkdown;
+  }
+
+  public void setCitizenPortalAccessibilityStatementMarkdown(
+      MultiLangDocument markdownCitizenAccessibility) {
+    this.citizenPortalAccessibilityStatementMarkdown = markdownCitizenAccessibility;
+  }
+
+  public MultiLangDocument getImprintMarkdown() {
+    return imprintMarkdown;
+  }
+
+  public void setImprintMarkdown(MultiLangDocument markdownCitizenImprint) {
+    this.imprintMarkdown = markdownCitizenImprint;
+  }
+
+  public MultiLangDocument getCitizenPortalPrivacyPolicyMarkdown() {
+    return citizenPortalPrivacyPolicyMarkdown;
+  }
+
+  public void setCitizenPortalPrivacyPolicyMarkdown(MultiLangDocument markdownCitizenPrivacy) {
+    this.citizenPortalPrivacyPolicyMarkdown = markdownCitizenPrivacy;
+  }
+
+  public MultiLangDocument getAcknowledgementsMarkdown() {
+    return acknowledgementsMarkdown;
+  }
+
+  public void setAcknowledgementsMarkdown(MultiLangDocument markdownCommonAcknowledgements) {
+    this.acknowledgementsMarkdown = markdownCommonAcknowledgements;
+  }
+
+  public MultiLangDocument getEmployeePortalAccessibilityStatementMarkdown() {
+    return employeePortalAccessibilityStatementMarkdown;
+  }
+
+  public void setEmployeePortalAccessibilityStatementMarkdown(
+      MultiLangDocument markdownEmployeeAccessibility) {
+    this.employeePortalAccessibilityStatementMarkdown = markdownEmployeeAccessibility;
+  }
+
+  public MultiLangDocument getContactMarkdown() {
+    return contactMarkdown;
+  }
+
+  public void setContactMarkdown(MultiLangDocument markdownEmployeeContact) {
+    this.contactMarkdown = markdownEmployeeContact;
+  }
+
+  public MultiLangDocument getEmployeePortalPrivacyPolicyMarkdown() {
+    return employeePortalPrivacyPolicyMarkdown;
+  }
+
+  public void setEmployeePortalPrivacyPolicyMarkdown(MultiLangDocument markdownEmployeePrivacy) {
+    this.employeePortalPrivacyPolicyMarkdown = markdownEmployeePrivacy;
   }
 }

@@ -5,10 +5,12 @@
 
 "use client";
 
+import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
@@ -39,8 +41,6 @@ import {
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
 
 import { useIcd10Sidebar } from "./Icd10Sidebar";
 import {

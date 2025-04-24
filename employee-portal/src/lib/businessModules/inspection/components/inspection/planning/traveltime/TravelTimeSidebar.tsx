@@ -9,6 +9,7 @@ import type {
   ApiObjectType,
 } from "@eshg/inspection-api";
 import {
+  DateTimeField,
   FormButtonBar,
   OverlayBoundary,
   Sidebar,
@@ -28,7 +29,6 @@ import { isEmpty } from "remeda";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";
-import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { durationBetweenDatesInMinutes } from "@/lib/shared/helpers/dateTime";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 

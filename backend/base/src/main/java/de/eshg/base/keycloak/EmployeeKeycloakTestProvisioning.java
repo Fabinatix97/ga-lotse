@@ -90,9 +90,9 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case SCHOOL_ENTRY_PHYSICIAN -> "Aaron";
       case TRAVEL_MEDICINE_MFA -> "Laura";
       case TRAVEL_MEDICINE_PHYSICIAN -> "Kai";
-      case STI_PROTECTION_PHYSICIANS -> "Michael";
-      case STI_PROTECTION_MFAS -> "Emilia";
-      case STI_PROTECTION_CONSULTANTS -> "Gregor";
+      case STI_PROTECTION_PHYSICIAN -> "Michael";
+      case STI_PROTECTION_MFA -> "Emilia";
+      case STI_PROTECTION_CONSULTANT -> "Gregor";
       case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Tina";
     };
   }
@@ -105,9 +105,9 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case SCHOOL_ENTRY_PHYSICIAN -> "Müller";
       case TRAVEL_MEDICINE_MFA -> "Schmitt";
       case TRAVEL_MEDICINE_PHYSICIAN -> "Schulz";
-      case STI_PROTECTION_PHYSICIANS -> "Kohlhaas";
-      case STI_PROTECTION_MFAS -> "Galotti";
-      case STI_PROTECTION_CONSULTANTS -> "Samsa";
+      case STI_PROTECTION_PHYSICIAN -> "Kohlhaas";
+      case STI_PROTECTION_MFA -> "Galotti";
+      case STI_PROTECTION_CONSULTANT -> "Samsa";
       case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Hoffmann";
     };
   }

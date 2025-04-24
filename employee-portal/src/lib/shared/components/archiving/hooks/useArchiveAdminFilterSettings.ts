@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  FilterDefinition,
+  FilterValue,
+  UseFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { GetRelevantArchivableProceduresRequest } from "@eshg/lib-procedures-api";
 
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
 import { getSelectedFilterValues } from "@/lib/shared/components/procedures/helper";
 import { getFilterDate } from "@/lib/shared/helpers/filter";

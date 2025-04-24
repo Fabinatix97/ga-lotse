@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiInformationStatementTemplate,
@@ -16,7 +17,6 @@ import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
 import { templateStatusColors } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/constants";
 import { translateInformationStatementTemplateStateType } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/translations";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiInformationStatementTemplate> =
   createColumnHelper<ApiInformationStatementTemplate>();

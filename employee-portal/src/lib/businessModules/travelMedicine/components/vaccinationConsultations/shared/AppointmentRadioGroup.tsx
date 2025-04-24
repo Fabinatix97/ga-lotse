@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DateTimeField } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupFieldProps } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
@@ -25,7 +26,6 @@ import {
   RadioSheet,
   RadioSheetOption,
 } from "@/lib/businessModules/travelMedicine/shared/RadioSheet";
-import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import {
   validateNonNegativeInteger,
   validateTodayOrFutureDate,

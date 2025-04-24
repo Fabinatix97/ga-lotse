@@ -12,7 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
@@ -37,6 +37,7 @@ interface OtherServiceFormProps {
 export function OtherServiceSidebarForm(
   props: Readonly<OtherServiceFormProps>,
 ) {
+  const { validateLength } = useValidators();
   return (
     <Formik
       initialValues={props.initialValues}

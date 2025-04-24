@@ -16,8 +16,6 @@ const inventoryPath = "/inventory";
 const usersPath = "/users";
 const metricsPath = "/metrics";
 const opendataPath = "/opendata";
-const gdprPath = "/gdpr";
-const validationTasksPath = "/validation-tasks";
 
 export const routes = {
   index: "/",
@@ -37,15 +35,6 @@ export const routes = {
     details: (contactId: string) => `${contactsPath}/${contactId}`,
     history: (contactId: string, historyId: number, addressId?: number) =>
       `${contactsPath}/${contactId}/history-details?historyId=${historyId}${isDefined(addressId) ? `&addressId=${addressId}` : ""}`,
-  },
-  gdpr: {
-    index: gdprPath,
-    details: (procedureId: string) => `${gdprPath}/${procedureId}`,
-    validationTasks: (businessModule: ApiBusinessModule) => ({
-      overview: `${gdprPath}${validationTasksPath}/${businessModule}/overview`,
-      byId: (id: string) =>
-        `${gdprPath}${validationTasksPath}/${businessModule}/${id}`,
-    }),
   },
   resources: {
     index: resourcesPath,

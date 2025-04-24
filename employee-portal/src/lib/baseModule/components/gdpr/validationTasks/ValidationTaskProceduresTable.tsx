@@ -4,6 +4,7 @@
  */
 
 import {
+  ActionsMenu,
   ButtonBar,
   DataTable,
   TablePage,
@@ -34,7 +35,6 @@ import {
   useAddDownloadPackage,
   useDeleteBusinessProcedure,
 } from "@/lib/shared/api/mutations/gdpr";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 
 interface ValidationTaskProceduresTableProps {

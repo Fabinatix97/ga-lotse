@@ -4,7 +4,7 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Stack } from "@mui/joy";
 import { FormikProps } from "formik";
 import { PropsWithChildren } from "react";
@@ -14,6 +14,7 @@ import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySideba
 export function DefaultFacilitySearchForm<
   TValues extends FacilitySearchFormValues,
 >(props: PropsWithChildren<FormikProps<TValues>>) {
+  const { validateLength } = useValidators();
   return (
     <Stack gap={2}>
       <InputField

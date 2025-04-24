@@ -17,11 +17,7 @@ export function NonceProvider({
   children: ReactNode;
 }) {
   const ref = useRef(initialNonce);
-  return (
-    <NonceContext.Provider value={ref.current}>
-      {children}
-    </NonceContext.Provider>
-  );
+  return <NonceContext value={ref.current}>{children}</NonceContext>;
 }
 
 export function useNonce() {

@@ -8,9 +8,13 @@
 import {
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
 } from "@eshg/lib-employee-portal";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
@@ -22,10 +26,6 @@ import { useTeamviewFilterSettings } from "@/lib/baseModule/components/task/useT
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { useFetchTasksForTeamViewOptions } from "@/lib/businessModules/inspection/api/queries/useFetchTasksForTeamViewOptions";
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export interface TaskCounts {
   nonOverdueTaskCount: number;
@@ -78,7 +78,7 @@ export function Teamview(props: Readonly<TeamviewPageProps>) {
 
     return {
       userId: groupMember.userId,
-      name: fullName(groupMember),
+      name: formatUserName(groupMember),
       tasks: taskCounts,
       subRows: toTaskSubRows(tasks),
     };
@@ -104,7 +104,7 @@ export function Teamview(props: Readonly<TeamviewPageProps>) {
       isOverdue: isOverdue,
       tasks: summary,
       dueAtInDays: dueAt ? differenceInDays(dueAt, new Date()) : undefined,
-      assignedBy: fullName(resolvedUser),
+      assignedBy: formatUserName(resolvedUser),
       createdAt: createdAt,
       procedureId: procedureId,
     };
@@ -124,7 +124,7 @@ export function Teamview(props: Readonly<TeamviewPageProps>) {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
         />
       }
       filterSettings={

@@ -3,10 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
+import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { Legend } from "@eshg/lib-portal/components/formFields/Legend";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { Box, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
@@ -18,10 +22,6 @@ import {
 } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
 import { validatePositiveInteger } from "@/lib/businessModules/stiProtection/components/anamnesis/helpers";
 import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
-import { CheckboxGroupField } from "@/lib/businessModules/stiProtection/components/shared/formFields/CheckboxGroupField";
-import { FieldSetControl } from "@/lib/businessModules/stiProtection/components/shared/formFields/FieldSetControl";
-import { Legend } from "@/lib/businessModules/stiProtection/components/shared/formFields/Legend";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/shared/formFields/YesOrNoWithFollowUp";
 import { useTranslation } from "@/lib/i18n/client";
 
 import { PrivacyNotice } from "./PrivacyNotice";

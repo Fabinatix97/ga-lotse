@@ -3,17 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FilterValue,
+  useGetGdprValidationBannerQuery,
+} from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { useQueries } from "@tanstack/react-query";
 
-import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
+import {
+  useGdprValidationTaskApi,
+  useMedicalRegistryApi,
+} from "@/lib/businessModules/medicalRegistry/api/clients";
 import {
   getMedicalRegistryOverviewQuery,
   getMedicalRegistrySearchQuery,
 } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
 import { getMedicalRegistryEntryFilters } from "@/lib/businessModules/medicalRegistry/shared/hooks/useMedicalRegistryFilterSettings";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 export function useGetMedicalProceduresTablePage(
   isSearchPanel: boolean,
@@ -23,9 +28,11 @@ export function useGetMedicalProceduresTablePage(
   searchQuery: string,
 ) {
   const medicalRegistryApi = useMedicalRegistryApi();
+  const gdprValidationTaskApi = useGdprValidationTaskApi();
 
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.MedicalRegistry,
+    gdprValidationTaskApi,
   );
 
   const proceduresQuery = isSearchPanel

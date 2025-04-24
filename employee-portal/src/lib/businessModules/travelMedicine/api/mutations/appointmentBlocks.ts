@@ -5,7 +5,11 @@
 
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { ApiCreateDailyAppointmentBlockGroupRequest } from "@eshg/travel-medicine-api";
+import {
+  ApiCreateDailyAppointmentBlockGroupRequest,
+  DeleteAppointmentBlockRequest,
+} from "@eshg/travel-medicine-api";
+import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/clients";
 
@@ -20,4 +24,30 @@ export function useCreateDailyAppointmentBlocksForGroup() {
       snackbar.confirmation("Der Terminblock wurde angelegt.");
     },
   });
+}
+
+export function useDeleteAppointmentBlockOptions(): MutationOptions<
+  void,
+  Error,
+  DeleteAppointmentBlockRequest
+> {
+  const appointmentBlockGroupsApi = useAppointmentBlockApi();
+  const snackbar = useSnackbar();
+
+  return {
+    mutationFn: ({ appointmentBlockId }: DeleteAppointmentBlockRequest) =>
+      appointmentBlockGroupsApi.deleteAppointmentBlock(appointmentBlockId),
+    onSuccess: () => {
+      snackbar.confirmation("Der Terminblock wurde erfolgreich gelöscht.");
+    },
+    onError: () => {
+      snackbar.error("Der Terminblock konnte nicht gelöscht werden.");
+    },
+  };
+}
+
+export function useDeleteAppointmentBlock() {
+  const deleteAppointmentBlockOptions = useDeleteAppointmentBlockOptions();
+
+  return useMutation(deleteAppointmentBlockOptions);
 }

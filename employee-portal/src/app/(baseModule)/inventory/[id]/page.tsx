@@ -10,6 +10,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
@@ -46,7 +47,12 @@ export default function InventoryDetailsPage(
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title={item.name} backHref={routes.inventory.index} />}
+      toolbar={
+        <Toolbar
+          title={item.name}
+          backButton={<ToolbarBackButton href={routes.inventory.index} />}
+        />
+      }
     >
       <MainContentLayout>
         <Stack gap={2}>

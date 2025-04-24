@@ -3,13 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NamedUser, UserField } from "@eshg/lib-employee-portal";
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import {
-  AppointmentStaffField,
-  StaffUser,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
 export const BUTTON_STYLES: SxProps = {
@@ -17,10 +14,10 @@ export const BUTTON_STYLES: SxProps = {
 };
 
 export interface AppointmentStaffSelectionProps {
-  physicianOptions: StaffUser[];
+  physicianOptions: NamedUser[];
   physicianRequired?: string;
-  medicalAssistantOptions?: StaffUser[];
-  consultantOptions?: StaffUser[];
+  medicalAssistantOptions?: NamedUser[];
+  consultantOptions?: NamedUser[];
   blockedStaff: string[];
   freeStaff: string[];
   validateAvailability: () => void;
@@ -32,7 +29,7 @@ export function AppointmentStaffSelection(
   return (
     <FormGroupGrid>
       <Grid xs={4}>
-        <AppointmentStaffField
+        <UserField
           name="physicians"
           label="Arzt/Ärztin"
           placeholder="auswählen"
@@ -44,7 +41,7 @@ export function AppointmentStaffSelection(
       </Grid>
       {props.medicalAssistantOptions && (
         <Grid xs={4}>
-          <AppointmentStaffField
+          <UserField
             name="mfas"
             label="MFA"
             placeholder="auswählen"
@@ -56,7 +53,7 @@ export function AppointmentStaffSelection(
       )}
       {props.consultantOptions && (
         <Grid xs={4}>
-          <AppointmentStaffField
+          <UserField
             name="consultants"
             label="Berater:in"
             placeholder="auswählen"

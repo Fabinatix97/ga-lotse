@@ -10,6 +10,26 @@ declare module "@mui/joy/styles" {
     xxs: true;
     xxl: true;
   }
+
+  interface Palette {
+    a11y: {
+      primary: string;
+      neutral: string;
+      danger: string;
+      warning?: string;
+      success?: string;
+    };
+  }
+
+  interface PaletteColor extends Palette {
+    a11y: {
+      primary: string;
+      neutral: string;
+      danger: string;
+      warning?: string;
+      success?: string;
+    };
+  }
 }
 
 declare module "@mui/joy/styles/types/zIndex" {

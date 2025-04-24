@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useState } from "react";
-
-import { UseAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useAddFilterTemplate";
 import {
   FilterTemplate,
   FilterTemplatesProps,
-} from "@/lib/shared/components/filterSettings/FilterTemplates";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
+  FilterValue,
+} from "@eshg/lib-employee-portal";
+import { useEffect, useState } from "react";
+
+import { UseAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useAddFilterTemplate";
 
 export interface UseFilterTemplateProps {
   filterTemplates: FilterTemplate[];

@@ -1,0 +1,654 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "This is the API for the config library 'lib-config'",
+    "title" : "The config library API",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "paths" : {
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
+      }
+    },
+    "/configuration/department-info" : {
+      "get" : {
+        "operationId" : "getInternalConfigDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInternalConfigDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateInternalConfigDepartmentInfo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInternalConfigDepartmentInfoRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/opening-hours" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNoticeConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyNoticeConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicyConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyPolicyConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/test-helper/population" : {
+      "post" : {
+        "operationId" : "populateDefaults",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DefaultPopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor" : {
+      "post" : {
+        "operationId" : "interceptNextRequest",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers" : {
+      "post" : {
+        "operationId" : "addBarrier",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddBarrierTestHelperResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers/{barrierId}/await" : {
+      "post" : {
+        "operationId" : "awaitBarrier",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "barrierId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeoutInMillis",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/reset" : {
+      "post" : {
+        "operationId" : "resetInterceptionsAndBarriers",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/reset" : {
+      "post" : {
+        "operationId" : "reset",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/set-clock" : {
+      "patch" : {
+        "operationId" : "setClock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockSetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/wind-clock" : {
+      "patch" : {
+        "operationId" : "windClockForward",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockWindForwardRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AddBarrierTestHelperResponse" : {
+        "required" : [ "barrierId" ],
+        "type" : "object",
+        "properties" : {
+          "barrierId" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
+      "CountryCode" : {
+        "type" : "string",
+        "description" : "List of country codes in ISO 3166-1 alpha-2 format. With custom extensions for stateless, non-standard countries, and unknown countries.",
+        "enum" : [ "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW", "XK", "UNKNOWN", "STATELESS" ]
+      },
+      "DefaultPopulationResponse" : {
+        "type" : "object",
+        "properties" : {
+          "populations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Population"
+            }
+          }
+        }
+      },
+      "DepartmentInfo" : {
+        "required" : [ "abbreviation", "city", "country", "email", "homepage", "houseNumber", "latitude", "longitude", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string"
+          },
+          "city" : {
+            "type" : "string"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "homepage" : {
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "type" : "string"
+          },
+          "postalCode" : {
+            "type" : "string"
+          },
+          "street" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Document" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
+          }
+        }
+      },
+      "GetInternalConfigDepartmentInfoResponse" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
+          }
+        }
+      },
+      "GetPrivacyDocumentConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "overwrittenPrivacyDocument" : {
+            "$ref" : "#/components/schemas/PrivacyDocument"
+          }
+        }
+      },
+      "HttpMethod" : {
+        "type" : "string",
+        "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
+      },
+      "InsertRequestInterceptionTestHelperRequest" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/InterceptionType"
+          }
+        }
+      },
+      "InterceptionType" : {
+        "type" : "string",
+        "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Population" : {
+        "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfPopulatedEntities" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "populatorName" : {
+            "type" : "string"
+          },
+          "totalNumberOfEntities" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PrivacyDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
+      "TestHelperClockSetRequest" : {
+        "required" : [ "newInstant" ],
+        "type" : "object",
+        "properties" : {
+          "newInstant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockUpdateResponse" : {
+        "required" : [ "instant" ],
+        "type" : "object",
+        "properties" : {
+          "instant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockWindForwardRequest" : {
+        "required" : [ "days", "hours", "minutes", "months", "seconds", "weeks" ],
+        "type" : "object",
+        "properties" : {
+          "days" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "hours" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutes" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "months" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "seconds" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weeks" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TestHelperInterceptionRequestFilter" : {
+        "type" : "object",
+        "properties" : {
+          "httpMethodFilter" : {
+            "$ref" : "#/components/schemas/HttpMethod"
+          },
+          "queryPatternFilter" : {
+            "type" : "string"
+          },
+          "urlPatternFilter" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateInternalConfigDepartmentInfoRequest" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      }
+    }
+  }
+}

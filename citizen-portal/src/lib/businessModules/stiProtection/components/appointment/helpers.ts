@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  YesOrNoFieldData,
+  mapYesOrNoToBool,
+} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { validateRange } from "@eshg/lib-portal/helpers/validators";
 import {
   ApiAddPersonalDetailsRequest,
   ApiAppointment,
   ApiConcern,
-  ApiCountryCode,
   ApiCreateAnonymousUserRequest,
   ApiGender,
 } from "@eshg/sti-protection-api";
@@ -55,8 +58,9 @@ export function validateYearWithinRange(
 export interface PersonalData {
   gender: ApiGender;
   birthYear: number;
-  countryOfBirth: ApiCountryCode | null;
-  inGermanySince: number | "";
+  pronouns: string;
+  hasSufficientGermanLanguageSkills: YesOrNoFieldData;
+  otherKnownLanguages: string;
 }
 
 export function mapToAddPersonalDetails(
@@ -70,8 +74,11 @@ export function mapToAddPersonalDetails(
   return {
     gender,
     yearOfBirth: birthYear,
-    countryOfBirth: data.countryOfBirth ?? undefined,
-    inGermanySince: mapOptionalValue(data.inGermanySince),
+    pronouns: mapOptionalValue(data.pronouns),
+    hasSufficientGermanLanguageSkills: mapYesOrNoToBool(
+      data.hasSufficientGermanLanguageSkills ?? null,
+    ),
+    otherKnownLanguages: mapOptionalValue(data.otherKnownLanguages),
     appointmentBooking: mapToBookAppointment({
       concern,
       appointment,

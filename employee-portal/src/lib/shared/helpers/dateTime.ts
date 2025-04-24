@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getDateFnsLocale } from "@eshg/lib-employee-portal";
 import {
-  DATE_TIME_FORMAT,
+  TIME_FORMAT,
   isDateString,
+  isTimeString,
 } from "@eshg/lib-portal/helpers/dateTime";
 import {
   FormatDistanceToNowOptions,
   FormatDurationOptions,
   GetWeekOptions,
-  type Locale,
   format,
   formatDistanceStrict,
   formatDistanceToNow,
@@ -19,47 +20,14 @@ import {
   formatISO,
   getWeek,
   isBefore,
-  isMatch,
   isSameDay,
   parse,
   secondsToMilliseconds,
 } from "date-fns";
-import * as DateLocales from "date-fns/locale";
 import { parse as parseDuration, toSeconds } from "iso8601-duration";
-
-export const TIME_FORMAT = "HH:mm";
-
-/**
- * Gets the default date-fns Locale based on the user's browser settings
- * (defaults to German (i.e., 'de') if the Locale cannot be found)
- *
- * Used for date-fns locale option to localize date output
- *
- * @returns a date-fns Locale
- * @example dateFns.getWeek(date, { locale: getDateLocale() })
- */
-export function getDateLocale(): Locale {
-  const dateLocales: Record<string, Locale> = DateLocales;
-  const localeFormattedBrowserLanguage =
-    typeof navigator !== "undefined"
-      ? navigator.language.replace("-", "")
-      : "de";
-  const dateLocale: Locale =
-    dateLocales[localeFormattedBrowserLanguage] ?? DateLocales.de;
-
-  return dateLocale;
-}
-
-export function isTimeString(value: string) {
-  return isMatch(value, TIME_FORMAT);
-}
 
 export function formatTimeInput(date: Date): string {
   return format(date, TIME_FORMAT);
-}
-
-export function isDateTimeString(value: string) {
-  return isMatch(value, DATE_TIME_FORMAT);
 }
 
 export function isBeforeTime(
@@ -98,7 +66,7 @@ export function formatDurationRounded(
 ) {
   const duration = parseDuration(isoDuration);
   return formatDistanceStrict(0, secondsToMilliseconds(toSeconds(duration)), {
-    locale: options?.locale ?? getDateLocale(),
+    locale: options?.locale ?? getDateFnsLocale(),
     roundingMethod: "round",
   });
 }
@@ -162,7 +130,7 @@ export function formatDateTimeRangeToNow(
   options?: FormatDistanceToNowOptions,
 ) {
   return formatDistanceToNow(date, {
-    locale: options?.locale ?? getDateLocale(),
+    locale: options?.locale ?? getDateFnsLocale(),
   });
 }
 
@@ -171,26 +139,14 @@ export function formatDateTimeRangeToNowInMinutes(
   options?: FormatDistanceToNowOptions,
 ) {
   return formatDistanceToNowStrict(date, {
-    locale: options?.locale ?? getDateLocale(),
+    locale: options?.locale ?? getDateFnsLocale(),
     unit: "minute",
   });
 }
 
-export function formatDurationFromNowUntil(
-  date: Date,
-  options?: { locale: Locale },
-) {
-  const now = new Date();
-  return date > now
-    ? formatDistanceStrict(date, now, {
-        locale: options?.locale ?? getDateLocale(),
-      })
-    : undefined;
-}
-
 export function formatCalendarWeek(date: Date, options?: GetWeekOptions) {
   const calendarWeek = getWeek(date, {
-    locale: options?.locale ?? getDateLocale(),
+    locale: options?.locale ?? getDateFnsLocale(),
   });
   return `KW ${calendarWeek}`;
 }
@@ -200,7 +156,7 @@ export function formatCalendarWeekRange(
   end: Date,
   options?: GetWeekOptions,
 ) {
-  const dateLocale = options?.locale ?? getDateLocale();
+  const dateLocale = options?.locale ?? getDateFnsLocale();
   const startCalendarWeek = getWeek(start, {
     locale: dateLocale,
   });

@@ -121,6 +121,8 @@ public class BaseInternalSecurityConfig {
           auth) {
     auth.requestMatchers(POST, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/{id}/verify")
         .hasRole(EmployeePermissionRole.BASE_ACCESS_CODE_USER_VERIFY.name());
+    auth.requestMatchers(PUT, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/credential")
+        .hasRole(CitizenPermissionRole.ACCESS_CODE_USER.name());
     auth.requestMatchers(GET, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN.name());
     auth.requestMatchers(POST, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/**")

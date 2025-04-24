@@ -47,5 +47,6 @@ public record GetPersonFileStateResponse(
                 "A flag that signals if a File State differs from the referencePerson it is connected to. Set to 'null' if unchecked.",
             example = "true")
         Boolean outdated,
-    @NotNull DataOriginDto dataOrigin)
+    @NotNull DataOriginDto dataOrigin,
+    @NotNull @Size(min = 8, max = 8) String humanReadableId)
     implements PersonDetails {}

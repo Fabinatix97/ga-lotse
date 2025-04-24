@@ -4,6 +4,7 @@
  */
 
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 import { Stack, Typography } from "@mui/joy";
 import { useContext } from "react";
@@ -13,7 +14,6 @@ import { FileCardWithDownload } from "@/lib/shared/components/procedures/progres
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { manualProgressEntryTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 interface ProgressEntryAsApprovalRequestEntityProps {
   approvalRequestEntity: ApiManualProgressEntry;
@@ -33,7 +33,7 @@ export function ProgressEntryAsApprovalRequestEntity({
           <Typography level={"body-xs"} data-testid="createdAtAndBy">
             {buildLabel(
               approvalRequestEntity.createdAt,
-              fullName(resolvedUsers[approvalRequestEntity.createdBy]),
+              formatUserName(resolvedUsers[approvalRequestEntity.createdBy]),
             )}
           </Typography>
           <Typography level={"title-md"} data-testid="entryTitle">

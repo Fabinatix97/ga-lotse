@@ -4,16 +4,15 @@
  */
 
 import { Configuration, DepartmentApi, PublicConfigApi } from "@eshg/base-api";
-import {
-  ApiConfiguration,
-  useApiConfiguration,
-} from "@eshg/lib-portal/api/ApiProvider";
+import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   ApiBusinessModule,
   Configuration as BusinessModuleConfiguration,
   ConfigurationParameters,
   GdprValidationTaskApi,
 } from "@eshg/lib-procedures-api";
+
+import { useCitizenPortalApiConfiguration } from "@/lib/shared/api/useCitizenPortalApiConfiguration";
 
 export const BUSINESS_MODULE_URLS = {
   [ApiBusinessModule.SchoolEntry]: "PUBLIC_SCHOOL_ENTRY_BACKEND_URL",
@@ -29,7 +28,7 @@ export const BUSINESS_MODULE_URLS = {
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
 function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useCitizenPortalApiConfiguration(
     "PUBLIC_BASE_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
@@ -53,7 +52,7 @@ export function useConfigurationByBusinessModule<TConfiguration>(
   businessModule: ApiBusinessModule,
   Configuration: ConfigurationConstructor<TConfiguration>,
 ): TConfiguration {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useCitizenPortalApiConfiguration(
     BUSINESS_MODULE_URLS[businessModule as keyof typeof BUSINESS_MODULE_URLS],
   );
   return new Configuration(configurationParameters);

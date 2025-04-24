@@ -4,8 +4,12 @@
  */
 
 import {
+  ActionsMenu,
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterValue,
   ManualTableSortingProps,
   NoSearchResults,
   OverlayBoundary,
@@ -13,6 +17,8 @@ import {
   PaginationProps,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  useFilterSettings,
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -27,6 +33,7 @@ import {
   Download,
   Edit,
   FileCopy,
+  Info,
   Menu,
   Share,
 } from "@mui/icons-material";
@@ -45,6 +52,7 @@ import {
   EvaluationOverviewTableItem,
 } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
 import { getEvaluationsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { useAnonymizationFailedSidebar } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationFailedSidebar";
 import { useDuplicateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/DuplicateEvaluationSidebar";
 import { useSaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveAsEvaluationTemplateSidebar";
 import { EvaluationNameChangeModal } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationNameChangeModal";
@@ -54,13 +62,7 @@ import { getSharedURL } from "@/lib/businessModules/statistics/components/shared
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
@@ -89,6 +91,7 @@ function columns(functions: {
   onNameChange: (id: string, name: string) => void;
   onSaveAsTemplate: (item: EvaluationOverviewTableItem) => void;
   onExportData: (item: EvaluationOverviewTableItem) => Promise<void>;
+  onShowAnonymizationFailedInformation: (id: string) => void;
 }) {
   return [
     columnHelper.accessor("name", {
@@ -167,82 +170,98 @@ function columns(functions: {
         canNavigate: {
           parentRow: true,
         },
-        width: "8rem",
+        width: "12rem",
       },
     }),
     columnHelper.display({
       id: "actions",
       header: "Aktionen",
       enableSorting: false,
-      cell: (props) => (
-        <ActionsMenu
-          actionItems={[
-            {
-              label: "Teilen",
-              onClick: async () =>
-                await functions.onShareClicked(
-                  getSharedURL({
-                    detailLinkId: props.row.original.id,
-                    statisticsSubRoute: "evaluations",
-                  }),
-                ),
-              startDecorator: <Share />,
-            },
-            functions.canUpdateEvaluation(props.row.original.userId) && {
-              label: "Name ändern",
-              onClick: () =>
-                functions.onNameChange(
-                  props.row.original.id,
-                  props.row.original.name,
-                ),
-              disabled:
-                props.row.original.state !== ApiEvaluationState.Completed,
-              startDecorator: <Edit />,
-            },
-            functions.canWrite(props.row.original.userId) && {
-              label: "Duplizieren",
-              onClick: () => {
-                functions.onDuplicate(props.row.original);
-              },
-              disabled:
-                props.row.original.state !== ApiEvaluationState.Completed,
-              startDecorator: <FileCopy />,
-            },
-            functions.canWrite(props.row.original.userId) && {
-              label: "Als Vorlage speichern",
-              onClick: () => {
-                functions.onSaveAsTemplate(props.row.original);
-              },
-              disabled:
-                props.row.original.state !== ApiEvaluationState.Completed,
-              startDecorator: <Menu />,
-            },
-            (props.row.original.dataSourceSensitivity ===
-              DataSourceSensitivity.Anonymous ||
-              props.row.original.dataSourceSensitivity ===
-                DataSourceSensitivity.InternalUsage) && {
-              label: "Daten exportieren",
-              onClick: () => functions.onExportData(props.row.original),
-              disabled:
-                props.row.original.state !== ApiEvaluationState.Completed,
-              startDecorator: <Download />,
-            },
-            functions.canDelete(props.row.original.userId) &&
-              ({
-                label: "Löschen",
+      cell: (props) => {
+        const anonymizationFailed =
+          props.row.original.state === ApiEvaluationState.AnonymizationFailed;
+        return (
+          <ActionsMenu
+            actionItems={[
+              anonymizationFailed && {
+                label: "Informationen",
                 onClick: () =>
-                  functions.deleteEvaluationWithConfirmation(
+                  functions.onShowAnonymizationFailedInformation(
                     props.row.original.id,
-                    props.row.original.name,
                   ),
-                disabled:
-                  props.row.original.state === ApiEvaluationState.CopyOngoing,
-                startDecorator: <Delete />,
-                color: "danger",
-              } as const),
-          ].filter(isPlainObject)}
-        />
-      ),
+                startDecorator: <Info />,
+              },
+              !anonymizationFailed && {
+                label: "Teilen",
+                onClick: async () =>
+                  await functions.onShareClicked(
+                    getSharedURL({
+                      detailLinkId: props.row.original.id,
+                      statisticsSubRoute: "evaluations",
+                    }),
+                  ),
+                startDecorator: <Share />,
+              },
+              functions.canUpdateEvaluation(props.row.original.userId) &&
+                !anonymizationFailed && {
+                  label: "Name ändern",
+                  onClick: () =>
+                    functions.onNameChange(
+                      props.row.original.id,
+                      props.row.original.name,
+                    ),
+                  disabled:
+                    props.row.original.state !== ApiEvaluationState.Completed,
+                  startDecorator: <Edit />,
+                },
+              functions.canWrite(props.row.original.userId) &&
+                !anonymizationFailed && {
+                  label: "Duplizieren",
+                  onClick: () => {
+                    functions.onDuplicate(props.row.original);
+                  },
+                  disabled:
+                    props.row.original.state !== ApiEvaluationState.Completed,
+                  startDecorator: <FileCopy />,
+                },
+              functions.canWrite(props.row.original.userId) &&
+                !anonymizationFailed && {
+                  label: "Als Vorlage speichern",
+                  onClick: () => {
+                    functions.onSaveAsTemplate(props.row.original);
+                  },
+                  disabled:
+                    props.row.original.state !== ApiEvaluationState.Completed,
+                  startDecorator: <Menu />,
+                },
+              (props.row.original.dataSourceSensitivity ===
+                DataSourceSensitivity.Anonymous ||
+                props.row.original.dataSourceSensitivity ===
+                  DataSourceSensitivity.InternalUsage) &&
+                !anonymizationFailed && {
+                  label: "Daten exportieren",
+                  onClick: () => functions.onExportData(props.row.original),
+                  disabled:
+                    props.row.original.state !== ApiEvaluationState.Completed,
+                  startDecorator: <Download />,
+                },
+              functions.canDelete(props.row.original.userId) &&
+                ({
+                  label: "Löschen",
+                  onClick: () =>
+                    functions.deleteEvaluationWithConfirmation(
+                      props.row.original.id,
+                      props.row.original.name,
+                    ),
+                  disabled:
+                    props.row.original.state === ApiEvaluationState.CopyOngoing,
+                  startDecorator: <Delete />,
+                  color: "danger",
+                } as const),
+            ].filter(isPlainObject)}
+          />
+        );
+      },
       meta: {
         width: "6rem",
         cellStyle: "button",
@@ -274,6 +293,7 @@ export function EvaluationsTable({
   const [nameChangeAction, setNameChangeAction] =
     useState<Pick<ApiEvaluationInfo, "id" | "name">>();
   const saveAsEvaluationTemplateSidebar = useSaveAsEvaluationTemplateSidebar();
+  const anonymizationFailedSidebar = useAnonymizationFailedSidebar();
 
   const userPermissions = useStatisticsRoleChecks();
 
@@ -306,7 +326,7 @@ export function EvaluationsTable({
         fullHeight
         controls={
           <ButtonBar
-            left={<FilterButton {...filterSettings.filterButtonProps} />}
+            left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
             right={[
               <RefreshButton
                 key="refreshEvaluation"
@@ -361,6 +381,8 @@ export function EvaluationsTable({
                 dataExportGuard(dataSourceSensitivity, () =>
                   exportData({ evaluationId: id }, { tooMuchDataForExport }),
                 ),
+              onShowAnonymizationFailedInformation: (id) =>
+                anonymizationFailedSidebar.open({ id }),
             })}
             sorting={manualSortingProps}
             rowNavigation={{

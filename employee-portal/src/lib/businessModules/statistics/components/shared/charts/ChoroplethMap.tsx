@@ -54,7 +54,7 @@ function getColor(colorScheme: DiagramColorScheme) {
   }
 }
 
-export function getPrecison(min: number, max: number) {
+export function getPrecision(min: number, max: number) {
   const log10 = Math.log10(max - min);
   return log10 < 1 ? Math.round(Math.abs(log10)) + 1 : 0;
 }
@@ -80,7 +80,7 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
         min.toString(),
       ],
       textGap: 5,
-      precision: getPrecison(min, max),
+      precision: getPrecision(min, max),
     },
 
     series: [

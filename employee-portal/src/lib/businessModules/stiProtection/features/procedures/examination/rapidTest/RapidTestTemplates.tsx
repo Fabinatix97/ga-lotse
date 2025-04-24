@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Grid, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 import { RapidTestExaminationData } from "./helpers";
 

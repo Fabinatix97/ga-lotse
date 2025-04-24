@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FilterDefinition } from "@eshg/lib-employee-portal";
 import { ApiAvailableDataSource, ApiReportType } from "@eshg/statistics-api";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
@@ -11,7 +12,6 @@ import {
   translateDataSourceSensitivity,
 } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 
 export enum ReportOverviewFilterKey {
   DataSource = "dataSource",

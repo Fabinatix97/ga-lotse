@@ -9,6 +9,8 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
+  gdprRoutes,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -16,7 +18,6 @@ import { use } from "react";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { ValidationTaskProceduresTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTaskProceduresTable";
-import { routes } from "@/lib/baseModule/shared/routes";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { getGdprValidationTaskDetailsQuery } from "@/lib/shared/api/queries/gdpr";
 import { isBusinessModule } from "@/lib/shared/helpers/guards";
@@ -53,7 +54,11 @@ export default function GdprValidationTaskPage(
       toolbar={
         <Toolbar
           title={`DSGVO Auftrag für ${name}`}
-          backHref={routes.gdpr.validationTasks(businessModule).overview}
+          backButton={
+            <ToolbarBackButton
+              href={gdprRoutes.validationTasks(businessModule).overview}
+            />
+          }
         />
       }
     >

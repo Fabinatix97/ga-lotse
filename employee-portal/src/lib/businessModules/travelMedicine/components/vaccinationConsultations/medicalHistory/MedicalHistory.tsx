@@ -7,7 +7,7 @@
 
 import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiMedicalHistory } from "@eshg/travel-medicine-api";
 import { Box, Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -39,6 +39,7 @@ export function MedicalHistory({
   readOnly = false,
   onCancel,
 }: Readonly<MedicalHistoryProps>) {
+  const { validateLength } = useValidators();
   const patchMedicalHistory = usePatchMedicalHistory();
 
   async function sendUpdateRequest(request: PatchMedicalHistoryRequest) {

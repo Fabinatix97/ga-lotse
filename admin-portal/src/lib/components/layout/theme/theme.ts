@@ -11,7 +11,7 @@ import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
-import { FontSize, extendTheme } from "@mui/joy/styles";
+import { FontSize, Theme, extendTheme } from "@mui/joy/styles";
 
 import { customBreakpoints } from "./customBreakpoints";
 
@@ -19,6 +19,26 @@ declare module "@mui/joy/styles" {
   interface BreakpointOverrides {
     xxs: true;
     xxl: true;
+  }
+
+  interface Palette {
+    a11y: {
+      primary: string;
+      neutral: string;
+      danger: string;
+      warning?: string;
+      success?: string;
+    };
+  }
+
+  interface PaletteColor extends Palette {
+    a11y: {
+      primary: string;
+      neutral: string;
+      danger: string;
+      warning?: string;
+      success?: string;
+    };
   }
 }
 
@@ -35,6 +55,21 @@ declare module "@mui/joy/SvgIcon" {
   interface SvgIconPropsSizeOverrides extends FontSizeOverrides {}
 }
 
+function a11yInputBorderOutline(theme: Theme, color: string | undefined) {
+  const typedColor = color as
+    | "primary"
+    | "neutral"
+    | "danger"
+    | "warning"
+    | "success"
+    | undefined;
+  return typedColor
+    ? {
+        borderColor: theme.palette.a11y[typedColor],
+      }
+    : {};
+}
+
 export const theme = extendTheme({
   fontFamily: {
     body: "Poppins",
@@ -45,6 +80,11 @@ export const theme = extendTheme({
       palette: {
         neutral: {
           plainHoverBg: "rgb(245, 247, 250)",
+        },
+        a11y: {
+          neutral: "#7F8994",
+          primary: "#3D8CDB",
+          danger: "#C41C1C",
         },
         background: {
           backdrop: "rgba(18, 20, 22, 0.25)",
@@ -129,6 +169,56 @@ export const theme = extendTheme({
     },
   },
   components: {
+    JoyTextarea: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          ...a11yInputBorderOutline(theme, ownerState.color),
+        }),
+      },
+    },
+    JoyInput: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          ...a11yInputBorderOutline(theme, ownerState.color),
+        }),
+      },
+    },
+    JoySelect: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          ...a11yInputBorderOutline(theme, ownerState.color),
+        }),
+      },
+    },
+    JoyCheckbox: {
+      styleOverrides: {
+        root: ({ theme, ownerState }) => ({
+          "& .MuiCheckbox-checkbox": a11yInputBorderOutline(
+            theme,
+            ownerState.color,
+          ),
+        }),
+      },
+    },
+    JoyRadio: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          "& .MuiRadio-radio": {
+            ...a11yInputBorderOutline(theme, ownerState.color),
+            color: ownerState.color
+              ? theme.palette[ownerState.color]["700"]
+              : undefined,
+          },
+        }),
+      },
+    },
+    JoySwitch: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          "& .MuiSwitch-track": a11yInputBorderOutline(theme, ownerState.color),
+        }),
+      },
+    },
     JoyList: {
       styleOverrides: {
         root: ({ theme, ownerState }) => ({
@@ -198,6 +288,11 @@ export const theme = extendTheme({
       },
     },
     JoyAutocomplete: {
+      styleOverrides: {
+        root: ({ theme, ownerState }) => ({
+          ...a11yInputBorderOutline(theme, ownerState.color),
+        }),
+      },
       defaultProps: {
         openText: "Öffnen",
         closeText: "Schließen",

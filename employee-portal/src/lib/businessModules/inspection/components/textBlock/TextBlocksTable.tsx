@@ -7,6 +7,7 @@
 
 import { ApiTextBlock } from "@eshg/inspection-api";
 import {
+  ActionsMenu,
   ButtonBar,
   DataTable,
   Pagination,
@@ -22,7 +23,6 @@ import { useState } from "react";
 
 import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutations/textblocks";
 import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 const columnHelper = createColumnHelper<ApiTextBlock>();

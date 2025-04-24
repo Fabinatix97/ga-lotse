@@ -4,7 +4,12 @@
  */
 
 import { ApiInventoryItemType, ApiLabel } from "@eshg/base-api";
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
+import {
+  ActiveFilter,
+  FilterSettingsContentProps,
+  ToggleFilterButtonProps,
+  UseTableControlResult,
+} from "@eshg/lib-employee-portal";
 import { Stack } from "@mui/joy";
 import { useState } from "react";
 import { isDefined } from "remeda";
@@ -13,9 +18,6 @@ import {
   inventoryItemTypeNames,
   inventoryTypeOptions,
 } from "@/lib/baseModule/components/inventory/constants";
-import { FilterButtonProps } from "@/lib/shared/components/buttons/FilterButton";
-import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
-import { FilterSettingsContentProps } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 
 interface InventoryFilterSettingsProps {
@@ -33,7 +35,7 @@ interface FilterDefinition {
 
 interface UseInventoryFilterSettings {
   filterSettingsContentProps: FilterSettingsContentProps;
-  filterButtonProps: FilterButtonProps;
+  filterButtonProps: ToggleFilterButtonProps;
   filterSheetVisible: boolean;
 }
 

@@ -26,4 +26,20 @@ public interface StiProtectionProcedureRepository
   List<StiProtectionProcedure> findByCreatedAtBefore(Instant overdueDate);
 
   Optional<StiProtectionProcedure> findByAnonymousUserId(UUID anonymousUserId);
+
+  @Query(
+      """
+    SELECT sti FROM StiProtectionProcedure sti
+        LEFT JOIN FETCH sti.appointment
+        LEFT JOIN FETCH sti.userDefinedAppointment
+        WHERE
+            (
+                sti.appointment.appointmentEnd IS NOT NULL
+                OR sti.userDefinedAppointment.appointmentEnd IS NOT NULL
+            )
+            AND
+            COALESCE(sti.appointment.appointmentEnd, sti.userDefinedAppointment.appointmentEnd) <= :overdueDate
+    ORDER BY sti.id
+    """)
+  List<StiProtectionProcedure> findAllAppointmentsWithEndBeforeOrEqual(Instant overdueDate);
 }

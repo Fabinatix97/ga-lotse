@@ -29,8 +29,14 @@ public class UserSettingsService {
   public UserSettings createOrUpdateUserSettings(UserSettingsRequest userSettingsRequest) {
     return userSettingsRepository
         .findById(userSettingsRequest.userId())
-        .map(userSettings -> mapOnlyNonNullFields(userSettings, userSettingsRequest))
-        .orElseGet(() -> userSettingsRepository.save(mapTo(userSettingsRequest)));
+        .map(settings -> mapOnlyNonNullFields(settings, userSettingsRequest))
+        .orElseGet(
+            () -> {
+              UserSettings newSettingsWithDefaultValues = new UserSettings();
+              newSettingsWithDefaultValues.userId(userSettingsRequest.userId());
+              mapOnlyNonNullFields(newSettingsWithDefaultValues, userSettingsRequest);
+              return userSettingsRepository.save(newSettingsWithDefaultValues);
+            });
   }
 
   public static UserSettings mapTo(UserSettingsRequest request) {

@@ -5,17 +5,17 @@
 
 import {
   DetailsColumn,
+  DetailsItem,
   DetailsSection,
   EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Sheet, Stack } from "@mui/joy";
 
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { sufficientText } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { EDIT_PERSONAL_DATA_SEARCH_PARAM } from "./EditPersonalDataSidebar";
@@ -49,27 +49,26 @@ export function PersonDetails({
           width="100%"
         >
           <DetailsColumn>
-            <DetailsCell
+            <DetailsItem
               label="Geburtsjahr"
               value={procedure.person.yearOfBirth.toString()}
             />
-            <DetailsCell
-              label="Geschlecht"
+            <DetailsItem
+              label="Biologisches Geschlecht"
               value={GENDER_VALUES[procedure.person.gender]}
             />
+            <DetailsItem label="Pronomen" value={procedure.person.pronouns} />
           </DetailsColumn>
           <DetailsColumn>
-            <DetailsCell
-              label="Geburtsland"
-              value={
-                procedure.person.countryOfBirth
-                  ? translateCountry(procedure.person.countryOfBirth)
-                  : undefined
-              }
+            <DetailsItem
+              label="Deutschkenntnisse"
+              value={sufficientText(
+                procedure.person.hasSufficientGermanLanguageSkills,
+              )}
             />
-            <DetailsCell
-              label="In Deutschland seit"
-              value={procedure.person.inGermanySince?.toString()}
+            <DetailsItem
+              label="Weitere Sprachen"
+              value={procedure.person.otherKnownLanguages}
             />
           </DetailsColumn>
         </Stack>

@@ -8,12 +8,12 @@ import {
   ApiProgressEntryDeletionApprovalRequestNotification,
   ApiUser,
 } from "@eshg/base-api";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { Typography } from "@mui/joy";
 
 import { ProgressEntryInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProgressEntryInternalLink";
 import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";
 import { manualProgressEntryTypeNames } from "@/lib/shared/components/procedures/progress-entries/constants";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function mapProgressEntryDeletionApprovalRequestNotificationProps(
   notification: ApiProgressEntryDeletionApprovalRequestNotification,
@@ -25,7 +25,7 @@ export function mapProgressEntryDeletionApprovalRequestNotificationProps(
   const content = (
     <>
       <Typography level="body-md">
-        {`${fullName(createdByUser)} beantragt die Löschung eines Verlaufsantrags: ${manualProgressEntryTypeNames[notification.manualProgressEntryType as ApiManualProgressEntryType]}`}
+        {`${formatUserName(createdByUser)} beantragt die Löschung eines Verlaufsantrags: ${manualProgressEntryTypeNames[notification.manualProgressEntryType as ApiManualProgressEntryType]}`}
       </Typography>
       <ProgressEntryInternalLink
         businessModule={notification.businessModule!}

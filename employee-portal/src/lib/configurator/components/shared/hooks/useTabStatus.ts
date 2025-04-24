@@ -4,24 +4,19 @@
  */
 
 import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configuratorModuleName";
-import { useGetModuleStatus } from "@/lib/configurator/api/queries/useGetModuleStatus";
+import { TabEndpointName } from "@/lib/configurator/api/models/configuratorStatusOverview";
+import { useGetSingleModuleStatus } from "@/lib/configurator/api/queries/useGetSingleModuleStatus";
 
 export function useTabStatus({
   moduleName,
-  tabButtonName,
+  endpointName,
 }: {
   moduleName: ConfiguratorModuleName;
-  tabButtonName: string;
+  endpointName: TabEndpointName;
 }) {
-  const allStatuses = useGetModuleStatus().data;
-
-  function getCurrentTabStatus() {
-    return allStatuses[moduleName].tabs.find(
-      (tab) => tab.tabButtonName === tabButtonName,
-    )!.status;
-  }
+  const { data } = useGetSingleModuleStatus(moduleName, endpointName);
 
   return {
-    currentTabStatus: getCurrentTabStatus(),
+    currentTabStatus: data.status,
   };
 }

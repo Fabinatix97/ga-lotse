@@ -5,6 +5,7 @@
 
 "use client";
 
+import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   SoftRequiredBooleanSelectField,
@@ -34,7 +35,6 @@ import { SxProps } from "@mui/joy/styles/types";
 import { FieldArray, Formik, FormikHelpers } from "formik";
 import { isDefined } from "remeda";
 
-import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { SetAllNumberInput } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllNumberInput";
 import {
   BOOLEAN_WITH_UNKNOWN_OPTIONS,
@@ -50,7 +50,6 @@ import {
   VaccinationField,
 } from "@/lib/businessModules/schoolEntry/features/procedures/vaccination/VaccinationField";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { FormStack } from "@/lib/shared/components/form/FormStack";
 
 export function emptyOtherVaccination(): OtherVaccinationValues {
   return {

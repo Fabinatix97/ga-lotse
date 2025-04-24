@@ -5,6 +5,7 @@
 
 package de.eshg.travelmedicine.vaccine.persistence.entity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface VaccineRepository extends JpaRepository<Vaccine, UUID> {
   Optional<Vaccine> findByName(String name);
 
   Optional<Vaccine> findByInventoryVaccineId(UUID id);
+
+  List<Vaccine> findAllByDiseaseId(UUID id);
 }

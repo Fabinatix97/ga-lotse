@@ -12,7 +12,6 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 import de.eshg.chat.SynapseProperties;
 import de.eshg.chat.model.synapse.*;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.security.CurrentUserHelper;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +37,8 @@ public class SynapseClient {
 
   private final RetryTemplate retryTemplate =
       RetryTemplate.builder()
-          .maxAttempts(5)
-          .exponentialBackoff(1000, 2, 10000)
+          .maxAttempts(6)
+          .exponentialBackoff(500, 2, 10000)
           .retryOn(Exception.class)
           .build();
 
@@ -52,11 +51,8 @@ public class SynapseClient {
     this.synapseProperties = synapseProperties;
   }
 
-  public void bindKeycloakId(String matrixUserId) {
+  public void bindKeycloakId(String matrixUserId, String keycloakUserId) {
     try {
-      String keycloakUserId = CurrentUserHelper.getCurrentUserId().toString();
-      validateIfLoggedMxidBelongsToLoggedInUser(keycloakUserId, matrixUserId);
-
       SetExternalIdRequest request =
           new SetExternalIdRequest()
               .externalIds(
@@ -73,13 +69,35 @@ public class SynapseClient {
 
   public void unbindKeycloakId(String matrixUserId) {
     try {
-      String keycloakUserId = CurrentUserHelper.getCurrentUserId().toString();
-      validateIfLoggedMxidBelongsToLoggedInUser(keycloakUserId, matrixUserId);
-
       SetExternalIdRequest request =
           new SetExternalIdRequest().externalIds(Collections.emptyList());
 
       updateMatrixUser(matrixUserId, request);
+    } catch (Exception ex) {
+      throw new BadRequestException(ex.getMessage());
+    }
+  }
+
+  public void deactivateUserAccount(String matrixUserId) {
+    try {
+      DeactivateRequest requestBody = new DeactivateRequest().eraseGdpr(true);
+
+      retryTemplate.execute(
+          retryContext -> {
+            if (retryContext.getRetryCount() > 0) {
+              log.error(
+                  "Retry to deactivate user account because of an error",
+                  retryContext.getLastThrowable());
+            }
+            return restTemplate.exchange(
+                resolveUrl(
+                    fromPath("/_synapse/admin/v1/deactivate/{matrixUserId}")
+                        .buildAndExpand(matrixUserId)
+                        .toUriString()),
+                HttpMethod.POST,
+                authenticatedRequest(requestBody),
+                Void.class);
+          });
     } catch (Exception ex) {
       throw new BadRequestException(ex.getMessage());
     }
@@ -105,21 +123,6 @@ public class SynapseClient {
     } catch (Exception ex) {
       throw new BadRequestException(ex.getMessage());
     }
-  }
-
-  private void validateIfLoggedMxidBelongsToLoggedInUser(
-      String actualKeycloakUserId, String matrixUserId) {
-    String keycloakUserIdFromMXID = extractMXIDLocalpart(matrixUserId);
-    if (!actualKeycloakUserId.equals(keycloakUserIdFromMXID)) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Failed to bindKeycloakId, matrixUserId localpart '%s' is not matching logged-in user keycloakId '%s",
-              matrixUserId, actualKeycloakUserId));
-    }
-  }
-
-  private String extractMXIDLocalpart(String matrixUserId) {
-    return matrixUserId.substring(1).split(":")[0];
   }
 
   private String resolveUrl(String url) {

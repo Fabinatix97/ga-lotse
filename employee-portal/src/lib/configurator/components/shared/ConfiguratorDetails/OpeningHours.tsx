@@ -36,7 +36,7 @@ export function OpeningHours(props: { module: OpeningHoursModuleName }) {
   const onSubmit = useUpdateOpeningHours(props.module);
   const { currentTabStatus } = useTabStatus({
     moduleName: props.module,
-    tabButtonName: "Öffnungszeiten",
+    endpointName: "OPENING_HOURS",
   });
 
   function getSections(language: "english" | "german") {

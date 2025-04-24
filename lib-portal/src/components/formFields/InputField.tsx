@@ -45,6 +45,7 @@ export interface InputFieldProps
   untrimmedInput?: boolean;
   autoComplete?: InputProps["autoComplete"];
   autoFocus?: boolean;
+  ref?: (el: HTMLInputElement) => void;
 }
 
 export function InputField(props: Readonly<InputFieldProps>) {
@@ -53,6 +54,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
   return (
     <MemoizedInputField
       {...props}
+      ref={props.ref}
       fieldHelperText={field.helperText}
       fieldRequired={field.required}
       fieldError={field.error}
@@ -140,6 +142,7 @@ const MemoizedInputField = memo(function InnerInputField(
         autoComplete={props.autoComplete}
         slotProps={{
           input: {
+            ref: props.ref,
             readOnly: props.readOnly === true || props.unstyledReadOnly,
             maxLength: props.maxLength,
             "aria-details": props["aria-details"],

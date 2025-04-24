@@ -320,6 +320,12 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .permitAll();
     requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_PRIVACY_NOTICE)
         .permitAll();
+    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_CITIZEN + "/*")
+        .permitAll();
+    requestMatchers(GET, Base.DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_EMPLOYEE + "/*")
+        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+    requestMatchers(GET, Base.DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_RELEASE_NOTES)
+        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
   }
 
   private void features() {

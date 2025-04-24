@@ -18,13 +18,18 @@ const prophylaxisStatusColors: Record<
 
 interface ProphylaxisSessionStatusChipProps {
   status: ApiProphylaxisStatus;
+  "data-testid"?: string;
 }
 
 export function ProphylaxisSessionStatusChip(
   props: ProphylaxisSessionStatusChipProps,
 ) {
   return (
-    <Chip variant="soft" color={prophylaxisStatusColors[props.status]}>
+    <Chip
+      variant="soft"
+      color={prophylaxisStatusColors[props.status]}
+      data-testid={props["data-testid"]}
+    >
       {PROPHYLAXIS_STATUS[props.status]}
     </Chip>
   );

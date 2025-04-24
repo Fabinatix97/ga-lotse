@@ -60,7 +60,7 @@ export function ProceduresProvider(props: RequiresChildren) {
   }
 
   return (
-    <ProceduresContext.Provider
+    <ProceduresContext
       value={{
         state: {
           procedureIdForDeletion: procedureIdForDeletion,
@@ -75,7 +75,7 @@ export function ProceduresProvider(props: RequiresChildren) {
       }}
     >
       {props.children}
-    </ProceduresContext.Provider>
+    </ProceduresContext>
   );
 }
 

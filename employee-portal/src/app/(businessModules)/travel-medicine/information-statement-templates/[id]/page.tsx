@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
@@ -26,7 +27,11 @@ export default function InformationStatementDetailsPage(
       toolbar={
         <Toolbar
           title="Aufklärungsbogenvorlage bearbeiten"
-          backHref={routes.informationStatementTemplates.index}
+          backButton={
+            <ToolbarBackButton
+              href={routes.informationStatementTemplates.index}
+            />
+          }
         />
       }
     >

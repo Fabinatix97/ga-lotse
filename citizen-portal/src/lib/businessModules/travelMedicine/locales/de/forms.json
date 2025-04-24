@@ -42,10 +42,10 @@
       "appointmentStart_required": "Bitte einen Termin auswählen."
     },
     "appointmentPicker": {
-      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung",
+      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung.",
       "noAppointmentSelected": "Es wurde kein Termin ausgewählt.",
       "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar",
-      "tryLater": "Wir schalten in kürze Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
+      "tryLater": "Wir schalten in Kürze Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
       "calendar_title": "Datum",
       "timePicker_title": "Verfügbare Uhrzeiten",
       "available": "Verfügbar"

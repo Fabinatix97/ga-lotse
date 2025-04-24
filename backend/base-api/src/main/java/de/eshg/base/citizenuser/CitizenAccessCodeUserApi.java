@@ -8,6 +8,7 @@ package de.eshg.base.citizenuser;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.base.citizenuser.api.UpdateCredentialRequest;
 import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.web.service.annotation.PutExchange;
 
 @HttpExchange(CitizenAccessCodeUserApi.BASE_URL)
 public interface CitizenAccessCodeUserApi {
@@ -68,4 +70,9 @@ public interface CitizenAccessCodeUserApi {
           @PathVariable("id")
           UUID userId,
       @Valid @RequestBody VerifyCitizenAccessCodeUserCredentialsRequest request);
+
+  @PutExchange("/credential")
+  @ApiResponse(responseCode = "204")
+  @Operation(summary = "Updates the credential in the context of a citizen user")
+  void updateCredential(@Valid @RequestBody UpdateCredentialRequest request);
 }

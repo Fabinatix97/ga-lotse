@@ -11,6 +11,7 @@ import {
   TabNavigationHeaderTypography,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
@@ -48,9 +49,6 @@ export function MedicalRegistryTabNavigationToolbar({
   return (
     <TabNavigationToolbar
       items={tabItems}
-      routeBack={
-        hasMedicalRegistryAdminRole ? routes.procedures.index : undefined
-      }
       header={
         <TabNavigationHeader titleAsH1>
           <TabNavigationHeaderTypography>
@@ -64,6 +62,11 @@ export function MedicalRegistryTabNavigationToolbar({
           type={procedure.procedureType}
           aria-label="Status"
         />
+      }
+      backButton={
+        hasMedicalRegistryAdminRole ? (
+          <ToolbarBackButton href={routes.procedures.index} />
+        ) : null
       }
     />
   );

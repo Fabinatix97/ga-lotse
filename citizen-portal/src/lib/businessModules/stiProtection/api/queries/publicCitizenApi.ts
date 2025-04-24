@@ -4,6 +4,7 @@
  */
 
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -13,6 +14,7 @@ import { stiProtectionPublicCitizenApiQueryKey } from "@/lib/businessModules/sti
 export function useDepartmentInfoQuery(concern: ApiConcern) {
   const publicCitizenApi = useCitizenPublicApi();
   return queryOptions({
+    ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: stiProtectionPublicCitizenApiQueryKey([
       "departmentInfo",
       concern,

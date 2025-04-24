@@ -106,7 +106,7 @@ public class ServiceDirectorySecurityConfig {
           getHeaderValue(requestAuthorizationContext.getRequest(), X_ESHG_CLIENT_CERT.headerName);
       String pem = X509Utils.normalizePem(certificateHeaderValue);
 
-      String adminCommonName = X509Utils.extractCommonName(X509Utils.parsePem(pem));
+      String adminCommonName = X509Utils.extractSanOrCommonName(X509Utils.parsePem(pem));
 
       boolean calledByAllowedCertificate = certificates.contains(pem);
       if (!calledByAllowedCertificate) {

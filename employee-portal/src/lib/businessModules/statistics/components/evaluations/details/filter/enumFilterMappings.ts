@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnumFilterOption } from "@eshg/lib-employee-portal";
 import { ApiValueOption } from "@eshg/statistics-api";
-
-import { EnumFilterOption } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 
 export const ENUM_EMPTY_FIELDS_VALUE = "__EMPTY_FIELDS_VALUE__";
 export const ENUM_TRUE_VALUE = "yes";

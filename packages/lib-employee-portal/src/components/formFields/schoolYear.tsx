@@ -23,7 +23,7 @@ interface SchoolYearAutocompleteProps
   range?: YearRange;
 }
 
-export interface YearRange {
+interface YearRange {
   numberOfYearsInPast: number;
   numberOfYearsInFuture: number;
 }

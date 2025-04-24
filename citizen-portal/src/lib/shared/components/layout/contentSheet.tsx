@@ -37,9 +37,9 @@ export function ContentSheet(props: ContentSheetProps) {
       data-testid={props["data-testid"]}
       aria-labelledby={props.missingTitle ? undefined : titleId}
     >
-      <SectionTitleId.Provider value={titleId}>
+      <SectionTitleId value={titleId}>
         <Stack gap={3}>{props.children}</Stack>
-      </SectionTitleId.Provider>
+      </SectionTitleId>
     </Sheet>
   );
 }

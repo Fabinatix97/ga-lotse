@@ -5,11 +5,11 @@
 
 import { ApiUser } from "@eshg/base-api";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 
 import { AssigneeAutocompleteField } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeAutocompleteField";
 import { AssigneeInfo } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeInfo";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export interface InspectionAssigneeSelectionProps {
   selfUser: ApiUser;
@@ -26,7 +26,7 @@ export function InspectionAssigneeSelection(
 ) {
   const assignableUsersOptions = props.allAssignableUsers.map((option) => ({
     value: option.userId,
-    label: fullName(option),
+    label: formatUserName(option),
   }));
 
   const selfUserOption = getSelfUserOption(
@@ -68,7 +68,7 @@ function getSelfUserOption(
   }
   const selfUserCreated = {
     value: user.userId,
-    label: fullName(user),
+    label: formatUserName(user),
   };
   assignableUsersOptions.push(selfUserCreated);
   return selfUserCreated;

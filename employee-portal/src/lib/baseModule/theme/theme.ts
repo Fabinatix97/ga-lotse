@@ -54,6 +54,21 @@ function fixInputColor(theme: Theme, color?: string) {
     : undefined;
 }
 
+function a11yInputBorderOutline(theme: Theme, color: string | undefined) {
+  const typedColor = color as
+    | "primary"
+    | "neutral"
+    | "danger"
+    | "warning"
+    | "success"
+    | undefined;
+  return typedColor
+    ? {
+        borderColor: theme.palette.a11y[typedColor],
+      }
+    : {};
+}
+
 function buttonStyle(theme: Theme, variant?: string, color?: string) {
   return {
     ...(variant === "outlined" && {
@@ -93,6 +108,11 @@ export const theme = extendTheme({
         },
         background: {
           backdrop: "rgba(18, 20, 22, 0.25)",
+        },
+        a11y: {
+          neutral: "#7F8994",
+          primary: "#3D8CDB",
+          danger: "#C41C1C",
         },
         text: {
           //neutral.500
@@ -271,6 +291,7 @@ export const theme = extendTheme({
           ...noBoxShadow,
           ...fixOutlinedHeight(ownerState.variant, ownerState.size),
           ...fixInputColor(theme, ownerState.color),
+          ...a11yInputBorderOutline(theme, ownerState.color),
           ...(ownerState.readOnly && {
             ".MuiFormControl-root:has(&) label": {
               fontWeight: theme.typography["body-sm"].fontWeight,
@@ -294,7 +315,29 @@ export const theme = extendTheme({
     },
     JoyTextarea: {
       styleOverrides: {
-        root: noBoxShadow,
+        root: ({ ownerState, theme }) => ({
+          ...noBoxShadow,
+          ...a11yInputBorderOutline(theme, ownerState.color),
+        }),
+      },
+    },
+    JoyRadio: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          "& .MuiRadio-radio": {
+            ...a11yInputBorderOutline(theme, ownerState.color),
+            color: ownerState.color
+              ? theme.palette[ownerState.color]["700"]
+              : undefined,
+          },
+        }),
+      },
+    },
+    JoySwitch: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          "& .MuiSwitch-track": a11yInputBorderOutline(theme, ownerState.color),
+        }),
       },
     },
     JoySelect: {
@@ -308,6 +351,7 @@ export const theme = extendTheme({
             ownerState.variant,
             ownerState.color,
           ),
+          ...a11yInputBorderOutline(theme, ownerState.color),
           "--Select-placeholderOpacity": 1,
           ...noBoxShadow,
           ...fixOutlinedHeight(ownerState.variant, ownerState.size),
@@ -355,6 +399,7 @@ export const theme = extendTheme({
           ...noBoxShadow,
           ...fixOutlinedHeight(ownerState.variant, ownerState.size),
           ...fixInputColor(theme, ownerState.color),
+          ...a11yInputBorderOutline(theme, ownerState.color),
         }),
       },
       defaultProps: {
@@ -461,6 +506,10 @@ export const theme = extendTheme({
                 : theme.palette.text.primary,
             },
           },
+          "& .MuiCheckbox-checkbox": a11yInputBorderOutline(
+            theme,
+            ownerState.color,
+          ),
         }),
         label: ({ theme }) => ({
           fontWeight: 400,

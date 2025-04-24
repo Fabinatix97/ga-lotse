@@ -147,14 +147,14 @@ catalogs:
       version: 5.0.0-beta.52
   next:
     '@next/bundle-analyzer':
-      specifier: 15.2.4
-      version: 15.2.4
+      specifier: 15.2.5
+      version: 15.2.5
     eslint-config-next:
-      specifier: 15.2.4
-      version: 15.2.4
+      specifier: 15.2.5
+      version: 15.2.5
     next:
-      specifier: 15.2.4
-      version: 15.2.4
+      specifier: 15.2.5
+      version: 15.2.5
   prettier:
     '@trivago/prettier-plugin-sort-imports':
       specifier: 5.2.2
@@ -246,7 +246,7 @@ importers:
         version: 4.1.4(@typescript-eslint/eslint-plugin@8.28.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0)
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       prettier:
         specifier: catalog:prettier
         version: 3.5.3
@@ -312,7 +312,7 @@ importers:
         version: 1.2.1
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       pkijs:
         specifier: 3.2.5
         version: 3.2.5
@@ -343,7 +343,7 @@ importers:
         version: 3.3.1
       '@next/bundle-analyzer':
         specifier: catalog:next
-        version: 15.2.4
+        version: 15.2.5
       '@tanstack/eslint-plugin-query':
         specifier: catalog:common
         version: 5.68.0(eslint@9.23.0)(typescript@5.8.2)
@@ -370,7 +370,7 @@ importers:
         version: 9.23.0
       eslint-config-next:
         specifier: catalog:next
-        version: 15.2.4(eslint@9.23.0)(typescript@5.8.2)
+        version: 15.2.5(eslint@9.23.0)(typescript@5.8.2)
       eslint-config-prettier:
         specifier: catalog:eslint
         version: 10.1.1(eslint@9.23.0)
@@ -484,7 +484,7 @@ importers:
         version: 1.0.0
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: catalog:react
         version: 19.1.0
@@ -518,7 +518,7 @@ importers:
         version: 3.3.1
       '@next/bundle-analyzer':
         specifier: catalog:next
-        version: 15.2.4
+        version: 15.2.5
       '@tanstack/eslint-plugin-query':
         specifier: catalog:common
         version: 5.68.0(eslint@9.23.0)(typescript@5.8.2)
@@ -551,7 +551,7 @@ importers:
         version: 9.23.0
       eslint-config-next:
         specifier: catalog:next
-        version: 15.2.4(eslint@9.23.0)(typescript@5.8.2)
+        version: 15.2.5(eslint@9.23.0)(typescript@5.8.2)
       eslint-config-prettier:
         specifier: catalog:eslint
         version: 10.1.1(eslint@9.23.0)
@@ -581,7 +581,7 @@ importers:
     devDependencies:
       '@axe-core/playwright':
         specifier: 4.10.1
-        version: 4.10.1(playwright-core@1.51.1)
+        version: 4.10.1(playwright-core@1.52.0)
       '@eshg/auditlog-api':
         specifier: workspace:*
         version: link:../packages/auditlog-api
@@ -640,8 +640,8 @@ importers:
         specifier: catalog:common
         version: 26.1.4
       '@playwright/test':
-        specifier: 1.51.1
-        version: 1.51.1
+        specifier: 1.52.0
+        version: 1.52.0
       '@trivago/prettier-plugin-sort-imports':
         specifier: catalog:prettier
         version: 5.2.2(prettier@3.5.3)
@@ -701,7 +701,7 @@ importers:
     dependencies:
       '@ducanh2912/next-pwa':
         specifier: 10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(webpack@5.92.1(esbuild@0.25.1))
+        version: 10.2.9(@types/babel__core@7.20.5)(next@15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(webpack@5.92.1(esbuild@0.25.1))
       '@emotion/react':
         specifier: catalog:joy
         version: 11.14.0(@types/react@19.1.0)(react@19.1.0)
@@ -831,15 +831,18 @@ importers:
       hpke-js:
         specifier: 1.6.2
         version: 1.6.2
+      i18next:
+        specifier: catalog:i18next
+        version: 24.2.3(typescript@5.8.2)
       iso8601-duration:
         specifier: 2.1.2
         version: 2.1.2
       matrix-js-sdk:
-        specifier: 36.2.0
-        version: 36.2.0
+        specifier: 37.3.0
+        version: 37.3.0
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: catalog:react
         version: 19.1.0
@@ -849,6 +852,9 @@ importers:
       react-error-boundary:
         specifier: catalog:common
         version: 5.0.0(react@19.1.0)
+      react-i18next:
+        specifier: catalog:i18next
+        version: 15.4.1(i18next@24.2.3(typescript@5.8.2))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-idle-timer:
         specifier: ^5.7.2
         version: 5.7.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -897,7 +903,7 @@ importers:
         version: 3.3.1
       '@next/bundle-analyzer':
         specifier: catalog:next
-        version: 15.2.4
+        version: 15.2.5
       '@tanstack/eslint-plugin-query':
         specifier: catalog:common
         version: 5.68.0(eslint@9.23.0)(typescript@5.8.2)
@@ -930,7 +936,7 @@ importers:
         version: 9.23.0
       eslint-config-next:
         specifier: catalog:next
-        version: 15.2.4(eslint@9.23.0)(typescript@5.8.2)
+        version: 15.2.5(eslint@9.23.0)(typescript@5.8.2)
       eslint-config-prettier:
         specifier: catalog:eslint
         version: 10.1.1(eslint@9.23.0)
@@ -982,15 +988,21 @@ importers:
       formik:
         specifier: catalog:common
         version: 2.4.6(react@19.1.0)
+      i18next:
+        specifier: catalog:i18next
+        version: 24.2.3(typescript@5.8.2)
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: catalog:react
         version: 19.1.0
       react-dom:
         specifier: catalog:react
         version: 19.1.0(react@19.1.0)
+      react-i18next:
+        specifier: catalog:i18next
+        version: 15.4.1(i18next@24.2.3(typescript@5.8.2))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       remeda:
         specifier: catalog:common
         version: 2.21.2
@@ -1036,7 +1048,7 @@ importers:
         version: 9.23.0
       eslint-config-next:
         specifier: catalog:next
-        version: 15.2.4(eslint@9.23.0)(typescript@5.8.2)
+        version: 15.2.5(eslint@9.23.0)(typescript@5.8.2)
       eslint-config-prettier:
         specifier: catalog:eslint
         version: 10.1.1(eslint@9.23.0)
@@ -1093,22 +1105,37 @@ importers:
       '@tanstack/react-query':
         specifier: catalog:common
         version: 5.69.0(react@19.1.0)
+      '@tanstack/react-table':
+        specifier: catalog:common
+        version: 8.21.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      date-fns:
+        specifier: catalog:common
+        version: 4.1.0
       formik:
         specifier: catalog:common
         version: 2.4.6(react@19.1.0)
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: catalog:react
         version: 19.1.0
       remeda:
         specifier: catalog:common
         version: 2.21.2
-      use-debounce:
+      valibot:
         specifier: catalog:common
-        version: 10.0.4(react@19.1.0)
+        version: 1.0.0(typescript@5.8.2)
+      zustand:
+        specifier: catalog:common
+        version: 5.0.3(@types/react@19.1.0)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
     devDependencies:
+      '@cronn/vitest-file-snapshots':
+        specifier: catalog:common
+        version: 0.4.0(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.13)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../lib-vitest
       '@eslint/compat':
         specifier: catalog:eslint
         version: 1.2.7(eslint@9.23.0)
@@ -1141,7 +1168,7 @@ importers:
         version: 9.23.0
       eslint-config-next:
         specifier: catalog:next
-        version: 15.2.4(eslint@9.23.0)(typescript@5.8.2)
+        version: 15.2.5(eslint@9.23.0)(typescript@5.8.2)
       eslint-config-prettier:
         specifier: catalog:eslint
         version: 10.1.1(eslint@9.23.0)
@@ -1190,6 +1217,9 @@ importers:
       '@eshg/lib-portal':
         specifier: workspace:*
         version: link:../../lib-portal
+      '@eshg/lib-procedures-api':
+        specifier: workspace:*
+        version: link:../lib-procedures-api
       '@mui/icons-material':
         specifier: catalog:joy
         version: 5.17.1(@mui/material@5.16.14(@emotion/react@11.14.0(@types/react@19.1.0)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.0)(react@19.1.0))(@types/react@19.1.0)(react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.0)(react@19.1.0)
@@ -1199,22 +1229,37 @@ importers:
       '@tanstack/react-query':
         specifier: catalog:common
         version: 5.69.0(react@19.1.0)
+      '@tanstack/react-table':
+        specifier: catalog:common
+        version: 8.21.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      date-fns:
+        specifier: catalog:common
+        version: 4.1.0
       formik:
         specifier: catalog:common
         version: 2.4.6(react@19.1.0)
       next:
         specifier: catalog:next
-        version: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: catalog:react
         version: 19.1.0
+      react-error-boundary:
+        specifier: catalog:common
+        version: 5.0.0(react@19.1.0)
       remeda:
         specifier: catalog:common
         version: 2.21.2
       use-debounce:
         specifier: catalog:common
         version: 10.0.4(react@19.1.0)
+      uuid:
+        specifier: catalog:common
+        version: 11.1.0
     devDependencies:
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../lib-vitest
       '@eslint/compat':
         specifier: catalog:eslint
         version: 1.2.7(eslint@9.23.0)
@@ -1247,7 +1292,7 @@ importers:
         version: 9.23.0
       eslint-config-next:
         specifier: catalog:next
-        version: 15.2.4(eslint@9.23.0)(typescript@5.8.2)
+        version: 15.2.5(eslint@9.23.0)(typescript@5.8.2)
       eslint-config-prettier:
         specifier: catalog:eslint
         version: 10.1.1(eslint@9.23.0)
@@ -2561,8 +2606,8 @@ packages:
     resolution: {integrity: sha512-zJJM7uhtzUUD0Uf6Q2xhFrUqT+qvfj5WhBqTwKtO8k4jbxu4uNmk5qRDa8fnkk0sHyPzlD+d875H2Jora/W2gw==}
     engines: {node: '>=18'}
 
-  '@matrix-org/matrix-sdk-crypto-wasm@13.0.0':
-    resolution: {integrity: sha512-2gtpjnxL42sdJAgkwitpMMI4cw7Gcjf5sW0MXoe+OAlXPlxIzyM+06F5JJ8ENvBeHkuV2RqtFIRrh8i90HLsMw==}
+  '@matrix-org/matrix-sdk-crypto-wasm@14.1.0':
+    resolution: {integrity: sha512-vcSxHJIr6lP0Fgo8jl0sTHg+OZxZn+skGjiyB62erfgw/R2QqJl0ZVSY8SRcbk9LtHo/ZGld1tnaOyjL2e3cLQ==}
     engines: {node: '>= 18'}
 
   '@matrix-org/olm@3.2.15':
@@ -2691,59 +2736,59 @@ packages:
   '@napi-rs/wasm-runtime@0.2.7':
     resolution: {integrity: sha512-5yximcFK5FNompXfJFoWanu5l8v1hNGqNHh9du1xETp9HWk/B/PzvchX55WYOPaIeNglG8++68AAiauBAtbnzw==}
 
-  '@next/bundle-analyzer@15.2.4':
-    resolution: {integrity: sha512-72OXS/+r3Q6PW9oCBlkxogsEJ9DIoD64dGe8OZc2nKcHu3HbKKaXoDkutC8u7cxmBFd+ERt3D0/MoP7eZkhhog==}
+  '@next/bundle-analyzer@15.2.5':
+    resolution: {integrity: sha512-p4JdhqDz2JZdXSzMPFLRUCOWn1be8lz/1EhjoGI9BQbebQAAS3Q2/QfPsdERUBKeUbJta1FUmsuImcLMZvEn0Q==}
 
-  '@next/env@15.2.4':
-    resolution: {integrity: sha512-+SFtMgoiYP3WoSswuNmxJOCwi06TdWE733D+WPjpXIe4LXGULwEaofiiAy6kbS0+XjM5xF5n3lKuBwN2SnqD9g==}
+  '@next/env@15.2.5':
+    resolution: {integrity: sha512-uWkCf9C8wKTyQjqrNk+BA7eL3LOQdhL+xlmJUf2O85RM4lbzwBwot3Sqv2QGe/RGnc3zysIf1oJdtq9S00pkmQ==}
 
-  '@next/eslint-plugin-next@15.2.4':
-    resolution: {integrity: sha512-O8ScvKtnxkp8kL9TpJTTKnMqlkZnS+QxwoQnJwPGBxjBbzd6OVVPEJ5/pMNrktSyXQD/chEfzfFzYLM6JANOOQ==}
+  '@next/eslint-plugin-next@15.2.5':
+    resolution: {integrity: sha512-Q1ncASVFKSy+AbabimYxr/2HH/h+qlKlwu1fYV48xUefGzVimS3i3nKwYsM2w+rLdpMFdJyoVowrYyjKu47rBw==}
 
-  '@next/swc-darwin-arm64@15.2.4':
-    resolution: {integrity: sha512-1AnMfs655ipJEDC/FHkSr0r3lXBgpqKo4K1kiwfUf3iE68rDFXZ1TtHdMvf7D0hMItgDZ7Vuq3JgNMbt/+3bYw==}
+  '@next/swc-darwin-arm64@15.2.5':
+    resolution: {integrity: sha512-4OimvVlFTbgzPdA0kh8A1ih6FN9pQkL4nPXGqemEYgk+e7eQhsst/p35siNNqA49eQA6bvKZ1ASsDtu9gtXuog==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@15.2.4':
-    resolution: {integrity: sha512-3qK2zb5EwCwxnO2HeO+TRqCubeI/NgCe+kL5dTJlPldV/uwCnUgC7VbEzgmxbfrkbjehL4H9BPztWOEtsoMwew==}
+  '@next/swc-darwin-x64@15.2.5':
+    resolution: {integrity: sha512-ohzRaE9YbGt1ctE0um+UGYIDkkOxHV44kEcHzLqQigoRLaiMtZzGrA11AJh2Lu0lv51XeiY1ZkUvkThjkVNBMA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@15.2.4':
-    resolution: {integrity: sha512-HFN6GKUcrTWvem8AZN7tT95zPb0GUGv9v0d0iyuTb303vbXkkbHDp/DxufB04jNVD+IN9yHy7y/6Mqq0h0YVaQ==}
+  '@next/swc-linux-arm64-gnu@15.2.5':
+    resolution: {integrity: sha512-FMSdxSUt5bVXqqOoZCc/Seg4LQep9w/fXTazr/EkpXW2Eu4IFI9FD7zBDlID8TJIybmvKk7mhd9s+2XWxz4flA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-arm64-musl@15.2.4':
-    resolution: {integrity: sha512-Oioa0SORWLwi35/kVB8aCk5Uq+5/ZIumMK1kJV+jSdazFm2NzPDztsefzdmzzpx5oGCJ6FkUC7vkaUseNTStNA==}
+  '@next/swc-linux-arm64-musl@15.2.5':
+    resolution: {integrity: sha512-4ZNKmuEiW5hRKkGp2HWwZ+JrvK4DQLgf8YDaqtZyn7NYdl0cHfatvlnLFSWUayx9yFAUagIgRGRk8pFxS8Qniw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@15.2.4':
-    resolution: {integrity: sha512-yb5WTRaHdkgOqFOZiu6rHV1fAEK0flVpaIN2HB6kxHVSy/dIajWbThS7qON3W9/SNOH2JWkVCyulgGYekMePuw==}
+  '@next/swc-linux-x64-gnu@15.2.5':
+    resolution: {integrity: sha512-bE6lHQ9GXIf3gCDE53u2pTl99RPZW5V1GLHSRMJ5l/oB/MT+cohu9uwnCK7QUph2xIOu2a6+27kL0REa/kqwZw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-musl@15.2.4':
-    resolution: {integrity: sha512-Dcdv/ix6srhkM25fgXiyOieFUkz+fOYkHlydWCtB0xMST6X9XYI3yPDKBZt1xuhOytONsIFJFB08xXYsxUwJLw==}
+  '@next/swc-linux-x64-musl@15.2.5':
+    resolution: {integrity: sha512-y7EeQuSkQbTAkCEQnJXm1asRUuGSWAchGJ3c+Qtxh8LVjXleZast8Mn/rL7tZOm7o35QeIpIcid6ufG7EVTTcA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@15.2.4':
-    resolution: {integrity: sha512-dW0i7eukvDxtIhCYkMrZNQfNicPDExt2jPb9AZPpL7cfyUo7QSNl1DjsHjmmKp6qNAqUESyT8YFl/Aw91cNJJg==}
+  '@next/swc-win32-arm64-msvc@15.2.5':
+    resolution: {integrity: sha512-gQMz0yA8/dskZM2Xyiq2FRShxSrsJNha40Ob/M2n2+JGRrZ0JwTVjLdvtN6vCxuq4ByhOd4a9qEf60hApNR2gQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@15.2.4':
-    resolution: {integrity: sha512-SbnWkJmkS7Xl3kre8SdMF6F/XDh1DTFEhp0jRTj/uB8iPKoU2bb2NDfcu+iifv1+mxQEd1g2vvSxcZbXSKyWiQ==}
+  '@next/swc-win32-x64-msvc@15.2.5':
+    resolution: {integrity: sha512-tBDNVUcI7U03+3oMvJ11zrtVin5p0NctiuKmTGyaTIEAVj9Q77xukLXGXRnWxKRIIdFG4OTA2rUVGZDYOwgmAA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -2846,8 +2891,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@playwright/test@1.51.1':
-    resolution: {integrity: sha512-nM+kEaTSAoVlXmMPH10017vn3FSiFqr/bh4fKg9vmAdMfd9SDqRZNvPSiAHADc/itWak+qPvMPZQOPwCBW7k7Q==}
+  '@playwright/test@1.52.0':
+    resolution: {integrity: sha512-uh6W7sb55hl7D6vsAeA+V2p5JnlAqzhqFyF0VcJkKZXkgnFcVG9PziERRHQfPLfNGx1C292a4JqbWzhR8L4R1g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -4644,8 +4689,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-config-next@15.2.4:
-    resolution: {integrity: sha512-v4gYjd4eYIme8qzaJItpR5MMBXJ0/YV07u7eb50kEnlEmX7yhOjdUdzz70v4fiINYRjLf8X8TbogF0k7wlz6sA==}
+  eslint-config-next@15.2.5:
+    resolution: {integrity: sha512-/aUpN5FVI3FD+OB4gY0GyD2TwIOjLk8mG0B9NxVsSn8/svNmzFaIAaS80ZO1zWaIcWxrzTy2FcPVdsCK7eiceA==}
     peerDependencies:
       eslint: ^7.23.0 || ^8.0.0 || ^9.0.0
       typescript: '>=3.3.1'
@@ -5782,8 +5827,8 @@ packages:
   matrix-events-sdk@0.0.1:
     resolution: {integrity: sha512-1QEOsXO+bhyCroIe2/A5OwaxHvBm7EsSQ46DEDn8RBIfQwN5HWBpFvyWWR4QY0KHPPnnJdI99wgRiAl7Ad5qaA==}
 
-  matrix-js-sdk@36.2.0:
-    resolution: {integrity: sha512-pP44qfqLA9tiJjx5YjxBPPkUmNsA2G0nb04ZUTuPbtQFmfK5cEQgIpvoCq69oqU6aulufeYpxJmd9yNffOvF9g==}
+  matrix-js-sdk@37.3.0:
+    resolution: {integrity: sha512-uYpXEucA+y9b116Hn+zG+X+u2GE2dACh+aN0BhiJDL/LtvhQgrXT4ZLG/N7OizomoHHF+i/WetDhi+rzDJQdDw==}
     engines: {node: '>=20.0.0'}
 
   matrix-widget-api@1.13.1:
@@ -6096,8 +6141,8 @@ packages:
     resolution: {integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==}
     engines: {node: '>= 0.4.0'}
 
-  next@15.2.4:
-    resolution: {integrity: sha512-VwL+LAaPSxEkd3lU2xWbgEOtrM8oedmyhBqaVNmgKB+GvZlCy9rgaEc+y2on0wv+l0oSFqLtYD6dcC1eAedUaQ==}
+  next@15.2.5:
+    resolution: {integrity: sha512-LlqS8ljc7RWR3riUwxB5+14v7ULAa5EuLUyarD/sFgXPd6Hmmscg8DXcu9hDdh5atybrIDVBrFhjDpRIQo/4pQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
     hasBin: true
     peerDependencies:
@@ -6453,13 +6498,13 @@ packages:
     resolution: {integrity: sha512-WX0la7n7CbnguuaIQoT4Fc0IJckPDOUldzOwlZ0nwpOcySS+Six/tXBdc0RX17J5o1To0SAr3xDJjDLsOfDFQA==}
     engines: {node: '>=12.0.0'}
 
-  playwright-core@1.51.1:
-    resolution: {integrity: sha512-/crRMj8+j/Nq5s8QcvegseuyeZPxpQCZb6HNk3Sos3BlZyAknRjoyJPFWkpNn8v0+P3WiwqFF8P+zQo4eqiNuw==}
+  playwright-core@1.52.0:
+    resolution: {integrity: sha512-l2osTgLXSMeuLZOML9qYODUQoPPnUsKsb5/P6LJ2e6uPKXUdPK5WYhN4z03G+YNbWmGDY4YENauNu4ZKczreHg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.51.1:
-    resolution: {integrity: sha512-kkx+MB2KQRkyxjYPc3a0wLZZoDczmppyGJIvQ43l+aZihkaVvmu/21kiyaHeHjiFxjxNNFnUncKmcGIyOojsaw==}
+  playwright@1.52.0:
+    resolution: {integrity: sha512-JAwMNMBlxJ2oD1kce4KPtMkDeKGHQstdpFPcPH3maElAXon/QZeTvtsfXmTMRyO9TslfoYOXkSsvao2nE1ilTw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -6888,6 +6933,7 @@ packages:
 
   rspack-resolver@1.2.2:
     resolution: {integrity: sha512-Fwc19jMBA3g+fxDJH2B4WxwZjE0VaaOL7OX/A4Wn5Zv7bOD/vyPZhzXfaO73Xc2GAlfi96g5fGUa378WbIGfFw==}
+    deprecated: Please migrate to the brand new `@rspack/resolver` or `unrs-resolver` instead
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -8142,10 +8188,10 @@ snapshots:
       '@bufbuild/protobuf': 1.7.2
     optional: true
 
-  '@axe-core/playwright@4.10.1(playwright-core@1.51.1)':
+  '@axe-core/playwright@4.10.1(playwright-core@1.52.0)':
     dependencies:
       axe-core: 4.10.3
-      playwright-core: 1.51.1
+      playwright-core: 1.52.0
 
   '@babel/code-frame@7.26.2':
     dependencies:
@@ -8890,10 +8936,10 @@ snapshots:
 
   '@drauu/core@0.4.3': {}
 
-  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(webpack@5.92.1(esbuild@0.25.1))':
+  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(webpack@5.92.1(esbuild@0.25.1))':
     dependencies:
       fast-glob: 3.3.2
-      next: 15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       semver: 7.6.3
       webpack: 5.92.1(esbuild@0.25.1)
       workbox-build: 7.1.1(@types/babel__core@7.20.5)
@@ -9355,7 +9401,7 @@ snapshots:
       url-join: 5.0.0
       url-template: 3.1.1
 
-  '@matrix-org/matrix-sdk-crypto-wasm@13.0.0': {}
+  '@matrix-org/matrix-sdk-crypto-wasm@14.1.0': {}
 
   '@matrix-org/olm@3.2.15': {}
 
@@ -9518,41 +9564,41 @@ snapshots:
       '@tybys/wasm-util': 0.9.0
     optional: true
 
-  '@next/bundle-analyzer@15.2.4':
+  '@next/bundle-analyzer@15.2.5':
     dependencies:
       webpack-bundle-analyzer: 4.10.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@next/env@15.2.4': {}
+  '@next/env@15.2.5': {}
 
-  '@next/eslint-plugin-next@15.2.4':
+  '@next/eslint-plugin-next@15.2.5':
     dependencies:
       fast-glob: 3.3.1
 
-  '@next/swc-darwin-arm64@15.2.4':
+  '@next/swc-darwin-arm64@15.2.5':
     optional: true
 
-  '@next/swc-darwin-x64@15.2.4':
+  '@next/swc-darwin-x64@15.2.5':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@15.2.4':
+  '@next/swc-linux-arm64-gnu@15.2.5':
     optional: true
 
-  '@next/swc-linux-arm64-musl@15.2.4':
+  '@next/swc-linux-arm64-musl@15.2.5':
     optional: true
 
-  '@next/swc-linux-x64-gnu@15.2.4':
+  '@next/swc-linux-x64-gnu@15.2.5':
     optional: true
 
-  '@next/swc-linux-x64-musl@15.2.4':
+  '@next/swc-linux-x64-musl@15.2.5':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@15.2.4':
+  '@next/swc-win32-arm64-msvc@15.2.5':
     optional: true
 
-  '@next/swc-win32-x64-msvc@15.2.4':
+  '@next/swc-win32-x64-msvc@15.2.5':
     optional: true
 
   '@noble/ciphers@1.2.1': {}
@@ -9713,9 +9759,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@playwright/test@1.51.1':
+  '@playwright/test@1.52.0':
     dependencies:
-      playwright: 1.51.1
+      playwright: 1.52.0
 
   '@pnpm/catalogs.config@1000.0.2':
     dependencies:
@@ -11818,9 +11864,9 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-next@15.2.4(eslint@9.23.0)(typescript@5.8.2):
+  eslint-config-next@15.2.5(eslint@9.23.0)(typescript@5.8.2):
     dependencies:
-      '@next/eslint-plugin-next': 15.2.4
+      '@next/eslint-plugin-next': 15.2.5
       '@rushstack/eslint-patch': 1.11.0
       '@typescript-eslint/eslint-plugin': 8.28.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.2))(eslint@9.23.0)(typescript@5.8.2)
       '@typescript-eslint/parser': 8.28.0(eslint@9.23.0)(typescript@5.8.2)
@@ -13131,10 +13177,10 @@ snapshots:
 
   matrix-events-sdk@0.0.1: {}
 
-  matrix-js-sdk@36.2.0:
+  matrix-js-sdk@37.3.0:
     dependencies:
       '@babel/runtime': 7.27.0
-      '@matrix-org/matrix-sdk-crypto-wasm': 13.0.0
+      '@matrix-org/matrix-sdk-crypto-wasm': 14.1.0
       '@matrix-org/olm': 3.2.15
       another-json: 0.2.0
       bs58: 6.0.0
@@ -13649,9 +13695,9 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  next@15.2.4(@babel/core@7.26.10)(@playwright/test@1.51.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  next@15.2.5(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
-      '@next/env': 15.2.4
+      '@next/env': 15.2.5
       '@swc/counter': 0.1.3
       '@swc/helpers': 0.5.15
       busboy: 1.6.0
@@ -13661,15 +13707,15 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
       styled-jsx: 5.1.6(@babel/core@7.26.10)(react@19.1.0)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 15.2.4
-      '@next/swc-darwin-x64': 15.2.4
-      '@next/swc-linux-arm64-gnu': 15.2.4
-      '@next/swc-linux-arm64-musl': 15.2.4
-      '@next/swc-linux-x64-gnu': 15.2.4
-      '@next/swc-linux-x64-musl': 15.2.4
-      '@next/swc-win32-arm64-msvc': 15.2.4
-      '@next/swc-win32-x64-msvc': 15.2.4
-      '@playwright/test': 1.51.1
+      '@next/swc-darwin-arm64': 15.2.5
+      '@next/swc-darwin-x64': 15.2.5
+      '@next/swc-linux-arm64-gnu': 15.2.5
+      '@next/swc-linux-arm64-musl': 15.2.5
+      '@next/swc-linux-x64-gnu': 15.2.5
+      '@next/swc-linux-x64-musl': 15.2.5
+      '@next/swc-win32-arm64-msvc': 15.2.5
+      '@next/swc-win32-x64-msvc': 15.2.5
+      '@playwright/test': 1.52.0
       sharp: 0.33.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -14081,11 +14127,11 @@ snapshots:
       pvutils: 1.1.3
       tslib: 2.8.1
 
-  playwright-core@1.51.1: {}
+  playwright-core@1.52.0: {}
 
-  playwright@1.51.1:
+  playwright@1.52.0:
     dependencies:
-      playwright-core: 1.51.1
+      playwright-core: 1.52.0
     optionalDependencies:
       fsevents: 2.3.2
 

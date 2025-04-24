@@ -5,7 +5,11 @@
 
 "use client";
 
-import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  ConfirmationDialog,
+  DataTable,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiCreateTextTemplateRequest,
@@ -21,7 +25,6 @@ import {
   useUpdateTextTemplate,
 } from "@/lib/businessModules/stiProtection/api/mutations/textTemplates";
 import { useTextTemplates } from "@/lib/businessModules/stiProtection/api/queries/textTemplates";
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { TextTemplateEditSidebar } from "./TextTemplateEditSidebar";
@@ -95,7 +98,7 @@ export function TextTemplatesOverviewTable() {
           })}
         />
       </TableSheet>
-      <EmployeePortalConfirmationDialog
+      <ConfirmationDialog
         open={confirmingDelete != null}
         title="Vorlage löschen?"
         description={`Möchten Sie die Vorlage ${textTemplates.find((template) => template.externalId == confirmingDelete)?.name} wirklich löschen? Die Aktion kann nicht rückgängig gemacht werden.`}

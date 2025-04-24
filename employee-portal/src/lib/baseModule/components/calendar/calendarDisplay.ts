@@ -7,10 +7,10 @@ import {
   ApiGetRelevantCalendarsResponse,
   ApiUserGroupCalendarInfo,
 } from "@eshg/base-api";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { flatMap, map, pipe, uniqueBy } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { translateUserGroup } from "@/lib/shared/helpers/users";
 
 const calendarColors = {
@@ -89,7 +89,7 @@ export function mapApiCalendarsToCalendarInfo({
     uniqueBy((calendar) => calendar.calendarId),
     map((calendar, index) => ({
       id: calendar.calendarId,
-      name: fullName(resolvedUsers[calendar.userId]),
+      name: formatUserName(resolvedUsers[calendar.userId]),
       color: getOrderedCalendarColor(index),
       groupNames: getGroupNamesByCalenderId(
         userGroupCalendarInfos,

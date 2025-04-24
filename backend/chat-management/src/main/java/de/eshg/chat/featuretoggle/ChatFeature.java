@@ -7,4 +7,5 @@ package de.eshg.chat.featuretoggle;
 
 public enum ChatFeature {
   CHAT_BASE,
+  RESET_KEY_BACKUP_PASSPHRASE
 }

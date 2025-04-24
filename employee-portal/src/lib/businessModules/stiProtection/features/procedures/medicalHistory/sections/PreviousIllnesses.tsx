@@ -4,10 +4,10 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { Typography } from "@mui/joy";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { defaultPreviousIllnesses } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
 import {
   ExaminableIllnesses,

@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import { MedicalHistoryTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/MedicalHistoryTemplateEditor";
@@ -20,7 +21,9 @@ export default function NewMedicalHistoryTemplatePage() {
       toolbar={
         <Toolbar
           title="Anamnesebogenvorlage erstellen"
-          backHref={routes.medicalHistoryTemplates.index}
+          backButton={
+            <ToolbarBackButton href={routes.medicalHistoryTemplates.index} />
+          }
         />
       }
     >

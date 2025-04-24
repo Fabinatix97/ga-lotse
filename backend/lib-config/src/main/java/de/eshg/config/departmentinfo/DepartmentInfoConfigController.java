@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(DepartmentInfoLibrary.DEPARTMENT_INFO_API)
+@RequestMapping(DepartmentInfoConfigController.BASE_URL)
 @ConditionalOnBean(DepartmentInfoConfigService.class)
 @Tag(name = "DepartmentInfoConfig")
 public class DepartmentInfoConfigController
     extends AbstractOptionalDepartmentInfoConfigController<DepartmentInfoConfig> {
+
+  public static final String BASE_URL =
+      DepartmentInfoLibrary.CONFIGURATION_API + DEPARTMENT_INFO_CONFIG_API_SUFFIX;
 
   public DepartmentInfoConfigController(DepartmentInfoConfigService configService) {
     super(configService);

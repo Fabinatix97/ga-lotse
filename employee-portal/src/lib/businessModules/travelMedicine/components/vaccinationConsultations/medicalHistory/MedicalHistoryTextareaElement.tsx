@@ -4,7 +4,7 @@
  */
 
 import { TextareaField } from "@eshg/lib-employee-portal";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { FormLabel, styled } from "@mui/joy";
 
 interface MedicalHistoryTextareaElementProps {
@@ -20,6 +20,7 @@ export function MedicalHistoryTextareaElement({
   labelColor,
   readOnly = false,
 }: Readonly<MedicalHistoryTextareaElementProps>) {
+  const { validateLength } = useValidators();
   const StyledLabelComponent = styled(FormLabel)(() => ({
     fontSize: 14,
     color: labelColor,

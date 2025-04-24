@@ -11,10 +11,10 @@ FROM registry.access.redhat.com/ubi9:9.4-1214.1726694543@sha256:b00d5990a00937bd
 
 FROM quay.io/keycloak/keycloak:$keycloakVersion AS keycloak-builder
 
-ENV KC_HEALTH_ENABLED true
-ENV KC_FEATURES_DISABLED impersonation,organization
-ENV KC_DB postgres
-ENV KC_CACHE local
+ENV KC_HEALTH_ENABLED=true \
+    KC_FEATURES_DISABLED=impersonation,organization \
+    KC_DB=postgres \
+    KC_CACHE=local
 
 WORKDIR /opt/keycloak
 
@@ -26,7 +26,13 @@ COPY ./resources/themes ./themes/
 RUN /opt/keycloak/bin/kc.sh build
 
 FROM quay.io/keycloak/keycloak:$keycloakVersion
-COPY --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
+
+USER 0:0
+RUN sed -i -e 's/keycloak:x:0:root/keycloak:x:10001:/g' /etc/group && \
+    sed -i -e 's/keycloak:x:1000:0/keycloak:x:10001:100001/g' /etc/passwd
+USER 10001:10001
+
+COPY --chown=10001:10001 --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
 
 # Note: The multi-stage build as described on https://github.com/keycloak/keycloak/blob/main/docs/guides/server/containers.adoc#installing-additional-rpm-packages
 # DOES NOT WORK. The "dnf install" hangs during installation of curl.
@@ -34,9 +40,12 @@ COPY --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
 COPY --from=ubi-micro-build /usr/lib64/ /usr/lib64/
 COPY --from=ubi-micro-build /usr/bin/curl /usr/bin/
 
-ENV KC_HEALTH_ENABLED true
-ENV KC_FEATURES_DISABLED impersonation,organization
-ENV KC_DB postgres
-ENV KC_CACHE local
+ENV KC_HEALTH_ENABLED=true \
+    KC_FEATURES_DISABLED=impersonation,organization \
+    KC_DB=postgres \
+    KC_CACHE=local
 
 HEALTHCHECK --start-period=120s --interval=5s CMD curl --silent --fail http://localhost:9000/health || exit 1
+
+LABEL org.opencontainers.image.source="https://gitlab.com/ga-ffm/ga-lotse/ga-lotse-code" \
+      org.opencontainers.image.description="Custom Keycloak image with plugin support and health checks"

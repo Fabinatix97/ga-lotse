@@ -5,6 +5,7 @@
 
 import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 
+import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { ConfirmationSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConfirmationSection";
 import { OverviewSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/OverviewSection";
 import { MultiStepFormButtonBar } from "@/lib/businessModules/officialMedicalService/shared/MultiStepFormButtonBar";
@@ -12,7 +13,15 @@ import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/s
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
-export function AppointmentFormSidePanel() {
+export function AppointmentFormSidePanel({
+  backendValidation,
+}: {
+  backendValidation?: (
+    currentStep: number,
+    values: AppointmentFormValues,
+    setFieldError: (field: string, message: string | undefined) => void,
+  ) => Promise<boolean>;
+}) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
   const citizenRoutes = useCitizenRoutes();
 
@@ -25,11 +34,12 @@ export function AppointmentFormSidePanel() {
       {currentStep !== totalSteps && (
         <OverviewSection
           buttonBar={
-            <MultiStepFormButtonBar
+            <MultiStepFormButtonBar<AppointmentFormValues>
               href={citizenRoutes.overview}
               backLabel={t("overview.goBack")}
               cancelLabel={t("overview.cancel")}
               forwardLabel={t("overview.goForward")}
+              backendValidation={backendValidation}
             />
           }
         />
@@ -38,7 +48,7 @@ export function AppointmentFormSidePanel() {
       {currentStep === totalSteps && (
         <ConfirmationSection
           buttonBar={
-            <MultiStepFormButtonBar
+            <MultiStepFormButtonBar<AppointmentFormValues>
               href={citizenRoutes.overview}
               backLabel={t("overview.goBack")}
               cancelLabel={t("overview.cancel")}

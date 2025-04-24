@@ -224,6 +224,7 @@ public class EvaluationTemplateService {
         sensitiveDataAllowed(evaluationTemplate),
         getMostRestrictiveSensitivity(evaluationTemplate, availableDataSources),
         getCanBeAnonymized(evaluationTemplate, availableDataSources),
+        availableDataSources,
         userService.findUser(evaluationTemplate.getCreatedByUserId()));
   }
 

@@ -5,32 +5,38 @@
 
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
-const apiQueryKey = queryKeyFactory(["officialMedicalService"]);
+export const officialMedicalServiceApiQueryKey = queryKeyFactory([
+  "officialMedicalService",
+]);
 
 export const appointmentBlockApiQueryKey = queryKeyFactory(
-  apiQueryKey(["appointmentBlockApi"]),
+  officialMedicalServiceApiQueryKey(["appointmentBlockApi"]),
 );
 
 export const appointmentTypesApiQueryKey = queryKeyFactory(
-  apiQueryKey(["appointmentTypesApi"]),
+  officialMedicalServiceApiQueryKey(["appointmentTypesApi"]),
 );
 
 export const appointmentStaffApiQueryKey = queryKeyFactory(
-  apiQueryKey(["appointtingStaffApi"]),
+  officialMedicalServiceApiQueryKey(["appointtingStaffApi"]),
 );
 
 export const progressEntryApiQueryKey = queryKeyFactory(
-  apiQueryKey(["progressEntryApi"]),
+  officialMedicalServiceApiQueryKey(["progressEntryApi"]),
 );
 
-export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
+export const fileApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["fileApi"]),
+);
 
 export const employeeOmsProcedureApiQueryKey = queryKeyFactory(
-  apiQueryKey(["employeeOmsProcedureApi"]),
+  officialMedicalServiceApiQueryKey(["employeeOmsProcedureApi"]),
 );
 
-export const concernApiQueryKey = queryKeyFactory(apiQueryKey(["concernApi"]));
+export const concernApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["concernApi"]),
+);
 
 export const waitingRoomApiQueryKey = queryKeyFactory(
-  apiQueryKey(["waitingRoomApi"]),
+  officialMedicalServiceApiQueryKey(["waitingRoomApi"]),
 );

@@ -18,7 +18,10 @@ import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  formatPersonName,
+  formatUserName,
+} from "@eshg/lib-portal/formatters/person";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Divider, Stack } from "@mui/joy";
@@ -31,7 +34,6 @@ import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/co
 import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 interface FormData {
   objectTypeId: string;
@@ -68,7 +70,7 @@ export function AdditionalInfoTile({
     type: ApiInspectionType.Initial,
     progressEntryText: "",
     assigneeId: onlySelfAssignable ? selfUser.userId : null,
-    assigneeName: onlySelfAssignable ? fullName(selfUser) : null,
+    assigneeName: onlySelfAssignable ? formatUserName(selfUser) : null,
   };
 
   const objectTypeOptions = objectTypes.map((o) => ({

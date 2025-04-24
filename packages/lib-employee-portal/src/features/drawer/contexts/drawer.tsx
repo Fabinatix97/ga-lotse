@@ -32,7 +32,7 @@ interface DrawerState {
   pending: DrawerInstance | null;
 }
 
-export interface DrawerCloseOptions {
+interface DrawerCloseOptions {
   drawerId?: string;
   force?: boolean;
 }
@@ -180,9 +180,7 @@ export function DrawerProvider({ children }: RequiresChildren) {
   // close drawer after navigation
   useNavigateEffect(() => drawerContextValue.tryClose({ force: true }));
 
-  return (
-    <Drawer.Provider value={drawerContextValue}>{children}</Drawer.Provider>
-  );
+  return <Drawer value={drawerContextValue}>{children}</Drawer>;
 }
 
 function usePendingEffect(

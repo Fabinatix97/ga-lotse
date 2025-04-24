@@ -19,15 +19,14 @@ import { isDefined, isEmpty, isNullish } from "remeda";
 
 import { OptionalFieldValue, Validator } from "../types/form";
 
-import { isDateString, isMonthString } from "./dateTime";
-import { isValidEmailString } from "./email";
 import {
-  isDict,
-  isEmptyString,
-  isInteger,
-  isNonEmptyString,
-  isStringOnlyDigits,
-} from "./guards";
+  isDateString,
+  isDateTimeString,
+  isMonthString,
+  isTimeString,
+} from "./dateTime";
+import { isValidEmailString } from "./email";
+import { isDict, isEmptyString, isInteger, isStringOnlyDigits } from "./guards";
 
 export function validatePipe<TValue>(
   ...validators: (Validator<TValue> | undefined)[]
@@ -71,6 +70,26 @@ export function validateDate(value: string) {
   return "Bitte ein gültiges Datum angeben.";
 }
 
+export function validateTime(value: string) {
+  if (!isTimeString(value)) {
+    return "Bitte eine gültige Zeit angeben.";
+  }
+
+  return undefined;
+}
+
+export function validateDateTime(value: OptionalFieldValue<string>) {
+  if (isEmptyString(value)) {
+    return undefined;
+  }
+
+  if (!isDateTimeString(value)) {
+    return "Bitte ein gültiges Datum mit Uhrzeit angeben.";
+  }
+
+  return undefined;
+}
+
 export function validateMonth(value: string) {
   if (value === undefined || isEmptyString(value) || isMonthString(value)) {
     return undefined;
@@ -82,7 +101,7 @@ export function validateMonth(value: string) {
 export function validateLength(
   startInclusive: number,
   endInclusive: number,
-  renderError?: (startIncluding: number, endInclusive: number) => string,
+  message: string,
 ): Validator<OptionalFieldValue<string>> {
   return (value: OptionalFieldValue<string>) => {
     if (isNullish(value) || isEmpty(value)) {
@@ -95,18 +114,18 @@ export function validateLength(
       return undefined;
     }
 
-    return renderError
-      ? renderError(startInclusive, endInclusive)
-      : `Bitte eine Textlänge zwischen ${startInclusive} und ${endInclusive} Zeichen angeben.`;
+    return message;
   };
 }
 
-export function validatePastOrTodayDate(value: string) {
-  if (isDateString(value) && !isToday(value) && isFuture(endOfDay(value))) {
-    return "Das Datum liegt in der Zukunft.";
-  }
+export function validatePastOrTodayDate(message: string): Validator<string> {
+  return (value: string) => {
+    if (isDateString(value) && !isToday(value) && isFuture(endOfDay(value))) {
+      return message;
+    }
 
-  return undefined;
+    return undefined;
+  };
 }
 
 export function validatePastMonthAndYear(year: number, month: number) {
@@ -187,16 +206,16 @@ export function validateRegex(
   };
 }
 
-export function validateEmail(value: string, message?: string) {
-  if (
-    value === undefined ||
-    isEmptyString(value) ||
-    isValidEmailString(value)
-  ) {
-    return undefined;
-  }
+export function validateEmail(message: string): Validator<string> {
+  return (value: string) => {
+    if (
+      value === undefined ||
+      isEmptyString(value) ||
+      isValidEmailString(value)
+    ) {
+      return undefined;
+    }
 
-  return isNonEmptyString(message)
-    ? message
-    : "Bitte eine gültige Email angeben.";
+    return message;
+  };
 }

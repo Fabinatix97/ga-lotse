@@ -84,7 +84,10 @@ export function procedureOverviewTableColumns(medicalOpinionLeadTime: number) {
               placement="top"
               sx={{ marginBottom: -0.5 }}
             >
-              <WarningAmberOutlined color="danger" />
+              <WarningAmberOutlined
+                sx={{ position: "relative", zIndex: 2 }}
+                color="danger"
+              />
             </Tooltip>
           )
         );

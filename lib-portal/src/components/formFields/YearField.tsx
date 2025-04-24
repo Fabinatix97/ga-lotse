@@ -5,21 +5,22 @@
 
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
 
+import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 import { YearInput } from "../inputs/YearInput";
 
-import { BaseField, BaseFieldProps, useBaseField } from "./BaseField";
+import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
+import { StyledInputProps } from "./types";
 
-interface YearFieldProps {
-  name: string;
+interface YearFieldProps
+  extends Omit<FieldProps<number>, "label">,
+    FieldComponentProps,
+    StyledInputProps {
   label?: string;
-  fieldDecorator?: ReactNode;
   min?: number;
   max?: number;
-  component?: (props: BaseFieldProps) => ReactNode;
   sx?: SxProps;
 }
 
@@ -31,6 +32,7 @@ export function YearField({
   max = Number.MAX_SAFE_INTEGER,
   component,
   sx,
+  ...props
 }: YearFieldProps) {
   const field = useBaseField<number>({
     name: name,
@@ -41,12 +43,13 @@ export function YearField({
       }
       return undefined;
     },
+    ...props,
   });
   const FieldComponent = component ?? BaseField;
   const disabled = useIsFormDisabled();
 
   return (
-    <FieldComponent label={label} {...field}>
+    <FieldComponent label={label} disabled={disabled} {...field}>
       <Stack direction="row" spacing={1}>
         <YearInput sx={sx} {...field.input} disabled={disabled} />
         {fieldDecorator}

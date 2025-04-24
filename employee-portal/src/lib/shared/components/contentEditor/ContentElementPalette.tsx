@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { InformationSheet } from "@eshg/lib-employee-portal";
 import { SvgIconComponent } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
@@ -14,7 +15,6 @@ import {
   PaletteItem,
   PaletteItemType,
 } from "@/lib/shared/components/contentEditor/types";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface ContentElementPaletteProps {
   palette: PaletteItem[];

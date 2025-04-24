@@ -17,16 +17,20 @@ import {
   ApiTitle,
   PostCitizenProcedureRequest,
 } from "@eshg/official-medical-service-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
+import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { usePostCitizenProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenPublicApi";
+import { validateFiles } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { AppointmentFormSidePanel } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentFormSidePanel";
 import { AppointmentStepWrapper } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentStepWrapper";
 import { ConcernStep } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConcernStep";
 import { DocumentAndPersonalDataStep } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/DocumentAndPersonalDataStep";
 import { SummaryStep } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/SummaryStep";
 import { DepartmentContextProvider } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";
+import { mapToFrontendErrorMessage } from "@/lib/businessModules/officialMedicalService/shared/file/helpers";
 import { mapToPostCitizenProcedureRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { MultiStepFormTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormWrapper";
@@ -113,6 +117,8 @@ export function AppointmentForm() {
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const postCitizenProcedure = usePostCitizenProcedure();
+  const citizenPublicApi = useCitizenPublicApi();
+  const queryClient = useQueryClient();
 
   async function handleSubmit(values: AppointmentFormValues) {
     const request: PostCitizenProcedureRequest =
@@ -121,6 +127,34 @@ export function AppointmentForm() {
     await postCitizenProcedure.mutateAsync(request, {
       onSuccess: () => router.push(citizenRoutes.overview),
     });
+  }
+
+  async function backendValidation(
+    currentStep: number,
+    values: AppointmentFormValues,
+    setFieldError: (field: string, message: string | undefined) => void,
+  ) {
+    if (currentStep === STEPS.indexOf(DocumentAndPersonalDataStep) + 1) {
+      const serverValidationResponse = await validateFiles(
+        citizenPublicApi,
+        queryClient,
+        values.files as Blob[],
+      );
+      if (serverValidationResponse.errorMessages.some((s) => s)) {
+        let fieldError = "\n";
+        for (const errorMessage of serverValidationResponse.errorMessages) {
+          if (errorMessage) {
+            fieldError += mapToFrontendErrorMessage(t, errorMessage) + "\n";
+          } else {
+            fieldError += "\n";
+          }
+        }
+        setFieldError("files", fieldError);
+
+        return false;
+      }
+    }
+    return true;
   }
 
   return (
@@ -142,7 +176,11 @@ export function AppointmentForm() {
                   {currentStep !== STEPS.indexOf(AppointmentStepWrapper) + 1 ? (
                     <TwoColumnGrid
                       content={<Outlet {...formikProps} />}
-                      sidePanel={<AppointmentFormSidePanel />}
+                      sidePanel={
+                        <AppointmentFormSidePanel
+                          backendValidation={backendValidation}
+                        />
+                      }
                     />
                   ) : (
                     <AppointmentStepWrapper />

@@ -26,7 +26,7 @@ export type SearchPersonFormProps<TValues> = FormikProps<TValues> & {
   onCancel: () => void;
 };
 
-export type SearchPersonSidebarProps<TValues extends SearchPersonFormValues> = {
+type SearchPersonSidebarProps<TValues extends SearchPersonFormValues> = {
   onCancel: () => void;
   onBack?: () => void;
   onSearch: (values: TValues) => void;

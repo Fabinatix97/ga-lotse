@@ -10,14 +10,13 @@ import {
   ApiTaskType,
   ApiUser,
 } from "@eshg/base-api";
+import { EnumFilterValue, FilterValue } from "@eshg/lib-employee-portal";
 import {
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
 } from "@eshg/lib-procedures-api";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import {
   manualProgressEntryTypeNames,
   progressEntryClassTitles,

@@ -117,6 +117,8 @@ public class VaccinationConsultationService {
       "The list of travel destinations must not contain null elements.";
   private static final String UPDATE_OUTDATED_PERSON =
       "The patient update failed. Is the person data up-to-date?";
+  private static final String INVALID_TRAVEL_TIME_AMOUNT =
+      "The travel time amount must be between 1 and 1000 inclusive.";
   private final ProcedureAccessor procedureAccessor;
   private final NotificationService notificationService;
 
@@ -171,7 +173,7 @@ public class VaccinationConsultationService {
 
     VaccinationConsultation vaccinationConsultation =
         vaccinationConsultationMapper.toDomainType(
-            getTravelInformation(request),
+            extractTravelInformation(request),
             patientIdFromCentralFile,
             CurrentUserHelper.getCurrentUserId(),
             CreatedByUserType.EMPLOYEE);
@@ -192,7 +194,7 @@ public class VaccinationConsultationService {
     return vaccinationConsultation.getExternalId();
   }
 
-  public UUID createProcedure(PostCitizenVaccinationConsultationRequest request) {
+  public UUID createCitizenProcedure(PostCitizenVaccinationConsultationRequest request) {
     validateTravelInformation(request.travelInformation());
 
     Appointment appointment =
@@ -266,7 +268,7 @@ public class VaccinationConsultationService {
 
   private void validatePostVaccinationConsultationRequest(
       PostVaccinationConsultationRequest request) {
-    validateTravelInformation(getTravelInformation(request));
+    validateTravelInformation(extractTravelInformation(request));
     procedureStepService.validateAppointmentData(
         request.appointmentBookingType(),
         request.appointmentStart(),
@@ -274,7 +276,18 @@ public class VaccinationConsultationService {
         null);
   }
 
-  private TravelInformationDto getTravelInformation(PostVaccinationConsultationRequest request) {
+  private TravelInformationDto extractTravelInformation(
+      PostVaccinationConsultationRequest request) {
+    return new TravelInformationDto(
+        request.travelType(),
+        request.travelDestinations(),
+        request.travelStartDate(),
+        request.travelTimeAmount(),
+        request.travelTimeUnit());
+  }
+
+  private TravelInformationDto extractTravelInformation(
+      PatchVaccinationConsultationTravelDetailsRequest request) {
     return new TravelInformationDto(
         request.travelType(),
         request.travelDestinations(),
@@ -284,12 +297,21 @@ public class VaccinationConsultationService {
   }
 
   private void validateTravelInformation(TravelInformationDto travelInformation) {
-    if (travelInformation.travelType() == TravelTypeDto.NO_TRAVEL
+    if ((travelInformation.travelType() == TravelTypeDto.NO_TRAVEL)
         && (!travelInformation.travelDestinations().isEmpty()
             || travelInformation.travelStartDate() != null
             || travelInformation.travelTimeAmount() != null
             || travelInformation.travelTimeUnit() != null)) {
       throw new BadRequestException(UNEXPECTED_TRAVEL_DATA);
+    }
+
+    if (travelInformation.travelDestinations().contains(null))
+      throw new BadRequestException(INVALID_TRAVEL_DATA_NULL);
+
+    if (travelInformation.travelTimeAmount() != null
+        && (travelInformation.travelTimeAmount() < 1
+            || travelInformation.travelTimeAmount() > 1000)) {
+      throw new BadRequestException(INVALID_TRAVEL_TIME_AMOUNT);
     }
   }
 
@@ -343,15 +365,7 @@ public class VaccinationConsultationService {
     VaccinationConsultation vaccinationConsultation =
         procedureAccessor.accessProcedure(externalId, ProcedureAccessor.checkNotClosed);
 
-    if (patchRequest.travelDestinations().contains(null))
-      throw new BadRequestException(INVALID_TRAVEL_DATA_NULL);
-    if (patchRequest.travelType() == TravelTypeDto.NO_TRAVEL
-        && (!patchRequest.travelDestinations().isEmpty()
-            || patchRequest.travelStartDate() != null
-            || patchRequest.travelTimeAmount() != null
-            || patchRequest.travelTimeUnit() != null)) {
-      throw new BadRequestException(UNEXPECTED_TRAVEL_DATA);
-    }
+    validateTravelInformation(extractTravelInformation(patchRequest));
 
     vaccinationConsultationMapper.toDomainTypePatchTravel(patchRequest, vaccinationConsultation);
   }

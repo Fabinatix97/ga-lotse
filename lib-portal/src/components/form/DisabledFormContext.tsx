@@ -19,8 +19,8 @@ export function useIsFormDisabled() {
 
 export function DisabledFormProvider(props: DisabledFormProviderProps) {
   return (
-    <DisabledFormContext.Provider value={props.disabled}>
+    <DisabledFormContext value={props.disabled}>
       {props.children}
-    </DisabledFormContext.Provider>
+    </DisabledFormContext>
   );
 }

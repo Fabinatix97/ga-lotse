@@ -71,19 +71,18 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
       BasePopulator<CreateProcedureResponse>.UniqueValueProvider uniqueValueProvider) {
 
     int age = age(faker);
+    GenderDto gender = gender(faker);
     CreateProcedureRequest createProcedureRequest =
         new CreateProcedureRequest(
             concern(faker),
-            gender(faker),
+            gender,
             yearOfBirth(faker, age),
-            optional(faker, randomCountry(), 0.66),
-            null,
             appointmentBookingType(),
             appointmentStart(faker, clock),
             durationInMinutes(faker),
             hasSufficientGermanLanguageSkills(faker),
-            null,
-            null);
+            otherKnownLanguages(faker),
+            pronouns(gender));
 
     CreateProcedureResponse resp =
         stiProtectionProcedureController.createProcedure(createProcedureRequest);
@@ -98,8 +97,21 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
     return resp;
   }
 
+  private static String pronouns(GenderDto gender) {
+    return switch (gender) {
+      case NOT_SPECIFIED -> null;
+      case DIVERSE -> "we/they";
+      case FEMALE -> "she/her";
+      case MALE -> "he/his";
+    };
+  }
+
   private static Boolean hasSufficientGermanLanguageSkills(Faker faker) {
     return faker.random().nextBoolean();
+  }
+
+  private static String otherKnownLanguages(Faker faker) {
+    return faker.country().countryCode2();
   }
 
   @Override

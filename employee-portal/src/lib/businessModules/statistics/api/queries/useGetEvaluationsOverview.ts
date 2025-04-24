@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FilterValue } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
@@ -14,7 +15,6 @@ import { PageRequest } from "@/lib/businessModules/statistics/api/models/pageReq
 import { createQueryGetAvailableDataSources } from "@/lib/businessModules/statistics/api/queries/useGetAvailableDataSources";
 import { createQueryGetEvaluationTemplates } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplates";
 import { createQueryGetEvaluations } from "@/lib/businessModules/statistics/api/queries/useGetEvaluations";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 export function useGetEvaluationsOverview(
   pageRequest: PageRequest,

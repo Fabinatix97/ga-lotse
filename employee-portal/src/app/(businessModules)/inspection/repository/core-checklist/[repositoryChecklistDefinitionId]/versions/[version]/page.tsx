@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
@@ -36,8 +37,8 @@ export default function InspectionRepositoryPage(
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          backHref={routes.repository.index}
           title={`Checklistendefinition aus Datenaustausch ansehen: ${checklistDefinition?.name ?? ""}`}
+          backButton={<ToolbarBackButton href={routes.repository.index} />}
         />
       }
     >

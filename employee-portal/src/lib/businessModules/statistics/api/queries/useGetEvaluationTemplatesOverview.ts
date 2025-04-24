@@ -4,6 +4,11 @@
  */
 
 import {
+  DateSpanFilterValue,
+  EnumFilterValue,
+  FilterValue,
+} from "@eshg/lib-employee-portal";
+import {
   ApiDataSourceSensitivity,
   ApiEvaluationTemplateSortKey,
   ApiGetEvaluationTemplatesResponse,
@@ -27,9 +32,6 @@ import {
   mapPageRequest,
 } from "@/lib/businessModules/statistics/api/models/pageRequest";
 import { EvaluationTemplatesFilterKey } from "@/lib/businessModules/statistics/components/evaluations/templates/filterDefinitions";
-import { DateSpanFilterValue } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
-import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 import { evaluationTemplateApiQueryKey } from "./apiQueryKeys";
 

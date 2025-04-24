@@ -5,14 +5,13 @@
 
 "use client";
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiResource, ApiVersion } from "@eshg/opendata-api";
 import Add from "@mui/icons-material/Add";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import { IconButton, Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 type ResourceOrVersion =
   | {

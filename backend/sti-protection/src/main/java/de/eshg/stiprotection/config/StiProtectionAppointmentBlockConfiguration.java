@@ -15,16 +15,16 @@ public class StiProtectionAppointmentBlockConfiguration {
 
   @Bean(name = AppointmentBlockValidator.TECHNICAL_GROUP_PHYSICIANS)
   TechnicalGroup technicalGroupPhysicians() {
-    return TechnicalGroup.STI_PROTECTION_PHYSICIANS;
+    return TechnicalGroup.STI_PROTECTION_PHYSICIAN;
   }
 
   @Bean(name = AppointmentBlockValidator.TECHNICAL_GROUP_MFAS)
   TechnicalGroup technicalGroupMfas() {
-    return TechnicalGroup.STI_PROTECTION_MFAS;
+    return TechnicalGroup.STI_PROTECTION_MFA;
   }
 
   @Bean(name = AppointmentBlockValidator.TECHNICAL_GROUP_CONSULTANTS)
   TechnicalGroup technicalGroupConsultants() {
-    return TechnicalGroup.STI_PROTECTION_CONSULTANTS;
+    return TechnicalGroup.STI_PROTECTION_CONSULTANT;
   }
 }

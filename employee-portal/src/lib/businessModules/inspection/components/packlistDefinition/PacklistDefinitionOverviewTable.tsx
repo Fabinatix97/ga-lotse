@@ -10,6 +10,7 @@ import {
   ApiPacklistDefinitionRevision,
 } from "@eshg/inspection-api";
 import {
+  ActionsMenu,
   ButtonBar,
   DataTable,
   TablePage,
@@ -25,7 +26,6 @@ import { useGetPacklistDefinitions } from "@/lib/businessModules/inspection/api/
 import { CreatePacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreatePacklistDefinitionSidebar";
 import { EditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/EditPacklistDefinitionSidebar";
 import { PacklistRevisionsSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/sidebars/PacklistRevisionsSidebar";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper = createColumnHelper<ApiPacklistDefinition>();
 

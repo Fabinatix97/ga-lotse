@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { endOfMonth, startOfMonth } from "date-fns";
@@ -39,7 +40,10 @@ export default function ResourceDetailsPage(
   return (
     <StickyToolbarLayout
       toolbar={
-        <Toolbar title={resource.name} backHref={routes.resources.index} />
+        <Toolbar
+          title={resource.name}
+          backButton={<ToolbarBackButton href={routes.resources.index} />}
+        />
       }
     >
       <MainContentLayout>

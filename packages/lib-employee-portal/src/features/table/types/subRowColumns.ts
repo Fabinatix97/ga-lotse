@@ -6,7 +6,7 @@
 import { Cell } from "@tanstack/react-table";
 import { ComponentPropsWithRef, ReactNode } from "react";
 
-export interface SubRowColumnProps<TData> {
+interface SubRowColumnProps<TData> {
   renderCell?: (cell: Cell<TData, unknown>) => ReactNode;
   tdProps?: Pick<ComponentPropsWithRef<"td">, "colSpan" | "align" | "valign">;
   skip?: boolean;

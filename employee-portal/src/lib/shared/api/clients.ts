@@ -4,10 +4,7 @@
  */
 
 import { ConfigurationParameters } from "@eshg/base-api";
-import {
-  ApiConfiguration,
-  useApiConfiguration,
-} from "@eshg/lib-portal/api/ApiProvider";
+import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   ApiBusinessModule,
   GdprValidationTaskApi,
@@ -17,6 +14,8 @@ import {
   Configuration as LibStatisticsConfiguration,
   StatisticsProcedureReferenceApi,
 } from "@eshg/lib-statistics-api";
+
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 type ConfigurationConstructor<TConfiguration> = new (
   params: ConfigurationParameters,
@@ -39,7 +38,7 @@ export function useConfigurationByBusinessModule<TConfiguration>(
   businessModule: ApiBusinessModule,
   Configuration: ConfigurationConstructor<TConfiguration>,
 ): TConfiguration {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     businessModuleBackendUrls[businessModule],
   );
 

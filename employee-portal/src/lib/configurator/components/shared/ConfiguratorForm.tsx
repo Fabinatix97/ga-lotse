@@ -179,7 +179,7 @@ export function ConfiguratorForm<T extends FormikValues>({
   sheets: FormSheet[];
   initialValues: T;
   onSubmit: (model: T) => Promise<void>;
-  status: ConfiguratorStatus;
+  status?: ConfiguratorStatus;
   deleteFile?: (fileName: string) => void;
   downloadFile?: (fileName: string) => void;
 }) {
@@ -196,9 +196,10 @@ export function ConfiguratorForm<T extends FormikValues>({
       }}
       validateOnChange={false}
       validateOnMount={false}
+      enableReinitialize
     >
       {({ values, handleReset, isSubmitting, handleSubmit, errors, dirty }) => (
-        <FormPlus>
+        <FormPlus data-testid="configurator-form">
           <ErrorListener
             onError={() => setShowError(true)}
             noErrors={() => setShowError(false)}
@@ -294,21 +295,21 @@ export function ConfiguratorForm<T extends FormikValues>({
               <Sheet>
                 <Stack gap={3}>
                   <Typography level="h3">Hinweis</Typography>
-                  {status === "complete" && (
+                  {status === "COMPLETE" && (
                     <Alert
                       variant="soft"
                       color="success"
                       message="Alle Pflichtangaben sind vollständig."
                     />
                   )}
-                  {status === "warning" && (
+                  {status === "PARTIALLY_COMPLETE" && (
                     <Alert
                       variant="soft"
                       color="warning"
                       message="Die englischsprachige Datei wurde nicht hochgeladen. Die deutsche Version wird für diese als Fallback genutzt."
                     />
                   )}
-                  {status === "error" && (
+                  {status === "INCOMPLETE" && (
                     <Alert
                       variant="soft"
                       color="danger"

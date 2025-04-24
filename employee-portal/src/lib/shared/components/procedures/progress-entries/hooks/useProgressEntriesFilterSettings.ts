@@ -4,15 +4,15 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
+import {
+  EnumFilterDefinition,
+  FilterValue,
+  UseFilterSettings,
+  useFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { ApiProgressEntryClassFromJSON } from "@eshg/lib-procedures-api";
 import { Dispatch, SetStateAction, startTransition } from "react";
 
-import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  UseFilterSettings,
-  useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
 import {
   buildOptionsFromManualProgressEntryTypes,
   buildOptionsFromProgressEntryClasses,

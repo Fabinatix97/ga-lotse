@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { loadLocale as loadLocaleLibPortal } from "@eshg/lib-portal/i18n/loadLocale";
+import { i18nNamespace as i18nNamespaceLibPortal } from "@eshg/lib-portal/i18n/namespace";
 import { InitOptions } from "i18next";
 
 export const defaultLang = "de";
@@ -38,6 +40,14 @@ export type SupportedLanguage = (typeof options.supportedLngs)[number];
 const defaultModule = "base";
 
 export function resourceResolver(language: string, namespace: string) {
+  if (namespace === i18nNamespaceLibPortal) {
+    return loadLocaleLibPortal(language);
+  }
+
+  return loadLocaleCitizenPortal(language, namespace);
+}
+
+function loadLocaleCitizenPortal(language: string, namespace: string) {
   const parts = namespace.split("/");
   const firstPart = parts[0];
   const subNamespace = parts.at(-1);

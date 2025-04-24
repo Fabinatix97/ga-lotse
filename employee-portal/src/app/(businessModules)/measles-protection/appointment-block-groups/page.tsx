@@ -7,6 +7,7 @@ import {
   ButtonBar,
   MainContentLayout,
   StickyToolbarLayout,
+  ToggleFilterButton,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
@@ -14,7 +15,6 @@ import { Schedule } from "@mui/icons-material";
 
 import { AppointmentBlockGroupsTable } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/AppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 
 export default function AppointmentBlockGroupsOverviewPage() {
   return (
@@ -23,7 +23,7 @@ export default function AppointmentBlockGroupsOverviewPage() {
         <AppointmentBlockGroupsTable
           controls={
             <ButtonBar
-              left={<FilterButton disabled />}
+              left={<ToggleFilterButton disabled />}
               right={
                 <InternalLinkButton
                   href={routes.appointmentBlockGroups.new}

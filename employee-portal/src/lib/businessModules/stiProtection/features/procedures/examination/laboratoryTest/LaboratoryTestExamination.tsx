@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -27,11 +28,10 @@ import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/fe
 import { ExaminationTabNavPanel } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationTabNavPanel";
 import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 import { LabStatusIndicator } from "./LabStatusIndicator";
 import {
-  HepatitisLaboratoryTest,
+  ImmunityLaboratoryTest,
   LaboratoryTestSamples,
   LaboratoryTestWithBooleanResult,
 } from "./LaboratoryTestTemplates";
@@ -108,18 +108,21 @@ export function LaboratoryTestExamination(
                   label="Syphilis (Labortest)"
                   dataPath="syphilisTestData"
                   bottomField={
-                    <CheckboxField name="hadSyphilis" label="Hatte Syphilis" />
+                    <CheckboxField
+                      name="syphilisTestData.hadSyphilis"
+                      label="Hatte Syphilis"
+                    />
                   }
                 />
                 <Divider />
-                <HepatitisLaboratoryTest
+                <ImmunityLaboratoryTest
                   dataPath="hepATestData"
                   testRequestedPath="hepATestRequested"
                   label="Hepatitis A"
                   bottomField={<HepatitisInfo variant="A" />}
                 />
                 <Divider />
-                <HepatitisLaboratoryTest
+                <ImmunityLaboratoryTest
                   dataPath="hepBTestData"
                   testRequestedPath="hepBTestRequested"
                   label="Hepatitis B"
@@ -136,7 +139,7 @@ export function LaboratoryTestExamination(
                 <LaboratoryTestSamples
                   dataPath="chlamydiaTestData"
                   testRequestedPath="chlamydiaTestRequested"
-                  label="Chlamydia"
+                  label="Chlamydien"
                 />
                 <Divider />
                 <LaboratoryTestSamples
@@ -173,7 +176,12 @@ export function LaboratoryTestExamination(
                   testRequestedPath="otherTestRequested"
                   label="Sonstige Tests"
                   dataPath="otherTestData"
-                  topField={<InputField name="otherTestName" label="Name" />}
+                  topField={
+                    <InputField
+                      name="otherTestData.otherTestName"
+                      label="Name"
+                    />
+                  }
                 />
               </Stack>
             </Sheet>

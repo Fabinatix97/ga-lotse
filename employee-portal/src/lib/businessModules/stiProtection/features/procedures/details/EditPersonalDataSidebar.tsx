@@ -12,7 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiGender,
   ApiStiProtectionProcedure,
@@ -22,20 +22,18 @@ import { Formik } from "formik";
 
 import { useUpdatePersonDetails } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { AddNewProcedureForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AddNewProcedureSidebar";
-import {
-  PersonalDataForm,
-  personalDataFormValidation,
-} from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/PersonalDataForm";
-import {
-  deleteUndefined,
-  optionalInt,
-} from "@/lib/businessModules/stiProtection/shared/helpers";
+import { PersonalDataForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/PersonalDataForm";
+import { deleteUndefined } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 export type EditPersonalDataForm = Pick<
   AddNewProcedureForm,
-  "gender" | "countryOfBirth" | "inGermanySince" | "yearOfBirth"
+  | "gender"
+  | "pronouns"
+  | "hasSufficientGermanLanguageSkills"
+  | "otherKnownLanguages"
+  | "yearOfBirth"
 >;
 
 export const EDIT_PERSONAL_DATA_SEARCH_PARAM = "edit-person-details";
@@ -74,7 +72,6 @@ export function EditPersonalDataSidebar({
             data: mapFormToApi(values),
           })
         }
-        validate={personalDataFormValidation}
       >
         <SidebarForm ref={sidebarFormRef}>
           <SidebarContent title="Angaben zur Person bearbeiten">
@@ -101,13 +98,14 @@ function mapFormToApi(
   }
 
   return deleteUndefined({
-    countryOfBirth: countryOptions().find(
-      (t) => t.value === form.countryOfBirth,
-    )?.value,
     gender: GENDER_OPTIONS.find((t) => t.value === form.gender)?.value as
       | ApiGender
       | undefined,
-    inGermanySince: optionalInt(form.inGermanySince),
+    pronouns: mapOptionalValue(form.pronouns),
+    hasSufficientGermanLanguageSkills:
+      form.hasSufficientGermanLanguageSkills ?? undefined,
+    otherKnownLanguages: mapOptionalValue(form.otherKnownLanguages),
+
     yearOfBirth: parseInt(form.yearOfBirth, 10),
   });
 }
@@ -116,9 +114,11 @@ function mapApiToForm(
   procedure: ApiStiProtectionProcedure,
 ): EditPersonalDataForm {
   return {
-    countryOfBirth: procedure.person.countryOfBirth ?? null,
+    pronouns: procedure.person.pronouns ?? "",
     gender: procedure.person.gender,
-    inGermanySince: procedure.person.inGermanySince?.toString() ?? "",
+    hasSufficientGermanLanguageSkills:
+      procedure.person.hasSufficientGermanLanguageSkills ?? null,
+    otherKnownLanguages: procedure.person.otherKnownLanguages ?? "",
     yearOfBirth: procedure.person.yearOfBirth.toString() ?? "",
   };
 }

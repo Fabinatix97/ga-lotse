@@ -7,7 +7,6 @@ package de.eshg.stiprotection.api;
 
 import de.eshg.base.GenderDto;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -31,7 +30,6 @@ public record StiProtectionProcedureOverviewDto(
             example = "1996")
         @NotNull
         Year yearOfBirth,
-    CountryCode countryOfBirth,
     @NotNull GenderDto gender,
     @Valid AppointmentDto appointment,
     @Schema(description = "Unique code for patient identification.", example = "h28RQNDRXoffRMzqM")

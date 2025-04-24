@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCountryCode, ApiGender } from "@eshg/base-api";
+import { ApiGender } from "@eshg/base-api";
+import { YesOrNoFieldData } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { ApiAppointment, ApiConcern } from "@eshg/sti-protection-api";
 
 import { Stepper } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
@@ -37,8 +38,11 @@ export interface AppointmentFormData {
   // Personal Data Step
   gender?: ApiGender | null;
   birthYear?: number | "";
-  countryOfBirth?: ApiCountryCode | null;
-  inGermanySince?: number | "";
+  pronouns?: string;
+  hasSufficientGermanLanguageSkills?: YesOrNoFieldData;
+  otherKnownLanguages?: string;
+
+  otherLanguage?: number | "";
 
   // Pin Step
   pin?: string;

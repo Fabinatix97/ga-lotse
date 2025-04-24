@@ -4,7 +4,15 @@
  */
 
 import { ApiProcedureStatus } from "@eshg/base-api";
-import { PROCEDURE_STATUS_NAMES } from "@eshg/lib-employee-portal";
+import {
+  FilterDefinition,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterValue,
+  PROCEDURE_STATUS_NAMES,
+  ToggleFilterButton,
+  useFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiCaseStatus,
@@ -24,12 +32,6 @@ import {
   roleStatusNames,
   submissionResultLabels,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 
 type ProceduresFilterDefinition = FilterDefinition & {
@@ -231,7 +233,7 @@ export function ProceduresTableFilterButton() {
   }, 0);
 
   return (
-    <FilterButton
+    <ToggleFilterButton
       isFilterVisible={filterSettingsVisible}
       activeFilters={activeFilterCount}
       onClick={() => setFilterSettingsVisible((prev) => !prev)}

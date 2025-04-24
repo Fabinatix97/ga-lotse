@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -45,7 +46,12 @@ export default function SnackbarPlaygroundPage() {
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title="Snackbar" backHref="/playground" />}
+      toolbar={
+        <Toolbar
+          title="Snackbar"
+          backButton={<ToolbarBackButton href="/playground" />}
+        />
+      }
     >
       <MainContentLayout>
         <Stack gap={3}>

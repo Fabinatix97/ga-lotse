@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -48,7 +49,12 @@ export default function AlertPlaygroundPage() {
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title="Alert" backHref="/playground" />}
+      toolbar={
+        <Toolbar
+          title="Alert"
+          backButton={<ToolbarBackButton href="/playground" />}
+        />
+      }
     >
       <MainContentLayout>
         <Stack gap={3}>

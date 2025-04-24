@@ -16,7 +16,6 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
   ApiConcern,
-  ApiCountryCode,
   ApiCreateProcedureResponse,
   ApiGender,
 } from "@eshg/sti-protection-api";
@@ -42,10 +41,7 @@ import { SelectableCardsField } from "@/lib/shared/components/formFields/Selecta
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
-import {
-  PersonalDataForm,
-  personalDataFormValidation,
-} from "./PersonalDataForm";
+import { PersonalDataForm } from "./PersonalDataForm";
 import { AppointmentFieldSetProps, SummaryForm } from "./SummaryForm";
 
 export type CombinedAppointmentForm = Partial<
@@ -73,7 +69,6 @@ const steps = [
     title: "Angaben zur Person",
     subTitle: "Schritt 3 von 4",
     fields: () => <PersonalDataForm />,
-    validate: personalDataFormValidation,
   },
   {
     title: "Zusammenfassung",
@@ -91,9 +86,10 @@ const initialValues: AddNewProcedureForm = {
   customAppointmentDuration: "",
 
   gender: "",
-  countryOfBirth: null,
-  inGermanySince: "",
   yearOfBirth: "",
+  pronouns: "",
+  hasSufficientGermanLanguageSkills: null,
+  otherKnownLanguages: "",
 };
 
 export interface AddNewProcedureForm {
@@ -106,9 +102,11 @@ export interface AddNewProcedureForm {
   customAppointmentDuration: string;
 
   gender: ApiGender | "";
-  countryOfBirth?: ApiCountryCode | "" | null;
-  inGermanySince?: string;
   yearOfBirth?: string;
+
+  pronouns: string;
+  hasSufficientGermanLanguageSkills: boolean | null;
+  otherKnownLanguages: string;
 }
 
 export function AddNewProcedureSidebar() {

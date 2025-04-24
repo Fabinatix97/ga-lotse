@@ -26,6 +26,7 @@ export interface NumberFieldProps
   max?: number;
   endDecorator?: ReactNode;
   readOnly?: boolean;
+  disabled?: boolean;
   placeholder?: string;
 }
 
@@ -33,7 +34,7 @@ export function NumberField(props: NumberFieldProps) {
   const FieldComponent = props.component ?? BaseField;
   const InputComponent = props.input ?? Input;
   const field = useBaseField<OptionalFieldValue<number>>(props);
-  const disabled = useIsFormDisabled();
+  const disabled = useIsFormDisabled() || props.disabled;
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const rawValue = event.target.valueAsNumber;
@@ -52,6 +53,7 @@ export function NumberField(props: NumberFieldProps) {
       required={field.required}
       fieldDecorator={props.fieldDecorator}
       error={field.error}
+      disabled={disabled}
       sx={props.fieldSx}
     >
       <InputComponent

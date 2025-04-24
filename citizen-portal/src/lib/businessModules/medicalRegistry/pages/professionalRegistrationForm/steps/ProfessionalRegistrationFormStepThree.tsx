@@ -13,10 +13,8 @@ import { Alert } from "@eshg/lib-portal/components/Alert";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import {
-  validateLength,
-  validateNumber,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateNumber } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
@@ -27,6 +25,7 @@ import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function ProfessionalRegistrationFormStepThree() {
+  const { validateLength } = useValidators();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 

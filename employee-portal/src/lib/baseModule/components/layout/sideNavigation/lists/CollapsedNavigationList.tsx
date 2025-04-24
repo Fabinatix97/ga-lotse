@@ -57,15 +57,15 @@ export function CollapsedNavigationList({
         alignItems="center"
         sx={{ overflowY: "auto", overflowX: "hidden", gap: 3 }}
       >
-        <NavigationListContext.Provider value={true}>
-          <CollapsedNavigationListContext.Provider
+        <NavigationListContext value={true}>
+          <CollapsedNavigationListContext
             value={{ openMenuItemName, setOpenMenuItemName }}
           >
             <NavigationItemGroup itemGroup={itemGroups.dashboardItem} />
             <NavigationItemGroup itemGroup={itemGroups.businessItems} />
             <NavigationItemGroup itemGroup={itemGroups.baseItems} />
-          </CollapsedNavigationListContext.Provider>
-        </NavigationListContext.Provider>
+          </CollapsedNavigationListContext>
+        </NavigationListContext>
       </Stack>
     </Stack>
   );

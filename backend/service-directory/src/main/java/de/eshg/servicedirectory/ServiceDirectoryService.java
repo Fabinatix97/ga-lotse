@@ -436,9 +436,15 @@ public class ServiceDirectoryService {
                 log.error("Ignoring CA certificate for actor {}", actorRequestDto.readableName());
                 return false;
               }
+              try {
+                X509Utils.assertOnlySanIsCn(cert);
+              } catch (RuntimeException e) {
+                log.error("Ignoring certificate for actor {}", actorRequestDto.readableName(), e);
+                return false;
+              }
               return true;
             })
-        .map(X509Utils::extractCommonName)
+        .map(X509Utils::extractSanOrCommonName)
         .forEach(
             s -> {
               ++certsInfo.count;

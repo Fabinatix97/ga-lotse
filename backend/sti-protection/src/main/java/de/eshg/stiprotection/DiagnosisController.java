@@ -6,6 +6,7 @@
 package de.eshg.stiprotection;
 
 import de.eshg.base.icd10.api.Icd10CodeDto;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.diagnosis.DiagnosisDto;
 import de.eshg.stiprotection.mapper.diagnosis.DiagnosisMapper;
@@ -59,6 +60,6 @@ public class DiagnosisController {
     Diagnosis diagnosis = diagnosisService.getOrCreateDiagnosis(procedureId);
     diagnosisService.updateDiagnosis(diagnosis, DiagnosisMapper.toDatabaseType(diagnosisDto));
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.DIAGNOSIS_UPDATED);
+        procedureId, StiProtectionSystemProgressEntryType.DIAGNOSIS_UPDATED, TriggerType.EMPLOYEE);
   }
 }

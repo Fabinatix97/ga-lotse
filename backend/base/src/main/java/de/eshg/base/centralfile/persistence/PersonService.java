@@ -7,6 +7,7 @@ package de.eshg.base.centralfile.persistence;
 
 import static de.eshg.base.centralfile.PersonController.REFERENCE_PERSON_NOT_FOUND;
 import static de.eshg.base.util.PersonDiffer.isPersonMatch;
+import static de.eshg.base.util.PersonIdUtil.isValidPersonId;
 import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
 
 import de.cronn.commons.lang.StreamUtil;
@@ -21,10 +22,12 @@ import de.eshg.base.centralfile.persistence.entity.Person_;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
 import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.base.util.PersonDiffer;
+import de.eshg.base.util.PersonIdUtil;
 import de.eshg.mutex.MutexService;
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.rest.service.error.InternalServerErrorException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import io.micrometer.common.util.StringUtils;
@@ -50,6 +53,8 @@ public class PersonService {
   private final MutexService mutexService;
   private final CentralFileAuditLogger logger;
   private final Clock clock;
+
+  private static final int MAXIMUM_NUMBER_OF_ITERATIONS_FOR_HUMAN_READABLE_ID = 100;
 
   public PersonService(
       PersonRepository personRepository,
@@ -210,6 +215,15 @@ public class PersonService {
         limit);
   }
 
+  public List<Person> searchReferencePersonsByHumanReadableId(String humanReadableId) {
+    if (isValidPersonId(humanReadableId)) {
+      return personRepository.findReferencePersonsByHumanReadableId(
+          PersonIdUtil.personIdToLong(humanReadableId));
+    } else {
+      return Collections.emptyList();
+    }
+  }
+
   private void configureSimilarityThreshold(String firstName, String lastName) {
     double similarityThresholdFirstName =
         firstName != null ? getSimilarityThreshold(firstName) : 1.0;
@@ -229,6 +243,7 @@ public class PersonService {
 
   private Person addPersonForFileState(Person personFileState) {
     Person person = personFileState.cloneFromFileState();
+    person.setHumanReadableId(getUniqueRandomHumanReadablePersonId());
     Person savedPerson = personRepository.save(person);
 
     logger.logAddReferenceData(savedPerson);
@@ -418,6 +433,7 @@ public class PersonService {
     Person referencePerson = personFileState.cloneFromFileState();
     referencePerson.setDataOrigin(DataOrigin.EXTERNAL);
     referencePerson.setDeleteAt(null);
+    referencePerson.setHumanReadableId(getUniqueRandomHumanReadablePersonId());
     Person savedReferencePerson = personRepository.save(referencePerson);
 
     personFileState.setReferencePerson(savedReferencePerson);
@@ -512,5 +528,18 @@ public class PersonService {
 
   private int deleteExpiredFileStatesAndReferencesWhenLocked(Instant expirationTime) {
     return personRepository.deleteByDeleteAtBefore(expirationTime);
+  }
+
+  private long getUniqueRandomHumanReadablePersonId() {
+    long id;
+    int iterations = 0;
+    do {
+      id = PersonIdUtil.getRandomPersonIdAsLong();
+      if (++iterations > MAXIMUM_NUMBER_OF_ITERATIONS_FOR_HUMAN_READABLE_ID) {
+        throw new InternalServerErrorException(
+            "Could not generate unique human readable person ID");
+      }
+    } while (personRepository.countUsesOfHumanReadableId(id) > 0);
+    return id;
   }
 }

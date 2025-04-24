@@ -6,4 +6,5 @@ de.eshg.rest.service.ServerAutoConfiguration
 de.eshg.rest.service.JacksonAutoConfiguration
 de.eshg.rest.service.security.KeycloakAuthAutoConfiguration
 de.eshg.rest.service.rate.limit.ClockBasedTimeMeter
+de.eshg.rest.service.i18n.InternationalizationAutoconfiguration
 de.eshg.management.config.ManagementEndpointAutoConfiguration

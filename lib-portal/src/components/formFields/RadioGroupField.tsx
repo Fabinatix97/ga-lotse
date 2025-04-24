@@ -5,7 +5,8 @@
 
 import { FormControl, FormHelperText, FormLabel, RadioGroup } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { ChangeEvent, PropsWithChildren, ReactNode } from "react";
+import { FieldHelperProps } from "formik";
+import { ChangeEvent, PropsWithChildren, ReactNode, memo } from "react";
 import { isDefined } from "remeda";
 
 import { ValidationRules } from "../../types/form";
@@ -24,18 +25,47 @@ export interface RadioGroupFieldProps
   "data-testid"?: string;
 }
 
-export function RadioGroupField({
+export function RadioGroupField(props: RadioGroupFieldProps) {
+  const { input, error, required, helpers } = useBaseField<string>(props);
+
+  return (
+    <MemoizedRadioGroupField
+      fieldInputName={input.name}
+      fieldInputValue={input.value}
+      fieldRequired={required}
+      fieldError={error}
+      fieldHelpersSetValue={helpers.setValue}
+      {...props}
+    />
+  );
+}
+
+interface InnerRadioGroupFieldProps extends RadioGroupFieldProps {
+  fieldInputName: string;
+  fieldInputValue: string;
+  fieldError: boolean;
+  fieldRequired: boolean;
+  fieldHelpersSetValue: FieldHelperProps<string>["setValue"];
+}
+
+const MemoizedRadioGroupField = memo(InnerRadioGroupField);
+
+function InnerRadioGroupField({
+  fieldHelpersSetValue,
+  fieldError,
+  fieldInputValue,
+  fieldInputName,
+  fieldRequired,
   sx,
   orientation,
   label,
   children,
   ...props
-}: RadioGroupFieldProps) {
+}: InnerRadioGroupFieldProps) {
   const isFormDisabled = useIsFormDisabled();
-  const { input, error, required, helpers } = useBaseField<string>(props);
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    await helpers.setValue(event.target.value);
+    await fieldHelpersSetValue(event.target.value);
     if (isDefined(props.onChange)) {
       props.onChange(event.target.value);
     }
@@ -43,22 +73,22 @@ export function RadioGroupField({
 
   return (
     <FormControl
-      error={error}
-      required={required}
+      error={fieldError}
+      required={fieldRequired}
       sx={sx}
       disabled={isFormDisabled}
       data-testid={props["data-testid"]}
     >
       {label && <FormLabel>{label}</FormLabel>}
       <RadioGroup
-        name={input.name}
-        value={input.value}
+        name={fieldInputName}
+        value={fieldInputValue}
         onChange={handleChange}
         orientation={orientation}
       >
         {children}
       </RadioGroup>
-      {error && <FormHelperText>{props.required}</FormHelperText>}
+      {fieldError && <FormHelperText>{props.required}</FormHelperText>}
     </FormControl>
   );
 }

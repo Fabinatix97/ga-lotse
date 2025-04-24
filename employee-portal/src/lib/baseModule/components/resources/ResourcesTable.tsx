@@ -8,9 +8,12 @@
 import { ApiUserRole, GetResourcesRequest } from "@eshg/base-api";
 import {
   DataTable,
+  FilterSettingsContent,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -21,9 +24,6 @@ import { useGetResourcesOverviewQuery } from "@/lib/baseModule/api/queries/resou
 import { useResourcesFilterSettings } from "@/lib/baseModule/components/resources/hooks/useResourcesFilterSettings";
 import { useAddResourceSidebar } from "@/lib/baseModule/components/resources/sidebar/AddResourceSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 import { resourceTableColumns } from "./columns";
@@ -75,7 +75,7 @@ export function ResourcesTable({ params }: ResourcesTableProps) {
             justifyContent={"space-between"}
           >
             <Stack direction={"row"} gap={"inherit"} flexWrap={"wrap"}>
-              <FilterButton {...filterSettings.filterButtonProps} />
+              <ToggleFilterButton {...filterSettings.filterButtonProps} />
               <SearchFilter
                 tableControl={tableControl}
                 searchParamName={"name"}

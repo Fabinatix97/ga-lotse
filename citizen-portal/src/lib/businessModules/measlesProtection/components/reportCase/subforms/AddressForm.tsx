@@ -5,7 +5,7 @@
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiDomesticAddress } from "@eshg/measles-protection-api";
 import { Box, Checkbox, Grid, Typography } from "@mui/joy";
 
@@ -39,6 +39,7 @@ export function AddressForm({
   name,
 }: AddressFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper<ApiDomesticAddress>(name);
 
   return (

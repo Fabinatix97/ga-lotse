@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import {
   Delete,
@@ -42,7 +42,6 @@ import { ImageType } from "@/lib/businessModules/statistics/components/shared/ch
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { canExportDataPermission } from "@/lib/businessModules/statistics/permissions/canExportDataPermission";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 export function AnalysisChartDiagram(props: {
   configuration: AnalysisDiagramConfiguration;

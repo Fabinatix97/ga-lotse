@@ -4,6 +4,7 @@
  */
 
 import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import { YesOrNoFieldData } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import {
   ApiConcern,
   ApiCreateMedicalHistoryRequest,
@@ -18,8 +19,6 @@ import {
   ApiSexualOrientation,
   ApiVaccination,
 } from "@eshg/sti-protection-api";
-
-import { YesOrNoFieldData } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 
 type ValueOf<T> = T[keyof T];
 type DateKeys<T> = ValueOf<{

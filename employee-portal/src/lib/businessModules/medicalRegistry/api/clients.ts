@@ -3,20 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
   FileApi,
+  GdprValidationTaskApi,
   MedicalRegistryApi,
   MedicalRegistryImportApi,
   ProcedureApi,
   ProgressEntryApi,
 } from "@eshg/medical-registry-api";
 
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
+
 export function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_MEDICAL_REGISTRY_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
@@ -55,4 +57,9 @@ export function useProgressEntryApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useGdprValidationTaskApi() {
+  const configuration = useConfiguration();
+  return new GdprValidationTaskApi(configuration);
 }

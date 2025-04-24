@@ -15,9 +15,11 @@
     "@tanstack/react-query": "catalog:common",
     "date-fns": "catalog:common",
     "formik": "catalog:common",
+    "i18next": "catalog:i18next",
     "next": "catalog:next",
     "react": "catalog:react",
     "react-dom": "catalog:react",
+    "react-i18next": "catalog:i18next",
     "remeda": "catalog:common",
     "uuid": "catalog:common",
     "valibot": "catalog:common"

@@ -4,6 +4,7 @@
  */
 
 import { ButtonBar } from "@eshg/lib-employee-portal";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { ApiAbstractFile, ApiApprovalRequest } from "@eshg/lib-procedures-api";
 import {
   Box,
@@ -22,7 +23,6 @@ import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progr
 import { useDecideApprovalRequest } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { FileAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/FileAsApprovalRequestEntity";
 import { ProgressEntryAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ProgressEntryAsApprovalRequestEntity";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function ApprovalRequestCard(request: ApiApprovalRequest) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
@@ -59,7 +59,7 @@ export function ApprovalRequestCard(request: ApiApprovalRequest) {
             color="danger"
             data-testid="requestTitle"
           >
-            Löschanfrage von {fullName(resolvedUsers[request.createdBy])}
+            Löschanfrage von {formatUserName(resolvedUsers[request.createdBy])}
           </Typography>
           <div data-testid="requestEntity">
             {isDefined(request.entity) &&

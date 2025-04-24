@@ -11,14 +11,18 @@ import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Child_;
+import de.eshg.dental.domain.model.ProcedureLabel;
+import de.eshg.dental.domain.model.ProcedureLabel_;
 import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.ListJoin;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -37,6 +41,7 @@ class ChildSpecification implements Specification<Child> {
   private final Integer yearFilter;
   private final UUID institutionIdFilter;
   private final String groupNameFilter;
+  private final ArrayList<UUID> procedureLabelFilter;
 
   public ChildSpecification(
       ChildFilterParameters filterParameters,
@@ -46,6 +51,7 @@ class ChildSpecification implements Specification<Child> {
     groupNameFilter = filterParameters.groupNameFilter();
     sortKey = paginationAndSortParameters.sortKeyOrFallback(ChildSortKey.ID);
     sortDirection = paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC);
+    procedureLabelFilter = (ArrayList<UUID>) filterParameters.procedureLabelsFilter();
   }
 
   static ChildPageSpec toPageSpec(
@@ -84,6 +90,18 @@ class ChildSpecification implements Specification<Child> {
       conjunctions.add(cb.equal(root.get(Child_.year), yearFilter));
     } else {
       conjunctions.add(cb.equal(root.get(Child_.procedureStatus), ProcedureStatus.OPEN));
+    }
+
+    if (procedureLabelFilter != null) {
+      for (UUID procedureLabel : procedureLabelFilter) {
+        Subquery<Child> subquery = query.subquery(Child.class);
+        Root<Child> subqueryRoot = subquery.correlate(root);
+        ListJoin<Child, ProcedureLabel> procedureLabelJoin =
+            subqueryRoot.join(Child_.procedureLabels);
+        subquery.where(
+            cb.equal(procedureLabelJoin.get(ProcedureLabel_.externalId), procedureLabel));
+        conjunctions.add(cb.exists(subquery));
+      }
     }
 
     return cb.and(conjunctions.toArray(Predicate[]::new));

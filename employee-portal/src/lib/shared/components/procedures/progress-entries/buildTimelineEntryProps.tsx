@@ -5,6 +5,7 @@
 
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiGetProgressEntriesResponseProgressEntriesInner,
   ApiManualProgressEntry,
@@ -24,7 +25,6 @@ import {
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { TimelineEntryProps } from "@/lib/shared/components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 import { EntryFile } from "./EntryFile";
 import {
@@ -145,7 +145,7 @@ function timelineEntryPropsOfManualProgressEntry(
     ),
     label: buildLabel(
       manualProgressEntry.createdAt,
-      fullName(resolvedUsers[manualProgressEntry.createdBy]),
+      formatUserName(resolvedUsers[manualProgressEntry.createdBy]),
     ),
     indicator: (
       <TimelineEntryIndicator>
@@ -184,7 +184,7 @@ function timelineEntryPropsOfInboxProgressEntry(
     ),
     label: buildLabel(
       inboxProgressEntry.createdAt,
-      fullName(resolvedUsers[inboxProgressEntry.createdBy]),
+      formatUserName(resolvedUsers[inboxProgressEntry.createdBy]),
     ),
     indicator: (
       <TimelineEntryIndicator>

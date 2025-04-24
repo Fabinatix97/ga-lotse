@@ -7,7 +7,7 @@ import { Stack, StackProps } from "@mui/joy";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
 
-export interface ButtonBarProps {
+interface ButtonBarProps {
   left?: ReactNode | ReactNode[];
   right?: ReactNode | ReactNode[];
   alignItems?: StackProps["alignItems"];

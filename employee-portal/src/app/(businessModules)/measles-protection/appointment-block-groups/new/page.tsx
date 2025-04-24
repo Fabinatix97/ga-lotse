@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import { useGetAppointmentDurations } from "@/lib/businessModules/measlesProtection/api/queries/appointmentTypeApi";
@@ -23,7 +24,9 @@ export default function NewAppointmentBlockGroupsPage() {
       toolbar={
         <Toolbar
           title="Neuen Terminblock planen"
-          backHref={routes.appointmentBlockGroups.index}
+          backButton={
+            <ToolbarBackButton href={routes.appointmentBlockGroups.index} />
+          }
         />
       }
     >

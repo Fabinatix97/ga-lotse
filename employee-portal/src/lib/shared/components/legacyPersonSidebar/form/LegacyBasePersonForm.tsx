@@ -14,10 +14,8 @@ import {
   TITLE_OPTIONS,
   TITLE_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
-import {
-  validateDateOfBirth,
-  validateLength,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Grid, Stack } from "@mui/joy";
 
@@ -63,6 +61,7 @@ export function LegacyBasePersonForm({
   optionalFields,
   disabledFields,
 }: LegacyBasePersonFormProps) {
+  const { validateLength } = useValidators();
   return (
     <Stack gap={2} rowGap={2}>
       {(!hiddenFields?.includes("salutation") ||

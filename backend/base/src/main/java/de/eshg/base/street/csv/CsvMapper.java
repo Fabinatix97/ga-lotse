@@ -42,6 +42,10 @@ public final class CsvMapper {
   }
 
   private static <T> CsvToBean<T> createCsvToBean(Reader reader, Class<T> clazz) {
-    return new CsvToBeanBuilder<T>(reader).withType(clazz).withSeparator(';').build();
+    return new CsvToBeanBuilder<T>(reader)
+        .withType(clazz)
+        .withSeparator(';')
+        .withQuoteChar('"')
+        .build();
   }
 }

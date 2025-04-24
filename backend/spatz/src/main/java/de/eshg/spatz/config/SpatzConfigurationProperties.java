@@ -85,7 +85,6 @@ public record SpatzConfigurationProperties(
   public static class SelfSignedConfiguration {
 
     private boolean enabled = true;
-    private List<String> subjectAlternativeNames;
     private String subjectLocation;
     private Duration maxAge = Duration.ofDays(7);
     private DefaultKeyParameters keyParameters = DefaultKeyParameters.ECDSA;
@@ -112,14 +111,6 @@ public record SpatzConfigurationProperties(
 
     public void setMaxAge(Duration maxAge) {
       this.maxAge = maxAge;
-    }
-
-    public List<String> getSubjectAlternativeNames() {
-      return subjectAlternativeNames;
-    }
-
-    public void setSubjectAlternativeNames(List<String> subjectAlternativeNames) {
-      this.subjectAlternativeNames = subjectAlternativeNames;
     }
 
     public String getSubjectLocation() {

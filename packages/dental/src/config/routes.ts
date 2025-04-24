@@ -31,6 +31,14 @@ export const routes = defineRoutes("/dental", (dentalPath) => ({
   ),
   children: defineRoutes(dentalPath("/children"), (childrenPath) => ({
     overview: childrenPath("/"),
+    schoolYearTransition: defineRoutes(
+      childrenPath("/school-year-transition"),
+      (schoolYearTransitionPath) => ({
+        schools: schoolYearTransitionPath("/schools"),
+        groups: (institutionId: string) =>
+          schoolYearTransitionPath(`/groups/${institutionId}`),
+      }),
+    ),
     byId: (childId: string) =>
       defineRoutes(childrenPath(`/${childId}`), (childPath) => ({
         index: childPath("/"),

@@ -11,6 +11,7 @@ import de.eshg.stiprotection.api.GetProcedureResponse;
 import de.eshg.stiprotection.api.StiProtectionProcedureOverviewDto;
 import de.eshg.stiprotection.api.citizen.GetCitizenProcedureResponse;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
+import de.eshg.stiprotection.persistence.db.LabStatus;
 import de.eshg.stiprotection.persistence.db.Person;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 
@@ -48,7 +49,16 @@ public class StiProtectionProcedureMapper {
         AppointmentMapper.toInterfaceType(
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),
         AppointmentHistoryMapper.toInterfaceType(procedure.getAppointmentHistory()),
-        procedure.getMedicalHistorySubmitted());
+        procedure.getMedicalHistorySubmitted(),
+        mapLabStatusToResultStatus(procedure.getLabStatus()));
+  }
+
+  private static Boolean mapLabStatusToResultStatus(LabStatus labStatus) {
+    return switch (labStatus) {
+      case RESULTS_RECORDED -> true;
+      case RESULTS_COMMUNICATED -> true;
+      default -> false;
+    };
   }
 
   public static StiProtectionProcedureOverviewDto toOverviewType(StiProtectionProcedure procedure) {
@@ -59,7 +69,6 @@ public class StiProtectionProcedureMapper {
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         ConcernMapper.toInterfaceType(procedure.getConcern()),
         person.getYearOfBirth(),
-        null,
         GenderMapper.toInterfaceType(person.getGender()),
         AppointmentMapper.toInterfaceType(
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),

@@ -5,6 +5,7 @@
 
 import { ApiUser } from "@eshg/base-api";
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { Close, Search } from "@mui/icons-material";
 import {
   AutocompleteOption,
@@ -17,7 +18,6 @@ import {
 import { FormikErrors } from "formik";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 interface UserInputProps {
   options: ApiUser[];
@@ -42,7 +42,7 @@ export function UserAutoCompleteField({
       options={options}
       value={values}
       onChange={(e, value) => setFieldValue("users", value)}
-      getOptionLabel={(user) => fullName(user)}
+      getOptionLabel={(user) => formatUserName(user)}
       renderTags={(users, getTagProps) =>
         users.map((user, index) => (
           // key handled by mui getTagProps
@@ -54,7 +54,7 @@ export function UserAutoCompleteField({
             sx={{ minWidth: 0 }}
             {...getTagProps({ index })}
           >
-            {fullName(user)}
+            {formatUserName(user)}
           </Chip>
         ))
       }
@@ -74,7 +74,7 @@ function UserOption({ user }: { user: ApiUser }) {
         <UserAvatar size={"sm"} user={user} />
       </ListItemDecorator>
       <ListItemContent>
-        <Typography level="title-md">{fullName(user)}</Typography>
+        <Typography level="title-md">{formatUserName(user)}</Typography>
       </ListItemContent>
     </>
   );

@@ -4,6 +4,7 @@
  */
 
 import { ApiInventoryItem } from "@eshg/base-api";
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import EditIcon from "@mui/icons-material/Edit";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
@@ -16,7 +17,6 @@ import { LowCountWarning } from "@/lib/baseModule/components/inventory/LowCountW
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 function isLowAmount(data: ApiInventoryItem) {
   return (

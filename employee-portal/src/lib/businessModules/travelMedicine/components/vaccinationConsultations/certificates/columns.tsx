@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiCertificateType,
@@ -10,8 +11,6 @@ import {
 } from "@eshg/travel-medicine-api";
 import { FeedOutlined } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
-
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiTMCertificate> =
   createColumnHelper<ApiTMCertificate>();

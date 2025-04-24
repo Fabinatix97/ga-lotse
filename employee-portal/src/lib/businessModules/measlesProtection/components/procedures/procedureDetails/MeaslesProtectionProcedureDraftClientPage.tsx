@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ToolbarBackButton } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
@@ -65,7 +66,10 @@ export function MeaslesProtectionProcedureDraftClientPage({
 
   const title = `${procedure.affectedPerson.lastName}, ${procedure.affectedPerson.firstName}, ${formatDate(procedure.affectedPerson.dateOfBirth)}`;
   return (
-    <MeaslesProtectionLayout title={title} backHref={routes.procedures.index}>
+    <MeaslesProtectionLayout
+      title={title}
+      backButton={<ToolbarBackButton href={routes.procedures.index} />}
+    >
       <Grid container gap={3} data-testid="procedureDraftPage">
         <Grid xs={12} lg>
           <Stack gap={3}>

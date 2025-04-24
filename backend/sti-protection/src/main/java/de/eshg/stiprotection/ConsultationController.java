@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection;
 
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.consultation.ConsultationDto;
 import de.eshg.stiprotection.mapper.consultation.ConsultationMapper;
@@ -55,6 +56,8 @@ public class ConsultationController {
     Consultation consultation = consultationService.getOrCreateConsultation(procedureId);
     ConsultationMapper.update(consultationDto, consultation);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.CONSULTATION_UPDATED);
+        procedureId,
+        StiProtectionSystemProgressEntryType.CONSULTATION_UPDATED,
+        TriggerType.EMPLOYEE);
   }
 }

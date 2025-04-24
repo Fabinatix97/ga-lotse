@@ -21,6 +21,8 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
+import { GoToResultsStatusCard } from "./GoToResultsStatusCard";
+
 const keycloakLogoutHref = "/logout/keycloak";
 
 export function AppointmentDetailsSidePanel() {
@@ -55,21 +57,32 @@ export function AppointmentDetailsSidePanel() {
   }
 
   return (
-    <ContentSheet>
-      <ContentSheetTitle>{t("personal_area.title")}</ContentSheetTitle>
-      <Stack gap={2}>
-        <InternalLinkButton
-          href={citizenRoutes.personalArea.appointments}
-          variant="outlined"
-        >
-          {t("personal_area.go_to_personal_area")}
-        </InternalLinkButton>
-        {hasAppointment ? (
-          <Button variant="outlined" color="danger" onClick={onCancel}>
-            {t("personal_area.cancel_appointment")}
-          </Button>
-        ) : null}
-      </Stack>
-    </ContentSheet>
+    <Stack gap={2}>
+      <ContentSheet>
+        <ContentSheetTitle>{t("personal_area.title")}</ContentSheetTitle>
+        <Stack gap={2}>
+          {hasAppointment ? (
+            <InternalLinkButton
+              href={citizenRoutes.personalArea.rebook}
+              variant="solid"
+            >
+              {t("personal_area.rebook_appointment")}
+            </InternalLinkButton>
+          ) : null}
+          <InternalLinkButton
+            href={citizenRoutes.personalArea.appointments}
+            variant="outlined"
+          >
+            {t("personal_area.go_to_personal_area")}
+          </InternalLinkButton>
+          {hasAppointment ? (
+            <Button variant="outlined" color="danger" onClick={onCancel}>
+              {t("personal_area.cancel_appointment")}
+            </Button>
+          ) : null}
+        </Stack>
+      </ContentSheet>
+      <GoToResultsStatusCard />
+    </Stack>
   );
 }

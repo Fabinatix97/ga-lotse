@@ -25,10 +25,11 @@ import {
   TaskMetricsApi,
   UserApi,
 } from "@eshg/base-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 export function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_BASE_BACKEND_URL",
   );
   return new Configuration(configurationParameters);

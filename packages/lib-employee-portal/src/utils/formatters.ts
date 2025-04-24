@@ -4,7 +4,10 @@
  */
 
 import { Nullable } from "@eshg/lib-portal/types/utility";
+import { type Locale, formatDistanceStrict } from "date-fns";
 import { isNullish } from "remeda";
+
+import { getDateFnsLocale } from "./dateTime";
 
 export function formatSchoolYear(schoolYear: Nullable<number>): string {
   if (isNullish(schoolYear)) {
@@ -52,4 +55,16 @@ export function createCountFormatter(
 
     return `${count} ${plural}`;
   };
+}
+
+export function formatDurationFromNowUntil(
+  date: Date,
+  options?: { locale: Locale },
+) {
+  const now = new Date();
+  return date > now
+    ? formatDistanceStrict(date, now, {
+        locale: options?.locale ?? getDateFnsLocale(),
+      })
+    : undefined;
 }

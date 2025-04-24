@@ -5,37 +5,6 @@
 
 "use client";
 
-import { routes } from "@eshg/dental";
-import {
-  MainContentLayout,
-  StickyToolbarLayout,
-  Toolbar,
-} from "@eshg/lib-employee-portal";
+import { DentalProphylaxisSessionDetailsPage } from "@eshg/dental";
 
-import { ProphylaxisSessionDetails } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionDetails";
-import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
-import { useSyncOutgoingProphylaxisSessionChanges } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/useSyncOutgoingProphylaxisSessionChanges";
-
-export default function ProphylaxisSessionDetailsPage() {
-  const institutionName = useProphylaxisSessionStore(
-    (state) => state.institution.name,
-  );
-  const groupName = useProphylaxisSessionStore((state) => state.groupName);
-
-  useSyncOutgoingProphylaxisSessionChanges();
-
-  return (
-    <StickyToolbarLayout
-      toolbar={
-        <Toolbar
-          title={`Prophylaxe - ${institutionName} - ${groupName}`}
-          backHref={routes.prophylaxisSessions.overview}
-        />
-      }
-    >
-      <MainContentLayout fullViewportHeight>
-        <ProphylaxisSessionDetails />
-      </MainContentLayout>
-    </StickyToolbarLayout>
-  );
-}
+export default DentalProphylaxisSessionDetailsPage;

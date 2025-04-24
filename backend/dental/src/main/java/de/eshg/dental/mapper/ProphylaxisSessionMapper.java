@@ -59,6 +59,14 @@ public final class ProphylaxisSessionMapper {
     };
   }
 
+  public static ProphylaxisStatus mapToDomain(ProphylaxisStatusDto dto) {
+    return switch (dto) {
+      case null -> null;
+      case OPEN -> ProphylaxisStatus.OPEN;
+      case CLOSED -> ProphylaxisStatus.CLOSED;
+    };
+  }
+
   public static ProphylaxisTypeDto mapToDto(ProphylaxisType type) {
     return switch (type) {
       case null -> null;

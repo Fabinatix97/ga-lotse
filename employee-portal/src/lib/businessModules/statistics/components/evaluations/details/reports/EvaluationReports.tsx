@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ActionsMenu,
   DataTable,
   NoSearchResults,
   TablePage,
@@ -15,7 +16,7 @@ import {
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiReportState } from "@eshg/statistics-api";
-import { Add, NotInterestedOutlined } from "@mui/icons-material";
+import { Add, Info, NotInterestedOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -26,6 +27,7 @@ import {
   Typography,
 } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
+import { isPlainObject } from "remeda";
 
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
@@ -40,6 +42,7 @@ import {
 import { ReportSeriesState } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import { useDeactivateReportSeries } from "@/lib/businessModules/statistics/api/mutations/useDeactivateReportSeries";
 import { getEvaluationReportsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { useAnonymizationFailedSidebar } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationFailedSidebar";
 import { useAddReportSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/AddReportSidebar";
 import { ReportStateChip } from "@/lib/businessModules/statistics/components/evaluations/details/reports/ReportStateChip";
 import {
@@ -52,7 +55,6 @@ import { getSharedURL } from "@/lib/businessModules/statistics/components/shared
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
@@ -71,6 +73,7 @@ const meta = {
 };
 
 function columns(
+  showFailedAnonymizationInformation: (reportId: string) => void,
   deleteReportWithConfirmation: (reportId: string) => void,
   deleteReportSeriesWithConfirmation: (seriesId: string) => void,
   updateReport: (report: UpdateReportSidebarReportInfo) => void,
@@ -120,7 +123,7 @@ function columns(
           parentRow: true,
           subRow: true,
         },
-        width: "8rem",
+        width: "12rem",
       },
     }),
     columnHelper.display({
@@ -129,52 +132,68 @@ function columns(
       enableSorting: false,
       cell: (props) => {
         const data = props.row.original;
+        const anonymizationFailed =
+          data.status === ApiReportState.AnonymizationFailed;
         return (
           <ActionsMenu
-            actionItems={getReportActionItems(
-              [
-                {
-                  type: "update",
-                  action: () =>
-                    updateReport({
-                      seriesId: (data as SingleReport | ReportSeries).seriesId,
-                      name: data.name,
-                      description: (data as SingleReport | ReportSeries)
-                        .description,
-                      type: data.type,
-                    }),
-                },
-                {
-                  type: "share",
-                  action: async () =>
-                    await share(
-                      getSharedURL({
-                        detailLinkId: (data as SingleReport | ReportSeriesItem)
-                          .reportId,
-                        statisticsSubRoute: "reports",
-                      }),
-                    ),
-                },
-                {
-                  type: "export",
-                  action: () =>
-                    exportData(data as SingleReport | ReportSeriesItem),
-                },
-              ],
-              data.type,
-              {
-                deleteReportWithConfirmation: deleteReportWithConfirmation,
-                deleteReportSeriesWithConfirmation:
-                  deleteReportSeriesWithConfirmation,
-                seriesId: (data as SingleReport | ReportSeries).seriesId,
-                reportId: (data as SingleReport | ReportSeriesItem).reportId,
+            actionItems={[
+              anonymizationFailed && {
+                label: "Informationen",
+                startDecorator: <Info />,
+                onClick: () =>
+                  showFailedAnonymizationInformation(data.reportId),
               },
-              canWrite(),
-              canDelete(props.row.original.userId),
-              props.row.original.type === ReportDataType.Series
-                ? props.row.original.isAllItemsDeleting
-                : props.row.original.status !== ApiReportState.Completed,
-            )}
+              ...getReportActionItems(
+                anonymizationFailed
+                  ? []
+                  : [
+                      {
+                        type: "update",
+                        action: () =>
+                          updateReport({
+                            seriesId: (data as SingleReport | ReportSeries)
+                              .seriesId,
+                            name: data.name,
+                            description: (data as SingleReport | ReportSeries)
+                              .description,
+                            type: data.type,
+                          }),
+                      },
+                      {
+                        type: "share",
+                        action: async () =>
+                          await share(
+                            getSharedURL({
+                              detailLinkId: (
+                                data as SingleReport | ReportSeriesItem
+                              ).reportId,
+                              statisticsSubRoute: "reports",
+                            }),
+                          ),
+                      },
+                      {
+                        type: "export",
+                        action: () =>
+                          exportData(data as SingleReport | ReportSeriesItem),
+                      },
+                    ],
+                data.type,
+                {
+                  deleteReportWithConfirmation: deleteReportWithConfirmation,
+                  deleteReportSeriesWithConfirmation:
+                    deleteReportSeriesWithConfirmation,
+                  seriesId: (data as SingleReport | ReportSeries).seriesId,
+                  reportId: (data as SingleReport | ReportSeriesItem).reportId,
+                },
+                canWrite(),
+                canDelete(props.row.original.userId),
+                props.row.original.type === ReportDataType.Series
+                  ? props.row.original.isAllItemsDeleting
+                  : props.row.original.status !== ApiReportState.Completed &&
+                      props.row.original.status !==
+                        ApiReportState.AnonymizationFailed,
+              ),
+            ].filter(isPlainObject)}
           />
         );
       },
@@ -200,6 +219,7 @@ export function EvaluationReports({
   const addReportSidebar = useAddReportSidebar();
   const updateReportSidebar = useUpdateReportSidebar();
   const automateReportSidebar = useAutomateReportSidebar();
+  const anonymizationFailedSidebar = useAnonymizationFailedSidebar();
   const { openConfirmationDialog } = useConfirmationDialog();
   const { deleteReportSeriesWithConfirmation, deleteReportWithConfirmation } =
     useDeleteWithConfirmation();
@@ -294,6 +314,11 @@ export function EvaluationReports({
               wrapContent
               wrapHeader
               columns={columns(
+                (reportId) =>
+                  anonymizationFailedSidebar.open({
+                    id: reportId,
+                    isReport: true,
+                  }),
                 deleteReportWithConfirmation,
                 deleteReportSeriesWithConfirmation,
                 openUpdateReportSidebar,

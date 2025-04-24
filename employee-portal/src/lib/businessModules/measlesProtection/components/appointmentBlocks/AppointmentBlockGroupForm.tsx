@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined } from "remeda";
@@ -16,7 +16,6 @@ import {
   AppointmentCountWithDays,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";

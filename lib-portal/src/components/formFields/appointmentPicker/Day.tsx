@@ -13,6 +13,7 @@ import {
   isWithinInterval,
   startOfDay,
 } from "date-fns";
+import { useEffect, useRef } from "react";
 
 import { AppointmentCalendarProps } from "./AppointmentCalendar";
 import { MonthSelectionProps } from "./MonthSelection";
@@ -25,7 +26,10 @@ export interface DayProps
   > {
   locale: string;
   date: Date | null;
+  focusedDay: Date | null;
   currentInterval: Interval;
+  isFirst: boolean;
+  onDayFocused: AppointmentCalendarProps["onDateSelected"];
 }
 
 export const DaysGrid = styled("div", {
@@ -46,15 +50,29 @@ export const DaysGrid = styled("div", {
 export function Day({
   date,
   currentInterval,
-  selectedDay: selectedDate,
-  onDateSelected,
+  selectedDay,
+  focusedDay,
+  onDayFocused,
+  onDateSelected: onDaySelected,
   appointments: monthAppointments,
   locale,
+  isFirst,
 }: DayProps) {
   const theme = useTheme();
+
+  const cellRef = useRef<HTMLTimeElement>(null);
+  const isFocused = date && focusedDay && isSameDay(focusedDay, date);
+  useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
+    cellRef.current?.focus();
+  }, [isFocused, cellRef]);
+
   if (date == null) {
     return <div></div>;
   }
+
   const boldProp = isSunday(date)
     ? { fontWeight: "bold" }
     : { fontWeight: "normal" };
@@ -63,25 +81,39 @@ export function Day({
       ? theme.palette.text.secondary
       : theme.palette.text.primary,
   };
-  const isSelected = selectedDate != null && isSameDay(selectedDate, date);
+  const isSelected = selectedDay != null && isSameDay(selectedDay, date);
   const selectedStyles = isSelected
     ? { borderRadius: "100%", color: theme.palette.common.white }
     : {};
+  const tabIntoProps =
+    isSelected || (isFirst && selectedDay == null) ? {} : { tabIndex: -1 };
 
   const dayInterval = { start: startOfDay(date), end: endOfDay(date) };
+
   const hasAppointments = monthAppointments.some((t) =>
     isWithinInterval(t, dayInterval),
   );
 
+  function handleFocus() {
+    if (!date) {
+      return;
+    }
+    onDayFocused(date);
+  }
+
   return (
     <Stack
       sx={{ alignItems: "center" }}
-      component={"time"}
-      dateTime={formatISO(date, { representation: "date" })}
+      role="gridcell"
+      aria-selected={isSelected || undefined}
+      aria-label={dateInMonthForm(locale).format(date)}
+      aria-disabled={!hasAppointments}
     >
       <Button
-        aria-selected={isSelected || undefined}
-        aria-label={dateInMonthForm(locale).format(date)}
+        ref={cellRef}
+        component={"time"}
+        dateTime={formatISO(date, { representation: "date" })}
+        onFocus={handleFocus}
         disabled={!hasAppointments}
         color={isSelected ? "primary" : "neutral"}
         variant={isSelected ? "solid" : "plain"}
@@ -96,7 +128,8 @@ export function Day({
           minHeight: "32px",
           width: "32px",
         }}
-        onClick={() => onDateSelected(date)}
+        onClick={() => onDaySelected(date)}
+        {...tabIntoProps}
         {...boldProp}
       >
         {date.getDate()}

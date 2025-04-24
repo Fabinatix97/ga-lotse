@@ -5,6 +5,7 @@
 
 import { ApiUser } from "@eshg/base-api";
 import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { Badge, DialogTitle, Stack, Typography } from "@mui/joy";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
@@ -13,7 +14,6 @@ import {
   getPresenceLabel,
   getStatusColor,
 } from "@/lib/businessModules/chat/shared/utils";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
   const { userPresence, sharePresence } = useGetSelfUserPresence();
@@ -57,7 +57,7 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
           component={"h1"}
           level={"h3"}
         >
-          {fullName(selfUser)}
+          {formatUserName(selfUser)}
         </DialogTitle>
         <Typography>@{selfUser.username}</Typography>
       </Stack>

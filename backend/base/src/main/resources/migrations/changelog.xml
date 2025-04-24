@@ -60,5 +60,9 @@
   <include file="migrations/0050_add_opening_hours_initialized.xml"/>
   <include file="migrations/0051_department_configuration_change_columns_to_document.xml"/>
   <include file="migrations/0052_gdpr_indices.xml"/>
+  <include file="migrations/0053_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="migrations/0054_add_markdown_documents.xml"/>
+  <include file="migrations/0055_remove_security_txt.xml"/>
+  <include file="migrations/0056_human_readable_person_id.xml"/>
 
 </databaseChangeLog>

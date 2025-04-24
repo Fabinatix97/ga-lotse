@@ -19,7 +19,7 @@
       "category_all": "Alle"
     },
     "fields": {
-      "concern_required": "Pflichtfeld ausfüllen."
+      "concern_required": "Pflichtfeld, bitte ausfüllen"
     }
   },
   "appointment": {
@@ -32,10 +32,10 @@
       }
     },
     "appointmentPicker": {
-      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung",
+      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung.",
       "noAppointmentSelected": "Es wurde kein Termin ausgewählt.",
-      "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar",
-      "tryLater": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+      "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar.",
+      "tryLater": "Wir schalten in Kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
     },
     "backToOverview": "Zurück"
   },
@@ -64,6 +64,14 @@
       "delete": "Entfernen",
       "deleteAll": "Alles entfernen",
       "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut."
+    },
+    "validation": {
+      "invalidFileName": "Bitte nur Buchstaben, Zahlen, Bindestriche und Unterstriche im Dateinamen verwenden",
+      "nonConformPdf": "Die ausgewählte Datei ist nicht PDF/A konform.",
+      "unsupportedFileType": "Bitte eine Datei vom Typ JPEG, PNG oder PDF auswählen",
+      "imageTooWide": "Bitte nur Bilder mit einer Größe von maximal {{maximumSize}} Pixeln auswählen",
+      "mismatchedMediaType": "Der Dateityp stimmt nicht mit der Dateinamenserweiterung überein.",
+      "unknownError": "Unbekannter Fehler"
     }
   },
   "affectedPerson": {
@@ -72,26 +80,26 @@
       "salutation": "Anrede",
       "title": "Titel",
       "firstName": "Vorname",
-      "firstName_required": "Pflichtfeld ausfüllen.",
+      "firstName_required": "Pflichtfeld, bitte ausfüllen",
       "lastName": "Nachname",
-      "lastName_required": "Pflichtfeld ausfüllen.",
+      "lastName_required": "Pflichtfeld, bitte ausfüllen",
       "nameAtBirth": "Geburtsname",
       "dateOfBirth": "Geburtsdatum",
-      "dateOfBirth_required": "Pflichtfeld ausfüllen.",
+      "dateOfBirth_required": "Pflichtfeld, bitte ausfüllen",
       "contactAddress": {
         "street": "Straße",
-        "street_required": "Pflichtfeld ausfüllen.",
+        "street_required": "Pflichtfeld, bitte ausfüllen",
         "houseNumber": "Hausnummer",
-        "houseNumber_required": "Pflichtfeld ausfüllen.",
-        "addressAddition": "Addresszusatz",
+        "houseNumber_required": "Pflichtfeld, bitte ausfüllen",
+        "addressAddition": "Adresszusatz",
         "postalCode": "Postleitzahl",
-        "postalCode_required": "Pflichtfeld ausfüllen.",
+        "postalCode_required": "Pflichtfeld, bitte ausfüllen",
         "city": "Ort",
-        "city_required": "Pflichtfeld ausfüllen."
+        "city_required": "Pflichtfeld, bitte ausfüllen"
       },
       "phoneNumbers": "Telefon",
       "emailAddresses": "E-Mail-Adresse",
-      "emailAddresses_required": "Pflichtfeld ausfüllen.",
+      "emailAddresses_required": "Pflichtfeld, bitte ausfüllen",
       "confirmOnlineServices": "Ich bestätige, dass ich die Online-Dienste nutzen möchte und die hierzu notwendigen E-Mails erhalten möchte.",
       "confirmOnlineServices_required": "Bitte bestätigen."
     }
@@ -116,8 +124,8 @@
     "requiredDocuments_header": "Die notwendigen Dokumente, die Sie bitte zum Termin mitbringen sollten, sind:",
     "requiredDocuments_list": [
       "Personalausweis / Reisepass",
-      "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
-      "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
+      "Ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
+      "Ein Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
     ]
   },
   "confirmation": {

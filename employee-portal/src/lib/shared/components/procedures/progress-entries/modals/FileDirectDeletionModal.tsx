@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OverlayBoundary } from "@eshg/lib-employee-portal";
+import { ConfirmationDialog, OverlayBoundary } from "@eshg/lib-employee-portal";
 import { useContext } from "react";
 
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useDeleteFile } from "@/lib/shared/components/procedures/progress-entries/mutations/fileApi";
 
@@ -25,7 +24,7 @@ export function FileDirectDeletionModalContent() {
   const { closeFileDeletionModal } = progressEntriesContext.action;
   const deleteFile = useDeleteFile(fileApi);
   return (
-    <EmployeePortalConfirmationDialog
+    <ConfirmationDialog
       open={fileIdForDeletion !== null}
       onClose={closeFileDeletionModal}
       onConfirm={() => {

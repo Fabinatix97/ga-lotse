@@ -43,4 +43,7 @@ export const routes = {
     index: `${basePath}/official-medical-service`,
     openingHours: `${basePath}/official-medical-service/opening-hours`,
   },
+  opendata: {
+    index: `${basePath}/opendata`,
+  },
 } as const;

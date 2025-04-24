@@ -227,7 +227,7 @@ export default function ConfiguratorPage() {
           // eslint-disable-next-line no-console
           console.log("Download: ", fileName);
         }}
-        status="complete"
+        status="COMPLETE"
       />
     </MainContentLayout>
   );

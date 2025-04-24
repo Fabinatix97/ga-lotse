@@ -7,8 +7,8 @@
   "appointment": {
     "title": "Examination appointment",
     "alert": {
-      "title_BOOKABLE": "Appointment booking necessary",
-      "message_BOOKABLE": "The appointment must still be booked via the calendar.",
+      "title_BOOKABLE": "Appointment booking required",
+      "message_BOOKABLE": "The appointment still needs to be booked via the calendar.",
       "title_CANCELLED": "Cancelled"
     },
     "bookingState": {
@@ -68,13 +68,13 @@
       "format": "Format",
       "delete": "Delete",
       "deleteAll": "Delete all",
-      "error": "File could not be uploaded. Please try again",
+      "error": "File could not be uploaded. Please try again.",
       "saveDocumentsInfo": "Please save documents",
       "save_MISSING": "Save documents",
       "save_REJECTED": "Submit for review"
     },
     "snackbar": {
-      "success": "The documents have been successfully uploaded"
+      "success": "The documents have been successfully uploaded."
     }
   },
   "overview": {
@@ -109,12 +109,12 @@
   "cancelAppointment": {
     "cancelModal": {
       "title": "Cancel your appointment?",
-      "description": "Are you sure you want to cancel your appointment? You can always reschedule afterward.",
+      "description": "Are you sure you want to cancel your appointment? You can then book another appointment at any time.",
       "confirmLabel": "Yes, cancel",
       "cancelLabel": "Keep appointment"
     },
     "snackbar": {
-      "success": "Appointment cancelled succesfully"
+      "success": "The appointment was cancelled."
     }
   }
 }

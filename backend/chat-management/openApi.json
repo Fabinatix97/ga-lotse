@@ -306,6 +306,27 @@
         "tags" : [ "UserAccount" ]
       }
     },
+    "/user-account/deactivate" : {
+      "post" : {
+        "operationId" : "deactivateUserAccount",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeactivateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "UserAccount" ]
+      }
+    },
     "/user-settings" : {
       "get" : {
         "operationId" : "getOrCreateDefaultUserSettings",
@@ -383,7 +404,16 @@
       },
       "ChatFeature" : {
         "type" : "string",
-        "enum" : [ "CHAT_BASE" ]
+        "enum" : [ "CHAT_BASE", "RESET_KEY_BACKUP_PASSPHRASE" ]
+      },
+      "DeactivateRequest" : {
+        "required" : [ "matrixUserId" ],
+        "type" : "object",
+        "properties" : {
+          "matrixUserId" : {
+            "type" : "string"
+          }
+        }
       },
       "DefaultPopulationResponse" : {
         "type" : "object",

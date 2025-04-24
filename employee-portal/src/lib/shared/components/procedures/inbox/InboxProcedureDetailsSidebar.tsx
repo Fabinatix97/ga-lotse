@@ -5,6 +5,7 @@
 
 import {
   ButtonBar,
+  ConfirmationDialog,
   DrawerProps,
   OverlayBoundary,
   SidebarActions,
@@ -13,6 +14,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiGetInboxProcedureResponse,
   ApiInboxProcedureAddress,
@@ -23,12 +25,10 @@ import { ReactElement, useState } from "react";
 
 import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures";
 import { FileCard } from "@/lib/shared/components/FileCard";
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";
 import { UseCloseInboxProcedure } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 import {
   postalCodeAndCity,
   streetAndHouseNumber,
@@ -133,7 +133,7 @@ function InboxProcedureSection({
     inboxProcedure;
 
   const creatorUser = resolvedUsers[createdBy];
-  const creatorName = fullName(creatorUser);
+  const creatorName = formatUserName(creatorUser);
   const procedureTypeName =
     inboxProcedureType !== undefined
       ? procedureTypeNames[inboxProcedureType]
@@ -393,7 +393,7 @@ function InboxProcedureClosureModal({
 
   return (
     <OverlayBoundary>
-      <EmployeePortalConfirmationDialog
+      <ConfirmationDialog
         open
         onClose={onClose}
         onConfirm={handleSubmit}

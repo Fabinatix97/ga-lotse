@@ -10,6 +10,7 @@ import {
   TextareaField,
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,
@@ -42,7 +43,6 @@ import {
 } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsContentWrapper";
 import { DetailsHistory } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsHistory";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 type ManualProgressEntryDetailsView = "DETAILS" | "HISTORY";
 
@@ -262,7 +262,7 @@ function ManualProgressEntryDetailsTemplate({
       <DetailsContentWrapper
         entry={entry}
         title={`Details ${manualProgressEntryTypeNames[entry.manualProgressEntryType]}`}
-        creatorName={fullName(resolvedUsers[entry.createdBy])}
+        creatorName={formatUserName(resolvedUsers[entry.createdBy])}
         additionalFileElements={{
           start: (
             <>

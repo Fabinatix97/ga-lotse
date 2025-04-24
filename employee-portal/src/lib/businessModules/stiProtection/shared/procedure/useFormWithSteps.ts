@@ -12,13 +12,13 @@ export interface Step<TProps, TForm> {
   validate?: (form: TForm) => Partial<Record<keyof TForm, string>> | undefined;
 }
 
-export interface useFormWithStepsArgs<TForm, TStep> {
+export interface UseFormWithStepsArgs<TForm, TStep> {
   steps: Step<TStep, TForm>[];
   onFinalSubmit: (form: TForm) => Promise<unknown>;
 }
 
 export function useFormWithSteps<TForm, TStep>(
-  args: useFormWithStepsArgs<TForm, TStep>,
+  args: UseFormWithStepsArgs<TForm, TStep>,
 ) {
   const { steps, onFinalSubmit } = args;
 

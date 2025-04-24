@@ -15,6 +15,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConfigConcernQualifier(concern = Concern.SEX_WORK)
 public class SexWorkDepartmentInfoConfigService
     extends AbstractDepartmentInfoWithBaseModuleFallbackConfigService<SexWorkDepartmentInfoConfig> {
 

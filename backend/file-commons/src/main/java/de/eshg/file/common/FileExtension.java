@@ -14,7 +14,8 @@ public enum FileExtension {
   PDF("pdf"),
   EML("eml"),
   CSV("csv"),
-  XLSX("xlsx");
+  XLSX("xlsx"),
+  MD("md");
 
   private final String value;
 

@@ -13,6 +13,6 @@ import java.util.Set;
 public record GetOmsProceduresFilterOptionsDto(
     Boolean assigned,
     Set<ProcedureStatusDto> status,
-    Boolean highPriority,
+    Boolean urgentCase,
     /* span format: yyyy-mm-dd<>yyyy-mm-dd, from first, both dates optional, <> separator fix */
     String appointmentDateSpan) {}

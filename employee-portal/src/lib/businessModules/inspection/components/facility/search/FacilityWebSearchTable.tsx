@@ -10,6 +10,7 @@ import {
   type ApiWebSearchStatus,
 } from "@eshg/inspection-api";
 import {
+  ActionsMenu,
   DataTable,
   TableSheet,
   useConfirmationDialog,
@@ -29,7 +30,6 @@ import {
   useStartWebSearch,
 } from "@/lib/businessModules/inspection/api/mutations/webSearch";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiWebSearchOverviewEntry> =
   createColumnHelper<ApiWebSearchOverviewEntry>();

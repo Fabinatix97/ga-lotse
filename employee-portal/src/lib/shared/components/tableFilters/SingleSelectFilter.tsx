@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
+import {
+  ResettableSingleSelect,
+  UseTableControlResult,
+} from "@eshg/lib-employee-portal";
 import {
   SelectOption,
   SelectOptions,
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { SxProps } from "@mui/joy/styles/types";
 import { isNonNullish } from "remeda";
-
-import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
 
 export function SingleSelectFilter(props: {
   searchParamName: string;

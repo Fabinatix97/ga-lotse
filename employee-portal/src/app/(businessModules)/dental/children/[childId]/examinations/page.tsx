@@ -5,6 +5,6 @@
 
 "use client";
 
-import { DentalChildExaminationsPage } from "@eshg/dental";
+import { DentalChildExaminationsOverviewPage } from "@eshg/dental";
 
-export default DentalChildExaminationsPage;
+export default DentalChildExaminationsOverviewPage;

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   ClientEvent,
@@ -62,7 +61,6 @@ export function useChatLifecycle(
   clientState: ClientState,
   setClientState: Dispatch<SetStateAction<ClientState>>,
 ) {
-  const { data: selfUser } = useGetSelfUser();
   const { data: selfUserChatAttributesData } = useGetSelfUserChatAttributes();
   const { configuration, userSettings } = useChat();
 
@@ -167,7 +165,7 @@ export function useChatLifecycle(
           queryKey: getSelfUserChatAttributesQueryKey(),
         });
       } catch (err) {
-        throw new Error("Error updating keycloak chatUser", {
+        throw new Error("Error updating keycloak user's chat attributes", {
           cause: err,
         });
       }
@@ -209,7 +207,9 @@ export function useChatLifecycle(
     wasMatrixClientInitialized.current = true;
     logger.info("Step 1/5: createMatrixClient");
 
-    void clearAllStoresOnUserChange(selfUser.externalChatUsername);
+    void clearAllStoresOnUserChange(
+      selfUserChatAttributesData.externalChatUsername,
+    );
 
     if (!userSettings.accountRegistered && !userWasJustRegistered.current) {
       logger.info(
@@ -221,7 +221,7 @@ export function useChatLifecycle(
     try {
       const userDevice: UserDevice = await loginWithCachedDeviceOrWithNewDevice(
         baseUrl,
-        selfUser?.externalChatUsername,
+        selfUserChatAttributesData.externalChatUsername,
       );
 
       userDeviceRef.current = userDevice;
@@ -239,6 +239,26 @@ export function useChatLifecycle(
         },
       });
 
+      if (
+        userDevice.userId !== selfUserChatAttributesData.externalChatUsername
+      ) {
+        logger.warn(
+          "Incorrect or missing externalChatUsername, updating with correct MXID",
+        );
+        try {
+          await updateSelfUserChatAttributes({
+            externalChatUsername: userDevice.userId,
+          });
+        } catch (err) {
+          throw new Error(
+            "Error updating keycloak user's externalChatUsername",
+            {
+              cause: err,
+            },
+          );
+        }
+      }
+
       setClientState(ClientState.StartMatrixClient);
     } catch (error) {
       logger.error("Error createMatrixClient:", error);
@@ -247,10 +267,11 @@ export function useChatLifecycle(
     logger.info("Step 1/5: createMatrixClient - FINISHED");
   }, [
     baseUrl,
-    selfUser.externalChatUsername,
     setClientState,
     userSettings,
     matrixClient,
+    selfUserChatAttributesData,
+    updateSelfUserChatAttributes,
   ]);
 
   /**
@@ -263,19 +284,34 @@ export function useChatLifecycle(
     try {
       logger.info("Step 2/5: initRustCrypto");
 
-      if (!selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret) {
-        throw new Error(
-          "Unable to init E2EE - please setup chatCryptoStoreDeriveKeySecret.",
-        );
-      }
-
       const userId = matrixClient.current.getUserId() ?? "";
       const deviceId = matrixClient.current.getDeviceId() ?? "";
+      let chatCryptoStoreDeriveKeySecret =
+        selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret;
+
+      if (!chatCryptoStoreDeriveKeySecret) {
+        logger.warn(
+          "MISSING chatCryptoStoreDeriveKeySecret, generating new one.",
+        );
+        try {
+          chatCryptoStoreDeriveKeySecret = generateCryptoRandomUUID();
+          await updateSelfUserChatAttributes({
+            chatCryptoStoreDeriveKeySecret: chatCryptoStoreDeriveKeySecret,
+          });
+        } catch (err) {
+          throw new Error(
+            "Error updating keycloak user's chatCryptoStoreDeriveKeySecret",
+            {
+              cause: err,
+            },
+          );
+        }
+      }
 
       const storageKey = await createStorageKey(
         userId,
         deviceId,
-        selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret,
+        chatCryptoStoreDeriveKeySecret,
       );
 
       await matrixClient.current.initRustCrypto({
@@ -295,7 +331,12 @@ export function useChatLifecycle(
       logger.error("Error starting matrix client", error);
       setClientState(ClientState.Error);
     }
-  }, [matrixClient, setClientState, selfUserChatAttributesData]);
+  }, [
+    matrixClient,
+    setClientState,
+    selfUserChatAttributesData,
+    updateSelfUserChatAttributes,
+  ]);
 
   /**
    * Checks for E2EE key backup in 4S

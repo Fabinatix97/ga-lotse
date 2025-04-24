@@ -6,5 +6,5 @@
 import { FormikValues } from "formik";
 
 export interface ChooseAttributesStepFormModel extends FormikValues {
-  selectedAttributeKeys?: Set<string>;
+  selectedAttributeKeys?: string[];
 }

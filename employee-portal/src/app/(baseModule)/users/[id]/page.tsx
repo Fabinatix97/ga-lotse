@@ -9,7 +9,9 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { Stack } from "@mui/joy";
 import { use } from "react";
@@ -18,7 +20,6 @@ import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { UserAbsence } from "@/lib/baseModule/components/users/UserAbsence";
 import { UserProfileDetails } from "@/lib/baseModule/components/users/UserProfileDetails";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export default function UserProfilePage(
   props: DynamicPageProps<{ id: string }>,
@@ -30,7 +31,12 @@ export default function UserProfilePage(
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title={fullName(user)} backHref={routes.users.index} />}
+      toolbar={
+        <Toolbar
+          title={formatUserName(user)}
+          backButton={<ToolbarBackButton href={routes.users.index} />}
+        />
+      }
     >
       <MainContentLayout>
         <Stack

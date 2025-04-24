@@ -106,11 +106,11 @@ export function ConfirmNavigationProvider({ children }: RequiresChildren) {
   );
 
   return (
-    <ConfirmNavigationContext.Provider value={value}>
+    <ConfirmNavigationContext value={value}>
       <NavigationContextProvider onBeforeNavigate={onBeforeNavigate}>
         {children}
       </NavigationContextProvider>
-    </ConfirmNavigationContext.Provider>
+    </ConfirmNavigationContext>
   );
 }
 

@@ -10,7 +10,7 @@ import static de.eshg.util.ResourceUtils.assertIsReadable;
 import de.eshg.base.config.BasePrivacyDocumentService.MandatoryInitialPrivacyDocuments;
 import de.eshg.base.config.persistence.entity.BasePrivacyDocumentsConfig;
 import de.eshg.config.departmentinfo.AbstractPrivacyDocumentService;
-import de.eshg.config.domain.PrivacyDocument;
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.initialization.InitialPrivacyDocuments;
 import de.eshg.config.spring.DepartmentInfoPropertyBinding;
 import de.eshg.persistence.TransactionHelper;
@@ -45,11 +45,11 @@ public class BasePrivacyDocumentService
   protected BasePrivacyDocumentsConfig getInitialConfiguration() throws Exception {
     BasePrivacyDocumentsConfig basePrivacyDocumentsConfig = new BasePrivacyDocumentsConfig();
 
-    PrivacyDocument privacyNotice = new PrivacyDocument();
+    MultiLangDocument privacyNotice = new MultiLangDocument();
     privacyNotice.updateDe(initialPrivacyDocuments.privacyNotice().getContentAsByteArray());
     basePrivacyDocumentsConfig.setPrivacyNotice(privacyNotice);
 
-    PrivacyDocument privacyPolicy = new PrivacyDocument();
+    MultiLangDocument privacyPolicy = new MultiLangDocument();
     privacyPolicy.updateDe(initialPrivacyDocuments.privacyPolicy().getContentAsByteArray());
     basePrivacyDocumentsConfig.setPrivacyPolicy(privacyPolicy);
 

@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/official-medical-service-api";
-import { queryOptions } from "@tanstack/react-query";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import {
+  ApiAppointmentType,
+  CitizenPublicApi,
+} from "@eshg/official-medical-service-api";
+import { QueryClient, queryOptions } from "@tanstack/react-query";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
@@ -23,6 +27,7 @@ export function useGetAllAppointmentTypesQuery() {
 export function useGetDepartmentInfoQuery() {
   const departmentApi = useCitizenPublicApi();
   return queryOptions({
+    ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: citizenPublicApiQueryKey(["getDepartmentInfo"]),
     queryFn: () => departmentApi.getDepartmentInfo(),
   });
@@ -68,5 +73,16 @@ export function useGetLandingContent() {
   return queryOptions({
     queryKey: citizenPublicApiQueryKey(["getLandingContent"]),
     queryFn: () => citizenPublicApi.getLandingContent(),
+  });
+}
+
+export function validateFiles(
+  citizenPublicApi: CitizenPublicApi,
+  queryClient: QueryClient,
+  files: Blob[],
+) {
+  return queryClient.fetchQuery({
+    queryKey: citizenPublicApiQueryKey(["validateFiles", files]),
+    queryFn: () => citizenPublicApi.validateFiles(files),
   });
 }

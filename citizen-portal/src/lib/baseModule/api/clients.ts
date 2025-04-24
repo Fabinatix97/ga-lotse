@@ -10,10 +10,11 @@ import {
   GdprProcedureApi,
   MukFacilityLinkApi,
 } from "@eshg/base-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+
+import { useCitizenPortalApiConfiguration } from "@/lib/shared/api/useCitizenPortalApiConfiguration";
 
 function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useCitizenPortalApiConfiguration(
     "PUBLIC_BASE_BACKEND_URL",
   );
   return new Configuration(configurationParameters);

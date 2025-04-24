@@ -34,6 +34,7 @@ function createLinkOrButton(
 interface FormButtonBarProps {
   left?: ReactNode | ReactNode[];
   submitLabel: string;
+  cancelLabel?: string;
   submitting: boolean;
   submitDisabled?: boolean;
   onCancel?: RouteOrHandler;
@@ -43,12 +44,15 @@ interface FormButtonBarProps {
 
 type RouteOrHandler = string | (() => void);
 
-export function FormButtonBar(props: FormButtonBarProps) {
+export function FormButtonBar({
+  cancelLabel = "Abbrechen",
+  ...props
+}: FormButtonBarProps) {
   const rightButtons: ReactNode[] = [];
 
   if (isDefined(props.onCancel)) {
     rightButtons.push(
-      createLinkOrButton("Abbrechen", props.onCancel, {
+      createLinkOrButton(cancelLabel, props.onCancel, {
         color: "neutral",
         variant: "soft",
         size: props.size,

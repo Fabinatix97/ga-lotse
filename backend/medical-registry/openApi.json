@@ -4480,7 +4480,7 @@
         }
       },
       "GetPersonFileStateResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -4526,6 +4526,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -4862,7 +4867,7 @@
         }
       },
       "GetReferencePersonResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "salutation", "version" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "salutation", "version" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -4908,6 +4913,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",

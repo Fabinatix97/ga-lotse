@@ -4,21 +4,19 @@
  */
 
 import {
-  ApiHepatitisLaboratoryTest,
-  ApiLaboratoryTest,
-  ApiLaboratoryTestExamination,
-  ApiLaboratoryTestSamples,
-} from "@eshg/sti-protection-api";
-
-import {
   YesOrNoFieldData,
   mapBoolToYesOrNo,
   mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
+} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import {
+  ApiLaboratoryTestExamination,
+  ApiLaboratoryTestExaminationLabTestDataInner,
+} from "@eshg/sti-protection-api";
+import { isBoolean, isPlainObject, isString } from "remeda";
+
 import {
   areAllValuesUndefined,
   guardValue,
-  mapOptionalBool,
   mapOptionalString,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 
@@ -26,6 +24,8 @@ export interface LaboratoryTestData {
   value: string;
   result: YesOrNoFieldData;
   remark: string;
+  hadSyphilis?: boolean;
+  otherTestName?: string;
 }
 
 export const defaultLaboratoryTestFormData = {
@@ -34,8 +34,23 @@ export const defaultLaboratoryTestFormData = {
   remark: "",
 };
 
+function getPropertyIf<T>(
+  obj: unknown,
+  prop: string,
+  predicate: (v: unknown) => v is T,
+): T | undefined {
+  if (!isPlainObject(obj) || !(prop in obj)) {
+    return;
+  }
+  const value = obj[prop];
+  if (!predicate(value)) {
+    return;
+  }
+  return value;
+}
+
 export function mapApiLaboratoryTestToFormData(
-  responseData: ApiLaboratoryTest | undefined,
+  responseData: ApiLaboratoryTestExaminationLabTestDataInner | undefined,
 ): LaboratoryTestData {
   if (responseData === undefined) {
     return defaultLaboratoryTestFormData;
@@ -44,89 +59,132 @@ export function mapApiLaboratoryTestToFormData(
     value: responseData.value ?? "",
     result: mapBoolToYesOrNo(responseData.result),
     remark: responseData.remark ?? "",
+    otherTestName: getPropertyIf(responseData, "otherTestName", isString),
+    hadSyphilis: getPropertyIf(responseData, "hadSyphilis", isBoolean) ?? false,
   };
 }
 
-export function mapLaboratoryTestFormDataToApi(
-  formData: LaboratoryTestData | null,
-): ApiLaboratoryTest | undefined {
-  if (formData === null) {
-    return undefined;
-  }
-
-  const mappedValues = {
-    value: mapOptionalString(formData.value),
-    result: mapYesOrNoToBool(formData.result ?? ""),
-    remark: mapOptionalString(formData.remark),
+type LaboratorySampleTestResponseData =
+  ApiLaboratoryTestExaminationLabTestDataInner & {
+    oral?: boolean;
+    urethral?: boolean;
+    anal?: boolean;
   };
-
-  if (areAllValuesUndefined(mappedValues)) {
-    return undefined;
-  } else {
-    return mappedValues;
-  }
-}
-
-export interface HepatitisLaboratoryTestData extends LaboratoryTestData {
-  infection?: boolean;
-  vaccineTitre?: boolean;
-}
-
-export const defaultHepatitisLaboratoryTestFormData = {
-  infection: false,
-  vaccineTitre: false,
-  value: "",
-  result: null,
-  remark: "",
-};
-
-export function mapApiHepatitisLaboratoryTestToFormData(
-  responseData: ApiHepatitisLaboratoryTest | undefined,
-): HepatitisLaboratoryTestData {
-  if (responseData === undefined) {
-    return defaultHepatitisLaboratoryTestFormData;
-  }
+export function mapApiLaboratorySampleTestToFormData(
+  responseData: LaboratorySampleTestResponseData | undefined,
+): LaboratoryTestSamplesData {
+  const values = mapApiLaboratoryTestToFormData(responseData);
   return {
-    infection: responseData.infection ?? false,
-    vaccineTitre: responseData.vaccineTitre ?? false,
-    value: responseData.value ?? "",
-    result: mapBoolToYesOrNo(responseData.result),
-    remark: responseData.remark ?? "",
+    ...values,
+    oralSampleRequested: responseData?.oral ?? false,
+    urethralSampleRequested: responseData?.urethral ?? false,
+    analSampleRequested: responseData?.anal ?? false,
+  };
+}
+const defaultLaboratoryImmunityTestFormData = {
+  ...defaultLaboratoryTestFormData,
+  vaccineTitre: false,
+  infection: false,
+};
+type LaboratoryImmunityTestResponseData =
+  ApiLaboratoryTestExaminationLabTestDataInner & {
+    vaccineTitre?: boolean;
+    infection?: boolean;
+  };
+export function mapApiLaboratoryImmunityTestToFormData(
+  responseData: LaboratoryImmunityTestResponseData | undefined,
+): LaboratoryTestImmunityData {
+  const values = mapApiLaboratoryTestToFormData(responseData);
+  return {
+    ...values,
+    vaccineTitre: responseData?.vaccineTitre ?? false,
+    infection: responseData?.infection ?? false,
   };
 }
 
-export function mapHepatitisLaboratoryTestFormDataToApi(
-  formData: HepatitisLaboratoryTestData | null,
-): ApiHepatitisLaboratoryTest | undefined {
+export function mapLaboratoryTestFormDataToApi<
+  T extends ApiLaboratoryTestExaminationLabTestDataInner,
+>(type: T["type"], formData: LaboratoryTestData | null): T | undefined {
   if (formData === null) {
     return undefined;
   }
 
-  const mappedValues = {
-    infection: mapOptionalBool(formData.infection),
-    vaccineTitre: mapOptionalBool(formData.vaccineTitre),
+  let mappedValues = {
+    type,
     value: mapOptionalString(formData.value),
     result: mapYesOrNoToBool(formData.result ?? ""),
     remark: mapOptionalString(formData.remark),
-  };
+  } as T;
+  if (type === "SyphilisTest") {
+    mappedValues = {
+      ...mappedValues,
+      hadSyphilis: formData.hadSyphilis ?? false,
+    };
+  }
+  if (type === "OtherTests") {
+    mappedValues = {
+      ...mappedValues,
+      otherTestName: mapOptionalString(formData.otherTestName),
+    };
+  }
 
   if (areAllValuesUndefined(mappedValues)) {
-    return undefined;
-  } else {
-    return mappedValues;
+    return;
   }
+  return mappedValues;
+}
+type ApiLaboratoryTestVariant<T> = T &
+  ApiLaboratoryTestExaminationLabTestDataInner;
+type ApiLaboratoryImmunityTest = ApiLaboratoryTestVariant<{
+  vaccineTitre?: boolean;
+  infected?: boolean;
+}>;
+type ApiLaboratorySamplesTest = ApiLaboratoryTestVariant<{
+  oral?: boolean;
+  urethral?: boolean;
+  anal?: boolean;
+}>;
+
+export function mapLaboratoryImmunityTestFormDataToApi<
+  T extends ApiLaboratoryImmunityTest,
+>(type: T["type"], formData: LaboratoryTestImmunityData | null): T | undefined {
+  if (formData == null) {
+    return;
+  }
+  const values = mapLaboratoryTestFormDataToApi(type, formData);
+  return {
+    ...values,
+    vaccineTitre: formData.vaccineTitre,
+    infection: formData.infection,
+  } as T;
 }
 
-export interface LaboratoryTestSamplesData {
+export function mapLaboratorySamplesTestFormDataToApi<
+  T extends ApiLaboratorySamplesTest,
+>(type: T["type"], formData: LaboratoryTestSamplesData | null): T | undefined {
+  const values = mapLaboratoryTestFormDataToApi(type, formData);
+  return {
+    type,
+    ...values,
+    oral: formData?.oralSampleRequested,
+    urethral: formData?.urethralSampleRequested,
+    anal: formData?.analSampleRequested,
+  } as T;
+}
+
+export interface LaboratoryTestSamplesData extends LaboratoryTestData {
   oralSampleRequested: boolean;
-  oralSampleData: LaboratoryTestData;
   urethralSampleRequested: boolean;
-  urethralSampleData: LaboratoryTestData;
   analSampleRequested: boolean;
-  analSampleData: LaboratoryTestData;
+}
+
+export interface LaboratoryTestImmunityData extends LaboratoryTestData {
+  vaccineTitre: boolean;
+  infection: boolean;
 }
 
 export const defaultLaboratoryTestSamplesFormData = {
+  ...defaultLaboratoryTestFormData,
   oralSampleRequested: false,
   oralSampleData: defaultLaboratoryTestFormData,
   urethralSampleRequested: false,
@@ -136,54 +194,19 @@ export const defaultLaboratoryTestSamplesFormData = {
 };
 
 export function mapApiLaboratoryTestSamplesToFormData(
-  responseData: ApiLaboratoryTestSamples | undefined,
+  responseData: ApiLaboratorySamplesTest | undefined,
 ): LaboratoryTestSamplesData {
   if (responseData === undefined) {
     return defaultLaboratoryTestSamplesFormData;
   }
+  const values = mapApiLaboratoryTestToFormData(responseData);
 
   return {
-    oralSampleRequested: responseData.oralSampleRequested ?? false,
-    oralSampleData: mapApiLaboratoryTestToFormData(responseData.oralSampleData),
-    urethralSampleRequested: responseData.urethralSampleRequested ?? false,
-    urethralSampleData: mapApiLaboratoryTestToFormData(
-      responseData.urethralSampleData,
-    ),
-    analSampleRequested: responseData.analSampleRequested ?? false,
-    analSampleData: mapApiLaboratoryTestToFormData(responseData.analSampleData),
+    ...values,
+    oralSampleRequested: responseData?.oral ?? false,
+    urethralSampleRequested: responseData?.urethral ?? false,
+    analSampleRequested: responseData?.anal ?? false,
   };
-}
-
-export function mapLaboratoryTestSamplesFormDataToApi(
-  formData: LaboratoryTestSamplesData | null,
-): ApiLaboratoryTestSamples | undefined {
-  if (formData === null) {
-    return undefined;
-  }
-
-  const mappedValues = {
-    oralSampleRequested: mapOptionalBool(formData.oralSampleRequested),
-    oralSampleData: guardValue(
-      formData.oralSampleRequested,
-      mapLaboratoryTestFormDataToApi(formData.oralSampleData),
-    ),
-    urethralSampleRequested: mapOptionalBool(formData.urethralSampleRequested),
-    urethralSampleData: guardValue(
-      formData.urethralSampleRequested,
-      mapLaboratoryTestFormDataToApi(formData.urethralSampleData),
-    ),
-    analSampleRequested: mapOptionalBool(formData.analSampleRequested),
-    analSampleData: guardValue(
-      formData.analSampleRequested,
-      mapLaboratoryTestFormDataToApi(formData.analSampleData),
-    ),
-  };
-
-  if (areAllValuesUndefined(mappedValues)) {
-    return undefined;
-  } else {
-    return mappedValues;
-  }
 }
 
 export interface LaboratoryTestExaminationData {
@@ -207,9 +230,8 @@ export interface LaboratoryTestExaminationData {
   //Data of Tests
   hivTestData: LaboratoryTestData | null;
   syphilisTestData: LaboratoryTestData | null;
-  hadSyphilis?: boolean;
-  hepATestData: HepatitisLaboratoryTestData | null;
-  hepBTestData: HepatitisLaboratoryTestData | null;
+  hepATestData: LaboratoryTestImmunityData | null;
+  hepBTestData: LaboratoryTestImmunityData | null;
   hepCTestData: LaboratoryTestData | null;
   chlamydiaTestData: LaboratoryTestSamplesData | null;
   gonorrheaTestData: LaboratoryTestSamplesData | null;
@@ -217,63 +239,76 @@ export interface LaboratoryTestExaminationData {
   cancerScreeningTestData: LaboratoryTestData | null;
   hpvTestData: LaboratoryTestData | null;
   mpoxTestData: LaboratoryTestData | null;
-  otherTestName?: string;
   otherTestData: LaboratoryTestData | null;
 }
 
 export function mapToFormValues(
   responseData: ApiLaboratoryTestExamination,
 ): LaboratoryTestExaminationData {
+  const labTestData = responseData.labTestData ?? [];
+  const foundTestData = {
+    hivTest: labTestData.find((t) => t.type === "HivTest"),
+    syphilisTest: labTestData.find((t) => t.type === "SyphilisTest"),
+    hepATest: labTestData.find((t) => t.type === "HepatitisATest"),
+    hepBTest: labTestData.find((t) => t.type === "HepatitisBTest"),
+    hepCTest: labTestData.find((t) => t.type === "HepatitisCTest"),
+    chlamydiaTest: labTestData.find((t) => t.type === "ChlamydiaTest"),
+    gonorrheaTest: labTestData.find((t) => t.type === "GonorrheaTest"),
+    mycoplasmaTest: labTestData.find((t) => t.type === "MycoplasmaTest"),
+    cancerScreeningTest: labTestData.find(
+      (t) => t.type === "CancerScreeningTest",
+    ),
+    hpvTest: labTestData.find((t) => t.type === "HpvTest"),
+    mpoxTest: labTestData.find((t) => t.type === "MpoxTest"),
+    otherTest: labTestData.find((t) => t.type === "OtherTests"),
+  };
   return {
     sampleBarcode: responseData.sampleBarcode ?? "",
     generalRemarks: responseData.generalRemarks ?? "",
     testsConducted: responseData.testsConducted ?? false,
     testsPayed: responseData.testsPayed ?? false,
     //Requested Tests
-    hivTestRequested: responseData.hivTestRequested ?? false,
-    syphilisTestRequested: responseData.syphilisTestRequested ?? false,
-    hepATestRequested: responseData.hepATestRequested ?? false,
-    hepBTestRequested: responseData.hepBTestRequested ?? false,
-    hepCTestRequested: responseData.hepCTestRequested ?? false,
-    chlamydiaTestRequested: responseData.chlamydiaTestRequested ?? false,
-    gonorrheaTestRequested: responseData.gonorrheaTestRequested ?? false,
-    mycoplasmaTestRequested: responseData.mycoplasmaTestRequested ?? false,
-    cancerScreeningTestRequested:
-      responseData.cancerScreeningTestRequested ?? false,
-    hpvTestRequested: responseData.hpvTestRequested ?? false,
-    mpoxTestRequested: responseData.mpoxTestRequested ?? false,
-    otherTestRequested: responseData.otherTestRequested ?? false,
+    //
+    hivTestRequested: foundTestData.hivTest != null,
+    syphilisTestRequested: foundTestData.syphilisTest != null,
+    hepATestRequested: foundTestData.hepATest != null,
+    hepBTestRequested: foundTestData.hepBTest != null,
+    hepCTestRequested: foundTestData.hepCTest != null,
+    chlamydiaTestRequested: foundTestData.chlamydiaTest != null,
+    gonorrheaTestRequested: foundTestData.gonorrheaTest != null,
+    mycoplasmaTestRequested: foundTestData.mycoplasmaTest != null,
+    cancerScreeningTestRequested: foundTestData.cancerScreeningTest != null,
+    hpvTestRequested: foundTestData.hpvTest != null,
+    mpoxTestRequested: foundTestData.mpoxTest != null,
+    otherTestRequested: foundTestData.otherTest != null,
+
     //Data of Tests
-    hivTestData: mapApiLaboratoryTestToFormData(responseData.hivTestData),
+    hivTestData: mapApiLaboratoryTestToFormData(foundTestData.hivTest),
     syphilisTestData: mapApiLaboratoryTestToFormData(
-      responseData.syphilisTestData,
+      foundTestData.syphilisTest,
     ),
-    hadSyphilis: responseData.hadSyphilis ?? false,
-    hepATestData: mapApiHepatitisLaboratoryTestToFormData(
-      responseData.hepATestData,
+    hepATestData: mapApiLaboratoryImmunityTestToFormData(
+      foundTestData.hepATest,
     ),
-    hepBTestData: mapApiHepatitisLaboratoryTestToFormData(
-      responseData.hepBTestData,
+    hepBTestData: mapApiLaboratoryImmunityTestToFormData(
+      foundTestData.hepBTest,
     ),
-    hepCTestData: mapApiLaboratoryTestToFormData(responseData.hepCTestData),
-    chlamydiaTestData: mapApiLaboratoryTestSamplesToFormData(
-      responseData.chlamydiaTestSamples,
+    hepCTestData: mapApiLaboratoryTestToFormData(foundTestData.hepCTest),
+    chlamydiaTestData: mapApiLaboratorySampleTestToFormData(
+      foundTestData.chlamydiaTest,
     ),
-    gonorrheaTestData: mapApiLaboratoryTestSamplesToFormData(
-      responseData.gonorrheaTestSamples,
+    gonorrheaTestData: mapApiLaboratorySampleTestToFormData(
+      foundTestData.gonorrheaTest,
     ),
-    mycoplasmaTestData: mapApiLaboratoryTestSamplesToFormData(
-      responseData.mycoplasmaTestSamples,
+    mycoplasmaTestData: mapApiLaboratorySampleTestToFormData(
+      foundTestData.mycoplasmaTest,
     ),
     cancerScreeningTestData: mapApiLaboratoryTestToFormData(
-      responseData.cancerScreeningTestData,
+      foundTestData.cancerScreeningTest,
     ),
-    hpvTestData: mapApiLaboratoryTestToFormData(responseData.hpvTestData),
-    mpoxTestData: mapApiLaboratoryTestToFormData(responseData.mpoxTestData),
-    otherTestName: responseData.otherTestRequested
-      ? (responseData.otherTestName ?? "")
-      : "",
-    otherTestData: mapApiLaboratoryTestToFormData(responseData.otherTestData),
+    hpvTestData: mapApiLaboratoryTestToFormData(foundTestData.hpvTest),
+    mpoxTestData: mapApiLaboratoryTestToFormData(foundTestData.mpoxTest),
+    otherTestData: mapApiLaboratoryTestToFormData(foundTestData.otherTest),
   };
 }
 
@@ -299,9 +334,8 @@ export function defaultLaboratoryTestExaminationFormValues(): LaboratoryTestExam
     //Data of Tests
     hivTestData: defaultLaboratoryTestFormData,
     syphilisTestData: defaultLaboratoryTestFormData,
-    hadSyphilis: false,
-    hepATestData: defaultHepatitisLaboratoryTestFormData,
-    hepBTestData: defaultHepatitisLaboratoryTestFormData,
+    hepATestData: defaultLaboratoryImmunityTestFormData,
+    hepBTestData: defaultLaboratoryImmunityTestFormData,
     hepCTestData: defaultLaboratoryTestFormData,
     chlamydiaTestData: defaultLaboratoryTestSamplesFormData,
     gonorrheaTestData: defaultLaboratoryTestSamplesFormData,
@@ -309,7 +343,6 @@ export function defaultLaboratoryTestExaminationFormValues(): LaboratoryTestExam
     cancerScreeningTestData: defaultLaboratoryTestFormData,
     hpvTestData: defaultLaboratoryTestFormData,
     mpoxTestData: defaultLaboratoryTestFormData,
-    otherTestName: "",
     otherTestData: defaultLaboratoryTestFormData,
   };
 }
@@ -322,76 +355,77 @@ export function mapFormValuesToApi(
     generalRemarks: mapOptionalString(formData.generalRemarks),
     testsConducted: formData.testsConducted ?? false,
     testsPayed: formData.testsPayed ?? false,
-    //Requested Tests
-    hivTestRequested: formData.hivTestRequested ?? false,
-    syphilisTestRequested: formData.syphilisTestRequested ?? false,
-    hepATestRequested: formData.hepATestRequested ?? false,
-    hepBTestRequested: formData.hepBTestRequested ?? false,
-    hepCTestRequested: formData.hepCTestRequested ?? false,
-    chlamydiaTestRequested: formData.chlamydiaTestRequested ?? false,
-    gonorrheaTestRequested: formData.gonorrheaTestRequested ?? false,
-    mycoplasmaTestRequested: formData.mycoplasmaTestRequested ?? false,
-    cancerScreeningTestRequested:
-      formData.cancerScreeningTestRequested ?? false,
-    hpvTestRequested: formData.hpvTestRequested ?? false,
-    mpoxTestRequested: formData.mpoxTestRequested ?? false,
-    otherTestRequested: formData.otherTestRequested ?? false,
     //Data of Tests
-    hivTestData: guardValue(
-      formData.hivTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.hivTestData),
-    ),
-    syphilisTestData: guardValue(
-      formData.syphilisTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.syphilisTestData),
-    ),
-    hadSyphilis: guardValue(
-      formData.syphilisTestRequested,
-      formData.hadSyphilis,
-    ),
-    hepATestData: guardValue(
-      formData.hepATestRequested,
-      mapHepatitisLaboratoryTestFormDataToApi(formData.hepATestData),
-    ),
-    hepBTestData: guardValue(
-      formData.hepBTestRequested,
-      mapHepatitisLaboratoryTestFormDataToApi(formData.hepBTestData),
-    ),
-    hepCTestData: guardValue(
-      formData.hepCTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.hepCTestData),
-    ),
-    chlamydiaTestSamples: guardValue(
-      formData.chlamydiaTestRequested,
-      mapLaboratoryTestSamplesFormDataToApi(formData.chlamydiaTestData),
-    ),
-    gonorrheaTestSamples: guardValue(
-      formData.gonorrheaTestRequested,
-      mapLaboratoryTestSamplesFormDataToApi(formData.gonorrheaTestData),
-    ),
-    mycoplasmaTestSamples: guardValue(
-      formData.mycoplasmaTestRequested,
-      mapLaboratoryTestSamplesFormDataToApi(formData.mycoplasmaTestData),
-    ),
-    cancerScreeningTestData: guardValue(
-      formData.cancerScreeningTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.cancerScreeningTestData),
-    ),
-    hpvTestData: guardValue(
-      formData.hpvTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.hpvTestData),
-    ),
-    mpoxTestData: guardValue(
-      formData.mpoxTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.mpoxTestData),
-    ),
-    otherTestName: guardValue(
-      formData.otherTestRequested,
-      mapOptionalString(formData.otherTestName),
-    ),
-    otherTestData: guardValue(
-      formData.otherTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.otherTestData),
-    ),
+    labTestData: [
+      guardValue(
+        formData.hivTestRequested,
+        mapLaboratoryTestFormDataToApi("HivTest", formData.hivTestData),
+      ),
+      guardValue(
+        formData.syphilisTestRequested,
+        mapLaboratoryTestFormDataToApi(
+          "SyphilisTest",
+          formData.syphilisTestData,
+        ),
+      ),
+      guardValue(
+        formData.hepATestRequested,
+        mapLaboratoryImmunityTestFormDataToApi(
+          "HepatitisATest",
+          formData.hepATestData,
+        ),
+      ),
+      guardValue(
+        formData.hepBTestRequested,
+        mapLaboratoryImmunityTestFormDataToApi(
+          "HepatitisBTest",
+          formData.hepBTestData,
+        ),
+      ),
+      guardValue(
+        formData.hepCTestRequested,
+        mapLaboratoryTestFormDataToApi("HepatitisCTest", formData.hepCTestData),
+      ),
+      guardValue(
+        formData.chlamydiaTestRequested,
+        mapLaboratorySamplesTestFormDataToApi(
+          "ChlamydiaTest",
+          formData.chlamydiaTestData,
+        ),
+      ),
+      guardValue(
+        formData.gonorrheaTestRequested,
+        mapLaboratorySamplesTestFormDataToApi(
+          "GonorrheaTest",
+          formData.gonorrheaTestData,
+        ),
+      ),
+      guardValue(
+        formData.mycoplasmaTestRequested,
+        mapLaboratorySamplesTestFormDataToApi(
+          "MycoplasmaTest",
+          formData.mycoplasmaTestData,
+        ),
+      ),
+      guardValue(
+        formData.cancerScreeningTestRequested,
+        mapLaboratoryTestFormDataToApi(
+          "CancerScreeningTest",
+          formData.cancerScreeningTestData,
+        ),
+      ),
+      guardValue(
+        formData.hpvTestRequested,
+        mapLaboratoryTestFormDataToApi("HpvTest", formData.hpvTestData),
+      ),
+      guardValue(
+        formData.mpoxTestRequested,
+        mapLaboratoryTestFormDataToApi("MpoxTest", formData.mpoxTestData),
+      ),
+      guardValue(
+        formData.otherTestRequested,
+        mapLaboratoryTestFormDataToApi("OtherTests", formData.otherTestData),
+      ),
+    ].filter((t) => t != null),
   };
 }

@@ -7,6 +7,7 @@ import { MatrixClient, UIAuthCallback } from "matrix-js-sdk";
 import {
   CryptoApi,
   ImportRoomKeyProgressData,
+  ImportRoomKeyStage,
 } from "matrix-js-sdk/lib/crypto-api";
 
 import {
@@ -14,6 +15,7 @@ import {
   getCryptoApi,
 } from "@/lib/businessModules/chat/matrix/crypto";
 import { getSecretStorageKeyFromCache } from "@/lib/businessModules/chat/matrix/cryptoCallbacks";
+import { startDehydration } from "@/lib/businessModules/chat/shared/dehydrated";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import {
   fetchBackupInfoWithRetry,
@@ -51,10 +53,17 @@ export async function restoreKeyBackupFromSecretStorage(
   try {
     const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
     const keyBackup = await cryptoApi.restoreKeyBackup({
-      progressCallback: (progress: ImportRoomKeyProgressData) =>
-        logger.debug(
-          `Backup import progress: ${progress.stage}, successes: ${progress.successes}, failures: ${progress.failures}, total: ${progress.total}`,
-        ),
+      progressCallback: (progress: ImportRoomKeyProgressData) => {
+        if (progress.stage === ImportRoomKeyStage.Fetch) {
+          logger.debug("Fetching room keys from KeyBackup...");
+        } else if (progress.stage === ImportRoomKeyStage.LoadKeys) {
+          logger.debug(
+            `Loading room keys from KeyBackup: ${progress.successes}/${progress.total} succeeded, ${progress.failures} failed.`,
+          );
+        } else {
+          logger.debug("restoreKeyBackup in progress...");
+        }
+      },
     });
 
     if (keyBackup) {
@@ -94,7 +103,7 @@ export async function loadKeyBackupPrivateKeyFromSecretStorage(
       "Failed to trust backupInfo isBackupMatchesStoredKey=false",
     );
 
-    // await startDehydration(matrixClient); //TODO: experimental feature: matrix dehydrated devices is disabled
+    await startDehydration(matrixClient);
     logger.debug(
       "KeyBackup Private Key successfully loaded from server's SecretStorage to local CryptoStore",
     );
@@ -169,7 +178,7 @@ export async function bootstrapNewSecretStorage(
       );
     }
 
-    // await startDehydration(matrixClient, true); //TODO: experimental feature: matrix dehydrated devices is disabled
+    await startDehydration(matrixClient, true);
   } catch (e) {
     logger.softError("bootstrapNewSecretStorage: error during operation", e);
     throw e;

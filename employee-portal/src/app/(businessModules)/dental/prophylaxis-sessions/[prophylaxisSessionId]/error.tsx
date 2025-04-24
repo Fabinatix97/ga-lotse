@@ -5,16 +5,6 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal";
-import {
-  NextErrorBoundary,
-  NextErrorBoundaryProps,
-} from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import { DentalProphylaxisSessionError } from "@eshg/dental";
 
-export default function ProphylaxisSessionError(props: NextErrorBoundaryProps) {
-  return (
-    <MainContentLayout fullViewportHeight>
-      <NextErrorBoundary {...props} />
-    </MainContentLayout>
-  );
-}
+export default DentalProphylaxisSessionError;

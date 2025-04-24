@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  CheckboxField,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -14,12 +15,11 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
 
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/shared/helpers/validators";
 
 export interface DiseaseFormValues {
@@ -39,6 +39,7 @@ interface DiseaseFormProps {
 }
 
 export function DiseaseForm(props: Readonly<DiseaseFormProps>) {
+  const { validateLength } = useValidators();
   return (
     <Formik
       initialValues={props.initialValues}

@@ -26,13 +26,22 @@ public class ProgressEntryUtil {
   public void addProgressEntry(
       UUID procedureId,
       StiProtectionSystemProgressEntryType progressEntryType,
-      String... changeDescriptionArgs) {
+      TriggerType triggerType,
+      Object... changeDescriptionArgs) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
+    addProgressEntry(procedure, progressEntryType, triggerType, changeDescriptionArgs);
+  }
+
+  public void addProgressEntry(
+      StiProtectionProcedure procedure,
+      StiProtectionSystemProgressEntryType progressEntryType,
+      TriggerType triggerType,
+      Object... changeDescriptionArgs) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(),
-            progressEntryType.getChangeDescription().formatted((Object[]) changeDescriptionArgs),
-            TriggerType.SYSTEM_AUTOMATIC);
+            progressEntryType.getChangeDescription().formatted(changeDescriptionArgs),
+            triggerType);
     procedure.addProgressEntry(progressEntry);
   }
 }

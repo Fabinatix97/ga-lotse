@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateString, isTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiAppointmentType } from "@eshg/measles-protection-api";
@@ -14,7 +14,7 @@ import {
   AppointmentBlockGroupValuesWithDays,
   WEEKDAY_CHECKBOX_OPTIONS,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { isTimeString, toLocalDateTime } from "@/lib/shared/helpers/dateTime";
+import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 export interface AppointmentBlockGroupValues {
   type: OptionalFieldValue<ApiAppointmentType>;

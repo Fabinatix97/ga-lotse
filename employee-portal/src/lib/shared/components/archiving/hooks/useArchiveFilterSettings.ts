@@ -4,6 +4,11 @@
  */
 
 import {
+  FilterDefinition,
+  FilterValue,
+  UseFilterSettings,
+} from "@eshg/lib-employee-portal";
+import {
   ApiArchivingRelevance,
   ApiGetArchivingConfigurationResponse,
   ApiProcedureType,
@@ -11,9 +16,6 @@ import {
 } from "@eshg/lib-procedures-api";
 
 import { archivingRelevanceNames } from "@/lib/shared/components/archiving/constants";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import {

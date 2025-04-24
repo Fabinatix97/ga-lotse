@@ -12,10 +12,8 @@ import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/Boolea
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  validateLength,
-  validateNumber,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateNumber } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
@@ -27,6 +25,7 @@ interface PracticeInformationFormProps extends NestedFormProps {
 }
 
 export function PracticeInformationForm(props: PracticeInformationFormProps) {
+  const { validateLength } = useValidators();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 

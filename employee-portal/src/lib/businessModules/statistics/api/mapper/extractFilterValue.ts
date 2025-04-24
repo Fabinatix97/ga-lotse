@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
+import { FilterValue } from "@eshg/lib-employee-portal";
 
 export function extractFilterValue<T>(
   filterValues: FilterValue[],

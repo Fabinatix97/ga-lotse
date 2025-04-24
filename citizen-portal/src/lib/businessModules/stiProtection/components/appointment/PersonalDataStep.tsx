@@ -3,26 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCountryCode } from "@eshg/base-api";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { styled } from "@mui/joy";
 import assert from "assert";
-import { useFormikContext } from "formik";
-import { isNumber } from "remeda";
 
 import { useAddPersonalDetails } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
-import { CountryField } from "@/lib/shared/components/form/CountryField";
 
 import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
 import { StepLayout } from "./StepLayout";
 import { StepSubTitle } from "./StepSubTitle";
 import {
-  InvalidYearRangeMessage,
   PersonalData,
   mapToAddPersonalDetails,
   validateYearWithinRange,
@@ -31,8 +28,9 @@ import {
 const initialValues = {
   gender: null,
   birthYear: "",
-  countryOfBirth: null,
-  inGermanySince: "",
+  pronouns: "",
+  hasSufficientGermanLanguageSkills: null,
+  otherKnownLanguages: "",
 } as const;
 
 export function PersonalDataStep() {
@@ -87,56 +85,25 @@ export function PersonalDataStep() {
             invalidYearRangeMessage,
           )}
         />
-        <CountryField
-          name="countryOfBirth"
-          label={t("personal_data.fields.birth_country")}
+        <InputField
+          label={t("personal_data.fields.pronouns")}
+          name="pronouns"
         />
-        <InGermanySinceField
-          name="inGermanySince"
-          label={t("personal_data.fields.in_germany_since")}
-          countryFieldName="countryOfBirth"
-          birthYearFieldName="birthYear"
-          invalidYearRangeMessage={invalidYearRangeMessage}
+        <RadioButtonsField
+          label={t("personal_data.fields.sufficient_german_skills")}
+          name="hasSufficientGermanLanguageSkills"
+          resettable
+          options={[
+            { label: t("common.yes"), value: "yes" },
+            { label: t("common.no"), value: "no" },
+          ]}
+        />
+        <InputField
+          label={t("personal_data.fields.other_known_languages")}
+          name="otherKnownLanguages"
         />
       </PersonalDataGrid>
     </StepLayout>
-  );
-}
-
-function InGermanySinceField({
-  name,
-  label,
-  countryFieldName,
-  birthYearFieldName,
-  invalidYearRangeMessage,
-}: {
-  name: string;
-  label: string;
-  countryFieldName: string;
-  birthYearFieldName: string;
-  invalidYearRangeMessage: InvalidYearRangeMessage;
-}) {
-  const { getFieldMeta } = useFormikContext();
-  const { value: birthCountry } = getFieldMeta(countryFieldName);
-  const { value: birthYear } = getFieldMeta(birthYearFieldName);
-  if (birthCountry === ApiCountryCode.De) {
-    return null;
-  }
-  const thisYear = new Date().getFullYear();
-  const minYear = isNumber(birthYear) ? birthYear : 1900;
-
-  return (
-    <NumberField
-      name={name}
-      label={label}
-      min={minYear}
-      max={thisYear}
-      validate={validateYearWithinRange(
-        minYear,
-        thisYear,
-        invalidYearRangeMessage,
-      )}
-    />
   );
 }
 

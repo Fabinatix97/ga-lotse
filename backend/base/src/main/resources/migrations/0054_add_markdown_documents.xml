@@ -1,0 +1,121 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1742554314966-4">
+    <delete tableName="department_configuration"/>
+    <addColumn tableName="department_configuration">
+      <column name="citizen_portal_accessibility_statement_markdown_id"
+        type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="department_configuration">
+      <column name="employee_portal_accessibility_statement_markdown_id"
+        type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="department_configuration">
+      <column name="acknowledgements_markdown_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="department_configuration">
+      <column name="contact_markdown_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="department_configuration">
+      <column name="imprint_markdown_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="department_configuration">
+      <column name="citizen_portal_privacy_policy_markdown_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="department_configuration">
+      <column name="employee_portal_privacy_policy_markdown_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addUniqueConstraint
+      columnNames="citizen_portal_accessibility_statement_markdown_id"
+      constraintName="department_configuration_citizen_portal_accessibility_statement_markdown_id_key"
+      tableName="department_configuration"/>
+    <addUniqueConstraint
+      columnNames="employee_portal_accessibility_statement_markdown_id"
+      constraintName="department_configuration_employee_portal_accessibility_statement_markdown_id_key"
+      tableName="department_configuration"/>
+    <addUniqueConstraint columnNames="acknowledgements_markdown_id"
+      constraintName="department_configuration_acknowledgements_markdown_id_key"
+      tableName="department_configuration"/>
+    <addUniqueConstraint columnNames="contact_markdown_id"
+      constraintName="department_configuration_contact_markdown_id_key"
+      tableName="department_configuration"/>
+    <addUniqueConstraint columnNames="imprint_markdown_id"
+      constraintName="department_configuration_imprint_markdown_id_key"
+      tableName="department_configuration"/>
+    <addUniqueConstraint columnNames="citizen_portal_privacy_policy_markdown_id"
+      constraintName="department_configuration_citizen_portal_privacy_policy_markdown_id_key"
+      tableName="department_configuration"/>
+    <addUniqueConstraint
+      columnNames="employee_portal_privacy_policy_markdown_id"
+      constraintName="department_configuration_employee_portal_privacy_policy_markdown_id_key"
+      tableName="department_configuration"/>
+    <addForeignKeyConstraint
+      baseColumnNames="citizen_portal_accessibility_statement_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_citizen_portal_accessibility_statement_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+    <addForeignKeyConstraint
+      baseColumnNames="employee_portal_accessibility_statement_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_employee_portal_accessibility_statement_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+    <addForeignKeyConstraint
+      baseColumnNames="acknowledgements_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_acknowledgements_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="contact_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_contact_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="imprint_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_imprint_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+    <addForeignKeyConstraint
+      baseColumnNames="citizen_portal_privacy_policy_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_citizen_portal_privacy_policy_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+    <addForeignKeyConstraint
+      baseColumnNames="employee_portal_privacy_policy_markdown_id"
+      baseTableName="department_configuration"
+      constraintName="fk_department_configuration_employee_portal_privacy_policy_markdown"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="multi_lang_document" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

@@ -10,12 +10,18 @@ import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/mode
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import { AnonymizationConfiguration } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
-import { ConfigureDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ConfigureDataSourceStep/configureDataSourceStepFormModel";
+import {
+  ChooseAttributeStepOrConfigureDataSourceStepFormModel,
+  ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel,
+} from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
 export interface ConfigureDataSourceStepProps
-  extends SidebarStepContentProps<ConfigureDataSourceStepFormModel> {
+  extends SidebarStepContentProps<
+    | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
+    | ChooseAttributeStepOrConfigureDataSourceStepFormModel
+  > {
   isEvaluationTemplateBranch: boolean;
   dataSource?: DataSource;
   evaluationTemplateId?: string;
@@ -43,7 +49,10 @@ export function ConfigureDataSourceStep(props: ConfigureDataSourceStepProps) {
 }
 
 interface ConfigureDataSourceProps
-  extends SidebarStepContentProps<ConfigureDataSourceStepFormModel> {
+  extends SidebarStepContentProps<
+    | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
+    | ChooseAttributeStepOrConfigureDataSourceStepFormModel
+  > {
   name: string;
   sensitivity: DataSourceSensitivity | undefined;
   anonymizationOptions: AnonymizationOptions;
@@ -71,7 +80,10 @@ function ConfigureDataSource(props: ConfigureDataSourceProps) {
 }
 
 interface ConfigureDataSourceFromTemplateProps
-  extends SidebarStepContentProps<ConfigureDataSourceStepFormModel> {
+  extends SidebarStepContentProps<
+    | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
+    | ChooseAttributeStepOrConfigureDataSourceStepFormModel
+  > {
   evaluationTemplateId: string;
   explicitStartAndEnd: boolean;
 }

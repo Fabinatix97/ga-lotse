@@ -75,7 +75,10 @@ function IncidentTile({
             </Stack>
           )}
           <Stack>
-            <Typography whiteSpace="pre-line">
+            <Typography
+              whiteSpace="pre-line"
+              sx={{ overflowWrap: "break-word" }}
+            >
               {incident.description}
             </Typography>
           </Stack>

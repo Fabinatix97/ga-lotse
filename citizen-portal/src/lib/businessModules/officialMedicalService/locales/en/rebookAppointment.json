@@ -14,9 +14,9 @@
       }
     },
     "appointmentPicker": {
-      "noAppointmentForSelectedDate": "There are no free appointments for the selected day.",
-      "noAppointmentSelected": "Appointment has not been selected.",
-      "noAppointmentsAvailable": "There are currently no available appointments",
+      "noAppointmentForSelectedDate": "No appointments available for the selected date",
+      "noAppointmentSelected": "No appointment selected.",
+      "noAppointmentsAvailable": "There are currently no available appointments.",
       "tryLater": "We will make more appointments available soon. Please try again later."
     },
     "backToOverview": "Back",
@@ -26,7 +26,7 @@
   "appointment_calendar": {
     "required_appointment": "Please select an appointment",
     "required_day": "Please select a day",
-    "month_selection": "Appointment calendar week",
+    "month_selection": "Appointment calendar month",
     "next_month": "next month",
     "prev_month": "previous month",
     "list_label": "Available times *",
@@ -36,7 +36,7 @@
   "sidePanel": {
     "title": "Overview",
     "dateAndTime": "{{ appointmentStart }}",
-    "appointmentDuration": "(ca. {{ durationInMinutes }} Minutes)",
+    "appointmentDuration": "(ca. {{ durationInMinutes }} minutes)",
     "bookAppointment_bookable": "Book appointment",
     "bookAppointment_cancelled": "Rebook appointment",
     "bookAppointment_booked": "Reschedule appointment",

@@ -6,7 +6,7 @@
 package de.eshg.spatz.relay;
 
 import static de.eshg.lib.relay.MessageHeader.writeHeader;
-import static de.eshg.servicedirectory.util.X509Utils.extractCommonName;
+import static de.eshg.servicedirectory.util.X509Utils.extractSanOrCommonName;
 import static java.nio.channels.SelectionKey.OP_READ;
 
 import de.eshg.lib.relay.MessageType;
@@ -471,6 +471,6 @@ public class RelayConnector extends WebSocketClient {
 
     Certificate keyStoreCertificate =
         sslBundleFactory.build().getStores().getKeyStore().getCertificate("ssl");
-    return extractCommonName((X509Certificate) keyStoreCertificate);
+    return extractSanOrCommonName((X509Certificate) keyStoreCertificate);
   }
 }

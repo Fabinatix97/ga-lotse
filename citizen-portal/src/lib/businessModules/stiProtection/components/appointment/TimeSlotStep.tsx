@@ -5,11 +5,7 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { ApiConcern } from "@eshg/sti-protection-api";
-import { DateRangeOutlined } from "@mui/icons-material";
-import { Sheet, Stack, Typography } from "@mui/joy";
 import assert from "assert";
 import { startOfMonth } from "date-fns";
 import { prop, sortBy } from "remeda";
@@ -19,13 +15,13 @@ import {
   useCancelPendingAppointment,
 } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
-import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { NoAppointmentAvailable } from "@/lib/businessModules/stiProtection/components/shared/NoAppointmentAvailable";
 import { useTranslation } from "@/lib/i18n/client";
 import { AppointmentPickerSection } from "@/lib/shared/components/AppointmentPickerSection";
 
 import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
-import { BookAppointmentTitle, StepLayout } from "./StepLayout";
+import { StepLayout } from "./StepLayout";
 import { StepSubTitle } from "./StepSubTitle";
 import { mapToBookAppointment } from "./helpers";
 
@@ -113,54 +109,5 @@ export function TimeSlotStep() {
         onAppointmentSelected={(value) => setFormData({ appointment: value })}
       />
     </StepLayout>
-  );
-}
-
-function NoAppointmentAvailable({ concern }: { concern: ApiConcern }) {
-  const { t } = useTranslation("stiProtection/forms");
-  const routes = useCitizenRoutes();
-  return (
-    <Stack gap={3}>
-      <BookAppointmentTitle />
-      <Sheet>
-        <Stack gap={3} sx={{ padding: 3, alignItems: "center" }}>
-          <Typography level="h2" sx={{ alignSelf: "start" }}>
-            {t(`time_slot.title`)}
-          </Typography>
-          <DateRangeOutlined
-            sx={(theme) => ({
-              height: theme.spacing(10),
-              width: theme.spacing(10),
-              color: theme.palette.primary.outlinedBorder,
-            })}
-          />
-          <Typography level="title-md">
-            {t("time_slot.no_appointments_available")}
-          </Typography>
-          <Typography
-            sx={(theme) => ({
-              maxWidth: theme.spacing(80),
-            })}
-          >
-            {t("time_slot.try_later")}
-          </Typography>
-          <InternalLinkButton
-            href={
-              concern === ApiConcern.SexWork
-                ? routes.sexWork.index
-                : routes.stiConsultation.index
-            }
-            size="lg"
-            sx={(theme) => ({
-              maxWidth: theme.spacing(44),
-              width: "100%",
-              minWidth: "min-content",
-            })}
-          >
-            {t("base/translations:common.back")}
-          </InternalLinkButton>
-        </Stack>
-      </Sheet>
-    </Stack>
   );
 }

@@ -13,22 +13,18 @@ import {
 } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { OpenInNew } from "@mui/icons-material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/joy";
-import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
 import { useCallback, useContext, useMemo, useState } from "react";
-import { isObjectType } from "remeda";
 
 import { ChatDeviceId } from "@/lib/baseModule/components/layout/sideNavigation/ChatDeviceId";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useUpdateSelfUserChatAttributes } from "@/lib/businessModules/chat/api/mutations/selfUserApi";
+import { useDeactivateUserAccount } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
-import {
-  DeactivateModal,
-  DeactivateModalProps,
-} from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
+import { DeactivateModal } from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
+import { DoubleConfirmModal } from "@/lib/businessModules/chat/components/deactivate/DoubleConfirmModal";
 import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
@@ -51,14 +47,18 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const { matrixClient, isClientPrepared } =
     useContext(ChatClientContext) ?? {};
   const { tryNavigate } = useNavigation();
-  const [modalValues, setModalValues] = useState<DeactivateModalProps>();
+  const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
+  const [doubleConfirmationModalOpen, setDoubleConfirmationModalOpen] =
+    useState(false);
   const [termsOfUseModal, setTermsOfUseModal] = useState(false);
-  const snackbar = useSnackbar();
 
   const chatUserId = matrixClient?.getUserId();
 
-  const { mutateAsync: updateSelfUserChatAttributes } =
+  const { mutateAsync: updateKeycloakUserChatAttributes } =
     useUpdateSelfUserChatAttributes();
+
+  const { mutateAsync: deactivateUserAccountInSynapseServer } =
+    useDeactivateUserAccount();
 
   const {
     userSettings: {
@@ -72,7 +72,8 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     toggleReadConfirmation,
     toggleTypingNotifications,
   } = useUserSettings();
-  const { deactivateAccount } = useUserSettings();
+  const { deactivateAccount: markUserAsDeactivatedInChatManagement } =
+    useUserSettings();
   const { backupStatus } = useBackupInfo();
 
   const isEncryptionReady = useMemo(() => {
@@ -96,74 +97,48 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     }
   }, [isClientPrepared, matrixClient, sharePresence, togglePresenceStatus]);
 
-  const handleStopChat = useCallback(async () => {
-    if (!matrixClient) return;
-
+  const handleDeleteUserAccount = useCallback(async () => {
     try {
-      await updateSelfUserChatAttributes({
+      if (!matrixClient) {
+        throw new Error("Unexpected error: matrixClient is not initialized");
+      }
+      const matrixUserId = matrixClient.getUserId();
+      if (!matrixUserId) {
+        throw new Error(
+          "Unexpected error: Missing matrixClient has no userId defined",
+        );
+      }
+
+      matrixClient.stopClient();
+      await clearAllStores();
+
+      await updateKeycloakUserChatAttributes({
         externalChatUsername: "",
         chatCryptoStoreDeriveKeySecret: "",
       });
-    } catch (e) {
-      logger.error(e);
-    }
 
-    try {
-      matrixClient.stopClient();
-      await clearAllStores();
+      markUserAsDeactivatedInChatManagement();
+
+      await deactivateUserAccountInSynapseServer({
+        matrixUserId: matrixUserId,
+      });
+
+      setDeactivateModalOpen(false);
+      setDoubleConfirmationModalOpen(false);
     } catch (error) {
       logger.error(error);
     }
-  }, [matrixClient, updateSelfUserChatAttributes]);
 
-  const showSSOModal = useCallback(
-    (values: Omit<DeactivateModalProps, "onFinished" | "open">) => {
-      return new Promise<{ confirmed: boolean }>((resolve) => {
-        function onFinished(confirmed: boolean) {
-          resolve({ confirmed });
-          setModalValues(undefined);
-          onClose();
-          if (confirmed) {
-            void handleStopChat();
-          }
-        }
-        setModalValues({ ...values, onFinished });
-      });
-    },
-    [handleStopChat, onClose],
-  );
-
-  const handleDeactivateClick = useCallback(async () => {
-    if (!matrixClient) return;
-    async function makeRequest(auth: AuthDict | null) {
-      return matrixClient?.deactivateAccount(auth ?? undefined);
-    }
-
-    try {
-      await matrixClient.deactivateAccount(undefined);
-    } catch (error) {
-      if (isObjectType(error) && "data" in error) {
-        const { session } = error.data as IAuthData;
-
-        if (!session) {
-          throw new Error("Unable to receive session");
-        }
-
-        const modalPromise = showSSOModal({
-          makeRequest: makeRequest as (
-            auth: AuthDict | null,
-          ) => Promise<UIAResponse<void>>,
-          session: session,
-          authData: error.data as AuthDict,
-        });
-        const { confirmed } = await modalPromise;
-        if (confirmed) {
-          deactivateAccount(true);
-          snackbar.notification("Account Deactivated");
-        }
-      }
-    }
-  }, [deactivateAccount, matrixClient, showSSOModal, snackbar]);
+    tryNavigate(routes.index);
+  }, [
+    markUserAsDeactivatedInChatManagement,
+    setDeactivateModalOpen,
+    setDoubleConfirmationModalOpen,
+    matrixClient,
+    deactivateUserAccountInSynapseServer,
+    updateKeycloakUserChatAttributes,
+    tryNavigate,
+  ]);
 
   const deviceId = useMemo(() => matrixClient?.getDeviceId(), [matrixClient]);
 
@@ -235,7 +210,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
             zur Chatfunktion zugestimmt
           </Typography>
           <Button
-            onClick={handleDeactivateClick}
+            onClick={() => setDeactivateModalOpen(true)}
             sx={{ alignSelf: "flex-start", mt: 2 }}
             color="danger"
           >
@@ -257,10 +232,15 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
         </Button>
       </SidebarActions>
       <DeactivateModal
-        onFinished={modalValues?.onFinished}
-        makeRequest={modalValues?.makeRequest}
-        session={modalValues?.session}
-        authData={modalValues?.authData}
+        onClose={() => setDeactivateModalOpen(false)}
+        open={deactivateModalOpen}
+        onConfirm={() => setDoubleConfirmationModalOpen(true)}
+      />
+      <DoubleConfirmModal
+        onClose={() => setDoubleConfirmationModalOpen(false)}
+        open={doubleConfirmationModalOpen}
+        onConfirm={handleDeleteUserAccount}
+        onCancel={() => setDoubleConfirmationModalOpen(false)}
       />
       <BaseModal
         modalTitle="Nutzungsbedingungen"

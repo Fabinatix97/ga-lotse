@@ -13,6 +13,7 @@ import {
   EditorApi,
   FacilityApi,
   FileApi,
+  GdprValidationTaskApi,
   ImporterApi,
   InboxProcedureApi,
   InspectionApi,
@@ -29,10 +30,11 @@ import {
   TextBlockApi,
   WebSearchApi,
 } from "@eshg/inspection-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 export function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_INSPECTION_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
@@ -151,4 +153,9 @@ export function useArchivingApi() {
 export function useImportApi() {
   const configuration = useConfiguration();
   return new ImporterApi(configuration);
+}
+
+export function useGdprValidationTaskApi() {
+  const configuration = useConfiguration();
+  return new GdprValidationTaskApi(configuration);
 }

@@ -21,7 +21,7 @@ import {
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
@@ -56,6 +56,7 @@ export function FacilityForm({
   contactPersonRequired,
   allowMainContactPerson,
 }: FacilityFormProps) {
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper<BaseFacility>();
   return (
     <Formik initialValues={facility} onSubmit={onSubmit} enableReinitialize>

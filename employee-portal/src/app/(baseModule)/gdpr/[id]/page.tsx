@@ -9,13 +9,14 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
+  gdprRoutes,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
 
 import { useGetGdprProcedureDetailsPageQuery } from "@/lib/baseModule/api/queries/gdpr";
 import { GDPRProcedureDetails } from "@/lib/baseModule/components/gdpr/procedure/GDPRProcedureDetails";
-import { routes } from "@/lib/baseModule/shared/routes";
 
 export default function GDPRProcedurePage(
   props: DynamicPageProps<{
@@ -26,7 +27,12 @@ export default function GDPRProcedurePage(
   const { data } = useGetGdprProcedureDetailsPageQuery(id);
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title="DSGVO Vorgang" backHref={routes.gdpr.index} />}
+      toolbar={
+        <Toolbar
+          title="DSGVO Vorgang"
+          backButton={<ToolbarBackButton href={gdprRoutes.index} />}
+        />
+      }
     >
       <MainContentLayout>
         <GDPRProcedureDetails

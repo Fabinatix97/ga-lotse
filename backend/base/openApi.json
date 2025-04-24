@@ -589,6 +589,28 @@
         "tags" : [ "CalendarEvent" ]
       }
     },
+    "/citizen-access-code-users/credential" : {
+      "put" : {
+        "operationId" : "updateCredential",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateCredentialRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "Updates the credential in the context of a citizen user",
+        "tags" : [ "CitizenAccessCodeUser" ]
+      }
+    },
     "/citizen-access-code-users/date-of-birth" : {
       "post" : {
         "operationId" : "addCitizenAccessCodeUserWithDateOfBirthCredential",
@@ -789,6 +811,155 @@
         "tags" : [ "ConfigStatus" ]
       }
     },
+    "/configuration/acknowledgements" : {
+      "get" : {
+        "operationId" : "getAcknowledgementsInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updateAcknowledgementsMarkdown",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "de" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      }
+    },
+    "/configuration/contact" : {
+      "get" : {
+        "operationId" : "getContactInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updateContactMarkdown",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "de" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      }
+    },
+    "/configuration/declaration-of-accessibility" : {
+      "get" : {
+        "operationId" : "getAccessibilityInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CitizenAndEmployeeMarkdownInfo"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updateAccessibilityMarkdown",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "citizen_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "citizen_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "employee_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "employee_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "citizen_de", "employee_de" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      }
+    },
     "/configuration/department-info" : {
       "get" : {
         "operationId" : "getInternalConfigDepartmentInfo",
@@ -824,6 +995,121 @@
           }
         },
         "tags" : [ "BaseDepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/imprint" : {
+      "get" : {
+        "operationId" : "getImprintInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updateImprintMarkdown",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "de" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      }
+    },
+    "/configuration/markdown/citizen/{name}/{lang}" : {
+      "get" : {
+        "operationId" : "getCitizenMarkdownFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "name",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CitizenPortalMarkdownName"
+          }
+        }, {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      }
+    },
+    "/configuration/markdown/employee/{name}/{lang}" : {
+      "get" : {
+        "operationId" : "getEmployeeMarkdownFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "name",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/EmployeePortalMarkdownName"
+          }
+        }, {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
       }
     },
     "/configuration/privacy-documents/privacy-notice" : {
@@ -918,6 +1204,61 @@
           }
         },
         "tags" : [ "BasePrivacyDocuments" ]
+      }
+    },
+    "/configuration/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CitizenAndEmployeeMarkdownInfo"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyMarkdown",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "citizen_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "citizen_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "employee_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "employee_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "citizen_de", "employee_de" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
       }
     },
     "/contacts" : {
@@ -1424,6 +1765,82 @@
           }
         },
         "summary" : "Get the logo of the department running this application.",
+        "tags" : [ "Department" ]
+      }
+    },
+    "/department/markdown/citizen/{name}" : {
+      "get" : {
+        "operationId" : "getCitizenPortalMarkdown",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "name",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CitizenPortalMarkdownName"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a markdown document for the citizen portal",
+        "tags" : [ "Department" ]
+      }
+    },
+    "/department/markdown/employee/{name}" : {
+      "get" : {
+        "operationId" : "getEmployeePortalMarkdown",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "name",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/EmployeePortalMarkdownName"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a markdown document for the employee portal",
+        "tags" : [ "Department" ]
+      }
+    },
+    "/department/markdown/release-notes" : {
+      "get" : {
+        "operationId" : "getReleaseNotesMarkdown",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the release notes markdown",
         "tags" : [ "Department" ]
       }
     },
@@ -3301,6 +3718,34 @@
         "tags" : [ "Person" ]
       }
     },
+    "/persons/by-human-readable-id" : {
+      "get" : {
+        "operationId" : "searchReferencePersonsByHumanReadableId",
+        "parameters" : [ {
+          "description" : "The human readable ID of the Person which shall be searched for.",
+          "in" : "query",
+          "name" : "humanReadableId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchReferencePersonsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Search reference persons by humanReadableId.\nIncludes persons created from external sources.\nCaution: The returned ids of the reference persons must not be stored.\n",
+        "tags" : [ "Person" ]
+      }
+    },
     "/persons/centralfilestates" : {
       "post" : {
         "operationId" : "addPersonFileState",
@@ -4255,7 +4700,7 @@
           "name" : "houseNumber",
           "required" : false,
           "schema" : {
-            "pattern" : "^(\\d+)([a-zA-Z]*)$|",
+            "pattern" : "^(\\d+)([ a-zA-Z]*)$|",
             "type" : "string",
             "description" : "The house number of the address for which the search shall be done",
             "example" : "1A"
@@ -6773,6 +7218,22 @@
           }
         }
       },
+      "CitizenAndEmployeeMarkdownInfo" : {
+        "required" : [ "citizen", "employee" ],
+        "type" : "object",
+        "properties" : {
+          "citizen" : {
+            "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+          },
+          "employee" : {
+            "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+          }
+        }
+      },
+      "CitizenPortalMarkdownName" : {
+        "type" : "string",
+        "enum" : [ "ACCESSIBILITY", "IMPRINT", "PRIVACY", "ACKNOWLEDGEMENTS" ]
+      },
       "CitizenUser" : {
         "required" : [ "userId" ],
         "type" : "object",
@@ -7361,6 +7822,10 @@
             }
           }
         } ]
+      },
+      "EmployeePortalMarkdownName" : {
+        "type" : "string",
+        "enum" : [ "ACCESSIBILITY", "CONTACT", "PRIVACY", "ACKNOWLEDGEMENTS" ]
       },
       "EmployeeUserKeys" : {
         "required" : [ "cryptoVersion", "encryptedPrivateKey", "keyIdentifier", "publicKey" ],
@@ -8875,7 +9340,7 @@
         }
       },
       "GetPersonFileStateResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -8921,6 +9386,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -9144,7 +9614,7 @@
         }
       },
       "GetReferencePersonResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "salutation", "version" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "salutation", "version" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -9190,6 +9660,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -9858,6 +10333,18 @@
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
       },
+      "InternationalMarkdownInfo" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/MarkdownInfo"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/MarkdownInfo"
+          }
+        }
+      },
       "InvalidateSessionsRequest" : {
         "required" : [ "sessions" ],
         "type" : "object",
@@ -10038,6 +10525,10 @@
         },
         "description" : "Labels are primarily used to further categorize Resources and Inventory, apart from their respective types."
       },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
+      },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
         "type" : "object",
@@ -10091,6 +10582,19 @@
             "items" : {
               "$ref" : "#/components/schemas/ErrorResponseWithLocation"
             }
+          }
+        }
+      },
+      "MarkdownInfo" : {
+        "required" : [ "fileName", "fileSize" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -10321,7 +10825,7 @@
         "description" : "The personal data relating to a person"
       },
       "PersonFileState" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -10367,6 +10871,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -11291,6 +11800,25 @@
           }
         }
       },
+      "UpdateCredentialRequest" : {
+        "required" : [ "currentSecret", "newSecret" ],
+        "type" : "object",
+        "properties" : {
+          "credentialType" : {
+            "$ref" : "#/components/schemas/CredentialType"
+          },
+          "currentSecret" : {
+            "type" : "string",
+            "description" : "The current secret value for verification",
+            "example" : "654321"
+          },
+          "newSecret" : {
+            "type" : "string",
+            "description" : "The new secret value for update",
+            "example" : "654321"
+          }
+        }
+      },
       "UpdateInstitutionContactRequest" : {
         "required" : [ "name" ],
         "type" : "object",
@@ -11719,14 +12247,11 @@
         "type" : "object",
         "properties" : {
           "chatCryptoStoreDeriveKeySecret" : {
-            "maxLength" : 128,
-            "minLength" : 32,
             "type" : "string",
             "description" : "Secret value used as a part of derive key used to encrypt user's local crypto store containing KeyBackup",
             "example" : "UUID_8"
           },
           "externalChatUsername" : {
-            "pattern" : "^@[\\w.-]+:[\\w.-]+$",
             "type" : "string",
             "description" : "Matrix User ID (MXID) of the gematik TI-Messenger (matrix chat)",
             "example" : "@username:matrix_homeserver_url"
@@ -11826,8 +12351,6 @@
         "type" : "object",
         "properties" : {
           "chatCryptoStoreDeriveKeySecret" : {
-            "maxLength" : 128,
-            "minLength" : 32,
             "type" : "string",
             "description" : "Secret value used as a part of derive key used to encrypt user's local crypto store containing KeyBackup",
             "example" : "UUID_8"
@@ -11938,7 +12461,7 @@
       "UserRole" : {
         "type" : "string",
         "description" : "A filter for a role users can have",
-        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "CHAT_MANAGEMENT_WRITE", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_USER", "STI_PROTECTION_MFA", "STI_PROTECTION_CONSULTANT", "STI_PROTECTION_PHYSICIAN", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS" ]
+        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "CHAT_MANAGEMENT_WRITE", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS" ]
       },
       "VCardAddress" : {
         "required" : [ "addressAddition", "city", "country", "houseNumber", "postBox", "postalCode", "street" ],

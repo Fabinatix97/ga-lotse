@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ActionsMenu,
   DataTable,
   Pagination,
   TablePage,
@@ -42,7 +43,6 @@ import {
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import {
   ProceduresTableControls,
   TableControlName,
@@ -279,7 +279,7 @@ export function StiProtectionProceduresTable() {
           onEntrySearch={setSearchQuery}
           onToggleActiveTableControl={handleToggleActiveTableControl}
           activeTableControl={activeTableControl}
-          FilterButton={<StiProtectionProceduresTableFilterButton />}
+          ToggleFilterButton={<StiProtectionProceduresTableFilterButton />}
           controlsRight={
             <NavigationLink href={openNewProcedureSidebarLink} passHref>
               <Button startDecorator={<Add />}>Neuen Vorgang anlegen</Button>

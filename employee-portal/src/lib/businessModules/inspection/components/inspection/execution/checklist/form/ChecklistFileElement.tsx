@@ -118,7 +118,7 @@ export function ChecklistFileElement({
             <Typography level="body-sm">
               <label id={uploadTooltipTitleId}>{uploadTooltipTitle}</label>
               <InfoIconTooltipButton
-                size="sm"
+                iconSize="sm"
                 iconLabelledBy={uploadTooltipTitleId}
                 infoText={uploadTooltipText}
                 title="Hinweise für Datei Upload"

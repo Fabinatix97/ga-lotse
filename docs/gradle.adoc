@@ -55,6 +55,8 @@ These are necessary for the e2e tests and for developing performance tests again
 | `./gradlew [project-name]:test [-Pcoverage]`  | Run all tests in a single run. Add `-Pcoverage` to enable coverage reporting.
 | `./gradlew [project-name]:testWatch`          | Run all tests in watch mode (reruns tests when they change)
 | `./gradlew [project-name]:analyzeBundle`      | Generates a visual report of the size of each module and their dependencies
+| `./gradlew [project-name]:inspect`            | Inspects the project for unused files, dependencies and exports
+| `./gradlew [project-name]:inspectFix`         | Automatically fixes inspection issues.
 |===
 *Notice:* The `run` task is recommended over the `runDev` task for demos and reviews, because in development mode, pages will be built ad-hoc. This can significantly reduce the runtime performance, especially when using screen sharing.
 
@@ -70,13 +72,13 @@ All common tasks are also available within the e2e project.
 
 [cols="1,1"]
 |===
-| *Command*                                  | *Description*
-| `./gradlew e2e:test`                       | Run all tests in headless mode
-| `./gradlew e2e:testUi`                     | Open Playwright in UI mode (enables running and debugging individual tests)
-| `./gradlew e2e:testFile -Pfile=FILE`       | Run test for single file matching the specified name (can include paths)
-| `./gradlew e2e:testReport`                 | Open HTML test report
-| `./gradlew e2e:cleanValidationFilesOutput` | Delete e2e/data/validation/output to have a clean folder for finding unused files
-| `./gradlew e2e:findUnusedValidationFiles`  | Compare e2e/data/validation with e2e/data/output to find unused validation files
+| *Command*                                               | *Description*
+| `./gradlew e2e:test [-Pfilter=PATH] [-Pretries=NUMBER]` | Run all tests in headless mode. Use `-Pfilter` to run an individual test only. Use `-Pretries` to enable retries for verifying flaky tests.
+| `./gradlew e2e:testUi`                                  | Open Playwright in UI mode (enables running and debugging individual tests)
+| `./gradlew e2e:testFile -Pfile=FILE`                    | Run test for single file matching the specified name (can include paths)
+| `./gradlew e2e:testReport`                              | Open HTML test report
+| `./gradlew e2e:cleanValidationFilesOutput`              | Delete e2e/data/validation/output to have a clean folder for finding unused files
+| `./gradlew e2e:findUnusedValidationFiles`               | Compare e2e/data/validation with e2e/data/output to find unused validation files
 |===
 
 *Notice:* `testUi` is recommended for local development, because tests can be run individually with a time travel experience. This simplifies the verification of the test runs and the analysis of errors.

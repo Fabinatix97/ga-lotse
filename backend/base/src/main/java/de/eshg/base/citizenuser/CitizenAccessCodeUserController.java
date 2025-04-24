@@ -9,6 +9,7 @@ import de.eshg.base.centralfile.PersonController;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.base.citizenuser.api.UpdateCredentialRequest;
 import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
 import de.eshg.base.citizenuser.mapper.CitizenAccessCodeUserMapper;
 import de.eshg.keycloak.api.user.model.CredentialTypeDto;
@@ -18,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -44,7 +47,7 @@ public class CitizenAccessCodeUserController implements CitizenAccessCodeUserApi
             .getPersonFileState(request.personFileStateId())
             .dateOfBirth()
             .format(DateTimeFormatter.ISO_LOCAL_DATE);
-    citizenUserService.addCredential(
+    citizenUserService.updateCredential(
         UUID.fromString(createdUser.getId()),
         CredentialTypeDto.DATE_OF_BIRTH,
         formattedDateOfBirth);
@@ -55,7 +58,7 @@ public class CitizenAccessCodeUserController implements CitizenAccessCodeUserApi
   public CitizenAccessCodeUserDto addCitizenAccessCodeUserWithPinCredential(
       AddCitizenAccessCodeUserWithPinCredentialRequest request) {
     UserRepresentation createdUser = citizenUserService.addAccessCodeUser();
-    citizenUserService.addCredential(
+    citizenUserService.updateCredential(
         UUID.fromString(createdUser.getId()), CredentialTypeDto.PIN, request.pin());
     return CitizenAccessCodeUserMapper.mapUserToApi(createdUser);
   }
@@ -84,5 +87,24 @@ public class CitizenAccessCodeUserController implements CitizenAccessCodeUserApi
     } catch (jakarta.ws.rs.NotFoundException e) {
       throw new NotFoundException(e.getMessage());
     }
+  }
+
+  @Override
+  public void updateCredential(UpdateCredentialRequest request) {
+    Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    UUID userId = UUID.fromString(principal.getSubject());
+    CredentialTypeDto credentialType =
+        CitizenAccessCodeUserMapper.mapCredentialTypeToApi(request.credentialType());
+
+    try {
+      citizenUserService.verifyCredential(userId, credentialType, request.currentSecret());
+    } catch (jakarta.ws.rs.NotAuthorizedException e) {
+      throw HttpClientErrorException.create(
+          HttpStatus.UNAUTHORIZED, e.getMessage(), null, null, null);
+    } catch (jakarta.ws.rs.NotFoundException e) {
+      throw new NotFoundException(e.getMessage());
+    }
+
+    citizenUserService.updateCredential(userId, credentialType, request.newSecret());
   }
 }

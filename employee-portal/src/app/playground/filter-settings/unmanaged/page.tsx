@@ -6,11 +6,15 @@
 "use client";
 
 import {
+  ActiveFilter,
   ButtonBar,
   DataTable,
+  FilterSettingsContent,
+  FilterSettingsSheet,
   MainContentLayout,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
 } from "@eshg/lib-employee-portal";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
@@ -22,11 +26,6 @@ import {
 } from "@mui/joy";
 import { useId, useState } from "react";
 import { isNonNullish } from "remeda";
-
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
-import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 
 interface PlaygroundFilter {
   key: string;
@@ -78,7 +77,7 @@ export default function PlaygroundFilterSettingsUnmanagedPage() {
         controls={
           <ButtonBar
             left={
-              <FilterButton
+              <ToggleFilterButton
                 isFilterVisible={filterVisible}
                 activeFilters={activeFilters.length}
                 onClick={() => setFilterVisible((prev) => !prev)}

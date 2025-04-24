@@ -8,9 +8,12 @@
 import {
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
@@ -20,9 +23,6 @@ import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";
 import { useAuditLogAdminFilterSettings } from "@/lib/auditlog/components/authorize/useAuditLogAdminFilterSettings";
 import { useGetAvailableAuditLogs } from "@/lib/auditlog/queries/auditlog";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 
 export function AuditLogAuthorizePage(props: PageProps) {
   const searchParams = use(props.searchParams);
@@ -41,7 +41,7 @@ export function AuditLogAuthorizePage(props: PageProps) {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
         />
       }
       filterSettings={

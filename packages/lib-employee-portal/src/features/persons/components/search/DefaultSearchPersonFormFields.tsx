@@ -6,14 +6,13 @@
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  validateDateOfBirth,
-  validateLength,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 
 import { SearchPersonFormValues } from "./SearchPersonSidebar";
 
 export function DefaultSearchPersonFormFields() {
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper<SearchPersonFormValues>();
 
   return (

@@ -9,9 +9,13 @@ import { ApiUserRole, GetGdprProceduresRequest } from "@eshg/base-api";
 import {
   ButtonBar,
   DataTable,
+  FilterSettingsContent,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  gdprRoutes,
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -22,10 +26,6 @@ import { useGetGdprProcedureOverviewQuery } from "@/lib/baseModule/api/queries/g
 import { useCreateGDPRProcedureSidebar } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";
 import { columns } from "@/lib/baseModule/components/gdpr/overview/columns";
 import { useGdprProcedureFilterSettings } from "@/lib/baseModule/components/gdpr/overview/useGdprFilterSettings";
-import { routes } from "@/lib/baseModule/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 
 export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseGdprProcedureWrite);
@@ -63,7 +63,7 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
       }
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
           right={
             hasWritePerms && (
               <Button
@@ -94,7 +94,7 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
           enableSortingRemoval={false}
           rowNavigation={{
             focusColumnAccessorKey: "identificationData",
-            route: (row) => routes.gdpr.details(row.original.id),
+            route: (row) => gdprRoutes.details(row.original.id),
           }}
           minWidth="65rem"
         />

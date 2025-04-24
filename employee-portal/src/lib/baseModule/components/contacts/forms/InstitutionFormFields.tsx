@@ -8,10 +8,11 @@ import { CONTACT_CATEGORY_NAMES } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Divider, Grid } from "@mui/joy";
 
 export function InstitutionFormFields() {
+  const { validateLength } = useValidators();
   return (
     <>
       <Grid xxs={12}>

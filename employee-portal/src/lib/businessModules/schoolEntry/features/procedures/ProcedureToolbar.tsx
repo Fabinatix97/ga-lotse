@@ -10,6 +10,7 @@ import {
   PersonToolbarHeader,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
@@ -36,15 +37,17 @@ export function ProcedureToolbar(props: ProcedureToolbarProps) {
 
   return (
     <TabNavigationToolbar
-      items={tabItems}
-      routeBack={
-        hasSchoolEntryAdminRole ? routes.procedures.overview : undefined
-      }
       header={<PersonToolbarHeader person={procedure.data.child} />}
+      items={tabItems}
       afterTabs={
         procedure.data.isClosed ? (
           <span data-testid="procedureStatus">Vorgang geschlossen</span>
-        ) : undefined
+        ) : null
+      }
+      backButton={
+        hasSchoolEntryAdminRole ? (
+          <ToolbarBackButton href={routes.procedures.overview} />
+        ) : null
       }
     />
   );

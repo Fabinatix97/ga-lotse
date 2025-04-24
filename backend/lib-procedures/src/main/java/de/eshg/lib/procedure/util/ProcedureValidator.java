@@ -41,4 +41,17 @@ public class ProcedureValidator {
         .map(prop -> PropertyUtils.read(object, prop))
         .anyMatch(Objects::nonNull);
   }
+
+  public static boolean hasNonNullNonBlankValue(Record object) {
+    return PropertyUtils.getPropertyDescriptors(object).stream()
+        .filter(descriptor -> !PropertyUtils.isDeclaredInClass(descriptor, Object.class))
+        .filter(PropertyUtils::isReadable)
+        .map(prop -> PropertyUtils.read(object, prop))
+        .anyMatch(
+            o ->
+                o != null
+                    && ((o instanceof String s
+                            && org.apache.commons.lang3.StringUtils.isNotBlank(s))
+                        || !(o instanceof String)));
+  }
 }

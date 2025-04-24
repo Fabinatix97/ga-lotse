@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  mapBoolToYesOrNo,
+  mapYesOrNoToBool,
+} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { ApiConsultation } from "@eshg/sti-protection-api";
 
-import {
-  mapBoolToYesOrNo,
-  mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { guardValue } from "@/lib/businessModules/stiProtection/shared/helpers";
 
 import { GeneralSectionData } from "./GeneralSection";
@@ -19,22 +19,10 @@ import { PregnancySectionData } from "./PregnancySection";
 export function mapFormValuesToApi(
   formData: ConsultationFormData,
 ): ApiConsultation {
-  const hasSufficientGermanLanguageSkills = mapYesOrNoToBool(
-    formData.general.hasSufficientGermanLanguageSkills,
-  );
-
   return {
     general: {
       mainReason: mapOptionalValue(formData.general.mainReason),
       furtherGenderInfo: mapOptionalValue(formData.general.furtherGenderInfo),
-      hasSufficientGermanLanguageSkills: hasSufficientGermanLanguageSkills,
-      isIlliterate: guardValue(
-        !hasSufficientGermanLanguageSkills,
-        formData.general.isIlliterate,
-      ),
-      otherKnownLanguages: mapOptionalValue(
-        formData.general.otherKnownLanguages,
-      ),
       hasHealthInsurance: mapYesOrNoToBool(formData.general.hasHealthInsurance),
       hasGermanHealthInsurance: formData.general.hasGermanHealthInsurance,
       hasInsecureResidence: mapYesOrNoToBool(
@@ -93,11 +81,6 @@ export function mapApiToForm(
     general: {
       mainReason: apiData?.general?.mainReason ?? "",
       furtherGenderInfo: apiData?.general?.furtherGenderInfo ?? "",
-      hasSufficientGermanLanguageSkills: mapBoolToYesOrNo(
-        apiData?.general?.hasSufficientGermanLanguageSkills,
-      ),
-      isIlliterate: apiData?.general?.isIlliterate ?? false,
-      otherKnownLanguages: apiData?.general?.otherKnownLanguages ?? "",
       hasHealthInsurance: mapBoolToYesOrNo(
         apiData?.general?.hasHealthInsurance,
       ),

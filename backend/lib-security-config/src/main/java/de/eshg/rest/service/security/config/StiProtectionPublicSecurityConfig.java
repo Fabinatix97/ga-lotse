@@ -17,20 +17,20 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
   StiProtectionPublicSecurityConfig() {
     super("sti-protection");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_USER, true);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_ADMIN, true);
     grantAccessToLibProceduresUrls(
-        EmployeePermissionRole.STI_PROTECTION_USER, ModuleLeaderRole.STI_PROTECTION_LEADER);
+        EmployeePermissionRole.STI_PROTECTION_ADMIN, ModuleLeaderRole.STI_PROTECTION_LEADER);
     grantAccessToConfiguration();
 
     requestMatchers(BaseUrls.StiProtection.CITIZEN_PUBLIC_CONTROLLER + "/**").permitAll();
 
     requestMatchers(GET, BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{id}/**")
         .hasAnyRole(
-            EmployeePermissionRole.STI_PROTECTION_USER, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+            EmployeePermissionRole.STI_PROTECTION_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(
             BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
-        .hasAnyRole(EmployeePermissionRole.STI_PROTECTION_USER);
+        .hasAnyRole(EmployeePermissionRole.STI_PROTECTION_ADMIN);
 
     requestMatchers(BaseUrls.StiProtection.CITIZEN_CONTROLLER + "/**")
         .hasRole(CitizenPermissionRole.ACCESS_CODE_USER);

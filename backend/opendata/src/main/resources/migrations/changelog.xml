@@ -10,5 +10,7 @@
 
   <include file="migrations/0001_initial.xml"/>
   <include file="migrations/0002_config.xml"/>
+  <include file="migrations/0003_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="migrations/0004_config_initialized.xml"/>
 
 </databaseChangeLog>

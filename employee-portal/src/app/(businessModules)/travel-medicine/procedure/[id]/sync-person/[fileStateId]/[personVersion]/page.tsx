@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  BasePersonDiffForm,
+  CentralFileSyncForm,
+  useGetPersonFileStateDiff,
+} from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   PositiveIntegerSchema,
@@ -15,10 +20,7 @@ import { useRouter } from "next/navigation";
 import { use } from "react";
 import * as v from "valibot";
 
-import { useGetPersonFileStateDiff } from "@/lib/baseModule/api/queries/persons";
 import { useSyncPerson } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
-import { CentralFileSyncForm } from "@/lib/shared/components/centralFile/sync/CentralFileSyncForm";
-import { BasePersonDiffForm } from "@/lib/shared/components/centralFile/sync/sections/BasePersonDiffForm";
 
 const RouteParamsSchema = v.object({
   id: UuidSchema,

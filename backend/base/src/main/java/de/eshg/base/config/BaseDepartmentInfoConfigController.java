@@ -8,8 +8,8 @@ package de.eshg.base.config;
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
 import de.eshg.config.api.GetInternalConfigDepartmentInfoResponse;
 import de.eshg.config.departmentinfo.AbstractDepartmentInfoConfigController;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigController;
 import de.eshg.config.mapper.DepartmentInfoMapper;
-import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(DepartmentInfoLibrary.DEPARTMENT_INFO_API)
+@RequestMapping(BaseDepartmentInfoConfigController.BASE_URL)
 @Tag(name = "BaseDepartmentInfoConfig")
 public class BaseDepartmentInfoConfigController
     extends AbstractDepartmentInfoConfigController<BaseDepartmentInfoConfig> {
+  static final String BASE_URL = DepartmentInfoConfigController.BASE_URL;
 
   private final BaseDepartmentInfoConfigService baseDepartmentInfoConfigService;
 

@@ -42,7 +42,7 @@ export function OtherModulesCard(props: { tabs: ConfiguratorStatusOverview }) {
               </Typography>
               <OtherModulesLink
                 modules={getAllErrorModules(props.tabs)}
-                status={"error"}
+                status={"INCOMPLETE"}
               />
             </Stack>
           )}
@@ -54,7 +54,7 @@ export function OtherModulesCard(props: { tabs: ConfiguratorStatusOverview }) {
               </Typography>
               <OtherModulesLink
                 modules={getAllWarningModules(props.tabs)}
-                status={"warning"}
+                status={"PARTIALLY_COMPLETE"}
               />
             </Stack>
           )}

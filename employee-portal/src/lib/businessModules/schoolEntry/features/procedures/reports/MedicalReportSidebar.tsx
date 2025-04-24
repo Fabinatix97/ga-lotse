@@ -16,7 +16,7 @@ import {
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Button, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
@@ -43,6 +43,7 @@ const initialValues: MedicalReportValues = {
 };
 
 function MedicalReportSidebar(props: MedicalReportSidebarProps) {
+  const { validateLength } = useValidators();
   const createMedicalReport = useCreateMedicalReport(props.procedureId);
   const { download } = useFileDownload(createMedicalReport.mutateAsync);
 

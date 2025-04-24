@@ -10,6 +10,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
@@ -31,7 +32,7 @@ export default function TaskMetricsPage(
       toolbar={
         <Toolbar
           title={`Aufgabenkennzahlen: ${procedureTypeNames[procedureType]}`}
-          backHref={routes.metrics.index}
+          backButton={<ToolbarBackButton href={routes.metrics.index} />}
         />
       }
     >

@@ -9,31 +9,47 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isEmpty } from "remeda";
 
-interface MultiStepFormButtonBarProps {
+interface MultiStepFormButtonBarProps<Values> {
   href: string;
   submitLabel?: string;
   cancelLabel: string;
   forwardLabel: string;
   backLabel: string;
+  backendValidation?: (
+    currentStep: number,
+    values: Values,
+    setFieldError: (field: string, message: string | undefined) => void,
+  ) => Promise<boolean>;
 }
 
-export function MultiStepFormButtonBar({
+export function MultiStepFormButtonBar<Values>({
   href,
   submitLabel,
   cancelLabel,
   forwardLabel,
   backLabel,
-}: Readonly<MultiStepFormButtonBarProps>) {
+  backendValidation,
+}: Readonly<MultiStepFormButtonBarProps<Values>>) {
   const { currentStep, totalSteps, goForward, goBack } = useMultiStepForm();
 
-  const { handleSubmit, validateForm, setTouched, touched } =
-    useFormikContext();
+  const {
+    handleSubmit,
+    validateForm,
+    setTouched,
+    touched,
+    values,
+    setFieldError,
+  } = useFormikContext<Values>();
 
   async function handleValidation(handleFunction: () => void) {
     const errors = await validateForm();
     await setTouched({ ...touched, ...errors });
 
-    if (isEmpty(errors)) {
+    if (
+      isEmpty(errors) &&
+      (!backendValidation ||
+        (await backendValidation(currentStep, values, setFieldError)))
+    ) {
       handleFunction();
     }
   }

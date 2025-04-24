@@ -15,7 +15,6 @@ import de.eshg.spatz.security.CertificateBuild;
 import de.eshg.spatz.security.CertificateBuilder;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
@@ -133,9 +132,6 @@ public class SelfSignedCertService implements SmartLifecycle {
   private CertificateBuild createCertificate() {
     CertificateBuild certificateBuild =
         CertificateBuilder.forHost(actorConfiguration.hostname())
-            .withAltName(
-                Optional.ofNullable(config.getSubjectAlternativeNames())
-                    .orElse(Collections.emptyList()))
             .withLocation(config.getSubjectLocation())
             .maxAge(config.getMaxAge())
             .keyParameters(config.getKeyParameters())
@@ -143,10 +139,9 @@ public class SelfSignedCertService implements SmartLifecycle {
             .build();
 
     logger.info(
-        "created self-signed {} certificate for {} (and {}, location {}); valid from {} to {}",
+        "created self-signed {} certificate for {} (location {}); valid from {} to {}",
         config.getKeyParameters(),
         actorConfiguration.hostname(),
-        config.getSubjectAlternativeNames(),
         config.getSubjectLocation(),
         certificateBuild.certificate().getNotBefore(),
         certificateBuild.certificate().getNotAfter());

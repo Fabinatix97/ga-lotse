@@ -9,5 +9,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
   <include file="/migrations/0001_initial.xml"/>
+  <include file="/migrations/0002_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="/migrations/0003_lab_tests.xml"/>
+  <include file="/migrations/0004_refactor_laboratory_test_examination.xml"/>
 
 </databaseChangeLog>

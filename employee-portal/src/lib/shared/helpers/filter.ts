@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { FilterValue } from "@eshg/lib-employee-portal";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
-
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 export function getFilterDate(filterValues: FilterValue[], key: string) {
   const value = filterValues.find((filterValue) => filterValue.key === key);

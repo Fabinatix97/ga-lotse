@@ -5,6 +5,7 @@
 
 import {
   ButtonBar,
+  CheckboxField,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -22,7 +23,6 @@ import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useCreateSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 export function useSchoolInfoLetterSidebar(): UseSidebarWithFormRefResult<SchoolInfoLetterSidebarProps> {
   return useSidebarWithFormRef({

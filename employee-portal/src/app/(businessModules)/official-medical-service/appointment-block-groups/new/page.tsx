@@ -7,6 +7,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import { CreateAppointmentBlockGroupForm } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
@@ -18,7 +19,9 @@ export default function NewAppointmentBlockPage() {
       toolbar={
         <Toolbar
           title="Neuen Terminblock planen"
-          backHref={routes.appointmentBlockGroups.index}
+          backButton={
+            <ToolbarBackButton href={routes.appointmentBlockGroups.index} />
+          }
         />
       }
     >

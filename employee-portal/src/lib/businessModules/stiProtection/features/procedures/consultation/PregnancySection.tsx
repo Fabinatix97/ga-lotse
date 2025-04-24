@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import {
   BaseField,
@@ -10,12 +11,11 @@ import {
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { validatePastOrTodayDate } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 
 export interface PregnancySectionData {
@@ -44,6 +44,7 @@ export function PregnancySection() {
 }
 
 function PregnancySectionFields() {
+  const { validatePastOrTodayDate } = useValidators();
   return (
     <>
       <Row gap={3}>

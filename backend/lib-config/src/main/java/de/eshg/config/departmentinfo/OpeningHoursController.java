@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(DepartmentInfoLibrary.OPENING_HOURS_API)
+@RequestMapping(OpeningHoursController.BASE_URL)
 @ConditionalOnBean(OpeningHoursService.class)
 @Tag(name = "OpeningHours")
 public class OpeningHoursController extends AbstractOpeningHoursController<OpeningHours> {
+
+  static final String BASE_URL = DepartmentInfoLibrary.CONFIGURATION_API + OPENING_HOURS_API_SUFFIX;
 
   protected OpeningHoursController(OpeningHoursService openingHoursService) {
     super(openingHoursService);

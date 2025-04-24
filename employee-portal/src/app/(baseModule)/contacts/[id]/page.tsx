@@ -10,15 +10,14 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
+  useGetContactQuery,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { Box, Grid, Typography } from "@mui/joy";
 import { use } from "react";
 
-import {
-  useGetContactHistoryQuery,
-  useGetContactQuery,
-} from "@/lib/baseModule/api/queries/contacts";
+import { useGetContactHistoryQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactDetails } from "@/lib/baseModule/components/contacts/ContactDetails";
 import { fullContactName } from "@/lib/baseModule/components/contacts/helpers";
 import { ContactHistory } from "@/lib/baseModule/components/contacts/history/ContactHistory";
@@ -38,7 +37,7 @@ export default function ContactDetailsPage(
       toolbar={
         <Toolbar
           title={fullContactName(contact)}
-          backHref={routes.contacts.index}
+          backButton={<ToolbarBackButton href={routes.contacts.index} />}
         />
       }
     >

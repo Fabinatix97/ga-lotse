@@ -26,6 +26,7 @@ import {
 } from "@eshg/inspection-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { isNonNullish } from "remeda";
@@ -405,6 +406,7 @@ async function prefetchAll({
   // 2.2 pre-fetch useGetDepartment()
   promises.push(() =>
     queryClient.fetchQuery({
+      ...SEMI_STATIC_QUERY_OPTIONS,
       queryKey: getDepartmentQueryKey(),
       queryFn: () =>
         departmentApi.getDepartmentInfo(getHeadersForOfflineCaching()),

@@ -85,7 +85,6 @@ export function AppointmentDetailsContent() {
             headingKey="important_info_to_heading"
             listKey="important_info_to_list"
             localePath="stiProtection/appointmentInfo"
-            length={3}
           />
         </ContentSheet>
       ) : null}

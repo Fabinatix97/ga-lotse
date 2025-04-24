@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiGetReportDetailPageResponse,
   ApiReportType,
@@ -16,7 +17,6 @@ import {
   mapTableColumnHeadersToFlatAttributes,
 } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { ReportDetailsView } from "@/lib/businessModules/statistics/api/models/reportDetailsViewTypes";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
 import { mapAnalyses } from "./useGetDetailPageInformation";
@@ -39,7 +39,7 @@ export function mapToReportDetailsView(
     start: response.timeRangeStart,
     end: response.timeRangeEnd,
     createdAt: response.executionDate,
-    createdBy: fullName(user),
+    createdBy: formatUserName(user),
     dataSource: {
       name: response.tableColumnHeaders[0]!.dataSourceName,
       attributeLabels: attributes.map((it) => it.name),

@@ -4,11 +4,11 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 
-import { TextareaField } from "@/components/form/TextareaField";
+import { TextareaField } from "@/components/formFields/TextareaField";
 
 export interface ProcedureLabelValues {
   name: string;
@@ -16,6 +16,8 @@ export interface ProcedureLabelValues {
 }
 
 export function ProcedureLabelFormFields() {
+  const { validateLength } = useValidators();
+
   return (
     <Stack gap={2}>
       <InputField

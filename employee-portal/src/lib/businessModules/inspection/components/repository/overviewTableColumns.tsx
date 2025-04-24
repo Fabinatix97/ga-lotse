@@ -4,6 +4,7 @@
  */
 
 import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import {
   Close,
   DeleteOutlined,
@@ -25,7 +26,6 @@ import {
   isUpdateableVersion as _isUpdateableVersion,
 } from "@/lib/businessModules/inspection/components/repository/utils";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper =
   createColumnHelper<ApiChecklistDefinitionCentralRepoMetadata>();

@@ -5,8 +5,10 @@
 
 package de.eshg.stiprotection.api.examination;
 
+import de.eshg.stiprotection.api.examination.labtests.LabTestDataDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import java.util.List;
 
 @Schema(
     name = "LaboratoryTestExamination",
@@ -28,45 +30,4 @@ public record LaboratoryTestExaminationDto(
         Boolean testsConducted,
     @Schema(description = "Indicates whether the patient has paid for the tests.")
         Boolean testsPayed,
-    @Schema(description = "Specifies whether an HIV laboratory test is requested.")
-        Boolean hivTestRequested,
-    @Schema(description = "Specifies whether a Syphilis laboratory test is requested.")
-        Boolean syphilisTestRequested,
-    @Schema(description = "Specifies whether a Hepatitis A laboratory test is requested.")
-        Boolean hepATestRequested,
-    @Schema(description = "Specifies whether a Hepatitis B laboratory test is requested.")
-        Boolean hepBTestRequested,
-    @Schema(description = "Specifies whether a Hepatitis C laboratory test is requested.")
-        Boolean hepCTestRequested,
-    @Schema(description = "Specifies whether a Chlamydia laboratory test is requested.")
-        Boolean chlamydiaTestRequested,
-    @Schema(description = "Specifies whether a Gonorrhea laboratory test is requested.")
-        Boolean gonorrheaTestRequested,
-    @Schema(description = "Specifies whether a Mycoplasma laboratory test is requested.")
-        Boolean mycoplasmaTestRequested,
-    @Schema(description = "Specifies whether a Cancer Screening laboratory test is requested.")
-        Boolean cancerScreeningTestRequested,
-    @Schema(description = "Specifies whether an HPV laboratory test is requested.")
-        Boolean hpvTestRequested,
-    @Schema(description = "Specifies whether a Mpox laboratory test is requested.")
-        Boolean mpoxTestRequested,
-    @Schema(description = "Specifies whether another additional laboratory test is requested.")
-        Boolean otherTestRequested,
-    @Valid LaboratoryTestDto hivTestData,
-    @Valid LaboratoryTestDto syphilisTestData,
-    @Schema(description = "Indicates if the patient was previously infected with Syphilis.")
-        Boolean hadSyphilis,
-    @Valid HepatitisLaboratoryTestDto hepATestData,
-    @Valid HepatitisLaboratoryTestDto hepBTestData,
-    @Valid LaboratoryTestDto hepCTestData,
-    @Valid LaboratoryTestSamplesDto chlamydiaTestSamples,
-    @Valid LaboratoryTestSamplesDto gonorrheaTestSamples,
-    @Valid LaboratoryTestSamplesDto mycoplasmaTestSamples,
-    @Valid LaboratoryTestDto cancerScreeningTestData,
-    @Valid LaboratoryTestDto hpvTestData,
-    @Valid LaboratoryTestDto mpoxTestData,
-    @Schema(
-            description = "Records the name of the additional laboratory test.",
-            example = "Ethylglucuronid (LC-MS/MS).")
-        String otherTestName,
-    @Valid LaboratoryTestDto otherTestData) {}
+    @Valid List<LabTestDataDto> labTestData) {}

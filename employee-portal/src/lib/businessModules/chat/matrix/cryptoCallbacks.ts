@@ -4,7 +4,7 @@
  */
 
 import { MatrixClient, SecretStorage } from "matrix-js-sdk";
-import { deriveKey } from "matrix-js-sdk/lib/crypto/key_passphrase";
+import { deriveRecoveryKeyFromPassphrase } from "matrix-js-sdk/lib/crypto-api";
 import { isEmpty, isString } from "remeda";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
@@ -64,7 +64,7 @@ export async function getSecretStorageKeyFromCache(
     throw new Error("Invalid passphrase - unable to get secret storage key.");
   }
 
-  const restoredKey = await deriveKey(
+  const restoredKey = await deriveRecoveryKeyFromPassphrase(
     passphrase,
     keyInfo.passphrase.salt,
     keyInfo.passphrase.iterations,

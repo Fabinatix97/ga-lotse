@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { isNonNullish } from "remeda";
 
-export type SearchParamValue =
+type SearchParamValue =
   | string
   | number
   | string[]

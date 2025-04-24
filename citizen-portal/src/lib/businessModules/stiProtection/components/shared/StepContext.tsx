@@ -80,9 +80,9 @@ export function Stepper({ steps }: StepContextProviderProps) {
   );
 
   return (
-    <StepContext.Provider value={contextValue}>
+    <StepContext value={contextValue}>
       <CurrentStep />
-    </StepContext.Provider>
+    </StepContext>
   );
 }
 

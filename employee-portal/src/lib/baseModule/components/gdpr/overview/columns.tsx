@@ -9,6 +9,7 @@ import {
   ApiGdprProcedureStatus,
   ApiGetGdprProcedureResponse,
 } from "@eshg/base-api";
+import { formatDurationFromNowUntil } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Chip } from "@mui/joy";
@@ -20,7 +21,6 @@ import {
   statusTranslation,
   typeTranslation,
 } from "@/lib/baseModule/components/gdpr/i18n";
-import { formatDurationFromNowUntil } from "@/lib/shared/helpers/dateTime";
 
 const columnHelper = createColumnHelper<ApiGetGdprProcedureResponse>();
 export const columns = [

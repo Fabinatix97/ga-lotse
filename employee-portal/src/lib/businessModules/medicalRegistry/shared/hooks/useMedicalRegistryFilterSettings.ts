@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FilterDefinition,
+  FilterValue,
+  UseFilterSettings,
+  useFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   ApiProcedureStatus,
@@ -15,12 +21,6 @@ import {
   EntryStatus,
   entryStatusNames,
 } from "@/lib/businessModules/medicalRegistry/shared/constants";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  UseFilterSettings,
-  useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
 import {
   getFilterSelectedValue,
   getFilterSelectedValues,

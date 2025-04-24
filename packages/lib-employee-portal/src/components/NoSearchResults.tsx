@@ -8,7 +8,7 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
 
-export interface NoSearchResultsProps {
+interface NoSearchResultsProps {
   info: string;
   buttonLabel?: string;
   onClick?: () => void;

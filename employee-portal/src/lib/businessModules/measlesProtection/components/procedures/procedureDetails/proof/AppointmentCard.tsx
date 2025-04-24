@@ -4,6 +4,8 @@
  */
 
 import {
+  ActionsItem,
+  ActionsMenu,
   DetailsSection,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
@@ -13,10 +15,6 @@ import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Button, Sheet, Stack } from "@mui/joy";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

@@ -10,6 +10,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { useState } from "react";
 
@@ -26,7 +27,7 @@ export default function MedicalRegistryCreateProcedure() {
       toolbar={
         <Toolbar
           title={"Neuen Eintrag anlegen"}
-          backHref={routes.procedures.index}
+          backButton={<ToolbarBackButton href={routes.procedures.index} />}
         />
       }
     >

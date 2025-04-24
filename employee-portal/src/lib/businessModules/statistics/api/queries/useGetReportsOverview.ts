@@ -4,6 +4,11 @@
  */
 
 import {
+  DateSpanFilterValue,
+  EnumFilterValue,
+  FilterValue,
+} from "@eshg/lib-employee-portal";
+import {
   ApiGetReportsResponse,
   ApiReportInfo,
   ApiReportSeries,
@@ -35,9 +40,6 @@ import {
 } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { createQueryGetAvailableDataSources } from "@/lib/businessModules/statistics/api/queries/useGetAvailableDataSources";
 import { ReportOverviewFilterKey } from "@/lib/businessModules/statistics/components/reports/filterDefinitions";
-import { DateSpanFilterValue } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
-import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
 

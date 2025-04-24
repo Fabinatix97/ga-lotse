@@ -23,7 +23,8 @@ public record HouseNumber(int number, String suffix) implements Comparable<House
 
     if (matcher.find()) {
       int number = Integer.parseInt(matcher.group(1)); // The numeric part
-      String suffix = matcher.group(2); // The suffix, which might be empty
+      String suffix =
+          StringUtils.normalizeSpace(matcher.group(2)); // The suffix, which might be empty
 
       return new HouseNumber(number, suffix);
     } else {
@@ -43,7 +44,7 @@ public record HouseNumber(int number, String suffix) implements Comparable<House
   @Override
   public int compareTo(HouseNumber otherHouseNumber) {
     if (isOnEdge(number, otherHouseNumber)) {
-      return suffix.compareTo(otherHouseNumber.suffix);
+      return suffix.toLowerCase().compareTo(otherHouseNumber.suffix.toLowerCase());
     }
 
     return Integer.compare(number, otherHouseNumber.number);

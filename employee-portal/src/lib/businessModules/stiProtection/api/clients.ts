@@ -7,7 +7,6 @@ import {
   Configuration as BaseConfiguration,
   CitizenAccessCodeUserApi,
 } from "@eshg/base-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AppointmentBlockApi,
   AppointmentTypeApi,
@@ -27,15 +26,17 @@ import {
   WaitingRoomApi,
 } from "@eshg/sti-protection-api";
 
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
+
 export function useConfiguration() {
-  const configParameters = useApiConfiguration(
+  const configParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_STI_PROTECTION_BACKEND_URL",
   );
   return new Configuration(configParameters);
 }
 
 function useBaseConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_BASE_BACKEND_URL",
   );
   return new BaseConfiguration(configurationParameters);

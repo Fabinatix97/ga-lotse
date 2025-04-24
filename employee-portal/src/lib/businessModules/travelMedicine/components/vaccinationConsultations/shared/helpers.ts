@@ -8,6 +8,7 @@ import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiAppointmentBookingType,
@@ -22,7 +23,6 @@ import { isEmpty, isNonNullish } from "remeda";
 
 import { AppointmentSummary } from "@/lib/businessModules/travelMedicine/api/models/AppointmentSummary";
 import { OtherServicesTemplates } from "@/lib/businessModules/travelMedicine/api/models/OtherServicesTemplates";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function createDiseaseOptions(allDiseases: ApiDisease[] | undefined) {
   if (allDiseases) {
@@ -172,7 +172,7 @@ export function createPhysicianOptions(allPhysicians: ApiUser[] | undefined) {
   if (allPhysicians) {
     const options: SelectOption[] = allPhysicians.map((option) => ({
       value: option.userId,
-      label: fullName(option),
+      label: formatUserName(option),
     }));
 
     return options;
@@ -187,7 +187,7 @@ export function createMedicalAssistantOptions(
   if (allMedicalAssistants) {
     const options: SelectOption[] = allMedicalAssistants.map((option) => ({
       value: option === undefined ? "" : option.userId,
-      label: option === undefined ? "" : fullName(option),
+      label: option === undefined ? "" : formatUserName(option),
     }));
 
     return options;

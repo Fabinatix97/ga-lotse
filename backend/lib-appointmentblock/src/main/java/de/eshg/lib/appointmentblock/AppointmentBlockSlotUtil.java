@@ -124,6 +124,14 @@ public class AppointmentBlockSlotUtil {
     entityWithAppointment.setAppointment(newAppointment);
   }
 
+  public void removeAppointment(EntityWithAppointment entityWithAppointment) {
+    Appointment appointment = entityWithAppointment.getAppointment();
+    AppointmentBlock appointmentBlock = appointment.getAppointmentBlock();
+    boolean removed = appointmentBlock.getAppointments().remove(appointment);
+    Assert.isTrue(removed, "Failed to remove appointment");
+    entityWithAppointment.setAppointment(null);
+  }
+
   private AppointmentBlock findSuitableAppointmentBlock(
       AppointmentType appointmentType,
       UUID locationId,

@@ -73,6 +73,7 @@ export interface FileSheetArrayProps {
   required?: boolean;
   error?: boolean;
   helperText?: string;
+  helperTexts?: string[];
   labels: FileSheetArrayLabels;
   mode?: ApiDocumentStatus;
 }
@@ -87,6 +88,7 @@ export function FileSheetArray({
   required,
   error,
   helperText,
+  helperTexts,
   labels,
   mode,
   ...props
@@ -166,6 +168,7 @@ export function FileSheetArray({
           files={files}
           onRemove={showAddRemoveButtons ? onRemove : undefined}
           labels={labels}
+          helperTexts={helperTexts}
         >
           {isDefined(onRemoveAll) && showAddRemoveButtons && (
             <Stack gap={0}>
@@ -383,6 +386,7 @@ function FileInput({
 export type FileStackProps = PropsWithChildren<
   Pick<FileSheetArrayProps, "files" | "onRemove"> & {
     labels: Pick<FileSheetArrayLabels, "removeFile">;
+    helperTexts?: string[];
   }
 >;
 
@@ -391,6 +395,7 @@ function FileStack({
   onRemove,
   labels,
   children,
+  helperTexts,
 }: Readonly<FileStackProps>) {
   if (files.length === 0) {
     return null;
@@ -409,6 +414,7 @@ function FileStack({
           file={file}
           removeLabel={`${labels.removeFile}.${index}`}
           onRemove={onRemove ? () => onRemove(index) : undefined}
+          helperText={helperTexts ? helperTexts[index] : undefined}
         />
       ))}
       {children}

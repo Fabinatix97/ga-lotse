@@ -19,7 +19,9 @@ public enum EmployeePermissionRole implements PermissionRole {
   INSPECTION_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Begehung"), Module.INSPECTION),
   INSPECTION_LANDESAMT_LEADER(
-      LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Begehung"), Module.INSPECTION_LANDESAMT),
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Begehungsmodul Landesamt"),
+      Module.INSPECTION_LANDESAMT),
   SCHOOL_ENTRY_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("ESU"), Module.SCHOOL_ENTRY),
   TRAVEL_MEDICINE_LEADER(
@@ -159,7 +161,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Kann Kennzahlen zu Vorgängen eines Gesundheitsamtes abrufen",
       Module.BASE),
 
-  BASE_MAIL_SEND("Mails senden", Module.BASE),
+  BASE_MAIL_SEND(
+      "Mails senden",
+      "Kann das Grundmodul dazu veranlassen eine Email zu verschicken",
+      Module.BASE),
   BASE_GLOBAL_CALENDARS_WRITE(
       WRITE_PERMISSION_TEMPLATE.formatted("Globaler Kalender"),
       "Kann einen globalen Kalender erstellen",
@@ -233,13 +238,24 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Kann eine bestehende Medizinalkartei importieren, um das System initial zu befüllen.",
       Module.MEDICAL_REGISTRY),
 
-  // TODO ISSUE-3317: Add keycloak descriptions for the inspection module
-  INSPECTION_NOTIFICATIONS_READ("Benachrichtigungen erhalten", Module.INSPECTION),
-  INSPECTION_PROCEDURE_EDIT("Begehungsvorgänge bearbeiten", Module.INSPECTION),
-  INSPECTION_PROCEDURE_ASSIGN("Begehungen anderen Mitarbeitenden zuweisen", Module.INSPECTION),
-  INSPECTION_OBJECTTYPES_READ("Objekttypen lesen", Module.INSPECTION),
+  INSPECTION_NOTIFICATIONS_READ(
+      "Benachrichtigungen erhalten",
+      "Kann Benachrichtigungen zu neuen Aufgaben erhalten.",
+      Module.INSPECTION),
+  INSPECTION_PROCEDURE_EDIT(
+      "Begehungsvorgänge bearbeiten",
+      "Kann Begehungsvorgänge bearbeiten und abschließen.",
+      Module.INSPECTION),
+  INSPECTION_PROCEDURE_ASSIGN(
+      "Begehungen anderen Mitarbeitenden zuweisen",
+      "Kann Begehungen anderen Mitarbeitenden zuweisen",
+      Module.INSPECTION),
+  INSPECTION_OBJECTTYPES_READ("Objekttypen lesen", "Kann Objekttypen lesen", Module.INSPECTION),
   INSPECTION_OBJECTTYPES_WRITE(
-      "Objekttypen bearbeiten", Module.INSPECTION, INSPECTION_OBJECTTYPES_READ),
+      "Objekttypen bearbeiten",
+      "Kann Objekttypen bearbeiten",
+      Module.INSPECTION,
+      INSPECTION_OBJECTTYPES_READ),
   INSPECTION_CHECKLISTDEFINITIONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Checklisten-Definitionen"),
       "Kann Checklisten-Definitionen einsehen.",
@@ -289,6 +305,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   TRAVEL_MEDICINE_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Impfberatung"),
+      "Standardberechtigung für das Fachmodul",
       Module.TRAVEL_MEDICINE,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
@@ -298,6 +315,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   MEASLES_PROTECTION_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Masernschutzimpfung"),
+      "Standardberechtigung für das Fachmodul",
       Module.MEASLES_PROTECTION,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
@@ -308,22 +326,14 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE,
       BASE_GDPR_PROCEDURE_REVIEW),
 
-  STI_PROTECTION_USER(
-      "HIV-STI Benutzer",
+  STI_PROTECTION_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("HIV-STI"),
+      "Standardberechtigung für das Fachmodul",
       Module.STI_PROTECTION,
       BASE_PERSONS_READ, // required to access progress entries
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE,
       BASE_ACCESS_CODE_USER_ADMIN,
       BASE_ACCESS_CODE_USER_VERIFY),
-  STI_PROTECTION_MFA("HIV-STI MFA", Module.STI_PROTECTION, STI_PROTECTION_USER),
-  STI_PROTECTION_CONSULTANT("HIV-STI Berater", Module.STI_PROTECTION, STI_PROTECTION_USER),
-  STI_PROTECTION_PHYSICIAN("HIV-STI Arzt", Module.STI_PROTECTION, STI_PROTECTION_USER),
-  STI_PROTECTION_ADMIN(
-      ADMIN_KEYCLOAK_NAME.formatted("HIV-STI"),
-      Module.STI_PROTECTION,
-      STI_PROTECTION_MFA,
-      STI_PROTECTION_CONSULTANT,
-      STI_PROTECTION_PHYSICIAN),
 
   MEDICAL_REGISTRY_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Medizinalaufsicht"),
@@ -349,10 +359,13 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.OPEN_DATA),
 
   CHAT_MANAGEMENT_WRITE(
-      READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT),
+      READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"),
+      "Kann Funktionen des Matrix Chats nutzen",
+      Module.CHAT_MANAGEMENT),
 
   OFFICIAL_MEDICAL_SERVICE_ADMIN(
-      "Amtsärztlicher Dienst Admin",
+      ADMIN_KEYCLOAK_NAME.formatted("Amtsärztlicher Dienst"),
+      "Standardberechtigung für das Fachmodul",
       Module.OFFICIAL_MEDICAL_SERVICE,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,

@@ -9,12 +9,12 @@ import {
   ApiUser,
 } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { Typography } from "@mui/joy";
 
 import { ProcedureInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProcedureInternalLink";
 import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";
 import { taskTypeNames } from "@/lib/shared/components/procedures/constants";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function mapTaskDueAtReminderNotificationProps(
   notification: ApiTaskDueAtReminderNotification,
@@ -29,7 +29,7 @@ export function mapTaskDueAtReminderNotificationProps(
           notification.dueAt > new Date()
             ? `am ${formatDateTime(notification.dueAt)} fällig`
             : `seit ${formatDateTime(notification.dueAt)} überfällig`
-        } (zugewiesen von ${fullName(assignedByUser)}).`}
+        } (zugewiesen von ${formatUserName(assignedByUser)}).`}
       </Typography>
       <ProcedureInternalLink
         businessModule={notification.businessModule!}

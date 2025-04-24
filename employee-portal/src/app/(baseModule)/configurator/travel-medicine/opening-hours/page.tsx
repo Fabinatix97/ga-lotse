@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ToolbarBackButton } from "@eshg/lib-employee-portal";
+
 import { OpeningHours } from "@/lib/configurator/components/shared/ConfiguratorDetails/OpeningHours";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { routes } from "@/lib/configurator/shared/routes";
@@ -12,8 +14,8 @@ import { routes } from "@/lib/configurator/shared/routes";
 export default function TravelMedicineConfiguratorPage() {
   return (
     <ConfiguratorLayout
-      backHref={routes.travelMedicine.index}
       module={"travelMedicine"}
+      backButton={<ToolbarBackButton href={routes.travelMedicine.index} />}
     >
       <OpeningHours module="travelMedicine" />
     </ConfiguratorLayout>

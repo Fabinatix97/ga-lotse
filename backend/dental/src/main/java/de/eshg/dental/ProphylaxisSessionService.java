@@ -133,7 +133,8 @@ public class ProphylaxisSessionService {
             new ProphylaxisSessionSpecification(
                 paginationAndSortParameters,
                 filterParameters.institutionIdFilter(),
-                ProphylaxisSessionMapper.mapToDomain(filterParameters.typeFilter())),
+                ProphylaxisSessionMapper.mapToDomain(filterParameters.typeFilter()),
+                ProphylaxisSessionMapper.mapToDomain(filterParameters.statusFilter())),
             ProphylaxisSessionSpecification.toPageSpec(paginationAndSortParameters));
 
     Map<UUID, ContactDto> contacts = fetchContactsInBulk(page);

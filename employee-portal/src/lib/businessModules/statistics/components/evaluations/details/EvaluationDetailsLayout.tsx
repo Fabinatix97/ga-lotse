@@ -7,6 +7,7 @@ import {
   StickyToolbarLayout,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import {
   BookOutlined,
@@ -61,11 +62,11 @@ export function EvaluationDetailsLayout({
     <StickyToolbarLayout
       toolbar={
         <TabNavigationToolbar
-          routeBack={routes.evaluations.index}
-          items={tabNavigationItems}
           header={
             <EvaluationDetailsTabHeader {...evaluationDetailsTabHeaderProps} />
           }
+          items={tabNavigationItems}
+          backButton={<ToolbarBackButton href={routes.evaluations.index} />}
         />
       }
     >

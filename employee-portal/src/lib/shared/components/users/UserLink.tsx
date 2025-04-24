@@ -7,11 +7,10 @@
 
 import { ApiUser } from "@eshg/base-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { isNonNullish } from "remeda";
 
 import { routes } from "@/lib/baseModule/shared/routes";
-
-import { fullName, unknownUser } from "./userFormatter";
 
 interface UserLinkProps {
   user: ApiUser | undefined;
@@ -25,9 +24,9 @@ export function UserLink({ user, nestedLink }: UserLinkProps) {
       sx={{ zIndex: nestedLink ? 2 : undefined }}
       onClick={(e) => e.stopPropagation()}
     >
-      {fullName(user)}
+      {formatUserName(user)}
     </InternalLink>
   ) : (
-    unknownUser
+    formatUserName(undefined)
   );
 }

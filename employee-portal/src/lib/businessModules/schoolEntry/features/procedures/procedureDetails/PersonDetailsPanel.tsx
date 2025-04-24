@@ -4,6 +4,8 @@
  */
 
 import {
+  ActionsItem,
+  ActionsMenu,
   CentralFilePersonDetails,
   ContentPanel,
   DetailsSection,
@@ -22,10 +24,6 @@ import {
   useDeleteCustodianWithConfirmation,
 } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateCustodianSidebar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 
 interface PersonDetailsPanelProps {
   title: string;

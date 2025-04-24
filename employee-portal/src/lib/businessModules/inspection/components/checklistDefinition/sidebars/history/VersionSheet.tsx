@@ -9,6 +9,8 @@ import {
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
 import {
+  ActionsItem,
+  ActionsMenu,
   useConfirmationDialog,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
@@ -51,10 +53,6 @@ import { EditDraftIcon } from "@/lib/businessModules/inspection/components/icons
 import { ExclusiveCorechecklistIcon } from "@/lib/businessModules/inspection/components/icons/ExclusiveCorechecklistIcon";
 import { InactiveChecklistIcon } from "@/lib/businessModules/inspection/components/icons/InactiveChecklistIcon";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 
 export function VersionSheet({
   definition,

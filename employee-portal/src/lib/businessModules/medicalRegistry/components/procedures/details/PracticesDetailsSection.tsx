@@ -7,6 +7,7 @@ import {
   DetailsColumn,
   DetailsRow,
   DetailsSection,
+  InformationSheet,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -23,7 +24,6 @@ import {
   DetailsCell,
   DetailsCellWrapped,
 } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 
 export function PracticesDetailsSection({

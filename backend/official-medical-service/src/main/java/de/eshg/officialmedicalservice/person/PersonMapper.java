@@ -41,7 +41,8 @@ public class PersonMapper {
         personFileState.contactAddress(),
         new AffectedPersonSyncDto(
             personFileState.id(), personFileState.referenceVersion(), personFileState.outdated()),
-        personFileState.dataOrigin());
+        personFileState.dataOrigin(),
+        personFileState.humanReadableId());
   }
 
   public static AddPersonFileStateRequest mapToAddPersonFileStateRequest(

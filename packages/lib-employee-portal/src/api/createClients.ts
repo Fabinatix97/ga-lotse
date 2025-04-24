@@ -7,6 +7,7 @@ import {
   BaseAPI,
   Configuration,
   ContactApi,
+  FacilityApi,
   PersonApi,
   StreetApi,
   UserApi,
@@ -24,6 +25,7 @@ export function createClients(baseUrl: string) {
   return {
     userApi: new UserApi(configuration),
     personApi: new PersonApi(configuration),
+    facilityApi: new FacilityApi(configuration),
     contactApi: new ContactApi(configuration),
     streetApi: new StreetApi(configuration),
   } satisfies Record<string, BaseAPI>;

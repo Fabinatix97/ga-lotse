@@ -23,7 +23,7 @@ import { SidebarActions } from "@/features/drawer/components/SidebarActions";
 import { SidebarContent } from "@/features/drawer/components/SidebarContent";
 import { SidebarForm } from "@/features/drawer/components/SidebarForm";
 
-export interface PersonDetailsSidebarProps {
+interface PersonDetailsSidebarProps {
   title: string;
   submitLabel: string;
   person: ApiGetReferencePersonResponse;

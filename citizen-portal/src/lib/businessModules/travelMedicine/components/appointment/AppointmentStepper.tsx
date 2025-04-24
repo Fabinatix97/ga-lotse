@@ -86,9 +86,7 @@ export function AppointmentStepper() {
 
   return (
     <DepartmentContextProvider>
-      <AppointmentStepperContext.Provider
-        value={{ showSidepanel, setShowSidepanel }}
-      >
+      <AppointmentStepperContext value={{ showSidepanel, setShowSidepanel }}>
         <MultiStepForm<InitialAppointmentFormValues> steps={STEPS}>
           {({ Outlet, currentStep, totalSteps }) => (
             <>
@@ -120,7 +118,7 @@ export function AppointmentStepper() {
             </>
           )}
         </MultiStepForm>
-      </AppointmentStepperContext.Provider>
+      </AppointmentStepperContext>
     </DepartmentContextProvider>
   );
 }

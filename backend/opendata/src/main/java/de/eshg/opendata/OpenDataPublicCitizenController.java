@@ -18,13 +18,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,22 +96,8 @@ public class OpenDataPublicCitizenController {
 
   @GetMapping("terms-of-use")
   @Operation(summary = "Returns the terms of use")
+  @Transactional(readOnly = true)
   public ResponseEntity<Resource> getTermsOfUse() {
-    return createTermsOfUseResponse();
-  }
-
-  private ResponseEntity<Resource> createTermsOfUseResponse() {
-    ByteArrayResource termsOfUse =
-        new ByteArrayResource(openDataConfigService.getConfig().getTermsOfUse());
-
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename("Terms-of-use.pdf", StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .contentType(MediaType.APPLICATION_PDF)
-        .body(termsOfUse);
+    return TermsOfUseHelper.termsOfUseResponse(openDataConfigService.getConfig().getTermsOfUse());
   }
 }

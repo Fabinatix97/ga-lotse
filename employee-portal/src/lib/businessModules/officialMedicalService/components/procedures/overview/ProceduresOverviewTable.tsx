@@ -8,11 +8,24 @@
 import {
   ButtonBar,
   DataTable,
+  FilterDefinition,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterSettingsStateProvider,
+  FilterValue,
   Pagination,
+  PersonSearchForm,
+  PersonSearchFormValues,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  TogglePersonSearchButton,
   getSortDirection,
   getSortKey,
+  useFilterSettings,
+  useGdprValidationTasksAlert,
+  useGetGdprValidationBannerQuery,
+  usePersonSearch,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -23,6 +36,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode, useMemo, useState } from "react";
 
+import { useGdprValidationTaskApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { useGetAllProceduresQuery } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import {
   LabCodeSearchForm,
@@ -33,28 +47,11 @@ import {
 import { procedureOverviewTableColumns } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/procedureOverviewColumns";
 import {
   omsProcedureAssignedFilterNames,
-  omsProcedureHighPriorityFilterNames,
   omsProcedureStatusFilterNames,
+  omsProcedureUrgentFilterNames,
 } from "@/lib/businessModules/officialMedicalService/shared/enums";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  FilterSettingsStateProvider,
-  useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import {
-  PersonSearchForm,
-  PersonSearchFormValues,
-  TogglePersonSearchButton,
-  usePersonSearch,
-} from "@/lib/shared/components/personSearch/PersonSearchForm";
 
 type PanelName = "filters" | "personSearch" | "labCodeSearch";
 
@@ -83,9 +80,9 @@ const filterDefinitions = [
   },
   {
     type: "Enum",
-    key: "highPriority",
+    key: "urgentCase",
     name: "Dringender Fall",
-    options: optionsFromRecord(omsProcedureHighPriorityFilterNames),
+    options: optionsFromRecord(omsProcedureUrgentFilterNames),
   },
   {
     type: "DateSpan",
@@ -119,8 +116,10 @@ export function ProceduresOverviewTable(
     sortDirection: getSortDirection(tableControl.tableSorting),
   });
 
+  const gdprValidationTaskApi = useGdprValidationTaskApi();
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.OfficialMedicalService,
+    gdprValidationTaskApi,
   );
 
   const [procedures, gdprBanner] = useSuspenseQueries({
@@ -182,7 +181,7 @@ export function ProceduresOverviewTable(
       controls={
         <ButtonBar
           left={[
-            <FilterButton
+            <ToggleFilterButton
               {...filterSettings.filterButtonProps}
               key="filterButton"
               isFilterVisible={activePanel === "filters"}
@@ -215,6 +214,8 @@ export function ProceduresOverviewTable(
               onChange={handleChangePersonSearch}
               onReset={handleResetPersonSearch}
               allowPartialSearch
+              disablePartialSearchAlert
+              allowPersonIdSearch
             />
           )}
           {activePanel === "labCodeSearch" && (

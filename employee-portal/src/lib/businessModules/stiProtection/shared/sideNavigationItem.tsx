@@ -23,27 +23,27 @@ const defaultSubItems: SideNavigationSubItem[] = [
   {
     name: "Vorgänge",
     href: routes.procedures.index,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
   },
   {
     name: "Wartezimmer",
     href: routes.waitingRoom.index,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
   },
   {
     name: "Terminblöcke",
     href: routes.appointmentBlockGroups.index,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
   },
   {
     name: "Terminarten",
     href: routes.appointmentDefinition,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
   },
   {
     name: "Textvorlagen",
     href: routes.textTemplates,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
   },
 ];
 

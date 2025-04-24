@@ -33,6 +33,8 @@ export const DataCell = styled("td")<
       left: 0,
       right: 0,
     },
-    "& > *": isClickableElement ? { zIndex: 1 } : undefined,
+    "& > *": isClickableElement
+      ? { zIndex: 1, position: "relative" }
+      : undefined,
   };
 });

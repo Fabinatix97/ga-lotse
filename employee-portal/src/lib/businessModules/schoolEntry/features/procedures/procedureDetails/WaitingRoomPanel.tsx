@@ -7,6 +7,7 @@ import {
   ButtonBar,
   ContentPanel,
   ContentPanelTitle,
+  FormStack,
   TextareaField,
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
@@ -15,7 +16,7 @@ import {
   mapOptionalValue,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
@@ -28,7 +29,6 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { WaitingRoom } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";
 import { useUpdateWaitingRoomDetails } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { FormStack } from "@/lib/shared/components/form/FormStack";
 
 interface WaitingRoomValues {
   description: OptionalFieldValue<string>;
@@ -36,6 +36,7 @@ interface WaitingRoomValues {
 }
 
 export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
+  const { validateLength } = useValidators();
   const updateWaitingRoomDetails = useUpdateWaitingRoomDetails(
     props.procedure.id,
   );

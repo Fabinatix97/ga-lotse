@@ -1,6 +1,7 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
 
 tasks.register('checkProjectReferences', PnpmTask) {
+  group = 'maintenance'
   dependsOn rootProject.tasks.installDependencies
   inputs.dir "${rootDir}/.meta-updater"
   inputs.file "${rootDir}/pnpm-workspace.yaml"
@@ -18,6 +19,7 @@ tasks.register('checkProjectReferences', PnpmTask) {
 }
 
 tasks.register('updateProjectReferences', PnpmTask) {
+  group = 'maintenance'
   dependsOn rootProject.tasks.installDependencies
   inputs.dir "${rootDir}/.meta-updater"
   inputs.file "${rootDir}/pnpm-workspace.yaml"

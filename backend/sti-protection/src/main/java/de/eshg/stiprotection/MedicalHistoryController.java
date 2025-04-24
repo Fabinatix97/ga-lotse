@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection;
 
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryRequest;
 import de.eshg.stiprotection.api.medicalhistory.MedicalHistoryDto;
@@ -57,6 +58,8 @@ public class MedicalHistoryController {
     MedicalHistory medicalHistory = medicalHistoryService.getOrCreateMedicalHistory(procedureId);
     MedicalHistoryMapper.update(request.medicalHistory(), medicalHistory);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.MEDICAL_HISTORY_UPDATED);
+        procedureId,
+        StiProtectionSystemProgressEntryType.MEDICAL_HISTORY_UPDATED,
+        TriggerType.EMPLOYEE);
   }
 }

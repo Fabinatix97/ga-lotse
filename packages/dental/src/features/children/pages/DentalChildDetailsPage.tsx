@@ -11,9 +11,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useDentalApi } from "@/contexts/dental";
 import { getChildDetailsQuery } from "@/features/children/api/queries/details";
-import { AdditionalInformationDetailsSection } from "@/features/children/components/details/AdditionalInformationDetailsSection";
-import { ChildDetailsSection } from "@/features/children/components/details/ChildDetailsSection";
-import { InstitutionHistoryDetailsSection } from "@/features/children/components/details/InstitutionHistoryDetailsSection";
+import { AdditionalInformationDetailsSection } from "@/features/children/components/childDetails/AdditionalInformationDetailsSection";
+import { ChildDetailsSection } from "@/features/children/components/childDetails/ChildDetailsSection";
+import { InstitutionHistoryDetailsSection } from "@/features/children/components/childDetails/InstitutionHistoryDetailsSection";
 import { useChildRouteParams } from "@/features/children/hooks/useChildRouteParams";
 import { DentalChildRouteParams } from "@/features/children/schemas/DentalChildRouteParams";
 

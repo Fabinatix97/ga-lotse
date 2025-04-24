@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiVaccine } from "@eshg/travel-medicine-api";
@@ -12,7 +13,6 @@ import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiVaccine> = createColumnHelper<ApiVaccine>();
 

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiAnalysis,
   ApiAnalysisChartConfiguration,
@@ -28,7 +29,6 @@ import {
   mapTableColumnHeadersToFlatAttributes,
 } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { evaluationApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 function mapConfiguration(
   attributes: Map<string, FlatAttribute>,
@@ -141,7 +141,7 @@ export function mapToEvaluationDetailsView(
     start: result.evaluationInfo.timeRangeStart,
     end: mapTimeRangeEndApiToFrontend(result.evaluationInfo.timeRangeEnd),
     createdAt: result.evaluationInfo.createdAt,
-    createdBy: fullName(result.user),
+    createdBy: formatUserName(result.user),
     dataSource: {
       // We only have one datasource currently. If this changes the data structure changes and thus
       // this aggregation method has to become more sophisticated.

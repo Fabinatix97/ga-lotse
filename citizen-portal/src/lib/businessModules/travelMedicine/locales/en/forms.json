@@ -43,9 +43,9 @@
     },
     "appointmentPicker": {
       "noAppointmentForSelectedDate": "No appointments available for the selected date",
-      "noAppointmentSelected": "No appointment selected.",
-      "noAppointmentsAvailable": "No appointments currently available",
-      "tryLater": "More appointments will be made available soon. Please try again later",
+      "noAppointmentSelected": "No appointment selected",
+      "noAppointmentsAvailable": "No appointments are currently available.",
+      "tryLater": "We will make more appointments available soon. Please try again later.",
       "calendar_title": "Date",
       "timePicker_title": "Available Times",
       "available": "Available"

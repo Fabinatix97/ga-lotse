@@ -74,6 +74,12 @@ export function FileSheetArrayField({
 
   const displayFiles = field.input.value?.map(fileToFileDescriptor) ?? [];
 
+  const splitHelperText = field.helperText?.split("\n");
+  const helperText = splitHelperText ? splitHelperText[0] : "";
+  const helperTexts = splitHelperText
+    ? splitHelperText.slice(1, splitHelperText.length)
+    : [];
+
   return (
     <FormControl error={field.error} required={field.required}>
       <FileSheetArray
@@ -84,7 +90,8 @@ export function FileSheetArrayField({
         accept={accept}
         error={field.error}
         required={field.required}
-        helperText={field.helperText}
+        helperText={helperText}
+        helperTexts={helperTexts}
         labels={labels}
         mode={props.mode}
         onFileUpload={() => props.handleFileUpload?.(field.input.value ?? [])}

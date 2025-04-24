@@ -362,13 +362,15 @@ public class RepoMapper {
     return new BusinessDataAttributeWithName(
         attribute.code(),
         attribute.name(),
+        null,
         attribute.baseDataAttributes().stream()
             .map(
                 baseAttribute ->
                     new BaseDataAttributeWithName(
                         baseAttribute.code(),
                         EvaluationMapper.getAttributeDisplayName(
-                            attribute.name(), baseAttribute.name())))
+                            attribute.name(), baseAttribute.name()),
+                        null))
             .toList());
   }
 

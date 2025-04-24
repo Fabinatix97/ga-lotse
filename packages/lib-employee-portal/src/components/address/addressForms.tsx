@@ -11,10 +11,8 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  validateLength,
-  validatePipe,
-} from "@eshg/lib-portal/helpers/validators";
+import { validatePipe } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
@@ -109,6 +107,7 @@ export function OptionalContactAddressForm(props: {
 export function BillingAddressForm(
   props: AddressFormProps & { optional?: boolean },
 ) {
+  const { validateLength } = useValidators();
   const name = props.name;
   const fieldName = createFieldNameMapper<BaseAddressFormInputs>(name);
   const { setFieldValue } = useFormikContext();
@@ -209,6 +208,7 @@ function CommonAddressFields({
   type: BaseAddressType;
   fieldName: (key: keyof BaseAddressFormInputs) => string;
 }) {
+  const { validateLength } = useValidators();
   const ctx = useFormikContext<BaseAddressFormInputs>();
 
   function getValue<K extends keyof BaseAddressFormInputs>(key: K) {

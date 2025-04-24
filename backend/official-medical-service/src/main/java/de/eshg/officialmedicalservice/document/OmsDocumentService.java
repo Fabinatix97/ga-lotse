@@ -15,6 +15,7 @@ import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.model.FileTypeDto;
+import de.eshg.officialmedicalservice.citizenpublic.ValidateFilesResponse;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentInformationRequest;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentNoteRequest;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentReviewRequest;
@@ -40,6 +41,8 @@ import de.eshg.rest.service.error.NotFoundException;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -158,6 +161,19 @@ public class OmsDocumentService {
     omsDocumentRepository.save(document);
 
     saveFiles(document, parsedFiles);
+  }
+
+  public ValidateFilesResponse validateFilesBeforeUpload(List<MultipartFile> files) {
+    List<String> errorMessages = new ArrayList<>();
+    for (MultipartFile file : files) {
+      try {
+        validateAndParseFiles(Collections.singletonList(file));
+        errorMessages.add(null);
+      } catch (BadRequestException e) {
+        errorMessages.add(e.getMessage());
+      }
+    }
+    return new ValidateFilesResponse(errorMessages);
   }
 
   @Transactional

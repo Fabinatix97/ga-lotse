@@ -30,6 +30,12 @@ export enum ChatPanelView {
   ChatMessages = "CHAT_MESSAGES",
 }
 
+export enum ChatTabTakeoverView {
+  LockClaimedByAnotherTab = "LOCK_CLAIMED_BY_ANOTHER_TAB",
+  ClaimTabLock = "CLAIM_TAB_LOCK",
+  ActiveChatTab = "ACTIVE_CHAT_TAB",
+}
+
 export enum MessageTypeEnum {
   ChatMessage = "CHAT_MESSAGE",
   SystemMessage = "SYSTEM_MESSAGE",

@@ -8,13 +8,13 @@ import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { useTranslation } from "@/lib/i18n/client";
 import { TextareaField } from "@/lib/shared/components/form/TextareaField";
-import { useFormValidation } from "@/lib/shared/hooks/useFormValidation";
 
 export function GdprObjectionFormDialog(props: {
   open: boolean;
@@ -23,7 +23,7 @@ export function GdprObjectionFormDialog(props: {
   const addGdprProcedure = useAddGdprProcedure();
   const resetAlertContext = useResetAlertContext();
   const { t } = useTranslation("gdpr");
-  const { validateLength } = useFormValidation();
+  const { validateLength } = useValidators();
 
   function handleClose() {
     resetAlertContext();

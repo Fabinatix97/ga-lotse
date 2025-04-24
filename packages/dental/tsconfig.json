@@ -5,5 +5,11 @@
       "@/*": ["./src/*"]
     },
     "types": ["@eshg/lib-employee-portal/theme"]
-  }
+  },
+  "include": [
+    "vitest-setup.ts",
+    "eslint.config.js",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ]
 }

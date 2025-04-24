@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Cuspid, Incisor, Molar, Premolar } from "@eshg/dental";
 import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { Grid, Typography } from "@mui/joy";
-
-import {
-  Cuspid,
-  Incisor,
-  Molar,
-  Premolar,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
 
 export default function TeethPlaygroundPage() {
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title={"Teeth"} backHref="/playground" />}
+      toolbar={
+        <Toolbar
+          title={"Teeth"}
+          backButton={<ToolbarBackButton href="/playground" />}
+        />
+      }
     >
       <MainContentLayout>
         <Grid container spacing={2}>

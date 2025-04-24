@@ -9,9 +9,18 @@ import { ApiObjectType } from "@eshg/inspection-api";
 import {
   ButtonBar,
   DataTable,
+  FilterDefinition,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterSettingsStateProvider,
+  FilterValue,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  useFilterSettings,
+  useGdprValidationTasksAlert,
+  useGetGdprValidationBannerQuery,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -21,7 +30,10 @@ import { addDays, formatISO } from "date-fns";
 import { useMemo, useState } from "react";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
-import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
+import {
+  useFacilityApi,
+  useGdprValidationTaskApi,
+} from "@/lib/businessModules/inspection/api/clients";
 import { getPendingFacilitiesQuery } from "@/lib/businessModules/inspection/api/queries/facility";
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { ExportBannedFacilitiesButton } from "@/lib/businessModules/inspection/components/facility/pending/ExportBannedFacilitiesButton";
@@ -40,18 +52,7 @@ import {
 } from "@/lib/businessModules/inspection/shared/enums";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  FilterSettingsStateProvider,
-  useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
 
 import {
@@ -176,8 +177,10 @@ export function PendingFacilitiesTable(
   }
 
   const facilityApi = useFacilityApi();
+  const gdprValidationTaskApi = useGdprValidationTaskApi();
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.Inspection,
+    gdprValidationTaskApi,
   );
   const [{ data: procedures, isFetching }, { data: gdprBanner }] =
     useSuspenseQueries({
@@ -252,7 +255,7 @@ export function PendingFacilitiesTable(
           <ButtonBar
             left={
               <>
-                <FilterButton {...filterSettings.filterButtonProps} />
+                <ToggleFilterButton {...filterSettings.filterButtonProps} />
                 <TextInputFilter
                   searchParamName="name"
                   placeholder="Name"

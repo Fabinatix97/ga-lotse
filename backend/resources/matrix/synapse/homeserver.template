@@ -4,6 +4,11 @@
 
 server_name: "synapse.local.dev"
 public_baseurl: "http://localhost:4000/api/synapse"
+delete_stale_devices_after: 90d
+
+experimental_features:
+  msc3814_enabled: true
+  msc2697_enabled: false
 
 pid_file: /data/homeserver.pid
 listeners:
@@ -37,6 +42,8 @@ database:
 log_config: "/data/synapse.log.config"
 
 report_stats: false
+enable_registration: false
+encryption_enabled_by_default_for_room_type: all
 
 registration_shared_secret: "k.@ukx06IL;5RcXHIo=^m4LI7lF*x-BgNegdB367MEyR@oe&~K"
 macaroon_secret_key: "N;bGo,h:OFkx4IFfkB;S^:y;~3DGp*a.z2Nbp;k#Ik.,DcIQ*R"
@@ -50,6 +57,17 @@ user_directory:
   prefer_local_users: true
   show_locked_users: false
 
+rc_login:
+  address:
+    per_second: 100
+    burst_count: 100
+  account:
+    per_second: 100
+    burst_count: 100
+  failed_attempts:
+    per_second: 100
+    burst_count: 100
+
 rc_message:
   per_second: 100
   burst_count: 100
@@ -61,17 +79,6 @@ rc_registration:
 rc_registration_token_validity:
   per_second: 100
   burst_count: 100
-
-rc_login:
-  address:
-    per_second: 100
-    burst_count: 100
-  account:
-    per_second: 100
-    burst_count: 100
-  failed_attempts:
-    per_second: 100
-    burst_count: 100
 
 rc_joins:
   local:
@@ -97,10 +104,8 @@ rc_presence:
     per_second: 100
     burst_count: 100
 
-max_upload_size: "10M"
-max_image_pixels: "32M"
-media_store_path: "/data/media_store"
-uploads_path: "/home/synapse/config/uploads"
+enable_media_repo: false
+max_upload_size: "0"
 
 sso:
   client_whitelist: # A list of client URLs which are whitelisted so that the user does not have to confirm giving access to their account to the URL
@@ -130,7 +135,6 @@ oidc_providers:
         localpart_template: "{{ user.sub }}"
         display_name_template: "{{ user.sub }}"
 
-    backchannel_logout_enabled: true
 
     # WARNING: for test env only!
     skip_verification: true
@@ -144,8 +148,8 @@ jwt_config:
 
 session_lifetime: 600m
 refresh_token_lifetime: 600m # No need to have RefreshToken lifetime longer than 10 hours, because employee-portal will always log out user after 10 hours of *Activity* and requires user to re-authenticate with Keycloak.
-refreshable_access_token_lifetime: 60m
-nonrefreshable_access_token_lifetime: 60m
+refreshable_access_token_lifetime: 30m
+nonrefreshable_access_token_lifetime: 30m
 
 #templates:
 #  custom_template_directory: "/data/templates/"

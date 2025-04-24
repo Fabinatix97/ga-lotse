@@ -40,11 +40,7 @@ export function DepartmentContextProvider(
 
   const value = useMemo(() => ({ department, setDepartment }), [department]);
 
-  return (
-    <DepartmentContext.Provider value={value}>
-      {props.children}
-    </DepartmentContext.Provider>
-  );
+  return <DepartmentContext value={value}>{props.children}</DepartmentContext>;
 }
 
 export function useDepartmentContext() {

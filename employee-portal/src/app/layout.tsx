@@ -4,6 +4,7 @@
  */
 
 import {
+  ConfirmationDialog,
   DrawerProvider,
   EmployeePortalErrorModal,
   EmployeePortalProvider,
@@ -27,10 +28,10 @@ import { ChatProvider } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { CHAT_CONFIGURATION } from "@/lib/businessModules/chat/shared/config";
 import { ServiceWorkerProvider } from "@/lib/businessModules/inspection/shared/offline/ServiceWorkerProvider";
 import { OfflinePasswordPrompt } from "@/lib/businessModules/inspection/shared/offline/password/OfflinePasswordPrompt";
+import { I18nProvider } from "@/lib/i18n/I18nProvider";
 import { API_CONFIGURATION } from "@/lib/shared/api/config";
 import { EmployeeSnackbar } from "@/lib/shared/components/EmployeeSnackbar";
 import { ConfirmNavigationProvider } from "@/lib/shared/components/confirmationDialog/ConfirmNavigationProvider";
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
 // Opt out of the Data Cache and Full Route Cache. All routes are dynamically rendered.
 export const dynamic = "force-dynamic";
@@ -73,37 +74,41 @@ export default async function RootLayout({
             <noscript>
               Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
             </noscript>
-            <EnvironmentTypeProvider
-              environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
-            >
-              <EmployeePortalProvider
-                baseUrl={env.PUBLIC_BASE_BACKEND_URL}
-                layoutConfig={LAYOUT_CONFIG}
+            <I18nProvider>
+              <EnvironmentTypeProvider
+                environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
               >
-                <SnackbarProvider snackbar={EmployeeSnackbar}>
-                  <DrawerProvider>
-                    <ApiProvider configuration={API_CONFIGURATION}>
-                      <ConfirmationDialogProvider
-                        component={EmployeePortalConfirmationDialog}
-                        errorModal={EmployeePortalErrorModal}
-                      >
-                        <ConfirmNavigationProvider>
-                          <QueryBoundary>
-                            <OfflinePasswordPrompt />
-                            <ServiceWorkerProvider>
-                              <ChatProvider configuration={CHAT_CONFIGURATION}>
-                                <MainLayout>{children}</MainLayout>
-                              </ChatProvider>
-                              {modal}
-                            </ServiceWorkerProvider>
-                          </QueryBoundary>
-                        </ConfirmNavigationProvider>
-                      </ConfirmationDialogProvider>
-                    </ApiProvider>
-                  </DrawerProvider>
-                </SnackbarProvider>
-              </EmployeePortalProvider>
-            </EnvironmentTypeProvider>
+                <EmployeePortalProvider
+                  baseUrl={env.PUBLIC_BASE_BACKEND_URL}
+                  layoutConfig={LAYOUT_CONFIG}
+                >
+                  <SnackbarProvider snackbar={EmployeeSnackbar}>
+                    <DrawerProvider>
+                      <ApiProvider configuration={API_CONFIGURATION}>
+                        <ConfirmationDialogProvider
+                          component={ConfirmationDialog}
+                          errorModal={EmployeePortalErrorModal}
+                        >
+                          <ConfirmNavigationProvider>
+                            <QueryBoundary>
+                              <OfflinePasswordPrompt />
+                              <ServiceWorkerProvider>
+                                <ChatProvider
+                                  configuration={CHAT_CONFIGURATION}
+                                >
+                                  <MainLayout>{children}</MainLayout>
+                                </ChatProvider>
+                                {modal}
+                              </ServiceWorkerProvider>
+                            </QueryBoundary>
+                          </ConfirmNavigationProvider>
+                        </ConfirmationDialogProvider>
+                      </ApiProvider>
+                    </DrawerProvider>
+                  </SnackbarProvider>
+                </EmployeePortalProvider>
+              </EnvironmentTypeProvider>
+            </I18nProvider>
 
             <HiddenDownloadContainer />
           </Box>

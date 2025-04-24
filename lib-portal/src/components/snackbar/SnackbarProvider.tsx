@@ -165,7 +165,7 @@ export function SnackbarProvider({
   const [queue, setQueue] = useState<SnackbarValues[]>([]);
 
   return (
-    <SnackbarContext.Provider value={setQueue}>
+    <SnackbarContext value={setQueue}>
       <>
         {queue.map((snackbarValues, index) => (
           <BaseSnackbar
@@ -189,7 +189,7 @@ export function SnackbarProvider({
         ))}
       </>
       {children}
-    </SnackbarContext.Provider>
+    </SnackbarContext>
   );
 }
 

@@ -84,38 +84,43 @@ public class StreetDirectoryService implements StreetDirectory {
   private StreetSequence convertToStreetSequence(StreetDirectory.EntryFields inputData) {
     return new StreetSequence(
         getOddEven(inputData.evenOddSequence()),
-        parseHouseNumber(inputData.houseNumberFrom()),
+        parseHouseNumber(inputData.houseNumberFrom(), inputData.houseNumberFromAddition()),
         convertToHouseNumberTo(inputData),
         convertToAdministrativeData(inputData));
   }
 
-  private static HouseNumber parseHouseNumber(String houseNumber) {
+  private static HouseNumber parseHouseNumber(String houseNumber, String addition) {
     if (StringUtils.isBlank(houseNumber)) {
       return null;
     }
 
-    return HouseNumber.parseHouseNumber(houseNumber);
+    if (StringUtils.isBlank(addition) || !houseNumber.matches("\\d+")) {
+      return HouseNumber.parseHouseNumber(houseNumber);
+    } else {
+      return new HouseNumber(Integer.parseInt(houseNumber), StringUtils.normalizeSpace(addition));
+    }
   }
 
   private AdministrativeData convertToAdministrativeData(StreetDirectory.EntryFields inputData) {
     return new AdministrativeData(
-        inputData.localDistrict(),
-        inputData.districtName(),
-        inputData.cityDistrict(),
-        inputData.cityDistrictPrefecture(),
-        inputData.arbitratorsDistrict(),
-        inputData.socialTownHallName(),
-        inputData.policeStation(),
+        StringUtils.normalizeSpace(inputData.localDistrict()),
+        StringUtils.normalizeSpace(inputData.districtName()),
+        StringUtils.normalizeSpace(inputData.cityDistrict()),
+        StringUtils.normalizeSpace(inputData.cityDistrictPrefecture()),
+        StringUtils.normalizeSpace(inputData.arbitratorsDistrict()),
+        StringUtils.normalizeSpace(inputData.policeStation()),
         inputData.postalCode());
   }
 
   private static HouseNumber convertToHouseNumberTo(
       StreetDirectory.EntryFields onlyStreetSequence) {
     if (StringUtils.isBlank(onlyStreetSequence.houseNumberTo())) {
-      return parseHouseNumber(onlyStreetSequence.houseNumberFrom());
+      return parseHouseNumber(
+          onlyStreetSequence.houseNumberFrom(), onlyStreetSequence.houseNumberFromAddition());
     }
 
-    return parseHouseNumber(onlyStreetSequence.houseNumberTo());
+    return parseHouseNumber(
+        onlyStreetSequence.houseNumberTo(), onlyStreetSequence.houseNumberToAddition());
   }
 
   private OddEven getOddEven(String germanString) {

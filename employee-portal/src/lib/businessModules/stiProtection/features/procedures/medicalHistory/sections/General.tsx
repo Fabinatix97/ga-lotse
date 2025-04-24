@@ -7,16 +7,17 @@ import { TextareaField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { validatePastOrTodayDate } from "@eshg/lib-portal/helpers/validators";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { useFormikContext } from "formik";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
 import { relationshipModelOptions } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export function General({ isForSexWork }: { isForSexWork: boolean }) {
+  const { validatePastOrTodayDate } = useValidators();
   const { values } = useFormikContext<MedicalHistoryFormData>();
 
   return (

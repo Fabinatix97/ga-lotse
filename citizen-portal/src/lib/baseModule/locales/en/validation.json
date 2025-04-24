@@ -1,5 +1,4 @@
 {
   "required": "Required",
-  "length": "Text must be between {{startInclusive}} and {{endInclusive}} symbols long.",
   "select_country": "Please select a {{label}}."
 }

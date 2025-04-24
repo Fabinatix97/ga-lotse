@@ -5,13 +5,16 @@
 
 "use client";
 
-import { ButtonBar, OverlayBoundary } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  OverlayBoundary,
+  ToggleFilterButton,
+} from "@eshg/lib-employee-portal";
 import { CancelOutlined, KeyOutlined } from "@mui/icons-material";
 import { Button, Sheet, Stack, Typography } from "@mui/joy";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { AuditlogCreatePasswordSidebar } from "@/lib/auditlog/components/AuditlogCreatePasswordSidebar";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 
 export function AuditlogCreatePasswordView() {
   const [open, setOpen] = useState(false);
@@ -19,7 +22,7 @@ export function AuditlogCreatePasswordView() {
   return (
     <>
       <ButtonBar
-        left={<FilterButton disabled />}
+        left={<ToggleFilterButton disabled />}
         right={<CreatePasswordButton setOpen={setOpen} />}
       />
       <Sheet

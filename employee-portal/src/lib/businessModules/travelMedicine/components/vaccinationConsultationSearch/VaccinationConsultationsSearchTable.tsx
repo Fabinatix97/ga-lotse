@@ -10,6 +10,8 @@ import {
   DataTable,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  useFilterDictionary,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
@@ -22,8 +24,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultationSearch/VaccinationConsultationsSearchFilterSettings";
 import { searchColumns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultationSearch/searchColumns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useToggle } from "@/lib/shared/hooks/useToggle";
 
 export function VaccinationConsultationsSearchTable() {
@@ -69,7 +69,7 @@ export function VaccinationConsultationsSearchTable() {
       controls={
         <ButtonBar
           left={
-            <FilterButton
+            <ToggleFilterButton
               isFilterVisible={filterVisible}
               activeFilters={activeFilters.length}
               onClick={toggleFilterVisible}

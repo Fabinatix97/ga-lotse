@@ -1491,7 +1491,6 @@
       <column name="has_symptoms" type="BOOLEAN"/>
       <column name="main_reason" type="TEXT"/>
       <column name="notes" type="TEXT"/>
-      <column name="other_known_languages" type="TEXT"/>
       <column name="referral" type="TEXT"/>
       <column name="symptoms" type="TEXT"/>
       <column name="has_pregnancy_related_info" type="BOOLEAN"/>

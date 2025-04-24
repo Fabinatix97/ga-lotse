@@ -1,0 +1,45 @@
+{
+  "title": "Ergebnisstatus",
+  "landing": {
+    "info": {
+      "title": "Ihr Testergebnis – Informationen zur Abholung",
+      "warning": "Sie benötigen weder ein Ausweisdokument noch eine Versicherungskarte. Alle Testergebnisse werden nur persönlich mitgeteilt. ",
+      "welcome": "Willkommen im Online-Portal für Testergebnisse. Hier können Sie den aktuellen Status Ihrer Untersuchung einsehen.",
+      "more_tests_subtitle": "Je nach Vorgeschichte und Beschwerden können weitere Tests durchgeführt werden",
+      "more_tests_body": "Alle Testergebnisse werden streng vertraulich behandelt und nicht online angezeigt.",
+      "call_for_results_subtitle": "Ergebnisse abrufen",
+      "call_for_results_body": "Sobald Ihre Testergebnisse vorliegen, sehen Sie hier den Hinweis: „Ergebnisse liegen zur Besprechung vor.“ Bitte kontaktieren Sie das Gesundheitsamt telefonisch, um Ihr Ergebnis zu erfahren oder einen Termin für eine persönliche Besprechung zu vereinbaren.",
+      "important_background_subtitle": "Wichtige Hinweise",
+      "important_background_points": [
+        "Testergebnisse werden ausschließlich persönlich oder telefonisch mitgeteilt.",
+        "Falls Ihr Ergebnis noch nicht vorliegt, versuchen Sie es später erneut.",
+        "Bei einem positiven Testergebnis erhalten Sie weiterführende Informationen und Beratungsangebote."
+      ],
+      "available_for_questions": "Für Fragen oder eine Terminvereinbarung stehen wir Ihnen gerne zur Verfügung."
+    },
+    "login_and_view_status_card": {
+      "title": "Möchten Sie den Ergebnisstatus überprüfen?",
+      "body": "Bitte melden Sie sich hier ein, um den aktuellen Ergebnisstatus einzusehen.",
+      "link_label": "Ergebnisstatus einsehen"
+    }
+  },
+  "view": {
+    "findings_title": "Befunde",
+    "status": {
+      "not_yet_available_label": "Ergebnisse noch nicht verfügbar",
+      "not_yet_available_info": "Es liegen noch keine Ergebnisse für Ihren Vorgang vor. Bitte versuchen Sie es später nochmal.",
+      "available_label": "Ergebnisse liegen vor",
+      "available_info": "Es liegen Ergebnisse zu Ihrem Vorgang vor. <strong>Bitte vereinbaren Sie einen Termin im Gesundheitsamt</strong>, um die Befunde zu besprechen."
+    },
+    "still_no_results_title": "Sie haben noch keine Ergebnisse?",
+    "still_no_results_body": "Falls noch keine Ergebnisse vorliegen, bitten wir um etwas Geduld – die Aktualisierung erfolgt schnellstmöglich. Sollten Sie dennoch dringende Rückfragen haben, erreichen Sie uns telefonisch.",
+    "get_results_title": "Möchten Sie einen Termin vereinbaren? Bitte rufen Sie uns an.",
+    "get_results_body": "Termine für eine Ergebnisbesprechung können telefonisch vereinbart werden.",
+    "go_to_appointments": "Zu meinen Terminen"
+  },
+  "go_to_card": {
+    "title": "Möchten Sie Ihren Ergebnisstatus einsehen?",
+    "body": "Nach Ihrem Besuch im Amt werden die Tests bearbeitet. Ihren Ergebnisstatus können Sie jederzeit hier online überprüfen.",
+    "link_label": "Zum Ergebnisstatus"
+  }
+}

@@ -77,6 +77,7 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureSortKey;
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.FacilityDto;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
+import de.eshg.officialmedicalservice.procedure.api.HumanReadablePersonIdSearchParameters;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionResultDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
 import de.eshg.officialmedicalservice.procedure.api.MergeAffectedPersonRequest;
@@ -114,6 +115,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -311,11 +313,18 @@ public class EmployeeOmsProcedureService {
       GetOmsProceduresFilterOptionsDto filters,
       EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
       ProcedureSearchParameters searchParameters,
-      ProcedureLabCodeSearchParameters labCodeSearchParameters) {
+      ProcedureLabCodeSearchParameters labCodeSearchParameters,
+      HumanReadablePersonIdSearchParameters humanReadablePersonIdSearchParameters) {
 
     List<OmsProcedureView> candidates;
 
-    if (ProcedureValidator.hasNonNullValue(searchParameters)) {
+    if (ProcedureValidator.hasNonNullNonBlankValue(humanReadablePersonIdSearchParameters)) {
+      List<OmsProcedure> allProcedures =
+          procedureSearchService.searchProceduresByPersonByHumanReadableId(
+              humanReadablePersonIdSearchParameters.searchHumanReadableId(), PersonType.PATIENT);
+
+      candidates = allProcedures.stream().flatMap(this::convertToProcedureViewStream).toList();
+    } else if (ProcedureValidator.hasNonNullNonBlankValue(searchParameters)) {
       List<OmsProcedure> allProcedures =
           procedureSearchService.searchProceduresByPerson(searchParameters, PersonType.PATIENT);
 
@@ -340,13 +349,20 @@ public class EmployeeOmsProcedureService {
               ? null
               : dateEnd.atStartOfDay(clock.getZone()).toInstant().plus(1, ChronoUnit.DAYS));
 
+      Set<ProcedureStatusDto> status = filters.status();
+      if (labCodeSearchParameters.searchLabCode() == null && (status == null || status.isEmpty())) {
+        status =
+            Set.of(
+                ProcedureStatusDto.DRAFT, ProcedureStatusDto.OPEN, ProcedureStatusDto.IN_PROGRESS);
+      }
+
       candidates =
           findOmsProcedures(
                   physicianId,
-                  filters.status(),
+                  status,
                   instantStart,
                   instantPastEnd,
-                  filters.highPriority(),
+                  filters.urgentCase(),
                   labCodeSearchParameters.searchLabCode())
               .stream()
               .filter(
@@ -401,7 +417,7 @@ public class EmployeeOmsProcedureService {
       @Nullable Set<ProcedureStatusDto> status,
       @Nullable Instant appointmentDateStart,
       @Nullable Instant appointmentDatePastEnd,
-      @Nullable Boolean highPriority,
+      @Nullable Boolean urgentCase,
       @Nullable String labCode) {
     Set<ProcedureStatus> procedureStatus =
         Stream.ofNullable(status)
@@ -450,8 +466,32 @@ public class EmployeeOmsProcedureService {
       }
     }
 
-    if (Boolean.TRUE.equals(highPriority)) {
-      predicates.add(cb.isTrue(concernJoin.get(Concern_.HIGH_PRIORITY)));
+    if (Boolean.TRUE.equals(urgentCase)) {
+      // urgent means:
+      //  high prio concern ||
+      //    (   opinion status == in progress
+      //    &&  procedure cutoff date is not null
+      //    &&  procedure cutoff date <= today + lead time
+      //    )
+
+      Expression<LocalDate> cutOffDate =
+          cb.literal(LocalDate.now(clock).plusDays(getCutOffDateLeadTime()));
+
+      Predicate highPrioCondition = cb.isTrue(concernJoin.get(Concern_.HIGH_PRIORITY));
+      Predicate opinionInProgress =
+          cb.equal(
+              procedureRoot.get(OmsProcedure_.medicalOpinionStatus),
+              cb.literal(MedicalOpinionStatus.IN_PROGRESS));
+
+      Predicate opinionOverdueCondition =
+          cb.and(
+              opinionInProgress,
+              procedureRoot.get(OmsProcedure_.medicalOpinionCutOffDate).isNotNull(),
+              cb.lessThanOrEqualTo(
+                  procedureRoot.get(OmsProcedure_.medicalOpinionCutOffDate), cutOffDate));
+      Predicate urgentCaseCondition = cb.or(highPrioCondition, opinionOverdueCondition);
+
+      predicates.add(urgentCaseCondition);
     }
 
     if (labCode != null) {
@@ -808,11 +848,9 @@ public class EmployeeOmsProcedureService {
         || !procedure.getConcern().getNameDe().equals(request.concern().nameDe())) {
       updateConcern(procedure, request.concern());
     }
-    if (request.physicianId() != null
-        && (procedure.getPhysicianId() == null
-            || !procedure.getPhysicianId().equals(request.physicianId()))) {
-      updatePhysician(procedure, request.physicianId());
-    }
+
+    updatePhysician(procedure, request.physicianId());
+
     updateMedicalOpinionCutOffDate(procedure, request.cutOffDate());
     if (request.sendEmailNotifications() != null) {
       updateEmailNotifications(procedure, request.sendEmailNotifications());
@@ -948,6 +986,8 @@ public class EmployeeOmsProcedureService {
     } catch (JsonProcessingException e) {
       throw new BadRequestException(ErrorCode.BAD_REQUEST, "Anamnesis is malformed");
     }
+
+    progressEntryService.createProgressEntryForAnamnesisChanged(procedure);
   }
 
   @Transactional

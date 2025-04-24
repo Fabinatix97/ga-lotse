@@ -83,7 +83,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
   );
 
   return (
-    <ChatContext.Provider
+    <ChatContext
       value={{
         configuration,
         userSettings,
@@ -103,7 +103,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
       ) : (
         children
       )}
-    </ChatContext.Provider>
+    </ChatContext>
   );
 }
 
@@ -119,7 +119,7 @@ export function useChat() {
 
 function InnerChatProviderMock({ children, configuration }: ChatProviderProps) {
   return (
-    <ChatContext.Provider
+    <ChatContext
       value={{
         configuration,
         userSettings: {
@@ -143,6 +143,6 @@ function InnerChatProviderMock({ children, configuration }: ChatProviderProps) {
       }}
     >
       {children}
-    </ChatContext.Provider>
+    </ChatContext>
   );
 }

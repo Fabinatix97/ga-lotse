@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AppointmentBlockApi,
   AppointmentTypeApi,
@@ -12,6 +11,7 @@ import {
   Configuration,
   DiseaseApi,
   FileApi,
+  GdprValidationTaskApi,
   InboxProcedureApi,
   InformationStatementTemplateApi,
   MedicalHistoryApi,
@@ -26,8 +26,10 @@ import {
   VaccineApi,
 } from "@eshg/travel-medicine-api";
 
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
+
 export function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_TRAVEL_MEDICINE_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
@@ -106,4 +108,9 @@ export function useFeatureTogglesApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useGdprValidationTaskApi() {
+  const configuration = useConfiguration();
+  return new GdprValidationTaskApi(configuration);
 }

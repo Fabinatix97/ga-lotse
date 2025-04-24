@@ -12,12 +12,15 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -27,8 +30,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class X509Utils {
+  private static final Logger logger = LoggerFactory.getLogger(X509Utils.class);
+
   public static final String SIGNATURE_ALGORITHM = "SHA384withRSA";
   public static final String ESHGACTOR_BUNDLE_NAME = "eshgactor";
 
@@ -71,19 +78,28 @@ public class X509Utils {
     }
   }
 
-  public static String extractCommonName(X509Certificate cert) {
-    return extractCommonName(cert.getSubjectX500Principal().getName());
+  public static String extractSanOrCommonName(X509Certificate cert) {
+    Collection<List<?>> SANs;
+    try {
+      SANs = extractSubjectAlternativeNames(cert);
+    } catch (RuntimeException e) {
+      return extractCommonName(cert.getSubjectX500Principal().getName());
+    }
+    if (SANs.size() > 1) {
+      logger.warn("More than one SAN found for certificate: {}", cert);
+    }
+    return getFirstDnsSan(SANs);
   }
 
   public static String extractLocation(X509Certificate cert) {
     return extractLocation(cert.getSubjectX500Principal().getName());
   }
 
-  public static String extractCommonName(String s) {
+  private static String extractCommonName(String s) {
     return extractSubjectComponent(s, "cn").orElseThrow();
   }
 
-  public static String extractLocation(String s) {
+  private static String extractLocation(String s) {
     return extractSubjectComponent(s, "l").orElse(null);
   }
 
@@ -249,5 +265,43 @@ public class X509Utils {
       throw new IllegalStateException("could not verify signature", e);
     }
     return true;
+  }
+
+  public static void assertOnlySanIsCn(X509Certificate certificate) {
+    Collection<List<?>> SANs = extractSubjectAlternativeNames(certificate);
+    if (SANs.size() > 1) {
+      throw new IllegalArgumentException(
+          "Certificate contains more than one subject alternative names");
+    }
+    String CN = extractCommonName(certificate.getSubjectX500Principal().getName());
+    String SAN = getFirstDnsSan(SANs);
+    if (!SAN.equals(CN)) {
+      throw new IllegalArgumentException(
+          "Certificate's subject alternative name" + SAN + " does not match common name " + CN);
+    }
+  }
+
+  private static Collection<List<?>> extractSubjectAlternativeNames(X509Certificate certificate) {
+    Collection<List<?>> SANs;
+    try {
+      SANs = certificate.getSubjectAlternativeNames();
+    } catch (CertificateParsingException e) {
+      throw new IllegalArgumentException(e);
+    }
+    if (SANs == null || SANs.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Certificate does not contain any subject alternative names");
+    }
+    return SANs;
+  }
+
+  private static String getFirstDnsSan(Collection<List<?>> SANs) {
+    return (String)
+        SANs.stream()
+            .filter((SAN) -> SAN.getFirst().equals(2))
+            .findFirst()
+            .orElseThrow(
+                () -> new IllegalArgumentException("Expected at least one dNSName(2) SAN entry."))
+            .getLast();
   }
 }

@@ -1,0 +1,24 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { ApiGetUsersResponse, ApiUser } from "@eshg/base-api";
+import { queryOptions } from "@tanstack/react-query";
+
+import { userApiQueryKey } from "@/config/apiQueryKeys";
+import { useApi } from "@/contexts/api";
+
+export function useGetUsersByGroupQuery(groupName: string) {
+  const { userApi } = useApi();
+
+  return queryOptions({
+    queryKey: userApiQueryKey(["getUsersByGroup", groupName]),
+    queryFn: () => userApi.getUsersByGroup(groupName),
+    select: mapUsers,
+  });
+}
+
+function mapUsers(response: ApiGetUsersResponse): ApiUser[] {
+  return response.users;
+}

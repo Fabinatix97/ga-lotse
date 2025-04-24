@@ -4,6 +4,16 @@
  */
 
 import {
+  DateComparisonOperator,
+  FilterDefinition,
+  FilterSettingsStateProvider,
+  FilterValue,
+  NumberFilterComparisonMode,
+  NumberFilterNullInclusion,
+  NumberFilterNumericComparison,
+  defaultDraftValueDateComparisonFilter,
+} from "@eshg/lib-employee-portal";
+import {
   ReadonlyURLSearchParams,
   usePathname,
   useRouter,
@@ -12,16 +22,6 @@ import {
 import { SetStateAction, useCallback, useState } from "react";
 
 import { mapOptionalString } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { defaultDraftValueDateComparisonFilter } from "@/lib/shared/components/filterSettings/DateComparisonFilter";
-import { DateComparisonOperator } from "@/lib/shared/components/filterSettings/models/DateComparisonFilter";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  NumberFilterComparisonMode,
-  NumberFilterNullInclusion,
-  NumberFilterNumericComparison,
-} from "@/lib/shared/components/filterSettings/models/NumberFilter";
-import { FilterSettingsStateProvider } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import {
   setWindowSearchParams,
   updateSearchParam,

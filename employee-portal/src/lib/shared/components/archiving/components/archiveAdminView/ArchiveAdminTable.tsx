@@ -6,9 +6,12 @@
 import {
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   getSortDirection,
   getSortKey,
   useConfirmationDialog,
@@ -30,9 +33,6 @@ import {
   getRelevantArchivableProceduresFilters,
   useArchiveAdminFilterSettings,
 } from "@/lib/shared/components/archiving/hooks/useArchiveAdminFilterSettings";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 
 export type ArchiveAdminTableProps = Omit<ArchiveAdminViewProps, "title">;
 
@@ -105,7 +105,7 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
   if (!showTable) {
     return (
       <>
-        <ButtonBar left={<FilterButton disabled />} />
+        <ButtonBar left={<ToggleFilterButton disabled />} />
         <NoProceduresFallback message="Es liegen keine archivierten Vorgänge vor." />
       </>
     );
@@ -116,7 +116,7 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
           right={
             totalElements > 0 ? (
               <>

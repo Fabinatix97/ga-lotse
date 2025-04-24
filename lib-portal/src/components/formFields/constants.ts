@@ -77,4 +77,5 @@ export const PERSON_FIELD_NAME = {
   phoneNumbers: "Telefonnummer",
   id: "ID",
   referenceVersion: "Version",
+  humanReadableId: "Personen-ID",
 } as const satisfies Record<keyof ApiPersonFileState, string>;

@@ -20,9 +20,9 @@ interface LayoutConfigProviderProps extends RequiresChildren {
 
 export function LayoutConfigProvider(props: LayoutConfigProviderProps) {
   return (
-    <LayoutConfigContext.Provider value={props.config}>
+    <LayoutConfigContext value={props.config}>
       {props.children}
-    </LayoutConfigContext.Provider>
+    </LayoutConfigContext>
   );
 }
 

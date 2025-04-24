@@ -15,7 +15,7 @@ export function validateZipCode(country: ApiCountryCode) {
   }
 }
 
-export function validateGermanZipCode(value: string) {
+function validateGermanZipCode(value: string) {
   if (value === undefined || isEmptyString(value)) {
     return undefined;
   }

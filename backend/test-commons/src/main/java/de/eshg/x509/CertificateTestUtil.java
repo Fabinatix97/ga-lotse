@@ -28,6 +28,8 @@ import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -115,6 +117,8 @@ public class CertificateTestUtil {
     certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
     certBuilder.addExtension(Extension.keyUsage, true, getKeyUsage());
 
+    certBuilder.addExtension(Extension.subjectAlternativeName, false, getGeneralNames(commonName));
+
     ContentSigner contentSigner = getContentSigner(keyPair);
     return new JcaX509CertificateConverter().getCertificate(certBuilder.build(contentSigner));
   }
@@ -126,6 +130,14 @@ public class CertificateTestUtil {
             + KeyUsage.keyCertSign
             + KeyUsage.cRLSign;
     return new KeyUsage(keyUsage);
+  }
+
+  private static GeneralNames getGeneralNames(String commonName) {
+    GeneralName[] encodableAltNames =
+        new GeneralName[] {
+          new GeneralName(GeneralName.dNSName, commonName),
+        };
+    return new GeneralNames(encodableAltNames);
   }
 
   private static ContentSigner getContentSigner(KeyPair keyPair) {

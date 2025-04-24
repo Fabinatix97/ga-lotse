@@ -9,6 +9,7 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
@@ -42,9 +43,8 @@ export function InspectionTabNavigationToolbar({
 
   return (
     <TabNavigationToolbar
-      items={tabItems}
-      routeBack={hasProcedureEditRole ? routes.procedures.index : undefined}
       header={<InspectionTabHeader inspection={inspection} />}
+      items={tabItems}
       afterTabs={
         <Stack direction="row">
           {isMobile && <InspectionLockInfo inspection={inspection} />}
@@ -54,6 +54,11 @@ export function InspectionTabNavigationToolbar({
             label="Offline-Modus"
           />
         </Stack>
+      }
+      backButton={
+        hasProcedureEditRole ? (
+          <ToolbarBackButton href={routes.procedures.index} />
+        ) : null
       }
     />
   );

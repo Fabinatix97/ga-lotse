@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
+import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
+import { Legend } from "@eshg/lib-portal/components/formFields/Legend";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -17,9 +20,6 @@ import {
   sexualContactGenderOptions,
   sexualOrientationOptions,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
-import { FieldSetControl } from "@/lib/shared/components/formFields/FieldSetControl";
-import { Legend } from "@/lib/shared/components/formFields/Legend";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export function SexualOrientationAndContact({

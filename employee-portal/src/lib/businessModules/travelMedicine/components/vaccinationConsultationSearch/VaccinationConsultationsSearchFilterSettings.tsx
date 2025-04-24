@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ActiveFilter,
+  FilterSettingsContent,
+  FilterSettingsSheet,
+  FilterSettingsSheetProps,
+  ResettableSingleSelect,
+  SetDictionaryFilterFn,
+} from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
@@ -14,14 +22,6 @@ import { FormControl, FormLabel, Input } from "@mui/joy";
 import { useEffect, useState } from "react";
 
 import { PROCEDURE_STATUS_OPTIONS_FOR_SEARCH } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
-import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
-import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import {
-  FilterSettingsSheet,
-  FilterSettingsSheetProps,
-} from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 
 type AllowedKeys = Extract<
   "DRAFT" | "IN_PROGRESS" | "OPEN",

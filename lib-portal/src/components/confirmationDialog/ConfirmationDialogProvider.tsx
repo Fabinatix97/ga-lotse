@@ -42,7 +42,7 @@ export function ConfirmationDialogProvider({
   const DialogComponent = component;
 
   return (
-    <ConfirmationDialogContext.Provider
+    <ConfirmationDialogContext
       value={{ confirmationDialog, setConfirmationDialog }}
     >
       {confirmationDialog && (
@@ -51,7 +51,7 @@ export function ConfirmationDialogProvider({
         </BaseOverlayBoundary>
       )}
       {children}
-    </ConfirmationDialogContext.Provider>
+    </ConfirmationDialogContext>
   );
 }
 

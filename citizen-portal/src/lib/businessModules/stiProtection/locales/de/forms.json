@@ -32,18 +32,19 @@
     "consent_note_title": "Einverständnis",
     "consent_note_message": "Derpy merpus pee derpler berps! Perp sherper herp terp herpy derpler. Sherper merp herpler herp pee. Derpler terpus, mer re berp der perp se?",
     "no_appointments_available": "Derzeit sind keine Termine verfügbar",
-    "try_later": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+    "try_later": "Wir schalten in Kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
   },
   "personal_data": {
     "title": "Persönliche Daten",
     "fields": {
-      "gender": "Geschlecht",
-      "gender_required": "Bitte geben Sie Ihr Geschlecht an.",
+      "gender": "Biologisches Geschlecht",
+      "gender_required": "Bitte geben Sie Ihr Biologisches Geschlecht an.",
       "birth_year": "Geburtsjahr",
       "birth_year_required": "Bitte geben Sie Ihr Geburtsjahr ein.",
-      "birth_country": "Geburtsland",
-      "in_germany_since": "In Deutschland seit",
-      "invalid_year_range": "Bitte ein Jahr zwischen {{startInclusive}} und {{endInclusive}} angeben."
+      "invalid_year_range": "Bitte ein Jahr zwischen {{startInclusive}} und {{endInclusive}} angeben.",
+      "pronouns": "Pronomen",
+      "sufficient_german_skills": "Ausreichende Deutschkenntnisse",
+      "other_known_languages": "Weitere Sprachen"
     }
   },
   "pin": {

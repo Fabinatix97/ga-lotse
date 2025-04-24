@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBindKeycloakIdRequest } from "@eshg/chat-management-api";
+import {
+  ApiBindKeycloakIdRequest,
+  ApiDeactivateRequest,
+} from "@eshg/chat-management-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useMutation } from "@tanstack/react-query";
 
@@ -16,6 +19,19 @@ export function useBindKeycloakId() {
   return useMutation({
     mutationFn: (request: ApiBindKeycloakIdRequest) =>
       userAccountApi.bindKeycloakId(request),
+    onError: () => {
+      snackbar.error("Etwas ist schief gelaufen");
+    },
+  });
+}
+
+export function useDeactivateUserAccount() {
+  const userAccountApi = useUserAccountApi();
+  const snackbar = useSnackbar();
+
+  return useMutation({
+    mutationFn: (request: ApiDeactivateRequest) =>
+      userAccountApi.deactivateUserAccount(request),
     onError: () => {
       snackbar.error("Etwas ist schief gelaufen");
     },

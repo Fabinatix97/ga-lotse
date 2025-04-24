@@ -1,0 +1,38 @@
+{
+  "common": {
+    "appointment_booking_title": "Reschedule appointment",
+    "required_title": "* Required field",
+    "hiv_sti_consultation": "HIV / STI Consultation",
+    "sex_work": "Sex work",
+    "overview_title": "Appointment overview",
+    "timeslot_taken": "Unfortunately, this appointment is no longer available. Please choose another appointment.",
+    "select_new_appointment": "New appointment",
+    "reset": "Reset",
+    "month": "Month",
+    "year": "Year",
+    "yes": "Yes",
+    "no": "No",
+    "cancel_button": "Cancel",
+    "timeslot_booked": "Appointment sucessfully booked"
+  },
+  "time_slot": {
+    "title": "Available Appointments",
+    "no_appointments_available": "Currently no appointments available",
+    "try_later": "We will add more appointments shortly. Please try again at a later date."
+  },
+  "appointment_calendar": {
+    "required_appointment": "Please select an appointment",
+    "required_day": "Please select a day",
+    "month_selection": "Date of calendar month",
+    "next_month": "next month",
+    "prev_month": "previous month",
+    "list_label": "Available times *",
+    "calendar_label": "Date *",
+    "available": "available"
+  },
+  "appointment_overview": {
+    "clock": " o'clock",
+    "rebook_appointment_button": "Reschedule appointment",
+    "cancel_button": "Cancel"
+  }
+}

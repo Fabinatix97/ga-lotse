@@ -11,6 +11,8 @@ import {
   PROCEDURE_STATUS_NAMES,
   TablePage,
   TableSheet,
+  useGdprValidationTasksAlert,
+  useGetGdprValidationBannerQuery,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -29,6 +31,7 @@ import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
+import { useGdprValidationTaskApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useGetAllProcedureAppointmentSummaries } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { NewPerson } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/new/NewPerson";
 import {
@@ -36,8 +39,6 @@ import {
   initialSorting,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/overviewColumns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { TextInputClientFilter } from "@/lib/shared/components/tableFilters/TextInputClientFilter";
 
 export function VaccinationConsultationsOverviewTable(
@@ -64,8 +65,10 @@ export function VaccinationConsultationsOverviewTable(
     allAppointmentOverviewEntries.appointmentOverviewEntries,
   );
 
+  const gdprValidationTaskApi = useGdprValidationTaskApi();
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.TravelMedicine,
+    gdprValidationTaskApi,
   );
 
   const [gdprBanner] = useSuspenseQueries({

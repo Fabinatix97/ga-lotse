@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -51,6 +52,7 @@ export function useGetFreeAppointmentsForCitizen(
 export function useGetDepartmentInfo() {
   const departmentApi = useCitizenPublicApi();
   return useSuspenseQuery({
+    ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: citizenPublicApiQueryKey(["getDepartmentInfo"]),
     queryFn: () => departmentApi.getDepartmentInfo(),
   });
@@ -59,6 +61,7 @@ export function useGetDepartmentInfo() {
 export function useGetDepartmentInfoQuery() {
   const departmentApi = useCitizenPublicApi();
   return queryOptions({
+    ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: citizenPublicApiQueryKey(["getDepartmentInfo"]),
     queryFn: () => departmentApi.getDepartmentInfo(),
   });

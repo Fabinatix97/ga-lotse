@@ -5,6 +5,7 @@
 
 import {
   SidebarWithFormRefProps,
+  UseFilterSettings,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -21,7 +22,6 @@ import {
   SidebarStepper,
   createStepContent,
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
 
 import { CreateDiagramFormModel } from "./createDiagramFormModel";

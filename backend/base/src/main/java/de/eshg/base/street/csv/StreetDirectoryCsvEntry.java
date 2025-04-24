@@ -55,20 +55,24 @@ public class StreetDirectoryCsvEntry implements StreetDirectory.EntryFields {
   @CsvWritePosition(10)
   private String cityDistrictPrefecture;
 
-  @CsvBindByName(column = "Schiedsleutebezirk")
+  @CsvBindByName(column = "Schiedsamtsbezirk")
   @CsvWritePosition(11)
   private String arbitratorsDistrict;
 
-  @CsvBindByName(column = "Sozialrathaus Name")
+  @CsvBindByName(column = "Sozialrathausbezirk")
   @CsvWritePosition(12)
-  private String socialTownHallName;
+  private String socialTownHallDistrict;
+
+  @CsvBindByName(column = "Sozialbezirk")
+  @CsvWritePosition(13)
+  private String socialDistrict;
 
   @CsvBindByName(column = "Polizeirevier")
-  @CsvWritePosition(13)
+  @CsvWritePosition(14)
   private String policeStation;
 
   @CsvBindByName(column = "Postleitzahl")
-  @CsvWritePosition(14)
+  @CsvWritePosition(15)
   private String postalCode;
 
   public String streetNumber() {
@@ -175,12 +179,20 @@ public class StreetDirectoryCsvEntry implements StreetDirectory.EntryFields {
     this.arbitratorsDistrict = arbitratorsDistrict;
   }
 
-  public String socialTownHallName() {
-    return socialTownHallName;
+  public String socialTownHallDistrict() {
+    return socialTownHallDistrict;
   }
 
-  public void setSocialTownHallName(String socialTownHallName) {
-    this.socialTownHallName = socialTownHallName;
+  public void setSocialTownHallDistrict(String socialTownHallDistrict) {
+    this.socialTownHallDistrict = socialTownHallDistrict;
+  }
+
+  public String socialDistrict() {
+    return socialDistrict;
+  }
+
+  public void setSocialDistrict(String socialDistrict) {
+    this.socialDistrict = socialDistrict;
   }
 
   public String policeStation() {

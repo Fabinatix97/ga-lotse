@@ -5,6 +5,7 @@
 
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
 import {
+  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -29,7 +30,6 @@ import {
   mapEventToFormValues,
   mapFormToRequestValues,
 } from "@/lib/baseModule/components/resources/resourceCalendarMapper";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { DateOrDateTimeField } from "@/lib/shared/components/formFields/DateOrDateTimeField";
 import {
   handleWholeDayChange,

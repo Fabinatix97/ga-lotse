@@ -9,6 +9,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ReactNode } from "react";
 
 import {
   ConfiguratorModuleName,
@@ -17,7 +18,7 @@ import {
 
 interface ConfiguratorLayoutProps extends RequiresChildren {
   module: ConfiguratorModuleName;
-  backHref?: string;
+  backButton?: ReactNode;
 }
 
 export function ConfiguratorLayout(props: ConfiguratorLayoutProps) {
@@ -33,7 +34,7 @@ export function ConfiguratorLayout(props: ConfiguratorLayoutProps) {
       toolbar={
         <Toolbar
           title={`GA-Konfigurator: ${mapModuleNameToText()}`}
-          backHref={props.backHref}
+          backButton={props.backButton}
         />
       }
     >

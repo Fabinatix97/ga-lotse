@@ -6,7 +6,7 @@
 import { Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-export interface SidebarActionsProps {
+interface SidebarActionsProps {
   children?: ReactNode;
 }
 

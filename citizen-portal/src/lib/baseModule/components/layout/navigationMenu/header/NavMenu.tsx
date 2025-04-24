@@ -101,6 +101,7 @@ function NavMenuItem({
             level="h3"
             fontWeight={selected ? "700" : "500"}
             sx={{
+              hyphens: "auto",
               color: (theme) =>
                 selected
                   ? theme.palette.primary.outlinedColor

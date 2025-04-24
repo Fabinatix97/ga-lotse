@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiChatFeature } from "@eshg/chat-management-api";
 import {
   FormButtonBar,
   Sidebar,
@@ -18,8 +19,9 @@ import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useRef, useState } from "react";
 
+import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
-import { ResetBackupModal } from "@/lib/businessModules/chat/components/secureBackup/ResetBackupModal";
+import { FactoryResetModal } from "@/lib/businessModules/chat/components/secureBackup/FactoryResetModal";
 import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import {
   loadKeyBackupPrivateKeyFromSecretStorage,
@@ -52,7 +54,9 @@ export function RestoreBackupSidebar({
   const { matrixClient, setClientState } = useChatClientContext();
   const snackbar = useSnackbar();
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const { data: featureToggleResetPassphraseEnabled } =
+    useIsNewFeatureEnabledUnsuspended(ApiChatFeature.ResetKeyBackupPassphrase);
+  const [factoryResetModalOpen, setFactoryResetModalOpen] = useState(false);
 
   function handleClose() {
     onClose();
@@ -87,7 +91,9 @@ export function RestoreBackupSidebar({
       );
       setClientState(ClientState.Ready);
       logger.info("Step 6/6 RestoreKeyBackupFromSecretStorage - FINISHED");
-      snackbar.confirmation("Ihr Gerät wurde nun verifiziert");
+      snackbar.confirmation("Ihr Gerät wurde nun verifiziert", {
+        manualClose: true,
+      });
     } catch (e) {
       handleClose();
       snackbar.error("Kein Zugriff auf den Chat");
@@ -123,18 +129,20 @@ export function RestoreBackupSidebar({
                     name={fieldName("passphrase")}
                     visibilityLabel={"visiblePassphrase"}
                   />
-                  <Stack direction="row" spacing={0.5}>
-                    <Typography level="body-sm" color="neutral">
-                      Wiederherstellungsphrase vergessen oder verloren?{` `}
-                      <ButtonLink
-                        level="body-sm"
-                        color="danger"
-                        onClick={() => setModalOpen(true)}
-                      >
-                        Alles zurücksetzen
-                      </ButtonLink>
-                    </Typography>
-                  </Stack>
+                  {featureToggleResetPassphraseEnabled && (
+                    <Stack direction="row" spacing={0.5}>
+                      <Typography level="body-sm" color="neutral">
+                        Wiederherstellungsphrase vergessen oder verloren?{` `}
+                        <ButtonLink
+                          level="body-sm"
+                          color="danger"
+                          onClick={() => setFactoryResetModalOpen(true)}
+                        >
+                          Alles zurücksetzen
+                        </ButtonLink>
+                      </Typography>
+                    </Stack>
+                  )}
                 </Stack>
               </SidebarContent>
               <SidebarActions>
@@ -148,10 +156,10 @@ export function RestoreBackupSidebar({
           )}
         </Formik>
       </Sidebar>
-      <ResetBackupModal
+      <FactoryResetModal
         color="danger"
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={factoryResetModalOpen}
+        onClose={() => setFactoryResetModalOpen(false)}
       />
     </>
   );

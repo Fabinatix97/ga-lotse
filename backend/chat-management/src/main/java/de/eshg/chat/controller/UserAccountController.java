@@ -8,7 +8,10 @@ package de.eshg.chat.controller;
 import de.eshg.chat.featuretoggle.ChatFeature;
 import de.eshg.chat.featuretoggle.ChatFeatureToggle;
 import de.eshg.chat.model.dto.BindKeycloakIdRequest;
+import de.eshg.chat.model.dto.DeactivateRequest;
+import de.eshg.chat.service.SynapseAuthorizationService;
 import de.eshg.chat.service.SynapseClient;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,10 +31,15 @@ public class UserAccountController {
 
   private final ChatFeatureToggle featureToggle;
   private final SynapseClient synapseClient;
+  private final SynapseAuthorizationService authorizationService;
 
-  public UserAccountController(SynapseClient synapseClient, ChatFeatureToggle featureToggle) {
+  public UserAccountController(
+      SynapseClient synapseClient,
+      ChatFeatureToggle featureToggle,
+      SynapseAuthorizationService authorizationService) {
     this.featureToggle = featureToggle;
     this.synapseClient = synapseClient;
+    this.authorizationService = authorizationService;
   }
 
   @PostMapping("/bind-keycloak-id")
@@ -39,7 +47,19 @@ public class UserAccountController {
   public ResponseEntity<Void> bindKeycloakId(
       @RequestBody @Valid BindKeycloakIdRequest bindKeycloakIdRequest) {
     featureToggle.assertNewFeatureIsEnabled(ChatFeature.CHAT_BASE);
-    synapseClient.bindKeycloakId(bindKeycloakIdRequest.matrixUserId());
+    authorizationService.validateIfMxidBelongsToCurrentUser(bindKeycloakIdRequest.matrixUserId());
+    String keycloakUserId = CurrentUserHelper.getCurrentUserId().toString();
+    synapseClient.bindKeycloakId(bindKeycloakIdRequest.matrixUserId(), keycloakUserId);
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/deactivate")
+  @Transactional
+  public ResponseEntity<Void> deactivateUserAccount(
+      @RequestBody @Valid DeactivateRequest deactivateRequest) {
+    featureToggle.assertNewFeatureIsEnabled(ChatFeature.CHAT_BASE);
+    authorizationService.validateIfMxidBelongsToCurrentUser(deactivateRequest.matrixUserId());
+    synapseClient.deactivateUserAccount(deactivateRequest.matrixUserId());
     return ResponseEntity.ok().build();
   }
 }

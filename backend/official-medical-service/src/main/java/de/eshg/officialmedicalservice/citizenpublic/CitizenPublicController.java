@@ -23,6 +23,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.officialmedicalservice.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.officialmedicalservice.citizenpublic.api.LandingContentDto;
 import de.eshg.officialmedicalservice.concern.ConcernService;
+import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.procedure.api.GetConcernsResponse;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -63,6 +64,7 @@ public class CitizenPublicController {
   public static final String CONCERNS_URL = "/concerns";
   public static final String APPOINTMENT_TYPES_URL = "/appointment-types";
   public static final String LANDING_URL = "/landing";
+  public static final String VALIDATE_FILES_URL = "/validate-files";
 
   private final OpeningHoursService openingHoursService;
   private final DepartmentInfoConfigService departmentInfoService;
@@ -72,6 +74,7 @@ public class CitizenPublicController {
   private final ConcernService concernService;
   private final AppointmentTypeService appointmentTypeService;
   private final PrivacyDocumentService privacyDocumentService;
+  private final OmsDocumentService omsDocumentService;
 
   public CitizenPublicController(
       OpeningHoursService openingHoursService,
@@ -81,7 +84,8 @@ public class CitizenPublicController {
       Clock clock,
       ConcernService concernService,
       AppointmentTypeService appointmentTypeService,
-      PrivacyDocumentService privacyDocumentService) {
+      PrivacyDocumentService privacyDocumentService,
+      OmsDocumentService omsDocumentService) {
     this.openingHoursService = openingHoursService;
     this.departmentInfoService = departmentInfoService;
     this.citizenPublicProcedureService = citizenPublicProcedureService;
@@ -90,6 +94,7 @@ public class CitizenPublicController {
     this.concernService = concernService;
     this.appointmentTypeService = appointmentTypeService;
     this.privacyDocumentService = privacyDocumentService;
+    this.omsDocumentService = omsDocumentService;
   }
 
   @Operation(summary = "Get opening hours.")
@@ -164,5 +169,12 @@ public class CitizenPublicController {
   @Transactional(readOnly = true)
   public GetAppointmentTypesResponse getAppointmentTypesForCitizen() {
     return appointmentTypeService.getAppointmentTypes();
+  }
+
+  @Operation(summary = "Validate files")
+  @PostMapping(path = VALIDATE_FILES_URL, consumes = MULTIPART_FORM_DATA_VALUE)
+  public ValidateFilesResponse validateFiles(
+      @RequestPart(name = "files") List<MultipartFile> files) {
+    return omsDocumentService.validateFilesBeforeUpload(files);
   }
 }

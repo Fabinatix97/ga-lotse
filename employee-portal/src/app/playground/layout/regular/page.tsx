@@ -7,6 +7,8 @@
 
 import {
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   MainContentLayout,
   StickyToolbarLayout,
   TablePage,
@@ -17,9 +19,6 @@ import { Sheet, Slider, Switch, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 import { doNothing } from "remeda";
-
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 
 interface TestData {
   name: string;

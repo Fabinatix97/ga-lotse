@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FilterValue,
+  NumberFilterComparisonMode,
+  NumberFilterNullInclusion,
+} from "@eshg/lib-employee-portal";
+
 import { mapKeyToAttributeSelection } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { EvaluationFilter } from "@/lib/businessModules/statistics/api/models/evaluationFilterType";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
@@ -12,11 +18,6 @@ import {
   shouldSearchForNull,
   shouldSearchForTrue,
 } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  NumberFilterComparisonMode,
-  NumberFilterNullInclusion,
-} from "@/lib/shared/components/filterSettings/models/NumberFilter";
 import { assertFilterType } from "@/lib/shared/components/filterSettings/models/assertFilterType";
 
 export function mapFilterValuesToEvaluationFilters(

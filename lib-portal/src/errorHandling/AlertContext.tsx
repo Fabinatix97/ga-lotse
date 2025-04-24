@@ -106,11 +106,7 @@ export function AlertContextProvider(props: RequiresChildren) {
   // close alert after navigation
   useNavigateEffect(() => contextValue.close());
 
-  return (
-    <AlertContext.Provider value={contextValue}>
-      {props.children}
-    </AlertContext.Provider>
-  );
+  return <AlertContext value={contextValue}>{props.children}</AlertContext>;
 }
 
 function useAlertContext() {

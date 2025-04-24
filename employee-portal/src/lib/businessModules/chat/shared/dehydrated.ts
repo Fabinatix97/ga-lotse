@@ -27,7 +27,7 @@ export async function startDehydration(
   while (true) {
     await delayed(() => null, 500);
     const secretStorageReady = await cryptoApi.isSecretStorageReady();
-    const backupInfo = await matrixClient.getKeyBackupVersion();
+    const backupInfo = await cryptoApi.getKeyBackupInfo();
     const backupTrustInfo = backupInfo
       ? await matrixClient.getCrypto()?.isKeyBackupTrusted(backupInfo)
       : undefined;

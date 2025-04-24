@@ -7,7 +7,6 @@ import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
 } from "@eshg/lib-employee-portal";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 
@@ -19,11 +18,6 @@ export function ProcedureTabHeader({
   return (
     <TabNavigationHeader titleAsH1>
       <TabNavigationHeaderTypography>AZ</TabNavigationHeaderTypography>
-      <TabNavigationHeaderTypography>
-        {procedure.person.countryOfBirth
-          ? translateCountry(procedure.person.countryOfBirth)
-          : "-"}
-      </TabNavigationHeaderTypography>
       <TabNavigationHeaderTypography>
         {procedure.person.yearOfBirth}
       </TabNavigationHeaderTypography>

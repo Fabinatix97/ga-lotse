@@ -14,6 +14,8 @@ k8s/helmcharts/eshg-ctr/charts
 k8s/helmcharts/eshg-gas/values/cronn-test1/values.deploy-test.frankfurt.yaml
 k8s/helmcharts/eshg-gas/charts
 
+k8s/k3d
+
 # IntelliJ
 *.iws
 *.iml

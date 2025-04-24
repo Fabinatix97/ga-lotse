@@ -13,6 +13,7 @@ import {
   ApiUser,
 } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
 
@@ -23,7 +24,6 @@ import {
   TimelineEntry,
   TimelineEntryProps,
 } from "@/lib/shared/components/timeline/TimelineEntry";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function ContactHistory({
   history,
@@ -67,7 +67,7 @@ export function ContactHistory({
 }
 
 function buildLabel(entry: ApiContactHistoryEntry, user?: ApiUser) {
-  return `${formatDateTime(entry.modifiedAt)} ${fullName(user)} `;
+  return `${formatDateTime(entry.modifiedAt)} ${formatUserName(user)} `;
 }
 
 function mapEntryToTimelineEntries(

@@ -107,6 +107,16 @@ public class PersonController implements PersonApi {
 
   @Override
   @Transactional(readOnly = true)
+  public SearchReferencePersonsResponse searchReferencePersonsByHumanReadableId(
+      String humanReadableId) {
+    return new SearchReferencePersonsResponse(
+        personService.searchReferencePersonsByHumanReadableId(humanReadableId).stream()
+            .map(PersonMapper::mapReferencePersonToApi)
+            .toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
   public SearchReferencePersonsWithPartialKnowledgeFactorsResponse
       searchReferencePersonsWithPartialKnowledgeFactors(
           String firstName, String lastName, LocalDate dateOfBirth) {
@@ -171,6 +181,7 @@ public class PersonController implements PersonApi {
   @Override
   @Transactional(readOnly = true)
   public GetFileStateIdsResponse getPersonFileStateIdsAssociatedWithReferencePerson(UUID id) {
+    System.err.println("!!! getPersonFileStateIdsAssociatedWithReferencePerson id: " + id);
     Person referencePerson =
         personRepository
             .findByExternalIdEqualsAndReferencePersonIsNull(id)

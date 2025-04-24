@@ -342,6 +342,17 @@
           }
         }, {
           "in" : "query",
+          "name" : "procedureLabelsFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "in" : "query",
           "name" : "sortKey",
           "required" : false,
           "schema" : {
@@ -407,6 +418,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns a list of all dental procedures including child data",
         "tags" : [ "Child" ]
       },
       "post" : {
@@ -433,6 +445,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Creates a procedure for a child",
         "tags" : [ "Child" ]
       }
     },
@@ -460,6 +473,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns a list of children including personal data from the central file",
         "tags" : [ "Child" ]
       }
     },
@@ -487,6 +501,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns an examination based on its identifier",
         "tags" : [ "Child" ]
       },
       "put" : {
@@ -516,6 +531,34 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Examination"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates an examination",
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/groups-for-transition/{institutionId}" : {
+      "get" : {
+        "operationId" : "getGroupsForSchoolYearTransition",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "institutionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetGroupsForSchoolYearTransitionResponse"
                 }
               }
             },
@@ -609,6 +652,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Searches and returns children associated with the given institution",
         "tags" : [ "Child" ]
       }
     },
@@ -636,14 +680,111 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns all created groups of an institution",
         "tags" : [ "Child" ]
       }
     },
-    "/children/school-year" : {
+    "/children/school-year-transition/close-children" : {
       "post" : {
-        "operationId" : "closeSchoolYear",
+        "operationId" : "closeChildrenInBulk",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CloseChildrenBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/school-year-transition/close-groups" : {
+      "post" : {
+        "operationId" : "closeGroupsInBulk",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CloseGroupsBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/schools-for-transition" : {
+      "get" : {
+        "operationId" : "getSchoolsForSchoolYearTransition",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SchoolYearTransitionSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "statusFilter",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SchoolYearTransitionStatus"
+          }
+        }, {
+          "in" : "query",
+          "name" : "institutionName",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSchoolYearTransitionResponse"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -674,6 +815,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns child details and dental procedures of child identified by UUID",
         "tags" : [ "Child" ]
       },
       "put" : {
@@ -709,6 +851,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Updates the child related data",
         "tags" : [ "Child" ]
       }
     },
@@ -746,6 +889,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Updates the child's personal data",
         "tags" : [ "Child" ]
       }
     },
@@ -783,6 +927,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Synchronizes personal data of a specific child",
         "tags" : [ "Child" ]
       }
     },
@@ -801,6 +946,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Retrieves a list of procedure labels sorted by ID",
         "tags" : [ "ProcedureLabel" ]
       },
       "post" : {
@@ -827,6 +973,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Creates a new procedure label",
         "tags" : [ "ProcedureLabel" ]
       }
     },
@@ -854,6 +1001,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns a specific procedure label identified by ID",
         "tags" : [ "ProcedureLabel" ]
       },
       "put" : {
@@ -889,6 +1037,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Updates a procedure label",
         "tags" : [ "ProcedureLabel" ]
       }
     },
@@ -2402,6 +2551,13 @@
           "schema" : {
             "$ref" : "#/components/schemas/ProphylaxisType"
           }
+        }, {
+          "in" : "query",
+          "name" : "statusFilter",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ProphylaxisStatus"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -2415,6 +2571,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Returns a filtered and paginated list of prophylaxis sessions",
         "tags" : [ "ProphylaxisSession" ]
       },
       "post" : {
@@ -2441,6 +2598,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Creates a new prophylaxis",
         "tags" : [ "ProphylaxisSession" ]
       }
     },
@@ -2468,6 +2626,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Retrieves a specific prophylaxis session by ID",
         "tags" : [ "ProphylaxisSession" ]
       },
       "put" : {
@@ -2503,6 +2662,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Updates a prophylaxis session",
         "tags" : [ "ProphylaxisSession" ]
       }
     },
@@ -2540,6 +2700,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Changes the status of a prophylaxis session",
         "tags" : [ "ProphylaxisSession" ]
       }
     },
@@ -2577,6 +2738,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Updates an examination of a given prophylaxis session",
         "tags" : [ "ProphylaxisSession" ]
       }
     },
@@ -2614,6 +2776,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Updates the participants of a given prophylaxis session",
         "tags" : [ "ProphylaxisSession" ]
       }
     },
@@ -3571,7 +3734,7 @@
         }
       },
       "Child" : {
-        "required" : [ "dateOfBirth", "firstName", "gender", "groupName", "id", "institution", "lastName", "status", "year" ],
+        "required" : [ "dateOfBirth", "firstName", "gender", "groupName", "id", "institution", "lastName", "procedureLabels", "status", "year" ],
         "type" : "object",
         "properties" : {
           "dateOfBirth" : {
@@ -3596,6 +3759,12 @@
           },
           "lastName" : {
             "type" : "string"
+          },
+          "procedureLabels" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DentalProcedureLabel"
+            }
           },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
@@ -3733,6 +3902,17 @@
           }
         }
       },
+      "ChildName" : {
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          }
+        }
+      },
       "ChildSearchResult" : {
         "required" : [ "dateOfBirth", "firstName", "groupName", "id", "lastName" ],
         "type" : "object",
@@ -3776,6 +3956,35 @@
           "count" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "CloseChildrenBulkRequest" : {
+        "required" : [ "childIds" ],
+        "type" : "object",
+        "properties" : {
+          "childIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "CloseGroupsBulkRequest" : {
+        "required" : [ "groupNames", "institutionId" ],
+        "type" : "object",
+        "properties" : {
+          "groupNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "institutionId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -4901,6 +5110,18 @@
           }
         }
       },
+      "GetGroupsForSchoolYearTransitionResponse" : {
+        "required" : [ "elements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GroupForTransition"
+            }
+          }
+        }
+      },
       "GetInboxProcedureResponse" : {
         "required" : [ "inboxProcedure", "resolvedUsers" ],
         "type" : "object",
@@ -4991,7 +5212,7 @@
         }
       },
       "GetPersonFileStateResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -5037,6 +5258,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -5339,6 +5565,22 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "GetSchoolYearTransitionResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InstitutionForTransition"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "GetTaskByUserResponse" : {
         "required" : [ "resolvedUsers", "tasksByUser" ],
         "type" : "object",
@@ -5402,6 +5644,21 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "GroupForTransition" : {
+        "required" : [ "children", "groupName" ],
+        "type" : "object",
+        "properties" : {
+          "children" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ChildName"
+            }
+          },
+          "groupName" : {
+            "type" : "string"
+          }
+        }
       },
       "HttpMethod" : {
         "type" : "string",
@@ -5611,6 +5868,48 @@
             "format" : "uuid"
           },
           "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InstitutionForTransition" : {
+        "required" : [ "completedCount", "institution", "status", "totalCount" ],
+        "type" : "object",
+        "properties" : {
+          "completedCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "institution" : {
+            "$ref" : "#/components/schemas/InstitutionWithAddress"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/SchoolYearTransitionStatus"
+          },
+          "totalCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "InstitutionWithAddress" : {
+        "required" : [ "city", "id", "name", "street" ],
+        "type" : "object",
+        "properties" : {
+          "city" : {
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "street" : {
             "type" : "string"
           }
         }
@@ -6369,6 +6668,14 @@
       "Salutation" : {
         "type" : "string",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
+      },
+      "SchoolYearTransitionSortKey" : {
+        "type" : "string",
+        "enum" : [ "ID", "NAME", "COMPLETED_COUNT", "STATUS" ]
+      },
+      "SchoolYearTransitionStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "INCOMPLETE" ]
       },
       "ScreeningExaminationResult" : {
         "required" : [ "calculus", "dentitionType", "gingivitis", "orthodonticFindings", "parodontitis", "plaque", "toothDiagnoses" ],

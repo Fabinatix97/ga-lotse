@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { Typography } from "@mui/joy";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import {
   safeSexRegularityOptions,
   stiProtectiveMeasuresOptions,
   vaccineOptions,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
 import { RadioButtonsField } from "@/lib/shared/components/formFields/RadioButtonsField";
 
 export function Prevention() {

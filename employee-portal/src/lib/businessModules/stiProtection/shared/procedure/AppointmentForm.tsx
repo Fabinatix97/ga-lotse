@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DateTimeField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import {
@@ -31,7 +32,6 @@ import {
 } from "@/lib/businessModules/stiProtection/components/RadioSheets";
 import { appointmentOptionsByConcern } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/options";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import {
   validateNonNegativeInteger,
   validateTodayOrFutureDate,

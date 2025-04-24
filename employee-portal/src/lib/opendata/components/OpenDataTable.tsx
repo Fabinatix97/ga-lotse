@@ -7,9 +7,12 @@
 
 import {
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -32,9 +35,6 @@ import {
 } from "@/lib/opendata/hooks/useOpenDataFilterSettings";
 import { useDeleteVersion } from "@/lib/opendata/mutations/opendata";
 import { useGetOpenDocuments } from "@/lib/opendata/queries/opendata";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 export function OpenDataTable() {
@@ -88,7 +88,7 @@ export function OpenDataTable() {
           gap={2}
         >
           <Stack direction="row" flexWrap="wrap" gap="inherit">
-            <FilterButton {...filterSettings.filterButtonProps} />
+            <ToggleFilterButton {...filterSettings.filterButtonProps} />
             <SearchFilter
               tableControl={tableControl}
               searchParamName="searchQuery"

@@ -22,6 +22,7 @@ import { LoadingIndicator } from "../components/LoadingIndicator";
 import { ErrorAlert } from "../errorHandling/ErrorAlert";
 import { RequiresChildren } from "../types/react";
 
+import { acceptLanguageMiddleware } from "./acceptLanguageMiddleware";
 import { clientOnlyMiddleware } from "./clientOnlyMiddleware";
 import { errorInterceptionMiddleware } from "./errorInterceptionMiddleware";
 
@@ -108,7 +109,7 @@ interface ApiProviderProps extends RequiresChildren {
 
 export function ApiProvider(props: ApiProviderProps) {
   return (
-    <ApiConfigurationContext.Provider value={props.configuration}>
+    <ApiConfigurationContext value={props.configuration}>
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary
           fallbackRender={({ error, resetErrorBoundary }) => (
@@ -124,16 +125,21 @@ export function ApiProvider(props: ApiProviderProps) {
           </Suspense>
         </ErrorBoundary>
       </QueryClientProvider>
-    </ApiConfigurationContext.Provider>
+    </ApiConfigurationContext>
   );
 }
 
 export function useApiConfiguration(
   basePathName: keyof ApiConfiguration,
+  acceptLanguage: string,
 ): ConfigurationParameters {
   return {
     basePath: useConfigurationValue(basePathName),
-    middleware: [clientOnlyMiddleware, errorInterceptionMiddleware],
+    middleware: [
+      clientOnlyMiddleware,
+      errorInterceptionMiddleware,
+      acceptLanguageMiddleware(acceptLanguage),
+    ],
   };
 }
 

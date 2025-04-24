@@ -57,10 +57,10 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export type CellStyle = "button" | "icon" | "checkbox";
-export type ColumnTextAlign = "left" | "right";
+type CellStyle = "button" | "icon" | "checkbox";
+type ColumnTextAlign = "left" | "right";
 
-export interface DataTableProps<TData> {
+interface DataTableProps<TData> {
   data: TableOptions<TData>["data"];
   columns: TableOptions<TData>["columns"];
   initialColumnVisibility?: VisibilityState;

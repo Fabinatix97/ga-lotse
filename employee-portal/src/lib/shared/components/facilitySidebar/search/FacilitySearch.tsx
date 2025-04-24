@@ -4,10 +4,10 @@
  */
 
 import type { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import { useSearchReferenceFacilitiesQuery } from "@eshg/lib-employee-portal";
 import { Button } from "@mui/joy";
 import { ReactNode, useEffect, useState } from "react";
 
-import { useSearchReferenceFacilitiesQuery } from "@/lib/baseModule/api/queries/facility";
 import { LegacyFacilitySearchForm } from "@/lib/shared/components/facilitySidebar/search/LegacyFacilitySearchForm";
 import { LegacyFacilitySearchResults } from "@/lib/shared/components/facilitySidebar/search/LegacyFacilitySearchResults";
 import { SearchFooter } from "@/lib/shared/components/facilitySidebar/search/SearchFooter";

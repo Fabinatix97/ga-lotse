@@ -57,7 +57,9 @@ export function Sidebar({
         sx={{
           padding: SIDEBAR_PADDING,
           flex: "1",
-          overflow: "hidden",
+          ["@media (min-height: 400px)"]: {
+            overflow: "hidden",
+          },
         }}
       >
         <ModalClose

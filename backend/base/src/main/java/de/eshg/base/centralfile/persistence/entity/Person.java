@@ -16,6 +16,8 @@ import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -119,6 +121,12 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
       mappedBy = BundIdPersonLink_.REFERENCE_PERSON)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private BundIdPersonLink bundIdPersonLink;
+
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  @Column(unique = true)
+  @Min(0L)
+  @Max((1L << 40L) - 1L)
+  private Long humanReadableId;
 
   public Instant getCreatedAt() {
     return createdAt;
@@ -401,5 +409,13 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
   @JsonIgnore
   public boolean isActive() {
     return deleteAt == null;
+  }
+
+  public Long getHumanReadableId() {
+    return humanReadableId;
+  }
+
+  public void setHumanReadableId(long humanReadableId) {
+    this.humanReadableId = humanReadableId;
   }
 }

@@ -3,17 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  YesOrNoFieldData,
+  mapBoolToYesOrNo,
+  mapYesOrNoToBool,
+} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiRapidTestData,
   ApiRapidTestExamination,
 } from "@eshg/sti-protection-api";
-
-import {
-  YesOrNoFieldData,
-  mapBoolToYesOrNo,
-  mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 
 export interface RapidTestData {
   number?: string;

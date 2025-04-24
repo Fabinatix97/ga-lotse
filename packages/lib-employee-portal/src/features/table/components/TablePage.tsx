@@ -40,7 +40,7 @@ const SearchStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export interface TablePageProps extends RequiresChildren {
+interface TablePageProps extends RequiresChildren {
   "data-testid"?: string;
   "aria-label"?: string;
   controls?: ReactNode;

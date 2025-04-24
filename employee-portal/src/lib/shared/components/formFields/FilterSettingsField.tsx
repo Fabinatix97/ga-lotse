@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useField } from "formik";
-
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import {
+  FilterDefinition,
+  FilterSettings,
+  FilterValue,
   UseFilterSettings,
   useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
+} from "@eshg/lib-employee-portal";
+import { useField } from "formik";
+
 import {
   UseFilterTemplateProps,
   useFilterTemplate,

@@ -90,6 +90,20 @@ public interface PersonApi {
           @RequestParam(name = "dateOfBirth")
           LocalDate dateOfBirth);
 
+  @GetExchange("/by-human-readable-id")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+Search reference persons by humanReadableId.
+Includes persons created from external sources.
+Caution: The returned ids of the reference persons must not be stored.
+""")
+  SearchReferencePersonsResponse searchReferencePersonsByHumanReadableId(
+      @Parameter(description = "The human readable ID of the Person which shall be searched for.")
+          @RequestParam(name = "humanReadableId")
+          String humanReadableId);
+
   @GetExchange("/partial")
   @ApiResponse(responseCode = "200")
   @Operation(

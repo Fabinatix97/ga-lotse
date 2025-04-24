@@ -8,11 +8,16 @@
 import {
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterTemplate,
   ManualTableSortingProps,
   Pagination,
   PaginationProps,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  useFilterSettings,
 } from "@eshg/lib-employee-portal";
 import { useMemo } from "react";
 import { isDefined } from "remeda";
@@ -27,11 +32,6 @@ import { useAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutat
 import { useDeleteFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteFilterTemplate";
 import { useGetFilterTemplateFilters } from "@/lib/businessModules/statistics/api/mutations/useGetFilterTemplateFilters";
 import { evaluationColumns } from "@/lib/businessModules/statistics/components/evaluations/details/table/columns";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterTemplate } from "@/lib/shared/components/filterSettings/FilterTemplates";
-import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useFilterTemplate } from "@/lib/shared/components/filterSettings/useFilterTemplate";
 
 export interface EvaluationDetailsTableProps {
@@ -92,7 +92,7 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
         />
       }
       filterSettings={

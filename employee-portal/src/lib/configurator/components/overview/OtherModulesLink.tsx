@@ -15,17 +15,18 @@ import {
   configuratorNameMapping,
 } from "@/lib/configurator/api/models/configuratorModuleName";
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
+import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
 import { routes } from "@/lib/configurator/shared/routes";
 
 export function OtherModulesLink(props: {
   modules: ConfiguratorStatusOverview;
-  status: "error" | "warning";
+  status: Omit<ConfiguratorStatus, "COMPLETE">;
 }) {
   return (
     <Stack gap={1}>
       {Object.keys(props.modules).map((tabKey) => (
         <Stack key={tabKey} gap={2} flexDirection="row">
-          {props.status === "error" ? (
+          {props.status === "INCOMPLETE" ? (
             <ErrorOutlineOutlined color="warning" />
           ) : (
             <CheckCircleOutlineOutlined color="neutral" />

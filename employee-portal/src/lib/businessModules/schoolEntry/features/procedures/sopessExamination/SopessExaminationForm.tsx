@@ -5,7 +5,11 @@
 
 "use client";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import {
+  FormFooter,
+  FormStack,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
@@ -23,7 +27,6 @@ import {
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
-import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { ArticulationForm } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/ArticulationForm";
 import { CountingForm } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/CountingForm";
 import { HandednessForm } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/HandednessForm";
@@ -32,7 +35,6 @@ import { SelectiveAttentionForm } from "@/lib/businessModules/schoolEntry/featur
 import { VisuoMotorSkillsForm } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/VisuoMotorSkillsForm";
 import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { FormStack } from "@/lib/shared/components/form/FormStack";
 import { isInteger } from "@/lib/shared/helpers/guards";
 
 import { BodyCoordinationForm } from "./BodyCoordinationForm";

@@ -24,7 +24,7 @@ import { DetailsRow } from "@/components/detailsSection/DetailsRow";
 import { DetailsItem } from "@/components/detailsSection/items/DetailsItem";
 import { ExternalLinkDetailsItem } from "@/components/detailsSection/items/ExternalLinkDetailsItem";
 
-export interface CentralFilePerson {
+interface CentralFilePerson {
   readonly firstName: string;
   readonly lastName: string;
   readonly dateOfBirth: Date;
@@ -39,7 +39,7 @@ export interface CentralFilePerson {
   readonly contactAddress?: BaseAddress;
 }
 
-export interface CentralFilePersonDetailsProps {
+interface CentralFilePersonDetailsProps {
   readonly person: CentralFilePerson;
   readonly columnSx?: SxProps;
   readonly showAge?: boolean;

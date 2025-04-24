@@ -3,11 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiContactCategory } from "@eshg/base-api";
 import {
+  ActiveFilter,
+  FilterSettingsContent,
+  FilterSettingsSheet,
+  FilterSettingsSheetProps,
   OverlayBoundary,
   ProcedureLabel,
   ProcedureLabelAutocomplete,
+  ResettableSingleSelect,
   SchoolYearAutocomplete,
+  SearchInstitutionFilter,
+  SetDictionaryFilterFn,
 } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
@@ -22,15 +30,6 @@ import { isEmpty } from "remeda";
 import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
-import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
-import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import {
-  FilterSettingsSheet,
-  FilterSettingsSheetProps,
-} from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { SearchInstitutionFilter } from "@/lib/shared/components/filterSettings/SearchInstitutionFilter";
-import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 
 export type ProcedureFilters = Pick<
   GetProceduresRequest,
@@ -51,6 +50,10 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   labelsFilter: "Kennungen",
   isInvitationSentFilter: "Einladung versandt",
 };
+
+export const SCHOOL_CONTACT = new Set<ApiContactCategory>([
+  ApiContactCategory.School,
+]);
 
 function getFilterLabel(filterValue: ActiveFilter<keyof ProcedureFilters>) {
   return FILTER_NAMES[filterValue.key];
@@ -181,11 +184,12 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
           <FormControl>
             <FormLabel>Schule</FormLabel>
             <SearchInstitutionFilter
+              placeholder="Schule suchen"
               institutionId={props.filterFormValues.schoolIdFilter}
+              categories={SCHOOL_CONTACT}
               onChange={(schoolId) =>
                 props.setFilterFormValue("schoolIdFilter", schoolId)
               }
-              placeholder="Schule suchen"
             />
           </FormControl>
           <FormControl>

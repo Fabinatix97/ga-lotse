@@ -42,9 +42,9 @@ export function RadioAccordionGroupField({
   //  (so you don't have to pass the group name manually)
   return (
     <RadioGroupField {...props}>
-      <RadioAccordionContext.Provider value={{ groupName: props.name }}>
+      <RadioAccordionContext value={{ groupName: props.name }}>
         <Stack gap={2}>{children}</Stack>
-      </RadioAccordionContext.Provider>
+      </RadioAccordionContext>
     </RadioGroupField>
   );
 }

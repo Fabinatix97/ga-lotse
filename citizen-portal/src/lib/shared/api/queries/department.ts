@@ -4,6 +4,7 @@
  */
 
 import { DepartmentApi } from "@eshg/base-api";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import {
   queryOptions,
   useQuery,
@@ -21,6 +22,7 @@ export function useGetDepartmentInfo() {
 
 export function getDepartmentInfoQuery(departmentApi: DepartmentApi) {
   return queryOptions({
+    ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: departmentApiQueryKey(["getDepartmentInfo"]),
     queryFn: () => departmentApi.getDepartmentInfo(),
     select: mapDepartmentInfo,

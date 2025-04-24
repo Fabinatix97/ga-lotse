@@ -22,11 +22,13 @@ export {
   isDomesticAddress,
   isPostboxAddress,
 } from "./api/models/address";
+export { useGetUsersByGroupQuery } from "./api/queries/users";
+
 export {
   createEmptyAddress,
   mapApiAddressToForm,
   mapBaseAddressToApi,
-} from "@/components/address/helpers";
+} from "./components/address/helpers";
 export { MultiFormButtonBar } from "./components/form/MultiFormButtonBar";
 export { CountryField } from "./components/formFields/CountryField";
 export {
@@ -36,17 +38,20 @@ export {
   OptionalBillingAddressForm,
   OptionalContactAddressForm,
 } from "./components/address/addressForms";
-
+export { ResettableSingleSelect } from "./components/select/ResettableSingleSelect";
 export { MainContentLayout } from "./components/layout/MainContentLayout";
 export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
+export {
+  CheckboxField,
+  type CheckboxFieldProps,
+} from "./components/formFields/CheckboxField";
+export { InformationSheet } from "./components/content/InformationSheet";
 
 export { BottomToolbar } from "./components/toolbar/BottomToolbar";
 export { Toolbar, type ToolbarProps } from "./components/toolbar/Toolbar";
+export { ToolbarBackButton } from "./components/toolbar/ToolbarBackButton";
 export { type TabNavigationItem } from "./components/tabNavigationToolbar/TabNavigation";
-export {
-  TabNavigationToolbar,
-  TabNavigationBackButton,
-} from "./components/tabNavigationToolbar/TabNavigationToolbar";
+export { TabNavigationToolbar } from "./components/tabNavigationToolbar/TabNavigationToolbar";
 export {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
@@ -68,11 +73,12 @@ export {
 export { ExternalLinkDetailsItem } from "./components/detailsSection/items/ExternalLinkDetailsItem";
 export { DetailsSectionHeader } from "./components/detailsSection/DetailsSectionHeader";
 export { ResponsiveDivider } from "./components/ResponsiveDivider";
-export { BaseAddressDetailsColumn } from "@/components/address/BaseAddressDetailsColumn";
+export { BaseAddressDetailsColumn } from "./components/address/BaseAddressDetailsColumn";
 export { NoEntriesMessage } from "./components/NoEntriesMessage";
 export { IconButton } from "./components/buttons/IconButton";
 export { EditButton } from "./components/buttons/EditButton";
 export { ButtonBar } from "./components/buttons/ButtonBar";
+export { OpenModalButton } from "./components/buttons/OpenModalButton";
 export { SelectableCard } from "./components/cards/SelectableCard";
 export { NoSearchResults } from "./components/NoSearchResults";
 export {
@@ -84,6 +90,32 @@ export {
   type FileFieldProps,
 } from "./components/formFields/file/FileField";
 export { DeletableFileField } from "./components/formFields/file/DeletableFileField";
+export { DateTimeField } from "./components/formFields/DateTimeField";
+export { UserField, type NamedUser } from "./components/formFields/UserField";
+export { ConfirmationDialog } from "./components/confirmationDialog/ConfirmationDialog";
+export { FormSheet } from "./components/form/FormSheet";
+export {
+  ToggleExpandButton,
+  type ToggleExpandButtonProps,
+} from "./components/buttons/ToggleExpandButton";
+export {
+  PersonSearchForm,
+  usePersonSearch,
+  type PersonSearchFormValues,
+  type PersonSearchParams,
+} from "./components/personSearch/PersonSearchForm";
+export { TogglePersonSearchButton } from "./components/personSearch/TogglePersonSearchButton";
+export {
+  ActionsMenu,
+  type ActionsItem,
+} from "./components/buttons/ActionsMenu";
+export { FormDialog } from "./components/form/FormDialog";
+export { FormStack } from "./components/form/FormStack";
+export {
+  SearchableGroups,
+  type SearchableGroup,
+  type SearchableGroupItem,
+} from "./components/searchableGroups/SearchableGroups";
 
 export { PROCEDURE_STATUS_COLORS } from "./config/procedures";
 
@@ -107,7 +139,7 @@ export {
   useHasUserRoleCheck,
   useHasUserRolesCheck,
 } from "./features/auth/hooks/useAccessControl";
-export { CentralFilePersonDetails } from "@/components/centralFile/CentralFilePersonDetails";
+export { CentralFilePersonDetails } from "./components/centralFile/CentralFilePersonDetails";
 
 export { ImportDataForm } from "./features/import/components/ImportDataForm";
 export {
@@ -142,7 +174,7 @@ export {
   type UseTableControlResult,
 } from "./features/table/hooks/useTableControl";
 export { useTableSorting } from "./features/table/hooks/useTableSorting";
-export { getSortKey, getSortDirection } from "@/features/table/utils/sorting";
+export { getSortKey, getSortDirection } from "./features/table/utils/sorting";
 export type {
   TableSortingProps,
   ManualTableSortingProps,
@@ -183,22 +215,85 @@ export { useSidenav } from "./features/drawer/hooks/useSidenav";
 export {
   ProcedureLabelFormFields,
   type ProcedureLabelValues,
-} from "@/features/procedureLabels/components/ProcedureLabelFormFields";
-export { ProcedureLabelsPage } from "@/features/procedureLabels/components/ProcedureLabelsPage";
-export { ProcedureLabelAutocomplete } from "@/features/procedureLabels/components/ProcedureLabelAutocomplete";
-export { ProcedureLabelSelection } from "@/features/procedureLabels/components/ProcedureLabelSelection";
+} from "./features/procedureLabels/components/ProcedureLabelFormFields";
+export { ProcedureLabelsPage } from "./features/procedureLabels/components/ProcedureLabelsPage";
+export { ProcedureLabelAutocomplete } from "./features/procedureLabels/components/ProcedureLabelAutocomplete";
+export { ProcedureLabelSelection } from "./features/procedureLabels/components/ProcedureLabelSelection";
+
+export {
+  ToggleFilterButton,
+  type ToggleFilterButtonProps,
+} from "./features/filters/components/filterSettings/ToggleFilterButton";
+export {
+  ActiveFilter,
+  type ActiveFilterProps,
+} from "./features/filters/components/filterSettings/ActiveFilter";
+export { FilterSettings } from "./features/filters/components/filterSettings/FilterSettings";
+export {
+  FilterSettingsContent,
+  type FilterSettingsContentProps,
+} from "./features/filters/components/filterSettings/FilterSettingsContent";
+export {
+  FilterSettingsSheet,
+  type FilterSettingsSheetProps,
+} from "./features/filters/components/filterSettings/FilterSettingsSheet";
+export type {
+  FilterTemplate,
+  FilterTemplatesProps,
+} from "./features/filters/components/filterSettings/FilterTemplates";
+export { defaultDraftValueDateComparisonFilter } from "./features/filters/components/filterFields/DateComparisonFilter";
+export { EnumFilter } from "./features/filters/components/filterFields/EnumFilter";
+export { NumberFilter } from "./features/filters/components/filterFields/NumberFilter";
+export { SearchInstitutionFilter } from "./features/filters/components/filterFields/SearchInstitutionFilter";
+export {
+  useFilterSettings,
+  type UseFilterSettings,
+  type UseFilterSettingsParams,
+  type FilterSettingsStateProvider,
+} from "./features/filters/hooks/useFilterSettings";
+export {
+  useFilterDictionary,
+  type SetDictionaryFilterFn,
+} from "./features/filters/hooks/useFilterDictionary";
+export type { FilterDefinition } from "./features/filters/types/FilterDefinition";
+export type { FilterValue } from "./features/filters/types/FilterValue";
+export type { DateComparisonOperator } from "./features/filters/types/DateComparisonFilter";
+export type { DateSpanFilterValue } from "./features/filters/types/DateSpanFilter";
+export type {
+  EnumFilterValue,
+  EnumFilterDefinition,
+  EnumFilterOption,
+} from "./features/filters/types/EnumFilter";
+export {
+  type NumberFilterDefinition,
+  type NumberFilterValue,
+  type NumberFilterValueComparison,
+  type NumberFilterOnlyNullComparison,
+  type NumberFilterRangeComparison,
+  NumberFilterComparisonMode,
+  NumberFilterNullInclusion,
+  NumberFilterNumericComparison,
+} from "./features/filters/types/NumberFilter";
+export type {
+  TextFilterDefinition,
+  TextFilterValue,
+} from "./features/filters/types/TextFilter";
+export { getDefinitionByValue } from "./features/filters/utils/getDefinitionByValue";
+
+export { gdprRoutes } from "./features/gdpr/config/gdprRoutes";
+export { useGetGdprValidationBannerQuery } from "./features/gdpr/api/queries";
+export { useGdprValidationTasksAlert } from "./features/gdpr/hooks/useGdprValidationTasksAlert";
+
 export {
   TextareaField,
   type TextareaFieldProps,
-} from "./components/form/TextareaField";
+} from "./components/formFields/TextareaField";
 export { FormButtonBar } from "./components/form/FormButtonBar";
+export { FormFooter } from "./components/form/FormFooter";
 export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
 export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
 
 export { ChipWithTooltip } from "./components/chip/ChipWithTooltip";
-
-export { SyncBarrier } from "./features/sync/components/SyncBarrier";
-export { useSyncBarrier } from "./features/sync/hooks/useSyncBarrier";
 
 export { CONTACT_CATEGORY_NAMES } from "./features/contacts/translations";
 export {
@@ -208,13 +303,12 @@ export {
 } from "./features/contacts/api/models/Contact";
 export {
   useSearchContactsQuery,
-  useGetOptionalContactQuery,
+  useGetContactQuery,
 } from "./features/contacts/api/queries";
 export { SearchContactField } from "./features/contacts/components/SearchContactField";
 export { SelectContactField } from "./features/contacts/components/SelectContactField";
 export { SelectMultipleContactsField } from "./features/contacts/components/SelectMultipleContactsField";
 export { formatInstitutionNameWithCategoryShort } from "./features/contacts/utils/formatters";
-export { mapContactToSelectOption } from "./features/contacts/utils/mappers";
 
 export type {
   PersonFormValues,
@@ -225,8 +319,8 @@ export {
   type DefaultPersonFormValues,
   DefaultPersonForm,
   defaultPersonFormValues,
-} from "@/features/persons/components/form/DefaultPersonForm";
-export { PersonSidebarForm } from "@/features/persons/components/form/PersonSidebarForm";
+} from "./features/persons/components/form/DefaultPersonForm";
+export { PersonSidebarForm } from "./features/persons/components/form/PersonSidebarForm";
 export {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,
@@ -240,10 +334,20 @@ export { PersonSearchResults } from "./features/persons/components/search/Person
 export {
   PersonSidebar,
   type PersonSidebarProps,
-} from "@/features/persons/components/sidebar/PersonSidebar";
-export { PersonDetailsSidebar } from "@/features/persons/components/sidebar/PersonDetailsSidebar";
-export { useEditReferencePersonSidebar } from "@/features/persons/components/sidebar/EditReferencePersonSidebar";
-export { useSearchReferencePersonsQuery } from "./features/persons/api/queries";
+} from "./features/persons/components/sidebar/PersonSidebar";
+export { PersonDetailsSidebar } from "./features/persons/components/sidebar/PersonDetailsSidebar";
+export { SyncBarrier } from "./features/persons/components/syncBarrier/SyncBarrier";
+export { useSyncBarrier } from "./features/persons/hooks/useSyncBarrier";
+export { CentralFileSyncForm } from "./features/persons/components/personSync/CentralFileSyncForm";
+export { BasePersonDiffForm } from "./features/persons/components/personSync/sections/BasePersonDiffForm";
+export { BaseFacilityDiffForm } from "./features/persons/components/personSync/sections/BaseFacilityDiffForm";
+export { useEditReferencePersonSidebar } from "./features/persons/components/sidebar/EditReferencePersonSidebar";
+export {
+  useSearchReferencePersonsQuery,
+  useGetPersonFileStateDiff,
+  useSearchReferenceFacilitiesQuery,
+  useGetFacilityFileStateDiff,
+} from "./features/persons/api/queries";
 export {
   mapReferencePersonToForm,
   mapToPersonUpdateRequest,
@@ -276,5 +380,7 @@ export {
   formatList,
   formatSchoolYear,
   createCountFormatter,
+  formatDurationFromNowUntil,
 } from "./utils/formatters";
 export { mapToSelectOption } from "./utils/mappers";
+export { getDateFnsLocale } from "./utils/dateTime";

@@ -4,6 +4,7 @@
  */
 
 import {
+  ActionsMenu,
   CONTACT_CATEGORY_NAMES,
   Contact,
   isInstitutionContact,
@@ -21,7 +22,6 @@ import {
   getContactAddressLine,
 } from "@/lib/baseModule/components/contacts/helpers";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper = createColumnHelper<Contact>();
 

@@ -6,6 +6,7 @@
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
+  gdprRoutes,
   hasUserRole,
   noCheck,
 } from "@eshg/lib-employee-portal";
@@ -45,7 +46,7 @@ const sideNavigationItems: SideNavigationItem[] = [
   {
     type: "SideNavigationLinkItem",
     name: "DSGVO",
-    href: routes.gdpr.index,
+    href: gdprRoutes.index,
     decorator: <GppGoodOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseGdprProcedureRead),
   },

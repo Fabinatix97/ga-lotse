@@ -7,6 +7,10 @@ import {
   MonthAndYear,
   mapMonthAndYear,
 } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import {
+  mapBoolToYesOrNo,
+  mapYesOrNoToBool,
+} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString, isInteger } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -22,11 +26,6 @@ import {
   ApiSexWorkMedicalHistory,
   ApiSexWorkRiskContact,
 } from "@eshg/sti-protection-api";
-
-import {
-  mapBoolToYesOrNo,
-  mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/components/shared/formFields/YesOrNoWithFollowUp";
 
 import {
   ExaminationData,

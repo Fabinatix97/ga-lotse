@@ -8,6 +8,7 @@ import {
   StickyToolbarLayout,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import ProcedureIcon from "@mui/icons-material/TextSnippetOutlined";
 import { ReactNode } from "react";
@@ -34,9 +35,11 @@ export default function PullChangesFlowLayout({
     <StickyToolbarLayout
       toolbar={
         <TabNavigationToolbar
-          items={navItems}
-          routeBack={centralFilePlaygroundRoutes.index}
           header={"Max Mustermann"}
+          items={navItems}
+          backButton={
+            <ToolbarBackButton href={centralFilePlaygroundRoutes.index} />
+          }
         />
       }
     >

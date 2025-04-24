@@ -4,7 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { Divider, Stack } from "@mui/joy";
@@ -20,7 +20,6 @@ import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlo
 import { AppointmentLocationSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentLocationSelection";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 const DEFAULT_PARALLEL_EXAMINATIONS = 1;

@@ -8,7 +8,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Box, Sheet, Stack, Theme, styled } from "@mui/joy";
 import { ReactElement, ReactNode } from "react";
 
-export const StyledSheet = styled(Sheet)(({ theme }) => ({
+const StyledSheet = styled(Sheet)(({ theme }) => ({
   flex: 1,
   minHeight: "15rem",
   display: "flex",
@@ -17,7 +17,7 @@ export const StyledSheet = styled(Sheet)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export interface TableSheetProps extends RequiresChildren {
+interface TableSheetProps extends RequiresChildren {
   loading?: boolean;
   hideTable?: boolean;
   title?: ReactNode;

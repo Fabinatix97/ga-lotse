@@ -8,17 +8,26 @@ package de.eshg.dental;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.ChildDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
+import de.eshg.dental.api.CloseChildrenBulkRequest;
+import de.eshg.dental.api.CloseGroupsBulkRequest;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.CreateChildResponse;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.GetChildrenResponse;
 import de.eshg.dental.api.GetChildrenWithDetailsResponse;
+import de.eshg.dental.api.GetGroupsForSchoolYearTransitionResponse;
 import de.eshg.dental.api.GetInstitutionGroupsResponse;
+import de.eshg.dental.api.GetSchoolYearTransitionResponse;
+import de.eshg.dental.api.GroupForTransitionDto;
+import de.eshg.dental.api.SchoolYearTransitionFilterParameters;
+import de.eshg.dental.api.SchoolYearTransitionPaginationAndSortParameters;
+import de.eshg.dental.api.SchoolYearTransitionSearchParameters;
 import de.eshg.dental.api.SearchChildrenResponse;
 import de.eshg.dental.api.SyncPersonRequest;
 import de.eshg.dental.api.UpdateChildRequest;
@@ -26,6 +35,7 @@ import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
+import de.eshg.dental.business.model.PagedInstitutionsForTransition;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
@@ -83,6 +93,7 @@ public class ChildController {
 
   @PostMapping
   @Transactional
+  @Operation(summary = "Creates a procedure for a child")
   public CreateChildResponse createChild(@Valid @RequestBody CreateChildRequest request) {
     validator.validateInstitution(request.institutionId());
 
@@ -94,6 +105,7 @@ public class ChildController {
 
   @GetMapping
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns a list of all dental procedures including child data")
   public GetChildrenResponse getChildren(
       @InlineParameterObject @ParameterObject @Valid ChildFilterParameters filterParameters,
       @InlineParameterObject @ParameterObject @Valid
@@ -111,6 +123,7 @@ public class ChildController {
 
   @GetMapping("/by-person-id")
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns a list of children including personal data from the central file")
   public GetChildrenWithDetailsResponse getChildrenByPerson(
       @RequestParam(name = "personId") UUID personId) {
     List<ChildDto> children =
@@ -120,6 +133,7 @@ public class ChildController {
 
   @GetMapping("/{childId}")
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns child details and dental procedures of child identified by UUID")
   public ChildDetailsDto getChild(@PathVariable("childId") UUID childId) {
     Child child = childService.findByExternalIdOrThrow(childId);
     return getChildDetails(child);
@@ -127,6 +141,7 @@ public class ChildController {
 
   @PutMapping("/{childId}/person")
   @Transactional
+  @Operation(summary = "Updates the child's personal data")
   public ChildDetailsDto updateChildPerson(
       @PathVariable("childId") UUID childId, @Valid @RequestBody UpdatePersonRequest request) {
     Child child = childService.findByExternalIdForUpdate(childId);
@@ -141,6 +156,7 @@ public class ChildController {
 
   @PutMapping("/{childId}/sync-person")
   @Transactional
+  @Operation(summary = "Synchronizes personal data of a specific child")
   public ChildDetailsDto syncPersonData(
       @PathVariable("childId") UUID childId, @Valid @RequestBody SyncPersonRequest request) {
     Child updatedChild = childService.syncPersonData(childId, request);
@@ -153,6 +169,7 @@ public class ChildController {
 
   @PutMapping("/{childId}")
   @Transactional
+  @Operation(summary = "Updates the child related data")
   public ChildDetailsDto updateChild(
       @PathVariable("childId") UUID childId, @Valid @RequestBody UpdateChildRequest request) {
     Child child = childService.findByExternalIdForUpdate(childId);
@@ -183,6 +200,7 @@ public class ChildController {
 
   @GetMapping("/examination/{examinationId}")
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns an examination based on its identifier")
   public ExaminationDto getExamination(@PathVariable("examinationId") UUID examinationId) {
     Examination examination = examinationService.findExamination(examinationId);
     return ExaminationMapper.mapToDto(examination);
@@ -190,6 +208,7 @@ public class ChildController {
 
   @PutMapping("/examination/{examinationId}")
   @Transactional
+  @Operation(summary = "Updates an examination")
   public ExaminationDto updateExamination(
       @PathVariable("examinationId") UUID examinationId,
       @Valid @RequestBody UpdateExaminationRequest request) {
@@ -219,6 +238,7 @@ public class ChildController {
 
   @GetMapping("/institutions/{institutionId}/groups")
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns all created groups of an institution")
   public GetInstitutionGroupsResponse getInstitutionGroups(
       @PathVariable("institutionId") UUID institutionId) {
     return new GetInstitutionGroupsResponse(childService.getInstitutionGroups(institutionId));
@@ -226,6 +246,7 @@ public class ChildController {
 
   @GetMapping("/institutions/{institutionId}/children")
   @Transactional(readOnly = true)
+  @Operation(summary = "Searches and returns children associated with the given institution")
   public SearchChildrenResponse searchChildren(
       @PathVariable("institutionId") UUID institutionId,
       @RequestParam(name = "searchString") @NotBlank String searchString) {
@@ -234,9 +255,43 @@ public class ChildController {
     return new SearchChildrenResponse(childService.searchChildren(institutionId, searchString));
   }
 
-  @PostMapping("/school-year")
+  @PostMapping("/school-year-transition/close-groups")
   @Transactional
-  public void closeSchoolYear() {
-    childService.closeSchoolYear();
+  public void closeGroupsInBulk(@Valid @RequestBody CloseGroupsBulkRequest request) {
+    childService.closeGroupsInBulk(request.institutionId(), request.groupNames());
+  }
+
+  @PostMapping("/school-year-transition/close-children")
+  @Transactional
+  public void closeChildrenInBulk(@Valid @RequestBody CloseChildrenBulkRequest request) {
+    childService.closeChildrenInBulk(request.childIds());
+  }
+
+  @GetMapping("/schools-for-transition")
+  @Transactional(readOnly = true)
+  public GetSchoolYearTransitionResponse getSchoolsForSchoolYearTransition(
+      @InlineParameterObject @ParameterObject @Valid
+          SchoolYearTransitionPaginationAndSortParameters paginationAndSortParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          SchoolYearTransitionFilterParameters filterParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          SchoolYearTransitionSearchParameters searchParameters) {
+    PagedInstitutionsForTransition pagedInstitutions =
+        childService.searchInstitutionsForSchoolYearTransition(
+            InstitutionContactCategoryDto.SCHOOL,
+            paginationAndSortParameters,
+            filterParameters,
+            searchParameters);
+    return new GetSchoolYearTransitionResponse(
+        pagedInstitutions.institutions(), pagedInstitutions.totalNumberOfInstitutions());
+  }
+
+  @GetMapping("/groups-for-transition/{institutionId}")
+  @Transactional(readOnly = true)
+  public GetGroupsForSchoolYearTransitionResponse getGroupsForSchoolYearTransition(
+      @PathVariable("institutionId") UUID institutionId) {
+    List<GroupForTransitionDto> groups =
+        childService.getGroupsForSchoolYearTransition(institutionId);
+    return new GetGroupsForSchoolYearTransitionResponse(groups);
   }
 }

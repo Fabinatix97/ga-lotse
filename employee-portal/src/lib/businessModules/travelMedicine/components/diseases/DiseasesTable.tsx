@@ -15,14 +15,21 @@ import {
 import { ApiDisease } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
+import { isEmpty } from "remeda";
 
+import { useDiseaseApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useDeleteDisease } from "@/lib/businessModules/travelMedicine/api/mutations/diseaseApi";
-import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
+import {
+  getAllDiseasesInUse,
+  useGetAllDiseasesQuery,
+} from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
 import { useDiseaseSidebar } from "@/lib/businessModules/travelMedicine/components/diseases/DiseaseSidebar";
 import { columns } from "@/lib/businessModules/travelMedicine/components/diseases/columns";
 
 export function DiseasesTable() {
+  const queryClient = useQueryClient();
+  const diseaseApi = useDiseaseApi();
   const [{ data: allDiseases }] = useSuspenseQueries({
     queries: [useGetAllDiseasesQuery()],
   });
@@ -44,38 +51,52 @@ export function DiseasesTable() {
     await deleteDisease.mutateAsync(entryId);
   }
 
-  function deleteDiseaseWithConfirmation(entryId: string, diseaseName: string) {
-    openConfirmationDialog({
-      title: `${diseaseName} löschen?`,
-      description: `Diese Aktion kann nicht rückgängig gemacht werden.`,
-      confirmLabel: "Löschen",
-      cancelLabel: "Abbrechen",
-      onConfirm: () => deleteEntry(entryId),
-      color: "danger",
-    });
+  async function deleteDiseaseWithConfirmation(
+    entryId: string,
+    diseaseName: string,
+  ) {
+    const result = await getAllDiseasesInUse(queryClient, diseaseApi, entryId);
+
+    if (isEmpty(result.vaccineNames)) {
+      openConfirmationDialog({
+        title: `${diseaseName} löschen?`,
+        description: `Diese Aktion kann nicht rückgängig gemacht werden.`,
+        confirmLabel: "Löschen",
+        cancelLabel: "Abbrechen",
+        onConfirm: () => deleteEntry(entryId),
+        color: "danger",
+      });
+    } else {
+      openConfirmationDialog({
+        title: `${diseaseName} kann nicht gelöscht werden`,
+        description: `Die Krankheit wird noch in folgenden Impfstoffen referenziert: ${result.vaccineNames.join(", ")}`,
+        confirmLabel: "Verstanden",
+        hideCancelButton: true,
+        color: "danger",
+        onConfirm: () => undefined,
+      });
+    }
   }
 
   return (
-    <>
-      <TablePage
-        data-testid="diseases"
-        controls={
-          <ButtonBar
-            right={
-              <Button startDecorator={<AddIcon />} onClick={() => newEntry()}>
-                Krankheit hinzufügen
-              </Button>
-            }
-          />
-        }
-      >
-        <TableSheet>
-          <DataTable
-            data={allDiseases}
-            columns={columns(deleteDiseaseWithConfirmation, editEntry)}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+    <TablePage
+      data-testid="diseases"
+      controls={
+        <ButtonBar
+          right={
+            <Button startDecorator={<AddIcon />} onClick={() => newEntry()}>
+              Krankheit hinzufügen
+            </Button>
+          }
+        />
+      }
+    >
+      <TableSheet>
+        <DataTable
+          data={allDiseases}
+          columns={columns(deleteDiseaseWithConfirmation, editEntry)}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

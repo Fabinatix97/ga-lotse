@@ -15,7 +15,7 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import {
   ApiDisease,
   ApiInventoryVaccineWithoutRmbiVaccine,
@@ -158,6 +158,7 @@ function inventoryVaccinesSelect(loadings: Readonly<VaccineFormLoadings>) {
 }
 
 export function VaccineForm(props: Readonly<VaccineFormProps>) {
+  const { validateLength } = useValidators();
   return (
     <Formik
       initialValues={props.initialValues}

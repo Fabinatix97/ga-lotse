@@ -7,6 +7,7 @@ package de.eshg.travelmedicine.disease;
 
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.disease.api.DiseaseDto;
+import de.eshg.travelmedicine.disease.api.GetDiseaseInUseResponse;
 import de.eshg.travelmedicine.disease.api.GetDiseasesResponse;
 import de.eshg.travelmedicine.disease.api.PostPutDiseaseRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiseaseController {
 
   public static final String BASE_URL = BaseUrls.TravelMedicine.DISEASE_CONTROLLER;
+  public static final String IN_USE_URL = "/in-use";
 
   private final DiseaseService diseaseService;
 
@@ -51,7 +53,7 @@ public class DiseaseController {
     return diseaseService.getDisease(id);
   }
 
-  @PostMapping()
+  @PostMapping
   @Operation(summary = "Adds a new Disease")
   @Transactional
   public DiseaseDto postDisease(@Valid @RequestBody PostPutDiseaseRequest request) {
@@ -71,5 +73,12 @@ public class DiseaseController {
   @Transactional
   public void deleteDisease(@PathVariable("id") UUID id) {
     diseaseService.deleteDisease(id);
+  }
+
+  @GetMapping("/{id}" + IN_USE_URL)
+  @Operation(summary = "Gets names of all vaccines which reference this disease")
+  @Transactional(readOnly = true)
+  public GetDiseaseInUseResponse getDiseaseInUse(@PathVariable("id") UUID id) {
+    return diseaseService.getDiseaseInUse(id);
   }
 }

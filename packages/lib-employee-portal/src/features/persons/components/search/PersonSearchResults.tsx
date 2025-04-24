@@ -134,6 +134,7 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
                             phoneNumbers: [],
                             salutation: ApiSalutation.NotSpecified,
                             version: 0,
+                            humanReadableId: "dummy-id",
                           }}
                         />
                       </Sheet>

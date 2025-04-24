@@ -9,6 +9,6 @@ import { AnonymizedFieldValue } from "@/lib/businessModules/statistics/component
 import { TimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 
 export interface ConfigureDataSourceStepFormModel extends FormikValues {
-  timeSpan: TimeSpan;
-  anonymized: AnonymizedFieldValue;
+  timeSpan?: TimeSpan;
+  anonymized?: AnonymizedFieldValue;
 }

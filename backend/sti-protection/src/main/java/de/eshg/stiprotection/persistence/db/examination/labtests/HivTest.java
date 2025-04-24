@@ -1,0 +1,20 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.stiprotection.persistence.db.examination.labtests;
+
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("HIV")
+public class HivTest extends LabTestData {
+
+  public HivTest() {}
+
+  public HivTest(Boolean result, String value, String remark) {
+    super(result, value, remark);
+  }
+}

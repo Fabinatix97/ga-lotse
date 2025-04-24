@@ -21,15 +21,13 @@ import {
   TITLE_OPTIONS,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import {
-  validateLength,
-  validatePipe,
-} from "@eshg/lib-portal/helpers/validators";
+import { validatePipe } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Chip, Grid } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
-import { phoneNumberValidator } from "@/lib/baseModule/components/users/validation";
+import { usePhoneNumberValidator } from "@/lib/baseModule/components/users/validation";
 import { translateUserGroup } from "@/lib/shared/helpers/users";
 
 function initialInputs() {
@@ -84,6 +82,8 @@ function SuggestNewUserFormSidebar({
   formRef,
   availableGroups,
 }: SuggestNewUserFormSidebarProps) {
+  const { validateLength } = useValidators();
+  const phoneNumberValidator = usePhoneNumberValidator();
   const suggestUser = useSuggestUser();
 
   async function handleSubmit(values: UserAddFormInputs) {

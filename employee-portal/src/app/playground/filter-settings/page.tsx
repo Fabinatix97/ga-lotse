@@ -8,26 +8,23 @@
 import {
   ButtonBar,
   DataTable,
+  FilterDefinition,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterValue,
   MainContentLayout,
+  NumberFilterComparisonMode,
+  NumberFilterNullInclusion,
+  NumberFilterNumericComparison,
   Sidebar,
   SidebarContent,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  useFilterSettings,
 } from "@eshg/lib-employee-portal";
 import { Button, Switch, Typography } from "@mui/joy";
 import { useState } from "react";
-
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  NumberFilterComparisonMode,
-  NumberFilterNullInclusion,
-  NumberFilterNumericComparison,
-} from "@/lib/shared/components/filterSettings/models/NumberFilter";
-import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 
 const filterDefinitions: FilterDefinition[] = [
   {
@@ -129,7 +126,7 @@ export default function PlaygroundFilterSettingsPage() {
           <ButtonBar
             left={
               <>
-                <FilterButton {...filterSettings.filterButtonProps} />
+                <ToggleFilterButton {...filterSettings.filterButtonProps} />
                 <Typography
                   component="label"
                   endDecorator={

@@ -61,7 +61,8 @@
   "personal_area": {
     "title": "Sie können den Termin nicht wahrnehmen?",
     "go_to_personal_area": "Zu meinen Terminen",
-    "cancel_appointment": "Termin absagen"
+    "cancel_appointment": "Termin absagen",
+    "rebook_appointment": "Termin umbuchen"
   },
   "cancel_dialog": {
     "title": "Termin absagen?",

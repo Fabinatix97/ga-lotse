@@ -12,7 +12,7 @@ import {
   TITLE_OPTIONS,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
@@ -32,6 +32,7 @@ export function ContactPersonForm({
   extraFieldsBottom,
   allowMainContactPerson,
 }: ContactPersonFormProps) {
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper<BaseFacilityContactPerson>(name);
 
   return (

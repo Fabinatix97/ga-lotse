@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { InfoOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -20,9 +23,6 @@ import { useState } from "react";
 
 import { multiLineEllipsis } from "@/lib/baseModule/theme/mixins";
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
-import { CheckboxGroupField } from "@/lib/businessModules/stiProtection/components/shared/formFields/CheckboxGroupField";
-import { RadioButtonsField } from "@/lib/businessModules/stiProtection/components/shared/formFields/RadioButtonsField";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/shared/formFields/YesOrNoWithFollowUp";
 import { InfoModal } from "@/lib/businessModules/travelMedicine/components/shared/components/InfoModal";
 import { useTranslation } from "@/lib/i18n/client";
 import { TextareaField } from "@/lib/shared/components/form/TextareaField";

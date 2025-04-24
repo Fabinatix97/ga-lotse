@@ -26,8 +26,9 @@ public class PersonMapper {
         person.getExternalId(),
         GenderMapper.toInterfaceType(person.getGender()),
         person.getYearOfBirth(),
-        null,
-        null,
+        person.getPronouns(),
+        person.getHasSufficientGermanLanguageSkills(),
+        person.getOtherKnownLanguages(),
         accessCode);
   }
 
@@ -54,7 +55,7 @@ public class PersonMapper {
         entity.getGender(),
         entity.getYearOfBirth(),
         entity.getHasSufficientGermanLanguageSkills(),
-        null,
+        entity.getOtherKnownLanguages(),
         entity.getPronouns());
   }
 

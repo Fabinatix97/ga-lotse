@@ -16,10 +16,7 @@ import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
-import {
-  validateLength,
-  validatePastOrTodayDate,
-} from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Grid, Typography } from "@mui/joy";
@@ -28,6 +25,7 @@ import { useFormikContext } from "formik";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 export function OccupationalInformationForm(props: NestedFormProps) {
+  const { validateLength, validatePastOrTodayDate } = useValidators();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 

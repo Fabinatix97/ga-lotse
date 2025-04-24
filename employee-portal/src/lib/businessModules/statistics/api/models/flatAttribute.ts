@@ -6,6 +6,7 @@
 import { ApiBusinessModule } from "@eshg/base-api";
 import {
   ApiAttributeSelection,
+  ApiDataPrivacyCategory,
   ApiTableColumnHeader,
 } from "@eshg/statistics-api";
 
@@ -23,6 +24,7 @@ type FlatApiAttribute = Exclude<
 export type FlatAttribute = FlatApiAttribute & {
   key: string;
   businessModule: ApiBusinessModule;
+  dataPrivacyCategory?: ApiDataPrivacyCategory;
 };
 
 function mapTableColumnHeaderToAttributeSelection(
@@ -59,12 +61,14 @@ export function mapTableColumnHeadersToFlatAttributes(
         name: header.displayName,
         key,
         businessModule: mapToApiBusinessModule(businessModule),
+        dataPrivacyCategory: header.dataPrivacyCategory,
       } satisfies FlatAttribute;
     }
     return {
       ...header.attribute,
       key,
       businessModule: mapToApiBusinessModule(businessModule),
+      dataPrivacyCategory: header.dataPrivacyCategory,
     } satisfies FlatAttribute;
   });
 }

@@ -5,7 +5,15 @@
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { SubdirectoryArrowRightOutlined } from "@mui/icons-material";
-import { Button, Divider, Sheet, Stack, Typography, styled } from "@mui/joy";
+import {
+  Button,
+  ColorPaletteProp,
+  Divider,
+  Sheet,
+  Stack,
+  Typography,
+  styled,
+} from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
@@ -68,6 +76,7 @@ interface ProcedureTableTitleButtonProps extends RequiresChildren {
   disabled?: boolean;
   onClick: () => Promise<void> | void;
   "data-testid"?: string;
+  color?: ColorPaletteProp;
 }
 
 export function RowSelectionTableToolbarButton(
@@ -78,7 +87,7 @@ export function RowSelectionTableToolbarButton(
       data-testid={props["data-testid"]}
       startDecorator={props.decorator}
       variant="plain"
-      color="neutral"
+      color={props.color ?? "neutral"}
       size="sm"
       sx={{ padding: 0 }}
       loading={props.isPending}

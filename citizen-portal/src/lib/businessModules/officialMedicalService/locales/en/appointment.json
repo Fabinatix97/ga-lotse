@@ -32,9 +32,9 @@
       }
     },
     "appointmentPicker": {
-      "noAppointmentForSelectedDate": "There are no free appointments for the selected day.",
-      "noAppointmentSelected": "Appointment has not been selected.",
-      "noAppointmentsAvailable": "There are currently no available appointments",
+      "noAppointmentForSelectedDate": "No appointments available for the selected date",
+      "noAppointmentSelected": "No appointment selected",
+      "noAppointmentsAvailable": "No appointments are currently available.",
       "tryLater": "We will make more appointments available soon. Please try again later."
     },
     "backToOverview": "Back"
@@ -42,7 +42,7 @@
   "appointment_calendar": {
     "required_appointment": "Please select an appointment",
     "required_day": "Please select a day",
-    "month_selection": "Appointment calendar week",
+    "month_selection": "Appointment calendar month",
     "next_month": "next month",
     "prev_month": "previous month",
     "list_label": "Available times *",
@@ -52,8 +52,8 @@
   "documents": {
     "title": "Required documents",
     "fileField": {
-      "title": "Offer letter",
-      "required": "Please upload your offer letter",
+      "title": "Order letter",
+      "required": "Please upload your order letter",
       "helperText": "Upload file as PDF, PNG or JPG",
       "inputSummary_one": "{{count}} file uploaded",
       "inputSummary_other": "{{count}} files uploaded",
@@ -63,7 +63,15 @@
       "format": "Format",
       "delete": "Delete",
       "deleteAll": "Delete all",
-      "error": "File could not be uploaded. Please try again"
+      "error": "File could not be uploaded. Please try again."
+    },
+    "validation": {
+      "invalidFileName": "Please use only letters, numbers, hyphens and underscores in the file name.",
+      "nonConformPdf": "The selected file is not PDF/A compliant.",
+      "unsupportedFileType": "Please select a f file of type JPEG, PNG or PDF.",
+      "imageTooWide": "Please only select images with a maximum size of {{maximumSize}} pixels.",
+      "mismatchedMediaType": "The media type does not match the type given by the file name extension.",
+      "unknownError": "Unknown error"
     }
   },
   "affectedPerson": {
@@ -81,16 +89,16 @@
       "contactAddress": {
         "street": "Street",
         "street_required": "Required",
-        "houseNumber": "House Nr.",
+        "houseNumber": "House number",
         "houseNumber_required": "Required",
-        "addressAddition": "Apartment, unit, suite etc.",
+        "addressAddition": "Address addition",
         "postalCode": "Postal Code",
         "postalCode_required": "Required",
         "city": "City",
         "city_required": "Required"
       },
       "phoneNumbers": "Phone",
-      "emailAddresses": "E-Mail Address",
+      "emailAddresses": "E-Mail address",
       "emailAddresses_required": "Required",
       "confirmOnlineServices": "I confirm that I would like to use the online services and receive the necessary emails.",
       "confirmOnlineServices_required": "Please confirm."
@@ -104,20 +112,20 @@
     "values": {
       "confirmOnlineServices": "Send confirmation email",
       "dateAndTime": "{{ appointmentStart }}",
-      "appointmentDuration": "(ca. {{ durationInMinutes }} Minutes)",
+      "appointmentDuration": "(ca. {{ durationInMinutes }} minutes)",
       "contactAddress": "{{ street }} <br> {{ city }} </br>"
     }
   },
   "appointmentInformation": {
     "title": "Appointment information",
     "alertMessage": "Please come sober on the day of the examination to: <br> {{ department }} </br>",
-    "infoText": "We will review your request. After successful verification, you will receive a <t1> appointment confirmation </t1> by email. All information about the appointment can be found there. You also have the option to change or cancel the appointment.",
+    "infoText": "We will review your request. After successful verification, you will receive an <t1> appointment confirmation </t1> by email. All information about the appointment can be found there. You also have the option to change or cancel the appointment.",
     "closingGreeting": "Sincerely <br> Your Health Department </br>",
     "requiredDocuments_header": "The necessary documents that you should bring with you to the appointment are:",
     "requiredDocuments_list": [
       "ID / Passport",
       "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
-      "proof of the currently prescribed medication (if any)"
+      "Proof of the currently prescribed medication (if any)"
     ]
   },
   "confirmation": {
@@ -125,7 +133,7 @@
     "submit": "Submit concern",
     "goBack": "Back",
     "cancel": "Cancel",
-    "success": "Your request has been sent successfully",
+    "success": "Your request has been sent successfully.",
     "fields": {
       "confirmPrivacyNotice": "I accept the data protection notice.",
       "privacyNotice": "To the data protection notice",

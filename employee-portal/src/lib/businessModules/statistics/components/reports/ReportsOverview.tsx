@@ -8,10 +8,15 @@
 import {
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterValue,
   NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
+  useFilterSettings,
   usePagination,
 } from "@eshg/lib-employee-portal";
 import { Box } from "@mui/joy";
@@ -26,11 +31,6 @@ import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/comp
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { getReportsOverviewColumns } from "./columns";
@@ -84,7 +84,7 @@ export function ReportsOverview() {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
         />
       }
       filterSettings={

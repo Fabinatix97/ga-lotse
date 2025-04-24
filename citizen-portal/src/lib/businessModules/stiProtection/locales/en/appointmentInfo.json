@@ -61,7 +61,8 @@
   "personal_area": {
     "title": "Can't make the appointment?",
     "go_to_personal_area": "Go to my appointments",
-    "cancel_appointment": "Cancel appointment"
+    "cancel_appointment": "Cancel appointment",
+    "rebook_appointment": "Reschedule appointment"
   },
   "cancel_dialog": {
     "title": "Cancel Appointment?",

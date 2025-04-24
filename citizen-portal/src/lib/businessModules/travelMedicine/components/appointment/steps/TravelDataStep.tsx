@@ -6,6 +6,10 @@
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  validateIntegerAnd,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
@@ -19,6 +23,9 @@ import {
 import { VACCINATION_CONSULTATION_TRAVEL_TIME_UNITS } from "@/lib/businessModules/travelMedicine/helpers/options";
 import { validateTodayOrFutureDate } from "@/lib/businessModules/travelMedicine/helpers/validators";
 import { useTranslation } from "@/lib/i18n/client";
+
+const MIN_TRAVEL_TIME = 1;
+const MAX_TRAVEL_TIME = 1000;
 
 export function TravelDataStep() {
   const { t } = useTranslation(["travelMedicine/forms"]);
@@ -57,7 +64,11 @@ export function TravelDataStep() {
               ? t("travelDataFormContent.fields.travelTimeAmount_required")
               : undefined
           }
-          min={1}
+          validate={validateIntegerAnd(
+            validateRange(MIN_TRAVEL_TIME, MAX_TRAVEL_TIME),
+          )}
+          min={MIN_TRAVEL_TIME}
+          max={MAX_TRAVEL_TIME}
         />
         <SelectField
           name={"travelInformation.travelTimeUnit"}

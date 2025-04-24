@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FilterValue } from "@eshg/lib-employee-portal";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -10,7 +11,6 @@ import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapFilterValuesToEvaluationFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToEvaluationFilters";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { mapSaveDiagramFormModelToUpdateDiagramApiModel } from "@/lib/businessModules/statistics/api/mutations/useUpdateDiagram";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 export interface UseAddDiagramParams {
   analysisId: string;

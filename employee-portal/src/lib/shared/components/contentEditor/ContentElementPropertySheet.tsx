@@ -7,12 +7,12 @@ import {
   ApiEditorBodyElementsInner,
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
+import { InformationSheet } from "@eshg/lib-employee-portal";
 import { Divider, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { ContentElementProperties } from "@/lib/shared/components/contentEditor/ContentElementProperties";
 import { ContentElementPropertiesToolbar } from "@/lib/shared/components/contentEditor/ContentElementPropertiesToolbar";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface ContentElementPropertySheetProps {
   element?: ApiEditorBodyElementsInner | null;

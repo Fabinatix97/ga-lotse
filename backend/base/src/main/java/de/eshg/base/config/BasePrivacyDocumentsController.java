@@ -12,8 +12,9 @@ import static de.eshg.config.departmentinfo.PrivacyDocumentController.PRIVACY_PO
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.config.api.PrivacyDocumentDto;
-import de.eshg.config.mapper.PrivacyDocumentMapper;
-import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.config.departmentinfo.PrivacyDocumentController;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
+import de.eshg.file.common.FileValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(BasePrivacyDocumentsController.BASE_URL)
+@RequestMapping(PrivacyDocumentController.BASE_URL)
 @Tag(name = "BasePrivacyDocuments")
 class BasePrivacyDocumentsController {
-  public static final String BASE_URL = BaseUrls.DepartmentInfoLibrary.PRIVACY_DOCUMENTS_API;
-
   private final BasePrivacyDocumentService basePrivacyDocumentService;
 
   BasePrivacyDocumentsController(BasePrivacyDocumentService basePrivacyDocumentService) {
@@ -39,7 +38,7 @@ class BasePrivacyDocumentsController {
   @GetMapping(PRIVACY_NOTICE_PATH)
   @Transactional(readOnly = true)
   public PrivacyDocumentDto getPrivacyNoticeConfig() {
-    return PrivacyDocumentMapper.mapToPrivacyNoticeDto(
+    return MultiLangDocumentMapper.mapToPrivacyNoticeDto(
         basePrivacyDocumentService.getConfig().getPrivacyNotice());
   }
 
@@ -49,14 +48,16 @@ class BasePrivacyDocumentsController {
       @RequestPart(DE) MultipartFile privacyNoticeDe,
       @RequestPart(value = EN, required = false) MultipartFile privacyNoticeEn)
       throws IOException {
+    FileValidator.validatePdfFile(privacyNoticeDe);
+    FileValidator.validatePdfFile(privacyNoticeEn);
     basePrivacyDocumentService.updatePrivacyNotice(
-        PrivacyDocumentMapper.mapToDomain(privacyNoticeDe, privacyNoticeEn));
+        MultiLangDocumentMapper.mapToDomain(privacyNoticeDe, privacyNoticeEn));
   }
 
   @GetMapping(PRIVACY_POLICY_PATH)
   @Transactional(readOnly = true)
   public PrivacyDocumentDto getPrivacyPolicyConfig() {
-    return PrivacyDocumentMapper.mapToPrivacyPolicyDto(
+    return MultiLangDocumentMapper.mapToPrivacyPolicyDto(
         basePrivacyDocumentService.getConfig().getPrivacyPolicy());
   }
 
@@ -66,7 +67,9 @@ class BasePrivacyDocumentsController {
       @RequestPart(DE) MultipartFile privacyPolicyDe,
       @RequestPart(value = EN, required = false) MultipartFile privacyPolicyEn)
       throws IOException {
+    FileValidator.validatePdfFile(privacyPolicyDe);
+    FileValidator.validatePdfFile(privacyPolicyEn);
     basePrivacyDocumentService.updatePrivacyPolicy(
-        PrivacyDocumentMapper.mapToDomain(privacyPolicyDe, privacyPolicyEn));
+        MultiLangDocumentMapper.mapToDomain(privacyPolicyDe, privacyPolicyEn));
   }
 }

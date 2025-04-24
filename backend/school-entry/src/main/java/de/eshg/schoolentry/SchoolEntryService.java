@@ -568,10 +568,22 @@ public class SchoolEntryService {
     TaskUtil.closeSingleTaskOfType(procedure, TaskType.BOOK_APPOINTMENT);
     if (!procedure.hasTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION)) {
       taskUtil.addOpenTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
+    } else if (procedure.getSchoolInfoLetterCreatedAt() == null) {
+      TaskUtil.reopenSingleTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
     }
     procedure.getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION).updateDueAt(start);
 
     schoolEntryProcedureRepository.flush();
+  }
+
+  public void removeAppointment(SchoolEntryProcedure procedure) {
+    appointmentBlockSlotUtil.removeAppointment(procedure);
+
+    removeCitizenUserAccessIfPresent(procedure);
+    resetWaitingRoomData(procedure);
+
+    TaskUtil.closeOptionalTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
+    TaskUtil.reopenSingleTaskOfType(procedure, TaskType.BOOK_APPOINTMENT);
   }
 
   private static boolean hasAppointmentChanged(
@@ -684,7 +696,7 @@ public class SchoolEntryService {
 
     AppointmentDto appointment = request.appointment();
     if (appointment == null && procedure.getAppointment() != null) {
-      throw new BadRequestException("An appointment can only be changed, but not deleted.");
+      removeAppointment(procedure);
     }
     if (appointment != null
         && hasAppointmentChanged(procedure, appointment.start(), appointment.end())) {
@@ -805,13 +817,23 @@ public class SchoolEntryService {
   public void closeProcedure(SchoolEntryProcedure procedure) {
     procedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
 
+    removeCitizenUserAccessIfPresent(procedure);
+
+    schoolEntryProcedureRepository.flush();
+  }
+
+  private void removeCitizenUserAccessIfPresent(SchoolEntryProcedure procedure) {
     UUID citizenUserId = procedure.getCitizenUserId();
     if (citizenUserId != null) {
       removeCitizenUserAccess(citizenUserId);
       procedure.setCitizenUserId(null);
     }
+  }
 
-    schoolEntryProcedureRepository.flush();
+  private void resetWaitingRoomData(SchoolEntryProcedure procedure) {
+    WaitingRoom waitingRoom = procedure.getWaitingRoom();
+    waitingRoom.setStatus(null);
+    waitingRoom.setDescription(null);
   }
 
   private void removeCitizenUserAccess(UUID citizenUserId) {

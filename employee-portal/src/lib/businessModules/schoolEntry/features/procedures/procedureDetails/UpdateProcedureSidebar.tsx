@@ -5,6 +5,7 @@
 
 import { ApiContactCategory } from "@eshg/base-api";
 import {
+  CheckboxField,
   FormButtonBar,
   ProcedureLabel,
   ProcedureLabelSelection,
@@ -32,8 +33,8 @@ import {
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { validatePastOrTodayDate } from "@eshg/lib-portal/helpers/validators";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointment,
@@ -58,7 +59,6 @@ import {
 } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateProcedureSidebarProps> {
   return useSidebarWithFormRef({
@@ -146,6 +146,7 @@ function useUpdateProcedureForm(
 }
 
 function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
+  const { validatePastOrTodayDate } = useValidators();
   const labelApi = useLabelApi();
   const { procedure, locationSelectionMode } = props;
 
@@ -154,7 +155,6 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
     procedure.type === ApiSchoolEntryProcedureType.DraftSchoolImport;
 
   const isMissingChildAddress = !isDefined(procedure.child.contactAddress);
-  const hasInitialAppointment = procedure.appointment !== undefined;
 
   const form = useUpdateProcedureForm(procedure, () => props.onClose(true));
   const { values, isSubmitting, setFieldValue } = form;
@@ -220,11 +220,6 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
               <SelectObjectField
                 name="appointment"
                 label="Termin"
-                required={
-                  hasInitialAppointment
-                    ? "Termin darf nicht gelöscht werden."
-                    : undefined
-                }
                 options={freeAppointments}
                 getOptionLabel={getAppointmentLabel}
                 loading={getFreeAppointments.isFetching}

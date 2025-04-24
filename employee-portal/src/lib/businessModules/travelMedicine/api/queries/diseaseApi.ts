@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions } from "@tanstack/react-query";
+import { DiseaseApi } from "@eshg/travel-medicine-api";
+import { QueryClient, queryOptions } from "@tanstack/react-query";
 
 import { useDiseaseApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { diseaseApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
@@ -14,5 +15,16 @@ export function useGetAllDiseasesQuery() {
     queryKey: diseaseApiQueryKey(["getDiseases"]),
     queryFn: () => diseaseApi.getDiseases(),
     select: (response) => response.diseases ?? [],
+  });
+}
+
+export function getAllDiseasesInUse(
+  queryClient: QueryClient,
+  diseaseApi: DiseaseApi,
+  diseaseId: string,
+) {
+  return queryClient.fetchQuery({
+    queryKey: diseaseApiQueryKey(["getDiseaseInUse", diseaseId]),
+    queryFn: () => diseaseApi.getDiseaseInUse(diseaseId),
   });
 }

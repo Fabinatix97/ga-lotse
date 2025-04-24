@@ -7,7 +7,7 @@ import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configurat
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
 
 function getFilteredModules(
-  data: ConfiguratorStatusOverview,
+  data: Partial<ConfiguratorStatusOverview>,
   condition: (value: string) => boolean,
 ) {
   return Object.keys(data)
@@ -22,7 +22,7 @@ function getFilteredModules(
 
 export function getAllOtherModules(
   currentModule: ConfiguratorModuleName,
-  tabs: ConfiguratorStatusOverview,
+  tabs: Partial<ConfiguratorStatusOverview>,
 ) {
   return getFilteredModules(tabs, (tabKey) => tabKey !== currentModule);
 }
@@ -30,25 +30,36 @@ export function getAllOtherModules(
 export function getAllWarningModules(data: ConfiguratorStatusOverview) {
   return getFilteredModules(
     data,
-    (tabKey) => data[tabKey as ConfiguratorModuleName].overview === "warning",
+    (tabKey) =>
+      data[tabKey as ConfiguratorModuleName].moduleState ===
+      "PARTIALLY_COMPLETE",
   );
 }
 
 export function getAllErrorModules(data: ConfiguratorStatusOverview) {
   return getFilteredModules(
     data,
-    (tabKey) => data[tabKey as ConfiguratorModuleName].overview === "error",
+    (tabKey) =>
+      data[tabKey as ConfiguratorModuleName].moduleState === "INCOMPLETE",
   );
 }
 
-export function isAllModulesCompleted(data: ConfiguratorStatusOverview) {
-  return Object.values(data).every((module) => module.overview === "complete");
+export function isAllModulesCompleted(
+  data: Partial<ConfiguratorStatusOverview>,
+) {
+  return Object.values(data).every(
+    (module) => module.moduleState === "COMPLETE",
+  );
 }
 
-export function existModuleWarning(data: ConfiguratorStatusOverview) {
-  return Object.values(data).some((module) => module.overview === "warning");
+export function existModuleWarning(data: Partial<ConfiguratorStatusOverview>) {
+  return Object.values(data).some(
+    (module) => module.moduleState === "PARTIALLY_COMPLETE",
+  );
 }
 
-export function existModuleError(data: ConfiguratorStatusOverview) {
-  return Object.values(data).some((module) => module.overview === "error");
+export function existModuleError(data: Partial<ConfiguratorStatusOverview>) {
+  return Object.values(data).some(
+    (module) => module.moduleState === "INCOMPLETE",
+  );
 }

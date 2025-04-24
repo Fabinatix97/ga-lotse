@@ -17,7 +17,7 @@ export function ConfiguratorCard({
 }: {
   title: string;
   link: string;
-  status: ConfiguratorStatus;
+  status?: ConfiguratorStatus;
 }) {
   return (
     <Card sx={{ padding: 3 }}>
@@ -39,11 +39,13 @@ export function ConfiguratorCard({
               <ArrowForwardOutlined />
             </InternalLinkIconButton>
           </Stack>
-          {status === "complete" && <Chip color="success">Vollständig</Chip>}
-          {status === "warning" && (
+          {status === "COMPLETE" && <Chip color="success">Vollständig</Chip>}
+          {status === "PARTIALLY_COMPLETE" && (
             <Chip color="neutral">Englische Übersetzung fehlt</Chip>
           )}
-          {status === "error" && <Chip color="warning">Unvollständig</Chip>}
+          {status === "INCOMPLETE" && (
+            <Chip color="warning">Unvollständig</Chip>
+          )}
         </Stack>
       </CardContent>
     </Card>

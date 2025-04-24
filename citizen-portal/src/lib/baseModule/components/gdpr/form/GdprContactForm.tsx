@@ -7,6 +7,7 @@ import { ApiGdprProcedureType } from "@eshg/base-api";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import CheckmarkIcon from "@mui/icons-material/Check";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SendIcon from "@mui/icons-material/Send";
@@ -21,7 +22,6 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import { useFormValidation } from "@/lib/shared/hooks/useFormValidation";
 
 interface ContactFormValues {
   content: string;
@@ -31,7 +31,7 @@ type ContactFormState = "initial" | "input" | "preview" | "submitted";
 
 export function GdprContactForm() {
   const { t } = useTranslation("gdpr");
-  const { validateLength } = useFormValidation();
+  const { validateLength } = useValidators();
   const [formState, setFormState] = useState<ContactFormState>("initial");
   const addGdprProcedure = useAddGdprProcedure();
 

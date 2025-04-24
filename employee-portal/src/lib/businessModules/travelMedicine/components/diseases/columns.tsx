@@ -3,18 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiDisease } from "@eshg/travel-medicine-api";
 import { Delete, Edit } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-
 const columnHelper: ColumnHelper<ApiDisease> = createColumnHelper<ApiDisease>();
 
 export function columns(
-  deleteEntry: (entryId: string, diseaseName: string) => void,
+  deleteEntry: (entryId: string, diseaseName: string) => Promise<void>,
   editEntry: (disease: ApiDisease) => void,
 ) {
   return [

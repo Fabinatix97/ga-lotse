@@ -4,9 +4,9 @@
  */
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import { useSearchReferenceFacilitiesQuery } from "@eshg/lib-employee-portal";
 import { useEffect, useReducer } from "react";
 
-import { useSearchReferenceFacilitiesQuery } from "@/lib/baseModule/api/queries/facility";
 import { FacilitySidebarProps } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";

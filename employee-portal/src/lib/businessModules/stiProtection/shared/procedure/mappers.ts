@@ -4,7 +4,7 @@
  */
 
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentBookingType,
@@ -71,13 +71,13 @@ export function mapProcedureFormToApi(
 
   return deleteUndefined({
     ...mapFollowUpProcedureFormToApi(form),
-    countryOfBirth: countryOptions().find(
-      (t) => t.value === form.countryOfBirth,
-    )?.value,
+    pronouns: mapOptionalValue(form.pronouns),
     gender: GENDER_OPTIONS.find((t) => t.value === form.gender)?.value as
       | ApiGender
       | undefined,
-    inGermanySince: optionalInt(form.inGermanySince),
+    hasSufficientGermanLanguageSkills:
+      form.hasSufficientGermanLanguageSkills ?? undefined,
+    otherKnownLanguages: mapOptionalValue(form.otherKnownLanguages),
     yearOfBirth: parseInt(form.yearOfBirth, 10),
   });
 }

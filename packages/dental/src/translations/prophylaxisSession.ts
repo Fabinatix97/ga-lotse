@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProphylaxisStatus, ApiProphylaxisType } from "@eshg/dental-api";
+import {
+  ApiDentitionType,
+  ApiFluoridationVarnish,
+  ApiProphylaxisStatus,
+  ApiProphylaxisType,
+} from "@eshg/dental-api";
 
 export const PROPHYLAXIS_TYPES: Record<ApiProphylaxisType, string> = {
   [ApiProphylaxisType.P1]: "P1 (mit FL/ mit und ohne U)",
@@ -18,4 +23,30 @@ export const PROPHYLAXIS_TYPES: Record<ApiProphylaxisType, string> = {
 export const PROPHYLAXIS_STATUS: Record<ApiProphylaxisStatus, string> = {
   OPEN: "offen",
   CLOSED: "abgeschlossen",
+};
+
+export const DENTITION_TYPES: Record<ApiDentitionType, string> = {
+  [ApiDentitionType.Primary]: "Milchgebiss",
+  [ApiDentitionType.Mixed]: "Wechselgebiss",
+  [ApiDentitionType.Secondary]: "Bleibendes Gebiss",
+};
+
+export const FLUORIDATION_VARNISH_TYPES: Record<
+  ApiFluoridationVarnish,
+  string
+> = {
+  [ApiFluoridationVarnish.A]: "A",
+  [ApiFluoridationVarnish.B]: "B",
+  [ApiFluoridationVarnish.C]: "C",
+  [ApiFluoridationVarnish.D]: "D",
+};
+
+export const FLUORIDATION_VARNISH_DESCRIPTIONS: Record<
+  ApiFluoridationVarnish,
+  string
+> = {
+  [ApiFluoridationVarnish.A]: "Lack A",
+  [ApiFluoridationVarnish.B]: "Lack B",
+  [ApiFluoridationVarnish.C]: "Lack C",
+  [ApiFluoridationVarnish.D]: "Lack D",
 };

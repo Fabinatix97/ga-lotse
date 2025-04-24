@@ -21,9 +21,7 @@ export function ApiProvider(props: ApiProviderProps) {
     createClients(props.baseUrl),
   );
 
-  return (
-    <ApiContext.Provider value={clients}>{props.children}</ApiContext.Provider>
-  );
+  return <ApiContext value={clients}>{props.children}</ApiContext>;
 }
 
 export function useApi() {

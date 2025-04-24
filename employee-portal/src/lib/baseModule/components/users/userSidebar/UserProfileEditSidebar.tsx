@@ -36,7 +36,7 @@ import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
-import { phoneNumberValidator } from "@/lib/baseModule/components/users/validation";
+import { usePhoneNumberValidator } from "@/lib/baseModule/components/users/validation";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
@@ -69,6 +69,7 @@ function UserProfileEditSidebar({
   formRef,
   onClose,
 }: UserProfileEditSidebarProps) {
+  const phoneNumberValidator = usePhoneNumberValidator();
   const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   const updateSelfUser = useUpdateSelfUser();
 

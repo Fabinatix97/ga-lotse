@@ -9,11 +9,11 @@ import static de.eshg.file.common.CustomMediaTypes.MEDIA_TYPE_WAV;
 import static de.eshg.file.common.CustomMediaTypes.WAV_MEDIA_TYPE_VALUES_LIST;
 
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -46,6 +46,19 @@ public class FileValidator {
     }
   }
 
+  public static void validatePdfFile(MultipartFile pdf) throws IOException {
+    if (pdf == null) {
+      return;
+    }
+
+    validate(pdf);
+    byte[] bytes = pdf.getBytes();
+    if (FileTypeDetector.getSupportedFileTypeOrThrow(bytes) != FileType.PDF) {
+      throw new BadRequestException(ErrorCode.INVALID_FILE, "Only PDF files are supported");
+    }
+    PdfAConformanceValidator.validate(bytes);
+  }
+
   public static MediaType validateAudioFile(MultipartFile file) {
     MediaType detectedMediaType = validateContentTypeAudio(file);
     Matcher fileNameMatcher = FILE_REGEX_PATTERN.matcher(file.getOriginalFilename());
@@ -58,7 +71,7 @@ public class FileValidator {
   // original method.
   private static MediaType validateContentTypeAudio(MultipartFile file) {
     try {
-      String detectedContentType = new Tika().detect(file.getInputStream());
+      String detectedContentType = new TikaWrapper().detect(file.getInputStream());
       String fileContentType = file.getContentType();
 
       if (StringUtils.isBlank(fileContentType)) {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
 import { ApiInformationStatement } from "@eshg/travel-medicine-api";
 import {
   DeleteOutlined,
@@ -12,10 +13,6 @@ import {
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { CitizenHasAnsweredStatusChip } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/CitizenHasAnsweredChip";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiInformationStatement> =
   createColumnHelper<ApiInformationStatement>();

@@ -10,12 +10,24 @@ import {
   GetContactsRequest,
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
 import { contactApiQueryKey } from "@/config/apiQueryKeys";
 import { useApi } from "@/contexts/api";
 import { Contact } from "@/features/contacts/api/models/Contact";
+
+export function useGetContactQuery(id: string) {
+  const { contactApi } = useApi();
+  return useSuspenseQuery({
+    queryKey: contactApiQueryKey(["getContact", id]),
+    queryFn: async (): Promise<Contact> => await contactApi.getContact(id),
+  });
+}
 
 export function useGetOptionalContactQuery(id?: string) {
   const { contactApi } = useApi();
@@ -57,7 +69,8 @@ export function useSearchContacts(
   contactName: string,
   contactCategories: Set<ApiContactCategory>,
 ) {
-  const [debouncedName] = useDebounce(contactName, 250, {
+  const debounceDelay = contactName === "" ? 0 : 250;
+  const [debouncedName] = useDebounce(contactName, debounceDelay, {
     trailing: true,
   });
 

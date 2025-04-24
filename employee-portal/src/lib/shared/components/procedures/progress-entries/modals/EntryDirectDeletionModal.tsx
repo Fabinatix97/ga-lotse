@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OverlayBoundary } from "@eshg/lib-employee-portal";
+import { ConfirmationDialog, OverlayBoundary } from "@eshg/lib-employee-portal";
 import { useContext } from "react";
 
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useDeleteProgressEntry } from "@/lib/shared/components/procedures/progress-entries/mutations/progressEntryApi";
 import { EntryDeletionModalProps } from "@/lib/shared/components/procedures/progress-entries/types";
@@ -28,7 +27,7 @@ export function EntryDirectDeletionModalContent(
   const { closeEntryDeletionModal } = progressEntriesContext.action;
   const deleteProgressEntry = useDeleteProgressEntry(progressEntryApi);
   return (
-    <EmployeePortalConfirmationDialog
+    <ConfirmationDialog
       open={entryIdForDeletion !== null}
       onClose={closeEntryDeletionModal}
       onConfirm={() => {

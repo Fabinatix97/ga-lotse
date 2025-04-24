@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { ConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
@@ -19,7 +19,6 @@ import {
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";
 
@@ -105,7 +104,7 @@ export function CloseConfirmationDialog({
   }
 
   return (
-    <EmployeePortalConfirmationDialog
+    <ConfirmationDialog
       title="Vorgang abschließen?"
       description="Möchten Sie diesen Vorgang wirklich abschließen?"
       confirmLabel="Abschließen"
@@ -124,7 +123,7 @@ export function CloseWithOpenAppointmentConfirmationDialog({
   openAppointment,
 }: CloseWithOpenAppointmentsConfirmationDialogProps) {
   return (
-    <EmployeePortalConfirmationDialog
+    <ConfirmationDialog
       title="Vorgang abschließen nur mit Terminstornierung möglich"
       description="Der Vorgang enthält einen offenen Termin. Um den Vorgang zu schließen, müssen Sie folgenden Termin stornieren."
       confirmLabel="Stornieren & Abschließen"
@@ -140,7 +139,7 @@ export function CloseWithOpenAppointmentConfirmationDialog({
         <br />
         {APPOINTMENT_TYPES[openAppointment.appointmentType]}
       </Typography>
-    </EmployeePortalConfirmationDialog>
+    </ConfirmationDialog>
   );
 }
 
@@ -155,7 +154,7 @@ export function ReopenConfirmationDialog({
   }
   const personDetails = "person" in procedure ? procedure.person : procedure;
   return (
-    <EmployeePortalConfirmationDialog
+    <ConfirmationDialog
       title={"Vorgang wiedereröffnen?"}
       confirmLabel="Wiedereröffnen"
       description="Durch das wiedereröffnen können existierende Daten geändert werden."
@@ -174,16 +173,9 @@ export function ReopenConfirmationDialog({
             <th scope="row">Geburtsjahr</th>
             <td>{personDetails.yearOfBirth}</td>
           </tr>
-          <tr>
-            <th scope="row">Geburtsland</th>
-            <td>
-              {personDetails.countryOfBirth &&
-                translateCountry(personDetails.countryOfBirth)}
-            </td>
-          </tr>
         </tbody>
       </DetailsTable>
-    </EmployeePortalConfirmationDialog>
+    </ConfirmationDialog>
   );
 }
 

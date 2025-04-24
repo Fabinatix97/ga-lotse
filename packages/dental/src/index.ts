@@ -3,123 +3,42 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export { ExaminationStatusChip } from "./components/examination/ExaminationStatusChip";
-export { OpenHistorySidebarButton } from "./components/examination/OpenHistorySidebarButton";
-export { SearchGroupField } from "./components/group/SearchGroupField";
-export { FluoridationConsentInformationSection } from "./components/fluoridationConsent/FluoridationConsentInformationSection";
-export { ProphylaxisSessionStatusChip } from "./components/prophylaxisSession/ProphylaxisSessionStatusChip";
+export {
+  Cuspid,
+  Incisor,
+  Molar,
+  Premolar,
+} from "./components/examination/teeth";
 
-export { type Child, mapChild } from "./features/children/api/models/Child";
-export {
-  type ChildDetails,
-  mapChildDetails,
-} from "./features/children/api/models/ChildDetails";
-export {
-  type PersonDetails,
-  mapPersonDetails,
-} from "./features/children/api/models/PersonDetails";
-export {
-  type ProphylaxisSessionExamination,
-  mapProphylaxisSessionExamination,
-} from "./features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-export {
-  type ChildSearchResult,
-  mapChildSearchResult,
-} from "./features/children/api/models/ChildSearchResult";
-
-export {
-  type ChildExamination,
-  mapChildExamination,
-} from "./features/children/api/models/ChildExamination";
-export {
-  type AbsenceExaminationResult,
-  type ExaminationResult,
-  type ExaminationResultWithDate,
-  type FluoridationExaminationResult,
-  type ScreeningExaminationResult,
-  type ToothDiagnoses,
-  mapExaminationResult,
-} from "./api/models/ExaminationResult";
-export {
-  type ExaminationStatus,
-  mapToExaminationStatus,
-} from "./api/models/ExaminationStatus";
-export { type Institution, mapInstitution } from "./api/models/Institution";
-export {
-  type AnnualInstitution,
-  mapAnnualInstitution,
-} from "./api/models/AnnualInstitution";
-export {
-  type ProphylaxisSession,
-  mapProphylaxisSession,
-} from "./features/prophylaxisSessions/api/models/ProphylaxisSession";
-export {
-  type ProphylaxisSessionDetails,
-  mapProphylaxisSessionDetails,
-} from "./features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
-export {
-  type ToothDiagnosis,
-  mapToothDiagnosis,
-} from "./api/models/ToothDiagnosis";
-export { useSearchSchoolOrDaycareContactQuery } from "./api/queries/contacts";
-export { useSearchInstitutionGroupsQuery } from "./api/queries/groups";
-
-export {
-  useSyncPerson,
-  useUpdateExamination,
-} from "./features/children/api/mutations/details";
-export { useCloseSchoolYear } from "./features/children/api/mutations/overview";
-export { useCreateProphylaxisSession } from "./features/prophylaxisSessions/api/mutations/overview";
-export {
-  useDeleteProphylaxisSessionParticipantOptions,
-  useUpdateProphylaxisSession,
-  useUpdateProphylaxisSessionExaminations,
-  useUpdateProphylaxisSessionParticipants,
-  useCloseProphylaxisSession,
-} from "./features/prophylaxisSessions/api/mutations/details";
 export {
   fileApiQueryKey,
   progressEntryApiQueryKey,
 } from "./config/apiQueryKeys";
+export { DentalProphylaxisSessionExaminationPage } from "./features/prophylaxisSessions/pages/DentalProphylaxisSessionExaminationPage";
+export { DentalProphylaxisSessionDetailsPage } from "./features/prophylaxisSessions/pages/DentalProphylaxisSessionDetailsPage";
 export {
-  useGetChildrenQuery,
-  useSearchChildren,
-} from "./features/children/api/queries/overview";
-export {
-  getChildDetailsQuery,
-  getExaminationQuery,
-} from "./features/children/api/queries/details";
-export { useGetProphylaxisSessions } from "./features/prophylaxisSessions/api/queries/overview";
-export {
-  getProphylaxisSessionQuery,
-  getAllDentalAssistantsQuery,
-  getAllDentistsQuery,
-} from "./features/prophylaxisSessions/api/queries/details";
-
-export { EXAMINATION_STATUS } from "./translations/examination";
-export { PROPHYLAXIS_TYPES } from "./translations/prophylaxisSession";
+  DentalProphylaxisSessionLayout,
+  DentalProphylaxisSessionError,
+} from "./features/prophylaxisSessions/layouts/DentalProphylaxisSessionLayout";
+export { DentalProphylaxisSessionsOverviewPage } from "./features/prophylaxisSessions/pages/DentalProphylaxisSessionsOverviewPage";
 
 export { routes } from "./config/routes";
-export {
-  ALL_TEETH,
-  OPTIONAL_TEETH,
-  RELATED_TEETH,
-  REQUIRED_TEETH,
-} from "./config/teeth";
-export { SCHOOL_OR_DAYCARE_CONTACT } from "./config/contacts";
 
 export { DentalProvider, useDentalApi } from "./contexts/dental";
 
 export { DentalChildLayout } from "./features/children/layouts/DentalChildLayout";
 export { useChildRouteParams } from "./features/children/hooks/useChildRouteParams";
-export { DentalChildExaminationRouteParams } from "./features/children/schemas/DentalChildExaminationRouteParams";
 export { DentalChildRouteParams } from "./features/children/schemas/DentalChildRouteParams";
-export { DentalChildExaminationsPage } from "./features/children/pages/DentalChildExaminationsPage";
+export { DentalChildExaminationsOverviewPage } from "./features/children/pages/DentalChildExaminationsOverviewPage";
 export { DentalChildDetailsPage } from "./features/children/pages/DentalChildDetailsPage";
-export { useImportChildrenSidebar } from "./features/children/components/import/ImportChildrenSidebar";
-export { useCreateChildSidebar } from "./features/children/components/createChild/CreateChildSidebar";
+export { DentalChildrenOverviewPage } from "./features/children/pages/DentalChildrenOverviewPage";
+export { SchoolYearTransitionButton } from "./features/children/components/childrenOverview/tableButtons";
+export { SchoolYearTransitionSchoolPage } from "./features/children/pages/SchoolYearTransitionSchoolPage";
+export { SchoolYearTransitionGroupPage } from "./features/children/pages/SchoolYearTransitionGroupPage";
+export { DentalChildExaminationPage } from "./features/children/pages/DentalChildExaminationPage";
+export { DentalSyncPersonPage } from "./features/children/pages/DentalSyncPersonPage";
 
-export { moduleUserGroup } from "./config/moduleUserGroup";
+export { moduleUserGroup } from "./config/userGroups";
 export {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,

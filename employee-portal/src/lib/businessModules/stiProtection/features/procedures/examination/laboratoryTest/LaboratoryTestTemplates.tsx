@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
+import { Row } from "@eshg/lib-portal/components/Row";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Divider, Grid, Stack } from "@mui/joy";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren, ReactNode } from "react";
 
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import {
   SectionGrid,
   SubRow,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 import { LaboratoryTestExaminationData } from "./helpers";
 
@@ -38,11 +38,18 @@ function LaboratoryTest(props: LaboratoryTestProps) {
       margin={0}
       padding={0}
       spacing={0}
-      rowGap={2}
+      rowGap={4}
       sx={{ ...props.sx }}
     >
       <Grid xxs={12} md={6} xxl={3} paddingLeft={0}>
-        <CheckboxField name={testRequestedPath} label={label} />
+        <CheckboxField
+          name={testRequestedPath}
+          label={
+            <Typography component="span" fontWeight={600}>
+              {label}
+            </Typography>
+          }
+        />
       </Grid>
       {isTestRequested ? (
         <SectionGrid>{props.children}</SectionGrid>
@@ -104,12 +111,12 @@ export function LaboratoryTestWithBooleanResult(
   );
 }
 
-export interface HepatitsLaboratoryTestProps extends LaboratoryTestProps {
+export interface ImmunityLaboratoryTestProps extends LaboratoryTestProps {
   dataPath: string;
   bottomField?: ReactNode;
 }
 
-export function HepatitisLaboratoryTest(props: HepatitsLaboratoryTestProps) {
+export function ImmunityLaboratoryTest(props: ImmunityLaboratoryTestProps) {
   const { testRequestedPath, label, dataPath } = props;
 
   return (
@@ -155,47 +162,30 @@ export interface LaboratorySamplesTestProps extends LaboratoryTestProps {
 }
 
 export function LaboratoryTestSamples(props: LaboratorySamplesTestProps) {
-  const { testRequestedPath, label } = props;
-  const { getFieldMeta } = useFormikContext<LaboratoryTestExaminationData>();
-  const isTestRequested = getFieldMeta(testRequestedPath).value === true;
+  const { label, testRequestedPath } = props;
 
   return (
-    <Stack
-      component="fieldset"
-      aria-label={`${label}-TestSamples`}
-      border={0}
-      margin={0}
-      padding={0}
-      spacing={0}
-      rowGap={2}
-    >
-      <Grid xxs={12} md={6} xxl={3} paddingLeft={0}>
-        <CheckboxField name={testRequestedPath} label={label} />
-      </Grid>
-      {isTestRequested ? (
-        <Stack paddingLeft={5} rowGap={3}>
-          <LaboratoryTestWithBooleanResult
-            sx={{ gridColumn: 1 }}
-            testRequestedPath={`${props.dataPath}.oralSampleRequested`}
-            dataPath={`${props.dataPath}.oralSampleData`}
+    <LaboratoryTestWithBooleanResult
+      topField={
+        <Row>
+          <CheckboxField
+            name={`${props.dataPath}.oralSampleRequested`}
             label={"Orale Probe"}
           />
-          <Divider />
-          <LaboratoryTestWithBooleanResult
-            sx={{ gridColumn: 1 }}
-            testRequestedPath={`${props.dataPath}.urethralSampleRequested`}
-            dataPath={`${props.dataPath}.urethralSampleData`}
+          <CheckboxField
+            name={`${props.dataPath}.urethralSampleRequested`}
             label={"Urethrale Probe"}
           />
-          <Divider />
-          <LaboratoryTestWithBooleanResult
-            sx={{ gridColumn: 1 }}
-            testRequestedPath={`${props.dataPath}.analSampleRequested`}
-            dataPath={`${props.dataPath}.analSampleData`}
+          <CheckboxField
+            name={`${props.dataPath}.analSampleRequested`}
             label={"Anale Probe"}
           />
-        </Stack>
-      ) : undefined}
-    </Stack>
+        </Row>
+      }
+      sx={{ gridColumn: 1 }}
+      testRequestedPath={testRequestedPath}
+      dataPath={props.dataPath}
+      label={label}
+    />
   );
 }

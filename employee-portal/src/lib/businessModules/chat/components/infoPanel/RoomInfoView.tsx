@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ConfirmationDialog } from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
@@ -27,7 +28,6 @@ import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
 export interface RoomInfoViewProps {
   roomId: string;
@@ -180,7 +180,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
         onClose={() => setLeaveDialogOpen(false)}
         onConfirm={handleLeaveRoomClick}
       />
-      <EmployeePortalConfirmationDialog
+      <ConfirmationDialog
         open={!!kickUserId}
         onClose={() => setKickUserId(undefined)}
         onConfirm={handleRemoveUser}

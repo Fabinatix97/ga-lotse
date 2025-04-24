@@ -5,7 +5,7 @@
 
 "use client";
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import { DetailsSection, InformationSheet } from "@eshg/lib-employee-portal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -25,7 +25,6 @@ import {
   useGetStatusQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { MedicalHistory } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistory";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelNav } from "@/lib/shared/components/sidePanel/SidePanelNav";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";

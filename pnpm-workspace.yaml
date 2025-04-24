@@ -12,9 +12,9 @@ packages:
 
 catalogs:
   next:
-    "next": "15.2.4"
-    "@next/bundle-analyzer": "15.2.4"
-    "eslint-config-next": "15.2.4"
+    "next": "15.2.5"
+    "@next/bundle-analyzer": "15.2.5"
+    "eslint-config-next": "15.2.5"
 
   react:
     "react": "19.1.0"
@@ -95,3 +95,4 @@ nodeLinker: "hoisted"
 ignoredBuiltDependencies:
   - esbuild
   - sharp
+  - sqlite3

@@ -43,10 +43,10 @@ export function Acknowledgements() {
         id={"street-directory"}
         title={"Straßenverzeichnis der Stadt Frankfurt am Main"}
         sourceHref={
-          "https://www.offenedaten.frankfurt.de/dataset/strassenverzeichnis-der-stadt-frankfurt-am-main"
+          "https://statistikportal.frankfurt.de/?open=1&result=2E487EF313AB434E901898EDB81DFE65#app/mainpage"
         }
         hint={
-          "Hinweis: An den Daten wurden an zwei Stellen Veränderungen vorgenommen. Zwei Straßen wurden entfernt."
+          "Hinweis: Die Überschriftenzeile wurde angepasst, so dass die Bezeichner der Spalten mit anderen Straßenverzeichnissen übereinstimmen. BOM wurde entfernt."
         }
       >
         Datenlizenz Deutschland Namensnennung

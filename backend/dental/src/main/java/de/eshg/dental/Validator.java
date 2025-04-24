@@ -19,13 +19,16 @@ import de.eshg.dental.api.FluoridationConsentDto;
 import de.eshg.dental.api.MainResultDto;
 import de.eshg.dental.api.ToothDiagnosisDto;
 import de.eshg.dental.api.ToothDto;
+import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.FluoridationExaminationResult;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.model.ToothDiagnosis;
 import de.eshg.dental.domain.repository.ChildRepository;
+import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
@@ -213,26 +216,37 @@ public class Validator {
         throw new BadRequestException(prophylaxisSessionNotCloseableMessage);
       }
       ExaminationResult result = examination.getResult();
+      FluoridationConsent currentFluoridationConsent =
+          examination.getChild().getCurrentFluoridationConsent();
 
       if (result instanceof FluoridationExaminationResult fluoridationExaminationResult) {
         validateFluoridationResult(
-            fluoridationExaminationResult, prophylaxisSessionNotCloseableMessage);
+            fluoridationExaminationResult,
+            currentFluoridationConsent,
+            prophylaxisSessionNotCloseableMessage);
       } else if (result instanceof ScreeningExaminationResult screeningExaminationResult) {
-        validateScreeningResult(screeningExaminationResult, prophylaxisSessionNotCloseableMessage);
+        validateScreeningResult(
+            screeningExaminationResult,
+            currentFluoridationConsent,
+            prophylaxisSessionNotCloseableMessage);
       }
     }
   }
 
   private static void validateFluoridationResult(
-      FluoridationExaminationResult result, String errorMessage) {
-    if (result.isFluorideVarnishApplied() == null) {
+      FluoridationExaminationResult result,
+      FluoridationConsent currentFluoridationConsent,
+      String errorMessage) {
+    if (currentFluoridationConsent != null && result.isFluorideVarnishApplied() == null) {
       throw new BadRequestException(errorMessage);
     }
   }
 
   private static void validateScreeningResult(
-      ScreeningExaminationResult result, String errorMessage) {
-    if (result.isFluorideVarnishApplied() == null) {
+      ScreeningExaminationResult result,
+      FluoridationConsent currentFluoridationConsent,
+      String errorMessage) {
+    if (currentFluoridationConsent != null && result.isFluorideVarnishApplied() == null) {
       throw new BadRequestException(errorMessage);
     }
 
@@ -264,6 +278,22 @@ public class Validator {
             .toList();
     if (!inexistentLabels.isEmpty()) {
       throw new BadRequestException("Invalid labels: %s".formatted(inexistentLabels));
+    }
+  }
+
+  public static void validateAllChildrenAreOpenAndOfYear(List<Child> childrenToClose, Year year) {
+    List<UUID> childrenNotInCurrentSchoolYear =
+        childrenToClose.stream()
+            .filter(
+                child ->
+                    !(child.getYear().equals(year)
+                        && child.getProcedureStatus().equals(ProcedureStatus.OPEN)))
+            .map(SequencedBaseEntityWithExternalId::getExternalId)
+            .toList();
+    if (!childrenNotInCurrentSchoolYear.isEmpty()) {
+      throw new BadRequestException(
+          "Not all children are open procedures and of current year: "
+              + childrenNotInCurrentSchoolYear);
     }
   }
 }

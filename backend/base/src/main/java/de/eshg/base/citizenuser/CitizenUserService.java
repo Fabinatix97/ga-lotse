@@ -206,8 +206,8 @@ public class CitizenUserService {
     }
   }
 
-  public void addCredential(UUID userId, CredentialTypeDto type, String secret) {
-    citizenKeycloakClient.addCredential(userId, type, secret);
+  public void updateCredential(UUID userId, CredentialTypeDto type, String secret) {
+    citizenKeycloakClient.updateCredential(userId, type, secret);
   }
 
   public void verifyCredential(UUID userId, CredentialTypeDto type, String secret) {

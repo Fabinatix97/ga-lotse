@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
@@ -26,7 +27,9 @@ export default function MedicalHistoryDetailsPage(
       toolbar={
         <Toolbar
           title="Anamnesebogenvorlage bearbeiten"
-          backHref={routes.medicalHistoryTemplates.index}
+          backButton={
+            <ToolbarBackButton href={routes.medicalHistoryTemplates.index} />
+          }
         />
       }
     >

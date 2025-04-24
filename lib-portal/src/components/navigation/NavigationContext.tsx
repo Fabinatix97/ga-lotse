@@ -91,11 +91,7 @@ export function NavigationContextProvider({
     pushRoute,
   ]);
 
-  return (
-    <NavigationContext.Provider value={contextValue}>
-      {children}
-    </NavigationContext.Provider>
-  );
+  return <NavigationContext value={contextValue}>{children}</NavigationContext>;
 }
 
 export function useNavigation(): NavigationContextValue {

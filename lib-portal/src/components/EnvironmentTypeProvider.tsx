@@ -21,9 +21,9 @@ interface EnvironmentTypeProps extends RequiresChildren {
 
 export function EnvironmentTypeProvider(props: EnvironmentTypeProps) {
   return (
-    <EnvironmentTypeContext.Provider value={props.environmentType}>
+    <EnvironmentTypeContext value={props.environmentType}>
       {props.children}
-    </EnvironmentTypeContext.Provider>
+    </EnvironmentTypeContext>
   );
 }
 

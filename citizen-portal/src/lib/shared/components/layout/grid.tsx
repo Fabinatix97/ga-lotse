@@ -6,8 +6,8 @@
 "use client";
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Grid, Stack } from "@mui/joy";
-import { ReactNode } from "react";
+import { Grid, Stack, styled } from "@mui/joy";
+import { Children, ReactNode } from "react";
 
 import { allBreakpoints, byBreakpoint } from "@/lib/shared/breakpoints";
 
@@ -22,6 +22,41 @@ interface TwoColumnGridProps {
 export function GridColumnStack(props: RequiresChildren) {
   return <Stack gap={GRID_SPACING}>{props.children}</Stack>;
 }
+
+export const ColumnGrid = styled("div", {
+  shouldForwardProp(prop) {
+    return !["templateColumns", "templateAreas"].includes(prop as string);
+  },
+})<{ templateColumns?: string; templateAreas?: string }>(
+  ({
+    theme,
+    children,
+    templateColumns = "2fr 1fr",
+    templateAreas = "content sidebar",
+  }) => ({
+    display: "grid",
+    gridTemplateColumns: templateColumns,
+    gap: theme.spacing(GRID_SPACING),
+    alignItems: "start",
+    gridTemplateAreas: new Array(Children.count(children) - 1)
+      .fill(templateAreas)
+      .map((t) => `"${t}"`)
+      .join("\n"),
+
+    [theme.breakpoints.down("md")]: {
+      gridTemplateColumns: "1fr",
+      gridTemplateAreas: `
+        "content"
+        "sidebar"
+      `,
+      display: "flex",
+      flexDirection: "column",
+      "& > *": {
+        width: "100%",
+      },
+    },
+  }),
+);
 
 export function TwoColumnGrid(props: TwoColumnGridProps) {
   return (

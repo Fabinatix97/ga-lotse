@@ -23,6 +23,7 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedurePaginati
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.GetEmployeeOmsProcedureOverviewResponse;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
+import de.eshg.officialmedicalservice.procedure.api.HumanReadablePersonIdSearchParameters;
 import de.eshg.officialmedicalservice.procedure.api.MergeAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAdditionalInfoRequest;
@@ -124,10 +125,16 @@ public class EmployeeOmsProcedureController {
           EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
       @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters,
       @InlineParameterObject @ParameterObject @Valid
-          ProcedureLabCodeSearchParameters labCodeSearchParameters) {
+          ProcedureLabCodeSearchParameters labCodeSearchParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          HumanReadablePersonIdSearchParameters humanReadablePersonIdSearchParameters) {
     EmployeePagedOmsProcedures pagedOmsProcedures =
         employeeOmsProcedureService.getEmployeeProceduresOverview(
-            filters, paginationAndSortParameters, searchParameters, labCodeSearchParameters);
+            filters,
+            paginationAndSortParameters,
+            searchParameters,
+            labCodeSearchParameters,
+            humanReadablePersonIdSearchParameters);
     int medicalOpinionLeadTime = employeeOmsProcedureService.getCutOffDateLeadTime();
     return new GetEmployeeOmsProcedureOverviewResponse(
         pagedOmsProcedures.proceduresPage(),

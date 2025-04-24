@@ -15,16 +15,22 @@
   "dependencies": {
     "@eshg/base-api": "workspace:*",
     "@eshg/lib-portal": "workspace:*",
+    "@eshg/lib-procedures-api": "workspace:*",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",
     "@tanstack/react-query": "catalog:common",
+    "@tanstack/react-table": "catalog:common",
+    "date-fns": "catalog:common",
     "formik": "catalog:common",
     "next": "catalog:next",
     "react": "catalog:react",
+    "react-error-boundary": "catalog:common",
     "remeda": "catalog:common",
-    "use-debounce": "catalog:common"
+    "use-debounce": "catalog:common",
+    "uuid": "catalog:common"
   },
   "devDependencies": {
+    "@eshg/lib-vitest": "workspace:*",
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",
     "@tanstack/eslint-plugin-query": "catalog:common",

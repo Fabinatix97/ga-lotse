@@ -265,6 +265,7 @@ public record AnamnesisDto(
     public enum CurrentMedicalConditionDto {
       ATTACKS,
       LACK_OF_APPETITE,
+      SHORTNESS_OF_BREATH,
       JOINT_TROUBLE,
       EAR_NOSE_THROAT,
       HEART_TROUBLE,
@@ -279,7 +280,6 @@ public record AnamnesisDto(
       RHEUMATIC_DISORDERS,
       BACK_PAIN,
       PAIN,
-      HEARING_DIFFICULTY,
       HEARING_LOSS,
       INSOMNIA,
       VERTIGO,

@@ -10,6 +10,7 @@ import {
   PROCEDURE_STATUS_COLORS,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
@@ -24,7 +25,10 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { isPlainObject } from "remeda";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
-import { useGetStatusQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import {
+  useGetStatusQuery,
+  useGetVaccinationConsultationDetailsQuery,
+} from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationTabHeader } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabHeader";
 import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
@@ -36,17 +40,20 @@ export function VaccinationConsultationTabNavigationToolbar({
   const hasTravelMedicineAdminRole = useHasUserRoleCheck(
     ApiUserRole.TravelMedicineAdmin,
   );
-  const [{ data: status }] = useSuspenseQueries({
-    queries: [useGetStatusQuery(id)],
+  const [{ data: status }, { data: detailsResponse }] = useSuspenseQueries({
+    queries: [
+      useGetStatusQuery(id),
+      useGetVaccinationConsultationDetailsQuery(id),
+    ],
   });
   const tabItems = createTabItems(id);
 
   return (
     <TabNavigationToolbar
-      routeBack={
-        hasTravelMedicineAdminRole ? businessRoutes.procedures.index : undefined
+      header={
+        <VaccinationConsultationTabHeader detailsResponse={detailsResponse} />
       }
-      header={<VaccinationConsultationTabHeader id={id} />}
+      items={tabItems}
       afterTabs={
         <Chip
           data-testid="tab-procedure-state"
@@ -56,7 +63,11 @@ export function VaccinationConsultationTabNavigationToolbar({
           {procedureStatusNames[status]}
         </Chip>
       }
-      items={tabItems}
+      backButton={
+        hasTravelMedicineAdminRole ? (
+          <ToolbarBackButton href={businessRoutes.procedures.index} />
+        ) : null
+      }
     />
   );
 }

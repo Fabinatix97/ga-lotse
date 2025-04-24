@@ -6,10 +6,12 @@
 package de.eshg.stiprotection;
 
 import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.FOLLOW_UP_CREATED;
+import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -164,6 +166,7 @@ public class StiProtectionProcedureController {
       @PathVariable("id") UUID procedureId,
       @Valid @RequestBody UpdatePersonDetailsRequest request) {
     stiProtectionService.updatePersonDetails(procedureId, PersonMapper.toDataType(request));
+    progressEntryUtil.addProgressEntry(procedureId, PERSON_DETAILS_UPDATED, TriggerType.EMPLOYEE);
   }
 
   @PostMapping("/{id}/appointment")
@@ -188,8 +191,9 @@ public class StiProtectionProcedureController {
     appointmentService.updateAppointment(procedure, appointmentData);
     String appointmentTimeAsString = appointmentService.getAppointmentTimeAsString(appointmentData);
     progressEntryUtil.addProgressEntry(
-        procedureId,
+        procedure,
         StiProtectionSystemProgressEntryType.APPOINTMENT_REBOOKED,
+        TriggerType.EMPLOYEE,
         appointmentTimeAsString);
   }
 
@@ -201,7 +205,9 @@ public class StiProtectionProcedureController {
     Appointments.assertHasAppointment(procedure);
     appointmentService.cancelAppointmentDeleteCalendarEvent(procedure);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED);
+        procedure,
+        StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED,
+        TriggerType.EMPLOYEE);
   }
 
   @PostMapping("/{id}/appointment/finalize")
@@ -212,7 +218,9 @@ public class StiProtectionProcedureController {
     Appointments.assertHasAppointment(procedure);
     appointmentService.finalizeAppointment(procedure);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_FINALIZED);
+        procedure,
+        StiProtectionSystemProgressEntryType.APPOINTMENT_FINALIZED,
+        TriggerType.EMPLOYEE);
   }
 
   @PutMapping("/{id}/close")
@@ -288,7 +296,7 @@ public class StiProtectionProcedureController {
 
     followUpProcedureService.transferFollowUpData(procedure, followUpProcedure);
 
-    progressEntryUtil.addProgressEntry(followUpProcedure.getExternalId(), FOLLOW_UP_CREATED);
+    progressEntryUtil.addProgressEntry(followUpProcedure, FOLLOW_UP_CREATED, TriggerType.EMPLOYEE);
     return new CreateFollowUpProcedureResponse(followUpProcedure.getExternalId(), pin);
   }
 }

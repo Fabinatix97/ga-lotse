@@ -71,3 +71,12 @@ export function useGetAllDocuments(procedureId: string) {
     select: (response) => response.documents,
   });
 }
+
+export function useGetAnamnesis(procedureId: string) {
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+  return queryOptions({
+    queryKey: employeeOmsProcedureApiQueryKey(["getAnamnesis", procedureId]),
+    queryFn: () => employeeOmsProcedureApi.getAnamnesis(procedureId),
+    select: (response) => response,
+  });
+}

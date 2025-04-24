@@ -39,6 +39,11 @@ public class TaskUtil {
     taskToUpdate.setTaskStatus(TaskStatus.CLOSED);
   }
 
+  public static void reopenSingleTaskOfType(SchoolEntryProcedure procedure, TaskType type) {
+    SchoolEntryTask taskToUpdate = procedure.getTaskOfType(type);
+    taskToUpdate.setTaskStatus(TaskStatus.OPEN);
+  }
+
   public static void closeOptionalTaskOfType(SchoolEntryProcedure procedure, TaskType type) {
     procedure.getOptionalTaskOfType(type).ifPresent(task -> task.setTaskStatus(TaskStatus.CLOSED));
   }

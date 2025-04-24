@@ -7,6 +7,7 @@ import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
+import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { Snackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
@@ -32,10 +33,6 @@ import { CorechecklistIcon } from "@/lib/businessModules/inspection/components/i
 import { ExclusiveCorechecklistIcon } from "@/lib/businessModules/inspection/components/icons/ExclusiveCorechecklistIcon";
 import { InactiveChecklistIcon } from "@/lib/businessModules/inspection/components/icons/InactiveChecklistIcon";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper = createColumnHelper<ApiChecklistDefinition>();
 

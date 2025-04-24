@@ -21,6 +21,7 @@ import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
 import de.eshg.rest.service.security.config.BaseUrls;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -51,6 +52,7 @@ public class ProphylaxisSessionController {
 
   @PostMapping
   @Transactional
+  @Operation(summary = "Creates a new prophylaxis")
   public CreateProphylaxisSessionResponse createProphylaxisSession(
       @Valid @RequestBody CreateProphylaxisSessionRequest request) {
     ProphylaxisSession prophylaxisSession =
@@ -60,6 +62,7 @@ public class ProphylaxisSessionController {
 
   @GetMapping
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns a filtered and paginated list of prophylaxis sessions")
   public GetProphylaxisSessionResponse getProphylaxisSessions(
       @InlineParameterObject @ParameterObject @Valid
           ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters,
@@ -77,6 +80,7 @@ public class ProphylaxisSessionController {
 
   @GetMapping("/{prophylaxisSessionId}")
   @Transactional(readOnly = true)
+  @Operation(summary = "Retrieves a specific prophylaxis session by ID")
   public ProphylaxisSessionDetailsDto getProphylaxisSession(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId) {
     return mapProphylaxisSessionToDetailsDto(
@@ -85,6 +89,7 @@ public class ProphylaxisSessionController {
 
   @PutMapping("/{prophylaxisSessionId}")
   @Transactional
+  @Operation(summary = "Updates a prophylaxis session")
   public ProphylaxisSessionDetailsDto updateProphylaxisSession(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionRequest request) {
@@ -94,6 +99,7 @@ public class ProphylaxisSessionController {
 
   @PutMapping("/{prophylaxisSessionId}/participants")
   @Transactional
+  @Operation(summary = "Updates the participants of a given prophylaxis session")
   public ProphylaxisSessionDetailsDto updateProphylaxisSessionParticipants(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionParticipantsRequest request) {
@@ -104,6 +110,7 @@ public class ProphylaxisSessionController {
 
   @PatchMapping("/{prophylaxisSessionId}/examinations")
   @Transactional
+  @Operation(summary = "Updates an examination of a given prophylaxis session")
   public ProphylaxisSessionDetailsDto updateProphylaxisSessionExaminations(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionExaminationsRequest request) {
@@ -114,6 +121,7 @@ public class ProphylaxisSessionController {
 
   @PostMapping("/{prophylaxisSessionId}/close-prophylaxis-session")
   @Transactional
+  @Operation(summary = "Changes the status of a prophylaxis session")
   public ProphylaxisSessionDetailsDto closeProphylaxisSession(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody CloseProphylaxisSessionRequest request) {

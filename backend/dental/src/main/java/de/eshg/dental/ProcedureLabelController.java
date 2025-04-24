@@ -20,6 +20,7 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.validation.ValidationUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.awt.Color;
@@ -43,6 +44,7 @@ public class ProcedureLabelController {
 
   @PostMapping
   @Transactional
+  @Operation(summary = "Creates a new procedure label")
   public ProcedureLabelDto createLabel(@Valid @RequestBody CreateProcedureLabelRequest request) {
     validateName(request.name());
 
@@ -54,6 +56,7 @@ public class ProcedureLabelController {
 
   @GetMapping
   @Transactional(readOnly = true)
+  @Operation(summary = "Retrieves a list of procedure labels sorted by ID")
   public GetProcedureLabelsResponse getLabels() {
     List<ProcedureLabel> procedureLabels = procedureLabelRepository.findAllByOrderById();
 
@@ -62,6 +65,7 @@ public class ProcedureLabelController {
 
   @GetMapping("/{id}")
   @Transactional(readOnly = true)
+  @Operation(summary = "Returns a specific procedure label identified by ID")
   public ProcedureLabelDto getLabel(@PathVariable("id") UUID id) {
     return ProcedureLabelMapper.toDto(
         procedureLabelRepository
@@ -71,6 +75,7 @@ public class ProcedureLabelController {
 
   @PutMapping("/{id}")
   @Transactional
+  @Operation(summary = "Updates a procedure label")
   public ProcedureLabelDto updateLabel(
       @PathVariable("id") UUID id, @Valid @RequestBody UpdateProcedureLabelRequest request) {
     ProcedureLabel procedureLabel =

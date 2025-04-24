@@ -5,17 +5,16 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { Sheet, Stack } from "@mui/joy";
-import { Formik } from "formik";
-
 import {
+  CheckboxField,
+  MainContentLayout,
   SearchableGroup,
   SearchableGroups,
-} from "@/lib/shared/components/SearchableGroups";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
+} from "@eshg/lib-employee-portal";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
 
 export default function PlaygroundSearchableGroupsPage() {
   const groups = [
@@ -32,7 +31,7 @@ export default function PlaygroundSearchableGroupsPage() {
     },
     {
       name: "Team 2",
-      inAccordion: true,
+      inAccordion: false,
       items: [
         { key: "Richie", searchableValue: "Richie" },
         { key: "Linette", searchableValue: "Linette" },
@@ -69,6 +68,14 @@ export default function PlaygroundSearchableGroupsPage() {
                       representingValue={item.key}
                       label={item.searchableValue}
                     />
+                  )}
+                  renderGroup={(group, renderItems) => (
+                    <Stack gap={1}>
+                      <Typography level="title-md">
+                        Hier könnte Ihre Werbung stehen!
+                      </Typography>
+                      {renderItems(group.items)}
+                    </Stack>
                   )}
                 />
                 <SubmitButton submitting={isSubmitting}>Submit</SubmitButton>

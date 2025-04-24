@@ -15,6 +15,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConfigConcernQualifier(concern = Concern.HIV_STI_CONSULTATION)
 public class StiConsultationDepartmentInfoConfigService
     extends AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
         StiConsultationDepartmentInfoConfig> {

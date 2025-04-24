@@ -11,6 +11,7 @@ import {
   OverlayBoundary,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
 } from "@eshg/lib-employee-portal";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
@@ -18,7 +19,6 @@ import { useParams, useRouter } from "next/navigation";
 import { AuditlogDeletePasswordButton } from "@/lib/auditlog/components/AuditlogDeletePasswordButton";
 import { useGetAccessibleAuditLogs } from "@/lib/auditlog/queries/auditlog";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 
 import { AuditLogDecryptSidebar } from "./AuditLogDecryptSidebar";
 import { auditLogAccessibleColumns } from "./auditLogAccessibleColumns";
@@ -42,7 +42,7 @@ export function AuditlogAccessibleTableView({
         fullHeight
         controls={
           <ButtonBar
-            left={<FilterButton disabled />}
+            left={<ToggleFilterButton disabled />}
             right={<AuditlogDeletePasswordButton />}
           />
         }

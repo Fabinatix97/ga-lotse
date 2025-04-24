@@ -3,14 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiAddress,
-  ApiDomesticAddress,
-  ApiPostboxAddress,
-  instanceOfApiDomesticAddress,
-  instanceOfApiPostboxAddress,
-} from "@eshg/base-api";
-import { isNonNullish } from "remeda";
+import { ApiDomesticAddress, ApiPostboxAddress } from "@eshg/base-api";
 
 export type BaseAddressType = "DomesticAddress" | "PostboxAddress";
 
@@ -33,14 +26,4 @@ export function isDomesticAddress(
   address: BaseAddress | undefined,
 ): address is TaggedDomesticAddress {
   return address?.type === "DomesticAddress";
-}
-
-export function isBaseAddress(
-  apiAddress?: ApiAddress,
-): apiAddress is BaseAddress {
-  return (
-    isNonNullish(apiAddress) &&
-    (instanceOfApiPostboxAddress(apiAddress) ||
-      instanceOfApiDomesticAddress(apiAddress))
-  );
 }

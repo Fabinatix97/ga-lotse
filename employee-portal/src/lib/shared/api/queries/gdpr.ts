@@ -10,7 +10,6 @@ import {
   ApiBusinessModule,
   ApiGdprDownloadPackageInfo,
   ApiGetGdprDownloadPackagesInfoResponse,
-  ApiGetGdprNotificationBannerResponse,
   GdprValidationTaskApiInterface,
   GetAllGdprValidationTasksRequest,
 } from "@eshg/lib-procedures-api";
@@ -24,21 +23,6 @@ import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 
 const businessModules = Object.freeze(Object.values(ApiBusinessModule));
-
-export function useGetGdprValidationBannerQuery(
-  businessModule: ApiBusinessModule,
-) {
-  const taskApi = useGdprValidationTaskApi(businessModule);
-  return queryOptions({
-    queryKey: gdprValidationTaskApiQueryKey([
-      businessModule,
-      "getGdprNotificationBanner",
-    ]),
-    queryFn: async (): Promise<ApiGetGdprNotificationBannerResponse> => {
-      return await taskApi.getGdprNotificationBanner();
-    },
-  });
-}
 
 export function getGdprValidationTaskDetailsQuery(
   taskApi: GdprValidationTaskApiInterface,

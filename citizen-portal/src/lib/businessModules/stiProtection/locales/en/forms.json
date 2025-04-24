@@ -37,13 +37,15 @@
   "personal_data": {
     "title": "Personal Data",
     "fields": {
-      "gender": "Gender",
-      "gender_required": "Please select your gender.",
+      "gender": "Biological gender",
+      "gender_required": "Please select your biological gender.",
       "birth_year": "Year of birth",
       "birth_year_required": "Please enter your year of birth.",
+      "invalid_year_range": "Please specify a year between {{startInclusive}} and {{endInclusive}}.",
       "birth_country": "Country of birth",
-      "in_germany_since": "In Germany since",
-      "invalid_year_range": "Please specify a year between {{startInclusive}} and {{endInclusive}}."
+      "pronouns": "Pronouns",
+      "sufficient_german_skills": "Sufficient German skills",
+      "other_known_languages": "Other languages"
     }
   },
   "pin": {

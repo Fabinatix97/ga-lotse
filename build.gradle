@@ -125,6 +125,7 @@ def installDependencies = tasks.register('installDependencies', PnpmTask) {
 }
 
 tasks.register('updateLockfile', PnpmTask) {
+  group = 'maintenance'
   description = "Install missing dependencies and update the lock file. Use this to add new dependencies."
   inputs.files depsInputs
   outputs.dir nodeModulesDir
@@ -135,6 +136,7 @@ tasks.register('updateLockfile', PnpmTask) {
 }
 
 tasks.register('updateDependencies', PnpmTask) {
+  group = 'maintenance'
   description = "Update ALL npm dependencies to the latest release"
   inputs.files depsInputs
   outputs.dir nodeModulesDir
@@ -145,6 +147,7 @@ tasks.register('updateDependencies', PnpmTask) {
 }
 
 tasks.register('outdatedDependencies', PnpmTask) {
+  group = 'maintenance'
   description = 'List all outdated npm dependencies'
   inputs.files depsInputs
   outputs.upToDateWhen { true }

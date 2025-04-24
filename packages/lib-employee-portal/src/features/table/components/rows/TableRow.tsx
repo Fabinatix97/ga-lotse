@@ -192,6 +192,17 @@ export function TableRow<TData>({
               meta={cell.column.columnDef.meta}
               className={canNavigate ? "cellCanNavigate" : undefined}
               onClick={canNavigate ? handleNavigate : undefined}
+              onKeyDown={(event) => {
+                switch (event.key) {
+                  case "Enter":
+                  case "ArrowDown":
+                  case "ArrowUp": {
+                    if (isClickableElement) {
+                      event.stopPropagation();
+                    }
+                  }
+                }
+              }}
             >
               {isLink ? (
                 <InternalLink
@@ -201,7 +212,6 @@ export function TableRow<TData>({
                       textDecorationLine: "none",
                     },
                   }}
-                  position="unset"
                   href={rowNavigationRoute!}
                 >
                   {cellFlexRenderer}

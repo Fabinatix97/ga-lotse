@@ -4,6 +4,8 @@
  */
 
 import { Box, Typography } from "@mui/joy";
+import assert from "assert";
+import { isArray, isString } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
 
@@ -11,7 +13,6 @@ export interface TranslatedListProps {
   baseKey: string;
   headingKey: string;
   listKey: string;
-  length: number;
   localePath: string;
 }
 
@@ -19,26 +20,30 @@ export function TranslatedList({
   baseKey,
   headingKey,
   listKey,
-  length,
   localePath,
 }: TranslatedListProps) {
   const { t } = useTranslation(localePath);
+  const fullListKey = `${baseKey}.${listKey}`;
+  const list = t(fullListKey, { returnObjects: true }) as unknown;
+  assert.ok(
+    isArrayOf(list, isString),
+    `${localePath}:${fullListKey} isn't an array of strings! (${JSON.stringify(list)})`,
+  );
   return (
     <div>
       <Typography level="title-md">{t(`${baseKey}.${headingKey}`)}</Typography>
       <Box component="ul" sx={{ margin: 1, paddingLeft: 2 }}>
-        {Array(length)
-          .fill(0)
-          .map((_, index) => (
-            <Typography
-              key={index}
-              component="li"
-              sx={{ display: "list-item" }}
-            >
-              {t(`${baseKey}.${listKey}.${index}`)}
-            </Typography>
-          ))}
+        {list.map((value, index) => (
+          <Typography key={index} component="li" sx={{ display: "list-item" }}>
+            {value}
+          </Typography>
+        ))}
       </Box>
     </div>
   );
+}
+
+type ShowsIs<K> = (k: unknown) => k is K;
+function isArrayOf<K>(t: unknown, predicate: ShowsIs<K>): t is K[] {
+  return isArray(t) && t.every(predicate);
 }

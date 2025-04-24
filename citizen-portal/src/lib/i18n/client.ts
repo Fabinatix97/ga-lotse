@@ -15,10 +15,7 @@ import {
 } from "react-i18next";
 import { flat, isArray, pipe, unique } from "remeda";
 
-import {
-  options,
-  resourceResolver, // supportedLanguages,
-} from "@/lib/i18n/options";
+import { options, resourceResolver } from "@/lib/i18n/options";
 
 const cache: Record<string, i18n> = {};
 export function getClient(lang: string) {

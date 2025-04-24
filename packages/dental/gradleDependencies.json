@@ -3,6 +3,7 @@
     ":base-api",
     ":dental-api",
     ":lib-employee-portal",
-    ":lib-portal"
+    ":lib-portal",
+    ":lib-vitest"
   ]
 }

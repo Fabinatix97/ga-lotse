@@ -5,10 +5,12 @@
 
 package de.eshg.stiprotection;
 
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.citizen.GetCitizenProcedureResponse;
 import de.eshg.stiprotection.api.citizen.UpdateBookedAppointmentRequest;
+import de.eshg.stiprotection.api.citizen.UpdatePinRequest;
 import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryRequest;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
@@ -83,7 +85,9 @@ public class CitizenController {
     MedicalHistory medicalHistory = medicalHistoryService.getOrCreateMedicalHistory(procedureId);
     MedicalHistoryMapper.update(request.medicalHistory(), medicalHistory);
     progressEntryUtil.addProgressEntry(
-        procedureId, StiProtectionSystemProgressEntryType.CITIZEN_MEDICAL_HISTORY_UPDATED);
+        procedure,
+        StiProtectionSystemProgressEntryType.CITIZEN_MEDICAL_HISTORY_UPDATED,
+        TriggerType.CITIZEN);
   }
 
   @DeleteMapping("/appointment")
@@ -93,6 +97,8 @@ public class CitizenController {
     StiProtectionProcedure procedure = citizenService.getProcedure(principal);
     Appointments.assertHasAppointment(procedure);
     appointmentService.cancelAppointment(procedure);
+    progressEntryUtil.addProgressEntry(
+        procedure, StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED, TriggerType.CITIZEN);
   }
 
   @PutMapping("/appointment")
@@ -108,8 +114,16 @@ public class CitizenController {
         AppointmentMapper.toDataType(request, openAppointmentHistoryEntry.getAppointmentType());
     appointmentService.updateCitizenAppointment(procedure, updatedAppointmentData);
     progressEntryUtil.addProgressEntry(
-        procedure.getExternalId(),
+        procedure,
         StiProtectionSystemProgressEntryType.APPOINTMENT_REBOOKED,
+        TriggerType.CITIZEN,
         appointmentService.getAppointmentTimeAsString(updatedAppointmentData));
+  }
+
+  @PutMapping("/pin")
+  @Operation(summary = "Update the pin credential of a citizen user.")
+  @Transactional
+  public void updatePin(@Valid @RequestBody UpdatePinRequest request) {
+    citizenService.updateAnonymousUserPin(request.currentPin(), request.newPin());
   }
 }

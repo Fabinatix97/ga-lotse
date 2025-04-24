@@ -15,10 +15,7 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import {
-  validateLength,
-  validatePastOrTodayDate,
-} from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,
@@ -39,6 +36,7 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const professionalTitleNamesOptions = buildEnumOptions(professionalTitleNames);
 
 export function ProfessionalRegistrationFormStepTwo() {
+  const { validateLength, validatePastOrTodayDate } = useValidators();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 

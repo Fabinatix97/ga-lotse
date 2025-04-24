@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
@@ -40,10 +41,6 @@ import {
   STATUS_NAMES_APPOINTMENT,
   STATUS_NAMES_MEDICAL_HISTORY_ANSWER,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/translations";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 import { formatDateTimeShortenedWeekday } from "@/lib/shared/helpers/dateTime";
 
 function getMedicalHistoryAnswerStatus(

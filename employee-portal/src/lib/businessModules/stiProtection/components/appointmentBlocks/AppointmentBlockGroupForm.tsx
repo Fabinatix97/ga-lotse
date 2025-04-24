@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar, FormSheet, NamedUser } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointmentType,
@@ -20,11 +20,9 @@ import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
-import { StaffUser } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 import { mapFormValues } from "./CreateAppointmentBlockGroupForm";
@@ -86,7 +84,7 @@ function validateForm(
   return errors;
 }
 
-function userToOption(user: ApiUser): StaffUser {
+function userToOption(user: ApiUser): NamedUser {
   return {
     userId: user.userId,
     firstName: user.firstName,

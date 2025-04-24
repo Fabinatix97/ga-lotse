@@ -3,59 +3,58 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Row } from "@eshg/lib-portal/components/Row";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { ChevronLeft } from "@mui/icons-material";
-import { Sheet, Typography } from "@mui/joy";
+import { Divider, Stack, Typography, styled } from "@mui/joy";
+import { ReactNode } from "react";
 
 import { useLayoutConfig } from "@/contexts/layoutConfig";
 
-export interface ToolbarProps {
-  title: string;
-  backHref?: string;
+interface ToolbarStackProps {
+  height: string;
 }
 
-export function Toolbar({ title, backHref }: ToolbarProps) {
+const ToolbarStack = styled(Stack, {
+  shouldForwardProp: (propName) => propName !== "height",
+})<ToolbarStackProps>(({ theme, height }) => ({
+  height,
+  backgroundColor: theme.palette.background.body,
+  borderStyle: "solid",
+  borderColor: theme.palette.divider,
+  borderWidth: 0,
+  borderBottomWidth: 1,
+  boxSizing: "border-box",
+}));
+
+const TitleStack = styled(Stack)(({ theme }) => ({
+  flex: 1,
+  gap: theme.spacing(1),
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingInline: theme.spacing(3),
+}));
+
+export interface ToolbarProps {
+  title: string;
+  backButton?: ReactNode;
+  afterTitle?: ReactNode;
+}
+
+export function Toolbar(props: ToolbarProps) {
+  const { title, backButton, afterTitle } = props;
   const { simpleToolbarHeight } = useLayoutConfig();
 
   return (
-    <Row sx={{ gap: 0 }}>
-      {backHref && (
-        <InternalLinkButton
-          aria-label="Zurück"
-          href={backHref}
-          variant="outlined"
-          color="neutral"
-          sx={{
-            borderRadius: 0,
-            borderWidth: 0,
-            borderBottomWidth: 1,
-          }}
-        >
-          <ChevronLeft sx={{ width: "2rem", height: "2rem" }} />
-        </InternalLinkButton>
-      )}
-      <Sheet
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          borderRadius: 0,
-          borderWidth: 0,
-          borderBottomWidth: 1,
-          height: simpleToolbarHeight,
-          flex: 1,
-        }}
-      >
-        <Typography
-          component="h1"
-          level="h2"
-          sx={{
-            paddingLeft: 1,
-          }}
-        >
+    <ToolbarStack
+      direction="row"
+      height={simpleToolbarHeight}
+      divider={<Divider orientation="vertical" />}
+    >
+      {backButton}
+      <TitleStack direction="row">
+        <Typography component="h1" level="h2">
           {title}
         </Typography>
-      </Sheet>
-    </Row>
+        {afterTitle}
+      </TitleStack>
+    </ToolbarStack>
   );
 }

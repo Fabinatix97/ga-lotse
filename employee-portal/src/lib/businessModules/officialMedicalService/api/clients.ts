@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AppointmentBlockApi,
   AppointmentTypeApi,
@@ -12,6 +11,7 @@ import {
   Configuration,
   EmployeeOmsProcedureApi,
   FileApi,
+  GdprValidationTaskApi,
   OmsAppointmentApi,
   OmsDocumentApi,
   OmsFileApi,
@@ -20,8 +20,10 @@ import {
   WaitingRoomApi,
 } from "@eshg/official-medical-service-api";
 
-function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
+
+export function useConfiguration() {
+  const configurationParameters = useEmployeePortalApiConfiguration(
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
@@ -80,4 +82,9 @@ export function useOmsFileApi() {
 export function useWaitingRoomApi() {
   const configuration = useConfiguration();
   return new WaitingRoomApi(configuration);
+}
+
+export function useGdprValidationTaskApi() {
+  const configuration = useConfiguration();
+  return new GdprValidationTaskApi(configuration);
 }

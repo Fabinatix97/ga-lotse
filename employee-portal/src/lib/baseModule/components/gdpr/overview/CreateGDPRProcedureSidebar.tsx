@@ -13,6 +13,7 @@ import {
   SidebarForm,
   SidebarWithFormRefProps,
   createEmptyAddress,
+  gdprRoutes,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
@@ -21,10 +22,8 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SALUTATION_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  validateDateOfBirth,
-  validateLength,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Grid } from "@mui/joy";
 import { Formik } from "formik";
@@ -33,7 +32,6 @@ import { useRouter } from "next/navigation";
 import { mapAddGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { TYPE_OPTIONS } from "@/lib/baseModule/components/gdpr/i18n";
-import { routes } from "@/lib/baseModule/shared/routes";
 
 export interface GDPRProcedureFormInputs {
   type: OptionalFieldValue<ApiGdprProcedureType>;
@@ -71,6 +69,7 @@ function CreateGDPRProcedureSidebar({
   onClose,
   formRef,
 }: SidebarWithFormRefProps) {
+  const { validateLength } = useValidators();
   const router = useRouter();
   const fieldName = createFieldNameMapper<GDPRProcedureFormInputs>();
 
@@ -81,7 +80,7 @@ function CreateGDPRProcedureSidebar({
       initialValues={initialValues()}
       onSubmit={async (values) => {
         await addGdprProcedure.mutateAsync(mapAddGdprProcedureRequest(values), {
-          onSuccess: ({ id }) => router.push(routes.gdpr.details(id)),
+          onSuccess: ({ id }) => router.push(gdprRoutes.details(id)),
         });
       }}
     >

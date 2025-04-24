@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   CitizenAuthApi,
   CitizenPublicApi,
@@ -11,8 +10,10 @@ import {
   TravelMedicineFeatureTogglesPublicApi,
 } from "@eshg/travel-medicine-api";
 
+import { useCitizenPortalApiConfiguration } from "@/lib/shared/api/useCitizenPortalApiConfiguration";
+
 function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configurationParameters = useCitizenPortalApiConfiguration(
     "PUBLIC_TRAVEL_MEDICINE_BACKEND_URL",
   );
   return new Configuration(configurationParameters);

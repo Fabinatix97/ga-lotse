@@ -114,8 +114,8 @@ tasks.register('createDockerfile', Dockerfile) {
   environmentVariable('NODE_ENV', 'production')
   environmentVariable('NEXT_TELEMETRY_DISABLED', '1')
 
-  runCommand("addgroup --system --gid 1001 ${groupName}")
-  runCommand("adduser --system --shell /usr/sbin/nologin --home /app --ingroup ${groupName} --uid 1001 ${userName}")
+  runCommand("addgroup --system --gid 10001 ${groupName}")
+  runCommand("adduser --system --shell /usr/sbin/nologin --home /app --ingroup ${groupName} --uid 10001 ${userName}")
 
   user("${userName}:${groupName}")
 

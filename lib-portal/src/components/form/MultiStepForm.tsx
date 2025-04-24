@@ -105,12 +105,12 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
   );
 
   return (
-    <MultiStepFormContext.Provider value={contextValue}>
+    <MultiStepFormContext value={contextValue}>
       {children({
         Outlet: currentNode,
         ...contextValue,
       })}
-    </MultiStepFormContext.Provider>
+    </MultiStepFormContext>
   );
 }
 

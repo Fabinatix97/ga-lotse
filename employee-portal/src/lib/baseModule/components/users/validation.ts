@@ -4,23 +4,21 @@
  */
 
 import {
-  validateLength,
   validatePipe,
   validateRegex,
 } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 
 const phoneNumberRegex = new RegExp(/^(\+[1-9])?[-+0-9 ]+$/);
-const chatUsernameRegex = new RegExp(/^\p{ASCII}+$/u);
 
-export const phoneNumberValidator = validatePipe(
-  validateLength(1, 23),
-  validateRegex(phoneNumberRegex, "Bitte eine gültige Telefonnummer angeben."),
-);
+export function usePhoneNumberValidator() {
+  const { validateLength } = useValidators();
 
-export const chatUsernameValidator = validatePipe(
-  validateLength(1, 255),
-  validateRegex(
-    chatUsernameRegex,
-    "Bitte einen gültigen Benutzernamen angeben.",
-  ),
-);
+  return validatePipe(
+    validateLength(1, 23),
+    validateRegex(
+      phoneNumberRegex,
+      "Bitte eine gültige Telefonnummer angeben.",
+    ),
+  );
+}

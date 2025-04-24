@@ -36,6 +36,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   MEDICAL_OPINION_STATUS_CHANGED: "Gutachtenstatus verändert",
   ADDITIONAL_INFO_CHANGED: "Zusatzinfos aktualisiert",
   CONCERN_CHANGED: "Anliegen gesetzt",
+  ANAMNESIS_CHANGED: "Anamnese aktualisiert",
 };
 
 export const statusColorsDocumentStatus = {

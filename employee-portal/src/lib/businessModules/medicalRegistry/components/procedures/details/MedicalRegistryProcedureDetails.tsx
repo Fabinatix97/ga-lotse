@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  InformationSheet,
   PageGrid,
   useConfirmationDialog,
   useHasUserRoleCheck,
@@ -28,7 +29,6 @@ import { TypeOfChangeSection } from "@/lib/businessModules/medicalRegistry/compo
 import { WrittenConfirmationSection } from "@/lib/businessModules/medicalRegistry/components/procedures/details/WrittenConfirmationSection";
 import { useFinalizeDraft } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface MedicalRegistryProcedureDetailsProps {
   procedureId: string;

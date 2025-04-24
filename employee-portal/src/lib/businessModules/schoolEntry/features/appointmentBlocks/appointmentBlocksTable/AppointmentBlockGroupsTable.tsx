@@ -14,165 +14,29 @@ import {
   getSortKey,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  ApiAppointmentBlockSortKey,
-  ApiAppointmentLocation,
-  ApiAppointmentType,
-  ApiLocationSelectionMode,
-} from "@eshg/school-entry-api";
-import { Chip } from "@mui/joy";
+import { ApiAppointmentBlockSortKey } from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import {
-  ColumnSort,
-  TableOptions,
-  createColumnHelper,
-} from "@tanstack/react-table";
+import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import {
   useAppointmentBlockApi,
   useConfigApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
-import {
-  AppointmentBlock,
-  AppointmentBlockGroup,
-} from "@/lib/businessModules/schoolEntry/api/models/AppointmentBlockGroup";
+import { useDeleteAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
 import { getAppointmentBlockGroupsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { formatCalendarWeek } from "@/lib/shared/helpers/dateTime";
 
-const columnHelper = createColumnHelper<AppointmentBlockRow>();
-
-const COLUMNS = [
-  columnHelper.accessor("start", {
-    id: "calendarWeek",
-    header: "Woche",
-    cell: (props) =>
-      props.row.depth === 0 ? formatCalendarWeek(props.getValue()) : undefined,
-    enableSorting: false,
-    meta: {
-      width: 96,
-    },
-  }),
-  columnHelper.accessor("type", {
-    header: "Art",
-    cell: (props) =>
-      props.row.depth === 0 ? APPOINTMENT_TYPES[props.getValue()] : undefined,
-    enableSorting: false,
-    meta: {
-      width: 200,
-    },
-  }),
-  columnHelper.accessor("start", {
-    header: "Start",
-    cell: (props) => formatDateTime(props.getValue()),
-    enableSorting: true,
-    meta: {
-      width: 180,
-    },
-  }),
-  columnHelper.accessor("end", {
-    header: "Ende",
-    cell: (props) => formatDateTime(props.getValue()),
-    enableSorting: true,
-    meta: {
-      width: 180,
-    },
-  }),
-  columnHelper.accessor("numberOfFreeAppointments", {
-    header: "Verfügbar",
-    cell: (props) => (
-      <Chip size="sm" color="primary">
-        {props.getValue()}
-      </Chip>
-    ),
-    enableSorting: false,
-    meta: {
-      width: 140,
-    },
-  }),
-  columnHelper.accessor("numberOfBookedAppointments", {
-    header: "Gebucht",
-    cell: (props) => (
-      <Chip size="sm" color="success">
-        {props.getValue()}
-      </Chip>
-    ),
-    enableSorting: false,
-    meta: {
-      width: 140,
-    },
-  }),
-];
-
-const LOCATION_COLUMN = columnHelper.accessor("location.name", {
-  header: "Ort",
-  cell: (props) => props.getValue(),
-  enableSorting: false,
-});
-
-function useAppointmentBlockColumns(
-  locationSelectionMode: ApiLocationSelectionMode,
-): TableOptions<AppointmentBlockRow>["columns"] {
-  return [
-    ...COLUMNS,
-    ...(locationSelectionMode !== ApiLocationSelectionMode.None
-      ? [LOCATION_COLUMN]
-      : []),
-  ];
-}
+import {
+  getSubRows,
+  toAggregatedAppointmentBlockRow,
+  useAppointmentBlockColumns,
+} from "./AppointmentBlockGroupsTable.columns";
 
 const initialSorting: ColumnSort = {
   id: "start",
   desc: false,
 };
-
-interface AppointmentBlockRow {
-  type: ApiAppointmentType;
-  start: Date;
-  end: Date;
-  numberOfFreeAppointments: number;
-  numberOfBookedAppointments: number;
-  location?: ApiAppointmentLocation;
-  subRows?: AppointmentBlockRow[];
-}
-
-function toAggregatedAppointmentBlockRow(
-  appointmentBlockGroup: AppointmentBlockGroup,
-): AppointmentBlockRow {
-  return {
-    type: appointmentBlockGroup.type,
-    start: appointmentBlockGroup.start,
-    end: appointmentBlockGroup.end,
-    numberOfFreeAppointments: appointmentBlockGroup.numberOfFreeAppointments,
-    numberOfBookedAppointments:
-      appointmentBlockGroup.numberOfBookedAppointments,
-    location: appointmentBlockGroup.location,
-    subRows: appointmentBlockGroup.appointmentBlocks.map((appointmentBlock) =>
-      toAppointmentBlockRow(appointmentBlock, appointmentBlockGroup),
-    ),
-  };
-}
-
-function toAppointmentBlockRow(
-  appointmentBlock: AppointmentBlock,
-  appointmentBlockGroup: AppointmentBlockGroup,
-): AppointmentBlockRow {
-  return {
-    type: appointmentBlockGroup.type,
-    start: appointmentBlock.start,
-    end: appointmentBlock.end,
-    numberOfFreeAppointments: appointmentBlock.numberOfFreeAppointments,
-    numberOfBookedAppointments: appointmentBlock.numberOfBookedAppointments,
-    location: appointmentBlockGroup.location,
-  };
-}
-
-function getSubRows(appointmentBlockRow: AppointmentBlockRow) {
-  return appointmentBlockRow.subRows;
-}
 
 interface AppointmentBlockGroupsTableProps {
   controls?: ReactNode;
@@ -204,7 +68,18 @@ export function AppointmentBlockGroupsTable(
         }),
       ],
     });
-  const columns = useAppointmentBlockColumns(locationSelectionMode);
+  const columns = useAppointmentBlockColumns({
+    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
+      void handleDeleteAppointmentBlock(appointmentBlockId);
+    },
+    locationSelectionMode,
+  });
+
+  const deleteAppointmentBlock = useDeleteAppointmentBlock();
+
+  async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
+    await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
+  }
 
   const rows = getAppointmentBlockGroups.data.elements.map(
     toAggregatedAppointmentBlockRow,

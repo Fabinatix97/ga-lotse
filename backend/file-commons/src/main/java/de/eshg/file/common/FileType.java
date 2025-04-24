@@ -21,7 +21,8 @@ public enum FileType {
   PDF(MediaType.APPLICATION_PDF, FileExtension.PDF),
   EML(CustomMediaTypes.EML, FileExtension.EML),
   CSV(CustomMediaTypes.CSV, FileExtension.CSV),
-  XLSX(CustomMediaTypes.APPLICATION_XLSX, FileExtension.XLSX);
+  XLSX(CustomMediaTypes.APPLICATION_XLSX, FileExtension.XLSX),
+  MD(MediaType.TEXT_MARKDOWN, FileExtension.MD);
 
   private final MediaType mediaType;
   private final FileExtension defaultFileExtension;

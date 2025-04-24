@@ -42,7 +42,6 @@ tasks.named('test').configure {
     dependsOn ':relay-server:buildDockerImage'
     dependsOn ':local-service-directory:buildDockerImage'
     dependsOn ':keycloak:buildDockerImage'
-    dependsOn ':spatz-dns:buildDockerImage'
     dependsOn ':spatz:buildDockerImage'
 
     inputs.files(project(':service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)

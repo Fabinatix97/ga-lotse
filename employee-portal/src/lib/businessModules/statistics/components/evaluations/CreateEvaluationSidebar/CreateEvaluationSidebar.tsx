@@ -66,6 +66,7 @@ function mapToCategorizedFlatAttributes(
         ),
         name: getAttributeLabel(attribute, it),
         key: `${attribute.code}_${it.code}`,
+        dataPrivacyCategory: it.dataPrivacyCategory,
       }));
     }
     return {
@@ -74,6 +75,7 @@ function mapToCategorizedFlatAttributes(
       businessModule: mapToApiBusinessModule(apiDataSource.businessModuleName),
       code: attribute.code,
       key: attribute.code,
+      dataPrivacyCategory: attribute.dataPrivacyCategory,
     };
   });
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public abstract class AbstractDepartmentInfoConfigController<
     T extends AbstractDepartmentInfoConfig> {
 
+  public static final String DEPARTMENT_INFO_CONFIG_API_SUFFIX = "/department-info";
   final AbstractDepartmentInfoConfigService<T> configService;
 
   protected AbstractDepartmentInfoConfigController(

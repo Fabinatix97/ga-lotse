@@ -41,5 +41,6 @@ public record GetReferencePersonResponse(
     @NotNull List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress,
-    @NotNull DataOriginDto dataOrigin)
+    @NotNull DataOriginDto dataOrigin,
+    @NotNull @Size(min = 8, max = 8) String humanReadableId)
     implements PersonDetails {}

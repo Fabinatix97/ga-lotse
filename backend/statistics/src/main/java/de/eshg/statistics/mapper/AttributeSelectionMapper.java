@@ -40,8 +40,8 @@ public class AttributeSelectionMapper {
       String businessModuleAttributeCode,
       UUID dataSourceId,
       String businessModuleName,
-      String baseModulAttributeCode) {
-    if (baseModulAttributeCode == null) {
+      String baseModuleAttributeCode) {
+    if (baseModuleAttributeCode == null) {
       return java.lang.String.join(
           SEARCH_KEY_DELIMITER,
           businessModuleAttributeCode,
@@ -53,7 +53,7 @@ public class AttributeSelectionMapper {
           businessModuleAttributeCode,
           dataSourceId.toString(),
           businessModuleName,
-          baseModulAttributeCode);
+          baseModuleAttributeCode);
     }
   }
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public abstract class AbstractOpeningHoursController<T extends AbstractOpeningHours> {
+  public static final String OPENING_HOURS_API_SUFFIX = "/opening-hours";
   private final AbstractOpeningHoursService<T> openingHoursService;
 
   protected AbstractOpeningHoursController(AbstractOpeningHoursService<T> openingHoursService) {

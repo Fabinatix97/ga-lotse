@@ -32,7 +32,7 @@ export const STATUS_NAMES_MEDICAL_OPINION_RESULT: EnumMap<ApiMedicalOpinionResul
   };
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
-  [ApiWaitingStatus.WaitingForConsultation]: "Wartet auf Termin",
+  [ApiWaitingStatus.WaitingForConsultation]: "Wartet",
   [ApiWaitingStatus.InConsultation]: "Im Gespräch",
   [ApiWaitingStatus.Done]: "Fertig",
 };

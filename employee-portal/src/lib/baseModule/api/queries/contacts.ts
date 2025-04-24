@@ -4,7 +4,6 @@
  */
 
 import { GetContactHistoryRequest, GetContactsRequest } from "@eshg/base-api";
-import { Contact } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -18,14 +17,6 @@ export function useGetContactsOverviewPageQuery(request: GetContactsRequest) {
     queryFn: async () => {
       return await contactApi.getContactsRaw(request).then(unwrapRawResponse);
     },
-  });
-}
-
-export function useGetContactQuery(id: string) {
-  const contactApi = useContactApi();
-  return useSuspenseQuery({
-    queryKey: contactApiQueryKey(["getContact", id]),
-    queryFn: async (): Promise<Contact> => await contactApi.getContact(id),
   });
 }
 

@@ -203,7 +203,7 @@ public class TestPopulateProcedureService {
     try {
       securityContextHolderStrategy.clearContext();
       // call must be unauthenticated
-      return vaccinationConsultationService.createProcedure(citizenProcedureRequest);
+      return vaccinationConsultationService.createCitizenProcedure(citizenProcedureRequest);
     } finally {
       securityContextHolderStrategy.setContext(oldContext);
     }

@@ -7,7 +7,8 @@ import {
   UseFilterSettings,
   UseFilterSettingsParams,
   useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
+} from "@eshg/lib-employee-portal";
+
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 
 export type UseSearchParamFilterSettingsParams = Omit<

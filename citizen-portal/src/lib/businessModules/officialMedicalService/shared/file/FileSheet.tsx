@@ -5,7 +5,7 @@
 
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { DeleteOutlined } from "@mui/icons-material";
-import { Box, IconButton, Sheet, Typography } from "@mui/joy";
+import { Box, FormHelperText, IconButton, Sheet, Typography } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -16,12 +16,14 @@ export interface FileSheet {
   file: FileDescriptor;
   removeLabel?: string;
   onRemove?: () => void;
+  helperText?: string;
 }
 
 export function FileSheet({
   file,
   onRemove,
   removeLabel,
+  helperText,
 }: Readonly<FileSheet>) {
   return (
     <Sheet
@@ -68,6 +70,14 @@ export function FileSheet({
             <DeleteOutlined />
           </IconButton>
         )}
+        <FormHelperText
+          id={`${file.name}+${file.size}-helper-text`}
+          sx={{
+            color: theme.palette.danger[500],
+          }}
+        >
+          {helperText}
+        </FormHelperText>
       </ResponsiveGrid>
     </Sheet>
   );

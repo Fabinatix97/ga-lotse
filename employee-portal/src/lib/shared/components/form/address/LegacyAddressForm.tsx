@@ -9,7 +9,7 @@ import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiCountryCode } from "@eshg/measles-protection-api";
 import AddIcon from "@mui/icons-material/Add";
@@ -61,6 +61,7 @@ interface LegacyAddressFormProps extends NestedFormProps {
 }
 
 export function LegacyAddressForm(props: LegacyAddressFormProps) {
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper(props.name);
   const { setFieldValue } = useFormikContext<LegacyPerson>();
   const [show, setShow] = useState(props.show ?? !props.isOptional);

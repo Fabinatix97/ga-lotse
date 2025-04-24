@@ -14,6 +14,10 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  validateIntegerAnd,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
+import {
   ApiCountryCode,
   ApiTravelTimeUnit,
   ApiTravelType,
@@ -27,7 +31,9 @@ import {
   VACCINATION_CONSULTATION_TRAVEL_TIME_UNITS,
   VACCINATION_CONSULTATION_TRAVEL_TYPE_OPTIONS,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
+
+const MIN_TRAVEL_TIME = 1;
+const MAX_TRAVEL_TIME = 1000;
 
 export interface TravelDataFormValues {
   travelType: ApiTravelType;
@@ -96,7 +102,11 @@ export function TravelDataForm(props: Readonly<TravelDataFormProps>) {
                       <NumberField
                         name={"travelTimeAmount"}
                         label="Reisedauer"
-                        validate={validatePositiveInteger}
+                        validate={validateIntegerAnd(
+                          validateRange(MIN_TRAVEL_TIME, MAX_TRAVEL_TIME),
+                        )}
+                        min={MIN_TRAVEL_TIME}
+                        max={MAX_TRAVEL_TIME}
                       />
                     </Grid>
                     <Grid xs={6}>

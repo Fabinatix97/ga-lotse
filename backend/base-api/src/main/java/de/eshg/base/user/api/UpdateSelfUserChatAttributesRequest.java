@@ -6,18 +6,14 @@
 package de.eshg.base.user.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public record UpdateSelfUserChatAttributesRequest(
     @Schema(
             description =
                 "Secret value used as a part of derive key used to encrypt user's local crypto store containing KeyBackup",
             example = "915685ed-b66a-47eb-b6ca-5da7a05ca041")
-        @Size(min = 32, max = 128)
         String chatCryptoStoreDeriveKeySecret,
     @Schema(
             description = "Matrix User ID (MXID) of the gematik TI-Messenger (matrix chat)",
             example = "@username:matrix_homeserver_url")
-        @Pattern(regexp = "^@[\\w.-]+:[\\w.-]+$")
         String externalChatUsername) {}

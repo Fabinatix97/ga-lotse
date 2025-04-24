@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
@@ -56,7 +57,12 @@ export default function AppointmentPickerPlaygroundPage() {
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title="Appointment Picker" backHref="/playground" />}
+      toolbar={
+        <Toolbar
+          title="Appointment Picker"
+          backButton={<ToolbarBackButton href="/playground" />}
+        />
+      }
     >
       <MainContentLayout>
         <Formik initialValues={initialData} onSubmit={handleSubmit}>

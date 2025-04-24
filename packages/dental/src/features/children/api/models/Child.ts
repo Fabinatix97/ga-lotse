@@ -4,7 +4,12 @@
  */
 
 import { ApiChild, ApiGender, ApiProcedureStatus } from "@eshg/dental-api";
-import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
+import {
+  BaseEntity,
+  ProcedureLabel,
+  mapBaseEntity,
+  mapProcedureLabels,
+} from "@eshg/lib-employee-portal";
 
 import { Institution, mapInstitution } from "@/api/models/Institution";
 
@@ -17,6 +22,7 @@ export interface Child extends BaseEntity {
   readonly groupName: string;
   readonly institution: Institution;
   readonly isClosed: boolean;
+  readonly procedureLabels: ProcedureLabel[];
 }
 
 export function mapChild(response: ApiChild): Child {
@@ -30,5 +36,6 @@ export function mapChild(response: ApiChild): Child {
     groupName: response.groupName,
     institution: mapInstitution(response.institution),
     isClosed: response.status == ApiProcedureStatus.Closed,
+    procedureLabels: mapProcedureLabels(response.procedureLabels),
   };
 }

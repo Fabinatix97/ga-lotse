@@ -7,19 +7,19 @@ import {
   ApiAuditLogSource,
   ApiAuditLogSourceFromJSON,
 } from "@eshg/auditlog-api";
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
+import {
+  FilterDefinition,
+  FilterValue,
+  UseFilterSettings,
+  UseTableControlResult,
+  useFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 import { SearchParams } from "@eshg/lib-portal/types/pageParams";
 import { isString } from "remeda";
 
 import { SearchParamsKeys } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import {
-  UseFilterSettings,
-  useFilterSettings,
-} from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { getSelectedFilterValues } from "@/lib/shared/components/procedures/helper";
 
 const FILTER_DEFINITION_KEYS = {

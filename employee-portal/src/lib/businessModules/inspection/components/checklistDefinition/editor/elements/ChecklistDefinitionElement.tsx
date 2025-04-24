@@ -4,6 +4,7 @@
  */
 
 import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
+import { CheckboxField, InformationSheet } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
@@ -24,8 +25,6 @@ import { CopyDeleteDropdown } from "@/lib/businessModules/inspection/components/
 import { DragHandle } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/DragHandle";
 import { InputFieldBar } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/InputFieldBar";
 import { createChecklistElement } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface ChecklistDefinitionElementProps {
   element: ApiCLSectionContextElementsInner;

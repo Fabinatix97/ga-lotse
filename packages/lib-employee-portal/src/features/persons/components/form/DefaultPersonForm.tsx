@@ -20,10 +20,8 @@ import {
   TITLE_OPTIONS,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  validateDateOfBirth,
-  validateLength,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
@@ -84,6 +82,7 @@ export function defaultPersonFormValues({
 export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
   props: PersonFormProps<TValues>,
 ) {
+  const { validateLength } = useValidators();
   const fieldName = createFieldNameMapper<DefaultPersonFormValues>();
 
   return (

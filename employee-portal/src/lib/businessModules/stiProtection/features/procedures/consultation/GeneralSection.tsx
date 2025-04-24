@@ -3,26 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
+import {
+  YesOrNoFieldData,
+  YesOrNoWithFollowUp,
+} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { Typography, useTheme } from "@mui/joy";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
-import {
-  YesOrNoFieldData,
-  YesOrNoWithFollowUp,
-} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 export interface GeneralSectionData {
   mainReason: string;
 
   furtherGenderInfo: string;
-
-  hasSufficientGermanLanguageSkills: YesOrNoFieldData;
-  isIlliterate: boolean;
-  otherKnownLanguages: string;
 
   hasHealthInsurance: YesOrNoFieldData;
   hasGermanHealthInsurance: boolean;
@@ -52,22 +47,6 @@ export function GeneralSection() {
       <TextareaField
         name="general.furtherGenderInfo"
         label="Weitere Geschlechtsangaben"
-      />
-
-      <YesOrNoWithFollowUp
-        name="general.hasSufficientGermanLanguageSkills"
-        label="Deutsche Sprachkenntnis?"
-        positiveLabel="ausreichend"
-        negativeLabel="nicht ausreichend"
-        followUpOnNo
-        inlineFollowUp
-      >
-        <CheckboxField name="general.isIlliterate" label="Analphabet:in" />
-      </YesOrNoWithFollowUp>
-
-      <TextareaField
-        name="general.otherKnownLanguages"
-        label="Andere Sprachkenntnisse?"
       />
 
       <YesOrNoWithFollowUp

@@ -211,4 +211,14 @@ order by fileState.id
   @Transactional
   @Modifying
   int deleteByDeleteAtBefore(Instant expirationTime);
+
+  @Query("select count(*) from Person p where p.humanReadableId = :humanReadableId")
+  long countUsesOfHumanReadableId(long humanReadableId);
+
+  @Query(
+      """
+        select p from Person p
+        where p.humanReadableId = :humanReadableId
+        """)
+  List<Person> findReferencePersonsByHumanReadableId(long humanReadableId);
 }

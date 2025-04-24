@@ -33,3 +33,13 @@ tasks.register('addWorkspaceDependency', PnpmTask) {
 
   finalizedBy rootProject.tasks.updateProjectReferences
 }
+
+tasks.register('inspect', PnpmTask) {
+  group = 'maintenance'
+  args = ['dlx', 'knip']
+}
+
+tasks.register('inspectFix', PnpmTask) {
+  group = 'maintenance'
+  args = ['dlx', 'knip', '--fix']
+}

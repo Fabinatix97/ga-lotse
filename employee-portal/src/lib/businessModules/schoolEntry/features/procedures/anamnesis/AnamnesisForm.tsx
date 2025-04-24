@@ -5,6 +5,7 @@
 
 "use client";
 
+import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -33,13 +34,11 @@ import { InterestAndSportsInfoForm } from "@/lib/businessModules/schoolEntry/fea
 import { MigrationBackgroundForm } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/MigrationBackgroundForm";
 import { PromotionBeforeSchoolEntryForm } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/PromotionBeforeSchoolEntryForm";
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
-import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import {
   BOLD_LABEL_STYLE,
   BOOLEAN_SELECT_STYLE,
 } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { FormStack } from "@/lib/shared/components/form/FormStack";
 
 export interface AnamnesisFormValues {
   childLanguageScreening: OptionalFieldValue<boolean>;

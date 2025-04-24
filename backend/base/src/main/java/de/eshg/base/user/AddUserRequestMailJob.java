@@ -21,7 +21,7 @@ public class AddUserRequestMailJob {
   @Scheduled(cron = "${de.eshg.base.user.schedule:0 * * * * *}")
   @SchedulerLock(
       name = "BaseAddUserRequestMailJob",
-      lockAtMostFor = "${de.eshg.base.user.lock-at-most-for:1h}")
+      lockAtMostFor = "${de.eshg.base.user.lock-at-most-for:15m}")
   public void sendApprovalRequestMailRemindersIfNecessary() {
     LockAssert.assertLocked();
     approvalRequestMailService.sendApprovalRequestMailRemindersIfNecessary();

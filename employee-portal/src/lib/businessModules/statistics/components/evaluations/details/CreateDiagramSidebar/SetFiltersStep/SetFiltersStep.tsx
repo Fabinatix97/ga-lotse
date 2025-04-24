@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { UseFilterSettings } from "@eshg/lib-employee-portal";
+
 import { mapAttributesToFilterDefinitions } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToFilterDefinitions";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { SetFiltersStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SetFiltersStep/setFiltersStepFormModel";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
 import { FilterSettingsField } from "@/lib/shared/components/formFields/FilterSettingsField";
 

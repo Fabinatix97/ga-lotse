@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ConfirmationDialog } from "@eshg/lib-employee-portal";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
-
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
 export function LeaveChatConfirmation(props: ConfirmationDialogProps) {
   return (
-    <EmployeePortalConfirmationDialog
+    <ConfirmationDialog
       color="danger"
       title="Wollen Sie den Chat wirklich verlassen?"
       description="Wenn Sie den Chat verlassen, können Sie keine neuen Nachrichten mehr empfangen."

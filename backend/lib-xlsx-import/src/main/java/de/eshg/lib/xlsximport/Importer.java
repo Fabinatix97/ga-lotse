@@ -14,9 +14,9 @@ import static de.eshg.lib.xlsximport.ImportStatus.MERGE_FAILED;
 import static de.eshg.lib.xlsximport.util.XlsxUtil.writeValue;
 import static java.util.function.Predicate.not;
 
+import de.eshg.file.common.ByteArrayFilenameResource;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.model.ImportStatistics;
-import de.eshg.lib.xlsximport.util.ByteArrayFilenameResource;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -10,6 +10,7 @@ import {
   SideNavigationItem,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
   noCheck,
 } from "@eshg/lib-employee-portal";
 import {
@@ -298,7 +299,12 @@ function ItemStatePlayground() {
 export default function SideNavigationPlaygroundPage() {
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title="SideNavigation" backHref="/playground" />}
+      toolbar={
+        <Toolbar
+          title="SideNavigation"
+          backButton={<ToolbarBackButton href="/playground" />}
+        />
+      }
     >
       <MainContentLayout>
         <Stack spacing={2}>

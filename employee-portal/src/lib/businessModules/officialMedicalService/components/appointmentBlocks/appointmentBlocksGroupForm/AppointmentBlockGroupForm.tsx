@@ -4,7 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Divider, Stack } from "@mui/joy";
@@ -22,7 +22,6 @@ import {
 } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 const DEFAULT_PARALLEL_EXAMINATIONS = 1;

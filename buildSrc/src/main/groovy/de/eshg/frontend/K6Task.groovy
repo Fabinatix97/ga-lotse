@@ -13,7 +13,7 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 abstract class K6Task extends Exec {
 
   @Input
-  List<String> additionalArgs = []
+  List<String> additionalArgs = ['--no-summary', '--no-thresholds']
 
   @InputFile
   File script

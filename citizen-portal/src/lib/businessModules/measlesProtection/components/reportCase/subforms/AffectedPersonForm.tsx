@@ -10,7 +10,8 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { validateEmail } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiReportingReason } from "@eshg/measles-protection-api";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -40,7 +41,6 @@ import {
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { useTranslation } from "@/lib/i18n/client";
 import { TextareaField } from "@/lib/shared/components/form/TextareaField";
-import { validateEmail } from "@/lib/shared/helpers/validators";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
 import { AddressForm } from "./AddressForm";
@@ -85,6 +85,7 @@ interface AffectedPersonFormProps {
 
 export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
+  const { validateLength } = useValidators();
   const {
     setFieldValue,
     isSubmitting,
@@ -220,9 +221,8 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
                 }
                 validate={(value) =>
                   validateEmail(
-                    Array.isArray(value) ? (value[0] as string) : value,
                     t("common.personalDetails.emailAddress_required"),
-                  )
+                  )(Array.isArray(value) ? (value[0] as string) : value)
                 }
               />
             </Grid>

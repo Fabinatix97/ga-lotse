@@ -7,7 +7,7 @@ package de.eshg.config.departmentinfo;
 
 import de.eshg.base.department.DepartmentApi;
 import de.eshg.config.domain.Document;
-import de.eshg.config.domain.PrivacyDocument;
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.domain.PrivacyDocumentsConfig;
 import de.eshg.config.initialization.InitialPrivacyDocuments;
 import de.eshg.config.initialization.OptionalInitialPrivacyDocuments;
@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 @ConditionalOnBusinessModule
 @ConditionalOnMissingBean(AbstractPrivacyDocumentService.class)
 @EnableConfigurationProperties(OptionalInitialPrivacyDocuments.class)
+@ConditionalOnProperty(
+    value = "de.eshg.privacy-documents.enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 public class PrivacyDocumentService extends AbstractPrivacyDocumentService<PrivacyDocumentsConfig> {
 
   private final DepartmentApi departmentApi;
@@ -55,7 +60,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
   public ResponseEntity<Resource> getPrivacyNoticeDe() {
     return PrivacyDocumentHelper.privacyNoticeAttachmentResponse(
         Optional.ofNullable(getConfig().getPrivacyNotice())
-            .map(PrivacyDocument::getDe)
+            .map(MultiLangDocument::getDe)
             .map(Document::getContent)
             .orElseGet(() -> getContentAsByteArray(departmentApi.getPrivacyNotice().getBody())));
   }
@@ -65,7 +70,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
   public ResponseEntity<Resource> getPrivacyPolicyDe() {
     return PrivacyDocumentHelper.privacyPolicyAttachmentResponse(
         Optional.ofNullable(getConfig().getPrivacyPolicy())
-            .map(PrivacyDocument::getDe)
+            .map(MultiLangDocument::getDe)
             .map(Document::getContent)
             .orElseGet(() -> getContentAsByteArray(departmentApi.getPrivacyPolicy().getBody())));
   }
@@ -79,20 +84,20 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
   }
 
   @Override
-  protected PrivacyDocument updatePrivacyDocument(
-      PrivacyDocument persistedDocument, PrivacyDocument documentUpdate) {
+  protected MultiLangDocument updatePrivacyDocument(
+      MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
     if (documentUpdate == null || persistedDocument == null) {
       return documentUpdate;
     }
     return super.updatePrivacyDocument(persistedDocument, documentUpdate);
   }
 
-  private PrivacyDocument createInitialPrivacyPolicy() {
+  private MultiLangDocument createInitialPrivacyPolicy() {
     if (optionalInitialPrivacyDocuments.usePrivacyDocumentsFromBaseModule()) {
       return null;
     }
 
-    PrivacyDocument privacyDocuments = new PrivacyDocument();
+    MultiLangDocument privacyDocuments = new MultiLangDocument();
     privacyDocuments.updateDe(
         contentFromInitialConfigOrBase(
             InitialPrivacyDocuments::privacyPolicy,
@@ -100,12 +105,12 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
     return privacyDocuments;
   }
 
-  private PrivacyDocument createInitialPrivacyNotice() {
+  private MultiLangDocument createInitialPrivacyNotice() {
     if (optionalInitialPrivacyDocuments.usePrivacyDocumentsFromBaseModule()) {
       return null;
     }
 
-    PrivacyDocument privacyDocuments = new PrivacyDocument();
+    MultiLangDocument privacyDocuments = new MultiLangDocument();
     privacyDocuments.updateDe(
         contentFromInitialConfigOrBase(
             InitialPrivacyDocuments::privacyNotice,

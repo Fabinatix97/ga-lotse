@@ -7,13 +7,20 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  ActionsItem,
+  ActionsMenu,
   ButtonBar,
   DataTable,
+  FilterSettings,
+  FilterSettingsSheet,
+  FilterValue,
   NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
+  ToggleFilterButton,
   useConfirmationDialog,
+  useFilterSettings,
   useHasUserRoleCheck,
   usePagination,
   useTableSorting,
@@ -35,15 +42,6 @@ import { useCreateEvaluationFromTemplateSidebar } from "@/lib/businessModules/st
 import { useEvaluationTemplateDetailsSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/EvaluationTemplateDetailsSidebar";
 import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/evaluations/templates/filterDefinitions";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
-import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
-import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 
 import { useUploadTemplateSidebar } from "./UploadTemplateSidebar/UploadTemplateSidebar";
@@ -148,7 +146,7 @@ export function EvaluationTemplatesOverview() {
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
         />
       }
       filterSettings={

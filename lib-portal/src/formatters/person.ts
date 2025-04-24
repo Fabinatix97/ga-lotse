@@ -7,17 +7,20 @@ import { isDefined, isEmpty, isNullish } from "remeda";
 
 import { Nullable } from "../types/utility";
 
-interface Person {
+interface NamedPerson {
   firstName: string;
   lastName: string;
 }
 
-export function formatPersonName(person: Nullable<Partial<Person>>) {
+export function formatPersonName(
+  person: Nullable<Partial<NamedPerson>>,
+  fallbackValue = "",
+) {
   if (
     isNullish(person) ||
     !(isDefined(person.firstName) || isDefined(person.lastName))
   ) {
-    return "";
+    return fallbackValue;
   }
 
   if (
@@ -35,4 +38,10 @@ export function formatPersonName(person: Nullable<Partial<Person>>) {
   }
 
   return `${person.firstName} ${person.lastName}`;
+}
+
+const UNKNOWN_USER = "Unbekannter Benutzer";
+
+export function formatUserName(user: Nullable<Partial<NamedPerson>>): string {
+  return formatPersonName(user, UNKNOWN_USER);
 }

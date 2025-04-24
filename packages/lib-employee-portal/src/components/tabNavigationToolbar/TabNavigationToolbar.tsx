@@ -3,17 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
-import { ChevronLeft } from "@mui/icons-material";
-import {
-  Box,
-  Divider,
-  IconButton,
-  IconButtonProps,
-  Sheet,
-  Stack,
-} from "@mui/joy";
-import { ElementType, ReactNode } from "react";
+import { Box, Divider, Sheet, Stack } from "@mui/joy";
+import { ReactNode } from "react";
 
 import { HorizontalScrollBoxWithButtons } from "./HorizontalScrollBoxWithButtons";
 import { TabNavigation, TabNavigationItem } from "./TabNavigation";
@@ -21,8 +12,8 @@ import { TabNavigation, TabNavigationItem } from "./TabNavigation";
 interface TabNavigationToolbarProps {
   /** tab definitions */
   items: TabNavigationItem[];
-  /** route or component for back button */
-  routeBack?: string | ReactNode;
+  /** component for back button */
+  backButton?: ReactNode;
   /** component to be displayed as header; required. */
   header: ReactNode;
   /** component to be displayed right aligned beneath the tabs; optional. */
@@ -50,14 +41,7 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
           overflowY: "hidden",
         }}
       >
-        {typeof props.routeBack === "string" ? (
-          <TabNavigationBackButton
-            component={InternalLinkIconButton}
-            href={props.routeBack}
-          />
-        ) : (
-          props.routeBack
-        )}
+        {props.backButton}
         <Stack divider={<Divider />} sx={{ flexGrow: 1, minWidth: 0 }}>
           <Box sx={{ paddingInline: 3 }}>{props.header}</Box>
           <HorizontalScrollBoxWithButtons>
@@ -83,15 +67,5 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
         </Stack>
       </Stack>
     </Sheet>
-  );
-}
-
-export function TabNavigationBackButton<T extends ElementType>(
-  props: IconButtonProps<T>,
-) {
-  return (
-    <IconButton aria-label="Zurück" sx={{ minWidth: "3.5rem" }} {...props}>
-      <ChevronLeft sx={{ width: "40px", height: "40px" }} />
-    </IconButton>
   );
 }

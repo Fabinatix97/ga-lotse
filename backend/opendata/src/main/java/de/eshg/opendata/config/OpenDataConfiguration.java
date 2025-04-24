@@ -5,14 +5,22 @@
 
 package de.eshg.opendata.config;
 
+import de.eshg.config.domain.Document;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.util.Assert;
 
 @Entity
 public class OpenDataConfiguration extends BaseEntity {
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean initialized = false;
 
   @NotNull
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -24,7 +32,12 @@ public class OpenDataConfiguration extends BaseEntity {
 
   @NotNull
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private byte[] termsOfUse;
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  private Document termsOfUse;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @NotNull
+  private int termsOfUseFileSizeBytes;
 
   public String getAuthor() {
     return author;
@@ -43,10 +56,25 @@ public class OpenDataConfiguration extends BaseEntity {
   }
 
   public byte[] getTermsOfUse() {
-    return termsOfUse;
+    return termsOfUse.getContent();
   }
 
   public void setTermsOfUse(byte[] termsOfUse) {
-    this.termsOfUse = termsOfUse;
+    Assert.state(termsOfUse != null, "termsOfUse must not be null");
+    this.termsOfUse = new Document();
+    this.termsOfUse.setContent(termsOfUse);
+    this.termsOfUseFileSizeBytes = termsOfUse.length;
+  }
+
+  boolean isInitialized() {
+    return initialized;
+  }
+
+  void setInitialized(boolean initialized) {
+    this.initialized = initialized;
+  }
+
+  int getTermsOfUseFileSizeBytes() {
+    return termsOfUseFileSizeBytes;
   }
 }

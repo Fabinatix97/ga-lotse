@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileField, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  CheckboxField,
+  FileField,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -14,7 +18,6 @@ import { FormikValues } from "formik";
 import { OpeningHoursField } from "@/lib/configurator/components/shared/OpeningHoursField";
 import { FileCard, FileCardProps } from "@/lib/shared/components/FileCard";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 interface Width {
   width: string;

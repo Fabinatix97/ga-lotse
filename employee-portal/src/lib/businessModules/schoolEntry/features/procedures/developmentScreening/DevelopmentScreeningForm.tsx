@@ -5,6 +5,7 @@
 
 "use client";
 
+import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
 import {
@@ -38,9 +39,7 @@ import {
   SocioEducationalFields,
   SocioEducationalFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/SocioEducationalFields";
-import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { FormStack } from "@/lib/shared/components/form/FormStack";
 
 export interface DevelopmentScreeningFormValues {
   measurements: MeasurementFieldsValues;

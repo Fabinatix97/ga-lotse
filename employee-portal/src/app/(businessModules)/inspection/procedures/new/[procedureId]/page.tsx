@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -56,8 +57,8 @@ export default function NewInspectionProcedurePage(
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          backHref={routes.procedures.index}
           title={facility.baseFacility.name}
+          backButton={<ToolbarBackButton href={routes.procedures.index} />}
         />
       }
     >

@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
@@ -36,8 +37,10 @@ export default function FacilityWebSearchResultsPage(
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          backHref={routes.facilities.webSearch.index}
           title={`Web-Suche: ${webSearch.name}`}
+          backButton={
+            <ToolbarBackButton href={routes.facilities.webSearch.index} />
+          }
         />
       }
     >

@@ -624,6 +624,28 @@
         "tags" : [ "Citizen" ]
       }
     },
+    "/citizen/auth/pin" : {
+      "put" : {
+        "operationId" : "updatePin",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdatePinRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the pin credential of a citizen user.",
+        "tags" : [ "Citizen" ]
+      }
+    },
     "/citizen/auth/procedure" : {
       "get" : {
         "operationId" : "getCitizenProcedure",
@@ -887,9 +909,9 @@
         "tags" : [ "CitizenPublic" ]
       }
     },
-    "/configuration" : {
+    "/configuration/sex-work" : {
       "get" : {
-        "operationId" : "getConfiguration",
+        "operationId" : "getConfiguration_1",
         "responses" : {
           "200" : {
             "content" : {
@@ -902,10 +924,10 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "ConfigStatus" ]
+        "tags" : [ "SexWorkConfigStatus" ]
       }
     },
-    "/configuration/department-info/sex-work" : {
+    "/configuration/sex-work/department-info" : {
       "get" : {
         "operationId" : "getInternalConfigDepartmentInfo_1",
         "responses" : {
@@ -942,44 +964,7 @@
         "tags" : [ "SexWorkDepartmentInfoConfig" ]
       }
     },
-    "/configuration/department-info/sti-consultation" : {
-      "get" : {
-        "operationId" : "getInternalConfigDepartmentInfo",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetInternalConfigDepartmentInfoResponse"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "StiConsultationDepartmentInfoConfig" ]
-      },
-      "put" : {
-        "operationId" : "updateInternalConfigDepartmentInfo",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UpdateInternalConfigDepartmentInfoRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "StiConsultationDepartmentInfoConfig" ]
-      }
-    },
-    "/configuration/opening-hours/sex-work" : {
+    "/configuration/sex-work/opening-hours" : {
       "get" : {
         "operationId" : "getConfigOpeningHours_1",
         "responses" : {
@@ -1016,7 +1001,62 @@
         "tags" : [ "SexWorkOpeningHours" ]
       }
     },
-    "/configuration/opening-hours/sti-consultation" : {
+    "/configuration/sti-consultation" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "StiConsultationConfigStatus" ]
+      }
+    },
+    "/configuration/sti-consultation/department-info" : {
+      "get" : {
+        "operationId" : "getInternalConfigDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInternalConfigDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "StiConsultationDepartmentInfoConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateInternalConfigDepartmentInfo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInternalConfigDepartmentInfoRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "StiConsultationDepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/sti-consultation/opening-hours" : {
       "get" : {
         "operationId" : "getConfigOpeningHours",
         "responses" : {
@@ -1051,98 +1091,6 @@
           }
         },
         "tags" : [ "StiConsultationOpeningHours" ]
-      }
-    },
-    "/configuration/privacy-documents/privacy-notice" : {
-      "get" : {
-        "operationId" : "getPrivacyNoticeConfig",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "PrivacyDocument" ]
-      },
-      "put" : {
-        "operationId" : "updatePrivacyNoticeConfig",
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "PrivacyDocument" ]
-      }
-    },
-    "/configuration/privacy-documents/privacy-policy" : {
-      "get" : {
-        "operationId" : "getPrivacyPolicyConfig",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "PrivacyDocument" ]
-      },
-      "put" : {
-        "operationId" : "updatePrivacyPolicyConfig",
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "PrivacyDocument" ]
       }
     },
     "/files/{fileId}" : {
@@ -4367,21 +4315,12 @@
           "appointmentBooking" : {
             "$ref" : "#/components/schemas/BookAppointmentRequest"
           },
-          "countryOfBirth" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
           },
           "hasSufficientGermanLanguageSkills" : {
             "type" : "boolean",
             "description" : "Indicates whether the patient has sufficient German language skills."
-          },
-          "inGermanySince" : {
-            "type" : "integer",
-            "description" : "The year since the person has been residing in Germany.",
-            "format" : "int32",
-            "example" : 2022
           },
           "otherKnownLanguages" : {
             "type" : "string",
@@ -4724,6 +4663,25 @@
           }
         }
       },
+      "CancerScreeningTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
       "CheckFileStateUsageRequest" : {
         "required" : [ "fileStatesIds" ],
         "type" : "object",
@@ -4752,8 +4710,36 @@
           }
         }
       },
+      "ChlamydiaTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "anal" : {
+              "type" : "boolean"
+            },
+            "oral" : {
+              "type" : "boolean"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "urethral" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
       "CitizenProcedure" : {
-        "required" : [ "appointmentHistory", "concern", "id", "medicalHistorySubmitted", "person" ],
+        "required" : [ "appointmentHistory", "concern", "hasResults", "id", "medicalHistorySubmitted", "person" ],
         "type" : "object",
         "properties" : {
           "appointment" : {
@@ -4767,6 +4753,9 @@
           },
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
+          },
+          "hasResults" : {
+            "type" : "boolean"
           },
           "id" : {
             "type" : "string",
@@ -4828,17 +4817,9 @@
             "type" : "boolean",
             "description" : "Indicates whether the patient's residency status is insecure."
           },
-          "hasSufficientGermanLanguageSkills" : {
-            "type" : "boolean",
-            "description" : "Indicates whether the patient has sufficient German language skills."
-          },
           "hasSymptoms" : {
             "type" : "boolean",
             "description" : "Indicates whether the patient has any symptoms."
-          },
-          "isIlliterate" : {
-            "type" : "boolean",
-            "description" : "Indicates whether the patient is illiterate."
           },
           "mainReason" : {
             "type" : "string",
@@ -4849,11 +4830,6 @@
             "type" : "string",
             "description" : "Optional field for additional remarks or comments during the consultation.",
             "example" : "The patient was advised to follow up in two weeks for further monitoring of symptoms."
-          },
-          "otherKnownLanguages" : {
-            "type" : "string",
-            "description" : "Other languages the patient can speak or understand.",
-            "example" : "Spanish and French."
           },
           "referral" : {
             "type" : "string",
@@ -5238,9 +5214,6 @@
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
           },
-          "countryOfBirth" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "durationInMinutes" : {
             "type" : "integer",
             "description" : "Duration of the appointment in minutes.",
@@ -5253,12 +5226,6 @@
           "hasSufficientGermanLanguageSkills" : {
             "type" : "boolean",
             "description" : "Indicates whether the patient has sufficient German language skills."
-          },
-          "inGermanySince" : {
-            "type" : "integer",
-            "description" : "The year since the person has been residing in Germany.",
-            "format" : "int32",
-            "example" : 2022
           },
           "otherKnownLanguages" : {
             "type" : "string",
@@ -5487,19 +5454,6 @@
             "items" : {
               "$ref" : "#/components/schemas/TestType"
             }
-          }
-        }
-      },
-      "Document" : {
-        "required" : [ "fileName", "fileSizeBytes" ],
-        "type" : "object",
-        "properties" : {
-          "fileName" : {
-            "type" : "string"
-          },
-          "fileSizeBytes" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       },
@@ -6420,7 +6374,7 @@
         }
       },
       "GetPersonFileStateResponse" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
+        "required" : [ "dataOrigin", "dateOfBirth", "emailAddresses", "firstName", "gender", "humanReadableId", "id", "lastName", "phoneNumbers", "referenceVersion", "salutation" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -6466,6 +6420,11 @@
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "humanReadableId" : {
+            "maxLength" : 8,
+            "minLength" : 8,
+            "type" : "string"
           },
           "id" : {
             "type" : "string",
@@ -6524,14 +6483,6 @@
             "type" : "string",
             "description" : "The academic title of a Person.",
             "example" : "Prof. Dr."
-          }
-        }
-      },
-      "GetPrivacyDocumentConfigResponse" : {
-        "type" : "object",
-        "properties" : {
-          "overwrittenPrivacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
           }
         }
       },
@@ -6856,33 +6807,140 @@
           }
         }
       },
-      "HepatitisLaboratoryTest" : {
+      "GonorrheaTest" : {
         "type" : "object",
-        "properties" : {
-          "infection" : {
-            "type" : "boolean",
-            "description" : "Indicates whether the test is conducted in the context of an infection."
-          },
-          "remark" : {
-            "type" : "string",
-            "description" : "Provides additional comments related to the corresponding test.",
-            "example" : "HAV-AK IgM-Test"
-          },
-          "result" : {
-            "type" : "boolean",
-            "description" : "Indicates the outcome of the laboratory test result."
-          },
-          "vaccineTitre" : {
-            "type" : "boolean",
-            "description" : "Indicates whether the test is conducted in the context of a vaccination."
-          },
-          "value" : {
-            "type" : "string",
-            "description" : "Records a specific measurement or value obtained from the laboratory test results.",
-            "example" : "1.5 U/ml"
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "anal" : {
+              "type" : "boolean"
+            },
+            "oral" : {
+              "type" : "boolean"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "urethral" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
           }
-        },
-        "description" : "Used in the context of laboratory test examination to document test results for Hepatitis A and Hepatitis B."
+        } ]
+      },
+      "HepatitisATest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "infection" : {
+              "type" : "boolean"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "vaccineTitre" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "HepatitisBTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "infection" : {
+              "type" : "boolean"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "vaccineTitre" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "HepatitisCTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "HivTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "HpvTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
       },
       "HttpMethod" : {
         "type" : "string",
@@ -7096,131 +7154,60 @@
         "description" : "The current status of the laboratory tests.",
         "enum" : [ "OPEN", "TESTS_REQUESTED", "TESTS_CONDUCTED", "RESULTS_RECORDED", "RESULTS_COMMUNICATED" ]
       },
-      "LaboratoryTest" : {
+      "LabTestData" : {
+        "required" : [ "@type" ],
         "type" : "object",
         "properties" : {
-          "remark" : {
-            "type" : "string",
-            "description" : "Provides additional comments related to the corresponding test.",
-            "example" : "CT-Value: 28.5"
-          },
-          "result" : {
-            "type" : "boolean",
-            "description" : "Indicates the outcome of the laboratory test result."
-          },
-          "value" : {
-            "type" : "string",
-            "description" : "Records a specific measurement or value obtained from the laboratory test results.",
-            "example" : "Chlamydia tr. rRNA Test"
+          "@type" : {
+            "type" : "string"
           }
         },
-        "description" : "Used in the context of laboratory test examinations to document test results."
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
       },
       "LaboratoryTestExamination" : {
         "type" : "object",
         "properties" : {
-          "cancerScreeningTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "cancerScreeningTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Cancer Screening laboratory test is requested."
-          },
-          "chlamydiaTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Chlamydia laboratory test is requested."
-          },
-          "chlamydiaTestSamples" : {
-            "$ref" : "#/components/schemas/LaboratoryTestSamples"
-          },
           "generalRemarks" : {
             "type" : "string",
             "description" : "Provides general comments related to the laboratory tests.",
             "example" : "Sample processed at Black Mesa Diagnostics Laboratory."
           },
-          "gonorrheaTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Gonorrhea laboratory test is requested."
-          },
-          "gonorrheaTestSamples" : {
-            "$ref" : "#/components/schemas/LaboratoryTestSamples"
-          },
-          "hadSyphilis" : {
-            "type" : "boolean",
-            "description" : "Indicates if the patient was previously infected with Syphilis."
-          },
-          "hepATestData" : {
-            "$ref" : "#/components/schemas/HepatitisLaboratoryTest"
-          },
-          "hepATestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Hepatitis A laboratory test is requested."
-          },
-          "hepBTestData" : {
-            "$ref" : "#/components/schemas/HepatitisLaboratoryTest"
-          },
-          "hepBTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Hepatitis B laboratory test is requested."
-          },
-          "hepCTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "hepCTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Hepatitis C laboratory test is requested."
-          },
-          "hivTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "hivTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether an HIV laboratory test is requested."
-          },
-          "hpvTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "hpvTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether an HPV laboratory test is requested."
-          },
-          "mpoxTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "mpoxTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Mpox laboratory test is requested."
-          },
-          "mycoplasmaTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Mycoplasma laboratory test is requested."
-          },
-          "mycoplasmaTestSamples" : {
-            "$ref" : "#/components/schemas/LaboratoryTestSamples"
-          },
-          "otherTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "otherTestName" : {
-            "type" : "string",
-            "description" : "Records the name of the additional laboratory test.",
-            "example" : "Ethylglucuronid (LC-MS/MS)."
-          },
-          "otherTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether another additional laboratory test is requested."
+          "labTestData" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/CancerScreeningTest"
+              }, {
+                "$ref" : "#/components/schemas/ChlamydiaTest"
+              }, {
+                "$ref" : "#/components/schemas/GonorrheaTest"
+              }, {
+                "$ref" : "#/components/schemas/HepatitisATest"
+              }, {
+                "$ref" : "#/components/schemas/HepatitisBTest"
+              }, {
+                "$ref" : "#/components/schemas/HepatitisCTest"
+              }, {
+                "$ref" : "#/components/schemas/HivTest"
+              }, {
+                "$ref" : "#/components/schemas/HpvTest"
+              }, {
+                "$ref" : "#/components/schemas/MpoxTest"
+              }, {
+                "$ref" : "#/components/schemas/MycoplasmaTest"
+              }, {
+                "$ref" : "#/components/schemas/OtherTests"
+              }, {
+                "$ref" : "#/components/schemas/SyphilisTest"
+              } ]
+            }
           },
           "sampleBarcode" : {
             "type" : "string",
             "description" : "Specifies a barcode for tracking the results with the external laboratory.",
             "example" : "4815162342"
-          },
-          "syphilisTestData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "syphilisTestRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether a Syphilis laboratory test is requested."
           },
           "testsConducted" : {
             "type" : "boolean",
@@ -7232,32 +7219,6 @@
           }
         },
         "description" : "Used to document the initial request which laboratory tests should be performed and to record the corresponding results."
-      },
-      "LaboratoryTestSamples" : {
-        "type" : "object",
-        "properties" : {
-          "analSampleData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "analSampleRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether an anal sample is requested."
-          },
-          "oralSampleData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "oralSampleRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether an oral sample is requested."
-          },
-          "urethralSampleData" : {
-            "$ref" : "#/components/schemas/LaboratoryTest"
-          },
-          "urethralSampleRequested" : {
-            "type" : "boolean",
-            "description" : "Specifies whether an urethral sample is requested."
-          }
-        }
       },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
@@ -7461,6 +7422,53 @@
           "propertyName" : "@type"
         }
       },
+      "MpoxTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "MycoplasmaTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "anal" : {
+              "type" : "boolean"
+            },
+            "oral" : {
+              "type" : "boolean"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "urethral" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
       "OpeningHours" : {
         "required" : [ "de", "en" ],
         "type" : "object",
@@ -7482,6 +7490,28 @@
       "Operation" : {
         "type" : "string",
         "enum" : [ "DELETE" ]
+      },
+      "OtherTests" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "otherTestName" : {
+              "type" : "string"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
       },
       "PartnerRiskFactors" : {
         "type" : "string",
@@ -7558,11 +7588,13 @@
             "description" : "Unique code for patient identification and login to the online portal, valid until the procedure is closed.",
             "example" : "937ZiFaqjkfQgTBmo"
           },
-          "countryOfBirth" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "hasSufficientGermanLanguageSkills" : {
+            "type" : "boolean",
+            "description" : "Flag for if the person has sufficient German language skills.",
+            "example" : false
           },
           "id" : {
             "type" : "string",
@@ -7570,11 +7602,15 @@
             "format" : "uuid",
             "example" : "UUID_3"
           },
-          "inGermanySince" : {
-            "type" : "integer",
-            "description" : "The year since the person has been residing in Germany.",
-            "format" : "int32",
-            "example" : 2010
+          "otherKnownLanguages" : {
+            "type" : "string",
+            "description" : "Other languages besides German that the person can speak.",
+            "example" : "Russisch und Spanisch"
+          },
+          "pronouns" : {
+            "type" : "string",
+            "description" : "The prefered pronouns for the person.",
+            "example" : "xier / dier"
           },
           "yearOfBirth" : {
             "type" : "integer",
@@ -7716,18 +7752,6 @@
           }
         },
         "description" : "Lists any past illnesses the patient had."
-      },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
-          }
-        }
       },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
@@ -8371,9 +8395,6 @@
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
           },
-          "countryOfBirth" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "createdAt" : {
             "type" : "string",
             "description" : "The timestamp indicating when the procedure was created.",
@@ -8434,6 +8455,28 @@
             }
           }
         }
+      },
+      "SyphilisTest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LabTestData"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "hadSyphilis" : {
+              "type" : "boolean"
+            },
+            "remark" : {
+              "type" : "string"
+            },
+            "result" : {
+              "type" : "boolean"
+            },
+            "value" : {
+              "type" : "string"
+            }
+          }
+        } ]
       },
       "SystemProgressEntry" : {
         "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],
@@ -8787,19 +8830,12 @@
         "required" : [ "gender", "yearOfBirth" ],
         "type" : "object",
         "properties" : {
-          "countryOfBirth" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
           },
           "hasSufficientGermanLanguageSkills" : {
             "type" : "boolean",
             "description" : "Indicates whether the patient has sufficient German language skills."
-          },
-          "inGermanySince" : {
-            "type" : "integer",
-            "format" : "int32"
           },
           "otherKnownLanguages" : {
             "type" : "string",
@@ -8816,6 +8852,24 @@
             "description" : "Indicates the year of birth of the person.",
             "format" : "int32",
             "example" : 1996
+          }
+        }
+      },
+      "UpdatePinRequest" : {
+        "required" : [ "currentPin", "newPin" ],
+        "type" : "object",
+        "properties" : {
+          "currentPin" : {
+            "pattern" : "\\d{6}",
+            "type" : "string",
+            "description" : "The current PIN for verification.",
+            "example" : "654321"
+          },
+          "newPin" : {
+            "pattern" : "\\d{6}",
+            "type" : "string",
+            "description" : "The new PIN for anonymous authorization.",
+            "example" : "654321"
           }
         }
       },

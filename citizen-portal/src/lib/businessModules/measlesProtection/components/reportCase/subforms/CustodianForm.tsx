@@ -11,7 +11,8 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { isAdult, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { validateEmail } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Add, DeleteOutline } from "@mui/icons-material";
 import {
   Button,
@@ -49,7 +50,6 @@ import {
   titleOptions,
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { useTranslation } from "@/lib/i18n/client";
-import { validateEmail } from "@/lib/shared/helpers/validators";
 import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
@@ -90,6 +90,7 @@ export function CustodianForm({
   name,
 }: CustodianFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
+  const { validateLength } = useValidators();
   const { setFieldValue } = useFormikContext();
   const fieldName = createFieldNameMapper<CustodianFormInputs>(name);
 
@@ -157,9 +158,8 @@ export function CustodianForm({
               setFieldValue(fieldName("emailAddresses"), [value])
             }
             validate={(value) =>
-              validateEmail(
+              validateEmail(t("common.personalDetails.emailAddress_required"))(
                 Array.isArray(value) ? (value[0] as string) : value,
-                t("common.personalDetails.emailAddress_required"),
               )
             }
           />

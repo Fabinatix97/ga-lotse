@@ -72,7 +72,6 @@ export function useGetDepartmentInfo(module: DepartmentInfoModuleName) {
           abbreviation: data.departmentInfo?.abbreviation ?? "",
           street: data.departmentInfo?.street ?? "",
           houseNumber: data.departmentInfo?.houseNumber ?? "",
-          country: data.departmentInfo?.country ?? "",
           postalCode: data.departmentInfo?.postalCode ?? "",
           city: data.departmentInfo?.city ?? "",
           phoneNumber: data.departmentInfo?.phoneNumber ?? "",

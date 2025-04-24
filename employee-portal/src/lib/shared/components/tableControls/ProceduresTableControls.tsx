@@ -5,16 +5,17 @@
 
 "use client";
 
-import { ButtonBar } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  ToggleFilterButton as GenericFilterButton,
+  UseFilterSettings,
+} from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/joy";
 import { Formik } from "formik";
 import { JSX, ReactNode } from "react";
-
-import { FilterButton as GenericFilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 
 export type TableControlName = "filters" | "entrySearch";
 
@@ -33,7 +34,7 @@ interface ProceduresTableControlsProps {
   activeTableControl: TableControlName | undefined;
   controlsRight?: ReactNode;
   filterSettings?: UseFilterSettings;
-  FilterButton?: JSX.Element;
+  ToggleFilterButton?: JSX.Element;
 }
 
 export function ProceduresTableControls({
@@ -42,15 +43,15 @@ export function ProceduresTableControls({
   activeTableControl,
   controlsRight = null,
   filterSettings,
-  FilterButton,
+  ToggleFilterButton,
 }: ProceduresTableControlsProps) {
   const isEntrySearch = activeTableControl === "entrySearch";
 
   function renderFilterButton() {
     let filterButton = null;
 
-    if (FilterButton) {
-      filterButton = FilterButton;
+    if (ToggleFilterButton) {
+      filterButton = ToggleFilterButton;
     } else if (filterSettings) {
       filterButton = (
         <GenericFilterButton

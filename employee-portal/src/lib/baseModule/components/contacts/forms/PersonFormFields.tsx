@@ -12,7 +12,7 @@ import {
   TITLE_OPTIONS,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Divider, Grid } from "@mui/joy";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -21,6 +21,7 @@ import { PersonContactFormValues } from "@/lib/baseModule/components/contacts/ty
 const fieldName = createFieldNameMapper<PersonContactFormValues>();
 
 export function PersonFormFields() {
+  const { validateLength } = useValidators();
   const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   return (
     <>

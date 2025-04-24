@@ -9,7 +9,7 @@
     "alert": {
       "title_BOOKABLE": "Terminbuchung erforderlich",
       "message_BOOKABLE": "Der Termin muss noch über den Kalender gebucht werden.",
-      "title_CANCELLED": "Abgelehnt"
+      "title_CANCELLED": "Abgesagt"
     },
     "bookingState": {
       "label": "Terminstatus",
@@ -74,7 +74,7 @@
       "save_REJECTED": "Zur Prüfung absenden"
     },
     "snackbar": {
-      "success": "Die Dokumente wurden erfolgreich hochgeladen"
+      "success": "Die Dokumente wurden erfolgreich hochgeladen."
     }
   },
   "overview": {
@@ -114,7 +114,7 @@
       "cancelLabel": "Beibehalten"
     },
     "snackbar": {
-      "success": "Termin wurde erfolgreich abgesagt"
+      "success": "Der Termin wurde abgesagt."
     }
   }
 }

@@ -18,25 +18,25 @@ public class AbstractPrivacyDocumentsConfig extends BaseEntity {
 
   @OneToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(nullable = false)
-  private PrivacyDocument privacyNotice;
+  private MultiLangDocument privacyNotice;
 
   @OneToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(nullable = false)
-  private PrivacyDocument privacyPolicy;
+  private MultiLangDocument privacyPolicy;
 
-  public PrivacyDocument getPrivacyNotice() {
+  public MultiLangDocument getPrivacyNotice() {
     return privacyNotice;
   }
 
-  public void setPrivacyNotice(PrivacyDocument privacyNotice) {
+  public void setPrivacyNotice(MultiLangDocument privacyNotice) {
     this.privacyNotice = privacyNotice;
   }
 
-  public PrivacyDocument getPrivacyPolicy() {
+  public MultiLangDocument getPrivacyPolicy() {
     return privacyPolicy;
   }
 
-  public void setPrivacyPolicy(PrivacyDocument privacyPolicy) {
+  public void setPrivacyPolicy(MultiLangDocument privacyPolicy) {
     this.privacyPolicy = privacyPolicy;
   }
 }

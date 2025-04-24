@@ -22,26 +22,21 @@ Note: `stress` is only available for UNIX systems. Windows users will need anoth
 
 === Retry until failure
 
-Flakiness can also be reproduced by retrying a test continuously. While this can be done manually, it's time-consuming and cumbersome. The `retry` command helps to automate this process. It can be configured to retry a command until it fails:
+Flakiness can also be reproduced by retrying a test continuously. While this can be done manually, it's time-consuming and cumbersome. Test retries can be configured for the Gradle `test` task:
 
 [source, shell]
 ----
-retry --until=fail [--times=50] -- command-to-retry
+./gradlew :e2e:test -Pfilter=path/to/flakyTest.spec.ts -Pretries=10
 ----
 
-Configuring `--times` is optional, but is useful to make the command terminate in case it hits no failure.
-Consider setting `--delay=0` to disable the back-off time after each attempt.
-After `--` follows the command to execute the test to analyze.
+The test path can be copy-pasted from test logs in pipelines or test reports.
 
-.Playwright Example
-[source, shell]
-----
-retry --until=fail -- pnpm playwright test path/to/test.spec.ts:123
-----
+The number of retries should be adjusted as needed. Tests with a high failure rate will only need a few retries to be reproduced. Tests with a low failure rate might need much more retries.
 
-`retry` is also a useful utility to verify whether a potential fix actually stabilizes a flaky test.
+Running tests with retries is also suggested to check new tests for flakiness before merging them.
 
-Note: `retry` is only available for UNIX systems. Windows users will need another tool.
+When running tests locally, traces are enabled by default. Since capturing **traces** slows down the test execution, there can be scenarios where tests are only flaky without tracing, which is the default configuration for tests in the CI pipeline.To disable tracing locally, you can add `-PdisableTraces`. Note that you won't have traces to analyze the flakiness, but logs from Docker containers might still help.
+
 
 == Common causes and fixes for flaky tests
 

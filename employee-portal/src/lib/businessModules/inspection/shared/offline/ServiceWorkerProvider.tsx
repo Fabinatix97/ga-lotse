@@ -64,10 +64,10 @@ function ServiceWorkerProviderInner({
   const syncing = useServiceWorkerSyncQueue();
 
   return (
-    <ServiceWorkerContext.Provider value={contextValue}>
+    <ServiceWorkerContext value={contextValue}>
       {syncing && <LoadingOverlay />}
       {children}
-    </ServiceWorkerContext.Provider>
+    </ServiceWorkerContext>
   );
 }
 
@@ -80,9 +80,9 @@ function ServiceWorkerProviderMock({
   }, []);
 
   return (
-    <ServiceWorkerContext.Provider value={EMPTY_CONTEXT}>
+    <ServiceWorkerContext value={EMPTY_CONTEXT}>
       {children}
-    </ServiceWorkerContext.Provider>
+    </ServiceWorkerContext>
   );
 }
 

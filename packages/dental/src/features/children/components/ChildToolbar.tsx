@@ -10,6 +10,7 @@ import {
   PersonToolbarHeader,
   TabNavigationItem,
   TabNavigationToolbar,
+  ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
@@ -38,7 +39,11 @@ export function ChildToolbar(props: ChildToolbarProps) {
   return (
     <TabNavigationToolbar
       header={<PersonToolbarHeader person={child} />}
-      routeBack={hasDentalAdminRole ? routes.children.overview : undefined}
+      backButton={
+        hasDentalAdminRole ? (
+          <ToolbarBackButton href={routes.children.overview} />
+        ) : null
+      }
       items={buildTabItems(childId)}
     />
   );

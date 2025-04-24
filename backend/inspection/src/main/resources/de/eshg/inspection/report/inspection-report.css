@@ -123,6 +123,7 @@ hr {
 .elementText {
   margin: 10px 0;
   white-space: pre-line;
+  word-wrap: break-word;
 }
 
 .elementTitle {
@@ -136,6 +137,7 @@ hr {
 
 .elementValue.textBlock {
   white-space: pre-line;
+  word-wrap: break-word;
 }
 
 table.simpleYesNo {
@@ -167,6 +169,7 @@ table.simpleYesNo {
   font-style: italic;
   margin-left: 15px;
   white-space: pre-line;
+  word-wrap: break-word;
 }
 
 .greetingEnd, .greetingPerson {

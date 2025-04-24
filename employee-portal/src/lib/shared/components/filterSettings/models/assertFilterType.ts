@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
+import { FilterValue } from "@eshg/lib-employee-portal";
 
 export function assertFilterType<TValueType extends FilterValue["type"]>(
   value: FilterValue,

@@ -10,7 +10,6 @@ import static de.eshg.stiprotection.pdf.identification.DocumentParameters.mapToD
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toAppointmentTimeRange;
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toConsultationAppointment;
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toDocumentDate;
-import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
 import static org.springframework.data.jpa.domain.Specification.allOf;
 
 import de.eshg.base.GenderDto;
@@ -65,7 +64,6 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
-import de.eshg.stiprotection.util.ProgressEntryUtil;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
@@ -102,7 +100,6 @@ public class StiProtectionProcedureService {
   private final SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
   private final StiProtectionProcedureFinder procedureFinder;
-  private final ProgressEntryUtil progressEntryUtil;
   private final String citizenPortalUrl;
 
   public StiProtectionProcedureService(
@@ -115,7 +112,6 @@ public class StiProtectionProcedureService {
       SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
       StiProtectionProcedureFinder procedureFinder,
-      ProgressEntryUtil progressEntryUtil,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl) {
     this.repository = procedures;
     this.clock = clock;
@@ -126,7 +122,6 @@ public class StiProtectionProcedureService {
     this.sexWorkDepartmentInfoService = sexWorkDepartmentInfoService;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
     this.procedureFinder = procedureFinder;
-    this.progressEntryUtil = progressEntryUtil;
     this.citizenPortalUrl = citizenPortalUrl;
   }
 
@@ -376,7 +371,6 @@ public class StiProtectionProcedureService {
   public void updatePersonDetails(UUID procedureId, PersonData personData) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     PersonMapper.updatePersonDetails(procedure.getPerson(), personData);
-    progressEntryUtil.addProgressEntry(procedureId, PERSON_DETAILS_UPDATED);
   }
 
   public void closeProcedure(StiProtectionProcedure procedure) {

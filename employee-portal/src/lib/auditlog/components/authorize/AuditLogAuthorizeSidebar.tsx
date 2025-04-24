@@ -20,6 +20,7 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useRef } from "react";
@@ -36,7 +37,6 @@ import {
   useGetAuditLogGranteesCandidates,
 } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function useAuditLogAuthorizeSidebar(): UseSidebarWithFormRefResult<AuditlogAuthorizeSidebarProps> {
   return useSidebarWithFormRef({
@@ -168,7 +168,7 @@ function AuditLogGranteesSheet({
                 justifyContent="space-between"
               >
                 <Typography level="body-sm">
-                  {fullName(resolvedUsers[access.idOfGrantedUser])}
+                  {formatUserName(resolvedUsers[access.idOfGrantedUser])}
                 </Typography>
                 <Typography level="body-sm">
                   bis {formatDate(access.expiresAt)}
@@ -213,7 +213,7 @@ function AuditLogAuthorizeConfirmationDescription({
         {users.map((user) => (
           <ListItem sx={{ display: "list-item" }} key={user.userId}>
             <Typography level="body-sm" sx={{ fontWeight: "bold" }}>
-              {fullName(user)}
+              {formatUserName(user)}
             </Typography>
           </ListItem>
         ))}

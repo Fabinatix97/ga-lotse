@@ -4,7 +4,6 @@
  */
 
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
@@ -15,6 +14,7 @@ import { ReactNode, useId } from "react";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { sufficientText } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";
 import { getAppointmentDate } from "@/lib/businessModules/stiProtection/shared/procedure/mappers";
 
 import { CombinedAppointmentForm } from "./AddNewProcedureSidebar";
@@ -103,18 +103,17 @@ export function SummaryForm({
             title="Persönliche Daten"
           />
           <LabelValuePair
-            label="Geschlecht"
+            label="Biologisches Geschlecht"
             value={values.gender && GENDER_VALUES[values.gender]}
           />
+          <LabelValuePair label="Pronomen" value={values.pronouns} />
           <LabelValuePair
-            label="Geburtsland"
-            value={
-              values.countryOfBirth && translateCountry(values.countryOfBirth)
-            }
+            label="Ausreichende Deutschkenntnisse"
+            value={sufficientText(values.hasSufficientGermanLanguageSkills)}
           />
           <LabelValuePair
-            label="In Deutschland seit"
-            value={values.inGermanySince}
+            label="Weitere Sprachen"
+            value={values.otherKnownLanguages}
           />
           <LabelValuePair label="Geburtsjahr" value={values.yearOfBirth} />
         </>

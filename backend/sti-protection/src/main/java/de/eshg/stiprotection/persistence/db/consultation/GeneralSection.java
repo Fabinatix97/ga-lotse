@@ -18,9 +18,6 @@ public class GeneralSection {
   @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String furtherGenderInfo;
 
-  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
-  private String otherKnownLanguages;
-
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hasHealthInsurance;
 
@@ -59,14 +56,6 @@ public class GeneralSection {
 
   public void setFurtherGenderInfo(String furtherGenderInfo) {
     this.furtherGenderInfo = furtherGenderInfo;
-  }
-
-  public String getOtherKnownLanguages() {
-    return otherKnownLanguages;
-  }
-
-  public void setOtherKnownLanguages(String otherKnownLanguages) {
-    this.otherKnownLanguages = otherKnownLanguages;
   }
 
   public Boolean getHasHealthInsurance() {

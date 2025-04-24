@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
@@ -21,6 +22,7 @@ import {
 } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { isDefined } from "remeda";
 
 import { TravelInformationOverviewDetails } from "@/lib/businessModules/travelMedicine/components/appointment/steps/overview/TravelInformationOverviewDetails";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
@@ -33,7 +35,8 @@ import { formatDepartmentAddress } from "@/lib/shared/formatters/address";
 export function AppointmentOverviewDetails() {
   const { t } = useTranslation(["travelMedicine/forms"]);
   const { values } = useFormikContext<InitialAppointmentFormValues>();
-  const department = useDepartmentContext();
+  const { currentStep } = useMultiStepForm();
+  const { department } = useDepartmentContext();
   const appointmentStart = values.appointment?.start;
   const durationInMinutes =
     values.appointment &&
@@ -44,61 +47,70 @@ export function AppointmentOverviewDetails() {
 
   return (
     <Stack gap={1} data-testid="appointment-overview-summary">
-      {values.initialStepAppointmentType && (
+      {currentStep > 1 && values.initialStepAppointmentType && (
         <DetailsField
           value={APPOINTMENT_TYPE[values.initialStepAppointmentType]}
           icon={<VaccinesOutlined />}
         />
       )}
-      <DetailsField
-        value={formatDepartmentAddress(department.department!)}
-        icon={<FmdGoodOutlined />}
-      />
-      {appointmentStart && (
+      {isDefined(department) && (
         <DetailsField
-          value={formatDateToFullReadableString(appointmentStart)}
-          icon={<DateRange />}
+          value={formatDepartmentAddress(department)}
+          icon={<FmdGoodOutlined />}
         />
       )}
-      {durationInMinutes && (
-        <DetailsField
-          value={`${formatTime(appointmentStart)} ${t("appointmentOverviewSection.values.appointmentDuration", { durationInMinutes })}`}
-          icon={<AccessTimeOutlined />}
-        />
+      {currentStep > 2 && (
+        <>
+          {appointmentStart && (
+            <DetailsField
+              value={formatDateToFullReadableString(appointmentStart)}
+              icon={<DateRange />}
+            />
+          )}
+          {durationInMinutes && (
+            <DetailsField
+              value={`${formatTime(appointmentStart)} ${t("appointmentOverviewSection.values.appointmentDuration", { durationInMinutes })}`}
+              icon={<AccessTimeOutlined />}
+            />
+          )}
+        </>
       )}
-      {values.patient.firstName && values.patient.lastName && (
-        <DetailsField
-          value={formatPersonName(values.patient)}
-          icon={<PersonOutlined />}
-        />
+      {currentStep > 5 && (
+        <>
+          {values.patient.firstName && values.patient.lastName && (
+            <DetailsField
+              value={formatPersonName(values.patient)}
+              icon={<PersonOutlined />}
+            />
+          )}
+          {values.patient.dateOfBirth && (
+            <DetailsField
+              value={formatDate(new Date(values.patient.dateOfBirth))}
+              icon={<CakeOutlined />}
+            />
+          )}
+        </>
       )}
-      {values.patient.dateOfBirth && (
-        <DetailsField
-          value={formatDate(new Date(values.patient.dateOfBirth))}
-          icon={<CakeOutlined />}
-        />
-      )}
-      {values.travelInformation.travelType && (
+      {currentStep > 3 && values.travelInformation.travelType && (
         <TravelInformationOverviewDetails></TravelInformationOverviewDetails>
       )}
-      {/*needs feedback from ui team*/}
-      {/*{!!values.patient.phoneNumbers && (*/}
-      {/*  <DetailsField*/}
-      {/*    value={values.patient.phoneNumbers}*/}
-      {/*    icon={<CallOutlined />}*/}
-      {/*  />*/}
-      {/*)}*/}
-      {values.patient.emailAddresses && (
-        <DetailsField
-          value={values.patient.emailAddresses}
-          icon={<MailOutlined />}
-        />
-      )}
-      {values.confirmOnlineServices && (
-        <DetailsField
-          value={t("appointmentOverviewSection.values.confirmOnlineServices")}
-          icon={<MarkEmailReadOutlined />}
-        />
+      {currentStep > 5 && (
+        <>
+          {values.patient.emailAddresses && (
+            <DetailsField
+              value={values.patient.emailAddresses}
+              icon={<MailOutlined />}
+            />
+          )}
+          {values.confirmOnlineServices && (
+            <DetailsField
+              value={t(
+                "appointmentOverviewSection.values.confirmOnlineServices",
+              )}
+              icon={<MarkEmailReadOutlined />}
+            />
+          )}
+        </>
       )}
     </Stack>
   );

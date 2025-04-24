@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSearchReferencePersonsQuery } from "@eshg/lib-employee-portal";
+import {
+  InformationSheet,
+  OpenModalButton,
+  useSearchReferencePersonsQuery,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiGetVaccinationConsultationDetailsResponse,
@@ -20,8 +24,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { AbortProcedureModal } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AbortProcedureModal";
 import { useAcceptProcedureSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
-import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 export function ProcedureActionsPanel(
   props: Readonly<{

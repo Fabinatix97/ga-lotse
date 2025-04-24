@@ -1,7 +1,7 @@
 # Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
-FROM matrixdotorg/synapse:v1.121.1@sha256:39ac223adee67024d9d5aecd679fdaeacaa1e348a6c4c999cb7270868486cbb5
+FROM matrixdotorg/synapse:v1.128.0@sha256:5765b7f1bd46b3ded0a59546c8e69b33e57ef6007854791701943f0414557e39
 
 RUN pip install --no-cache-dir jwcrypto
 

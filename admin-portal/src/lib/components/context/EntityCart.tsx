@@ -92,11 +92,7 @@ export function EntityCartProvider({ children }: Readonly<PropsWithChildren>) {
     [addEntity, canAddEntity, clear, entities, removeEntity],
   );
 
-  return (
-    <EntityCartContext.Provider value={values}>
-      {children}
-    </EntityCartContext.Provider>
-  );
+  return <EntityCartContext value={values}>{children}</EntityCartContext>;
 }
 
 export function useEntityCart() {

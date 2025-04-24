@@ -4,6 +4,7 @@
  */
 
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
+import { InformationSheet } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import deLocale from "@fullcalendar/core/locales/de";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -13,7 +14,6 @@ import { Card, Chip, Stack, Typography } from "@mui/joy";
 import { useRef, useState } from "react";
 
 import { CalendarViewTypes } from "@/lib/baseModule/components/calendar/calendarViews";
-import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 import { CalendarHeader } from "./CalendarHeader";
 import { UserActivityState } from "./ResourceDetail";

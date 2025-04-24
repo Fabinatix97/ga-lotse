@@ -11,7 +11,7 @@ import { OpenInNewOutlined } from "@mui/icons-material";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
-import { ChooseAttributeStepOrChooseEvaluationStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
+import { ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
 import {
   Analyses,
   Attributes,
@@ -26,7 +26,7 @@ export interface EvaluationTemplateStepAutocompleteEntry {
 }
 
 export interface ChooseEvaluationTemplateStepProps
-  extends SidebarStepContentProps<ChooseAttributeStepOrChooseEvaluationStepFormModel> {
+  extends SidebarStepContentProps<ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel> {
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
 }
 

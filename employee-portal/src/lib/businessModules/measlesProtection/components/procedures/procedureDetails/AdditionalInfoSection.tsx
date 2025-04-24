@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import { ConfirmationDialog, DetailsSection } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -21,7 +21,6 @@ import {
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
-import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
@@ -119,7 +118,7 @@ export function AdditionalInfoSection({
           </Button>
         )}
       </Sheet>
-      <EmployeePortalConfirmationDialog
+      <ConfirmationDialog
         title={"Vorgang abschließen?"}
         description={"Möchten Sie diesen Vorgang wirklich abschließen?"}
         confirmLabel={"Abschließen"}

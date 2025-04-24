@@ -6,13 +6,13 @@
 import { ApiBaseFeature, ApiUser } from "@eshg/base-api";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
 import { routes as chatRoutes } from "@/lib/businessModules/chat/shared/routes";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { sortUsersByName } from "@/lib/shared/helpers/users";
 
 const columnHelper = createColumnHelper<ApiUser>();
@@ -33,7 +33,7 @@ const userColumns = [
   columnHelper.accessor("firstName", {
     header: "Vorname",
     sortingFn: (a, b) =>
-      fullName(a.original).localeCompare(fullName(b.original)),
+      formatUserName(a.original).localeCompare(formatUserName(b.original)),
     cell: (props) => props.getValue(),
     meta: {
       canNavigate: {

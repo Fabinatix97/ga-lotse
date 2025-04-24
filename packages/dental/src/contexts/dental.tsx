@@ -19,11 +19,7 @@ interface DentalProviderProps extends RequiresChildren {
 export function DentalProvider(props: DentalProviderProps) {
   const [clients] = useState<DentalClients>(() => createClients(props.baseUrl));
 
-  return (
-    <DentalContext.Provider value={clients}>
-      {props.children}
-    </DentalContext.Provider>
-  );
+  return <DentalContext value={clients}>{props.children}</DentalContext>;
 }
 
 export function useDentalApi() {

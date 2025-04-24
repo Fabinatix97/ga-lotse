@@ -44,11 +44,7 @@ export function InfoPanelProvider({ children }: RequiresChildren) {
     [infoPanel],
   );
 
-  return (
-    <InfoPanelContext.Provider value={contextValues}>
-      {children}
-    </InfoPanelContext.Provider>
-  );
+  return <InfoPanelContext value={contextValues}>{children}</InfoPanelContext>;
 }
 
 export function useInfoPanelContext() {

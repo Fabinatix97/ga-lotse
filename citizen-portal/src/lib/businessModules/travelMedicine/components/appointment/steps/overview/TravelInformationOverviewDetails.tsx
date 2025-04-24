@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { ApiTravelTimeUnit, ApiTravelType } from "@eshg/travel-medicine-api";
 import { TravelExploreOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
@@ -26,6 +27,7 @@ export function TravelInformationOverviewDetails() {
   const { t } = useTranslation(["travelMedicine/forms"]);
   const { values } = useFormikContext<InitialAppointmentFormValues>();
   const { translateCountry } = useTranslateCountry();
+  const { currentStep } = useMultiStepForm();
 
   const travelDurationLabel = t(
     "appointmentOverviewSection.values.travelDuration",
@@ -34,9 +36,6 @@ export function TravelInformationOverviewDetails() {
     "appointmentOverviewSection.values.travelDestinations",
     { count: values.travelInformation.travelDestinations.length },
   );
-  // const travelStartDateLabel = t(
-  //   "appointmentOverviewSection.values.travelStartDate",
-  // );
 
   function isTravelDataComplete() {
     return (
@@ -51,13 +50,15 @@ export function TravelInformationOverviewDetails() {
 
   return (
     <Stack>
-      <DetailsField
-        value={
-          TRAVEL_TYPES[values.travelInformation.travelType as ApiTravelType]
-        }
-        icon={<TravelExploreOutlined />}
-      />
-      {isTravelDataComplete() && (
+      {currentStep > 3 && (
+        <DetailsField
+          value={
+            TRAVEL_TYPES[values.travelInformation.travelType as ApiTravelType]
+          }
+          icon={<TravelExploreOutlined />}
+        />
+      )}
+      {currentStep > 4 && isTravelDataComplete() && (
         <>
           <Typography sx={{ paddingInlineStart: "2.25rem" }}>
             {formatTravelDestinations(
@@ -68,13 +69,6 @@ export function TravelInformationOverviewDetails() {
               ),
             )}
           </Typography>
-          {/*needs feedback from ui team*/}
-          {/*<Typography sx={{ paddingInlineStart: "2.25rem" }}>*/}
-          {/*  {formatTravelStartDate(*/}
-          {/*    travelStartDateLabel,*/}
-          {/*    formatDate(new Date(values.travelInformation.travelStartDate)),*/}
-          {/*  )}*/}
-          {/*</Typography>*/}
           <Typography sx={{ paddingInlineStart: "2.25rem" }}>
             {formatTravelDuration(
               travelDurationLabel,

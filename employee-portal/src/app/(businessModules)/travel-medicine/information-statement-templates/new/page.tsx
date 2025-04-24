@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import { InformationStatementTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateEditor";
@@ -20,7 +21,11 @@ export default function NewInformationStatementTemplatePage() {
       toolbar={
         <Toolbar
           title="Aufklärungsbogenvorlage erstellen"
-          backHref={routes.informationStatementTemplates.index}
+          backButton={
+            <ToolbarBackButton
+              href={routes.informationStatementTemplates.index}
+            />
+          }
         />
       }
     >

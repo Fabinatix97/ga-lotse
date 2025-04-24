@@ -6,7 +6,6 @@
 package de.eshg.stiprotection.api;
 
 import de.eshg.base.GenderDto;
-import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Year;
@@ -19,8 +18,6 @@ public record UpdatePersonDetailsRequest(
             example = "1996")
         @NotNull
         Year yearOfBirth,
-    CountryCode countryOfBirth,
-    @Schema(type = "integer") Year inGermanySince,
     @Schema(description = "Indicates whether the patient has sufficient German language skills.")
         Boolean hasSufficientGermanLanguageSkills,
     @Schema(

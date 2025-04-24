@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Chip } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -11,7 +12,6 @@ import {
   GeoShapeInfo,
   GeoShapeStatus,
 } from "@/lib/businessModules/statistics/api/models/geoShapesTableView";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper = createColumnHelper<GeoShapeInfo>();
 

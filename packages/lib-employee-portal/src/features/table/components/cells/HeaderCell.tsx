@@ -21,7 +21,7 @@ const StyledHeaderCell = styled("th")<StyledCellProps>(({ theme, meta }) => ({
   ".MuiTable-root &": getHeaderCellStyles(meta, theme),
 }));
 
-export interface HeaderCellProps extends RequiresChildren {
+interface HeaderCellProps extends RequiresChildren {
   canSort: boolean;
   isSorted: false | SortDirection;
   onSort?: (event: unknown) => void;

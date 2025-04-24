@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
@@ -22,8 +23,10 @@ export default function NewChecklist() {
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          backHref={routes.checklists.definitions.index}
           title="Checkliste erstellen"
+          backButton={
+            <ToolbarBackButton href={routes.checklists.definitions.index} />
+          }
         />
       }
     >

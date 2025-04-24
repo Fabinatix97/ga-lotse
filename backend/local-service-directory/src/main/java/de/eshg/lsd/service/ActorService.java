@@ -144,7 +144,8 @@ public class ActorService {
     if (X509Utils.isCaCertificate(cert)) {
       throw new InvalidCertificateException("CA certificate not allowed");
     }
-    String commonName = X509Utils.extractCommonName(cert);
+    X509Utils.assertOnlySanIsCn(cert);
+    String commonName = X509Utils.extractSanOrCommonName(cert);
     if (!commonName.equals(userName)) {
       throw new InvalidCertificateException(commonName, userName);
     }

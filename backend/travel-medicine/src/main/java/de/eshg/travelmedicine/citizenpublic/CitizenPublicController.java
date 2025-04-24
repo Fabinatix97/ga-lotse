@@ -120,7 +120,7 @@ public class CitizenPublicController {
   public UUID postVaccinationConsultationForCitizen(
       @RequestBody @Valid
           PostCitizenVaccinationConsultationRequest postCitizenVaccinationConsultationRequest) {
-    return vaccinationConsultationService.createProcedure(
+    return vaccinationConsultationService.createCitizenProcedure(
         postCitizenVaccinationConsultationRequest);
   }
 

@@ -6,7 +6,11 @@
 package de.eshg.dental.api;
 
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import java.util.UUID;
 
 public record ChildFilterParameters(
-    @Min(1900) Integer yearFilter, UUID institutionIdFilter, String groupNameFilter) {}
+    @Min(1900) Integer yearFilter,
+    UUID institutionIdFilter,
+    String groupNameFilter,
+    List<UUID> procedureLabelsFilter) {}

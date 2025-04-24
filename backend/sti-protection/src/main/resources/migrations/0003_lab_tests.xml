@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1744208045605-1">
+    <createTable tableName="lab_test_data">
+      <column name="lab_test_type" type="VARCHAR(31)">
+        <constraints nullable="false"/>
+      </column>
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_lab_test_data"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="remark" type="TEXT"/>
+      <column name="result" type="BOOLEAN"/>
+      <column name="value" type="TEXT"/>
+      <column name="anal" type="BOOLEAN"/>
+      <column name="oral" type="BOOLEAN"/>
+      <column name="urethral" type="BOOLEAN"/>
+      <column name="infection" type="BOOLEAN"/>
+      <column name="vaccine_titre" type="BOOLEAN"/>
+      <column name="other_test_name" type="TEXT"/>
+      <column name="had_syphilis" type="BOOLEAN"/>
+      <column name="lab_test_examination_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744208045605-2">
+    <addUniqueConstraint columnNames="id, lab_test_type"
+      constraintName="lab_test_data_id_lab_test_type_key"
+      tableName="lab_test_data"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744208045605-3">
+    <createIndex indexName="idx_lab_test_data_lab_test_examination_id"
+      tableName="lab_test_data">
+      <column name="lab_test_examination_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744208045605-4">
+    <addForeignKeyConstraint baseColumnNames="lab_test_examination_id"
+      baseTableName="lab_test_data"
+      constraintName="fk_lab_test_data_laboratory_test_examination"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="laboratory_test_examination" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

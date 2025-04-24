@@ -4,6 +4,8 @@
  */
 
 import {
+  ActionsItem,
+  ActionsMenu,
   DataTable,
   DetailsSection,
   TablePage,
@@ -30,10 +32,6 @@ import {
   appointmentStatusColor,
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

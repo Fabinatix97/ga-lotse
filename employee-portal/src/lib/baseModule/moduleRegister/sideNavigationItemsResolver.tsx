@@ -27,7 +27,7 @@ import { resolveSideNavigationItems as resolveSchoolEntrySideNavigationItems } f
 import { sideNavigationItems as statisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
-import { useConfiguratorSideNavigationItems } from "@/lib/configurator/shared/sideNavigationItem";
+import { resolveConfiguratorSideNavigationItems } from "@/lib/configurator/shared/sideNavigationItem";
 import { sideNavigationItems as archivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
 
 export type ResolveSideNavigationItems = (
@@ -67,7 +67,7 @@ function useBusinessItems(): SideNavigationItem[] {
 function useBaseItems(): SideNavigationItem[] {
   const chatSideNavigations = useChatSideNavigationItems();
   const baseSideNavigations = useBaseSideNavigationItems();
-  const configurationSideNavigations = useConfiguratorSideNavigationItems();
+  const configurationSideNavigations = resolveConfiguratorSideNavigationItems();
 
   const baseItems: SideNavigationItem[][] = [
     baseSideNavigations,

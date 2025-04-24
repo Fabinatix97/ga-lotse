@@ -10,6 +10,7 @@ import de.eshg.dental.domain.model.Person;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import jakarta.persistence.LockModeType;
+import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.Lock;
@@ -33,10 +34,17 @@ public interface ChildRepository extends ProcedureRepository<Child> {
   List<Child> findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(
       UUID institutionId, String groupName, ProcedureStatus procedureStatus);
 
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query(
+      "select c from Child c where c.institutionId = :institutionId and c.groupName in :groupNames and c.procedureStatus='OPEN' and c.year = :year")
+  List<Child> findByInstitutionIdAndGroupNameAndYearForUpdate(
+      UUID institutionId, List<String> groupNames, Year year);
+
+  List<Child> findByInstitutionIdAndYearAndProcedureStatus(
+      UUID institutionId, Year year, ProcedureStatus procedureStatus);
+
   List<Child> findByInstitutionIdAndProcedureStatusOrderById(
       UUID institutionId, ProcedureStatus status);
-
-  List<Child> findByProcedureStatusOrderById(ProcedureStatus status);
 
   boolean existsByInstitutionIdAndGroupNameAndProcedureStatus(
       UUID institutionId, String groupName, ProcedureStatus status);
@@ -46,4 +54,40 @@ public interface ChildRepository extends ProcedureRepository<Child> {
       "select p from Person p where p.procedure.externalId = :childId and p.centralFileStateId = :fileStateId")
   Person findByProcedureExternalIdAndFileStateIdForUpdate(
       @Param("childId") UUID childId, @Param("fileStateId") UUID fileStateId);
+
+  @Query(
+      nativeQuery = true,
+      value =
+          """
+        select
+          institution_id as institutionId,
+          count(*) as totalGroups,
+          sum(case when totalChildren = completedChildren then 1 else 0 end) as completedGroups
+        from
+          (
+          select
+              c.institution_id,
+              c.group_name,
+              count(*) as totalChildren,
+              sum(case when c.procedure_status = 'CLOSED' then 1 else 0 end) as completedChildren
+          from
+              Child c
+          where
+              c.year = :schoolYear
+          group by
+              c.group_name,
+              c.institution_id) as group_status
+        group by
+            institution_id
+      """)
+  List<InstitutionGroupCounts> getInstitutionsAndCompletedGroups(
+      @Param("schoolYear") Year schoolYear);
+
+  interface InstitutionGroupCounts {
+    UUID getInstitutionId();
+
+    int getTotalGroups();
+
+    int getCompletedGroups();
+  }
 }

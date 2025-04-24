@@ -11,7 +11,6 @@ public record AdministrativeData(
     String cityDistrict,
     String cityDistrictPrefecture,
     String arbitratorsDistrict,
-    String socialTownHallName,
     String policeStation,
     String postalCode,
     String municipalityKey) {}

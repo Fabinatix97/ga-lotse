@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FilterDefinition } from "@eshg/lib-employee-portal";
 import { ApiAvailableDataSource } from "@eshg/statistics-api";
-
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 
 export enum EvaluationTemplatesFilterKey {
   DataSource = "dataSource",

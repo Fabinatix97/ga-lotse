@@ -110,7 +110,7 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
                     peerCertificate.getSubjectX500Principal().getName()
                   });
 
-              String peerCommonName = X509Utils.extractCommonName(peerCertificate);
+              String peerCommonName = X509Utils.extractSanOrCommonName(peerCertificate);
               ActorResponseDto senderActor = actorsByHostname.get(peerCommonName);
               if (senderActor != null) {
                 headers.add(

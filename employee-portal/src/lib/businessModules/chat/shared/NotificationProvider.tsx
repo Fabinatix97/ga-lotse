@@ -90,9 +90,9 @@ export function NotificationProvider({ children }: RequiresChildren) {
   }, [isClientPrepared, matrixClient]);
 
   return (
-    <NotificationContext.Provider value={{ unreadNotificationsPerRoom }}>
+    <NotificationContext value={{ unreadNotificationsPerRoom }}>
       {children}
-    </NotificationContext.Provider>
+    </NotificationContext>
   );
 }
 

@@ -112,7 +112,8 @@ export function isCategorical(valueType: AttributeType) {
     isValueWithOptions(valueType) ||
     isText(valueType) ||
     isDate(valueType) ||
-    isInteger(valueType)
+    isInteger(valueType) ||
+    isIntegerInterval(valueType)
   );
 }
 
@@ -121,7 +122,23 @@ export function isInteger(valueType: AttributeType) {
 }
 
 export function isNumeric(valueType: AttributeType) {
-  return valueType === "DecimalAttribute" || isInteger(valueType);
+  return (
+    valueType === "DecimalAttribute" ||
+    isInteger(valueType) ||
+    isInterval(valueType)
+  );
+}
+
+export function isInterval(valueType: AttributeType) {
+  return isDecimalInterval(valueType) || isIntegerInterval(valueType);
+}
+
+export function isIntegerInterval(valueType: AttributeType) {
+  return valueType === "IntegerIntervalAttribute";
+}
+
+export function isDecimalInterval(valueType: AttributeType) {
+  return valueType === "DecimalIntervalAttribute";
 }
 
 export function evaluateGrouping(

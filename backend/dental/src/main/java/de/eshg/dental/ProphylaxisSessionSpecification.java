@@ -11,6 +11,7 @@ import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
 import de.eshg.dental.api.ProphylaxisSessionSortKey;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisSession_;
+import de.eshg.dental.domain.model.ProphylaxisStatus;
 import de.eshg.dental.domain.model.ProphylaxisType;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -35,15 +36,18 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
   private final ProphylaxisSessionSortKey sortKey;
   private final ProphylaxisType typeFilter;
   private final UUID institutionIdFilter;
+  private final ProphylaxisStatus statusFilter;
 
   public ProphylaxisSessionSpecification(
       ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters,
       UUID institutionIdFilter,
-      ProphylaxisType typeFilter) {
+      ProphylaxisType typeFilter,
+      ProphylaxisStatus statusFilter) {
     sortKey = paginationAndSortParameters.sortKeyOrFallback(ProphylaxisSessionSortKey.ID);
     sortDirection = paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC);
     this.typeFilter = typeFilter;
     this.institutionIdFilter = institutionIdFilter;
+    this.statusFilter = statusFilter;
   }
 
   static Pageable toPageSpec(PaginationParameters paginationParameters) {
@@ -66,6 +70,9 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
     }
     if (institutionIdFilter != null) {
       conjunctions.add(cb.equal(root.get(ProphylaxisSession_.institutionId), institutionIdFilter));
+    }
+    if (statusFilter != null) {
+      conjunctions.add(cb.equal(root.get(ProphylaxisSession_.status), statusFilter));
     }
 
     return cb.and(conjunctions.toArray(Predicate[]::new));

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormDialog } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { useEditEvaluationName } from "@/lib/businessModules/statistics/api/mutations/useEditEvaluationName";
-import { FormDialog } from "@/lib/shared/components/formDialog/FormDialog";
 
 interface EvaluationNameChangeModalProps {
   open: boolean;

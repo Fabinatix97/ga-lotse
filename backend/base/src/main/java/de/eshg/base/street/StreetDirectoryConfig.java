@@ -29,6 +29,6 @@ public class StreetDirectoryConfig {
   }
 
   public static File csvFile() {
-    return getFromClasspath("strassenverzeichnis2022.csv");
+    return getFromClasspath("strassenverzeichnis2025.csv");
   }
 }

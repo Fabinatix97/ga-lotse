@@ -14,217 +14,25 @@ import {
   getSortKey,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  ApiAppointmentBlockSortKey,
-  ApiAppointmentType,
-} from "@eshg/sti-protection-api";
-import { Chip } from "@mui/joy";
-import { ColumnSort, Row, createColumnHelper } from "@tanstack/react-table";
+import { ApiAppointmentBlockSortKey } from "@eshg/sti-protection-api";
+import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode } from "react";
-import { unique } from "remeda";
 
-import {
-  AppointmentBlockGroup,
-  AppointmentBlockStiProtection,
-} from "@/lib/businessModules/stiProtection/api/models/AppointmentBlockGroup";
+import { useDeleteAppointmentBlock } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
 import { useGetAppointmentBlockGroups } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import {
-  type WeekdayCheckboxOption,
-  getWeekdayFromDate,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
+
 import {
-  formatCalendarWeek,
-  formatCalendarWeekRange,
-} from "@/lib/shared/helpers/dateTime";
-
-function toggleRowExpanded({
-  getIsExpanded,
-  toggleExpanded,
-}: Row<AppointmentBlockRow>) {
-  toggleExpanded(!getIsExpanded());
-}
-
-const columnHelper = createColumnHelper<AppointmentBlockRow>();
-
-const COLUMNS = [
-  columnHelper.accessor("start", {
-    id: "calendarWeek",
-    header: "Woche",
-    cell: ({ getValue, row }) => (
-      <div onClick={() => toggleRowExpanded(row)}>
-        {row.depth === 0
-          ? formatCalendarWeekRange(row.original.start, row.original.end)
-          : formatCalendarWeek(getValue())}
-      </div>
-    ),
-    enableSorting: false,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "120px",
-    },
-  }),
-  columnHelper.accessor("type", {
-    header: "Art",
-    cell: ({ getValue, row }) =>
-      row.depth === 0 ? (
-        <div onClick={() => toggleRowExpanded(row)}>
-          {APPOINTMENT_TYPES[getValue()]}
-        </div>
-      ) : undefined,
-    enableSorting: false,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "200px",
-    },
-  }),
-  columnHelper.accessor("start", {
-    header: "Start",
-    cell: ({ getValue, row }) => (
-      <div onClick={() => toggleRowExpanded(row)}>
-        {formatDateTime(getValue())}
-      </div>
-    ),
-    enableSorting: true,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "180px",
-    },
-  }),
-  columnHelper.accessor("end", {
-    header: "Ende",
-    cell: ({ getValue, row }) => (
-      <div onClick={() => toggleRowExpanded(row)}>
-        {formatDateTime(getValue())}
-      </div>
-    ),
-    enableSorting: true,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "180px",
-    },
-  }),
-  columnHelper.accessor("weekdays", {
-    header: "Wochentag",
-    cell: ({ getValue, row }) => (
-      <div onClick={() => toggleRowExpanded(row)}>
-        {getValue().map((weekday) => (
-          <Chip
-            key={weekday}
-            size="sm"
-            color="primary"
-            sx={{ "&:not(:last-child)": { mr: "3px" } }}
-          >
-            {weekday}
-          </Chip>
-        ))}
-      </div>
-    ),
-    enableSorting: false,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "180px",
-    },
-  }),
-  columnHelper.accessor("numberOfFreeAppointments", {
-    header: "Verfügbar",
-    cell: ({ getValue, row }) => (
-      <Chip size="sm" color="primary" onClick={() => toggleRowExpanded(row)}>
-        {getValue()}
-      </Chip>
-    ),
-    enableSorting: false,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "140px",
-    },
-  }),
-  columnHelper.accessor("numberOfBookedAppointments", {
-    header: "Gebucht",
-    cell: ({ getValue, row }) => (
-      <Chip size="sm" color="success" onClick={() => toggleRowExpanded(row)}>
-        {getValue()}
-      </Chip>
-    ),
-    enableSorting: false,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-      width: "140px",
-    },
-  }),
-];
+  getSubRows,
+  toAggregatedAppointmentBlockRow,
+  useAppointmentBlockGroupsColumns,
+} from "./AppointmentBlockGroupsTable.columns";
 
 const initialSorting: ColumnSort = {
   id: "start",
   desc: false,
 };
-
-interface AppointmentBlockRow {
-  type: ApiAppointmentType;
-  start: Date;
-  end: Date;
-  weekdays: WeekdayCheckboxOption["label"][];
-  numberOfFreeAppointments: number;
-  numberOfBookedAppointments: number;
-  subRows?: AppointmentBlockRow[];
-}
-
-function toAggregatedAppointmentBlockRow(
-  appointmentBlockGroup: AppointmentBlockGroup,
-): AppointmentBlockRow {
-  const daysOfWeek = appointmentBlockGroup.appointmentBlocks.map(
-    (appointmentBlock) => getWeekdayFromDate(appointmentBlock.start),
-  );
-  const uniqueDaysOfWeek = unique(daysOfWeek);
-
-  return {
-    type: appointmentBlockGroup.type,
-    start: appointmentBlockGroup.start,
-    end: appointmentBlockGroup.end,
-    weekdays: uniqueDaysOfWeek,
-    numberOfFreeAppointments: appointmentBlockGroup.numberOfFreeAppointments,
-    numberOfBookedAppointments:
-      appointmentBlockGroup.numberOfBookedAppointments,
-    subRows: appointmentBlockGroup.appointmentBlocks.map((appointmentBlock) =>
-      toAppointmentBlockRow(appointmentBlock, appointmentBlockGroup),
-    ),
-  };
-}
-
-function toAppointmentBlockRow(
-  appointmentBlock: AppointmentBlockStiProtection,
-  appointmentBlockGroup: AppointmentBlockGroup,
-): AppointmentBlockRow {
-  return {
-    type: appointmentBlockGroup.type,
-    start: appointmentBlock.start,
-    end: appointmentBlock.end,
-    weekdays: [getWeekdayFromDate(appointmentBlock.start)],
-    numberOfFreeAppointments: appointmentBlock.numberOfFreeAppointments,
-    numberOfBookedAppointments: appointmentBlock.numberOfBookedAppointments,
-  };
-}
-
-function getSubRows(appointmentBlockRow: AppointmentBlockRow) {
-  return appointmentBlockRow.subRows;
-}
 
 interface AppointmentBlockGroupsTableProps {
   controls?: ReactNode;
@@ -245,6 +53,17 @@ export function AppointmentBlockGroupsTable(
     sortKey: getSortKey<ApiAppointmentBlockSortKey>(tableSorting),
     sortDirection: getSortDirection(tableSorting),
   });
+  const appointmentBlockGroupsColumns = useAppointmentBlockGroupsColumns({
+    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
+      void handleDeleteAppointmentBlock(appointmentBlockId);
+    },
+  });
+
+  const deleteAppointmentBlock = useDeleteAppointmentBlock();
+
+  async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
+    await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
+  }
 
   const rows = appointmentBlockGroups.data.elements.map(
     toAggregatedAppointmentBlockRow,
@@ -265,7 +84,7 @@ export function AppointmentBlockGroupsTable(
       >
         <DataTable
           data={rows}
-          columns={COLUMNS}
+          columns={appointmentBlockGroupsColumns}
           getSubRows={getSubRows}
           sorting={tableSorting}
           noDataComponent={() => (

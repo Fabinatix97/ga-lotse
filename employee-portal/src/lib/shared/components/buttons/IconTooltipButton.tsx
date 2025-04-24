@@ -10,33 +10,67 @@ import {
   ColorPaletteProp,
   IconButton as JoyIconButton,
   Tooltip,
+  TooltipProps,
   Typography,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
 
+export function SlimInfoIconTooltipButton({
+  infoText,
+  iconLabelledBy,
+  title,
+}: Readonly<{
+  infoText: ReactNode;
+  iconLabelledBy?: string;
+  title: string;
+}>) {
+  return (
+    <InfoIconTooltipButton
+      iconLabelledBy={iconLabelledBy}
+      infoText={infoText}
+      tooltipColor="neutral"
+      title={title}
+      tooltipSx={{
+        maxWidth: "16rem",
+      }}
+      tooltipPlacement="top"
+      tooltipVariant="solid"
+    />
+  );
+}
+
 export function InfoIconTooltipButton({
   infoText,
   sx,
-  size,
+  iconSize,
   iconLabelledBy,
   tooltipColor,
   title,
+  tooltipPlacement,
+  tooltipSx,
+  tooltipVariant,
 }: Readonly<{
   infoText: ReactNode;
   sx?: SxProps;
   iconLabelledBy?: string;
-  size?: "sm" | "md" | "lg";
-  tooltipColor?: ColorPaletteProp;
+  iconSize?: "sm" | "md" | "lg";
   title: string;
+  tooltipSx?: SxProps;
+  tooltipColor?: ColorPaletteProp;
+  tooltipPlacement?: TooltipProps["placement"];
+  tooltipVariant?: TooltipProps["variant"];
 }>) {
   return (
     <IconTooltipButton
-      icon={<InfoOutlined sx={sx} size={size} />}
+      icon={<InfoOutlined sx={sx} size={iconSize} />}
       iconLabelledBy={iconLabelledBy}
       infoText={infoText}
       tooltipColor={tooltipColor}
       title={title}
+      tooltipSx={tooltipSx}
+      tooltipPlacement={tooltipPlacement}
+      tooltipVariant={tooltipVariant}
     />
   );
 }
@@ -47,18 +81,31 @@ export function IconTooltipButton({
   infoText,
   tooltipColor,
   title,
+  tooltipPlacement,
+  tooltipSx,
+  tooltipVariant,
 }: Readonly<{
   icon: ReactNode;
   iconLabelledBy?: string;
   infoText: ReactNode;
-  tooltipColor?: ColorPaletteProp;
   title: string;
+  tooltipPlacement?: TooltipProps["placement"];
+  tooltipColor?: ColorPaletteProp;
+  tooltipVariant?: TooltipProps["variant"];
+  tooltipSx?: SxProps;
 }>) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Tooltip arrow color={tooltipColor} variant="outlined" title={infoText}>
+      <Tooltip
+        arrow
+        color={tooltipColor}
+        variant={tooltipVariant ?? "outlined"}
+        title={infoText}
+        placement={tooltipPlacement}
+        sx={tooltipSx}
+      >
         <IconButton
           aria-label={title}
           aria-labelledby={iconLabelledBy}

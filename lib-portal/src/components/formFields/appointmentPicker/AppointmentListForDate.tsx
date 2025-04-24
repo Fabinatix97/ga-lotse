@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
-import { useId, useMemo } from "react";
+import { useCallback, useId, useMemo } from "react";
 
 import { ifDefined } from "../../../helpers/ifDefined";
 import { useBaseField } from "../BaseField";
@@ -75,6 +75,9 @@ export interface AppointmentListProps<T extends Appointment> {
   label: string;
   locale: string;
 }
+function defaultOptionLabel<T extends Appointment>(apt: T, locale: string) {
+  return formatTime(apt.start, locale);
+}
 export function AppointmentListForDate<T extends Appointment>({
   date,
   field,
@@ -84,7 +87,7 @@ export function AppointmentListForDate<T extends Appointment>({
   label,
   slotProps,
   locale,
-  optionLabel = (apt, locale) => formatTime(apt.start, locale),
+  optionLabel = defaultOptionLabel,
 }: AppointmentListProps<T> & {
   slotProps?: {
     chip?: Omit<ChipProps, "variant" | "color">;
@@ -93,16 +96,20 @@ export function AppointmentListForDate<T extends Appointment>({
 }) {
   const theme = useTheme();
   const labelId = useId();
+
+  const createOnSelected = useCallback(
+    (d: T) => {
+      return () => {
+        onAppointmentSelected?.(d);
+        return field.helpers.setValue(d);
+      };
+    },
+    [onAppointmentSelected, field.helpers],
+  );
+
   const hasAppointments = appointments.length > 0;
   if (!hasAppointments || !date) {
     return null;
-  }
-
-  function createOnSelected(d: T) {
-    return () => {
-      onAppointmentSelected?.(d);
-      return field.helpers.setValue(d);
-    };
   }
 
   const { sx: chipSx, ...otherChipProps } = slotProps?.chip ?? {};

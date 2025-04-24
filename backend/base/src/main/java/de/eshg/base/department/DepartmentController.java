@@ -5,16 +5,29 @@
 
 package de.eshg.base.department;
 
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_MARKDOWN_CITIZEN;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_MARKDOWN_EMPLOYEE;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_MARKDOWN_RELEASE_NOTES;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT_PGP_KEY;
+
 import de.eshg.base.config.BaseDepartmentInfoConfigService;
 import de.eshg.base.config.BasePrivacyDocumentService;
 import de.eshg.base.config.DepartmentConfigurationService;
+import de.eshg.base.config.SecurityTxtService;
 import de.eshg.file.common.CustomMediaTypes;
+import de.eshg.rest.service.i18n.LanguageContextHolder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.GetExchange;
 
 @RestController
 @Tag(name = "Department")
@@ -22,14 +35,20 @@ public class DepartmentController implements DepartmentApi {
   private final DepartmentConfigurationService departmentConfigurationService;
   private final BaseDepartmentInfoConfigService baseDepartmentInfoService;
   private final BasePrivacyDocumentService basePrivacyDocumentService;
+  private final ReleaseNotesLoader releaseNotesLoader;
+  private final SecurityTxtService securityTxtService;
 
   public DepartmentController(
       DepartmentConfigurationService departmentConfiguration,
       BaseDepartmentInfoConfigService departmentInfoService,
-      BasePrivacyDocumentService basePrivacyDocumentService) {
+      BasePrivacyDocumentService basePrivacyDocumentService,
+      ReleaseNotesLoader releaseNotesLoader,
+      SecurityTxtService securityTxtService) {
     this.departmentConfigurationService = departmentConfiguration;
     this.baseDepartmentInfoService = departmentInfoService;
     this.basePrivacyDocumentService = basePrivacyDocumentService;
+    this.releaseNotesLoader = releaseNotesLoader;
+    this.securityTxtService = securityTxtService;
   }
 
   @Override
@@ -47,6 +66,43 @@ public class DepartmentController implements DepartmentApi {
     return basePrivacyDocumentService.getPrivacyPolicyDe();
   }
 
+  @Operation(summary = "Get a markdown document for the employee portal")
+  @ApiResponse(responseCode = "200")
+  @GetExchange(DEPARTMENT_API_MARKDOWN_EMPLOYEE + "/{name}")
+  @Transactional(readOnly = true)
+  public ResponseEntity<byte[]> getEmployeePortalMarkdown(
+      @PathVariable("name") EmployeePortalMarkdownName name) {
+    return ResponseEntity.ok()
+        .contentType(MediaType.TEXT_MARKDOWN)
+        .body(
+            departmentConfigurationService.getMarkdownWithGermanFallback(
+                name, LanguageContextHolder.getLanguage()));
+  }
+
+  @Operation(summary = "Get a markdown document for the citizen portal")
+  @ApiResponse(responseCode = "200")
+  @GetExchange(DEPARTMENT_API_MARKDOWN_CITIZEN + "/{name}")
+  @Transactional(readOnly = true)
+  public ResponseEntity<byte[]> getCitizenPortalMarkdown(
+      @PathVariable("name") CitizenPortalMarkdownName name) {
+    return ResponseEntity.ok()
+        .contentType(MediaType.TEXT_MARKDOWN)
+        .body(
+            departmentConfigurationService.getMarkdownWithGermanFallback(
+                name, LanguageContextHolder.getLanguage()));
+  }
+
+  @Operation(summary = "Get the release notes markdown")
+  @ApiResponse(responseCode = "200")
+  @GetExchange(DEPARTMENT_API_MARKDOWN_RELEASE_NOTES)
+  public ResponseEntity<byte[]> getReleaseNotesMarkdown() {
+    return ResponseEntity.ok()
+        .contentType(MediaType.TEXT_MARKDOWN)
+        .body(
+            releaseNotesLoader.getReleaseNotesWithGermanFallback(
+                LanguageContextHolder.getLanguage()));
+  }
+
   @Override
   public ResponseEntity<Resource> getDepartmentLogo() {
     // svg may contain JavaScript. Make sure the image comes from a trustworthy source.
@@ -55,15 +111,19 @@ public class DepartmentController implements DepartmentApi {
         .body(new ByteArrayResource(departmentConfigurationService.getLogo()));
   }
 
-  @Override
+  @Operation(summary = "Get the security.txt file of the department running this application.")
+  @ApiResponse(responseCode = "200")
+  @GetExchange(DEPARTMENT_API_SECURITY_TXT)
   public ResponseEntity<byte[]> getSecurityTxt() {
-    byte[] securityTxt = departmentConfigurationService.getSecurityTxt();
-    return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
+    return securityTxtService.getSecurityTxt();
   }
 
-  @Override
+  @Operation(
+      summary =
+          "Get the security.txt public PGP key file of the department running this application.")
+  @ApiResponse(responseCode = "200")
+  @GetExchange(DEPARTMENT_API_SECURITY_TXT_PGP_KEY)
   public ResponseEntity<byte[]> getSecurityTxtPublicKey() {
-    byte[] securityTxt = departmentConfigurationService.getSecurityTxtPublicKey();
-    return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
+    return securityTxtService.getSecurityTxtPublicKey();
   }
 }

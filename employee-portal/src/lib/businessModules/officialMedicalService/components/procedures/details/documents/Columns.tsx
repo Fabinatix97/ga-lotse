@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiDocument,
@@ -19,7 +19,6 @@ import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { statusColorsDocumentStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { STATUS_NAMES_DOCUMENT_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiDocument> =
   createColumnHelper<ApiDocument>();

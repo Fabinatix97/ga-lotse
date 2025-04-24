@@ -22,7 +22,7 @@ import {
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { Box, Divider, Grid, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
@@ -77,6 +77,7 @@ export interface FacilityFormProps {
 }
 
 export function FacilityForm(props: FacilityFormProps) {
+  const { validateLength } = useValidators();
   const initialValues: DefaultFacilityFormValues =
     props.initialValues ?? getInitialFacilityFormValues(props.searchInputs);
 

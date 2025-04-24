@@ -9,6 +9,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -47,8 +48,10 @@ export default function NewChecklistVersion(
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          backHref={routes.checklists.definitions.index}
           title={`Checklistendefinition bearbeiten: ${checklistVersion.context.name}`}
+          backButton={
+            <ToolbarBackButton href={routes.checklists.definitions.index} />
+          }
         />
       }
     >

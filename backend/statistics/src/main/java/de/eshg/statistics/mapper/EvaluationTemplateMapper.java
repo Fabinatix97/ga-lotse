@@ -48,6 +48,7 @@ import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -111,7 +112,8 @@ public class EvaluationTemplateMapper {
   private static DataSource mapToPersistence(
       DataSourceDto dataSourceDto, List<AvailableDataSource> availableDataSources) {
     AvailableDataSource availableDataSource =
-        getAvailableDataSource(dataSourceDto, availableDataSources);
+        getAvailableDataSource(
+            dataSourceDto.id(), dataSourceDto.businessModuleName(), availableDataSources);
 
     DataSource dataSource = new DataSource();
     dataSource.setBusinessModuleName(dataSourceDto.businessModuleName());
@@ -127,12 +129,14 @@ public class EvaluationTemplateMapper {
   }
 
   private static AvailableDataSource getAvailableDataSource(
-      DataSourceDto dataSourceDto, List<AvailableDataSource> availableDataSources) {
+      UUID dataSourceId,
+      String businessModuleName,
+      List<AvailableDataSource> availableDataSources) {
     return availableDataSources.stream()
         .filter(
             source ->
-                source.id().equals(dataSourceDto.id())
-                    && source.businessModuleName().equals(dataSourceDto.businessModuleName()))
+                source.id().equals(dataSourceId)
+                    && source.businessModuleName().equals(businessModuleName))
         .findFirst()
         .orElseThrow(InvalidDataSourceException::new);
   }
@@ -140,7 +144,7 @@ public class EvaluationTemplateMapper {
   private static DataAttribute mapToPersistence(
       BusinessDataAttribute businessDataAttribute, AvailableDataSource availableDataSource) {
     BusinessDataSourceAttribute businessDataSourceAttribute =
-        getBusinessDataSourceAttribute(businessDataAttribute, availableDataSource);
+        getBusinessDataSourceAttribute(businessDataAttribute.code(), availableDataSource);
 
     DataAttribute dataAttribute = new DataAttribute();
     dataAttribute.setCode(businessDataAttribute.code());
@@ -153,9 +157,9 @@ public class EvaluationTemplateMapper {
   }
 
   private static BusinessDataSourceAttribute getBusinessDataSourceAttribute(
-      BusinessDataAttribute businessDataAttribute, AvailableDataSource availableDataSource) {
+      String businessDataAttributeCode, AvailableDataSource availableDataSource) {
     return availableDataSource.attributes().stream()
-        .filter(attribute -> attribute.code().equals(businessDataAttribute.code()))
+        .filter(attribute -> attribute.code().equals(businessDataAttributeCode))
         .findFirst()
         .orElseThrow(InvalidDataSourceException::new);
   }
@@ -187,7 +191,10 @@ public class EvaluationTemplateMapper {
             .map(
                 dataSourceDto -> {
                   AvailableDataSource availableDataSource =
-                      getAvailableDataSource(dataSourceDto, availableDataSources);
+                      getAvailableDataSource(
+                          dataSourceDto.id(),
+                          dataSourceDto.businessModuleName(),
+                          availableDataSources);
                   return new DataSourceWithAttributeNames(
                       dataSourceDto.businessModuleName(),
                       dataSourceDto.id(),
@@ -218,10 +225,11 @@ public class EvaluationTemplateMapper {
         .map(
             attribute -> {
               BusinessDataSourceAttribute businessDataSourceAttribute =
-                  getBusinessDataSourceAttribute(attribute, availableDataSource);
+                  getBusinessDataSourceAttribute(attribute.code(), availableDataSource);
               return new BusinessDataAttributeWithName(
                   businessDataSourceAttribute.code(),
                   businessDataSourceAttribute.name(),
+                  businessDataSourceAttribute.dataPrivacyCategory(),
                   mapToBaseDataAttributes(
                       attribute.baseAttributeCodes(), businessDataSourceAttribute));
             })
@@ -236,7 +244,9 @@ public class EvaluationTemplateMapper {
               BaseDataSourceAttribute baseDataSourceAttribute =
                   getBaseDataSourceAttribute(code, businessDataSourceAttribute);
               return new BaseDataAttributeWithName(
-                  baseDataSourceAttribute.code(), baseDataSourceAttribute.displayName());
+                  baseDataSourceAttribute.code(),
+                  baseDataSourceAttribute.displayName(),
+                  baseDataSourceAttribute.dataPrivacyCategory());
             })
         .toList();
   }
@@ -282,9 +292,10 @@ public class EvaluationTemplateMapper {
       boolean sensitiveDataAllowedForBusinessModule,
       DataSourceSensitivity sensitivity,
       boolean canBeAnonymized,
+      List<AvailableDataSource> availableDataSources,
       UserDto user) {
     List<DataSourceWithAttributeNames> dataSources =
-        mapToAttributesWithNames(evaluationTemplate.getDataSources());
+        mapToAttributesWithNames(evaluationTemplate.getDataSources(), availableDataSources);
 
     return new EvaluationTemplateDto(
         evaluationTemplate.getExternalId(),
@@ -303,38 +314,89 @@ public class EvaluationTemplateMapper {
   }
 
   private static List<DataSourceWithAttributeNames> mapToAttributesWithNames(
-      List<DataSource> dataSources) {
-    return dataSources.stream().map(EvaluationTemplateMapper::mapToAttributeWithNames).toList();
+      List<DataSource> dataSources, List<AvailableDataSource> availableDataSources) {
+    return dataSources.stream()
+        .map(
+            dataSource -> {
+              AvailableDataSource availableDataSource =
+                  retrieveEntityIgnoreInvalidDataSourceException(
+                      availableDataSources,
+                      availableDataSourceList ->
+                          getAvailableDataSource(
+                              dataSource.getExternalDataSourceId(),
+                              dataSource.getBusinessModuleName(),
+                              availableDataSourceList));
+              return mapToAttributeWithNames(dataSource, availableDataSource);
+            })
+        .toList();
   }
 
-  private static DataSourceWithAttributeNames mapToAttributeWithNames(DataSource dataSource) {
+  private static DataSourceWithAttributeNames mapToAttributeWithNames(
+      DataSource dataSource, AvailableDataSource availableDataSource) {
     return new DataSourceWithAttributeNames(
         dataSource.getBusinessModuleName(),
         dataSource.getExternalDataSourceId(),
         dataSource.getDataSourceName(),
         dataSource.getAttributes().stream()
-            .map(EvaluationTemplateMapper::mapToBusinessDataAttribute)
+            .map(
+                attribute -> {
+                  BusinessDataSourceAttribute businessDataSourceAttribute =
+                      retrieveEntityIgnoreInvalidDataSourceException(
+                          availableDataSource,
+                          existingAvailableDataSource ->
+                              getBusinessDataSourceAttribute(
+                                  attribute.getCode(), existingAvailableDataSource));
+                  return mapToBusinessDataAttribute(attribute, businessDataSourceAttribute);
+                })
             .toList());
   }
 
   private static BusinessDataAttributeWithName mapToBusinessDataAttribute(
-      DataAttribute dataAttribute) {
+      DataAttribute dataAttribute, BusinessDataSourceAttribute businessDataSourceAttribute) {
     return new BusinessDataAttributeWithName(
         dataAttribute.getCode(),
         dataAttribute.getName(),
+        businessDataSourceAttribute == null
+            ? null
+            : businessDataSourceAttribute.dataPrivacyCategory(),
         dataAttribute.getBaseAttributes().stream()
             .map(
-                baseDataAttribute ->
-                    mapToBaseDataAttribute(dataAttribute.getName(), baseDataAttribute))
+                baseDataAttribute -> {
+                  BaseDataSourceAttribute baseDataSourceAttribute =
+                      retrieveEntityIgnoreInvalidDataSourceException(
+                          businessDataSourceAttribute,
+                          existingBusinessDataSourceAttribute ->
+                              getBaseDataSourceAttribute(
+                                  baseDataAttribute.getCode(),
+                                  existingBusinessDataSourceAttribute));
+                  return mapToBaseDataAttribute(
+                      dataAttribute.getName(), baseDataAttribute, baseDataSourceAttribute);
+                })
             .toList());
   }
 
   private static BaseDataAttributeWithName mapToBaseDataAttribute(
-      String businessAttributeName, BaseDataAttribute baseDataAttribute) {
+      String businessAttributeName,
+      BaseDataAttribute baseDataAttribute,
+      BaseDataSourceAttribute baseDataSourceAttribute) {
     return new BaseDataAttributeWithName(
         baseDataAttribute.getCode(),
         EvaluationMapper.getAttributeDisplayName(
-            businessAttributeName, baseDataAttribute.getName()));
+            businessAttributeName, baseDataAttribute.getName()),
+        baseDataSourceAttribute == null ? null : baseDataSourceAttribute.dataPrivacyCategory());
+  }
+
+  private static <S, E> E retrieveEntityIgnoreInvalidDataSourceException(
+      S source, Function<S, E> retrieveEntityFunction) {
+    if (source == null) {
+      return null;
+    }
+    try {
+      return retrieveEntityFunction.apply(source);
+    } catch (InvalidDataSourceException e) {
+      // ignored
+      return null;
+    }
   }
 
   private static List<AnalysisInfo> mapToAnalysisInfos(List<AnalysisTemplate> analysisTemplates) {

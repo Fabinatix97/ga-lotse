@@ -9,6 +9,7 @@ import static de.eshg.dental.util.ChildSystemProgressEntryType.LABELS_MODIFIED;
 
 import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
@@ -21,17 +22,28 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildFilterParameters;
+import de.eshg.dental.api.ChildNameDto;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSearchResult;
 import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.api.CreateChildRequest;
+import de.eshg.dental.api.GroupForTransitionDto;
+import de.eshg.dental.api.InstitutionForTransitionDto;
+import de.eshg.dental.api.SchoolYearTransitionFilterParameters;
+import de.eshg.dental.api.SchoolYearTransitionPaginationAndSortParameters;
+import de.eshg.dental.api.SchoolYearTransitionSearchParameters;
+import de.eshg.dental.api.SchoolYearTransitionSortKey;
+import de.eshg.dental.api.SchoolYearTransitionStatusDto;
 import de.eshg.dental.api.SyncPersonRequest;
 import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
+import de.eshg.dental.business.model.PagedInstitutionsForTransition;
 import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.config.DentalProperties;
 import de.eshg.dental.domain.model.Child;
@@ -51,6 +63,7 @@ import de.eshg.dental.statistic.StatisticsCalculationHelper;
 import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
+import de.eshg.dental.util.GroupNameComparator;
 import de.eshg.dental.util.ProgressEntryUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
@@ -82,6 +95,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.FuzzyScore;
@@ -100,6 +114,8 @@ public class ChildService {
 
   private static final Logger log = LoggerFactory.getLogger(ChildService.class);
   private static final int FUZZY_SEARCH_SCORE_THRESHOLD = 5;
+  public static final int DEFAULT_PAGE_SIZE = 25;
+  public static final int DEFAULT_PAGE_NUMBER = 0;
 
   private final Clock clock;
   private final AuditLogger auditLogger;
@@ -384,6 +400,22 @@ public class ChildService {
     }
   }
 
+  private List<ChildWithAugmentedData> augmentWithChildData(List<Child> children) {
+    Map<UUID, GetPersonFileStateResponse> persons =
+        personClient.fetchPersonDataInBulk(children).stream()
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
+
+    return children.stream()
+        .map(
+            child -> {
+              UUID centralFileStateId = child.getChildIdFromCentralFile();
+              GetPersonFileStateResponse person = persons.get(centralFileStateId);
+              Assert.notNull(person, () -> "Failed to resolve child " + centralFileStateId);
+              return new ChildWithAugmentedData(child, person, null);
+            })
+        .toList();
+  }
+
   private List<ChildWithAugmentedData> augmentWithChildAndContactData(List<Child> children) {
     Map<UUID, GetPersonFileStateResponse> persons =
         personClient.fetchPersonDataInBulk(children).stream()
@@ -565,9 +597,21 @@ public class ChildService {
         .toList();
   }
 
-  public void closeSchoolYear() {
+  public void closeChildrenInBulk(List<UUID> childIds) {
+    List<Child> childrenToClose = childRepository.findByExternalIdsForUpdate(childIds).toList();
+    Validator.validateAllChildrenAreOpenAndOfYear(childrenToClose, Year.now(clock).minusYears(1));
+    closeChildren(childrenToClose);
+  }
+
+  public void closeGroupsInBulk(UUID institutionId, List<String> groupNames) {
+    Year currentSchoolYear = Year.now(clock).minusYears(1);
     List<Child> childrenToClose =
-        childRepository.findByProcedureStatusOrderById(ProcedureStatus.OPEN);
+        childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
+            institutionId, groupNames, currentSchoolYear);
+    closeChildren(childrenToClose);
+  }
+
+  private void closeChildren(List<Child> childrenToClose) {
     log.info(
         "Closing {} {}",
         childrenToClose.size(),
@@ -648,6 +692,29 @@ public class ChildService {
         .orElse(null);
   }
 
+  public List<GroupForTransitionDto> getGroupsForSchoolYearTransition(UUID institutionId) {
+    List<Child> openChildren =
+        childRepository.findByInstitutionIdAndYearAndProcedureStatus(
+            institutionId, Year.now(clock).minusYears(1), ProcedureStatus.OPEN);
+
+    List<ChildWithAugmentedData> augmentedChildren = augmentWithChildData(openChildren);
+
+    return augmentedChildren.stream()
+        .collect(
+            Collectors.groupingBy(
+                childData -> childData.child().getGroupName(),
+                Collectors.mapping(
+                    childData ->
+                        new ChildNameDto(
+                            childData.personData().firstName(), childData.personData().lastName()),
+                    Collectors.toList())))
+        .entrySet()
+        .stream()
+        .map(entry -> new GroupForTransitionDto(entry.getKey(), entry.getValue()))
+        .sorted((a, b) -> GroupNameComparator.compareGroupNames(a.groupName(), b.groupName()))
+        .toList();
+  }
+
   record ChildWithScore(GetPersonFileStateResponse fileState, Child child, int score) {
 
     private ChildSearchResult mapToChildSearchResult() {
@@ -697,5 +764,132 @@ public class ChildService {
 
   static NotFoundException childNotFoundException() {
     return ExceptionUtil.notFoundException(Child.class);
+  }
+
+  PagedInstitutionsForTransition searchInstitutionsForSchoolYearTransition(
+      InstitutionContactCategoryDto contactCategory,
+      SchoolYearTransitionPaginationAndSortParameters paginationAndSortParameters,
+      SchoolYearTransitionFilterParameters filterParameters,
+      SchoolYearTransitionSearchParameters searchParameters) {
+
+    List<ChildRepository.InstitutionGroupCounts> institutionGroupCounts =
+        childRepository.getInstitutionsAndCompletedGroups(Year.now(clock).minusYears(1));
+    Map<UUID, ChildRepository.InstitutionGroupCounts> institutionGroupCountByInstitution =
+        institutionGroupCounts.stream()
+            .collect(
+                Collectors.toMap(
+                    ChildRepository.InstitutionGroupCounts::getInstitutionId, Function.identity()));
+
+    List<UUID> institutionIds = institutionGroupCountByInstitution.keySet().stream().toList();
+    Map<UUID, InstitutionContactDto> augmentedInstitutions =
+        contactClient
+            .getBulkContacts(institutionIds)
+            .map(InstitutionContactDto.class::cast)
+            .filter(contact -> contact.category().equals(contactCategory))
+            .collect(Collectors.toMap(InstitutionContactDto::id, Function.identity()));
+
+    Stream<InstitutionContactDto> institutionContacts = augmentedInstitutions.values().stream();
+    institutionContacts = searchInstitutions(searchParameters, institutionContacts);
+
+    Stream<InstitutionForTransitionDto> institutionsForTransition =
+        institutionContacts.map(
+            institution -> {
+              ChildRepository.InstitutionGroupCounts searchGroupsResult =
+                  institutionGroupCountByInstitution.get(institution.id());
+              int completedCount = searchGroupsResult.getCompletedGroups();
+              int totalCount = searchGroupsResult.getTotalGroups();
+
+              return new InstitutionForTransitionDto(
+                  InstitutionMapper.mapToInstitutionWithAddressDto(institution),
+                  completedCount,
+                  totalCount,
+                  calculateSchoolYearTransitionStatus(completedCount, totalCount));
+            });
+    institutionsForTransition = filterInstitutions(filterParameters, institutionsForTransition);
+
+    List<InstitutionForTransitionDto> institutionsResult = institutionsForTransition.toList();
+    return new PagedInstitutionsForTransition(
+        sortAndPaginate(institutionsResult, paginationAndSortParameters),
+        institutionsResult.size());
+  }
+
+  private static List<InstitutionForTransitionDto> sortAndPaginate(
+      List<InstitutionForTransitionDto> institutions,
+      SchoolYearTransitionPaginationAndSortParameters parameters) {
+    SortDirection sortDirection = parameters.sortDirectionOrFallback(SortDirection.ASC);
+    SchoolYearTransitionSortKey schoolYearTransitionSortKey =
+        parameters.sortKeyOrFallback(SchoolYearTransitionSortKey.NAME);
+
+    int pageNumber = parameters.pageNumberOrFallback(DEFAULT_PAGE_NUMBER);
+    int pageSize = parameters.pageSizeOrFallback(DEFAULT_PAGE_SIZE);
+    int offset = pageNumber * pageSize;
+
+    return institutions.stream()
+        .sorted(sortComparator(schoolYearTransitionSortKey, sortDirection))
+        .skip(offset)
+        .limit(pageSize)
+        .toList();
+  }
+
+  private static Comparator<InstitutionForTransitionDto> sortComparator(
+      SchoolYearTransitionSortKey schoolYearTransitionSortKey, SortDirection sortDirection) {
+
+    Comparator<InstitutionForTransitionDto> comparator =
+        switch (schoolYearTransitionSortKey) {
+          case ID ->
+              Comparator.comparing(
+                  institutionForTransition -> institutionForTransition.institution().id());
+          case COMPLETED_COUNT ->
+              Comparator.comparing(InstitutionForTransitionDto::completedCount)
+                  .thenComparing(
+                      institutionForTransition -> institutionForTransition.institution().name());
+          case STATUS ->
+              Comparator.comparing(InstitutionForTransitionDto::status)
+                  .thenComparing(
+                      institutionForTransition -> institutionForTransition.institution().name());
+          case NAME ->
+              Comparator.comparing(
+                  (InstitutionForTransitionDto institutionForTransition) ->
+                      institutionForTransition.institution().name());
+        };
+
+    comparator =
+        comparator.thenComparing(
+            institutionForTransition -> institutionForTransition.institution().id());
+
+    if (SortDirection.DESC.equals(sortDirection)) {
+      return comparator.reversed();
+    }
+    return comparator;
+  }
+
+  private static Stream<InstitutionContactDto> searchInstitutions(
+      SchoolYearTransitionSearchParameters searchParameters,
+      Stream<InstitutionContactDto> institutions) {
+    if (searchParameters.institutionName() != null) {
+      return institutions.filter(
+          institutionForTransition ->
+              computeFuzzyScore(searchParameters.institutionName(), institutionForTransition.name())
+                  > FUZZY_SEARCH_SCORE_THRESHOLD);
+    }
+    return institutions;
+  }
+
+  private static Stream<InstitutionForTransitionDto> filterInstitutions(
+      SchoolYearTransitionFilterParameters filterParameters,
+      Stream<InstitutionForTransitionDto> institutions) {
+    if (filterParameters.statusFilter() != null) {
+      return institutions.filter(
+          institutionForTransition ->
+              institutionForTransition.status().equals(filterParameters.statusFilter()));
+    }
+    return institutions;
+  }
+
+  private SchoolYearTransitionStatusDto calculateSchoolYearTransitionStatus(
+      int completedGroups, int allGroups) {
+    return completedGroups == allGroups
+        ? SchoolYearTransitionStatusDto.COMPLETE
+        : SchoolYearTransitionStatusDto.INCOMPLETE;
   }
 }

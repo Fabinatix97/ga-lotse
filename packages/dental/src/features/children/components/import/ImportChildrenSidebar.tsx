@@ -30,7 +30,7 @@ export function useImportChildrenSidebar(): UseSidebarWithFormRefResult {
   });
 }
 
-export interface ImportChildrenFormValues {
+interface ImportChildrenFormValues {
   file: File | null;
   institution: ApiAddContact200Response | null;
   schoolYear: OptionalFieldValue<number>;

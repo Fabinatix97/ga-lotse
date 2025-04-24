@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
 import { mapCreateProcedureRequest } from "@eshg/lib-portal/businessModules/medicalRegistry/api/mapper";
 import { initialValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
@@ -18,7 +18,6 @@ import { RequiredDocumentsForm } from "@/lib/businessModules/medicalRegistry/com
 import { WrittenConfirmationForm } from "@/lib/businessModules/medicalRegistry/components/procedures/create/WrittenConfirmationForm";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 
 import { GeneralInformationForm } from "./GeneralInformationForm";
 import { OccupationalInformationForm } from "./OccupationalInformationForm";
