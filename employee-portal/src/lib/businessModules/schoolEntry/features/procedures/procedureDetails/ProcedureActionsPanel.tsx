@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ContentPanel, OpenModalButton } from "@eshg/lib-employee-portal";
 import { ReactNode } from "react";
+
+import { ContentPanel, OpenModalButton } from "@eshg/lib-employee-portal";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { CloseProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/CloseProcedureModal";

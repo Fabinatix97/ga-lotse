@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureType } from "@eshg/base-api";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import CheckmarkIcon from "@mui/icons-material/Check";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SendIcon from "@mui/icons-material/Send";
 import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useState } from "react";
+
+import { ApiGdprProcedureType } from "@eshg/base-api";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { useTranslation } from "@/lib/i18n/client";

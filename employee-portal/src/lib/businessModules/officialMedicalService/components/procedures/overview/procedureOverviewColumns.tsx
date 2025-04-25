@@ -3,6 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { WarningAmberOutlined } from "@mui/icons-material";
+import { Chip, Tooltip } from "@mui/joy";
+import {
+  CellContext,
+  ColumnHelper,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import { addDays, isAfter } from "date-fns";
+import { isDefined } from "remeda";
+
 import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
@@ -16,15 +26,6 @@ import {
   ApiEmployeeOmsProcedureOverview,
   ApiMedicalOpinionStatus,
 } from "@eshg/official-medical-service-api";
-import { WarningAmberOutlined } from "@mui/icons-material";
-import { Chip, Tooltip } from "@mui/joy";
-import {
-  CellContext,
-  ColumnHelper,
-  createColumnHelper,
-} from "@tanstack/react-table";
-import { addDays, isAfter } from "date-fns";
-import { isDefined } from "remeda";
 
 import { statusColorsMedicalOpinionStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { STATUS_NAMES_MEDICAL_OPINION_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";

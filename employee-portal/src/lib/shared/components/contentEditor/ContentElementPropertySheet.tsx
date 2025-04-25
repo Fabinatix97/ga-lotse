@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import {
   ApiEditorBodyElementsInner,
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
 import { InformationSheet } from "@eshg/lib-employee-portal";
-import { Divider, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { ContentElementProperties } from "@/lib/shared/components/contentEditor/ContentElementProperties";
 import { ContentElementPropertiesToolbar } from "@/lib/shared/components/contentEditor/ContentElementPropertiesToolbar";

@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
+import { Button } from "@mui/joy";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useState } from "react";
+
 import { ApiTextBlock } from "@eshg/inspection-api";
 import {
   ActionsMenu,
@@ -16,10 +21,6 @@ import {
   useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
-import { Button } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutations/textblocks";
 import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";

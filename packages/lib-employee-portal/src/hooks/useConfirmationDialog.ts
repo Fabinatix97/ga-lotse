@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useContext, useMemo } from "react";
+import { isDefined } from "remeda";
+
 import {
   ConfirmationDialogContext,
   ConfirmationDialogOptions,
 } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
-import { useContext, useMemo } from "react";
-import { isDefined } from "remeda";
 
 export function useConfirmationDialog() {
   const context = useContext(ConfirmationDialogContext);

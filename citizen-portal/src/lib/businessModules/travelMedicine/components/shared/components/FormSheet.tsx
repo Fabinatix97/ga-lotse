@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { byBreakpoint } from "@/lib/shared/breakpoints";

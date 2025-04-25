@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OpenInNew } from "@mui/icons-material";
+import { Chip, Grid, Sheet, Typography } from "@mui/joy";
+
 import { ApiChild } from "@eshg/dental-api";
 import {
   PROCEDURE_STATUS_COLORS,
@@ -12,8 +15,6 @@ import {
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { OpenInNew } from "@mui/icons-material";
-import { Chip, Grid, Sheet, Typography } from "@mui/joy";
 
 import { routes } from "@/config/routes";
 

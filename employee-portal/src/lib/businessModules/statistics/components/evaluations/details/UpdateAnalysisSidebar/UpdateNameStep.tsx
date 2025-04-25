@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 

@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+import { Ref } from "react";
+import { isDefined } from "remeda";
+
 import { ApiContactType } from "@eshg/base-api";
 import {
   ContactAddressForm,
@@ -20,12 +27,6 @@ import {
   InputArrayField,
   getIndexLabel,
 } from "@eshg/lib-portal/components/formFields/InputArrayField";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { useRouter } from "next/navigation";
-import { Ref } from "react";
-import { isDefined } from "remeda";
 
 import {
   mapAddContactRequest,

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
-import { isDefined } from "remeda";
 
 import { AnamnesisCard } from "@/lib/businessModules/officialMedicalService/components/personalArea/cards/AnamnesisCard";
 import { AppointmentCard } from "@/lib/businessModules/officialMedicalService/components/personalArea/cards/AppointmentCard";

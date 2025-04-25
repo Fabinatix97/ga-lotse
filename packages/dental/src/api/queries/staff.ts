@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGetUsersByGroupQuery } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { useGetUsersByGroupQuery } from "@eshg/lib-employee-portal";
 
 import { DentalUserGroup } from "@/config/userGroups";
 

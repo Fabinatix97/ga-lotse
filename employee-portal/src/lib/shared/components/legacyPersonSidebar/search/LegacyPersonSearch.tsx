@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Button } from "@mui/joy";
+import { ReactNode, RefObject, useState } from "react";
+
 import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   SidebarFormHandle,
   useSearchReferencePersonsQuery,
 } from "@eshg/lib-employee-portal";
-import { Button } from "@mui/joy";
-import { ReactNode, RefObject, useState } from "react";
 
 import {
   LegacyMinimalPerson,

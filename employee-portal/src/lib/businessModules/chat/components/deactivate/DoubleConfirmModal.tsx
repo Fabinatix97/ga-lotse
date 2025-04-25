@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Stack } from "@mui/joy";
+
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
-import { Button, Stack } from "@mui/joy";
 
 export type DoubleConfirmModal = Omit<
   BaseModalPropsRequiredClose,

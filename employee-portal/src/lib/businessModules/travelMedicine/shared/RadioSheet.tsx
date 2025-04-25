@@ -4,10 +4,6 @@
  */
 
 import {
-  RadioGroupField,
-  RadioGroupFieldProps,
-} from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import {
   Radio,
   RadioProps,
   Sheet,
@@ -18,6 +14,11 @@ import {
 import { useFormikContext } from "formik";
 import { PropsWithChildren, useId } from "react";
 import { isDefined } from "remeda";
+
+import {
+  RadioGroupField,
+  RadioGroupFieldProps,
+} from "@eshg/lib-portal/components/formFields/RadioGroupField";
 
 export function RadioSheet({ children, ...props }: RadioGroupFieldProps) {
   return (

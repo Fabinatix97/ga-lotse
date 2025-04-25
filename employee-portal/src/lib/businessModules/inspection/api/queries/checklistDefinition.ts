@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   ChecklistDefinitionApi,
   ChecklistDefinitionCentralRepoApi,
 } from "@eshg/inspection-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import {
   useChecklistDefinitionApi,

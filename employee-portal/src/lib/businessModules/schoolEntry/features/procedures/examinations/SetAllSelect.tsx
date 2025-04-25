@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Option, Select } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { ReactNode } from "react";
+
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   FieldOrientation,
@@ -12,9 +16,6 @@ import { FieldComponentProps } from "@eshg/lib-portal/components/formFields/Base
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { NO_SELECTION_LABEL } from "@eshg/lib-portal/helpers/form";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Option, Select } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { ReactNode } from "react";
 
 import {
   BOOLEAN_WITH_UNKNOWN_OPTIONS,

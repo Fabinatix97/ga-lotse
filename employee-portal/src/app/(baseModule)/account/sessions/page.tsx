@@ -5,6 +5,13 @@
 
 "use client";
 
+import LaptopIcon from "@mui/icons-material/Laptop";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import { Button, Chip, Stack, Typography } from "@mui/joy";
+import { createColumnHelper } from "@tanstack/react-table";
+import { ReactNode, useMemo } from "react";
+
 import { ApiActiveUserSession } from "@eshg/base-api";
 import {
   DataTable,
@@ -15,12 +22,6 @@ import {
   formatList,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import LaptopIcon from "@mui/icons-material/Laptop";
-import LogoutIcon from "@mui/icons-material/Logout";
-import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
-import { Button, Chip, Stack, Typography } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
-import { ReactNode, useMemo } from "react";
 
 import { useInvalidateUserSessions } from "@/lib/baseModule/api/mutations/users";
 import { useGetSelfActiveSessions } from "@/lib/baseModule/api/queries/users";

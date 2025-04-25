@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Middleware } from "@eshg/base-api";
 import { BailoutToCSRError } from "next/dist/shared/lib/lazy-dynamic/bailout-to-csr";
+
+import { Middleware } from "@eshg/base-api";
 
 /**
  * Requests to the backend will only succeed on the client side.

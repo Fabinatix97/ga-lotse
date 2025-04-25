@@ -5,6 +5,8 @@
 
 "use client";
 
+import { FormLabel, Stack, Typography } from "@mui/joy";
+
 import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -16,7 +18,6 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
-import { FormLabel, Stack, Typography } from "@mui/joy";
 
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";

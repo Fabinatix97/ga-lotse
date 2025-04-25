@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Chip } from "@mui/joy";
+import {
+  ColumnHelper,
+  SortingState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+
 import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
@@ -15,12 +22,6 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentOverviewEntry,
 } from "@eshg/travel-medicine-api";
-import { Chip } from "@mui/joy";
-import {
-  ColumnHelper,
-  SortingState,
-  createColumnHelper,
-} from "@tanstack/react-table";
 
 import {
   translateAppointmentType,

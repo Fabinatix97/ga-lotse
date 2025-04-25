@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray } from "formik";
+import { useEffect } from "react";
+
+import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 import { ContactPersonForm } from "@/lib/shared/components/facilitySidebar/ContactPersonForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
@@ -25,6 +27,12 @@ export function FacilityContactPersonArrayForm({
   contactPersonRequired,
   allowMainContactPerson,
 }: FacilityContactPersonArrayFormProps) {
+  useEffect(() => {
+    if (contactPersonRequired && values.length === 0) {
+      values.push(createEmptyContactPerson());
+    }
+  }, [contactPersonRequired, values]);
+
   return (
     <FieldArray name={name} validateOnChange={false}>
       {({ push, remove }) => (

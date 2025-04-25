@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { entries } from "remeda";
+
 import { ApiBusinessModule } from "@eshg/base-api";
 import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "@eshg/dental";
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
 } from "@eshg/lib-employee-portal";
-import { entries } from "remeda";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";

@@ -5,8 +5,9 @@
 
 "use client";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
+
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { InspectionTabHistory } from "@/lib/businessModules/inspection/components/inspection/history/InspectionTabHistory";
 

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { List, ListItem, ListItemContent, Stack, Typography } from "@mui/joy";
+
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 
 import { useGetAllDiseasesCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import {

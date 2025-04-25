@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Stack, Typography } from "@mui/joy";
 import { useState } from "react";
+
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 export function CollapsableList({
   items,

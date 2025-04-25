@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminCertificate } from "@eshg/service-directory-api";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode } from "react";
+
+import { ApiAdminCertificate } from "@eshg/service-directory-api";
 
 import { CertificateDialogButton } from "@/lib/components/button/CertificateDialogButton";
 import { EditableCertificateCell } from "@/lib/components/table/cell/EditableCertificateCell";

@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Box, Grid, Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { ReactNode } from "react";
+
 import { DetailsSection, InformationSheet } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Box, Grid, Stack } from "@mui/joy";
-import { ReactNode } from "react";
 
 export interface InfoTileProps extends RequiresChildren {
   name: string;
@@ -15,6 +17,7 @@ export interface InfoTileProps extends RequiresChildren {
   footer?: ReactNode;
   controls?: ReactNode;
   "data-testid"?: string;
+  sx?: SxProps;
 }
 
 export function InfoTile({
@@ -25,9 +28,10 @@ export function InfoTile({
   children,
   footer,
   controls,
+  sx,
 }: InfoTileProps) {
   return (
-    <InformationSheet data-testid={testId}>
+    <InformationSheet data-testid={testId} sx={{ ...sx }}>
       <Box flexGrow={1}>
         <DetailsSection
           data-testid={name}

@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import { Grid, Stack } from "@mui/joy";
+
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { ApiFacilityContactPerson } from "@eshg/measles-protection-api";
-import { Grid, Sheet, Stack } from "@mui/joy";
 
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
   ExternalLinkDetailsCell,
   emailHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 export function FacilityContact({
   person,
@@ -21,31 +22,32 @@ export function FacilityContact({
   person: ApiFacilityContactPerson;
 }) {
   return (
-    <Sheet>
-      <DetailsSection title="Kontaktperson der Einrichtung">
-        <Stack gap={1}>
-          <Row>
-            <DetailsCell
-              label="Anrede"
-              value={person.salutation && SALUTATION_VALUES[person.salutation]}
-            />
-            <DetailsCell label="Titel" value={person.title} />
-          </Row>
-          <Row>
-            <DetailsCell label="Vorname" value={person.firstName} />
-            <DetailsCell label="Name" value={person.lastName} />
-          </Row>
-        </Stack>
-        <Stack gap={1}>
-          <ExternalLinkDetailsCell
-            label="E-Mail-Adresse"
-            value={person.emailAddress}
-            href={emailHref}
+    <InfoTile
+      title="Kontaktperson der Einrichtung"
+      name="facilityContactPerson"
+    >
+      <Stack gap={1}>
+        <Row>
+          <DetailsItem
+            label="Anrede"
+            value={person.salutation && SALUTATION_VALUES[person.salutation]}
           />
-          <DetailsCell label="Telefonnummer" value={person.phoneNumber} />
-        </Stack>
-      </DetailsSection>
-    </Sheet>
+          <DetailsItem label="Titel" value={person.title} />
+        </Row>
+        <Row>
+          <DetailsItem label="Vorname" value={person.firstName} />
+          <DetailsItem label="Name" value={person.lastName} />
+        </Row>
+      </Stack>
+      <Stack gap={1}>
+        <ExternalLinkDetailsCell
+          label="E-Mail-Adresse"
+          value={person.emailAddress}
+          href={emailHref}
+        />
+        <DetailsItem label="Telefonnummer" value={person.phoneNumber} />
+      </Stack>
+    </InfoTile>
   );
 }
 

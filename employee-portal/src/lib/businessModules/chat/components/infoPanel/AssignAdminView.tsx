@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box, Button, Stack, Switch, Typography } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { mapToObj } from "remeda";
+
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

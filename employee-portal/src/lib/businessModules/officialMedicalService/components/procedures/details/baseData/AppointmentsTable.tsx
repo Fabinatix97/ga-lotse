@@ -4,6 +4,16 @@
  */
 
 import {
+  CheckCircle,
+  Delete,
+  EditCalendarOutlined,
+  EventBusyOutlined,
+} from "@mui/icons-material";
+import { Chip, Typography } from "@mui/joy";
+import { DefaultColorPalette } from "@mui/joy/styles/types";
+import { createColumnHelper } from "@tanstack/react-table";
+
+import {
   ActionsItem,
   ActionsMenu,
   DataTable,
@@ -17,15 +27,6 @@ import {
   ApiEmployeeOmsProcedureDetails,
   ApiOmsAppointment,
 } from "@eshg/official-medical-service-api";
-import {
-  CheckCircle,
-  Delete,
-  EditCalendarOutlined,
-  EventBusyOutlined,
-} from "@mui/icons-material";
-import { Chip, Typography } from "@mui/joy";
-import { DefaultColorPalette } from "@mui/joy/styles/types";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import {
   useCloseAppointment,

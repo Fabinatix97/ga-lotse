@@ -5,7 +5,6 @@
 
 "use client";
 
-import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 import {
   ReactNode,
   createContext,
@@ -13,6 +12,8 @@ import {
   useEffect,
   useMemo,
 } from "react";
+
+import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 
 import { unregisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/unregisterServiceWorker";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";

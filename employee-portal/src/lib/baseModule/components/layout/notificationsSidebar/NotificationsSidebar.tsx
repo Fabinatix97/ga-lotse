@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { InfoOutlined } from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/joy";
+import { isNonNullish } from "remeda";
+
 import { ApiGetAggregatedNotificationsResponse } from "@eshg/base-api";
 import {
   DrawerProps,
@@ -11,9 +15,6 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { InfoOutlined } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/joy";
-import { isNonNullish } from "remeda";
 
 import { useMarkNotificationsAsRead } from "@/lib/baseModule/api/mutations/notifications";
 

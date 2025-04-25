@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureStatus } from "@eshg/base-api";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
+
+import { ApiGdprProcedureStatus } from "@eshg/base-api";
 
 export const gdprProcedureStatusColor = {
   DRAFT: "warning",

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormControl, Stack, styled } from "@mui/joy";
+
 import {
   BaseFieldProps,
   renderHelperText,
   renderLabel,
 } from "@eshg/lib-portal/components/formFields/BaseField";
-import { FormControl, Stack, styled } from "@mui/joy";
 
 const StyledFormControl = styled(FormControl)({
   flexDirection: "column",

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 import { Stack, Typography, styled } from "@mui/joy";
+
+import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 
 import { LanguageSwitch } from "@/lib/components/layout/nav/LanguageSwitch";
 import {

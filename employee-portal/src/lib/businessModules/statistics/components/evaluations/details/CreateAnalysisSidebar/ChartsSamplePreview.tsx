@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 import { isNumber } from "remeda";
+
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 export function ChartsSamplePreview({ chart }: { chart: ReactNode }) {
   return (

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { isDefined } from "remeda";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   BaseAddress,
@@ -26,9 +30,6 @@ import {
   ApiPatient,
   ApiSalutation,
 } from "@eshg/travel-medicine-api";
-import { Divider, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { isDefined } from "remeda";
 
 import { instanceOfApiGetReferencePersonResponse } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
 

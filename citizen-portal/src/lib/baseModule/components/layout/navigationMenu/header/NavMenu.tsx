@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { ExpandMore } from "@mui/icons-material";
 import {
   Box,
@@ -16,6 +15,8 @@ import {
 } from "@mui/joy";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import {
   isItemSelected,

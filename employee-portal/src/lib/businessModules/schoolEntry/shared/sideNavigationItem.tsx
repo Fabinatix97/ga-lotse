@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { WcOutlined } from "@mui/icons-material";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
@@ -12,8 +15,6 @@ import {
   hasUserRole,
 } from "@eshg/lib-employee-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
-import { WcOutlined } from "@mui/icons-material";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";

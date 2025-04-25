@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid } from "@mui/joy";
+
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -10,7 +12,6 @@ import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNu
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
-import { Grid } from "@mui/joy";
 
 import {
   salutationOptions,

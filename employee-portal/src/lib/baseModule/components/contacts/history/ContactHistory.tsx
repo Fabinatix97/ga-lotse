@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
+import { isDefined } from "remeda";
+
 import {
   ApiContactHistoryEntry,
   ApiGetContactHistoryResponse,
@@ -14,8 +17,6 @@ import {
 } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { useRouter } from "next/navigation";
-import { isDefined } from "remeda";
 
 import { HistoryEntryIndicator } from "@/lib/baseModule/components/contacts/history/HistoryEntryIndicator";
 import { routes } from "@/lib/baseModule/shared/routes";

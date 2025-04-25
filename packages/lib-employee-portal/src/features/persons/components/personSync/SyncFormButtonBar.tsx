@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Button, Stack } from "@mui/joy";
 import { isString } from "remeda";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
 

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import { CancelOutlined, KeyOutlined } from "@mui/icons-material";
 import { Button, Sheet, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
+
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
 
 import { CreateBackupSidebar } from "@/lib/businessModules/chat/components/secureBackup/CreateBackupSidebar";
 import { RestoreBackupSidebar } from "@/lib/businessModules/chat/components/secureBackup/RestoreBackupSidebar";

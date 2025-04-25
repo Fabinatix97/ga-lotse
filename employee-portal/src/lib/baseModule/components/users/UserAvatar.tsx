@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/base-api";
 import { Avatar } from "@mui/joy";
+
+import { ApiUser } from "@eshg/base-api";
 
 type AvatarSize = "sm" | "lg";
 

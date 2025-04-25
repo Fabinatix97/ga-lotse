@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   ApiBusinessProcedureInclusionStatus,
@@ -10,7 +12,6 @@ import {
   ApiGdprProcedureType,
   GdprValidationTaskApiInterface,
 } from "@eshg/lib-procedures-api";
-import { Typography } from "@mui/joy";
 
 import { useCloseValidationTask } from "@/lib/baseModule/api/mutations/gdpr";
 

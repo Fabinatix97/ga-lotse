@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   FileField,
   MultiFormButtonBar,
@@ -12,8 +15,6 @@ import {
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 interface UploadForm {
   file: File | null;

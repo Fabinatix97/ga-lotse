@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
 import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
+
+import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";

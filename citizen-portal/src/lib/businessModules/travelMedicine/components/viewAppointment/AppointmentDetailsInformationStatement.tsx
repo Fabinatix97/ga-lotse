@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInformationStatementSummary } from "@eshg/travel-medicine-api";
 import { Check, CloseOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
+
+import { ApiInformationStatementSummary } from "@eshg/travel-medicine-api";
 
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";

@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiPacklist } from "@eshg/inspection-api";
 import { DeleteOutlined } from "@mui/icons-material";
 import {
   Accordion,
@@ -18,6 +17,8 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+
+import { ApiPacklist } from "@eshg/inspection-api";
 
 export interface PacklistProps {
   revisionName: string;

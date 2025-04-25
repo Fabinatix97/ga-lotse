@@ -5,8 +5,6 @@
 
 "use client";
 
-import { CalendarEventApi } from "@eshg/base-api";
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import {
   EventSourceFuncArg,
   EventSourceInput,
@@ -28,6 +26,9 @@ import {
   useState,
 } from "react";
 import { isDefined, isNonNullish } from "remeda";
+
+import { CalendarEventApi } from "@eshg/base-api";
+import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 
 import { useCalendarEventApi } from "@/lib/baseModule/api/clients";
 import { theme } from "@/lib/baseModule/theme/theme";

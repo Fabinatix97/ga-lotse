@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEditorBodyElementsInner } from "@eshg/lib-editor-api";
 import { Divider, Stack, Typography } from "@mui/joy";
+
+import { ApiEditorBodyElementsInner } from "@eshg/lib-editor-api";
 
 import { ContentElementAudios } from "@/lib/shared/components/contentEditor/ContentElementAudio";
 import { ContentElementImages } from "@/lib/shared/components/contentEditor/ContentElementImages";

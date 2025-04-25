@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -11,8 +14,6 @@ import {
   validateRange,
 } from "@eshg/lib-portal/helpers/validators";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import { CountryFieldMulti } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";

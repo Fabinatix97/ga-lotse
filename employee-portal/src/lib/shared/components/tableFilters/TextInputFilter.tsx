@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import { Input } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useState } from "react";
+
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 
 export function TextInputFilter(
   props: Readonly<{

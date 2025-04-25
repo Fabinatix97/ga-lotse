@@ -5,10 +5,11 @@
 
 "use client";
 
-import { ApiAppointment } from "@eshg/sti-protection-api";
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useTranslation } from "react-i18next";
+
+import { ApiAppointment } from "@eshg/sti-protection-api";
 
 import { AppointmentPickerSection } from "@/lib/shared/components/AppointmentPickerSection";
 import {

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SearchableGroups } from "@eshg/lib-employee-portal";
 import { Stack, Typography } from "@mui/joy";
+
+import { SearchableGroups } from "@eshg/lib-employee-portal";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 import {

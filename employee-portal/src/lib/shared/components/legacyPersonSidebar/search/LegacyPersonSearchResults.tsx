@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Formik, FormikErrors } from "formik";
+import { ReactNode } from "react";
+import { isNonNullish } from "remeda";
+
 import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   MultiFormButtonBar,
@@ -15,9 +19,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { Formik, FormikErrors } from "formik";
-import { ReactNode } from "react";
-import { isNonNullish } from "remeda";
 
 interface LegacyPersonSearchResultsProps {
   persons: ApiGetReferencePersonResponse[];

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {
   Dispatch,
@@ -14,6 +12,9 @@ import {
   useMemo,
   useState,
 } from "react";
+
+import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 

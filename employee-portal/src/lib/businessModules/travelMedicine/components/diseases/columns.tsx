@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Delete, Edit } from "@mui/icons-material";
+import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
 import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiDisease } from "@eshg/travel-medicine-api";
-import { Delete, Edit } from "@mui/icons-material";
-import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper: ColumnHelper<ApiDisease> = createColumnHelper<ApiDisease>();
 

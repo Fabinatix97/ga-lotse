@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import { FormikProps } from "formik";
+import { ComponentType, ReactNode } from "react";
+import { isDefined } from "remeda";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -13,11 +16,11 @@ import {
   useSidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
-import { FormikProps } from "formik";
-import { ComponentType, ReactNode } from "react";
-import { isDefined } from "remeda";
 
-import { FacilityDetailsSidebar } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
+import {
+  FacilityDetailsSidebar,
+  ReferenceFacilityWithOptionalMeaslesFacilityType,
+} from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
 import {
   DefaultFacilityFormValues,
   FacilityForm,
@@ -55,9 +58,11 @@ export type FacilitySidebarProps<TSearchValues> = {
   }) => Promise<void>;
   onSelect: (props: {
     searchInputs: FacilitySearchFormValues;
-    facility: ApiGetReferenceFacilityResponse;
+    facility: ReferenceFacilityWithOptionalMeaslesFacilityType;
   }) => Promise<void>;
   allowMainContactPerson?: boolean;
+  requiresContactPerson?: boolean;
+  showMeaslesFacilityType?: boolean;
 } & SidebarWithFormRefProps &
   OptionalSearchFormComponent<TSearchValues>;
 
@@ -175,7 +180,9 @@ function EmbeddedFacilitySidebar<
             });
             return props.onClose(true);
           }}
+          requiresContactPerson={props.requiresContactPerson}
           allowMainContactPerson={props.allowMainContactPerson}
+          showMeaslesFacilityType={props.showMeaslesFacilityType}
         />
       )}
       {state.stage === "display" && isDefined(state.selectedFacility) && (
@@ -195,6 +202,7 @@ function EmbeddedFacilitySidebar<
             state.backEnabled ? () => dispatch({ type: "BACK" }) : undefined
           }
           onCancel={() => props.onClose(false)}
+          showMeaslesFacilityType={props.showMeaslesFacilityType}
         />
       )}
     </>

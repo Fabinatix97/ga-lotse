@@ -5,6 +5,11 @@
 
 "use client";
 
+import { AddOutlined } from "@mui/icons-material";
+import { Button, Grid } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+
 import {
   DataTable,
   TablePage,
@@ -19,10 +24,6 @@ import {
   ApiServicePlanGroup,
   ApiServiceStatus,
 } from "@eshg/travel-medicine-api";
-import { AddOutlined } from "@mui/icons-material";
-import { Button, Grid } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
 import { useDeleteAppointmentEp } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import {

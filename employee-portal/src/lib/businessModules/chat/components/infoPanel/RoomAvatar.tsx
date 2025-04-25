@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
+import { Avatar, Box, Button, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { EventType } from "matrix-js-sdk";
+import { useState } from "react";
+
 import { FileField } from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -11,12 +18,6 @@ import {
   FileType,
 } from "@eshg/lib-portal/components/formFields/file/types";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
-import { Avatar, Box, Button, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { EventType } from "matrix-js-sdk";
-import { useState } from "react";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

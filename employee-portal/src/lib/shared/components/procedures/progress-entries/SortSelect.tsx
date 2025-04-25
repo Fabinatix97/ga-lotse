@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Select } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { useReplaceSearchParams } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { ApiProgressEntrySortOrder } from "@eshg/lib-procedures-api";
-import { Select } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { ProgressEntriesSearchParams } from "./types";
 

@@ -1,0 +1,271 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.stiprotection.statistics.attributes;
+
+import de.eshg.lib.statistics.attributes.AttributeData;
+import de.eshg.lib.statistics.attributes.BooleanAttribute;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
+import de.eshg.stiprotection.persistence.db.examination.labtests.CancerScreeningTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.ChlamydiaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.GonorrheaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HepatitisATest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HepatitisBTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HepatitisCTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HivTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.HpvTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.LabTestData;
+import de.eshg.stiprotection.persistence.db.examination.labtests.MpoxTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.MycoplasmaTest;
+import de.eshg.stiprotection.persistence.db.examination.labtests.OtherTests;
+import de.eshg.stiprotection.persistence.db.examination.labtests.SyphilisTest;
+
+public enum StiLaboratoryTestsAttributes implements StiAttributes {
+  LABORATORY_TESTS_HIV_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "HIV Test angefordert",
+          "LABORATORY_TESTS_HIV_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HIV_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver HIV Test",
+          "LABORATORY_TESTS_HIV_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_SYPHILIS_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Syphilis Test angefordert",
+          "LABORATORY_TESTS_SYPHILIS_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_SYPHILIS_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Syphilis Test",
+          "LABORATORY_TESTS_SYPHILIS_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HEPATITIS_A_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Hepatitis A Test angefordert",
+          "LABORATORY_TESTS_HEPATITIS_A_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HEPATITIS_A_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Hepatitis A Test",
+          "LABORATORY_TESTS_HEPATITIS_A_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HEPATITIS_B_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Hepatitis B Test angefordert",
+          "LABORATORY_TESTS_HEPATITIS_B_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HEPATITIS_B_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Hepatitis B Test",
+          "LABORATORY_TESTS_HEPATITIS_B_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HEPATITIS_C_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Hepatitis C Test angefordert",
+          "LABORATORY_TESTS_HEPATITIS_C_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HEPATITIS_C_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Hepatitis C Test",
+          "LABORATORY_TESTS_HEPATITIS_C_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_CHLAMYDIA_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Chlamydien Test angefordert",
+          "LABORATORY_TESTS_CHLAMYDIA_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_CHLAMYDIA_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Chlamydien Test",
+          "LABORATORY_TESTS_CHLAMYDIA_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Gonorrhöe Test angefordert",
+          "LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Gonorrhöe Test",
+          "LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_MYCOPLASMA_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Mykoplasmen Test angefordert",
+          "LABORATORY_TESTS_MYCOPLASMA_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_MYCOPLASMA_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Mykoplasmen Test",
+          "LABORATORY_TESTS_MYCOPLASMA_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_CANCER_SCREENING_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Krebsvorsorge Test angefordert",
+          "LABORATORY_TESTS_CANCER_SCREENING_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_CANCER_SCREENING_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Krebsvorsorge Test",
+          "LABORATORY_TESTS_CANCER_SCREENING_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HPV_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "HPV-Abstrich Test angefordert",
+          "LABORATORY_TESTS_HPV_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_HPV_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver HPV-Abstrich Test",
+          "LABORATORY_TESTS_HPV_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_MPOX_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Mpox Test angefordert",
+          "LABORATORY_TESTS_MPOX_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_MPOX_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver Mpox Test",
+          "LABORATORY_TESTS_MPOX_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_OTHER_TEST_REQUESTED(
+      BooleanAttribute.create(
+          "Sonstiger Test angefordert",
+          "LABORATORY_TESTS_OTHER_TEST_REQUESTED",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false)),
+
+  LABORATORY_TESTS_OTHER_TEST_RESULT_POSITIVE(
+      BooleanAttribute.create(
+          "Positiver sonstiger Test",
+          "LABORATORY_TESTS_OTHER_TEST_RESULT_POSITIVE",
+          StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
+          false));
+
+  private static final String LABORATORY_TESTS_CATEGORY = "Labortests";
+
+  private final AttributeData attribute;
+
+  StiLaboratoryTestsAttributes(AttributeData attribute) {
+    this.attribute = attribute;
+  }
+
+  public static Object mapAttribute(
+      StiProtectionProcedure procedure, StiLaboratoryTestsAttributes attribute) {
+    LaboratoryTestExamination laboratoryTests = procedure.getLaboratoryTestExamination();
+    if (laboratoryTests == null) {
+      return null;
+    }
+
+    return switch (attribute) {
+      case LABORATORY_TESTS_HIV_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(HivTest.class).isPresent();
+      case LABORATORY_TESTS_HIV_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, HivTest.class);
+      case LABORATORY_TESTS_SYPHILIS_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(SyphilisTest.class).isPresent();
+      case LABORATORY_TESTS_SYPHILIS_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, SyphilisTest.class);
+      case LABORATORY_TESTS_HEPATITIS_A_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(HepatitisATest.class).isPresent();
+      case LABORATORY_TESTS_HEPATITIS_A_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, HepatitisATest.class);
+      case LABORATORY_TESTS_HEPATITIS_B_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(HepatitisBTest.class).isPresent();
+      case LABORATORY_TESTS_HEPATITIS_B_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, HepatitisBTest.class);
+      case LABORATORY_TESTS_HEPATITIS_C_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(HepatitisCTest.class).isPresent();
+      case LABORATORY_TESTS_HEPATITIS_C_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, HepatitisCTest.class);
+      case LABORATORY_TESTS_CHLAMYDIA_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(ChlamydiaTest.class).isPresent();
+      case LABORATORY_TESTS_CHLAMYDIA_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, ChlamydiaTest.class);
+      case LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(GonorrheaTest.class).isPresent();
+      case LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, GonorrheaTest.class);
+      case LABORATORY_TESTS_MYCOPLASMA_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(MycoplasmaTest.class).isPresent();
+      case LABORATORY_TESTS_MYCOPLASMA_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, MycoplasmaTest.class);
+      case LABORATORY_TESTS_CANCER_SCREENING_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(CancerScreeningTest.class).isPresent();
+      case LABORATORY_TESTS_CANCER_SCREENING_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, CancerScreeningTest.class);
+      case LABORATORY_TESTS_HPV_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(HpvTest.class).isPresent();
+      case LABORATORY_TESTS_HPV_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, HpvTest.class);
+      case LABORATORY_TESTS_MPOX_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(MpoxTest.class).isPresent();
+      case LABORATORY_TESTS_MPOX_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, MpoxTest.class);
+      case LABORATORY_TESTS_OTHER_TEST_REQUESTED ->
+          laboratoryTests.getLabTest(OtherTests.class).isPresent();
+      case LABORATORY_TESTS_OTHER_TEST_RESULT_POSITIVE ->
+          mapTestResult(laboratoryTests, OtherTests.class);
+    };
+  }
+
+  private static Boolean mapTestResult(
+      LaboratoryTestExamination laboratoryTestExamination, Class<? extends LabTestData> clazz) {
+    return laboratoryTestExamination.getLabTest(clazz).map(LabTestData::getResult).orElse(null);
+  }
+
+  @Override
+  public AttributeData getAttributeData() {
+    return attribute;
+  }
+}

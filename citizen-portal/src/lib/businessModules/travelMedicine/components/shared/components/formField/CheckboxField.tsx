@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
   Checkbox,
   FormControl,
@@ -15,6 +14,8 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 
 import { ValidationRules } from "@/lib/shared/components/form/TextareaField";
 

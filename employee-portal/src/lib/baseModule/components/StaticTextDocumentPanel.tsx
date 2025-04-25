@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, StackProps, Typography } from "@mui/joy";
+
 import { ContentPanel } from "@eshg/lib-employee-portal";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { Stack, StackProps, Typography } from "@mui/joy";
 
 export function NoWrap({ children }: { children: string }) {
   return (

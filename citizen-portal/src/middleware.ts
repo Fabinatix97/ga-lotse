@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { NextRequest, NextResponse } from "next/server";
+
 import { contentSecurityPolicyHeaderMiddleware } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
 import { redirectToPublicUrlMiddleware } from "@eshg/lib-portal/next/redirectToPublicUrlMiddleware";
-import { NextRequest, NextResponse } from "next/server";
 
 import { env } from "@/env/server";
 

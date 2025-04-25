@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import assert from "assert";
 import { startOfMonth } from "date-fns";
 import { prop, sortBy } from "remeda";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 
 import {
   useBookAppointment,

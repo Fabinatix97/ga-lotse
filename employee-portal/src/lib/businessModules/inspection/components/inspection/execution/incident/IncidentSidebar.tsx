@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { isEmpty, isNonNullish, isNullish } from "remeda";
+import { v4 as uuidv4 } from "uuid";
+
 import {
   ApiCreateInspectionIncidentRequest,
   ApiInspectionIncident,
@@ -18,10 +23,6 @@ import {
   TextareaField,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Grid, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { isEmpty, isNonNullish, isNullish } from "remeda";
-import { v4 as uuidv4 } from "uuid";
 
 import {
   useCreateIncident,

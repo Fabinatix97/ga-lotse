@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { isNonNullish } from "remeda";
+
+import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 
 export type SearchParamValue =
   | string

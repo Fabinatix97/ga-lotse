@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -11,9 +15,6 @@ import {
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { DocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";

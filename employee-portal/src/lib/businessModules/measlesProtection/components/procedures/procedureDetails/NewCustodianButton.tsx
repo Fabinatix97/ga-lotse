@@ -5,15 +5,14 @@
 
 "use client";
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
 import {
   ApiAddCustodianRequest,
   ApiCustodianDetails,
 } from "@eshg/measles-protection-api";
-import { Add } from "@mui/icons-material";
-import { Button, Sheet } from "@mui/joy";
 
 import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helpers";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
+import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 import {
   LegacyPerson,
   LegacyPersonFormConfig,
@@ -68,18 +67,10 @@ export function mapToAddCustodianRequest(
 export function NewCustodianButton() {
   const [_, setAddCustodianOpen] = useSearchParam("add-custodian", "boolean");
   return (
-    <Sheet>
-      <DetailsSection title={"PSB - Personensorgeberechtigte:r"}>
-        <div>
-          <Button
-            startDecorator={<Add />}
-            variant="plain"
-            onClick={() => setAddCustodianOpen(true)}
-          >
-            Hinzufügen
-          </Button>
-        </div>
-      </DetailsSection>
-    </Sheet>
+    <InfoTile title="PSB - Personensorgeberechtigte:r" name="custodian">
+      <InfoTileAddButton onClick={() => setAddCustodianOpen(true)}>
+        Hinzufügen
+      </InfoTileAddButton>
+    </InfoTile>
   );
 }

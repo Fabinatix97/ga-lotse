@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHeaderHeights, useSidenav } from "@eshg/lib-employee-portal";
 import { Box, Drawer } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
+
+import { useHeaderHeights, useSidenav } from "@eshg/lib-employee-portal";
 
 import { CollapsedNavigationList } from "@/lib/baseModule/components/layout/sideNavigation/lists/CollapsedNavigationList";
 import { ExpandedNavigationList } from "@/lib/baseModule/components/layout/sideNavigation/lists/ExpandedNavigationList";

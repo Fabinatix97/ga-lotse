@@ -5,8 +5,9 @@
 
 "use client";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { LandingpageContent } from "@/lib/businessModules/officialMedicalService/components/landing/LandingpageContent";

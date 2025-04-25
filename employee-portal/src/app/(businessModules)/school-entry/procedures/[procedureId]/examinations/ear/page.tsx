@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
+
 import { ContentPanel, ContentPanelTitle } from "@eshg/lib-employee-portal";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
@@ -14,8 +17,6 @@ import {
   ApiHertzValue,
   UpdateHearingTestResultRequest,
 } from "@eshg/school-entry-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { use } from "react";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { HearingTestResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/HearingTestResult";

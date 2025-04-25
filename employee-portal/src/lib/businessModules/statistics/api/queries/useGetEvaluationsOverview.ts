@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FilterValue } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { FilterValue } from "@eshg/lib-employee-portal";
 
 import {
   useDataSourceApi,

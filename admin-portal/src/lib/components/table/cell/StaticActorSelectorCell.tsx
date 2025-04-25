@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminActorSelector } from "@eshg/service-directory-api";
 import { Stack } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
+
+import { ApiAdminActorSelector } from "@eshg/service-directory-api";
 
 import { ActorsChip } from "@/lib/components/table/cell/ForeignKeyCell";
 import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalRegistryFeature } from "@eshg/medical-registry-api";
 import { StickyNote2Outlined } from "@mui/icons-material";
+
+import { ApiMedicalRegistryFeature } from "@eshg/medical-registry-api";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/types";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/medicalRegistry/api/queries/featureTogglesApi";

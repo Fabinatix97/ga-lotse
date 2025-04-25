@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetEvaluationTemplatesFromRepositoryResponse } from "@eshg/statistics-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { ApiGetEvaluationTemplatesFromRepositoryResponse } from "@eshg/statistics-api";
 
 import { useCentralRepositoryApi } from "@/lib/businessModules/statistics/api/clients";
 import { EvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";

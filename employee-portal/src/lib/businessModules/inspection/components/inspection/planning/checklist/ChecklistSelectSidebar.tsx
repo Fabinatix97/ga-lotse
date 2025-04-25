@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { InfoOutlined } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
+
 import { ApiInspectionCLDVersion } from "@eshg/inspection-api";
 import {
   OverlayBoundary,
   Sidebar,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { InfoOutlined } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
 
 import { useGetAvailableCLDVs } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { ChecklistSelectSidebarForm } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebarForm";

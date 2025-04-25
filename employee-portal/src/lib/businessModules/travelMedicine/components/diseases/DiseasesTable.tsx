@@ -5,6 +5,11 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button } from "@mui/joy";
+import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
+import { isEmpty } from "remeda";
+
 import {
   ButtonBar,
   DataTable,
@@ -13,10 +18,6 @@ import {
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { ApiDisease } from "@eshg/travel-medicine-api";
-import AddIcon from "@mui/icons-material/Add";
-import { Button } from "@mui/joy";
-import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
-import { isEmpty } from "remeda";
 
 import { useDiseaseApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useDeleteDisease } from "@/lib/businessModules/travelMedicine/api/mutations/diseaseApi";

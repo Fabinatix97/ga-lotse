@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
-import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
 import { InfoOutlined } from "@mui/icons-material";
 import { Alert, Box } from "@mui/joy";
 import { ReactNode } from "react";
+
+import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
+import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
 
 import { CLDInfoCard } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
 import { ReadOnlyCLDContent } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDContent";

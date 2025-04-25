@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   Box,
   Button,
@@ -16,6 +15,8 @@ import {
   useTheme,
 } from "@mui/joy";
 import { isEmpty, isString, omit, pick } from "remeda";
+
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import {
   fetchBackupInfo,

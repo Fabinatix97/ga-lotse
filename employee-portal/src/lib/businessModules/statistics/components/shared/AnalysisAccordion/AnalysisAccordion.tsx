@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Delete, Edit } from "@mui/icons-material";
+import { CircularProgress, Stack } from "@mui/joy";
+import { Suspense, useState } from "react";
+
 import {
   ActionsMenu,
   NoSearchResults,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { Delete, Edit } from "@mui/icons-material";
-import { CircularProgress, Stack } from "@mui/joy";
-import { Suspense, useState } from "react";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { Analysis } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";

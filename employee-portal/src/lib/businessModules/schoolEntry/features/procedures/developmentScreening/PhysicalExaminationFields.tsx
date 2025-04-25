@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+
 import { TextareaField } from "@eshg/lib-employee-portal";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
@@ -13,7 +15,6 @@ import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,
 } from "@eshg/school-entry-api";
-import { Stack, Typography } from "@mui/joy";
 
 import {
   ExaminationWithDiagnosisFieldValues,

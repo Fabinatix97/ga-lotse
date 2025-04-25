@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useEffect } from "react";
+
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { usePrevious } from "@eshg/lib-portal/hooks/usePrevious";
-import { useEffect } from "react";
 
 /**
  * Used by multiple step sidebars to reset the alert when the current step changes.

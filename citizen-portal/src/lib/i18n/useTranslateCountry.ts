@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useMemo } from "react";
+
 import { ApiCountryCode } from "@eshg/base-api";
 import {
   countryOptions,
   translateCountry,
 } from "@eshg/lib-portal/helpers/countryOption";
-import { useMemo } from "react";
 
 import { useLocale } from "@/lib/i18n/useLocale";
 

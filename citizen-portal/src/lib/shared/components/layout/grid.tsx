@@ -5,9 +5,10 @@
 
 "use client";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid, Stack, styled } from "@mui/joy";
 import { Children, ReactNode } from "react";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { allBreakpoints, byBreakpoint } from "@/lib/shared/breakpoints";
 

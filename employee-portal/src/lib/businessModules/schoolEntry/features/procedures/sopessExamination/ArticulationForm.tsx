@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Stack, Typography } from "@mui/joy";
+
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -11,7 +13,6 @@ import {
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
 import { ApiArticulationValue } from "@eshg/school-entry-api";
-import { Button, Stack, Typography } from "@mui/joy";
 
 import { StatusChip } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/StatusChip";
 import { ArticulationField } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/ArticulationField";

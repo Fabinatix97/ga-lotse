@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Add } from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
+import { useState } from "react";
+
 import {
   ConfirmationDialog,
   DataTable,
@@ -15,9 +19,6 @@ import {
   ApiCreateTextTemplateRequest,
   ApiTextTemplate,
 } from "@eshg/sti-protection-api";
-import { Add } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
-import { useState } from "react";
 
 import {
   useCreateTextTemplate,

@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Chip } from "@mui/joy";
+import { CellContext, createColumnHelper } from "@tanstack/react-table";
+import { addMonths } from "date-fns";
+
 import {
   ApiGdprProcedureStatus,
   ApiGetGdprProcedureResponse,
@@ -12,9 +16,6 @@ import {
 import { formatDurationFromNowUntil } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { Chip } from "@mui/joy";
-import { CellContext, createColumnHelper } from "@tanstack/react-table";
-import { addMonths } from "date-fns";
 
 import { gdprProcedureStatusColor } from "@/lib/baseModule/components/gdpr/constants";
 import {

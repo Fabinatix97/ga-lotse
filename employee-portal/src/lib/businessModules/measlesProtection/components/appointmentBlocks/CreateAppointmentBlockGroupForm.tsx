@@ -5,12 +5,13 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
 } from "@eshg/measles-protection-api";
-import { useRouter } from "next/navigation";
 
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBlockApi";

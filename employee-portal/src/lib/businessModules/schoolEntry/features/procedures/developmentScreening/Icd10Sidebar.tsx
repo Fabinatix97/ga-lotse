@@ -5,15 +5,6 @@
 
 "use client";
 
-import { ApiIcd10Code } from "@eshg/base-api";
-import {
-  ButtonBar,
-  DrawerProps,
-  SidebarActions,
-  SidebarContent,
-  UseSidebarResult,
-  useSidebar,
-} from "@eshg/lib-employee-portal";
 import { Close, SearchOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -30,6 +21,16 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent, TdHTMLAttributes, useState } from "react";
 import { useDebounce } from "use-debounce";
+
+import { ApiIcd10Code } from "@eshg/base-api";
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 
 import { useSearchIcd10Codes } from "@/lib/baseModule/api/queries/icd10Codes";
 

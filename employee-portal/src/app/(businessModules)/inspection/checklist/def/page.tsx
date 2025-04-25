@@ -5,6 +5,9 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Box } from "@mui/joy";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
@@ -13,8 +16,6 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import AddIcon from "@mui/icons-material/Add";
-import { Box } from "@mui/joy";
 
 import { useGetChecklistDefinitions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ChecklistDefinitionOverviewTable } from "@/lib/businessModules/inspection/components/checklistDefinition/overview/ChecklistDefinitionOverviewTable";

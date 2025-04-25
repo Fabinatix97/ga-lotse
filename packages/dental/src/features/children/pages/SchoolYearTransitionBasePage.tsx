@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+
 import { ApiSchoolYearTransitionSortKey } from "@eshg/dental-api";
 import {
   DataTable,
@@ -18,8 +21,6 @@ import {
   getSortKey,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { SchoolYearTransitionStatusChip } from "@/components/schoolYearTransition/SchoolYearTransitionStatusChip";
 import { routes } from "@/config/routes";
@@ -150,7 +151,7 @@ export function SchoolYearTransitionBasePage(
                   ),
                 focusColumnAccessorKey: "institution.name",
               }}
-              minWidth={990}
+              minWidth={1250}
               sorting={tableControl.tableSorting}
             />
           </TableSheet>

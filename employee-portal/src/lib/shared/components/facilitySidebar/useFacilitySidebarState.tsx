@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useEffect, useReducer } from "react";
+
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { useSearchReferenceFacilitiesQuery } from "@eshg/lib-employee-portal";
-import { useEffect, useReducer } from "react";
 
 import { FacilitySidebarProps } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";

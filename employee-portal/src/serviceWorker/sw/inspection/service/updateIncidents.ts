@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   ApiGetInspectionIncidentsResponseFromJSON,
   ApiGetInspectionIncidentsResponseToJSON,
   ApiInspectionIncident,
   ApiUpdateInspectionIncidentRequest,
 } from "@eshg/inspection-api";
-import { isDefined } from "remeda";
 
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";
 import { updateIncidents } from "@/serviceWorker/sw/inspection/service/updateInspection";

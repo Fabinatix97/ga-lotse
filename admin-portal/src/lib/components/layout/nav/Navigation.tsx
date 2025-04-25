@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 import {
   Domain,
   Extension,
@@ -17,6 +16,8 @@ import {
 import { Button, List, Stack, Typography } from "@mui/joy";
 import { useMemo, useState } from "react";
 import { prop, sortBy } from "remeda";
+
+import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 
 import { theme } from "@/lib/components/layout/theme/theme";
 import { useHeaderHeights } from "@/lib/components/layout/useHeaderHeights";

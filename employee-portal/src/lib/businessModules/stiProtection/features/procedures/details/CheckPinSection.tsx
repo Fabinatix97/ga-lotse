@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import {
   CheckCircleOutlined,
   ErrorOutlineOutlined,
@@ -18,6 +12,13 @@ import {
 import { IconButton, Sheet, Typography } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { useReducer, useState } from "react";
+
+import { DetailsSection } from "@eshg/lib-employee-portal";
+import { Row } from "@eshg/lib-portal/components/Row";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { usePinCheck } from "@/lib/businessModules/stiProtection/api/queries/identity";
 

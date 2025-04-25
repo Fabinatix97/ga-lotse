@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FeedOutlined } from "@mui/icons-material";
+import { Sheet } from "@mui/joy";
+
 import { ApiAuditLogSourceFromJSON } from "@eshg/auditlog-api";
 import { DetailsRow } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { FeedOutlined } from "@mui/icons-material";
-import { Sheet } from "@mui/joy";
 
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ColumnSort } from "@tanstack/react-table";
+
 import {
   DataTable,
   Pagination,
@@ -15,7 +17,6 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { ApiWaitingRoomSortKey } from "@eshg/official-medical-service-api";
-import { ColumnSort } from "@tanstack/react-table";
 
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/officialMedicalService/api/queries/waitingRoomApi";
 import { waitingRoomColumns } from "@/lib/businessModules/officialMedicalService/components/waitingRoom/waitingRoomColumns";

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useCallback } from "react";
+import { isNullish } from "remeda";
+
 import {
   FileField,
   FormButtonBar,
@@ -14,10 +19,6 @@ import {
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
-import { Stack } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { useCallback } from "react";
-import { isNullish } from "remeda";
 
 import { useAddAccessRestrictionLetterMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";

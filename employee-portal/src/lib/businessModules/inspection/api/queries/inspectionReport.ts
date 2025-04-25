@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   ApiSortDirection,
   ApiTextBlockSortKey,
@@ -10,7 +12,6 @@ import {
   InspectionApi,
   TextBlockApi,
 } from "@eshg/inspection-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import {
   useEditorApi,

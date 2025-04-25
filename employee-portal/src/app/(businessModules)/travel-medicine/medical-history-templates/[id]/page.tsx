@@ -5,6 +5,8 @@
 
 "use client";
 
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -12,7 +14,6 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { MedicalHistoryTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/MedicalHistoryTemplateEditor";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";

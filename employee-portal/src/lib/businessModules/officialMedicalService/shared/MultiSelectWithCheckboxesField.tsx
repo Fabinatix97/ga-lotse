@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
+import { ReactNode, memo } from "react";
+
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
   SelectField,
   SelectFieldProps,
   SelectFieldValue,
 } from "@eshg/lib-portal/components/formFields/SelectField";
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { ReactNode, memo } from "react";
 
 export function MultiSelectWithCheckboxesField<
   TMultiple extends boolean = false,

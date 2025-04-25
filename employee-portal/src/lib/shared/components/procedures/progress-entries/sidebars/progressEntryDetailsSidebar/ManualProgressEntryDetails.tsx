@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Button, Chip } from "@mui/joy";
+import { Formik } from "formik";
+import { ReactNode, useContext, useState } from "react";
+import { isDefined } from "remeda";
+
 import {
   ButtonBar,
   SidebarActions,
@@ -16,11 +22,6 @@ import {
   ApiManualProgressEntry,
   ApiUser,
 } from "@eshg/lib-procedures-api";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Button, Chip } from "@mui/joy";
-import { Formik } from "formik";
-import { ReactNode, useContext, useState } from "react";
-import { isDefined } from "remeda";
 
 import {
   ProgressEntriesContext,

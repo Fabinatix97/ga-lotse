@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import {
-  ApiReportingReason,
-  ApiRoleStatus,
-} from "@eshg/measles-protection-api";
 import {
   Business,
   FmdGoodOutlined,
@@ -22,6 +16,13 @@ import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { ReactElement, ReactNode } from "react";
+
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import {
+  ApiReportingReason,
+  ApiRoleStatus,
+} from "@eshg/measles-protection-api";
 
 import {
   usePrivacyNoticeFile,

@@ -7,9 +7,13 @@ package de.eshg.measlesprotection.persistence.centralfile;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityDiffResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
+import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
@@ -42,7 +46,8 @@ public class FacilityClient {
     }
 
     GetFacilityFileStatesResponse response =
-        facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(facilityIdsToFetch));
+        facilityApi.getFacilityFileStates(
+            new GetFacilityFileStatesRequest(facilityIdsToFetch, facilityIdsToFetch.size() == 1));
 
     if (response.facilityFileStates().size() != facilityIdsToFetch.size()) {
       throw new IllegalStateException("Some facilities were not found in the central file.");
@@ -50,5 +55,20 @@ public class FacilityClient {
 
     return response.facilityFileStates().stream()
         .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id));
+  }
+
+  public AddFacilityFileStateResponse updateFacilityFileStateAndReference(
+      UUID id, PutFacilityRequest putFacilityRequest) {
+    return facilityApi.updateFacilityFileStateAndReference(id, putFacilityRequest);
+  }
+
+  public UUID syncFacilityFileState(UUID fileStateId, long referenceVersion) {
+    return facilityApi
+        .syncFacilityFileState(fileStateId, new SyncFileStateRequest(referenceVersion))
+        .id();
+  }
+
+  public GetFacilityDiffResponse getFacilityDiff(UUID fileStateId) {
+    return facilityApi.getFacilityDiff(fileStateId);
   }
 }

@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextareaField, TextareaFieldProps } from "@eshg/lib-employee-portal";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { FieldSetColumn } from "@eshg/lib-portal/components/formFields/FieldSetControl";
-import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { Add } from "@mui/icons-material";
 import { Button, styled } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { KeyboardEvent, useRef } from "react";
+
+import { TextareaField, TextareaFieldProps } from "@eshg/lib-employee-portal";
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { FieldSetColumn } from "@eshg/lib-portal/components/formFields/FieldSetControl";
+import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 
 import { AppendText, TextTemplatesSidebar } from "./TextTemplatesSidebar";
 import {

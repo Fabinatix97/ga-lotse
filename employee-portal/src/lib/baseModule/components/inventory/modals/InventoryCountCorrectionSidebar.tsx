@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiInventoryItem } from "@eshg/base-api";
 import {
   MultiFormButtonBar,
@@ -16,8 +19,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { Grid, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 import { useCorrectInventoryItemCount } from "@/lib/baseModule/api/mutations/inventory";
 

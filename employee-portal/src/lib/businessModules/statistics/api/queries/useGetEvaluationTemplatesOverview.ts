@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
+
 import {
   DateSpanFilterValue,
   EnumFilterValue,
@@ -13,8 +16,6 @@ import {
   ApiEvaluationTemplateSortKey,
   ApiGetEvaluationTemplatesResponse,
 } from "@eshg/statistics-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { isDefined } from "remeda";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
 import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";

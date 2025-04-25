@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OpenInNewOutlined } from "@mui/icons-material";
+import { Chip, IconButton, Stack, Typography } from "@mui/joy";
+import { ColumnHelper, Row, createColumnHelper } from "@tanstack/react-table";
+import { ReactNode } from "react";
+
 import {
   type ApiInspPendingFacility,
   ApiProcedureStatus,
 } from "@eshg/inspection-api";
 import { PROCEDURE_STATUS_COLORS } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { OpenInNewOutlined } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Typography } from "@mui/joy";
-import { ColumnHelper, Row, createColumnHelper } from "@tanstack/react-table";
-import { ReactNode } from "react";
 
 import { translateProcedureStatus } from "@/lib/baseModule/api/procedures/enums";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InformationSheet } from "@eshg/lib-employee-portal";
 import { SvgIconComponent } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
 import { IconButton, Sheet, Stack, Tooltip, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
+
+import { InformationSheet } from "@eshg/lib-employee-portal";
 
 import {
   PaletteItem,

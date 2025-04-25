@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
-import { ApiDocumentAnamnesisQuestion } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { FieldConfig, FieldInputProps } from "formik";
+
+import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { ApiDocumentAnamnesisQuestion } from "@eshg/travel-medicine-api";
 
 import { DocumentMultiSelectElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/DocumentMultiSelectElement";
 import { DocumentRadioButtonElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/DocumentRadioButtonElement";

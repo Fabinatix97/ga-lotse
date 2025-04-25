@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   ApiGetOpenDocumentsResponse,
   ApiVersion,
   GetOpenDocuments1Request,
 } from "@eshg/opendata-api";
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
 
 import { useOpenDataPublicCitizenApi } from "@/lib/businessModules/opendata/api/clients";
 import { publicCitizenApiQueryKey } from "@/lib/businessModules/opendata/api/queries/apiQueryKeys";

@@ -5,11 +5,14 @@
 
 "use client";
 
+import { isNullish } from "remeda";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
 import { getFilenameFromHeader } from "@eshg/lib-portal/api/files/download";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import {
@@ -34,12 +37,11 @@ import {
   ApiProofSubmission,
   ApiResponse,
   ApiSaveProofRequestLetter,
+  ApiSyncFacilityRequest,
   ApiUpdateAccessRestriction,
   ApiUpdateProcedureRequest,
   CreateProofSubmissionRequest,
 } from "@eshg/measles-protection-api";
-import { useMutation } from "@tanstack/react-query";
-import { isNullish } from "remeda";
 
 import {
   useAccessRestrictionApi,
@@ -50,8 +52,11 @@ import {
   useProtectionProcedureApi,
 } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
-import { ValidUpdateProcedureForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
-import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
+import {
+  ValidUpdateProcedureForm,
+  mapDefaultFacilityFormValuesToApiPutFacilityRequest,
+} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 
 interface UpdateProcedureParams {
   id: string;
@@ -324,7 +329,7 @@ export function useUpdateAccessRestrictionMutation({
 }
 
 // Replace with generated API type from backend
-export type MeaslesFacility = BaseFacility &
+export type MeaslesFacility = DefaultFacilityFormValues &
   Partial<{
     type: ApiMPFacilityType;
     otherFacilityTypeInformation?: string;
@@ -339,8 +344,8 @@ function mapMeaslesFacilityToApiAddFacilityRequest(
     facility: {
       ...facility,
       contactAddress: mapBaseAddressToApi(facility.contactAddress),
-      differentBillingAddress: facility.billingAddress
-        ? mapBaseAddressToApi(facility.billingAddress)
+      differentBillingAddress: facility.differentBillingAddress
+        ? mapBaseAddressToApi(facility.differentBillingAddress)
         : undefined,
       contactPersons: facility.contactPersons?.map((person) => ({
         ...person,
@@ -353,21 +358,21 @@ function mapMeaslesFacilityToApiAddFacilityRequest(
       })),
       dataOrigin: ApiDataOrigin.Manual,
     },
-    type: facility.type!,
-    otherFacilityTypeInformation: facility.otherFacilityTypeInformation,
+    type: facility.measlesFacilityType?.type as ApiMPFacilityType,
+    otherFacilityTypeInformation:
+      facility.measlesFacilityType?.otherFacilityTypeInformation,
   };
 }
 
 interface AddFacilityParams {
   procedureId: string;
-  facility: MeaslesFacility;
+  facility: DefaultFacilityFormValues;
 }
 
-export function useAddFacilityMutation({
-  onSuccess,
-}: MutationPassThrough<AddFacilityParams, ApiAddFacilityResponse>) {
+export function useAddFacility() {
   const api = useDraftProcedureApi();
-  return useMutation({
+  const snackbar = useSnackbar();
+  return useHandledMutation({
     mutationFn: ({
       procedureId,
       facility,
@@ -376,32 +381,55 @@ export function useAddFacilityMutation({
       return api.addFacility(procedureId, request);
     },
     mutationKey: measlesProtectionApiQueryKey(["procedures"]),
-    onSuccess,
+    onSuccess: () => {
+      snackbar.confirmation("Einrichtung erfolgreich gespeichert.");
+    },
   });
 }
 
 interface PatchFacilityParams {
-  facility: MeaslesFacility;
+  procedureId: string;
+  facility: DefaultFacilityFormValues;
 }
 
-export function usePatchFacilityMutation({
-  onSuccess,
-  onError,
-}: MutationPassThrough<
-  PatchFacilityParams,
-  PatchFacilityParams["facility"] | undefined
-> = {}) {
-  // const api = useDraftProcedureApi();
-  return useMutation({
-    mutationFn: ({ facility }: PatchFacilityParams) => {
-      // Todo: call backend to patch the facility
-      return new Promise<MeaslesFacility | undefined>((resolve) => {
-        setTimeout(() => resolve(facility), 1000);
-      });
+export function useEditFacility() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: ({
+      procedureId,
+      facility,
+    }: PatchFacilityParams): Promise<ApiAddFacilityResponse> => {
+      const request =
+        mapDefaultFacilityFormValuesToApiPutFacilityRequest(facility);
+      return api.editFacility(procedureId, request);
     },
     mutationKey: measlesProtectionApiQueryKey(["procedures"]),
-    onSuccess,
-    onError,
+    onSuccess: () => {
+      snackbar.confirmation("Einrichtung erfolgreich bearbeitet.");
+    },
+  });
+}
+
+interface SyncFacilityParams {
+  procedureId: string;
+  request: ApiSyncFacilityRequest;
+}
+
+export function useSyncFacility() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: ({
+      procedureId,
+      request,
+    }: SyncFacilityParams): Promise<void> => {
+      return api.syncFacility(procedureId, request);
+    },
+    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
+    onSuccess: () => {
+      snackbar.confirmation("Einrichtungsdaten erfolgreich synchronisiert.");
+    },
   });
 }
 

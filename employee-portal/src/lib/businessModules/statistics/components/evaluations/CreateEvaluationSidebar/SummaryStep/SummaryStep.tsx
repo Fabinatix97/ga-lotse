@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Divider, Stack, Typography } from "@mui/joy";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";

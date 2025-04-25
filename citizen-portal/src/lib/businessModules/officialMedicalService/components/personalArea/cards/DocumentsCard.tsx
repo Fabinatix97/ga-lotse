@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { isEmpty } from "remeda";
+
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import {
@@ -10,9 +14,6 @@ import {
   ApiDocumentStatus,
   PostDocumentCitizenRequest,
 } from "@eshg/official-medical-service-api";
-import { Divider, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { isEmpty } from "remeda";
 
 import { usePostDocumentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { FileSheetArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArrayField";

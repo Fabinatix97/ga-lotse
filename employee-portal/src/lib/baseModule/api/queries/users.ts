@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 import { GetSelfEventsRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { userApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

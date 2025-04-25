@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Typography } from "@mui/joy";
 import { ComponentProps } from "react";
+
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 export function OpenHistorySidebarButton(
   props: ComponentProps<typeof ButtonLink>,

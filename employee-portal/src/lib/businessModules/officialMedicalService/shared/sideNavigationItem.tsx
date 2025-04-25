@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isPlainObject } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { SideNavigationItem, hasUserRole } from "@eshg/lib-employee-portal";
-import { isPlainObject } from "remeda";
 
 import { StethoscopeIcon } from "@/lib/businessModules/officialMedicalService/components/icons/StethoscopeIcon";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";

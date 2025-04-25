@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import {
   ChatBubbleOutlineOutlined,
   FmdGoodOutlined,
@@ -11,6 +10,8 @@ import {
 import { Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Trans } from "react-i18next";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";

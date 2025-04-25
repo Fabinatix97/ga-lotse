@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Button, Stack } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ButtonBar, TextareaField } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { Button, Stack } from "@mui/joy";
-import { Formik } from "formik";
 
 export interface DeletionRequestValues {
   reason: string;

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Switch } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import {
   BaseField,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Switch } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 interface SwitchFieldProps extends FieldProps<boolean> {
   sx?: SxProps;

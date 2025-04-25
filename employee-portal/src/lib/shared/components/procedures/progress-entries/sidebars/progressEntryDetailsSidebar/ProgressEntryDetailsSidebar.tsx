@@ -5,9 +5,10 @@
 
 "use client";
 
-import { Sidebar } from "@eshg/lib-employee-portal";
 import { useContext } from "react";
 import { isDefined } from "remeda";
+
+import { Sidebar } from "@eshg/lib-employee-portal";
 
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useFetchProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/queries/progressEntryApi";

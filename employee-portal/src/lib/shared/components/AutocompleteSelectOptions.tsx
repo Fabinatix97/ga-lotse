@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { AutocompleteOption, AutocompleteProps, Typography } from "@mui/joy";
+
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 
 export interface AutocompleteSelectOption extends SelectOption {
   disabled?: boolean;

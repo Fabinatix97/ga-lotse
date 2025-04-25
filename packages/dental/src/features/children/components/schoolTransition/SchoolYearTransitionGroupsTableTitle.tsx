@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { StopCircleOutlined, UploadOutlined } from "@mui/icons-material";
+import { Button, Divider } from "@mui/joy";
+import { RowSelectionState } from "@tanstack/react-table";
+
 import {
   RowSelectionTableToolbar,
   RowSelectionTableToolbarButton,
   mapRowSelectionToRowIds,
 } from "@eshg/lib-employee-portal";
-import { StopCircleOutlined, UploadOutlined } from "@mui/icons-material";
-import { Button, Divider } from "@mui/joy";
-import { RowSelectionState } from "@tanstack/react-table";
 
 import { useCloseGroupsInBulk } from "@/features/children/api/mutations/schoolYearTransition";
 import { useSchoolLeavingSidebar } from "@/features/children/components/schoolTransition/SchoolLeavingSidebar";

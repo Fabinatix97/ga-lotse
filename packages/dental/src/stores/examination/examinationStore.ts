@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { createStore } from "zustand";
+
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
 import {
   ExaminationResult,

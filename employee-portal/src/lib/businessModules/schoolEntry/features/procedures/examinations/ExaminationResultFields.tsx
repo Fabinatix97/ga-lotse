@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   createFieldNameMapper,
   mapOptionalValue,
@@ -15,8 +18,6 @@ import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,
 } from "@eshg/school-entry-api";
-import { Grid } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { ExaminationResultValueField } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultValueField";
 import { ResponseDoctorLetterField } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ResponseDoctorLetterField";

@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { ApiConcern } from "@eshg/sti-protection-api";
 import {
   AccessTimeOutlined,
   CakeOutlined,
@@ -25,6 +20,12 @@ import {
   useRef,
   useState,
 } from "react";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Row } from "@eshg/lib-portal/components/Row";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { ApiConcern } from "@eshg/sti-protection-api";
 
 import {
   ConfirmLeaveDirtyFormEffect,

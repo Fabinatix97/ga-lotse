@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack } from "@mui/joy";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Stack } from "@mui/joy";
 
 import { TextareaField } from "@/components/formFields/TextareaField";
 

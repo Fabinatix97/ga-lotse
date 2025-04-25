@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDocumentTextBlock } from "@eshg/travel-medicine-api";
 import { Box } from "@mui/joy";
+
+import { ApiDocumentTextBlock } from "@eshg/travel-medicine-api";
 
 interface TextBlockProps {
   textBlock: ApiDocumentTextBlock;

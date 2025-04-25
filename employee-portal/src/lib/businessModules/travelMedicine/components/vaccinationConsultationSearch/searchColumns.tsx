@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Chip } from "@mui/joy";
+import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
 import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
@@ -10,8 +13,6 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiVaccinationConsultationSearch } from "@eshg/travel-medicine-api";
-import { Chip } from "@mui/joy";
-import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { translateCreatedByUserType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 

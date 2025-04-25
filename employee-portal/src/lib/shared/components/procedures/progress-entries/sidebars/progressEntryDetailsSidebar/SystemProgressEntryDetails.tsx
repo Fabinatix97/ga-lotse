@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Chip } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiSystemProgressEntry,
   ApiUser,
 } from "@eshg/lib-procedures-api";
-import { Chip } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { systemProgressEntryTypeTitles } from "@/lib/shared/components/procedures/progress-entries/constants";

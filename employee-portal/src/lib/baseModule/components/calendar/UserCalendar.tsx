@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiGetRelevantCalendarsResponse } from "@eshg/base-api";
 import { useMemo, useRef, useState } from "react";
+
+import { ApiGetRelevantCalendarsResponse } from "@eshg/base-api";
 
 import { Calendar, CalendarHandle } from "./Calendar";
 import { mapApiCalendarsToCalendarInfo } from "./calendarDisplay";

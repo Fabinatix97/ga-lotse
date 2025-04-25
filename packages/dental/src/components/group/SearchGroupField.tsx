@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CircularProgress } from "@mui/joy";
+
 import { mapToSelectOption } from "@eshg/lib-employee-portal";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { CircularProgress } from "@mui/joy";
 
 import { useSearchInstitutionGroupsQuery } from "@/api/queries/groups";
 

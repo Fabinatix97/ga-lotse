@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Button, ToggleButtonGroup } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import {
   BaseField,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Button, ToggleButtonGroup } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 export interface ToggleButtonGroupFieldProps extends FieldProps<string> {
   options: SelectOption[];

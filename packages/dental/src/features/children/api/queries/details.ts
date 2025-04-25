@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildApi } from "@eshg/dental-api";
 import { queryOptions } from "@tanstack/react-query";
+
+import { ChildApi } from "@eshg/dental-api";
 
 import { childApiQueryKey } from "@/config/apiQueryKeys";
 import { mapChildDetails } from "@/features/children/api/models/ChildDetails";

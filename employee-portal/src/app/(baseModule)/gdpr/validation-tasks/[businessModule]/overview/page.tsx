@@ -5,6 +5,9 @@
 
 "use client";
 
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -20,8 +23,6 @@ import {
   ApiSortDirection,
   GetAllGdprValidationTasksRequest,
 } from "@eshg/lib-procedures-api";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { use } from "react";
 
 import { ValidationTasksTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTasksTable";
 import { isBusinessModule } from "@/lib/shared/helpers/guards";

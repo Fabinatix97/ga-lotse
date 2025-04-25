@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Box, Button, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export interface FilterSettingsSheetProps {
   id?: string;

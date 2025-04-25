@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, Typography } from "@mui/joy";
 import { useField } from "formik";
 import { isDefined } from "remeda";
+
+import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useTranslation } from "@/lib/i18n/client";
 

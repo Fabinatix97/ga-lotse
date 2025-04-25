@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import { ApiInstitutionContact, ApiPersonContact } from "@eshg/base-api";
 import {
   Contact,
@@ -12,7 +14,6 @@ import {
   mapApiAddressToForm,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { isDefined } from "remeda";
 
 import { contactDiscriminatorToEnum } from "@/lib/baseModule/components/contacts/constants";
 import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";

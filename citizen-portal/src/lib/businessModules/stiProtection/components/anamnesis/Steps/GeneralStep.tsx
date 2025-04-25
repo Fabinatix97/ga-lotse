@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box, FormControl, FormLabel, Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
@@ -10,8 +13,6 @@ import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField"
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Box, FormControl, FormLabel, Grid, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
 import { validatePositiveInteger } from "@/lib/businessModules/stiProtection/components/anamnesis/helpers";

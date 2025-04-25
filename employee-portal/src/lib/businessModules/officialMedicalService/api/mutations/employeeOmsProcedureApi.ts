@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MutationOptions } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -23,7 +25,6 @@ import {
   UpdateAdditionalInfoRequest,
   UpdateAffectedPersonRequest,
 } from "@eshg/official-medical-service-api";
-import { MutationOptions } from "@tanstack/react-query";
 
 import { useEmployeeOmsProcedureApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";

@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useCallback } from "react";
+import { isNullish } from "remeda";
+
 import {
   FileField,
   FormButtonBar,
@@ -20,10 +25,6 @@ import {
   ApiSubmissionResult,
   CreateProofSubmissionRequest,
 } from "@eshg/measles-protection-api";
-import { Stack } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { useCallback } from "react";
-import { isNullish } from "remeda";
 
 import { useAddProofMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { submissionResultOptions } from "@/lib/businessModules/measlesProtection/components/procedures/constants";

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AeadId, CipherSuite, KdfId, KemId } from "hpke-js";
+
 import { ApiGetEncryptedSymmetricKeyResponse } from "@eshg/auditlog-api";
 import { ApiEmployeeUserKeys } from "@eshg/base-api";
-import { AeadId, CipherSuite, KdfId, KemId } from "hpke-js";
 
 const suite = new CipherSuite({
   kem: KemId.DhkemP256HkdfSha256,

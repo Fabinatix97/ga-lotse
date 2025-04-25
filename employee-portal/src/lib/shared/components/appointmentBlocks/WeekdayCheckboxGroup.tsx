@@ -5,8 +5,9 @@
 
 "use client";
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { SxProps } from "@mui/joy/styles/types";
+
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 
 import {
   WEEKDAY_TYPES,

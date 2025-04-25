@@ -3,16 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  DetailsItem,
-  EditButton,
-  SidebarContent,
-} from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import {
-  ApiDocument,
-  ApiDocumentStatus,
-} from "@eshg/official-medical-service-api";
 import { WarningAmber } from "@mui/icons-material";
 import {
   Alert,
@@ -26,6 +16,17 @@ import {
 import { useField } from "formik";
 import { ReactNode } from "react";
 import { isEmpty } from "remeda";
+
+import {
+  DetailsItem,
+  EditButton,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import {
+  ApiDocument,
+  ApiDocumentStatus,
+} from "@eshg/official-medical-service-api";
 
 import { FilesSection } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/FilesSection";
 import { statusColorsDocumentStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";

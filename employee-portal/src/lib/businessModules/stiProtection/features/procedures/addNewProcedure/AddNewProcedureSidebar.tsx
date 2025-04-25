@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import {
   MultiFormButtonBar,
   Sidebar,
@@ -19,9 +23,6 @@ import {
   ApiCreateProcedureResponse,
   ApiGender,
 } from "@eshg/sti-protection-api";
-import { Formik } from "formik";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import {
   useCreateStiProcedureMutation,

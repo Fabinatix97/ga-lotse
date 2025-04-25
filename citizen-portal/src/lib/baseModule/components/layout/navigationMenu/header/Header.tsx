@@ -5,8 +5,9 @@
 
 "use client";
 
-import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 import { Box, Stack, styled } from "@mui/joy";
+
+import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 
 import { MainMenu } from "@/lib/baseModule/components/layout/navigationMenu/header/MainMenu";
 import { NavMenu } from "@/lib/baseModule/components/layout/navigationMenu/header/NavMenu";

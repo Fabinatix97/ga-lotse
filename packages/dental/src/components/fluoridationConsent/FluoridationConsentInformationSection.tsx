@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { DetailsItem, formatBoolean } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Stack, Typography } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { OpenHistorySidebarButton } from "@/components/examination/OpenHistorySidebarButton";
 import { useFluoridationConsentHistorySidebar } from "@/components/fluoridationConsent/FluoridationConsentHistorySidebar";

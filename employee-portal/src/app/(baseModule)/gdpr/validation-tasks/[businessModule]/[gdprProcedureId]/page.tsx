@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -13,8 +16,6 @@ import {
   gdprRoutes,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { use } from "react";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { ValidationTaskProceduresTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTaskProceduresTable";

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DeleteOutlined, DownloadOutlined } from "@mui/icons-material";
+import { Button } from "@mui/joy";
+
 import {
   ButtonBar,
   DataTable,
@@ -23,8 +26,6 @@ import {
   ApiArchivingRelevance,
   ApiGetRelevantArchivableProceduresSortBy,
 } from "@eshg/lib-procedures-api";
-import { DeleteOutlined, DownloadOutlined } from "@mui/icons-material";
-import { Button } from "@mui/joy";
 
 import { ArchiveAdminViewProps } from "@/lib/shared/components/archiving/ArchiveAdminView";
 import { NoProceduresFallback } from "@/lib/shared/components/archiving/components/NoProceduresFallback";

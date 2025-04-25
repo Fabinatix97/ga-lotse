@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Add } from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
+import { v4 as uuidv4 } from "uuid";
+
 import {
   ApiCLFieldOptionContext,
   type ApiCLMultiSelectContext,
   ApiCLSectionContextElementsInner,
 } from "@eshg/inspection-api";
-import { Add } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
-import { v4 as uuidv4 } from "uuid";
 
 import { ChecklistDefinitionAnswerItem } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionAnswerItem";
 import { ChecklistDefinitionElementInnerProps } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionElementInner";

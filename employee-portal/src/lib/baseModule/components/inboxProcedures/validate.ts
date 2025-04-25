@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormikErrors } from "formik";
+import { isEmpty } from "remeda";
+
 import {
   isEmptyString,
   isNonEmptyString,
 } from "@eshg/lib-portal/helpers/guards";
-import { FormikErrors } from "formik";
-import { isEmpty } from "remeda";
 
 import { AddressValues } from "./AddressForm";
 import { ContactValues } from "./ContactForm";

@@ -5,20 +5,19 @@
 
 "use client";
 
+import { Grid, Stack } from "@mui/joy";
+import assert from "assert";
+import { useFormikContext } from "formik";
+
 import { TextareaField } from "@eshg/lib-employee-portal";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { ApiReportingReason } from "@eshg/measles-protection-api";
-import { Grid, Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import {
   reportingReasonNames,
   roleStatusNames,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
-import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
 import { AdditionalInfoSection } from "./AdditionalInfoSection";
 import { AffectedPerson } from "./AffectedPerson";
@@ -28,19 +27,7 @@ import { UpdateProcedureForm } from "./helpers";
 
 export function MeaslesProtectionProcedureData({ id }: { id: string }) {
   const procedure = useProcedureQuery(id).data;
-  const router = useRouter();
-
-  useEffect(() => {
-    if (procedure.procedureStatus === "DRAFT") {
-      router.replace(routes.procedures.draft(procedure.id));
-    }
-  }, [procedure.id, procedure.procedureStatus, router]);
-  if (
-    procedure.procedureStatus === "DRAFT" ||
-    procedure.type != "MeaslesProtectionProcedure"
-  ) {
-    return null;
-  }
+  assert(procedure.type === "MeaslesProtectionProcedure");
 
   return (
     <Grid container spacing={3} data-testid="procedureDetailPage">

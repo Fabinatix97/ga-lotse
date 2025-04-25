@@ -5,6 +5,14 @@
 
 "use client";
 
+import {
+  DescriptionOutlined,
+  ListOutlined,
+  TextSnippetOutlined,
+  TimelineOutlined,
+} from "@mui/icons-material";
+import { Chip } from "@mui/joy";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   PROCEDURE_STATUS_COLORS,
@@ -13,13 +21,6 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import {
-  DescriptionOutlined,
-  ListOutlined,
-  TextSnippetOutlined,
-  TimelineOutlined,
-} from "@mui/icons-material";
-import { Chip } from "@mui/joy";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useGetProcedureHeader } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";

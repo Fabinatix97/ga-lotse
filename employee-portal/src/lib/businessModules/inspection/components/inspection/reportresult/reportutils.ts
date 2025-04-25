@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspection, ApiInspectionResult } from "@eshg/inspection-api";
 import { isNonNullish } from "remeda";
+
+import { ApiInspection, ApiInspectionResult } from "@eshg/inspection-api";
 
 export function inspectionHasResult(inspection: ApiInspection) {
   return (

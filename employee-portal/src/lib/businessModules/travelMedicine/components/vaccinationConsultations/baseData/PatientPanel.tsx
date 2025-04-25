@@ -5,6 +5,8 @@
 
 "use client";
 
+import { isDefined } from "remeda";
+
 import {
   CentralFilePersonDetails,
   DetailsSection,
@@ -20,7 +22,6 @@ import {
   ApiPersonSync,
   ApiSalutation,
 } from "@eshg/travel-medicine-api";
-import { isDefined } from "remeda";
 
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { useUpdatePatient } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";

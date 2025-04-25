@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Divider, Grid, Stack } from "@mui/joy";
+import { ReactNode } from "react";
+
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
@@ -13,8 +16,6 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Divider, Grid, Stack } from "@mui/joy";
-import { ReactNode } from "react";
 
 import { MainContactSwitchField } from "@/lib/shared/components/facilitySidebar/MainContactSwitchField";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";

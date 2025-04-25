@@ -5,8 +5,6 @@
 
 "use client";
 
-import { LiveAnnouncer } from "@eshg/lib-portal/components/liveAnnouncer/LiveAnnouncer";
-import { getLastPage } from "@eshg/lib-portal/helpers/paginationHelper";
 import {
   ChevronLeft,
   ChevronRight,
@@ -14,6 +12,9 @@ import {
   SkipPrevious,
 } from "@mui/icons-material";
 import { SelectProps, Stack, Typography } from "@mui/joy";
+
+import { LiveAnnouncer } from "@eshg/lib-portal/components/liveAnnouncer/LiveAnnouncer";
+import { getLastPage } from "@eshg/lib-portal/helpers/paginationHelper";
 
 import { IconButton } from "@/components/buttons/IconButton";
 import {

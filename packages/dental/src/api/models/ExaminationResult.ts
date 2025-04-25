@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { mapToObj } from "remeda";
+
 import {
   ApiAbsenceExaminationResult,
   ApiDentitionType,
@@ -16,7 +18,6 @@ import {
   ApiScreeningExaminationResult,
   ApiTooth,
 } from "@eshg/dental-api";
-import { mapToObj } from "remeda";
 
 import { ToothDiagnosis, mapToothDiagnosis } from "./ToothDiagnosis";
 

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined } from "remeda";
+
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -12,7 +14,6 @@ import {
   ApiPatchManualProgressEntryRequest,
   ApiUpdateFileMetaDataRequest,
 } from "@eshg/lib-procedures-api";
-import { isDefined } from "remeda";
 
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {

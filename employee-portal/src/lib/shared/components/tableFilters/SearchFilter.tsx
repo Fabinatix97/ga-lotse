@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import SearchIcon from "@mui/icons-material/Search";
 import { Input } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 
 interface SearchFilterProps {
   tableControl: UseTableControlResult;

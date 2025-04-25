@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormLabel, getFormLabelUtilityClass, useTheme } from "@mui/joy";
 import { TypographySystem } from "@mui/joy/styles/types";
 import { PropsWithChildren } from "react";
+
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 
 interface LegendProps extends PropsWithChildren {
   level?: keyof TypographySystem;

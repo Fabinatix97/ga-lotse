@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
+
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 

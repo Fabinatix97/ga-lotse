@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { isDefined, isEmpty } from "remeda";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import {
   useGetAllAppointmentTypesQuery,

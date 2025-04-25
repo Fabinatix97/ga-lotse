@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormControl, FormLabel, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { FormControl, FormLabel, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import {

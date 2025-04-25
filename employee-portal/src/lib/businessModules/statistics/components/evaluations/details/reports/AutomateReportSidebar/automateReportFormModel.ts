@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { addMonths, getMonth, startOfMonth, startOfToday } from "date-fns";
+
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import {
   Interval,

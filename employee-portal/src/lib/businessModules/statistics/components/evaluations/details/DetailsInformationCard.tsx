@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   AddchartOutlined,
   Delete,
@@ -16,6 +14,9 @@ import {
 } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { isPlainObject } from "remeda";
+
+import { ActionsMenu } from "@eshg/lib-employee-portal";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";

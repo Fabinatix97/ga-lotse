@@ -5,28 +5,22 @@
 
 "use client";
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
-import { Add } from "@mui/icons-material";
-import { Button, Sheet } from "@mui/joy";
+import { useNewFacilitySidebar } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/NewFacilitySidebar";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
+import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
-
-export function NewFacilityButton() {
-  const [_open, setOpen] = useSearchParam("new-facility", "boolean");
+export function NewFacilityButton({
+  procedureId,
+}: Readonly<{ procedureId: string }>) {
+  const newFacilitySidebar = useNewFacilitySidebar();
 
   return (
-    <Sheet>
-      <DetailsSection title="Einrichtung">
-        <div>
-          <Button
-            startDecorator={<Add />}
-            variant="plain"
-            onClick={() => setOpen(true)}
-          >
-            Hinzufügen
-          </Button>
-        </div>
-      </DetailsSection>
-    </Sheet>
+    <InfoTile title="Einrichtung" name="facility">
+      <InfoTileAddButton
+        onClick={() => newFacilitySidebar.open({ procedureId: procedureId })}
+      >
+        Hinzufügen
+      </InfoTileAddButton>
+    </InfoTile>
   );
 }

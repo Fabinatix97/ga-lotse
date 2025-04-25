@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Typography } from "@mui/joy";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+
 import { ApiProphylaxisSessionSortKey } from "@eshg/dental-api";
 import {
   ButtonBar,
@@ -21,8 +24,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
-import { Typography } from "@mui/joy";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { ProphylaxisSessionStatusChip } from "@/components/prophylaxisSession/ProphylaxisSessionStatusChip";
 import { routes } from "@/config/routes";

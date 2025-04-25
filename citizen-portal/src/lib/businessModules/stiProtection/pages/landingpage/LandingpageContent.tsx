@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiConcern } from "@eshg/sti-protection-api";
 import { Typography } from "@mui/joy";
+
+import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { ContactAndAvailability } from "@/lib/businessModules/stiProtection/components/ContactAndAvailability";
 import { TranslatedList } from "@/lib/businessModules/stiProtection/components/shared/TranslatedList";

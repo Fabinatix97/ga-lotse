@@ -5,11 +5,12 @@
 
 "use client";
 
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";

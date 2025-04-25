@@ -5,13 +5,6 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/base-api";
-import {
-  TabNavigationItem,
-  TabNavigationToolbar,
-  ToolbarBackButton,
-  useHasUserRoleCheck,
-} from "@eshg/lib-employee-portal";
 import {
   FormatListBulletedOutlined,
   MedicalServicesOutlined,
@@ -21,6 +14,14 @@ import {
 } from "@mui/icons-material";
 import { CircularProgress } from "@mui/joy";
 import { useIsFetching } from "@tanstack/react-query";
+
+import { ApiUserRole } from "@eshg/base-api";
+import {
+  TabNavigationItem,
+  TabNavigationToolbar,
+  ToolbarBackButton,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { PersonDocumentConsultation } from "@/lib/shared/components/icons/PersonDocumentConsultation";

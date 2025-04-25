@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { RefObject } from "@fullcalendar/core/preact.js";
+import { Divider, Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -10,9 +14,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { RefObject } from "@fullcalendar/core/preact.js";
-import { Divider, Stack } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
 
 import { LegacyAddressForm } from "@/lib/shared/components/form/address/LegacyAddressForm";
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";

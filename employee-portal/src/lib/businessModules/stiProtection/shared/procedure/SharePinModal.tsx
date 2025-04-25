@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import { CheckboxField } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { Button, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 export function SharePinModal({
   pinToShare,

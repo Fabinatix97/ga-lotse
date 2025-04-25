@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isEmpty } from "remeda";
+
 import {
   ApiCountryCode,
   ApiCreateApplicant,
@@ -14,7 +16,6 @@ import {
   ApiTypeOfPracticeChange,
   CreateProcedureRequest,
 } from "@eshg/medical-registry-api";
-import { isEmpty } from "remeda";
 
 import {
   mapNullableValue,

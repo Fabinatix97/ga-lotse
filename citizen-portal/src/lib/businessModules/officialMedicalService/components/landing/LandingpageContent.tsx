@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem, Stack, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { isDefined } from "remeda";
+
 import {
   ApiLandingElementHeaderConfig,
   ApiLandingElementListConfig,
 } from "@eshg/official-medical-service-api";
-import { List, ListItem, Stack, Typography } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { isDefined } from "remeda";
 
 import {
   useGetLandingContent,

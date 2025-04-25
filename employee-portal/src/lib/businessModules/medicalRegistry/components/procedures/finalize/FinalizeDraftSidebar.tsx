@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { Formik, FormikHelpers } from "formik";
+import { useMemo, useState } from "react";
+import { isDefined } from "remeda";
+
 import {
   ButtonBar,
   SidebarActions,
@@ -13,10 +18,6 @@ import {
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
-import { Button } from "@mui/joy";
-import { Formik, FormikHelpers } from "formik";
-import { useMemo, useState } from "react";
-import { isDefined } from "remeda";
 
 import {
   ReferencePersonWithProcedures,

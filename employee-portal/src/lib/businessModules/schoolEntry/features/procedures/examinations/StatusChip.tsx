@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Chip, ChipProps, Stack, Typography, styled } from "@mui/joy";
 import { useId } from "react";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 interface StyledChipProps {
   minWidth?: ChipMinWidth;

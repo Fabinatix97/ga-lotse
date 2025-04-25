@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
 import { ApiDisease } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
 
 import {
   validateInformationStatementTemplateDocumentTitle,

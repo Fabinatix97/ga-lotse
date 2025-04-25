@@ -5,6 +5,16 @@
 
 "use client";
 
+import { Chip, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import {
+  ColumnSort,
+  TableOptions,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import { ReactNode } from "react";
+import { isDefined, isNullish } from "remeda";
+
 import {
   ButtonBar,
   ChipWithTooltip,
@@ -38,15 +48,6 @@ import {
   ApiSchoolEntryProcedureSortKey,
   GetProceduresRequest,
 } from "@eshg/school-entry-api";
-import { Chip, Stack } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import {
-  ColumnSort,
-  TableOptions,
-  createColumnHelper,
-} from "@tanstack/react-table";
-import { ReactNode } from "react";
-import { isDefined, isNullish } from "remeda";
 
 import {
   useGdprValidationTaskApi,

@@ -4,11 +4,6 @@
  */
 
 import {
-  SearchableGroup,
-  SearchableGroupItem,
-  SearchableGroups,
-} from "@eshg/lib-employee-portal";
-import {
   Checkbox,
   Stack,
   Typography,
@@ -17,6 +12,12 @@ import {
 } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 import { isNonNullish, isNullish, unique } from "remeda";
+
+import {
+  SearchableGroup,
+  SearchableGroupItem,
+  SearchableGroups,
+} from "@eshg/lib-employee-portal";
 
 import { CalendarInfo } from "./calendarDisplay";
 

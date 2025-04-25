@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Stack } from "@mui/joy";
+
+import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 
 import {
   SectionTile,

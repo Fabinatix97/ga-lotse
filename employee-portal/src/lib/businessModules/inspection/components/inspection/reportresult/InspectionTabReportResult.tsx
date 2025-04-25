@@ -5,8 +5,9 @@
 
 "use client";
 
-import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
 import { Grid } from "@mui/joy";
+
+import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
 
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
 import { useGetInspectionAndLoadEditor } from "@/lib/businessModules/inspection/api/queries/inspectionReport";

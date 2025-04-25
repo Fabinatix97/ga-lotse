@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined, isEmpty } from "remeda";
+
 import {
   durationBetweenDatesInMinutes,
   toUtcDate,
@@ -17,7 +19,6 @@ import {
   ApiTravelInformation,
   ApiTravelType,
 } from "@eshg/travel-medicine-api";
-import { isDefined, isEmpty } from "remeda";
 
 import {
   InitialAppointmentFormValues,

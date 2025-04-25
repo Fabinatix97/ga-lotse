@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { isDefined } from "remeda";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import {
   DetailsCell,

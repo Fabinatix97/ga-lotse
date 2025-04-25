@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistoryTemplateState } from "@eshg/travel-medicine-api";
 import { ChipProps } from "@mui/joy";
+
+import { ApiMedicalHistoryTemplateState } from "@eshg/travel-medicine-api";
 
 export const templateStatusColors = {
   [ApiMedicalHistoryTemplateState.Final]: "success",

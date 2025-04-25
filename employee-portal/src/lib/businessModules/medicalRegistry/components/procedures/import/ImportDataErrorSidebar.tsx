@@ -5,12 +5,13 @@
 
 "use client";
 
+import { Button } from "@mui/joy";
+
 import { ButtonBar, SidebarContent } from "@eshg/lib-employee-portal";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { Button } from "@mui/joy";
 
 interface ImportDataErrorSidebarProps {
   error: Error;

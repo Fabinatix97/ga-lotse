@@ -5,6 +5,10 @@
 
 "use client";
 
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   ApiBaseFeature,
   ApiSalutation,
@@ -19,9 +23,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined, isNullish } from "remeda";
+
 import {
   SearchParams,
   parseOptionalInt,
 } from "@eshg/lib-portal/helpers/searchParams";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { isDefined, isNullish } from "remeda";
 
 import { ContactAddressChangeSidebar } from "@/lib/baseModule/components/contacts/history/ContactAddressChangeSidebar";
 import { ContactChangeSidebar } from "@/lib/baseModule/components/contacts/history/ContactChangeSidebar";

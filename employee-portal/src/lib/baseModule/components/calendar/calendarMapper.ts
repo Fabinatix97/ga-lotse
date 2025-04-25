@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DayHeaderContentArg, EventInput } from "@fullcalendar/core/index.js";
+import { EventImpl } from "@fullcalendar/core/internal";
+import { addDays, startOfDay } from "date-fns";
+
 import {
   ApiBaseEventRequest,
   ApiBaseEventType,
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
 } from "@eshg/base-api";
-import { DayHeaderContentArg, EventInput } from "@fullcalendar/core/index.js";
-import { EventImpl } from "@fullcalendar/core/internal";
-import { addDays, startOfDay } from "date-fns";
 
 import {
   mapDateTimeToInput,

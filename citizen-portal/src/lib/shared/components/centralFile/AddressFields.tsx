@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import StreetIcon from "@mui/icons-material/BusinessOutlined";
 import AddressAdditionIcon from "@mui/icons-material/InfoOutlined";
 import PostalCodeIcon from "@mui/icons-material/MapOutlined";
@@ -11,6 +10,8 @@ import PostboxIcon from "@mui/icons-material/MarkunreadMailboxOutlined";
 import CityIcon from "@mui/icons-material/PlaceOutlined";
 import CountryIcon from "@mui/icons-material/PublicOutlined";
 import { isDefined, join } from "remeda";
+
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";

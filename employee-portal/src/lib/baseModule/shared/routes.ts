@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import { isDefined } from "remeda";
+
+import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 
 const accountPath = "/account";
 const auditLogPath = "/auditlog";

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   BarChartOutlined,
   PieChartOutline,
@@ -13,6 +12,8 @@ import {
   SvgIconComponent,
   TravelExploreOutlined,
 } from "@mui/icons-material";
+
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
 import {
   DiagramAxisRange,

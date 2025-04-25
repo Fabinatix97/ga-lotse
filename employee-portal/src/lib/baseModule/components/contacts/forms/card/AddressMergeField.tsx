@@ -3,16 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCountryCode } from "@eshg/base-api";
-import {
-  BaseAddressDetailsColumn,
-  BaseAddressFormInputs,
-  DetailsRow,
-  formatList,
-} from "@eshg/lib-employee-portal";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
 import {
   FormControl,
@@ -26,6 +16,17 @@ import {
 } from "@mui/joy";
 import { ChangeEvent, useState } from "react";
 import { isDefined } from "remeda";
+
+import { ApiCountryCode } from "@eshg/base-api";
+import {
+  BaseAddressDetailsColumn,
+  BaseAddressFormInputs,
+  DetailsRow,
+  formatList,
+} from "@eshg/lib-employee-portal";
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 

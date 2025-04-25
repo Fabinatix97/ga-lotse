@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MutationOptions, useMutation } from "@tanstack/react-query";
+
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import { ApiConsultation } from "@eshg/sti-protection-api";
-import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useConsultationApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { proceduresQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";

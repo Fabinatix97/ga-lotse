@@ -5,8 +5,6 @@
 
 "use client";
 
-import { ApiProcedureMetric } from "@eshg/inspection-api";
-import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import {
   CheckOutlined,
   DeviceHubOutlined,
@@ -18,6 +16,9 @@ import { Stack, Typography } from "@mui/joy";
 import { endOfToday } from "date-fns";
 import { startTransition, useState } from "react";
 import { unique } from "remeda";
+
+import { ApiProcedureMetric } from "@eshg/inspection-api";
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 
 import { useAggregateProcedureMetricsQuery } from "@/lib/baseModule/api/queries/procedures";
 import { routes } from "@/lib/baseModule/shared/routes";

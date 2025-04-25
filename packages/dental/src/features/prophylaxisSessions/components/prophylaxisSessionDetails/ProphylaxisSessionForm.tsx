@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { useEffect } from "react";
+
 import {
   ApiCreateProphylaxisSessionRequest,
   ApiDentitionType,
@@ -25,8 +28,6 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Stack, Typography } from "@mui/joy";
-import { useEffect } from "react";
 
 import { Institution } from "@/api/models/Institution";
 import { SearchGroupField } from "@/components/group/SearchGroupField";

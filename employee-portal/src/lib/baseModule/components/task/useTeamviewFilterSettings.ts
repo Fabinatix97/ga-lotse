@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Dispatch, SetStateAction, startTransition } from "react";
+
 import { ApiUser } from "@eshg/base-api";
 import {
   EnumFilterDefinition,
@@ -10,7 +12,6 @@ import {
   UseFilterSettings,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { Dispatch, SetStateAction, startTransition } from "react";
 
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
 import {

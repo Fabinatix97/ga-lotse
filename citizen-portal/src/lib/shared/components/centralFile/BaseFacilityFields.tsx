@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiFacilityContactPerson,
-  ApiGetReferenceFacilityResponse,
-} from "@eshg/base-api";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import SalutationIcon from "@mui/icons-material/HowToRegOutlined";
 import MailIcon from "@mui/icons-material/MailOutlined";
 import LastNameIcon from "@mui/icons-material/PersonOutlined";
@@ -16,6 +11,12 @@ import PhoneIcon from "@mui/icons-material/PhoneOutlined";
 import TitleIcon from "@mui/icons-material/PortraitOutlined";
 import RoleIcon from "@mui/icons-material/WorkOutlineOutlined";
 import { isDefined } from "remeda";
+
+import {
+  ApiFacilityContactPerson,
+  ApiGetReferenceFacilityResponse,
+} from "@eshg/base-api";
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { AddressFields } from "@/lib/shared/components/centralFile/AddressFields";

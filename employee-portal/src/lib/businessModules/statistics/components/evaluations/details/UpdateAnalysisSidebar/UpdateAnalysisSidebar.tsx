@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonNullish } from "remeda";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { isNonNullish } from "remeda";
 
 import {
   AnalysisDiagramConfiguration,

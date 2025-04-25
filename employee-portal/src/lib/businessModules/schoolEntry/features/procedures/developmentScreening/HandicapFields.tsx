@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import { TextareaField } from "@eshg/lib-employee-portal";
 import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
@@ -12,8 +15,6 @@ import {
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
 import { ApiDisabilityType } from "@eshg/school-entry-api";
-import { Stack, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import {
   HandicapWithDiagnosisFieldValues,

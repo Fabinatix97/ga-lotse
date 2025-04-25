@@ -15,7 +15,6 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
@@ -46,7 +45,7 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
-import de.eshg.officialmedicalservice.anamnesis.api.AnamnesisDto;
+import de.eshg.officialmedicalservice.anamnesis.AnamnesisMapper;
 import de.eshg.officialmedicalservice.anamnesis.api.GetAnamnesisResponse;
 import de.eshg.officialmedicalservice.anamnesis.api.UpdateAnamnesisRequest;
 import de.eshg.officialmedicalservice.anamnesis.persistence.entity.OmsAnamnesis;
@@ -120,7 +119,6 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -169,6 +167,7 @@ public class EmployeeOmsProcedureService {
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final OmsDocumentRepository omsDocumentRepository;
   private final ObjectMapper objectMapper;
+  private final AnamnesisMapper anamnesisMapper;
   private final TransactionHelper transactionHelper;
 
   @Value("${de.eshg.official-medical-service.cutOffDate.leadTime}")
@@ -192,6 +191,7 @@ public class EmployeeOmsProcedureService {
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
       OmsDocumentRepository omsDocumentRepository,
       ObjectMapper objectMapper,
+      AnamnesisMapper anamnesisMapper,
       TransactionHelper transactionHelper) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
@@ -210,6 +210,7 @@ public class EmployeeOmsProcedureService {
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.omsDocumentRepository = omsDocumentRepository;
     this.objectMapper = objectMapper;
+    this.anamnesisMapper = anamnesisMapper;
     this.transactionHelper = transactionHelper;
   }
 
@@ -974,18 +975,10 @@ public class EmployeeOmsProcedureService {
     OmsAnamnesis anamnesis =
         procedure.getAnamnesis() != null ? procedure.getAnamnesis() : new OmsAnamnesis();
 
-    try {
-      anamnesis.setProcedure(procedure);
-      anamnesis.setContent(
-          objectMapper
-              .writerWithDefaultPrettyPrinter()
-              .writeValueAsString(request.anamnesis())
-              .getBytes(StandardCharsets.UTF_8));
+    anamnesis.setProcedure(procedure);
+    anamnesis.setContent(anamnesisMapper.anamnesisToBytes(request.anamnesis()));
 
-      procedure.setAnamnesis(anamnesis);
-    } catch (JsonProcessingException e) {
-      throw new BadRequestException(ErrorCode.BAD_REQUEST, "Anamnesis is malformed");
-    }
+    procedure.setAnamnesis(anamnesis);
 
     progressEntryService.createProgressEntryForAnamnesisChanged(procedure);
   }
@@ -1001,13 +994,7 @@ public class EmployeeOmsProcedureService {
 
     byte[] anamnesisContent = anamnesis.getContent();
 
-    try {
-      return new GetAnamnesisResponse(
-          objectMapper.readValue(
-              new String(anamnesisContent, StandardCharsets.UTF_8), AnamnesisDto.class));
-    } catch (JsonProcessingException e) {
-      throw new BadRequestException(ErrorCode.BAD_REQUEST, "Anamnesis is malformed");
-    }
+    return new GetAnamnesisResponse(anamnesisMapper.bytesToAnamnesis(anamnesisContent));
   }
 
   @Transactional

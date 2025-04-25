@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+
 import {
   ApiResourceSortKey,
   ApiResourceType,
@@ -21,7 +23,6 @@ import {
   parseOptionalString,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { ResourcesTable } from "@/lib/baseModule/components/resources/ResourcesTable";
 

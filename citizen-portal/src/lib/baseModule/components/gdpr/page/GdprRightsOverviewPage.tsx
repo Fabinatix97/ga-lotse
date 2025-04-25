@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureType } from "@eshg/base-api";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Button, Sheet, Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useId, useState } from "react";
+
+import { ApiGdprProcedureType } from "@eshg/base-api";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 
 import { useGetSelfGdprProceduresQuery } from "@/lib/baseModule/api/queries/gdpr";
 import { GdprProcedureList } from "@/lib/baseModule/components/gdpr/GdprProcedureList";

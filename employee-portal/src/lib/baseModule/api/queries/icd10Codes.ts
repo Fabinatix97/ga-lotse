@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+
 import { SearchIcd10CodesRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { useIcd10CodeApi } from "@/lib/baseModule/api/clients";
 import { baseApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

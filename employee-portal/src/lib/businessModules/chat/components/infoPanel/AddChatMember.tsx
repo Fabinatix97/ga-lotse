@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { useCallback, useEffect, useState } from "react";
@@ -17,6 +15,9 @@ import {
   map,
   pipe,
 } from "remeda";
+
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

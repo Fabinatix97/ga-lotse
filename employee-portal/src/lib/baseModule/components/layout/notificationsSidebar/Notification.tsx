@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import WarningIcon from "@mui/icons-material/WarningAmberSharp";
+import { Card, Stack, Typography } from "@mui/joy";
+
 import {
   ApiGetAggregatedNotificationsResponseNotificationsInner,
   ApiUser,
 } from "@eshg/base-api";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import WarningIcon from "@mui/icons-material/WarningAmberSharp";
-import { Card, Stack, Typography } from "@mui/joy";
 
 import { mapToSpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapToSpecificNotificationProps";
 import { formatDateTimeRangeToNow } from "@/lib/shared/helpers/dateTime";

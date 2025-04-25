@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { TOptions } from "i18next";
+import { ReactNode, useState } from "react";
+
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import {
   ApiAppointmentType,
   ApiAppointmentTypeConfig,
 } from "@eshg/travel-medicine-api";
-import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { TOptions } from "i18next";
-import { ReactNode, useState } from "react";
 
 import { useGetAllAppointmentTypesForCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";

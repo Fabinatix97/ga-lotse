@@ -5,6 +5,9 @@
 
 "use client";
 
+import { ColumnSort } from "@tanstack/react-table";
+import { ReactNode } from "react";
+
 import {
   DataTable,
   Pagination,
@@ -15,8 +18,6 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/measles-protection-api";
-import { ColumnSort } from "@tanstack/react-table";
-import { ReactNode } from "react";
 
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBlockApi";
 import { useGetAppointmentBlockGroups } from "@/lib/businessModules/measlesProtection/api/queries/appointmentBlockApi";

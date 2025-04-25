@@ -5,6 +5,10 @@
 
 "use client";
 
+import { InfoOutlined } from "@mui/icons-material";
+import { Alert } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { DetailsItem, EditButton } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
@@ -12,9 +16,6 @@ import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
-import { InfoOutlined } from "@mui/icons-material";
-import { Alert } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { useAdditionalInfoSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/AdditionalInfoSidebar";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";

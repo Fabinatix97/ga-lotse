@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SideNavigationItem } from "@eshg/lib-employee-portal";
 import { List, styled } from "@mui/joy";
+
+import { SideNavigationItem } from "@eshg/lib-employee-portal";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 

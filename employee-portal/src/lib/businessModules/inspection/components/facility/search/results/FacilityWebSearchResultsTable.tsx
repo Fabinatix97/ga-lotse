@@ -5,6 +5,10 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button, Chip, Stack, Typography } from "@mui/joy";
+import ChipDelete from "@mui/joy/ChipDelete";
+
 import {
   ApiWebSearch,
   ApiWebSearchEntriesResponse,
@@ -22,9 +26,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Chip, Stack, Typography } from "@mui/joy";
-import ChipDelete from "@mui/joy/ChipDelete";
 
 import {
   useDeleteWebSearchQuery,

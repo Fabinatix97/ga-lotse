@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Formik, FormikHelpers } from "formik";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, createContext, useState } from "react";
+
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { Formik, FormikHelpers } from "formik";
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 import { usePostCitizenVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/citizenPublicApi";
 import { initialValues } from "@/lib/businessModules/travelMedicine/components/appointment/appointmentFormValuesFactory";

@@ -5,11 +5,12 @@
 
 "use client";
 
+import { isDefined } from "remeda";
+
 import {
   BaseConfirmationDialog,
   ConfirmationDialogProps,
 } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
-import { isDefined } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { CitizenConfirmationButtonBar } from "@/lib/shared/components/confirmationDialog/CitizenConfirmationButtonBar";

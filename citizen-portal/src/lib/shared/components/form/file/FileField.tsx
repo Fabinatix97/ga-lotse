@@ -3,6 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
+import {
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  FormLabelProps,
+  Stack,
+  Typography,
+  styled,
+} from "@mui/joy";
+import { ChangeEvent, ReactNode, useId, useRef } from "react";
+import { isDefined, isFunction, isString } from "remeda";
+
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import {
@@ -16,18 +29,6 @@ import {
 } from "@eshg/lib-portal/components/formFields/file/validators";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  FormLabelProps,
-  Stack,
-  Typography,
-  styled,
-} from "@mui/joy";
-import { ChangeEvent, ReactNode, useId, useRef } from "react";
-import { isDefined, isFunction, isString } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
 

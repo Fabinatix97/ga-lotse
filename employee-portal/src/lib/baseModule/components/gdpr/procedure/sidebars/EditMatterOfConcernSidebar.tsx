@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import {
   MultiFormButtonBar,
@@ -16,8 +19,6 @@ import {
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
 
 import { useSetMatterOfConcern } from "@/lib/baseModule/api/mutations/gdpr";
 import { statusTranslation } from "@/lib/baseModule/components/gdpr/i18n";

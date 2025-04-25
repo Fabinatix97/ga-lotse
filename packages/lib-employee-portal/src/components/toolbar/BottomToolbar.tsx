@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 interface BottomToolbarProps extends RequiresChildren {
   sx?: SxProps;

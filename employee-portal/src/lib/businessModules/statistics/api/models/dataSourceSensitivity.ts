@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiDataSourceSensitivity,
   ApiReportDataSensitivity,
 } from "@eshg/statistics-api";
-import { isDefined } from "remeda";
 
 export const DataSourceSensitivity = {
   Sensitive: "SENSITIVE",

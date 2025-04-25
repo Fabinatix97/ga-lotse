@@ -5,6 +5,9 @@
 
 "use client";
 
+import { endOfMonth, startOfMonth } from "date-fns";
+import { startTransition, use, useState } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -12,8 +15,6 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { endOfMonth, startOfMonth } from "date-fns";
-import { startTransition, use, useState } from "react";
 
 import { useGetResourceDetailsQuery } from "@/lib/baseModule/api/queries/resources";
 import { ResourceDetail } from "@/lib/baseModule/components/resources/ResourceDetail";

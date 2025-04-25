@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DeleteOutlined } from "@mui/icons-material";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import { Grid, IconButton, Stack, Typography } from "@mui/joy";
+import { FieldArray, Formik } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -20,11 +26,6 @@ import {
   ApiDisease,
   ApiInventoryVaccineWithoutRmbiVaccine,
 } from "@eshg/travel-medicine-api";
-import { DeleteOutlined } from "@mui/icons-material";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import { Grid, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray, Formik } from "formik";
-import { Ref } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 import {

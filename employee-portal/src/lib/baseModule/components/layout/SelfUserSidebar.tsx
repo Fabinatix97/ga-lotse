@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import ProfileIcon from "@mui/icons-material/AccountCircle";
+import DevicesIcon from "@mui/icons-material/Devices";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import { Button, Divider, Stack } from "@mui/joy";
+import { ReactNode } from "react";
+
 import {
   ButtonBar,
   SidebarActions,
@@ -13,12 +20,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import ProfileIcon from "@mui/icons-material/AccountCircle";
-import DevicesIcon from "@mui/icons-material/Devices";
-import LogoutIcon from "@mui/icons-material/Logout";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import { Button, Divider, Stack } from "@mui/joy";
-import { ReactNode } from "react";
 
 import { ChatSettingsButton } from "@/lib/baseModule/components/layout/ChatSettingsSidebar";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";

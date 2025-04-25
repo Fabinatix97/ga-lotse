@@ -5,6 +5,8 @@
 
 "use client";
 
+import { useState } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
@@ -12,7 +14,6 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
-import { useState } from "react";
 
 import { useCreateInboxProcedure } from "@/lib/baseModule/api/mutations/inboxProcedures";
 import { EMPTY_CONTACT_VALUES } from "@/lib/baseModule/components/inboxProcedures/ContactForm";

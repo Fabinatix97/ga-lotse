@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  BackupTableOutlined,
+  CloudDownloadOutlined,
+} from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
@@ -17,10 +22,6 @@ import {
   hasAnyUserRoles,
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import {
-  BackupTableOutlined,
-  CloudDownloadOutlined,
-} from "@mui/icons-material";
 
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 

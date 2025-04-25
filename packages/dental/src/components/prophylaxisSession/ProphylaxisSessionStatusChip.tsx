@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProphylaxisStatus } from "@eshg/dental-api";
 import { Chip, ChipProps } from "@mui/joy";
+
+import { ApiProphylaxisStatus } from "@eshg/dental-api";
 
 import { PROPHYLAXIS_STATUS } from "@/translations/prophylaxisSession";
 

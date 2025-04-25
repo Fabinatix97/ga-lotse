@@ -5,6 +5,8 @@
 
 "use client";
 
+import { FormControl, Select } from "@mui/joy";
+
 import {
   SelectOptions,
   optionsFromRecord,
@@ -14,7 +16,6 @@ import {
   ApiCaseStatus,
   ApiGetProcedure200Response,
 } from "@eshg/measles-protection-api";
-import { FormControl, Select } from "@mui/joy";
 
 import { useUpdateCaseStatusMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { caseStatusNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";

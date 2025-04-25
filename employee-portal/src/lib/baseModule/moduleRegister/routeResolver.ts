@@ -32,7 +32,7 @@ export function resolveProcedureDetailsRoute({
       return travelMedicineRoutes.procedures.baseData(procedureId);
     case "MEASLES_PROTECTION":
       if (status === ApiProcedureStatus.Draft) {
-        return measlesProtectionRoutes.procedures.draft(procedureId);
+        return measlesProtectionRoutes.procedures.draft(procedureId).index;
       }
       return measlesProtectionRoutes.procedures.details(procedureId).index;
     case "STI_PROTECTION":

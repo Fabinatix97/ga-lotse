@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ComponentType, Ref, useState } from "react";
+import { isDefined } from "remeda";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
@@ -14,8 +17,6 @@ import {
   defaultPersonFormValues,
 } from "@eshg/lib-employee-portal";
 import { ApiPatient } from "@eshg/travel-medicine-api";
-import { ComponentType, Ref, useState } from "react";
-import { isDefined } from "remeda";
 
 import { PatientDetails } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/PatientDetails";
 

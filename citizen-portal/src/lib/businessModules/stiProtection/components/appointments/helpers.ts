@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isSameSecond } from "date-fns";
+
 import {
   ApiAppointment,
   ApiAppointmentHistoryEntry,
-  ApiAppointmentStatus,
-  ApiAppointmentType,
-  ApiConcern,
 } from "@eshg/sti-protection-api";
 
 export const OverviewAppointmentType = {
@@ -18,32 +17,22 @@ export const OverviewAppointmentType = {
 export type OverviewAppointmentType =
   (typeof OverviewAppointmentType)[keyof typeof OverviewAppointmentType];
 
-export interface ApiAppointmentSummary extends Omit<ApiAppointment, "end"> {
-  appointmentType: ApiAppointmentType;
-  appointmentStatus?: ApiAppointmentStatus;
-  end?: Date;
+export interface ApiAppointmentSummary extends ApiAppointmentHistoryEntry {
+  appointmentEnd?: Date;
 }
 
-export function mapAppointmentToSummary(
-  appointment: ApiAppointment,
-  concern: ApiConcern,
+export function mapAppointmentHistoryEntryToSummary(
+  currentAppointment: ApiAppointment | undefined,
+  entry: ApiAppointmentHistoryEntry,
 ): ApiAppointmentSummary {
-  return {
-    ...appointment,
-    appointmentStatus: ApiAppointmentStatus.Open,
-    appointmentType:
-      concern === ApiConcern.HivStiConsultation
-        ? ApiAppointmentType.HivStiConsultation
-        : ApiAppointmentType.SexWork,
-  };
-}
-
-export function mapAppointmentHistoryEntryToSummary({
-  appointmentStart,
-  ...apptHistory
-}: ApiAppointmentHistoryEntry): ApiAppointmentSummary {
-  return {
-    ...apptHistory,
-    start: appointmentStart,
-  };
+  if (
+    currentAppointment &&
+    isSameSecond(currentAppointment.start, entry.appointmentStart)
+  ) {
+    return {
+      ...entry,
+      appointmentEnd: currentAppointment.end,
+    };
+  }
+  return entry;
 }

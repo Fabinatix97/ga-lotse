@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
+import { Divider, Typography } from "@mui/joy";
+import { RowSelectionState } from "@tanstack/react-table";
+
 import {
   RowSelectionTableToolbar,
   RowSelectionTableToolbarButton,
@@ -10,9 +14,6 @@ import {
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { ApiArchivingRelevance } from "@eshg/lib-procedures-api";
-import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
-import { Divider, Typography } from "@mui/joy";
-import { RowSelectionState } from "@tanstack/react-table";
 
 import { ArchiveTableProps } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
 

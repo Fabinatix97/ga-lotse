@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MutationOptions, useMutation } from "@tanstack/react-query";
+
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiCreateMedicalHistoryRequest,
   ApiUpdateBookedAppointmentRequest,
+  ApiUpdatePinRequest,
 } from "@eshg/sti-protection-api";
-import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useCitizenApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { useTranslation } from "@/lib/i18n/client";
@@ -57,5 +59,13 @@ export function useRebookAppointment() {
   return useMutation({
     mutationFn: (appointment: ApiUpdateBookedAppointmentRequest) =>
       citizenApi.updateBookedAppointment(appointment).catch(returnConflict),
+  });
+}
+
+export function useUpdatePin() {
+  const citizenApi = useCitizenApi();
+
+  return useMutation({
+    mutationFn: (request: ApiUpdatePinRequest) => citizenApi.updatePin(request),
   });
 }

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormControl } from "@mui/joy";
+import { isDefined, splice } from "remeda";
+
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { FormControl } from "@mui/joy";
-import { isDefined, splice } from "remeda";
 
 import {
   FileSheetArray,

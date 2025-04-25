@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
+
+import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 
 import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
 import { ElementContext } from "@/stores/examination/types";

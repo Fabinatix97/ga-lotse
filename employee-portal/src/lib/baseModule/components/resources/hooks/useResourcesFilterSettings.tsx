@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { useState } from "react";
+import { isDefined } from "remeda";
+
 import { ApiLabel, ApiResourceType } from "@eshg/base-api";
 import {
   ActiveFilter,
@@ -10,9 +14,6 @@ import {
   ToggleFilterButtonProps,
   UseTableControlResult,
 } from "@eshg/lib-employee-portal";
-import { Stack } from "@mui/joy";
-import { useState } from "react";
-import { isDefined } from "remeda";
 
 import {
   resourceTypeNames,

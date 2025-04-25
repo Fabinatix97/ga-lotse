@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Grid, Stack, Typography } from "@mui/joy";
+
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { Divider, Grid, Stack, Typography } from "@mui/joy";
 
 import { validatePostboxNumber } from "./validate";
 

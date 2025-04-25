@@ -3,13 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
-import {
-  ApiBookingState,
-  ApiOmsAppointment,
-} from "@eshg/official-medical-service-api";
 import {
   DateRangeOutlined,
   EventOutlined,
@@ -18,6 +11,14 @@ import {
 import { Chip, Stack, Typography } from "@mui/joy";
 import { ColorPaletteProp, DefaultColorPalette } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import {
+  ApiBookingState,
+  ApiOmsAppointment,
+} from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useTranslation } from "@/lib/i18n/client";

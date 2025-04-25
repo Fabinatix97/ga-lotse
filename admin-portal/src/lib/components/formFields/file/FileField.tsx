@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import {
   FormControl,
   FormHelperText,
@@ -16,6 +13,10 @@ import {
 } from "@mui/joy";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined } from "remeda";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { validatePipe } from "@eshg/lib-portal/helpers/validators";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import { useValidateFileType } from "@/lib/helpers/validators";
 import { useDragAndDrop } from "@/lib/hooks/useDragAndDrop";

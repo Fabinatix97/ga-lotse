@@ -5,6 +5,8 @@
 
 "use client";
 
+import { PropsWithChildren } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
@@ -15,7 +17,6 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { PropsWithChildren } from "react";
 
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { CaseStatusSelect } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/CaseStatusSelect";

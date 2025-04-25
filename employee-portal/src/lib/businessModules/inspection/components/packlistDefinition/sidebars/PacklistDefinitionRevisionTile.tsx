@@ -5,12 +5,13 @@
 
 "use client";
 
-import { ApiUser } from "@eshg/base-api";
-import { ApiPacklistDefinitionRevision } from "@eshg/inspection-api";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { FactCheckOutlined } from "@mui/icons-material";
 import CropFree from "@mui/icons-material/CropFree";
 import { Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
+
+import { ApiUser } from "@eshg/base-api";
+import { ApiPacklistDefinitionRevision } from "@eshg/inspection-api";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

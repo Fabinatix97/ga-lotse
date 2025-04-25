@@ -5,9 +5,10 @@
 
 "use client";
 
+import { use } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import {
   useApprovalRequestApi,
@@ -19,17 +20,13 @@ import {
   fileApiQueryKey,
   progressEntryApiQueryKey,
 } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
+import { MeaslesProtectionDetailsRouteParamsSchema } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesProtectionDetailsRouteParamsSchema";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type MeaslesProtectionProcedureProgressEntriesRouteParams = {
-  id: string;
-};
-
 export default function MeaslesProtectionProcedureDataProgressEntriesTab(
-  props: DynamicPageProps<MeaslesProtectionProcedureProgressEntriesRouteParams>,
+  props: DynamicPageProps<MeaslesProtectionDetailsRouteParamsSchema>,
 ) {
   const { id } = use(props.params);
   const searchParams = use(props.searchParams);

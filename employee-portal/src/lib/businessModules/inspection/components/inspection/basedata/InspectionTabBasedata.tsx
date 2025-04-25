@@ -5,9 +5,10 @@
 
 "use client";
 
-import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { Grid } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { ApiInspectionPhase } from "@eshg/inspection-api";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";

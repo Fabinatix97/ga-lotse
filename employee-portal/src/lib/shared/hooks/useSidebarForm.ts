@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Ref, useCallback, useRef } from "react";
+
 import {
   SidebarFormHandle,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { Ref, useCallback, useRef } from "react";
 
 export interface UseSidebarFormProps {
   onClose: () => void;

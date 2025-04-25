@@ -5,10 +5,12 @@
 
 "use client";
 
+import { Stack, Typography } from "@mui/joy";
+
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { Typography } from "@mui/joy";
 
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
+import { GoToChangePinCard } from "@/lib/businessModules/stiProtection/components/pin/GoToChangePinCard";
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
@@ -27,14 +29,17 @@ export function ResultsStatusSidePanel() {
   const messageKey = hasResults ? "get_results" : "still_no_results";
 
   return (
-    <ContentSheet sx={{ gridArea: "sidebar" }}>
-      <ContentSheetTitle>{t(`view.${messageKey}_title`)}</ContentSheetTitle>
-      <Typography>{t(`view.${messageKey}_body`)}</Typography>
-      {hasResults ? (
-        <InternalLinkButton href={citizenRoutes.personalArea.appointments}>
-          {t("view.go_to_appointments")}
-        </InternalLinkButton>
-      ) : null}
-    </ContentSheet>
+    <Stack gap={2} sx={{ gridArea: "sidebar" }}>
+      <ContentSheet>
+        <ContentSheetTitle>{t(`view.${messageKey}_title`)}</ContentSheetTitle>
+        <Typography>{t(`view.${messageKey}_body`)}</Typography>
+        {hasResults ? (
+          <InternalLinkButton href={citizenRoutes.personalArea.appointments}>
+            {t("view.go_to_appointments")}
+          </InternalLinkButton>
+        ) : null}
+      </ContentSheet>
+      <GoToChangePinCard />
+    </Stack>
   );
 }

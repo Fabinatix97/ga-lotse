@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { Box, CardContent, Typography } from "@mui/joy";
 import Card from "@mui/joy/Card";
 import { useId } from "react";
+
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import { SubNavigationItem } from "@/lib/baseModule/components/layout/types";
 import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";

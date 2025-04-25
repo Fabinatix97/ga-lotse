@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Formik } from "formik";
+
 import {
   FormButtonBar,
   SidebarActions,
@@ -17,7 +19,6 @@ import {
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { Formik } from "formik";
 
 import { useGetStaff } from "@/api/queries/staff";
 import { ProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CellContext } from "@tanstack/react-table";
+import { ReactNode } from "react";
+import { isDeepEqual } from "remeda";
+
 import {
   ApiAdminActorSelector,
   ApiAdminCertificate,
 } from "@eshg/service-directory-api";
-import { CellContext } from "@tanstack/react-table";
-import { ReactNode } from "react";
-import { isDeepEqual } from "remeda";
 
 import { ColoredText } from "@/lib/components/table/cell/ColoredText";
 import { AuditEntity, RevisionType } from "@/lib/types/audit";

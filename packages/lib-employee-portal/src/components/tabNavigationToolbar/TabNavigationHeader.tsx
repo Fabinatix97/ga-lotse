@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, Typography, TypographyProps } from "@mui/joy";
 import { Children } from "react";
+
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 interface TabNavigationHeaderProps extends RequiresChildren {
   titleAsH1?: boolean;

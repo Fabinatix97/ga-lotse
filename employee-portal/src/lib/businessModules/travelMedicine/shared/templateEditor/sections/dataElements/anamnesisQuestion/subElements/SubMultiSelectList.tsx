@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTemplateSubElementMultiSelect } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
+
+import { ApiTemplateSubElementMultiSelect } from "@eshg/travel-medicine-api";
 
 import { SubMultiSelectElement } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/anamnesisQuestion/subElements/SubMultiSelectElement";
 

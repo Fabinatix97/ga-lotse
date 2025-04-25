@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ReactNode, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
 import {
   SideNavigationItem,
   useAccessControl,
 } from "@eshg/lib-employee-portal";
-import { ReactNode, Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 
 import { filterNavigationItemsWithAccess } from "@/lib/baseModule/components/layout/sideNavigation/filterNavigationItemsWithAccess";
 import {

@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -20,9 +24,6 @@ import {
   ApiCertificateType,
   ApiStepWithAppliedServices,
 } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { Ref } from "react";
 
 import { CERTIFICATE_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/options";
 import {

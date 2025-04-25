@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
-import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
 import {
   DragDropContext,
   Draggable,
@@ -15,6 +13,9 @@ import {
 import { Box, Stack } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 import { memo } from "react";
+
+import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
+import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { ChecklistDefinitionElement } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/ChecklistDefinitionElement";

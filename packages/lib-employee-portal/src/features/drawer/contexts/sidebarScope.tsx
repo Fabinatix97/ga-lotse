@@ -5,9 +5,10 @@
 
 "use client";
 
+import { createContext, useContext } from "react";
+
 import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { createContext, useContext } from "react";
 
 import { SidebarSlot } from "@/features/drawer/components/SidebarSlot";
 

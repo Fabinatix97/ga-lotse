@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isEmptyArray } from "formik";
+
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import {
   ExaminationResult,

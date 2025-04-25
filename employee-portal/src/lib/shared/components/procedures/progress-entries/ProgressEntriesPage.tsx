@@ -5,6 +5,11 @@
 
 "use client";
 
+import { DeleteOutlined } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
+import { useContext, useState } from "react";
+
 import {
   ButtonBar,
   FilterSettings,
@@ -14,10 +19,6 @@ import {
   PageGrid,
   ToggleFilterButton,
 } from "@eshg/lib-employee-portal";
-import { DeleteOutlined } from "@mui/icons-material";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { useContext, useState } from "react";
 
 import { useGetUsersByGroupQuery } from "@/lib/baseModule/api/queries/users";
 import { keyDocumentTypes } from "@/lib/shared/components/procedures/progress-entries/constants";

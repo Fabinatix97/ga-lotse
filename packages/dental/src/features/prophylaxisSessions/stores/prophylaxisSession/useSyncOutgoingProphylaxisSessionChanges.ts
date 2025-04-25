@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useEffect, useRef } from "react";
+
 import {
   ApiExaminationResult,
   ApiUpdateExaminationsInBulkRequest,
 } from "@eshg/dental-api";
-import { useEffect, useRef } from "react";
 
 import {
   AbsenceExaminationResult,

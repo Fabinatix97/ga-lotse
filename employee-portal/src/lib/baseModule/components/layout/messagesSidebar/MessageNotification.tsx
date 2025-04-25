@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import CloseIcon from "@mui/icons-material/Close";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { Box, Card, IconButton, Stack, Typography } from "@mui/joy";
 import { de } from "date-fns/locale";
 import { Formik } from "formik";
 import { User } from "matrix-js-sdk";
+
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

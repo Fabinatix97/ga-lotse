@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -12,8 +15,6 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { use } from "react";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {

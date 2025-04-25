@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined, isEmpty } from "remeda";
+
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
@@ -12,7 +14,6 @@ import {
   ApiTriggerType,
   ApiUser,
 } from "@eshg/lib-procedures-api";
-import { isDefined, isEmpty } from "remeda";
 
 import { manualProgressEntryFileTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
 

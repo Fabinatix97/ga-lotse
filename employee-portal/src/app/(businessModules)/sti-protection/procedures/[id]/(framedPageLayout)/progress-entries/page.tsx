@@ -5,9 +5,10 @@
 
 "use client";
 
+import { use } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import {

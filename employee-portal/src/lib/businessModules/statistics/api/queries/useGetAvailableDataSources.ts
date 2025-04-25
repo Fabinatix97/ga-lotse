@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   ApiGetAvailableDataSourcesResponse,
   DataSourceApi,
 } from "@eshg/statistics-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useDataSourceApi } from "@/lib/businessModules/statistics/api/clients";
 

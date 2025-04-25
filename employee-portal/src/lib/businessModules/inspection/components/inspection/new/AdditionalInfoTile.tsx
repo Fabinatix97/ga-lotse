@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Divider, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+import { isNonNullish, isNullish } from "remeda";
+
 import { ApiUser, ApiUserRole } from "@eshg/base-api";
 import {
   ApiInspFacility,
@@ -24,10 +29,6 @@ import {
 } from "@eshg/lib-portal/formatters/person";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
-import { Divider, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { useRouter } from "next/navigation";
-import { isNonNullish, isNullish } from "remeda";
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";

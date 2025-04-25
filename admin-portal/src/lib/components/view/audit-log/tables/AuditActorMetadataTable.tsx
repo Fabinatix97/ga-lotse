@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiPairAdminActorMetadata } from "@eshg/service-directory-api";
 import { createColumnHelper } from "@tanstack/react-table";
+
+import { ApiPairAdminActorMetadata } from "@eshg/service-directory-api";
 
 import { AuditCell } from "@/lib/components/table/cell/AuditCell";
 import { AuditIdCell } from "@/lib/components/table/cell/AuditIdCell";

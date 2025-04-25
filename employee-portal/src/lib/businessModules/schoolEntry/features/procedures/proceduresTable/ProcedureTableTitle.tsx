@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider } from "@mui/joy";
+import { RowSelectionState } from "@tanstack/react-table";
+
 import {
   RowSelectionTableToolbar,
   mapRowSelectionToRowIds,
 } from "@eshg/lib-employee-portal";
-import { Divider } from "@mui/joy";
-import { RowSelectionState } from "@tanstack/react-table";
 
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { BulkCreateAppointmentsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/BulkCreateAppointmentsButton";

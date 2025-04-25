@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import { Button, Card, IconButton, Stack, Tooltip, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { ReactNode } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import SwapVertIcon from "@mui/icons-material/SwapVert";
-import { Button, Card, IconButton, Stack, Tooltip, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { ReactNode } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 

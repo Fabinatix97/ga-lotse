@@ -4,16 +4,17 @@
  */
 
 import {
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+
+import {
   GetInventoryItemsRequest,
   InventoryApi,
   LabelApi,
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import {
-  queryOptions,
-  useSuspenseQueries,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
 
 import { useInventoryApi, useLabelApi } from "@/lib/baseModule/api/clients";
 import { inventoryApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

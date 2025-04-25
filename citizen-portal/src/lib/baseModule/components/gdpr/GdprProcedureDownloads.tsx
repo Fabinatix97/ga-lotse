@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiBusinessModule,
-  ApiCitizenUsersGdprProcedure,
-} from "@eshg/base-api";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import DownloadIcon from "@mui/icons-material/DownloadOutlined";
 import FileIcon from "@mui/icons-material/FileCopyOutlined";
 import {
@@ -19,6 +14,12 @@ import {
   Typography,
   styled,
 } from "@mui/joy";
+
+import {
+  ApiBusinessModule,
+  ApiCitizenUsersGdprProcedure,
+} from "@eshg/base-api";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 
 import {
   useDownloadBaseModulePackage,

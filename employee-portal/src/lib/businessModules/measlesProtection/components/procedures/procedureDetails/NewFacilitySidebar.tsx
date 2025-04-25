@@ -3,46 +3,57 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
-import { doNothing } from "remeda";
-
 import {
-  MeaslesFacility,
-  useAddFacilityMutation,
-} from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
-import { LegacyFacilitySidebar } from "@/lib/shared/components/facilitySidebar/LegacyFacilitySidebar";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 
-import { MeaslesFacilityTypeSelect } from "./MeaslesFacilityTypeSelect";
+import { useAddFacility } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import { mapToDefaultFacilityFormValues } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
+import { ReferenceFacilityWithOptionalMeaslesFacilityType } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
+import {
+  FacilitySidebar,
+  FacilitySidebarProps,
+} from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
-export function NewFacilitySidebar({
-  procedure,
-}: {
-  procedure: ApiDraftMeaslesProcedure;
-}) {
-  const [open, setOpen] = useSearchParam("new-facility", "boolean");
+export function useNewFacilitySidebar(): UseSidebarWithFormRefResult<NewFacilitySidebarProps> {
+  return useSidebarWithFormRef({ component: NewFacilitySidebar });
+}
 
-  const addFacility = useAddFacilityMutation({
-    // nothing to do because FacilitySidebar already displays default save message,
-    // closes sidebar and resets form
-    onSuccess: doNothing,
-  });
+interface NewFacilitySidebarProps extends SidebarWithFormRefProps {
+  procedureId: string;
+}
 
-  async function handleSaveFacility(facility: MeaslesFacility) {
-    return addFacility.mutateAsync({ procedureId: procedure.id, facility });
+function NewFacilitySidebar(props: Readonly<NewFacilitySidebarProps>) {
+  const addFacility = useAddFacility();
+
+  async function handleSubmit(facility: DefaultFacilityFormValues) {
+    await addFacility.mutateAsync({ procedureId: props.procedureId, facility });
   }
 
-  return (
-    <LegacyFacilitySidebar
-      open={open}
-      onClose={() => setOpen(false)}
-      onSubmit={handleSaveFacility}
-      extraFieldsTop={<MeaslesFacilityTypeSelect />}
-      extraFieldsInitialValues={{
-        type: "",
-        otherFacilityTypeInformation: "",
-      }}
-      contactPersonRequired={true}
-    />
-  );
+  async function handleSelectFacility(
+    facility: ReferenceFacilityWithOptionalMeaslesFacilityType,
+  ) {
+    const request = mapToDefaultFacilityFormValues(facility);
+    await addFacility.mutateAsync({
+      procedureId: props.procedureId,
+      facility: request,
+    });
+  }
+
+  const facilitySidebarProps: FacilitySidebarProps<FacilitySearchFormValues> = {
+    title: "Einrichtung hinzufügen",
+    submitLabel: "Speichern",
+    onCreateNew: (values) => handleSubmit(values.createInputs),
+    onSelect: (values) => handleSelectFacility(values.facility),
+    formRef: props.formRef,
+    onClose: props.onClose,
+    requiresContactPerson: true,
+    showMeaslesFacilityType: true,
+  };
+
+  return <FacilitySidebar {...facilitySidebarProps} />;
 }

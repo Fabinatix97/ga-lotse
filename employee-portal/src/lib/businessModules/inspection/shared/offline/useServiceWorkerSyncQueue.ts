@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 import {

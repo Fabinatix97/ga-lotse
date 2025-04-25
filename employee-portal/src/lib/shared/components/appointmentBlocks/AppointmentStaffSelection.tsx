@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { NamedUser, UserField } from "@eshg/lib-employee-portal";
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+
+import { NamedUser, UserField } from "@eshg/lib-employee-portal";
 
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 

@@ -4,12 +4,6 @@
  */
 
 import {
-  SideNavigationLinkItem,
-  SideNavigationParentItem,
-  SideNavigationSuspenseItem,
-} from "@eshg/lib-employee-portal";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
-import {
   Dropdown,
   ListItem,
   ListItemButton,
@@ -23,6 +17,13 @@ import {
 } from "@mui/joy";
 import { usePathname } from "next/navigation";
 import { KeyboardEvent, useRef, useState } from "react";
+
+import {
+  SideNavigationLinkItem,
+  SideNavigationParentItem,
+  SideNavigationSuspenseItem,
+} from "@eshg/lib-employee-portal";
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import {
   navItemSelectedBackgroundColor,

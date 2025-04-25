@@ -4,11 +4,6 @@
  */
 
 import {
-  type ApiInspectionResource,
-  ApiResourceType,
-} from "@eshg/inspection-api";
-import { DataTable, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import {
   CameraAltOutlined,
   DeleteOutlined,
   DevicesOtherOutlined,
@@ -22,6 +17,12 @@ import { IconButton } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import {
+  type ApiInspectionResource,
+  ApiResourceType,
+} from "@eshg/inspection-api";
+import { DataTable, useConfirmationDialog } from "@eshg/lib-employee-portal";
 
 import { resourceTypeNames } from "@/lib/baseModule/components/resources/constants";
 import { useDeleteResource } from "@/lib/businessModules/inspection/api/mutations/resources";

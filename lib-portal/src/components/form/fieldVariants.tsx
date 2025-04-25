@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import {
   AutocompleteProps,
   Input,
@@ -12,6 +11,8 @@ import {
   SelectProps,
 } from "@mui/joy";
 import { ReactNode } from "react";
+
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 
 import { isEmptyString } from "../../helpers/guards";
 import { BaseField } from "../formFields/BaseField";

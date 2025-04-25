@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
@@ -15,8 +18,6 @@ import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { validateNumber } from "@eshg/lib-portal/helpers/validators";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Grid, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { useTranslation } from "@/lib/i18n/client";

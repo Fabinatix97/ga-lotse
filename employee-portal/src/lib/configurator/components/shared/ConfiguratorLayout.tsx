@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ReactNode } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { ReactNode } from "react";
 
 import {
   ConfiguratorModuleName,

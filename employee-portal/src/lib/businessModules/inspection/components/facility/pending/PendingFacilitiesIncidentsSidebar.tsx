@@ -5,13 +5,14 @@
 
 "use client";
 
+import { Sheet, Stack, Typography } from "@mui/joy";
+
 import { ApiInspectionIncident } from "@eshg/inspection-api";
 import {
   OverlayBoundary,
   Sidebar,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { useGetIncidents } from "@/lib/businessModules/inspection/api/queries/incidents";
 

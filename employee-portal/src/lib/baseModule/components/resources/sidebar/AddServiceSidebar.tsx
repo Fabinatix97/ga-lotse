@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DeleteForever } from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { ReactNode } from "react";
+import { isDefined } from "remeda";
+
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
 import {
   CheckboxField,
@@ -16,11 +22,6 @@ import {
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { DeleteForever } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { ReactNode } from "react";
-import { isDefined } from "remeda";
 
 import {
   useDeleteCalendarEvent,

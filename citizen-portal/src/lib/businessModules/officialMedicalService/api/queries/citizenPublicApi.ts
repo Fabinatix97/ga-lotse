@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient, queryOptions } from "@tanstack/react-query";
+
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import {
   ApiAppointmentType,
   CitizenPublicApi,
 } from "@eshg/official-medical-service-api";
-import { QueryClient, queryOptions } from "@tanstack/react-query";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";

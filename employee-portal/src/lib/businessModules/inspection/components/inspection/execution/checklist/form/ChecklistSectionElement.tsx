@@ -5,17 +5,18 @@
 
 "use client";
 
-import {
-  ApiUpdateChecklistElementsInner,
-  ApiUpdateChecklistRequest,
-} from "@eshg/inspection-api";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Stack } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
 import { Formik, useFormikContext } from "formik";
 import { ChangeEvent, createElement, useEffect, useMemo, useRef } from "react";
 import { isNonNullish } from "remeda";
 import { useDebouncedCallback } from "use-debounce";
+
+import {
+  ApiUpdateChecklistElementsInner,
+  ApiUpdateChecklistRequest,
+} from "@eshg/inspection-api";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import {

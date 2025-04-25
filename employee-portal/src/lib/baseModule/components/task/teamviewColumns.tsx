@@ -5,10 +5,11 @@
 
 "use client";
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Chip, Stack, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
+
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { OverdueTaskIcon } from "@/lib/baseModule/components/task/OverdueTaskIcon";
 import { TaskRow } from "@/lib/baseModule/components/task/Teamview";

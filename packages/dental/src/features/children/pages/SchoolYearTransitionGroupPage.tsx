@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
+
 import {
   DataTable,
   MainContentLayout,
@@ -18,9 +22,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { Stack } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { routes } from "@/config/routes";
 import { useDentalApi } from "@/contexts/dental";

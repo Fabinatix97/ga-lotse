@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiWaitingStatus } from "@eshg/sti-protection-api";
 import { Chip, ChipProps } from "@mui/joy";
+
+import { ApiWaitingStatus } from "@eshg/sti-protection-api";
 
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/stiProtection/features/procedures/translations";
 

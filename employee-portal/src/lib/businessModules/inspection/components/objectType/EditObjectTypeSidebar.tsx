@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiObjectType } from "@eshg/inspection-api";
 import {
   CheckboxField,
@@ -20,8 +23,6 @@ import {
   validateRange,
 } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Grid } from "@mui/joy";
-import { Formik } from "formik";
 
 import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutations/objectTypes";
 

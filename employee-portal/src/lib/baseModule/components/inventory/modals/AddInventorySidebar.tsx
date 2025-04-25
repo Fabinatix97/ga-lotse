@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useRouter } from "next/navigation";
+
 import { ApiLabel } from "@eshg/base-api";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useRouter } from "next/navigation";
 
 import { mapAddInventoryItemRequest } from "@/lib/baseModule/api/mapper/inventory";
 import { useAddInventoryItem } from "@/lib/baseModule/api/mutations/inventory";

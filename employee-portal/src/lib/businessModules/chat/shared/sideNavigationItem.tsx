@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChatOutlined } from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { SideNavigationItem, hasUserRole } from "@eshg/lib-employee-portal";
-import { ChatOutlined } from "@mui/icons-material";
 
 import { ChatMessageCounter } from "@/lib/businessModules/chat/components/ChatMessageCounter";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

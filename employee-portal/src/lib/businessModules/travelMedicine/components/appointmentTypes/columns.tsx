@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { ApiAppointmentTypeConfig } from "@eshg/travel-medicine-api";
 import { Edit } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
+import { ActionsMenu } from "@eshg/lib-employee-portal";
+import { ApiAppointmentTypeConfig } from "@eshg/travel-medicine-api";
 
 import { translateAppointmentType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 

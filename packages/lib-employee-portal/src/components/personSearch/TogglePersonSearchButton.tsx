@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { PersonSearchOutlined } from "@mui/icons-material";
 import { isDefined } from "remeda";
+
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import {
   ToggleExpandButton,

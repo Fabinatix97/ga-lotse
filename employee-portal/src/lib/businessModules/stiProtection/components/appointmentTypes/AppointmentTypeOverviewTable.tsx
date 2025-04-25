@@ -5,11 +5,12 @@
 
 "use client";
 
+import { FormikProps } from "formik";
+import { useRef, useState } from "react";
+
 import { DataTable, Sidebar, TableSheet } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiAppointmentTypeConfig } from "@eshg/sti-protection-api";
-import { FormikProps } from "formik";
-import { useRef, useState } from "react";
 
 import { useUpdateAppointmentType } from "@/lib/businessModules/stiProtection/api/mutations/appointmentTypes";
 import { useGetAllAppointmentTypes } from "@/lib/businessModules/stiProtection/api/queries/appointmentTypes";

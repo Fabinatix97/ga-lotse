@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
-import { CheckboxField, InformationSheet } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import {
   Audiotrack,
@@ -18,6 +14,11 @@ import {
   RadioButtonChecked,
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/joy";
+
+import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
+import { CheckboxField, InformationSheet } from "@eshg/lib-employee-portal";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 
 import { NoteAndHelpTextInput } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/NoteAndHelpTextInput";
 import { ChecklistDefinitionElementInner } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionElementInner";

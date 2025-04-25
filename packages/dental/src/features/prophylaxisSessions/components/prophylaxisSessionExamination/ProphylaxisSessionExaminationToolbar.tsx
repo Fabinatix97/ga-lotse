@@ -5,12 +5,13 @@
 
 "use client";
 
+import { MedicalServicesOutlined } from "@mui/icons-material";
+
 import {
   PersonToolbarHeader,
   TabNavigationToolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { MedicalServicesOutlined } from "@mui/icons-material";
 
 import { routes } from "@/config/routes";
 import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";

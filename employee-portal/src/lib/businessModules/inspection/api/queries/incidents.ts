@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InspectionIncidentApi } from "@eshg/inspection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
+import { InspectionIncidentApi } from "@eshg/inspection-api";
 
 import { useIncidentApi } from "@/lib/businessModules/inspection/api/clients";
 import { incidentsApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

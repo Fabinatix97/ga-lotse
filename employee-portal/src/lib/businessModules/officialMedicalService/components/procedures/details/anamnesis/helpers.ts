@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isPlainObject } from "next/dist/shared/lib/is-plain-object";
+
 import {
   mapOptionalValue,
   mapRequiredValue,
@@ -13,7 +15,6 @@ import {
   ApiYesNoDontKnowAnswer,
   PatchAnamnesisRequest,
 } from "@eshg/official-medical-service-api";
-import { isPlainObject } from "next/dist/shared/lib/is-plain-object";
 
 import {
   AffectedPersonInfoValues,

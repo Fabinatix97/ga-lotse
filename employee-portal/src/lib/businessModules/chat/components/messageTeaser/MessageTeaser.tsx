@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Button, IconButton, Snackbar, Stack, Typography } from "@mui/joy";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 import { ChatSnackbarValues } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

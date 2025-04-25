@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import { ApiLabel, ApiResourceType } from "@eshg/base-api";
 import {
   MultiFormButtonBar,
@@ -15,9 +19,6 @@ import {
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
 import { resourceTypeOptions } from "@/lib/baseModule/components/resources/constants";

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+
 import { ApiExistingUser, ApiPerformingPerson } from "@eshg/dental-api";
 import {
   ContentPanel,
@@ -14,7 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { Stack, Typography } from "@mui/joy";
 
 import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 import { formatFluoridationVarnishDescription } from "@/features/prophylaxisSessions/utils/formatters";

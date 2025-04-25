@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormikErrors } from "formik";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { isNullish } from "remeda";
+
 import { type ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   OverlayBoundary,
@@ -15,9 +19,6 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
-import { FormikErrors } from "formik";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { isNullish } from "remeda";
 
 import { useGetAllAppointmentTypesUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import {

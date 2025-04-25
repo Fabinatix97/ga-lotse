@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import { ApiBaseEventRequest, DeleteBaseEventRequest } from "@eshg/base-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { isDefined } from "remeda";
 
 import { useCalendarEventApi } from "@/lib/baseModule/api/clients";
 

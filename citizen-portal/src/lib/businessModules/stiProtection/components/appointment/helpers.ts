@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import assert from "assert";
+import { differenceInMinutes } from "date-fns";
+
 import {
   YesOrNoFieldData,
   mapYesOrNoToBool,
@@ -16,8 +19,6 @@ import {
   ApiCreateAnonymousUserRequest,
   ApiGender,
 } from "@eshg/sti-protection-api";
-import assert from "assert";
-import { differenceInMinutes } from "date-fns";
 
 import { AppointmentFormData } from "./AppointmentStepper";
 import { parsePin } from "./PinField";

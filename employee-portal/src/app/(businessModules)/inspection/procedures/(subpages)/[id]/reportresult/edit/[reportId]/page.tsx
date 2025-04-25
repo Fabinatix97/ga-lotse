@@ -5,8 +5,9 @@
 
 "use client";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
+
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { InspectionReportEditor } from "@/lib/businessModules/inspection/components/inspection/reportresult/editor/InspectionReportEditor";

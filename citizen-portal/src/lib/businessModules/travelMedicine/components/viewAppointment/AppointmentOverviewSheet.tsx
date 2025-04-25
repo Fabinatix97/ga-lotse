@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentSummary } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
+
+import { ApiAppointmentSummary } from "@eshg/travel-medicine-api";
 
 import { OverviewAppointmentType } from "@/lib/businessModules/stiProtection/components/appointments/helpers";
 import { AppointmentOverviewSheetButton } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentOverviewSheetButton";

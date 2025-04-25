@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { InfoOutlined } from "@mui/icons-material";
 import {
   ColorPaletteProp,
@@ -15,6 +13,9 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
+
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
 export function SlimInfoIconTooltipButton({
   infoText,

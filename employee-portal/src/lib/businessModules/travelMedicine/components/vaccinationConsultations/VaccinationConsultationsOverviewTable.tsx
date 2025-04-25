@@ -6,6 +6,14 @@
 "use client";
 
 import {
+  KeyboardArrowLeftOutlined,
+  KeyboardArrowRightOutlined,
+} from "@mui/icons-material";
+import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+
+import {
   DataTable,
   NoEntriesMessage,
   PROCEDURE_STATUS_NAMES,
@@ -23,13 +31,6 @@ import {
 } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
-import {
-  KeyboardArrowLeftOutlined,
-  KeyboardArrowRightOutlined,
-} from "@mui/icons-material";
-import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
 
 import { useGdprValidationTaskApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useGetAllProcedureAppointmentSummaries } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";

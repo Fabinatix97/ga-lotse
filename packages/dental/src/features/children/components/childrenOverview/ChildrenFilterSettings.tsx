@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CircularProgress, FormControl, FormLabel } from "@mui/joy";
+import { useEffect } from "react";
+
 import { GetChildrenRequest } from "@eshg/dental-api";
 import {
   ActiveFilter,
@@ -17,8 +20,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import { CircularProgress, FormControl, FormLabel } from "@mui/joy";
-import { useEffect } from "react";
 
 import { useSearchInstitutionGroupsQuery } from "@/api/queries/groups";
 import { ProcedureLabelFilter } from "@/components/procedureLabels/ProcedureLabelFilter";

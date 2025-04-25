@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiOrthodonticFinding } from "@eshg/dental-api";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import { useField } from "formik";
+
+import { ApiOrthodonticFinding } from "@eshg/dental-api";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 
 import { ORTHODONTIC_FINDINGS } from "@/translations/examination";
 

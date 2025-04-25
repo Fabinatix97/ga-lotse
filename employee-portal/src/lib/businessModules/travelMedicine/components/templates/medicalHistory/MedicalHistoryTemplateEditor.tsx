@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -10,9 +14,6 @@ import {
   ApiMedicalHistoryTemplateState,
   ApiTemplateSection,
 } from "@eshg/travel-medicine-api";
-import { Box } from "@mui/joy";
-import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import {
   PutMedicalHistoryTemplateRequest,

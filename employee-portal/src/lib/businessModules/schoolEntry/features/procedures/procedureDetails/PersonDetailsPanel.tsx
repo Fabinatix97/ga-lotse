@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SxProps } from "@mui/joy/styles/types";
+
 import {
   ActionsItem,
   ActionsMenu,
@@ -14,7 +16,6 @@ import {
   useSidebarWithFormRef,
   useSyncBarrier,
 } from "@eshg/lib-employee-portal";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";

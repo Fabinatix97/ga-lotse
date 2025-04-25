@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/base-api";
 import { useQuery } from "@tanstack/react-query";
 import { isDefined } from "remeda";
+
+import { ApiBusinessModule } from "@eshg/base-api";
 
 import { useStatisticsProcedureReferenceApi } from "@/lib/shared/api/clients";
 import { getProcedureIdsQuery } from "@/lib/shared/api/queries/statisticsProcedureReference";

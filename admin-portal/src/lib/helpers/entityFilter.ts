@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Row } from "@tanstack/react-table";
+
 import {
   ApiStagingStatus,
   instanceOfApiAdminStagedEntityAdminPartialActor,
   instanceOfApiAdminStagedEntityAdminPartialOrgUnit,
   instanceOfApiAdminStagedEntityAdminPartialRule,
 } from "@eshg/service-directory-api";
-import { Row } from "@tanstack/react-table";
 
 import { useEditableTable } from "@/lib/components/table/context/TableEditContext";
 import {

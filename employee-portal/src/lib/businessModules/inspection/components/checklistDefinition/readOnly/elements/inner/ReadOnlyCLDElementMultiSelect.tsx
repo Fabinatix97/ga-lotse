@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box, List, ListItem, Typography, styled } from "@mui/joy";
+
 import {
   ApiCLFieldOptionContext,
   ApiCLMultiSelectContext,
 } from "@eshg/inspection-api";
-import { Box, List, ListItem, Typography, styled } from "@mui/joy";
 
 import { ReadOnlyCLDElementProps } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/ReadOnlyCLDElement";
 import {

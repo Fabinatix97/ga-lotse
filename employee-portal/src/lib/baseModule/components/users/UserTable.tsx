@@ -5,15 +5,16 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import LockIcon from "@mui/icons-material/LockOutlined";
+import { Button, Chip, Sheet, Stack } from "@mui/joy";
+
 import {
   DataTable,
   TablePage,
   TableSheet,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
-import AddIcon from "@mui/icons-material/Add";
-import LockIcon from "@mui/icons-material/LockOutlined";
-import { Button, Chip, Sheet, Stack } from "@mui/joy";
 
 import { useGetUserOverviewPageQuery } from "@/lib/baseModule/api/queries/users";
 import { useSuggestNewUserSidebar } from "@/lib/baseModule/components/users/SuggestNewUserSidebar";

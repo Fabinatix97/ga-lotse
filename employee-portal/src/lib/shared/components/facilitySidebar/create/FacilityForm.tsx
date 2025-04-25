@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Box, Divider, Grid, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+import { isDefined } from "remeda";
+
 import {
   BaseAddressFormInputs,
   MultiFormButtonBar,
@@ -23,11 +28,11 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Box, Divider, Grid, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
-import { isDefined } from "remeda";
 
+import {
+  MeaslesFacilityTypeSelect,
+  MeaslesFacilityTypeSelectFormValues,
+} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesFacilityTypeSelect";
 import { FacilityContactPersonArrayForm } from "@/lib/shared/components/facilitySidebar/create/FacilityContactPersonArrayForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
@@ -40,6 +45,7 @@ export interface DefaultFacilityFormValues {
   contactAddress?: BaseAddressFormInputs;
   differentBillingAddress?: BaseAddressFormInputs;
   contactPersons: BaseFacilityContactPerson[];
+  measlesFacilityType?: MeaslesFacilityTypeSelectFormValues;
 }
 
 // TODO: Make this accept an object instead
@@ -56,6 +62,11 @@ export function getInitialFacilityFormValues(
     contactPersons:
       defaultValues?.contactPersons ??
       (requiresContactPerson ? [createEmptyContactPerson()] : []),
+    measlesFacilityType: {
+      type: defaultValues?.measlesFacilityType?.type ?? "",
+      otherFacilityTypeInformation:
+        defaultValues?.measlesFacilityType?.otherFacilityTypeInformation ?? "",
+    },
   };
 }
 
@@ -74,6 +85,7 @@ export interface FacilityFormProps {
   onBack?: (values: DefaultFacilityFormValues) => void;
 
   allowMainContactPerson?: boolean;
+  showMeaslesFacilityType?: boolean;
 }
 
 export function FacilityForm(props: FacilityFormProps) {
@@ -111,6 +123,12 @@ export function FacilityForm(props: FacilityFormProps) {
               />
 
               <Divider />
+              {props.showMeaslesFacilityType && (
+                <>
+                  <MeaslesFacilityTypeSelect />
+                  <Divider />
+                </>
+              )}
 
               <Grid container spacing={2}>
                 <OptionalContactAddressForm

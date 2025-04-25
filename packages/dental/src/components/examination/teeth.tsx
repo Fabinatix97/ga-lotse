@@ -5,9 +5,10 @@
 
 "use client";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Clear } from "@mui/icons-material";
 import { Box, SvgIcon, useTheme } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import {
   Tooth,

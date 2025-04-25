@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Chip } from "@mui/joy";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useState } from "react";
+
 import { ApiUserEvent, ApiUserEventType } from "@eshg/base-api";
 import {
   DataTable,
@@ -16,9 +20,6 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { Chip } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import { useGetSelfUserEvents } from "@/lib/baseModule/api/queries/users";
 

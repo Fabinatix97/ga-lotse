@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AppointmentTypeApi } from "@eshg/sti-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
+import { AppointmentTypeApi } from "@eshg/sti-protection-api";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { appointmentTypesApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";

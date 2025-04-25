@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckCircle, EditCalendar, EventBusy } from "@mui/icons-material";
+import { Button, Chip, Sheet, Stack } from "@mui/joy";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+
 import {
   ActionsItem,
   ActionsMenu,
@@ -18,9 +22,6 @@ import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
 } from "@eshg/sti-protection-api";
-import { CheckCircle, EditCalendar, EventBusy } from "@mui/icons-material";
-import { Button, Chip, Sheet, Stack } from "@mui/joy";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import {
   useCancelAppointmentMutation,

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import { translateDataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";

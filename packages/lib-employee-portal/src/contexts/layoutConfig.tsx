@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext } from "react";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export interface LayoutConfig {
   appBarHeightMobile: string;

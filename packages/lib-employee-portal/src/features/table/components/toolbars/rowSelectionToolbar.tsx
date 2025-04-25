@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { SubdirectoryArrowRightOutlined } from "@mui/icons-material";
 import {
   Button,
@@ -16,6 +15,8 @@ import {
 } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 import { ReactNode } from "react";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { mapRowSelectionToRowIds } from "@/features/table/hooks/useRowSelection";
 

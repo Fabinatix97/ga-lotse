@@ -5,7 +5,11 @@
 
 "use client";
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import { Add } from "@mui/icons-material";
+import { Button, Grid, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -15,9 +19,6 @@ import {
   ApiProofSubmission,
   ApiSubmissionResult,
 } from "@eshg/measles-protection-api";
-import { Add } from "@mui/icons-material";
-import { Button, Grid, Sheet, Stack } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
   useProofRequestLetterApi,
@@ -37,7 +38,7 @@ import {
   formatName,
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AccessRestrictionSidebar } from "./AccessRestrictionSidebar";
@@ -157,41 +158,43 @@ function ProofSubmissionsCard({
   procedureClosed,
 }: Readonly<ProofSubmissionsProps>) {
   return (
-    <Sheet sx={{ height: "100%" }}>
-      <DetailsSection title="Nachweisvorlage">
-        <Stack spacing={3} alignItems={"start"} width={"100%"}>
-          {proofSubmissions.map((proof) => (
-            <ProofTabEntry key={proof.externalId}>
-              <DetailsCell
-                label="Resultat"
-                value={submissionResultLabels[proof.submissionResult]}
-              />
-              <Row>
-                {proof.submissionResult ===
-                ApiSubmissionResult.TempMedicalAttest ? (
-                  <DetailsCell
-                    label="Frist zum medizinischen Attest"
-                    value={formatDate(proof.medicalAttestDeadline)}
-                  />
-                ) : null}
-                <DetailsCell
-                  label="Vorlagedatum"
-                  value={formatDate(proof.submissionDate)}
+    <InfoTile
+      title="Nachweisvorlage"
+      name="proofSubmission"
+      sx={{ height: "100%" }}
+    >
+      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+        {proofSubmissions.map((proof) => (
+          <ProofTabEntry key={proof.externalId}>
+            <DetailsItem
+              label="Resultat"
+              value={submissionResultLabels[proof.submissionResult]}
+            />
+            <Row>
+              {proof.submissionResult ===
+              ApiSubmissionResult.TempMedicalAttest ? (
+                <DetailsItem
+                  label="Frist zum medizinischen Attest"
+                  value={formatDate(proof.medicalAttestDeadline)}
                 />
-              </Row>
-              {proof.proofSubmissionDocumentId && (
-                <ProofTabFileCard fileId={proof.proofSubmissionDocumentId} />
-              )}
-            </ProofTabEntry>
-          ))}
-          {!procedureClosed && (
-            <Button variant="plain" startDecorator={<Add />} onClick={onClick}>
-              Hinzufügen
-            </Button>
-          )}
-        </Stack>
-      </DetailsSection>
-    </Sheet>
+              ) : null}
+              <DetailsItem
+                label="Vorlagedatum"
+                value={formatDate(proof.submissionDate)}
+              />
+            </Row>
+            {proof.proofSubmissionDocumentId && (
+              <ProofTabFileCard fileId={proof.proofSubmissionDocumentId} />
+            )}
+          </ProofTabEntry>
+        ))}
+        {!procedureClosed && (
+          <Button variant="plain" startDecorator={<Add />} onClick={onClick}>
+            Hinzufügen
+          </Button>
+        )}
+      </Stack>
+    </InfoTile>
   );
 }
 
@@ -207,33 +210,31 @@ function FineCard({
   procedureClosed,
 }: Readonly<FineCardProps>) {
   return (
-    <Sheet sx={{ height: "100%" }}>
-      <DetailsSection title="Bußgeld">
-        <Stack spacing={3} alignItems={"start"} width={"100%"}>
-          {monetaryFines.length > 0 && (
-            <Stack gap={1} sx={{ flexBasis: "auto" }}>
-              {monetaryFines.map((fine) => (
-                <DetailsCell
-                  key={fine.externalId}
-                  label="Erteilungsdatum"
-                  value={formatDate(fine.fineIssuedDate)}
-                />
-              ))}
-            </Stack>
-          )}
-          {!procedureClosed && (
-            <Button
-              variant="plain"
-              startDecorator={<Add />}
-              disabled={procedureClosed}
-              onClick={onClick}
-            >
-              Bußgeld erteilen
-            </Button>
-          )}
-        </Stack>
-      </DetailsSection>
-    </Sheet>
+    <InfoTile title="Bußgeld" name="fine" sx={{ height: "100%" }}>
+      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+        {monetaryFines.length > 0 && (
+          <Stack gap={1} sx={{ flexBasis: "auto" }}>
+            {monetaryFines.map((fine) => (
+              <DetailsItem
+                key={fine.externalId}
+                label="Erteilungsdatum"
+                value={formatDate(fine.fineIssuedDate)}
+              />
+            ))}
+          </Stack>
+        )}
+        {!procedureClosed && (
+          <Button
+            variant="plain"
+            startDecorator={<Add />}
+            disabled={procedureClosed}
+            onClick={onClick}
+          >
+            Bußgeld erteilen
+          </Button>
+        )}
+      </Stack>
+    </InfoTile>
   );
 }
 
@@ -251,41 +252,43 @@ function ProofRequestLetterCard({
   proofSubmissionLetters,
 }: Readonly<ProofRequestLetterCardProps>) {
   return (
-    <Sheet sx={{ height: "100%" }}>
-      <DetailsSection title={"Anschreiben Nachweisvorlage"}>
-        <Stack spacing={3} width={"100%"} alignItems={"start"}>
-          {proofSubmissionLetters.map((letter, index) => (
-            <ProofTabEntry rowLayout key={index}>
-              <DetailsCell
-                label="Empfänger"
-                value={formatName(
-                  getPersonByIdFromProcedure(letter.recipientId, procedure),
-                )}
-              />
-              <DetailsCell
-                label="Versanddatum"
-                value={formatDate(letter.pdf.createdAt)}
-              />
-              <DetailsCell label="Frist" value={formatDate(letter.deadline)} />
+    <InfoTile
+      title={"Anschreiben Nachweisvorlage"}
+      name="proofSubmissionLetter"
+      sx={{ height: "100%" }}
+    >
+      <Stack spacing={3} width={"100%"} alignItems={"start"}>
+        {proofSubmissionLetters.map((letter, index) => (
+          <ProofTabEntry rowLayout key={index}>
+            <DetailsItem
+              label="Empfänger"
+              value={formatName(
+                getPersonByIdFromProcedure(letter.recipientId, procedure),
+              )}
+            />
+            <DetailsItem
+              label="Versanddatum"
+              value={formatDate(letter.pdf.createdAt)}
+            />
+            <DetailsItem label="Frist" value={formatDate(letter.deadline)} />
 
-              <ProofTabFileCard
-                fileId={letter.pdf.fileId}
-                fileData={letter.pdf}
-              />
-            </ProofTabEntry>
-          ))}
-          {!procedureClosed && (
-            <Button
-              variant="plain"
-              startDecorator={<Add />}
-              disabled={procedureClosed}
-              onClick={onClick}
-            >
-              Anschreiben erstellen
-            </Button>
-          )}
-        </Stack>
-      </DetailsSection>
-    </Sheet>
+            <ProofTabFileCard
+              fileId={letter.pdf.fileId}
+              fileData={letter.pdf}
+            />
+          </ProofTabEntry>
+        ))}
+        {!procedureClosed && (
+          <Button
+            variant="plain"
+            startDecorator={<Add />}
+            disabled={procedureClosed}
+            onClick={onClick}
+          >
+            Anschreiben erstellen
+          </Button>
+        )}
+      </Stack>
+    </InfoTile>
   );
 }

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Chip, Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { ReactNode } from "react";
+import { isDefined } from "remeda";
+
 import { ApiFacilityContactPerson } from "@eshg/base-api";
 import {
   BaseAddress,
@@ -14,10 +19,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
-import { Chip, Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { ReactNode } from "react";
-import { isDefined } from "remeda";
 
 export interface CentralFileFacility {
   readonly name: string;

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ReadonlyURLSearchParams } from "next/navigation";
+
 import {
   ApiBusinessModule,
   ApiProcedureType,
@@ -15,7 +17,6 @@ import {
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
 } from "@eshg/lib-procedures-api";
-import { ReadonlyURLSearchParams } from "next/navigation";
 
 import {
   manualProgressEntryTypeNames,

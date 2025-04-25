@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLAudioContext, ApiCLImageContext } from "@eshg/inspection-api";
 import { UploadFileOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
+
+import { ApiCLAudioContext, ApiCLImageContext } from "@eshg/inspection-api";
 
 import { ReadOnlyCLDElementProps } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/ReadOnlyCLDElement";
 import { ReadOnlyCLDElementWrapper } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/inner/ReadOnlyCLDElementWrapper";

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Stack, StackProps } from "@mui/joy";
 import { FormEventHandler, ReactNode } from "react";
+
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 
 interface FormStackProps extends Omit<StackProps<"form">, "component"> {
   dense?: boolean;

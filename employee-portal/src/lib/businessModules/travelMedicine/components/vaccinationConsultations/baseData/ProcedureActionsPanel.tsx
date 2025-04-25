@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Grid } from "@mui/joy";
+import { ReactNode } from "react";
+
 import {
   InformationSheet,
   OpenModalButton,
@@ -14,8 +17,6 @@ import {
   ApiProcedureStatus,
   ApiServiceStatus,
 } from "@eshg/travel-medicine-api";
-import { Button, Grid } from "@mui/joy";
-import { ReactNode } from "react";
 
 import {
   UsePatchStatusRequest,

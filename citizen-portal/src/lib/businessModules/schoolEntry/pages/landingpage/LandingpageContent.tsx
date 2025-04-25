@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { CallOutlined, MailOutlineOutlined } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { useSchoolEntryPublicCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import {

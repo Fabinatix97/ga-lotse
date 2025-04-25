@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import { queryOptions, useQuery } from "@tanstack/react-query";
+
+import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 
 import { useVaccinationConsultationApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { mapAppointment } from "@/lib/businessModules/travelMedicine/api/models/AppointmentSummary";

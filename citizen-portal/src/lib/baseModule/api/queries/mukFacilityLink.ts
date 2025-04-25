@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { ApiErrorCode } from "@eshg/base-api";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useMukFacilityLinkApi } from "@/lib/baseModule/api/clients";
 import { mukFacilityLinkApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKeys";

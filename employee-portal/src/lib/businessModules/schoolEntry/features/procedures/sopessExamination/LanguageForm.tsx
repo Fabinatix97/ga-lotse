@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { ApiPrimaryLanguageValue } from "@eshg/school-entry-api";
-import { Stack, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import {
   FIXED_WIDTH_STYLE,

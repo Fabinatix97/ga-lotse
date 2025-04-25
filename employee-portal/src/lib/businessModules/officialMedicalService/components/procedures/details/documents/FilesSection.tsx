@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileField, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { ApiFileType } from "@eshg/lib-procedures-api";
-import { ApiOmsFile } from "@eshg/official-medical-service-api";
 import {
   Delete,
   FileDownloadOutlined,
@@ -17,6 +11,13 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isDefined } from "remeda";
+
+import { FileField, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { ApiFileType } from "@eshg/lib-procedures-api";
+import { ApiOmsFile } from "@eshg/official-medical-service-api";
 
 import { useOmsFileApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { AddDocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/AddDocumentForm";

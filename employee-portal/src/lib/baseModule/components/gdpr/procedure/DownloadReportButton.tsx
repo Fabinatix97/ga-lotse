@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { Button, Sheet } from "@mui/joy";
 import { useState } from "react";
+
+import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 

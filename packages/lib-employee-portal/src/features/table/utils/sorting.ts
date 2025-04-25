@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiSortDirection } from "@eshg/base-api";
 import { isDefined } from "remeda";
+
+import { ApiSortDirection } from "@eshg/base-api";
 
 import { TableSortingProps } from "@/features/table/types/tableSorting";
 

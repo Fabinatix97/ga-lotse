@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { memo } from "react";
+
+import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import {
   BooleanRadioField,

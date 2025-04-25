@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { List, ListItem, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";

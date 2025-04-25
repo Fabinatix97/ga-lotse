@@ -3,19 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
+
 import {
   ActionsItem,
   ActionsMenu,
-  DetailsSection,
+  DetailsItem,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiAppointment } from "@eshg/measles-protection-api";
-import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
-import { Button, Sheet, Stack } from "@mui/joy";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export interface AppointmentCardProps {
@@ -64,51 +65,48 @@ export function AppointmentCard({
     },
   ];
   return (
-    <Sheet sx={{ height: "100%" }}>
-      <DetailsSection
-        title="Termin"
-        buttons={
-          appointment && (
-            <ActionsMenu
-              actionItems={appointmentCardActions}
-              aria-label="Aktionen"
-              sx={{
-                border: (theme) =>
-                  `1px solid ${theme.palette.primary.outlinedBorder}`,
-              }}
+    <InfoTile
+      title="Termin"
+      name="appointment"
+      sx={{ height: "100%" }}
+      controls={
+        appointment && (
+          <ActionsMenu
+            actionItems={appointmentCardActions}
+            aria-label="Aktionen"
+            sx={{
+              border: (theme) =>
+                `1px solid ${theme.palette.primary.outlinedBorder}`,
+            }}
+          />
+        )
+      }
+    >
+      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+        {appointment ? (
+          <Stack gap={1} sx={{ flexBasis: "auto" }}>
+            <DetailsItem label="Datum" value={formatDate(appointment.start)} />
+            <DetailsItem
+              label="Zeitraum"
+              value={
+                "Von " +
+                formatTime(appointment.start) +
+                " Uhr bis " +
+                formatTime(appointment.end) +
+                " Uhr"
+              }
             />
-          )
-        }
-      >
-        <Stack spacing={3} alignItems={"start"} width={"100%"}>
-          {appointment ? (
-            <Stack gap={1} sx={{ flexBasis: "auto" }}>
-              <DetailsCell
-                label="Datum"
-                value={formatDate(appointment.start)}
-              />
-              <DetailsCell
-                label="Zeitraum"
-                value={
-                  "Von " +
-                  formatTime(appointment.start) +
-                  " Uhr bis " +
-                  formatTime(appointment.end) +
-                  " Uhr"
-                }
-              />
-            </Stack>
-          ) : !procedureClosed ? (
-            <Button
-              variant="plain"
-              startDecorator={<Add />}
-              onClick={() => setAddingAppointment(true)}
-            >
-              Hinzufügen
-            </Button>
-          ) : null}
-        </Stack>
-      </DetailsSection>
-    </Sheet>
+          </Stack>
+        ) : !procedureClosed ? (
+          <Button
+            variant="plain"
+            startDecorator={<Add />}
+            onClick={() => setAddingAppointment(true)}
+          >
+            Hinzufügen
+          </Button>
+        ) : null}
+      </Stack>
+    </InfoTile>
   );
 }

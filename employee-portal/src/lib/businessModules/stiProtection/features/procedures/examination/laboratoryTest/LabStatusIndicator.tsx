@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLabStatus } from "@eshg/sti-protection-api";
 import { Sheet, Stack, Typography } from "@mui/joy";
+
+import { ApiLabStatus } from "@eshg/sti-protection-api";
 
 import { LAB_STATUS_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 

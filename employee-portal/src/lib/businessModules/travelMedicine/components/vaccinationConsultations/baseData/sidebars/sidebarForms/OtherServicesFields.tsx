@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormikErrors, useFormikContext } from "formik";
+
 import { DetailsItem } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
-import { FormikErrors, useFormikContext } from "formik";
 
 import { OtherServicesTemplates } from "@/lib/businessModules/travelMedicine/api/models/OtherServicesTemplates";
 import {

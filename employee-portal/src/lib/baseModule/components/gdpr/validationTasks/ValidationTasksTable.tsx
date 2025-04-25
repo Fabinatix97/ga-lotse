@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Chip } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
+
 import {
   DataTable,
   Pagination,
@@ -20,9 +24,6 @@ import {
   ApiGdprValidationTaskStatus,
   GetAllGdprValidationTasksRequest,
 } from "@eshg/lib-procedures-api";
-import { Chip } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { typeTranslation } from "@/lib/baseModule/components/gdpr/i18n";

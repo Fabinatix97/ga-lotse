@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 import { Stack, Typography } from "@mui/joy";
 import { useContext } from "react";
 import { isDefined } from "remeda";
+
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 
 import { FileCardWithDownload } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";

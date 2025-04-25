@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Select } from "@mui/joy";
+
 import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import {
   SelectOption,
   SelectOptions,
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { Select } from "@mui/joy";
 
 export function MultiSelectFilter(props: {
   searchParamName: string;

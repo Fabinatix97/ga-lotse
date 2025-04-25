@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Sheet, Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { Button, Sheet, Stack, Typography } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { useSyncCentralRepoChecklistDefinition } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { CLDInfoCardCoreChecklistLabel } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";

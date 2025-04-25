@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { VaccinesOutlined } from "@mui/icons-material";
+import { isPlainObject } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
-import { VaccinesOutlined } from "@mui/icons-material";
-import { isPlainObject } from "remeda";
 
 import { routes } from "./routes";
 

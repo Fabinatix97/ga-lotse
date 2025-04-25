@@ -5,15 +5,21 @@
 
 "use client";
 
+import { useFormikContext } from "formik";
+import { useState } from "react";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { ApiFacilityType } from "@eshg/measles-protection-api";
-import { useFormikContext } from "formik";
-import { useState } from "react";
 
 import { MeaslesFacility } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { facilityTypeNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
+
+export interface MeaslesFacilityTypeSelectFormValues {
+  type?: string;
+  otherFacilityTypeInformation?: string;
+}
 
 export function MeaslesFacilityTypeSelect() {
   const { setFieldValue, values } = useFormikContext<MeaslesFacility>();
@@ -24,17 +30,23 @@ export function MeaslesFacilityTypeSelect() {
   async function handleChange(value: string) {
     if (value == ApiFacilityType.Other) {
       setShowCommentField(true);
-      await setFieldValue("otherFacilityTypeInformation", "");
+      await setFieldValue(
+        "measlesFacilityType.otherFacilityTypeInformation",
+        "",
+      );
     } else {
       setShowCommentField(false);
-      await setFieldValue("otherFacilityTypeInformation", undefined);
+      await setFieldValue(
+        "measlesFacilityType.otherFacilityTypeInformation",
+        undefined,
+      );
     }
   }
 
   return (
     <>
       <WrappedSelectField
-        name={"type"}
+        name="measlesFacilityType.type"
         label="Typ"
         options={buildEnumOptions(facilityTypeNames)}
         required="Bitte einen Typ auswählen."
@@ -42,7 +54,7 @@ export function MeaslesFacilityTypeSelect() {
       />
       {showCommentField && (
         <InputField
-          name={"otherFacilityTypeInformation"}
+          name="measlesFacilityType.otherFacilityTypeInformation"
           label="Anderer Einrichtungstyp"
           required="Bitte einen spezifischen anderen Typ angeben."
         />

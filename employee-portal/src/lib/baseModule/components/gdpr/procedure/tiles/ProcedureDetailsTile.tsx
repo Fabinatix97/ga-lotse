@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import EditIcon from "@mui/icons-material/EditOutlined";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useState, useTransition } from "react";
+import { isDefined, isNullish } from "remeda";
+
 import {
   ApiGdprProcedureStatus,
   ApiGdprProcedureType,
@@ -23,12 +30,6 @@ import {
   useAlert,
 } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import EditIcon from "@mui/icons-material/EditOutlined";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { useState, useTransition } from "react";
-import { isDefined, isNullish } from "remeda";
 
 import QueryBoundary from "@/app/@modal/template";
 import {

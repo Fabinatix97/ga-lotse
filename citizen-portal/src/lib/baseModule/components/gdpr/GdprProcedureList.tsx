@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiCitizenUsersGdprProcedure,
-  ApiGdprProcedureStatus,
-  ApiGdprProcedureType,
-} from "@eshg/base-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import UnexpandedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import ExpandedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import {
@@ -25,6 +19,13 @@ import {
 } from "@mui/joy";
 import { Suspense, useState } from "react";
 import { isDefined } from "remeda";
+
+import {
+  ApiCitizenUsersGdprProcedure,
+  ApiGdprProcedureStatus,
+  ApiGdprProcedureType,
+} from "@eshg/base-api";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { GdprProcedureDownloads } from "@/lib/baseModule/components/gdpr/GdprProcedureDownloads";
 import { GdprProcedureStatusChip } from "@/lib/baseModule/components/gdpr/GdprProcedureStatusChip";

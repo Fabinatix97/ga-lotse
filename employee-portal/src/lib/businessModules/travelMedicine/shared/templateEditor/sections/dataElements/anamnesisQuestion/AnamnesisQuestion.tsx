@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiTemplateAnamnesisQuestion,
-  ApiTemplateSubElementText,
-} from "@eshg/travel-medicine-api";
 import { Add } from "@mui/icons-material";
 import { Box, Button } from "@mui/joy";
 import { FieldArray } from "formik";
 import { ReactNode } from "react";
+
+import {
+  ApiTemplateAnamnesisQuestion,
+  ApiTemplateSubElementText,
+} from "@eshg/travel-medicine-api";
 
 import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementBox";
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";

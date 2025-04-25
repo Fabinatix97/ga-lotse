@@ -13,7 +13,7 @@ import {
 interface AppointmentOverviewBookingTypeStatusProps {
   icon: ReactNode;
   testId?: string;
-  text: string;
+  text: ReactNode;
 }
 
 export function AppointmentOverviewButtonElement(

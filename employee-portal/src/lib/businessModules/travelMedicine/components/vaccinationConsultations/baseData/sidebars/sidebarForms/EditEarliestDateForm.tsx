@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -12,9 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { ApiProcedureStepService } from "@eshg/travel-medicine-api";
-import { List, ListItem, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 export interface EditEarliestDateFormValues {
   earliestDate: string;

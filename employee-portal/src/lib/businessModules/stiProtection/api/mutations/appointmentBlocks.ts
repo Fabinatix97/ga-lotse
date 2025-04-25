@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MutationOptions, useMutation } from "@tanstack/react-query";
+
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiCreateAppointmentBlockGroupResponse,
   ApiCreateDailyAppointmentBlockGroupRequest,
   DeleteAppointmentBlockRequest,
 } from "@eshg/sti-protection-api";
-import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";

@@ -1,0 +1,42 @@
+{
+  "title": "Change PIN",
+  "form": {
+    "title": "Enter New PIN",
+    "info": "Please choose a new 6-digit numeric PIN and enter your current PIN for confirmation.",
+    "digit_label": "PIN digit {{digitNumber}} of {{maxDigits}}",
+    "current_pin": {
+      "label": "Current PIN",
+      "hint": "Please enter your current PIN.",
+      "required": "Please define a PIN.",
+      "invalid": "Please enter your current PIN."
+    },
+    "new_pin": {
+      "label": "Desired new PIN",
+      "hint": "Enter a 6-digit numeric sequence.",
+      "required": "Please define a PIN.",
+      "invalid": "Please enter a 6-digit numeric sequence."
+    },
+    "repeated_pin": {
+      "label": "Repeat new PIN",
+      "required": "Please define a PIN.",
+      "invalid": "Please enter a 6-digit numeric sequence.",
+      "comparison_error": "PINs do not match"
+    },
+    "confirmation": "The PIN has been successfully changed.",
+    "button_label": "Save new PIN",
+    "cancel": "Cancel"
+  },
+  "confirm": {
+    "title": "Note Your PIN",
+    "info": "Please make a note of the newly defined PIN. It replaces the previous one and will be required for login and verification from now on.",
+    "text": "Your new personal 6-digit PIN:",
+    "check": "Yes, I have noted my PIN.",
+    "error": "Please confirm",
+    "link_label": "Back to Overview"
+  },
+  "go_to_card": {
+    "title": "Change PIN",
+    "body": "You can change your personal PIN if you wish – this is optional but possible if needed. The new PIN will replace your previous one.",
+    "link_label": "Change PIN"
+  }
+}

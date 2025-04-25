@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Checkbox, List, ListItem, Stack } from "@mui/joy";
+import { ChangeEvent } from "react";
+
 import {
   BaseFieldProps,
   useBaseField,
@@ -11,8 +14,6 @@ import {
   ApiDocumentSectionElement,
   ApiDocumentSubElementMultiSelect,
 } from "@eshg/travel-medicine-api";
-import { Checkbox, List, ListItem, Stack } from "@mui/joy";
-import { ChangeEvent } from "react";
 
 interface MedicalHistoryMultiSelectElementProps
   extends Omit<BaseFieldProps, "required" | "children"> {

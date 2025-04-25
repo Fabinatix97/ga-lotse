@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Button, Switch, Typography } from "@mui/joy";
+import { useState } from "react";
+
 import {
   ButtonBar,
   DataTable,
@@ -23,8 +26,6 @@ import {
   ToggleFilterButton,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { Button, Switch, Typography } from "@mui/joy";
-import { useState } from "react";
 
 const filterDefinitions: FilterDefinition[] = [
   {

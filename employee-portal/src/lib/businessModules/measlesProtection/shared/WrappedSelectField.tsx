@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { styled } from "@mui/joy";
+
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 
 export const WrappedSelectField = styled(SelectField)(({ theme }) => ({
   ".MuiSelect-root": {

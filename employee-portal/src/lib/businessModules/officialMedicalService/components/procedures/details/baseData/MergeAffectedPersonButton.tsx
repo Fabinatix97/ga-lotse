@@ -5,6 +5,9 @@
 
 "use client";
 
+import { UseQueryResult } from "@tanstack/react-query";
+import { useState } from "react";
+
 import {
   ApiGetReferencePersonResponse,
   ApiPersonContact,
@@ -26,8 +29,6 @@ import {
   ApiAffectedPerson,
   ApiEmployeeOmsProcedureDetails,
 } from "@eshg/official-medical-service-api";
-import { UseQueryResult } from "@tanstack/react-query";
-import { useState } from "react";
 
 import {
   mapOptionalMergeValue,

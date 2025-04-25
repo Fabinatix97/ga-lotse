@@ -6,19 +6,20 @@
 "use client";
 
 import {
-  ApiChecklist,
-  ApiInspection,
-  ApiInspectionPhase,
-  ApiUpdateInspectionRequest,
-} from "@eshg/inspection-api";
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import {
   AutorenewOutlined,
   Checklist as ChecklistIcon,
 } from "@mui/icons-material";
 import { Grid } from "@mui/joy";
 import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+
+import {
+  ApiChecklist,
+  ApiInspection,
+  ApiInspectionPhase,
+  ApiUpdateInspectionRequest,
+} from "@eshg/inspection-api";
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {

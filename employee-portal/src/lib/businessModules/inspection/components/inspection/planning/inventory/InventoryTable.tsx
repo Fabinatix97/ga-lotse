@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionInventory } from "@eshg/inspection-api";
-import { DataTable, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Chip, IconButton } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
+
+import { ApiInspectionInventory } from "@eshg/inspection-api";
+import { DataTable, useConfirmationDialog } from "@eshg/lib-employee-portal";
 
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";

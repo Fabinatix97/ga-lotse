@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
-import { ActionsMenu } from "@eshg/lib-employee-portal";
 import {
   Close,
   DeleteOutlined,
@@ -18,6 +16,9 @@ import {
 import { ColorPaletteProp, Stack } from "@mui/joy";
 import { CellContext, Row, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
+
+import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 
 import { CorechecklistIcon } from "@/lib/businessModules/inspection/components/icons/CorechecklistIcon";
 import {

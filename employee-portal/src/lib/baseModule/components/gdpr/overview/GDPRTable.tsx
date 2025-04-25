@@ -5,6 +5,9 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button } from "@mui/joy";
+
 import { ApiUserRole, GetGdprProceduresRequest } from "@eshg/base-api";
 import {
   ButtonBar,
@@ -19,8 +22,6 @@ import {
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import AddIcon from "@mui/icons-material/Add";
-import { Button } from "@mui/joy";
 
 import { useGetGdprProcedureOverviewQuery } from "@/lib/baseModule/api/queries/gdpr";
 import { useCreateGDPRProcedureSidebar } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";

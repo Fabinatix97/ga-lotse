@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useRef, useState } from "react";
+
 import { ApiChatFeature } from "@eshg/chat-management-api";
 import {
   FormButtonBar,
@@ -15,9 +19,6 @@ import {
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { useRef, useState } from "react";
 
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";

@@ -4,6 +4,10 @@
  */
 
 /* eslint-disable @typescript-eslint/no-base-to-string */
+import Close from "@mui/icons-material/Close";
+import { AutocompleteProps, Chip } from "@mui/joy";
+import { isString } from "remeda";
+
 import {
   BaseField,
   useBaseField,
@@ -11,9 +15,6 @@ import {
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import Close from "@mui/icons-material/Close";
-import { AutocompleteProps, Chip } from "@mui/joy";
-import { isString } from "remeda";
 
 type JoyUiSelectValue = AutocompleteProps<
   string,

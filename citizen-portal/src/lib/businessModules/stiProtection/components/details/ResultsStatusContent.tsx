@@ -5,13 +5,15 @@
 
 "use client";
 
-import { Row } from "@eshg/lib-portal/components/Row";
 import { CheckCircleOutlined, TimelapseOutlined } from "@mui/icons-material";
-import { Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import { TFunction } from "i18next";
 import { Trans } from "react-i18next";
 
+import { Row } from "@eshg/lib-portal/components/Row";
+
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
+import { ContactAndAvailability } from "@/lib/businessModules/stiProtection/components/ContactAndAvailability";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
@@ -20,12 +22,17 @@ import {
 
 export function ResultsStatusContent() {
   const { t } = useTranslation("stiProtection/resultsStatus");
+  const { data: procedure } = useGetProcedure();
+  const { concern } = procedure;
 
   return (
-    <ContentSheet>
-      <ContentSheetTitle>{t("view.findings_title")}</ContentSheetTitle>
-      <CurrentStatus />
-    </ContentSheet>
+    <Stack gap={2}>
+      <ContentSheet>
+        <ContentSheetTitle>{t("view.findings_title")}</ContentSheetTitle>
+        <CurrentStatus />
+      </ContentSheet>
+      <ContactAndAvailability concern={concern} />
+    </Stack>
   );
 }
 

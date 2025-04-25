@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isString } from "remeda";
+import { vi } from "vitest";
+
 import {
   ApiCLAudioField,
   ApiCLImageField,
@@ -11,8 +14,6 @@ import {
   ApiInspection,
   ApiInspectionToJSON,
 } from "@eshg/inspection-api";
-import { isString } from "remeda";
-import { vi } from "vitest";
 
 import { API_CACHE_NAME } from "@/serviceWorker/common/common";
 

@@ -3,6 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Button, DialogTitle, Stack, Typography } from "@mui/joy";
+import { Formik, FormikProps, FormikValues } from "formik";
+import {
+  ComponentType,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { isDefined, isNonNullish } from "remeda";
+
 import {
   SidebarActions,
   SidebarContent,
@@ -14,16 +25,6 @@ import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { Button, DialogTitle, Stack, Typography } from "@mui/joy";
-import { Formik, FormikProps, FormikValues } from "formik";
-import {
-  ComponentType,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { isDefined, isNonNullish } from "remeda";
 
 import { SidebarStep, SidebarStepContentProps } from "./sidebarStep";
 

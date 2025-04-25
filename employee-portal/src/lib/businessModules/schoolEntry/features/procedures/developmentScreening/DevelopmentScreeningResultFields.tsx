@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import {
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
 } from "@eshg/lib-portal/components/form/fieldVariants";
-import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { getAbbreviation } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
 import {

@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row } from "@eshg/lib-portal/components/Row";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { getPropertyIf } from "@eshg/lib-portal/helpers/getProperty";
 import {
   FormHelperText,
   FormHelperTextProps,
@@ -17,6 +14,10 @@ import {
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 import { isString } from "remeda";
+
+import { Row } from "@eshg/lib-portal/components/Row";
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { getPropertyIf } from "@eshg/lib-portal/helpers/getProperty";
 
 import { usePinFieldEventHandlers } from "./usePinFieldEventHandlers";
 

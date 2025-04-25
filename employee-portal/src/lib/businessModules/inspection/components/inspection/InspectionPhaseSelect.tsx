@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiInspection } from "@eshg/inspection-api";
 import { Typography } from "@mui/joy";
+
+import { ApiInspection } from "@eshg/inspection-api";
 
 import { translateInspectionPhase } from "@/lib/businessModules/inspection/shared/enums";
 

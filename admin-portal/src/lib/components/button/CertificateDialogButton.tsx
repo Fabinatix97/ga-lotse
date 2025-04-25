@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminCertificate } from "@eshg/service-directory-api";
 import {
   Button,
   DialogTitle,
@@ -16,6 +15,8 @@ import {
   Typography,
 } from "@mui/joy";
 import { ReactNode, useState } from "react";
+
+import { ApiAdminCertificate } from "@eshg/service-directory-api";
 
 import { useTranslation } from "@/lib/i18n/client";
 

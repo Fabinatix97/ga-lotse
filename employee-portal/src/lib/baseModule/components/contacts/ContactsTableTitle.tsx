@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import MergeIcon from "@mui/icons-material/SchemaOutlined";
+import { RowSelectionState } from "@tanstack/react-table";
+
 import {
   RowSelectionTableToolbar,
   RowSelectionTableToolbarButton,
   mapRowSelectionToRowIds,
 } from "@eshg/lib-employee-portal";
-import MergeIcon from "@mui/icons-material/SchemaOutlined";
-import { RowSelectionState } from "@tanstack/react-table";
 
 interface ContactsTableTitleProps {
   rowSelection: RowSelectionState;

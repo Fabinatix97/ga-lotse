@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   ApiFacilityContactPerson,
   ApiFacilityContactPersonDiff,
@@ -14,8 +17,6 @@ import {
   SALUTATION_VALUES,
   getOptionalTitle,
 } from "@eshg/lib-portal/components/formFields/constants";
-import { Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import {
   AddressUnion,

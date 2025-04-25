@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 

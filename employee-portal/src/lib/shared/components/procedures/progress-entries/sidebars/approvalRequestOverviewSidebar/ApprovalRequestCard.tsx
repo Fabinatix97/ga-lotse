@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ButtonBar } from "@eshg/lib-employee-portal";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { ApiAbstractFile, ApiApprovalRequest } from "@eshg/lib-procedures-api";
 import {
   Box,
   Button,
@@ -18,6 +15,10 @@ import {
 } from "@mui/joy";
 import { useContext } from "react";
 import { isDefined } from "remeda";
+
+import { ButtonBar } from "@eshg/lib-employee-portal";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { ApiAbstractFile, ApiApprovalRequest } from "@eshg/lib-procedures-api";
 
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useDecideApprovalRequest } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { useState } from "react";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -14,8 +17,6 @@ import {
   PatchDocumentInformationRequest,
   PatchDocumentNoteRequest,
 } from "@eshg/official-medical-service-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { useState } from "react";
 
 import {
   usePatchCompleteDocumentFileUpload,

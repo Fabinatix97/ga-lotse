@@ -5,12 +5,13 @@
 
 "use client";
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import {
   DataTable,
   DetailsSection,
   formatSchoolYear,
 } from "@eshg/lib-employee-portal";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { AnnualInstitution } from "@/api/models/AnnualInstitution";
 

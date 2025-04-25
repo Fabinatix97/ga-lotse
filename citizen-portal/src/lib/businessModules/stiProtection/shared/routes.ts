@@ -35,6 +35,7 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
           rebook: path("/termin-umbuchen"),
           anamnesis: path("/anamnesebogen"),
           resultsStatus: path("/ergebnisstatus"),
+          pin: path("/pin"),
         }),
       ),
     }),

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as v from "valibot";
+
 import {
   ApiWebSearchEntryStatus,
   GetPendingFacilitiesRequest,
@@ -11,7 +13,6 @@ import {
   BooleanSchema,
   PositiveIntegerSchema,
 } from "@eshg/lib-portal/schemas/pageParams";
-import * as v from "valibot";
 
 export const FacilityWebSearchFiltersSchema = v.partial(
   v.object({

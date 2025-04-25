@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { ArrowRightAltOutlined, LaptopMacOutlined } from "@mui/icons-material";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useGetDepartmentInfo } from "@/lib/shared/api/queries/department";

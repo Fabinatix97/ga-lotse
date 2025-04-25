@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
-import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 import { EditOutlined } from "@mui/icons-material";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ReactNode, useId } from "react";
+
+import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";

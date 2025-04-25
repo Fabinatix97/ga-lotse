@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiMedicalRegistryFeature } from "@eshg/medical-registry-api";
 import { notFound } from "next/navigation";
+
+import { ApiMedicalRegistryFeature } from "@eshg/medical-registry-api";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/medicalRegistry/api/queries/featureTogglesApi";
 import { HomeContent } from "@/lib/businessModules/medicalRegistry/pages/home/HomeContent";

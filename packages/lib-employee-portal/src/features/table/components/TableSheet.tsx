@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Box, Sheet, Stack, Theme, styled } from "@mui/joy";
 import { ReactElement, ReactNode } from "react";
+
+import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 const StyledSheet = styled(Sheet)(({ theme }) => ({
   flex: 1,

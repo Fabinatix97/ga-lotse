@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack, Typography } from "@mui/joy";
+
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import { ToothResult, ToothWithDiagnosis } from "@/stores/examination/types";
 

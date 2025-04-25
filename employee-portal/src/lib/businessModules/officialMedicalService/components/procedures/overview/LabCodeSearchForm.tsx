@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Close, SearchOutlined } from "@mui/icons-material";
+import { Button, styled } from "@mui/joy";
+import { Formik } from "formik";
+import { ReactNode, useId, useState } from "react";
+
 import {
   FormSheet,
   ToggleExpandButton,
   ToggleExpandButtonProps,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Close, SearchOutlined } from "@mui/icons-material";
-import { Button, styled } from "@mui/joy";
-import { Formik } from "formik";
-import { ReactNode, useId, useState } from "react";
 
 const SearchFormSheet = styled(FormSheet)(({ theme }) => ({
   padding: theme.spacing(3),

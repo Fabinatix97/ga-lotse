@@ -6,14 +6,6 @@
 "use client";
 
 import {
-  MainContentLayout,
-  StickyToolbarLayout,
-  Toolbar,
-  ToolbarBackButton,
-} from "@eshg/lib-employee-portal";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import {
   Button,
   Checkbox,
   FormControl,
@@ -24,6 +16,15 @@ import {
   Stack,
 } from "@mui/joy";
 import { useState } from "react";
+
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+  ToolbarBackButton,
+} from "@eshg/lib-employee-portal";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 const DEFAULT_TYPE = "error";
 const TYPES = ["error", "warning", "notification"] as const;

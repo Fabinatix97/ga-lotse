@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import CheckIcon from "@mui/icons-material/Check";
+import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { useContext } from "react";
+import { isDefined, isEmpty } from "remeda";
+
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
@@ -13,11 +19,6 @@ import {
   ApiSystemProgressEntry,
   ApiUser,
 } from "@eshg/lib-procedures-api";
-import CheckIcon from "@mui/icons-material/Check";
-import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { useContext } from "react";
-import { isDefined, isEmpty } from "remeda";
 
 import {
   ProgressEntriesContext,

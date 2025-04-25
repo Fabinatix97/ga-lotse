@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { UseQueryResult } from "@tanstack/react-query";
+
 import {
   ApiChatFeature,
   ApiGetFeatureTogglesResponse,
@@ -14,7 +16,6 @@ import {
   useGetFeatureToggle,
   useGetFeatureToggleUnsuspended,
 } from "@eshg/lib-portal/api/featureToggles";
-import { UseQueryResult } from "@tanstack/react-query";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/chat/api/clients";
 import { chatFeatureTogglesApiQueryKey } from "@/lib/businessModules/chat/api/queries/apiQueryKeys";

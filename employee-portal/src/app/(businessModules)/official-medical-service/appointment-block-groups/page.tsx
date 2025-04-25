@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Schedule } from "@mui/icons-material";
+
 import {
   ButtonBar,
   MainContentLayout,
@@ -10,7 +12,6 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { Schedule } from "@mui/icons-material";
 
 import { AppointmentBlockGroupsTable } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksTable/AppointmentBlockGroupTable";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";

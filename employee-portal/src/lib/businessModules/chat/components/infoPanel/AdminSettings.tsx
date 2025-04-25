@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { Stack } from "@mui/joy";
 import { useState } from "react";
+
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

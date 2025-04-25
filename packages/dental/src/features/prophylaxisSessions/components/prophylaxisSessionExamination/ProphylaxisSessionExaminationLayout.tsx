@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
+
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 
 import { AdditionalInformationFormSection } from "@/components/examination/AdditionalInformationFormSection";
 import { ExaminationChildDetailsSection } from "@/components/examination/ExaminationChildDetailsSection";

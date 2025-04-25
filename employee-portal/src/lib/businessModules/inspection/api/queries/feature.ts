@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { UseQueryResult } from "@tanstack/react-query";
+
 import {
   ApiGetInspectionFeatureTogglesResponse,
   ApiInspectionFeature,
@@ -14,7 +16,6 @@ import {
   useGetFeatureToggle,
   useGetFeatureToggleUnsuspended,
 } from "@eshg/lib-portal/api/featureToggles";
-import { UseQueryResult } from "@tanstack/react-query";
 
 import { useInspectionFeatureTogglesApi } from "@/lib/businessModules/inspection/api/clients";
 import { inspectionFeatureTogglesApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

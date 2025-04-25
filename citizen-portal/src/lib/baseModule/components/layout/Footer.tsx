@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box, Stack, Typography, styled } from "@mui/joy";
+
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiOpenDataFeature } from "@eshg/opendata-api";
-import { Box, Stack, Typography, styled } from "@mui/joy";
 
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/businessModules/opendata/api/queries/featureTogglesApi";

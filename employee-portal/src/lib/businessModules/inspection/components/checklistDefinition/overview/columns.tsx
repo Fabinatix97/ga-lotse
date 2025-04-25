@@ -4,6 +4,22 @@
  */
 
 import {
+  CheckCircle,
+  CloudSync,
+  CloudUpload,
+  CopyAll,
+  CropFree,
+  Delete,
+  Edit,
+  History,
+} from "@mui/icons-material";
+import { Chip, ColorPaletteProp, Stack, Typography } from "@mui/joy";
+import { UseMutateAsyncFunction } from "@tanstack/react-query";
+import { CellContext, createColumnHelper } from "@tanstack/react-table";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { isNonNullish, isNullish } from "remeda";
+
+import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
@@ -11,23 +27,12 @@ import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { Snackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  CheckCircle,
-  CloudSync,
-  CloudUpload,
-  CopyAll,
-  CropFree,
-  Edit,
-  History,
-} from "@mui/icons-material";
-import { Chip, Stack, Typography } from "@mui/joy";
-import { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { CellContext, createColumnHelper } from "@tanstack/react-table";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { isNonNullish, isNullish } from "remeda";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
-import { showPublishChecklistDefinitionDialog } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
+import {
+  showDeleteChecklistDefinitionDialog,
+  showPublishChecklistDefinitionDialog,
+} from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
 import { ActiveChecklistIcon } from "@/lib/businessModules/inspection/components/icons/ActiveChecklistIcon";
 import { CorechecklistIcon } from "@/lib/businessModules/inspection/components/icons/CorechecklistIcon";
 import { ExclusiveCorechecklistIcon } from "@/lib/businessModules/inspection/components/icons/ExclusiveCorechecklistIcon";
@@ -59,6 +64,7 @@ export function generateChecklistDefinitionOverviewTableColumns(
     handleUploadRepoButtonClick,
     handleUpdateRepoButtonClick,
     editDraftCldVersion,
+    deleteDraftCldVersion,
   }: ActionItemActions,
 ) {
   return [
@@ -235,6 +241,7 @@ export function generateChecklistDefinitionOverviewTableColumns(
                 handleUploadRepoButtonClick,
                 handleUpdateRepoButtonClick,
                 editDraftCldVersion,
+                deleteDraftCldVersion,
               },
             )}
           />
@@ -299,6 +306,14 @@ interface ActionItemActions {
     },
     unknown
   >;
+  deleteDraftCldVersion: UseMutateAsyncFunction<
+    void,
+    Error,
+    {
+      versionId: string;
+    },
+    unknown
+  >;
 }
 
 function generateActionItems(
@@ -318,6 +333,7 @@ function generateActionItems(
     handleUpdateRepoButtonClick,
     addCldVersion,
     editDraftCldVersion,
+    deleteDraftCldVersion,
   }: ActionItemActions,
 ) {
   const hideEdit =
@@ -384,6 +400,28 @@ function generateActionItems(
                   },
                 ),
               startDecorator: <CheckCircle />,
+            },
+            {
+              label: "Löschen",
+              color: "danger" as ColorPaletteProp,
+              onClick: () =>
+                showDeleteChecklistDefinitionDialog(
+                  openConfirmationDialog,
+                  mostRecentVersion.context.name,
+                  async () => {
+                    await deleteDraftCldVersion(
+                      {
+                        versionId: mostRecentVersion.context.id,
+                      },
+                      {
+                        onSuccess: () => {
+                          router.push(routes.checklists.definitions.index);
+                        },
+                      },
+                    );
+                  },
+                ),
+              startDecorator: <Delete />,
             },
           ]),
     );

@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useMemo } from "react";
+import { isDefined } from "remeda";
+
 import {
   ButtonBar,
   DataTable,
@@ -19,8 +22,6 @@ import {
   ToggleFilterButton,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { useMemo } from "react";
-import { isDefined } from "remeda";
 
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { mapAttributesToFilterDefinitions } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToFilterDefinitions";

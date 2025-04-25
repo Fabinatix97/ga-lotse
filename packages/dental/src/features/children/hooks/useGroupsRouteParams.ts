@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RouteParams } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
 import { parse } from "valibot";
+
+import { RouteParams } from "@eshg/lib-portal/types/pageParams";
 
 import { DentalGroupsRouteParams } from "@/features/children/schemas/DentalGroupsRouteParams";
 

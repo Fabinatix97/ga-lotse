@@ -5,9 +5,10 @@
 
 "use client";
 
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { notFound } from "next/navigation";
 import { useLayoutEffect } from "react";
+
+import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 
 import { Chat } from "@/lib/businessModules/chat/components/Chat";
 import { ChatErrorBoundary } from "@/lib/businessModules/chat/components/ChatErrorBoundary";

@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Add, EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
+import { Button, Chip } from "@mui/joy";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { useReducer, useState } from "react";
+
 import {
   ActionsMenu,
   DataTable,
@@ -21,10 +26,6 @@ import {
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiStiProtectionProcedureOverview } from "@eshg/sti-protection-api";
-import { Add, EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
-import { Button, Chip } from "@mui/joy";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
-import { useReducer, useState } from "react";
 
 import { useGetStiProceduresTablePage } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
@@ -153,7 +154,11 @@ function getProceduresColumns({
     }),
     columnHelper.accessor("sampleBarCode", {
       header: "Labor-Barcode",
-      cell: ({ getValue }) => getValue(),
+      cell: ({ getValue }) => (
+        <Row component="span" aria-label={getValue()} fontFamily="code">
+          <span>{getValue()}</span>
+        </Row>
+      ),
       enableSorting: true,
       meta: {
         width: 172,

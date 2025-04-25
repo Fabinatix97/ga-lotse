@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSearchParams } from "next/navigation";
+import { isNonNullish } from "remeda";
+
 import { ApiBusinessModule } from "@eshg/base-api";
 import { parseOptionalEnum } from "@eshg/lib-portal/helpers/searchParams";
 import { ApiOpenDataFileType } from "@eshg/opendata-api";
-import { useSearchParams } from "next/navigation";
-import { isNonNullish } from "remeda";
 
 import {
   SEARCH_PARAMS,

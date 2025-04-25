@@ -5,8 +5,9 @@
 
 "use client";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
+
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { InformationStatementsTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/InformationStatementsTable";
 

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode } from "@eshg/base-api";
 import { isDefined } from "remeda";
+
+import { ApiCountryCode } from "@eshg/base-api";
 
 import { SelectOption } from "../components/formFields/SelectOptions";
 

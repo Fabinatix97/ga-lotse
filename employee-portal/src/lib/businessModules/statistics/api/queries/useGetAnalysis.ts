@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { isNonNullish } from "remeda";
+
 import {
   ApiAnalysisChartConfiguration,
   ApiAnalysisWithDiagrams,
   ApiDiagramDiagramData,
   ApiValueWithOptionsAttribute,
 } from "@eshg/statistics-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { isNonNullish } from "remeda";
 
 import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { getActiveFilterLabels } from "@/lib/businessModules/statistics/api/mapper/getActiveFilterLabels";

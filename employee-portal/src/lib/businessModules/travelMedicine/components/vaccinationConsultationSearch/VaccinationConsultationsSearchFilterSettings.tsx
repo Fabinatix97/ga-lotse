@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormControl, FormLabel, Input } from "@mui/joy";
+import { useEffect, useState } from "react";
+
 import {
   ActiveFilter,
   FilterSettingsContent,
@@ -18,8 +21,6 @@ import {
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
-import { FormControl, FormLabel, Input } from "@mui/joy";
-import { useEffect, useState } from "react";
 
 import { PROCEDURE_STATUS_OPTIONS_FOR_SEARCH } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
 

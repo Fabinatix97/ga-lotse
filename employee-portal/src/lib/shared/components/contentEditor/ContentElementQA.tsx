@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEditorElementQA } from "@eshg/lib-editor-api";
 import {
   Checkbox,
   FormControl,
@@ -11,6 +10,8 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+
+import { ApiEditorElementQA } from "@eshg/lib-editor-api";
 
 export function ContentElementQA({
   element,

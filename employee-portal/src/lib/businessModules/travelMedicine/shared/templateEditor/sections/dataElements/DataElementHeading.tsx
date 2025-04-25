@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Typography } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export function DataElementHeading(props: Readonly<RequiresChildren>) {
   return (

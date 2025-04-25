@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem, Typography } from "@mui/joy";
+import { ReactNode } from "react";
+import { isDefined } from "remeda";
+
 import {
   BaseModal,
   BaseModalProps,
@@ -18,9 +22,6 @@ import {
   ApiMedicalOpinionStatus,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
-import { List, ListItem, Typography } from "@mui/joy";
-import { ReactNode } from "react";
-import { isDefined } from "remeda";
 
 import { useCloseOpenProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 

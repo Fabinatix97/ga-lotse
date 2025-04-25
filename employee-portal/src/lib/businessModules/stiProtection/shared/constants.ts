@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChipProps } from "@mui/joy";
+import { DefaultColorPalette } from "@mui/joy/styles/types";
+
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentStatus,
@@ -17,8 +20,6 @@ import {
   ApiStiProcedureOrigin,
   ApiTaskType,
 } from "@eshg/sti-protection-api";
-import { ChipProps } from "@mui/joy";
-import { DefaultColorPalette } from "@mui/joy/styles/types";
 
 export const procedureTypes = [ApiProcedureType.StiProtection];
 

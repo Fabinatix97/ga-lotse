@@ -5,10 +5,11 @@
 
 "use client";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Button, Stack, Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
+
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";

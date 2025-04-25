@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row } from "@eshg/lib-portal/components/Row";
 import { Check } from "@mui/icons-material";
 import {
   Accordion,
@@ -14,6 +13,8 @@ import {
   styled,
 } from "@mui/joy";
 import { useTransition } from "react";
+
+import { Row } from "@eshg/lib-portal/components/Row";
 
 import { AddTextTemplate } from "@/lib/shared/components/icons/AddTextTemplate";
 

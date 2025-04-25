@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AutocompleteOption } from "@mui/joy";
+
 import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { AutocompleteOption } from "@mui/joy";
 
 import { ChipWithTooltip } from "@/components/chip/ChipWithTooltip";
 import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";

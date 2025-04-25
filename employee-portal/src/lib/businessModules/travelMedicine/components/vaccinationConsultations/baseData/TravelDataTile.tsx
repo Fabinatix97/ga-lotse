@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+import { isEmpty } from "remeda";
+
 import {
   DetailsItem,
   DetailsRow,
@@ -13,8 +16,6 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { isEmpty } from "remeda";
 
 import { CreateProcedureValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
 import { useTravelDataSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/TravelDataSidebar";

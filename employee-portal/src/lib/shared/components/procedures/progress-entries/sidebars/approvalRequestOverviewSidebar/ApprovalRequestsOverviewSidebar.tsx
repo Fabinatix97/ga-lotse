@@ -5,14 +5,15 @@
 
 "use client";
 
+import { Button, Stack } from "@mui/joy";
+import { useContext } from "react";
+
 import {
   ButtonBar,
   Sidebar,
   SidebarActions,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { Button, Stack } from "@mui/joy";
-import { useContext } from "react";
 
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useGrantDeletionForAllRequests } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";

@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFluoridationConsent } from "@eshg/dental-api";
-import { DetailsItem, InformationSheet } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import {
   Accordion,
   AccordionDetails,
@@ -15,6 +10,12 @@ import {
   Divider,
   Stack,
 } from "@mui/joy";
+
+import { ApiFluoridationConsent } from "@eshg/dental-api";
+import { DetailsItem, InformationSheet } from "@eshg/lib-employee-portal";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 
 import { FluoridationConsentInformationSection } from "@/components/fluoridationConsent/FluoridationConsentInformationSection";
 

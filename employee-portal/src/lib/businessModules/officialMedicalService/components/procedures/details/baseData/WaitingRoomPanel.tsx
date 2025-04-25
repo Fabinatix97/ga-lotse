@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ButtonBar, FormStack, TextareaField } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -18,8 +21,6 @@ import {
   ApiEmployeeOmsProcedureDetails,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
-import { Button } from "@mui/joy";
-import { Formik } from "formik";
 
 import { usePatchWaitingRoom } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";

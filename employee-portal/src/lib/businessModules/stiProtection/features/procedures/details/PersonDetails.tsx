@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Sheet, Stack } from "@mui/joy";
+
 import {
   DetailsColumn,
   DetailsItem,
@@ -12,7 +14,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
-import { Sheet, Stack } from "@mui/joy";
 
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { sufficientText } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";

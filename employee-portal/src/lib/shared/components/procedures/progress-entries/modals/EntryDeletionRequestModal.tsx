@@ -5,10 +5,11 @@
 
 "use client";
 
-import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Typography } from "@mui/joy";
 import { useContext } from "react";
+
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {

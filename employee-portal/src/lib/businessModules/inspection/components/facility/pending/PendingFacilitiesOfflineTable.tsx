@@ -5,14 +5,15 @@
 
 "use client";
 
+import { Typography } from "@mui/joy";
+import { useState } from "react";
+
 import {
   DataTable,
   TablePage,
   TableSheet,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Typography } from "@mui/joy";
-import { useState } from "react";
 
 import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";

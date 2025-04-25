@@ -2529,6 +2529,34 @@
         "tags" : [ "DraftProtectionProcedure" ]
       }
     },
+    "/protection-procedures/draft/{id}/header-information" : {
+      "get" : {
+        "operationId" : "getDraftHeaderInformation",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProtectionProcedureHeader"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get header information of measles protection procedure.",
+        "tags" : [ "DraftProtectionProcedure" ]
+      }
+    },
     "/protection-procedures/draft/{id}/open" : {
       "post" : {
         "operationId" : "openProcedure",
@@ -2869,6 +2897,75 @@
           }
         },
         "summary" : "Update the case status of a measles protection procedure.",
+        "tags" : [ "ProtectionProcedure" ]
+      }
+    },
+    "/protection-procedures/{id}/facilities/edit" : {
+      "post" : {
+        "operationId" : "editFacility",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PutFacilityRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EditFacilityResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates facility from a measles protection procedure.",
+        "tags" : [ "ProtectionProcedure" ]
+      }
+    },
+    "/protection-procedures/{id}/facilities/sync" : {
+      "post" : {
+        "operationId" : "syncFacility",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncFacilityRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Synchronize facility data.",
         "tags" : [ "ProtectionProcedure" ]
       }
     },
@@ -5197,6 +5294,19 @@
           }
         } ]
       },
+      "EditFacilityResponse" : {
+        "required" : [ "facility", "id" ],
+        "type" : "object",
+        "properties" : {
+          "facility" : {
+            "$ref" : "#/components/schemas/Facility"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "ExportArchivingRelevantProceduresRequest" : {
         "required" : [ "procedures" ],
         "type" : "object",
@@ -5299,6 +5409,9 @@
             "description" : "Email address of the facility.",
             "example" : "example@mail.de"
           },
+          "facilitySync" : {
+            "$ref" : "#/components/schemas/FacilitySync"
+          },
           "name" : {
             "type" : "string",
             "description" : "Name of the facility.",
@@ -5345,6 +5458,76 @@
           }
         },
         "description" : "Contact person in the facility."
+      },
+      "FacilityDetails" : {
+        "required" : [ "name" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "contactPersons" : {
+            "type" : "array",
+            "description" : "A list of contact persons of the Facility.",
+            "items" : {
+              "$ref" : "#/components/schemas/FacilityContactPerson"
+            }
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "description" : "A list of email addresses of the Facility.",
+            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Facility.",
+            "example" : "Example Facility"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "description" : "A list of telephone numbers of the Facility.",
+            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 0,
+              "type" : "string"
+            }
+          }
+        },
+        "description" : "The data relating to a facility"
+      },
+      "FacilitySync" : {
+        "required" : [ "fileStateId", "outdated", "version" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "outdated" : {
+            "type" : "boolean"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "FacilityType" : {
         "type" : "string",
@@ -7356,6 +7539,32 @@
           "propertyName" : "@type"
         }
       },
+      "ProtectionProcedureHeader" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PutFacilityRequest" : {
+        "required" : [ "updatedFacility" ],
+        "type" : "object",
+        "properties" : {
+          "updatedFacility" : {
+            "$ref" : "#/components/schemas/FacilityDetails"
+          }
+        },
+        "description" : "Request used for performing a consistent update of file state and associated reference facility"
+      },
       "ReportCaseRequest" : {
         "required" : [ "facility", "type" ],
         "type" : "object",
@@ -7471,6 +7680,24 @@
         "description" : "The SubmissionResult describes the current state and the final outcome of a proof submission.\n",
         "example" : "PROOF_SUBMITTED",
         "enum" : [ "UNDER_REVIEW", "ATTENDED_NO_PROOF", "TEMP_MEDICAL_ATTEST", "MEDICAL_ATTEST", "PROOF_SUBMITTED" ]
+      },
+      "SyncFacilityRequest" : {
+        "required" : [ "facilityVersion", "fileStateId", "referenceVersion" ],
+        "type" : "object",
+        "properties" : {
+          "facilityVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "SystemProgressEntry" : {
         "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],

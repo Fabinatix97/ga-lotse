@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Button, Divider, Stack, Typography } from "@mui/joy";
+import { ReactElement, useState } from "react";
+
 import {
   ButtonBar,
   ConfirmationDialog,
@@ -20,8 +23,6 @@ import {
   ApiInboxProcedureAddress,
   ApiInboxProcedureStatus,
 } from "@eshg/lib-procedures-api";
-import { Button, Divider, Stack, Typography } from "@mui/joy";
-import { ReactElement, useState } from "react";
 
 import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures";
 import { FileCard } from "@/lib/shared/components/FileCard";

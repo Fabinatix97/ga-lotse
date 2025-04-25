@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   PROCEDURE_STATUS_NAMES,
@@ -17,7 +19,6 @@ import {
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { ApiMedicalRegistryEntrySearchResult } from "@eshg/medical-registry-api";
-import { Stack, Typography } from "@mui/joy";
 
 import {
   FORM_OPTION_NEW,

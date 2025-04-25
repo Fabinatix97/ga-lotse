@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   FormControl,
   FormLabel,
@@ -18,6 +15,10 @@ import {
 } from "@mui/joy";
 import { ChangeEvent } from "react";
 import { isDefined } from "remeda";
+
+import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
 import {
   NumberFilterDefinition,

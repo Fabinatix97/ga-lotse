@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+
 import {
   FormButtonBar,
   Sidebar,
@@ -12,11 +18,6 @@ import {
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
 
 import { generateKeyPairs } from "@/lib/auditlog/components/crypto";
 import { useAddEmployeeSelfUserKeys } from "@/lib/baseModule/api/mutations/users";

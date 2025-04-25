@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiHistoryEntryType } from "@eshg/base-api";
 import AddIcon from "@mui/icons-material/AddOutlined";
 import DeleteIcon from "@mui/icons-material/DeleteOutlineRounded";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import { StepIndicatorProps } from "@mui/joy/StepIndicator/StepIndicatorProps";
 import { createElement } from "react";
+
+import { ApiHistoryEntryType } from "@eshg/base-api";
 
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
 

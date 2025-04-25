@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Radio, Sheet, Stack, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { PropsWithChildren, useId } from "react";
+
 import { Row } from "@eshg/lib-portal/components/Row";
 import {
   RadioGroupField,
   RadioGroupFieldProps,
 } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { Radio, Sheet, Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { PropsWithChildren, useId } from "react";
 
 export function RadioSheets({ children, ...props }: RadioGroupFieldProps) {
   return (

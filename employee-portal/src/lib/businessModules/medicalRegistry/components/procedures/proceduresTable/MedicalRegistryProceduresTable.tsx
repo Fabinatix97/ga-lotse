@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Box } from "@mui/joy";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useEffect, useReducer, useState } from "react";
+import { isDefined } from "remeda";
+
 import {
   DataTable,
   FilterSettings,
@@ -24,10 +29,6 @@ import {
   ApiApplicantAddress,
   ApiMedicalRegistryEntry,
 } from "@eshg/medical-registry-api";
-import { Box } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useEffect, useReducer, useState } from "react";
-import { isDefined } from "remeda";
 
 import { useGetMedicalProceduresTablePage } from "@/lib/businessModules/medicalRegistry/api/queries/useGetMedicalProceduresTablePage";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";

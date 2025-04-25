@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+import { FormikProps, useFormikContext } from "formik";
+
 import { MedicalRegistryCreateProcedureFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -12,8 +15,6 @@ import {
 } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
-import { Typography } from "@mui/joy";
-import { FormikProps, useFormikContext } from "formik";
 
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/baseModule/components/ConfirmLeaveDirtyFormEffect";
 import { theme } from "@/lib/baseModule/theme/theme";

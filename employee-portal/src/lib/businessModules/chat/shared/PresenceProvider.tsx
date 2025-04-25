@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ClientEvent, MatrixEvent, User, UserEvent } from "matrix-js-sdk";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { isNullish } from "remeda";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

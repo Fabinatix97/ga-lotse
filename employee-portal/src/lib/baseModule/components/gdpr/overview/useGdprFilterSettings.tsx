@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, ToggleButtonGroup, Typography } from "@mui/joy";
+import { useState } from "react";
+import { isDefined } from "remeda";
+
 import { ApiGdprProcedureType } from "@eshg/base-api";
 import {
   ActiveFilter,
@@ -10,9 +14,6 @@ import {
   ToggleFilterButtonProps,
   UseTableControlResult,
 } from "@eshg/lib-employee-portal";
-import { Stack, ToggleButtonGroup, Typography } from "@mui/joy";
-import { useState } from "react";
-import { isDefined } from "remeda";
 
 import { typeTranslation } from "@/lib/baseModule/components/gdpr/i18n";
 import { ToggleButton } from "@/lib/shared/components/buttons/ToggleButton";

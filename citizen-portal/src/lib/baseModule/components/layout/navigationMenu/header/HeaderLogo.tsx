@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { styled } from "@mui/joy";
+
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import { useGetDepartmentLogo } from "@/lib/shared/api/queries/department";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";

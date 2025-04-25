@@ -5,6 +5,12 @@
 
 "use client";
 
+import {
+  queryOptions,
+  useQueries,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+
 import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
@@ -12,11 +18,6 @@ import {
   ApiGetStiProtectionProceduresSortOrder,
   ApiStiProtectionProcedureOverview,
 } from "@eshg/sti-protection-api";
-import {
-  queryOptions,
-  useQueries,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/stiProtection/components/procedures/proceduresTable/StiProtectionProceduresTableFilters";

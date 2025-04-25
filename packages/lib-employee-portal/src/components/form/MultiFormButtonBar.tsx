@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { Button, ColorPaletteProp } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 
 import { ButtonBar } from "@/components/buttons/ButtonBar";
 

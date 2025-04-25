@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { Button, Stack, ToggleButtonGroup } from "@mui/joy";
+
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";

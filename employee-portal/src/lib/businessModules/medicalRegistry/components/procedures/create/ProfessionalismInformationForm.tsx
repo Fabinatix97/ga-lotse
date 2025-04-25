@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Radio, Typography } from "@mui/joy";
+
 import {
   employmentStatusNames,
   employmentTypeNames,
@@ -15,7 +17,6 @@ import {
   ApiEmploymentStatus,
   ApiEmploymentType,
 } from "@eshg/medical-registry-api";
-import { Grid, Radio, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 

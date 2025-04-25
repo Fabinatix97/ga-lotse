@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import {
   CheckboxField,
   MainContentLayout,
@@ -13,8 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 export default function PlaygroundSearchableGroupsPage() {
   const groups = [

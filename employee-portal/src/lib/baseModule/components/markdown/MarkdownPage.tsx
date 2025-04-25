@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { evaluate } from "@mdx-js/mdx";
 import { List, ListItem, Typography } from "@mui/joy";
 import { promises as fs } from "fs";
@@ -11,6 +10,8 @@ import * as path from "path";
 import { HTMLProps } from "react";
 import * as runtime from "react/jsx-runtime";
 import "server-only";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { env } from "@/env/server";
 

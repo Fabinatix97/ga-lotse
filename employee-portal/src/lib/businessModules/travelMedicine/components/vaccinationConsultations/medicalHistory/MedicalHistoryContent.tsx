@@ -5,6 +5,13 @@
 
 "use client";
 
+import { DownloadOutlined } from "@mui/icons-material";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import { Button, IconButton, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { ReactNode, useEffect, useState } from "react";
+
 import { DetailsSection, InformationSheet } from "@eshg/lib-employee-portal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -12,12 +19,6 @@ import {
   ApiMedicalHistory,
   ApiProcedureStatus,
 } from "@eshg/travel-medicine-api";
-import { DownloadOutlined } from "@mui/icons-material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Button, IconButton, Stack } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { ReactNode, useEffect, useState } from "react";
 
 import { useDownloadMedicalHistoryPdf } from "@/lib/businessModules/travelMedicine/api/download/files";
 import {

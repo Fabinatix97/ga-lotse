@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  FormatListBulletedOutlined,
+  TextSnippetOutlined,
+  TimelineOutlined,
+} from "@mui/icons-material";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   PersonToolbarHeader,
@@ -13,12 +20,6 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import {
-  FormatListBulletedOutlined,
-  TextSnippetOutlined,
-  TimelineOutlined,
-} from "@mui/icons-material";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { routes } from "@/config/routes";
 import { useDentalApi } from "@/contexts/dental";

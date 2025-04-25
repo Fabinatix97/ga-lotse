@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { format, isAfter } from "date-fns";
+import { Formik, FormikErrors } from "formik";
+import { Ref } from "react";
+import { isEmpty } from "remeda";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -16,11 +22,6 @@ import {
   ApiAppointmentType,
   ApiAssignableService,
 } from "@eshg/travel-medicine-api";
-import { Stack, Typography } from "@mui/joy";
-import { format, isAfter } from "date-fns";
-import { Formik, FormikErrors } from "formik";
-import { Ref } from "react";
-import { isEmpty } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";

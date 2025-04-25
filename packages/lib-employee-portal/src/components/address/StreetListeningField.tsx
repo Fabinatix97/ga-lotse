@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useFormikContext } from "formik";
+import { useEffect } from "react";
+
 import {
   InputField,
   InputFieldProps,
 } from "@eshg/lib-portal/components/formFields/InputField";
-import { useFormikContext } from "formik";
-import { useEffect } from "react";
 
 import { useGetPostCodeAndCityForStreet } from "@/api/queries/streets";
 

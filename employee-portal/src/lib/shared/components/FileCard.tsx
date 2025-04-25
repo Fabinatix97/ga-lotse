@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiFileType } from "@eshg/lib-procedures-api";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
@@ -25,6 +21,11 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useRouter } from "next/navigation";
 import { ReactNode, createElement } from "react";
 import { isDefined } from "remeda";
+
+import { ActionsMenu } from "@eshg/lib-employee-portal";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiFileType } from "@eshg/lib-procedures-api";
 
 export interface FileCardActionProps {
   onClick: string | (() => Promise<void> | void);

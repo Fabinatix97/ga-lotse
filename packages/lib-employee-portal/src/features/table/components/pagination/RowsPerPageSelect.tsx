@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Select, SelectProps } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { isNonNullish } from "remeda";
+
 import {
   SelectOption,
   SelectOptions,
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { Select, SelectProps } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { isNonNullish } from "remeda";
 
 export function RowsPerPageSelect(props: {
   value: string;

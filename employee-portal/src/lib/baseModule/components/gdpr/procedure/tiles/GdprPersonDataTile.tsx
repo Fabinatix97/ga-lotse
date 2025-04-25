@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
+import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import { ApiGdprPerson, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
@@ -18,9 +22,6 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
-import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import {
   SectionTile,

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { LogoutOutlined } from "@mui/icons-material";
+
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { LogoutOutlined } from "@mui/icons-material";
 
 export function LogoutButton(props: { text: string }) {
   const isMobile = useIsMobile();

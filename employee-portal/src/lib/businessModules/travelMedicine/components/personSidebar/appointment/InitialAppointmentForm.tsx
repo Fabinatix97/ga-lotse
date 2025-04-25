@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { RefObject } from "@fullcalendar/core/preact.js";
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { Formik, FormikErrors } from "formik";
+import { useState } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -15,12 +22,6 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
-import { RefObject } from "@fullcalendar/core/preact.js";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { Formik, FormikErrors } from "formik";
-import { useState } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";

@@ -3,15 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import {
-  ApiAppointmentStatus,
-  ApiAppointmentType,
-  ApiConcern,
-} from "@eshg/sti-protection-api";
 import {
   ChevronRightOutlined,
   DateRangeOutlined,
@@ -23,6 +14,16 @@ import {
   WatchLaterOutlined,
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import {
+  ApiAppointmentStatus,
+  ApiAppointmentType,
+  ApiConcern,
+} from "@eshg/sti-protection-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -60,6 +61,11 @@ export function AppointmentOverviewSheetButton({
     appointment.appointmentStatus,
   );
 
+  const appointmentTypeTransKey =
+    appointment.appointmentType === ApiAppointmentType.ResultsReview
+      ? "appointment_card.appointment_type.results_review"
+      : "appointment_card.appointment_type.consultation";
+
   return (
     <InternalLinkButton
       color={"neutral"}
@@ -78,6 +84,8 @@ export function AppointmentOverviewSheetButton({
           "&:hover": {
             filter: "brightness(90%)",
           },
+          minHeight: theme.spacing(18),
+          gap: theme.spacing(3),
         }}
       >
         <AppointmentOverviewSectionGrid
@@ -85,42 +93,39 @@ export function AppointmentOverviewSheetButton({
         >
           <AppointmentOverviewButtonElement
             icon={<DateRangeOutlined />}
-            text={formatDate(appointment.start)}
+            text={formatDate(appointment.appointmentStart)}
           />
-          {appointment.start && (
-            <AppointmentOverviewSection icon={<WatchLaterOutlined />}>
-              <AppointmentOverviewSectionTitle>
-                {t("appointment_card.start", {
-                  time: formatTime(appointment.start),
+          <AppointmentOverviewSection icon={<WatchLaterOutlined />}>
+            <AppointmentOverviewSectionTitle>
+              {t("appointment_card.start", {
+                time: formatTime(appointment.appointmentStart),
+              })}
+            </AppointmentOverviewSectionTitle>
+            {appointment.appointmentEnd && (
+              <AppointmentOverviewSectionText>
+                {t("appointment_card.duration", {
+                  appointmentDuration: durationBetweenDatesInMinutes(
+                    appointment.appointmentStart,
+                    appointment.appointmentEnd,
+                  ),
                 })}
-              </AppointmentOverviewSectionTitle>
-              {appointment.start && appointment.end && (
-                <AppointmentOverviewSectionText>
-                  {t("appointment_card.duration", {
-                    appointmentDuration: durationBetweenDatesInMinutes(
-                      appointment.start,
-                      appointment.end,
-                    ),
-                  })}
-                </AppointmentOverviewSectionText>
-              )}
-            </AppointmentOverviewSection>
-          )}
-          {appointment.appointmentType ===
-          ApiAppointmentType.HivStiConsultation ? (
+              </AppointmentOverviewSectionText>
+            )}
+          </AppointmentOverviewSection>
+          {concern === ApiConcern.HivStiConsultation ? (
             <AppointmentOverviewButtonElement
               icon={<HivOutlined />}
-              text={t("appointment_card.appointment_type.hiv_sti")}
+              text={t("appointment_card.concern.hiv_sti")}
             />
           ) : (
             <AppointmentOverviewButtonElement
               icon={<MedicalServicesOutlined />}
-              text={t("appointment_card.appointment_type.sex_work")}
+              text={t("appointment_card.concern.sex_work")}
             />
           )}
           <AppointmentOverviewButtonElement
             icon={<PeopleAltOutlined />}
-            text={t("appointment_card.appointment_type.consultation")}
+            text={t(appointmentTypeTransKey)}
           />
           <AppointmentOverviewButtonElement
             icon={statusIcon}

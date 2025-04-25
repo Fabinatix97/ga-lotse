@@ -5,13 +5,14 @@
 
 "use client";
 
+import { Button, Stack } from "@mui/joy";
+
 import {
   ButtonBar,
   Sidebar,
   SidebarActions,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { Button, Stack } from "@mui/joy";
 
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";

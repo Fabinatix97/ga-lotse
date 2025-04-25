@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Sheet, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import { CheckboxField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   ApiRapidTestExamination,
   ApiTextTemplateContext,
 } from "@eshg/sti-protection-api";
-import { Divider, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 import {
   useUpsertRapidTestOptions,

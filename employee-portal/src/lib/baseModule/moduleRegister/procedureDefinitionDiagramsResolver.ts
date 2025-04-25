@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import { StaticImageData } from "next/image";
+
+import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 
 import inspectionProcedureDefinitionDiagram from "@/lib/businessModules/inspection/shared/procedureDefinition.svg";
 import measlesProtectionProcedureDefinitionDiagram from "@/lib/businessModules/measlesProtection/shared/procedureDefinition.svg";

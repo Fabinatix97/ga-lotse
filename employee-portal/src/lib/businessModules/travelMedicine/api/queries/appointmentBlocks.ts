@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useQuery } from "@tanstack/react-query";
+
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
@@ -11,7 +13,6 @@ import {
   ApiCreateDailyAppointmentBlockGroupRequest,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/travel-medicine-api";
-import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { mapAppointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";

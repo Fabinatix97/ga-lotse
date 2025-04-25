@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { Formik } from "formik";
+
 import {
   ButtonBar,
   SidebarActions,
@@ -13,8 +16,6 @@ import {
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiVersion } from "@eshg/opendata-api";
-import { Button } from "@mui/joy";
-import { Formik } from "formik";
 
 import { EntryDetailsSidebarProps } from "@/lib/opendata/components/EntryDetailsSidebar";
 import {

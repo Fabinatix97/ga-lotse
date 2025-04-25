@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Business, PeopleAltOutlined, TurnLeft } from "@mui/icons-material";
 import {
   Box,
@@ -18,6 +17,8 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

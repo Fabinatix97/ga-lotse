@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types/theme";
+import { FormikErrors } from "formik";
+import { isDefined } from "remeda";
+
 import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import {
   createFieldNameMapper,
@@ -15,10 +20,6 @@ import {
   OptionalFieldValue,
 } from "@eshg/lib-portal/types/form";
 import { GetPercentilesRequest } from "@eshg/school-entry-api";
-import { Stack, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types/theme";
-import { FormikErrors } from "formik";
-import { isDefined } from "remeda";
 
 import { Percentiles } from "@/lib/businessModules/schoolEntry/api/models/examinations/Percentiles";
 import { useGetPercentiles } from "@/lib/businessModules/schoolEntry/api/queries/valueEvaluatorApi";

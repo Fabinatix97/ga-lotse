@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { ApiConcern } from "@eshg/official-medical-service-api";
 import { Select, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { ApiConcern } from "@eshg/official-medical-service-api";
 
 import {
   SEARCH_PARAMS,

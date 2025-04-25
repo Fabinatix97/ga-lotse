@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   ApiGetWaitingRoomProceduresResponse,
   GetWaitingRoomProceduresRequest,
 } from "@eshg/sti-protection-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useWaitingRoomApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";

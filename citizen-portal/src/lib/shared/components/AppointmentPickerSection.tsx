@@ -3,17 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AppointmentListProps } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentListForDate";
-import {
-  Appointment,
-  AppointmentPickerField,
-  AppointmentPickerFieldProps,
-  AppointmentPickerLayoutProps,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import {
-  formatTime,
-  isSameAppointment,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
 import {
   Box,
   ListItem,
@@ -28,6 +17,18 @@ import {
 import assert from "assert";
 import { useFormikContext } from "formik";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
+
+import { AppointmentListProps } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentListForDate";
+import {
+  Appointment,
+  AppointmentPickerField,
+  AppointmentPickerFieldProps,
+  AppointmentPickerLayoutProps,
+} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import {
+  formatTime,
+  isSameAppointment,
+} from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
 
 import { Row } from "@/lib/businessModules/measlesProtection/shared/components/Row";
 import { TranslateFn } from "@/lib/i18n/client";

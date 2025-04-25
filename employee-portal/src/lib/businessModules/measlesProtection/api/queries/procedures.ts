@@ -5,6 +5,9 @@
 
 "use client";
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { DeepKeys } from "@tanstack/react-table";
+
 import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
 import {
   ApiGetMeaslesProtectionProceduresSortBy,
@@ -12,10 +15,11 @@ import {
   ApiGetProcedure200Response,
   ProtectionProcedureApi,
 } from "@eshg/measles-protection-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { DeepKeys } from "@tanstack/react-table";
 
-import { useProtectionProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
+import {
+  useDraftProcedureApi,
+  useProtectionProcedureApi,
+} from "@/lib/businessModules/measlesProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ProceduresTableFilters";
 
 import { measlesProtectionApiQueryKey } from "./apiQueryKeys";
@@ -65,7 +69,7 @@ export function getProcedureQuery(
   return queryOptions({
     queryFn: ({ signal }) =>
       protectionProcedureApi.getProcedure(procedureId, { signal }),
-    queryKey: measlesProtectionApiQueryKey(["procedures", procedureId]),
+    queryKey: measlesProtectionApiQueryKey(["getProcedure", procedureId]),
   });
 }
 
@@ -75,6 +79,17 @@ export function useProcedureQuery(procedureId: string) {
   return useSuspenseQuery(
     getProcedureQuery(protectionProcedureApi, procedureId),
   );
+}
+
+export function useGetHeaderInformation(procedureId: string) {
+  const api = useDraftProcedureApi();
+  return useSuspenseQuery({
+    queryFn: () => api.getDraftHeaderInformation(procedureId),
+    queryKey: measlesProtectionApiQueryKey([
+      "getDraftHeaderInformation",
+      procedureId,
+    ]),
+  });
 }
 
 function mapSortOrder(

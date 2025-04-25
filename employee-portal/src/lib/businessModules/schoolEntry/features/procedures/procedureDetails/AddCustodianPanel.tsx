@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button } from "@mui/joy";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   ContentPanel,
@@ -14,8 +17,6 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { ApiAddCustodianRequest } from "@eshg/school-entry-api";
-import AddIcon from "@mui/icons-material/Add";
-import { Button } from "@mui/joy";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useAddPersonAsCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";

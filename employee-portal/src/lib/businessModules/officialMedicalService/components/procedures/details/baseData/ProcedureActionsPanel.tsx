@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { useRouter } from "next/navigation";
+import { ReactNode } from "react";
+import { isDefined } from "remeda";
+
 import {
   InformationSheet,
   OpenModalButton,
@@ -15,10 +20,6 @@ import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
-import { Button } from "@mui/joy";
-import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
-import { isDefined } from "remeda";
 
 import {
   useAbortDraftProcedure,

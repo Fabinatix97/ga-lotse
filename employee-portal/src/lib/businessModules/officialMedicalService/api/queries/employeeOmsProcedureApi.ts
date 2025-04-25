@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   EmployeeOmsProcedureApi,
   GetAllEmployeeProceduresRequest,
 } from "@eshg/official-medical-service-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEmployeeOmsProcedureApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { employeeOmsProcedureApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";

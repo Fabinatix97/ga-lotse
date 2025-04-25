@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EditOutlined } from "@mui/icons-material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -12,10 +17,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { EditOutlined } from "@mui/icons-material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import {

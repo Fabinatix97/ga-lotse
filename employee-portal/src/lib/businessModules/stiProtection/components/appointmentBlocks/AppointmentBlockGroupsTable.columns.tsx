@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiAppointmentType } from "@eshg/sti-protection-api";
 import { Delete } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import { Row, createColumnHelper } from "@tanstack/react-table";
 import { unique } from "remeda";
+
+import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiAppointmentType } from "@eshg/sti-protection-api";
 
 import {
   AppointmentBlockGroup,

@@ -5,11 +5,12 @@
 
 "use client";
 
+import { useState } from "react";
+import { isNonNullish, isNullish } from "remeda";
+
 import { ApiInspection, ApiInspectionAppointment } from "@eshg/inspection-api";
 import { DetailsItem } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { useState } from "react";
-import { isNonNullish, isNullish } from "remeda";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";

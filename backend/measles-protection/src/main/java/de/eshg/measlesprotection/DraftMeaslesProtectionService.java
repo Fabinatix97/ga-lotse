@@ -26,10 +26,13 @@ import de.eshg.lib.procedure.domain.model.TaskStatus;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.measlesprotection.api.FacilityContactPersonDto;
 import de.eshg.measlesprotection.api.FacilityDto;
+import de.eshg.measlesprotection.api.FacilitySyncDto;
+import de.eshg.measlesprotection.api.ProtectionProcedureHeaderDto;
 import de.eshg.measlesprotection.api.draft.AddFacilityRequest;
 import de.eshg.measlesprotection.api.draft.AddFacilityResponse;
 import de.eshg.measlesprotection.mapper.FacilityContactPersonMapper;
 import de.eshg.measlesprotection.mapper.MPFacilityTypeMapper;
+import de.eshg.measlesprotection.mapper.ToDtoMappers;
 import de.eshg.measlesprotection.persistence.db.CaseStatus;
 import de.eshg.measlesprotection.persistence.db.Facility;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
@@ -156,7 +159,9 @@ public class DraftMeaslesProtectionService {
             getFirstPhoneNumber(addFacilityRequest.facility()),
             getFirstEmailAddress(addFacilityRequest.facility()),
             facilityFileState.contactAddress(),
-            facilityFileState.differentBillingAddress());
+            facilityFileState.differentBillingAddress(),
+            new FacilitySyncDto(
+                facilityFileState.id(), facilityFileState.referenceVersion(), false));
     return new AddFacilityResponse(procedure.getExternalId(), facilityDto);
   }
 
@@ -175,6 +180,14 @@ public class DraftMeaslesProtectionService {
     procedure.setCaseStatus(CaseStatus.PROCEDURE_RECORDED);
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     return procedure;
+  }
+
+  @Transactional
+  public ProtectionProcedureHeaderDto getDraftHeaderInformation(UUID id) {
+    MeaslesProtectionProcedure procedure = findDraftByExternalId(id);
+    GetPersonFileStateResponse personFileState =
+        personApi.getPersonFileState(procedure.getPatientIdFromCentralFile());
+    return ToDtoMappers.toProtectionProcedureHeaderDto(personFileState);
   }
 
   private void requireCustodian(MeaslesProtectionProcedure procedure) {

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Row } from "@eshg/lib-portal/components/Row";
 import { BoxProps, getFormControlUtilityClass, styled } from "@mui/joy";
+
+import { Row } from "@eshg/lib-portal/components/Row";
 
 import { FieldSetLegendAndHelper, FieldSetProps } from "./CheckboxGroupField";
 import { Legend } from "./Legend";

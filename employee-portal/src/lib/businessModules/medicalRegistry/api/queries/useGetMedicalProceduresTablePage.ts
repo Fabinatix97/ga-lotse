@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueries } from "@tanstack/react-query";
+
 import {
   FilterValue,
   useGetGdprValidationBannerQuery,
 } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
-import { useQueries } from "@tanstack/react-query";
 
 import {
   useGdprValidationTaskApi,

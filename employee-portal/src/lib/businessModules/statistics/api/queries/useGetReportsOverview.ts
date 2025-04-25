@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import {
   DateSpanFilterValue,
   EnumFilterValue,
@@ -15,7 +17,6 @@ import {
   ApiReportType,
   ReportSeriesApi,
 } from "@eshg/statistics-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
   useDataSourceApi,

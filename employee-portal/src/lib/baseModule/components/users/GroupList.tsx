@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserGroup } from "@eshg/base-api";
 import { Chip, Stack } from "@mui/joy";
+
+import { ApiUserGroup } from "@eshg/base-api";
 
 import { translateUserGroup } from "@/lib/shared/helpers/users";
 

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ComponentType, Ref, useState } from "react";
+import { isDefined } from "remeda";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonForm,
@@ -18,8 +21,6 @@ import {
   defaultPersonFormValues,
 } from "@eshg/lib-employee-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
-import { ComponentType, Ref, useState } from "react";
-import { isDefined } from "remeda";
 
 type CreatePersonStateMapper<TSearchValues, TCreateValues> = (props: {
   inputs: TSearchValues;

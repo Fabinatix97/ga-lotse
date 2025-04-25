@@ -5,6 +5,9 @@
 
 "use client";
 
+import { FormLabel, Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
@@ -15,8 +18,6 @@ import {
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
 import { ApiSchoolEntryCountryCode } from "@eshg/school-entry-api";
-import { FormLabel, Stack, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { CountryCodes } from "@/lib/businessModules/schoolEntry/api/models/CountryCodes";
 import { MigrationBackgroundValues } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/AnamnesisForm";

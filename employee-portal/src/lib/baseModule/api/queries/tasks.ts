@@ -5,6 +5,8 @@
 
 "use client";
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   AggregateTasksRequest,
   ApiBusinessModule,
@@ -17,7 +19,6 @@ import {
 } from "@eshg/base-api";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useTaskAggregationApi } from "@/lib/baseModule/api/clients";
 import { mapResponse } from "@/lib/baseModule/api/models/task";

@@ -6,14 +6,6 @@
 "use client";
 
 import {
-  MainContentLayout,
-  SideNavigationItem,
-  StickyToolbarLayout,
-  Toolbar,
-  ToolbarBackButton,
-  noCheck,
-} from "@eshg/lib-employee-portal";
-import {
   AcUnitOutlined,
   AppsOutlined,
   ChatOutlined,
@@ -33,6 +25,15 @@ import {
 } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ReactNode, useState } from "react";
+
+import {
+  MainContentLayout,
+  SideNavigationItem,
+  StickyToolbarLayout,
+  Toolbar,
+  ToolbarBackButton,
+  noCheck,
+} from "@eshg/lib-employee-portal";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 import { CollapsedNavigationList } from "@/lib/baseModule/components/layout/sideNavigation/lists/CollapsedNavigationList";

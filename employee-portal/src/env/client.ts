@@ -4,8 +4,9 @@
  */
 
 /* eslint-disable no-restricted-properties */
-import { nodeEnvSchema } from "@eshg/lib-portal/schemas/environment";
 import { object, parse, string } from "valibot";
+
+import { nodeEnvSchema } from "@eshg/lib-portal/schemas/environment";
 
 /*
  * Environment Variables exposed to the Client (Browser)

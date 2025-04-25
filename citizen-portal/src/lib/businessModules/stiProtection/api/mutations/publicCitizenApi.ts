@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+import assert from "assert";
+
 import {
   ApiAddPersonalDetailsRequest,
   ApiBookAppointmentRequest,
 } from "@eshg/sti-protection-api";
-import { useMutation } from "@tanstack/react-query";
-import assert from "assert";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/stiProtection/api/clients";
 

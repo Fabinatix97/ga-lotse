@@ -5,9 +5,10 @@
 
 "use client";
 
+import { Stack, Typography } from "@mui/joy";
+
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { ApiConcern } from "@eshg/sti-protection-api";
-import { Stack, Typography } from "@mui/joy";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

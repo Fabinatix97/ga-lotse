@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import ProcedureIcon from "@mui/icons-material/TextSnippetOutlined";
+import { ReactNode } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -10,8 +13,6 @@ import {
   TabNavigationToolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import ProcedureIcon from "@mui/icons-material/TextSnippetOutlined";
-import { ReactNode } from "react";
 
 import { centralFilePlaygroundRoutes } from "@/app/playground/centralFile/centralFilePlaygroundRoutes";
 import { updateAvailableNavItem } from "@/lib/shared/components/centralFile/constants";

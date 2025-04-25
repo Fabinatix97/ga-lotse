@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { ComponentType, ReactNode, useEffect, useState } from "react";
 import { isDefined } from "remeda";
+
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 
 import { SidebarWithFormRefProps } from "@/features/drawer/hooks/useSidebarWithFormRef";
 import { useSearchReferencePersonsQuery } from "@/features/persons/api/queries";

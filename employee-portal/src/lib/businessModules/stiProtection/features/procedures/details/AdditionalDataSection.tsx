@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Chip, Sheet, styled } from "@mui/joy";
+
 import { DetailsColumn, DetailsSection } from "@eshg/lib-employee-portal";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
-import { Chip, Sheet, styled } from "@mui/joy";
 
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";

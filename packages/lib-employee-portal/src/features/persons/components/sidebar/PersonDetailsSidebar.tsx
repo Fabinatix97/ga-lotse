@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { isDefined } from "remeda";
+
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   GENDER_VALUES,
@@ -11,9 +15,6 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { Divider, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { isDefined } from "remeda";
 
 import { BaseAddressDetailsColumn } from "@/components/address/BaseAddressDetailsColumn";
 import { DetailsRow } from "@/components/detailsSection/DetailsRow";

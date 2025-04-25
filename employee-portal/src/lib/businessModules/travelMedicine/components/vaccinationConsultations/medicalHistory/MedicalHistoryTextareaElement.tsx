@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormLabel, styled } from "@mui/joy";
+
 import { TextareaField } from "@eshg/lib-employee-portal";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { FormLabel, styled } from "@mui/joy";
 
 interface MedicalHistoryTextareaElementProps {
   label: string;

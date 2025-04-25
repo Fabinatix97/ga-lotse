@@ -15,8 +15,10 @@ import de.eshg.measlesprotection.api.CustodianDto;
 import de.eshg.measlesprotection.api.DraftMeaslesProcedureDto;
 import de.eshg.measlesprotection.api.FacilityContactPersonDto;
 import de.eshg.measlesprotection.api.FacilityDto;
+import de.eshg.measlesprotection.api.FacilitySyncDto;
 import de.eshg.measlesprotection.api.MeaslesProtectionProcedureDto;
 import de.eshg.measlesprotection.api.ProtectionProcedureDto;
+import de.eshg.measlesprotection.api.ProtectionProcedureHeaderDto;
 import de.eshg.measlesprotection.persistence.centralfile.FacilityData;
 import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
 import java.util.List;
@@ -42,6 +44,33 @@ public final class ToDtoMappers {
         person.title(),
         RoleStatusMapper.toInterfaceType(procedureDetailsData.roleStatus()),
         person.contactAddress());
+  }
+
+  public static AffectedPersonDto toAffectedPersonDto(
+      GetPersonFileStateResponse fileStateResponse) {
+    return new AffectedPersonDto(
+        fileStateResponse.id(),
+        fileStateResponse.firstName(),
+        fileStateResponse.lastName(),
+        fileStateResponse.dateOfBirth(),
+        fileStateResponse.phoneNumbers(),
+        fileStateResponse.emailAddresses(),
+        fileStateResponse.countryOfBirth(),
+        fileStateResponse.gender(),
+        fileStateResponse.nameAtBirth(),
+        fileStateResponse.placeOfBirth(),
+        fileStateResponse.salutation(),
+        fileStateResponse.title(),
+        null,
+        fileStateResponse.contactAddress());
+  }
+
+  public static ProtectionProcedureHeaderDto toProtectionProcedureHeaderDto(
+      GetPersonFileStateResponse fileStateResponse) {
+    return new ProtectionProcedureHeaderDto(
+        fileStateResponse.firstName(),
+        fileStateResponse.lastName(),
+        fileStateResponse.dateOfBirth());
   }
 
   public static CustodianDto toCustodianDto(GetPersonFileStateResponse person) {
@@ -76,7 +105,12 @@ public final class ToDtoMappers {
         getFirstPhoneNumber(facilityData.facilityDto()),
         getFirstEmailAddress(facilityData.facilityDto()),
         facilityData.facilityDto().contactAddress(),
-        facilityData.facilityDto().differentBillingAddress());
+        facilityData.facilityDto().differentBillingAddress(),
+        new FacilitySyncDto(
+            facilityData.facilityDto().id(),
+            facilityData.facilityDto().referenceVersion(),
+            facilityData.facilityDto().outdated() != null
+                && facilityData.facilityDto().outdated()));
   }
 
   public static String getFirstPhoneNumber(FacilityDetails facility) {

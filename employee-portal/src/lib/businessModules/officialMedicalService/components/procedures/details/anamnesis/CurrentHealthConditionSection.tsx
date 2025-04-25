@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+
 import { TextareaField } from "@eshg/lib-employee-portal";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { Typography } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { BooleanRadioButtonsWithFollowUp } from "@/lib/businessModules/officialMedicalService/shared/BooleanRadioButtonsWithFollowUp";

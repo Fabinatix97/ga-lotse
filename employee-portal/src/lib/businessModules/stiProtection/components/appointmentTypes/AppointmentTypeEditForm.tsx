@@ -5,6 +5,9 @@
 
 "use client";
 
+import { FormLabel, Input, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -14,8 +17,6 @@ import {
 import { BaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { ApiAppointmentType } from "@eshg/sti-protection-api";
-import { FormLabel, Input, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 

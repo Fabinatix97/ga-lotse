@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonNullish } from "remeda";
+
 import { ApiInspectionAppointment } from "@eshg/inspection-api";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { isNonNullish } from "remeda";
 
 export function getFormattedAppointmentParts(
   appointment: ApiInspectionAppointment | undefined,

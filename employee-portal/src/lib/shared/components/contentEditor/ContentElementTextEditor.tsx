@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiUpdateEditorRequest } from "@eshg/lib-editor-api";
 import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { Divider, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 interface ContentElementTextEditorProps {
   text: string;

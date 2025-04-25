@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
+
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
 export interface ModuleErrorModalProps {
   open: boolean;

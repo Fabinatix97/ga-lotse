@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { TFunction } from "i18next";
+import { isEmpty } from "remeda";
+
 import {
   ApiAdminActorMetadata,
   ApiAdminActorSelector,
@@ -16,9 +20,6 @@ import {
   ApiPairAdminPartialOrgUnit,
   ApiPairAdminPartialRule,
 } from "@eshg/service-directory-api";
-import { Stack, Typography } from "@mui/joy";
-import { TFunction } from "i18next";
-import { isEmpty } from "remeda";
 
 import {
   EmptyHistoryEntryIndicator,

@@ -125,6 +125,21 @@ export function useEditDraftChecklistDefinitionVersion() {
   });
 }
 
+export function useDeleteDraftChecklistDefinitionVersion() {
+  const checklistDefinitionApi = useChecklistDefinitionApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: async ({ versionId }: { versionId: string }) => {
+      return await checklistDefinitionApi.deleteDraftChecklistDefinitionVersion(
+        versionId,
+      );
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Entwurf erfolgreich gelöscht");
+    },
+  });
+}
+
 export function useAddChecklistDefinitionToCentralRepo() {
   const repoApi = useChecklistDefinitionCentralRepoApi();
   const snackbar = useSnackbar();

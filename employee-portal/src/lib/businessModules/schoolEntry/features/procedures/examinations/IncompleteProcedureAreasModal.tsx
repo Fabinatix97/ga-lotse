@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+
 import {
   BaseModal,
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
 import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
-import { Typography } from "@mui/joy";
 
 import { REQUIRED_PROCEDURE_AREAS } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 

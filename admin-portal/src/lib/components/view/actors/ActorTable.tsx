@@ -5,6 +5,9 @@
 
 "use client";
 
+import { createColumnHelper, filterFns } from "@tanstack/react-table";
+import { useMemo } from "react";
+
 import {
   ApiAdminActor,
   ApiAdminActorType,
@@ -13,8 +16,6 @@ import {
   ApiAdminStagedEntityType,
   ApiGetOrgUnitsResponse,
 } from "@eshg/service-directory-api";
-import { createColumnHelper, filterFns } from "@tanstack/react-table";
-import { useMemo } from "react";
 
 import { DeleteRow } from "@/lib/components/table/DeleteRow";
 import { EditableTable } from "@/lib/components/table/EditableTable";

@@ -5,7 +5,6 @@
 
 "use client";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
   Checkbox,
   FormControl,
@@ -14,6 +13,8 @@ import {
   ListItem,
 } from "@mui/joy";
 import { ChangeEvent, ReactNode } from "react";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";

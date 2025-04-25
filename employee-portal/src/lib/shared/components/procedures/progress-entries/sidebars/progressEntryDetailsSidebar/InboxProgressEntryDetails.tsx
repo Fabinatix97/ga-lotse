@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined } from "remeda";
+
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiProcessedInboxProgressEntry,
   ApiUser,
 } from "@eshg/lib-procedures-api";
-import { isDefined } from "remeda";
 
 import { inboxProgressEntryTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { DetailsContentWrapper } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsContentWrapper";

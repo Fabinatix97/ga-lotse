@@ -5,10 +5,11 @@
 
 "use client";
 
-import { ApiTask } from "@eshg/base-api";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { Chip, Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { ApiTask } from "@eshg/base-api";
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import { OverdueTaskIcon } from "@/lib/baseModule/components/task/OverdueTaskIcon";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";

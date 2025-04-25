@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEmpty } from "remeda";
+
 import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { isEmpty } from "remeda";
 
 import {
   DirtyState,

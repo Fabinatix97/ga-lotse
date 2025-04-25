@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { UseQueryResult } from "@tanstack/react-query";
+
 import {
   FeatureToggleQueryOptions,
   selectDisabledOldFeature,
@@ -14,7 +16,6 @@ import {
   ApiGetSchoolEntryFeatureTogglesResponse,
   ApiSchoolEntryFeature,
 } from "@eshg/school-entry-api";
-import { UseQueryResult } from "@tanstack/react-query";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { schoolEntryFeatureTogglesApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";

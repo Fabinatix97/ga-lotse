@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SxProps } from "@mui/joy/styles/types";
+
 import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import {
   validateIntegerAnd,
   validateRange,
 } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
-import { SxProps } from "@mui/joy/styles/types";
 
 export const VACCINATION_FIELD_STYLE: SxProps = { width: "160px" };
 

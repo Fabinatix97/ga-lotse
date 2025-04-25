@@ -3,6 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  Add,
+  Cancel,
+  Check,
+  CheckCircleOutline,
+  DeleteOutlined,
+  Start,
+} from "@mui/icons-material";
+import { Button, Divider, Stack, Typography } from "@mui/joy";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import { isDefined } from "remeda";
+
 import { ApiProphylaxisStatus, ApiReasonForAbsence } from "@eshg/dental-api";
 import {
   ActionsItem,
@@ -20,18 +33,6 @@ import {
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  Add,
-  Cancel,
-  Check,
-  CheckCircleOutline,
-  DeleteOutlined,
-  Start,
-} from "@mui/icons-material";
-import { Button, Divider, Stack, Typography } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
-import { isDefined } from "remeda";
 
 import { ExaminationStatusChip } from "@/components/examination/ExaminationStatusChip";
 import { routes } from "@/config/routes";

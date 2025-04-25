@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row } from "@eshg/lib-portal/components/Row";
 import {
   Check,
   DownloadOutlined,
@@ -11,6 +10,8 @@ import {
 } from "@mui/icons-material";
 import { Button, Typography, styled } from "@mui/joy";
 import { FieldInputProps } from "formik";
+
+import { Row } from "@eshg/lib-portal/components/Row";
 
 export interface DownloadDocumentCardProps {
   documentTitle: string;

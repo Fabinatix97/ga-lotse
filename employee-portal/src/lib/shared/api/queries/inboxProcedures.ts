@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { InboxProcedureApi } from "@eshg/lib-procedures-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
+
+import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { InboxProcedureApi } from "@eshg/lib-procedures-api";
 
 type UseFetchInboxProceduresResult = ReturnType<
   typeof useFetchInboxProceduresTemplate

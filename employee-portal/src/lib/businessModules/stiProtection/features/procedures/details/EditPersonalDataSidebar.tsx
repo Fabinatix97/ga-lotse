@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Formik } from "formik";
+
 import {
   MultiFormButtonBar,
   Sidebar,
@@ -18,7 +20,6 @@ import {
   ApiStiProtectionProcedure,
   UpdatePersonDetailsRequest,
 } from "@eshg/sti-protection-api";
-import { Formik } from "formik";
 
 import { useUpdatePersonDetails } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { AddNewProcedureForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AddNewProcedureSidebar";

@@ -6,7 +6,7 @@
     "importAssertions",
     "decorators"
   ],
-  "importOrder": ["^@/(.*)$", "^(../)+(.*)$", "^./(.*)$"],
+  "importOrder": ["^@eshg/(.*)$", "^@/(.*)$", "^(../)+(.*)$", "^./(.*)$"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

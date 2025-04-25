@@ -3,18 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import { SxProps } from "@mui/joy/styles/types";
+
+import {
+  DetailsItem,
+  EditButton,
+  SyncBarrier,
+  useSyncBarrier,
+} from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiDraftMeaslesProcedure,
+  ApiFacilitySync,
   ApiMeaslesProtectionProcedure,
+  ApiProcedureStatus,
 } from "@eshg/measles-protection-api";
-import { Sheet } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { facilityTypeNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
+import { useUpdateFacilitySidebar } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/UpdateFacilitySidebar";
+import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 import { FacilityContacts } from "./FacilityContact";
 
@@ -28,45 +37,91 @@ export function Facility({
 }: {
   procedure: ApiMeaslesProtectionProcedure | ApiDraftMeaslesProcedure;
 }) {
+  const facility = procedure.facility!;
+  const updateFacilitySidebar = useUpdateFacilitySidebar();
+  const syncRoute =
+    procedure.procedureStatus === ApiProcedureStatus.Draft
+      ? routes.procedures
+          .draft(procedure.id)
+          .syncFacility(
+            facility.facilitySync?.fileStateId ?? "",
+            facility.facilitySync?.version ?? 0,
+          )
+      : routes.procedures
+          .details(procedure.id)
+          .syncFacility(
+            facility.facilitySync?.fileStateId ?? "",
+            facility.facilitySync?.version ?? 0,
+          );
+  const facilitySync: ApiFacilitySync = {
+    fileStateId: procedure.facility?.facilitySync?.fileStateId ?? "",
+    version: procedure.facility?.facilitySync?.version ?? 0,
+    outdated: procedure.facility?.facilitySync?.outdated ?? false,
+  };
+  const { syncBarrier } = useSyncBarrier(syncRoute, facilitySync);
+
+  function openUpdateFacilitySidebar() {
+    updateFacilitySidebar.open({
+      procedureId: procedure.id,
+      facility: facility,
+    });
+  }
+
   if (!procedure?.facility) {
     return null;
   }
 
-  const facility = procedure.facility;
+  function procedureOpen() {
+    return (
+      procedure.procedureStatus === ApiProcedureStatus.Draft ||
+      procedure.procedureStatus === ApiProcedureStatus.Open ||
+      procedure.procedureStatus === ApiProcedureStatus.InProgress
+    );
+  }
 
   return (
-    procedure.facility && (
+    facility && (
       <>
-        <Sheet>
-          <DetailsSection title="Einrichtung">
-            <CentralFileFacilityDetails
-              facility={{
-                ...procedure.facility,
-                // TODO: The API type here is wrong, these should both be lists
-                emailAddresses: isNonEmptyString(
-                  procedure.facility.emailAddress,
-                )
-                  ? [procedure.facility.emailAddress]
-                  : [],
-                phoneNumbers: isNonEmptyString(procedure.facility.phoneNumber)
-                  ? [procedure.facility.phoneNumber]
-                  : [],
-              }}
-              columnSx={COLUMN_STYLE}
-            >
-              <DetailsCell
-                name="type"
-                label="Einrichtungsart"
-                value={facilityTypeNames[facility.type]}
-              />
-              <DetailsCell
-                name="extra_type"
-                label="Anderer Einrichtungstyp"
-                value={facility.otherFacilityTypeInformation}
-              />
-            </CentralFileFacilityDetails>
-          </DetailsSection>
-        </Sheet>
+        <InfoTile
+          title="Einrichtung"
+          name="facility"
+          controls={
+            procedureOpen() && (
+              <SyncBarrier
+                outdated={procedure.facility?.facilitySync?.outdated ?? false}
+                syncHref={syncRoute}
+              >
+                <EditButton
+                  aria-label="Einrichtung bearbeiten"
+                  onClick={syncBarrier(openUpdateFacilitySidebar)}
+                />
+              </SyncBarrier>
+            )
+          }
+        >
+          <CentralFileFacilityDetails
+            facility={{
+              ...facility,
+              // TODO: The API type here is wrong, these should both be lists
+              emailAddresses: isNonEmptyString(facility.emailAddress)
+                ? [facility.emailAddress]
+                : [],
+              phoneNumbers: isNonEmptyString(facility.phoneNumber)
+                ? [facility.phoneNumber]
+                : [],
+            }}
+            columnSx={COLUMN_STYLE}
+          >
+            <DetailsItem
+              label="Einrichtungsart"
+              value={facilityTypeNames[facility.type]}
+            />
+            <DetailsItem
+              label="Anderer Einrichtungstyp"
+              value={facility.otherFacilityTypeInformation}
+            />
+          </CentralFileFacilityDetails>
+        </InfoTile>
         <FacilityContacts persons={facility.contactPersons} />
       </>
     )

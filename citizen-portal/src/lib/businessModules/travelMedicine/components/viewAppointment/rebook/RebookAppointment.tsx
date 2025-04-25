@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { ApiAppointment } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
 
 import { FormSheetTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { useTranslation } from "@/lib/i18n/client";

@@ -5,13 +5,13 @@
 
 "use client";
 
+import { Grid, Stack } from "@mui/joy";
+import { useRouter } from "next/navigation";
+
 import { ToolbarBackButton } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
-import { Grid, Stack } from "@mui/joy";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 import { useSubmitDraftProcedureMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
@@ -24,10 +24,8 @@ import { AffectedPerson } from "./AffectedPerson";
 import { Custodians } from "./Custodians";
 import { EditAffectedPersonSidebar } from "./EditAffectedPersonSidebar";
 import { EditCustodianSidebar } from "./EditCustodianSidebar";
-import { EditFacilitySidebar } from "./EditFacilitySidebar";
 import { Facility } from "./Facility";
 import { NewFacilityButton } from "./NewFacilityButton";
-import { NewFacilitySidebar } from "./NewFacilitySidebar";
 import { UpdateProcedureSection } from "./UpdateProcedureSection";
 import { ValidUpdateProcedureForm } from "./helpers";
 
@@ -50,16 +48,6 @@ export function MeaslesProtectionProcedureDraftClientPage({
     },
   });
 
-  useEffect(() => {
-    if (procedure.procedureStatus !== "DRAFT") {
-      router.replace(routes.procedures.details(procedure.id).index);
-    }
-  }, [procedure.id, procedure.procedureStatus, router]);
-
-  if (procedure.procedureStatus !== "DRAFT") {
-    return null;
-  }
-
   function handleSubmit(data: ValidUpdateProcedureForm) {
     return submitProcedure.mutate({ id: procedure.id, data });
   }
@@ -75,7 +63,7 @@ export function MeaslesProtectionProcedureDraftClientPage({
           <Stack gap={3}>
             <AffectedPerson procedure={procedure} />
             <Custodians procedure={procedure} />
-            <Facility procedure={procedure} />
+            {procedure.facility && <Facility procedure={procedure} />}
             <AddButtons procedure={procedure} />
           </Stack>
         </Grid>
@@ -88,9 +76,7 @@ export function MeaslesProtectionProcedureDraftClientPage({
       </Grid>
       <AddCustodianSidebar procedure={procedure} />
       <EditCustodianSidebar custodians={procedure.custodians} />
-      <EditFacilitySidebar facility={procedure.facility} />
       <EditAffectedPersonSidebar person={procedure.affectedPerson} />
-      <NewFacilitySidebar procedure={procedure} />
     </MeaslesProtectionLayout>
   );
 }
@@ -103,7 +89,7 @@ function AddButtons({ procedure }: { procedure: ApiDraftMeaslesProcedure }) {
       </Grid>
       {!procedure.facility && (
         <Grid xs={6}>
-          <NewFacilityButton />
+          <NewFacilityButton procedureId={procedure.id} />
         </Grid>
       )}
     </Grid>

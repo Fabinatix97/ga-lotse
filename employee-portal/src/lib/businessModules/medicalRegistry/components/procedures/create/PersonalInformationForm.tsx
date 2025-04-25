@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { CountryField } from "@eshg/lib-employee-portal";
 import {
   MedicalRegistryCreateProcedureFormValues,
@@ -22,8 +25,6 @@ import {
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
-import { Grid, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 

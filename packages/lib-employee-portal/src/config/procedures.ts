@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiProcedureStatus } from "@eshg/base-api";
 import { ChipProps } from "@mui/joy";
+
+import { ApiProcedureStatus } from "@eshg/base-api";
 
 export const PROCEDURE_STATUS_COLORS: Record<
   ApiProcedureStatus,

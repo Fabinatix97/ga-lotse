@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Textarea, TextareaProps } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { FocusEvent, ReactNode } from "react";
+
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   BaseField,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { ValidationRules } from "@eshg/lib-portal/types/form";
-import { Textarea, TextareaProps } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { FocusEvent, ReactNode } from "react";
 
 export interface TextareaFieldProps extends ValidationRules<string> {
   name: string;

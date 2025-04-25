@@ -576,6 +576,25 @@
       }
     },
     "/checklists/definitions/versions/{id}" : {
+      "delete" : {
+        "operationId" : "deleteDraftChecklistDefinitionVersion",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Permanently deletes an existing checklist definition in draft mode",
+        "tags" : [ "ChecklistDefinition" ]
+      },
       "put" : {
         "operationId" : "editDraftChecklistDefinitionVersion",
         "parameters" : [ {

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Card, Chip, Typography } from "@mui/joy";
+import { useRouter } from "next/navigation";
+import { isDefined } from "remeda";
+
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
   ApiInspAddFacilityResponse,
@@ -14,9 +18,6 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Card, Chip, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
-import { isDefined } from "remeda";
 
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
 import {

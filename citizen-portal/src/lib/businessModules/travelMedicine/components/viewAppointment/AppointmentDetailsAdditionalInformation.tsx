@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box, styled } from "@mui/joy";
+
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import {
   ApiAppointmentBookingType,
   ApiGetAppointmentDetailsResponse,
 } from "@eshg/travel-medicine-api";
-import { Box, styled } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { AppointmentDetailsInformationStatementList } from "@/lib/businessModules/travelMedicine/components/viewAppointment/ApointmentDetailsInformationStatementList";

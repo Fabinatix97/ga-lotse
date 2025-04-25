@@ -5,6 +5,8 @@
 
 "use client";
 
+import { isDefined } from "remeda";
+
 import {
   ApiContactCategory,
   ApiContactSortKey,
@@ -14,7 +16,6 @@ import {
   PaginatedSearchParams,
   SortableSearchParams,
 } from "@eshg/lib-portal/helpers/searchParams";
-import { isDefined } from "remeda";
 
 import { useGetContactsOverviewPageQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactsTable } from "@/lib/baseModule/components/contacts/ContactsTable";

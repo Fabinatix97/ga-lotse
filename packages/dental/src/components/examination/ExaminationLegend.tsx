@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Circle, CircleOutlined, Error } from "@mui/icons-material";
+import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
+import { ReactNode } from "react";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -11,9 +15,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { Circle, CircleOutlined, Error } from "@mui/icons-material";
-import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
-import { ReactNode } from "react";
 
 export function ExaminationLegend() {
   const findingsOverviewSidebar = useSidebar({

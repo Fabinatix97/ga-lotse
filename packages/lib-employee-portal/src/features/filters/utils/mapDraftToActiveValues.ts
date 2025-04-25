@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isNonNull } from "remeda";
+
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import {
   DateComparisonFilterDraftValue,

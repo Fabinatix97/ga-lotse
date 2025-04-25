@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
-import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
+
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";

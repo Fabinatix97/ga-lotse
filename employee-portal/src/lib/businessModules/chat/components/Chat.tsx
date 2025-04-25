@@ -5,10 +5,11 @@
 
 "use client";
 
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { Stack, useTheme } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 
 import { TabLockClaim } from "@/lib/businessModules/chat/components/TabLockClaim";
 import { TabLockTakenByAnotherTab } from "@/lib/businessModules/chat/components/TabLockTakenByAnotherTab";

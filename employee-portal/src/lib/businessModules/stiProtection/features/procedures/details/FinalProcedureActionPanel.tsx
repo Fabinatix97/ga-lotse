@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ContentPanel } from "@eshg/lib-employee-portal";
-import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Button } from "@mui/joy";
 import { ReactEventHandler } from "react";
+
+import { ContentPanel } from "@eshg/lib-employee-portal";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   ApiCLAudioField,
   ApiCLCheckboxField,
@@ -11,7 +13,6 @@ import {
   ApiChecklist,
   ApiUpdateChecklistElementsInner,
 } from "@eshg/inspection-api";
-import { isDefined } from "remeda";
 
 export type FormCheckboxField = Omit<ApiCLCheckboxField, "checked"> & {
   checked: string;

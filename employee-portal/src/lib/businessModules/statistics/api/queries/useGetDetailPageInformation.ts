@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions } from "@tanstack/react-query";
+
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiAnalysis,
@@ -11,7 +13,6 @@ import {
   ApiGetDetailPageInformationResponse,
   EvaluationApi,
 } from "@eshg/statistics-api";
-import { queryOptions } from "@tanstack/react-query";
 
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";

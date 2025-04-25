@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { FileField } from "@eshg/lib-employee-portal";
 import {
   EmployeeInformationFormValues,
@@ -12,8 +15,6 @@ import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/Boolea
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { Grid, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { ReactNode, useState } from "react";
+import { isNonNullish } from "remeda";
+
 import {
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
@@ -19,10 +24,6 @@ import {
   useResetAlertContextOnChange,
 } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { ReactNode, useState } from "react";
-import { isNonNullish } from "remeda";
 
 import { mapAddCentralFileIdToGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddCentralFileIdToGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";

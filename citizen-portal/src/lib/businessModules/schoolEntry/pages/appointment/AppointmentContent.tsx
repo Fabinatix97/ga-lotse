@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   AccessTimeOutlined,
   CakeOutlined,
@@ -19,6 +16,10 @@ import {
 import { Box, Typography, styled } from "@mui/joy";
 import { formatDuration } from "date-fns";
 import { de } from "date-fns/locale";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolEntryProcedure } from "@/lib/businessModules/schoolEntry/api/models/SchoolEntryProcedure";

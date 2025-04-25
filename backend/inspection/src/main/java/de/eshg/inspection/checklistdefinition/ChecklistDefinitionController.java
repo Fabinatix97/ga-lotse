@@ -90,4 +90,11 @@ public class ChecklistDefinitionController {
       @PathVariable("id") UUID id, @Valid @RequestBody ChecklistDefinitionVersionRequest request) {
     return checklistDefinitionService.editDraftChecklistDefinitionVersion(id, request);
   }
+
+  @DeleteMapping(path = "/versions/{id}")
+  @Operation(summary = "Permanently deletes an existing checklist definition in draft mode")
+  @Transactional()
+  public void deleteDraftChecklistDefinitionVersion(@PathVariable("id") UUID id) {
+    checklistDefinitionService.deleteDraftChecklistDefinitionVersion(id);
+  }
 }

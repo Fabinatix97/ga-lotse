@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { ContentCopy, DeleteOutlined } from "@mui/icons-material";
+
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 
 export function CopyDeleteDropdown({
   onDelete,

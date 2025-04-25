@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { SidebarContent } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
-import { Stack, Typography } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { SearchDraftReferencesResponse } from "@/lib/businessModules/medicalRegistry/api/queries/draft";
 import { FORM_OPTION_NEW } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";

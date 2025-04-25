@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+
 import { Cuspid, Incisor, Molar, Premolar } from "@eshg/dental";
 import {
   MainContentLayout,
@@ -10,7 +12,6 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { Grid, Typography } from "@mui/joy";
 
 export default function TeethPlaygroundPage() {
   return (

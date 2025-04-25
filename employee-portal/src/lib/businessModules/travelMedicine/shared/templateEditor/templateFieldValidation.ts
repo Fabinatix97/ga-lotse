@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
 import { isEmpty, isNullish } from "remeda";
+
+import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
 
 export function validateAnamnesisTemplateTitle() {
   return validateTemplateField("Der Anamnesename", true, 200);

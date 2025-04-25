@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
 import { mapProcedureLabels } from "@/features/procedureLabels/api/models/ProcedureLabel";
 import { ProcedureLabelClient } from "@/features/procedureLabels/types/procedureLabelClient";

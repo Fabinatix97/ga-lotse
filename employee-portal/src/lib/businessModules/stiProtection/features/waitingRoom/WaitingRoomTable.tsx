@@ -5,6 +5,9 @@
 
 "use client";
 
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { differenceInMinutes } from "date-fns";
+
 import {
   DataTable,
   Pagination,
@@ -20,8 +23,6 @@ import {
   ApiWaitingRoomProcedure,
   ApiWaitingRoomSortKey,
 } from "@eshg/sti-protection-api";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
-import { differenceInMinutes } from "date-fns";
 
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/stiProtection/api/queries/waitingRoomApi";
 import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";

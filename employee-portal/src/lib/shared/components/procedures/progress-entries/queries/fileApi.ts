@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { ApiGetMetaDataHistoryResponseMetaDataHistoryInner } from "@eshg/school-entry-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isDefined, reverse } from "remeda";
+
+import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { ApiGetMetaDataHistoryResponseMetaDataHistoryInner } from "@eshg/school-entry-api";
 
 import {
   FileClient,

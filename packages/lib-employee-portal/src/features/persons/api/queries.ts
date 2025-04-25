@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   SearchReferenceFacilitiesRequest,
   SearchReferencePersonsRequest,
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import { facilityApiQueryKey, personApiQueryKey } from "@/config/apiQueryKeys";
 import { useApi } from "@/contexts/api";

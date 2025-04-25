@@ -5,12 +5,13 @@
 
 "use client";
 
+import { createContext, useContext, useMemo } from "react";
+import { doNothing, isNullish, omit } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChatFeature } from "@eshg/chat-management-api";
 import { useGetSelfUser, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { createContext, useContext, useMemo } from "react";
-import { doNothing, isNullish, omit } from "remeda";
 
 import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";

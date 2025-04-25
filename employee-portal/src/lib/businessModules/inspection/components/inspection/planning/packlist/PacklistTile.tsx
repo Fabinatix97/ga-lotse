@@ -5,12 +5,13 @@
 
 "use client";
 
-import { ApiInspection, ApiPacklist } from "@eshg/inspection-api";
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Stack, Textarea, Typography } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+
+import { ApiInspection, ApiPacklist } from "@eshg/inspection-api";
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { useCheckPacklistElement } from "@/lib/businessModules/inspection/api/mutations/packlist";

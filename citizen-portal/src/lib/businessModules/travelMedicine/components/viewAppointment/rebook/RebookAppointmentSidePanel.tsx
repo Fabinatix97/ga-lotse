@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AccessTimeOutlined, DateRange } from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { useRouter } from "next/navigation";
+
 import { formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   durationBetweenDatesInMinutes,
   formatDateToFullReadableString,
 } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
-import { AccessTimeOutlined, DateRange } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
 
 import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";

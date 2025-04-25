@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiArchivingRelevance } from "@eshg/lib-procedures-api";
 import Chip, { ChipProps } from "@mui/joy/Chip";
+
+import { ApiArchivingRelevance } from "@eshg/lib-procedures-api";
 
 import { archivingRelevanceNames } from "@/lib/shared/components/archiving/constants";
 

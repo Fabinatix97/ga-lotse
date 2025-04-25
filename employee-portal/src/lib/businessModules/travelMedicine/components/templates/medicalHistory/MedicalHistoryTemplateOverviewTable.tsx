@@ -5,16 +5,17 @@
 
 "use client";
 
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { Button } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+
 import {
   ButtonBar,
   DataTable,
   TablePage,
   TableSheet,
 } from "@eshg/lib-employee-portal";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { Button } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
 import {
   PatchMedicalHistoryTemplateFlagRequest,

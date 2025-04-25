@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { useMemo } from "react";
+import { isDefined } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiObjectType } from "@eshg/inspection-api";
 import {
@@ -13,10 +18,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { useMemo } from "react";
-import { isDefined } from "remeda";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 

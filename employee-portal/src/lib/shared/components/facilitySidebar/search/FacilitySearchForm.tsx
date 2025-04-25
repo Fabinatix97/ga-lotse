@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Formik, FormikProps } from "formik";
+import { ComponentType, Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -10,8 +13,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { Formik, FormikProps } from "formik";
-import { ComponentType, Ref } from "react";
 
 export interface FacilitySearchFormValues {
   name: string;

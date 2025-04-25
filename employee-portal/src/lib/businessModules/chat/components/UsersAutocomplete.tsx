@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   AutocompleteOption,
@@ -15,6 +14,8 @@ import {
 } from "@mui/joy";
 import { useField } from "formik";
 import { HTMLAttributes } from "react";
+
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 

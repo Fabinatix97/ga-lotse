@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AlertProps } from "@eshg/lib-portal/components/Alert";
-import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
 import { FormikErrors } from "formik";
 import {
   IPresenceOpts,
@@ -14,6 +12,9 @@ import {
   User,
 } from "matrix-js-sdk";
 import { isEmpty, isObjectType, isString } from "remeda";
+
+import { AlertProps } from "@eshg/lib-portal/components/Alert";
+import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
 
 import {
   CommunicationType,

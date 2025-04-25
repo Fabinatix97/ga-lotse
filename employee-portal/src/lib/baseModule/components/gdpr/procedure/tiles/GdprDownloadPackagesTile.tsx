@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
-import { NoSearchResults } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import CheckmarkIcon from "@mui/icons-material/Check";
 import DownloadIcon from "@mui/icons-material/SimCardDownloadOutlined";
 import {
@@ -24,6 +20,11 @@ import {
   styled,
 } from "@mui/joy";
 import { useId } from "react";
+
+import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
+import { NoSearchResults } from "@eshg/lib-employee-portal";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import {
   SectionTile,

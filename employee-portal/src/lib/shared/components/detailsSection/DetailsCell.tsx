@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isNonNullish, isString } from "remeda";
+
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 export interface DetailsCellProps {
   name?: string;

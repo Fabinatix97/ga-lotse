@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Chip, List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { Ref, useId } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -20,9 +24,6 @@ import {
   ApiAppointmentType,
   ApiProcedureStepService,
 } from "@eshg/travel-medicine-api";
-import { Chip, List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { Ref, useId } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";

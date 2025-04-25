@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { ApiConcern } from "@eshg/sti-protection-api";
 import { Button, Stack } from "@mui/joy";
 import { MouseEvent } from "react";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";

@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Button, Stack } from "@mui/joy";
+import { Fragment, useState } from "react";
+
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DioalogButtonBarProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialogButtonBar";
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { Button, Stack } from "@mui/joy";
-import { Fragment, useState } from "react";
 
 export function CitizenConfirmationButtonBar({
   onClose,

@@ -5,6 +5,9 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button, Stack } from "@mui/joy";
+
 import { ApiUserRole, GetInventoryItemsRequest } from "@eshg/base-api";
 import {
   DataTable,
@@ -17,8 +20,6 @@ import {
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Stack } from "@mui/joy";
 
 import { useGetInventoryOverviewPageQuery } from "@/lib/baseModule/api/queries/inventory";
 import { useInventoryFilterSettings } from "@/lib/baseModule/components/inventory/hooks/useInventoryFilterSettings";

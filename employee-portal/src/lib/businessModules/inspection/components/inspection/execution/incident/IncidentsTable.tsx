@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DeleteOutlined, Edit } from "@mui/icons-material";
+import { ColorPaletteProp } from "@mui/joy";
+import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
 import { ApiInspectionIncident } from "@eshg/inspection-api";
 import {
   ActionsMenu,
   DataTable,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { DeleteOutlined, Edit } from "@mui/icons-material";
-import { ColorPaletteProp } from "@mui/joy";
-import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { useDeleteIncident } from "@/lib/businessModules/inspection/api/mutations/incidents";
 

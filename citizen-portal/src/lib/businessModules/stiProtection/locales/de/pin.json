@@ -1,0 +1,42 @@
+{
+  "title": "PIN ändern",
+  "form": {
+    "title": "Neue PIN Eingabe",
+    "info": "Bitte wählen Sie eine neue, 6-stellige numerische PIN und geben Sie zur Bestätigung Ihre bisherige PIN ein.",
+    "digit_label": "PIN-Ziffer {{digitNumber}} von {{maxDigits}}",
+    "current_pin": {
+      "label": "Aktuelle PIN",
+      "hint": "Geben Sie bitte Ihre aktuelle PIN ein.",
+      "required": "Bitte eine PIN festlegen.",
+      "invalid": "Bitte geben Sie bitte Ihre aktuelle PIN ein."
+    },
+    "new_pin": {
+      "label": "Gewünschte neue PIN",
+      "hint": "Geben Sie eine 6-stellige Ziffernfolge ein.",
+      "required": "Bitte eine PIN festlegen.",
+      "invalid": "Bitte geben Sie eine 6-stellige Ziffernfolge ein."
+    },
+    "repeated_pin": {
+      "label": "Wiederholung neue PIN",
+      "required": "Bitte eine PIN festlegen.",
+      "invalid": "Bitte geben Sie eine 6-stellige Ziffernfolge ein.",
+      "comparison_error": "PINS stimmen nicht überein"
+    },
+    "confirmation": "Die PIN wurde erfolgreich geändert.",
+    "button_label": "Neue PIN speichern",
+    "cancel": "Abbrechen"
+  },
+  "confirm": {
+    "title": "PIN notieren",
+    "info": "Bitte notieren Sie die neu festgelegte PIN. Sie ersetzt die bisherige und wird ab sofort für die Anmeldung und Verifizierung benötigt.",
+    "text": "Ihre neue persönliche 6-stellige PIN:",
+    "check": "Ja, ich habe meine PIN notiert.",
+    "error": "Bitte bestätigen",
+    "link_label": "Zur Übersicht"
+  },
+  "go_to_card": {
+    "title": "PIN ändern",
+    "body": "Sie können Ihre persönliche PIN nach Wunsch ändern - dies ist optional, aber bei Bedarf möglich. Die neu vergebene PIN ersetzt dabei Ihre bisherige.",
+    "link_label": "PIN ändern"
+  }
+}

@@ -5,9 +5,10 @@
 
 "use client";
 
-import { ApiMedicalRegistryFeature } from "@eshg/medical-registry-api";
 import { notFound } from "next/navigation";
 import { useState } from "react";
+
+import { ApiMedicalRegistryFeature } from "@eshg/medical-registry-api";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/medicalRegistry/api/queries/featureTogglesApi";
 import { ProfessionalRegistrationForm } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { use } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   DentalChildRouteParams,
@@ -17,7 +19,6 @@ import {
   useDentalApi,
 } from "@eshg/dental";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 

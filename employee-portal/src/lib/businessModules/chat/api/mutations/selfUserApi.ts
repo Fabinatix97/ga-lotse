@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { ApiUpdateSelfUserChatAttributesRequest } from "@eshg/base-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useMutation } from "@tanstack/react-query";
 
 import { useSelfUserApi } from "@/lib/businessModules/chat/api/clients";
 

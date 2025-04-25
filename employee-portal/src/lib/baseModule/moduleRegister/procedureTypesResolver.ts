@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import { unique } from "remeda";
+
+import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 
 import { procedureTypes as inspectionProcedureTypes } from "@/lib/businessModules/inspection/shared/constants";
 import { procedureTypes as measlesProtectionProcedureTypes } from "@/lib/businessModules/measlesProtection/shared/constants";

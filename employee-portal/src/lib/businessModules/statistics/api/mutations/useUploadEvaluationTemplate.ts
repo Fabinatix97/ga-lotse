@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useRouter } from "next/navigation";
+
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useRouter } from "next/navigation";
 
 import { useCentralRepositoryApi } from "@/lib/businessModules/statistics/api/clients";
 import { UploadTemplateFormModel } from "@/lib/businessModules/statistics/components/evaluations/templates/UploadTemplateSidebar/uploadTemplateFormModel";

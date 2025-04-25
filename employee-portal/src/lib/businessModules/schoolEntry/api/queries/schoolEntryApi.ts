@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
+
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
@@ -12,8 +15,6 @@ import {
   GetWaitingRoomProceduresRequest,
   SchoolEntryApi,
 } from "@eshg/school-entry-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { isDefined } from "remeda";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { mapAnamnesis } from "@/lib/businessModules/schoolEntry/api/models/Anamnesis";

@@ -5,11 +5,12 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
+
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { use } from "react";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useConsultationQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/consultation";

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useMemo, useState } from "react";
 import { isNullish } from "remeda";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 

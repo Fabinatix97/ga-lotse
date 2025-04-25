@@ -5,11 +5,6 @@
 
 "use client";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import {
-  ApiAppliedService,
-  ApiAssignableService,
-} from "@eshg/travel-medicine-api";
 import {
   Checkbox,
   FormControl,
@@ -20,6 +15,12 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent } from "react";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import {
+  ApiAppliedService,
+  ApiAssignableService,
+} from "@eshg/travel-medicine-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 

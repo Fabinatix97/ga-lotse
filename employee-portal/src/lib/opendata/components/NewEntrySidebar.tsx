@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { Formik, FormikHelpers } from "formik";
+import { isEmpty } from "remeda";
+
 import {
   ButtonBar,
   SidebarActions,
@@ -12,9 +16,6 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { Button } from "@mui/joy";
-import { Formik, FormikHelpers } from "formik";
-import { isEmpty } from "remeda";
 
 import {
   OpenDataForm,

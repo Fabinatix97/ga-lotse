@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import { queryOptions } from "@tanstack/react-query";
+
+import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { mapAppointmentTypeConfig } from "@/lib/businessModules/travelMedicine/api/models/AppointmentTypeConfig";

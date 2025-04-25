@@ -5,6 +5,10 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
+import { use } from "react";
+import * as v from "valibot";
+
 import {
   BasePersonDiffForm,
   CentralFileSyncForm,
@@ -16,9 +20,6 @@ import {
   UuidSchema,
 } from "@eshg/lib-portal/schemas/pageParams";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { useRouter } from "next/navigation";
-import { use } from "react";
-import * as v from "valibot";
 
 import { useSyncPerson } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OtherHousesOutlined } from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
   SideNavigationSubItem,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
-import { OtherHousesOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";
 

@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { UnfoldMore } from "@mui/icons-material";
+import { Box, Button, FormLabel, Stack, Typography } from "@mui/joy";
+import { addMinutes, startOfHour } from "date-fns";
+import { useFormikContext } from "formik";
+import { useState } from "react";
+
 import { DateTimeField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
@@ -19,11 +25,6 @@ import {
   ApiAppointmentType,
   ApiConcern,
 } from "@eshg/sti-protection-api";
-import { UnfoldMore } from "@mui/icons-material";
-import { Box, Button, FormLabel, Stack, Typography } from "@mui/joy";
-import { addMinutes, startOfHour } from "date-fns";
-import { useFormikContext } from "formik";
-import { useState } from "react";
 
 import { useGetFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import {

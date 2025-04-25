@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -12,9 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";

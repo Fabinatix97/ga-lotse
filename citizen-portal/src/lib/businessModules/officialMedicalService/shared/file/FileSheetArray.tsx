@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
-import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -33,6 +29,11 @@ import {
   useRef,
 } from "react";
 import { isDefined } from "remeda";
+
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
+import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
+import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { FileSheet } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheet";

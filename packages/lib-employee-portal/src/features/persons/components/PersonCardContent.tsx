@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import type {
   ApiAddFacilityFileStateRequestContactAddress,
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { Stack, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { formatList } from "@/utils/formatters";
 

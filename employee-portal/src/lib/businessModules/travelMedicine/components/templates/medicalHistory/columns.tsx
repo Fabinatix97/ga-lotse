@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  ApiMedicalHistoryTemplate,
-  ApiMedicalHistoryTemplateState,
-} from "@eshg/travel-medicine-api";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -16,6 +10,13 @@ import {
 } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
+import { ActionsMenu } from "@eshg/lib-employee-portal";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  ApiMedicalHistoryTemplate,
+  ApiMedicalHistoryTemplateState,
+} from "@eshg/travel-medicine-api";
 
 import { templateStatusColors } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/constants";
 import { translateMedicalHistoryTemplateStateType } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/translations";

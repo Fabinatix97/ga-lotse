@@ -5,9 +5,10 @@
 
 "use client";
 
-import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
 import { Button, ButtonProps } from "@mui/joy";
 import { ReactElement, useState } from "react";
+
+import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
 
 type ModalProps = Pick<BaseModalPropsRequiredClose, "open" | "onClose">;
 

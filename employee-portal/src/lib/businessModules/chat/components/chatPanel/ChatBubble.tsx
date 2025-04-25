@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   Box,
@@ -17,6 +15,9 @@ import {
 } from "@mui/joy";
 import { ReactNode, useState } from "react";
 import { isEmpty } from "remeda";
+
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { DeletedMessage } from "@/lib/businessModules/chat/components/chatPanel/DeletedMessage";

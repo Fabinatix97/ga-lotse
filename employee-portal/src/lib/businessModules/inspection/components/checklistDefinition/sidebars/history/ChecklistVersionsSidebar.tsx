@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Stack, Typography } from "@mui/joy";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   ApiChecklistDefinition,
@@ -17,7 +19,6 @@ import {
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { Stack, Typography } from "@mui/joy";
 
 import { useGetChecklistDefinitionVersions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 

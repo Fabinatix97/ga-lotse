@@ -3,14 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import {
-  BaseField,
-  FieldComponentProps,
-  useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { StyledInputProps } from "@eshg/lib-portal/components/formFields/types";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import { Input, InputProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import {
@@ -20,6 +12,15 @@ import {
   HTMLInputTypeAttribute,
   ReactNode,
 } from "react";
+
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import {
+  BaseField,
+  FieldComponentProps,
+  useBaseField,
+} from "@eshg/lib-portal/components/formFields/BaseField";
+import { StyledInputProps } from "@eshg/lib-portal/components/formFields/types";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 export interface ChatInputFieldProps
   extends FieldProps<string>,

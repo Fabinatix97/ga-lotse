@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid, GridProps } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 interface FormGroupGridProps
   extends Pick<GridProps, "columns" | "aria-labelledby" | "component">,

@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import {
   ApiConcern,
   MedicalHistoryDocumentApi,
 } from "@eshg/sti-protection-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useMedicalHistoryDocumentApi } from "@/lib/businessModules/stiProtection/api/clients";
 

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSidebarWithFormRef } from "@eshg/lib-employee-portal";
 import { useCallback } from "react";
+
+import { useSidebarWithFormRef } from "@eshg/lib-employee-portal";
 
 import { useInboxProcedureApi } from "@/lib/businessModules/inspection/api/clients";
 import { InspectionInboxProcedureCreateSidebar } from "@/lib/businessModules/inspection/components/inbox/InspectionInboxProcedureCreateSidebar";

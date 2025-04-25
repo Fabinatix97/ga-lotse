@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { object, optional, parse, string } from "valibot";
+
 import {
   environmentTypeSchema,
   nodeEnvSchema,
   urlSchema,
 } from "@eshg/lib-portal/schemas/environment";
-import { object, optional, parse, string } from "valibot";
 
 /*
  * Environment Variables exposed to the Server (Node.js)

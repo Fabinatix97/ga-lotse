@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUpdateChecklistElementsInner } from "@eshg/inspection-api";
 import { isArray, isPlainObject } from "remeda";
+
+import { ApiUpdateChecklistElementsInner } from "@eshg/inspection-api";
 
 // Recursively update all objects with matching id and type.
 // Note that array properties are updated, not overwritten.

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PositiveIntegerSchema } from "@eshg/lib-portal/schemas/pageParams";
 import * as v from "valibot";
+
+import { PositiveIntegerSchema } from "@eshg/lib-portal/schemas/pageParams";
 
 export const FetchTaskForOverviewSearchParamsSchema = v.partial(
   v.object({

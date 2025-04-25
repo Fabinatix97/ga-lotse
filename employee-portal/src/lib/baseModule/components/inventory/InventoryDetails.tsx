@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Sheet, Stack, Typography } from "@mui/joy";
+
 import { ApiInventoryItem, ApiLabel } from "@eshg/base-api";
 import { DetailsRow, EditButton } from "@eshg/lib-employee-portal";
-import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { LowCountWarning } from "@/lib/baseModule/components/inventory/LowCountWarning";
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";

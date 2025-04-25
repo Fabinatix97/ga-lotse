@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { YearField } from "@eshg/lib-portal/components/formFields/YearField";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { FormLabel, Grid, IconButton, Typography } from "@mui/joy";
 import { FieldArray } from "formik";
 import { Fragment } from "react";
+
+import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { YearField } from "@eshg/lib-portal/components/formFields/YearField";
 
 import { CitizenAnamnesisFormValues } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
 import { CitizenPortalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/CitizenPortalMonthAndYearFields";

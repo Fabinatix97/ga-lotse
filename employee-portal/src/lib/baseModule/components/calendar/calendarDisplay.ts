@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { flatMap, map, pipe, uniqueBy } from "remeda";
+
 import {
   ApiGetRelevantCalendarsResponse,
   ApiUserGroupCalendarInfo,
 } from "@eshg/base-api";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { flatMap, map, pipe, uniqueBy } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { translateUserGroup } from "@/lib/shared/helpers/users";

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -11,9 +15,6 @@ import {
   SidebarFormHandle,
   TextareaField,
 } from "@eshg/lib-employee-portal";
-import { List, ListItem, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 export interface CancelAppointmentFormValues {
   reasonForRejection: string;

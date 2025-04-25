@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 import { Button, Stack, Typography } from "@mui/joy";
+
+import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 
 import {
   navItemIconColor,

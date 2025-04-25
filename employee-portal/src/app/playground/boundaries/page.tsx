@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Button, Stack } from "@mui/joy";
+
 import {
   MainContentLayout,
   OpenModalButton,
@@ -20,7 +22,6 @@ import {
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { Button, Stack } from "@mui/joy";
 
 export default function MutationErrorsPage() {
   return (

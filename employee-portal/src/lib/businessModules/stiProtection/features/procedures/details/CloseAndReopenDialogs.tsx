@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography, styled } from "@mui/joy";
+import { useState } from "react";
+
 import { ConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
   ApiStiProtectionProcedureOverview,
 } from "@eshg/sti-protection-api";
-import { Typography, styled } from "@mui/joy";
-import { useState } from "react";
 
 import {
   useCloseProcedure,

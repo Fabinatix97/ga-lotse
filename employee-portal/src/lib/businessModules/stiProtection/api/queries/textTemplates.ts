@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import {
   keepPreviousData,
   queryOptions,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+
+import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 
 import { useTextTemplateApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { textTemplateApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";

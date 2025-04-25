@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import { Divider, Stack, Typography } from "@mui/joy";
+import { isDefined, isNonNullish } from "remeda";
+
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
@@ -23,9 +27,6 @@ import {
   getOptionalTitle,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import { Divider, Stack, Typography } from "@mui/joy";
-import { isDefined, isNonNullish } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";

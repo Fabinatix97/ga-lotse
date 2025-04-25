@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Box, Grid, Typography } from "@mui/joy";
+
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 

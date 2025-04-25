@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Ref, useState } from "react";
+import { isDefined } from "remeda";
+
 import {
   ApiImportPersonContactResponse,
   ApiPersonContact,
   ApiVCardPersonContact,
 } from "@eshg/base-api";
 import { SidebarFormHandle } from "@eshg/lib-employee-portal";
-import { Ref, useState } from "react";
-import { isDefined } from "remeda";
 
 import { useImportPersonContactMutation } from "@/lib/baseModule/api/mutations/contacts";
 import { PersonContactCard } from "@/lib/baseModule/components/contacts/forms/card/PersonContactCard";

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { List, ListItem, Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import {
   FormSheet,

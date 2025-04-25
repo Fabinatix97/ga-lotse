@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiInboxProcedureStatus } from "@eshg/lib-procedures-api";
 import Chip from "@mui/joy/Chip";
+
+import { ApiInboxProcedureStatus } from "@eshg/lib-procedures-api";
 
 import { statusColors, statusNames } from "./constants";
 

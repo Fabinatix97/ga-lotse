@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiGetReportDetailPageResponse,
   ApiReportType,
 } from "@eshg/statistics-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useReportApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapReportDataSourceSensitivityFrontendToApi } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";

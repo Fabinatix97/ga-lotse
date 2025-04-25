@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Delete, Download } from "@mui/icons-material";
+import { Radio, Stack } from "@mui/joy";
+import { FormikValues } from "formik";
+
 import {
   CheckboxField,
   FileField,
@@ -11,9 +15,6 @@ import {
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { Delete, Download } from "@mui/icons-material";
-import { Radio, Stack } from "@mui/joy";
-import { FormikValues } from "formik";
 
 import { OpeningHoursField } from "@/lib/configurator/components/shared/OpeningHoursField";
 import { FileCard, FileCardProps } from "@/lib/shared/components/FileCard";

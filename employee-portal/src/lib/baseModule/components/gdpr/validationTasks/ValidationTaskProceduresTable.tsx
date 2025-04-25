@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import IncludedIcon from "@mui/icons-material/CheckOutlined";
+import UndecidedIcon from "@mui/icons-material/ClearOutlined";
+import { Button, Chip, Typography } from "@mui/joy";
+import { DefaultColorPalette } from "@mui/joy/styles/types";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useTransition } from "react";
+
 import {
   ActionsMenu,
   ButtonBar,
@@ -21,12 +28,6 @@ import {
   ApiProcedureStatus,
   GdprValidationTaskApiInterface,
 } from "@eshg/lib-procedures-api";
-import IncludedIcon from "@mui/icons-material/CheckOutlined";
-import UndecidedIcon from "@mui/icons-material/ClearOutlined";
-import { Button, Chip, Typography } from "@mui/joy";
-import { DefaultColorPalette } from "@mui/joy/styles/types";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useTransition } from "react";
 
 import { useCloseValidationTaskDialog } from "@/lib/baseModule/components/gdpr/validationTasks/UseCloseValidationTaskDialog";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";

@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import DateOfBirthIcon from "@mui/icons-material/CakeOutlined";
 import NameAtBirthIcon from "@mui/icons-material/ChildCareOutlined";
 import SalutationIcon from "@mui/icons-material/HowToRegOutlined";
@@ -18,6 +15,10 @@ import PhoneIcon from "@mui/icons-material/PhoneOutlined";
 import TitleIcon from "@mui/icons-material/PortraitOutlined";
 import CountryOfBirthIcon from "@mui/icons-material/TravelExploreOutlined";
 import { isDefined } from "remeda";
+
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";

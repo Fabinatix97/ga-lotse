@@ -3,17 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiInventoryBookingType,
-  ApiInventoryItemBookingEntry,
-  ApiInventoryItemBookingHistory,
-  ApiUser,
-} from "@eshg/base-api";
-import { DetailsSectionHeader, formatList } from "@eshg/lib-employee-portal";
-import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
 import AddIcon from "@mui/icons-material/Add";
 import BlockIcon from "@mui/icons-material/Block";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -30,6 +19,18 @@ import {
 } from "@mui/joy";
 import { createElement, useTransition } from "react";
 import { isDefined } from "remeda";
+
+import {
+  ApiInventoryBookingType,
+  ApiInventoryItemBookingEntry,
+  ApiInventoryItemBookingHistory,
+  ApiUser,
+} from "@eshg/base-api";
+import { DetailsSectionHeader, formatList } from "@eshg/lib-employee-portal";
+import {
+  formatDate,
+  formatDateTime,
+} from "@eshg/lib-portal/formatters/dateTime";
 
 import { Timeline } from "@/lib/shared/components/timeline/Timeline";
 import { TimelineEntry } from "@/lib/shared/components/timeline/TimelineEntry";

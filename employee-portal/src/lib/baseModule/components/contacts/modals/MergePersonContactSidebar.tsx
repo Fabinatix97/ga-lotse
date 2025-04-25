@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useState } from "react";
+
 import { ApiPersonContact } from "@eshg/base-api";
 import {
   SidebarWithFormRefProps,
   useResetAlertContextOnChange,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useState } from "react";
 
 import { PersonContactCard } from "@/lib/baseModule/components/contacts/forms/card/PersonContactCard";
 import { MergePersonContactForm } from "@/lib/baseModule/components/contacts/forms/merge/MergePersonContactForm";

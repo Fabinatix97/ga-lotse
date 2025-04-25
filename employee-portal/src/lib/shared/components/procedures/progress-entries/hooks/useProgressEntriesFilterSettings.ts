@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Dispatch, SetStateAction, startTransition } from "react";
+
 import { ApiUser } from "@eshg/base-api";
 import {
   EnumFilterDefinition,
@@ -11,7 +13,6 @@ import {
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
 import { ApiProgressEntryClassFromJSON } from "@eshg/lib-procedures-api";
-import { Dispatch, SetStateAction, startTransition } from "react";
 
 import {
   buildOptionsFromManualProgressEntryTypes,

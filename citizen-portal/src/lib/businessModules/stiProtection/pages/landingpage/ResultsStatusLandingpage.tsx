@@ -5,8 +5,9 @@
 
 "use client";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Typography } from "@mui/joy";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { GoToResultsStatusCard } from "@/lib/businessModules/stiProtection/components/details/GoToResultsStatusCard";
 import { TranslatedList } from "@/lib/businessModules/stiProtection/components/shared/TranslatedList";

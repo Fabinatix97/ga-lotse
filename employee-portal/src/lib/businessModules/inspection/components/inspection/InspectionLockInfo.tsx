@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Clear } from "@mui/icons-material";
+import { Box, IconButton, Typography } from "@mui/joy";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { type ApiInspection } from "@eshg/inspection-api";
 import {
   useConfirmationDialog,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { Clear } from "@mui/icons-material";
-import { Box, IconButton, Typography } from "@mui/joy";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

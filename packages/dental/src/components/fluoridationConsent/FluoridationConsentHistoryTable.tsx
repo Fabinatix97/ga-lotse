@@ -5,6 +5,8 @@
 
 "use client";
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import {
   DataTable,
@@ -12,7 +14,6 @@ import {
   formatBoolean,
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { createColumnHelper } from "@tanstack/react-table";
 
 interface FluoridationConsentHistoryTableProps {
   fluoridationConsent: ApiFluoridationConsent[];

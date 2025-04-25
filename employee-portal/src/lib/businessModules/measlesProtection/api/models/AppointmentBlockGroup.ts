@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { first, last, sumBy } from "remeda";
+
 import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
 import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
 import {
@@ -10,7 +12,6 @@ import {
   ApiGetAppointmentBlock,
   ApiGetAppointmentBlockGroup,
 } from "@eshg/measles-protection-api";
-import { first, last, sumBy } from "remeda";
 
 export interface AppointmentBlockMeasles extends BaseEntity {
   readonly start: Date;

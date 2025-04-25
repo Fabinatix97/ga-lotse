@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
 import { PropsWithChildren } from "react";
+
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 
 import { SIDEBAR_PADDING } from "@/features/drawer/config/sidebar";
 import { useHeaderHeights } from "@/hooks/useHeaderHeights";

@@ -5,11 +5,12 @@
 
 "use client";
 
+import { Grid, Stack } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { PageGrid } from "@eshg/lib-employee-portal";
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
-import { Grid, Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { ProcedureDetails as ProcedureDetailsType } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { AddCustodianPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/AddCustodianPanel";

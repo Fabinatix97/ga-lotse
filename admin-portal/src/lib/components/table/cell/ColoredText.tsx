@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ColorPaletteProp, Typography } from "@mui/joy";
+import { ReactNode } from "react";
+import { isObjectType } from "remeda";
+
 import {
   ApiAdminActorSelector,
   ApiAdminCertificate,
   instanceOfApiAdminActorSelector,
   instanceOfApiAdminCertificate,
 } from "@eshg/service-directory-api";
-import { ColorPaletteProp, Typography } from "@mui/joy";
-import { ReactNode } from "react";
-import { isObjectType } from "remeda";
 
 import { CertificateDialogButton } from "@/lib/components/button/CertificateDialogButton";
 import { formatActorSelector } from "@/lib/components/table/cell/StaticActorSelectorCell";

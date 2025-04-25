@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { InfoOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -20,6 +15,12 @@ import {
 } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useState } from "react";
+
+import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
+import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 
 import { multiLineEllipsis } from "@/lib/baseModule/theme/mixins";
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";

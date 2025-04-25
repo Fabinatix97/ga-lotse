@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonNullish } from "remeda";
+
 import {
   ApiBaseDataSourceAttribute,
   ApiBusinessDataSourceAttribute,
 } from "@eshg/statistics-api";
-import { isNonNullish } from "remeda";
 
 export function getAttributeLabel(
   attribute: Pick<ApiBusinessDataSourceAttribute, "name">,

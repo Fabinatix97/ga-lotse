@@ -5,6 +5,8 @@
 
 "use client";
 
+import { use } from "react";
+
 import { GetTextBlocksRequest } from "@eshg/inspection-api";
 import {
   MainContentLayout,
@@ -12,7 +14,6 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/textblocks";
 import { TextBlocksTable } from "@/lib/businessModules/inspection/components/textBlock/TextBlocksTable";

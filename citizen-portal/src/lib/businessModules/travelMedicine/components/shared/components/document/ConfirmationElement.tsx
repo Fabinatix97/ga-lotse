@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Checkbox } from "@mui/joy";
+
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { ApiDocumentConfirmation } from "@eshg/travel-medicine-api";
-import { Checkbox } from "@mui/joy";
 
 interface ConfirmationElementProps {
   confirmation: ApiDocumentConfirmation;

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+
 import {
   ApiGdprProcedureSortKey,
   ApiGdprProcedureType,
@@ -20,7 +22,6 @@ import {
   parseOptionalEnum,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { GDPRTable } from "@/lib/baseModule/components/gdpr/overview/GDPRTable";
 

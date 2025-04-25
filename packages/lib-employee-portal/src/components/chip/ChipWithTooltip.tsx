@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Chip, Tooltip, Typography, styled } from "@mui/joy";
 import { useState } from "react";
+
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
 import { OverlayBoundary } from "@/components/boundaries/OverlayBoundary";
 

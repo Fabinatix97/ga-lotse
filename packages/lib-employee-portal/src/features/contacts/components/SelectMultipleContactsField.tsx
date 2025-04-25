@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useState } from "react";
+
 import { ApiContactCategory } from "@eshg/base-api";
 import { SelectObjectField } from "@eshg/lib-portal/components/formFields/SelectObjectField";
-import { useState } from "react";
 
 import { useSearchContacts } from "@/features/contacts/api/queries";
 import { CONTACT_CATEGORY_NAMES_SHORT } from "@/features/contacts/translations";

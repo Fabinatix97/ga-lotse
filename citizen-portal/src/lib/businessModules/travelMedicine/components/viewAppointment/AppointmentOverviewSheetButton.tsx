@@ -3,14 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import {
-  ApiAppointmentBookingType,
-  ApiAppointmentSummary,
-  ApiAppointmentType,
-} from "@eshg/travel-medicine-api";
 import {
   ChevronRightOutlined,
   DateRangeOutlined,
@@ -23,6 +15,15 @@ import {
 } from "@mui/icons-material";
 import { Button, Sheet } from "@mui/joy";
 import { useRouter } from "next/navigation";
+
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentSummary,
+  ApiAppointmentType,
+} from "@eshg/travel-medicine-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";

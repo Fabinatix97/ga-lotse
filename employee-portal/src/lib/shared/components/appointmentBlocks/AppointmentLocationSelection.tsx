@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Grid } from "@mui/joy";
+
 import {
   CONTACT_CATEGORY_NAMES,
   SearchContactField,
 } from "@eshg/lib-employee-portal";
-import { Grid } from "@mui/joy";
 
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 

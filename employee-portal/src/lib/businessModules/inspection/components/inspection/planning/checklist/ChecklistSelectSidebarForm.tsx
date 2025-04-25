@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Lock } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { useRef } from "react";
+
 import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
@@ -18,10 +23,6 @@ import {
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { Lock } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { useRef } from "react";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 

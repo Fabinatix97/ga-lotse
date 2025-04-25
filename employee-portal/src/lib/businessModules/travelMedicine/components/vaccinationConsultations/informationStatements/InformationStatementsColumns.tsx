@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
-import { ApiInformationStatement } from "@eshg/travel-medicine-api";
 import {
   DeleteOutlined,
   Replay,
   TextSnippetOutlined,
 } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
+import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
+import { ApiInformationStatement } from "@eshg/travel-medicine-api";
 
 import { CitizenHasAnsweredStatusChip } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/CitizenHasAnsweredChip";
 

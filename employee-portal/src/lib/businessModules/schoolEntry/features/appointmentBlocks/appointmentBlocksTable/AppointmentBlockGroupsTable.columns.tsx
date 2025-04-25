@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Delete } from "@mui/icons-material";
+import { Chip } from "@mui/joy";
+import { TableOptions, createColumnHelper } from "@tanstack/react-table";
+
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -10,9 +14,6 @@ import {
   ApiAppointmentType,
   ApiLocationSelectionMode,
 } from "@eshg/school-entry-api";
-import { Delete } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
-import { TableOptions, createColumnHelper } from "@tanstack/react-table";
 
 import {
   AppointmentBlock,

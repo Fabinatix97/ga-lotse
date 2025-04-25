@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
-import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
 import {
   AccessTimeOutlined,
   DateRange,
@@ -15,6 +11,11 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
 
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";

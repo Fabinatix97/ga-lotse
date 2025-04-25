@@ -5,6 +5,11 @@
 
 "use client";
 
+import { EditOutlined, Preview, ToggleOffOutlined } from "@mui/icons-material";
+import { Chip } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   ActionsMenu,
@@ -23,10 +28,6 @@ import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
-import { EditOutlined, Preview, ToggleOffOutlined } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { useGdprValidationTaskApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { useGetProceduresQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
@@ -248,8 +249,8 @@ export function ProceduresTable() {
                 openProcedureReopenModal(procedureId),
             })}
             rowNavigation={{
-              route: ({ original: { id: procedureId } }) =>
-                routes.procedures.details(procedureId).index,
+              route: (row: { original: ApiGetProcedure200Response }) =>
+                getLinkToProcedure(row.original),
               focusColumnAccessorKey: "affectedPerson.lastName",
             }}
           />
@@ -262,7 +263,7 @@ export function ProceduresTable() {
 
 function getLinkToProcedure(procedure: ApiGetProcedure200Response) {
   if (procedure.type === "DraftMeaslesProcedure") {
-    return routes.procedures.draft(procedure.id);
+    return routes.procedures.draft(procedure.id).index;
   }
   return routes.procedures.details(procedure.id).index;
 }

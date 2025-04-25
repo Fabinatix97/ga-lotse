@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { useRef } from "react";
+import { isNonNullish } from "remeda";
+
 import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionCentralRepoRequest,
@@ -20,10 +25,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { useRef } from "react";
-import { isNonNullish } from "remeda";
 
 import {
   useAddChecklistDefinitionToCentralRepo,

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { isDefined, isEmpty, mapToObj } from "remeda";
+
 import { FormButtonBar, FormSheet, NamedUser } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
@@ -10,9 +14,6 @@ import {
   ApiAppointmentTypeConfig,
   ApiUser,
 } from "@eshg/sti-protection-api";
-import { Divider, Stack } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
 import { useCreateDailyAppointmentBlocksForGroupOptions } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";

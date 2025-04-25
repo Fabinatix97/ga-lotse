@@ -5,6 +5,8 @@
 
 "use client";
 
+import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   TabNavigationHeader,
@@ -15,7 +17,6 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
 
 import { useGetProcedure } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";

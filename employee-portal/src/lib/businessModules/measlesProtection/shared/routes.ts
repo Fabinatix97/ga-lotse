@@ -15,8 +15,14 @@ export const routes = {
       index: `${proceduresPath}/${procedureId}`,
       proof: `${proceduresPath}/${procedureId}/proof`,
       progressEntries: `${proceduresPath}/${procedureId}/progress-entries`,
+      syncFacility: (fileStateId: string, facilityVersion: number) =>
+        `${proceduresPath}/${procedureId}/sync-facility/${fileStateId}/${facilityVersion}`,
     }),
-    draft: (procedureId: string) => `${proceduresPath}/draft/${procedureId}`,
+    draft: (procedureId: string) => ({
+      index: `${proceduresPath}/draft/${procedureId}`,
+      syncFacility: (fileStateId: string, facilityVersion: number) =>
+        `${proceduresPath}/draft/${procedureId}/sync-facility/${fileStateId}/${facilityVersion}`,
+    }),
   },
   appointmentBlockGroups: {
     index: `${appointmentBlockPath}`,

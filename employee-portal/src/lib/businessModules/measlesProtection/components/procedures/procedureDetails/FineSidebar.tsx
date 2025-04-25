@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useCallback } from "react";
+
 import {
   FormButtonBar,
   Sidebar,
@@ -14,9 +18,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiCreateMonetaryFine } from "@eshg/measles-protection-api";
-import { Stack } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { useCallback } from "react";
 
 import { useAddFineMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";

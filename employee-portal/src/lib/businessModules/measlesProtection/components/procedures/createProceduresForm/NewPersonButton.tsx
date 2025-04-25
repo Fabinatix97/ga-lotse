@@ -5,14 +5,15 @@
 
 "use client";
 
-import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { type ApiAffectedPersonDetails } from "@eshg/measles-protection-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { type ApiAffectedPersonDetails } from "@eshg/measles-protection-api";
 
 import {
   useCreateDraftProcedureMutation,
@@ -100,7 +101,7 @@ export function NewPersonButton() {
       snackbar.confirmation("Vorgang erfolgreich angelegt.");
       // Todo: redirect is sluggish
       if (response) {
-        router.push(routes.procedures.draft(response.id));
+        router.push(routes.procedures.draft(response.id).index);
       }
       handleClose();
     },

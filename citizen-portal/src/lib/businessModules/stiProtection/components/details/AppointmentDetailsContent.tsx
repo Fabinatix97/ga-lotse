@@ -5,14 +5,6 @@
 
 "use client";
 
-import { formatTime } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import {
-  durationBetweenDatesInMinutes,
-  formatDateToYear,
-} from "@eshg/lib-portal/helpers/dateTime";
-import { ApiCitizenProcedure, ApiConcern } from "@eshg/sti-protection-api";
 import {
   AccessTimeOutlined,
   CakeOutlined,
@@ -22,6 +14,15 @@ import {
   MedicalServicesOutlined,
 } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
+
+import { formatTime } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import {
+  durationBetweenDatesInMinutes,
+  formatDateToYear,
+} from "@eshg/lib-portal/helpers/dateTime";
+import { ApiCitizenProcedure, ApiConcern } from "@eshg/sti-protection-api";
 
 import {
   useAnonymousIdentificationDocumentQuery,

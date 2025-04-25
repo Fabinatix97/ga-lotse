@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -14,7 +16,6 @@ import {
   ApiServiceStatus,
   PatchOtherServiceRequest,
 } from "@eshg/travel-medicine-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUpdateOtherService } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import {

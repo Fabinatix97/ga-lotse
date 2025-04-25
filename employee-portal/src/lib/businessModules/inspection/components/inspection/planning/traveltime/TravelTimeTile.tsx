@@ -5,6 +5,13 @@
 
 "use client";
 
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CopyAllIcon from "@mui/icons-material/CopyAll";
+import { Button, Grid, IconButton, Stack } from "@mui/joy";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { isNonNullish } from "remeda";
+
 import type {
   ApiAddFacilityFileStateRequestContactAddress,
   ApiDomesticAddress,
@@ -14,12 +21,6 @@ import type {
 import { DetailsItem } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CopyAllIcon from "@mui/icons-material/CopyAll";
-import { Button, Grid, IconButton, Stack } from "@mui/joy";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { isNonNullish } from "remeda";
 
 import { useInspectionGeoApi } from "@/lib/businessModules/inspection/api/clients";
 import { useGetDepartment } from "@/lib/businessModules/inspection/api/queries/department";

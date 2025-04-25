@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { Suspense, useMemo } from "react";
+
 import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiAppointment,
   ApiGetCitizenProcedureDetailsResponse,
 } from "@eshg/official-medical-service-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { Suspense, useMemo } from "react";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";

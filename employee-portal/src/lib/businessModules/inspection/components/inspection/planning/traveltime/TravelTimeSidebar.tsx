@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+import { addMinutes, isAfter, isBefore, subMinutes } from "date-fns";
+import { Formik, FormikErrors } from "formik";
+import { SetStateAction, useMemo, useRef } from "react";
+import { isEmpty } from "remeda";
+
 import type {
   ApiInspectionAppointment,
   ApiInspectionTravelTime,
@@ -21,11 +27,6 @@ import {
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { Grid, Typography } from "@mui/joy";
-import { addMinutes, isAfter, isBefore, subMinutes } from "date-fns";
-import { Formik, FormikErrors } from "formik";
-import { SetStateAction, useMemo, useRef } from "react";
-import { isEmpty } from "remeda";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";

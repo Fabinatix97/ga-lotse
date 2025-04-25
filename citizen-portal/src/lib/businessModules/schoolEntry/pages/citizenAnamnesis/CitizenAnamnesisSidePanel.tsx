@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CakeOutlined, PersonOutlined } from "@mui/icons-material";
+import { Button, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { ApiCitizenChild } from "@eshg/school-entry-api";
-import { CakeOutlined, PersonOutlined } from "@mui/icons-material";
-import { Button, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

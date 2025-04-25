@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { TypographyProps } from "@mui/joy";
 import { ComponentProps } from "react";
 import { isString } from "remeda";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { DetailsItem, DetailsItemProps, DetailsItemValue } from "./DetailsItem";
 

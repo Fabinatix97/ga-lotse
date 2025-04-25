@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionIncident } from "@eshg/inspection-api";
 import { Box, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
+
+import { ApiInspectionIncident } from "@eshg/inspection-api";
 
 import { IncidentSidebar } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentSidebar";
 import { IncidentsTable } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentsTable";

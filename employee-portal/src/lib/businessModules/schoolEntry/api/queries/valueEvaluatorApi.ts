@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { GetPercentilesRequest } from "@eshg/school-entry-api";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
+
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { GetPercentilesRequest } from "@eshg/school-entry-api";
 
 import { useValueEvaluatorApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import {

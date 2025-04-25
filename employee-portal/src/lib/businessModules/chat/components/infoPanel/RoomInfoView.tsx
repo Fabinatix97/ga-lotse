@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ConfirmationDialog } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { Box, Stack, Typography } from "@mui/joy";
 import { useMemo, useState } from "react";
 import { find } from "remeda";
+
+import { ConfirmationDialog } from "@eshg/lib-employee-portal";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { GroupChatMember } from "@/lib/businessModules/chat/components/GroupChatMember";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";

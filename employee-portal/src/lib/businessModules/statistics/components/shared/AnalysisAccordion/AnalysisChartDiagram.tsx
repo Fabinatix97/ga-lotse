@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import {
   Delete,
   Download,
@@ -14,6 +12,9 @@ import {
 import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
 import { useState } from "react";
 import { isObjectType } from "remeda";
+
+import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {

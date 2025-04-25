@@ -5,6 +5,8 @@
 
 "use client";
 
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -12,7 +14,6 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { useGetChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ReadOnlyCLDPage } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDPage";

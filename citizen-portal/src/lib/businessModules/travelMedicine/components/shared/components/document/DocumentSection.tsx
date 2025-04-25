@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { ReactNode } from "react";
+
 import {
   ApiDocumentContent,
   ApiDocumentSection,
 } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { ReactNode } from "react";
 
 import { AnamnesisQuestion } from "@/lib/businessModules/travelMedicine/components/shared/components/document/AnamnesisQuestion";
 import { ConfirmationElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/ConfirmationElement";

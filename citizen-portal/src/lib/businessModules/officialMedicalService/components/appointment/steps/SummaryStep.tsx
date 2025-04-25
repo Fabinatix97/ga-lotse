@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { Grid } from "@mui/joy";
+
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 
 import { InformationCard } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/InformationCard";
 import { OverviewSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/OverviewSection";

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { isDefined } from "remeda";
+
 import {
   ApiBaseFeature,
   ApiSalutation,
@@ -28,9 +32,6 @@ import {
   createFieldNameMapper,
   mapOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
-import { Divider, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { isDefined } from "remeda";
 
 import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";

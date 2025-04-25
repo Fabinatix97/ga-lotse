@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMemo } from "react";
+
 import { ApiProcedureStatus } from "@eshg/base-api";
 import {
   FilterDefinition,
@@ -22,7 +24,6 @@ import {
   ApiRoleStatus,
   ApiSubmissionResult,
 } from "@eshg/measles-protection-api";
-import { useMemo } from "react";
 
 import {
   caseStatusNames,

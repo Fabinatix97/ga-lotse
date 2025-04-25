@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Metadata, ResolvingMetadata } from "next";
+import { headers } from "next/headers";
+
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
 import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
-import type { Metadata, ResolvingMetadata } from "next";
-import { headers } from "next/headers";
 
 import { baseTranslations } from "@/lib/baseModule/locales";
 

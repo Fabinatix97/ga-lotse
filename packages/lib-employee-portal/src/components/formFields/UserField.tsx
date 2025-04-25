@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Close } from "@mui/icons-material";
+import { Chip, ChipProps, Tooltip } from "@mui/joy";
+
 import {
   BaseField,
   useBaseField,
@@ -10,8 +13,6 @@ import {
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Close } from "@mui/icons-material";
-import { Chip, ChipProps, Tooltip } from "@mui/joy";
 
 export interface NamedUser {
   userId: string;

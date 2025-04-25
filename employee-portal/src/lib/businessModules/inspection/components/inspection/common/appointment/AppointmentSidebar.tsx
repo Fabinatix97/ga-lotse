@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid } from "@mui/joy";
+import { addHours, endOfDay, getDay } from "date-fns";
+import { Formik, FormikErrors } from "formik";
+import { SetStateAction, useMemo, useRef } from "react";
+import { isDefined, isEmpty, isNonNullish } from "remeda";
+
 import { ApiInspectionAppointment } from "@eshg/inspection-api";
 import {
   FormButtonBar,
@@ -15,11 +21,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { Grid } from "@mui/joy";
-import { addHours, endOfDay, getDay } from "date-fns";
-import { Formik, FormikErrors } from "formik";
-import { SetStateAction, useMemo, useRef } from "react";
-import { isDefined, isEmpty, isNonNullish } from "remeda";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { TimeField } from "@/lib/shared/components/formFields/TimeField";

@@ -5,6 +5,11 @@
 
 "use client";
 
+import { FormLabel, Slider, Stack, Typography, styled } from "@mui/joy";
+import { useQuery } from "@tanstack/react-query";
+import { Formik } from "formik";
+import { useEffect, useState } from "react";
+
 import {
   FileField,
   MainContentLayout,
@@ -14,10 +19,6 @@ import {
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { FileLike } from "@eshg/lib-portal/components/formFields/file/types";
-import { FormLabel, Slider, Stack, Typography, styled } from "@mui/joy";
-import { useQuery } from "@tanstack/react-query";
-import { Formik } from "formik";
-import { useEffect, useState } from "react";
 
 import { compressImage } from "@/lib/shared/helpers/imageCompressor";
 

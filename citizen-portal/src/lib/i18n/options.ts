@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { InitOptions } from "i18next";
+
 import { loadLocale as loadLocaleLibPortal } from "@eshg/lib-portal/i18n/loadLocale";
 import { i18nNamespace as i18nNamespaceLibPortal } from "@eshg/lib-portal/i18n/namespace";
-import { InitOptions } from "i18next";
 
 export const defaultLang = "de";
 export const supportedLanguages = ["en", "de"] as const;

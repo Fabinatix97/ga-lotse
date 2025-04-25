@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
+import { useCallback, useRef, useState } from "react";
+import { isObjectType } from "remeda";
+
 import {
   FormButtonBar,
   Sidebar,
@@ -13,12 +20,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
-import { useCallback, useRef, useState } from "react";
-import { isObjectType } from "remeda";
 
 import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";

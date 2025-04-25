@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetUsersResponse, ApiUser, UserApi } from "@eshg/base-api";
 import { queryOptions } from "@tanstack/react-query";
+
+import { ApiGetUsersResponse, ApiUser, UserApi } from "@eshg/base-api";
 
 import { appointmentStaffApiQueryKey } from "./apiQueryKeys";
 

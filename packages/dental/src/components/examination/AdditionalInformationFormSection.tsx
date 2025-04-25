@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Grid, Stack, Typography } from "@mui/joy";
+import { compareDesc } from "date-fns";
+import { isDefined } from "remeda";
+import { useShallow } from "zustand/react/shallow";
+
 import {
   ApiDentitionType,
   ApiMihStatus,
@@ -21,10 +26,6 @@ import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { Divider, Grid, Stack, Typography } from "@mui/joy";
-import { compareDesc } from "date-fns";
-import { isDefined } from "remeda";
-import { useShallow } from "zustand/react/shallow";
 
 import {
   ExaminationResultWithDate,

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/inspection-api";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import AddIcon from "@mui/icons-material/Add";
 import { Stack, Typography } from "@mui/joy";
+
+import { ApiUser } from "@eshg/inspection-api";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

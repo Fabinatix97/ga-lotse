@@ -5,12 +5,6 @@
 
 "use client";
 
-import {
-  ApiCLSectionContext,
-  ApiCLSectionContextElementsInner,
-} from "@eshg/inspection-api";
-import { InformationSheet } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import { Add } from "@mui/icons-material";
 import {
@@ -24,6 +18,13 @@ import {
 } from "@mui/joy";
 import { doNothing } from "remeda";
 import { v4 as uuidv4 } from "uuid";
+
+import {
+  ApiCLSectionContext,
+  ApiCLSectionContextElementsInner,
+} from "@eshg/inspection-api";
+import { InformationSheet } from "@eshg/lib-employee-portal";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { ChecklistDefinitionElementsList } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/ChecklistDefinitionElementsList";
 import { CopyDeleteDropdown } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/CopyDeleteDropdown";

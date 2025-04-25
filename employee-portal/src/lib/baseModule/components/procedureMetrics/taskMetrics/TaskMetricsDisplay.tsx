@@ -6,13 +6,6 @@
 "use client";
 
 import {
-  ApiBusinessModule,
-  ApiProcedureStatus,
-  ApiProcedureType,
-  ApiProcedureWithDuration,
-} from "@eshg/base-api";
-import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
-import {
   CheckOutlined,
   HourglassEmptyOutlined,
   RocketLaunchOutlined,
@@ -22,6 +15,14 @@ import { endOfToday } from "date-fns";
 import Image from "next/image";
 import { startTransition, useState } from "react";
 import { isDefined } from "remeda";
+
+import {
+  ApiBusinessModule,
+  ApiProcedureStatus,
+  ApiProcedureType,
+  ApiProcedureWithDuration,
+} from "@eshg/base-api";
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 
 import { useTaskMetricsQuery } from "@/lib/baseModule/api/queries/taskMetrics";
 import { TimeRangeSelect } from "@/lib/baseModule/components/procedureMetrics/TimeRangeSelect";

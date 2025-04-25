@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAddFacilityFileStateRequestContactAddress } from "@eshg/base-api";
-import { BaseAddressDetailsColumn } from "@eshg/lib-employee-portal";
 import { Grid } from "@mui/joy";
 import { isDefined, isNonNullish } from "remeda";
+
+import { ApiAddFacilityFileStateRequestContactAddress } from "@eshg/base-api";
+import { BaseAddressDetailsColumn } from "@eshg/lib-employee-portal";
 
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";

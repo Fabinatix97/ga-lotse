@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { addMinutes, isEqual } from "date-fns";
+import { Formik, FormikHelpers, useFormikContext } from "formik";
+import { useEffect, useMemo, useState } from "react";
+import { isEmpty, prop, sortBy } from "remeda";
+
 import {
   DateTimeField,
   DetailsItem,
@@ -35,11 +41,6 @@ import {
   ApiOmsAppointment,
   ApiUser,
 } from "@eshg/official-medical-service-api";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { addMinutes, isEqual } from "date-fns";
-import { Formik, FormikHelpers, useFormikContext } from "formik";
-import { useEffect, useMemo, useState } from "react";
-import { isEmpty, prop, sortBy } from "remeda";
 
 import { useBookAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import { usePostAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";

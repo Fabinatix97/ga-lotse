@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormControl, FormLabel } from "@mui/joy";
+
 import {
   ProcedureLabel,
   ProcedureLabelAutocomplete,
 } from "@eshg/lib-employee-portal";
-import { FormControl, FormLabel } from "@mui/joy";
 
 import { procedureLabelApiQueryKey } from "@/config/apiQueryKeys";
 import { useDentalApi } from "@/contexts/dental";

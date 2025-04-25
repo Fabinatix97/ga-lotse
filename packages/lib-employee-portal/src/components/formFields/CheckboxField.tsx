@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import { Checkbox, CheckboxProps, FormControl, FormHelperText } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FormikHandlers, useFormikContext } from "formik";
 import { ChangeEventHandler, memo } from "react";
 import { isString } from "remeda";
+
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 export interface CheckboxFieldProps extends FieldProps<boolean> {
   onChange?: ChangeEventHandler<HTMLInputElement>;

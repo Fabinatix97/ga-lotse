@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SidebarFormHandle } from "@eshg/lib-employee-portal";
 import { parseISO } from "date-fns";
 import { Ref } from "react";
 import { isDefined } from "remeda";
+
+import { SidebarFormHandle } from "@eshg/lib-employee-portal";
 
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";

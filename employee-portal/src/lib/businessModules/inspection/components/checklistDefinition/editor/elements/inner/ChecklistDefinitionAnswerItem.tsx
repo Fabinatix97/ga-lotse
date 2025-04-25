@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SubdirectoryArrowRight } from "@mui/icons-material";
+import { Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { memo, useState } from "react";
+
 import {
   ApiCLFieldOptionContext,
   ApiCLSectionContextElementsInner,
 } from "@eshg/inspection-api";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { SubdirectoryArrowRight } from "@mui/icons-material";
-import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { memo, useState } from "react";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { FlexInputField } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";

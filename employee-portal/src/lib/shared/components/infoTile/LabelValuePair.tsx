@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Box, Stack, Typography } from "@mui/joy";
 import { ReactElement } from "react";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export function StyledValue(props: RequiresChildren) {
   return (

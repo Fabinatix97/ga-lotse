@@ -5,9 +5,10 @@
 
 "use client";
 
-import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Stack } from "@mui/joy";
 import { PropsWithChildren, Suspense, useEffect, useState } from "react";
+
+import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { AdminSnackbar } from "@/lib/components/AdminSnackbar";
 import {

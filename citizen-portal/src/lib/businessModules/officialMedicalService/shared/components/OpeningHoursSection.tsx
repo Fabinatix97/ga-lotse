@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetOpeningHoursResponse } from "@eshg/official-medical-service-api";
 import { AccessTimeOutlined } from "@mui/icons-material";
 import { Grid, Stack, Typography, styled } from "@mui/joy";
 import { isDefined, map, partition, pipe, zip } from "remeda";
+
+import { ApiGetOpeningHoursResponse } from "@eshg/official-medical-service-api";
 
 import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
 import { useTranslation } from "@/lib/i18n/client";

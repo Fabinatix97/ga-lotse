@@ -5,6 +5,12 @@
 
 "use client";
 
+import Delete from "@mui/icons-material/Delete";
+import { Divider, IconButton, Radio, Stack, Typography } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { Ref } from "react";
+import { isDefined } from "remeda";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -15,11 +21,6 @@ import {
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import Delete from "@mui/icons-material/Delete";
-import { Divider, IconButton, Radio, Stack, Typography } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { Ref } from "react";
-import { isDefined } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { FilesSection } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/FilesSection";

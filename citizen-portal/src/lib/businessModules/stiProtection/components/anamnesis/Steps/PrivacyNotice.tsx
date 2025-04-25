@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Box } from "@mui/joy";
 import { useTranslation } from "react-i18next";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 export function PrivacyNotice() {
   const { t } = useTranslation(["stiProtection/anamnesis"]);

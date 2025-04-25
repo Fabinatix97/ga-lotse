@@ -9,7 +9,9 @@ import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.CASE_STATUS_CHANGED;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -22,13 +24,19 @@ import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.measlesprotection.api.CaseStatusDto;
+import de.eshg.measlesprotection.api.FacilityContactPersonDto;
+import de.eshg.measlesprotection.api.FacilityDto;
+import de.eshg.measlesprotection.api.FacilitySyncDto;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresPaginationOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresSortOptions;
 import de.eshg.measlesprotection.api.MPFacilityTypeDto;
+import de.eshg.measlesprotection.api.SyncFacilityRequest;
 import de.eshg.measlesprotection.api.UpdateProcedureRequest;
+import de.eshg.measlesprotection.api.draft.EditFacilityResponse;
 import de.eshg.measlesprotection.mapper.AccessRestrictionMapper;
 import de.eshg.measlesprotection.mapper.CaseStatusMapper;
+import de.eshg.measlesprotection.mapper.FacilityContactPersonMapper;
 import de.eshg.measlesprotection.mapper.MPFacilityTypeMapper;
 import de.eshg.measlesprotection.mapper.MonetaryFineMapper;
 import de.eshg.measlesprotection.mapper.ProofSubmissionMapper;
@@ -375,5 +383,62 @@ public class MeaslesProtectionService {
     } else {
       throw new BadRequestException("Non-draft procedures cannot be deleted!");
     }
+  }
+
+  @Transactional
+  public EditFacilityResponse editFacility(UUID id, PutFacilityRequest putFacilityRequest) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
+    Optional<Facility> optionalFacility = procedure.getFacility();
+    if (!procedure.getProcedureStatus().isOpen()) {
+      throw new BadRequestException("Procedure is closed");
+    }
+    if (optionalFacility.isEmpty()) {
+      throw new BadRequestException("Procedure doesn't have a facility");
+    }
+    Facility facility = optionalFacility.get();
+
+    AddFacilityFileStateResponse facilityFileState =
+        facilityClient.updateFacilityFileStateAndReference(
+            facility.getCentralFileStateId(), putFacilityRequest);
+
+    facility.setCentralFileStateId(facilityFileState.id());
+    List<FacilityContactPersonDto> contactPersons =
+        FacilityContactPersonMapper.map(facilityFileState.contactPersons());
+
+    FacilityDto facilityDto =
+        new FacilityDto(
+            facilityFileState.name(),
+            contactPersons,
+            MPFacilityTypeDto.valueOf(facility.getMpFacilityType().name()),
+            facility.getOtherFacilityTypeInformation(),
+            !facilityFileState.phoneNumbers().isEmpty()
+                ? facilityFileState.phoneNumbers().getFirst()
+                : "",
+            !facilityFileState.emailAddresses().isEmpty()
+                ? facilityFileState.emailAddresses().getFirst()
+                : "",
+            facilityFileState.contactAddress(),
+            facilityFileState.differentBillingAddress(),
+            new FacilitySyncDto(
+                facilityFileState.id(), facilityFileState.referenceVersion(), false));
+    return new EditFacilityResponse(procedure.getExternalId(), facilityDto);
+  }
+
+  @Transactional
+  public void syncFacility(UUID id, SyncFacilityRequest syncFacilityRequest) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
+    Optional<Facility> optionalFacility = procedure.getFacility();
+    if (!procedure.getProcedureStatus().isOpen()) {
+      throw new BadRequestException("Procedure is closed");
+    }
+    if (optionalFacility.isEmpty()) {
+      throw new BadRequestException("Procedure doesn't have a facility");
+    }
+    Facility facility = optionalFacility.get();
+
+    UUID updatedFileStateId =
+        facilityClient.syncFacilityFileState(
+            facility.getCentralFileStateId(), syncFacilityRequest.referenceVersion());
+    facility.setCentralFileStateId(updatedFileStateId);
   }
 }

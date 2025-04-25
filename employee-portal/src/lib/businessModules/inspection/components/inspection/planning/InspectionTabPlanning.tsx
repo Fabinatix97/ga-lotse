@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Box, useTheme } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import {
   ApiInspection,
   ApiInspectionAvailableCLDVersionsResponse,
@@ -12,8 +15,6 @@ import {
 } from "@eshg/inspection-api";
 import { useHeaderHeights } from "@eshg/lib-employee-portal";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
-import { Box, useTheme } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";

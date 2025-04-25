@@ -3,13 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import {
-  ApiInboxProgressEntryType,
-  ApiManualProgressEntryType,
-  ApiProgressEntryClass,
-} from "@eshg/lib-procedures-api";
 import {
   CallOutlined,
   DescriptionOutlined,
@@ -20,6 +13,14 @@ import {
   UploadOutlined,
 } from "@mui/icons-material";
 import { ReactNode } from "react";
+
+import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import {
+  ApiInboxProgressEntryType,
+  ApiManualProgressEntryType,
+  ApiProgressEntryClass,
+} from "@eshg/lib-procedures-api";
 
 import { systemProgressEntryTypeTitles as inspectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { systemProgressEntryTypeTitles as measlesProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";

@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Grid } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiUpdateInspectionModifyInventoryRequest } from "@eshg/inspection-api";
 import {
   FormButtonBar,
@@ -17,8 +20,6 @@ import {
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { validateRange } from "@eshg/lib-portal/helpers/validators";
-import { Grid } from "@mui/joy";
-import { Formik } from "formik";
 
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";
 import { useGetInventoryItems } from "@/lib/businessModules/inspection/api/queries/inventory";

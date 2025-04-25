@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { isDeepEqual, isNullish } from "remeda";
+
 import {
   ApiAttributeSelection,
   ApiSortDirection,
   GetEvaluationRequest,
 } from "@eshg/statistics-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
-import { isDeepEqual, isNullish } from "remeda";
 
 import {
   useEvaluationApi,

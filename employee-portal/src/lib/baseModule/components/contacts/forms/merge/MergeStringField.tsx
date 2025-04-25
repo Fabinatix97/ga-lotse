@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Stack, Typography } from "@mui/joy";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 

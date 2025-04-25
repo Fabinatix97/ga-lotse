@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
+import { useState } from "react";
+
 import { IconButton } from "@eshg/lib-employee-portal";
 import {
   InputField,
   InputFieldProps,
 } from "@eshg/lib-portal/components/formFields/InputField";
-import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
-import { useState } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInventoryItem } from "@eshg/base-api";
-import { ActionsMenu } from "@eshg/lib-employee-portal";
 import EditIcon from "@mui/icons-material/Edit";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
@@ -12,6 +10,9 @@ import LocalShippingIcon from "@mui/icons-material/LocalShippingOutlined";
 import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
+
+import { ApiInventoryItem } from "@eshg/base-api";
+import { ActionsMenu } from "@eshg/lib-employee-portal";
 
 import { LowCountWarning } from "@/lib/baseModule/components/inventory/LowCountWarning";
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";

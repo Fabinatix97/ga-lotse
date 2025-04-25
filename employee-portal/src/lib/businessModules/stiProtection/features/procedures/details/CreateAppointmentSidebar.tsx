@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { differenceInMinutes } from "date-fns";
+import { Formik, FormikHelpers } from "formik";
+import { ReactNode, useMemo, useReducer } from "react";
+
 import {
   MultiFormButtonBar,
   Sidebar,
@@ -18,9 +22,6 @@ import {
   ApiStiProtectionProcedure,
   ApiUpdateAppointmentRequest,
 } from "@eshg/sti-protection-api";
-import { differenceInMinutes } from "date-fns";
-import { Formik, FormikHelpers } from "formik";
-import { ReactNode, useMemo, useReducer } from "react";
 
 import {
   useCreateAppointmentMutation,

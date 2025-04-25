@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DownloadOutlined, FileCopyOutlined } from "@mui/icons-material";
+import { Button, Card, Chip, Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
+import { useId } from "react";
+import { isEmpty, isNonNullish } from "remeda";
+
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
@@ -10,11 +16,6 @@ import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLin
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiVersion } from "@eshg/opendata-api";
-import { DownloadOutlined, FileCopyOutlined } from "@mui/icons-material";
-import { Button, Card, Chip, Stack, Typography } from "@mui/joy";
-import { visuallyHidden } from "@mui/utils";
-import { useId } from "react";
-import { isEmpty, isNonNullish } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useOpenDataPublicCitizenApi } from "@/lib/businessModules/opendata/api/clients";

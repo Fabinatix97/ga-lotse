@@ -5,6 +5,8 @@
 
 "use client";
 
+import { use } from "react";
+
 import {
   ButtonBar,
   DataTable,
@@ -17,7 +19,6 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize/AuditLogAuthorizeSidebar";
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";

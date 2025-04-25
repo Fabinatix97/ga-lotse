@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { Ref, useState } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -22,9 +26,6 @@ import {
   ApiTravelTimeUnit,
   ApiTravelType,
 } from "@eshg/travel-medicine-api";
-import { Grid, Stack } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { Ref, useState } from "react";
 
 import { CountryFieldMulti } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/CountryFieldMulti";
 import {

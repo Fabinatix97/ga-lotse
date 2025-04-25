@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { format } from "date-fns";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -12,8 +15,6 @@ import {
   ApiServicePlanGroup,
   PatchEarliestDateRequest,
 } from "@eshg/travel-medicine-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { format } from "date-fns";
 
 import { usePatchEarliestDate } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import { useGetProcedureStepServicesQuery } from "@/lib/businessModules/travelMedicine/api/queries/procedureSteps";

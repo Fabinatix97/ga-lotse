@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Typography } from "@mui/joy";
+
 import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { GeneralInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -11,7 +13,6 @@ import {
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { Grid, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "./MedicalRegistryCreateProcedureForm";
 

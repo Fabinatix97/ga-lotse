@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiSelfUser } from "@eshg/base-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { ApiSelfUser } from "@eshg/base-api";
 
 import { userApiQueryKey } from "@/config/apiQueryKeys";
 import { useApi } from "@/contexts/api";

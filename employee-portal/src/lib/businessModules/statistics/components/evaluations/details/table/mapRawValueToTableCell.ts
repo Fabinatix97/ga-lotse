@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiValueOption } from "@eshg/statistics-api";
 import { isDefined } from "remeda";
+
+import { ApiValueOption } from "@eshg/statistics-api";
 
 import { EvaluationDetailsTableValue } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";

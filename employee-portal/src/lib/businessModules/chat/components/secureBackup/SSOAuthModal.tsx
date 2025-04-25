@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 import { AuthType, InteractiveAuth } from "matrix-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
+
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
 import { SSOAuthModalValues } from "@/lib/businessModules/chat/components/secureBackup/CreateBackupSidebar";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

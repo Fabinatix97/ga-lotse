@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ConfigurationParameters } from "@eshg/base-api";
 import {
   Mutation,
   MutationCache,
@@ -17,6 +16,8 @@ import {
 } from "@tanstack/react-query";
 import { Suspense, createContext, useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+
+import { ConfigurationParameters } from "@eshg/base-api";
 
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { ErrorAlert } from "../errorHandling/ErrorAlert";

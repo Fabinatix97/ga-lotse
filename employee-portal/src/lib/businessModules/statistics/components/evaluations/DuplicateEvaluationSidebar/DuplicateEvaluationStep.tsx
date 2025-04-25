@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack, Typography } from "@mui/joy";
+
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Divider, Stack, Typography } from "@mui/joy";
 
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";

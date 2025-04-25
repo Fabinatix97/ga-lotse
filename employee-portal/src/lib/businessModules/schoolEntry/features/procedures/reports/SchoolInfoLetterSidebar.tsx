@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Divider, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import {
   ButtonBar,
   CheckboxField,
@@ -19,8 +22,6 @@ import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiCreateSchoolInfoLetterRequest } from "@eshg/school-entry-api";
-import { Button, Divider, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 import { useCreateSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 

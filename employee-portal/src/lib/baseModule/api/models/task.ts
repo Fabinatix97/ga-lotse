@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   type ApiBusinessModule,
   ApiGetAggregatedTasksResponse,
@@ -12,7 +14,6 @@ import {
   ApiUser,
 } from "@eshg/base-api";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { isDefined } from "remeda";
 
 export interface Task {
   readonly assignedById?: string;

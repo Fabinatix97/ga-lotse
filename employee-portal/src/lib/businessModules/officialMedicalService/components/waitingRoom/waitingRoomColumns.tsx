@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiWaitingRoomProcedure } from "@eshg/official-medical-service-api";
 import { Chip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiWaitingRoomProcedure } from "@eshg/official-medical-service-api";
 
 import { statusColorsWaitingStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/officialMedicalService/shared/translations";

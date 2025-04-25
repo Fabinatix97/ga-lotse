@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import { Sheet, Stack } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { PropsWithChildren, useCallback } from "react";
+
 import { Alert as SharedAlert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -12,11 +15,9 @@ import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
-import { Sheet, Stack } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { PropsWithChildren, useCallback } from "react";
 
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 import {
   OtherComment,
@@ -102,13 +103,11 @@ export function UpdateProcedureSection({
       initialValues={initialValues}
     >
       <Stack rowGap={3}>
-        <Sheet>
-          <DetailsSection title={title}>
-            <Stack gap={2} width="100%">
-              <UpdateProcedureSectionFields errorMessages={errorMessages} />
-            </Stack>
-          </DetailsSection>
-        </Sheet>
+        <InfoTile title={title} name="additionalInfo">
+          <Stack gap={2} width="100%">
+            <UpdateProcedureSectionFields errorMessages={errorMessages} />
+          </Stack>
+        </InfoTile>
         <EditActions isDraft={isDraft} isOpen={!procedureClosed} />
       </Stack>
     </ProcedureForm>

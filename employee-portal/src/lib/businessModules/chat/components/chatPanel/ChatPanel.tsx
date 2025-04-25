@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
-import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { Box } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { isNonNullish, isShallowEqual, isStrictEqual } from "remeda";
+
+import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
+import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 
 import { chatColumnHeaderHeight } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";

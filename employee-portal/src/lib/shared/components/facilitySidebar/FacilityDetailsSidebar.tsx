@@ -4,24 +4,6 @@
  */
 
 import {
-  ApiFacilityContactPerson,
-  ApiGetReferenceFacilityResponse,
-} from "@eshg/base-api";
-import {
-  BaseAddressDetailsColumn,
-  DetailsRow,
-  MultiFormButtonBar,
-  SidebarActions,
-  SidebarContent,
-  SidebarForm,
-  formatList,
-} from "@eshg/lib-employee-portal";
-import {
-  SALUTATION_VALUES,
-  getOptionalTitle,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
   Accordion,
   AccordionDetails,
   AccordionGroup,
@@ -36,25 +18,57 @@ import {
 import { Formik } from "formik";
 import { isDefined } from "remeda";
 
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import {
+  ApiFacilityContactPerson,
+  ApiGetReferenceFacilityResponse,
+} from "@eshg/base-api";
+import {
+  BaseAddressDetailsColumn,
+  DetailsItem,
+  DetailsRow,
+  MultiFormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  formatList,
+} from "@eshg/lib-employee-portal";
+import {
+  SALUTATION_VALUES,
+  getOptionalTitle,
+} from "@eshg/lib-portal/components/formFields/constants";
+
+import {
+  MeaslesFacilityTypeSelect,
+  MeaslesFacilityTypeSelectFormValues,
+} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesFacilityTypeSelect";
+
+export type ReferenceFacilityWithOptionalMeaslesFacilityType =
+  ApiGetReferenceFacilityResponse & {
+    measlesFacilityType?: MeaslesFacilityTypeSelectFormValues;
+  };
 
 export interface FacilityDetailsSidebarProps {
   title: string;
   submitLabel: string;
-  facility: ApiGetReferenceFacilityResponse;
-  onSubmit: (values: ApiGetReferenceFacilityResponse) => Promise<void>;
+  facility: ReferenceFacilityWithOptionalMeaslesFacilityType;
+  onSubmit: (
+    values: ReferenceFacilityWithOptionalMeaslesFacilityType,
+  ) => Promise<void>;
   onBack?: () => void;
   onCancel: () => void;
+  showMeaslesFacilityType?: boolean;
 }
 
 export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
-  const fieldName = createFieldNameMapper<ApiGetReferenceFacilityResponse>();
   const facility = props.facility;
   const showEmailPhoneSection =
     facility.phoneNumbers.length + facility.emailAddresses.length > 0;
   return (
     <Formik
-      initialValues={props.facility}
+      initialValues={{
+        ...props.facility,
+        measlesFacilityType: { type: "", otherFacilityTypeInformation: "" },
+      }}
       onSubmit={props.onSubmit}
       enableReinitialize
     >
@@ -65,11 +79,8 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
             subtitle="Ausgewählte Einrichtung"
           >
             <Stack gap={2}>
-              <DetailsCell
-                name={fieldName("name")}
-                label={"Name"}
-                value={facility.name}
-              />
+              <DetailsItem label={"Name"} value={facility.name} />
+              {props.showMeaslesFacilityType && <MeaslesFacilityTypeSelect />}
 
               {isDefined(facility.contactAddress) && (
                 <>
@@ -91,17 +102,15 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
                   <Divider />
 
                   {facility.emailAddresses.map((email, index) => (
-                    <DetailsCell
+                    <DetailsItem
                       key={`${email}-${index}`}
-                      name={fieldName("emailAddresses") + "." + index}
                       label={"E-Mail-Adresse"}
                       value={email}
                     />
                   ))}
                   {facility.phoneNumbers.map((phoneNumber, index) => (
-                    <DetailsCell
+                    <DetailsItem
                       key={`${phoneNumber}-${index}`}
-                      name={fieldName("phoneNumbers") + "." + index}
                       label={"Telefonnummer"}
                       value={phoneNumber}
                     />
@@ -147,8 +156,7 @@ function ContactPersonDetails(props: {
               </AccordionSummary>
               <AccordionDetails>
                 <DetailsRow>
-                  <DetailsCell
-                    name={"salutation"}
+                  <DetailsItem
                     label={"Anrede"}
                     value={
                       isDefined(person.salutation)
@@ -156,36 +164,21 @@ function ContactPersonDetails(props: {
                         : undefined
                     }
                   />
-                  <DetailsCell
-                    name={"title"}
+                  <DetailsItem
                     label={"Titel"}
                     value={getOptionalTitle(person.title)}
                   />
                 </DetailsRow>
-                <DetailsCell
-                  name={"role"}
-                  label={"Rolle"}
-                  value={person.role}
-                />
+                <DetailsItem label={"Rolle"} value={person.role} />
                 <DetailsRow>
-                  <DetailsCell
-                    name={"firstName"}
-                    label={"Vorname"}
-                    value={person.firstName}
-                  />
-                  <DetailsCell
-                    name={"lastName"}
-                    label={"Nachname"}
-                    value={person.lastName}
-                  />
+                  <DetailsItem label={"Vorname"} value={person.firstName} />
+                  <DetailsItem label={"Nachname"} value={person.lastName} />
                 </DetailsRow>
-                <DetailsCell
-                  name={"emailAddress"}
+                <DetailsItem
                   label={"E-Mail-Adresse"}
                   value={person.emailAddress}
                 />
-                <DetailsCell
-                  name={"phoneNumber"}
+                <DetailsItem
                   label={"Telefonnummer"}
                   value={person.phoneNumber}
                 />

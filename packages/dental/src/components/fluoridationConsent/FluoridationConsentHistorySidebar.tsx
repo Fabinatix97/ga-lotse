@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import {
   ButtonBar,
@@ -12,7 +14,6 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { Button } from "@mui/joy";
 
 import { FluoridationConsentHistoryTable } from "./FluoridationConsentHistoryTable";
 

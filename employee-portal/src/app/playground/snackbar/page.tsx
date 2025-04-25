@@ -6,14 +6,6 @@
 "use client";
 
 import {
-  MainContentLayout,
-  StickyToolbarLayout,
-  Toolbar,
-  ToolbarBackButton,
-} from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import {
   Button,
   Checkbox,
   FormControl,
@@ -24,6 +16,15 @@ import {
   Stack,
 } from "@mui/joy";
 import { useState } from "react";
+
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+  ToolbarBackButton,
+} from "@eshg/lib-employee-portal";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 const DEFAULT_TYPE = "confirmation";
 const TYPES = ["confirmation", "error", "notification"] as const;

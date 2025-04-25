@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 import { IconButton, Stack, Tooltip } from "@mui/joy";
 import { useState } from "react";
+
+import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 
 import {
   navItemIconColor,

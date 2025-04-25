@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEmpty } from "remeda";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
@@ -13,7 +15,6 @@ import {
   NestedFormProps,
   OptionalFieldValue,
 } from "@eshg/lib-portal/types/form";
-import { isEmpty } from "remeda";
 
 import {
   VACCINATION_FIELD_STYLE,

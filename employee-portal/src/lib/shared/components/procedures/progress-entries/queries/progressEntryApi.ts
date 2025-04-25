@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import { isDefined, reverse } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { ApiGetProceduresSortOrder } from "@eshg/lib-procedures-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { isDefined, reverse } from "remeda";
 
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";

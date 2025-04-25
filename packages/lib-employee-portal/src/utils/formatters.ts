@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Nullable } from "@eshg/lib-portal/types/utility";
 import { type Locale, formatDistanceStrict } from "date-fns";
 import { isNullish } from "remeda";
+
+import { Nullable } from "@eshg/lib-portal/types/utility";
 
 import { getDateFnsLocale } from "./dateTime";
 

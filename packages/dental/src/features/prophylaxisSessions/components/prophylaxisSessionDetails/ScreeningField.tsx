@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { Stack } from "@mui/joy";
 import { useField } from "formik";
+
+import { CheckboxField } from "@eshg/lib-employee-portal";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 
 import { DENTITION_TYPE_OPTIONS } from "@/config/prophylaxisSession";
 

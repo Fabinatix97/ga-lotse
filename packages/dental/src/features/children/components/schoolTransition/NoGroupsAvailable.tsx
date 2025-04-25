@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { TableRowsOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 export function NoGroupsAvailable({ href }: { href: string }) {
   return (

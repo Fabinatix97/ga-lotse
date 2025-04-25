@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Grid, Stack } from "@mui/joy";
+
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
 import { CountryField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
@@ -17,7 +19,6 @@ import {
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Grid, Stack } from "@mui/joy";
 
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 

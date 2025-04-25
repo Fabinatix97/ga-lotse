@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonNullish } from "remeda";
+
 import {
   EnumFilterDefinition,
   FilterDefinition,
   NumberFilterDefinition,
   TextFilterDefinition,
 } from "@eshg/lib-employee-portal";
-import { isNonNullish } from "remeda";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import {

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import {
   MultiFormButtonBar,
   Sidebar,
@@ -20,10 +25,6 @@ import {
   ApiCreateFollowUpProcedureResponse,
   ApiStiProtectionProcedure,
 } from "@eshg/sti-protection-api";
-import { Stack, Typography } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import {
   useCreateStiFollowUpProcedureMutation,

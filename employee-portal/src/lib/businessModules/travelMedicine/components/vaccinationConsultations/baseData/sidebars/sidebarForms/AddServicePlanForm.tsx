@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -18,9 +22,6 @@ import {
   ApiPostVaccinationRequest,
   ApiVaccine,
 } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 import { AppointmentSheet } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppointmentSheet";
 import { ServicesSheet } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/ServicesSheet";

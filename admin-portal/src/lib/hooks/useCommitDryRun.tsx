@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useQuery } from "@tanstack/react-query";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { isObjectType, isString, last } from "remeda";
+
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useAdminApi } from "@/lib/api/clients";
 import { EntityLink } from "@/lib/components/layout/nav/EntityLink";

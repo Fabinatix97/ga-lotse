@@ -7,6 +7,7 @@ dependencies {
     implementation project(':business-module-persistence-commons')
     implementation project(':lib-base-client')
     implementation project(':lib-procedures')
+    implementation project(":lib-statistics")
     implementation project(':lib-appointmentblock')
     implementation project(':lib-calendar')
     implementation project(':lib-config')
@@ -23,6 +24,7 @@ dependencies {
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-procedures'))
+    testImplementation testFixtures(project(':lib-statistics'))
     testImplementation testFixtures(project(':lib-auditlog'))
 }
 

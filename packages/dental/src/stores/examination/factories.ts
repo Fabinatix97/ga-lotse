@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { isDefined } from "remeda";
+
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
 import { ToothDiagnoses } from "@/api/models/ExaminationResult";
 import { ToothDiagnosis } from "@/api/models/ToothDiagnosis";

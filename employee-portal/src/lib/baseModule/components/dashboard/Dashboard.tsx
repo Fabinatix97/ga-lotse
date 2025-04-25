@@ -5,11 +5,12 @@
 
 "use client";
 
+import { Grid } from "@mui/joy";
+import { Suspense } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { PageGrid, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { Grid } from "@mui/joy";
-import { Suspense } from "react";
 
 import { DashboardProceduresTable } from "@/lib/baseModule/components/dashboard/DashboardProceduresTable";
 import { DashboardTaskList } from "@/lib/baseModule/components/dashboard/DashboardTaskList";

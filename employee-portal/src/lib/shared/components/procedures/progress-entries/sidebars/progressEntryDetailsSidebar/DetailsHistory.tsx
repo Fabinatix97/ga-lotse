@@ -4,14 +4,6 @@
  */
 
 import {
-  ButtonBar,
-  OverlayBoundary,
-  SidebarActions,
-  SidebarContent,
-} from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
-import {
   Button,
   Chip,
   Divider,
@@ -23,6 +15,15 @@ import {
   Typography,
 } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import {
+  ButtonBar,
+  OverlayBoundary,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useGetMetaDataHistory } from "@/lib/shared/components/procedures/progress-entries/queries/fileApi";

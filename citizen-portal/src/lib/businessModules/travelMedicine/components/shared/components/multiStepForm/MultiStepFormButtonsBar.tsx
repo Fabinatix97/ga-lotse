@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { Button, Stack } from "@mui/joy";
+
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 
 export interface MultiStepFormButtonBarProps {
   onNextStep?: { title: string; action: () => Promise<void> };

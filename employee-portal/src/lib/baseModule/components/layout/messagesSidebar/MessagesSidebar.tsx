@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import { Button } from "@mui/joy";
+
 import {
   DrawerProps,
   SidebarActions,
@@ -10,8 +13,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import OpenInNew from "@mui/icons-material/OpenInNew";
-import { Button } from "@mui/joy";
 
 import { MessagesSidebarContent } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebarContent";
 import { routes } from "@/lib/baseModule/shared/routes";

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { endOfDay, isPast } from "date-fns";
+import { Formik, useFormikContext } from "formik";
+import { Ref } from "react";
+
 import {
   DetailsItem,
   MultiFormButtonBar,
@@ -21,10 +26,6 @@ import {
   ApiProcedureStatus,
   ApiUser,
 } from "@eshg/official-medical-service-api";
-import { Stack } from "@mui/joy";
-import { endOfDay, isPast } from "date-fns";
-import { Formik, useFormikContext } from "formik";
-import { Ref } from "react";
 
 import { createPhysicianOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { SwitchField } from "@/lib/shared/components/formFields/SwitchField";

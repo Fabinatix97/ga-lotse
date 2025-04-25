@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { useIsServer } from "@eshg/lib-portal/next/renderingHooks";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import {
   Checkbox,
   FormControl,
@@ -16,6 +13,10 @@ import {
 } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { useIsServer } from "@eshg/lib-portal/next/renderingHooks";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 const DescriptionText = styled("div")({
   marginLeft: "1.875rem", // checkbox width + gap between checkbox and label

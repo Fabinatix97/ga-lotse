@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined } from "remeda";
+
 import {
   ApiAddPersonFileStateRequest,
   ApiGetReferencePersonResponse,
@@ -13,7 +15,6 @@ import {
   dropBlankStrings,
   mapOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
-import { isDefined } from "remeda";
 
 import {
   mapApiAddressToForm,

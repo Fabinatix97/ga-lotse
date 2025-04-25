@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid } from "@mui/joy";
+import { addDays, setHours, setMinutes } from "date-fns";
+import { Formik } from "formik";
+
 import {
   ApiFollowupType,
   ApiInspectionFollowupInfo,
@@ -19,9 +23,6 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { Grid } from "@mui/joy";
-import { addDays, setHours, setMinutes } from "date-fns";
-import { Formik } from "formik";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import {

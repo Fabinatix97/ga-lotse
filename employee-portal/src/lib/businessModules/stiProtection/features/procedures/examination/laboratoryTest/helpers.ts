@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isBoolean, isPlainObject, isString } from "remeda";
+
 import {
   YesOrNoFieldData,
   mapBoolToYesOrNo,
@@ -12,7 +14,6 @@ import {
   ApiLaboratoryTestExamination,
   ApiLaboratoryTestExaminationLabTestDataInner,
 } from "@eshg/sti-protection-api";
-import { isBoolean, isPlainObject, isString } from "remeda";
 
 import {
   areAllValuesUndefined,

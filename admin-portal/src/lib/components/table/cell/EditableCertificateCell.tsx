@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { ApiAdminCertificate } from "@eshg/service-directory-api";
 import { Add, AddModerator } from "@mui/icons-material";
 import { IconButton, styled } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ChangeEvent, ReactNode, useCallback, useRef } from "react";
+
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiAdminCertificate } from "@eshg/service-directory-api";
 
 import { Actor } from "@/lib/components/view/actors/ActorTable";
 import { getCommonName } from "@/lib/helpers/crypto";

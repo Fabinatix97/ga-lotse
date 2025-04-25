@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Formik } from "formik";
+
 import {
   ApiExaminationResult,
   UpdateExaminationRequest,
@@ -16,7 +18,6 @@ import {
   mapRequiredValue,
 } from "@eshg/lib-portal/helpers/form";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Formik } from "formik";
 
 import { ToothDiagnoses } from "@/api/models/ExaminationResult";
 import { ChildExamination } from "@/features/children/api/models/ChildExamination";

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContext } from "@eshg/inspection-api";
 import { Stack, Typography } from "@mui/joy";
+
+import { ApiCLSectionContext } from "@eshg/inspection-api";
 
 import { ReadOnlyCLDElement } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/ReadOnlyCLDElement";
 

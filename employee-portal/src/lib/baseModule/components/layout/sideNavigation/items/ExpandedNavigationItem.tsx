@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  SideNavigationLinkItem,
-  SideNavigationParentItem,
-  SideNavigationSuspenseItem,
-} from "@eshg/lib-employee-portal";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {
   Box,
@@ -23,6 +17,13 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useId, useState } from "react";
+
+import {
+  SideNavigationLinkItem,
+  SideNavigationParentItem,
+  SideNavigationSuspenseItem,
+} from "@eshg/lib-employee-portal";
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import {
   navItemIconColor,

@@ -18,6 +18,8 @@ public class NotificationConfig extends BaseEntity {
   @NotNull private String fromAddress;
   @NotNull private String greeting;
 
+  @NotNull private boolean initialized = true;
+
   public String getFromAddress() {
     return fromAddress;
   }
@@ -32,5 +34,13 @@ public class NotificationConfig extends BaseEntity {
 
   public void setGreeting(String greeting) {
     this.greeting = greeting;
+  }
+
+  public boolean isInitialized() {
+    return initialized;
+  }
+
+  public void setInitialized(boolean initialized) {
+    this.initialized = initialized;
   }
 }

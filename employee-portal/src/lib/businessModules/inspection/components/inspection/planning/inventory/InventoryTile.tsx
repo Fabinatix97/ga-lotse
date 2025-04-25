@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiInspectionInventory } from "@eshg/inspection-api";
 import { useState } from "react";
+
+import { ApiInspectionInventory } from "@eshg/inspection-api";
 
 import { InventorySidebar } from "@/lib/businessModules/inspection/components/inspection/planning/inventory/InventorySidebar";
 import { InventoryTable } from "@/lib/businessModules/inspection/components/inspection/planning/inventory/InventoryTable";

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useFormikContext } from "formik";
+import { useEffect } from "react";
+
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
-import { useFormikContext } from "formik";
-import { useEffect } from "react";
 
 import { formatName } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";

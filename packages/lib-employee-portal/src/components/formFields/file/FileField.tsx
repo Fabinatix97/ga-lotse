@@ -3,18 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import {
-  FileLike,
-  FileType,
-} from "@eshg/lib-portal/components/formFields/file/types";
-import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
-import {
-  validateFile,
-  validateFileType,
-} from "@eshg/lib-portal/components/formFields/file/validators";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import {
   Box,
   FormControl,
@@ -27,6 +15,19 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import {
+  FileLike,
+  FileType,
+} from "@eshg/lib-portal/components/formFields/file/types";
+import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
+import {
+  validateFile,
+  validateFileType,
+} from "@eshg/lib-portal/components/formFields/file/validators";
+import { validatePipe } from "@eshg/lib-portal/helpers/validators";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import { FileButton, FileInputButton } from "./buttonVariants";
 

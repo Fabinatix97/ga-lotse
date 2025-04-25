@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import assert from "assert";
+
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import assert from "assert";
 
 import { useCreateAnonymousUser } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";

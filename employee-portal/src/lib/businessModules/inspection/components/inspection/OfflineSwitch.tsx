@@ -5,11 +5,12 @@
 
 "use client";
 
+import { CircularProgress, Switch, Typography } from "@mui/joy";
+
 import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { CircularProgress, Switch, Typography } from "@mui/joy";
 
 import { useLockInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";

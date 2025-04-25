@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Close } from "@mui/icons-material";
 import { IconButton, Input } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isNonNullish } from "remeda";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { FileField, FileFieldProps } from "./FileField";
 

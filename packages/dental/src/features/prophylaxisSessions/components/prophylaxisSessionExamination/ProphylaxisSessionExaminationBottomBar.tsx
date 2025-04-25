@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiReasonForAbsence } from "@eshg/dental-api";
-import {
-  BottomToolbar,
-  ButtonBar,
-  OverlayBoundary,
-} from "@eshg/lib-employee-portal";
 import {
   CancelOutlined,
   KeyboardArrowLeftOutlined,
@@ -18,6 +12,13 @@ import { Button } from "@mui/joy";
 import { useState } from "react";
 import { isDefined } from "remeda";
 import { useShallow } from "zustand/react/shallow";
+
+import { ApiReasonForAbsence } from "@eshg/dental-api";
+import {
+  BottomToolbar,
+  ButtonBar,
+  OverlayBoundary,
+} from "@eshg/lib-employee-portal";
 
 import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
 import { ChangeReasonForAbsenceModal } from "@/features/prophylaxisSessions/components/absence/ChangeReasonForAbsenceModal";

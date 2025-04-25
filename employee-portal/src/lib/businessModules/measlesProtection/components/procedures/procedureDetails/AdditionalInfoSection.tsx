@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ConfirmationDialog, DetailsSection } from "@eshg/lib-employee-portal";
+import { EditOutlined } from "@mui/icons-material";
+import { Button, IconButton, Sheet, Stack } from "@mui/joy";
+import { useState } from "react";
+
+import { ConfirmationDialog, DetailsItem } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiMeaslesProtectionProcedure,
   ApiReportingReason,
 } from "@eshg/measles-protection-api";
-import { EditOutlined } from "@mui/icons-material";
-import { Button, IconButton, Sheet, Stack } from "@mui/joy";
-import { useState } from "react";
 
 import { useCloseProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/statusTransitionApi";
 import {
@@ -21,7 +22,7 @@ import {
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AdditionalInfoUpdateSidebar } from "./AdditionalInfoUpdateSidebar";
@@ -69,39 +70,40 @@ export function AdditionalInfoSection({
 
   return (
     <Stack rowGap={2}>
-      <Sheet>
-        <DetailsSection title={"Zusatzinfos"} buttons={editAction}>
-          <Stack gap={1}>
-            <DetailsCell
-              label="Personenstatus"
-              value={
-                procedure.affectedPerson.roleStatus
-                  ? roleStatusNames[procedure.affectedPerson.roleStatus]
-                  : "-"
-              }
+      <InfoTile
+        title={"Zusatzinfos"}
+        name="additionalInfo"
+        controls={editAction}
+      >
+        <Stack gap={1}>
+          <DetailsItem
+            label="Personenstatus"
+            value={
+              procedure.affectedPerson.roleStatus
+                ? roleStatusNames[procedure.affectedPerson.roleStatus]
+                : "-"
+            }
+          />
+          <DetailsItem
+            label="Meldedatum"
+            value={formatDate(procedure.reportData?.reportingDate)}
+          />
+          <DetailsItem
+            label="Meldegrund"
+            value={
+              procedure.reportData?.reportingReason
+                ? reportingReasonNames[procedure.reportData?.reportingReason]
+                : "-"
+            }
+          />
+          {procedure.reportData?.reportingReason == ApiReportingReason.Other ? (
+            <DetailsItem
+              label="Kommentar zum Meldegrund"
+              value={procedure.reportData?.commentReportingReason}
             />
-            <DetailsCell
-              label="Meldedatum"
-              value={formatDate(procedure.reportData?.reportingDate)}
-            />
-            <DetailsCell
-              label="Meldegrund"
-              value={
-                procedure.reportData?.reportingReason
-                  ? reportingReasonNames[procedure.reportData?.reportingReason]
-                  : "-"
-              }
-            />
-            {procedure.reportData?.reportingReason ==
-            ApiReportingReason.Other ? (
-              <DetailsCell
-                label="Kommentar zum Meldegrund"
-                value={procedure.reportData?.commentReportingReason}
-              />
-            ) : null}
-          </Stack>
-        </DetailsSection>
-      </Sheet>
+          ) : null}
+        </Stack>
+      </InfoTile>
       <Sheet component="section">
         {!procedure.isOpen ? (
           <Button color="danger" onClick={handleReopenProcedure} fullWidth>

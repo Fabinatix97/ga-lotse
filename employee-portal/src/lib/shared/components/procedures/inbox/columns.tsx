@@ -5,10 +5,11 @@
 
 "use client";
 
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
+
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileLike } from "@eshg/lib-portal/components/formFields/file/types";
 import { DragEvent, useCallback, useState } from "react";
+
+import { FileLike } from "@eshg/lib-portal/components/formFields/file/types";
 
 export function useDragAndDropMultiple({
   onChange,

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { prop, sortBy } from "remeda";
+
 import {
   ApiAdminActor,
   ApiAdminOrgUnit,
@@ -13,9 +17,6 @@ import {
   ApiGetOrgUnitsResponse,
   ServiceDirectoryAdminApi,
 } from "@eshg/service-directory-api";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { prop, sortBy } from "remeda";
 
 import { BackendError, useAdminApi } from "@/lib/api/clients";
 import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";

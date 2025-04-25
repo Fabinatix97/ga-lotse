@@ -5,6 +5,11 @@
 
 "use client";
 
+import { Button, Grid, Input, Typography } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Formik } from "formik";
+import { ReactNode, useState } from "react";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -20,10 +25,6 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Button, Grid, Input, Typography } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Formik } from "formik";
-import { ReactNode, useState } from "react";
 
 export default function SidebarPlaygroundPage() {
   const sidebarWithoutParameters = useSidebar({

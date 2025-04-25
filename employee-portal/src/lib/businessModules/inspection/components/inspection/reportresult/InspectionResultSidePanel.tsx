@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import NoteAltOutlined from "@mui/icons-material/NoteAltOutlined";
 import { Button } from "@mui/joy";
 import { useState } from "react";
+
+import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { InspectionResultSidebar } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidebar";
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";

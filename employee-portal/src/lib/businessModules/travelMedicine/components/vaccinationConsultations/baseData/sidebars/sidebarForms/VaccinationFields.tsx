@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Grid } from "@mui/joy";
+import { FormikErrors, useFormikContext } from "formik";
+import { useState } from "react";
+
 import { CheckboxField, DetailsItem } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiVaccinationType } from "@eshg/travel-medicine-api";
-import { Divider, Grid } from "@mui/joy";
-import { FormikErrors, useFormikContext } from "formik";
-import { useState } from "react";
 
 import { Disease } from "@/lib/businessModules/travelMedicine/api/models/Disease";
 import { Vaccines } from "@/lib/businessModules/travelMedicine/api/models/Vaccines";

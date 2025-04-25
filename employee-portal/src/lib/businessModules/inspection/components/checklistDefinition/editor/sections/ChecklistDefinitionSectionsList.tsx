@@ -5,7 +5,6 @@
 
 "use client";
 
-import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
 import {
   DragDropContext,
   Draggable,
@@ -17,6 +16,8 @@ import { CreateNewFolder } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
+
+import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { createChecklistElement } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";

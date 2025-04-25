@@ -3,14 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/base-api";
-import {
-  SideNavigationItem,
-  gdprRoutes,
-  hasUserRole,
-  noCheck,
-} from "@eshg/lib-employee-portal";
-import { ApiOpenDataFeature } from "@eshg/opendata-api";
 import {
   CalendarTodayOutlined,
   ContactsOutlined,
@@ -25,6 +17,15 @@ import {
   TrackChangesOutlined,
   WarehouseOutlined,
 } from "@mui/icons-material";
+
+import { ApiUserRole } from "@eshg/base-api";
+import {
+  SideNavigationItem,
+  gdprRoutes,
+  hasUserRole,
+  noCheck,
+} from "@eshg/lib-employee-portal";
+import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
 import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/opendata/queries/feature";
 

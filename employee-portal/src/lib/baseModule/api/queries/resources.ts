@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { endOfToday, startOfToday } from "date-fns";
+
 import {
   ApiDetailedEventWithoutCalendarId,
   GetEventsOfCalendarRequest,
   GetResourceRequest,
   GetResourcesRequest,
 } from "@eshg/base-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { endOfToday, startOfToday } from "date-fns";
 
 import {
   useCalendarApi,

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Sheet, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
 import {
   DetailsItem,
   MultiFormButtonBar,
@@ -13,9 +17,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { ApiUser } from "@eshg/travel-medicine-api";
-import { Sheet, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
 
 import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppliedByFields";
 import { validateRequiredBatchId } from "@/lib/shared/helpers/validators";

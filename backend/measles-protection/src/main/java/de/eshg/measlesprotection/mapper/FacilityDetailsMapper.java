@@ -9,6 +9,8 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.ExternalAddFacilityFileStateRequest;
+import de.eshg.base.centralfile.api.facility.FacilityDetailsDto;
+import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.measlesprotection.api.FacilityContactPersonDto;
 import de.eshg.measlesprotection.api.FacilityDto;
 import java.util.List;
@@ -40,6 +42,31 @@ public class FacilityDetailsMapper {
         source.contactAddress(),
         source.differentBillingAddress(),
         DataOriginDto.MANUAL);
+  }
+
+  public static PutFacilityRequest getPutFacilityRequest(FacilityDto source) {
+    List<FacilityContactPersonDto> contactPersons = source.contactPersons();
+    return new PutFacilityRequest(
+        new FacilityDetailsDto(
+            source.name(),
+            source.emailAddress() == null ? null : List.of(source.emailAddress()),
+            source.phoneNumber() == null ? null : List.of(source.phoneNumber()),
+            contactPersons.stream()
+                .map(
+                    contactPerson ->
+                        new de.eshg.base.centralfile.api.facility.FacilityContactPersonDto(
+                            contactPerson.emailAddress(),
+                            contactPerson.phoneNumber(),
+                            contactPerson.role(),
+                            contactPerson.lastName(),
+                            contactPerson.firstName(),
+                            contactPerson.title(),
+                            contactPerson.salutation(),
+                            GenderDto.NOT_SPECIFIED,
+                            false))
+                .toList(),
+            source.contactAddress(),
+            source.differentBillingAddress()));
   }
 
   public static ExternalAddFacilityFileStateRequest getExternalAddFacilityRequest(

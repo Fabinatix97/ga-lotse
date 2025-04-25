@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   ChipWithTooltip,
   ContentPanel,
@@ -14,8 +17,6 @@ import {
   formatWeekdayDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
-import { Divider, Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useGetLocationSelectionMode } from "@/lib/businessModules/schoolEntry/api/queries/configApi";

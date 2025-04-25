@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/base-api";
 import { isDefined, isString } from "remeda";
+
+import { ApiBusinessModule } from "@eshg/base-api";
 
 import { EvaluationDetailsTableData } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";

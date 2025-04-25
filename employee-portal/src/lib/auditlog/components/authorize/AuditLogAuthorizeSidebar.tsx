@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useRef } from "react";
+import { isEmpty } from "remeda";
+
 import {
   ApiAuditLogSource,
   ApiGetAuditLogGrantedAccessesResponse,
@@ -21,10 +26,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { useRef } from "react";
-import { isEmpty } from "remeda";
 
 import { AuditLogSheet } from "@/lib/auditlog/components/AuditLogSheet";
 import {

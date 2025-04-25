@@ -4,17 +4,18 @@
  */
 
 import {
-  ApiBusinessModule,
-  ApiGetConfigurationStatusResponse,
-  ApiUserRole,
-} from "@eshg/base-api";
-import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
-import {
   UseSuspenseQueryResult,
   useSuspenseQueries,
 } from "@tanstack/react-query";
 import assert from "assert";
 import { useCallback } from "react";
+
+import {
+  ApiBusinessModule,
+  ApiGetConfigurationStatusResponse,
+  ApiUserRole,
+} from "@eshg/base-api";
+import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configuratorModuleName";

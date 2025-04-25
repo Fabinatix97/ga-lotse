@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { RefObject } from "@fullcalendar/core/preact.js";
+import { Divider, Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+
 import {
   FormButtonBar,
   SidebarActions,
@@ -10,9 +14,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { RefObject } from "@fullcalendar/core/preact.js";
-import { Divider, Stack } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
 
 import {
   LegacyAddressForm,

@@ -5,6 +5,11 @@
 
 "use client";
 
+import { CopyAll } from "@mui/icons-material";
+import { IconButton, Stack, Tooltip } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
+
 import {
   CentralFilePersonDetails,
   EditButton,
@@ -18,10 +23,6 @@ import {
   ApiPostboxAddress,
   ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
-import { CopyAll } from "@mui/icons-material";
-import { IconButton, Stack, Tooltip } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { isDefined } from "remeda";
 
 import { useUpdateAffectedPersonSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/UpdateAffectedPersonSidebar";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";

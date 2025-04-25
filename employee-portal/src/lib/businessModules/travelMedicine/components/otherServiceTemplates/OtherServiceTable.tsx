@@ -5,6 +5,10 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import {
   ButtonBar,
   DataTable,
@@ -14,9 +18,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
-import AddIcon from "@mui/icons-material/Add";
-import { Button } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
   useAddOtherServiceTemplate,

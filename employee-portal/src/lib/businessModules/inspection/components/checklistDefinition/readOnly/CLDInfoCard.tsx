@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CopyAllOutlined, InfoOutlined } from "@mui/icons-material";
+import { Alert, Sheet, Stack, Typography } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { CopyAllOutlined, InfoOutlined } from "@mui/icons-material";
-import { Alert, Sheet, Stack, Typography } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import {
   getIsNewestVersion,

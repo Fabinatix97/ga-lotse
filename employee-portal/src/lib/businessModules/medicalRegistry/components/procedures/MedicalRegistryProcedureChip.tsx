@@ -5,11 +5,12 @@
 
 "use client";
 
+import { Chip, ChipProps } from "@mui/joy";
+
 import {
   ApiProcedureStatus,
   ApiProcedureType,
 } from "@eshg/medical-registry-api";
-import { Chip, ChipProps } from "@mui/joy";
 
 import {
   EntryStatus,

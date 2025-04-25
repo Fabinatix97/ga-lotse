@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiContactCategory } from "@eshg/base-api";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { useState } from "react";
 import { identity } from "remeda";
+
+import { ApiContactCategory } from "@eshg/base-api";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 
 import {
   useGetOptionalContactQuery,

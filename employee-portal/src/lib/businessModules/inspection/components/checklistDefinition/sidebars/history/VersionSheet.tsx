@@ -3,6 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  CheckCircle,
+  CloudSync,
+  CloudUpload,
+  CopyAll,
+  CropFree,
+  Delete,
+  Edit,
+  FactCheckOutlined,
+} from "@mui/icons-material";
+import { ColorPaletteProp, Sheet, Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { UseMutateAsyncFunction } from "@tanstack/react-query";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
+import { isEmpty, isNonNullish } from "remeda";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   ApiChecklistDefinition,
@@ -21,28 +38,17 @@ import {
   useSnackbar,
 } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  CheckCircle,
-  CloudSync,
-  CloudUpload,
-  CopyAll,
-  CropFree,
-  Edit,
-  FactCheckOutlined,
-} from "@mui/icons-material";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { UseMutateAsyncFunction } from "@tanstack/react-query";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useRouter } from "next/navigation";
-import { isEmpty, isNonNullish } from "remeda";
 
 import {
   FormChecklistDefinitionVersion,
   useAddChecklistDefinitionVersion,
+  useDeleteDraftChecklistDefinitionVersion,
   useEditDraftChecklistDefinitionVersion,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
-import { showPublishChecklistDefinitionDialog } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
+import {
+  showDeleteChecklistDefinitionDialog,
+  showPublishChecklistDefinitionDialog,
+} from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
 import {
   showUpdateRepoMenuEntry,
   showUploadRepoMenuEntry,
@@ -87,6 +93,8 @@ export function VersionSheet({
   ]);
   const { mutateAsync: editDraftCldVersion } =
     useEditDraftChecklistDefinitionVersion();
+  const { mutateAsync: deleteDraftCldVersion } =
+    useDeleteDraftChecklistDefinitionVersion();
   const { mutateAsync: addCldVersion } = useAddChecklistDefinitionVersion();
   const modifiedBy =
     !isEmpty(version.modifiedBy?.firstName) &&
@@ -107,6 +115,7 @@ export function VersionSheet({
     },
     {
       editDraftCldVersion,
+      deleteDraftCldVersion,
       addCldVersion,
       openConfirmationDialog,
       onUploadCldClick,
@@ -267,6 +276,7 @@ function generateActionItems(
   },
   {
     editDraftCldVersion,
+    deleteDraftCldVersion,
     addCldVersion,
     openConfirmationDialog,
     onUploadCldClick,
@@ -282,6 +292,14 @@ function generateActionItems(
         cldVersion:
           | FormChecklistDefinitionVersion
           | ApiChecklistDefinitionVersion;
+      },
+      unknown
+    >;
+    deleteDraftCldVersion: UseMutateAsyncFunction<
+      void,
+      Error,
+      {
+        versionId: string;
       },
       unknown
     >;
@@ -360,6 +378,28 @@ function generateActionItems(
                   },
                 ),
               startDecorator: <CheckCircle />,
+            },
+            {
+              label: "Löschen",
+              color: "danger" as ColorPaletteProp,
+              onClick: () =>
+                showDeleteChecklistDefinitionDialog(
+                  openConfirmationDialog,
+                  version.context.name,
+                  async () => {
+                    await deleteDraftCldVersion(
+                      {
+                        versionId: version.context.id,
+                      },
+                      {
+                        onSuccess: () => {
+                          router.push(routes.checklists.definitions.index);
+                        },
+                      },
+                    );
+                  },
+                ),
+              startDecorator: <Delete />,
             },
           ]),
       // {

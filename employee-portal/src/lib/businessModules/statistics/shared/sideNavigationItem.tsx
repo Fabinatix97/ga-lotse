@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BarChartOutlined } from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
   hasAnyUserRoles,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
-import { BarChartOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";
 

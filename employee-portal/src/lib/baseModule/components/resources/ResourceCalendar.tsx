@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
-import { InformationSheet } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import deLocale from "@fullcalendar/core/locales/de";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import { Card, Chip, Stack, Typography } from "@mui/joy";
 import { useRef, useState } from "react";
+
+import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
+import { InformationSheet } from "@eshg/lib-employee-portal";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { CalendarViewTypes } from "@/lib/baseModule/components/calendar/calendarViews";
 

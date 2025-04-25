@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPersonContact } from "@eshg/base-api";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
+
+import { ApiPersonContact } from "@eshg/base-api";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
 import { getContactAddressLine } from "@/lib/baseModule/components/contacts/helpers";
 

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Card, Grid, IconButton, Stack, styled } from "@mui/joy";
 import { useId } from "react";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { validateLabelText } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 

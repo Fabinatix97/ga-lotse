@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MedicalServicesOutlined } from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { SideNavigationItem, hasUserRole } from "@eshg/lib-employee-portal";
-import { MedicalServicesOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";
 

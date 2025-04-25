@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiAddContact200Response } from "@eshg/base-api";
 import {
   FileField,
@@ -18,8 +21,6 @@ import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
 
 import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
 import { useImportChildren } from "@/features/children/api/mutations/overview";

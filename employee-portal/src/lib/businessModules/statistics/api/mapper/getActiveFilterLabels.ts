@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   FilterDefinition,
   getDefinitionByValue,
 } from "@eshg/lib-employee-portal";
-import { isDefined } from "remeda";
 
 import { SupportedEvaluationFilterValues } from "./supportedEvaluationFilterValues";
 

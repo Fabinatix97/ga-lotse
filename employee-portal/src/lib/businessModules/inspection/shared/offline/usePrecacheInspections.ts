@@ -5,6 +5,10 @@
 
 "use client";
 
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
+import { isNonNullish } from "remeda";
+
 import {
   ApiUserRole,
   BaseFeatureTogglesApi,
@@ -27,9 +31,6 @@ import {
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
-import { isNonNullish } from "remeda";
 
 import {
   useBaseFeatureTogglesApi,

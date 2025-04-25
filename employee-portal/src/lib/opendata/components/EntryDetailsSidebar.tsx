@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Chip, Divider, Stack, Typography } from "@mui/joy";
+import { useState } from "react";
+import { isEmpty } from "remeda";
+
 import {
   ButtonBar,
   SidebarActions,
@@ -13,9 +17,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiVersion } from "@eshg/opendata-api";
-import { Button, Chip, Divider, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
-import { isEmpty } from "remeda";
 
 import { EditEntrySidebarContent } from "@/lib/opendata/components/EditEntrySidebarContent";
 import { VersionFileCard } from "@/lib/opendata/components/VersionFileCard";

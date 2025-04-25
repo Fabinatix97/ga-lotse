@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Stack, Typography } from "@mui/joy";
+import { useRouter } from "next/navigation";
+
 import {
   BaseModal,
   BaseModalProps,
@@ -11,8 +14,6 @@ import {
   AbortDraftVaccinationConsultationRequest,
   ApiGetVaccinationConsultationDetailsResponse,
 } from "@eshg/travel-medicine-api";
-import { Button, Stack, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { useAboardDraftVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";

@@ -6,6 +6,7 @@
 package de.eshg.measlesprotection;
 
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
+import de.eshg.measlesprotection.api.ProtectionProcedureHeaderDto;
 import de.eshg.measlesprotection.api.draft.*;
 import de.eshg.measlesprotection.mapper.AffectedPersonDetailsMapper;
 import de.eshg.measlesprotection.mapper.CreatePersonResponseMapper;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,5 +75,11 @@ public class DraftProtectionProcedureController {
     MeaslesProtectionProcedure procedure =
         draftProcedureService.openProcedure(id, reportData, roleStatus);
     return new OpenProcedureResponse(procedure.getExternalId());
+  }
+
+  @GetMapping("{id}/header-information")
+  @Operation(summary = "Get header information of measles protection procedure.")
+  public ProtectionProcedureHeaderDto getDraftHeaderInformation(@PathVariable("id") UUID id) {
+    return draftProcedureService.getDraftHeaderInformation(id);
   }
 }

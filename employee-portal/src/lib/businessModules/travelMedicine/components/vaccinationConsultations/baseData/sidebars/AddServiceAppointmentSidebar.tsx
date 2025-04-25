@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { format } from "date-fns";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -14,8 +17,6 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { format } from "date-fns";
 
 import { useAddProcedureStep } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";

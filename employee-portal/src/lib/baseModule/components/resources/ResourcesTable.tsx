@@ -5,6 +5,9 @@
 
 "use client";
 
+import AddIcon from "@mui/icons-material/Add";
+import { Button, Stack } from "@mui/joy";
+
 import { ApiUserRole, GetResourcesRequest } from "@eshg/base-api";
 import {
   DataTable,
@@ -17,8 +20,6 @@ import {
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Stack } from "@mui/joy";
 
 import { useGetResourcesOverviewQuery } from "@/lib/baseModule/api/queries/resources";
 import { useResourcesFilterSettings } from "@/lib/baseModule/components/resources/hooks/useResourcesFilterSettings";

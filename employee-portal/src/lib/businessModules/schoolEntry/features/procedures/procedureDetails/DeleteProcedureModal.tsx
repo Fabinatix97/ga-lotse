@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Stack, Typography } from "@mui/joy";
+import { useRouter } from "next/navigation";
+
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
-import { Button, Stack, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useDeleteProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";

@@ -5,6 +5,11 @@
 
 "use client";
 
+import { DeleteOutlined } from "@mui/icons-material";
+import { Chip, IconButton, Stack, Typography } from "@mui/joy";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+
 import {
   ApiFollowupType,
   ApiInspection,
@@ -13,10 +18,6 @@ import {
 } from "@eshg/inspection-api";
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { DeleteOutlined } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Typography } from "@mui/joy";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/queries/inspection";

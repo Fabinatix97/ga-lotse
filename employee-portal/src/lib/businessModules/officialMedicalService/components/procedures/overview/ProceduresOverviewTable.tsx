@@ -5,6 +5,10 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { ColumnSort } from "@tanstack/react-table";
+import { ReactNode, useMemo, useState } from "react";
+
 import {
   ButtonBar,
   DataTable,
@@ -32,9 +36,6 @@ import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/Select
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { GetAllEmployeeProceduresRequest } from "@eshg/official-medical-service-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { ColumnSort } from "@tanstack/react-table";
-import { ReactNode, useMemo, useState } from "react";
 
 import { useGdprValidationTaskApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { useGetAllProceduresQuery } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";

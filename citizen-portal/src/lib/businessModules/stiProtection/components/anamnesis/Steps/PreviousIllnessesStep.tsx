@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box, Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -12,8 +15,6 @@ import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField"
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { ApiConcern } from "@eshg/sti-protection-api";
-import { Box, Grid, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import {
   AnamnesisFormData,

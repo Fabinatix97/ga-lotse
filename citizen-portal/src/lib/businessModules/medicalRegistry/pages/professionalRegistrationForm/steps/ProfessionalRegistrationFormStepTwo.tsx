@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Radio, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { useMemo } from "react";
+
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   MedicalRegistryCreateProcedureFormValues,
@@ -21,9 +25,6 @@ import {
   ApiEmploymentType,
   ApiTypeOfChange,
 } from "@eshg/medical-registry-api";
-import { Grid, Radio, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { useMemo } from "react";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";

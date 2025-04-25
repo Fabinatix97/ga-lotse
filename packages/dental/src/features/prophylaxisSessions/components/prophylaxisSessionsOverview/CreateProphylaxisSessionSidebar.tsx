@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Formik } from "formik";
+
 import { ApiDentitionType } from "@eshg/dental-api";
 import {
   FormButtonBar,
@@ -16,7 +18,6 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Formik } from "formik";
 
 import { useGetStaff } from "@/api/queries/staff";
 import { useCreateProphylaxisSession } from "@/features/prophylaxisSessions/api/mutations/overview";

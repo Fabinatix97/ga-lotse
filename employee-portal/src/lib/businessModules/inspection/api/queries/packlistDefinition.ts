@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PacklistDefinitionApi } from "@eshg/inspection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
+import { PacklistDefinitionApi } from "@eshg/inspection-api";
 
 import { usePacklistDefinitionApi } from "@/lib/businessModules/inspection/api/clients";
 import { packlistDefinitionApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

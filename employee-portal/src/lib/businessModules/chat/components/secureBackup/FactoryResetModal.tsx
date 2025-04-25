@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Stack, Typography } from "@mui/joy";
+
 import {
   BaseModal,
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
-import { Button, Stack, Typography } from "@mui/joy";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";

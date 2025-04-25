@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useParams } from "next/navigation";
+import { useRef } from "react";
+
 import {
   ApiAuditLogSource,
   ApiAuditLogSourceFromJSON,
@@ -20,10 +25,6 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { encodeReservedHtmlCharacters } from "@eshg/lib-portal/helpers/htmlStringEncoder";
-import { Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { useParams } from "next/navigation";
-import { useRef } from "react";
 
 import { useAuditlogApi } from "@/lib/auditlog/api/clients";
 import { AuditLogSheet } from "@/lib/auditlog/components/AuditLogSheet";

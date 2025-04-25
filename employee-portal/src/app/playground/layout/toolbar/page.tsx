@@ -5,14 +5,15 @@
 
 "use client";
 
+import { Sheet, Slider, Switch, Typography } from "@mui/joy";
+import { useState } from "react";
+
 import {
   BottomToolbar,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { Sheet, Slider, Switch, Typography } from "@mui/joy";
-import { useState } from "react";
 
 export default function PlaygroundStickyToolbarLayoutPage() {
   const [fullViewportHeight, setFullViewportHeight] = useState(true);

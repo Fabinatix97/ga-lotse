@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Box, Table as JoyTable, Typography, useTheme } from "@mui/joy";
+
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 export interface DecayHistoryRow {
   value: string;

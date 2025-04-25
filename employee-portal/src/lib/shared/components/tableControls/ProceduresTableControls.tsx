@@ -5,6 +5,11 @@
 
 "use client";
 
+import SearchIcon from "@mui/icons-material/Search";
+import { Button } from "@mui/joy";
+import { Formik } from "formik";
+import { JSX, ReactNode } from "react";
+
 import {
   ButtonBar,
   ToggleFilterButton as GenericFilterButton,
@@ -12,10 +17,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import SearchIcon from "@mui/icons-material/Search";
-import { Button } from "@mui/joy";
-import { Formik } from "formik";
-import { JSX, ReactNode } from "react";
 
 export type TableControlName = "filters" | "entrySearch";
 

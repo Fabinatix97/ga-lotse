@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { IconButton, Stack, Typography } from "@mui/joy";
 import { RoomMember } from "matrix-js-sdk";
 import { useState } from "react";
+
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { getMemberAvatarUrl } from "@/lib/businessModules/chat/shared/utils";

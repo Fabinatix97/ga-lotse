@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/base-api";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { Close, Search } from "@mui/icons-material";
 import {
   AutocompleteOption,
@@ -16,6 +13,10 @@ import {
   Typography,
 } from "@mui/joy";
 import { FormikErrors } from "formik";
+
+import { ApiUser } from "@eshg/base-api";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { formatUserName } from "@eshg/lib-portal/formatters/person";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
 

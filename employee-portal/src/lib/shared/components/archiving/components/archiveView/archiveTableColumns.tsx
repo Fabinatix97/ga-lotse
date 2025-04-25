@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiGetArchivableProceduresSortBy } from "@eshg/lib-procedures-api";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { ArchivableProcedure } from "@/lib/shared/components/archiving/api/models/archivableProcedure";
 import { ArchivingRelevanceChip } from "@/lib/shared/components/archiving/components/ArchivingRelevanceChip";

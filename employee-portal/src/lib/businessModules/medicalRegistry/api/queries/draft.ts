@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQuery } from "@tanstack/react-query";
+import { isDefined, mapValues } from "remeda";
+
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
   ApiGetProcedureDraftResponse,
@@ -11,8 +14,6 @@ import {
   ApiMedicalRegistryEntrySearchResultFromJSON,
   ApiProcedureStatus,
 } from "@eshg/medical-registry-api";
-import { useQuery } from "@tanstack/react-query";
-import { isDefined, mapValues } from "remeda";
 
 import { useFacilityApi } from "@/lib/baseModule/api/clients";
 import { useProcedureApi } from "@/lib/businessModules/medicalRegistry/api/clients";

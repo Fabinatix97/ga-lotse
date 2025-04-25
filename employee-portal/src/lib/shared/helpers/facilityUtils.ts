@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isNullish } from "remeda";
+
 import {
   ApiAddFacilityFileStateRequest,
   ApiAddFacilityFileStateResponse,
@@ -15,7 +17,6 @@ import {
   mapBaseAddressToApi,
 } from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { isNullish } from "remeda";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import {

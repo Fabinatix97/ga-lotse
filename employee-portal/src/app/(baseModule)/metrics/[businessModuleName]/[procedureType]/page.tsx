@@ -5,6 +5,8 @@
 
 "use client";
 
+import { use } from "react";
+
 import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import {
   MainContentLayout,
@@ -13,7 +15,6 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";

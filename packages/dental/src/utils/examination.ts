@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import { ApiDecayStatus, ApiDentitionType } from "@eshg/dental-api";
 import { formatBoolean } from "@eshg/lib-employee-portal";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { isDefined } from "remeda";
 
 import { ExaminationResult } from "@/api/models/ExaminationResult";
 import { DecayHistoryItem } from "@/components/examination/DecayHistorySidebar";

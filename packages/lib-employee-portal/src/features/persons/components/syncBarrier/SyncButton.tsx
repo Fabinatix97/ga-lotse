@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Warning } from "@mui/icons-material";
 import { ComponentProps } from "react";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 type SyncButtonProps = ComponentProps<typeof InternalLinkButton>;
 

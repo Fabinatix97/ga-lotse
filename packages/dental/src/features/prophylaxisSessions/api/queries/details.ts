@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions } from "@tanstack/react-query";
+
 import {
   GetProphylaxisSessionRequest,
   ProphylaxisSessionApi,
 } from "@eshg/dental-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { queryOptions } from "@tanstack/react-query";
 
 import { prophylaxisSessionApiQueryKey } from "@/config/apiQueryKeys";
 import { mapProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";

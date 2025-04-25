@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Box } from "@mui/joy";
 import { Table as TanstackTable, flexRender } from "@tanstack/react-table";
 import { Fragment } from "react";
+
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import { Filter } from "@/lib/components/table/Filter";
 import { Header } from "@/lib/components/table/head/Header";

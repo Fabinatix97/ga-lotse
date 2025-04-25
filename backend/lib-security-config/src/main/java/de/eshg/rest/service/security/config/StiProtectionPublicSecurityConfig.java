@@ -21,6 +21,7 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.STI_PROTECTION_ADMIN, ModuleLeaderRole.STI_PROTECTION_LEADER);
     grantAccessToConfiguration();
+    grantAccessToStatistics(EmployeePermissionRole.STI_PROTECTION_ADMIN);
 
     requestMatchers(BaseUrls.StiProtection.CITIZEN_PUBLIC_CONTROLLER + "/**").permitAll();
 

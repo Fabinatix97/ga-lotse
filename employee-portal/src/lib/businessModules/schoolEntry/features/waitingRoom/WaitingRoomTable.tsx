@@ -5,6 +5,9 @@
 
 "use client";
 
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { isDefined, isNullish } from "remeda";
+
 import {
   DataTable,
   Pagination,
@@ -16,8 +19,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiWaitingRoomSortKey } from "@eshg/school-entry-api";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
-import { isDefined, isNullish } from "remeda";
 
 import { WaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";

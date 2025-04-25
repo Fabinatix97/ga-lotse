@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { FormikErrors } from "formik";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { isNullish } from "remeda";
+
 import {
   type ApiGetReferencePersonResponse,
   ApiProcedureStatus,
@@ -14,9 +18,6 @@ import {
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { FormikErrors } from "formik";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { isNullish } from "remeda";
 
 import { LegacyMinimalPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
 import {

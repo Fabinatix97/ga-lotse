@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 import {
   FormControl,
   FormLabel,
@@ -16,6 +13,10 @@ import {
   Typography,
 } from "@mui/joy";
 import { useState } from "react";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
 

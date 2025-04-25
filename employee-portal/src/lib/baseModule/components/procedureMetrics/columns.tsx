@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureMetric } from "@eshg/base-api";
 import { SortingState, createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
+
+import { ApiProcedureMetric } from "@eshg/base-api";
 
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { formatDurationRounded } from "@/lib/shared/helpers/dateTime";

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Badge, DialogTitle, Stack, Typography } from "@mui/joy";
+
 import { ApiUser } from "@eshg/base-api";
 import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { Badge, DialogTitle, Stack, Typography } from "@mui/joy";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
 import { useGetSelfUserPresence } from "@/lib/businessModules/chat/shared/hooks/useGetSelfUserPresence";

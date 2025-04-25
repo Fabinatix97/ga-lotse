@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InspectionGeoApi } from "@eshg/inspection-api";
 import { QueryClient } from "@tanstack/react-query";
+
+import { InspectionGeoApi } from "@eshg/inspection-api";
 
 import { inspectionGeoApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 

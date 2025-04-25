@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { memo } from "react";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -10,9 +14,6 @@ import { YearField } from "@eshg/lib-portal/components/formFields/YearField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { memo } from "react";
 
 import { AnamnesisFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/anamnesis/AnamnesisForm.config";
 import { SectionSheet } from "@/lib/businessModules/officialMedicalService/shared/SectionSheet";

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormControl, FormLabel } from "@mui/joy";
+
 import { GetProphylaxisSessionsRequest } from "@eshg/dental-api";
 import {
   ActiveFilter,
@@ -14,7 +16,6 @@ import {
   SetDictionaryFilterFn,
 } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { FormControl, FormLabel } from "@mui/joy";
 
 import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
 import {

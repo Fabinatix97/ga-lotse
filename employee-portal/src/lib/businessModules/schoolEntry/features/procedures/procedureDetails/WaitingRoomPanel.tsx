@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { Formik } from "formik";
+
 import {
   ButtonBar,
   ContentPanel,
@@ -22,8 +25,6 @@ import {
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
 import { ApiWaitingRoom, ApiWaitingStatus } from "@eshg/school-entry-api";
-import { Button } from "@mui/joy";
-import { Formik } from "formik";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { WaitingRoom } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";

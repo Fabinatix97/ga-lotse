@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEmpty } from "remeda";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -13,7 +15,6 @@ import {
   ApiPatchVaccinationConsultationTravelDetailsRequest,
   ApiTravelType,
 } from "@eshg/travel-medicine-api";
-import { isEmpty } from "remeda";
 
 import { useUpdateTravelDetails } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { CreateProcedureValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";

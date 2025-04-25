@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import {
   ApiSyncPersonRequest,
   UpdateChildPersonRequest,
@@ -12,7 +14,6 @@ import {
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { useDentalApi } from "@/contexts/dental";
 import {

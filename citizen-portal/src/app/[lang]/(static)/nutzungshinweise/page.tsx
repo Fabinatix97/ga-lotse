@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { Typography } from "@mui/joy";
+
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
 import { TitleAndSheetContentLayout } from "@/lib/shared/components/layout/TitleAndSheetContentLayout";
 

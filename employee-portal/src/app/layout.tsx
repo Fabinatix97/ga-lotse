@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
+import { ReactNode } from "react";
+
 import {
   ConfirmationDialog,
   DrawerProvider,
@@ -17,8 +20,6 @@ import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBound
 import { ConfirmationDialogProvider } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
-import { Box } from "@mui/joy";
-import { ReactNode } from "react";
 
 import { LAYOUT_CONFIG } from "@/config/layout";
 import { env } from "@/env/server";

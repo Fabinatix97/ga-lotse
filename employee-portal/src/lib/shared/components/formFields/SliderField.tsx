@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Slider } from "@mui/joy";
+
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Slider } from "@mui/joy";
 
 export interface SliderFieldProps extends Omit<FieldProps<number>, "label"> {
   min: number;

@@ -5,7 +5,6 @@
 
 "use client";
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { Close, LanguageOutlined } from "@mui/icons-material";
 import {
   Button,
@@ -25,6 +24,8 @@ import {
 import { TOptions } from "i18next";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRef } from "react";
+
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { DeutschFlag } from "@/lib/i18n/flags/DeutschFlag";

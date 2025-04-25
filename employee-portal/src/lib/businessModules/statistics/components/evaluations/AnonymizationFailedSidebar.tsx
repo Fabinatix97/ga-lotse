@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Divider, List, ListItem, Stack, Typography } from "@mui/joy";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -10,7 +12,6 @@ import {
   SidebarContent,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { Button, Divider, List, ListItem, Stack, Typography } from "@mui/joy";
 
 import { useGetAnonymizationFailedDetails } from "@/lib/businessModules/statistics/api/queries/useGetAnonymizationFailedDetails";
 import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";

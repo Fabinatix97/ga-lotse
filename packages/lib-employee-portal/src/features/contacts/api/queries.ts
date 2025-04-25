@@ -4,18 +4,19 @@
  */
 
 import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { useDebounce } from "use-debounce";
+
+import {
   ApiContactCategory,
   ApiContactSortKey,
   ApiSearchContactsResponse,
   GetContactsRequest,
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useDebounce } from "use-debounce";
 
 import { contactApiQueryKey } from "@/config/apiQueryKeys";
 import { useApi } from "@/contexts/api";

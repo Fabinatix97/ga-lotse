@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
+import assert from "assert";
+import { isDefined } from "remeda";
+
 import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -12,9 +16,6 @@ import {
   ApiGetGdprDownloadPackagesInfoResponse,
   GdprValidationTaskApiInterface,
 } from "@eshg/lib-procedures-api";
-import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
-import assert from "assert";
-import { isDefined } from "remeda";
 
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 import { gdprProcedureApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKeys";

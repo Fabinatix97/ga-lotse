@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEvaluationState } from "@eshg/statistics-api";
 import { Chip, ChipProps } from "@mui/joy";
+
+import { ApiEvaluationState } from "@eshg/statistics-api";
 
 const statusNames = {
   [ApiEvaluationState.Completed]: "Erstellt",

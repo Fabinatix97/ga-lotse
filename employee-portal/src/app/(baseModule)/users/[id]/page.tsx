@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -13,8 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { Stack } from "@mui/joy";
-import { use } from "react";
 
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { UserAbsence } from "@/lib/baseModule/components/users/UserAbsence";

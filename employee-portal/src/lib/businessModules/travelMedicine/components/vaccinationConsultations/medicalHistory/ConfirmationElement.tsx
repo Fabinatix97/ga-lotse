@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SetStateAction } from "react";
+
 import { CheckboxField } from "@eshg/lib-employee-portal";
 import { ApiDocumentConfirmation } from "@eshg/travel-medicine-api";
-import { SetStateAction } from "react";
 
 interface ConfirmationElementProps {
   sectionIndex: number;

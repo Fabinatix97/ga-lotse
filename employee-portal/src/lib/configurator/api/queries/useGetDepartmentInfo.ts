@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetInternalConfigDepartmentInfoResponse } from "@eshg/base-api";
 import { QueryKey, useSuspenseQueries } from "@tanstack/react-query";
+
+import { ApiGetInternalConfigDepartmentInfoResponse } from "@eshg/base-api";
 
 import {
   useBaseDepartmentInfoConfigApi,

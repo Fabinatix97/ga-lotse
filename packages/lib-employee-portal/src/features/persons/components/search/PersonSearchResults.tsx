@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ArrowBackIosOutlined } from "@mui/icons-material";
+import { Box, Button, Sheet, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+import { isDefined } from "remeda";
+
 import {
   ApiDataOrigin,
   ApiGender,
@@ -13,11 +19,6 @@ import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreB
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { ArrowBackIosOutlined } from "@mui/icons-material";
-import { Box, Button, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
-import { isDefined } from "remeda";
 
 import { NoSearchResults } from "@/components/NoSearchResults";
 import { SelectableCard } from "@/components/cards/SelectableCard";

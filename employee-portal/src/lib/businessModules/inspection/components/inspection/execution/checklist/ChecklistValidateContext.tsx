@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiChecklist } from "@eshg/inspection-api";
 import { FormikErrors } from "formik";
 import {
   ReactNode,
@@ -15,6 +14,8 @@ import {
   useContext,
   useState,
 } from "react";
+
+import { ApiChecklist } from "@eshg/inspection-api";
 
 import {
   CLFormElement,

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
+import assert from "assert";
+import { isDefined } from "remeda";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -13,9 +17,6 @@ import {
   GdprValidationTaskApiInterface,
   GetAllGdprValidationTasksRequest,
 } from "@eshg/lib-procedures-api";
-import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
-import assert from "assert";
-import { isDefined } from "remeda";
 
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

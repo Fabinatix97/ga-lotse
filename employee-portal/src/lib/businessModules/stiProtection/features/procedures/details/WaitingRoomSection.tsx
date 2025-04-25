@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Sheet } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useTransition } from "react";
+
 import { DetailsSection } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
@@ -20,9 +24,6 @@ import {
   ApiWaitingStatus,
   UpdateWaitingRoomDetailsRequest,
 } from "@eshg/sti-protection-api";
-import { Button, Sheet } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { useTransition } from "react";
 
 import { useUpdateWaitingRoomDetails } from "@/lib/businessModules/stiProtection/api/mutations/waitingRoomApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/stiProtection/features/procedures/translations";

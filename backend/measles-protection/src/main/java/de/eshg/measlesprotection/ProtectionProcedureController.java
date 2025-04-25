@@ -6,6 +6,7 @@
 package de.eshg.measlesprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.measlesprotection.api.CaseStatusDto;
@@ -16,7 +17,9 @@ import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresSortOptions;
 import de.eshg.measlesprotection.api.GetProceduresForPersonRequest;
 import de.eshg.measlesprotection.api.GetProceduresForPersonResponse;
 import de.eshg.measlesprotection.api.ProtectionProcedureDto;
+import de.eshg.measlesprotection.api.SyncFacilityRequest;
 import de.eshg.measlesprotection.api.UpdateProcedureRequest;
+import de.eshg.measlesprotection.api.draft.EditFacilityResponse;
 import de.eshg.measlesprotection.mapper.GetProceduresForPersonMapper;
 import de.eshg.measlesprotection.mapper.ToDtoMappers;
 import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
@@ -127,5 +130,19 @@ public class ProtectionProcedureController {
   @Operation(summary = "Delete measles protection procedure by id.")
   public void deleteProcedure(@PathVariable("id") UUID id) {
     measlesProtectionService.deleteProcedure(id);
+  }
+
+  @PostMapping("{id}/facilities/edit")
+  @Operation(summary = "Updates facility from a measles protection procedure.")
+  public EditFacilityResponse editFacility(
+      @PathVariable("id") UUID id, @Valid @RequestBody PutFacilityRequest request) {
+    return measlesProtectionService.editFacility(id, request);
+  }
+
+  @PostMapping("{id}/facilities/sync")
+  @Operation(summary = "Synchronize facility data.")
+  public void syncFacility(
+      @PathVariable("id") UUID id, @Valid @RequestBody SyncFacilityRequest request) {
+    measlesProtectionService.syncFacility(id, request);
   }
 }

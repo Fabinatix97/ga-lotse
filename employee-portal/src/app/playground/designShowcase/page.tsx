@@ -5,6 +5,10 @@
 
 "use client";
 
+import StarOutlined from "@mui/icons-material/StarOutlined";
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -12,9 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import StarOutlined from "@mui/icons-material/StarOutlined";
-import { Sheet, Stack, Typography } from "@mui/joy";
-import { Formik } from "formik";
 
 export default function DesignShowcasePage() {
   return (

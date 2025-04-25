@@ -5,16 +5,15 @@
 
 "use client";
 
-import {
-  CentralFilePersonDetails,
-  DetailsSection,
-} from "@eshg/lib-employee-portal";
+import { SxProps } from "@mui/joy/styles/types";
+
+import { CentralFilePersonDetails } from "@eshg/lib-employee-portal";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
-import { Sheet } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
+
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 const COLUMN_STYLE: SxProps = {
   flexGrow: 1,
@@ -30,16 +29,14 @@ export function AffectedPerson({
   const person = procedure.affectedPerson;
 
   return (
-    <Sheet>
-      <DetailsSection title={title}>
-        <CentralFilePersonDetails
-          person={{
-            ...person,
-            contactAddress: person.address,
-          }}
-          columnSx={COLUMN_STYLE}
-        />
-      </DetailsSection>
-    </Sheet>
+    <InfoTile title={title} name="affectedPerson">
+      <CentralFilePersonDetails
+        person={{
+          ...person,
+          contactAddress: person.address,
+        }}
+        columnSx={COLUMN_STYLE}
+      />
+    </InfoTile>
   );
 }

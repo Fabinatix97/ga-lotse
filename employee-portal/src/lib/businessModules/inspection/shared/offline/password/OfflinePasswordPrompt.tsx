@@ -5,9 +5,10 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { useEffect, useState } from "react";
 
 import { useLockInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import {

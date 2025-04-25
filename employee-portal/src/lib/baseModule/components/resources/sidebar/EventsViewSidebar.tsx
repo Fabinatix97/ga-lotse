@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
-import { SidebarContent, useSidebar } from "@eshg/lib-employee-portal";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
+import { SidebarContent, useSidebar } from "@eshg/lib-employee-portal";
 
 import { UserActivityState } from "@/lib/baseModule/components/resources/ResourceDetail";
 import {

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import Button from "@mui/joy/Button";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -11,7 +13,6 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import Button from "@mui/joy/Button";
 
 import { useCloseGroupsInBulk } from "@/features/children/api/mutations/schoolYearTransition";
 import { SchoolYearTransitionGroupList } from "@/features/children/components/schoolTransition/SchoolYearTransitionGroupList";

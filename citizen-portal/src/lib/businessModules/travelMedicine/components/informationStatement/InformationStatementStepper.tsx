@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   MultiStepForm,
@@ -13,9 +17,6 @@ import {
   ApiDocumentContent,
   ApiDocumentSection,
 } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { Formik, FormikErrors } from "formik";
-import { useRouter, useSearchParams } from "next/navigation";
 
 import { usePatchCitizenInformationStatement } from "@/lib/businessModules/travelMedicine/api/mutations/citizenAuthApi";
 import { useGetInformationStatement } from "@/lib/businessModules/travelMedicine/api/queries/citizenAuthApi";

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography, useTheme } from "@mui/joy";
+
 import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
 import {
   YesOrNoFieldData,
   YesOrNoWithFollowUp,
 } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
-import { Typography, useTheme } from "@mui/joy";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";

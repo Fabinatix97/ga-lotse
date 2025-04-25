@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChipProps } from "@mui/joy";
+
 import {
   ApiDocumentStatus,
   ApiMedicalOpinionStatus,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
-import { ChipProps } from "@mui/joy";
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
   UPDATE_AFFECTED_PERSON: "Geänderte Personendaten übernommen",

@@ -3,15 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SidebarContent } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  ApiGetFile200Response,
-  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
-  ApiInboxProgressEntryFileReference,
-  ApiMail,
-  ApiProgressEntry,
-} from "@eshg/lib-procedures-api";
 import DateRangeOutlinedIcon from "@mui/icons-material/DateRangeOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
@@ -28,6 +19,16 @@ import {
 } from "@mui/joy";
 import { PropsWithChildren, ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import { SidebarContent } from "@eshg/lib-employee-portal";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  ApiGetFile200Response,
+  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
+  ApiInboxProgressEntryFileReference,
+  ApiMail,
+  ApiProgressEntry,
+} from "@eshg/lib-procedures-api";
 
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";

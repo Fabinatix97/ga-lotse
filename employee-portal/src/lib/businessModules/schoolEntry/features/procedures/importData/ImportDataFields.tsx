@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FileDownload } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import { Stack } from "@mui/joy";
+import Radio from "@mui/joy/Radio";
+import { FormikErrors, FormikTouched } from "formik";
+
 import { ApiContactCategory, ApiResponse } from "@eshg/base-api";
 import {
   FileField,
@@ -17,11 +23,6 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
-import { FileDownload } from "@mui/icons-material";
-import AddIcon from "@mui/icons-material/Add";
-import { Stack } from "@mui/joy";
-import Radio from "@mui/joy/Radio";
-import { FormikErrors, FormikTouched } from "formik";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";

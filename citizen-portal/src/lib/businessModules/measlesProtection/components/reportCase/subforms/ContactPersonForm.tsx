@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import AddIcon from "@mui/icons-material/AddOutlined";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import { Button, Divider, Grid, IconButton, Typography } from "@mui/joy";
+import { FieldArray } from "formik";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateEmail } from "@eshg/lib-portal/helpers/validators";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import AddIcon from "@mui/icons-material/AddOutlined";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { Button, Divider, Grid, IconButton, Typography } from "@mui/joy";
-import { FieldArray } from "formik";
 
 import { FormSectionLabel } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
 import {

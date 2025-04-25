@@ -3,14 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { WithRequired } from "@eshg/lib-portal/types/utility";
-import {
-  ApiBookingState,
-  ApiGetCitizenProcedureDetailsResponse,
-} from "@eshg/official-medical-service-api";
 import {
   CakeOutlined,
   DifferenceOutlined,
@@ -19,6 +11,15 @@ import {
 } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { WithRequired } from "@eshg/lib-portal/types/utility";
+import {
+  ApiBookingState,
+  ApiGetCitizenProcedureDetailsResponse,
+} from "@eshg/official-medical-service-api";
 
 import { useCancelAppointmentByCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";

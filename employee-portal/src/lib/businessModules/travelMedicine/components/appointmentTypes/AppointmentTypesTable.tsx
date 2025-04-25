@@ -5,8 +5,9 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import { useAppointmentTypeSidebar } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/AppointmentTypeSidebar";

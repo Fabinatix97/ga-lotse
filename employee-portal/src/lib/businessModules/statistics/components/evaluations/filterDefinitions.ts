@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isPlainObject } from "remeda";
+
 import { FilterDefinition } from "@eshg/lib-employee-portal";
 import {
   ApiAvailableDataSource,
   ApiEvaluationState,
 } from "@eshg/statistics-api";
-import { isPlainObject } from "remeda";
 
 import {
   DataSourceSensitivity,

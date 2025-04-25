@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Stack } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { isStrictEqual } from "remeda";
+
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 
 import { MemberInfo } from "@/lib/businessModules/chat/components/MemberInfo";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

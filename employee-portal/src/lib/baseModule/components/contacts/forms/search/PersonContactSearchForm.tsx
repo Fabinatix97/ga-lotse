@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { useState } from "react";
+import { useDebounce } from "use-debounce";
+
 import {
   SidebarContent,
   SidebarForm,
@@ -11,10 +16,6 @@ import {
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { useState } from "react";
-import { useDebounce } from "use-debounce";
 
 import { PersonContactCard } from "@/lib/baseModule/components/contacts/forms/card/PersonContactCard";
 import { ContactSearchFormResults } from "@/lib/baseModule/components/contacts/forms/search/ContactSearchFormResults";

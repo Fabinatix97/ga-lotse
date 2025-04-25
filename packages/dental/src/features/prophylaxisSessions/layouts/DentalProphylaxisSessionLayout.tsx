@@ -5,14 +5,15 @@
 
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { use } from "react";
+
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import {
   NextErrorBoundary,
   NextErrorBoundaryProps,
 } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { use } from "react";
 
 import { useDentalApi } from "@/contexts/dental";
 import { getProphylaxisSessionQuery } from "@/features/prophylaxisSessions/api/queries/details";

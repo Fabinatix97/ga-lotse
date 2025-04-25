@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+
 import {
   ApiEditorBodyElementsInner,
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
-import { Typography } from "@mui/joy";
 
 import { ContentElementFullTextEditor } from "@/lib/shared/components/contentEditor/ContentElementFullTextEditor";
 import { ContentElementQAEditor } from "@/lib/shared/components/contentEditor/ContentElementQAEditor";

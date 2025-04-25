@@ -187,6 +187,35 @@ public class ChecklistDefinitionService {
         savedVersion, userClient.getUserById(savedVersion.getModifiedBy()));
   }
 
+  public void deleteDraftChecklistDefinitionVersion(UUID versionId) {
+    ChecklistDefinitionVersion dbVersion =
+        checklistDefinitionVersionRepository
+            .findById(versionId)
+            .orElseThrow(() -> new NotFoundException("ChecklistDefinitionVersion"));
+    ChecklistDefinition dbDefinition = dbVersion.getChecklistDefinition();
+
+    checkUserRightsForDeleteChecklistDefinitionVersion(dbDefinition);
+    if (dbVersion.isPublished()) {
+      throw new BadRequestException(
+          "This version can not be deleted, because it is already published.");
+    } else if (dbVersion.getId() != getLatestVersion(dbDefinition).getId()) {
+      // In theory this shouldn't be possible, but we check for it just in case.
+      throw new IllegalStateException(
+          "This version can not be deleted, because it is not the newest draft version.");
+    } else if (dbDefinition.getVersions().getLast() != dbVersion) {
+      // In theory this shouldn't be possible, but we check for it just in case.
+      throw new BadRequestException(
+          "This version can not be deleted, because it is not the newest version.");
+    }
+
+    if (dbDefinition.getVersions().size() > 1) {
+      dbDefinition.getVersions().removeLast();
+      dbDefinition.setPublished(dbDefinition.getVersions().getLast().isPublished());
+    } else {
+      checklistDefinitionRepository.delete(dbDefinition);
+    }
+  }
+
   ChecklistDefinitionVersionDto saveNewChecklistDefinitionVersion(
       ChecklistDefinitionVersionRequest request, ChecklistDefinition dbDefinition) {
     ChecklistDefinitionVersion latestVersion = getLatestVersion(dbDefinition);
@@ -222,6 +251,14 @@ public class ChecklistDefinitionService {
         throw new BadRequestException(
             "setting a version to non-expandable is only allowed for core checklists");
       }
+    }
+  }
+
+  private static void checkUserRightsForDeleteChecklistDefinitionVersion(
+      ChecklistDefinition dbDefinition) {
+    // check if user tried to delete a core checklist but has no rights for that
+    if (dbDefinition.isCoreChecklist() && mayNotEditCoreChecklists()) {
+      throw new BadRequestException(INSUFFICIENT_USER_RIGHTS, "no rights to edit core checklists");
     }
   }
 

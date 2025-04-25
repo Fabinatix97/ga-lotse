@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Chip, Grid } from "@mui/joy";
+import { Formik } from "formik";
+
 import { ApiSalutation } from "@eshg/base-api";
 import {
   FormButtonBar,
@@ -23,8 +26,6 @@ import {
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Chip, Grid } from "@mui/joy";
-import { Formik } from "formik";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
 import { usePhoneNumberValidator } from "@/lib/baseModule/components/users/validation";

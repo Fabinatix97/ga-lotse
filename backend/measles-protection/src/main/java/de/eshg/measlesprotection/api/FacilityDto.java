@@ -27,7 +27,8 @@ public record FacilityDto(
     @Schema(description = "Email address of the facility.", example = "example@mail.de") @Email
         String emailAddress,
     @Valid @NotNull AddressDto contactAddress,
-    @Valid AddressDto differentBillingAddress)
+    @Valid AddressDto differentBillingAddress,
+    @Valid FacilitySyncDto facilitySync)
     implements ValidOtherFacilityTypeInformation {
 
   public FacilityDto(
@@ -38,7 +39,8 @@ public record FacilityDto(
       String phoneNumber,
       @Email String emailAddress,
       AddressDto contactAddress,
-      AddressDto differentBillingAddress) {
+      AddressDto differentBillingAddress,
+      @Valid FacilitySyncDto facilitySync) {
     this(
         name,
         contactPersons,
@@ -48,6 +50,7 @@ public record FacilityDto(
         phoneNumber,
         emailAddress,
         contactAddress,
-        differentBillingAddress);
+        differentBillingAddress,
+        facilitySync);
   }
 }

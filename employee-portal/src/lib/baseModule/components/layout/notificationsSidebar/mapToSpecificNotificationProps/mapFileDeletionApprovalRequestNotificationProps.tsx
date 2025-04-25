@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+
 import {
   ApiFileDeletionApprovalRequestNotification,
   ApiUser,
 } from "@eshg/base-api";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { Typography } from "@mui/joy";
 
 import { ProgressEntryInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProgressEntryInternalLink";
 import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";

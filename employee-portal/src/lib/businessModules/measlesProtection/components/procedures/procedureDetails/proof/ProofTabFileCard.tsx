@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { ApiAbstractFile } from "@eshg/measles-protection-api";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Box } from "@mui/joy";
+
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ApiAbstractFile } from "@eshg/measles-protection-api";
 
 import { useFileApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { useGetFile } from "@/lib/businessModules/measlesProtection/api/queries/files";

@@ -3,15 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ButtonBar,
-  SidebarActions,
-  SidebarContent,
-  formatDuplicatedRecordCount,
-  formatFaultyRecordCount,
-  formatTotalRecordCount,
-} from "@eshg/lib-employee-portal";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import type { SvgIconComponent } from "@mui/icons-material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
@@ -25,6 +16,16 @@ import {
   Typography,
 } from "@mui/joy";
 import { PropsWithChildren } from "react";
+
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  formatDuplicatedRecordCount,
+  formatFaultyRecordCount,
+  formatTotalRecordCount,
+} from "@eshg/lib-employee-portal";
+import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 
 import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutations/processImport";
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";

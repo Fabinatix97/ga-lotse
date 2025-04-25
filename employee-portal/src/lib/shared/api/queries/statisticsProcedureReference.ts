@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { queryOptions } from "@tanstack/react-query";
+
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiGetProcedureIdsRequest,
   StatisticsProcedureReferenceApiInterface,
 } from "@eshg/lib-statistics-api";
-import { queryOptions } from "@tanstack/react-query";
 
 import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
 

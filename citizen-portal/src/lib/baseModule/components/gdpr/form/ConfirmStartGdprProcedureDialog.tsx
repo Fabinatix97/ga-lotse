@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureType } from "@eshg/base-api";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { isDefined } from "remeda";
+
+import { ApiGdprProcedureType } from "@eshg/base-api";
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { UserType } from "@/lib/baseModule/components/layout/types";

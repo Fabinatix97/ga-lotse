@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import {
   formatDate,
   formatDateTime,
@@ -11,7 +13,6 @@ import {
   ApiGetRelevantArchivableProceduresSortBy,
   ApiProcedure,
 } from "@eshg/lib-procedures-api";
-import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<ApiProcedure>();
 export const archiveAdminTableColumns = [

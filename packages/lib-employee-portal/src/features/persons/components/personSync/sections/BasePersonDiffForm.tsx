@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import { ApiGetPersonDiffResponse, ApiPersonDetails } from "@eshg/base-api";
 import {
   GENDER_VALUES,
@@ -12,8 +15,6 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import {
   AddressUnion,

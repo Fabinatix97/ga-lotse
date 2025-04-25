@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import WebAssetOffOutlinedIcon from "@mui/icons-material/WebAssetOffOutlined";
 import { Box, Stack, SvgIcon, Typography } from "@mui/joy";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 export default function NotFound() {
   return (

@@ -5,6 +5,12 @@
 
 "use client";
 
+import { CheckBox } from "@mui/icons-material";
+import { Box, Button, List, ListItem, Stack, Typography } from "@mui/joy";
+import { addMinutes } from "date-fns";
+import { Formik } from "formik";
+import { useState } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -21,11 +27,6 @@ import {
   FIELD_LABELS_DE,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { CheckBox } from "@mui/icons-material";
-import { Box, Button, List, ListItem, Stack, Typography } from "@mui/joy";
-import { addMinutes } from "date-fns";
-import { Formik } from "formik";
-import { useState } from "react";
 
 const now = new Date();
 interface Appointment {

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ArrowBackIosOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { SidebarActions } from "@/features/drawer/components/SidebarActions";
 import { SidebarContent } from "@/features/drawer/components/SidebarContent";

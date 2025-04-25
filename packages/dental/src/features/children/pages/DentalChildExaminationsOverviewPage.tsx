@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+
 import {
   DataTable,
   TablePage,
@@ -13,8 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { ExaminationStatusChip } from "@/components/examination/ExaminationStatusChip";
 import { routes } from "@/config/routes";

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
@@ -10,7 +12,6 @@ import {
   GetArchivableProceduresRequest,
   GetRelevantArchivableProceduresRequest,
 } from "@eshg/lib-procedures-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { mapArchivableProceduresResponse } from "@/lib/shared/components/archiving/api/models/archivableProcedure";
 

@@ -5,6 +5,10 @@
 
 "use client";
 
+import { DeleteOutlined, OpenInNew } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
+import { useId } from "react";
+
 import { ApiFileType } from "@eshg/inspection-api";
 import { FileField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -13,9 +17,6 @@ import {
   FileLike,
   FileType,
 } from "@eshg/lib-portal/components/formFields/file/types";
-import { DeleteOutlined, OpenInNew } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
-import { useId } from "react";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMemo } from "react";
+
 import { ApiProcedureStatus } from "@eshg/base-api";
 import {
   FilterDefinition,
@@ -21,7 +23,6 @@ import {
   ApiLabStatus,
   ApiStiProcedureOrigin,
 } from "@eshg/sti-protection-api";
-import { useMemo } from "react";
 
 import {
   CONCERN_VALUES,

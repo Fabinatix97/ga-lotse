@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isString } from "remeda";
+
 import {
   ApiAuditLogSource,
   ApiAuditLogSourceFromJSON,
@@ -16,7 +18,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 import { SearchParams } from "@eshg/lib-portal/types/pageParams";
-import { isString } from "remeda";
 
 import { SearchParamsKeys } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetUsersResponse, ApiUser } from "@eshg/base-api";
 import { queryOptions } from "@tanstack/react-query";
+
+import { ApiGetUsersResponse, ApiUser } from "@eshg/base-api";
 
 import { userApiQueryKey } from "@/config/apiQueryKeys";
 import { useApi } from "@/contexts/api";

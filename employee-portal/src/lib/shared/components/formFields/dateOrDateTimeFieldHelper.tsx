@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { endOfDay, isBefore, parseISO, startOfDay } from "date-fns";
+import { FormikErrors, FormikHelpers } from "formik";
+
 import {
   toDateString,
   toDateTimeString,
 } from "@eshg/lib-portal/helpers/dateTime";
-import { endOfDay, isBefore, parseISO, startOfDay } from "date-fns";
-import { FormikErrors, FormikHelpers } from "formik";
 
 export function mapDateTimeToInput(date: Date, wholeDay: boolean) {
   return wholeDay ? toDateString(date) : toDateTimeString(date);

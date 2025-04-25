@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions } from "@tanstack/react-query";
+
 import {
   ChildApi,
   GetSchoolsForSchoolYearTransitionRequest,
 } from "@eshg/dental-api";
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { queryOptions } from "@tanstack/react-query";
 
 import { childApiQueryKey } from "@/config/apiQueryKeys";
 import { mapGroupResult } from "@/features/children/api/models/SchoolYearTransitionGroupResult";

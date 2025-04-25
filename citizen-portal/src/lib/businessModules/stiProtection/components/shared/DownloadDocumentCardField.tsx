@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FormControl, FormHelperText } from "@mui/joy";
 import assert from "assert";
 import { useId } from "react";
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
 

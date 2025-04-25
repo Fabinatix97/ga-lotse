@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
+
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   DetailsColumn,
   DetailsRow,
@@ -22,8 +25,6 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiGetProcedure200Response } from "@eshg/medical-registry-api";
-import { Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
 import {

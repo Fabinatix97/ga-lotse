@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Add, DeleteOutlined } from "@mui/icons-material";
+import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
+import { FieldArray, useFormikContext } from "formik";
+import { Fragment } from "react";
+
 import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
@@ -11,10 +16,6 @@ import {
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { ApiCountryCode, ApiTypeOfChange } from "@eshg/medical-registry-api";
-import { Add, DeleteOutlined } from "@mui/icons-material";
-import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
-import { FieldArray, useFormikContext } from "formik";
-import { Fragment } from "react";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { useTranslation } from "@/lib/i18n/client";

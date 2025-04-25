@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Switch } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import {
   BaseField,
   FieldComponentProps,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Switch } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 // ToDo: @saschl replace old field or rename
 interface SwitchFieldProps extends FieldProps<boolean>, FieldComponentProps {

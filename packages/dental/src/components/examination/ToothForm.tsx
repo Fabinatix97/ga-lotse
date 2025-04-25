@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack, Typography } from "@mui/joy";
+
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
 import {

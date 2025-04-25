@@ -5,11 +5,12 @@
 
 "use client";
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import {
   ApiAdminActorSelector,
   ApiPairAdminPartialRule,
 } from "@eshg/service-directory-api";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { AuditCell } from "@/lib/components/table/cell/AuditCell";
 import { RevisionTypeCell } from "@/lib/components/table/cell/RevisionTypeCell";

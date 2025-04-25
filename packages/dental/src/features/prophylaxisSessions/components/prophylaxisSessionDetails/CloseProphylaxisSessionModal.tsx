@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { KeyboardArrowRightOutlined } from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/joy";
+
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
-import { KeyboardArrowRightOutlined } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/joy";
 
 import { useCloseProphylaxisSession } from "@/features/prophylaxisSessions/api/mutations/details";
 import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";

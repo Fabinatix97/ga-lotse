@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { FormikProvider, useFormik } from "formik";
+import { ReactNode, useEffect } from "react";
+import { isDefined } from "remeda";
+
 import { ApiContactCategory } from "@eshg/base-api";
 import {
   CheckboxField,
@@ -42,10 +47,6 @@ import {
   ApiSchoolEntryProcedureType,
   UpdateProcedureRequest,
 } from "@eshg/school-entry-api";
-import { Divider, Stack } from "@mui/joy";
-import { FormikProvider, useFormik } from "formik";
-import { ReactNode, useEffect } from "react";
-import { isDefined } from "remeda";
 
 import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Location } from "@/lib/businessModules/schoolEntry/api/models/Location";

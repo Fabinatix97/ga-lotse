@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTaskMetric } from "@eshg/base-api";
 import { createColumnHelper } from "@tanstack/react-table";
+
+import { ApiTaskMetric } from "@eshg/base-api";
 
 import { taskTypeNames } from "@/lib/shared/components/procedures/constants";
 

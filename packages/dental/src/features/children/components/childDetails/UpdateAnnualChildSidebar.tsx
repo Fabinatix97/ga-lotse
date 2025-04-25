@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack, Typography } from "@mui/joy";
+import { FormikProvider, useFormik } from "formik";
+import { isDefined } from "remeda";
+
 import { UpdateChildRequest } from "@eshg/dental-api";
 import {
   FormButtonBar,
@@ -27,9 +31,6 @@ import {
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Divider, Stack, Typography } from "@mui/joy";
-import { FormikProvider, useFormik } from "formik";
-import { isDefined } from "remeda";
 
 import { Institution } from "@/api/models/Institution";
 import { SearchGroupField } from "@/components/group/SearchGroupField";

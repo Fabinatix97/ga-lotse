@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
+
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
-import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 
 export type DeactivateModalProps = Omit<
   BaseModalPropsRequiredClose,

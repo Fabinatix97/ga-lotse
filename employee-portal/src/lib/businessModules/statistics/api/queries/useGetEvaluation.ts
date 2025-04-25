@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryOptions } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { EvaluationApi, GetEvaluationRequest } from "@eshg/statistics-api";
-import { queryOptions } from "@tanstack/react-query";
 
 import { mapEvaluationToTableView } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableView";
 

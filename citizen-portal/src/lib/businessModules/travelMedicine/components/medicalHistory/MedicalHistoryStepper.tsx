@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 import { FormikValues } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 
 import {
   PatchMedicalHistoryRequest,

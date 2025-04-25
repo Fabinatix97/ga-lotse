@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Row } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinition } from "@eshg/inspection-api";
 import {
@@ -15,12 +19,10 @@ import {
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Row } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import {
   useAddChecklistDefinitionVersion,
+  useDeleteDraftChecklistDefinitionVersion,
   useEditDraftChecklistDefinitionVersion,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { generateChecklistDefinitionOverviewTableColumns } from "@/lib/businessModules/inspection/components/checklistDefinition/overview/columns";
@@ -68,6 +70,8 @@ export function ChecklistDefinitionOverviewTable({
   const { mutateAsync: addCldVersion } = useAddChecklistDefinitionVersion();
   const { mutateAsync: editDraftCldVersion } =
     useEditDraftChecklistDefinitionVersion();
+  const { mutateAsync: deleteDraftCldVersion } =
+    useDeleteDraftChecklistDefinitionVersion();
   const router = useRouter();
 
   const [userActivity, setUserActivity] =
@@ -116,6 +120,7 @@ export function ChecklistDefinitionOverviewTable({
       handleUpdateRepoButtonClick,
       addCldVersion,
       editDraftCldVersion,
+      deleteDraftCldVersion,
     },
   );
 

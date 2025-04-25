@@ -5,9 +5,10 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useSchoolEntryCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import {

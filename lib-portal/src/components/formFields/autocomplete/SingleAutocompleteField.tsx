@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { ReactNode, SyntheticEvent } from "react";
 import { identity } from "remeda";
+
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 
 import { useIsFormDisabled } from "../../form/DisabledFormContext";
 import { BaseField } from "../BaseField";

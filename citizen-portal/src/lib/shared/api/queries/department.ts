@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DepartmentApi } from "@eshg/base-api";
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import {
   queryOptions,
   useQuery,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+
+import { DepartmentApi } from "@eshg/base-api";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 
 import { useDepartmentApi } from "@/lib/shared/api/clients";
 import { mapDepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";

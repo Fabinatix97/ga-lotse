@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OpenInNew } from "@mui/icons-material";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/joy";
+import { useCallback, useContext, useMemo, useState } from "react";
+
 import {
   DrawerProps,
   SIDEBAR_PADDING,
@@ -13,10 +18,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { OpenInNew } from "@mui/icons-material";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/joy";
-import { useCallback, useContext, useMemo, useState } from "react";
 
 import { ChatDeviceId } from "@/lib/baseModule/components/layout/sideNavigation/ChatDeviceId";
 import { routes } from "@/lib/baseModule/shared/routes";

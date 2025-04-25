@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDeepEqual, isDefined } from "remeda";
+
 import { ApiVCardAddress } from "@eshg/base-api";
 import {
   BaseAddress,
@@ -10,7 +12,6 @@ import {
   createEmptyAddress,
   mapApiAddressToForm,
 } from "@eshg/lib-employee-portal";
-import { isDeepEqual, isDefined } from "remeda";
 
 export const UnselectedValue = Symbol("Unselected merge value");
 export type RequiredMergeValue<T> = T | typeof UnselectedValue;

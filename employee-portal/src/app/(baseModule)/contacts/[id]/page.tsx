@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Box, Grid, Typography } from "@mui/joy";
+import { use } from "react";
+
 import {
   ContentPanel,
   MainContentLayout,
@@ -14,8 +17,6 @@ import {
   useGetContactQuery,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import { Box, Grid, Typography } from "@mui/joy";
-import { use } from "react";
 
 import { useGetContactHistoryQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactDetails } from "@/lib/baseModule/components/contacts/ContactDetails";

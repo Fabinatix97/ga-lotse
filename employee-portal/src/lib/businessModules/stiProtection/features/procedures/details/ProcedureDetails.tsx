@@ -5,9 +5,10 @@
 
 "use client";
 
-import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { AdditionalDataSection } from "./AdditionalDataSection";
 import { AnonIdentityDocumentCard } from "./AnonIdentityDocumentCard";

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { v4 as uuidv4 } from "uuid";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   type ApiCLAudioContext,
@@ -17,7 +19,6 @@ import {
 } from "@eshg/inspection-api";
 import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
-import { v4 as uuidv4 } from "uuid";
 
 function getId(
   partial: Partial<ApiCLSectionContextElementsInner>,
@@ -195,6 +196,25 @@ export function showPublishChecklistDefinitionDialog(
     confirmLabel: "Veröffentlichen",
     cancelLabel: "Abbrechen",
     onConfirm: onConfirm,
+  });
+}
+
+export function showDeleteChecklistDefinitionDialog(
+  openConfirmationDialog: (
+    confirmationDialog: Omit<ConfirmationDialogProps, "open" | "onClose"> & {
+      onClose?: ConfirmationDialogProps["onClose"];
+    },
+  ) => void,
+  cldName: string,
+  onConfirm: () => Promise<void> | void,
+) {
+  openConfirmationDialog({
+    title: "Checklisten-Definition-Entwurf löschen?",
+    description: `Möchten Sie den Entwurf „${cldName}” wirklich löschen? Dies lässt sich nicht rückgängig machen.`,
+    confirmLabel: "Löschen",
+    cancelLabel: "Abbrechen",
+    onConfirm: onConfirm,
+    color: "danger",
   });
 }
 

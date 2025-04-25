@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, styled } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 const ButtonStack = styled(Stack)({
   marginTop: "27px",

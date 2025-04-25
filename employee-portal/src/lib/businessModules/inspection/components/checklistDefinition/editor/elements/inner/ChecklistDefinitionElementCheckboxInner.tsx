@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLCheckboxContext } from "@eshg/inspection-api";
 import { SubdirectoryArrowRight } from "@mui/icons-material";
 import { Radio, Stack } from "@mui/joy";
 import { useState } from "react";
+
+import { ApiCLCheckboxContext } from "@eshg/inspection-api";
 
 import { ChecklistDefinitionElementInnerProps } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionElementInner";
 import { FlexInputField } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";

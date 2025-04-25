@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Card, Stack, Typography } from "@mui/joy";
+import { useId } from "react";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -11,8 +14,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
-import { Button, Card, Stack, Typography } from "@mui/joy";
-import { useId } from "react";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
 

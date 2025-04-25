@@ -3,22 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactType, ApiUserRole } from "@eshg/base-api";
-import {
-  CONTACT_CATEGORY_NAMES,
-  Contact,
-  DataTable,
-  Pagination,
-  TablePage,
-  TableSheet,
-  UseTableControlResult,
-  mapRowSelectionToRowIds,
-  useHasUserRoleCheck,
-  useRowSelection,
-  useTableControl,
-} from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import AddIcon from "@mui/icons-material/Add";
 import BusinessIcon from "@mui/icons-material/Business";
 import CachedIcon from "@mui/icons-material/Cached";
@@ -36,6 +20,23 @@ import {
 } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+import { ApiContactType, ApiUserRole } from "@eshg/base-api";
+import {
+  CONTACT_CATEGORY_NAMES,
+  Contact,
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  UseTableControlResult,
+  mapRowSelectionToRowIds,
+  useHasUserRoleCheck,
+  useRowSelection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 
 import { ContactsTableTitle } from "@/lib/baseModule/components/contacts/ContactsTableTitle";
 import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergeInstitutionContactSidebar";

@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Grid, Stack, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import {
   FileField,
   FileFieldProps,
@@ -23,8 +26,6 @@ import {
 } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { ApiInboxProgressEntryType } from "@eshg/lib-procedures-api";
-import { Grid, Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";
 

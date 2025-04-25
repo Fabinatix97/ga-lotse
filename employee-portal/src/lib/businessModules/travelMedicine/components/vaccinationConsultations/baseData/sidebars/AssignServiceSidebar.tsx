@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { isDefined } from "remeda";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -12,8 +15,6 @@ import {
   ApiPatchServiceAssignmentRequest,
   AssignStepToServiceRequest,
 } from "@eshg/travel-medicine-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { isDefined } from "remeda";
 
 import { useAssignStepToService } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { useGetAllAvailableAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";

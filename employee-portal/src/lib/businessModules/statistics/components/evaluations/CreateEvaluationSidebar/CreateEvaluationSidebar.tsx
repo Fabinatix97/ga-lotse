@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonNullish } from "remeda";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -12,7 +14,6 @@ import {
   ApiAvailableDataSource,
   ApiMinimalEvaluationTemplateInfo,
 } from "@eshg/statistics-api";
-import { isNonNullish } from "remeda";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
 import { mapToAnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";

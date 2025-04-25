@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { ApiTextTemplate } from "@eshg/sti-protection-api";
 import { Delete, Edit } from "@mui/icons-material";
 import { createColumnHelper } from "@tanstack/react-table";
+
+import { ActionsMenu } from "@eshg/lib-employee-portal";
+import { ApiTextTemplate } from "@eshg/sti-protection-api";
 
 import { TextTemplateContextLabels } from "./constants";
 

@@ -34,11 +34,6 @@ export default function PlaygroundIndexPage() {
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/facilityForm"}>
-              Legacy Facility Sidebar & Form
-            </InternalLink>
-          </li>
-          <li>
             <InternalLink href="/playground/personSidebar">
               Person Sidebar
             </InternalLink>

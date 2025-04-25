@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Dispatch, SetStateAction, startTransition } from "react";
+import { isDefined } from "remeda";
+
 import {
   ApiBusinessModule,
   ApiBusinessModuleFromJSON,
@@ -19,8 +22,6 @@ import {
   UseTableControlResult,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { Dispatch, SetStateAction, startTransition } from "react";
-import { isDefined } from "remeda";
 
 import { AggregateTaskFilters } from "@/lib/baseModule/api/queries/tasks";
 import { businessModuleUserGroups } from "@/lib/baseModule/moduleRegister/moduleUserGroupResolver";

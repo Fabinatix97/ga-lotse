@@ -5,9 +5,10 @@
 
 "use client";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
+
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import {
   useConfigApi,

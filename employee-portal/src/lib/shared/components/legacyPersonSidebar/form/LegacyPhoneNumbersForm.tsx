@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, IconButton } from "@mui/joy";
 import { FieldArray } from "formik";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 // See InputArrayField
 export function LegacyPhoneNumbersForm(props: {

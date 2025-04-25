@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack } from "@mui/joy";
+import { ReactElement } from "react";
+
 import { SelectableCard } from "@eshg/lib-employee-portal";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
   RadioGroupField,
   RadioGroupFieldProps,
 } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { Stack } from "@mui/joy";
-import { ReactElement } from "react";
 
 interface SelectableCardsFieldProps extends RadioGroupFieldProps {
   options: {

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { HubOutlined } from "@mui/icons-material";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
@@ -10,7 +12,6 @@ import {
   SideNavigationSubItem,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
-import { HubOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";
 

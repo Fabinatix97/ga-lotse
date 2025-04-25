@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChipProps } from "@mui/joy";
+
 import {
   ApiFollowupType,
   ApiInspPendingFacilityKind,
@@ -12,7 +14,6 @@ import {
   ApiInspectionType,
   ApiWebSearchEntryStatus,
 } from "@eshg/inspection-api";
-import { ChipProps } from "@mui/joy";
 
 export const webSearchStatusNames = {
   [ApiWebSearchEntryStatus.New]: "Neu",

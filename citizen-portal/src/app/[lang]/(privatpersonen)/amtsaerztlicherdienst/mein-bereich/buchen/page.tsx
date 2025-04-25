@@ -5,10 +5,11 @@
 
 "use client";
 
-import { ApiBookingState } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
+
+import { ApiBookingState } from "@eshg/official-medical-service-api";
 
 import { usePutAppointmentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/citizenAuthApi";

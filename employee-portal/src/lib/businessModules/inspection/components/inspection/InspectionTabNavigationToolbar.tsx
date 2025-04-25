@@ -5,14 +5,6 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/base-api";
-import {
-  TabNavigationItem,
-  TabNavigationToolbar,
-  ToolbarBackButton,
-  useHasUserRoleCheck,
-} from "@eshg/lib-employee-portal";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import {
   History,
   OtherHousesOutlined,
@@ -22,6 +14,15 @@ import {
   TimelineOutlined,
 } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
+
+import { ApiUserRole } from "@eshg/base-api";
+import {
+  TabNavigationItem,
+  TabNavigationToolbar,
+  ToolbarBackButton,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";

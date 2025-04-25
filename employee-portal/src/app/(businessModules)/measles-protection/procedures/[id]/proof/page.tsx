@@ -3,15 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { use } from "react";
+
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
+import { MeaslesProtectionDetailsRouteParamsSchema } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesProtectionDetailsRouteParamsSchema";
 import { ProofTab } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/ProofTab";
 import { ProceduresProvider } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 
-export default async function MeaslesProtectionProcedureDataProofTab(
-  props: DynamicPageProps<{ id: string }>,
+export default function MeaslesProtectionProcedureDataProofTab(
+  props: DynamicPageProps<MeaslesProtectionDetailsRouteParamsSchema>,
 ) {
-  const { id } = await props.params;
+  const { id } = use(props.params);
 
   return (
     <ProceduresProvider>

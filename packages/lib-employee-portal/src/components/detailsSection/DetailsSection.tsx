@@ -5,10 +5,11 @@
 
 "use client";
 
-import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
 import { Stack } from "@mui/joy";
 import { ReactNode, useId, useMemo, useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
+
+import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
 
 import { DetailsSectionHeader } from "./DetailsSectionHeader";
 

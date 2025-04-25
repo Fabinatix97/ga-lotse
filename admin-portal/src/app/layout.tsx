@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
+import type { Metadata } from "next";
+
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
 import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
-import { Box } from "@mui/joy";
-import type { Metadata } from "next";
 
 import { env } from "@/env/server";
 import { ApiProvider } from "@/lib/components/layout/ApiProvider";

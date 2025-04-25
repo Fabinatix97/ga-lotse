@@ -3,17 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isObjectType } from "remeda";
+
+import {
+  mapApiAddressToForm,
+  mapBaseAddressToApi,
+} from "@eshg/lib-employee-portal";
 import { AlertProps as SharedAlertProps } from "@eshg/lib-portal/components/Alert";
 import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiDraftMeaslesProcedure,
+  ApiFacility,
   ApiMeaslesProtectionProcedure,
+  ApiPutFacilityRequest,
   ApiReportData,
   ApiReportingReason,
   ApiRoleStatus,
   ApiUpdateProcedureRequest,
 } from "@eshg/measles-protection-api";
-import { isObjectType } from "remeda";
+
+import { ReferenceFacilityWithOptionalMeaslesFacilityType } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import { mapApiContactPersonToForm } from "@/lib/shared/helpers/facilityUtils";
 
 export interface UpdateProcedureForm {
   reportData: {
@@ -191,4 +203,63 @@ export function formatName(
   let prefix = person.personType ? getPersonPrefix(person.personType) : "";
   prefix = customPrefix ?? prefix;
   return `${prefix}${person.firstName} ${person.lastName}`;
+}
+
+export function mapToDefaultFacilityFormValues(
+  facility: ReferenceFacilityWithOptionalMeaslesFacilityType,
+): DefaultFacilityFormValues {
+  return {
+    name: facility.name,
+    contactAddress: mapApiAddressToForm(facility.contactAddress!),
+    contactPersons:
+      facility.contactPersons?.map(mapApiContactPersonToForm) ?? [],
+    emailAddresses: facility.emailAddresses,
+    phoneNumbers: facility.phoneNumbers,
+    measlesFacilityType: facility.measlesFacilityType
+      ? {
+          type: facility.measlesFacilityType.type,
+          otherFacilityTypeInformation:
+            facility.measlesFacilityType.otherFacilityTypeInformation,
+        }
+      : undefined,
+  };
+}
+
+export function mapApiFacilityToDefaultFacilityFormValues(
+  facility: ApiFacility,
+): DefaultFacilityFormValues {
+  return {
+    name: facility.name,
+    contactAddress: mapApiAddressToForm(facility.contactAddress),
+    differentBillingAddress: facility.differentBillingAddress
+      ? mapApiAddressToForm(facility.differentBillingAddress)
+      : undefined,
+    contactPersons:
+      facility.contactPersons?.map(mapApiContactPersonToForm) ?? [],
+    emailAddresses: facility.emailAddress ? [facility.emailAddress] : [],
+    phoneNumbers: facility.phoneNumber ? [facility.phoneNumber] : [],
+  };
+}
+
+export function mapDefaultFacilityFormValuesToApiPutFacilityRequest(
+  facility: DefaultFacilityFormValues,
+): ApiPutFacilityRequest {
+  return {
+    updatedFacility: {
+      ...facility,
+      contactAddress: mapBaseAddressToApi(facility.contactAddress),
+      differentBillingAddress: facility.differentBillingAddress
+        ? mapBaseAddressToApi(facility.differentBillingAddress)
+        : undefined,
+      contactPersons: facility.contactPersons?.map((person) => ({
+        ...person,
+        firstName: person.firstName,
+        emailAddress: person.emailAddress,
+        phoneNumber: person.phoneNumber,
+        salutation: mapOptionalValue(person.salutation),
+        title: mapOptionalValue(person.title),
+        role: mapOptionalValue(person.role),
+      })),
+    },
+  };
 }

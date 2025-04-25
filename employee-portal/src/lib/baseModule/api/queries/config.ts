@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 
 import { useConfigApi } from "@/lib/baseModule/api/clients";
 

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsItem } from "@eshg/lib-employee-portal";
 import { Delete, Download, Edit, Share } from "@mui/icons-material";
 import { isDefined } from "remeda";
+
+import { ActionsItem } from "@eshg/lib-employee-portal";
 
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 

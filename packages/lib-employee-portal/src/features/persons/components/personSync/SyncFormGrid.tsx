@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ArrowForwardOutlined } from "@mui/icons-material";
 import { Chip, Sheet, styled } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 const gridLines = {
   before: "before",

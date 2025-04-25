@@ -5,9 +5,10 @@
 
 "use client";
 
-import { SidebarSlot, useHeaderHeights } from "@eshg/lib-employee-portal";
 import { Box } from "@mui/joy";
 import { ReactNode, useState } from "react";
+
+import { SidebarSlot, useHeaderHeights } from "@eshg/lib-employee-portal";
 
 import { Header } from "@/lib/baseModule/components/layout/header/Header";
 import { SideNavigation } from "@/lib/baseModule/components/layout/sideNavigation/SideNavigation";

@@ -5,8 +5,9 @@
 
 "use client";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { use } from "react";
+
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";

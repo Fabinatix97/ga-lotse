@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export interface FilterSettingsContentProps extends RequiresChildren {
   showActiveFilters?: boolean;

@@ -5,6 +5,10 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
+
 import {
   ApiGdprProcedureStatus,
   ApiGdprProcedureType,
@@ -21,9 +25,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { isDefined } from "remeda";
 
 import {
   isGdprFacility,

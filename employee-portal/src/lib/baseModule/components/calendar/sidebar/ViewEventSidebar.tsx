@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Button, Stack } from "@mui/joy";
+import { isDefined } from "remeda";
+
 import {
   DrawerProps,
   SidebarActions,
@@ -13,8 +16,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { Button, Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { EventView } from "@/lib/baseModule/components/calendar/EventView";
 import { CalendarInfo } from "@/lib/baseModule/components/calendar/calendarDisplay";

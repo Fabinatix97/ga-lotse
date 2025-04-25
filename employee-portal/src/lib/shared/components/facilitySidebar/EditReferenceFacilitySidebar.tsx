@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined } from "remeda";
+
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
   SidebarWithFormRefProps,
   mapApiAddressToForm,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { isDefined } from "remeda";
 
 import { useUpdateReferenceFacility } from "@/lib/baseModule/api/mutations/facility";
 import {

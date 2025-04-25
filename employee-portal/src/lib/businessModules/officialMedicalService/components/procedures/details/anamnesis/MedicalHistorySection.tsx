@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { memo } from "react";
+import { isDefined } from "remeda";
+
 import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
@@ -12,10 +17,6 @@ import {
   ApiHeartDisease,
   ApiYesNoDontKnowAnswer,
 } from "@eshg/official-medical-service-api";
-import { Divider, Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { memo } from "react";
-import { isDefined } from "remeda";
 
 import { AnamnesisFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/anamnesis/AnamnesisForm.config";
 import { BooleanRadioField } from "@/lib/businessModules/officialMedicalService/shared/BooleanRadioField";

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Checkbox, Divider, Stack, Typography } from "@mui/joy";
+import { useField } from "formik";
+import { ReactNode, useCallback, useMemo, useState } from "react";
+import { groupBy } from "remeda";
+
 import {
   CheckboxFieldProps,
   SearchableGroup,
@@ -10,10 +15,6 @@ import {
   SearchableGroups,
 } from "@eshg/lib-employee-portal";
 import { ApiDataPrivacyCategory } from "@eshg/statistics-api";
-import { Checkbox, Divider, Stack, Typography } from "@mui/joy";
-import { useField } from "formik";
-import { ReactNode, useCallback, useMemo, useState } from "react";
-import { groupBy } from "remeda";
 
 import { AnonymizedFieldValue } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import { ChooseAttributeStepOrConfigureDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";

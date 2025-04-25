@@ -5,9 +5,10 @@
 
 "use client";
 
+import { Add } from "@mui/icons-material";
+
 import { ButtonBar, TablePage } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { Add } from "@mui/icons-material";
 
 import { webSearchApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 import { useGetWebSearchOverview } from "@/lib/businessModules/inspection/api/queries/webSearch";

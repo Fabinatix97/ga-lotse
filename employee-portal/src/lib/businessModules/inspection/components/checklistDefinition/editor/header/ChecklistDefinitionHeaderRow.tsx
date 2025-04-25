@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack, Typography } from "@mui/joy";
+
 import { ApiUser } from "@eshg/inspection-api";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { Stack, Typography } from "@mui/joy";
 
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

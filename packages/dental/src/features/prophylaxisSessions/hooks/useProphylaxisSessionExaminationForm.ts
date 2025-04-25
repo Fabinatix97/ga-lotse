@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useFormik } from "formik";
+
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   mapOptionalValue,
   mapRequiredValue,
 } from "@eshg/lib-portal/helpers/form";
-import { useFormik } from "formik";
 
 import {
   ExaminationResult,

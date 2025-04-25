@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
+
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
 import {
   GENDER_VALUES,
@@ -12,9 +16,6 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
-import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { isDefined } from "remeda";
 
 import { BaseAddress } from "@/api/models/address";
 import { ResponsiveDivider } from "@/components/ResponsiveDivider";

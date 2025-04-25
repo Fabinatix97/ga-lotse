@@ -5,12 +5,13 @@
 
 "use client";
 
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   GetProcedureOverviewRequest,
   MedicalRegistryApi,
 } from "@eshg/medical-registry-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 

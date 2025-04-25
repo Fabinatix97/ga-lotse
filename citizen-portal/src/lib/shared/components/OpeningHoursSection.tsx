@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetOpeningHoursResponse } from "@eshg/travel-medicine-api";
 import { AccessTimeOutlined } from "@mui/icons-material";
 import { Stack, Typography, styled } from "@mui/joy";
 import { Fragment } from "react";
 import { isDefined, map, partition, pipe, zip } from "remeda";
+
+import { ApiGetOpeningHoursResponse } from "@eshg/travel-medicine-api";
 
 import { useTranslation } from "@/lib/i18n/client";
 import {

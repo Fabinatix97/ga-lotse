@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLayoutConfig, useSidenav } from "@eshg/lib-employee-portal";
-import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Typography } from "@mui/joy";
+
+import { useLayoutConfig, useSidenav } from "@eshg/lib-employee-portal";
+import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 
 import { HeaderButtons } from "@/lib/baseModule/components/layout/header/HeaderButtons";
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";

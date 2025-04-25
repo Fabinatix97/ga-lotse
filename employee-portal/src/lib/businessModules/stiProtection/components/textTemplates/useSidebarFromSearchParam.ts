@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useCallback, useEffect, useRef } from "react";
+
 import {
   DrawerOpenOptions,
   DrawerProps,
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { useCallback, useEffect, useRef } from "react";
 
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

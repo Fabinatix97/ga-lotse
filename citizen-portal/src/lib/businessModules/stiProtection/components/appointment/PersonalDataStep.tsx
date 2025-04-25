@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { styled } from "@mui/joy";
+import assert from "assert";
+
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { styled } from "@mui/joy";
-import assert from "assert";
 
 import { useAddPersonalDetails } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
@@ -36,6 +37,7 @@ const initialValues = {
 export function PersonalDataStep() {
   const { t } = useTranslation("stiProtection/forms");
   const thisYear = new Date().getFullYear();
+  const minYear = 1900;
   const [formData] = useFormData<AppointmentFormData>();
   const procedureId = formData.procedureId;
   assert.ok(procedureId);
@@ -77,10 +79,10 @@ export function PersonalDataStep() {
           name="birthYear"
           label={t("personal_data.fields.birth_year")}
           required={t("personal_data.fields.birth_year_required")}
-          min={1990}
+          min={minYear}
           max={thisYear}
           validate={validateYearWithinRange(
-            1900,
+            minYear,
             thisYear,
             invalidYearRangeMessage,
           )}

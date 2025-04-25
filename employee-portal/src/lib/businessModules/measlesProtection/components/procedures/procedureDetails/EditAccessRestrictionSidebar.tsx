@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { formatISO } from "date-fns";
+import { Formik, useFormikContext } from "formik";
+import { useCallback } from "react";
+
 import {
+  DetailsItem,
   FormButtonBar,
   Sidebar,
   SidebarActions,
@@ -17,14 +23,9 @@ import {
   ApiAccessRestriction,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
-import { Divider, Stack } from "@mui/joy";
-import { formatISO } from "date-fns";
-import { Formik, useFormikContext } from "formik";
-import { useCallback } from "react";
 
 import { useUpdateAccessRestrictionMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import {
@@ -111,11 +112,11 @@ export function EditAccessRestrictionSidebarForm({
       <SidebarForm onSubmit={handleRawSubmit}>
         <SidebarContent title={"Betretungsverbot bearbeiten"}>
           <Stack gap={3}>
-            <DetailsCell
+            <DetailsItem
               label={fields.restrictionIssuedDate.label}
               value={formatDate(accessRestriction.restrictionIssuedDate)}
             />
-            <DetailsCell
+            <DetailsItem
               label={fields.restrictionStartDate.label}
               value={formatDate(accessRestriction.restrictionStartDate)}
             />

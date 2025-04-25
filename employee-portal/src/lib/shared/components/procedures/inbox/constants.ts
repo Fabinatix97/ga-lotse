@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ChipProps } from "@mui/joy/Chip";
+
 import {
   ApiContactType,
   ApiInboxProcedureStatus,
   ApiInboxProgressEntryType,
   ApiTitle,
 } from "@eshg/lib-procedures-api";
-import { ChipProps } from "@mui/joy/Chip";
 
 export const statusNames = {
   [ApiInboxProcedureStatus.Closed]: "Geschlossen",

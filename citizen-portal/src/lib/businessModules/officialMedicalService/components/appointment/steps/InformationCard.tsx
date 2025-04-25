@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
 import { isDefined } from "remeda";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { TranslatedList } from "@/lib/businessModules/officialMedicalService/shared/components/TranslatedList";

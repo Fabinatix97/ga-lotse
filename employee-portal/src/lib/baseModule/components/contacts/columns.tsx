@@ -3,12 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ActionsMenu,
-  CONTACT_CATEGORY_NAMES,
-  Contact,
-  isInstitutionContact,
-} from "@eshg/lib-employee-portal";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import PersonIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -16,6 +10,13 @@ import InstitutionIcon from "@mui/icons-material/VillaOutlined";
 import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
+
+import {
+  ActionsMenu,
+  CONTACT_CATEGORY_NAMES,
+  Contact,
+  isInstitutionContact,
+} from "@eshg/lib-employee-portal";
 
 import {
   fullContactName,

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { isEmpty } from "remeda";
+
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
   DataPrivacyFormValues,
@@ -14,9 +18,6 @@ import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Button, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { isEmpty } from "remeda";
 
 import { useMedicalRegistryPublicCitizenApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";

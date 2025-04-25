@@ -5,8 +5,6 @@
 
 "use client";
 
-import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   MatrixClient,
   MatrixEvent,
@@ -26,6 +24,9 @@ import {
   useState,
 } from "react";
 import { isNullish } from "remeda";
+
+import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useGetDepartment } from "@/lib/businessModules/chat/api/queries/department";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";

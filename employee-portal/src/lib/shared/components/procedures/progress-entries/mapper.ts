@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined, isEmpty } from "remeda";
+
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAbstractFile,
@@ -13,7 +15,6 @@ import {
   ApiPatchManualProgressEntryRequest,
   ApiUpdateFileMetaDataRequest,
 } from "@eshg/lib-procedures-api";
-import { isDefined, isEmpty } from "remeda";
 
 import { FileCardProps } from "@/lib/shared/components/FileCard";
 import {

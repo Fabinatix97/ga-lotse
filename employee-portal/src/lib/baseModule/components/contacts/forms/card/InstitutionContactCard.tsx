@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInstitutionContact } from "@eshg/base-api";
 import { Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { ApiInstitutionContact } from "@eshg/base-api";
 
 import { getContactAddressLine } from "@/lib/baseModule/components/contacts/helpers";
 

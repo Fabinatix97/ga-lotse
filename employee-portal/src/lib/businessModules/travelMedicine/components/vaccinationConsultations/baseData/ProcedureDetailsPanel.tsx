@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InformationSheet } from "@eshg/lib-employee-portal";
 import { Divider } from "@mui/joy";
+
+import { InformationSheet } from "@eshg/lib-employee-portal";
 
 import { ProcedureCreatedByTile } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ProcedureCreatedByTile";
 import { TravelDataTile } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/TravelDataTile";

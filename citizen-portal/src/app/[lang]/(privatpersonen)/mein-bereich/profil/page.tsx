@@ -5,10 +5,11 @@
 
 "use client";
 
-import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Grid } from "@mui/joy";
 import { isDefined } from "remeda";
+
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 
 import { useGetLinkedReferencePerson } from "@/lib/baseModule/api/queries/bundIdLink";
 import { GdprContactForm } from "@/lib/baseModule/components/gdpr/form/GdprContactForm";

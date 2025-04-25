@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { YearInput } from "@eshg/lib-portal/components/inputs/YearInput";
 import { isValid, parse } from "date-fns";
+
+import { YearInput } from "@eshg/lib-portal/components/inputs/YearInput";
 
 import {
   YearFilterDefinition,

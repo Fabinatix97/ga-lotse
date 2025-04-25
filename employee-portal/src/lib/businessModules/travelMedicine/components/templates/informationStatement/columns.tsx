@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Delete, Edit } from "@mui/icons-material";
+import { Chip } from "@mui/joy";
+import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
 import { ActionsMenu } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiInformationStatementTemplate,
   ApiInformationStatementTemplateState,
 } from "@eshg/travel-medicine-api";
-import { Delete, Edit } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
-import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
 import { templateStatusColors } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/constants";

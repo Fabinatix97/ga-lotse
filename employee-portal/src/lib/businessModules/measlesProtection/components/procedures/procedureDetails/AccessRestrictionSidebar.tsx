@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useCallback } from "react";
+
 import {
   FormButtonBar,
   Sidebar,
@@ -11,9 +15,6 @@ import {
   SidebarForm,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Divider, Stack } from "@mui/joy";
-import { Formik, useFormikContext } from "formik";
-import { useCallback } from "react";
 
 import { useAddAccessRestrictionMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";

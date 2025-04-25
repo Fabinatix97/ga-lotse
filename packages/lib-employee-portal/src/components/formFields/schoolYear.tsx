@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AutocompleteProps } from "@mui/joy";
+import { isNullish } from "remeda";
+
 import {
   BaseField,
   useBaseField,
@@ -10,8 +13,6 @@ import {
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FieldProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { AutocompleteProps } from "@mui/joy";
-import { isNullish } from "remeda";
 
 import { formatSchoolYear } from "@/utils/formatters";
 

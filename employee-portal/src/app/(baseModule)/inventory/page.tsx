@@ -5,6 +5,8 @@
 
 "use client";
 
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+
 import {
   ApiInventoryItemType,
   ApiInventorySortKey,
@@ -21,7 +23,6 @@ import {
   parseOptionalString,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { InventoryTable } from "@/lib/baseModule/components/inventory/InventoryTable";
 

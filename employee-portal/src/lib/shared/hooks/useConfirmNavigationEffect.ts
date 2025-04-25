@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useEffect } from "react";
+
 import {
   OnBeforeNavigateProps,
   useNavigation,
 } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { useEffect } from "react";
 
 export function useConfirmNavigationEffect(
   triggerLeaveConfirmation: boolean,

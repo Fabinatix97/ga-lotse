@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
+
 import {
   EditButton,
   SyncBarrier,
@@ -14,8 +17,6 @@ import {
   ApiFacilitySync,
   ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
-import { SxProps } from "@mui/joy/styles/types";
-import { isDefined } from "remeda";
 
 import { AddFacility } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/AddFacility";
 import { UpdateFacilitySidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/UpdateFacilitySidebar";

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   Sheet,
   SheetProps,
@@ -12,6 +11,8 @@ import {
   TypographyProps,
 } from "@mui/joy";
 import { createContext, useContext, useId } from "react";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";

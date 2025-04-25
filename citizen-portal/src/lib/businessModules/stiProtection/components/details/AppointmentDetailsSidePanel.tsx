@@ -5,14 +5,16 @@
 
 "use client";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { ApiCitizenProcedure } from "@eshg/sti-protection-api";
 import { Button, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiCitizenProcedure } from "@eshg/sti-protection-api";
+
 import { useCancelBookedAppointment } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";
 import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
+import { GoToChangePinCard } from "@/lib/businessModules/stiProtection/components/pin/GoToChangePinCard";
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
@@ -83,6 +85,7 @@ export function AppointmentDetailsSidePanel() {
         </Stack>
       </ContentSheet>
       <GoToResultsStatusCard />
+      <GoToChangePinCard />
     </Stack>
   );
 }

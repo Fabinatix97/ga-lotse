@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EventInput } from "@fullcalendar/core/index.js";
+import { eachDayOfInterval, isAfter, isSameDay, max, min } from "date-fns";
+
 import {
   ApiBaseEventRequest,
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
 } from "@eshg/base-api";
-import { EventInput } from "@fullcalendar/core/index.js";
-import { eachDayOfInterval, isAfter, isSameDay, max, min } from "date-fns";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import {

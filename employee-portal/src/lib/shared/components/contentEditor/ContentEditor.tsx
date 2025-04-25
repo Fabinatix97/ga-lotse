@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Box } from "@mui/joy";
+import { useEffect, useRef, useState } from "react";
+
 import {
   ApiEditor,
   ApiEditorBodyElementsInner,
@@ -12,8 +15,6 @@ import {
   EditorApiInterface,
 } from "@eshg/lib-editor-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Box } from "@mui/joy";
-import { useEffect, useRef, useState } from "react";
 
 import {
   useDeleteEditorElement,

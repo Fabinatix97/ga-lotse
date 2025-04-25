@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSection } from "@eshg/inspection-api";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { Fragment } from "react";
+
+import { ApiCLSection } from "@eshg/inspection-api";
 
 import { ChecklistSectionElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistSectionElement";
 import { mapToCLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";

@@ -5,12 +5,13 @@
 
 "use client";
 
+import { CheckOutlined, EditRoadOutlined } from "@mui/icons-material";
+import { Button } from "@mui/joy";
+
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { CheckOutlined, EditRoadOutlined } from "@mui/icons-material";
-import { Button } from "@mui/joy";
 
 import { useApproveInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";

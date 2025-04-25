@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export function NoAppointments(props: Readonly<RequiresChildren>) {
   return (

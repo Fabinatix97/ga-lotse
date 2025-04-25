@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   OptionalFieldValue,
@@ -12,8 +15,6 @@ import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,
 } from "@eshg/school-entry-api";
-import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { ExaminationResultValueField } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultValueField";
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";

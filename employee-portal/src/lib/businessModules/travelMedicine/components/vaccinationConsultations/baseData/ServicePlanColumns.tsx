@@ -3,17 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import {
-  ApiAppointmentBookingType,
-  ApiServicePlanEntry,
-  ApiServicePlanGroup,
-  ApiServiceStatus,
-  ApiUser,
-} from "@eshg/travel-medicine-api";
 import {
   Cancel,
   Delete,
@@ -26,6 +15,18 @@ import {
 import { Chip, ColorPaletteProp } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 import { isDefined, isPlainObject } from "remeda";
+
+import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  ApiAppointmentBookingType,
+  ApiServicePlanEntry,
+  ApiServicePlanGroup,
+  ApiServiceStatus,
+  ApiUser,
+} from "@eshg/travel-medicine-api";
 
 import { CalendarAddOnIcon } from "@/lib/businessModules/travelMedicine/components/icons/CalendarAddOnIcon";
 import { EditCalendarIcon } from "@/lib/businessModules/travelMedicine/components/icons/EditCalendarIcon";

@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentStatus } from "@eshg/sti-protection-api";
 import { DateRange } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
+import assert from "assert";
 import { useState } from "react";
+
+import { ApiAppointmentStatus } from "@eshg/sti-protection-api";
 
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { AppointmentOverviewSheetButton } from "@/lib/businessModules/stiProtection/components/appointments/AppointmentOverviewSheetButton";
@@ -14,7 +16,6 @@ import {
   ApiAppointmentSummary,
   OverviewAppointmentType,
   mapAppointmentHistoryEntryToSummary,
-  mapAppointmentToSummary,
 } from "@/lib/businessModules/stiProtection/components/appointments/helpers";
 import { useTranslation } from "@/lib/i18n/client";
 import {
@@ -34,23 +35,20 @@ export function AppointmentsOverviewPage() {
   const { t } = useTranslation(["stiProtection/appointmentOverview"]);
 
   const { data: procedure } = useGetProcedure();
-  const { concern, appointmentHistory, appointment, person } = procedure;
+  const { concern, appointmentHistory, person, appointment } = procedure;
 
   const [selectedAppointmentType, setSelectedAppointmentType] =
     useState<OverviewAppointmentType>(OverviewAppointmentType.UPCOMING);
-  const upcomingAppointments: ApiAppointmentSummary[] = appointment
-    ? [mapAppointmentToSummary(appointment, concern)]
-    : [];
-  const pastAppointments: ApiAppointmentSummary[] = appointmentHistory
+
+  const showUpcomingAppointments =
+    selectedAppointmentType === OverviewAppointmentType.UPCOMING;
+  const appointments: ApiAppointmentSummary[] = appointmentHistory
     .filter(
       (apptHistory) =>
-        apptHistory.appointmentStatus !== ApiAppointmentStatus.Open,
+        (apptHistory.appointmentStatus === ApiAppointmentStatus.Open) ===
+        showUpcomingAppointments,
     )
-    .map((apptHistory) => mapAppointmentHistoryEntryToSummary(apptHistory));
-  const appointments =
-    selectedAppointmentType === OverviewAppointmentType.UPCOMING
-      ? upcomingAppointments
-      : pastAppointments;
+    .map((entry) => mapAppointmentHistoryEntryToSummary(appointment, entry));
 
   const appointmentTypeConfigs: TypeSwitchButtonConfig<OverviewAppointmentType>[] =
     [
@@ -67,6 +65,8 @@ export function AppointmentsOverviewPage() {
           setSelectedAppointmentType(selectedAppointmentType),
       },
     ];
+  const accessCode = person.accessCode;
+  assert.ok(accessCode, "accessCode is not ok");
 
   return (
     <PageLayout>
@@ -112,7 +112,7 @@ export function AppointmentsOverviewPage() {
                   index={index}
                   appointment={appointment}
                   concern={concern}
-                  accessCode={person.accessCode!} //TODO: Improve this!
+                  accessCode={accessCode}
                 />
               ))}
             </Stack>

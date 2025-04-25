@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { ApiAppointment } from "@eshg/travel-medicine-api";
 import { isAfter, isEqual } from "date-fns";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
+
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { ApiAppointment } from "@eshg/travel-medicine-api";
 
 import {
   PutAppointmentRequest,

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminActorMetadata } from "@eshg/service-directory-api";
 import { styled } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode } from "react";
+
+import { ApiAdminActorMetadata } from "@eshg/service-directory-api";
 
 import { EmptyCell } from "@/lib/components/table/cell/EmptyCell";
 

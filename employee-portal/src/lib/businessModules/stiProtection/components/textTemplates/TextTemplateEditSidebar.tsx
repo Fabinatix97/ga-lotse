@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
+import { Formik } from "formik";
+import { ReactNode } from "react";
+
 import {
   ButtonBar,
   Sidebar,
@@ -16,9 +20,6 @@ import {
   ApiTextTemplate,
   ApiTextTemplateContext,
 } from "@eshg/sti-protection-api";
-import { Button } from "@mui/joy";
-import { Formik } from "formik";
-import { ReactNode } from "react";
 
 import { TextTemplateFields } from "./TextTemplateFields";
 

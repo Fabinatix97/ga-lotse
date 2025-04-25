@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   AccessTimeOutlined,
   CakeOutlined,
@@ -23,6 +19,11 @@ import { useFormikContext } from "formik";
 import { ReactNode } from "react";
 import { Trans } from "react-i18next";
 import { isDefined } from "remeda";
+
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
 
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { useDepartmentContext } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";

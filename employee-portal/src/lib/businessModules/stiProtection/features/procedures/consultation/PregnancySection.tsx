@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import {
@@ -12,8 +15,6 @@ import {
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";

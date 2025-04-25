@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Stack, StackProps, styled } from "@mui/joy";
+
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 
 interface MainContentLayoutProps extends StackProps {
   /**

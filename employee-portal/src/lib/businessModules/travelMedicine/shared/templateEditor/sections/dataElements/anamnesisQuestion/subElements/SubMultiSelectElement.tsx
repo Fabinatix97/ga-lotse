@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Box, IconButton, Stack } from "@mui/joy";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { validateSubElementMultiselectOption } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 

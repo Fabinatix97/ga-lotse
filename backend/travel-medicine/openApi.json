@@ -1197,6 +1197,43 @@
         "tags" : [ "PrivacyDocument" ]
       }
     },
+    "/configuration/rmbi-properties" : {
+      "get" : {
+        "operationId" : "getNotificationConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetNotificationConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "NotificationConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateNotificationConfig",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NotificationConfig"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "NotificationConfig" ]
+      }
+    },
     "/diseases" : {
       "get" : {
         "operationId" : "getDiseases",
@@ -7031,6 +7068,14 @@
           }
         }
       },
+      "GetNotificationConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "notificationConfigDto" : {
+            "$ref" : "#/components/schemas/NotificationConfig"
+          }
+        }
+      },
       "GetOpeningHoursConfigResponse" : {
         "type" : "object",
         "properties" : {
@@ -8142,6 +8187,18 @@
         },
         "discriminator" : {
           "propertyName" : "@type"
+        }
+      },
+      "NotificationConfig" : {
+        "required" : [ "fromAddress", "greeting" ],
+        "type" : "object",
+        "properties" : {
+          "fromAddress" : {
+            "type" : "string"
+          },
+          "greeting" : {
+            "type" : "string"
+          }
         }
       },
       "OpeningHours" : {

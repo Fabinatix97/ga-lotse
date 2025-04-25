@@ -5,12 +5,13 @@
 
 "use client";
 
+import { isPast } from "date-fns";
+
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiBusinessModule,
   ApiGetGdprNotificationBannerResponse,
 } from "@eshg/lib-procedures-api";
-import { isPast } from "date-fns";
 
 import { gdprRoutes } from "@/features/gdpr/config/gdprRoutes";
 import { formatDurationFromNowUntil } from "@/utils/formatters";

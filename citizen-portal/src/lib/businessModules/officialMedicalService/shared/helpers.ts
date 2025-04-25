@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined, isEmpty } from "remeda";
+
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
@@ -11,7 +13,6 @@ import {
   ApiConcernCategoryConfig,
   PostCitizenProcedureRequest,
 } from "@eshg/official-medical-service-api";
-import { isDefined, isEmpty } from "remeda";
 
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 

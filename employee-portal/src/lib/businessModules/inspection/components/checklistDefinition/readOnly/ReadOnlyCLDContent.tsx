@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { Sheet, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+
+import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 
 import { ReadOnlyCLDSection } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDSection";
 

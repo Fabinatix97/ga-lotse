@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { UserApi } from "@eshg/base-api";
 import { queryOptions } from "@tanstack/react-query";
+
+import { UserApi } from "@eshg/base-api";
 
 import { userApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 

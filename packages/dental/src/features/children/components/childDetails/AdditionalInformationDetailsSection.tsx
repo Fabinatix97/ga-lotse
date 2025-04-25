@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Stack } from "@mui/joy";
+
 import {
   ChipWithTooltip,
   DetailsItem,
   DetailsSection,
 } from "@eshg/lib-employee-portal";
-import { Divider, Stack } from "@mui/joy";
 
 import { FluoridationConsentInformationSection } from "@/components/fluoridationConsent/FluoridationConsentInformationSection";
 import { ChildDetails } from "@/features/children/api/models/ChildDetails";

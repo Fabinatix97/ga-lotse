@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiInboxProgressEntryFileReference } from "@eshg/lib-procedures-api";
 import { Typography } from "@mui/joy";
+
+import { ApiInboxProgressEntryFileReference } from "@eshg/lib-procedures-api";
 
 import { FileCardWithActions } from "./FileCardWithActions";
 

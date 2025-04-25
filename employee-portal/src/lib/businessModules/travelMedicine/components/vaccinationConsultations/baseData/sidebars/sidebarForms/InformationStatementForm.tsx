@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref, useState } from "react";
+import { isDefined, isEmpty } from "remeda";
+
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -18,10 +23,6 @@ import {
   ApiInformationStatementTemplate,
   ApiInformationStatementTemplateState,
 } from "@eshg/travel-medicine-api";
-import { Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref, useState } from "react";
-import { isDefined, isEmpty } from "remeda";
 
 import {
   createDiseaseOptions,

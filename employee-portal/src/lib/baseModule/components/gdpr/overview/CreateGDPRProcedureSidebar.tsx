@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Grid } from "@mui/joy";
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+
 import { ApiGdprProcedureType, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
@@ -25,9 +29,6 @@ import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Divider, Grid } from "@mui/joy";
-import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import { mapAddGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography, styled } from "@mui/joy";
+
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { ApiDocumentAnamnesisQuestion } from "@eshg/travel-medicine-api";
-import { Typography, styled } from "@mui/joy";
 
 import { RadioButtonsField } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioButtonsField";
 import { useTranslation } from "@/lib/i18n/client";

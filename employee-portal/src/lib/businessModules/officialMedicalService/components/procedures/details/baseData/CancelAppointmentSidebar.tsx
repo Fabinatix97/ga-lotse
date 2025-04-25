@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEmpty } from "remeda";
+
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -12,7 +14,6 @@ import {
   ApiOmsAppointment,
   CancelAppointmentRequest,
 } from "@eshg/official-medical-service-api";
-import { isEmpty } from "remeda";
 
 import { useCancelAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import {

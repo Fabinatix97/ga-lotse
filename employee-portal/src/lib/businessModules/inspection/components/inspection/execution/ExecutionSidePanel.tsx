@@ -5,13 +5,6 @@
 
 "use client";
 
-import {
-  ApiChecklist,
-  ApiInspection,
-  ApiInspectionPhase,
-} from "@eshg/inspection-api";
-import { DetailsItem, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import {
@@ -24,6 +17,14 @@ import {
   Typography,
 } from "@mui/joy";
 import { useState } from "react";
+
+import {
+  ApiChecklist,
+  ApiInspection,
+  ApiInspectionPhase,
+} from "@eshg/inspection-api";
+import { DetailsItem, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";

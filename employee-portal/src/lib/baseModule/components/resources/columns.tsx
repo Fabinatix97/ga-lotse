@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiResource } from "@eshg/base-api";
 import { createColumnHelper } from "@tanstack/react-table";
+
+import { ApiResource } from "@eshg/base-api";
 
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
 

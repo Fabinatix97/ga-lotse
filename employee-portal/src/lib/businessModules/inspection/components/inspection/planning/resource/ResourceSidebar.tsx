@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid, Sheet, Stack, Typography } from "@mui/joy";
+import { addMinutes, isBefore, isSameDay, subMinutes } from "date-fns";
+import { Formik, FormikErrors, useFormikContext } from "formik";
+import { PropsWithChildren } from "react";
+
 import {
   ApiBlockingEventsOfResource,
   ApiEventWithTimeData,
@@ -28,10 +33,6 @@ import {
   formatTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { addMinutes, isBefore, isSameDay, subMinutes } from "date-fns";
-import { Formik, FormikErrors, useFormikContext } from "formik";
-import { PropsWithChildren } from "react";
 
 import { resourceTypeNames } from "@/lib/baseModule/components/resources/constants";
 import { useAddResource } from "@/lib/businessModules/inspection/api/mutations/resources";

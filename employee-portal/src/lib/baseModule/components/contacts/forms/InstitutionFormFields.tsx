@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Grid } from "@mui/joy";
+
 import { ApiContactCategory } from "@eshg/base-api";
 import { CONTACT_CATEGORY_NAMES } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
-import { Divider, Grid } from "@mui/joy";
 
 export function InstitutionFormFields() {
   const { validateLength } = useValidators();

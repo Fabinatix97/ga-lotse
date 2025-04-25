@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Typography } from "@mui/joy";
 import assert from "assert";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { DownloadDocumentCardField } from "@/lib/businessModules/stiProtection/components/shared/DownloadDocumentCardField";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";

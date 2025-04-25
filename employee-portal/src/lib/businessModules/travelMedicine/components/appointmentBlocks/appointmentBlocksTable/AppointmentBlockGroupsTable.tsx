@@ -5,6 +5,10 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { ColumnSort } from "@tanstack/react-table";
+import { ReactNode } from "react";
+
 import {
   DataTable,
   Pagination,
@@ -15,9 +19,6 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/travel-medicine-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { ColumnSort } from "@tanstack/react-table";
-import { ReactNode } from "react";
 
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/travelMedicine/api/mutations/appointmentBlocks";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";

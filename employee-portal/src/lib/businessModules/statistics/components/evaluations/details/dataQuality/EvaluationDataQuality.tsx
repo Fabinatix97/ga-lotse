@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
-import {
-  ApiGetCompletenessDataResponse,
-  ApiGetCompletenessDataResponseCompletenessOfAttributesInner,
-} from "@eshg/statistics-api";
 import {
   DiamondOutlined,
   IndeterminateCheckBoxOutlined,
@@ -17,6 +12,12 @@ import {
 } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
+
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  ApiGetCompletenessDataResponse,
+  ApiGetCompletenessDataResponseCompletenessOfAttributesInner,
+} from "@eshg/statistics-api";
 
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
 

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import {
   ButtonBar,
   DataTable,
@@ -15,7 +17,6 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetSearchVaccinationConsultationQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import {

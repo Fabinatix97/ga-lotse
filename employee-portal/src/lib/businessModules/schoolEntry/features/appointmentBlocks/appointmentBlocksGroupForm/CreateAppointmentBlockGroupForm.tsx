@@ -5,6 +5,10 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import { ApiAddContact200Response } from "@eshg/base-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -17,9 +21,6 @@ import {
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
 } from "@eshg/school-entry-api";
-import { useSuspenseQueries } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {

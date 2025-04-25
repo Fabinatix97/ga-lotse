@@ -5,6 +5,9 @@
 
 "use client";
 
+import { Divider, Grid, Stack } from "@mui/joy";
+import { Formik, FormikHelpers } from "formik";
+
 import {
   CheckboxField,
   FormFooter,
@@ -23,8 +26,6 @@ import {
   ApiPercentageValue,
   UpdateEyeExaminationResultRequest,
 } from "@eshg/school-entry-api";
-import { Divider, Grid, Stack } from "@mui/joy";
-import { Formik, FormikHelpers } from "formik";
 
 import {
   ExaminationResultFields,

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiErrorCode } from "@eshg/base-api";
 import { isPlainObject } from "remeda";
+
+import { ApiErrorCode } from "@eshg/base-api";
 
 import { PortalError } from "./PortalError";
 import { PortalErrorCode } from "./PortalErrorCode";

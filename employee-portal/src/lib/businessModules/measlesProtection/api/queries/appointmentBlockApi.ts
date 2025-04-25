@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { GetAppointmentBlockGroupsRequest } from "@eshg/measles-protection-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";

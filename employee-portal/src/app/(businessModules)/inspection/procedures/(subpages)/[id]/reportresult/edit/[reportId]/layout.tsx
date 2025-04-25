@@ -5,12 +5,13 @@
 
 "use client";
 
+import { use } from "react";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
-import { use } from "react";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";

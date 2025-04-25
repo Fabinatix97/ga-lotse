@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Formik, FormikHelpers } from "formik";
+
 import {
   ButtonBar,
   DetailsItem,
@@ -20,7 +22,6 @@ import {
   ApiMedicalOpinionStatus,
   ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
-import { Formik, FormikHelpers } from "formik";
 
 import { usePatchMedicalOpinionStatus } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import {

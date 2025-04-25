@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQuery } from "@tanstack/react-query";
+
 import { ApiGetInstitutionGroupsResponse } from "@eshg/dental-api";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
-import { useQuery } from "@tanstack/react-query";
 
 import { childApiQueryKey } from "@/config/apiQueryKeys";
 import { useDentalApi } from "@/contexts/dental";

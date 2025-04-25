@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, RadioGroup, Stack } from "@mui/joy";
+import { ReactNode, useState } from "react";
+
 import {
   ButtonBar,
   DrawerProps,
@@ -12,8 +15,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Button, RadioGroup, Stack } from "@mui/joy";
-import { ReactNode, useState } from "react";
 
 import { useResolveFacilityDuplicate } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { useGetFacilityDuplicates } from "@/lib/businessModules/inspection/api/queries/inspection";

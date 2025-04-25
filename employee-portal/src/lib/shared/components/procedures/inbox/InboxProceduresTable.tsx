@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Stack } from "@mui/joy";
+
 import {
   DataTable,
   Pagination,
@@ -15,7 +17,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { ApiProcedureType } from "@eshg/lib-procedures-api";
-import { Stack } from "@mui/joy";
 
 import {
   UseFetchInboxProcedure,

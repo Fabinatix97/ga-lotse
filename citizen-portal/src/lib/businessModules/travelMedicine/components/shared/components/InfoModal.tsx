@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { DialogTitle, Modal, ModalClose, ModalDialog, Stack } from "@mui/joy";
 import { DefaultColorPalette, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
+
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 
 export interface InfoModalProps {
   children: ReactNode;

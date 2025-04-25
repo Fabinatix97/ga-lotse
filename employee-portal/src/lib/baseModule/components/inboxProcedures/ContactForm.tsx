@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Divider, Grid, Stack, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
 import { ApiSalutation } from "@eshg/base-api";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -23,8 +26,6 @@ import {
 } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { ApiContactType } from "@eshg/lib-procedures-api";
-import { Divider, Grid, Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import {
   AddressForm,

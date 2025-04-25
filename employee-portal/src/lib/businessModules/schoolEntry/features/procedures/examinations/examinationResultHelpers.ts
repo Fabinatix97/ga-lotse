@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
+
 import { SelectFieldOption } from "@eshg/lib-portal/components/formFields/SelectField";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
@@ -11,8 +14,6 @@ import {
   ApiExaminationResult,
   ApiExaminationResultValue,
 } from "@eshg/school-entry-api";
-import { SxProps } from "@mui/joy/styles/types";
-import { isDefined } from "remeda";
 
 import { ExaminationResultFieldsValues } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultFields";
 

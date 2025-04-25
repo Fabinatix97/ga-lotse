@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureStatus } from "@eshg/base-api";
 import { Chip, ChipProps } from "@mui/joy";
+
+import { ApiGdprProcedureStatus } from "@eshg/base-api";
 
 import { useTranslation } from "@/lib/i18n/client";
 

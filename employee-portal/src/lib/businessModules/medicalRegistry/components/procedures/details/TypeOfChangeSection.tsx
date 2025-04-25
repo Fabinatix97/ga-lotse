@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
+
 import { ContentPanel, DetailsSection } from "@eshg/lib-employee-portal";
 import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
-import { Typography } from "@mui/joy";
 
 export function TypeOfChangeSection({
   procedure,

@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Typography } from "@mui/joy";
+import { isEmpty } from "remeda";
+
 import {
   ApiAppointmentType,
   ApiEmployeeOmsProcedureDetails,
 } from "@eshg/official-medical-service-api";
-import { Button, Typography } from "@mui/joy";
-import { isEmpty } from "remeda";
 
 import { useCreateAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/AppointmentSidebar";
 import { AppointmentsTable } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/AppointmentsTable";

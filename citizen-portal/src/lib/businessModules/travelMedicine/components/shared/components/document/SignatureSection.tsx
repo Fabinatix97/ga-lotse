@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
   Box,
   Button,
@@ -14,6 +13,8 @@ import {
 } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useState } from "react";
+
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
 import { InformationStatementFormValues } from "@/lib/businessModules/travelMedicine/components/informationStatement/InformationStatementStepper";
 import { SignDocumentModal } from "@/lib/businessModules/travelMedicine/components/informationStatement/SignDocumentModal";

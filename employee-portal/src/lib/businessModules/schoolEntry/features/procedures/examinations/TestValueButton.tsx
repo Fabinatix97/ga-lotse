@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Button, styled } from "@mui/joy";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 const StyledButton = styled(Button)<{ width: number }>(({ theme, width }) => ({
   padding: theme.spacing(0.5, 3.5),

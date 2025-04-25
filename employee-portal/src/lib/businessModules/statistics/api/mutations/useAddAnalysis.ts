@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonNullish, isNumber } from "remeda";
+
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAddAnalysisRequest,
   ApiAddAnalysisRequestChartConfiguration,
 } from "@eshg/statistics-api";
-import { isNonNullish, isNumber } from "remeda";
 
 import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapKeyToAttributeSelection } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";

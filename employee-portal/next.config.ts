@@ -4,9 +4,10 @@
  */
 
 import nextPwa from "@ducanh2912/next-pwa";
-import dentalRedirects from "@eshg/dental/redirects";
 import crypto from "crypto";
 import fs from "fs";
+
+import dentalRedirects from "@eshg/dental/redirects";
 
 // eslint-disable-next-line no-restricted-imports
 import { nextConfig } from "../config/next.base";

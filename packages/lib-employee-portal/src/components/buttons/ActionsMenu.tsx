@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { MoreVert } from "@mui/icons-material";
 import {
   Dropdown,
@@ -17,6 +16,8 @@ import {
 } from "@mui/joy";
 import { ColorPaletteProp, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 export interface ActionsItem {
   label: string;

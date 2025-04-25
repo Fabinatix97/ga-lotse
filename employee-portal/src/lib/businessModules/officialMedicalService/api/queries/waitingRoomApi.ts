@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { GetWaitingRoomProceduresRequest } from "@eshg/official-medical-service-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useWaitingRoomApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { waitingRoomApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";

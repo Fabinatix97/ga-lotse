@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box, Divider, Grid, Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+import { isDefined } from "remeda";
+
 import { ApiGender, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
@@ -22,10 +27,6 @@ import {
   TITLE_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { Box, Divider, Grid, Stack } from "@mui/joy";
-import { Formik } from "formik";
-import { Ref } from "react";
-import { isDefined } from "remeda";
 
 import { mapImportMergeContactRequest } from "@/lib/baseModule/api/mapper/contacts";
 import { useUpdateContactMutation } from "@/lib/baseModule/api/mutations/contacts";

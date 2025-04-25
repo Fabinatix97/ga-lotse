@@ -5,12 +5,13 @@
 
 "use client";
 
+import { useState } from "react";
+
 import type {
   ApiInspectionAppointment,
   ApiInspectionResource,
   ApiInspectionTravelTime,
 } from "@eshg/inspection-api";
-import { useState } from "react";
 
 import { ResourceSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceSidebar";
 import { ResourcesTable } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourcesTable";

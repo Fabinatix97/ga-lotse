@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Box, DialogTitle, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined, isNonNullish } from "remeda";
+
+import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 
 import { SIDEBAR_PADDING } from "@/features/drawer/config/sidebar";
 

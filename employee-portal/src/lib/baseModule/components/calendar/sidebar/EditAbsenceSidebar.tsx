@@ -5,6 +5,9 @@
 
 "use client";
 
+import { DeleteForever } from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
+
 import {
   DrawerProps,
   SidebarActions,
@@ -14,8 +17,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { DeleteForever } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
 
 import {
   useDeleteCalendarEvent,

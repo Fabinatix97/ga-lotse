@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SvgIcon, SvgIconProps } from "@mui/joy";
+
 import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
   SideNavigationSubItem,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
-import { SvgIcon, SvgIconProps } from "@mui/joy";
 
 import { routes } from "@/config/routes";
 

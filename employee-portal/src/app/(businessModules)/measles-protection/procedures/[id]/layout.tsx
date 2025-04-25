@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TabNavigationItem } from "@eshg/lib-employee-portal";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import {
   PlaylistAddCheckOutlined,
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
+
+import { TabNavigationItem } from "@eshg/lib-employee-portal";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
 import { MeaslesProtectionProcedureLayout } from "@/lib/businessModules/measlesProtection/layout/MeaslesProtectionProcedureLayout";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Grid } from "@mui/joy";
+import { isNonNullish } from "remeda";
+
 import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
 import {
   DetailsItem,
@@ -11,8 +14,6 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { Grid } from "@mui/joy";
-import { isNonNullish } from "remeda";
 
 interface CreateChecklistVersionsSidebarProps extends DrawerProps {
   metadata?: ApiChecklistDefinitionCentralRepoMetadata;

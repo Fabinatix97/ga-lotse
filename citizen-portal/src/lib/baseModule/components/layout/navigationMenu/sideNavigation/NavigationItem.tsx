@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { ChevronRightOutlined } from "@mui/icons-material";
 import {
   ListItem,
@@ -14,6 +13,8 @@ import {
 } from "@mui/joy";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
+
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import {
   isItemSelected,

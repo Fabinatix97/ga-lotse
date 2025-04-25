@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { createColumnHelper } from "@tanstack/react-table";
+
 import { ApiProcedureWithDuration } from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { createColumnHelper } from "@tanstack/react-table";
 
 import { formatOptionalDuration } from "./formatOptionalDuration";
 

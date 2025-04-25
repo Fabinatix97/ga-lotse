@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTemplateSection } from "@eshg/travel-medicine-api";
 import { Box, Sheet } from "@mui/joy";
 import { ReactNode } from "react";
+
+import { ApiTemplateSection } from "@eshg/travel-medicine-api";
 
 import { TemplateSectionList } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/TemplateSectionList";
 
