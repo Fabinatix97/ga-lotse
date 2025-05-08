@@ -14,7 +14,7 @@ import { AppointmentTypeOverviewTable } from "@/lib/businessModules/stiProtectio
 export default function AppointmentTypeOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Terminarten" />}>
-      <MainContentLayout>
+      <MainContentLayout fullViewportHeight>
         <AppointmentTypeOverviewTable />
       </MainContentLayout>
     </StickyToolbarLayout>

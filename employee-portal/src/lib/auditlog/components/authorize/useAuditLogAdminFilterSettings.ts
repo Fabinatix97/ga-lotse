@@ -14,6 +14,7 @@ import {
   FilterValue,
   UseFilterSettings,
   UseTableControlResult,
+  getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
@@ -21,7 +22,6 @@ import { SearchParams } from "@eshg/lib-portal/types/pageParams";
 
 import { SearchParamsKeys } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { getSelectedFilterValues } from "@/lib/shared/components/procedures/helper";
 
 const FILTER_DEFINITION_KEYS = {
   source: "source",
@@ -121,7 +121,7 @@ function getInitialValues(searchParams: SearchParams): FilterValue[] {
   return [...parseEnumFilterValue(), ...parseDateFilterValue()];
 }
 
-export function buildOptionsFromAuditLogSources() {
+function buildOptionsFromAuditLogSources() {
   return Object.values(ApiAuditLogSource).map(buildOptionFromAuditLogSource);
 }
 
@@ -129,26 +129,20 @@ function buildOptionFromAuditLogSource(auditLogSource: ApiAuditLogSource) {
   return { value: auditLogSource, label: auditLogSourceNames[auditLogSource] };
 }
 
-export function getSelectedStartDateValue(
-  filters: FilterValue[],
-  ...key: string[]
-) {
+function getSelectedStartDateValue(filters: FilterValue[], ...key: string[]) {
   return filters
     .filter((filterValue) => filterValue.type === "DateSpan")
     .find((filterValue) => key.includes(filterValue.key))?.startDate;
 }
 
-export function getSelectedEndDateValue(
-  filters: FilterValue[],
-  ...key: string[]
-) {
+function getSelectedEndDateValue(filters: FilterValue[], ...key: string[]) {
   return filters
     .filter((filterValue) => filterValue.type === "DateSpan")
     .find((filterValue) => key.includes(filterValue.key))?.endDate;
 }
 
 function getAuditLogSourceFilters(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_DEFINITION_KEYS.source,
   ).map((v) => ApiAuditLogSourceFromJSON(v));

@@ -9,7 +9,7 @@ import { isDefined, last } from "remeda";
 
 import { ApiSortDirection } from "@eshg/base-api";
 
-import { ManualTableSortingProps } from "@/features/table/types/tableSorting";
+import { ManualTableSortingProps } from "../types/tableSorting";
 
 interface UseTableSorting {
   sortKey: string | undefined;

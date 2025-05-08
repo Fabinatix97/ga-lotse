@@ -49,12 +49,6 @@ export function SelectAsyncField(props: SelectAsyncProps) {
       <Select<string>
         name={props.name}
         value={field.input.value}
-        onChange={(_, value) => {
-          void field.helpers.setValue(value ?? "");
-          props.onChange?.(value);
-        }}
-        onBlur={field.input.onBlur}
-        onListboxOpenChange={onListboxOpenChange}
         placeholder={props.placeholder}
         disabled={props.disabled}
         endDecorator={
@@ -62,6 +56,12 @@ export function SelectAsyncField(props: SelectAsyncProps) {
             <CircularProgress aria-label={`Lade ${props.name}`} size="sm" />
           ) : null
         }
+        onChange={(_, value) => {
+          void field.helpers.setValue(value ?? "");
+          props.onChange?.(value);
+        }}
+        onBlur={field.input.onBlur}
+        onListboxOpenChange={onListboxOpenChange}
       >
         {options.map((option) => (
           <Option key={option.value} value={option.value} label={option.label}>

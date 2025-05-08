@@ -91,11 +91,11 @@ export function UpdateCustodianSidebar({
     <PersonSidebarForm
       mode="edit"
       title="Person bearbeiten"
-      onCancel={() => onClose(false)}
-      onSubmit={handleSubmit}
       initialValues={mapPersonDetailsToForm(custodian)}
       component={DefaultPersonForm}
       sidebarFormRef={formRef}
+      onCancel={() => onClose(false)}
+      onSubmit={handleSubmit}
       onDelete={() => deleteCustodian({ procedureVersion, onSuccess: onClose })}
     />
   );

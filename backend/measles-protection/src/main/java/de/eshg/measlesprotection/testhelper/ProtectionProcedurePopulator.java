@@ -123,6 +123,7 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
             dateOfBirth(faker, adultAge(faker)),
             List.of(phoneNumber(faker)),
             List.of(faker.internet().emailAddress()),
+            null,
             GenderDto.NOT_SPECIFIED,
             null,
             null,

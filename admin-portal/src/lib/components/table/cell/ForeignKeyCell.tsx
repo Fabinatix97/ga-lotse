@@ -33,12 +33,8 @@ export function ActorsCell<TData extends OrgUnit | Rule>(
     : `${t("actors", { count: props.getValue().length })}`;
 
   return value ? (
-    <Tooltip title={<Title value={props.getValue()} linkTo={"actors"} />}>
-      <EntityLink
-        linkTo={"actors"}
-        name={linkName}
-        value={props.row.original.id}
-      >
+    <Tooltip title={<Title value={props.getValue()} linkTo="actors" />}>
+      <EntityLink linkTo="actors" name={linkName} value={props.row.original.id}>
         {value}
       </EntityLink>
     </Tooltip>
@@ -56,8 +52,8 @@ export function ActorsChip(
   }>,
 ): ReactNode {
   return props.actors.length > 0 ? (
-    <Tooltip title={<Title value={props.actors} linkTo={"actors"} />}>
-      <EntityLink linkTo={"actors"} name={props.linkName} value={props.rowId}>
+    <Tooltip title={<Title value={props.actors} linkTo="actors" />}>
+      <EntityLink linkTo="actors" name={props.linkName} value={props.rowId}>
         <Chip
           variant="outlined"
           sx={{ "--Chip-radius": (theme) => theme.spacing(1) }}

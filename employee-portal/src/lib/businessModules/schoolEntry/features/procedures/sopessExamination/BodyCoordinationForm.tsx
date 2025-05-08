@@ -86,11 +86,11 @@ export function BodyCoordinationForm(props: BodyCoordinationFormProps) {
             label="Sprungzahl"
             name={fieldName("points")}
             sx={FIXED_WIDTH_STYLE}
-            onChange={handleJumpCountChange}
             validate={validateJumpCount}
             softRequired
             min={MIN_0}
             max={MAX_99}
+            onChange={handleJumpCountChange}
           />
           <StatusChip aria-label="Bewertung Sprungzahl" minWidth="sm">
             {mapExaminationEvaluation(props.points)}

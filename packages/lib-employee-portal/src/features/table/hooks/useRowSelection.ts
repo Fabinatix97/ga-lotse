@@ -7,8 +7,8 @@ import { RowSelectionState, Updater } from "@tanstack/react-table";
 import { useCallback, useEffect, useState } from "react";
 import { mapToObj, pickBy } from "remeda";
 
-import { ToggleSelectColumnProps } from "@/features/table/components/columns/ToggleSelectColumn";
-import { RowSelectionProps } from "@/features/table/types/rowSelection";
+import { ToggleSelectColumnProps } from "../components/columns/ToggleSelectColumn";
+import { RowSelectionProps } from "../types/rowSelection";
 
 interface UseRowSelectionOptions {
   initialRowSelection?: RowSelectionState;

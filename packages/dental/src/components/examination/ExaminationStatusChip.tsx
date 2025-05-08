@@ -5,8 +5,8 @@
 
 import { Chip, ChipProps } from "@mui/joy";
 
-import { ExaminationStatus } from "@/api/models/ExaminationStatus";
-import { EXAMINATION_STATUS } from "@/translations/examination";
+import { ExaminationStatus } from "../../api/models/ExaminationStatus";
+import { EXAMINATION_STATUS } from "../../translations/examination";
 
 const examinationStatusColors: Record<ExaminationStatus, ChipProps["color"]> = {
   OPEN: "neutral",

@@ -43,8 +43,8 @@ export function Prevention() {
           options={stiProtectiveMeasuresOptions}
         />
         <YesOrNoWithFollowUp
-          name={`prevention.infoAboutPrepDesired`}
-          label={"Infos zur PrEP gewünscht?"}
+          name="prevention.infoAboutPrepDesired"
+          label="Infos zur PrEP gewünscht?"
         />
       </SectionGrid>
     </>

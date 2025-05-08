@@ -7,8 +7,10 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { DeepKeys } from "@tanstack/react-table";
+import { isDefined } from "remeda";
 
 import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   ApiGetMeaslesProtectionProceduresSortBy,
   ApiGetMeaslesProtectionProceduresSortOrder,
@@ -139,6 +141,23 @@ export function useGetProceduresQuery(
       sortState,
       makeFiltersQueryKeyPart(filters),
     ]),
+  });
+}
+
+export function getProceduresByPersonQuery(
+  protectionProcedureApi: ProtectionProcedureApi,
+  id: string | undefined,
+) {
+  return queryOptions({
+    queryKey: measlesProtectionApiQueryKey(["getProceduresByPerson", id]),
+    queryFn: () =>
+      isDefined(id)
+        ? protectionProcedureApi
+            .getProceduresForPersonRaw({ id })
+            .then(unwrapRawResponse)
+        : Promise.reject(new Error("Expected personId to be defined")),
+    select: (response) => response.procedures,
+    enabled: isDefined(id),
   });
 }
 

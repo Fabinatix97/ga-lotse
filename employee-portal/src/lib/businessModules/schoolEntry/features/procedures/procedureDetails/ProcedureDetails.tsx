@@ -54,12 +54,12 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
           />
           {procedure.custodians.map((custodian, index) => (
             <PersonDetailsPanel
+              key={custodian.fileStateId}
               isCustodian
               title={`${index + 1}. PSB - Personensorgeberechtigte:r`}
               person={custodian}
               procedure={procedure}
               name={`custodian-details-${index}`}
-              key={custodian.fileStateId}
             />
           ))}
           {!procedure.isClosed && <AddCustodianPanel procedure={procedure} />}

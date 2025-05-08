@@ -66,8 +66,6 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>(
         <StyledRadioGroup
           name={props.name}
           value={field.input.value ? String(field.input.value) : ""}
-          onChange={onChange}
-          onBlur={field.input.onBlur}
           sx={{
             gap: 2,
             marginLeft: 2.5,
@@ -75,6 +73,8 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>(
             flexDirection: props.direction ?? "row",
           }}
           data-testid={props["data-testid"]}
+          onChange={onChange}
+          onBlur={field.input.onBlur}
         >
           <RadioButtons
             options={props.options}

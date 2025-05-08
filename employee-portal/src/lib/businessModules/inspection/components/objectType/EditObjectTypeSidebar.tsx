@@ -8,7 +8,6 @@ import { Formik } from "formik";
 
 import { ApiObjectType } from "@eshg/inspection-api";
 import {
-  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -17,6 +16,7 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import {
   validateIntegerAnd,
@@ -88,9 +88,9 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
   return (
     <Formik
       initialValues={initialValues}
+      enableReinitialize
       onSubmit={saveWithConfirmation}
       onReset={() => onClose(true)}
-      enableReinitialize
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>

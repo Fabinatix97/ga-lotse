@@ -6,7 +6,7 @@
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ApiAssignableService } from "@eshg/travel-medicine-api";
 
-export interface AssignableService {
+interface AssignableService {
   readonly appointmentSuggestion?: Date;
   readonly latency?: number;
   readonly serviceDescription: string;

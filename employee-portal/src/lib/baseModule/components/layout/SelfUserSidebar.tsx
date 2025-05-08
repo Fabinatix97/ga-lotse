@@ -43,8 +43,8 @@ function NavLinkButton({
 }) {
   return (
     <InternalLinkButton
-      variant={"plain"}
-      size={"md"}
+      variant="plain"
+      size="md"
       startDecorator={decorator}
       href={href}
       sx={{
@@ -119,10 +119,7 @@ function SelfUserSidebar() {
               href={routes.privacy}
               label="Datenschutzerklärung"
             />
-            <MiscLinkButton
-              href={routes.usageNotes}
-              label={"Nutzungshinweise"}
-            />
+            <MiscLinkButton href={routes.usageNotes} label="Nutzungshinweise" />
             <MiscLinkButton href={routes.acknowledgements} label="Danksagung" />
             <MiscLinkButton href={routes.contact} label="Kontakt" />
             <MiscLinkButton href={routes.releaseNotes} label="Release Notes" />

@@ -11,7 +11,7 @@ import {
   SingleAutocompleteFieldProps,
 } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 
-import { useAutocompleteStreetQuery } from "@/api/queries/streets";
+import { useAutocompleteStreetQuery } from "../../api/queries/streets";
 
 type StreetFieldProps = Omit<
   SingleAutocompleteFieldProps,

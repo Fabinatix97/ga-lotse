@@ -95,8 +95,8 @@ export function ArticulationForm(props: ArticulationFormProps) {
       <Stack direction="row" gap={2} alignItems="flex-start">
         <Button
           variant="outlined"
-          onClick={markAllAsInconspicuous}
           disabled={disabled}
+          onClick={markAllAsInconspicuous}
         >
           unauffällig
         </Button>

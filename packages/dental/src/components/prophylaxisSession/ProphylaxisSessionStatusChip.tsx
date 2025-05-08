@@ -7,7 +7,7 @@ import { Chip, ChipProps } from "@mui/joy";
 
 import { ApiProphylaxisStatus } from "@eshg/dental-api";
 
-import { PROPHYLAXIS_STATUS } from "@/translations/prophylaxisSession";
+import { PROPHYLAXIS_STATUS } from "../../translations/prophylaxisSession";
 
 const prophylaxisStatusColors: Record<
   ApiProphylaxisStatus,

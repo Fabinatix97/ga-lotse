@@ -6,12 +6,13 @@
 "use client";
 
 import { Add } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
+import { Button } from "@mui/joy";
 import { useState } from "react";
 
 import {
   ConfirmationDialog,
   DataTable,
+  TablePage,
   TableSheet,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -82,14 +83,18 @@ export function TextTemplatesOverviewTable() {
   }
 
   return (
-    <Stack gap={3}>
-      <Button
-        sx={{ alignSelf: "end" }}
-        startDecorator={<Add />}
-        onClick={() => setNewSidebarOpen(true)}
-      >
-        Vorlage hinzufügen
-      </Button>
+    <TablePage
+      controls={
+        <Button
+          sx={{ alignSelf: "end" }}
+          startDecorator={<Add />}
+          onClick={() => setNewSidebarOpen(true)}
+        >
+          Vorlage hinzufügen
+        </Button>
+      }
+      fullHeight
+    >
       <TableSheet aria-label="Tabelle der Textvorlagen">
         <DataTable
           data={textTemplates}
@@ -114,18 +119,18 @@ export function TextTemplatesOverviewTable() {
         onConfirm={deleteTemplate}
       />
       <TextTemplateEditSidebar
-        title={"Vorlage bearbeiten"}
+        title="Vorlage bearbeiten"
         isOpen={sidebarOpenId != null}
         initialValues={selectedTemplate}
         onClose={() => setSidebarOpenId(null)}
         onUpdate={onUpdate}
       />
       <TextTemplateEditSidebar
-        title={"Vorlage hinzufügen"}
+        title="Vorlage hinzufügen"
         isOpen={isNewSidebarOpen}
         onCreate={onCreate}
         onClose={() => setNewSidebarOpen(false)}
       />
-    </Stack>
+    </TablePage>
   );
 }

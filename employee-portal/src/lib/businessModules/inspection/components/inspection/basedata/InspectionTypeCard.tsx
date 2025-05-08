@@ -13,7 +13,6 @@ import { useRef } from "react";
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiInspection } from "@eshg/inspection-api";
 import {
-  CheckboxField,
   DetailsItem,
   DetailsSection,
   FormButtonBar,
@@ -28,6 +27,7 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 
@@ -165,6 +165,7 @@ function EditInspectionTypeSidebar({
     <Sidebar {...modalProps} onClose={closeAndReset}>
       <Formik
         initialValues={initialValues}
+        enableReinitialize
         onSubmit={({ challenging, assigneeId }) =>
           updateInspectionProperties(
             challenging,
@@ -172,11 +173,10 @@ function EditInspectionTypeSidebar({
             modalProps.onClose,
           )
         }
-        enableReinitialize
       >
         {({ isSubmitting, setFieldValue, values }) => (
           <SidebarForm ref={sidebarFormRef}>
-            <SidebarContent title={"Begehungsart bearbeiten"}>
+            <SidebarContent title="Begehungsart bearbeiten">
               <Stack spacing={2}>
                 <CheckboxField
                   name="challenging"
@@ -185,12 +185,12 @@ function EditInspectionTypeSidebar({
                 <Divider />
                 <InspectionAssigneeSelection
                   selfUser={selfUser}
-                  onSelfAssign={() => handleSelfAssign(setFieldValue)}
                   currentAssigneeName={values.assigneeName}
                   currentAssigneeId={values.assigneeId ?? selfUser.userId}
                   onlySelfAssignable={onlySelfAssignable}
                   assigneeIdFieldValueName="assigneeId"
                   allAssignableUsers={allAssignableUsers}
+                  onSelfAssign={() => handleSelfAssign(setFieldValue)}
                 />
               </Stack>
             </SidebarContent>

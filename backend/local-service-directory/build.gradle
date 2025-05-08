@@ -27,10 +27,9 @@ dockerCompose {
 tasks.named("test").configure {
     dependsOn ':service-directory:buildDockerImage'
     dependsOn ':keycloak:composeBuild'
-}
 
-test {
-    dependsOn ':keycloak:composeBuild'
+    inputs.files(project(':service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

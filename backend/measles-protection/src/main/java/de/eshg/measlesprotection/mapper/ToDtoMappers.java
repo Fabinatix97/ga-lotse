@@ -11,7 +11,9 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.measlesprotection.api.AffectedPersonDto;
+import de.eshg.measlesprotection.api.AffectedPersonSyncDto;
 import de.eshg.measlesprotection.api.CustodianDto;
+import de.eshg.measlesprotection.api.CustodianSyncDto;
 import de.eshg.measlesprotection.api.DraftMeaslesProcedureDto;
 import de.eshg.measlesprotection.api.FacilityContactPersonDto;
 import de.eshg.measlesprotection.api.FacilityDto;
@@ -43,26 +45,11 @@ public final class ToDtoMappers {
         person.salutation(),
         person.title(),
         RoleStatusMapper.toInterfaceType(procedureDetailsData.roleStatus()),
-        person.contactAddress());
-  }
-
-  public static AffectedPersonDto toAffectedPersonDto(
-      GetPersonFileStateResponse fileStateResponse) {
-    return new AffectedPersonDto(
-        fileStateResponse.id(),
-        fileStateResponse.firstName(),
-        fileStateResponse.lastName(),
-        fileStateResponse.dateOfBirth(),
-        fileStateResponse.phoneNumbers(),
-        fileStateResponse.emailAddresses(),
-        fileStateResponse.countryOfBirth(),
-        fileStateResponse.gender(),
-        fileStateResponse.nameAtBirth(),
-        fileStateResponse.placeOfBirth(),
-        fileStateResponse.salutation(),
-        fileStateResponse.title(),
-        null,
-        fileStateResponse.contactAddress());
+        person.contactAddress(),
+        new AffectedPersonSyncDto(
+            person.id(),
+            person.referenceVersion(),
+            person.outdated() != null && person.outdated()));
   }
 
   public static ProtectionProcedureHeaderDto toProtectionProcedureHeaderDto(
@@ -83,10 +70,17 @@ public final class ToDtoMappers {
         person.dateOfBirth(),
         person.phoneNumbers(),
         person.emailAddresses(),
+        person.countryOfBirth(),
         person.gender(),
+        person.nameAtBirth(),
+        person.placeOfBirth(),
         person.salutation(),
         person.title(),
-        address);
+        address,
+        new CustodianSyncDto(
+            person.id(),
+            person.referenceVersion(),
+            person.outdated() != null && person.outdated()));
   }
 
   private static FacilityDto toFacilityDtoNullable(FacilityData facilityData) {

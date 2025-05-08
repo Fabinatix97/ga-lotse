@@ -50,15 +50,13 @@ export const manualProgressEntryTitles = {
 
 export const manualProgressEntryIndicators = {
   [ApiManualProgressEntryType.Document]: (
-    <PictureAsPdfOutlined color={"primary"} />
+    <PictureAsPdfOutlined color="primary" />
   ),
-  [ApiManualProgressEntryType.Email]: <EmailOutlined color={"primary"} />,
-  [ApiManualProgressEntryType.Image]: <ImageOutlined color={"primary"} />,
-  [ApiManualProgressEntryType.Letter]: (
-    <DescriptionOutlined color={"primary"} />
-  ),
-  [ApiManualProgressEntryType.PhoneCall]: <CallOutlined color={"primary"} />,
-  [ApiManualProgressEntryType.Note]: <NoteAltOutlined color={"primary"} />,
+  [ApiManualProgressEntryType.Email]: <EmailOutlined color="primary" />,
+  [ApiManualProgressEntryType.Image]: <ImageOutlined color="primary" />,
+  [ApiManualProgressEntryType.Letter]: <DescriptionOutlined color="primary" />,
+  [ApiManualProgressEntryType.PhoneCall]: <CallOutlined color="primary" />,
+  [ApiManualProgressEntryType.Note]: <NoteAltOutlined color="primary" />,
 } satisfies Record<ApiManualProgressEntryType, ReactNode>;
 
 export const systemProgressEntryIndicators: Record<string, ReactNode> = {

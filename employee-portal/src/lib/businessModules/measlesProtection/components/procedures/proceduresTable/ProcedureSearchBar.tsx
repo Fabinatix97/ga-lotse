@@ -8,8 +8,7 @@
 import { Row } from "@eshg/lib-portal/components/Row";
 
 import { NewPersonButton } from "@/lib/businessModules/measlesProtection/components/procedures/createProceduresForm/NewPersonButton";
-
-import { ProceduresTableFilterButton } from "./ProceduresTableFilters";
+import { ProceduresTableFilterButton } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ProceduresTableFilters";
 
 export function ProcedureSearchBar() {
   return (

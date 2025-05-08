@@ -94,7 +94,7 @@ function TravelDataSidebar(props: Readonly<TravelDataSidebarProps>) {
       initialValues={mapInitialTravelDataValues(props.initialValues)}
       formRef={props.formRef}
       procedureId={props.initialValues.externalId}
-      title={"Reisedaten"}
+      title="Reisedaten"
       onSubmit={handleSubmit}
       onCancel={props.onClose}
     />

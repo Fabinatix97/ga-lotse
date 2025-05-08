@@ -41,7 +41,7 @@ export default function UserProfilePage(
     >
       <MainContentLayout>
         <Stack
-          flexWrap={"wrap"}
+          flexWrap="wrap"
           gap={2}
           sx={{
             flexDirection: { md: "row" },

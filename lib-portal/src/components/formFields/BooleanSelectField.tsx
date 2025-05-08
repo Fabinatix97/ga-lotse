@@ -10,6 +10,7 @@ import { isDefined } from "remeda";
 
 import { NO_SELECTION_LABEL } from "../../helpers/form";
 import { isEmptyString } from "../../helpers/guards";
+import { useTranslation } from "../../i18n/useTranslation";
 import { FieldProps, OptionalFieldValue } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
@@ -33,6 +34,7 @@ export interface BooleanSelectFieldProps
 }
 
 export function BooleanSelectField(props: BooleanSelectFieldProps) {
+  const { t } = useTranslation();
   const FieldComponent = props.component ?? BaseField;
   const SelectComponent = props.select ?? Select;
   const field = useBaseField<OptionalFieldValue<boolean>>(props);
@@ -50,6 +52,9 @@ export function BooleanSelectField(props: BooleanSelectFieldProps) {
       <SelectComponent
         name={props.name}
         value={isEmptyString(field.input.value) ? null : field.input.value}
+        placeholder={props.placeholder}
+        disabled={disabled || props.disabled}
+        color={props.primary ? "primary" : undefined}
         onChange={(_, newValue) => {
           const newFieldValue = newValue ?? "";
           void field.helpers.setValue(newFieldValue);
@@ -64,12 +69,9 @@ export function BooleanSelectField(props: BooleanSelectFieldProps) {
             field.input.onBlur(event);
           }
         }}
-        placeholder={props.placeholder}
-        disabled={disabled || props.disabled}
-        color={props.primary ? "primary" : undefined}
       >
-        <Option value={true}>{props.labelTrue ?? "Ja"}</Option>
-        <Option value={false}>{props.labelFalse ?? "Nein"}</Option>
+        <Option value>{props.labelTrue ?? t("common.yes")}</Option>
+        <Option value={false}>{props.labelFalse ?? t("common.no")}</Option>
         {props.allowDeselection && (
           <Option value="">{NO_SELECTION_LABEL}</Option>
         )}

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { WarningAmber } from "@mui/icons-material";
-import { Alert, Stack } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
 
@@ -14,8 +13,9 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   ApiDocument,
   ApiReviewResult,
@@ -39,6 +39,7 @@ export function RejectDocumentForm({
   return (
     <Formik
       initialValues={{ reasonForRejection: document.reasonForRejection }}
+      enableReinitialize
       onSubmit={async (values) => {
         await reviewDocument({
           id: document.id,
@@ -49,15 +50,15 @@ export function RejectDocumentForm({
         });
         onClose(true);
       }}
-      enableReinitialize
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
           <SidebarContent title="Dokument ablehnen">
             <Stack gap={2} rowGap={2}>
-              <Alert color={"warning"} startDecorator={<WarningAmber />}>
-                Bei Ablehnung werden die Dateien dauerhaft gelöscht.
-              </Alert>
+              <Alert
+                color="warning"
+                message="Bei Ablehnung werden die Dateien dauerhaft gelöscht."
+              />
               <TextareaField
                 name="reasonForRejection"
                 label="Ablehnungsgrund"

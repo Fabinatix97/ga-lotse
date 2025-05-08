@@ -12,8 +12,9 @@ import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ToggleExpandButton,
   ToggleExpandButtonProps,
-} from "@/components/buttons/ToggleExpandButton";
-import { PersonSearchParams } from "@/components/personSearch/PersonSearchForm";
+} from "../buttons/ToggleExpandButton";
+
+import { PersonSearchParams } from "./PersonSearchForm";
 
 export interface TogglePersonSearchButtonProps extends ToggleExpandButtonProps {
   searchParams: PersonSearchParams | undefined;

@@ -120,7 +120,7 @@ export function PreventionStep() {
         <Grid container rowSpacing={3} columnSpacing={3}>
           {Object.entries(values.standardRiskFactors).map(
             ([riskName, { lastIncident }]: [string, StandardRiskQuestion]) => (
-              <Grid xxs={12} key={riskName}>
+              <Grid key={riskName} xxs={12}>
                 <YesOrNoWithFollowUp
                   key={riskName}
                   name={`standardRiskFactors.${riskName}.taken`}
@@ -163,7 +163,7 @@ export function PreventionStep() {
           )}
           <Grid xxs={12}>
             <YesOrNoWithFollowUp
-              name={`otherRisks.taken`}
+              name="otherRisks.taken"
               label={
                 <Typography level="title-sm">
                   {t("prevention.other_risks")}
@@ -192,7 +192,6 @@ export function PreventionStep() {
       />
       <InfoModal
         modalTitle={t("prevention.PrEP_info_modal.title")}
-        onClose={() => setIsOpenInfoModal((isOpen) => !isOpen)}
         open={isOpenInfoModal}
         sx={{
           minWidth: {
@@ -204,6 +203,7 @@ export function PreventionStep() {
             sm: 600,
           },
         }}
+        onClose={() => setIsOpenInfoModal((isOpen) => !isOpen)}
       >
         {t("prevention.PrEP_info_modal.info")}
       </InfoModal>

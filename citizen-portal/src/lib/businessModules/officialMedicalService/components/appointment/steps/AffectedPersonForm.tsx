@@ -10,7 +10,10 @@ import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import {
@@ -26,11 +29,12 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function AffectedPersonForm(props: { name: string }) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const fieldName = createFieldNameMapper<ApiAffectedPerson>(props.name);
 
   return (
-    <ContentSheet data-testid={"personal-data-form"}>
+    <ContentSheet data-testid="personal-data-form">
       <FormSheetTitle requiredTitle={t("common.requiredTitle")}>
         {t("affectedPerson.title")}
       </FormSheetTitle>
@@ -131,7 +135,7 @@ export function AffectedPersonForm(props: { name: string }) {
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
           <CheckboxField
-            name={"confirmOnlineServices"}
+            name="confirmOnlineServices"
             label={t("affectedPerson.fields.confirmOnlineServices")}
             required={t("affectedPerson.fields.confirmOnlineServices_required")}
           />

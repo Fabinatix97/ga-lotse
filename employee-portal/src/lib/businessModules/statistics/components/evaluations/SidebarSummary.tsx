@@ -69,7 +69,7 @@ export function Analyses({ analyses }: { analyses: Analysis[] }) {
         <SearchableGroups
           groups={groups}
           renderItem={(item) => item.searchableValue}
-          hideSearch={true}
+          hideSearch
         />
       )}
     </Stack>

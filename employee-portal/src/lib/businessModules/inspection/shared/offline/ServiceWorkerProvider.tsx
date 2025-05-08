@@ -13,14 +13,14 @@ import {
   useMemo,
 } from "react";
 
+import { useIsOffline } from "@eshg/lib-employee-portal";
 import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 
 import { unregisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/unregisterServiceWorker";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { useServiceWorkerSyncQueue } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerSyncQueue";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
-export interface ServiceWorker {
+interface ServiceWorker {
   isOffline: boolean;
   sendMessageToServiceWorker: (message: object) => Promise<unknown>;
 }

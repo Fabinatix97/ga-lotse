@@ -18,7 +18,7 @@ import {
 } from "@/serviceWorker/sw/requestHandlers";
 import { getFormData, requireNonNullish } from "@/serviceWorker/sw/util";
 
-export function getApiInspectionInspectionsPath(inspectionId: string) {
+function getApiInspectionInspectionsPath(inspectionId: string) {
   return `/api/inspection/inspections/${inspectionId}`;
 }
 

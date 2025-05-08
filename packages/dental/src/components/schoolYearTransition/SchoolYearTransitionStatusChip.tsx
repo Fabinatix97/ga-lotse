@@ -7,7 +7,7 @@ import { Chip, ChipProps } from "@mui/joy";
 
 import { ApiSchoolYearTransitionStatus } from "@eshg/dental-api";
 
-import { SCHOOL_YEAR_TRANSITION_STATUS } from "@/translations/schoolYearTransition";
+import { SCHOOL_YEAR_TRANSITION_STATUS } from "../../translations/schoolYearTransition";
 
 const statusColors: Record<ApiSchoolYearTransitionStatus, ChipProps["color"]> =
   {

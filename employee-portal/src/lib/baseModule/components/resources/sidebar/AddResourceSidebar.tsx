@@ -52,11 +52,11 @@ function AddResourceSidebar(props: AddResourceSidebarProps) {
       initialValues={emptyValues}
       labels={props.labels}
       formRef={props.formRef}
+      title="Ressource hinzufügen"
+      submitLabel="Hinzufügen"
+      canChooseType
       onCancel={() => props.onClose(false)}
       onSubmit={handleSubmit}
-      title={"Ressource hinzufügen"}
-      submitLabel={"Hinzufügen"}
-      canChooseType
     />
   );
 }

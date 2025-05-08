@@ -30,7 +30,7 @@ import {
 } from "./AnalysisSortOrderSelect";
 import { ToggleExpandedButton } from "./ToggleExpandedButton";
 
-export interface AnalysisAccordionProps {
+interface AnalysisAccordionProps {
   analyses: Analysis[];
   attributes: FlatAttribute[];
   evaluatedDataAmountTotal: number;
@@ -90,14 +90,14 @@ export function AnalysisAccordion(props: AnalysisAccordionProps) {
           key={analysis.id}
           analysis={analysis}
           expanded={expandedAccordions[analysis.id] ?? false}
+          attributes={props.attributes}
+          evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
+          isReport={isReport}
+          dataSourceSensitivity={props.dataSourceSensitivity}
           onExpand={(expanded) => {
             handleAccordionExpand(analysis.id, expanded);
           }}
-          attributes={props.attributes}
-          evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
           onDiagramCreateClicked={props.onDiagramCreateClicked}
-          isReport={isReport}
-          dataSourceSensitivity={props.dataSourceSensitivity}
         />
       ))}
     </Stack>
@@ -144,7 +144,6 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
     <AccordionSheet
       key={props.analysis.id}
       expanded={props.expanded}
-      onExpand={props.onExpand}
       summary={<AnalysisAccordionSummary analysis={props.analysis} />}
       controls={
         canWrite &&
@@ -186,13 +185,14 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
               analysis={props.analysis}
               attributes={props.attributes}
               evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-              onDiagramCreateClicked={props.onDiagramCreateClicked}
               isReport={props.isReport}
               dataSourceSensitivity={props.dataSourceSensitivity}
+              onDiagramCreateClicked={props.onDiagramCreateClicked}
             />
           )}
         </Suspense>
       }
+      onExpand={props.onExpand}
     />
   );
 }

@@ -34,28 +34,28 @@ import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants"
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
-import { ExaminationStatusChip } from "@/components/examination/ExaminationStatusChip";
-import { routes } from "@/config/routes";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { useDeleteProphylaxisSessionParticipantOptions } from "@/features/prophylaxisSessions/api/mutations/details";
-import { ChangeReasonForAbsenceModal } from "@/features/prophylaxisSessions/components/absence/ChangeReasonForAbsenceModal";
-import { useAddChildToProphylaxisSessionSidebar } from "@/features/prophylaxisSessions/components/prophylaxisSessionDetails/AddChildToProphylaxisSessionSidebar";
-import { CloseProphylaxisSessionModal } from "@/features/prophylaxisSessions/components/prophylaxisSessionDetails/CloseProphylaxisSessionModal";
+import { ExaminationStatusChip } from "../../../../components/examination/ExaminationStatusChip";
+import { routes } from "../../../../config/routes";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
+import { useDeleteProphylaxisSessionParticipantOptions } from "../../api/mutations/details";
 import {
   useFilteredParticipants,
   useFilteredPresentParticipants,
   useProphylaxisSessionStore,
-} from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+} from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 import {
   FluoridationConsentFilter,
   GenderFilter,
-} from "@/features/prophylaxisSessions/stores/prophylaxisSession/participantFilters";
+} from "../../stores/prophylaxisSession/participantFilters";
 import {
   ParticipantSortKey,
   ParticipantSorting,
-} from "@/features/prophylaxisSessions/stores/prophylaxisSession/participantSorting";
-import { canBeMarkedAbsent } from "@/features/prophylaxisSessions/utils/canBeMarkedAbsent";
+} from "../../stores/prophylaxisSession/participantSorting";
+import { canBeMarkedAbsent } from "../../utils/canBeMarkedAbsent";
+import { ChangeReasonForAbsenceModal } from "../absence/ChangeReasonForAbsenceModal";
 
+import { useAddChildToProphylaxisSessionSidebar } from "./AddChildToProphylaxisSessionSidebar";
+import { CloseProphylaxisSessionModal } from "./CloseProphylaxisSessionModal";
 import { ParticipantFilter, ParticipantFilterDef } from "./ParticipantFilter";
 
 const GENDER_FILTERS: ParticipantFilterDef<GenderFilter>[] = [
@@ -211,7 +211,7 @@ export function ProphylaxisSessionParticipantsTable() {
               </>
             )
           }
-          invertDomOrder={true}
+          invertDomOrder
         />
       }
     >
@@ -255,10 +255,10 @@ export function ProphylaxisSessionParticipantsTable() {
       {isDefined(examinationForAbsence) && (
         <OverlayBoundary>
           <ChangeReasonForAbsenceModal
-            open={true}
+            open
+            examination={examinationForAbsence}
             onCancel={closeAbsenceModal}
             onSubmit={onSubmitAbsenceModal(examinationForAbsence)}
-            examination={examinationForAbsence}
           />
         </OverlayBoundary>
       )}
@@ -320,7 +320,7 @@ function columnDefs(
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 110,
+        width: 150,
       },
     }),
     ...(isFluoridation
@@ -440,7 +440,7 @@ function AddChildButton() {
 function CloseProphylaxisButton() {
   return (
     <OpenModalButton
-      color={"success"}
+      color="success"
       endDecorator={<Check />}
       renderModal={(modalProps) => (
         <CloseProphylaxisSessionModal {...modalProps} />

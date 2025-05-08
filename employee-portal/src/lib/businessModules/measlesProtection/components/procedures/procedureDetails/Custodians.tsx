@@ -3,20 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SxProps } from "@mui/joy/styles/types";
-
-import { CentralFilePersonDetails } from "@eshg/lib-employee-portal";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
 
-import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-
-const COLUMN_STYLE: SxProps = {
-  flexGrow: 1,
-  maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
-};
+import { Custodian } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/Custodian";
 
 export function Custodians({
   procedure,
@@ -30,18 +22,10 @@ export function Custodians({
   const custodians = procedure.custodians ?? [];
 
   return custodians.map((person, index) => (
-    <InfoTile
+    <Custodian
       key={`custodian-${index}`}
-      title="PSB - Personensorgeberechtigte:r"
-      name="custodian"
-    >
-      <CentralFilePersonDetails
-        person={{
-          ...person,
-          contactAddress: person.address,
-        }}
-        columnSx={COLUMN_STYLE}
-      />
-    </InfoTile>
+      custodian={person}
+      procedure={procedure}
+    />
   ));
 }

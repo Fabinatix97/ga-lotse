@@ -97,8 +97,8 @@ function createActionsLinkOrButton(item: ActionsItem) {
       <MenuItem
         key={item.label}
         sx={{ padding: 0 }}
-        onClick={item.onClick}
         disabled={item.disabled}
+        onClick={item.onClick}
       >
         <ActionLabel
           color={item.color}

@@ -6,7 +6,7 @@
 import { UploadFileOutlined } from "@mui/icons-material";
 import { Button, ButtonProps, styled } from "@mui/joy";
 
-export const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   fontWeight: theme.vars.fontWeight.md,
@@ -25,6 +25,7 @@ interface FileInputButtonProps
     | "onDragOver"
     | "onDragLeave"
     | "onDragEnd"
+    | "aria-describedby"
   > {
   activeDragOver?: boolean;
   error: boolean;

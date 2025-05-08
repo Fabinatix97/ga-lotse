@@ -58,12 +58,12 @@ public class DepartmentController implements DepartmentApi {
 
   @Override
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return basePrivacyDocumentService.getPrivacyNoticeDe();
+    return basePrivacyDocumentService.getPrivacyNotice();
   }
 
   @Override
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return basePrivacyDocumentService.getPrivacyPolicyDe();
+    return basePrivacyDocumentService.getPrivacyPolicy();
   }
 
   @Operation(summary = "Get a markdown document for the employee portal")
@@ -104,6 +104,7 @@ public class DepartmentController implements DepartmentApi {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public ResponseEntity<Resource> getDepartmentLogo() {
     // svg may contain JavaScript. Make sure the image comes from a trustworthy source.
     return ResponseEntity.ok()
@@ -114,6 +115,7 @@ public class DepartmentController implements DepartmentApi {
   @Operation(summary = "Get the security.txt file of the department running this application.")
   @ApiResponse(responseCode = "200")
   @GetExchange(DEPARTMENT_API_SECURITY_TXT)
+  @Transactional(readOnly = true)
   public ResponseEntity<byte[]> getSecurityTxt() {
     return securityTxtService.getSecurityTxt();
   }
@@ -123,6 +125,7 @@ public class DepartmentController implements DepartmentApi {
           "Get the security.txt public PGP key file of the department running this application.")
   @ApiResponse(responseCode = "200")
   @GetExchange(DEPARTMENT_API_SECURITY_TXT_PGP_KEY)
+  @Transactional(readOnly = true)
   public ResponseEntity<byte[]> getSecurityTxtPublicKey() {
     return securityTxtService.getSecurityTxtPublicKey();
   }

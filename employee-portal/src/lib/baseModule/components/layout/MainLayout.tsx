@@ -6,9 +6,14 @@
 "use client";
 
 import { Box } from "@mui/joy";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
-import { SidebarSlot, useHeaderHeights } from "@eshg/lib-employee-portal";
+import {
+  SidebarSlot,
+  useHeaderHeights,
+  useIsOffline,
+  useSidenav,
+} from "@eshg/lib-employee-portal";
 
 import { Header } from "@/lib/baseModule/components/layout/header/Header";
 import { SideNavigation } from "@/lib/baseModule/components/layout/sideNavigation/SideNavigation";
@@ -16,11 +21,10 @@ import {
   sideNavigationCollapsedWidth,
   sideNavigationWidth,
 } from "@/lib/baseModule/components/layout/sizes";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const isOffline = useIsOffline();
-  const [collapsed, setCollapsed] = useState(false);
+  const sidenav = useSidenav();
   const drawerTransitionTime = "0.3s";
   const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
 
@@ -40,19 +44,19 @@ export function MainLayout({ children }: { children: ReactNode }) {
               transition: `transform ${drawerTransitionTime}, width ${drawerTransitionTime}`,
               // Fades desktop side navigation in, when display width gets expanded.
               transform: {
-                xxs: `translateX(-${collapsed ? sideNavigationCollapsedWidth : sideNavigationWidth})`,
+                xxs: `translateX(-${sidenav.isCollapsed ? sideNavigationCollapsedWidth : sideNavigationWidth})`,
                 sm: "none",
               },
               // Controls the horizontal offset of the main content.
               width: {
                 xxs: "0",
-                lg: collapsed
+                lg: sidenav.isCollapsed
                   ? sideNavigationCollapsedWidth
                   : sideNavigationWidth,
               },
             }}
           >
-            <SideNavigation collapsed={collapsed} setCollapsed={setCollapsed} />
+            <SideNavigation />
           </Box>
         )}
 

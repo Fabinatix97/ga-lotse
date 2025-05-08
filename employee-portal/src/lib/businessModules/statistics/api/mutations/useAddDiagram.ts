@@ -12,7 +12,7 @@ import { mapFilterValuesToEvaluationFilters } from "@/lib/businessModules/statis
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { mapSaveDiagramFormModelToUpdateDiagramApiModel } from "@/lib/businessModules/statistics/api/mutations/useUpdateDiagram";
 
-export interface UseAddDiagramParams {
+interface UseAddDiagramParams {
   analysisId: string;
   attributes: FlatAttribute[];
   filterValues: FilterValue[];

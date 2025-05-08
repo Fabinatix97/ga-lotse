@@ -26,7 +26,7 @@ export function ContactAddressChangeSidebar(props: {
 
   return (
     <ContactHistoryDetailsSidebar
-      title={"Adressänderung"}
+      title="Adressänderung"
       type={type}
       modifiedAt={modifiedAt}
       modifiedBy={resolvedUser}

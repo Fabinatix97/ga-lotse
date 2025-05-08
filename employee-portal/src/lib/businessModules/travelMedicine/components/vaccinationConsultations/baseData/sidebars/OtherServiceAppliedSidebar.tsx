@@ -102,8 +102,6 @@ function OtherServiceAppliedSidebar(
       allPhysicians={allPhysicians}
       allMedicalAssistants={allMedicalAssistants}
       formRef={props.formRef}
-      onCancel={props.onClose}
-      onSubmit={handleSubmit}
       title={
         props.service.status === ApiServiceStatus.Planned
           ? "Leistung durchgeführt"
@@ -114,6 +112,8 @@ function OtherServiceAppliedSidebar(
           ? "Durchgeführt"
           : "Speichern"
       }
+      onCancel={props.onClose}
+      onSubmit={handleSubmit}
     />
   );
 }

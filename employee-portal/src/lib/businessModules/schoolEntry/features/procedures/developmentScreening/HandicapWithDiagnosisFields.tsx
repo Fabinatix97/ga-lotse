@@ -53,17 +53,17 @@ export function HandicapWithDiagnosisFields(
         name={fieldName("result")}
         label={<FlexLabel>{props.label}</FlexLabel>}
         sx={FIXED_WIDTH_BOOLEAN_SELECT_STYLE}
-        onChange={handleChangeResult}
         allowDeselection
         softRequired
+        onChange={handleChangeResult}
       />
       <Icd10CodeField
         name={fieldName("icd10Codes")}
         values={props.values.icd10Codes}
         setFieldValue={props.setFieldValue}
-        onClickIcd10Code={props.onClickIcd10Code}
         disabled={!props.values.result}
         softRequired
+        onClickIcd10Code={props.onClickIcd10Code}
       />
     </Stack>
   );

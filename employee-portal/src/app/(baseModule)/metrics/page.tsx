@@ -15,7 +15,7 @@ import { ProcedureMetricsDisplay } from "@/lib/baseModule/components/procedureMe
 
 export default function ProcedureMetricsPage() {
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Kennzahlen"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Kennzahlen" />}>
       <MainContentLayout>
         <ProcedureMetricsDisplay />
       </MainContentLayout>

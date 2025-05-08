@@ -14,7 +14,7 @@ export function getProperty(t: unknown, prop: string): unknown {
   }
 }
 
-export type TypePredicate<T> = (v: unknown) => v is T;
+type TypePredicate<T> = (v: unknown) => v is T;
 export function getPropertyIf<T>(
   t: unknown,
   prop: string,

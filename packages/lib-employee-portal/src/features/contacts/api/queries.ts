@@ -18,9 +18,10 @@ import {
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 
-import { contactApiQueryKey } from "@/config/apiQueryKeys";
-import { useApi } from "@/contexts/api";
-import { Contact } from "@/features/contacts/api/models/Contact";
+import { contactApiQueryKey } from "../../../config/apiQueryKeys";
+import { useApi } from "../../../contexts/api";
+
+import { Contact } from "./models/Contact";
 
 export function useGetContactQuery(id: string) {
   const { contactApi } = useApi();

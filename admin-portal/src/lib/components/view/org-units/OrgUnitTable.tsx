@@ -34,7 +34,7 @@ import {
 } from "@/lib/hooks/useOrgUnits";
 import { useOrgUnitsApi } from "@/lib/hooks/useOrgUnitsApi";
 
-export const NEW_ORG_UNIT_PARENT_ID = "NEW_ORG_UNIT_PARENT_ID";
+const NEW_ORG_UNIT_PARENT_ID = "NEW_ORG_UNIT_PARENT_ID";
 
 const columnHelper = createColumnHelper<OrgUnit>();
 // eslint-disable-next-line func-style

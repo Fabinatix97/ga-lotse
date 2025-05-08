@@ -17,14 +17,14 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { ExaminationStatusChip } from "@/components/examination/ExaminationStatusChip";
-import { routes } from "@/config/routes";
-import { useDentalApi } from "@/contexts/dental";
-import { ChildExamination } from "@/features/children/api/models/ChildExamination";
-import { getChildDetailsQuery } from "@/features/children/api/queries/details";
-import { useChildRouteParams } from "@/features/children/hooks/useChildRouteParams";
-import { DentalChildRouteParams } from "@/features/children/schemas/DentalChildRouteParams";
-import { PROPHYLAXIS_TYPES } from "@/translations/prophylaxisSession";
+import { ExaminationStatusChip } from "../../../components/examination/ExaminationStatusChip";
+import { routes } from "../../../config/routes";
+import { useDentalApi } from "../../../contexts/dental";
+import { PROPHYLAXIS_TYPES } from "../../../translations/prophylaxisSession";
+import { ChildExamination } from "../api/models/ChildExamination";
+import { getChildDetailsQuery } from "../api/queries/details";
+import { useChildRouteParams } from "../hooks/useChildRouteParams";
+import { DentalChildRouteParams } from "../schemas/DentalChildRouteParams";
 
 const columnHelper = createColumnHelper<ChildExamination>();
 const COLUMNS = [

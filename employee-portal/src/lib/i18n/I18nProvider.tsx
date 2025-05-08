@@ -12,6 +12,8 @@ import { I18nextProvider, initReactI18next } from "react-i18next";
 import { de as deLibPortal } from "@eshg/lib-portal/i18n/locales/de";
 import { i18nNamespace as i18nNamespaceLibPortal } from "@eshg/lib-portal/i18n/namespace";
 
+import { anamnesis as deOfficialMedicalServiceAnamnesis } from "@/lib/businessModules/officialMedicalService/locales/de/anamnesis";
+
 const i18n = i18next.use(initReactI18next);
 
 void i18n.init({
@@ -20,6 +22,7 @@ void i18n.init({
   resources: {
     de: {
       [i18nNamespaceLibPortal]: deLibPortal,
+      "officialMedicalService/anamnesis": deOfficialMedicalServiceAnamnesis,
     },
   },
 });

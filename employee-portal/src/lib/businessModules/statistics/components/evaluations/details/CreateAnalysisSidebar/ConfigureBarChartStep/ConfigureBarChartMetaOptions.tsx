@@ -16,7 +16,7 @@ import {
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
 
-export interface ConfigureBarChartMetaOptionsProps
+interface ConfigureBarChartMetaOptionsProps
   extends SidebarStepContentProps<BarChartMetaFormModel> {
   showGroupedConfigurations: boolean;
 }

@@ -8,8 +8,8 @@ import { isDefined } from "remeda";
 import { formatBoolean } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { EXAMINATION_STATUS } from "@/translations/examination";
+import { EXAMINATION_STATUS } from "../../../../translations/examination";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 export interface ParticipantSorting {
   sortKey: ParticipantSortKey;
@@ -26,9 +26,10 @@ type ParticipantSortAttributes = Omit<
   | "allFluoridationConsents"
   | "prophylaxisDentitionType"
   | "previousExaminations"
+  | "procedureLabels"
 >;
 export type ParticipantSortKey = keyof ParticipantSortAttributes;
-export type ParticipantSortDirection = "asc" | "desc";
+type ParticipantSortDirection = "asc" | "desc";
 
 type ParticipantComparator = (
   a: ParticipantSortAttributes,
@@ -86,6 +87,9 @@ function compareBy(
         return compareGender(a, b, sortDirection);
       case "status":
         return compareStatus(a, b);
+      case "groupName":
+        return compareGroupName(a, b, sortDirection);
+      //TODO sbr: add compare groupName
       default:
         return a[sortKey].localeCompare(b[sortKey]);
     }
@@ -122,6 +126,17 @@ function compareStatus(
   const bValue = EXAMINATION_STATUS[b.status];
 
   return aValue.localeCompare(bValue);
+}
+
+function compareGroupName(
+  a: ParticipantSortAttributes,
+  b: ParticipantSortAttributes,
+  sortDirection: ParticipantSortDirection,
+): number {
+  const aValue = isDefined(a.groupName) ? a.groupName : "";
+  const bValue = isDefined(b.groupName) ? b.groupName : "";
+
+  return compareAndSortEmptyStringToEnd(aValue, bValue, sortDirection);
 }
 
 function compareAndSortEmptyStringToEnd(

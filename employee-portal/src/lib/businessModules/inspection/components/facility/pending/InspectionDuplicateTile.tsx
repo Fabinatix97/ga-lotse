@@ -17,7 +17,7 @@ import {
   translateInspectionType,
 } from "@/lib/businessModules/inspection/shared/enums";
 
-export interface InspectionDuplicateTileProps {
+interface InspectionDuplicateTileProps {
   inspection: ApiInspectionForDuplicateReview;
   importedInspection: ApiInspectionForDuplicateReview;
   isImportedInspection: boolean;
@@ -41,7 +41,7 @@ export function InspectionDuplicateTile({
         borderColor: isImportedInspection ? "warning.300" : "divider",
         backgroundColor: isImportedInspection ? "warning.100" : "transparent",
       }}
-      aria-label={"Einrichtung"}
+      aria-label="Einrichtung"
     >
       <Stack direction="column" gap={2} data-testid={testId}>
         <Typography level="h4" component="p">
@@ -52,7 +52,7 @@ export function InspectionDuplicateTile({
             dataset={inspection}
             importedDataset={importedInspection}
             textExtractor={(i) => translateInspectionType(i.type)}
-            suppressExclamationMark={true}
+            suppressExclamationMark
           />
           <DuplicateTileLine
             dataset={inspection}

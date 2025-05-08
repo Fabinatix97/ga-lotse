@@ -55,7 +55,7 @@ export function InspectionTabReportResult({
         >
           <ContentDisplay
             elements={elements}
-            readonly={true}
+            readonly
             sx={{ maxHeight: { lg: "100%" }, overflowY: "auto" }}
             imagesBasePath={`${basePath}/checklists/file/`}
           />

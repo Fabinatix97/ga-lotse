@@ -9,14 +9,14 @@ Verantwortlicher:
 
 Verantwortlich für die Website „frankfurt.ga-lotse.de” ist das Gesundheitsamt Frankfurt am Main:
 
-Gesundheitsamt Frankfurt am Main  
-Breite Gasse 28  
-60313 Frankfurt am Main  
+Gesundheitsamt Frankfurt am Main\
+Breite Gasse 28\
+60313 Frankfurt am Main\
 E-Mail: [datenschutz.gesundheitsamt@stadt-frankfurt.de](mailto:datenschutz.gesundheitsamt@stadt-frankfurt.de)
 
 Behördlicher Datenschutzbeauftragter:
 
-Referat Datenschutz und IT-Sicherheit  
+Referat Datenschutz und IT-Sicherheit\
 Sandgasse 6, 60311 Frankfurt am Main
 
 ## 2. Erhebung und Speicherung personenbezogener Daten sowie Art und Zweck von deren Verwendung"

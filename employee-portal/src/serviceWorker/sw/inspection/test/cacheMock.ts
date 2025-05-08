@@ -24,7 +24,7 @@ import {
 } from "./config";
 import { decrypt, decryptJson, encryptJson } from "./cryptoMock";
 
-export const apiCache: Record<string, Response> = {};
+const apiCache: Record<string, Response> = {};
 
 const notImplemented = new Error("not implemented");
 

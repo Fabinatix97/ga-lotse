@@ -13,9 +13,9 @@ import {
   ButtonBar,
   SidebarActions,
   SidebarForm,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
@@ -109,7 +109,6 @@ export function ManualProgressEntryDetailsView(props: {
         props.relatedKeyDocumentProgressEntries
       }
       handleClose={props.onClose}
-      onHistory={props.onHistory}
       elements={{
         fileDescription: (
           <LabelValueDisplay
@@ -124,6 +123,7 @@ export function ManualProgressEntryDetailsView(props: {
           />
         ),
       }}
+      onHistory={props.onHistory}
     />
   );
 }
@@ -186,7 +186,6 @@ function EditableManualProgressEntryDetails({
               relatedKeyDocumentProgressEntries
             }
             handleClose={onClose}
-            onHistory={onHistory}
             elements={{
               fileDescription: isFileLocked(entry) ? (
                 <LabelValueDisplay
@@ -206,6 +205,7 @@ function EditableManualProgressEntryDetails({
                 </SubmitButton>
               ),
             }}
+            onHistory={onHistory}
           />
         </SidebarForm>
       )}
@@ -292,8 +292,8 @@ function ManualProgressEntryDetailsTemplate({
             right={
               <Button
                 variant="plain"
-                onClick={onHistory}
                 endDecorator={<ArrowForwardIcon />}
+                onClick={onHistory}
               >
                 Änderungshistorie
               </Button>
@@ -308,12 +308,12 @@ function ManualProgressEntryDetailsTemplate({
           <ButtonBar
             left={
               <Button
-                onClick={() => {
-                  openEntryDeletionModal(entry.progressEntryId);
-                }}
                 variant="plain"
                 color="danger"
                 disabled={entry.locked}
+                onClick={() => {
+                  openEntryDeletionModal(entry.progressEntryId);
+                }}
               >
                 {deletionProps.name}
               </Button>

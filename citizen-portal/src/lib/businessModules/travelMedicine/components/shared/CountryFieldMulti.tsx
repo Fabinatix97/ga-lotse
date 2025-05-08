@@ -59,9 +59,6 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
         name={props.name}
         disableClearable={field.required}
         value={field.input.value}
-        onChange={(_, newValue) => {
-          setValue(newValue);
-        }}
         filterOptions={(options, params) => {
           const { inputValue } = params;
           return options.filter(
@@ -72,7 +69,6 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
               !field.input.value.includes((opt as SelectionOption).value),
           );
         }}
-        onBlur={field.input.onBlur}
         placeholder={props.placeholder}
         options={countries}
         getOptionLabel={(value) => (isString(value) ? value : value.label)}
@@ -80,9 +76,9 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
         renderTags={(options, getTagProps) =>
           options.map((item, index) => (
             <Chip
-              variant={"soft"}
+              variant="soft"
               color="primary"
-              size={"sm"}
+              size="sm"
               endDecorator={<Close fontSize="xl" />}
               sx={{ minWidth: 0, fontWeight: 500 }}
               {...getTagProps({ index })}
@@ -92,6 +88,10 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
             </Chip>
           ))
         }
+        onChange={(_, newValue) => {
+          setValue(newValue);
+        }}
+        onBlur={field.input.onBlur}
       />
     </BaseField>
   );

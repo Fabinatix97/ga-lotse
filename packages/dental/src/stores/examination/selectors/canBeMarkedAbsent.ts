@@ -7,10 +7,13 @@ import { isEmptyArray } from "formik";
 
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
-import { ExaminationStatus } from "@/api/models/ExaminationStatus";
-import { ExaminationState } from "@/stores/examination/examinationStore";
-import { QuadrantNumber } from "@/stores/examination/types";
-import { EmptinessRules, ExaminationFormValues } from "@/types/examination";
+import { ExaminationStatus } from "../../../api/models/ExaminationStatus";
+import {
+  EmptinessRules,
+  ExaminationFormValues,
+} from "../../../types/examination";
+import { ExaminationState } from "../examinationStore";
+import { QuadrantNumber } from "../types";
 
 export function selectCanBeMarkedAbsent(
   status: ExaminationStatus,
@@ -33,8 +36,7 @@ export function selectCanBeMarkedAbsent(
       .every(
         (tooth) =>
           isEmptyString(tooth.mainResult.value) &&
-          isEmptyString(tooth.secondaryResult1.value) &&
-          isEmptyString(tooth.secondaryResult2.value),
+          isEmptyString(tooth.secondaryResult.value),
       );
   };
 }

@@ -7,6 +7,8 @@ import { FormControl, FormLabel, Radio, RadioGroup } from "@mui/joy";
 import { useField } from "formik";
 import { ReactNode } from "react";
 
+import { useTranslation } from "../../i18n/useTranslation";
+
 export interface BooleanRadioGroupFieldProps {
   name: string;
   label?: ReactNode;
@@ -22,10 +24,11 @@ export function BooleanRadioField({
   label,
   orientation = "horizontal",
   allowDeselection = false,
-  trueLabel = "Ja",
-  falseLabel = "Nein",
+  trueLabel,
+  falseLabel,
   dataTestId,
 }: BooleanRadioGroupFieldProps) {
+  const { t } = useTranslation();
   const [field, _, helpers] = useField<boolean | null>(name);
 
   function handleDeselect(forValue: boolean) {
@@ -48,10 +51,14 @@ export function BooleanRadioField({
           void helpers.setValue(event.currentTarget.value === "true")
         }
       >
-        <Radio value={true} label={trueLabel} onClick={handleDeselect(true)} />
+        <Radio
+          value
+          label={trueLabel ?? t("common.yes")}
+          onClick={handleDeselect(true)}
+        />
         <Radio
           value={false}
-          label={falseLabel}
+          label={falseLabel ?? t("common.no")}
           onClick={handleDeselect(false)}
         />
       </RadioGroup>

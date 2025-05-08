@@ -56,9 +56,9 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>({
         readOnly={props.readOnly}
         orientation={props.orientation}
         required={!!props.required}
-        onReset={() => handleChange(null)}
         resettable={resettable}
         additionalField={additionalField}
+        onReset={() => handleChange(null)}
       />
     </RadioGroupField>
   );

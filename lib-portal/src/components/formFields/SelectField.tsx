@@ -16,6 +16,7 @@ import {
 } from "react";
 import { isDefined } from "remeda";
 
+import { useTranslation } from "../../i18n/useTranslation";
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
@@ -107,6 +108,7 @@ function InnerSelectField<
   TMultiple extends boolean = false,
   TOptionLabel extends string | ReactNode = string,
 >(props: Readonly<InnerSelectFieldProps<TMultiple, TOptionLabel>>) {
+  const { t } = useTranslation();
   const FieldComponent = props.component ?? BaseField;
   const SelectComponent = props.select ?? Select;
   const disabled = useIsFormDisabled() || props.disabled;
@@ -126,6 +128,15 @@ function InnerSelectField<
       <SelectComponent
         name={props.name}
         value={toJoyUiSelectValue<TMultiple>(props.fieldInputValue)}
+        // Trigger the validation when the dropdown is closed, acting similar to a blur
+        multiple={props.multiple}
+        placeholder={props.placeholder}
+        disabled={disabled}
+        renderValue={props.renderValue}
+        color={props.primary ? "primary" : undefined}
+        aria-description={
+          props.multiple ? t("form.multipleSelectionPossible") : undefined
+        }
         onChange={(_, newValue) => {
           const emptyValue = props.multiple ? [] : "";
           const newFieldValue = (newValue ??
@@ -137,7 +148,6 @@ function InnerSelectField<
             }
           });
         }}
-        // Trigger the validation when the dropdown is closed, acting similar to a blur
         onClose={() => enqueue(() => props.fieldHelpersSetTouched(true, true))}
         onBlur={(event) => {
           // The relatedTarget is a <li> when the dropdown is opened,
@@ -146,14 +156,6 @@ function InnerSelectField<
             props.fieldInputOnBlur(event);
           }
         }}
-        multiple={props.multiple}
-        placeholder={props.placeholder}
-        disabled={disabled}
-        renderValue={props.renderValue}
-        color={props.primary ? "primary" : undefined}
-        aria-description={
-          props.multiple ? "Mehrfachauswahl möglich" : undefined
-        }
       >
         <SelectOptions options={props.options} />
       </SelectComponent>

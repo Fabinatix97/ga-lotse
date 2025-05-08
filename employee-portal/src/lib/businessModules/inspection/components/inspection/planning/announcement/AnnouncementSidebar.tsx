@@ -25,7 +25,7 @@ import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutati
 import { translateInspectionAnnouncement } from "@/lib/businessModules/inspection/shared/enums";
 import { RadioButtonsField } from "@/lib/shared/components/formFields/RadioButtonsField";
 
-export interface AnnouncementSidebarProps {
+interface AnnouncementSidebarProps {
   open: boolean;
   onClose: () => void;
   announcement?: ApiInspectionAnnouncement;

@@ -5,7 +5,7 @@
 
 import { useEnvironmentIndicatorHeight } from "@eshg/lib-portal/components/EnvironmentIndicator";
 
-import { useLayoutConfig } from "@/contexts/layoutConfig";
+import { useLayoutConfig } from "../contexts/layoutConfig";
 
 export function useHeaderHeights() {
   const environmentIndicatorHeight = useEnvironmentIndicatorHeight();

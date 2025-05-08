@@ -9,7 +9,7 @@ import { ApiAdminStagedEntityType } from "@eshg/service-directory-api";
 
 import { OverridableTableRowProps } from "@/lib/components/table/TableRow";
 
-export interface StagedEntity {
+interface StagedEntity {
   author: string;
   entity?: UniqueEntity;
   id: string;

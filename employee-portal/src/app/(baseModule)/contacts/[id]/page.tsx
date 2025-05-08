@@ -48,16 +48,13 @@ export default function ContactDetailsPage(
             <ContactDetails contact={contact} />
           </Grid>
           <Grid xxs={12} md>
-            <ContentPanel testId={"contact-change-history"}>
+            <ContentPanel testId="contact-change-history">
               <Box
-                component={"section"}
+                component="section"
                 sx={{ display: "contents" }}
-                aria-labelledby={"contact-change-history-title"}
+                aria-labelledby="contact-change-history-title"
               >
-                <Typography
-                  level={"title-lg"}
-                  id={"contact-change-history-title"}
-                >
+                <Typography level="title-lg" id="contact-change-history-title">
                   Historie
                 </Typography>
                 <ContactHistory history={history} />

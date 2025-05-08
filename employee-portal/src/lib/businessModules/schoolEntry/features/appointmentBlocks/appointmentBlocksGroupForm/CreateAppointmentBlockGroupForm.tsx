@@ -153,7 +153,6 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
-      onSubmit={handleSubmit}
       allAppointmentTypes={allAppointmentTypes}
       allPhysicians={allPhysicians}
       allMfas={allMfas}
@@ -161,6 +160,7 @@ export function CreateAppointmentBlockGroupForm() {
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}
       locationSelectionMode={locationSelectionMode}
+      onSubmit={handleSubmit}
     />
   );
 }

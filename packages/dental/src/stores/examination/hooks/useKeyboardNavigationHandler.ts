@@ -6,8 +6,8 @@
 import { KeyboardEvent, KeyboardEventHandler } from "react";
 import { isDefined } from "remeda";
 
-import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
-import { NavigateDirection } from "@/stores/examination/actions/navigateFrom";
+import { useExaminationStore } from "../ExaminationStoreProvider";
+import { NavigateDirection } from "../actions/navigateFrom";
 
 const NAVIGATE_DIRECTIONS: Record<string, NavigateDirection> = {
   ArrowUp: "UP",

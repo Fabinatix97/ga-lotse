@@ -80,14 +80,14 @@ export function EditEntrySidebarContent({
         fileName: version.fileName,
         file: null,
       }}
+      validate={validateOpenDataForm}
       onSubmit={(values, { setSubmitting }) => {
         handleSubmitUpdateVersion(values);
         setSubmitting(false);
       }}
-      validate={validateOpenDataForm}
     >
       {({ isSubmitting, handleSubmit }) => (
-        <SidebarForm onSubmit={handleSubmit} ref={formRef}>
+        <SidebarForm ref={formRef} onSubmit={handleSubmit}>
           <SidebarContent title={version.versionName}>
             <OpenDataForm mode="edit">
               <VersionFileCard version={version} />

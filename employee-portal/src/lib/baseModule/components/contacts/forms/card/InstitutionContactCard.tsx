@@ -17,7 +17,7 @@ export function InstitutionContactCard({
 }) {
   return (
     <Stack sx={{ minWidth: 0 }}>
-      <Typography level={"title-md"} noWrap>
+      <Typography level="title-md" noWrap>
         {contact.name}
       </Typography>
       {isDefined(contact.contactAddress) && (

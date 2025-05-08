@@ -13,7 +13,7 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 
 import {
@@ -36,7 +36,7 @@ interface PromotionBeforeSchoolEntryProps {
 export function PromotionBeforeSchoolEntryForm(
   props: PromotionBeforeSchoolEntryProps,
 ) {
-  const { validatePastOrTodayDate } = useValidators();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const promotionBeforeSchoolEntry = createFieldNameMapper(
     "promotionBeforeSchoolEntry",
   );
@@ -66,8 +66,8 @@ export function PromotionBeforeSchoolEntryForm(
           <Stack direction="row" gap={2}>
             <SetAllBooleanSelect
               label="Alle"
-              onChange={handleChange}
               sx={BOOLEAN_SELECT_STYLE}
+              onChange={handleChange}
             />
             <Stack gap={2}>
               <SoftRequiredBooleanSelectField
@@ -171,7 +171,7 @@ function BooleanWithDateFields(props: {
   nameEndDate: string;
   values: PromotionBeforeSchoolEntryValues;
 }) {
-  const { validatePastOrTodayDate } = useValidators();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const fieldName = props.nameBoolean.split(".")[1];
 
   return (

@@ -12,10 +12,8 @@ import { useState } from "react";
 import { DateTimeField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import {
-  AppointmentPickerField,
-  FIELD_LABELS_DE,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { AppointmentPickerField } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
@@ -34,7 +32,9 @@ import {
 import { appointmentOptionsByConcern } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/options";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
 import {
-  validateNonNegativeInteger,
+  APPOINTMENT_DURATION_MAX_LENGTH,
+  APPOINTMENT_DURATION_MIN_LENGTH,
+  validateAppointmentDuration,
   validateTodayOrFutureDate,
 } from "@/lib/shared/helpers/validators";
 
@@ -91,7 +91,7 @@ function ConnectedAppointmentPicker<TForm extends CreateAppointmentForm>({
         currentMonth={currentMonth}
         setCurrentMonth={setCurrentMonth}
         monthAppointments={monthAppointments}
-        required={true}
+        required
         labels={FIELD_LABELS_DE}
       />
     </Box>
@@ -151,19 +151,20 @@ export function AppointmentForm<TForm extends CreateAppointmentForm>({
                 label="Datum und Zeit"
                 name="customAppointmentDate"
                 validate={validateTodayOrFutureDate}
-                required={
-                  customSectionSelected ? "Bitte ein Datum eingeben" : undefined
-                }
+                {...(customSectionSelected && {
+                  required: "Datum eingeben",
+                })}
               />
               <CustomAppointmentQuickButtons />
               <NumberField
                 label="Termindauer in Minuten"
                 name="customAppointmentDuration"
-                min={0}
-                validate={validateNonNegativeInteger}
-                required={
-                  customSectionSelected ? "Bitte ein Dauer eingeben" : undefined
-                }
+                min={APPOINTMENT_DURATION_MIN_LENGTH}
+                max={APPOINTMENT_DURATION_MAX_LENGTH}
+                validate={validateAppointmentDuration}
+                {...(customSectionSelected && {
+                  required: "Termindauer eingeben",
+                })}
               />
             </Stack>
           </RadioSheetOption>
@@ -192,33 +193,33 @@ function CustomAppointmentQuickButtons<TForm>() {
     <Row mb={2} justifyContent="right">
       <Button
         title="Individueller Termin in den nächsten Minuten setzen"
-        onClick={() => setCustomAppointment(0)}
         size="sm"
         variant="soft"
+        onClick={() => setCustomAppointment(0)}
       >
         Jetzt
       </Button>
       <Button
         title="Individueller Termin in ca. 10 Minuten setzen"
-        onClick={() => setCustomAppointment(10)}
         size="sm"
         variant="soft"
+        onClick={() => setCustomAppointment(10)}
       >
         in 10m
       </Button>
       <Button
         title="Individueller Termin in ca. 20 Minuten setzen"
-        onClick={() => setCustomAppointment(20)}
         size="sm"
         variant="soft"
+        onClick={() => setCustomAppointment(20)}
       >
         in 20m
       </Button>
       <Button
         title="Individueller Termin in ca. 30 Minuten setzen"
-        onClick={() => setCustomAppointment(30)}
         size="sm"
         variant="soft"
+        onClick={() => setCustomAppointment(30)}
       >
         in 30m
       </Button>

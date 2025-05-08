@@ -13,12 +13,15 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
-import { routes } from "@/config/routes";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
+import { ExaminationStatus } from "../../../../api/models/ExaminationStatus";
+import { ExaminationStatusChip } from "../../../../components/examination/ExaminationStatusChip";
+import { routes } from "../../../../config/routes";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 interface ProphylaxisSessionExaminationToolbarProps {
   prophylaxisSessionId: string;
   participant: ProphylaxisSessionExamination;
+  status: ExaminationStatus;
   onBackClicked: () => void;
 }
 
@@ -38,6 +41,7 @@ export function ProphylaxisSessionExaminationToolbar(
         },
       ]}
       backButton={<ToolbarBackButton onClick={props.onBackClicked} />}
+      afterTabs={<ExaminationStatusChip status={props.status} />}
     />
   );
 }

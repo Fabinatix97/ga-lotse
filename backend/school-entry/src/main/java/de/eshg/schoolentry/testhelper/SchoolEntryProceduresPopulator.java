@@ -16,7 +16,7 @@ import de.eshg.base.icd10.api.Icd10CodeDto;
 import de.eshg.base.icd10.api.SearchIcd10CodesResponse;
 import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.schoolentry.ProcedureLabelController;
 import de.eshg.schoolentry.SchoolEntryController;
@@ -52,7 +52,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private final Icd10CodeApi icd10CodeApi;
   private final BaseTestHelperApi baseTestHelperApi;
   private final ContactApi contactApi;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
 
   public SchoolEntryProceduresPopulator(
       PopulationProperties properties,
@@ -67,7 +67,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
           AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
       Icd10CodeApi icd10CodeApi,
       ContactApi contactApi,
-      AppointmentBlockProperties appointmentBlockProperties) {
+      AppointmentBlockConfig appointmentBlockConfig) {
     super(
         properties,
         clock,
@@ -81,7 +81,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     this.baseTestHelperApi = baseTestHelperApi;
     this.icd10CodeApi = icd10CodeApi;
     this.contactApi = contactApi;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
   }
 
   @Override
@@ -92,7 +92,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
               populateWithAuthentication(numberOfEntitiesToPopulate);
           UUID schoolId = getIdOfFirstContactForCategory(InstitutionContactCategoryDto.SCHOOL);
           assignSchool(response.entities().subList(0, numberOfEntitiesToPopulate / 2), schoolId);
-          if (appointmentBlockProperties.getLocationSelectionMode()
+          if (appointmentBlockConfig.getLocationSelectionMode()
               == LocationSelectionMode.HEALTH_DEPARTMENT) {
             assignLocationId(
                 response.entities().subList(0, numberOfEntitiesToPopulate / 2),

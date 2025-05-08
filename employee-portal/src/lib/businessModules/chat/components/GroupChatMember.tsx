@@ -72,8 +72,8 @@ export function GroupChatMember({
       {!isAdmin && (
         <IconButton
           color="primary"
-          onClick={handleKick}
           data-testid="remove-from-room"
+          onClick={handleKick}
         >
           <CloseOutlinedIcon />
         </IconButton>

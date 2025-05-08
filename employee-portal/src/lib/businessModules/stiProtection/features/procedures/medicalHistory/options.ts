@@ -30,7 +30,7 @@ export const sexualContactGenderOptions = buildEnumOptions<ApiGender>(
   sexualContactGenderNames,
 );
 
-export const sexualContactFactorNames = {
+const sexualContactFactorNames = {
   [ApiPartnerRiskFactors.Homosexual]: "Homosexuell",
   [ApiPartnerRiskFactors.BisexualMale]: "bisexueller Mann",
   [ApiPartnerRiskFactors.HivPositive]: "HIV-Positiv",
@@ -43,7 +43,7 @@ export const sexualContactFactorOptions = buildEnumOptions(
   sexualContactFactorNames,
 );
 
-export const sexWorkTypeNames = {
+const sexWorkTypeNames = {
   [ApiSexWorkLocation.Bordello]: "Bordell",
   [ApiSexWorkLocation.Club]: "Club",
   [ApiSexWorkLocation.Escort]: "Escort",
@@ -57,7 +57,7 @@ export const sexWorkTypeNames = {
 
 export const sexWorkTypeOptions = buildEnumOptions(sexWorkTypeNames);
 
-export const vaccineNames = {
+const vaccineNames = {
   [ApiVaccination.HepatitisA]: "Hepatitis A",
   [ApiVaccination.HepatitisB]: "Hepatitis B",
   [ApiVaccination.Hpv]: "HPV",
@@ -65,7 +65,7 @@ export const vaccineNames = {
 
 export const vaccineOptions = buildEnumOptions(vaccineNames);
 
-export const safeSexRegularityNames = {
+const safeSexRegularityNames = {
   [ApiSafeSexPractice.Always]: "Immer",
   [ApiSafeSexPractice.Frequently]: "Häufig",
   [ApiSafeSexPractice.Occasionally]: "Gelegentlich",
@@ -76,7 +76,7 @@ export const safeSexRegularityOptions = buildEnumOptions(
   safeSexRegularityNames,
 );
 
-export const stiProtectiveMeasuresNames = {
+const stiProtectiveMeasuresNames = {
   CONDOM: "Kondome",
   DENTAL_DAM: "Lecktuch",
   GLOVES: "Handschuhe",
@@ -97,11 +97,7 @@ export const standardRiskFactorNames = {
 
 export type StandardRiskFactor = keyof typeof standardRiskFactorNames;
 
-export const standardRiskFactorOptions = buildEnumOptions(
-  standardRiskFactorNames,
-);
-
-export const relationshipModelNames = {
+const relationshipModelNames = {
   NO_COMMITMENT: "Keine feste Beziehung",
   MONOGAMOUS: "Monogam",
   OPEN: "Offen",

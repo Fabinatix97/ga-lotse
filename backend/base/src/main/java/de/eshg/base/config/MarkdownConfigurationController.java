@@ -6,17 +6,19 @@
 package de.eshg.base.config;
 
 import static de.eshg.base.config.MarkdownConfigurationController.BASE_URL;
+import static de.eshg.base.config.MarkdownMapper.mapToFileName;
 import static de.eshg.config.mapper.MultiLangDocumentMapper.mapToDomain;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.ACCESSIBILITY_STATEMENT_MARKDOWN_CONFIG_API;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.ACKNOWLEDGEMENTS_MARKDOWN_CONFIG_API;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.CONFIGURATION_API_MARKDOWN_FILES_CITIZEN;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.CONFIGURATION_API_MARKDOWN_FILES_EMPLOYEE;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.CONTACT_MARKDOWN_CONFIG_API;
-import static de.eshg.rest.service.security.config.BaseUrls.Base.DECLARATION_OF_ACCESSIBILITY_MARKDOWN_CONFIG_API;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.IMPRINT_MARKDOWN_CONFIG_API;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.PRIVACY_POLICY_MARKDOWN_CONFIG_API;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.config.api.CitizenAndEmployeeMarkdownInfo;
+import de.eshg.base.config.api.GetMarkdownInfoResponse;
 import de.eshg.base.config.api.InternationalMarkdownInfo;
 import de.eshg.base.department.CitizenPortalMarkdownName;
 import de.eshg.base.department.EmployeePortalMarkdownName;
@@ -56,45 +58,42 @@ public class MarkdownConfigurationController {
 
   private final DepartmentConfigurationService departmentConfigurationService;
   private final BaseConfigurationProperties baseConfigurationProperties;
-  private final MarkdownMapper markdownMapper;
 
   public MarkdownConfigurationController(
       DepartmentConfigurationService departmentConfigurationService,
-      BaseConfigurationProperties baseConfigurationProperties,
-      MarkdownMapper markdownMapper) {
+      BaseConfigurationProperties baseConfigurationProperties) {
     this.departmentConfigurationService = departmentConfigurationService;
     this.baseConfigurationProperties = baseConfigurationProperties;
-    this.markdownMapper = markdownMapper;
   }
 
-  @GetMapping(DECLARATION_OF_ACCESSIBILITY_MARKDOWN_CONFIG_API)
+  @GetMapping(ACCESSIBILITY_STATEMENT_MARKDOWN_CONFIG_API)
   @Transactional(readOnly = true)
-  public CitizenAndEmployeeMarkdownInfo getAccessibilityInfo() {
-    return departmentConfigurationService.getAccessibilityInfo();
+  public GetMarkdownInfoResponse<CitizenAndEmployeeMarkdownInfo> getAccessibilityInfo() {
+    return new GetMarkdownInfoResponse<>(departmentConfigurationService.getAccessibilityInfo());
   }
 
   @GetMapping(ACKNOWLEDGEMENTS_MARKDOWN_CONFIG_API)
   @Transactional(readOnly = true)
-  public InternationalMarkdownInfo getAcknowledgementsInfo() {
-    return departmentConfigurationService.getAcknowledgementsInfo();
+  public GetMarkdownInfoResponse<InternationalMarkdownInfo> getAcknowledgementsInfo() {
+    return new GetMarkdownInfoResponse<>(departmentConfigurationService.getAcknowledgementsInfo());
   }
 
   @GetMapping(CONTACT_MARKDOWN_CONFIG_API)
   @Transactional(readOnly = true)
-  public InternationalMarkdownInfo getContactInfo() {
-    return departmentConfigurationService.getContactInfo();
+  public GetMarkdownInfoResponse<InternationalMarkdownInfo> getContactInfo() {
+    return new GetMarkdownInfoResponse<>(departmentConfigurationService.getContactInfo());
   }
 
   @GetMapping(IMPRINT_MARKDOWN_CONFIG_API)
   @Transactional(readOnly = true)
-  public InternationalMarkdownInfo getImprintInfo() {
-    return departmentConfigurationService.getImprintInfo();
+  public GetMarkdownInfoResponse<InternationalMarkdownInfo> getImprintInfo() {
+    return new GetMarkdownInfoResponse<>(departmentConfigurationService.getImprintInfo());
   }
 
   @GetMapping(PRIVACY_POLICY_MARKDOWN_CONFIG_API)
   @Transactional(readOnly = true)
-  public CitizenAndEmployeeMarkdownInfo getPrivacyInfo() {
-    return departmentConfigurationService.getPrivacyInfo();
+  public GetMarkdownInfoResponse<CitizenAndEmployeeMarkdownInfo> getPrivacyInfo() {
+    return new GetMarkdownInfoResponse<>(departmentConfigurationService.getPrivacyInfo());
   }
 
   @GetMapping(CONFIGURATION_API_MARKDOWN_FILES_CITIZEN + "/{name}/{lang}")
@@ -103,7 +102,7 @@ public class MarkdownConfigurationController {
       @PathVariable("name") CitizenPortalMarkdownName name,
       @PathVariable("lang") LanguageDto lang) {
     return markdownAttachmentResponse(
-        markdownMapper.getFileName(name, lang),
+        mapToFileName(name, lang),
         new ByteArrayResource(
             departmentConfigurationService.getSpecificMarkdownOrThrow(name, mapToDomain(lang))));
   }
@@ -114,13 +113,13 @@ public class MarkdownConfigurationController {
       @PathVariable("name") EmployeePortalMarkdownName name,
       @PathVariable("lang") LanguageDto lang) {
     return markdownAttachmentResponse(
-        markdownMapper.getFileName(name, lang),
+        mapToFileName(name, lang),
         new ByteArrayResource(
             departmentConfigurationService.getSpecificMarkdownOrThrow(name, mapToDomain(lang))));
   }
 
   @PutMapping(
-      value = DECLARATION_OF_ACCESSIBILITY_MARKDOWN_CONFIG_API,
+      value = ACCESSIBILITY_STATEMENT_MARKDOWN_CONFIG_API,
       consumes = MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updateAccessibilityMarkdown(

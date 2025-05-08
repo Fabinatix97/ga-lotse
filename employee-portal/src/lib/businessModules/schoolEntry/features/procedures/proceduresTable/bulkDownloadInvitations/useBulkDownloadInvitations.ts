@@ -15,7 +15,7 @@ import { DownloadNotPossibleDialogProps } from "@/lib/businessModules/schoolEntr
 
 import { PartialDownloadDialogProps } from "./PartialDownloadDialog";
 
-export interface UseBulkDownloadInvitationsResult {
+interface UseBulkDownloadInvitationsResult {
   startDownload: (
     procedures: Procedure[],
     selectedProcedureIds: string[],

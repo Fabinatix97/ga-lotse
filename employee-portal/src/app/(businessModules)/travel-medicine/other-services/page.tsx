@@ -15,7 +15,7 @@ export default function OtherServicesOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Sonstige Leistungen" />}>
       <MainContentLayout>
-        <OtherServiceTable></OtherServiceTable>
+        <OtherServiceTable />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

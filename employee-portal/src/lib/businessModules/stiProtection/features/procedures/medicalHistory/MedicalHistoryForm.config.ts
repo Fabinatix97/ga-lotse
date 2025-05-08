@@ -6,8 +6,6 @@
 import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { YesOrNoFieldData } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import {
-  ApiConcern,
-  ApiCreateMedicalHistoryRequest,
   ApiExamination,
   ApiGender,
   ApiPartnerRiskFactors,
@@ -87,7 +85,7 @@ const defaultStandardRisks: StandardRiskFactors = {
   unprotectedOral: defaultStandardRiskQuestion,
 };
 
-export const defaultVaccinations: VaccinationData = [];
+const defaultVaccinations: VaccinationData = [];
 
 export interface MedicalHistoryFormData {
   general: GeneralData;
@@ -123,7 +121,7 @@ export interface GeneralData {
   numberOfPregnancies: number | "";
 }
 
-export type VaccinationData = ApiVaccination[];
+type VaccinationData = ApiVaccination[];
 
 export interface PreventionData {
   vaccinations: VaccinationData;
@@ -140,17 +138,6 @@ export interface SexualOrientationAndContactData {
   startInSexWork: MonthAndYear;
   sexWorkType: ApiSexWorkLocation[];
 }
-
-type MedicalHistoryType =
-  ApiCreateMedicalHistoryRequest["medicalHistory"]["type"];
-
-export const medicalHistoryTypeByConcern: Record<
-  ApiConcern,
-  MedicalHistoryType
-> = {
-  [ApiConcern.SexWork]: "SexWorkMedicalHistory",
-  [ApiConcern.HivStiConsultation]: "StiConsultationMedicalHistory",
-} satisfies Record<ApiConcern, MedicalHistoryType>;
 
 export function defaultMedicalHistoryFormValues(): MedicalHistoryFormData {
   return {

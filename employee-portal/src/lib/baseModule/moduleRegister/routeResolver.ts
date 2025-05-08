@@ -71,13 +71,3 @@ export function resolveProcedureProgressEntriesRoute(
         .progressEntries;
   }
 }
-
-export function resolveTeamviewRoute(businessModule: ApiBusinessModule) {
-  if (businessModule === "INSPECTION") {
-    return inspectionRoutes.teamview.index;
-  } else {
-    throw new Error(
-      `Teamview not implemented for business module ${businessModule}`,
-    );
-  }
-}

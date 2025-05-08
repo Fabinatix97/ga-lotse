@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MarkdownPage } from "@/lib/baseModule/components/MarkdownPage";
+"use client";
+
+import { ClientMarkdownPage } from "@/lib/baseModule/components/ClientMarkdownPage";
+import { useGetCitizenPortalMarkdown } from "@/lib/shared/api/queries/department";
 
 export default function ImprintPage() {
-  return <MarkdownPage pageType="imprint" title="Impressum" />;
+  const source = useGetCitizenPortalMarkdown("IMPRINT");
+  return <ClientMarkdownPage title="Impressum" source={source.data} />;
 }

@@ -19,13 +19,16 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { ToothDiagnoses } from "@/api/models/ExaminationResult";
-import { ChildExamination } from "@/features/children/api/models/ChildExamination";
-import { useUpdateExamination } from "@/features/children/api/mutations/details";
-import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
-import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "@/translations/examination";
-import { ExaminationFormValues } from "@/types/examination";
-import { mapToExaminationFormValues } from "@/utils/examination";
+import { ToothDiagnoses } from "../../../../api/models/ExaminationResult";
+import { useExaminationStore } from "../../../../stores/examination/ExaminationStoreProvider";
+import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "../../../../translations/examination";
+import { ExaminationFormValues } from "../../../../types/examination";
+import {
+  mapToExaminationFormValues,
+  mapToothDiagnosesToRequest,
+} from "../../../../utils/examination";
+import { ChildExamination } from "../../api/models/ChildExamination";
+import { useUpdateExamination } from "../../api/mutations/details";
 
 interface ChildExaminationFormProps extends RequiresChildren {
   examination: ChildExamination;
@@ -60,8 +63,8 @@ export function ChildExaminationForm(props: ChildExaminationFormProps) {
         examination.note,
         examination.prophylaxisDentitionType,
       )}
-      onSubmit={handleSubmit}
       enableReinitialize
+      onSubmit={handleSubmit}
     >
       {({ handleSubmit, isSubmitting }) => {
         return (
@@ -113,7 +116,7 @@ function mapExaminationResultRequest(
       calculus: formValues.calculus,
       gingivitis: formValues.gingivitis,
       parodontitis: formValues.parodontitis,
-      toothDiagnoses: Object.values(toothDiagnoses),
+      toothDiagnoses: mapToothDiagnosesToRequest(toothDiagnoses),
     };
   }
 

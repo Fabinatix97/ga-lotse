@@ -811,6 +811,61 @@
         "tags" : [ "ConfigStatus" ]
       }
     },
+    "/configuration/accessibility-statement" : {
+      "get" : {
+        "operationId" : "getAccessibilityInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseCitizenAndEmployeeMarkdownInfo"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updateAccessibilityMarkdown",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "citizen_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "citizen_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "employee_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "employee_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "citizen_de", "employee_de" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MarkdownConfiguration" ]
+      }
+    },
     "/configuration/acknowledgements" : {
       "get" : {
         "operationId" : "getAcknowledgementsInfo",
@@ -819,7 +874,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseInternationalMarkdownInfo"
                 }
               }
             },
@@ -866,7 +921,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseInternationalMarkdownInfo"
                 }
               }
             },
@@ -893,61 +948,6 @@
                   }
                 },
                 "required" : [ "de" ]
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "MarkdownConfiguration" ]
-      }
-    },
-    "/configuration/declaration-of-accessibility" : {
-      "get" : {
-        "operationId" : "getAccessibilityInfo",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/CitizenAndEmployeeMarkdownInfo"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "MarkdownConfiguration" ]
-      },
-      "put" : {
-        "operationId" : "updateAccessibilityMarkdown",
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "citizen_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "citizen_en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "employee_de" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
-                  "employee_en" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  }
-                },
-                "required" : [ "citizen_de", "employee_de" ]
               }
             }
           }
@@ -1005,7 +1005,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseInternationalMarkdownInfo"
                 }
               }
             },
@@ -1120,7 +1120,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PrivacyDocument"
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
                 }
               }
             },
@@ -1159,6 +1159,33 @@
         "tags" : [ "BasePrivacyDocuments" ]
       }
     },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "BasePrivacyDocuments" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-policy" : {
       "get" : {
         "operationId" : "getPrivacyPolicyConfig",
@@ -1167,7 +1194,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PrivacyDocument"
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
                 }
               }
             },
@@ -1206,6 +1233,33 @@
         "tags" : [ "BasePrivacyDocuments" ]
       }
     },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "BasePrivacyDocuments" ]
+      }
+    },
     "/configuration/privacy-policy" : {
       "get" : {
         "operationId" : "getPrivacyInfo",
@@ -1214,7 +1268,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/CitizenAndEmployeeMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseCitizenAndEmployeeMarkdownInfo"
                 }
               }
             },
@@ -5309,6 +5363,34 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/population/contacts/daycares" : {
+      "post" : {
+        "operationId" : "populateDaycareContacts",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PopulationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchContactsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/population/contacts/health-departments" : {
       "post" : {
         "operationId" : "populateHealthDepartmentContacts",
@@ -9274,6 +9356,22 @@
           }
         }
       },
+      "GetMarkdownInfoResponseCitizenAndEmployeeMarkdownInfo" : {
+        "type" : "object",
+        "properties" : {
+          "markdownInfo" : {
+            "$ref" : "#/components/schemas/CitizenAndEmployeeMarkdownInfo"
+          }
+        }
+      },
+      "GetMarkdownInfoResponseInternationalMarkdownInfo" : {
+        "type" : "object",
+        "properties" : {
+          "markdownInfo" : {
+            "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+          }
+        }
+      },
       "GetMergedContactsResponse" : {
         "required" : [ "contactIds" ],
         "type" : "object",
@@ -9521,6 +9619,14 @@
       "GetPersonsSortKey" : {
         "type" : "string",
         "enum" : [ "FIRST_NAME", "LAST_NAME", "DATE_OF_BIRTH" ]
+      },
+      "GetPrivacyDocumentConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "privacyDocument" : {
+            "$ref" : "#/components/schemas/PrivacyDocument"
+          }
+        }
       },
       "GetProcedureConfigResponse" : {
         "type" : "object",

@@ -45,7 +45,7 @@ import {
   shouldShowMessageTeaser,
 } from "@/lib/businessModules/chat/shared/utils";
 
-export interface ChatClientContextType {
+interface ChatClientContextType {
   matrixClient: MatrixClient;
   clientState: ClientState;
   setClientState: Dispatch<SetStateAction<ClientState>>;
@@ -202,5 +202,3 @@ export function useChatClientContext() {
   }
   return chatContext;
 }
-
-export { ChatClientContext as ChatContext, ChatClientProvider as ChatProvider };

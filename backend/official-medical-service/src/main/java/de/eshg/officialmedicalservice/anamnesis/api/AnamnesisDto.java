@@ -129,9 +129,18 @@ public record AnamnesisDto(
     public record HeartDiseaseSegmentDto(
         @NotNull @Answer YesNoDontKnowAnswerDto answer,
         @NotEmptyIfAnswerIsYes @NullOrEmptyIfAnswerIsNotYes List<@NotNull HeartDiseaseDto> which,
-        @NotNullIfAnswerIsYes @NullIfAnswerIsNotYes Boolean bypass,
-        @NotNullIfAnswerIsYes @NullIfAnswerIsNotYes Boolean stent)
-        implements ValidationBasedOnAnswer {}
+        @NullIfAnswerIsNotYes Boolean bypass,
+        @NullIfAnswerIsNotYes Boolean stent)
+        implements ValidationBasedOnAnswer {
+      @AssertTrue
+      private boolean isValidDependingOnWhich() {
+        if (which == null || !which.contains(HeartDiseaseDto.CORONARY_HEART_DISEASE)) {
+          return bypass == null && stent == null;
+        } else {
+          return bypass != null && stent != null;
+        }
+      }
+    }
 
     @Schema(name = "CancerSegment")
     public record CancerSegmentDto(

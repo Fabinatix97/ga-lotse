@@ -4,6 +4,12 @@
  */
 
 import { ConfigurationParameters } from "@eshg/base-api";
+import {
+  ConfigStatusApi,
+  DepartmentInfoConfigApi,
+  Configuration as LibConfigConfiguration,
+  OpeningHoursApi,
+} from "@eshg/lib-config-api";
 import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   ApiBusinessModule,
@@ -14,7 +20,17 @@ import {
   Configuration as LibStatisticsConfiguration,
   StatisticsProcedureReferenceApi,
 } from "@eshg/lib-statistics-api";
+import {
+  SexWorkConfigStatusApi,
+  SexWorkDepartmentInfoConfigApi,
+  SexWorkOpeningHoursApi,
+  StiConsultationConfigStatusApi,
+  StiConsultationDepartmentInfoConfigApi,
+  StiConsultationOpeningHoursApi,
+} from "@eshg/sti-protection-api";
 
+import { useConfiguration as useStiProtectionConfiguration } from "@/lib/businessModules/stiProtection/api/clients";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 type ConfigurationConstructor<TConfiguration> = new (
@@ -34,7 +50,7 @@ const businessModuleBackendUrls = {
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
-export function useConfigurationByBusinessModule<TConfiguration>(
+function useConfigurationByBusinessModule<TConfiguration>(
   businessModule: ApiBusinessModule,
   Configuration: ConfigurationConstructor<TConfiguration>,
 ): TConfiguration {
@@ -61,4 +77,78 @@ export function useStatisticsProcedureReferenceApi(
     LibStatisticsConfiguration,
   );
   return new StatisticsProcedureReferenceApi(configuration);
+}
+
+// GA-Configurator
+// note: STI_PROTECTION and SEX_WORK have different paths
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+const { INSPECTION, DENTAL, ...configBusinessModuleBackendUrls } =
+  businessModuleBackendUrls;
+const configuratorModuleBackendUrls = {
+  ...configBusinessModuleBackendUrls,
+  BASE: "PUBLIC_BASE_BACKEND_URL",
+  OPEN_DATA: "PUBLIC_OPENDATA_BACKEND_URL",
+  SEX_WORK: "PUBLIC_STI_PROTECTION_BACKEND_URL",
+} as const;
+
+function useConfiguratorConfigurationByModule<TConfiguration>(
+  configuratorModule: ConfiguratorModuleName,
+  Configuration: ConfigurationConstructor<TConfiguration>,
+): TConfiguration {
+  const configurationParameters = useEmployeePortalApiConfiguration(
+    configuratorModuleBackendUrls[configuratorModule],
+  );
+  return new Configuration(configurationParameters);
+}
+
+export function useConfiguratorStatusApi(
+  configuratorModule: ConfiguratorModuleName,
+) {
+  const configuration = useConfiguratorConfigurationByModule(
+    configuratorModule,
+    LibConfigConfiguration,
+  );
+  const stiConfiguration = useStiProtectionConfiguration();
+
+  if (configuratorModule === "STI_PROTECTION") {
+    return new StiConsultationConfigStatusApi(stiConfiguration);
+  } else if (configuratorModule === "SEX_WORK") {
+    return new SexWorkConfigStatusApi(stiConfiguration);
+  }
+  return new ConfigStatusApi(configuration);
+}
+
+export function useConfiguratorDepartmentInfoApi(
+  configuratorModule: ConfiguratorModuleName,
+) {
+  const configuration = useConfiguratorConfigurationByModule(
+    configuratorModule,
+    LibConfigConfiguration,
+  );
+  const stiConfiguration = useStiProtectionConfiguration();
+
+  if (configuratorModule === "STI_PROTECTION") {
+    return new StiConsultationDepartmentInfoConfigApi(stiConfiguration);
+  } else if (configuratorModule === "SEX_WORK") {
+    return new SexWorkDepartmentInfoConfigApi(stiConfiguration);
+  }
+  return new DepartmentInfoConfigApi(configuration);
+}
+
+export function useConfiguratorOpeningHoursApi(
+  configuratorModule: ConfiguratorModuleName,
+) {
+  const configuration = useConfiguratorConfigurationByModule(
+    configuratorModule,
+    LibConfigConfiguration,
+  );
+  const stiConfiguration = useStiProtectionConfiguration();
+
+  if (configuratorModule === "STI_PROTECTION") {
+    return new StiConsultationOpeningHoursApi(stiConfiguration);
+  } else if (configuratorModule === "SEX_WORK") {
+    return new SexWorkOpeningHoursApi(stiConfiguration);
+  }
+  return new OpeningHoursApi(configuration);
 }

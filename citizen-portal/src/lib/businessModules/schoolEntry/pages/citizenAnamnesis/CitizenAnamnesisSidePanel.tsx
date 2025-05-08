@@ -21,7 +21,7 @@ import {
 } from "@/lib/shared/components/infoSection";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
-export interface CitizenAnamnesisSidePanelProps {
+interface CitizenAnamnesisSidePanelProps {
   child: ApiCitizenChild;
 }
 
@@ -57,9 +57,7 @@ export function CitizenAnamnesisSidePanel({
         </InternalLinkButton>
       )}
       {currentStep === totalSteps && (
-        <>
-          <Button onClick={() => handleSubmit()}>{t("result.submit")}</Button>
-        </>
+        <Button onClick={() => handleSubmit()}>{t("result.submit")}</Button>
       )}
       {currentStep > 1 && (
         <Button variant="soft" color="neutral" onClick={goBack}>

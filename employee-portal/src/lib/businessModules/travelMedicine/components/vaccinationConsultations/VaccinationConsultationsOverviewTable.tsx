@@ -165,20 +165,20 @@ export function VaccinationConsultationsOverviewTable(
           <Stack direction="row" gap={3} alignItems="center">
             <Stack direction="row" gap={1}>
               <TextInputClientFilter
-                placeholder={"Vorname"}
-                type={"search"}
+                placeholder="Vorname"
+                type="search"
                 setInputField={setFirstName}
                 sx={{ height: "36px" }}
               />
               <TextInputClientFilter
-                placeholder={"Nachname"}
-                type={"search"}
+                placeholder="Nachname"
+                type="search"
                 setInputField={setLastName}
                 sx={{ height: "36px" }}
               />
               <TextInputClientFilter
-                placeholder={"Geburtsdatum"}
-                type={"date"}
+                placeholder="Geburtsdatum"
+                type="date"
                 setInputField={setDateOfBirth}
                 sx={{ height: "36px" }}
               />
@@ -189,10 +189,10 @@ export function VaccinationConsultationsOverviewTable(
               value={status}
               placeholder="Vorgangsstatus"
               aria-label="Vorgangsstatus"
-              onChange={(_, value) => setStatus(value)}
               sx={{
                 width: "200px",
               }}
+              onChange={(_, value) => setStatus(value)}
             >
               <SelectOptions options={getStatusOptions()} />
             </Select>
@@ -201,6 +201,7 @@ export function VaccinationConsultationsOverviewTable(
                 <Input
                   type="date"
                   value={dayOfAppointmentFilter ?? ""}
+                  aria-label="Termin zu Datum"
                   onChange={(dayOfAppointment) => {
                     const value = dayOfAppointment.target.value;
                     if (isDateString(value)) {
@@ -209,7 +210,6 @@ export function VaccinationConsultationsOverviewTable(
                       updateTimeRange(newDate);
                     }
                   }}
-                  aria-label="Termin zu Datum"
                 />
               </FormControl>
               <IconButton
@@ -217,12 +217,12 @@ export function VaccinationConsultationsOverviewTable(
                 variant="outlined"
                 size="md"
                 sx={{ padding: "4px 16px" }}
+                aria-label="Termine heute"
                 onClick={() => {
                   const newDate = new Date();
                   setDayOfAppointmentFilter(toDateString(newDate));
                   updateTimeRange(newDate);
                 }}
-                aria-label="Termine heute"
               >
                 Heute
               </IconButton>
@@ -230,8 +230,8 @@ export function VaccinationConsultationsOverviewTable(
                 color="primary"
                 variant="outlined"
                 size="md"
-                onClick={setPrevDay}
                 aria-label="Termine vorheriger Tag"
+                onClick={setPrevDay}
               >
                 <KeyboardArrowLeftOutlined size="sm" />
               </IconButton>
@@ -239,8 +239,8 @@ export function VaccinationConsultationsOverviewTable(
                 color="primary"
                 variant="outlined"
                 size="md"
-                onClick={setNextDay}
                 aria-label="Termine nächster Tag"
+                onClick={setNextDay}
               >
                 <KeyboardArrowRightOutlined size="sm" />
               </IconButton>

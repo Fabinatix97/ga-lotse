@@ -16,11 +16,11 @@ import {
   useGetLandingContent,
   useGetOpeningHoursQuery,
 } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
-import { OpeningHoursSection } from "@/lib/businessModules/officialMedicalService/shared/components/OpeningHoursSection";
 import { useTranslation } from "@/lib/i18n/client";
 import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
 import { EmailSection } from "@/lib/shared/components/EmailSection";
+import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
 import { PhoneSection } from "@/lib/shared/components/PhoneSection";
 import { InfoSectionGrid } from "@/lib/shared/components/infoSection";
 import {
@@ -46,8 +46,8 @@ export function LandingpageContent(props: Readonly<LandingpageContentProps>) {
       <ContentSheet>
         <ContentSheetTitle>{t("information.title")}</ContentSheetTitle>
         {landingContent.elements.map((element) => (
-          <Stack gap={0.5} key={element.elementHeader.de}>
-            <Typography level={"title-md"} sx={{ whiteSpace: "pre-wrap" }}>
+          <Stack key={element.elementHeader.de} gap={0.5}>
+            <Typography level="title-md" sx={{ whiteSpace: "pre-wrap" }}>
               {
                 element.elementHeader[
                   i18n.language as keyof ApiLandingElementHeaderConfig
@@ -86,7 +86,7 @@ export function LandingpageContent(props: Readonly<LandingpageContentProps>) {
           <PhoneSection
             department={props.departmentInfo}
             localePath="officialMedicalService/landing"
-          ></PhoneSection>
+          />
           <OpeningHoursSection
             openingHours={openingHours}
             localePath="officialMedicalService/landing"
@@ -94,7 +94,7 @@ export function LandingpageContent(props: Readonly<LandingpageContentProps>) {
           <EmailSection
             department={props.departmentInfo}
             localePath="officialMedicalService/landing"
-          ></EmailSection>
+          />
         </InfoSectionGrid>
       </ContentSheet>
     </GridColumnStack>

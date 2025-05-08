@@ -5,10 +5,7 @@
 
 import { Input } from "@mui/joy";
 
-import {
-  DateFilterDefinition,
-  DateFilterValue,
-} from "@/features/filters/types/DateFilter";
+import { DateFilterDefinition, DateFilterValue } from "../../types/DateFilter";
 
 interface DateFilterProps {
   definition: DateFilterDefinition;
@@ -32,8 +29,8 @@ export function DateFilter(props: DateFilterProps) {
     <Input
       type="date"
       value={props.value?.selectedValue ?? ""}
-      onChange={(event) => handleChange(event.target.value)}
       sx={{ width: "100%" }}
+      onChange={(event) => handleChange(event.target.value)}
     />
   );
 }

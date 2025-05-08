@@ -59,9 +59,9 @@ export function CheckboxField({
         slots={{
           label: RequiredFormLabel, // Joy UI does not pass required flag to checkbox labels
         }}
+        sx={props.sx}
         onChange={input.onChange}
         onBlur={input.onBlur}
-        sx={props.sx}
       />
       {isDefined(descriptionText) && (
         <DescriptionText>{descriptionText}</DescriptionText>

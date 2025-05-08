@@ -85,15 +85,15 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
       validateOnBlur={false}
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, values, setFieldValue, setFieldTouched }) => (
         <SidebarForm ref={props.formRef}>
           <SidebarContent title={props.title}>
             <Stack gap={2} rowGap={4}>
-              <Typography level={"title-md"}>Angaben zum Dokument</Typography>
+              <Typography level="title-md">Angaben zum Dokument</Typography>
               <Stack direction="column" gap={1}>
                 <InputField
                   name="documentTypeDe"
@@ -118,8 +118,8 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                   />
                 ) : (
                   <FormAddMoreButton
-                    onClick={() => setFieldValue("documentTypeEn", "", false)}
                     aria-label="Dokument Übersetzen"
+                    onClick={() => setFieldValue("documentTypeEn", "", false)}
                   >
                     Übersetzung ergänzen
                   </FormAddMoreButton>
@@ -145,8 +145,8 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                   />
                 ) : (
                   <FormAddMoreButton
-                    onClick={() => setFieldValue("helpTextEn", "", false)}
                     aria-label="Hilfstext Übersetzen"
+                    onClick={() => setFieldValue("helpTextEn", "", false)}
                   >
                     Übersetzung ergänzen
                   </FormAddMoreButton>
@@ -195,9 +195,9 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                   <Stack gap={2}>
                     <FilesSection
                       name="files"
-                      canAdd={true}
+                      canAdd
                       canRemoveLast={false}
-                      withInitialField={true}
+                      withInitialField
                       addLabel="Weitere Datei hochladen"
                     />
                     <InputField name="note" label="Stichwörter" />

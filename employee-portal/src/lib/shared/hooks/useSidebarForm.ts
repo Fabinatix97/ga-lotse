@@ -10,11 +10,11 @@ import {
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 
-export interface UseSidebarFormProps {
+interface UseSidebarFormProps {
   onClose: () => void;
 }
 
-export interface UseSidebarForm {
+interface UseSidebarForm {
   closeSidebar: () => void;
   handleClose: () => void;
   sidebarFormRef: Ref<SidebarFormHandle>;

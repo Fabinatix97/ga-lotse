@@ -8,16 +8,16 @@ package de.eshg.schoolentry.testhelper;
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
+import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.api.CreateProcedureResponse;
 import de.eshg.schoolentry.api.GetClosedProceduresResponse;
 import de.eshg.schoolentry.api.SchoolEntryAppointmentBlockPopulationResult;
 import de.eshg.schoolentry.api.SchoolEntryProcedurePopulationResult;
 import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.api.PopulationRequest;
@@ -40,29 +40,29 @@ public class SchoolEntryTestHelperController extends TestHelperController
 
   private final SchoolEntryTestHelperService schoolEntryTestHelperService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
-  private final SchoolEntryProperties schoolEntryProperties;
   private final SchoolEntryProceduresPopulator schoolEntryProceduresPopulator;
   private final AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator;
   private final AuditLogTestHelperService auditLogTestHelperService;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final SchoolEntryConfigService schoolEntryConfigService;
+  private final AppointmentBlockConfig appointmentBlockConfig;
 
   public SchoolEntryTestHelperController(
       SchoolEntryTestHelperService schoolEntryTestHelperService,
       SchoolEntryFeatureToggle schoolEntryFeatureToggle,
-      SchoolEntryProperties schoolEntryProperties,
       SchoolEntryProceduresPopulator schoolEntryProceduresPopulator,
       AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
       AuditLogTestHelperService auditLogTestHelperService,
-      AppointmentBlockProperties appointmentBlockProperties,
+      SchoolEntryConfigService schoolEntryConfigService,
+      AppointmentBlockConfig appointmentBlockConfig,
       EnvironmentConfig environmentConfig) {
     super(schoolEntryTestHelperService, environmentConfig);
     this.schoolEntryTestHelperService = schoolEntryTestHelperService;
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
-    this.schoolEntryProperties = schoolEntryProperties;
     this.schoolEntryProceduresPopulator = schoolEntryProceduresPopulator;
     this.appointmentBlockGroupsPopulator = appointmentBlockGroupsPopulator;
     this.auditLogTestHelperService = auditLogTestHelperService;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.schoolEntryConfigService = schoolEntryConfigService;
+    this.appointmentBlockConfig = appointmentBlockConfig;
   }
 
   @GetExchange("/school-entries/{procedureId}/citizen-user-id")
@@ -96,14 +96,16 @@ public class SchoolEntryTestHelperController extends TestHelperController
   }
 
   @PostExchange("/location-selection-mode/{newLocationSelectionMode}")
+  @Transactional
   public void updateLocationSelectionMode(
       @PathVariable("newLocationSelectionMode") LocationSelectionMode newLocationSelectionMode) {
-    appointmentBlockProperties.setLocationSelectionMode(newLocationSelectionMode);
+    appointmentBlockConfig.setLocationSelectionMode(newLocationSelectionMode);
   }
 
   @PostExchange("/direct-procedure-type-assignment-on-import")
+  @Transactional
   public void enableDirectProcedureTypeAssignmentOnImport() {
-    schoolEntryProperties.setDirectProcedureTypeAssignmentOnImport(true);
+    schoolEntryConfigService.updateDirectProcedureTypeAssignmentOnImport(true);
   }
 
   @PostExchange("/population/procedures")

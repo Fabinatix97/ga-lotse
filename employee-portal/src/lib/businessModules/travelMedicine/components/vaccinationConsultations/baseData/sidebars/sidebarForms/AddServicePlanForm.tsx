@@ -53,8 +53,8 @@ export function AddServicePlanForm(props: Readonly<AddServicePlanFormProps>) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>

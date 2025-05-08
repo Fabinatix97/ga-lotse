@@ -20,7 +20,7 @@ import {
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 
-export interface CentralFileFacility {
+interface CentralFileFacility {
   readonly name: string;
   readonly contactAddress?: BaseAddress;
   readonly emailAddresses?: string[];
@@ -28,7 +28,7 @@ export interface CentralFileFacility {
   readonly contactPersons?: ApiFacilityContactPerson[];
 }
 
-export interface CentralFileFacilityDetailsProps<T> {
+interface CentralFileFacilityDetailsProps<T> {
   readonly facility: T;
   readonly columnSx?: SxProps;
   readonly children?: ReactNode;

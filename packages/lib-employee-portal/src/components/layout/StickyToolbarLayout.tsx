@@ -6,7 +6,7 @@
 import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { useHeaderHeights } from "@/hooks/useHeaderHeights";
+import { useHeaderHeights } from "../../hooks/useHeaderHeights";
 
 interface StickyToolbarLayoutProps {
   children: ReactNode;

@@ -36,7 +36,3 @@ export function useCitizenNavigationItems(): NavigationItem[] {
     },
   ];
 }
-
-export function useOrganizationNavigationItems(): NavigationItem[] {
-  return [];
-}

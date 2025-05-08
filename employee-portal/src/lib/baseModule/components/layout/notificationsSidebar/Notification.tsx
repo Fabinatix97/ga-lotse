@@ -28,7 +28,7 @@ export function Notification({
   );
   return (
     <Card variant="soft" data-testid="notification">
-      <Stack direction={"row"} alignItems={"center"} gap={1}>
+      <Stack direction="row" alignItems="center" gap={1}>
         {specificNotificationProps.severity === "info" && (
           <NotificationsIcon color="neutral" />
         )}

@@ -43,7 +43,7 @@ export interface CreateProcedureValues {
 }
 const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
 
-export interface VaccinationConsultationPageProps {
+interface VaccinationConsultationPageProps {
   procedure: ApiGetVaccinationConsultationDetailsResponse;
 }
 
@@ -88,7 +88,7 @@ export function VaccinationConsultationDetails(
             />
           )}
       </Grid>
-      <Grid xs={9} display={"flex"} data-testid={"patient"}>
+      <Grid xs={9} display="flex" data-testid="patient">
         <PatientPanel
           procedureId={initialValues.externalId}
           patient={initialValues.patient}
@@ -119,7 +119,7 @@ export function VaccinationConsultationDetails(
             initialValues.initialAppointmentProcedureStepId
           }
           createdByUserType={initialValues.createdByUserType}
-        ></ServicePlanTable>
+        />
       </Grid>
     </DetailsGrid>
   );

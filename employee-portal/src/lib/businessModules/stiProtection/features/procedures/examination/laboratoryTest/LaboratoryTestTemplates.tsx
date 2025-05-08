@@ -8,9 +8,10 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren, ReactNode } from "react";
 
-import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 
 import {
@@ -20,7 +21,7 @@ import {
 
 import { LaboratoryTestExaminationData } from "./helpers";
 
-export interface LaboratoryTestProps extends PropsWithChildren {
+interface LaboratoryTestProps extends PropsWithChildren {
   testRequestedPath: string;
   label: string;
   sx?: SxProps;
@@ -59,60 +60,76 @@ function LaboratoryTest(props: LaboratoryTestProps) {
   );
 }
 
-export interface LaboratoryTestWithBooleanResultProps
-  extends LaboratoryTestProps {
+interface LaboratoryTestWithBooleanResultProps extends LaboratoryTestProps {
   dataPath: string;
   positiveFieldLabel?: string;
   topField?: ReactNode;
+  middleField?: ReactNode;
   bottomField?: ReactNode;
 }
 
 export function LaboratoryTestWithBooleanResult(
   props: LaboratoryTestWithBooleanResultProps,
 ) {
-  const { testRequestedPath, label, dataPath } = props;
+  const {
+    dataPath,
+    label,
+    testRequestedPath,
+    middleField,
+    topField,
+    bottomField,
+  } = props;
   const positiveFieldLabel = props.positiveFieldLabel ?? "Positiv";
 
   return (
     <LaboratoryTest label={label} testRequestedPath={testRequestedPath}>
-      {props.topField ? (
+      {topField && (
         <Grid paddingLeft={0} sx={{ gridColumn: 1 }}>
-          {props.topField}
+          {topField}
         </Grid>
-      ) : undefined}
+      )}
       <SubRow sx={{ gridColumn: 1 }}>
         <YesOrNoWithFollowUp
           name={`${dataPath}.result`}
-          label={"Ergebnis"}
-          negativeLabel={"Negativ"}
+          label="Ergebnis"
+          negativeLabel="Negativ"
           positiveLabel={positiveFieldLabel}
         />
         <InputField
           sx={{ gridColumn: 2 }}
           name={`${dataPath}.value`}
-          label={"Wert"}
+          label="Wert"
         />
       </SubRow>
-      <TextareaField
-        sx={{ gridColumn: 1 }}
-        name={`${dataPath}.remark`}
-        label={"Bemerkung"}
-        minRows={2}
-      />
-      {props.bottomField ? (
+      {middleField && (
         <Grid
           paddingLeft={0}
           paddingRight={0}
           sx={{ gridColumn: 1, gridColumnEnd: 3 }}
         >
-          {props.bottomField}
+          {middleField}
         </Grid>
-      ) : undefined}
+      )}
+      <TextareaField
+        sx={{ gridColumn: 1 }}
+        name={`${dataPath}.remark`}
+        label="Bemerkung"
+        minRows={2}
+      />
+      {bottomField && (
+        <Grid
+          paddingLeft={0}
+          paddingRight={0}
+          sx={{ gridColumn: 1, gridColumnEnd: 3 }}
+        >
+          {bottomField}
+        </Grid>
+      )}
     </LaboratoryTest>
   );
 }
 
-export interface ImmunityLaboratoryTestProps extends LaboratoryTestProps {
+interface ImmunityLaboratoryTestProps extends LaboratoryTestProps {
   dataPath: string;
   bottomField?: ReactNode;
 }
@@ -125,24 +142,24 @@ export function ImmunityLaboratoryTest(props: ImmunityLaboratoryTestProps) {
       <SubRow sx={{ gridColumn: 1 }}>
         <YesOrNoWithFollowUp
           name={`${dataPath}.result`}
-          label={"Ergebnis"}
-          negativeLabel={"Negativ"}
-          positiveLabel={"Positiv"}
+          label="Ergebnis"
+          negativeLabel="Negativ"
+          positiveLabel="Positiv"
         />
         <InputField
           sx={{ gridColumn: 2 }}
           name={`${dataPath}.value`}
-          label={"Wert"}
+          label="Wert"
         />
       </SubRow>
       <SubRow sx={{ gridColumn: 1, display: "flex" }}>
-        <CheckboxField name={`${dataPath}.infection`} label={"Infektion"} />
-        <CheckboxField name={`${dataPath}.vaccineTitre`} label={"Impftiter"} />
+        <CheckboxField name={`${dataPath}.infection`} label="Infektion" />
+        <CheckboxField name={`${dataPath}.vaccineTitre`} label="Impftiter" />
       </SubRow>
       <TextareaField
         sx={{ gridColumn: 1 }}
         name={`${dataPath}.remark`}
-        label={"Bemerkung"}
+        label="Bemerkung"
         minRows={2}
       />
       {props.bottomField ? (
@@ -158,7 +175,7 @@ export function ImmunityLaboratoryTest(props: ImmunityLaboratoryTestProps) {
   );
 }
 
-export interface LaboratorySamplesTestProps extends LaboratoryTestProps {
+interface LaboratorySamplesTestProps extends LaboratoryTestProps {
   dataPath: string;
 }
 
@@ -171,15 +188,15 @@ export function LaboratoryTestSamples(props: LaboratorySamplesTestProps) {
         <Row>
           <CheckboxField
             name={`${props.dataPath}.oralSampleRequested`}
-            label={"Orale Probe"}
+            label="Orale Probe"
           />
           <CheckboxField
             name={`${props.dataPath}.urethralSampleRequested`}
-            label={"Urethrale Probe"}
+            label="Urethrale Probe"
           />
           <CheckboxField
             name={`${props.dataPath}.analSampleRequested`}
-            label={"Anale Probe"}
+            label="Anale Probe"
           />
         </Row>
       }

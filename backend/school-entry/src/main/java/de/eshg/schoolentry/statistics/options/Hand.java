@@ -6,6 +6,7 @@
 package de.eshg.schoolentry.statistics.options;
 
 import de.eshg.lib.statistics.util.ConvertibleToValueOptions;
+import de.eshg.schoolentry.domain.model.HandednessValue;
 
 public enum Hand implements ConvertibleToValueOptions {
   RIGHT("R", "rechts"),
@@ -20,6 +21,16 @@ public enum Hand implements ConvertibleToValueOptions {
   Hand(String value, String meaning) {
     this.value = value;
     this.meaning = meaning;
+  }
+
+  public static String convertHandednessValueToValue(HandednessValue handness) {
+    return switch (handness) {
+      case null -> null;
+      case RIGHT -> RIGHT.getValue();
+      case LEFT -> LEFT.getValue();
+      case UNCERTAIN -> UNSURE.getValue();
+      case UNKNOWN -> UNKNOWN.getValue();
+    };
   }
 
   @Override

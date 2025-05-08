@@ -55,3 +55,11 @@ All playwright tasks (`test`, `testUi` and `runDockerizedPlaywright`) check the 
 ./gradlew test -PsmokeTestEnv=playground
 ----
 
+=== BundId smoke test
+
+The BundId smoke expects a running "AusweisApp" container at post 24727 locally. To start it with the card file system as used by the smoke test run
+
+[source,shell]
+----
+docker run --pull always --rm -d --name AusweisApp -p 24727:24727 -v ./e2e/resources/base/gdpr/ausweisapp-file-system.json:/fs.json -e AUSWEISAPP_AUTOMATIC_SIMULATOR=/fs.json governikus/ausweisapp2
+----

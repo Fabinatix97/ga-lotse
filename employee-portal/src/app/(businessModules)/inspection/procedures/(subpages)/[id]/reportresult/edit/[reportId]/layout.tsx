@@ -30,7 +30,7 @@ export default function InspectionReportEditorPageLayout(
       toolbar={
         <SubPageHeader
           routeBack={routes.procedures.reportResult(id)}
-          header={"Bericht bearbeiten"}
+          header="Bericht bearbeiten"
         />
       }
     >

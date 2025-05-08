@@ -162,8 +162,8 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => {
         return (
@@ -199,14 +199,14 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
               )}
               <SoftRequiredBooleanSelectField
                 name="childLanguageScreening"
-                label={"Kiss"}
+                label="Kiss"
                 sx={{ ...BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
                 softRequired
                 allowDeselection
               />
               <SoftRequiredBooleanSelectField
                 name="preliminaryCourse"
-                label={"Vorlaufkurs"}
+                label="Vorlaufkurs"
                 sx={{ ...BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
                 softRequired
                 allowDeselection

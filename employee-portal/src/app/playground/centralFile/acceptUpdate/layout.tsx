@@ -36,7 +36,7 @@ export default function PullChangesFlowLayout({
     <StickyToolbarLayout
       toolbar={
         <TabNavigationToolbar
-          header={"Max Mustermann"}
+          header="Max Mustermann"
           items={navItems}
           backButton={
             <ToolbarBackButton href={centralFilePlaygroundRoutes.index} />

@@ -7,12 +7,8 @@ import { OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
 import { ApiEditorElementImages } from "@eshg/lib-editor-api";
+import { FileCard, FileCardActionProps } from "@eshg/lib-employee-portal";
 import { ApiFileType } from "@eshg/lib-procedures-api";
-
-import {
-  FileCard,
-  FileCardActionProps,
-} from "@/lib/shared/components/FileCard";
 
 export function ContentElementImages({
   element,
@@ -46,11 +42,11 @@ export function ContentElementImages({
 
           return (
             <Stack
+              key={image.externalId}
               direction="row"
               flexWrap="wrap"
               gap={1}
               mt={1}
-              key={image.externalId}
             >
               <FileCard
                 name={image.fileName ?? ""}

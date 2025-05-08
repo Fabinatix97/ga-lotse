@@ -13,7 +13,7 @@ import {
   formatSchoolYear,
 } from "@eshg/lib-employee-portal";
 
-import { AnnualInstitution } from "@/api/models/AnnualInstitution";
+import { AnnualInstitution } from "../../../../api/models/AnnualInstitution";
 
 const columnHelper = createColumnHelper<AnnualInstitution>();
 const COLUMNS = [

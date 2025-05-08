@@ -104,6 +104,7 @@ export interface AlertProps {
   onClose?: () => void;
   messageComponent?: TypographyProps["component"];
   ref?: Ref<HTMLDivElement>;
+  role?: string;
 }
 
 export function Alert({
@@ -116,6 +117,7 @@ export function Alert({
   sx,
   onClose,
   messageComponent,
+  role = "note",
 }: AlertProps) {
   return (
     <AlertJoy
@@ -124,6 +126,8 @@ export function Alert({
       color={color}
       sx={{ ...sx, alignItems: "flex-start" }}
       startDecorator={renderIcon(color)}
+      role={role}
+      data-testid="alert"
     >
       <Row justifyContent="space-between" flex="1">
         <Box>
@@ -161,8 +165,8 @@ export function Alert({
         <EndDecorator
           color={color}
           action={action}
-          onClose={onClose}
           variant={variant}
+          onClose={onClose}
         />
       </Row>
     </AlertJoy>
@@ -180,7 +184,7 @@ function EndDecorator({
       {isDefined(action) && renderAction(action, color, variant)}
       {isDefined(onClose) && (
         <IconButton
-          variant={"plain"}
+          variant="plain"
           color={color}
           size="sm"
           aria-label="Schließen"

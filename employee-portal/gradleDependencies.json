@@ -6,6 +6,7 @@
     ":dental",
     ":dental-api",
     ":inspection-api",
+    ":lib-config-api",
     ":lib-editor-api",
     ":lib-employee-portal",
     ":lib-portal",

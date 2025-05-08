@@ -276,9 +276,9 @@ export function OpenDataFilters({ isMobile }: OpenDataFilterProps) {
           </Stack>
           <ButtonLink
             underline="always"
-            onClick={resetAllFilters}
             startDecorator={<CloseOutlined />}
             sx={{ fontWeight: 600, marginLeft: "auto" }}
+            onClick={resetAllFilters}
           >
             {t("filterSection.resetAllFilters")}
           </ButtonLink>

@@ -66,13 +66,13 @@ function InteractiveActiveCell(
     <>
       <Switch
         checked={props.getValue()}
-        onChange={switchActive}
-        onClick={(event) => event.stopPropagation()}
         slotProps={{
           input: {
             "aria-label": labelAction + " " + labelId,
           },
         }}
+        onChange={switchActive}
+        onClick={(event) => event.stopPropagation()}
       />
       <div onClick={(event) => event.stopPropagation()}>
         {confirmationDialog}

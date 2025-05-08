@@ -36,7 +36,7 @@ export function TypeSwitchButtons<T>({
             <Button
               key={label}
               variant={selected === switchType ? "solid" : "plain"}
-              color={"primary"}
+              color="primary"
               sx={(theme) => ({
                 flex: 1,
                 height: "40px",

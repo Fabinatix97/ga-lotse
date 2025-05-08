@@ -17,7 +17,7 @@ interface IdContextProps {
   appointmentDetails: ApiGetAppointmentDetailsResponse;
 }
 
-export const IdContext = createContext<IdContextProps | null>(null);
+const IdContext = createContext<IdContextProps | null>(null);
 
 type IdContextProviderProps = RequiresChildren;
 

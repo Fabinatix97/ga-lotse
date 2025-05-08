@@ -73,7 +73,7 @@ export function emptyAppointmentBlockGroup(): AppointmentBlockGroupValuesWithDay
   };
 }
 
-export interface AppointmentBlockFormWithDaysProps extends NestedFormProps {
+interface AppointmentBlockFormWithDaysProps extends NestedFormProps {
   removeBlock: () => void;
   blockCount: number;
 }
@@ -88,7 +88,7 @@ export function AppointmentBlockFormWithDays(
 
   return (
     <Grid direction="column" xs={10} paddingTop={0}>
-      <Grid container xs={12} direction={"row"} columnGap={0}>
+      <Grid container xs={12} direction="row" columnGap={0}>
         <Grid xs={2} sx={{ ...dateTimeFieldStyle, pl: 0 }}>
           <DateField
             name={fieldName("startDate")}
@@ -120,26 +120,26 @@ export function AppointmentBlockFormWithDays(
           />
         </Grid>
       </Grid>
-      <Grid container xs={12} direction={"row"} paddingLeft={0}>
-        <Grid direction={"column"}>
+      <Grid container xs={12} direction="row" paddingLeft={0}>
+        <Grid direction="column">
           <WeekdayCheckboxGroup
             name={fieldName("daysOfWeek")}
             options={daysOfWeekOptions}
-            label={"Wochentage"}
+            label="Wochentage"
             required
             sx={{ mt: 1 }}
           />
         </Grid>
       </Grid>
       {props.blockCount > 1 && (
-        <Grid container xs={12} direction={"row"} padding={0}>
-          <Grid direction={"column"}>
+        <Grid container xs={12} direction="row" padding={0}>
+          <Grid direction="column">
             <Button
               variant="outlined"
               startDecorator={<Delete />}
               title="Terminblock entfernen"
-              onClick={props.removeBlock}
               color="danger"
+              onClick={props.removeBlock}
             >
               Löschen
             </Button>

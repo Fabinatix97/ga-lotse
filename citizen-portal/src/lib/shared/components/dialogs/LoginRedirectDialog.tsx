@@ -32,8 +32,8 @@ export function LoginRedirectDialog(props: Readonly<LoginRedirectDialogProps>) {
   return (
     <BaseModal
       open={props.open}
-      onClose={props.onClose}
       modalTitle={dialogText("title")}
+      onClose={props.onClose}
     >
       <Typography>
         <Trans
@@ -52,9 +52,9 @@ export function LoginRedirectDialog(props: Readonly<LoginRedirectDialogProps>) {
       </Typography>
       <Stack direction="row" justifyContent="end" gap={2}>
         <Button
-          onClick={() => props.onClose()}
           variant="outlined"
           color="primary"
+          onClick={() => props.onClose()}
         >
           {t("translation:common.cancel")}
         </Button>

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { UploadOutlined } from "@mui/icons-material";
 import { Box, Sheet, Typography } from "@mui/joy";
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
@@ -13,17 +12,21 @@ import {
   HeaderGrid,
   IndicatorIcon,
 } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
+import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function AnamnesisCard({
   isAnamnesisAnswered,
 }: Readonly<{ isAnamnesisAnswered: boolean }>) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
+  const citizenRoutes = useCitizenRoutes();
+  const accessCode = useAccessCodeParam();
 
   return (
     <ContentSheet
@@ -72,8 +75,7 @@ export function AnamnesisCard({
               <InternalLinkButton
                 variant="outlined"
                 fullWidth
-                startDecorator={<UploadOutlined />}
-                href={""}
+                href={citizenRoutes.personalArea.anamnesis(accessCode)}
                 sx={{ backgroundColor: "white", height: "40px" }}
               >
                 {t("anamnesis.file.placeholder")}

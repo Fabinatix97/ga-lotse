@@ -34,7 +34,7 @@ import {
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 
-export interface AnalysisAccordionDetailsProps {
+interface AnalysisAccordionDetailsProps {
   analysis: Analysis;
   attributes: FlatAttribute[];
   evaluatedDataAmountTotal: number;
@@ -82,21 +82,21 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
         {canWrite && canCreateDiagram && (
           <Button
             startDecorator={<Add />}
-            onClick={handleDiagramCreateClick}
             data-testid="upper-add-diagram-button"
+            onClick={handleDiagramCreateClick}
           >
             Diagramm hinzufügen
           </Button>
         )}
       </Stack>
       <Divider />
-      <Stack gap={2} direction={"row"} flexWrap={"wrap"}>
+      <Stack gap={2} direction="row" flexWrap="wrap">
         {analysisDiagrams.map((it) => (
           <Stack
             key={it.diagramId}
             sx={{ minWidth: "31rem" }}
             flexGrow={1}
-            flexBasis={"30%"}
+            flexBasis="30%"
           >
             <AnalysisChartDiagram
               configuration={props.analysis.diagramConfiguration}
@@ -113,8 +113,8 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
           variant="plain"
           startDecorator={<Add />}
           sx={{ alignSelf: "flex-end" }}
-          onClick={handleDiagramCreateClick}
           data-testid="lower-add-diagram-button"
+          onClick={handleDiagramCreateClick}
         >
           Diagramm hinzufügen
         </Button>

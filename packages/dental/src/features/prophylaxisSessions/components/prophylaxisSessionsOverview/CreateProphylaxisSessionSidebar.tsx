@@ -19,17 +19,17 @@ import {
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-import { useGetStaff } from "@/api/queries/staff";
-import { useCreateProphylaxisSession } from "@/features/prophylaxisSessions/api/mutations/overview";
+import { useGetStaff } from "../../../../api/queries/staff";
+import { useCreateProphylaxisSession } from "../../api/mutations/overview";
 import {
   ProphylaxisSessionForm,
   ProphylaxisSessionFormValues,
   mapProphylaxisSessionFormValuesToRequest,
-} from "@/features/prophylaxisSessions/components/prophylaxisSessionDetails/ProphylaxisSessionForm";
+} from "../prophylaxisSessionDetails/ProphylaxisSessionForm";
 
 const INITIAL_VALUES: ProphylaxisSessionFormValues = {
   dateAndTime: "",
-  institution: "",
+  institution: null,
   groupName: "",
   type: "",
   isScreening: false,

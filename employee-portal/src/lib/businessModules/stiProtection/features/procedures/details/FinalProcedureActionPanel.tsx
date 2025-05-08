@@ -47,9 +47,9 @@ export function FinalProcedureActionPanel({
       <ActionButton onClick={() => requestFinalize(procedure)} />
       <ConfirmationDialog
         open={isRequestingFinalize}
+        procedure={procedure}
         onClose={abortFinalize}
         onConfirm={handleFinalizeProcedure}
-        procedure={procedure}
       />
       <CreateFollowUpProcedureSidebar procedure={procedure} />
     </ContentPanel>
@@ -70,7 +70,7 @@ function ReopenButton({
   onClick: ReactEventHandler<HTMLButtonElement>;
 }) {
   return (
-    <Button onClick={onClick} color="danger">
+    <Button color="danger" onClick={onClick}>
       Vorgang wiedereröffnen
     </Button>
   );
@@ -82,7 +82,7 @@ function FollowUpButton({
   onClick: ReactEventHandler<HTMLButtonElement>;
 }) {
   return (
-    <Button onClick={onClick} variant="soft">
+    <Button variant="soft" onClick={onClick}>
       Folgevorgang anlegen
     </Button>
   );

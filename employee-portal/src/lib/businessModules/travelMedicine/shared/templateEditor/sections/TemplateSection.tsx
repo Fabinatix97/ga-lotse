@@ -13,7 +13,7 @@ import { ApiTemplateSectionElement } from "@eshg/travel-medicine-api";
 import { SectionButtonBar } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/SectionButtonBar";
 import { SectionDataElementList } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/SectionDataElementList";
 
-export function createEmptyAnamnesisQuestionElement(): ApiTemplateSectionElement {
+function createEmptyAnamnesisQuestionElement(): ApiTemplateSectionElement {
   return {
     anamnesisQuestion: {
       questionText: "",
@@ -23,15 +23,15 @@ export function createEmptyAnamnesisQuestionElement(): ApiTemplateSectionElement
   };
 }
 
-export function createEmptyTextBlockElement(): ApiTemplateSectionElement {
+function createEmptyTextBlockElement(): ApiTemplateSectionElement {
   return { textBlock: { textField: "" } };
 }
 
-export function createEmptyConfirmationElement(): ApiTemplateSectionElement {
+function createEmptyConfirmationElement(): ApiTemplateSectionElement {
   return { confirmation: { confirmationTextField: "" } };
 }
 
-export interface MedicalHistoryTemplateSectionProp {
+interface MedicalHistoryTemplateSectionProp {
   sectionFormikPath: string;
   sectionElements: ApiTemplateSectionElement[];
   sectionTitle: ReactNode;

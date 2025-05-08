@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export { type BaseEntity, mapBaseEntity } from "./api/models/BaseEntity";
+export { type BaseEntity, mapBaseEntity, getId } from "./api/models/BaseEntity";
 export {
   type PaginatedList,
   mapPaginatedList,
@@ -41,10 +41,6 @@ export {
 export { ResettableSingleSelect } from "./components/select/ResettableSingleSelect";
 export { MainContentLayout } from "./components/layout/MainContentLayout";
 export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
-export {
-  CheckboxField,
-  type CheckboxFieldProps,
-} from "./components/formFields/CheckboxField";
 export { InformationSheet } from "./components/content/InformationSheet";
 
 export { BottomToolbar } from "./components/toolbar/BottomToolbar";
@@ -66,10 +62,7 @@ export {
 } from "./components/detailsSection/DetailsSection";
 export { DetailsColumn } from "./components/detailsSection/DetailsColumn";
 export { DetailsRow } from "./components/detailsSection/DetailsRow";
-export {
-  DetailsItem,
-  type DetailsItemProps,
-} from "./components/detailsSection/items/DetailsItem";
+export { DetailsItem } from "./components/detailsSection/items/DetailsItem";
 export { ExternalLinkDetailsItem } from "./components/detailsSection/items/ExternalLinkDetailsItem";
 export { DetailsSectionHeader } from "./components/detailsSection/DetailsSectionHeader";
 export { ResponsiveDivider } from "./components/ResponsiveDivider";
@@ -80,6 +73,12 @@ export { EditButton } from "./components/buttons/EditButton";
 export { ButtonBar } from "./components/buttons/ButtonBar";
 export { OpenModalButton } from "./components/buttons/OpenModalButton";
 export { SelectableCard } from "./components/cards/SelectableCard";
+export {
+  CustomFileType,
+  FileCard,
+  type FileCardProps,
+  type FileCardActionProps,
+} from "./components/cards/FileCard";
 export { NoSearchResults } from "./components/NoSearchResults";
 export {
   SchoolYearAutocomplete,
@@ -116,11 +115,18 @@ export {
   type SearchableGroup,
   type SearchableGroupItem,
 } from "./components/searchableGroups/SearchableGroups";
+export { Timeline } from "./components/timeline/Timeline";
+export {
+  TimelineEntry,
+  type TimelineEntryProps,
+} from "./components/timeline/TimelineEntry";
+export { TimelineEntryIndicator } from "./components/timeline/TimelineEntryIndicator";
 
 export { PROCEDURE_STATUS_COLORS } from "./config/procedures";
 
 export { EmployeePortalProvider } from "./contexts/employeePortal";
 export { useLayoutConfig, type LayoutConfig } from "./contexts/layoutConfig";
+export { useSidenav } from "./contexts/sidenav";
 
 export {
   checkAccess,
@@ -210,7 +216,7 @@ export {
   type SidebarWithFormRefProps,
   type UseSidebarWithFormRefResult,
 } from "./features/drawer/hooks/useSidebarWithFormRef";
-export { useSidenav } from "./features/drawer/hooks/useSidenav";
+export { useSidenavDrawer } from "./features/drawer/hooks/useSidenavDrawer";
 
 export {
   ProcedureLabelFormFields,
@@ -219,6 +225,7 @@ export {
 export { ProcedureLabelsPage } from "./features/procedureLabels/components/ProcedureLabelsPage";
 export { ProcedureLabelAutocomplete } from "./features/procedureLabels/components/ProcedureLabelAutocomplete";
 export { ProcedureLabelSelection } from "./features/procedureLabels/components/ProcedureLabelSelection";
+export { ProcedureLabelChip } from "./features/procedureLabels/components/ProcedureLabelChip";
 
 export {
   ToggleFilterButton,
@@ -279,15 +286,12 @@ export type {
   TextFilterValue,
 } from "./features/filters/types/TextFilter";
 export { getDefinitionByValue } from "./features/filters/utils/getDefinitionByValue";
+export { getSelectedEnumFilterValues } from "./features/filters/utils/getSelectedEnumFilterValues";
 
 export { gdprRoutes } from "./features/gdpr/config/gdprRoutes";
 export { useGetGdprValidationBannerQuery } from "./features/gdpr/api/queries";
 export { useGdprValidationTasksAlert } from "./features/gdpr/hooks/useGdprValidationTasksAlert";
 
-export {
-  TextareaField,
-  type TextareaFieldProps,
-} from "./components/formFields/TextareaField";
 export { FormButtonBar } from "./components/form/FormButtonBar";
 export { FormFooter } from "./components/form/FormFooter";
 export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
@@ -362,6 +366,7 @@ export {
 } from "./hooks/useReplaceSearchParams";
 export { useConfirmationDialog } from "./hooks/useConfirmationDialog";
 export { useResetAlertContextOnChange } from "./hooks/useResetAlertContextOnChange";
+export { useIsOffline } from "./hooks/useIsOffline";
 
 export type { ModuleUserGroupConfig } from "./types/module";
 export type {

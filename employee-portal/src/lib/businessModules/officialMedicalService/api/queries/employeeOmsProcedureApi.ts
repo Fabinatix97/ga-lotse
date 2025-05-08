@@ -38,7 +38,7 @@ export function useGetProcedureHeader(procedureId: string) {
   );
 }
 
-export function getProcedureHeaderQuery(
+function getProcedureHeaderQuery(
   employeeOmsProcedureApi: EmployeeOmsProcedureApi,
   procedureId: string,
 ) {

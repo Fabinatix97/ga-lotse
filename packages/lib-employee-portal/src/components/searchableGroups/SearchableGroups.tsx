@@ -22,7 +22,7 @@ import {
 import { Fragment, ReactNode, useId, useState } from "react";
 import { isNonNullish } from "remeda";
 
-import { NoSearchResults } from "@/components/NoSearchResults";
+import { NoSearchResults } from "../NoSearchResults";
 
 export interface SearchableGroupItem {
   key: string;
@@ -102,7 +102,6 @@ export function SearchableGroups<
               size="md"
               placeholder={props.placeholder}
               value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
               startDecorator={<SearchOutlined />}
               endDecorator={
                 searchTerm !== "" && (
@@ -114,6 +113,7 @@ export function SearchableGroups<
                   </IconButton>
                 )
               }
+              onChange={(event) => setSearchTerm(event.target.value)}
             />
           )}
         </Stack>
@@ -212,13 +212,13 @@ function GroupAccordion<TItem extends SearchableGroupItem>({
     >
       <ListItemButton
         variant="plain"
-        onClick={() => toggleExpandedGroup(group.name)}
         sx={{
           borderRadius: "md",
         }}
         id={buttonId}
         aria-expanded={group.expanded}
         aria-controls={expandableContentId}
+        onClick={() => toggleExpandedGroup(group.name)}
       >
         <ListItemContent>
           <Typography

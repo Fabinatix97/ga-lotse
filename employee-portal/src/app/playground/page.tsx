@@ -16,20 +16,20 @@ export default function PlaygroundIndexPage() {
       <MainContentLayout>
         <ul>
           <li>
-            <InternalLink href={"/playground/error"}>Test Error</InternalLink>
+            <InternalLink href="/playground/error">Test Error</InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/loading"}>
+            <InternalLink href="/playground/loading">
               Loading indicator
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/layout/regular"}>
+            <InternalLink href="/playground/layout/regular">
               Regular layout with title
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/layout/toolbar"}>
+            <InternalLink href="/playground/layout/toolbar">
               Layout with sticky toolbar
             </InternalLink>
           </li>
@@ -49,25 +49,25 @@ export default function PlaygroundIndexPage() {
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/addressForm"}>
+            <InternalLink href="/playground/addressForm">
               Address Form Sidebars
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/formPlus"}>FormPlus</InternalLink>
+            <InternalLink href="/playground/formPlus">FormPlus</InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/searchable-groups"}>
+            <InternalLink href="/playground/searchable-groups">
               SearchableGroups
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/filter-settings"}>
+            <InternalLink href="/playground/filter-settings">
               FilterSettings
             </InternalLink>
           </li>
           <li>
-            <InternalLink href={"/playground/filter-settings/unmanaged"}>
+            <InternalLink href="/playground/filter-settings/unmanaged">
               FilterSettings (unmanaged)
             </InternalLink>
           </li>
@@ -123,6 +123,9 @@ export default function PlaygroundIndexPage() {
             <InternalLink href="/playground/configurator">
               Konfigurator
             </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/markdown">Markdown</InternalLink>
           </li>
         </ul>
       </MainContentLayout>

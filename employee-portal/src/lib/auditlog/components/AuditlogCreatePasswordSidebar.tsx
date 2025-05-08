@@ -75,7 +75,7 @@ export function AuditlogCreatePasswordSidebar({
       >
         {({ isSubmitting, values, errors }) => (
           <SidebarForm ref={formRef}>
-            <SidebarContent title={"Passwort erstellen"}>
+            <SidebarContent title="Passwort erstellen">
               <Stack gap={2}>
                 <Typography level="body-md">
                   Bitte vergeben Sie ein Passwort, um Log Files anzuzeigen. Bei
@@ -83,16 +83,16 @@ export function AuditlogCreatePasswordSidebar({
                   freigegeben Log Files.
                 </Typography>
                 <PasswordField
-                  data-testid={"passwordField"}
-                  label={"Passwort vergeben"}
+                  data-testid="passwordField"
+                  label="Passwort vergeben"
                   name={fieldName("password")}
-                  visibilityLabel={"visiblePassword"}
+                  visibilityLabel="visiblePassword"
                 />
                 <PasswordField
-                  data-testid={"repeatedPasswordField"}
-                  label={"Passwort wiederholen"}
+                  data-testid="repeatedPasswordField"
+                  label="Passwort wiederholen"
                   name={fieldName("repeatedPassword")}
-                  visibilityLabel={"visibleRepeatedPassword"}
+                  visibilityLabel="visibleRepeatedPassword"
                 />
               </Stack>
               <PasswortRequirementHints
@@ -103,7 +103,7 @@ export function AuditlogCreatePasswordSidebar({
             </SidebarContent>
             <SidebarActions>
               <FormButtonBar
-                submitLabel={"Passwort festlegen"}
+                submitLabel="Passwort festlegen"
                 submitting={isSubmitting}
                 onCancel={handleClose}
               />
@@ -129,7 +129,7 @@ function PasswortRequirementHints({
   return (
     <Stack gap={0.5} mt={3}>
       {erroneous && (
-        <Typography mb={2} color={"danger"} fontSize={"small"}>
+        <Typography mb={2} color="danger" fontSize="small">
           Bitte beachten Sie die Passwortanforderungen
         </Typography>
       )}
@@ -137,7 +137,7 @@ function PasswortRequirementHints({
       <Typography
         mb={1}
         color={erroneous ? "danger" : "neutral"}
-        fontSize={"small"}
+        fontSize="small"
       >
         Passwortanforderungen:
       </Typography>
@@ -145,11 +145,11 @@ function PasswortRequirementHints({
       {getPasswordValidityInfo(password, repeatedPassword).map(
         ({ message, valid }) => (
           <Typography
-            fontWeight={"lighter"}
-            startDecorator={getPasswordRuleDecorator(valid)}
             key={message}
+            fontWeight="lighter"
+            startDecorator={getPasswordRuleDecorator(valid)}
             color={getPasswordRuleColor(valid, erroneous)}
-            fontSize={"small"}
+            fontSize="small"
           >
             {message}
           </Typography>

@@ -5,9 +5,13 @@
 
 "use client";
 
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useCallback } from "react";
 
-import { SupportedLanguage, defaultLang } from "./options";
+import { baseTranslations } from "@/lib/baseModule/locales";
+
+import { useTranslation } from "./client";
+import { SupportedLanguage } from "./options";
 import { parseLocaleFromPath } from "./parseLocaleFromPath";
 
 export function useGivenLang(): SupportedLanguage | undefined {
@@ -16,6 +20,28 @@ export function useGivenLang(): SupportedLanguage | undefined {
 }
 
 export function useLang(): SupportedLanguage {
-  const { lang } = useParams<{ lang?: SupportedLanguage }>();
-  return lang ?? defaultLang;
+  const { i18n } = useTranslation();
+  return i18n.language as SupportedLanguage;
+}
+
+export function useSwitchLanguage() {
+  const { i18n } = useTranslation();
+  return useCallback(
+    async (update: SupportedLanguage, path: string) => {
+      const pathname = window.location.pathname;
+      if (pathname.startsWith(`/${update}`)) {
+        return;
+      }
+      const base = baseTranslations[update];
+      await i18n.changeLanguage(update);
+      window.history.replaceState(null, "", path);
+
+      // Here we update the title & language because that (and other metadata) are rendered on the server
+      // However, most metadata is irrelevant to the user once the page is loaded, with the exceptions of page title
+      // and the document language
+      document.title = base.site_title;
+      document.documentElement.lang = update;
+    },
+    [i18n],
+  );
 }

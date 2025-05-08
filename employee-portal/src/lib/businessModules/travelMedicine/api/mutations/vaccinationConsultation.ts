@@ -68,26 +68,6 @@ export function useAddProcedureStep() {
   });
 }
 
-export interface UseUpdateVaccinationTravelDetailsRequest {
-  externalId: string;
-  apiRequest: ApiPatchVaccinationConsultationTravelDetailsRequest;
-}
-export function useUpdateVaccinationConsultationTravelDetails() {
-  const snackbar = useSnackbar();
-  const vaccinationConsultationApi = useVaccinationConsultationApi();
-
-  return useHandledMutation({
-    mutationFn: (request: UseUpdateVaccinationTravelDetailsRequest) =>
-      vaccinationConsultationApi.updateTravelDetails(
-        request.externalId,
-        request.apiRequest,
-      ),
-    onSuccess: () => {
-      snackbar.confirmation("Die Reisedaten wurden gespeichert.");
-    },
-  });
-}
-
 export function useUpdateOtherService() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
@@ -104,7 +84,7 @@ export function useUpdateOtherService() {
   });
 }
 
-export interface UseUpdatePatientRequest {
+interface UseUpdatePatientRequest {
   procedureId: string;
   apiRequest: ApiPatchVaccinationConsultationPatientRequest;
 }
@@ -127,7 +107,7 @@ export function useUpdatePatient() {
   });
 }
 
-export interface UseUpdateTravelDetailsRequest {
+interface UseUpdateTravelDetailsRequest {
   id: string;
   apiRequest: ApiPatchVaccinationConsultationTravelDetailsRequest;
 }
@@ -160,7 +140,7 @@ export function usePostServices() {
   });
 }
 
-export interface UseDeleteServiceRequest {
+interface UseDeleteServiceRequest {
   procedureId: string;
   serviceId: string;
 }
@@ -192,7 +172,7 @@ export function useAssignStepToService() {
   });
 }
 
-export interface UseUnassignStepToServiceRequest {
+interface UseUnassignStepToServiceRequest {
   procedureId: string;
   serviceId: string;
 }
@@ -270,7 +250,7 @@ export function useCreateInformationStatements() {
   });
 }
 
-export interface UseResetInformationStatementRequest {
+interface UseResetInformationStatementRequest {
   procedureId: string;
   informationStatementId: string;
 }
@@ -290,7 +270,7 @@ export function useResetInformationStatement() {
   });
 }
 
-export interface UseDeleteInformationStatementRequest {
+interface UseDeleteInformationStatementRequest {
   procedureId: string;
   informationStatementId: string;
 }

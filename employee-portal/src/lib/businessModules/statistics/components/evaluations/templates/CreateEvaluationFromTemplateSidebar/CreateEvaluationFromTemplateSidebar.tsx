@@ -71,9 +71,7 @@ function CreateEvaluationFromTemplateSidebar(
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={onSubmit}
       steps={[
         () => ({
           title: "Auswertung erstellen",
@@ -85,15 +83,21 @@ function CreateEvaluationFromTemplateSidebar(
             name: "",
             anonymized:
               evaluationTemplateDetails.anonymizationOptions ===
-              AnonymizationOptions.NotAnonymizable
-                ? ENUM_FALSE_VALUE
-                : ENUM_TRUE_VALUE,
+                AnonymizationOptions.AlwaysAnonymize ||
+              evaluationTemplateDetails.anonymizationOptions ===
+                AnonymizationOptions.Choice
+                ? ENUM_TRUE_VALUE
+                : ENUM_FALSE_VALUE,
+            anonymizationOptions:
+              evaluationTemplateDetails.anonymizationOptions,
             timeSpan: getLastXMonthsTimeRange(3),
           } as CreateEvaluationStepFormModel,
           validator: validateCreateEvaluationStep,
           onSubmit,
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={onSubmit}
     />
   );
 }

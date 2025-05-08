@@ -175,12 +175,13 @@ public class StiProtectionProcedure
 
   public static StiProtectionProcedure newProcedure(
       Concern concern,
+      ProcedureStatus status,
       StiProcedureOrigin stiProcedureOrigin,
       Clock clock,
       AuditLogger auditLogger) {
     StiProtectionProcedure procedure = new StiProtectionProcedure();
     procedure.setProcedureType(ProcedureType.STI_PROTECTION);
-    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    procedure.updateProcedureStatus(status, clock, auditLogger);
     procedure.setConcern(concern);
     procedure.setStiProcedureOrigin(stiProcedureOrigin);
     return procedure;

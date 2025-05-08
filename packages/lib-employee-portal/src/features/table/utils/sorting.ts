@@ -7,7 +7,7 @@ import { isDefined } from "remeda";
 
 import { ApiSortDirection } from "@eshg/base-api";
 
-import { TableSortingProps } from "@/features/table/types/tableSorting";
+import { TableSortingProps } from "../types/tableSorting";
 
 export function getSortKey<TSortKey extends string>(
   sortingProps: TableSortingProps,

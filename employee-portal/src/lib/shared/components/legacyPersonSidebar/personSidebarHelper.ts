@@ -31,7 +31,7 @@ export function createNewPerson(searchArgs: LegacyMinimalPerson): LegacyPerson {
   };
 }
 
-export function mapToBaseAddress(
+function mapToBaseAddress(
   domesticAddress: ApiDomesticAddress,
 ): LegacyBaseAddress {
   return {
@@ -78,13 +78,4 @@ export function mapApiPersonData(
         : createEmptyLegacyAddress(ApiFacilityAddressType.Postal),
     referenceId: searchResult.id,
   };
-}
-
-export enum Mode {
-  // search for person in central file
-  searchInCentralFile,
-  // create new person or add additional information to person
-  editInCentralFile,
-  // list all (possible duplicated) procedures for person
-  listProceduresForPerson,
 }

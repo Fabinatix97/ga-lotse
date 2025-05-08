@@ -9,7 +9,7 @@ export function Timeline(props: StepperProps) {
   return (
     <Stepper
       orientation="vertical"
-      size={"sm"}
+      size="sm"
       sx={{
         "--StepIndicator-size": "2rem",
         "--Step-connectorThickness": "2px",

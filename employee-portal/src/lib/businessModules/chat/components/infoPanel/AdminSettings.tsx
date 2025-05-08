@@ -21,7 +21,7 @@ import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanel
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 
-export interface AdminSettingsProps {
+interface AdminSettingsProps {
   roomId: string;
   onClose: () => void;
 }

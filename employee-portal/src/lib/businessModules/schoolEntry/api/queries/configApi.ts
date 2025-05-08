@@ -30,7 +30,7 @@ export function useIsDirectProcedureTypeAssignmentOnImport() {
   return isDirectProcedureTypeAssignmentOnImport;
 }
 
-export function getIsDirectProcedureTypeAssignmentOnImportQuery(
+function getIsDirectProcedureTypeAssignmentOnImportQuery(
   configApi: SchoolEntryConfigApi,
 ) {
   return getConfigValueQuery(

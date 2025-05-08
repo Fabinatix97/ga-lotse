@@ -4,7 +4,6 @@
  */
 
 import { Ref, useState } from "react";
-import { isDefined } from "remeda";
 
 import {
   ApiImportInstitutionContactResponse,
@@ -62,35 +61,35 @@ export function InstitutionContactImportForm(props: ContactImportFormProps) {
     });
   }
 
+  if (searchResults === undefined) {
+    return (
+      <UploadVCardForm
+        sidebarFormRef={props.sidebarFormRef}
+        onSubmit={async (file) => {
+          await handleSubmit(file);
+        }}
+        onClose={props.onClose}
+      />
+    );
+  }
+
   return (
-    <>
-      {isDefined(searchResults) ? (
-        <ImportResultForm<ApiInstitutionContact>
-          label={"Institution"}
-          formRef={props.sidebarFormRef}
-          searchResults={searchResults}
-          cardComponent={InstitutionContactCard}
-          onSubmit={(selected) => {
-            const vcard = searchResults.vCard;
-            if (selected === "new") {
-              props.onImported(mapImportToCreate(vcard));
-            } else {
-              const contact = searchResults.matches.find(
-                (contact) => contact.id === selected,
-              )!;
-              props.onMerge(contact, mapImportToCreate(vcard));
-            }
-          }}
-        />
-      ) : (
-        <UploadVCardForm
-          sidebarFormRef={props.sidebarFormRef}
-          onSubmit={async (file) => {
-            await handleSubmit(file);
-          }}
-          onClose={props.onClose}
-        />
-      )}
-    </>
+    <ImportResultForm<ApiInstitutionContact>
+      label="Institution"
+      formRef={props.sidebarFormRef}
+      searchResults={searchResults}
+      cardComponent={InstitutionContactCard}
+      onSubmit={(selected) => {
+        const vcard = searchResults.vCard;
+        if (selected === "new") {
+          props.onImported(mapImportToCreate(vcard));
+        } else {
+          const contact = searchResults.matches.find(
+            (contact) => contact.id === selected,
+          )!;
+          props.onMerge(contact, mapImportToCreate(vcard));
+        }
+      }}
+    />
   );
 }

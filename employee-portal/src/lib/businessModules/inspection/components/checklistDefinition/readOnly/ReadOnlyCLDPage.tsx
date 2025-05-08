@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InfoOutlined } from "@mui/icons-material";
-import { Alert, Box } from "@mui/joy";
+import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { CLDInfoCard } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
 import { ReadOnlyCLDContent } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDContent";
@@ -39,11 +39,9 @@ export function ReadOnlyCLDPage({
     >
       <Alert
         color="primary"
-        startDecorator={<InfoOutlined />}
         sx={{ gridArea: "alert" }}
-      >
-        Veröffentlichte Checklisten-Definitionen können nicht bearbeitet werden.
-      </Alert>
+        message="Veröffentlichte Checklisten-Definitionen können nicht bearbeitet werden."
+      />
       <Box
         sx={{
           position: { lg: "sticky" },

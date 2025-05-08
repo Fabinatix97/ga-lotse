@@ -20,7 +20,7 @@ export type ClickIcd10CodeHandler = (
   setFieldValue: (newCodes: string[]) => void,
 ) => void;
 
-export const FIXED_WIDTH_STYLE: SxProps = {
+const FIXED_WIDTH_STYLE: SxProps = {
   ".MuiInput-root": { width: "140px" },
 };
 

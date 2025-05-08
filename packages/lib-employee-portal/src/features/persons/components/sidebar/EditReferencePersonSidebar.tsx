@@ -7,17 +7,17 @@ import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
-} from "@/features/drawer/hooks/useSidebarWithFormRef";
-import { useUpdateReferencePerson } from "@/features/persons/api/mutations";
+} from "../../../drawer/hooks/useSidebarWithFormRef";
+import { useUpdateReferencePerson } from "../../api/mutations";
+import { mapToPersonUpdateRequest } from "../../utils/mappers";
 import {
   DefaultPersonForm,
   DefaultPersonFormValues,
-} from "@/features/persons/components/form/DefaultPersonForm";
+} from "../form/DefaultPersonForm";
 import {
   PersonSidebarForm,
   PersonSidebarFormProps,
-} from "@/features/persons/components/form/PersonSidebarForm";
-import { mapToPersonUpdateRequest } from "@/features/persons/utils/mappers";
+} from "../form/PersonSidebarForm";
 
 interface EditReferencePersonFormValues extends DefaultPersonFormValues {
   id: string;
@@ -57,11 +57,11 @@ function EditReferencePersonSidebar(props: EditReferencePersonSidebarProps) {
   return (
     <PersonSidebarForm
       {...props}
-      mode={"edit"}
-      onCancel={() => props.onClose(false)}
-      onSubmit={onSubmit}
+      mode="edit"
       sidebarFormRef={props.formRef}
       component={DefaultPersonForm}
+      onCancel={() => props.onClose(false)}
+      onSubmit={onSubmit}
     />
   );
 }

@@ -21,7 +21,7 @@ import {
   ResponsiveTypography,
 } from "@/lib/shared/components/modal/DataField";
 
-export function ReopenProcedureModalContent() {
+function ReopenProcedureModalContent() {
   const snackbar = useSnackbar();
   const proceduresContext = useProceduresContext();
   const { procedureForReopen } = proceduresContext.state;
@@ -50,8 +50,8 @@ export function ReopenProcedureModalContent() {
     <BaseModal
       modalTitle="Vorgang wiedereröffnen?"
       open={!!procedureForReopen}
-      onClose={handleClose}
       color="danger"
+      onClose={handleClose}
     >
       <ResponsiveTypography
         textColor="text.secondary"
@@ -66,15 +66,15 @@ export function ReopenProcedureModalContent() {
         label="Geburtsdatum"
         value={formatDate(procedureForReopen?.affectedPerson.dateOfBirth)}
       />
-      <Stack direction={"row"} gap={2} justifyContent={"flex-end"}>
+      <Stack direction="row" gap={2} justifyContent="flex-end">
         <Button variant="outlined" color="neutral" onClick={handleClose}>
           Abbrechen
         </Button>
         <Button
           color="danger"
-          onClick={handleReopen}
           loadingPosition="start"
           loading={isRequestingReopen}
+          onClick={handleReopen}
         >
           Wiedereröffnen
         </Button>

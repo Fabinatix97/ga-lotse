@@ -40,14 +40,12 @@ function ExportBannedFacilitiesButtonWithinOverlay() {
   }
 
   return (
-    <>
-      <Button
-        onClick={handleClick}
-        variant="outlined"
-        startDecorator={<FileDownloadOutlined />}
-      >
-        Untersagte Einrichtungen
-      </Button>
-    </>
+    <Button
+      variant="outlined"
+      startDecorator={<FileDownloadOutlined />}
+      onClick={handleClick}
+    >
+      Untersagte Einrichtungen
+    </Button>
   );
 }

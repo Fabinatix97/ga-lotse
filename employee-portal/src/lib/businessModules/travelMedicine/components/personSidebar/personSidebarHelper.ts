@@ -42,7 +42,7 @@ function mapToApiAffectedPersonDetails(basePerson: LegacyPerson): ApiPatient {
   };
 }
 
-export function mapToApiPatient(basePerson: LegacyPerson): ApiPatient {
+function mapToApiPatient(basePerson: LegacyPerson): ApiPatient {
   return {
     ...mapToBasePersonData(basePerson),
     dateOfBirth: new Date(basePerson.dateOfBirth),

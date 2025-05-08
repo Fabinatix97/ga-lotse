@@ -36,7 +36,7 @@ export function BookAppointmentWrapper(props: BookAppointmentWrapperProps) {
   );
 }
 
-export function InnerBookAppointmentWrapper({
+function InnerBookAppointmentWrapper({
   procedure,
 }: BookAppointmentWrapperProps) {
   const citizenRoutes = useCitizenRoutes();

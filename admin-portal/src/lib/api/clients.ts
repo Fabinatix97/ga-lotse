@@ -71,9 +71,7 @@ const errorInterceptionMiddleware: Middleware = {
   },
 };
 
-export async function resolveErrorResponse(
-  response: Response,
-): Promise<BackendError> {
+async function resolveErrorResponse(response: Response): Promise<BackendError> {
   try {
     const message = await response.text();
     return {

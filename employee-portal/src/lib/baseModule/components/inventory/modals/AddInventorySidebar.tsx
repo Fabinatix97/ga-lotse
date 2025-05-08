@@ -57,10 +57,10 @@ function AddInventorySidebar(props: AddInventorySidebarProps) {
       initialValues={initialInventoryFormValues}
       labels={props.labels}
       formRef={props.formRef}
+      title="Inventar hinzufügen"
+      submitLabel="Hinzufügen"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Inventar hinzufügen"}
-      submitLabel={"Hinzufügen"}
     />
   );
 }

@@ -25,7 +25,7 @@ export function WeekdayHeaders({
   );
 }
 
-export function WeekdayHeader({ children }: PropsWithChildren) {
+function WeekdayHeader({ children }: PropsWithChildren) {
   return (
     <Box
       role="columnheader"

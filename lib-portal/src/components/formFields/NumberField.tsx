@@ -60,8 +60,6 @@ export function NumberField(props: NumberFieldProps) {
         type="number"
         name={props.name}
         value={field.input.value}
-        onChange={handleChange}
-        onBlur={field.input.onBlur}
         slotProps={{
           input: {
             min: props.min,
@@ -73,6 +71,8 @@ export function NumberField(props: NumberFieldProps) {
         readOnly={props.readOnly}
         endDecorator={props.endDecorator}
         placeholder={props.placeholder}
+        onChange={handleChange}
+        onBlur={field.input.onBlur}
       />
     </FieldComponent>
   );

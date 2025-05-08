@@ -10,16 +10,16 @@ import {
   EnumFilterDefinition,
   FilterValue,
   UseFilterSettings,
+  getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { ApiProgressEntryClassFromJSON } from "@eshg/lib-procedures-api";
 
 import {
   buildOptionsFromManualProgressEntryTypes,
   buildOptionsFromProgressEntryClasses,
-  buildOptionsFromRecord,
   buildOptionsFromUsers,
-  getSelectedFilterValues,
 } from "@/lib/shared/components/procedures/helper";
 import { generalSystemProgressEntryTypeTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { ProgressEntriesFilters } from "@/lib/shared/components/procedures/progress-entries/types";
@@ -60,13 +60,13 @@ export function useProgressEntriesFilterSettings({
       type: "Enum",
       key: FILTER_KEYS.progressEntryTypeSystemProgressEntry,
       name: "System Typen",
-      options: buildOptionsFromRecord(systemProgressEntryTypes),
+      options: buildEnumOptions(systemProgressEntryTypes),
     },
     {
       type: "Enum",
       key: FILTER_KEYS.progressEntryTypeStandard,
       name: "Standard Typen",
-      options: buildOptionsFromRecord(generalSystemProgressEntryTypeTitles),
+      options: buildEnumOptions(generalSystemProgressEntryTypeTitles),
     },
     {
       type: "Enum",
@@ -93,7 +93,7 @@ export function useProgressEntriesFilterSettings({
 }
 
 function getInitiatedByFilters(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.initiatedBy,
   );
@@ -101,7 +101,7 @@ function getInitiatedByFilters(filters: FilterValue[]) {
 }
 
 function getProgressEntryTypeFilters(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.progressEntryTypeManualProgressEntry,
     FILTER_KEYS.progressEntryTypeSystemProgressEntry,
@@ -111,7 +111,7 @@ function getProgressEntryTypeFilters(filters: FilterValue[]) {
 }
 
 function getProgressEntryClassFilters(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.progressEntryClass,
   ).map((v) => ApiProgressEntryClassFromJSON(v));

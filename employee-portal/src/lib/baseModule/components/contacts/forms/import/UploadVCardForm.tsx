@@ -42,17 +42,17 @@ export function UploadVCardForm({
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={sidebarFormRef}>
-          <SidebarContent title={"Kontakt importieren"}>
+          <SidebarContent title="Kontakt importieren">
             <FileField
-              name={"file"}
-              label={"Wählen Sie eine Datei aus"}
+              name="file"
+              label="Wählen Sie eine Datei aus"
               accept={FileType.Vcf}
-              required={"Bitte eine vCard Datei hochladen"}
+              required="Bitte eine vCard Datei hochladen"
             />
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitLabel={"Importieren"}
+              submitLabel="Importieren"
               submitting={isSubmitting}
               onCancel={onClose}
             />

@@ -96,7 +96,7 @@ export function OpenDataTable() {
               label="Suche"
             />
           </Stack>
-          <Button onClick={handleAddNewEntry} startDecorator={<Add />}>
+          <Button startDecorator={<Add />} onClick={handleAddNewEntry}>
             Datensatz anlegen
           </Button>
         </Stack>

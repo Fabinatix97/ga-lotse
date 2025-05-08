@@ -5,7 +5,7 @@
 
 import { Dispatch, SetStateAction, createContext, useContext } from "react";
 
-export interface CollapsedNavigationListContextValue {
+interface CollapsedNavigationListContextValue {
   openMenuItemName: string | null;
   setOpenMenuItemName: Dispatch<SetStateAction<string | null>>;
 }

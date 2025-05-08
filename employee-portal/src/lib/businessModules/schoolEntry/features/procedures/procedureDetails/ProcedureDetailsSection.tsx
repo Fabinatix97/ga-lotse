@@ -34,106 +34,104 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
   const updateProcedureSidebar = useUpdateProcedureSidebar();
 
   return (
-    <>
-      <ContentPanel testId="child-details-panel">
-        <DetailsSection
-          data-testid="additional-infos"
-          title="Zusatzinfos"
-          onEdit={() =>
-            updateProcedureSidebar.open({
-              procedure: props.procedure,
-              locationSelectionMode,
-            })
-          }
-          canEdit={!props.procedure.isClosed}
-        >
-          <Stack gap={2} divider={<Divider />}>
-            <Stack gap={1}>
-              <DetailsCell
-                name="type"
-                label="Art"
-                value={PROCEDURE_TYPES[props.procedure.type]}
-              />
-              <DetailsCell
-                name="schoolYear"
-                label="Schuljahr"
-                value={
-                  isDefined(props.procedure.schoolYear)
-                    ? formatSchoolYear(props.procedure.schoolYear)
-                    : "Kein Schuljahr zugewiesen"
-                }
-              />
-              {props.procedure.labels.length > 0 && (
-                <DetailsCell
-                  name="labels"
-                  label="Kennungen"
-                  value={
-                    <Stack direction="row" gap={1} flexWrap="wrap">
-                      {props.procedure.labels.map((label) => (
-                        <ChipWithTooltip
-                          key={label.id}
-                          name={label.name}
-                          hexColor={label.hexColor}
-                          modalTitle="Kennung"
-                        />
-                      ))}
-                    </Stack>
-                  }
-                />
-              )}
-            </Stack>
+    <ContentPanel testId="child-details-panel">
+      <DetailsSection
+        data-testid="additional-infos"
+        title="Zusatzinfos"
+        canEdit={!props.procedure.isClosed}
+        onEdit={() =>
+          updateProcedureSidebar.open({
+            procedure: props.procedure,
+            locationSelectionMode,
+          })
+        }
+      >
+        <Stack gap={2} divider={<Divider />}>
+          <Stack gap={1}>
             <DetailsCell
-              name="school"
-              label="Schule"
+              name="type"
+              label="Art"
+              value={PROCEDURE_TYPES[props.procedure.type]}
+            />
+            <DetailsCell
+              name="schoolYear"
+              label="Schuljahr"
               value={
-                isDefined(props.procedure.school)
-                  ? props.procedure.school.name
-                  : "Keine Schule zugewiesen"
+                isDefined(props.procedure.schoolYear)
+                  ? formatSchoolYear(props.procedure.schoolYear)
+                  : "Kein Schuljahr zugewiesen"
               }
             />
-            {locationSelectionMode ===
-              ApiLocationSelectionMode.HealthDepartment && (
+            {props.procedure.labels.length > 0 && (
               <DetailsCell
-                name="location"
-                label="Gesundheitsamt"
+                name="labels"
+                label="Kennungen"
                 value={
-                  isDefined(props.procedure.location)
-                    ? props.procedure.location.name
-                    : "Kein Gesundheitsamt zugewiesen"
-                }
-              />
-            )}
-            <Stack gap={1}>
-              <DetailsCell
-                name="appointment"
-                label="Termin"
-                value={
-                  props.procedure.appointment
-                    ? `${formatWeekdayDateTime(props.procedure.appointment.start)} Uhr`
-                    : "Kein Termin gebucht"
-                }
-              />
-              {isDefined(props.procedure.appointment) && (
-                <InvitationDetails
-                  procedureId={props.procedure.id}
-                  isInvitationSend={props.procedure.isInvitationSent}
-                />
-              )}
-            </Stack>
-            {props.procedure.isDeceased && (
-              <DetailsCell
-                name="deceased"
-                label="Kind verstorben"
-                value={
-                  props.procedure.deceased
-                    ? formatDate(props.procedure.deceased)
-                    : "Kein Datum angegeben"
+                  <Stack direction="row" gap={1} flexWrap="wrap">
+                    {props.procedure.labels.map((label) => (
+                      <ChipWithTooltip
+                        key={label.id}
+                        name={label.name}
+                        hexColor={label.hexColor}
+                        modalTitle="Kennung"
+                      />
+                    ))}
+                  </Stack>
                 }
               />
             )}
           </Stack>
-        </DetailsSection>
-      </ContentPanel>
-    </>
+          <DetailsCell
+            name="school"
+            label="Schule"
+            value={
+              isDefined(props.procedure.school)
+                ? props.procedure.school.name
+                : "Keine Schule zugewiesen"
+            }
+          />
+          {locationSelectionMode ===
+            ApiLocationSelectionMode.HealthDepartment && (
+            <DetailsCell
+              name="location"
+              label="Gesundheitsamt"
+              value={
+                isDefined(props.procedure.location)
+                  ? props.procedure.location.name
+                  : "Kein Gesundheitsamt zugewiesen"
+              }
+            />
+          )}
+          <Stack gap={1}>
+            <DetailsCell
+              name="appointment"
+              label="Termin"
+              value={
+                props.procedure.appointment
+                  ? `${formatWeekdayDateTime(props.procedure.appointment.start)} Uhr`
+                  : "Kein Termin gebucht"
+              }
+            />
+            {isDefined(props.procedure.appointment) && (
+              <InvitationDetails
+                procedureId={props.procedure.id}
+                isInvitationSend={props.procedure.isInvitationSent}
+              />
+            )}
+          </Stack>
+          {props.procedure.isDeceased && (
+            <DetailsCell
+              name="deceased"
+              label="Kind verstorben"
+              value={
+                props.procedure.deceased
+                  ? formatDate(props.procedure.deceased)
+                  : "Kein Datum angegeben"
+              }
+            />
+          )}
+        </Stack>
+      </DetailsSection>
+    </ContentPanel>
   );
 }

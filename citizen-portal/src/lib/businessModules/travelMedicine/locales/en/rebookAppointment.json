@@ -1,4 +1,7 @@
 {
+  "errors": {
+    "concurrentAppointment_errorMessage": "The appointment you selected has has already been reserved elsewhere in the meantime. Please select another free appointment."
+  },
   "header": {
     "title": "(Re)schedule Appointment",
     "logout": "Logout"
@@ -22,7 +25,8 @@
   },
   "sidePanel": {
     "title": "Overview",
-    "dateAndTime": "{{ appointmentStart }}",
+    "date_label": "Day, date",
+    "time_label": "Time, appointment duration",
     "appointmentDuration": "(Duration: {{ durationInMinutes }} minutes)",
     "postponeAppointment": "Postpone appointment",
     "bookAppointment": "Book Appointment",

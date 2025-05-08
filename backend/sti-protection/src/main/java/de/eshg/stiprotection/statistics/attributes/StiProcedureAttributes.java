@@ -30,7 +30,6 @@ public enum StiProcedureAttributes implements StiAttributes {
           StiAttributeMapper.mapOriginToValueOptions()));
 
   private static final String PROCEDURE_CATEGORY = "Vorgang";
-  private static final String PERSON_CATEGORY = "Person";
 
   private final AttributeData attribute;
 

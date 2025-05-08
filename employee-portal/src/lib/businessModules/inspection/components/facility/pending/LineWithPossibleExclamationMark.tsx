@@ -8,7 +8,7 @@
 import { ErrorOutlineOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
-export interface InspectionDuplicateTileProps {
+interface InspectionDuplicateTileProps {
   text: string;
   importedText: string;
 }

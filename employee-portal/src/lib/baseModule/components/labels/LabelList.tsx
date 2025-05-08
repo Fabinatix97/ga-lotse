@@ -23,7 +23,7 @@ export function LabelList({
   const sorted = labels.toSorted((a, b) => a.name.localeCompare(b.name));
   return (
     <Stack
-      direction={"row"}
+      direction="row"
       gap={0.5}
       flexWrap={disableWrap ? undefined : "wrap"}
       sx={{
@@ -33,8 +33,8 @@ export function LabelList({
       {sorted.slice(0, maxVisible).map((label) => (
         <Chip
           key={label.id}
-          variant={"soft"}
-          color={"primary"}
+          variant="soft"
+          color="primary"
           size={chipSize ?? "sm"}
           sx={{ margin: 0 }}
         >

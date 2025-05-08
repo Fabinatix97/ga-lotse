@@ -12,7 +12,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 
-export interface NotificationContextType {
+interface NotificationContextType {
   unreadNotificationsPerRoom: Record<string, number>;
 }
 

@@ -84,8 +84,8 @@ export function CreateInboxProcedureForm(props: CreateInboxProcedureFormProps) {
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={props.onSubmit}
       validate={validateForm}
+      onSubmit={props.onSubmit}
     >
       {({ handleSubmit, isSubmitting, values }) => {
         return (

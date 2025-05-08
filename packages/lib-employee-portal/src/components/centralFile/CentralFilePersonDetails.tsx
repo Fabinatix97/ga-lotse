@@ -17,13 +17,13 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 
-import { BaseAddress } from "@/api/models/address";
-import { ResponsiveDivider } from "@/components/ResponsiveDivider";
-import { BaseAddressDetailsColumn } from "@/components/address/BaseAddressDetailsColumn";
-import { DetailsColumn } from "@/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/components/detailsSection/DetailsRow";
-import { DetailsItem } from "@/components/detailsSection/items/DetailsItem";
-import { ExternalLinkDetailsItem } from "@/components/detailsSection/items/ExternalLinkDetailsItem";
+import { BaseAddress } from "../../api/models/address";
+import { ResponsiveDivider } from "../ResponsiveDivider";
+import { BaseAddressDetailsColumn } from "../address/BaseAddressDetailsColumn";
+import { DetailsColumn } from "../detailsSection/DetailsColumn";
+import { DetailsRow } from "../detailsSection/DetailsRow";
+import { DetailsItem } from "../detailsSection/items/DetailsItem";
+import { ExternalLinkDetailsItem } from "../detailsSection/items/ExternalLinkDetailsItem";
 
 interface CentralFilePerson {
   readonly firstName: string;
@@ -38,12 +38,14 @@ interface CentralFilePerson {
   readonly emailAddresses?: string[];
   readonly phoneNumbers?: string[];
   readonly contactAddress?: BaseAddress;
+  readonly humanReadableId?: string;
 }
 
 interface CentralFilePersonDetailsProps {
   readonly person: CentralFilePerson;
   readonly columnSx?: SxProps;
   readonly showAge?: boolean;
+  readonly showHumanReadableId?: boolean;
 }
 
 export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
@@ -51,6 +53,11 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
 
   const emailAddresses = person.emailAddresses ?? [];
   const phoneNumbers = person.phoneNumbers ?? [];
+
+  const showHumanReadableId =
+    !!props.showHumanReadableId && isDefined(person.humanReadableId);
+  const hasContactSection =
+    emailAddresses.length + phoneNumbers.length > 0 || showHumanReadableId;
 
   return (
     <Stack
@@ -122,7 +129,7 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
           address={person.contactAddress}
         />
       )}
-      {emailAddresses.length + phoneNumbers.length > 0 && (
+      {hasContactSection && (
         <DetailsColumn sx={props.columnSx}>
           {emailAddresses.map((email, index) => (
             <ExternalLinkDetailsItem
@@ -139,6 +146,12 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
               value={phoneNumber}
             />
           ))}
+          {showHumanReadableId && (
+            <DetailsItem
+              label={PERSON_FIELD_NAME.humanReadableId}
+              value={person.humanReadableId}
+            />
+          )}
         </DetailsColumn>
       )}
     </Stack>

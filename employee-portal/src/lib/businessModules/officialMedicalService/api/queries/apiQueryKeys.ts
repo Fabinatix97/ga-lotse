@@ -40,3 +40,7 @@ export const concernApiQueryKey = queryKeyFactory(
 export const waitingRoomApiQueryKey = queryKeyFactory(
   officialMedicalServiceApiQueryKey(["waitingRoomApi"]),
 );
+
+export const archivingApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["archivingApi"]),
+);

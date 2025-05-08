@@ -13,8 +13,8 @@ import {
   ApiGetGdprNotificationBannerResponse,
 } from "@eshg/lib-procedures-api";
 
-import { gdprRoutes } from "@/features/gdpr/config/gdprRoutes";
-import { formatDurationFromNowUntil } from "@/utils/formatters";
+import { formatDurationFromNowUntil } from "../../../utils/formatters";
+import { gdprRoutes } from "../config/gdprRoutes";
 
 export function useGdprValidationTasksAlert({
   banner,

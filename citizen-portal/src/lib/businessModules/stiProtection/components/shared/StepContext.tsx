@@ -23,7 +23,7 @@ interface StepContextProps {
   goForward: (numOfSteps?: number) => void;
   goBack: (numOfSteps?: number) => void;
 }
-export const StepContext = createContext<StepContextProps | null>(null);
+const StepContext = createContext<StepContextProps | null>(null);
 
 type ReactComponent = () => ReactNode;
 

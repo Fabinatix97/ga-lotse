@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -45,11 +45,7 @@ export function PersonalDataForm() {
   );
 }
 
-export function createBoundedIntValidator(
-  min: number,
-  max: number,
-  message: string,
-) {
+function createBoundedIntValidator(min: number, max: number, message: string) {
   return (value: OptionalFieldValue<number | string>) => {
     const int = typeof value === "string" ? parseInt(value, 10) : value;
     const isPositiveInteger = int >= min && int <= max;

@@ -9,7 +9,7 @@ import {
   TravelInformationFormValues,
 } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 
-export function createInitialPatient(): PatientFormValues {
+function createInitialPatient(): PatientFormValues {
   return {
     firstName: "",
     lastName: "",
@@ -19,7 +19,7 @@ export function createInitialPatient(): PatientFormValues {
   };
 }
 
-export function createInitialTravelInformation(): TravelInformationFormValues {
+function createInitialTravelInformation(): TravelInformationFormValues {
   return {
     travelType: "",
     travelDestinations: [],

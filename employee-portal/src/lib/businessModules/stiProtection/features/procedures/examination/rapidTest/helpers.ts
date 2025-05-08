@@ -14,7 +14,7 @@ import {
   ApiRapidTestExamination,
 } from "@eshg/sti-protection-api";
 
-export interface RapidTestData {
+interface RapidTestData {
   number?: string;
   result: YesOrNoFieldData;
 }
@@ -38,7 +38,7 @@ export interface RapidTestExaminationData {
   testsPayed: boolean;
 }
 
-export function mapRapidTestToForm(testData?: ApiRapidTestData): RapidTestData {
+function mapRapidTestToForm(testData?: ApiRapidTestData): RapidTestData {
   if (testData == undefined) {
     return {
       number: "",
@@ -51,7 +51,7 @@ export function mapRapidTestToForm(testData?: ApiRapidTestData): RapidTestData {
   };
 }
 
-export function mapRapidTestToApi(
+function mapRapidTestToApi(
   formData: RapidTestData | null,
 ): ApiRapidTestData | undefined {
   if (formData === null) {

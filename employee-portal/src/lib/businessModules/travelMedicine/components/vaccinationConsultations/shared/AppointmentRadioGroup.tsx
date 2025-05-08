@@ -10,10 +10,8 @@ import { ReactNode, useMemo, useState } from "react";
 import { DateTimeField } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupFieldProps } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import {
-  AppointmentPickerField,
-  FIELD_LABELS_DE,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { AppointmentPickerField } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
 import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import {
@@ -28,7 +26,9 @@ import {
   RadioSheetOption,
 } from "@/lib/businessModules/travelMedicine/shared/RadioSheet";
 import {
-  validateNonNegativeInteger,
+  APPOINTMENT_DURATION_MAX_LENGTH,
+  APPOINTMENT_DURATION_MIN_LENGTH,
+  validateAppointmentDuration,
   validateTodayOrFutureDate,
 } from "@/lib/shared/helpers/validators";
 
@@ -111,15 +111,16 @@ export function AppointmentRadioGroup({
           >
             <DateTimeField
               label="Datum und Uhrzeit"
-              name={"userDefinedAppointmentDate"}
+              name="userDefinedAppointmentDate"
               validate={validateTodayOrFutureDate}
             />
             <NumberField
               label="Termindauer in Minuten"
-              name={"appointmentTypeStandardDuration"}
-              min={0}
-              validate={validateNonNegativeInteger}
-            ></NumberField>
+              name="appointmentTypeStandardDuration"
+              min={APPOINTMENT_DURATION_MIN_LENGTH}
+              max={APPOINTMENT_DURATION_MAX_LENGTH}
+              validate={validateAppointmentDuration}
+            />
           </Stack>
         </RadioSheetOption>
         {isCitizenFollowUp && (

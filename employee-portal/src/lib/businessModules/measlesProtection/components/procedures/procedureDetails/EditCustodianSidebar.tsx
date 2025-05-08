@@ -5,68 +5,88 @@
 
 "use client";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  DefaultPersonForm,
+  DefaultPersonFormValues,
+  PersonSidebarForm,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  mapApiAddressToForm,
+  mapOptional,
+  mapToPersonAddRequest,
+  normalizeListInputs,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { ApiCustodian, ApiDomesticAddress } from "@eshg/measles-protection-api";
+import { ApiCustodian } from "@eshg/measles-protection-api";
 
-import { MEASLES_PROTECTION_CUSTODIAN_CONFIG } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/NewCustodianButton";
-import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";
-import { LegacyPersonSidebar } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
-import { BASE_PERSON_VALUES } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
-import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
-import { Mode } from "@/lib/shared/components/legacyPersonSidebar/personSidebarHelper";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
+import { useEditCustodian } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 
-export function EditCustodianSidebar({
-  custodians,
-}: {
-  custodians: ApiCustodian[] | undefined;
-}) {
-  const [editIndex, setEditIndex] = useSearchParam("edit-custodian", "number");
-  const open = editIndex != null;
-  const custodian =
-    editIndex != null ? (custodians ?? [])[editIndex] : undefined;
-  const snackbar = useSnackbar();
+export function useEditCustodianSidebar(): UseSidebarWithFormRefResult<EditCustodianSidebarProps> {
+  return useSidebarWithFormRef({ component: EditCustodianSidebar });
+}
 
-  function onClose() {
-    setEditIndex(null);
-  }
+interface EditCustodianSidebarProps extends SidebarWithFormRefProps {
+  procedureId: string;
+  custodianId: string;
+  custodian: ApiCustodian;
+}
 
-  function onSubmit() {
-    snackbar.confirmation("Änderungen an PSB erfolgreich gespeichert.");
-    return Promise.resolve();
+function EditCustodianSidebar({
+  procedureId,
+  custodianId,
+  custodian,
+  formRef,
+  onClose,
+}: Readonly<EditCustodianSidebarProps>) {
+  const editCustodian = useEditCustodian();
+
+  async function handleSubmit(values: DefaultPersonFormValues) {
+    const request = mapToPersonAddRequest(values);
+    await editCustodian.mutateAsync(
+      {
+        procedureId: procedureId,
+        custodianId: custodianId,
+        custodian: { ...request, address: request.contactAddress! },
+      },
+      {
+        onSuccess: () => {
+          onClose(true);
+        },
+      },
+    );
   }
 
   return (
-    <LegacyPersonSidebar
-      open={open}
-      onClose={onClose}
-      personFormTitle={"PSB bearbeiten"}
-      config={MEASLES_PROTECTION_CUSTODIAN_CONFIG}
-      onSubmit={onSubmit}
-      mode={Mode.editInCentralFile}
-      person={mapToPerson(custodian)}
+    <PersonSidebarForm
+      mode="edit"
+      title="PSB bearbeiten"
+      sidebarFormRef={formRef}
+      initialValues={mapCustodianDetailsToForm(custodian)}
+      component={DefaultPersonForm}
+      addressRequired
+      onCancel={onClose}
+      onSubmit={handleSubmit}
     />
   );
 }
-export function mapToPerson(
-  custodian: ApiCustodian | undefined,
-): LegacyPerson | undefined {
-  if (!custodian) {
-    return;
-  }
-  const address = custodian.address as ApiDomesticAddress;
+
+function mapCustodianDetailsToForm(
+  person: ApiCustodian,
+): DefaultPersonFormValues {
   return {
-    ...BASE_PERSON_VALUES,
-    ...custodian,
-    dateOfBirth: toDateString(custodian.dateOfBirth),
-    emailAddresses: custodian.emailAddresses ?? [],
-    phoneNumbers: custodian.phoneNumbers ?? [],
-    postalAddress: {
-      ...address,
-      houseNumber: address.houseNumber!,
-      addressAddition: address.addressAddition ?? "",
-      type: ApiFacilityAddressType.Postal,
-    },
+    salutation: person.salutation ?? "",
+    title: person.title ?? "",
+    firstName: person.firstName,
+    lastName: person.lastName,
+    dateOfBirth: toDateString(person.dateOfBirth),
+    gender: person.gender ?? "",
+    countryOfBirth: person.countryOfBirth ?? "",
+    nameAtBirth: person.nameAtBirth ?? "",
+    placeOfBirth: person.placeOfBirth ?? "",
+    emailAddresses: normalizeListInputs(person.emailAddresses),
+    phoneNumbers: normalizeListInputs(person.phoneNumbers),
+    contactAddress: mapOptional(person.address, mapApiAddressToForm),
+    differentBillingAddress: undefined,
   };
 }

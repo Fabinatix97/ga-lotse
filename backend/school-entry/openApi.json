@@ -882,6 +882,33 @@
         "tags" : [ "PrivacyDocument" ]
       }
     },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-policy" : {
       "get" : {
         "operationId" : "getPrivacyPolicyConfig",
@@ -926,6 +953,70 @@
           }
         },
         "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/school-entry" : {
+      "get" : {
+        "operationId" : "getSchoolEntryConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSchoolEntryLibConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryLibConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateSchoolEntryConfig",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateSchoolEntryConfigRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntryLibConfig" ]
       }
     },
     "/country-codes" : {
@@ -7248,7 +7339,7 @@
       "GetPrivacyDocumentConfigResponse" : {
         "type" : "object",
         "properties" : {
-          "overwrittenPrivacyDocument" : {
+          "privacyDocument" : {
             "$ref" : "#/components/schemas/PrivacyDocument"
           }
         }
@@ -7531,6 +7622,14 @@
             "items" : {
               "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
             }
+          }
+        }
+      },
+      "GetSchoolEntryLibConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "configuration" : {
+            "$ref" : "#/components/schemas/SchoolEntryConfig"
           }
         }
       },
@@ -9068,6 +9167,27 @@
           }
         }
       },
+      "SchoolEntryConfig" : {
+        "required" : [ "directProcedureTypeAssignmentOnImport", "directProcedureTypeAssignmentOnImportReadOnly", "locationSelectionMode", "locationSelectionModeReadOnly", "pdfDocumentAccentColor" ],
+        "type" : "object",
+        "properties" : {
+          "directProcedureTypeAssignmentOnImport" : {
+            "type" : "boolean"
+          },
+          "directProcedureTypeAssignmentOnImportReadOnly" : {
+            "type" : "boolean"
+          },
+          "locationSelectionMode" : {
+            "$ref" : "#/components/schemas/LocationSelectionMode"
+          },
+          "locationSelectionModeReadOnly" : {
+            "type" : "boolean"
+          },
+          "pdfDocumentAccentColor" : {
+            "type" : "string"
+          }
+        }
+      },
       "SchoolEntryCountryCode" : {
         "type" : "string",
         "description" : "Country codes by alpha-3 code (ISO 3166)",
@@ -9763,6 +9883,21 @@
           "version" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "UpdateSchoolEntryConfigRequest" : {
+        "required" : [ "directProcedureTypeAssignmentOnImport", "locationSelectionMode", "pdfDocumentAccentColor" ],
+        "type" : "object",
+        "properties" : {
+          "directProcedureTypeAssignmentOnImport" : {
+            "type" : "boolean"
+          },
+          "locationSelectionMode" : {
+            "$ref" : "#/components/schemas/LocationSelectionMode"
+          },
+          "pdfDocumentAccentColor" : {
+            "type" : "string"
           }
         }
       },

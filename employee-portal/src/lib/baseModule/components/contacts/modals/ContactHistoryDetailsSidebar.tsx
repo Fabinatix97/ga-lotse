@@ -17,7 +17,7 @@ import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 
-export interface ContactHistoryModalProps {
+interface ContactHistoryModalProps {
   title: string;
   type: ApiHistoryEntryType;
   modifiedAt: Date;
@@ -45,9 +45,9 @@ export function ContactHistoryDetailsSidebar({
   }
 
   return (
-    <Sidebar onClose={handleClose} open>
+    <Sidebar open onClose={handleClose}>
       <SidebarContent title={title}>
-        <Typography level={"body-sm"}>
+        <Typography level="body-sm">
           {formatDateTime(modifiedAt, "de")}, {translatedType[type]} von{" "}
           <UserLink user={modifiedBy} />
         </Typography>
@@ -55,9 +55,9 @@ export function ContactHistoryDetailsSidebar({
       </SidebarContent>
       <SidebarActions>
         <Button
-          onClick={handleClose}
           sx={{ alignSelf: "flex-end" }}
-          color={"primary"}
+          color="primary"
+          onClick={handleClose}
         >
           Okay
         </Button>

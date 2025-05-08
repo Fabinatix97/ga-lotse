@@ -5,10 +5,13 @@
 
 "use client";
 
+import { Typography, TypographyProps } from "@mui/joy";
+import assert from "assert";
 import { TOptions, createInstance, type i18n } from "i18next";
 import resourcesToBackend from "i18next-resources-to-backend";
-import { useCallback } from "react";
+import { ReactElement, createElement, memo, useCallback } from "react";
 import {
+  Trans,
   UseTranslationOptions,
   initReactI18next,
   useTranslation,
@@ -41,6 +44,18 @@ function createClient(lang: string) {
   return client;
 }
 
+function loadNamespace(key: string | string[] | undefined, i18n: i18n) {
+  const firstKey = key instanceof Array ? key[0] : key;
+  const nsIndex = firstKey?.indexOf(":") ?? -1;
+  const ns = nsIndex >= 0 ? firstKey?.slice(0, nsIndex) : undefined;
+  if (ns && !i18n.hasLoadedNamespace(ns)) {
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
+    throw new Promise((resolve) => {
+      void i18n.loadNamespaces(ns, resolve);
+    });
+  }
+}
+
 function useTranslationWrapper(
   ns?: string | string[],
   options?: UseTranslationOptions<undefined>,
@@ -48,20 +63,80 @@ function useTranslationWrapper(
   const { t, i18n, ready } = useTranslation(ns, options);
   const tFunction = useCallback(
     (key: string | string[], tOptions?: TOptions) => {
-      const firstKey = key instanceof Array ? key[0] : key;
-      const nsIndex = firstKey?.indexOf(":") ?? -1;
-      const ns = nsIndex >= 0 ? firstKey?.slice(0, nsIndex) : undefined;
-      if (ns && !i18n.hasLoadedNamespace(ns)) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
-        throw new Promise((resolve) => {
-          void i18n.loadNamespaces(ns, resolve);
-        });
-      }
+      loadNamespace(key, i18n);
       return t(key, tOptions);
     },
     [i18n, t],
   );
-  return { t: useTWithCamelCase(tFunction), i18n, ready };
+  const CustomTrans = createTrans(ns, i18n);
+  return {
+    t: useTWithCamelCase(tFunction),
+    i18n,
+    ready,
+    Trans: CustomTrans,
+    TransTypography: createTransTypography(CustomTrans),
+  };
+}
+
+export function createTransTypography(Trans: CustomTransComponent) {
+  const component = memo(
+    ({
+      i18nKey,
+      ns,
+      components,
+      shouldUnescape,
+      ...typographyProps
+    }: TransProps & Omit<TypographyProps, "children">) =>
+      createElement(
+        Typography,
+        {
+          ...typographyProps,
+        },
+        createElement(Trans, {
+          i18nKey,
+          ns,
+          components,
+          shouldUnescape,
+        }),
+      ),
+  );
+  component.displayName = "TransTypography";
+  return component;
+}
+interface TransProps {
+  i18nKey: string;
+  ns?: string;
+  components?: Record<string, ReactElement>;
+  shouldUnescape?: boolean;
+}
+type CustomTransComponent = ReturnType<typeof createTrans>;
+export function createTrans(
+  namespace: string | string[] | undefined,
+  i18n: i18n,
+) {
+  const component = memo(({ ...props }: TransProps) => {
+    const givenNamespace = props.ns ?? namespace;
+    assert.ok(
+      !isArray(givenNamespace),
+      "Multiple namespaces aren't supported with the <Trans /> component",
+    );
+    loadNamespace(props.i18nKey, i18n);
+    return createElement(Trans, {
+      shouldUnescape: true,
+      ...props,
+      components: {
+        p: createElement("p"),
+        mark: createElement("mark"),
+        strong: createElement("strong"),
+        u: createElement("u"),
+        em: createElement("em"),
+        ...props.components,
+      },
+      ns: givenNamespace,
+    });
+  });
+  component.displayName = "Trans";
+  return component;
 }
 
 export type TranslateFn = (
@@ -82,7 +157,7 @@ function fromSnakeToCamel(snakeCase: string): string {
     .join(".");
 }
 
-export function useTWithCamelCase(t: TranslateFn): TranslateFn {
+function useTWithCamelCase(t: TranslateFn): TranslateFn {
   return useCallback(
     (args, tOptions) => {
       const keys: string[] = (isArray(args) ? args : [args]).filter(

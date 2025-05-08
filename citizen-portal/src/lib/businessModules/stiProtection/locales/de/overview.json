@@ -1,31 +1,30 @@
 {
-  "page_title_sex_work": "Sexarbeit",
-  "page_title_sti_consultation": "HIV-STI-Beratung",
-  "information": {
-    "title": "Beratungs- und Testangebote",
-    "notice": "Sie benötigen weder ein Ausweisdokument noch eine Versicherungskarte. Alle Testergebnisse werden nur persönlich mitgeteilt.",
-    "applies_to_heading": "Das Angebot richtet sich an",
-    "applies_to_list": [
-      "Menschen ohne Krankenversicherung",
-      "Sexarbeiterinnen und Sexarbeiter",
-      "Allgemeinbevölkerung (Sie können sich bei uns nur beraten und testen lassen, eine Untersuchung können wir leider nicht vornehmen)"
-    ],
-    "tests_available_heading": "Je nach Vorgeschichte und Beschwerden können weitere Tests durchgeführt werden",
-    "tests_available_list": [
-      "körperliche Untersuchung",
-      "Blut- und Urinuntersuchung",
-      "Abstriche"
-    ],
-    "costs_heading": "Kosten",
-    "costs_info": "Die Kosten für die Laboruntersuchungen müssen von Ihnen selbst übernommen werden.",
-    "exceptions_heading": "Ausnahme",
-    "exceptions_list": [
-      "Jugendliche bis 24 Jahre können sich kostenlos auf HIV und Clamydien testen lassen.",
-      "Wenn Sie in der Sexarbeit tätig oder nicht krankenversichert sind, können Sie unsere Leistungen kostenlos in Anspruch nehmen."
-    ],
-    "invitation": "Den Termin zur Einschulungsuntersuchung verschickt das Gesundheitsamt per Post mit einem Einladungsschreiben etwa 3 bis 4 Wochen vor dem Termin.",
-    "cancellation": "Falls dieser Termin nicht wahrgenommen werden kann, sollte er rechtzeitig verschoben werden. Dies können Sie hier über das Online-Portal bequem selbst erledigen. Mithilfe des Anmeldecodes auf der Einladung und dem Geburtstag Ihres Kindes erreichen Sie Ihren persönlichen Bereich.",
-    "location": "Die Einschulungsuntersuchung findet im Gesundheitsamt in der {{address}} statt. Bitte im Eingangsbereich am Empfang melden und das Einladungsschreiben vorzeigen."
+  "sti_consultation": {
+    "page_title": "HIV-STI-Beratung",
+    "information": {
+      "title": "Beratungs- und Testangebote",
+      "offer": "Sie können sich bei uns <strong><u>anonym</u></strong> auf HIV und sexuell übertragbare Infektionen einschließlich Hepatitis B und C untersuchen und dazu beraten lassen. Außerdem können Sie Fragen zur Partnerschaft, Verhütung oder zur sexuellen Orientierung vertraulich und anonym stellen. Bei Bedarf können Ihnen weitere Hilfsangebote vermittelt werden.",
+      "applies_to": "Das Angebot richtet sich an <strong>alle</strong> Menschen. Die Tests sind ab 16 Jahren auch ohne Zustimmung der Sorgeberechtigten möglich. ",
+      "test_results": "Alle Testergebnisse werden nur <strong>persönlich</strong> mitgeteilt.",
+      "other_services": "Falls Sie Sexarbeiter/Sexarbeiterin sind, nutzen Sie bitte den Reiter „Sexarbeit”.",
+      "costs_heading": "Kosten",
+      "costs_info": "Die Kosten für die Laboruntersuchungen müssen von Ihnen selbst übernommen werden. Jugendliche und junge Erwachsene bis 24 Jahren können einen kostenlosen HIV-Test sowie einen Chlamydien-Test machen.",
+      "notice_heading": "Hinweis",
+      "notice_info": "Zur Verarbeitung Ihrer Buchung wird Ihre IP-Adresse übermittelt. Die Erhebung der IP-Adresse dient ausschließlich zu technischen Zwecken."
+    }
+  },
+  "sex_work": {
+    "page_title": "Sexarbeit",
+    "information": {
+      "title": "Beratungs- und Testangebote",
+      "offer": "Hier können sich alle Sexarbeiter/Sexarbeiterinnen <strong><u>anonym</u></strong> auf HIV und sexuell übertragbare Infektionen einschließlich Hepatitis B und C untersuchen und dazu beraten lassen. Außerdem können Sie Fragen zur Partnerschaft, Verhütung oder zur sexuellen Orientierung vertraulich und anonym stellen. Bei Bedarf können Ihnen weitere Hilfsangebote vermittelt werden.",
+      "test_results": "Alle Testergebnisse werden nur <strong>persönlich</strong> mitgeteilt.",
+      "other_services": "Falls Sie nicht in der Sexarbeit tätig sind, nutzen Sie bitte den Reiter „HIV-STI-Beratung”.",
+      "costs_heading": "Kosten",
+      "costs_info": "Das Angebot ist komplett kostenfrei.",
+      "notice_heading": "Hinweis",
+      "notice_info": "Zur Verarbeitung Ihrer Buchung wird Ihre IP-Adresse übermittelt. Die Erhebung der IP-Adresse dient ausschließlich zu technischen Zwecken."
+    }
   },
   "contact": {
     "title": "Kontakt und Erreichbarkeit",

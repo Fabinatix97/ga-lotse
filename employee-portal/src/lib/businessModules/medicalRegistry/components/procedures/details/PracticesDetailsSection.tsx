@@ -92,7 +92,7 @@ function PracticeDetails({
           divider={<ResponsiveDivider breakpoint="md" />}
         >
           <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsCellWrapped label={"Name"} value={practice.name} />
+            <DetailsCellWrapped label="Name" value={practice.name} />
             {isDefined(address) && (
               <>
                 <DetailsCellWrapped

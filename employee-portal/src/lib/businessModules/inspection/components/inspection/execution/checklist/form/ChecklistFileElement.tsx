@@ -10,7 +10,12 @@ import { Stack, Typography } from "@mui/joy";
 import { useId } from "react";
 
 import { ApiFileType } from "@eshg/inspection-api";
-import { FileField } from "@eshg/lib-employee-portal";
+import {
+  CustomFileType,
+  FileCard,
+  FileCardActionProps,
+  FileField,
+} from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import {
@@ -23,11 +28,6 @@ import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
 import { useDeleteChecklistFile } from "@/lib/businessModules/inspection/api/mutations/checklist";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
-import {
-  CustomFileType,
-  FileCard,
-  FileCardActionProps,
-} from "@/lib/shared/components/FileCard";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
 interface ChecklistFileElementProps {

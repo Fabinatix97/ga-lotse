@@ -32,7 +32,7 @@ export interface SubItem {
   path: string;
 }
 
-export function Item({
+function Item({
   item,
   open,
 }: Readonly<{
@@ -117,7 +117,7 @@ export function Item({
           }}
         >
           {item.subItems.map((subItem) => {
-            return <Item open={open} key={subItem.name} item={subItem} />;
+            return <Item key={subItem.name} open={open} item={subItem} />;
           })}
         </List>
       )}

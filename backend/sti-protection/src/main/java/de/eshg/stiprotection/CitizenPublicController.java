@@ -13,6 +13,8 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls.StiProtection;
 import de.eshg.stiprotection.api.ConcernDto;
@@ -168,6 +170,7 @@ public class CitizenPublicController {
     StiProtectionProcedure procedure;
     try {
       procedure = citizenAppointmentService.findByExternalId(procedureId);
+      validateDraftStatus(procedure);
     } catch (NotFoundException e) {
       log.debug("{}: procedure not found, creating personal details", procedureId, e);
       procedure = doAddPersonalDetails(procedureId, request.personalDetails());
@@ -176,7 +179,7 @@ public class CitizenPublicController {
     CitizenAccessCodeUserDto user =
         citizenAppointmentService.createAnonymousUser(procedureExternalId, request.pin());
     citizenAppointmentService.confirmAppointment(procedureExternalId);
-    return new CreateAnonymousUserResponse(user.userId(), user.accessCode(), procedureExternalId);
+    return new CreateAnonymousUserResponse(user.accessCode(), procedureExternalId);
   }
 
   @PutMapping("/appointments/{id}/personal-details")
@@ -188,11 +191,11 @@ public class CitizenPublicController {
   }
 
   private StiProtectionProcedure doAddPersonalDetails(
-      UUID procedureId, AddPersonalDetailsRequest request) {
-    Assert.notNull(request, "AddPersonalDetailsRequest must not be null");
+      UUID procedureId, @NotNull AddPersonalDetailsRequest request) {
     StiProtectionProcedure procedure;
     try {
       procedure = citizenAppointmentService.findByExternalId(procedureId);
+      validateDraftStatus(procedure);
     } catch (NotFoundException e) {
       log.debug("{}: procedure not found, booking appointment", procedureId, e);
       procedure = doBookAppointment(request.appointmentBooking());
@@ -201,19 +204,29 @@ public class CitizenPublicController {
         procedure.getExternalId(), PersonMapper.toDataType(request));
   }
 
-  @GetMapping(path = "/appointments/{id}/anon-ident-document")
+  @PostMapping(path = "/appointments/{id}/anon-ident-document")
   @Operation(summary = "Get an anonymous identification document for an appointment")
-  @Transactional(readOnly = true)
+  @Transactional
   @ApiResponse(
       responseCode = "200",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_PDF_VALUE,
               schema = @Schema(format = "binary")))
-  public ResponseEntity<byte[]> getCitizenAnonymousIdentificationDocument(
+  public ResponseEntity<byte[]> getInitialCitizenAnonymousIdentificationDocument(
       @PathVariable("id") UUID procedureId) {
+    StiProtectionProcedure procedure = citizenAppointmentService.findByExternalId(procedureId);
+    validateDraftStatus(procedure);
+    citizenAppointmentService.finalizeDraftProcedure(procedureId);
     Pdf pdf = citizenAppointmentService.getAnonymousIdentificationDocument(procedureId);
     return ResponseEntities.pdfContent(pdf.getFileName(), pdf.getFileContent().getContent());
+  }
+
+  private void validateDraftStatus(StiProtectionProcedure procedure) {
+    if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException(
+          "Procedure is not DRAFT and cannot be edited without authorization anymore.");
+    }
   }
 
   @DeleteMapping("/appointments/{id}")

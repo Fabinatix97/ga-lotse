@@ -53,7 +53,7 @@ export interface EvaluationDetailsView {
   tooMuchDataForExport: boolean;
 }
 
-export interface Diagram<T> {
+interface Diagram<T> {
   diagramId: string;
   title: string;
   description: string | undefined;
@@ -62,7 +62,7 @@ export interface Diagram<T> {
   data: T[];
 }
 
-export interface ChoroplethDiagram<T> extends Diagram<T> {
+interface ChoroplethDiagram<T> extends Diagram<T> {
   geoJson: string;
 }
 

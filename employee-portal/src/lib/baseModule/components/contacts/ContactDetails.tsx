@@ -50,11 +50,11 @@ export function ContactDetails({ contact }: { contact: Contact }) {
     0;
 
   return (
-    <ContentPanel dense={false} testId={"contact-details-panel"}>
+    <ContentPanel dense={false} testId="contact-details-panel">
       {hasWritePerms && (
         <EditButton
-          onClick={() => updateSidebar.open({ contact })}
           sx={{ maxWidth: "fit-content", flex: 0, alignSelf: "flex-end" }}
+          onClick={() => updateSidebar.open({ contact })}
         />
       )}
       <Stack
@@ -71,8 +71,8 @@ export function ContactDetails({ contact }: { contact: Contact }) {
               <DetailsRow>
                 {isDefined(contact.salutation) && (
                   <DetailsCell
-                    name={"salutation"}
-                    label={"Anrede"}
+                    name="salutation"
+                    label="Anrede"
                     value={
                       contact.salutation !== "NOT_SPECIFIED"
                         ? SALUTATION_VALUES[contact.salutation]
@@ -81,22 +81,22 @@ export function ContactDetails({ contact }: { contact: Contact }) {
                   />
                 )}
                 <DetailsCell
-                  name={"title"}
-                  label={"Titel"}
+                  name="title"
+                  label="Titel"
                   value={getOptionalTitle(contact.title)}
                 />
               </DetailsRow>
               <DetailsCell
-                name={"firstName"}
-                label={"Vorname"}
+                name="firstName"
+                label="Vorname"
                 value={contact.firstName}
               />
-              <DetailsCell name={"name"} label={"Name"} value={contact.name} />
+              <DetailsCell name="name" label="Name" value={contact.name} />
 
               {isDefined(contact.gender) && (
                 <DetailsCell
-                  name={"gender"}
-                  label={"Geschlecht"}
+                  name="gender"
+                  label="Geschlecht"
                   value={GENDER_VALUES[contact.gender]}
                 />
               )}
@@ -104,8 +104,8 @@ export function ContactDetails({ contact }: { contact: Contact }) {
               {showChatUsername && contact.externalChatUsername && (
                 <>
                   <DetailsCell
-                    name={"externalChatUsername"}
-                    label={"Chat-ID"}
+                    name="externalChatUsername"
+                    label="Chat-ID"
                     valueIsDiv
                     value={
                       <ChatUserId
@@ -133,10 +133,10 @@ export function ContactDetails({ contact }: { contact: Contact }) {
           )}
           {isInstitutionContact(contact) && (
             <>
-              <DetailsCell name={"name"} label={"Name"} value={contact.name} />
+              <DetailsCell name="name" label="Name" value={contact.name} />
               <DetailsCell
-                name={"category"}
-                label={"Objekttyp"}
+                name="category"
+                label="Objekttyp"
                 value={
                   isNonNullish(contact.category)
                     ? CONTACT_CATEGORY_NAMES[contact.category]
@@ -156,7 +156,7 @@ export function ContactDetails({ contact }: { contact: Contact }) {
             {isDefined(contact.differentBillingAddress) && (
               <>
                 <Divider />
-                <Typography level={"title-md"}>Rechnungsadresse</Typography>
+                <Typography level="title-md">Rechnungsadresse</Typography>
                 <BaseAddressDetailsColumn
                   address={contact.differentBillingAddress}
                 />
@@ -171,7 +171,7 @@ export function ContactDetails({ contact }: { contact: Contact }) {
               <ExternalLinkDetailsCell
                 key={[emailAddress, index].join("-")}
                 name={`emailAddresses.${index}`}
-                label={"E-Mail-Adresse"}
+                label="E-Mail-Adresse"
                 value={emailAddress}
                 href={emailHref}
               />
@@ -180,7 +180,7 @@ export function ContactDetails({ contact }: { contact: Contact }) {
               <ExternalLinkDetailsCell
                 key={[phoneNumber, index].join("-")}
                 name={`phoneNumbers.${index}`}
-                label={"Telefonnummer"}
+                label="Telefonnummer"
                 value={phoneNumber}
                 href={phoneHref}
               />

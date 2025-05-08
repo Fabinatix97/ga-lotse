@@ -7,7 +7,6 @@ import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
 import { InspectionTabNavigationToolbar } from "@/lib/businessModules/inspection/components/inspection/InspectionTabNavigationToolbar";
-import { TrackInspectionView } from "@/lib/businessModules/inspection/components/inspection/TrackInspectionView";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type EditInspectionRouteParams = {
@@ -24,7 +23,6 @@ export default async function EditInspectionLayout(
       toolbar={<InspectionTabNavigationToolbar inspectionId={id} />}
     >
       {props.children}
-      <TrackInspectionView inspectionId={id} />
     </StickyToolbarLayout>
   );
 }

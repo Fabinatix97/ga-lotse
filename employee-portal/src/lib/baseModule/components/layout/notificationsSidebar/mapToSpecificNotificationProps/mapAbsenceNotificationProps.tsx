@@ -20,13 +20,11 @@ export function mapAbsenceNotificationProps(
   const absentUser = resolvedUsers[notification.absentUserId]!;
 
   const content = (
-    <>
-      <Typography level="body-md">
-        {<UserLink user={absentUser} />} hat eine Abwesenheit eingetragen:
-        <br />
-        <strong>{`${formatDateRange(notification.absenceStart, notification.absenceEnd)}.`}</strong>
-      </Typography>
-    </>
+    <Typography level="body-md">
+      <UserLink user={absentUser} /> hat eine Abwesenheit eingetragen:
+      <br />
+      <strong>{`${formatDateRange(notification.absenceStart, notification.absenceEnd)}.`}</strong>
+    </Typography>
   );
 
   return {

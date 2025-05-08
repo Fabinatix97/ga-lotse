@@ -5,7 +5,7 @@
 
 import { SetStateAction } from "react";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { ApiDocumentConfirmation } from "@eshg/travel-medicine-api";
 
 interface ConfirmationElementProps {
@@ -30,9 +30,9 @@ export function ConfirmationElement({
     <CheckboxField
       label={confirmation.confirmationTextField}
       name={name}
-      onChange={(event) => setFieldValue(name, event.target.checked)}
       disabled={readOnly}
       data-testid="document-element-type-confirmation"
+      onChange={(event) => setFieldValue(name, event.target.checked)}
     />
   );
 }

@@ -76,7 +76,7 @@ export function InfoIconTooltipButton({
   );
 }
 
-export function IconTooltipButton({
+function IconTooltipButton({
   icon,
   iconLabelledBy,
   infoText,
@@ -118,8 +118,8 @@ export function IconTooltipButton({
       <OverlayBoundary>
         <BaseModal
           open={open}
-          onClose={() => setOpen(false)}
           modalTitle={title}
+          onClose={() => setOpen(false)}
         >
           <Typography>{infoText}</Typography>
         </BaseModal>

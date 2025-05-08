@@ -81,8 +81,8 @@ export default function PlaygroundFilterSettingsUnmanagedPage() {
               <ToggleFilterButton
                 isFilterVisible={filterVisible}
                 activeFilters={activeFilters.length}
-                onClick={() => setFilterVisible((prev) => !prev)}
                 aria-controls={filtersId}
+                onClick={() => setFilterVisible((prev) => !prev)}
               />
             }
           />

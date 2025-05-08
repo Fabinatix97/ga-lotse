@@ -24,7 +24,7 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
 };
 
-export const CREATED_BY_USER_TYPES: EnumMap<ApiCreatedByUserType> = {
+const CREATED_BY_USER_TYPES: EnumMap<ApiCreatedByUserType> = {
   [ApiCreatedByUserType.Employee]: "Mitarbeiter",
   [ApiCreatedByUserType.CitizenPortal]: "Bürger",
 };

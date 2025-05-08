@@ -70,7 +70,7 @@ export function TextTemplatesSidebar({
 
   return (
     <>
-      <SidebarContent title={"Textvorlage einfügen"}>
+      <SidebarContent title="Textvorlage einfügen">
         <TextTemplatesSidebarContent
           context={context}
           appendText={appendText}
@@ -78,7 +78,7 @@ export function TextTemplatesSidebar({
         />
       </SidebarContent>
       <SidebarActions>
-        <Button onClick={onClose} sx={{ alignSelf: "end" }}>
+        <Button sx={{ alignSelf: "end" }} onClick={onClose}>
           Schließen
         </Button>
       </SidebarActions>
@@ -90,7 +90,7 @@ interface TextTemplatesSidebarContentProps
   appendText: AppendText;
   accordionsRef: MutableRefObject<HTMLDivElement | null>;
 }
-export function TextTemplatesSidebarContent({
+function TextTemplatesSidebarContent({
   context: givenContext,
   appendText,
   accordionsRef,
@@ -103,11 +103,11 @@ export function TextTemplatesSidebarContent({
   return (
     <Stack gap={2}>
       <ContextSelect context={context} setContext={setContext} />
-      <AccordionGroup sx={{ gap: 1 }} ref={accordionsRef}>
+      <AccordionGroup ref={accordionsRef} sx={{ gap: 1 }}>
         <Divider />
         {textTemplates.map(({ name, content }, index) => (
           <TextTemplateAccordion
-            key={name}
+            key={index}
             name={name}
             content={content}
             index={index}
@@ -131,7 +131,7 @@ interface ContextSelectProps {
   context: ApiTextTemplateContext | null;
   setContext: (c: ApiTextTemplateContext | null) => void;
 }
-export function ContextSelect({ context, setContext }: ContextSelectProps) {
+function ContextSelect({ context, setContext }: ContextSelectProps) {
   const buttonId = useId();
   const labelId = useId();
   return (

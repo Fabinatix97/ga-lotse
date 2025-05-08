@@ -18,12 +18,12 @@ import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField"
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
-import { BaseAddressType } from "@/api/models/address";
-import { CountryField } from "@/components/formFields/CountryField";
-import { validateZipCode } from "@/utils/validators";
+import { BaseAddressType } from "../../api/models/address";
+import { validateZipCode } from "../../utils/validators";
+import { CountryField } from "../formFields/CountryField";
 
 import { StreetField } from "./StreetField";
 import { StreetListeningField } from "./StreetListeningField";
@@ -48,11 +48,7 @@ interface AddressFormProps extends Partial<NestedFormProps> {
 export function ContactAddressForm(props: AddressFormProps) {
   const fieldName = createFieldNameMapper<BaseAddressFormInputs>(props.name);
 
-  return (
-    <>
-      <CommonAddressFields type={props.type} fieldName={fieldName} />
-    </>
-  );
+  return <CommonAddressFields type={props.type} fieldName={fieldName} />;
 }
 
 export function OptionalContactAddressForm(props: {
@@ -63,52 +59,48 @@ export function OptionalContactAddressForm(props: {
   const { setFieldValue } = useFormikContext();
   const id = useId();
 
-  return (
-    <>
-      {isNonNullish(props.values) ? (
-        <Box
-          component={"section"}
-          aria-labelledby={id}
-          sx={{ display: "contents" }}
+  if (props.values === undefined) {
+    return (
+      <Grid xxs={12}>
+        <FormAddMoreButton
+          onClick={() => setFieldValue(props.name, createEmptyAddress())}
         >
-          <Grid xxs={12}>
-            <Typography
-              level="title-md"
-              id={id}
-              justifyContent="space-between"
-              endDecorator={
-                props.optional && (
-                  <IconButton
-                    aria-label="Entfernen"
-                    onClick={() => setFieldValue(props.name, undefined, false)}
-                  >
-                    <DeleteOutlined color={"primary"} />
-                  </IconButton>
-                )
-              }
-            >
-              Kontaktadresse
-            </Typography>
-          </Grid>
-          <ContactAddressForm name={props.name} type={props.values.type} />
-        </Box>
-      ) : (
-        <Grid xxs={12}>
-          <FormAddMoreButton
-            onClick={() => setFieldValue(props.name, createEmptyAddress())}
-          >
-            Kontaktadresse hinzufügen
-          </FormAddMoreButton>
-        </Grid>
-      )}
-    </>
+          Kontaktadresse hinzufügen
+        </FormAddMoreButton>
+      </Grid>
+    );
+  }
+
+  return (
+    <Box component="section" aria-labelledby={id} sx={{ display: "contents" }}>
+      <Grid xxs={12}>
+        <Typography
+          level="title-md"
+          id={id}
+          justifyContent="space-between"
+          endDecorator={
+            props.optional ? (
+              <IconButton
+                aria-label="Entfernen"
+                onClick={() => setFieldValue(props.name, undefined, false)}
+              >
+                <DeleteOutlined color="primary" />
+              </IconButton>
+            ) : null
+          }
+        >
+          Kontaktadresse
+        </Typography>
+      </Grid>
+      <ContactAddressForm name={props.name} type={props.values.type} />
+    </Box>
   );
 }
 
 export function BillingAddressForm(
   props: AddressFormProps & { optional?: boolean },
 ) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const name = props.name;
   const fieldName = createFieldNameMapper<BaseAddressFormInputs>(name);
   const { setFieldValue } = useFormikContext();
@@ -117,8 +109,8 @@ export function BillingAddressForm(
 
   return (
     <Box
-      component={"section"}
-      aria-labelledby={"different-billing-address-form-section-title"}
+      component="section"
+      aria-labelledby="different-billing-address-form-section-title"
       sx={{
         display: "contents",
       }}
@@ -126,13 +118,13 @@ export function BillingAddressForm(
       {canRemove && (
         <Grid xxs={12}>
           <Stack
-            direction={"row"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
           >
             <Typography
-              level={"title-md"}
-              id={"different-billing-address-form-section-title"}
+              level="title-md"
+              id="different-billing-address-form-section-title"
             >
               Abweichende Rechnungsadresse
             </Typography>
@@ -141,7 +133,7 @@ export function BillingAddressForm(
               color="primary"
               onClick={() => setFieldValue(name, undefined, false)}
             >
-              <DeleteOutlined color={"primary"} />
+              <DeleteOutlined color="primary" />
             </IconButton>
           </Stack>
         </Grid>
@@ -149,8 +141,8 @@ export function BillingAddressForm(
       <Grid xxs={12}>
         <InputField
           name={fieldName("differentName")}
-          label={"Abweichender Empfänger"}
-          placeholder={"Wenn der Name von der Kontaktadresse abweicht"}
+          label="Abweichender Empfänger"
+          placeholder="Wenn der Name von der Kontaktadresse abweicht"
           validate={validateLength(1, 200)}
         />
       </Grid>
@@ -164,30 +156,25 @@ export function OptionalBillingAddressForm(props: {
   values?: BaseAddressFormInputs;
 }) {
   const { setFieldValue } = useFormikContext();
+
+  if (props.values === undefined) {
+    return (
+      <Grid xxs={12}>
+        <Button
+          variant="plain"
+          size="sm"
+          sx={{ padding: 0, margin: 0, "--Button-minHeight": 0 }}
+          startDecorator={<Add />}
+          onClick={() => setFieldValue(props.name, createEmptyAddress())}
+        >
+          Abweichende Rechnungsadresse eingeben
+        </Button>
+      </Grid>
+    );
+  }
+
   return (
-    <>
-      {isNonNullish(props.values) ? (
-        <BillingAddressForm
-          optional
-          name={props.name}
-          type={props.values.type}
-        />
-      ) : (
-        <>
-          <Grid xxs={12}>
-            <Button
-              onClick={() => setFieldValue(props.name, createEmptyAddress())}
-              variant={"plain"}
-              size={"sm"}
-              sx={{ padding: 0, margin: 0, "--Button-minHeight": 0 }}
-              startDecorator={<Add />}
-            >
-              Abweichende Rechnungsadresse eingeben
-            </Button>
-          </Grid>
-        </>
-      )}
-    </>
+    <BillingAddressForm optional name={props.name} type={props.values.type} />
   );
 }
 
@@ -209,7 +196,7 @@ function CommonAddressFields({
   type: BaseAddressType;
   fieldName: (key: keyof BaseAddressFormInputs) => string;
 }) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const ctx = useFormikContext<BaseAddressFormInputs>();
 
   function getValue<K extends keyof BaseAddressFormInputs>(key: K) {
@@ -224,8 +211,8 @@ function CommonAddressFields({
         <SelectField
           options={typeOptions}
           name={fieldName("type")}
-          label={"Art"}
-          required={"Bitte die Art der Adresse angeben"}
+          label="Art"
+          required="Bitte die Art der Adresse angeben"
         />
       </Grid>
       {type === "DomesticAddress" && (
@@ -260,8 +247,8 @@ function CommonAddressFields({
         <Grid xxs={12}>
           <InputField
             name={fieldName("postbox")}
-            label={"Postfachnummer"}
-            required={"Bitte eine Postfachnummer angeben"}
+            label="Postfachnummer"
+            required="Bitte eine Postfachnummer angeben"
             validate={validateLength(1, 21)}
           />
         </Grid>

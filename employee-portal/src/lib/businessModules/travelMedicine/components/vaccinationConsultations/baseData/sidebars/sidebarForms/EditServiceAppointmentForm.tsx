@@ -86,19 +86,19 @@ function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
     bookingType === ApiAppointmentBookingType.AppointmentBlock
   ) {
     return (
-      <Chip color={"primary"} size="md" component={"span"}>
+      <Chip color="primary" size="md" component="span">
         Gebucht
       </Chip>
     );
   } else if (bookingType === ApiAppointmentBookingType.Cancelled) {
     return (
-      <Chip color={"danger"} size="md">
+      <Chip color="danger" size="md">
         Abgesagt
       </Chip>
     );
   } else {
     return (
-      <Chip color={"neutral"} size="md">
+      <Chip color="neutral" size="md">
         Nicht gebucht
       </Chip>
     );
@@ -139,9 +139,9 @@ export function EditServiceAppointmentForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
       validate={validateForm}
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, setFieldValue, values }) => (
         <SidebarForm ref={props.formRef}>
@@ -187,11 +187,11 @@ export function EditServiceAppointmentForm(
                         label: "Impfung",
                       },
                     ]}
+                    sx={{ flexGrow: 1 }}
                     onChange={async () => {
                       await setFieldValue("bookingType", "");
                       await setFieldValue("appointmentBlockDate", "");
                     }}
-                    sx={{ flexGrow: 1 }}
                   />
                 </Sheet>
               )}

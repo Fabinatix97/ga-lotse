@@ -21,8 +21,8 @@ import {
 } from "@eshg/lib-portal/schemas/pageParams";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { useSyncPerson } from "@/features/children/api/mutations/details";
-import { DentalChildRouteParams } from "@/features/children/schemas/DentalChildRouteParams";
+import { useSyncPerson } from "../api/mutations/details";
+import { DentalChildRouteParams } from "../schemas/DentalChildRouteParams";
 
 const RouteParamsSchema = v.object({
   ...DentalChildRouteParams.entries,
@@ -55,9 +55,9 @@ export function DentalSyncPersonPage(props: DynamicPageProps) {
 
   return (
     <CentralFileSyncForm
+      title={formatPersonName(data.personDetailsDiff.fileState)}
       onAccept={handleSync}
       onCancel={router.back}
-      title={formatPersonName(data.personDetailsDiff.fileState)}
     >
       <BasePersonDiffForm diff={data} />
     </CentralFileSyncForm>

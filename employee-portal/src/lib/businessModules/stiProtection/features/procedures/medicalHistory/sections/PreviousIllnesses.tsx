@@ -19,7 +19,7 @@ export function PreviousIllnesses() {
   return (
     <>
       <Typography level="h3" mb={3} id="previous-illnesses-section-title">
-        Bisherige Krankheiten
+        Bisherige Infektionen
       </Typography>
       <SectionGrid
         aria-labelledby="previous-illnesses-section-title"
@@ -35,13 +35,13 @@ export function PreviousIllnesses() {
             />
           ))}
         <YesOrNoWithFollowUp
-          label="Andere sexuell übertragbare Krankheit"
+          label="Andere sexuell übertragbare Infektionen"
           name="previousIllnesses.other"
         >
           <InputField
             sx={{ gridColumn: 2 }}
             name="previousIllnesses.otherData"
-            label={"Wenn ja, welche?"}
+            label="Wenn ja, welche?"
           />
         </YesOrNoWithFollowUp>
       </SectionGrid>

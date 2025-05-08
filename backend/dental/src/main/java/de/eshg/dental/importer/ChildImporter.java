@@ -20,6 +20,8 @@ import de.eshg.lib.xlsximport.Importer;
 import de.eshg.lib.xlsximport.RowReader;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +34,7 @@ public class ChildImporter extends Importer<ChildRow, ChildColumn> {
   private final UUID institutionId;
   private final Year year;
   private final ChildService childService;
+  private final Map<PersonKeyAttributes, Child> closableChildren;
 
   public ChildImporter(
       XSSFSheet sheet,
@@ -44,6 +47,7 @@ public class ChildImporter extends Importer<ChildRow, ChildColumn> {
     this.institutionId = institutionId;
     this.year = year;
     this.childService = childService;
+    closableChildren = new HashMap<>();
   }
 
   @Override
@@ -78,13 +82,23 @@ public class ChildImporter extends Importer<ChildRow, ChildColumn> {
   private void evaluateActionForValidRow(
       ChildRow row, Map<PersonKeyAttributes, Child> existingChildrenInAsset) {
     Child existingChild = existingChildrenInAsset.get(row.getChildKeyAttributes());
-    if (existingChild != null) {
+    if (existingChild == null) {
+      handleImportableChild(row);
+      return;
+    }
+    if (year.isAfter(existingChild.getYear())) {
+      addToMergeableRows(row);
+      closableChildren.put(row.getChildKeyAttributes(), existingChild);
+      stats.countCreated();
+    } else {
       writeStatusAndEntityId(row, ImportStatus.DUPLICATE_IN_ASSET, existingChild.getExternalId());
       stats.countDuplicated();
-    } else {
-      addToImportableRows(row);
-      stats.countCreated();
     }
+  }
+
+  private void handleImportableChild(ChildRow row) {
+    addToImportableRows(row);
+    stats.countCreated();
   }
 
   private List<UUID> fetchExistingChildIdsIfNecessary(List<ChildRow> rows) {
@@ -95,6 +109,20 @@ public class ChildImporter extends Importer<ChildRow, ChildColumn> {
 
   @Override
   protected void createEntitiesAndWriteResults(List<ChildRow> importableRows) {
+    createChildren(importableRows, Collections.emptyMap());
+  }
+
+  @Override
+  protected void mergeEntitiesAndWriteResults(List<ChildRow> mergeableRows) {
+    List<UUID> idsToClose = closableChildren.values().stream().map(Child::getExternalId).toList();
+    childService.closeChildrenInBulk(idsToClose, true);
+    Map<CreateChildRequest, Child> createdChildren =
+        createChildren(mergeableRows, closableChildren);
+    childService.updateReferencePersons(createdChildren);
+  }
+
+  private Map<CreateChildRequest, Child> createChildren(
+      List<ChildRow> importableRows, Map<PersonKeyAttributes, Child> previouslyClosedChildren) {
     Map<ChildRow, CreateChildRequest> requestsPerRow =
         importableRows.stream()
             .map(
@@ -107,13 +135,17 @@ public class ChildImporter extends Importer<ChildRow, ChildColumn> {
             .collect(StreamUtil.toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<CreateChildRequest, Child> result =
-        childService.createChildren(new ArrayList<>(requestsPerRow.values()), DataOriginDto.IMPORT);
+        childService.createChildrenAndUpdateProcedureLabels(
+            new ArrayList<>(requestsPerRow.values()),
+            previouslyClosedChildren,
+            DataOriginDto.IMPORT);
 
     requestsPerRow.forEach(
         (importableRow, request) -> {
           Child child = result.get(request);
           writeStatusAndEntityId(importableRow, IMPORTED_SUCCESSFULLY, child.getExternalId());
         });
+    return result;
   }
 
   private Map<PersonKeyAttributes, Child> findExistingChildrenInAsset(List<ChildRow> rows) {

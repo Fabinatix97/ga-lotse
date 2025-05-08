@@ -30,7 +30,6 @@ export function ChecklistIncidentToggle({
       checkedIcon={<CloseOutlined />}
       uncheckedIcon={<WarningAmberOutlined />}
       label="Vorkommnis"
-      onChange={!readOnly ? field.onChange : undefined}
       checked={field.checked}
       readOnly={readOnly}
       slotProps={{
@@ -50,6 +49,7 @@ export function ChecklistIncidentToggle({
         },
         checkbox: () => ({ sx: { border: "none" } }),
       }}
+      onChange={!readOnly ? field.onChange : undefined}
     />
   );
 }

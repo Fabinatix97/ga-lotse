@@ -21,7 +21,7 @@ const userColumns = [
   columnHelper.display({
     id: "avatar",
     header: "",
-    cell: (props) => <UserAvatar size={"sm"} user={props.row.original} />,
+    cell: (props) => <UserAvatar size="sm" user={props.row.original} />,
     meta: {
       width: 48,
       canNavigate: {
@@ -85,9 +85,7 @@ const userColumns = [
         >
           <ChatOutlinedIcon />
         </InternalLinkIconButton>
-      ) : (
-        <></>
-      );
+      ) : null;
     },
     meta: {
       width: "9ch",

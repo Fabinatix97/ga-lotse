@@ -20,10 +20,7 @@ public class ToothDiagnosis {
   private MainResult mainResult;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private SecondaryResult secondaryResult1;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private SecondaryResult secondaryResult2;
+  private SecondaryResult secondaryResult;
 
   // flag necessary for hibernate to not ignore empty diagnoses
   @Column(nullable = false)
@@ -37,19 +34,11 @@ public class ToothDiagnosis {
     this.mainResult = mainResult;
   }
 
-  public SecondaryResult secondaryResult1() {
-    return secondaryResult1;
+  public SecondaryResult secondaryResult() {
+    return secondaryResult;
   }
 
-  public void setSecondaryResult1(SecondaryResult secondaryResult1) {
-    this.secondaryResult1 = secondaryResult1;
-  }
-
-  public SecondaryResult secondaryResult2() {
-    return secondaryResult2;
-  }
-
-  public void setSecondaryResult2(SecondaryResult secondaryResult2) {
-    this.secondaryResult2 = secondaryResult2;
+  public void setSecondaryResult(SecondaryResult secondaryResult) {
+    this.secondaryResult = secondaryResult;
   }
 }

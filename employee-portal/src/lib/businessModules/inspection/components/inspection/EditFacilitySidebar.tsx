@@ -45,9 +45,9 @@ function EmbeddedEditFacilitySidebar({
       title="Einrichtung bearbeiten"
       submitLabel="Speichern"
       initialValues={initialInputs}
+      sidebarFormRef={formRef}
       onSubmit={handleSubmit}
       onCancel={onClose}
-      sidebarFormRef={formRef}
     />
   );
 }

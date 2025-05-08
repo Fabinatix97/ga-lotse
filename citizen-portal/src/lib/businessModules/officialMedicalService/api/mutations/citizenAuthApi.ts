@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
+  ApiPostAnamnesisRequest,
   CancelAppointmentByCitizenRequest,
   PostDocumentCitizenRequest,
   PutAppointmentCitizenRequest,
@@ -36,7 +39,7 @@ export function usePutAppointmentCitizen(successMsg: string) {
   const citizenAuthApi = useCitizenAuthApi();
   const snackbar = useSnackbar();
 
-  return useHandledMutation({
+  return useMutation({
     mutationFn: (request: PutAppointmentCitizenRequest) => {
       return citizenAuthApi
         .putAppointmentCitizenRaw(request)
@@ -61,6 +64,21 @@ export function usePostDocumentCitizen() {
     },
     onSuccess: () => {
       snackbar.confirmation(t("documents.snackbar.success"));
+    },
+  });
+}
+
+export function usePostAnamnesisCitizen() {
+  const citizenAuthApi = useCitizenAuthApi();
+  const snackbar = useSnackbar();
+  const { t } = useTranslation(["officialMedicalService/anamnesis"]);
+
+  return useHandledMutation({
+    mutationFn: (request: ApiPostAnamnesisRequest) => {
+      return citizenAuthApi.postAnamnesisCitizen(request);
+    },
+    onSuccess: () => {
+      snackbar.confirmation(t("snackbar.submit_success"));
     },
   });
 }

@@ -8,11 +8,8 @@
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
-import {
-  FormFooter,
-  FormStack,
-  TextareaField,
-} from "@eshg/lib-employee-portal";
+import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
@@ -208,7 +205,7 @@ export function SopessExaminationForm(props: SopessExaminationFormProps) {
               values.articulation.formationsTrDrKrGrPoints
             }
             setFieldValue={setFieldValue}
-          ></ArticulationForm>
+          />
           <Stack gap={5} direction="row" alignItems="flex-end" flexWrap="wrap">
             <PrepositionForm
               prepositionPoints={values.speech.prepositionPoints}

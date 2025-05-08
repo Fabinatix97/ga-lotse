@@ -31,7 +31,7 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 const columnHelper =
   createColumnHelper<ApiChecklistDefinitionCentralRepoMetadata>();
 
-export interface CldRepoOverviewTableColumnsProps {
+interface CldRepoOverviewTableColumnsProps {
   canEditCoreCld: boolean;
   canEditCld: boolean;
   canDeleteCld: boolean;

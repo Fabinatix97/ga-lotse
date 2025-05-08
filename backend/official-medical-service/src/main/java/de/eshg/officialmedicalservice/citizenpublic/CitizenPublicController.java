@@ -149,13 +149,13 @@ public class CitizenPublicController {
   @Operation(summary = "Get the privacy-notice document.")
   @GetMapping(path = PRIVACY_NOTICE_URL)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNoticeDe();
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @Operation(summary = "Get the privacy-policy document.")
   @GetMapping(path = PRIVACY_POLICY_URL)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicyDe();
+    return privacyDocumentService.getPrivacyPolicy();
   }
 
   @Operation(summary = "Get all available concerns for the online portal.")

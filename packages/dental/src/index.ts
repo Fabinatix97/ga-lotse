@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
 export {
-  Cuspid,
-  Incisor,
-  Molar,
-  Premolar,
-} from "./components/examination/teeth";
+  CuspidIcon,
+  IncisorIcon,
+  MolarIcon,
+  PremolarIcon,
+} from "./components/fullDentition/toothIcons";
 
 export {
   fileApiQueryKey,
@@ -35,8 +37,12 @@ export { DentalChildrenOverviewPage } from "./features/children/pages/DentalChil
 export { SchoolYearTransitionButton } from "./features/children/components/childrenOverview/tableButtons";
 export { SchoolYearTransitionSchoolPage } from "./features/children/pages/SchoolYearTransitionSchoolPage";
 export { SchoolYearTransitionGroupPage } from "./features/children/pages/SchoolYearTransitionGroupPage";
+export { SchoolYearTransitionDaycarePage } from "./features/children/pages/SchoolYearTransitionDaycarePage";
+export { SchoolYearTransitionChildrenPage } from "./features/children/pages/SchoolYearTransitionChildrenPage";
 export { DentalChildExaminationPage } from "./features/children/pages/DentalChildExaminationPage";
 export { DentalSyncPersonPage } from "./features/children/pages/DentalSyncPersonPage";
+
+export { DentalProcedureLabelsOverviewPage } from "./features/procedureLabels/pages/DentalProcedureLabelsOverviewPage";
 
 export { moduleUserGroup } from "./config/userGroups";
 export {

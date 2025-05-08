@@ -70,10 +70,10 @@ function AppointmentTypeSidebar(props: Readonly<AppointmentTypeSidebarProps>) {
     <AppointmentTypeForm
       initialValues={mapInitialValues(props.appointmentTypeConfig)}
       formRef={props.formRef}
+      title="Terminart bearbeiten"
+      submitLabel="Speichern"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Terminart bearbeiten"}
-      submitLabel={"Speichern"}
     />
   );
 }

@@ -30,12 +30,11 @@ interface InformationStatementSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
 }
 
-export const initialInformationStatementFormValues: InformationStatementFormValues =
-  {
-    procedureId: "",
-    diseases: [],
-    informationStatementTemplates: [],
-  };
+const initialInformationStatementFormValues: InformationStatementFormValues = {
+  procedureId: "",
+  diseases: [],
+  informationStatementTemplates: [],
+};
 
 function InformationStatementSidebar(
   props: Readonly<InformationStatementSidebarProps>,
@@ -78,10 +77,10 @@ function InformationStatementSidebar(
       allInformationStatementTemplates={allInformationStatementTemplates}
       allDiseases={allDiseases}
       formRef={props.formRef}
+      title="Bogen hinzufügen"
+      submitLabel="Hinzufügen"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Bogen hinzufügen"}
-      submitLabel={"Hinzufügen"}
     />
   );
 }

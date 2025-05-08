@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Alert, Typography } from "@mui/joy";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
 interface SummaryItemProps {
   content: string;
@@ -17,15 +17,7 @@ export function SummaryItem(props: SummaryItemProps) {
       variant="soft"
       color={props.color}
       sx={{ padding: 1 }}
-    >
-      <Typography
-        fontSize="sm"
-        fontWeight="md"
-        variant="soft"
-        color={props.color}
-      >
-        {props.content}
-      </Typography>
-    </Alert>
+      message={props.content}
+    />
   );
 }

@@ -21,18 +21,16 @@ export function AppointmentTypesTable() {
   const appointmentTypeSidebar = useAppointmentTypeSidebar();
 
   return (
-    <>
-      <TablePage data-testid="appointment-types" fullHeight>
-        <TableSheet>
-          <DataTable
-            data={getAllAppointmentTypes}
-            columns={columns({
-              editEntry: (appointmentTypeConfig) =>
-                appointmentTypeSidebar.open({ appointmentTypeConfig }),
-            })}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+    <TablePage data-testid="appointment-types" fullHeight>
+      <TableSheet>
+        <DataTable
+          data={getAllAppointmentTypes}
+          columns={columns({
+            editEntry: (appointmentTypeConfig) =>
+              appointmentTypeSidebar.open({ appointmentTypeConfig }),
+          })}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

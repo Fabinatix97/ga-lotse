@@ -12,10 +12,13 @@ import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/Month
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
-import { validatePositiveInteger } from "@/lib/businessModules/stiProtection/components/anamnesis/helpers";
 import { useTranslation } from "@/lib/i18n/client";
 import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 
@@ -28,7 +31,8 @@ import {
 
 export function GeneralStep() {
   const { t } = useTranslation(["stiProtection/anamnesis"]);
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const { setFieldValue, initialValues, values } =
     useFormikContext<FormDataWithoutConcern>();
 
@@ -108,6 +112,9 @@ export function GeneralStep() {
           positiveLabel={t("stiProtection/forms:common.yes")}
           negativeLabel={t("stiProtection/forms:common.no")}
           resetLabel={t("stiProtection/forms:common.reset")}
+          sx={{
+            mt: 4,
+          }}
           onReset={async () => {
             await setFieldValue(
               "general.numberOfPregnancies",
@@ -117,9 +124,6 @@ export function GeneralStep() {
               "general.numberOfBirthsOrAbortions",
               initialValues.general.numberOfBirthsOrAbortions,
             );
-          }}
-          sx={{
-            mt: 4,
           }}
         >
           <Grid container rowSpacing={2} columnSpacing={3}>
@@ -149,7 +153,7 @@ export function GeneralStep() {
           <Grid container rowSpacing={3} columnSpacing={3}>
             {Object.entries(values.examinations).map(
               ([diseaseType, { examinationDate }]) => (
-                <Grid xxs={12} key={diseaseType}>
+                <Grid key={diseaseType} xxs={12}>
                   <YesOrNoWithFollowUp
                     name={`examinations.${diseaseType}.hadExamination`}
                     label={

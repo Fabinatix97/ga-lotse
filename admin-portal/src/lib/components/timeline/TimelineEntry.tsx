@@ -17,7 +17,7 @@ import { isDefined } from "remeda";
 
 import { TimelineEntryIndicator } from "./TimelineEntryIndicator";
 
-export type TimelineEntryProps = Omit<StepProps, "title"> &
+type TimelineEntryProps = Omit<StepProps, "title"> &
   TitleAndLabel & {
     titleLink?: ReactNode;
     buttonProps?: StepButtonProps;
@@ -43,7 +43,7 @@ export function TimelineEntry({
         isDefined(indicator) ? (
           indicator
         ) : (
-          <TimelineEntryIndicator color={"success"}>
+          <TimelineEntryIndicator color="success">
             <CheckIcon />
           </TimelineEntryIndicator>
         )
@@ -68,14 +68,14 @@ export function TimelineEntry({
 function Content(props: PropsWithChildren<TitleAndLabel>) {
   return (
     <>
-      <Typography level={"body-xs"}>
+      <Typography level="body-xs">
         {props.label}
         <br />
-        <Typography level={"title-sm"}>{props.title}</Typography>
+        <Typography level="title-sm">{props.title}</Typography>
         {props.subtitle && (
           <>
             <br />
-            <Typography level={"body-sm"}>{props.subtitle}</Typography>
+            <Typography level="body-sm">{props.subtitle}</Typography>
           </>
         )}
       </Typography>

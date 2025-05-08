@@ -12,10 +12,10 @@ import jakarta.validation.constraints.NotBlank;
 
 @Schema(name = "FacilityContactPerson")
 public record FacilityContactPersonDto(
-    @NotBlank String firstName,
+    String firstName,
     @NotBlank String lastName,
-    @NotBlank String phoneNumber,
-    @NotBlank @Email String emailAddress,
+    String phoneNumber,
+    @Email String emailAddress,
     String role,
     SalutationDto salutation,
     String title) {}

@@ -1,21 +1,21 @@
 ## Gesamtverantwortung:
 
-Stadt Frankfurt am Main  
-DER MAGISTRAT  
-Römerberg 23  
-60311 Frankfurt am Main  
-Website: www.frankfurt.de  
+Stadt Frankfurt am Main\
+DER MAGISTRAT\
+Römerberg 23\
+60311 Frankfurt am Main\
+Website: www.frankfurt.de
 
 USt-ID: DE 114 110 388
 
 ## Verantwortung für das GA-Lotse Online-Portal:
 
-Stadt Frankfurt am Main  
-DER MAGISTRAT  
-Gesundheitsamt Frankfurt am Main  
-Abteilung Digitale Zukunft, IT und strategische Planung  
-Breite Gasse 28  
-60313 Frankfurt am Main  
+Stadt Frankfurt am Main\
+DER MAGISTRAT\
+Gesundheitsamt Frankfurt am Main\
+Abteilung Digitale Zukunft, IT und strategische Planung\
+Breite Gasse 28\
+60313 Frankfurt am Main
 
 GA-Lotse ist ein Kooperationsprojekt des Hessischen Ministeriums für Familie, Senioren, Sport, Gesundheit und Pflege mit dem Gesundheitsamt Frankfurt unter der EU-Förderung NextGenerationEU.
 
@@ -29,7 +29,7 @@ Informationen erhalten Sie über die Rufnummer: +49 (0) 800 -4256873
 
 ## Kontakt bei Fragen zum GA-Lotse Online-Portal:
 
-eMail: gesundheitsamt.einheitliche-software@stadt-frankfurt.de  
+eMail: gesundheitsamt.einheitliche-software@stadt-frankfurt.de\
 Die Abteilung Digitale Zukunft, IT und strategische Planung des Gesundheitsamtes der Stadt Frankfurt am Main zeichnet für ihre Inhalte auf www.ga-lotse.de redaktionell verantwortlich.
 
 ## Verantwortung:
@@ -39,10 +39,10 @@ Bei Fragen oder Anregungen zu konkreten Inhalten und Seiten können Sie sich ger
 
 ## Technische Realisierung:
 
-Gesundheitsamt der Stadt Frankfurt am Main  
-Abteilung Digitale Zukunft, IT und strategische Planung  
-Breite Gasse 28  
-60313 Frankfurt am Main  
+Gesundheitsamt der Stadt Frankfurt am Main\
+Abteilung Digitale Zukunft, IT und strategische Planung\
+Breite Gasse 28\
+60313 Frankfurt am Main
 
 ## Bei Fragen oder Anmerkungen:
 

@@ -22,7 +22,7 @@ export function PhoneNumberSection({
       <ExternalLinkDetailsCell
         key={[phoneNumber, index].join("-")}
         name={`phoneNumbers.${index}`}
-        label={"Telefonnummer"}
+        label="Telefonnummer"
         value={phoneNumber}
         href={phoneHref}
       />

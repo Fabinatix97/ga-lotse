@@ -29,7 +29,7 @@ export interface EvaluationReports {
   sensitive: boolean;
 }
 
-export type ReportData = SingleReport | ReportSeries;
+type ReportData = SingleReport | ReportSeries;
 
 export type ReportTableRow = SingleReport | ReportSeries | ReportSeriesItem;
 
@@ -39,7 +39,7 @@ export interface SingleReport extends ReportBase {
   seriesId: string;
 }
 
-export interface ReportBase {
+interface ReportBase {
   reportId: string;
   name: string;
   timeRangeStart: Date;

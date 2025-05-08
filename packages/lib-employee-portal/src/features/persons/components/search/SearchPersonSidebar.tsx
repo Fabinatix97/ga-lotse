@@ -6,8 +6,8 @@
 import { Formik, FormikProps } from "formik";
 import { ComponentType, Ref } from "react";
 
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
-import { SidebarFormHandle } from "@/features/drawer/types/sidebar";
+import { SidebarForm } from "../../../drawer/components/SidebarForm";
+import { SidebarFormHandle } from "../../../drawer/types/sidebar";
 
 import {
   DefaultSearchPersonForm,
@@ -59,17 +59,17 @@ export function SearchPersonSidebar<
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleSearch}
       enableReinitialize
+      onSubmit={handleSearch}
     >
       {(formikProps) => (
         <SidebarForm ref={props.sidebarFormRef}>
           <SearchFormComponent
             {...formikProps}
             isSubmitting={formikProps.isSubmitting || props.searching}
+            title={props.searchFormTitle}
             onBack={props.onBack}
             onCancel={props.onCancel}
-            title={props.searchFormTitle}
           />
         </SidebarForm>
       )}

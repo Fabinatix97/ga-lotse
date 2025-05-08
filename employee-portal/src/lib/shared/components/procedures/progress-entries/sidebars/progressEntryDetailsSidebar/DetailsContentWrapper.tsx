@@ -102,9 +102,7 @@ interface FileSectionProps {
 function FileSection({ fileReference, ...props }: FileSectionProps) {
   return fileReference.deleted ? (
     <DeletionNote />
-  ) : fileReference.type === "GenericFileReference" ? (
-    <></>
-  ) : (
+  ) : fileReference.type === "GenericFileReference" ? null : (
     <UndeletedFileSection file={fileReference} {...props} />
   );
 }
@@ -157,7 +155,7 @@ function UndeletedFileSection({
       <FileCardWithActions file={file} />
       {additionalElements?.start}
       {file.type === "Mail" && <EmailFields file={file as ApiMail} />}
-      {isDefined(additionalElements?.end) ? additionalElements.end : <></>}
+      {isDefined(additionalElements?.end) ? additionalElements.end : null}
     </>
   );
 }

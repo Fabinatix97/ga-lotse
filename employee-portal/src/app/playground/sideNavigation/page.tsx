@@ -278,19 +278,19 @@ function ItemStatePlayground() {
       {collapsed ? (
         <CollapsedNavigationList
           key={itemState}
+          itemGroups={itemGroups}
           onExpand={() => {
             setCollapsed(false);
           }}
-          itemGroups={itemGroups}
         />
       ) : (
         <ExpandedNavigationList
           key={itemState}
-          showCollapseButton={true}
+          showCollapseButton
+          itemGroups={itemGroups}
           onCollapse={() => {
             setCollapsed(true);
           }}
-          itemGroups={itemGroups}
         />
       )}
     </>
@@ -311,18 +311,18 @@ export default function SideNavigationPlaygroundPage() {
         <Stack spacing={2}>
           <Stack direction="row" spacing={2}>
             <ExpandedNavigationList
-              showCollapseButton={true}
+              showCollapseButton
+              itemGroups={itemGroups}
               onCollapse={() => {
                 alert("Collapse");
               }}
-              itemGroups={itemGroups}
             />
 
             <CollapsedNavigationList
+              itemGroups={itemGroups}
               onExpand={() => {
                 alert("Expand");
               }}
-              itemGroups={itemGroups}
             />
           </Stack>
           <Divider />

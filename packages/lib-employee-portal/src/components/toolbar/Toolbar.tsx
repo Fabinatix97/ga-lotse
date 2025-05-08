@@ -6,7 +6,7 @@
 import { Divider, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { useLayoutConfig } from "@/contexts/layoutConfig";
+import { useLayoutConfig } from "../../contexts/layoutConfig";
 
 interface ToolbarStackProps {
   height: string;

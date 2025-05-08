@@ -48,7 +48,7 @@ export function FilterSettingsSheet({
         >
           <Stack sx={{ paddingInline: 2 }}>
             {children}
-            <Box sx={{ mt: 2 }}></Box>
+            <Box sx={{ mt: 2 }} />
             {isDefined(errorMessages) &&
               errorMessages.map((errorMessage, index) => (
                 <Typography key={index} level="body-xs" color="danger">

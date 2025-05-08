@@ -16,14 +16,11 @@ export function LanguageSwitch() {
 
   return (
     <Switch
+      key="language-switch"
       color="primary"
       size="sm"
       variant="outlined"
-      key={"language-switch"}
       checked={i18n.resolvedLanguage == "en"}
-      onClick={() =>
-        i18n.changeLanguage(i18n.resolvedLanguage == "de" ? "en" : "de")
-      }
       startDecorator={supportedLngs.de.toUpperCase()}
       endDecorator={supportedLngs.en.toUpperCase()}
       slotProps={{
@@ -31,6 +28,9 @@ export function LanguageSwitch() {
           "aria-label": t("toggleLanguage"),
         },
       }}
-    ></Switch>
+      onClick={() =>
+        i18n.changeLanguage(i18n.resolvedLanguage == "de" ? "en" : "de")
+      }
+    />
   );
 }

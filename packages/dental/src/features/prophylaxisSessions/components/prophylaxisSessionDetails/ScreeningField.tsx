@@ -6,10 +6,10 @@
 import { Stack } from "@mui/joy";
 import { useField } from "formik";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 
-import { DENTITION_TYPE_OPTIONS } from "@/config/prophylaxisSession";
+import { DENTITION_TYPE_OPTIONS } from "../../../../config/prophylaxisSession";
 
 interface ScreeningFieldProps {
   screeningDisabled?: boolean;

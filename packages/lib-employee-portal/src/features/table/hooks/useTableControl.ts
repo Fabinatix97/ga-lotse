@@ -8,13 +8,13 @@ import { ColumnSort, SortingState } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
 import { isDefined } from "remeda";
 
-import { PaginationProps } from "@/features/table/components/pagination/Pagination";
-import { DEFAULT_PAGE_SIZE_OPTIONS } from "@/features/table/config/pagination";
-import { TableSortingProps } from "@/features/table/types/tableSorting";
 import {
   SearchParamReplacement,
   useReplaceSearchParams,
-} from "@/hooks/useReplaceSearchParams";
+} from "../../../hooks/useReplaceSearchParams";
+import { PaginationProps } from "../components/pagination/Pagination";
+import { DEFAULT_PAGE_SIZE_OPTIONS } from "../config/pagination";
+import { TableSortingProps } from "../types/tableSorting";
 
 interface UseTableControlParams {
   pageNumberName?: string;

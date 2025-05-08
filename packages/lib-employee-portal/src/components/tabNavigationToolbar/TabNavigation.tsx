@@ -8,8 +8,8 @@
 import { ColorPaletteProp, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { useAccessControl } from "@/features/auth/hooks/useAccessControl";
-import { AccessCheck, noCheck } from "@/features/auth/utils/accessChecks";
+import { useAccessControl } from "../../features/auth/hooks/useAccessControl";
+import { AccessCheck, noCheck } from "../../features/auth/utils/accessChecks";
 
 import { TabNavigationItemButton } from "./TabNavigationButton";
 

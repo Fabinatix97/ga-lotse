@@ -37,7 +37,7 @@ import {
 } from "@/lib/businessModules/chat/shared/utils";
 import { useWindowFocus } from "@/lib/shared/hooks/useWindowFocus";
 
-export interface ChatPanelProps {
+interface ChatPanelProps {
   roomId: string | null;
   chatPanelView: ChatPanelView;
   setChatPanelView: (viewType: ChatPanelView) => void;
@@ -176,8 +176,8 @@ export function ChatPanel({
           }}
         >
           <ChatMessages
-            room={roomWithCommunicationType}
             key={selectedRoom?.roomId}
+            room={roomWithCommunicationType}
           />
           <MessageInput
             handleUserTyping={handleUserTyping}

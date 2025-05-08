@@ -19,7 +19,7 @@ import {
   isDMRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
-export interface RoomInfo {
+interface RoomInfo {
   room: Room | null;
   roomCreator?: string;
   communicationType?: CommunicationType;

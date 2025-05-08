@@ -11,7 +11,8 @@ import {
   ApiOrthodonticStatus,
 } from "@eshg/dental-api";
 
-import { ExaminationStatus } from "@/api/models/ExaminationStatus";
+import { ExaminationStatus } from "../api/models/ExaminationStatus";
+import { QuadrantNumber } from "../stores/examination/types";
 
 export const EXAMINATION_STATUS: Record<ExaminationStatus, string> = {
   OPEN: "offen",
@@ -89,3 +90,39 @@ export const ORTHODONTIC_STATUS: Record<ApiOrthodonticStatus, string> = {
 
 export const INVALID_EXAMINATION_RESULT_VALIDATION_ERROR =
   "Es wurden fehlerhafte Befunde eingetragen. Bitte korrigieren Sie die markierten Befunde und versuchen es danach erneut.";
+
+export const TOOTH_DIAGNOSES = {
+  S: "Kariesfrei",
+  I: "Initialkaries",
+  D: "Kariös",
+  F: "Gefüllt",
+  E: "Extrahiert",
+  Y: "KFO-Extr.",
+  X: "Nichtanlage",
+  Z: "Zerstört",
+  T: "Trauma",
+  H: "Hypoplasie",
+  O: "Trep/Fistel",
+  V: "Versiegelt",
+  N: "Nicht beurteilbar",
+  P: "Platzhalter",
+  U: "BZ nicht da",
+  DA: "Doppelte Anlage",
+  FA: "Formanomalie",
+  FIS: "Fistel",
+  ID: "Im Durchbruch",
+  INS: "Insuffizient",
+  K: "Krone",
+  LÜ: "Lückenschluss",
+  RET: "Retinierter Zahn",
+  TR: "Trepaniert",
+  WR: "Wurzelrest",
+  ZA: "Zapfenzahn",
+};
+
+export const QUADRANT_NAMES: Record<QuadrantNumber, string> = {
+  Q1: "Oberkiefer rechts",
+  Q2: "Oberkiefer links",
+  Q3: "Unterkiefer links",
+  Q4: "Unterkiefer rechts",
+};

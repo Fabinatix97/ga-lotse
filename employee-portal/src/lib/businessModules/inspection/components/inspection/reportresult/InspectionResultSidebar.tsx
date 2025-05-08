@@ -33,7 +33,7 @@ import { validateTodayOrFutureDate } from "@/lib/shared/helpers/validators";
 
 const FOLLOWUP_INSPECTION_INTERVAL_IN_DAYS = 14;
 
-export interface InspectionResultSidebarProps {
+interface InspectionResultSidebarProps {
   open: boolean;
   onClose: () => void;
   procedureId: string;
@@ -119,8 +119,8 @@ export function InspectionResultSidebar({
     <Sidebar open={open} onClose={onClose}>
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit, values }) => (
           <SidebarForm onSubmit={handleSubmit}>

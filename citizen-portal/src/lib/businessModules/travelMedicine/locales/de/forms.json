@@ -2,7 +2,11 @@
   "common": {
     "title": "Reisemedizinische Impfberatung",
     "requiredTitle": "*Pflichtfeld",
-    "stepperTitle": "Schritt {{currentStepIndex}} von {{totalSteps}}"
+    "stepperTitle": "Schritt {{currentStepIndex}} von {{totalSteps}}",
+    "errors": {
+      "concurrentAppointment_errorMessage": "Der ausgewählte Termin wurde in der Zwischenzeit schon anderweitig reserviert. Bitte wählen Sie einen anderen freien Termin.",
+      "concurrentAppointment_action": "Termin ändern"
+    }
   },
   "appointmentTypeFormContent": {
     "title": "Terminart",
@@ -101,13 +105,22 @@
     "closingGreeting": "Mit freundlichen Grüßen",
     "healthDepartment": "Ihr Gesundheitsamt"
   },
-  "appointmentOverviewSection": {
+  "overview": {
     "title": "Übersicht",
     "onNextStep": "Weiter",
     "onPrevStep": "Zurück",
     "onCancel": "Abbrechen",
-    "values": {
-      "confirmOnlineServices": "Bestätigungsmail senden",
+    "fields": {
+      "initialStepAppointmentType_label": "Anliegen",
+      "confirmOnlineServices_label": "Onlinedienstleistungen",
+      "confirmOnlineServices_value": "Bestätigungsmail senden",
+      "department_label": "Gesundheitsamt",
+      "date_label": "Tag, Datum",
+      "time_label": "Uhrzeit, Termindauer",
+      "fullName_label": "Name",
+      "dateOfBirth_label": "Geburtsdatum",
+      "emailAddress_label": "E-Mailadresse",
+      "travelData_label": "Reisedaten",
       "travelDuration": "Reisedauer",
       "travelDestinations_one": "Reiseziel",
       "travelDestinations_other": "Reiseziele",

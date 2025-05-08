@@ -58,8 +58,8 @@ export function ProceduresTableControls({
         <GenericFilterButton
           {...filterSettings.filterButtonProps}
           isFilterVisible={activeTableControl === "filters"}
-          onClick={() => onToggleActiveTableControl("filters")}
           activeFilters={filterSettings.filterButtonProps.activeFilters}
+          onClick={() => onToggleActiveTableControl("filters")}
         />
       );
     }

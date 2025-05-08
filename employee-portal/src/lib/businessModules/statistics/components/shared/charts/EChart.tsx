@@ -209,8 +209,8 @@ export function EChart(props: {
 
   return (
     <Box
-      component={ReactEChartsCore}
       ref={ref}
+      component={ReactEChartsCore}
       echarts={echarts}
       option={options}
       opts={{ locale: "DE", renderer: imageType }}

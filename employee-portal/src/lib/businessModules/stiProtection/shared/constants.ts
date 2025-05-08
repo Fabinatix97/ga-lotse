@@ -18,12 +18,9 @@ import {
   ApiProcedureType,
   ApiSexualOrientation,
   ApiStiProcedureOrigin,
-  ApiTaskType,
 } from "@eshg/sti-protection-api";
 
 export const procedureTypes = [ApiProcedureType.StiProtection];
-
-export const taskTypes = [ApiTaskType.StiProtection];
 
 export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
   [ApiProcedureStatus.Aborted]: "Abgebrochen",
@@ -44,14 +41,11 @@ export const PROCEDURE_STATUS_COLORS: EnumMap<
   [ApiProcedureStatus.Open]: "neutral",
 };
 
-export const PROCEDURE_TYPES = [ApiProcedureType.StiProtection];
-
-export const TASK_TYPES = [ApiTaskType.StiProtection];
-
 export const systemProgressEntryTypeTitles: Record<string, string> = {
   PERSON_DETAILS_UPDATED: "Person aktualisiert",
   RAPID_TEST_EXAMINATION_UPDATED: "Schnelltests aktualisiert",
   LABORATORY_TEST_EXAMINATION_UPDATED: "Labortests aktualisiert",
+  APPOINTMENT_ADDED: "Termin gebucht",
   APPOINTMENT_REBOOKED: "Termin geändert",
   APPOINTMENT_CANCELLED: "Termin storniert",
   APPOINTMENT_FINALIZED: "Termin abgeschlossen",
@@ -108,9 +102,7 @@ export const sexualContactNames: EnumMap<ApiGender> = {
   [ApiGender.NotSpecified]: "Keine Angabe",
 } satisfies Record<ApiGender, string>;
 
-export type NotEndsWith<T, K extends string> = T extends `${infer _J}${K}`
-  ? never
-  : T;
+type NotEndsWith<T, K extends string> = T extends `${infer _J}${K}` ? never : T;
 
 export type ExaminableIllnesses = NotEndsWith<keyof ApiExamination, "Date">;
 

@@ -40,7 +40,7 @@ interface Letter {
   document: File | null;
 }
 
-export const initialLetterValues: Letter = {
+const initialLetterValues: Letter = {
   letterCreationType: LetterCreationType.Manual,
   recipientId: "",
   sentAt: "",
@@ -85,7 +85,7 @@ export function AccessRestrictionLetterSidebar({ id }: { id: string }) {
   );
 }
 
-export function AccessRestrictionLetterSidebarForm({ id }: { id: string }) {
+function AccessRestrictionLetterSidebarForm({ id }: { id: string }) {
   const { isSubmitting, handleSubmit, resetForm, values } =
     useFormikContext<Letter>();
   const [open, setOpen] = useSearchParam(
@@ -108,7 +108,7 @@ export function AccessRestrictionLetterSidebarForm({ id }: { id: string }) {
       }}
     >
       <SidebarForm onSubmit={handleSubmit}>
-        <SidebarContent title={"Anschreiben hinzufügen"}>
+        <SidebarContent title="Anschreiben hinzufügen">
           <Stack gap={3}>
             {values.letterCreationType === LetterCreationType.Manual ? (
               <UploadSentLetterFields procedure={procedure} />
@@ -144,13 +144,13 @@ function UploadSentLetterFields(props: Readonly<LetterFieldsProps>) {
         name="sentAt"
         label="Versanddatum"
         required="Bitte ein Versanddatum angeben."
-        onButtonClick={() => setFieldValue("sentAt", today)}
         buttonLabel="Heute"
-      ></DateAndButtonRow>
+        onButtonClick={() => setFieldValue("sentAt", today)}
+      />
       <FileField
-        name={"document"}
+        name="document"
         label="Dokument"
-        required={"Bitte ein Dokument auswählen."}
+        required="Bitte ein Dokument auswählen."
         accept={[FileType.Pdf]}
       />
     </>
@@ -166,7 +166,7 @@ function GenerateNewLetterFields(props: Readonly<LetterFieldsProps>) {
   return (
     <>
       <WrappedSelectField
-        name={"letterType"}
+        name="letterType"
         label="Art des Anschreibens"
         options={
           hasCustodian ? letterTypeOptions : letterTypeOptionsWithoutCustodian

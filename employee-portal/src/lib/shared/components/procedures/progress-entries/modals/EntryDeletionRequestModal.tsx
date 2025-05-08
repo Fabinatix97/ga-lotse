@@ -27,7 +27,7 @@ export function EntryDeletionRequestModal(_props: EntryDeletionModalProps) {
   );
 }
 
-export function EntryDeletionRequestModalContent() {
+function EntryDeletionRequestModalContent() {
   const progressEntriesContext = useContext(ProgressEntriesContext);
   const { progressEntryApi } = progressEntriesContext.config;
   const { entryIdForDeletion } = progressEntriesContext.state;
@@ -55,8 +55,8 @@ export function EntryDeletionRequestModalContent() {
     <BaseModal
       modalTitle="Löschung beantragen?"
       open={entryIdForDeletion !== null}
-      onClose={handleClose}
       color="danger"
+      onClose={handleClose}
     >
       <Typography textColor="text.secondary">
         Der gesamte Verlaufseintrag inklusive Datei wird gelöscht. Diese Aktion

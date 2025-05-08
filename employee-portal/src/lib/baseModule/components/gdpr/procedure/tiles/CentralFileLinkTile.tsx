@@ -23,8 +23,8 @@ export function CentralFileLinkTile({
   hasLinkedMatches: boolean;
 }) {
   return (
-    <SectionTile id={"procedure-central-file-links"}>
-      <SectionTitle id={"procedure-central-file-links"}>
+    <SectionTile id="procedure-central-file-links">
+      <SectionTitle id="procedure-central-file-links">
         {numMatches > 0
           ? numMatches === 1
             ? "1 Datensatz gefunden"
@@ -40,7 +40,7 @@ export function CentralFileLinkTile({
           </FormAddMoreButton>
         )
       ) : (
-        <Stack direction={"row"} gap={1} alignItems={"center"}>
+        <Stack direction="row" gap={1} alignItems="center">
           <CloseIcon />
           Keine Treffer.
         </Stack>

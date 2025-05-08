@@ -26,7 +26,7 @@ function ConfirmationDialog({
   const { t } = useTranslation();
 
   return (
-    <Modal open={true} onClose={() => onClose(false)}>
+    <Modal open onClose={() => onClose(false)}>
       <ModalDialog variant="outlined" role="alertdialog">
         <DialogTitle>
           {/*<WarningRoundedIcon />*/}

@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  FilterDraftValue,
-  FilterValue,
-} from "@/features/filters/types/FilterValue";
+import { FilterDraftValue, FilterValue } from "../types/FilterValue";
 import {
   NumberFilterComparisonMode,
   NumberFilterNullInclusion,
   defaultNumberFilterDraftValue,
-} from "@/features/filters/types/NumberFilter";
+} from "../types/NumberFilter";
 
 export function mapActiveToDraftValues(
   activeValues: FilterValue[],

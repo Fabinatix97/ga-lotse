@@ -16,7 +16,7 @@ interface Entity {
   naturalId?: string;
 }
 
-export type EntityLike =
+type EntityLike =
   | Entity
   | {
       id: string;

@@ -63,10 +63,8 @@ function UpdateEvaluationDataBasisSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
       saveLabel="Aktualisieren"
-      onSubmit={handleSubmit}
       confirmationDialog={confirmationDialogOptions}
       steps={[
         () => ({
@@ -78,6 +76,8 @@ function UpdateEvaluationDataBasisSidebar({
           validator: validateUpdateEvaluationDataBasisStep,
         }),
       ]}
+      onClose={onClose}
+      onSubmit={handleSubmit}
     />
   );
 }

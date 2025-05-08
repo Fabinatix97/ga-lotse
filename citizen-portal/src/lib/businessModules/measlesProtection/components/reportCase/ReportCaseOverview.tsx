@@ -277,13 +277,13 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
         showFacilityContactPerson
         showAffected={{ count: true }}
         submitLabel={t("overview.submit", { count: affectedPersons.length })}
-        finalSubmit={true}
-        onCancel={onCancel}
+        finalSubmit
         actionButton={
           <Button variant="outlined" onClick={handleAddAffectedPerson}>
             {t("overview.reportAdditionalPerson")}
           </Button>
         }
+        onCancel={onCancel}
       />
     </>
   );

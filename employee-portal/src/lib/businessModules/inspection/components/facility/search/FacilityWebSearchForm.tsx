@@ -77,7 +77,7 @@ export function FacilityWebSearchForm(
           <Grid container columnSpacing={2} rowSpacing={3} component={FormPlus}>
             <Grid xs={12}>
               <InputField
-                name={"name"}
+                name="name"
                 label="Name"
                 placeholder="Name"
                 required="Bitte einen Namen angeben."
@@ -85,7 +85,7 @@ export function FacilityWebSearchForm(
             </Grid>
             <Grid xs={12}>
               <InputField
-                name={"basicURL"}
+                name="basicURL"
                 label="URL"
                 placeholder="URL"
                 required="Bitte eine OpenStreetMap-URL angeben (Endung *.osm.pbz)."
@@ -93,7 +93,7 @@ export function FacilityWebSearchForm(
             </Grid>
             <Grid xs={12}>
               <InputField
-                name={"searchCity"}
+                name="searchCity"
                 label="Stadt"
                 required="Bitte eine Stadt angeben."
                 hint="Nur nach Einrichtungen innerhalb dieser Stadt suchen."

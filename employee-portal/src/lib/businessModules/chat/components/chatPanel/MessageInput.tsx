@@ -9,10 +9,10 @@ import { RoomMember } from "matrix-js-sdk";
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 
-import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/InputComponent";
+import { TextareaComponent } from "@/lib/businessModules/chat/components/chatPanel/TextareaComponent";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
-export interface MessageFormValues {
+interface MessageFormValues {
   message: string;
   mentionedUsers?: string[];
 }
@@ -46,6 +46,8 @@ export function MessageInput({
   return (
     <Box>
       <Formik<MessageFormValues>
+        initialValues={{ message: "", mentionedUsers: undefined }}
+        validate={validateMessageForm}
         onSubmit={async (values, helpers) => {
           try {
             await sendMessage(values.message, values.mentionedUsers);
@@ -54,11 +56,9 @@ export function MessageInput({
             logger.warn("Sending message failed", error);
           }
         }}
-        initialValues={{ message: "", mentionedUsers: undefined }}
-        validate={validateMessageForm}
       >
         <FormPlus>
-          <InputComponent
+          <TextareaComponent
             name="message"
             selectFieldName="mentionedUsers"
             handleUserTyping={handleUserTyping}

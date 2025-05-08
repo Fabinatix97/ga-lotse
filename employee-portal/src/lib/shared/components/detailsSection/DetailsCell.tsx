@@ -81,7 +81,7 @@ export function DetailsCell({
       >
         <Typography
           data-testid={`${name}.label`}
-          level={"body-sm"}
+          level="body-sm"
           textColor="text.secondary"
           noWrap
           sx={{
@@ -95,7 +95,7 @@ export function DetailsCell({
         <Grid container alignItems="center">
           {isRenderableValue ? (
             <Typography
-              role={"paragraph"}
+              role="paragraph"
               component={valueIsDiv ? "div" : "p"}
               data-testid={`${name}.value`}
               level="title-md"

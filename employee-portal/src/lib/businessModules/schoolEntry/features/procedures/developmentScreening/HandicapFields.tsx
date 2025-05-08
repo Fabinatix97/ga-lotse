@@ -6,8 +6,8 @@
 import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
@@ -62,43 +62,41 @@ export function HandicapFields(props: HandicapFieldsProps) {
   }
 
   return (
-    <>
-      <Stack gap={2} data-testid="handicapForm">
-        <Typography level="title-sm">Handicap</Typography>
-        <Stack direction="row" gap={4} alignItems="flex-start" flexWrap="wrap">
-          <SetAllBooleanSelect
-            label="Alle"
-            onChange={setAll}
-            sx={BOOLEAN_SELECT_STYLE}
+    <Stack gap={2} data-testid="handicapForm">
+      <Typography level="title-sm">Handicap</Typography>
+      <Stack direction="row" gap={4} alignItems="flex-start" flexWrap="wrap">
+        <SetAllBooleanSelect
+          label="Alle"
+          sx={BOOLEAN_SELECT_STYLE}
+          onChange={setAll}
+        />
+        <Stack gap={1}>
+          <HandicapWithDiagnosisFields
+            name={fieldName("chronicDisease")}
+            label="chron. Krankheit"
+            values={props.values.chronicDisease}
+            setFieldValue={props.setFieldValue}
+            onClickIcd10Code={props.onClickIcd10Code}
           />
-          <Stack gap={1}>
-            <HandicapWithDiagnosisFields
-              name={fieldName("chronicDisease")}
-              label="chron. Krankheit"
-              values={props.values.chronicDisease}
-              setFieldValue={props.setFieldValue}
-              onClickIcd10Code={props.onClickIcd10Code}
-            />
-            <HandicapWithDiagnosisFields
-              name={fieldName("disability")}
-              label="Behinderung"
-              values={props.values.disability}
-              setFieldValue={props.setFieldValue}
-              onClickIcd10Code={props.onClickIcd10Code}
-              onResetResult={resetDisabilityType}
-            />
-            <SoftRequiredSelectField
-              name={fieldName("disabilityType")}
-              label={<FlexLabel>Behinderungs-Art</FlexLabel>}
-              options={DISABILITY_TYPE_OPTIONS}
-              sx={DISABILITY_TYPE_STYLE}
-              disabled={!props.values.disability.result}
-              softRequired
-            />
-          </Stack>
+          <HandicapWithDiagnosisFields
+            name={fieldName("disability")}
+            label="Behinderung"
+            values={props.values.disability}
+            setFieldValue={props.setFieldValue}
+            onClickIcd10Code={props.onClickIcd10Code}
+            onResetResult={resetDisabilityType}
+          />
+          <SoftRequiredSelectField
+            name={fieldName("disabilityType")}
+            label={<FlexLabel>Behinderungs-Art</FlexLabel>}
+            options={DISABILITY_TYPE_OPTIONS}
+            sx={DISABILITY_TYPE_STYLE}
+            disabled={!props.values.disability.result}
+            softRequired
+          />
         </Stack>
-        <TextareaField name={fieldName("note")} label="Bemerkung" />
       </Stack>
-    </>
+      <TextareaField name={fieldName("note")} label="Bemerkung" />
+    </Stack>
   );
 }

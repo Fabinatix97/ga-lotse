@@ -176,8 +176,20 @@ public class BarChartDiagramCreationService
   public void fillDiagramData(UUID diagramId, Map<Object, Map<Object, Integer>> chartDataHolder) {
     Diagram diagram = analysisService.getDiagramInternal(diagramId);
     BarChartConfiguration chartConfiguration = getBarChartConfiguration(diagram.getAnalysis());
-    fillChartDataHolderWithMissingValues(
-        chartDataHolder, chartConfiguration.getSecondaryAttributeSelection() == null);
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
+
+    TableColumn primaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            chartConfiguration.getPrimaryAttributeSelection(), aggregationResult);
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            chartConfiguration.getSecondaryAttributeSelection(), aggregationResult);
+    cleanUpChartDataHolderKeys(
+        chartDataHolder,
+        primaryTableColumn.getValueType().equals(TableColumnValueType.BOOLEAN),
+        chartConfiguration.getSecondaryAttributeSelection() == null,
+        secondaryTableColumn != null
+            && secondaryTableColumn.getValueType().equals(TableColumnValueType.BOOLEAN));
 
     List<BarGroupData> groupDataList = getBarGroupDataList(chartDataHolder);
 

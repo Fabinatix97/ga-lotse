@@ -67,7 +67,7 @@ export async function loginWithCachedDeviceOrWithNewDevice(
   return userDevice;
 }
 
-export function deviceBelongsToLoggedInUser(
+function deviceBelongsToLoggedInUser(
   userDevice?: UserDevice,
   selfUserChatUserId?: string,
 ) {
@@ -93,7 +93,7 @@ export function deviceBelongsToLoggedInUser(
   return true;
 }
 
-export async function loginWithDevice(baseUrl: string, deviceId: string) {
+async function loginWithDevice(baseUrl: string, deviceId: string) {
   logger.info("Login to synapse with deviceId:", deviceId);
   const matrixClient = createTemporaryMatrixClient(baseUrl, deviceId);
   return await requestUserDeviceInfo(matrixClient);
@@ -105,7 +105,7 @@ export async function loginWithNewDevice(baseUrl: string) {
   return await requestUserDeviceInfo(matrixClient);
 }
 
-export async function requestUserDeviceInfo(
+async function requestUserDeviceInfo(
   matrixClient: MatrixClient,
 ): Promise<UserDevice> {
   logger.debug("Requesting userId and deviceid from matrix whoami endpoint");

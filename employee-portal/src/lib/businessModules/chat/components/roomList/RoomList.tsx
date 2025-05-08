@@ -48,6 +48,12 @@ export function RoomList({
         return (
           <ListItem key={data.room.roomId}>
             <ListItemButton
+              selected={selectedRoomId === data.room.roomId}
+              color="neutral"
+              sx={{
+                paddingX: 3,
+                paddingY: 2,
+              }}
               onClick={() => {
                 setRoomIdParam(data.room.roomId);
                 setChatPanelView(ChatPanelView.ChatMessages);
@@ -55,12 +61,6 @@ export function RoomList({
                 if (infoPanelState.isOpen) {
                   setInfoPanelView(InfoPanelView.RoomInfo, data.room.roomId);
                 }
-              }}
-              selected={selectedRoomId === data.room.roomId}
-              color="neutral"
-              sx={{
-                paddingX: 3,
-                paddingY: 2,
               }}
             >
               <RoomListItem

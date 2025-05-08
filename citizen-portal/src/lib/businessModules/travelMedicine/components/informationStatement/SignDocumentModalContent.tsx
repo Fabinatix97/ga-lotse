@@ -98,8 +98,8 @@ export function SignDocumentModalContent({
           {t("modal.sign")}
         </Typography>
         <Box
-          component={"svg"}
           ref={svgRef}
+          component="svg"
           sx={{ width: "100%", height: "100%" }}
         />
       </Sheet>

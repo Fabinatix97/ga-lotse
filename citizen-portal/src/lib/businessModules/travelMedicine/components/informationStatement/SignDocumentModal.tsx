@@ -26,8 +26,8 @@ export function SignDocumentModal({
   return (
     <QueryBoundary>
       <BaseModal
-        modalTitle={t("modal.title")}
         key="sign-information-statement-modal"
+        modalTitle={t("modal.title")}
         sx={{ width: 820, ...sx }}
         {...props}
       >

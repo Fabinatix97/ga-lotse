@@ -26,12 +26,7 @@ export function MainQuestion(
   }>,
 ) {
   return (
-    <Stack
-      direction="row"
-      spacing={5}
-      alignItems="flex-start"
-      flexWrap={"wrap"}
-    >
+    <Stack direction="row" spacing={5} alignItems="flex-start" flexWrap="wrap">
       <InputField
         label
         aria-label={props.label}
@@ -42,7 +37,7 @@ export function MainQuestion(
         data-testid="element-main-text"
       />
 
-      <Stack direction="row" spacing={1} alignItems="center" paddingTop={"6px"}>
+      <Stack direction="row" spacing={1} alignItems="center" paddingTop="6px">
         <Box>{"Antwortmöglichkeiten: "}</Box>
         <List
           sx={{
@@ -60,14 +55,14 @@ export function MainQuestion(
         </List>
       </Stack>
 
-      <Stack alignItems="center" paddingTop={"6px"}>
+      <Stack alignItems="center" paddingTop="6px">
         <IconButton
-          onClick={props.sectionElementDeleteHandler}
           aria-label="Entfernen"
           color="warning"
           variant="outlined"
           title="Entfernen"
           data-testid="element-delete-button"
+          onClick={props.sectionElementDeleteHandler}
         >
           <DeleteOutlineIcon />
         </IconButton>

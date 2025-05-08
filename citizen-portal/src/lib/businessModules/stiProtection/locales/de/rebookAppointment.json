@@ -31,6 +31,9 @@
     "available": "verfügbar"
   },
   "appointment_overview": {
+    "concern": "Anliegen",
+    "date": "Datum",
+    "time": "Uhrzeit",
     "clock": " Uhr",
     "rebook_appointment_button": "Termin umbuchen",
     "cancel_button": "Abbrechen"

@@ -39,12 +39,12 @@ export default function PlaygroundStickyToolbarLayoutPage() {
       </Typography>
       <Slider
         value={itemCount}
-        onChange={(_event, value) => setItemCount(value as number)}
         step={5}
         marks
         min={0}
         max={100}
         valueLabelDisplay="auto"
+        onChange={(_event, value) => setItemCount(value as number)}
       />
     </Sheet>
   );

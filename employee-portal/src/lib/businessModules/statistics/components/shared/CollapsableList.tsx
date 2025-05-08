@@ -23,7 +23,7 @@ export function CollapsableList({
   return (
     <Stack>
       {resultItems.map((it) => (
-        <Typography level="body-md" key={it}>
+        <Typography key={it} level="body-md">
           {it}
         </Typography>
       ))}

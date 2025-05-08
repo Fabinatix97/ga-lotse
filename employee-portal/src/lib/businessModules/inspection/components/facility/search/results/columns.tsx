@@ -130,6 +130,6 @@ function CheckboxCell(props: {
   return loading ? (
     <CircularProgress aria-label="Lädt" size="sm" />
   ) : (
-    <Checkbox onChange={handleChange} checked={value} />
+    <Checkbox checked={value} onChange={handleChange} />
   );
 }

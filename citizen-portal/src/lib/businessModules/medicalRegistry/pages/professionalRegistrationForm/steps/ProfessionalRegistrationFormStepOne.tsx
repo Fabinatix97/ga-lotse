@@ -20,7 +20,10 @@ import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNu
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
@@ -34,7 +37,8 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const changeTypeNamesOptions = buildEnumOptions(changeTypeNames);
 
 export function ProfessionalRegistrationFormStepOne() {
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 

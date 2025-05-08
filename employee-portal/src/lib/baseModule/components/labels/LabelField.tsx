@@ -53,9 +53,6 @@ export function LabelField(props: LabelFieldProps) {
         name={props.name}
         value={field.input.value}
         disableClearable={field.required}
-        onChange={(_, newValue) => {
-          setValue(newValue);
-        }}
         filterOptions={(options, params) => {
           const { inputValue } = params;
           const filtered = options.filter(
@@ -74,16 +71,15 @@ export function LabelField(props: LabelFieldProps) {
           }
           return filtered;
         }}
-        onBlur={field.input.onBlur}
         placeholder={props.placeholder}
         options={props.options.map((label) => ({ value: label, label }))}
         getOptionLabel={(value) => (isString(value) ? value : value.label)}
         renderTags={(tags, getTagProps) =>
           tags.map((item, index) => (
             <Chip
-              variant={"soft"}
-              color={"primary"}
-              size={"sm"}
+              variant="soft"
+              color="primary"
+              size="sm"
               endDecorator={<Close fontSize="sm" />}
               sx={{ minWidth: 0 }}
               {...getTagProps({ index })}
@@ -98,6 +94,10 @@ export function LabelField(props: LabelFieldProps) {
             disablePortal: true,
           },
         }}
+        onChange={(_, newValue) => {
+          setValue(newValue);
+        }}
+        onBlur={field.input.onBlur}
       />
     </BaseField>
   );

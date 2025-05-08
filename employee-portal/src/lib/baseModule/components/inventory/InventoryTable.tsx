@@ -61,80 +61,78 @@ export function InventoryTable({ params }: InventoryTableProps) {
   });
 
   return (
-    <>
-      <TablePage
-        data-testid="inventory-table"
-        fullHeight
-        filterSettings={
-          filterSettings.filterSheetVisible && (
-            <FilterSettingsSheet>
-              <FilterSettingsContent
-                {...filterSettings.filterSettingsContentProps}
-              />
-            </FilterSettingsSheet>
-          )
-        }
-        controls={
-          <Stack
-            direction="row"
-            flexWrap="wrap-reverse"
-            justifyContent="space-between"
-            gap={2}
-          >
-            <Stack direction="row" flexWrap="wrap" gap="inherit">
-              <ToggleFilterButton {...filterSettings.filterButtonProps} />
-              <SearchFilter
-                tableControl={tableControl}
-                searchParamName={"name"}
-                label={"Suche"}
-              />
-            </Stack>
-            {isAdmin && (
-              <Button
-                onClick={() => addInventorySidebar.open({ labels })}
-                startDecorator={<AddIcon />}
-                sx={{
-                  justifySelf: "flex-end",
-                }}
-              >
-                Inventar hinzufügen
-              </Button>
-            )}
+    <TablePage
+      data-testid="inventory-table"
+      fullHeight
+      filterSettings={
+        filterSettings.filterSheetVisible && (
+          <FilterSettingsSheet>
+            <FilterSettingsContent
+              {...filterSettings.filterSettingsContentProps}
+            />
+          </FilterSettingsSheet>
+        )
+      }
+      controls={
+        <Stack
+          direction="row"
+          flexWrap="wrap-reverse"
+          justifyContent="space-between"
+          gap={2}
+        >
+          <Stack direction="row" flexWrap="wrap" gap="inherit">
+            <ToggleFilterButton {...filterSettings.filterButtonProps} />
+            <SearchFilter
+              tableControl={tableControl}
+              searchParamName="name"
+              label="Suche"
+            />
           </Stack>
+          {isAdmin && (
+            <Button
+              startDecorator={<AddIcon />}
+              sx={{
+                justifySelf: "flex-end",
+              }}
+              onClick={() => addInventorySidebar.open({ labels })}
+            >
+              Inventar hinzufügen
+            </Button>
+          )}
+        </Stack>
+      }
+    >
+      <TableSheet
+        loading={isFetching}
+        footer={
+          <Pagination
+            totalCount={totalNumberOfElements}
+            {...tableControl.paginationProps}
+          />
         }
       >
-        <TableSheet
-          loading={isFetching}
-          footer={
-            <Pagination
-              totalCount={totalNumberOfElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={elements}
-            minWidth="60rem"
-            sorting={tableControl.tableSorting}
-            rowNavigation={{
-              route: (row) => routes.inventory.details(row.original.id),
-              focusColumnAccessorKey: "name",
-            }}
-            columns={inventoryColumns({
-              isAdmin,
-              onCorrection: (item) =>
-                inventoryCountCorrectionSidebar.open({ item }),
-              onEdit: (item) =>
-                inventoryUpdateSidebar.open({ inventory: item, labels }),
-              onRestock: (item) =>
-                inventoryRestockSidebar.open({
-                  id: item.id,
-                  minCount: item.minCount,
-                }),
-            })}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+        <DataTable
+          data={elements}
+          minWidth="60rem"
+          sorting={tableControl.tableSorting}
+          rowNavigation={{
+            route: (row) => routes.inventory.details(row.original.id),
+            focusColumnAccessorKey: "name",
+          }}
+          columns={inventoryColumns({
+            isAdmin,
+            onCorrection: (item) =>
+              inventoryCountCorrectionSidebar.open({ item }),
+            onEdit: (item) =>
+              inventoryUpdateSidebar.open({ inventory: item, labels }),
+            onRestock: (item) =>
+              inventoryRestockSidebar.open({
+                id: item.id,
+                minCount: item.minCount,
+              }),
+          })}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

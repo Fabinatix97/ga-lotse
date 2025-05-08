@@ -3,7 +3,7 @@
     {
       "elementHeader": {
         "de": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns. D.h. bitte 3 - 4 Stunden vor der amtsärztlichen Untersuchung nichts essen und nur ungesüßte Getränke in geringer Menge (z.B. Wasser, Tee) zu sich nehmen.",
-        "en": "Please come to us on the day of the examination on an empty stomach. In other words, please do not eat anything for 3 - 4 hours before the medical examination and only consume a small amount of unsweetened drinks (e.g. water, tea)."
+        "en": "Please arrive on the day of the examination on an empty stomach. In other words, please do not eat anything for 3 - 4 hours before the medical examination and only consume a small amount of unsweetened drinks (e.g. water, tea)."
       }
     },
     {
@@ -31,7 +31,7 @@
     {
       "elementHeader": {
         "de": "Für Atteste zur Prüfungsfähigkeit ist Folgendes zu beachten und mitzubringen:",
-        "en": "For certificates of exam eligibility, please bring the following with you:"
+        "en": "For certificates of exam eligibility, please either bring or consider the following:"
       },
       "elementList": {
         "de": [

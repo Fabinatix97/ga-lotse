@@ -10,7 +10,7 @@ import { UrlObject } from "url";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
-export interface MedicalHistoryCardProps {
+interface MedicalHistoryCardProps {
   title: string;
   fulfilledLabel: string;
   unfulfilledLabel: string;
@@ -41,9 +41,9 @@ export function MedicalHistoryCard(props: MedicalHistoryCardProps) {
       </Stack>
       {!isFulfilled ? (
         <InternalLinkButton
-          color={"primary"}
-          variant={"solid"}
-          sx={{ padding: 0, flex: 1 }}
+          color="primary"
+          variant="solid"
+          sx={{ padding: 0, flex: 1, minWidth: "10rem" }}
           href={href}
         >
           {buttonLabel}

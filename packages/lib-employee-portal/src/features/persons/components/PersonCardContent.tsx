@@ -13,7 +13,7 @@ import type {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
-import { formatList } from "@/utils/formatters";
+import { formatList } from "../../../utils/formatters";
 
 function getAddress(
   address: ApiAddFacilityFileStateRequestContactAddress,

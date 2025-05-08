@@ -11,7 +11,7 @@ import {
   GdprValidationTaskApiInterface,
 } from "@eshg/lib-procedures-api";
 
-import { gdprValidationTaskApi } from "@/config/apiQueryKeys";
+import { gdprValidationTaskApi } from "../../../config/apiQueryKeys";
 
 export function useGetGdprValidationBannerQuery(
   businessModule: ApiBusinessModule,

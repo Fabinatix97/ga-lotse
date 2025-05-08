@@ -38,9 +38,9 @@ Sie möchten uns noch bestehende Barrieren mitteilen oder nicht
 barrierefreie Inhalte in einem barrierefreien Format anfordern?
 Sprechen Sie unsere verantwortlichen Kontaktpersonen an:
 
-**Gesundheitsamt Frankfurt am Main  
-Digitale Zukunft, IT und strategische Planung  
-+49 (0) 800 -4256873**  
+**Gesundheitsamt Frankfurt am Main\
+Digitale Zukunft, IT und strategische Planung\
++49 (0) 800 -4256873**\
 [support@ga-lotse.de](mailto:support@ga-lotse.de)
 
 ## Durchsetzungsverfahren
@@ -56,14 +56,12 @@ Barrierefreiheit zu ermitteln, damit der Träger diese beheben kann.
 
 ## Durchsetzungs- und Überwachungsstelle Barrierefreie Informationstechnik Hessisches Ministerium für Soziales und Integration Sitz: Regierungspräsidium Gießen
 
-Prof. Dr. Erdmuthe Meyer zu Bexten  
-Landesbeauftragte für barrierefreie IT  
-Leiterin der Durchsetzungs- und Überwachungsstelle  
-Landgraf-Philipp-Platz 1-7  
-35390 Gießen  
-Telefon: +49 641 303 - 2901  
+Prof. Dr. Erdmuthe Meyer zu Bexten\
+Landesbeauftragte für barrierefreie IT\
+Leiterin der Durchsetzungs- und Überwachungsstelle\
+Landgraf-Philipp-Platz 1-7\
+35390 Gießen\
+Telefon: +49 641 303 - 2901\
 E-Mail: [Durchsetzungsstelle-LBIT@rpgi.hessen.de](mailto:Durchsetzungsstelle-LBIT@rpgi.hessen.de)
-
-  
 
 [Durchsetzung beantragen](https://lbit.hessen.de/Durchsetzungs-und-Ueberwachungsstelle/Durchsetzungsverfahren-beantragen/Formular-Durchsetzungsverfahren)

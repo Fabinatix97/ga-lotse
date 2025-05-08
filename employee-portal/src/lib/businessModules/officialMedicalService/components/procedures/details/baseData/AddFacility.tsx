@@ -28,16 +28,19 @@ export function AddFacility({ id }: Readonly<{ id: string }>) {
   });
 
   return (
-    <>
-      <Stack gap={2} sx={{ pt: 1 }}>
-        <Alert color={"warning"} startDecorator={<InfoOutlined />}>
-          Um einen Vorgang anzulegen, muss ein Auftraggeber ergänzt werden.
-        </Alert>
-        <InfoTileAddButton onClick={() => facilitySidebar.open({ id })}>
-          Hinzufügen
-        </InfoTileAddButton>
-      </Stack>
-    </>
+    <Stack gap={2} sx={{ pt: 1 }}>
+      <Alert
+        color="warning"
+        startDecorator={<InfoOutlined />}
+        role="note"
+        data-testid="alert"
+      >
+        Um einen Vorgang anzulegen, muss ein Auftraggeber ergänzt werden.
+      </Alert>
+      <InfoTileAddButton onClick={() => facilitySidebar.open({ id })}>
+        Hinzufügen
+      </InfoTileAddButton>
+    </Stack>
   );
 }
 

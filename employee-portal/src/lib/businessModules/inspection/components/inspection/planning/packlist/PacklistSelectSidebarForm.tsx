@@ -12,20 +12,20 @@ import {
   ApiInspectionPLDRevision,
 } from "@eshg/inspection-api";
 import {
-  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 
-export interface PacklistSelectSidebarFormProps {
+interface PacklistSelectSidebarFormProps {
   onClose: () => void;
   inspectionExternalId: string;
   currentSelectedRevisions: ApiInspectionPLDRevision[];
@@ -88,12 +88,12 @@ export function PacklistSelectSidebarForm({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleSubmit}
       enableReinitialize
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting, handleSubmit, setFieldValue, values, errors }) => (
-        <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
-          <SidebarContent title={"Packliste auswählen"}>
+        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+          <SidebarContent title="Packliste auswählen">
             <Stack direction="column" spacing={2}>
               <SelectedRevisionsForm
                 name="selectedRevisionIds"
@@ -182,11 +182,11 @@ function SelectedRevisionsForm({
               key={revisionId}
               name={fieldName(revisionId)}
               label={label}
+              size="md"
+              variant="outlined"
               onChange={async (ev) => {
                 await handleChange(revisionId, ev.target.checked);
               }}
-              size="md"
-              variant="outlined"
             />
           );
         })}

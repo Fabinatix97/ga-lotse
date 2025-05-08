@@ -20,7 +20,6 @@ import {
   InspectionFeatureTogglesApi,
   InspectionGeoApi,
   InspectionIncidentApi,
-  InspectionTestDataApi,
   ObjectTypeApi,
   PacklistApi,
   PacklistDefinitionApi,
@@ -43,11 +42,6 @@ export function useConfiguration() {
 export function useInspectionApi() {
   const configuration = useConfiguration();
   return new InspectionApi(configuration);
-}
-
-export function useInspectionTestDataApi() {
-  const configuration = useConfiguration();
-  return new InspectionTestDataApi(configuration);
 }
 
 export function useEditorApi() {

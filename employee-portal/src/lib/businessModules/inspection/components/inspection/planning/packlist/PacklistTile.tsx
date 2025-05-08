@@ -25,7 +25,7 @@ import { PacklistSelectSidebar } from "@/lib/businessModules/inspection/componen
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface PacklistTileProps {
+interface PacklistTileProps {
   readonly?: boolean;
   isOffline?: boolean;
   inspection: ApiInspection;
@@ -182,12 +182,12 @@ export function PacklistTile({
             return (
               packlist && (
                 <Packlist
+                  key={"packlist-" + revision.name + "-" + index}
                   revisionName={revision.name}
                   packlist={packlist}
                   handleCheck={handleCheck}
                   handleDeleteClick={handleDeleteClick}
                   readonly={readonly ?? isOffline}
-                  key={"packlist-" + revision.name + "-" + index}
                 />
               )
             );

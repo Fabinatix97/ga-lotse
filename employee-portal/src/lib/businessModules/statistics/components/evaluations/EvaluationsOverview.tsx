@@ -59,6 +59,10 @@ export function EvaluationsOverview() {
       apiDataSources={availableDataSources}
       evaluationOverview={evaluationsOverview}
       loading={evaluationsOverviewIsFetching}
+      paginationProps={getPaginationProps({
+        totalCount: evaluationsOverview.totalNumberOfElements,
+      })}
+      manualSortingProps={manualSortingProps}
       onCreateEvaluationClick={openCreateEvaluationSidebar}
       onFilterValuesChanged={(filterValues) => {
         startTransition(() => {
@@ -66,10 +70,6 @@ export function EvaluationsOverview() {
           resetPageNumber();
         });
       }}
-      paginationProps={getPaginationProps({
-        totalCount: evaluationsOverview.totalNumberOfElements,
-      })}
-      manualSortingProps={manualSortingProps}
     />
   );
 }

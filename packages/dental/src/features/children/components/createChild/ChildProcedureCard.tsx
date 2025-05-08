@@ -16,7 +16,7 @@ import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
-import { routes } from "@/config/routes";
+import { routes } from "../../../../config/routes";
 
 export function ChildProcedureCard(props: { procedure: ApiChild }) {
   const child = props.procedure;

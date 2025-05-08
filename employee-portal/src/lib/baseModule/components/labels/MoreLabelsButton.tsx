@@ -22,22 +22,22 @@ export function MoreLabelsButton({
   return (
     <Dropdown>
       <MenuButton
-        variant={"plain"}
-        size={"sm"}
+        variant="plain"
+        size="sm"
         sx={{
           minHeight: 0,
           padding: 0,
           borderRadius: "var(--Chip-radius, 1.5rem)",
         }}
       >
-        <Chip variant={"outlined"} color={"neutral"}>
-          <Stack direction={"row"} alignItems={"center"}>
-            <AddIcon size={"xs"} />
+        <Chip variant="outlined" color="neutral">
+          <Stack direction="row" alignItems="center">
+            <AddIcon size="xs" />
             {labels.length - visible}
           </Stack>
         </Chip>
       </MenuButton>
-      <Menu title={"title"}>
+      <Menu title="title">
         {labels.map((label) => (
           <MenuItem key={label.id}>{label.name}</MenuItem>
         ))}

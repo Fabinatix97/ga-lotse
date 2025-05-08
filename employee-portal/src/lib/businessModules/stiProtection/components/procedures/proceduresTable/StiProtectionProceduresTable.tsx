@@ -281,8 +281,6 @@ export function StiProtectionProceduresTable() {
       filterSettings={<StiProtectionProceduresTableFilters />}
       controls={
         <ProceduresTableControls
-          onEntrySearch={setSearchQuery}
-          onToggleActiveTableControl={handleToggleActiveTableControl}
           activeTableControl={activeTableControl}
           ToggleFilterButton={<StiProtectionProceduresTableFilterButton />}
           controlsRight={
@@ -290,8 +288,11 @@ export function StiProtectionProceduresTable() {
               <Button startDecorator={<Add />}>Neuen Vorgang anlegen</Button>
             </NavigationLink>
           }
+          onEntrySearch={setSearchQuery}
+          onToggleActiveTableControl={handleToggleActiveTableControl}
         />
       }
+      fullHeight
     >
       <TableSheet
         loading={isLoading}
@@ -315,9 +316,9 @@ export function StiProtectionProceduresTable() {
         />
         <ReopenConfirmationDialog
           open={reopenDialog.isRequestingFinalize}
+          procedure={reopenDialog.procedure}
           onClose={reopenDialog.abortFinalize}
           onConfirm={reopenDialog.handleFinalizeProcedure}
-          procedure={reopenDialog.procedure}
         />
       </TableSheet>
     </TablePage>

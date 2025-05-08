@@ -137,7 +137,7 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
     >
       <Stack gap={1}>
         <LabelValuePair
-          label={"Zeitraum"}
+          label="Zeitraum"
           value={
             <StyledValue>
               {formatDateRangeNumeric(props.start, props.end)}

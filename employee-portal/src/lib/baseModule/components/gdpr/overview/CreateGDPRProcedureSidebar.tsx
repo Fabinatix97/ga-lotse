@@ -27,7 +27,7 @@ import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField"
 import { SALUTATION_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { mapAddGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
@@ -70,7 +70,7 @@ function CreateGDPRProcedureSidebar({
   onClose,
   formRef,
 }: SidebarWithFormRefProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const router = useRouter();
   const fieldName = createFieldNameMapper<GDPRProcedureFormInputs>();
 
@@ -93,41 +93,41 @@ function CreateGDPRProcedureSidebar({
                 <SelectField
                   options={TYPE_OPTIONS}
                   name={fieldName("type")}
-                  label={"Vorgangsart"}
-                  required={"Bitte die Art des Vorgangs angeben"}
+                  label="Vorgangsart"
+                  required="Bitte die Art des Vorgangs angeben"
                 />
               </Grid>
               <Grid xxs={12} xs={6}>
                 <SelectField
                   options={SALUTATION_OPTIONS}
                   name={fieldName("salutation")}
-                  label={"Anrede"}
+                  label="Anrede"
                 />
               </Grid>
               <Grid xxs={12} xs={6}>
-                <InputField name={fieldName("title")} label={"Titel"} />
+                <InputField name={fieldName("title")} label="Titel" />
               </Grid>
               <Grid xxs={12}>
                 <InputField
                   name={fieldName("firstName")}
-                  label={"Vorname"}
-                  required={"Bitte einen Vornamen angeben"}
+                  label="Vorname"
+                  required="Bitte einen Vornamen angeben"
                   validate={validateLength(1, 80)}
                 />
               </Grid>
               <Grid xxs={12}>
                 <InputField
                   name={fieldName("lastName")}
-                  label={"Nachname"}
-                  required={"Bitte einen Nachname angeben"}
+                  label="Nachname"
+                  required="Bitte einen Nachname angeben"
                   validate={validateLength(1, 120)}
                 />
               </Grid>
               <Grid xxs={12}>
                 <DateField
                   name={fieldName("dateOfBirth")}
-                  label={"Geburtsdatum"}
-                  required={"Bitte ein Geburtsdatum eingeben"}
+                  label="Geburtsdatum"
+                  required="Bitte ein Geburtsdatum eingeben"
                   validate={validateDateOfBirth}
                 />
               </Grid>
@@ -144,14 +144,14 @@ function CreateGDPRProcedureSidebar({
               <Grid xxs={12}>
                 <EmailField
                   name={fieldName("emailAddress")}
-                  label={"E-Mail-Adresse"}
+                  label="E-Mail-Adresse"
                   validate={validateLength(6, 254)}
                 />
               </Grid>
               <Grid xxs={12}>
                 <InputField
                   name={fieldName("phoneNumber")}
-                  label={"Telefonnummer"}
+                  label="Telefonnummer"
                   validate={validateLength(1, 23)}
                 />
               </Grid>
@@ -159,7 +159,7 @@ function CreateGDPRProcedureSidebar({
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitLabel={"Anlegen"}
+              submitLabel="Anlegen"
               submitting={isSubmitting}
               onCancel={() => onClose(false)}
             />

@@ -19,7 +19,7 @@ export function NoAppointmentCard({ href }: NoAppointmentCardProps) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
 
   return (
-    <ContentSheet data-testid={"no-appointment-form"}>
+    <ContentSheet data-testid="no-appointment-form">
       <Typography level="h2">{t("appointment.title")}</Typography>
       <Stack
         direction="column"

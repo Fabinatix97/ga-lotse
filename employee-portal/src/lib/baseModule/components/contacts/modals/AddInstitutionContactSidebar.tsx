@@ -60,6 +60,7 @@ function AddInstitutionContactSidebar({
     <>
       {formState.flowStep === "IMPORT" && (
         <InstitutionContactImportForm
+          sidebarFormRef={formRef}
           onImported={(values) =>
             setFormState({
               initialValues: values,
@@ -74,15 +75,14 @@ function AddInstitutionContactSidebar({
             })
           }
           onClose={() => onClose(false)}
-          sidebarFormRef={formRef}
         />
       )}
       {formState.flowStep === "CREATE" && (
         <ContactEntityForm
-          type={"INSTITUTION"}
+          type="INSTITUTION"
           initialValues={formState.initialValues}
-          onClose={() => onClose(false)}
           sidebarFormRef={formRef}
+          onClose={() => onClose(false)}
         />
       )}
       {formState.flowStep === "SEARCH" && (
@@ -106,11 +106,11 @@ function AddInstitutionContactSidebar({
         <MergeInstitutionContactForm
           into={formState.into}
           from={formState.from}
-          intoLabel={"Aktuell"}
-          fromLabel={"Importiert"}
+          intoLabel="Aktuell"
+          fromLabel="Importiert"
+          sidebarFormRef={formRef}
           onCancel={() => onClose(false)}
           onSuccess={() => onClose(true)}
-          sidebarFormRef={formRef}
         />
       )}
     </>

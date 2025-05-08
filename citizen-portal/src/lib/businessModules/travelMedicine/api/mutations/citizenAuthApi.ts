@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -22,7 +24,7 @@ export interface PatchMedicalHistoryRequest {
   medicalHistory: ApiDocumentContent;
 }
 
-export interface PatchInformationStatementRequest {
+interface PatchInformationStatementRequest {
   statementId: string;
   request: ApiPatchInformationStatementRequest;
   signature: Blob;
@@ -74,7 +76,7 @@ export function usePutAppointment() {
   const citizenAuthApi = useCitizenAuthApi();
   const snackbar = useSnackbar();
 
-  return useHandledMutation({
+  return useMutation({
     mutationFn: (data: PutAppointmentRequest) => {
       return citizenAuthApi.putAppointment(
         data.procedureId,

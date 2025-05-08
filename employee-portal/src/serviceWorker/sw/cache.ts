@@ -16,7 +16,7 @@ export async function getFromApiCache(request: string) {
   return new Response(await decrypt(await response.arrayBuffer()), response);
 }
 
-export async function getFromApiCacheOptional(request: Request) {
+async function getFromApiCacheOptional(request: Request) {
   const cache = await caches.open(API_CACHE_NAME);
   const response = await cache.match(request);
   if (!response?.ok) return undefined;

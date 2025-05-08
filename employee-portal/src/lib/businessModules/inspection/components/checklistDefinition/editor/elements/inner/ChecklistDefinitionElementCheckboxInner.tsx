@@ -23,13 +23,13 @@ export function ChecklistDefinitionElementCheckboxInner({
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" spacing={2} alignItems={"center"}>
+      <Stack direction="row" spacing={2} alignItems="center">
         <Radio disabled label="Ja" />
         <Radio disabled label="Nein" />
         <TextModuleToggle
           checked={showTextModules}
-          onToggle={(pressed) => setShowTextModules(pressed)}
           count={countTextModules(element)}
+          onToggle={(pressed) => setShowTextModules(pressed)}
         />
       </Stack>
       {showTextModules && (

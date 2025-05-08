@@ -134,12 +134,12 @@ export function MergeInstitutionContactForm({
         <SidebarForm ref={sidebarFormRef}>
           <SidebarContent title="Institution zusammenführen">
             <Stack gap={3} divider={<Divider />}>
-              <Stack gap={"inherit"}>
+              <Stack gap="inherit">
                 <MergeStringField
                   target={into.name}
                   source={from.data.name}
                   name={fieldName("name")}
-                  label={"Name"}
+                  label="Name"
                   sourceValueLabel={fromLabel}
                   targetValueLabel={intoLabel}
                 />
@@ -147,7 +147,7 @@ export function MergeInstitutionContactForm({
                   target={into.category}
                   source={from.data.category}
                   name={fieldName("category")}
-                  label={"Objekttyp"}
+                  label="Objekttyp"
                   getOptionLabel={(value) =>
                     CONTACT_CATEGORY_NAMES[
                       value as keyof typeof CONTACT_CATEGORY_NAMES
@@ -171,8 +171,8 @@ export function MergeInstitutionContactForm({
                     },
                   ]}
                   name={fieldName("contactAddress")}
-                  label={"Kontaktadresse"}
-                  required={"Bitte auswählen"}
+                  label="Kontaktadresse"
+                  required="Bitte auswählen"
                   value={values.contactAddress}
                   readOnly={!requiresContactAddressMerge}
                 />
@@ -191,25 +191,25 @@ export function MergeInstitutionContactForm({
                     },
                   ]}
                   name={fieldName("differentBillingAddress")}
-                  label={"Abweichende Rechnungsadresse"}
-                  required={"Bitte auswählen"}
+                  label="Abweichende Rechnungsadresse"
+                  required="Bitte auswählen"
                   value={values.differentBillingAddress}
                   readOnly={!requiresBillingAddressMerge}
                 />
               )}
-              <Stack gap={"inherit"}>
-                <Box component={"section"} aria-label={"E-Mail-Adressen"}>
+              <Stack gap="inherit">
+                <Box component="section" aria-label="E-Mail-Adressen">
                   <InputArrayField
                     name={fieldName("emailAddresses")}
                     label={(index) => getIndexLabel("E-Mail-Adresse", index)}
-                    addMoreLabel={"E-Mail-Adresse hinzufügen"}
+                    addMoreLabel="E-Mail-Adresse hinzufügen"
                   />
                 </Box>
-                <Box component={"section"} aria-label={"Telefonnummern"}>
+                <Box component="section" aria-label="Telefonnummern">
                   <InputArrayField
                     name={fieldName("phoneNumbers")}
                     label={(index) => getIndexLabel("Telefonnummer", index)}
-                    addMoreLabel={"Telefonnummer hinzufügen"}
+                    addMoreLabel="Telefonnummer hinzufügen"
                   />
                 </Box>
               </Stack>
@@ -218,7 +218,7 @@ export function MergeInstitutionContactForm({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={isSubmitting}
-              submitLabel={"Bestätigen"}
+              submitLabel="Bestätigen"
               onCancel={onCancel}
               onBack={onBack}
             />

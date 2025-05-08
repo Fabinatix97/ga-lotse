@@ -9,11 +9,11 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { groupBy } from "remeda";
 
 import {
-  CheckboxFieldProps,
   SearchableGroup,
   SearchableGroupItem,
   SearchableGroups,
 } from "@eshg/lib-employee-portal";
+import { CheckboxFieldProps } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { ApiDataPrivacyCategory } from "@eshg/statistics-api";
 
 import { AnonymizedFieldValue } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
@@ -36,14 +36,14 @@ export interface CategorizedFlatAttribute {
   dataPrivacyCategory?: ApiDataPrivacyCategory;
 }
 
-export interface ChooseAttributesStepProps
+interface ChooseAttributesStepProps
   extends SidebarStepContentProps<ChooseAttributeStepOrConfigureDataSourceStepFormModel> {
   attributes: CategorizedFlatAttribute[];
   dataSourceName: string;
   anonymized: AnonymizedFieldValue;
 }
 
-export const MAX_AMOUNT_QUASI_IDENTIFYING = 5;
+const MAX_AMOUNT_QUASI_IDENTIFYING = 5;
 
 export function ChooseAttributesStep({
   fieldName,
@@ -112,8 +112,8 @@ export function ChooseAttributesStep({
           renderItem={(item) => (
             <CheckboxItem
               item={item}
-              onChange={onChange}
               isChecked={(key: string) => input.value.includes(key)}
+              onChange={onChange}
             />
           )}
           renderGroup={(group, renderItems) => (

@@ -18,7 +18,7 @@ import { ResourcesTable } from "@/lib/businessModules/inspection/components/insp
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface ResourceTileProps {
+interface ResourceTileProps {
   readonly?: boolean;
   procedureId: string;
   inspectionResources: ApiInspectionResource[];

@@ -20,8 +20,6 @@ function citizenRoutes(locale: SupportedLanguage | undefined) {
   );
 }
 
-export type CitizenRoutes = ReturnType<typeof citizenRoutes>;
-
 export function useCitizenRoutes() {
   const locale = useGivenLang();
   return citizenRoutes(locale);

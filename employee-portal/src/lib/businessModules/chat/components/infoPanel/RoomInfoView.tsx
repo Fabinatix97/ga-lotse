@@ -30,7 +30,7 @@ import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/use
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 
-export interface RoomInfoViewProps {
+interface RoomInfoViewProps {
   roomId: string;
   onClose: () => void;
 }
@@ -182,9 +182,8 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
         onConfirm={handleLeaveRoomClick}
       />
       <ConfirmationDialog
+        key="kick-user-dialog"
         open={!!kickUserId}
-        onClose={() => setKickUserId(undefined)}
-        onConfirm={handleRemoveUser}
         color="danger"
         title={
           userToRemove?.name
@@ -196,8 +195,9 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
             ? `Andere Gruppenmitglieder werden darüber informiert, dass ${userToRemove.name} aus der Gruppe entfernt wurde.`
             : `Andere Gruppenmitglieder werden darüber informiert, dass Benutzer aus der Gruppe entfernt wurde.`
         }
-        key="kick-user-dialog"
         confirmLabel="Entfernen"
+        onClose={() => setKickUserId(undefined)}
+        onConfirm={handleRemoveUser}
       />
     </>
   );

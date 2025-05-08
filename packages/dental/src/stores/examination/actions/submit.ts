@@ -6,15 +6,15 @@
 import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
 import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
 
-import { ToothDiagnoses } from "@/api/models/ExaminationResult";
-import { ExaminationState } from "@/stores/examination/examinationStore";
+import { ToothDiagnoses } from "../../../api/models/ExaminationResult";
+import { ExaminationState } from "../examinationStore";
 import {
   Dentition,
   ElementContext,
   ToothContext,
   ToothResult,
   ToothWithDiagnosis,
-} from "@/stores/examination/types";
+} from "../types";
 
 import { NavigateToInputState, navigateTo } from "./navigateTo";
 import { isValidMainResult, isValidSecondaryResult } from "./result";
@@ -60,8 +60,7 @@ export function validateDentition(dentition: Dentition): SubmitResult {
         return;
       }
 
-      const { toothNumber, mainResult, secondaryResult1, secondaryResult2 } =
-        tooth;
+      const { toothNumber, mainResult, secondaryResult } = tooth;
 
       const invalidFields = collectInvalidFields(tooth, {
         quadrantNumber,
@@ -74,8 +73,7 @@ export function validateDentition(dentition: Dentition): SubmitResult {
         validToothDiagnoses[toothNumber] = {
           tooth: toothNumber,
           mainResult: resolveMainResult(mainResult),
-          secondaryResult1: resolveSecondaryResult(secondaryResult1),
-          secondaryResult2: resolveSecondaryResult(secondaryResult2),
+          secondaryResult: resolveSecondaryResult(secondaryResult),
         };
       }
     });
@@ -104,12 +102,8 @@ function collectInvalidFields(
     invalidElements.push({ element: "mainResultField", toothContext });
   }
 
-  if (tooth.secondaryResult1.isInvalid) {
-    invalidElements.push({ element: "secondaryResult1Field", toothContext });
-  }
-
-  if (tooth.secondaryResult2.isInvalid) {
-    invalidElements.push({ element: "secondaryResult2Field", toothContext });
+  if (tooth.secondaryResult.isInvalid) {
+    invalidElements.push({ element: "secondaryResultField", toothContext });
   }
 
   return invalidElements;

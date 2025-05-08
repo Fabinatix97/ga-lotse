@@ -24,11 +24,3 @@ export function useGetAllAppointmentTypes() {
   const appointmentTypeApi = useAppointmentTypeApi();
   return useSuspenseQuery(getAllAppointmentTypesQuery(appointmentTypeApi));
 }
-
-export function useGetOneAppointmentType(id: string) {
-  const appointmentTypeApi = useAppointmentTypeApi();
-  return useSuspenseQuery({
-    queryKey: appointmentTypesApiQueryKey(["getOneAppointmentType", id]),
-    queryFn: () => appointmentTypeApi.getOneAppointmentType(id),
-  });
-}

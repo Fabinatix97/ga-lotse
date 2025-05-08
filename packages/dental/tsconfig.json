@@ -1,9 +1,6 @@
 {
   "extends": "../../config/tsconfig.lib.json",
   "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "types": ["@eshg/lib-employee-portal/theme"]
   },
   "include": [

@@ -6,7 +6,7 @@
 package de.eshg.lib.appointmentblock.persistence;
 
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
@@ -22,22 +22,22 @@ public class CreateAppointmentTypeTask {
 
   private final AppointmentTypeRepository appointmentTypeRepository;
   private final TransactionHelper transactionHelper;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
 
   public CreateAppointmentTypeTask(
       AppointmentTypeRepository appointmentTypeRepository,
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       TransactionHelper transactionHelper) {
     this.appointmentTypeRepository = appointmentTypeRepository;
     this.transactionHelper = transactionHelper;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
   }
 
   @PostConstruct
   public void createAppointmentTypes() {
     transactionHelper.executeInTransaction(
         () ->
-            appointmentBlockProperties
+            appointmentBlockConfig
                 .getDefaultAppointmentTypeConfiguration()
                 .forEach(
                     (appointmentType, standardDuration) -> {
@@ -46,7 +46,7 @@ public class CreateAppointmentTypeTask {
 
                       if (config.isEmpty()) {
                         createAppointmentTypeConfig(appointmentType, standardDuration);
-                      } else if (appointmentBlockProperties
+                      } else if (appointmentBlockConfig
                           .isOverwriteAppointmentTypeConfigurationWithProperties()) {
                         updateAppointmentTypeConfig(config.get(), standardDuration);
                       }

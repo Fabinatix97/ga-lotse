@@ -4,7 +4,6 @@
  */
 
 import { Ref, useState } from "react";
-import { isDefined } from "remeda";
 
 import {
   ApiImportPersonContactResponse,
@@ -64,35 +63,35 @@ export function PersonContactImportForm(props: ContactImportFormProps) {
     });
   }
 
+  if (searchResults === undefined) {
+    return (
+      <UploadVCardForm
+        sidebarFormRef={props.sidebarFormRef}
+        onSubmit={async (file) => {
+          await handleSubmit(file);
+        }}
+        onClose={props.onClose}
+      />
+    );
+  }
+
   return (
-    <>
-      {isDefined(searchResults) ? (
-        <ImportResultForm<ApiPersonContact>
-          label={"Person"}
-          formRef={props.sidebarFormRef}
-          searchResults={searchResults}
-          cardComponent={PersonContactCard}
-          onSubmit={(selected) => {
-            const vcard = searchResults.vCard;
-            if (selected === "new") {
-              props.onImported(mapImportToCreate(vcard));
-            } else {
-              const contact = searchResults.matches.find(
-                (contact) => contact.id === selected,
-              )!;
-              props.onMerge(contact, mapImportToCreate(vcard));
-            }
-          }}
-        />
-      ) : (
-        <UploadVCardForm
-          sidebarFormRef={props.sidebarFormRef}
-          onSubmit={async (file) => {
-            await handleSubmit(file);
-          }}
-          onClose={props.onClose}
-        />
-      )}
-    </>
+    <ImportResultForm<ApiPersonContact>
+      label="Person"
+      formRef={props.sidebarFormRef}
+      searchResults={searchResults}
+      cardComponent={PersonContactCard}
+      onSubmit={(selected) => {
+        const vcard = searchResults.vCard;
+        if (selected === "new") {
+          props.onImported(mapImportToCreate(vcard));
+        } else {
+          const contact = searchResults.matches.find(
+            (contact) => contact.id === selected,
+          )!;
+          props.onMerge(contact, mapImportToCreate(vcard));
+        }
+      }}
+    />
   );
 }

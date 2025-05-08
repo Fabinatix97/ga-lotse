@@ -1,0 +1,41 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.base.testhelper;
+
+import de.eshg.base.contact.ContactController;
+import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.base.contact.persistence.entity.InstitutionContactCategory;
+import de.eshg.base.contact.persistence.repository.ContactRepository;
+import de.eshg.testhelper.environment.EnvironmentConfig;
+import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
+import java.time.Clock;
+import net.datafaker.Faker;
+
+@PopulatorComponent
+public class DaycareContactPopulator extends AbstractContactPopulator {
+  protected DaycareContactPopulator(
+      PopulationProperties properties,
+      Clock clock,
+      EnvironmentConfig environmentConfig,
+      ContactController contactController,
+      ContactRepository contactRepository) {
+    super(properties, clock, environmentConfig, contactController, contactRepository);
+  }
+
+  @Override
+  protected ContactDto populate(
+      int index, Faker faker, BasePopulator<ContactDto>.UniqueValueProvider uniqueValueProvider) {
+    return createInstitutionContact(faker, () -> InstitutionContactCategoryDto.DAYCARE);
+  }
+
+  @Override
+  protected long countExistingEntities() {
+    return this.contactRepository.countByCategory(InstitutionContactCategory.DAYCARE);
+  }
+}

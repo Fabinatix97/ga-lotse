@@ -102,8 +102,6 @@ export function InnerEnumCell({
         sx={{ display: "inline-flex" }}
         size="sm"
         color={color}
-        onChange={handleChange}
-        onClick={(event) => event.stopPropagation()}
         value={value ?? null}
         slotProps={{
           button: {
@@ -111,6 +109,8 @@ export function InnerEnumCell({
             "aria-labelledby": columnId,
           },
         }}
+        onChange={handleChange}
+        onClick={(event) => event.stopPropagation()}
       >
         <SelectOptions options={options} />
       </Select>

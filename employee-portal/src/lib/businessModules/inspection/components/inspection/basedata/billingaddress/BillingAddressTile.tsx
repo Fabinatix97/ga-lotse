@@ -12,7 +12,7 @@ import { BaseAddressDetailsColumn } from "@eshg/lib-employee-portal";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface BillingAddressTileProps {
+interface BillingAddressTileProps {
   billingAddress?: ApiAddFacilityFileStateRequestContactAddress;
   readonly?: boolean;
   onEdit: () => void;

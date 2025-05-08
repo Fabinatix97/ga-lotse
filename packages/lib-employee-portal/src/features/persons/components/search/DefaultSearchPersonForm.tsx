@@ -6,9 +6,9 @@
 import { Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { MultiFormButtonBar } from "@/components/form/MultiFormButtonBar";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
+import { MultiFormButtonBar } from "../../../../components/form/MultiFormButtonBar";
+import { SidebarActions } from "../../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../../drawer/components/SidebarContent";
 
 import { DefaultSearchPersonFormFields } from "./DefaultSearchPersonFormFields";
 import {
@@ -37,7 +37,7 @@ export function DefaultSearchPersonForm<
       <SidebarActions>
         <MultiFormButtonBar
           submitting={props.isSubmitting}
-          submitLabel={"Weiter"}
+          submitLabel="Weiter"
           onBack={props.onBack}
           onCancel={props.onCancel}
         />

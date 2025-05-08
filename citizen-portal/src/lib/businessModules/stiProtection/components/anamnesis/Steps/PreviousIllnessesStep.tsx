@@ -14,6 +14,7 @@ import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/Month
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import {
@@ -21,7 +22,6 @@ import {
   FormDataWithoutConcern,
   defaultPreviousIllnesses,
 } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
-import { validatePositiveInteger } from "@/lib/businessModules/stiProtection/components/anamnesis/helpers";
 import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
 import { useTranslation } from "@/lib/i18n/client";
 
@@ -57,7 +57,7 @@ export function PreviousIllnessesStep() {
           {Object.keys(defaultPreviousIllnesses)
             .filter((t) => !["other", "otherData"].includes(t))
             .map((diseaseType) => (
-              <Grid xxs={12} key={diseaseType}>
+              <Grid key={diseaseType} xxs={12}>
                 <YesOrNoWithFollowUp
                   name={`previousIllnesses.${diseaseType}`}
                   label={
@@ -113,12 +113,7 @@ export function PreviousIllnessesStep() {
         component="section"
         aria-label={t("sexual_orientation_and_contact.title")}
       >
-        <Grid
-          container
-          rowSpacing={2}
-          columnSpacing={3}
-          alignItems={"flex-end"}
-        >
+        <Grid container rowSpacing={2} columnSpacing={3} alignItems="flex-end">
           <Grid xxs={12} xs={6}>
             <SelectField
               name="sexualOrientationAndContact.sexualOrientation"

@@ -53,15 +53,15 @@ export function NewPerson() {
         Neuen Vorgang anlegen
       </Button>
       <PersonSidebar
-        searchFormTitle={"Neuen Vorgang anlegen"}
-        personFormTitle={"Person anlegen"}
+        searchFormTitle="Neuen Vorgang anlegen"
+        personFormTitle="Person anlegen"
         config={TRAVEL_MEDICINE_PERSON_CONFIG}
         open={open}
+        skipEditPersonAfterSearch
+        showPostalAddress
+        skipInitialAppointmentSelection={false}
         onSubmit={handleSubmit}
         onClose={handleClose}
-        skipEditPersonAfterSearch={true}
-        showPostalAddress={true}
-        skipInitialAppointmentSelection={false}
       />
     </>
   );

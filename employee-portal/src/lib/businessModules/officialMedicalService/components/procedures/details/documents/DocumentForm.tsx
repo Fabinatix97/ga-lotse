@@ -56,6 +56,7 @@ export function DocumentForm(props: Readonly<DocumentFormProps>) {
   return (
     <Formik
       initialValues={props.initialValues}
+      enableReinitialize
       onSubmit={async (values) => {
         if (isCompletableWithConfirmation({ ...props, ...values })) {
           openConfirmationDialog({
@@ -88,7 +89,6 @@ export function DocumentForm(props: Readonly<DocumentFormProps>) {
           props.onClose();
         }
       }}
-      enableReinitialize
     >
       {({ isSubmitting, values }) => {
         const isCompletable =
@@ -100,16 +100,16 @@ export function DocumentForm(props: Readonly<DocumentFormProps>) {
             <SidebarActions>
               {needsReview(props) ? (
                 <MultiFormButtonBar
-                  onCancel={props.onClose}
-                  onReject={props.onReject}
                   submitLabel="Akzeptieren"
                   submitting={isSubmitting}
+                  onCancel={props.onClose}
+                  onReject={props.onReject}
                 />
               ) : isCompletable ? (
                 <MultiFormButtonBar
                   submitLabel="Abschließen"
-                  onCancel={props.onCancel}
                   submitting={isSubmitting}
+                  onCancel={props.onCancel}
                 />
               ) : (
                 <MultiFormButtonBar

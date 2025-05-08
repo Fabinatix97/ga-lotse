@@ -5,13 +5,17 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
+import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiGetProcedureIdsRequest,
   StatisticsProcedureReferenceApiInterface,
 } from "@eshg/lib-statistics-api";
 
-import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
+const statisticsProcedureReferenceApiQueryKey = queryKeyFactory([
+  "lib-statistics",
+  "statisticsProcedureReferenceApi",
+]);
 
 export function getProcedureIdsQuery({
   statisticsProcedureReferenceApi,
@@ -23,7 +27,7 @@ export function getProcedureIdsQuery({
   request: ApiGetProcedureIdsRequest;
 }) {
   return queryOptions({
-    queryKey: gdprValidationTaskApiQueryKey([
+    queryKey: statisticsProcedureReferenceApiQueryKey([
       businessModule,
       "getProcedureIds",
       request,

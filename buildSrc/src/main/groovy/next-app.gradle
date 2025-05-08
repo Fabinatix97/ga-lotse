@@ -69,6 +69,7 @@ tasks.register('assemble', PnpmTask) {
   finalizedBy 'copyMarkdownSources'
   finalizedBy 'copyStaticBuildAssets'
   finalizedBy 'copyPublicBuildAssets'
+  def bundlerArgs = project.hasProperty('turbo') ? ['--turbo'] : []
   inputs.file "${rootDir}/config/tsconfig.base.json"
   inputs.file "${projectDir}/tsconfig.json"
   inputs.file "${rootDir}/config/next.base.ts"
@@ -82,7 +83,7 @@ tasks.register('assemble', PnpmTask) {
     include 'static'
     exclude 'cache'
   }
-  args = ['next', 'build']
+  args = ['next', 'build'] + bundlerArgs
 }
 
 tasks.register('build') {

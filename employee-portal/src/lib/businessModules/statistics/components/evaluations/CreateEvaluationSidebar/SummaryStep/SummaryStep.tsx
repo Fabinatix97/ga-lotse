@@ -23,7 +23,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 import { TimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 
-export interface SummaryStepProps
+interface SummaryStepProps
   extends SidebarStepContentProps<SummaryStepFormModel> {
   isEvaluationTemplateBranch: boolean;
   timeSpan: TimeSpan;
@@ -34,24 +34,24 @@ export interface SummaryStepProps
 }
 
 export function SummaryStep(props: SummaryStepProps) {
+  if (props.isEvaluationTemplateBranch) {
+    return (
+      <SummaryStepFromTemplate
+        evaluationTemplateId={props.evaluationTemplateId!}
+        {...props}
+      />
+    );
+  }
+
   return (
-    <>
-      {props.isEvaluationTemplateBranch ? (
-        <SummaryStepFromTemplate
-          evaluationTemplateId={props.evaluationTemplateId!}
-          {...props}
-        />
-      ) : (
-        <Summary
-          dataSourceName={props.dataSource!.name}
-          attributeLabels={props.selectedAttributes!.map(
-            (attribute) => attribute.name,
-          )}
-          anonymizationOptions={props.dataSource!.anonymizationOptions}
-          {...props}
-        />
+    <Summary
+      dataSourceName={props.dataSource!.name}
+      attributeLabels={props.selectedAttributes!.map(
+        (attribute) => attribute.name,
       )}
-    </>
+      anonymizationOptions={props.dataSource!.anonymizationOptions}
+      {...props}
+    />
   );
 }
 

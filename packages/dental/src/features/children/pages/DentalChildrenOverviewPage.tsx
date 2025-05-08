@@ -11,7 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 
-import { ChildrenTable } from "@/features/children/components/childrenOverview/ChildrenTable";
+import { ChildrenTable } from "../components/childrenOverview/ChildrenTable";
 
 export function DentalChildrenOverviewPage() {
   return (

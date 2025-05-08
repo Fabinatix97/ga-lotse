@@ -32,7 +32,7 @@ export function SidebarDetails<TData extends UniqueEntity & EditableEntity>({
   const rowToDisplay = editRow ?? row;
 
   return (
-    <TableContextProvider editable={true}>
+    <TableContextProvider editable>
       <SidebarHeader editButton={renderData(rowToDisplay, EDIT_BUTTON_ID)}>
         {headerIds.map((id) => renderData(rowToDisplay, id))}
       </SidebarHeader>

@@ -17,9 +17,7 @@ import { useTranslation } from "@/lib/i18n/client";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
-export interface MultiStepFormProps
-  extends RequiresChildren,
-    MultiStepFormTitleProps {
+interface MultiStepFormProps extends RequiresChildren, MultiStepFormTitleProps {
   initialValues: FormikValues;
   onSubmit: (
     values: FormikValues,
@@ -47,12 +45,12 @@ interface StepCounterProps {
   stepperTitle: string;
 }
 
-export interface MultiStepFormTitleProps extends StepCounterProps {
+interface MultiStepFormTitleProps extends StepCounterProps {
   title: string;
   withLogoutButton: boolean;
 }
 
-function StepCounter(props: Readonly<StepCounterProps>) {
+export function StepCounter(props: Readonly<StepCounterProps>) {
   return (
     <Typography
       component="span"

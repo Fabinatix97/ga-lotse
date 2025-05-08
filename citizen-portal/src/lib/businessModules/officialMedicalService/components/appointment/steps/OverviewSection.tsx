@@ -27,17 +27,17 @@ import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTim
 
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { useDepartmentContext } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";
-import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
-import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useTranslation } from "@/lib/i18n/client";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
 import {
   formatDepartmentAddress,
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
 } from "@/lib/shared/formatters/address";
+import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
-export interface OverviewSectionProps {
+interface OverviewSectionProps {
   buttonBar?: ReactNode;
 }
 
@@ -53,35 +53,52 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
   });
 
   return (
-    <Stack gap={2} data-testid={"overview"}>
+    <Stack gap={2} data-testid="overview">
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
-      <Stack gap={1} data-testid={"appointment-overview-summary"}>
+      <Stack gap={1} data-testid="appointment-overview-summary">
         {currentStep > 1 && (
-          <DetailsField
-            value={`${concernName} ${t("overview.values.appointmentDuration", { durationInMinutes: values.concern.standardDurationInMinutes })}`}
+          <DetailsItem
+            label={t("overview.fields.concernAndDuration", {
+              context: "label",
+            })}
+            value={`${concernName} ${t("overview.fields.appointmentDuration", { durationInMinutes: values.concern.standardDurationInMinutes })}`}
             icon={<MedicalServicesOutlined />}
+            hiddenLabel
           />
         )}
         {isDefined(department) && (
-          <DetailsField
+          <DetailsItem
+            label={t("overview.fields.department", {
+              context: "label",
+            })}
             value={formatDepartmentAddress(department)}
             icon={<FmdGoodOutlined />}
+            hiddenLabel
           />
         )}
         {currentStep > 2 && (
           <>
             {values.appointment && (
-              <DetailsField
+              <DetailsItem
+                label={t("overview.fields.date", {
+                  context: "label",
+                })}
                 value={formatDateToFullReadableString(values.appointment.start)}
                 icon={<DateRange />}
+                hiddenLabel
               />
             )}
             {values.appointment && (
-              <DetailsField
-                value={t("overview.values.dateAndTime", {
+              <DetailsItem
+                label={t("overview.fields.time", {
+                  context: "label",
+                })}
+                value={t("overview.fields.time", {
                   appointmentStart: formatTime(values.appointment?.start),
+                  context: "value",
                 })}
                 icon={<AccessTimeOutlined />}
+                hiddenLabel
               />
             )}
           </>
@@ -90,49 +107,69 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
           <>
             {values.affectedPerson.firstName &&
               values.affectedPerson.lastName && (
-                <DetailsField
+                <DetailsItem
+                  label={t("overview.fields.fullName", {
+                    context: "label",
+                  })}
                   value={formatPersonName(values.affectedPerson)}
                   icon={<PersonOutlined />}
+                  hiddenLabel
                 />
               )}
             {values.affectedPerson.dateOfBirth && (
-              <DetailsField
+              <DetailsItem
+                label={t("overview.fields.dateOfBirth", {
+                  context: "label",
+                })}
                 value={formatDate(new Date(values.affectedPerson.dateOfBirth))}
                 icon={<CakeOutlined />}
+                hiddenLabel
               />
             )}
-            {values.affectedPerson.contactAddress.street &&
-              values.affectedPerson.contactAddress.houseNumber &&
-              values.affectedPerson.contactAddress.houseNumber &&
-              values.affectedPerson.contactAddress.city && (
-                <DetailsField
-                  value={
-                    <Trans
-                      i18nKey="overview.values.contactAddress"
-                      ns="officialMedicalService/appointment"
-                      values={{
-                        street: formatStreetAndHouseNumber(
-                          values.affectedPerson.contactAddress,
-                        ),
-                        city: formatPostalCodeAndCity(
-                          values.affectedPerson.contactAddress,
-                        ),
-                      }}
-                    />
-                  }
-                  icon={<HomeOutlined sx={{ alignSelf: "self-start" }} />}
-                />
-              )}
+            {values.affectedPerson.contactAddress && (
+              <DetailsItem
+                label={t("overview.fields.contactAddress", {
+                  context: "label",
+                })}
+                value={
+                  <Trans
+                    i18nKey="overview.fields.contactAddress"
+                    ns="officialMedicalService/appointment"
+                    context="value"
+                    values={{
+                      street: formatStreetAndHouseNumber(
+                        values.affectedPerson.contactAddress,
+                      ),
+                      city: formatPostalCodeAndCity(
+                        values.affectedPerson.contactAddress,
+                      ),
+                    }}
+                  />
+                }
+                icon={<HomeOutlined sx={{ alignSelf: "self-start" }} />}
+                hiddenLabel
+              />
+            )}
             {values.affectedPerson.emailAddresses && (
-              <DetailsField
+              <DetailsItem
+                label={t("overview.fields.emailAddress", {
+                  context: "label",
+                })}
                 value={values.affectedPerson.emailAddresses}
                 icon={<MailOutlined />}
+                hiddenLabel
               />
             )}
             {values.confirmOnlineServices && (
-              <DetailsField
-                value={t("overview.values.confirmOnlineServices")}
+              <DetailsItem
+                label={t("overview.fields.confirmOnlineServices", {
+                  context: "label",
+                })}
+                value={t("overview.fields.confirmOnlineServices", {
+                  context: "value",
+                })}
                 icon={<MarkEmailReadOutlined />}
+                hiddenLabel
               />
             )}
           </>

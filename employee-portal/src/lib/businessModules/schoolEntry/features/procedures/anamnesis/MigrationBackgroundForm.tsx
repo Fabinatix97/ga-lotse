@@ -23,7 +23,7 @@ import { CountryCodes } from "@/lib/businessModules/schoolEntry/api/models/Count
 import { MigrationBackgroundValues } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/AnamnesisForm";
 import { CountryWithNumberField } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/CountryWithNumberField";
 
-export type NationalityValues = keyof Omit<
+type NationalityValues = keyof Omit<
   MigrationBackgroundValues,
   "hasMigrationBackground" | "inGermanySince"
 >;
@@ -149,21 +149,21 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
       <SoftRequiredBooleanSelectField
         name={fieldName("hasMigrationBackground")}
         label="Migrationshintergrund"
+        component={HorizontalField}
+        sx={FIXED_STYLE}
+        allowDeselection
+        softRequired
         onChange={(value) => {
           if (value === false) {
             setMigrationBackgroundFields();
           }
         }}
-        component={HorizontalField}
-        sx={FIXED_STYLE}
-        allowDeselection
-        softRequired
       />
       <Stack direction="row" gap={4} flexWrap="wrap" alignItems="flex-start">
         {MIGRATION_FIELDS.map((fields, columnIndex) => (
-          <Stack gap={1} key={columnIndex} flexWrap="wrap">
+          <Stack key={columnIndex} gap={1} flexWrap="wrap">
             {fields.map((field, rowIndex) => (
-              <Stack direction="row" gap={2} flexWrap="wrap" key={field.name}>
+              <Stack key={field.name} direction="row" gap={2} flexWrap="wrap">
                 <CountryWithNumberField
                   key={field.name}
                   name={field.name}

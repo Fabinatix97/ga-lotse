@@ -3,8 +3,9 @@
     "title": "Official Medical Service",
     "requiredTitle": "*Required",
     "stepTitle": "Step {{currentStepIndex}} of {{totalSteps}}",
-    "snackbar": {
-      "success": "The request for your concern has been sent successfully"
+    "errors": {
+      "concurrentAppointment_errorMessage": "The appointment you've selected has just been reserved by another party. Please select another free appointment.",
+      "concurrentAppointment_action": "Change Appointment"
     }
   },
   "concern": {
@@ -12,7 +13,7 @@
     "description": "The appointment type will be included in the order letter sent to you.",
     "infoText": {
       "title": "School-related concern",
-      "description": "For exams, please come to us at the latest on the day of the exam (even without an appointment) or if you are submitting an academic paper, please make an appointment by telephone in advance"
+      "description": "For exams, please arrive at the latest on the day of the exam (even without an appointment) or if you are submitting an academic paper, please make an appointment by telephone in advance"
     },
     "filter": {
       "category": "Category",
@@ -68,7 +69,7 @@
     "validation": {
       "invalidFileName": "Please use only letters, numbers, hyphens and underscores in the file name.",
       "nonConformPdf": "The selected file is not PDF/A compliant.",
-      "unsupportedFileType": "Please select a f file of type JPEG, PNG or PDF.",
+      "unsupportedFileType": "Please select a file of type JPEG, PNG or PDF.",
       "imageTooWide": "Please only select images with a maximum size of {{maximumSize}} pixels.",
       "mismatchedMediaType": "The media type does not match the type given by the file name extension.",
       "unknownError": "Unknown error"
@@ -109,18 +110,27 @@
     "goForward": "Continue",
     "goBack": "Back",
     "cancel": "Cancel",
-    "values": {
-      "confirmOnlineServices": "Send confirmation email",
-      "dateAndTime": "{{ appointmentStart }}",
+    "fields": {
+      "confirmOnlineServices_label": "Online services",
+      "confirmOnlineServices_value": "Send confirmation email",
+      "concernAndDuration_label": "Concern, expected appointment duration",
       "appointmentDuration": "(ca. {{ durationInMinutes }} minutes)",
-      "contactAddress": "{{ street }} <br> {{ city }} </br>"
+      "department_label": "Department",
+      "date_label": "Day, date",
+      "time_label": "Time",
+      "time_value": "{{ appointmentStart }}",
+      "fullName_label": "Name",
+      "dateOfBirth_label": "Date of birth",
+      "emailAddress_label": "E-Mail address",
+      "contactAddress_label": "Address",
+      "contactAddress_value": "{{ street }} <br> {{ city }} </br>"
     }
   },
   "appointmentInformation": {
     "title": "Appointment information",
     "alertMessage": "Please come sober on the day of the examination to: <br> {{ department }} </br>",
     "infoText": "We will review your request. After successful verification, you will receive an <t1> appointment confirmation </t1> by email. All information about the appointment can be found there. You also have the option to change or cancel the appointment.",
-    "closingGreeting": "Sincerely <br> Your Health Department </br>",
+    "closingGreeting": "Sincerely, <br> Your Health Department </br>",
     "requiredDocuments_header": "The necessary documents that you should bring with you to the appointment are:",
     "requiredDocuments_list": [
       "ID / Passport",
@@ -133,7 +143,6 @@
     "submit": "Submit concern",
     "goBack": "Back",
     "cancel": "Cancel",
-    "success": "Your request has been sent successfully.",
     "fields": {
       "confirmPrivacyNotice": "I accept the data protection notice.",
       "privacyNotice": "To the data protection notice",
@@ -142,5 +151,10 @@
       "privacyPolicy": "To the privacy policy",
       "confirmPrivacyPolicy_required": "Please give consent to continue."
     }
+  },
+  "success": {
+    "title": "Concern successfully sent",
+    "description": "You have successfully submitted your request. You will receive a confirmation email from us with the next steps.",
+    "buttonLabel": "Back to information page"
   }
 }

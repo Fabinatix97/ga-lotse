@@ -11,10 +11,10 @@ import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
 
-import { childApiQueryKey } from "@/config/apiQueryKeys";
-import { useDentalApi } from "@/contexts/dental";
-import { mapChild } from "@/features/children/api/models/Child";
-import { mapChildSearchResult } from "@/features/children/api/models/ChildSearchResult";
+import { childApiQueryKey } from "../../../../config/apiQueryKeys";
+import { useDentalApi } from "../../../../contexts/dental";
+import { mapChild } from "../models/Child";
+import { mapChildSearchResult } from "../models/ChildSearchResult";
 
 export function useGetChildrenQuery(request: GetChildrenRequest) {
   const { childApi } = useDentalApi();

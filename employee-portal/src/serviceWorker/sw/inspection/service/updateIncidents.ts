@@ -15,7 +15,7 @@ import {
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";
 import { updateIncidents } from "@/serviceWorker/sw/inspection/service/updateInspection";
 
-export function getApiInspectionIncidentsPath(inspectionId: string) {
+function getApiInspectionIncidentsPath(inspectionId: string) {
   return `/api/inspection/inspections/${inspectionId}/incidents`;
 }
 

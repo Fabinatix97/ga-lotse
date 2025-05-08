@@ -11,8 +11,8 @@ import {
   useSyncBarrier,
 } from "@eshg/lib-employee-portal";
 
-import { routes } from "@/config/routes";
-import { ChildDetails } from "@/features/children/api/models/ChildDetails";
+import { routes } from "../../../../config/routes";
+import { ChildDetails } from "../../api/models/ChildDetails";
 
 import { useUpdateAnnualChildPersonSidebar } from "./UpdateAnnualChildPersonSidebar";
 

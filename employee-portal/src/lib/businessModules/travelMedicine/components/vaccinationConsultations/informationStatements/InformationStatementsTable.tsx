@@ -108,13 +108,13 @@ export function InformationStatementsTable({
               <Button
                 sx={{ py: 1 / 2 }}
                 startDecorator={<AddOutlined />}
+                data-testid="add-information-statement"
+                disabled={isProcedureClosed}
                 onClick={() =>
                   informationStatementSidebar.open({
                     procedureId: procedureId,
                   })
                 }
-                data-testid="add-information-statement"
-                disabled={isProcedureClosed}
               >
                 Bogen hinzufügen
               </Button>
@@ -158,12 +158,12 @@ export function InformationStatementsTable({
           <Button
             sx={{ py: 1 / 2 }}
             startDecorator={<AddOutlined />}
+            data-testid="add-information-statement-empty-table"
             onClick={() =>
               informationStatementSidebar.open({
                 procedureId: procedureId,
               })
             }
-            data-testid="add-information-statement-empty-table"
           >
             Bogen hinzufügen
           </Button>

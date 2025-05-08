@@ -6,10 +6,9 @@
 import { Stack } from "@mui/joy";
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-
-import { TextareaField } from "@/components/formFields/TextareaField";
 
 export interface ProcedureLabelValues {
   name: string;
@@ -17,7 +16,7 @@ export interface ProcedureLabelValues {
 }
 
 export function ProcedureLabelFormFields() {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
 
   return (
     <Stack gap={2}>

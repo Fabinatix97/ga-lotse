@@ -1,0 +1,37 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { use } from "react";
+
+import { ToolbarBackButton } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
+import { DepartmentInfo } from "@/lib/configurator/components/shared/ConfiguratorDetails/DepartmentInfo";
+import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
+import { resolveConfiguratorRoute } from "@/lib/configurator/shared/routes";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+
+export default function DepartmentInfoConfiguratorPage(
+  props: DynamicPageProps<{
+    module: ConfiguratorModuleName;
+  }>,
+) {
+  const { module } = use(props.params);
+
+  return (
+    <ConfiguratorLayout
+      module={module}
+      backButton={
+        <ToolbarBackButton
+          href={resolveConfiguratorRoute({ module, endpointName: "index" })}
+        />
+      }
+    >
+      <DepartmentInfo module={module} />
+    </ConfiguratorLayout>
+  );
+}

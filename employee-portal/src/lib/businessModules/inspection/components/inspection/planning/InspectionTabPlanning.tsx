@@ -13,7 +13,7 @@ import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
-import { useHeaderHeights } from "@eshg/lib-employee-portal";
+import { useHeaderHeights, useIsOffline } from "@eshg/lib-employee-portal";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
@@ -31,7 +31,6 @@ import { PacklistTile } from "@/lib/businessModules/inspection/components/inspec
 import { ResourceTile } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceTile";
 import { TravelTimeTile } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 interface InspectionTabPlanningProps {
   inspectionId: string;

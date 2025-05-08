@@ -7,11 +7,9 @@
 
 import { createContext, useContext, useState } from "react";
 
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { useHasUserRoleCheck, useIsOffline } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiProcedureStatus } from "@eshg/lib-procedures-api";
-
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 import { ProgressEntriesConfig } from "./types";
 
@@ -35,7 +33,7 @@ interface ProgressEntriesContextProps {
 export const ProgressEntriesContext =
   createContext<ProgressEntriesContextProps>(null!);
 
-export interface ProgressEntriesProviderProps extends RequiresChildren {
+interface ProgressEntriesProviderProps extends RequiresChildren {
   progressEntriesConfig: ProgressEntriesConfig;
 }
 

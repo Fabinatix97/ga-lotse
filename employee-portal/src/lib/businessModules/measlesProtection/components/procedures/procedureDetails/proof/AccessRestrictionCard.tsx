@@ -27,7 +27,7 @@ import { ProofTabFileCard } from "./ProofTabFileCard";
 
 const fields = ACCESS_RESTRICTION_FIELDS;
 
-export interface AccessRestrictionCardProps {
+interface AccessRestrictionCardProps {
   procedure: ApiMeaslesProtectionProcedure;
   accessRestriction?: ApiAccessRestriction;
   onClick: () => void;
@@ -66,10 +66,10 @@ export function AccessRestrictionCard({
           ),
         })}
     >
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+      <Stack spacing={3} alignItems="start" width="100%">
         {accessRestriction ? (
           <>
-            <Stack gap={3} flexDirection={"row"}>
+            <Stack gap={3} flexDirection="row">
               <DetailsItem
                 label={fields.restrictionIssuedDate.label}
                 value={formatDate(accessRestriction.restrictionIssuedDate)}

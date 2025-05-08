@@ -30,14 +30,14 @@ export function SectionTitle({
         sx={{ flex: 1 }}
         data-testid="section-title"
       />
-      <Stack alignItems="center" paddingTop={"6px"}>
+      <Stack alignItems="center" paddingTop="6px">
         <IconButton
           aria-label="Entfernen"
           color="warning"
           variant="outlined"
-          onClick={sectionDeleteHandler}
           title="Sektion Löschen"
           data-testid="section-delete-button"
+          onClick={sectionDeleteHandler}
         >
           <DeleteOutlineIcon />
         </IconButton>

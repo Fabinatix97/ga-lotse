@@ -22,8 +22,7 @@ import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/q
 import { CaseStatusSelect } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/CaseStatusSelect";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
-export interface MeaslesProtectionProcedurePageParams
-  extends PropsWithChildren {
+interface MeaslesProtectionProcedurePageParams extends PropsWithChildren {
   id: string;
   navItems: TabNavigationItem[];
 }

@@ -35,65 +35,65 @@ export default function DesignShowcasePage() {
                   },
                 }}
               >
-                <Stack gap={8} direction={"row"}>
+                <Stack gap={8} direction="row">
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>enable/primary</Typography>
-                    <InputField name={"name"} label={"Label"} primary />
+                    <Typography level="title-md">enable/primary</Typography>
+                    <InputField name="name" label="Label" primary />
                   </Stack>
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>focused/primary</Typography>
+                    <Typography level="title-md">focused/primary</Typography>
                     <InputField
-                      name={"name"}
-                      label={"Label"}
-                      hint={"Hint: Click to focus"}
+                      name="name"
+                      label="Label"
+                      hint="Hint: Click to focus"
                     />
                   </Stack>
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>read only</Typography>
-                    <InputField name={"name"} label={"Label"} readOnly />
+                    <Typography level="title-md">read only</Typography>
+                    <InputField name="name" label="Label" readOnly />
                   </Stack>
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>disable</Typography>
-                    <InputField name={"name"} label={"Label"} disabled />
+                    <Typography level="title-md">disable</Typography>
+                    <InputField name="name" label="Label" disabled />
                   </Stack>
                 </Stack>
-                <Stack gap={8} direction={"row"}>
+                <Stack gap={8} direction="row">
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>
+                    <Typography level="title-md">
                       enable/primary/placeholder
                     </Typography>
                     <InputField
-                      name={"empty"}
-                      label={"Label"}
-                      placeholder={"Placeholder"}
+                      name="empty"
+                      label="Label"
+                      placeholder="Placeholder"
                       primary
                     />
                   </Stack>
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>enable/danger</Typography>
+                    <Typography level="title-md">enable/danger</Typography>
                     <InputField
-                      name={"error"}
-                      label={"Label"}
-                      placeholder={"Placeholder"}
+                      name="error"
+                      label="Label"
+                      placeholder="Placeholder"
                       validate={() => "Opps! something is wrong."}
-                      hint={"Hint: Click to trigger validation error"}
+                      hint="Hint: Click to trigger validation error"
                     />
                   </Stack>
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>
+                    <Typography level="title-md">
                       enable/neutral/placeholder
                     </Typography>
                     <InputField
-                      name={"empty"}
-                      label={"Label"}
-                      placeholder={"Placeholder"}
+                      name="empty"
+                      label="Label"
+                      placeholder="Placeholder"
                     />
                   </Stack>
                   <Stack gap={2}>
-                    <Typography level={"title-md"}>start & end icon</Typography>
+                    <Typography level="title-md">start & end icon</Typography>
                     <InputField
-                      name={"name"}
-                      label={"Label"}
+                      name="name"
+                      label="Label"
                       startDecorator={<StarOutlined />}
                       endDecorator={<StarOutlined />}
                       primary

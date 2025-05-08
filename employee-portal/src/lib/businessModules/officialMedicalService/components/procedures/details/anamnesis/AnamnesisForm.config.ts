@@ -42,26 +42,26 @@ export interface CurrentHealthConditionInfoValues {
   sportsInfo: SportsSegment;
 }
 
-export interface CurrentMedicalConditionSegmentValues {
+interface CurrentMedicalConditionSegmentValues {
   answer: OptionalFieldValue<boolean>;
   descriptionOfCondition?: ApiCurrentMedicalCondition[];
   particulars?: string;
 }
-export interface SubInfoSegmentWithAnswerBoolean {
+interface SubInfoSegmentWithAnswerBoolean {
   answer: OptionalFieldValue<boolean>;
 }
-export interface SubInfoSegmentWithAnswerOpticalAidAnswer {
+interface SubInfoSegmentWithAnswerOpticalAidAnswer {
   answer: OptionalFieldValue<ApiOpticalAidAnswer>;
 }
-export interface MedicalImagingFindingsInfoSegment {
+interface MedicalImagingFindingsInfoSegment {
   answer: OptionalFieldValue<boolean>;
   result?: string;
 }
-export interface MedicationDietarySupplementsOrDrugsSegment {
+interface MedicationDietarySupplementsOrDrugsSegment {
   answer: OptionalFieldValue<boolean>;
   substances?: string;
 }
-export interface SportsSegment {
+interface SportsSegment {
   answer: OptionalFieldValue<boolean>;
   formOfSport?: string;
 }
@@ -70,12 +70,12 @@ export interface HealthFitnessAndDisabilityInfoValues {
   disabilityInfo: DisabilitySegment;
   priorExaminationInfo: PriorExaminationSegment;
 }
-export interface DisabilitySegment {
+interface DisabilitySegment {
   degree?: string;
   hasDisability: OptionalFieldValue<boolean>;
   reason?: string;
 }
-export interface PriorExaminationSegment {
+interface PriorExaminationSegment {
   hasPriorExaminations: OptionalFieldValue<boolean>;
   place?: string;
   reason?: string;
@@ -105,7 +105,7 @@ export interface MedicalHistoryInfoValues {
   tuberculosis: SubInfoSegmentWithAnswerYesNoDontKnowAnswer;
 }
 
-export interface AddictionsSegment {
+interface AddictionsSegment {
   amount?: string;
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   description?: string;
@@ -113,24 +113,24 @@ export interface AddictionsSegment {
   since?: string;
   which?: ApiAddiction[];
 }
-export interface SubInfoSegmentWithAnswerWhichStringYesNoDontKnowAnswer {
+interface SubInfoSegmentWithAnswerWhichStringYesNoDontKnowAnswer {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   which?: string;
 }
-export interface SubInfoSegmentWithAnswerYesNoDontKnowAnswer {
+interface SubInfoSegmentWithAnswerYesNoDontKnowAnswer {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
 }
-export interface BoneFractureBrainTraumaSegment {
+interface BoneFractureBrainTraumaSegment {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   description?: string;
   whatWhenAndWhere?: string;
 }
-export interface CancerSegment {
+interface CancerSegment {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   chemoRadiationTherapy?: OptionalFieldValue<boolean>;
   whichAndWhen?: string;
 }
-export interface SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerEatingDisorder {
+interface SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerEatingDisorder {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   which?: ApiEatingDisorder[];
 }
@@ -140,22 +140,22 @@ export interface HeartDiseaseSegment {
   stent?: OptionalFieldValue<boolean>;
   which?: ApiHeartDisease[];
 }
-export interface MentalIllnessSegment {
+interface MentalIllnessSegment {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   description?: string;
   which?: ApiMentalIllness[];
 }
-export interface MiscellaneousSegment {
+interface MiscellaneousSegment {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   description?: string;
 }
-export interface OverweightSegment {
+interface OverweightSegment {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   description?: string;
   heightInCm?: OptionalFieldValue<number>;
   weightInKg?: OptionalFieldValue<number>;
 }
-export interface SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerThyroidDisease {
+interface SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerThyroidDisease {
   answer: OptionalFieldValue<ApiYesNoDontKnowAnswer>;
   which?: ApiThyroidDisease[];
 }

@@ -20,6 +20,7 @@ export function AuditlogDeletePasswordButton() {
 
   return (
     <Button
+      startDecorator={<KeyOffOutlined />}
       onClick={() =>
         openConfirmationDialog({
           title: "Passwort endgültig löschen?",
@@ -32,7 +33,6 @@ export function AuditlogDeletePasswordButton() {
           onConfirm: handleConfirm,
         })
       }
-      startDecorator={<KeyOffOutlined />}
     >
       Passwort löschen
     </Button>

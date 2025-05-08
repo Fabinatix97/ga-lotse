@@ -114,8 +114,8 @@ function FormButtons({
     <Row justifyContent="right">
       <Button
         variant="plain"
-        onClick={() => resetForm()}
         aria-disabled={disabled}
+        onClick={() => resetForm()}
       >
         Zurücksetzen
       </Button>

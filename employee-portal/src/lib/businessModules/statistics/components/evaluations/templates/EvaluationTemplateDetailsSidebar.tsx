@@ -119,11 +119,11 @@ function EvaluationTemplateDetailsSidebar({
               <Button
                 variant="plain"
                 endDecorator={<ArrowForwardIcon />}
+                sx={{ alignSelf: "end" }}
                 onClick={() => {
                   onClose();
                   onUploadEvaluation();
                 }}
-                sx={{ alignSelf: "end" }}
               >
                 Auswertungsvorlage hochladen
               </Button>

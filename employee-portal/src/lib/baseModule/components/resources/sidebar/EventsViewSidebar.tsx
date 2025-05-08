@@ -36,14 +36,14 @@ function EventsViewSidebar(props: {
       <Stack gap={2}>
         <Divider sx={{ marginBottom: 1 }} />
         {props.events.map((event) => (
-          <Stack gap={2} key={event.id}>
+          <Stack key={event.id} gap={2}>
             <Stack direction="row" gap={1} alignItems="baseline">
               <Box
                 width="0.75rem"
                 height="0.75rem"
                 bgcolor={mapResourceCalendarEventColor(event.type)}
                 borderRadius="lg"
-              ></Box>
+              />
               <Stack flex={1}>
                 <Stack
                   direction="row"
@@ -58,24 +58,24 @@ function EventsViewSidebar(props: {
                   </Typography>
                   {event.type !== "BUSINESS_CASE" && (
                     <Button
+                      variant="plain"
+                      sx={{
+                        paddingY: 0,
+                        minHeight: "24px",
+                      }}
                       onClick={() =>
                         props.setUserActivity({
                           type: "edit-service",
                           event,
                         })
                       }
-                      variant="plain"
-                      sx={{
-                        paddingY: 0,
-                        minHeight: "24px",
-                      }}
                     >
                       Bearbeiten
                     </Button>
                   )}
                 </Stack>
                 {mapResourceEventDateInfo(event).map((info) => (
-                  <Typography level="body-md" color="neutral" key={info}>
+                  <Typography key={info} level="body-md" color="neutral">
                     {info}
                   </Typography>
                 ))}

@@ -34,14 +34,14 @@ export function SubMultiSelectElement({
         validate={validateSubElementMultiselectOption()}
         data-testid={`element-multi-select-${subElementIndex}`}
       />
-      <Stack alignItems="center" paddingTop={"6px"}>
+      <Stack alignItems="center" paddingTop="6px">
         <IconButton
-          onClick={multiSelectDeleteHandler}
           aria-label="Entfernen"
           color="warning"
           variant="outlined"
           title="Antwortmöglichkeit löschen"
           data-testid={`element-multi-select-delete-button-${subElementIndex}`}
+          onClick={multiSelectDeleteHandler}
         >
           <DeleteOutlineIcon />
         </IconButton>

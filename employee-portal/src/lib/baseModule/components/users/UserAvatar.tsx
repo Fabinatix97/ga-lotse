@@ -19,8 +19,8 @@ export function UserAvatar({
   return (
     <Avatar
       size={size}
-      variant={"solid"}
-      color={"primary"}
+      variant="solid"
+      color="primary"
       sx={{
         "--Avatar-size": size === "lg" ? "5rem" : undefined,
         textTransform: "uppercase",

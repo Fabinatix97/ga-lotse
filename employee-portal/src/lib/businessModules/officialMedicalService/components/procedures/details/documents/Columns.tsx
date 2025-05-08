@@ -45,7 +45,7 @@ export function Columns({
         ctx.row.original.mandatoryDocument &&
         ctx.row.original.documentStatus !== ApiDocumentStatus.Accepted && (
           <Tooltip
-            title={"Pflichtdokument noch nicht akzeptiert"}
+            title="Pflichtdokument noch nicht akzeptiert"
             arrow
             placement="top"
             sx={{ marginBottom: -0.5 }}

@@ -13,7 +13,7 @@ export interface PotentialDuplicatesFilterProps {
   onFilterForDuplicates: () => void;
 }
 
-export interface PotentialDuplicatesWarningProps
+interface PotentialDuplicatesWarningProps
   extends PotentialDuplicatesFilterProps {
   numberOfDuplicates: number;
 }

@@ -10,21 +10,17 @@ import { use } from "react";
 
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { ExaminationResultWithDate } from "@/api/models/ExaminationResult";
-import { AdditionalInformationFormSection } from "@/components/examination/AdditionalInformationFormSection";
-import { ExaminationChildDetailsSection } from "@/components/examination/ExaminationChildDetailsSection";
-import { ExaminationFormLayout } from "@/components/examination/ExaminationFormLayout";
-import { ExaminationFormSection } from "@/components/examination/ExaminationFormSection";
-import { NoteFormSection } from "@/components/examination/NoteFormSection";
-import { useDentalApi } from "@/contexts/dental";
-import { ChildExamination } from "@/features/children/api/models/ChildExamination";
+import { ExaminationResultWithDate } from "../../../api/models/ExaminationResult";
+import { ExaminationFormLayout } from "../../../components/examination/ExaminationFormLayout";
+import { useDentalApi } from "../../../contexts/dental";
+import { ExaminationStoreProvider } from "../../../stores/examination/ExaminationStoreProvider";
+import { ChildExamination } from "../api/models/ChildExamination";
 import {
   getChildDetailsQuery,
   getExaminationQuery,
-} from "@/features/children/api/queries/details";
-import { ChildExaminationForm } from "@/features/children/components/childExamination/ChildExaminationForm";
-import { DentalChildExaminationRouteParams } from "@/features/children/schemas/DentalChildExaminationRouteParams";
-import { ExaminationStoreProvider } from "@/stores/examination/ExaminationStoreProvider";
+} from "../api/queries/details";
+import { ChildExaminationForm } from "../components/childExamination/ChildExaminationForm";
+import { DentalChildExaminationRouteParams } from "../schemas/DentalChildExaminationRouteParams";
 
 export function DentalChildExaminationPage(
   props: DynamicPageProps<DentalChildExaminationRouteParams>,
@@ -48,31 +44,15 @@ export function DentalChildExaminationPage(
     >
       <ChildExaminationForm examination={examination}>
         <ExaminationFormLayout
-          childInformation={
-            <ExaminationChildDetailsSection
-              firstName={child.firstName}
-              lastName={child.lastName}
-              dateOfBirth={child.dateOfBirth}
-              dateOfExamination={examination.dateAndTime}
-              groupName={institutionAtExaminationDate?.groupName ?? ""}
-              allFluoridationConsents={child.allFluoridationConsents}
-            />
-          }
-          additionalInformation={
-            <AdditionalInformationFormSection
-              screening={examination.screening}
-              fluoridation={examination.fluoridation}
-              fluoridationConsentGiven={examination.fluoridationConsentGiven}
-              status={examination.status}
-              dateOfExamination={examination.dateAndTime}
-              participantDateOfBirth={child.dateOfBirth}
-              previousExaminations={mapPreviousExaminations(child.examinations)}
-            />
-          }
-          dentalExamination={
-            examination.screening ? <ExaminationFormSection /> : undefined
-          }
-          note={<NoteFormSection />}
+          isScreening={examination.screening}
+          isFluoridation={examination.fluoridation}
+          isFluoridationConsentGiven={examination.fluoridationConsentGiven}
+          dateAndTime={examination.dateAndTime}
+          institutionName={institutionAtExaminationDate?.institution?.name}
+          groupName={institutionAtExaminationDate?.groupName}
+          childId={child.id}
+          child={child}
+          previousExaminations={mapPreviousExaminations(child.examinations)}
         />
       </ChildExaminationForm>
     </ExaminationStoreProvider>

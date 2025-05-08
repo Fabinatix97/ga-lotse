@@ -22,14 +22,18 @@ import {
   validateDateOfBirth,
   validatePipe,
 } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 export function PersonalInformationForm(props: NestedFormProps) {
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
@@ -59,7 +63,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={3}>
         <InputField
           name={fieldName("firstName")}
-          label={"Vorname(n)"}
+          label="Vorname(n)"
           required={requiredFieldMessage}
           validate={validateLength(1, 120)}
         />
@@ -67,7 +71,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={3}>
         <InputField
           name={fieldName("lastName")}
-          label={"Nachname"}
+          label="Nachname"
           required={requiredFieldMessage}
           validate={validateLength(1, 80)}
         />
@@ -77,7 +81,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6}>
         <InputField
           name={fieldName("birthName")}
-          label={"Geburtsname"}
+          label="Geburtsname"
           validate={validateLength(1, 40)}
           required={
             changeType === ApiTypeOfChange.ChangeOfName
@@ -101,7 +105,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={4.5}>
         <InputField
           name={fieldName("street")}
-          label={"Straße"}
+          label="Straße"
           required={requiredFieldMessage}
           validate={validateLength(1, 55)}
         />
@@ -109,7 +113,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={1.5}>
         <InputField
           name={fieldName("houseNumber")}
-          label={"Hausnummer"}
+          label="Hausnummer"
           required={requiredFieldMessage}
           validate={validateLength(1, 11)}
         />
@@ -119,7 +123,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={2}>
         <InputField
           name={fieldName("postalCode")}
-          label={"Postleitzahl"}
+          label="Postleitzahl"
           required={requiredFieldMessage}
           validate={validateLength(1, 20)}
         />
@@ -127,7 +131,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={4}>
         <InputField
           name={fieldName("city")}
-          label={"Ort"}
+          label="Ort"
           required={requiredFieldMessage}
           validate={validateLength(1, 50)}
         />
@@ -137,7 +141,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6}>
         <CountryField
           name={fieldName("country")}
-          label={"Land"}
+          label="Land"
           required={requiredFieldMessage}
         />
       </Grid>
@@ -146,7 +150,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6}>
         <PhoneNumberField
           name={fieldName("phoneNumber")}
-          label={"Telefon"}
+          label="Telefon"
           required={requiredFieldMessage}
           validate={validateLength(1, 23)}
         />
@@ -156,7 +160,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6}>
         <EmailField
           name={fieldName("email")}
-          label={"E-Mail-Adresse"}
+          label="E-Mail-Adresse"
           validate={validateLength(1, 254)}
         />
       </Grid>
@@ -165,7 +169,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={2}>
         <DateField
           name={fieldName("birthDate")}
-          label={"Geburtsdatum"}
+          label="Geburtsdatum"
           required={requiredFieldMessage}
           validate={validatePipe(validatePastOrTodayDate, validateDateOfBirth)}
         />
@@ -173,7 +177,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6} xxl={4}>
         <InputField
           name={fieldName("birthPlace")}
-          label={"Geburtsort"}
+          label="Geburtsort"
           required={requiredFieldMessage}
           validate={validateLength(1, 50)}
         />
@@ -183,7 +187,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxs={6}>
         <CountryField
           name={fieldName("nationality")}
-          label={"Staatsangehörigkeit"}
+          label="Staatsangehörigkeit"
           required={requiredFieldMessage}
         />
       </Grid>

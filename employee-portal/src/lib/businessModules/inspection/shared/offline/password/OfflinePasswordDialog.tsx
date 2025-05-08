@@ -28,7 +28,7 @@ export function OfflinePasswordDialog({
   const descriptionId = `${dialogId}-description`;
 
   return (
-    <Modal open={true}>
+    <Modal open>
       <ModalDialog
         aria-labelledby={titleId}
         aria-describedby={descriptionId}

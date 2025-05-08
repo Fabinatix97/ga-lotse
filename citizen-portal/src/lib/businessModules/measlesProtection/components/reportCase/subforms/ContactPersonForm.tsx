@@ -12,7 +12,7 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateEmail } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { FormSectionLabel } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
 import {
@@ -46,7 +46,7 @@ export function createEmptyContactPerson(): FacilityContactPersonFormInputs {
 
 export function ContactPersonForm(props: NestedFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper<FacilityContactPersonFormInputs>(
     props.name,
   );
@@ -148,8 +148,8 @@ function ContactPersonsFieldArray({
                   {!(index == 0 && contactPersonRequired) && (
                     <IconButton
                       color="primary"
-                      onClick={() => remove(index)}
                       aria-label={`${sectionHeader} löschen`}
+                      onClick={() => remove(index)}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -160,17 +160,17 @@ function ContactPersonsFieldArray({
             );
           })}
           <Button
-            onClick={() => push(createEmptyContactPerson())}
             variant="plain"
             color="primary"
             startDecorator={<AddIcon />}
-            size={"sm"}
+            size="sm"
             sx={{
               padding: 0,
               margin: 0,
               "--Button-minHeight": 0,
               alignSelf: "flex-start",
             }}
+            onClick={() => push(createEmptyContactPerson())}
           >
             Kontaktperson hinzufügen
           </Button>

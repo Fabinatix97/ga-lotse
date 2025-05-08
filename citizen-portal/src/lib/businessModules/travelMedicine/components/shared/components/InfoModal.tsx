@@ -10,7 +10,7 @@ import { isDefined } from "remeda";
 
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 
-export interface InfoModalProps {
+interface InfoModalProps {
   children: ReactNode;
   color?: DefaultColorPalette;
   modalTitle?: string;
@@ -47,9 +47,9 @@ export function InfoModal({
         sx={{ width: 328, gap: 2, padding: "24px 16px 24px 16px", ...sx }}
       >
         <Stack
-          direction={"row"}
+          direction="row"
           alignItems="center"
-          justifyContent={"space-between"}
+          justifyContent="space-between"
         >
           {isDefined(modalTitle) && (
             <DialogTitle color={color} level="h3" component="h1">

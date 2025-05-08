@@ -11,13 +11,11 @@ import { Stack } from "@mui/joy";
 
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 
-import {
-  ConfiguratorModuleName,
-  configuratorNameMapping,
-} from "@/lib/configurator/api/models/configuratorModuleName";
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
-import { routes } from "@/lib/configurator/shared/routes";
+import { configuratorNameMapping } from "@/lib/configurator/components/shared/configuratorNameMapping";
+import { resolveConfiguratorRoute } from "@/lib/configurator/shared/routes";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 
 export function OtherModulesLink(props: {
   modules: ConfiguratorStatusOverview;
@@ -34,7 +32,10 @@ export function OtherModulesLink(props: {
           )}
           <InternalLink
             underline="always"
-            href={routes[tabKey as ConfiguratorModuleName].index}
+            href={resolveConfiguratorRoute({
+              module: tabKey as ConfiguratorModuleName,
+              endpointName: "index",
+            })}
           >
             {configuratorNameMapping[tabKey as ConfiguratorModuleName]}
           </InternalLink>

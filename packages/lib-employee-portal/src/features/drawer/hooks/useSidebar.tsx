@@ -5,9 +5,9 @@
 
 import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
 
-import { isDrawer, useDrawerContext } from "@/features/drawer/contexts/drawer";
-import { useSidebarScope } from "@/features/drawer/contexts/sidebarScope";
-import { DrawerOpenOptions, DrawerProps } from "@/features/drawer/types/drawer";
+import { isDrawer, useDrawerContext } from "../contexts/drawer";
+import { useSidebarScope } from "../contexts/sidebarScope";
+import { DrawerOpenOptions, DrawerProps } from "../types/drawer";
 
 export type UseSidebarResult<TSidebarProps extends DrawerProps = DrawerProps> =
   CustomSidebarProps<TSidebarProps> extends Record<string, never>

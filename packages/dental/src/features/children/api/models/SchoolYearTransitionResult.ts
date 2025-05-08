@@ -11,7 +11,7 @@ import {
 import {
   InstitutionWithAddress,
   mapInstitutionWithAddress,
-} from "@/api/models/InstitutionWithAddress";
+} from "../../../../api/models/InstitutionWithAddress";
 
 export interface InstitutionForTransition {
   readonly institution: InstitutionWithAddress;

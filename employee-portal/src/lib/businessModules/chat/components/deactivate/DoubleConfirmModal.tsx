@@ -34,7 +34,7 @@ export function DoubleConfirmModal(props: DoubleConfirmModal) {
   return (
     <BaseModal
       {...props}
-      modalTitle="Sind Sie sicherrr? (Eine Reaktivierung ist nicht möglich!)"
+      modalTitle="Sind Sie sicher? (Eine Reaktivierung ist nicht möglich!)"
       onClose={handleCloseClick}
     >
       <Stack direction="row" spacing={2} sx={{ marginLeft: "auto" }}>
@@ -42,17 +42,17 @@ export function DoubleConfirmModal(props: DoubleConfirmModal) {
           size="sm"
           variant="outlined"
           color="neutral"
-          onClick={handleCancelClick}
           data-testid="deactivate-cancel"
+          onClick={handleCancelClick}
         >
           Nein
         </Button>
         <Button
           size="sm"
-          color={"danger"}
-          loadingPosition={"start"}
-          onClick={handleConfirmClick}
+          color="danger"
+          loadingPosition="start"
           data-testid="deactivate-confirm"
+          onClick={handleConfirmClick}
         >
           Ja
         </Button>

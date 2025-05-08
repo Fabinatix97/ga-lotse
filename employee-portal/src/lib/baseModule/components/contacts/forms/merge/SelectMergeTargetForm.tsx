@@ -46,7 +46,7 @@ export function SelectMergeTargetForm<T extends EntityWithId>({
     >
       {({ isSubmitting, values, setFieldValue }) => (
         <SidebarForm>
-          <SidebarContent title={"Kontakt zusammenführen"}>
+          <SidebarContent title="Kontakt zusammenführen">
             <Stack gap={2} sx={{ height: "100%" }}>
               <Typography>
                 Die Kontakte werden zusammengeführt. Dabei bleibt die
@@ -68,8 +68,8 @@ export function SelectMergeTargetForm<T extends EntityWithId>({
                 renderCard={renderCard}
               />
               <Button
-                variant={"plain"}
-                size={"sm"}
+                variant="plain"
+                size="sm"
                 sx={{
                   alignSelf: "end",
                 }}
@@ -90,7 +90,7 @@ export function SelectMergeTargetForm<T extends EntityWithId>({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={isSubmitting}
-              submitLabel={"Weiter"}
+              submitLabel="Weiter"
               onCancel={onClose}
             />
           </SidebarActions>
@@ -108,21 +108,21 @@ function ContactCard<T extends EntityWithId>({
   renderCard: (data: T) => ReactNode;
 }) {
   return (
-    <Card color={"primary"}>
+    <Card color="primary">
       <Stack
-        direction={"row"}
+        direction="row"
         gap={1}
-        justifyContent={"space-between"}
-        alignItems={"center"}
+        justifyContent="space-between"
+        alignItems="center"
       >
         {renderCard(contact)}
-        <Tooltip title={"In neuem Tab anzeigen"} placement={"left"}>
+        <Tooltip title="In neuem Tab anzeigen" placement="left">
           <IconButton
-            component={"a"}
-            color={"primary"}
-            size={"sm"}
+            component="a"
+            color="primary"
+            size="sm"
             href={routes.contacts.details(contact.id)}
-            target={"_blank"}
+            target="_blank"
             sx={{
               alignSelf: "start",
             }}

@@ -46,7 +46,7 @@ import { OrgUnit } from "@/lib/hooks/useOrgUnits";
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
 import { Rule } from "@/lib/hooks/useRules";
 
-export function toColumnFilter<TData, TValue>(
+function toColumnFilter<TData, TValue>(
   searchParams: ReadonlyURLSearchParams,
 ): (columnDef: ColumnDef<TData, TValue>) => ColumnFiltersState {
   return (columnDef: ColumnDef<TData, TValue>) => {
@@ -80,7 +80,7 @@ export function toColumnFilter<TData, TValue>(
   };
 }
 
-export function toStringOrArrayOfString(value: unknown): string | string[] {
+function toStringOrArrayOfString(value: unknown): string | string[] {
   if (isArray(value)) {
     return value.map((v) => String(v));
   }

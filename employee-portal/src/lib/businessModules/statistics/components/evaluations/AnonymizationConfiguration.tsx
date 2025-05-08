@@ -5,6 +5,7 @@
 
 import { List, ListItem, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useEffect } from "react";
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -33,7 +34,7 @@ const anonymizedFieldValueToBoolean = {
   [ENUM_FALSE_VALUE]: false,
 } satisfies Record<AnonymizedFieldValue, boolean>;
 
-export const anonymizedFieldValueNames = {
+const anonymizedFieldValueNames = {
   [ENUM_TRUE_VALUE]: "Ja",
   [ENUM_FALSE_VALUE]: "Nein",
 } satisfies Record<AnonymizedFieldValue, string>;
@@ -47,8 +48,12 @@ interface AnonymizationConfigurationProps
 export function AnonymizationConfiguration(
   props: AnonymizationConfigurationProps,
 ) {
-  const { getFieldProps } = useFormikContext();
+  const { getFieldProps, setFieldValue } = useFormikContext();
   const { value } = getFieldProps<string>(props.name);
+
+  useEffect(() => {
+    void setFieldValue("anonymizationOptions", props.anonymizationOptions);
+  }, [props.anonymizationOptions, setFieldValue]);
 
   switch (props.anonymizationOptions) {
     case AnonymizationOptions.Choice:
@@ -70,6 +75,23 @@ export function AnonymizationConfiguration(
       return <AnonymizationAlert />;
     case AnonymizationOptions.NotAnonymizable:
       return <SensitivityInfo sensitivity={props.sensitivity} />;
+    case AnonymizationOptions.AlwaysInternal:
+      return (
+        <Stack gap={2}>
+          <Alert
+            color="warning"
+            message="Anonymisierung aufgrund der Auswahl der Attribute nicht möglich. Die Anzahl der Quasi-Identifier ist zu hoch."
+          />
+          <SensitivityInfo sensitivity={props.sensitivity} />
+        </Stack>
+      );
+    case AnonymizationOptions.Neither:
+      return (
+        <Alert
+          color="danger"
+          message="Erstellen einer Auswertung auf Basis dieser Vorlage nicht möglich. Die Anzahl der Quasi-Identifier ist zu hoch. Verwenden Sie eine andere Vorlage oder erstellen Sie eine individuelle Auswertung."
+        />
+      );
   }
 }
 

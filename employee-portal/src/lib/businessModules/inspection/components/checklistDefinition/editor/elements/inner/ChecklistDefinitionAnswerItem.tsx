@@ -89,17 +89,17 @@ const MemoizedChecklistDefinitionAnswerItem = memo(
           name={`context.sections.${sectionIndex}.elements.${elementIndex}.items.${itemIndex}.text`}
           label={`Antwort ${itemIndex + 1}`}
           placeholder="Antwort eingeben"
-          onDelete={onDelete}
           validate={validateMultipleAnswers}
           required="Bitte geben Sie eine Antwort ein."
           hideDeleteButton={hideDeleteButton}
           endDecorator={
             <TextModuleToggle
               checked={showTextModules}
-              onToggle={(show) => setShowTextModules(show)}
               count={countTextModules(item)}
+              onToggle={(show) => setShowTextModules(show)}
             />
           }
+          onDelete={onDelete}
         />
         {showTextModules && (
           <>

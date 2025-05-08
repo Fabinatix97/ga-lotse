@@ -27,20 +27,23 @@ import {
   mapRequiredValue,
 } from "@eshg/lib-portal/helpers/form";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  NullableFieldValue,
+  OptionalFieldValue,
+} from "@eshg/lib-portal/types/form";
 
-import { Institution } from "@/api/models/Institution";
-import { SearchGroupField } from "@/components/group/SearchGroupField";
-import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
-import { PROPHYLAXIS_TYPE_OPTIONS } from "@/config/prophylaxisSession";
+import { Institution } from "../../../../api/models/Institution";
+import { SearchGroupField } from "../../../../components/group/SearchGroupField";
+import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
+import { PROPHYLAXIS_TYPE_OPTIONS } from "../../../../config/prophylaxisSession";
 
 import { FluoridationField } from "./FluoridationField";
 import { ScreeningField } from "./ScreeningField";
 
 export interface ProphylaxisSessionFormValues {
   dateAndTime: string;
-  institution: OptionalFieldValue<Institution>;
-  groupName: string;
+  institution: NullableFieldValue<Institution>;
+  groupName: OptionalFieldValue<string>;
   type: OptionalFieldValue<ApiProphylaxisType>;
   isScreening: boolean;
   dentitionType: OptionalFieldValue<ApiDentitionType>;
@@ -101,7 +104,7 @@ export function ProphylaxisSessionForm(props: ProphylaxisSessionFormProps) {
       <SearchGroupField
         name="groupName"
         label="Gruppe"
-        institutionId={mapOptionalValue(values.institution)?.id ?? ""}
+        institution={values.institution}
         disabled={hasExaminationResults}
       />
       <SelectField
@@ -141,7 +144,7 @@ export function mapProphylaxisSessionFormValuesToRequest(
   return {
     dateAndTime: new Date(values.dateAndTime),
     institutionId: mapRequiredValue(values.institution)?.id,
-    groupName: mapRequiredValue(values.groupName),
+    groupName: mapOptionalValue(values.groupName) ?? undefined,
     type: mapRequiredValue(values.type),
     isScreening: values.isScreening,
     dentitionType: values.isScreening

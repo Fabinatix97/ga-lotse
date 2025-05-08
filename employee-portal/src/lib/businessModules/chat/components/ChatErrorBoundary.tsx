@@ -19,7 +19,7 @@ export function ChatErrorBoundary({ children }: PropsWithChildren) {
   if (clientState === ClientState.Error) {
     return (
       <ErrorAlert
-        error={"Chat Error"}
+        error="Chat Error"
         onReset={() => {
           try {
             refresh();

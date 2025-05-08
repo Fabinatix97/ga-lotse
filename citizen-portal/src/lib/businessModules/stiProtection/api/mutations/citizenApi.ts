@@ -18,7 +18,7 @@ import { useTranslation } from "@/lib/i18n/client";
 
 import { returnConflict } from "./helper";
 
-export function useUpsertMedicalHistoryOptions(): MutationOptions<
+function useUpsertMedicalHistoryOptions(): MutationOptions<
   void,
   Error,
   ApiCreateMedicalHistoryRequest

@@ -13,7 +13,7 @@ import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 
 import { routes } from "./routes";
 
-export const sideNavigationItem: SideNavigationItem = {
+const sideNavigationItem: SideNavigationItem = {
   type: "SideNavigationLinkItem",
   name: "Chat",
   href: routes.index,

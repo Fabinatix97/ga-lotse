@@ -33,7 +33,7 @@ import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appoin
 import { durationBetweenDatesInMinutes } from "@/lib/shared/helpers/dateTime";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 
-export interface TravelTimeSidebarProps {
+interface TravelTimeSidebarProps {
   open: boolean;
   onClose: () => void;
   procedureId: string;
@@ -162,11 +162,11 @@ function TravelTimeSidebarWithMutations({
     <Sidebar open={open} onClose={handleClose}>
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit, values, setValues }) => (
-          <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
+          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
             <SidebarContent title={title}>
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>
@@ -246,8 +246,8 @@ function TravelTimeSidebarWithMutations({
             <SidebarActions>
               <FormButtonBar
                 submitting={isSubmitting}
-                onCancel={handleClose}
                 submitLabel="Speichern"
+                onCancel={handleClose}
               />
             </SidebarActions>
           </SidebarForm>
@@ -257,7 +257,7 @@ function TravelTimeSidebarWithMutations({
   );
 }
 
-export function validateBeforeAppointment(
+function validateBeforeAppointment(
   value: string,
   appointment: Appointment | undefined,
 ) {
@@ -267,7 +267,7 @@ export function validateBeforeAppointment(
   return undefined;
 }
 
-export function validateAfterAppointment(
+function validateAfterAppointment(
   value: string,
   appointment: Appointment | undefined,
 ) {

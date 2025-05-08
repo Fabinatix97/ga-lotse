@@ -97,8 +97,8 @@ export function CalendarSelector(props: {
               key={calendar.id}
               calendar={calendar}
               checked={props.displayedCalendarIds.includes(calendar.id)}
-              onChange={() => toggleCalendarVisibility(calendar.id)}
               hasMargin={false}
+              onChange={() => toggleCalendarVisibility(calendar.id)}
             />
           ))}
       </Stack>
@@ -128,6 +128,7 @@ export function CalendarSelector(props: {
                   }}
                   indeterminate={someItemSelected && !everyItemSelected}
                   checked={everyItemSelected}
+                  hasMargin={false}
                   onChange={() => {
                     if (everyItemSelected) {
                       props.setDisplayedCalendarIds((previousCalenderIds) =>
@@ -144,7 +145,6 @@ export function CalendarSelector(props: {
                       ]);
                     }
                   }}
-                  hasMargin={false}
                 />
               );
             }
@@ -153,8 +153,8 @@ export function CalendarSelector(props: {
               <CalendarSettingCheckbox
                 calendar={item.calendar}
                 checked={props.displayedCalendarIds.includes(item.calendar.id)}
+                hasMargin
                 onChange={() => toggleCalendarVisibility(item.calendar.id)}
-                hasMargin={true}
               />
             );
           }}

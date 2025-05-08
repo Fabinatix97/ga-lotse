@@ -11,7 +11,7 @@ import {
 } from "@mui/icons-material";
 import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
 import { useState } from "react";
-import { isObjectType } from "remeda";
+import { isNonNullish, isObjectType } from "remeda";
 
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
@@ -112,6 +112,7 @@ export function AnalysisChartDiagram(props: {
             diagramData={
               props.analysisDiagram.data as AnalysisDiagramBarChart["data"]
             }
+            isDataGrouped={isNonNullish(props.configuration.secondaryAttribute)}
             grouping={props.configuration.grouping}
             scaling={props.configuration.scaling}
             orientation={props.configuration.orientation}
@@ -124,6 +125,7 @@ export function AnalysisChartDiagram(props: {
             diagramData={
               props.analysisDiagram.data as AnalysisDiagramHistogram["data"]
             }
+            isDataGrouped={isNonNullish(props.configuration.secondaryAttribute)}
             grouping={props.configuration.grouping}
             scaling={props.configuration.scaling}
             eChartApi={setEChartApi}
@@ -155,13 +157,13 @@ export function AnalysisChartDiagram(props: {
     <>
       <BaseModal
         open={openFullScreenChart}
-        onClose={() => setOpenFullScreenChart(false)}
         modalTitle={props.analysisDiagram.title}
         sx={{
           width: "95vw",
           height: "85vh",
           marginTop: "2.25rem",
         }}
+        onClose={() => setOpenFullScreenChart(false)}
       >
         <AnalysisDiagramBox
           description={props.analysisDiagram.description}
@@ -173,7 +175,6 @@ export function AnalysisChartDiagram(props: {
       </BaseModal>
       <AnalysisDiagramBox
         description={props.analysisDiagram.description}
-        onShowMoreDescription={() => setOpenFullScreenChart(true)}
         filterLabels={props.analysisDiagram.filterLabels}
         evaluatedDataAmount={props.analysisDiagram.evaluatedDataAmount}
         evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
@@ -203,10 +204,10 @@ export function AnalysisChartDiagram(props: {
             <Stack direction="row" gap={1}>
               <IconButton
                 aria-label="Im Vollbildmodus anzeigen"
-                onClick={() => setOpenFullScreenChart(true)}
                 variant="outlined"
                 sx={{ background: "none" }}
                 color="primary"
+                onClick={() => setOpenFullScreenChart(true)}
               >
                 <OpenInFullOutlined />
               </IconButton>
@@ -258,6 +259,7 @@ export function AnalysisChartDiagram(props: {
             </Stack>
           </Stack>
         }
+        onShowMoreDescription={() => setOpenFullScreenChart(true)}
       />
     </>
   );

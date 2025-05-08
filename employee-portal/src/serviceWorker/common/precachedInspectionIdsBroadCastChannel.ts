@@ -13,7 +13,7 @@ enum MessageType {
   InspectionChanged = "inspection-changed",
 }
 
-export interface InspectionChanged {
+interface InspectionChanged {
   type: MessageType.InspectionChanged;
   inspectionId: string;
 }

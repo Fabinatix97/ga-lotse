@@ -162,12 +162,23 @@ export function validateInteger(value: OptionalFieldValue<number>) {
   return "Bitte eine ganze Zahl angeben.";
 }
 
-export function validateNumber(value: string) {
-  if (isEmptyString(value) || isStringOnlyDigits(value)) {
+export function validatePositiveInteger(value: OptionalFieldValue<number>) {
+  const isPositiveInteger = isInteger(value) && value > 0;
+  if (isEmptyString(value) || isPositiveInteger) {
     return undefined;
   }
 
-  return "Bitte eine Nummer angeben.";
+  return "Bitte eine positive ganze Zahl angeben.";
+}
+
+export function validateNumber(message: string): Validator<string> {
+  return (value: string) => {
+    if (isEmptyString(value) || isStringOnlyDigits(value)) {
+      return undefined;
+    }
+
+    return message;
+  };
 }
 
 export function validateIntegerAnd(

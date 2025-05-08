@@ -10,7 +10,7 @@ import {
   BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 
-export type DeactivateModalProps = Omit<
+type DeactivateModalProps = Omit<
   BaseModalPropsRequiredClose,
   "children" | "modalTitle"
 > & {
@@ -29,8 +29,8 @@ export function DeactivateModal(props: DeactivateModalProps) {
   return (
     <BaseModal
       {...props}
-      modalTitle="Chat Account Deaktivieren"
       key="chat-account-deactivation-modal"
+      modalTitle="Chat Account Deaktivieren"
       onClose={handleCancelClick}
     >
       <>
@@ -64,17 +64,17 @@ export function DeactivateModal(props: DeactivateModalProps) {
             size="sm"
             variant="outlined"
             color="neutral"
-            onClick={handleCancelClick}
             data-testid="deactivate-cancel"
+            onClick={handleCancelClick}
           >
             Abbrechen
           </Button>
           <Button
             size="sm"
-            color={"danger"}
-            loadingPosition={"start"}
-            onClick={handleConfirmClick}
+            color="danger"
+            loadingPosition="start"
             data-testid="deactivate-confirm"
+            onClick={handleConfirmClick}
           >
             Fortfahren
           </Button>

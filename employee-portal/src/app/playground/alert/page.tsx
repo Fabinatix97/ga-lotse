@@ -102,8 +102,8 @@ export default function AlertPlaygroundPage() {
             <Button onClick={openAlert}>Open Alert</Button>
             <Button
               color="danger"
-              onClick={() => alert.close()}
               disabled={!alert.isOpen}
+              onClick={() => alert.close()}
             >
               Close Alert
             </Button>

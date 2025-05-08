@@ -36,7 +36,7 @@ export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
           <BulkCreateAppointmentsButton
             selectedProcedureIds={selectedProcedureIds}
           />
-          <Divider orientation={"vertical"} sx={{ marginY: 1 }} />
+          <Divider orientation="vertical" sx={{ marginY: 1 }} />
           <BulkDownloadInvitationsButton
             selectedProcedureIds={selectedProcedureIds}
             procedures={props.procedures}

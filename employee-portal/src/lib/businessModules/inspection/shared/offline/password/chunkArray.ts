@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export function* createChunkedArrays<T>(
+function* createChunkedArrays<T>(
   arr: T[],
   chunkSize: number,
 ): Generator<T[], void> {

@@ -60,7 +60,7 @@ export function LinkFacilitySidebar(
 ) {
   return (
     <LinkCentralFileSidebar
-      title={"Einrichtung anheften"}
+      title="Einrichtung anheften"
       renderMatchCard={(match) => (
         <FacilityCardContent
           name={match.name}
@@ -71,8 +71,8 @@ export function LinkFacilitySidebar(
       )}
       renderDetailsSidebar={(props) => (
         <FacilityDetailsSidebar
-          title={"Einrichtung anheften"}
-          submitLabel={"Anheften"}
+          title="Einrichtung anheften"
+          submitLabel="Anheften"
           facility={props.match}
           onSubmit={props.onSelect}
           onCancel={props.onCancel}
@@ -89,12 +89,12 @@ export function LinkPersonSidebar(
 ) {
   return (
     <LinkCentralFileSidebar
-      title={"Person anheften"}
+      title="Person anheften"
       renderMatchCard={(match) => <PersonCardContent person={match} />}
       renderDetailsSidebar={(props) => (
         <PersonDetailsSidebar
-          title={"Person anheften"}
-          submitLabel={"Anheften"}
+          title="Person anheften"
+          submitLabel="Anheften"
           person={props.match}
           onSubmit={props.onSelect}
           onCancel={props.onCancel}
@@ -148,47 +148,45 @@ function LinkCentralFileSidebar<TMatch extends CentralFileData>({
     });
   }
 
+  if (isNonNullish(selected)) {
+    return renderDetailsSidebar({
+      match: selected,
+      onSelect: () => handleSubmit(),
+      onBack: () => setSelected(undefined),
+      onCancel: onClose,
+    });
+  }
+
   return (
-    <>
-      {isNonNullish(selected) ? (
-        renderDetailsSidebar({
-          match: selected,
-          onSelect: () => handleSubmit(),
-          onBack: () => setSelected(undefined),
-          onCancel: onClose,
-        })
-      ) : (
-        <Formik
-          initialValues={{ selected: "" }}
-          onSubmit={({ selected }) =>
-            setSelected(matches.find((it) => it.id === selected))
-          }
-          enableReinitialize
-        >
-          {({ isSubmitting }) => (
-            <SidebarForm>
-              <SidebarContent title={title}>
-                <RadioGroupField name={"selected"} required={"Bitte auswählen"}>
-                  <Stack gap={1}>
-                    {matches.map((match) => (
-                      <SelectableCard key={match.id} value={match.id}>
-                        {renderMatchCard(match)}
-                      </SelectableCard>
-                    ))}
-                  </Stack>
-                </RadioGroupField>
-              </SidebarContent>
-              <SidebarActions>
-                <MultiFormButtonBar
-                  submitting={isSubmitting}
-                  submitLabel={"Auswählen"}
-                  onCancel={onClose}
-                />
-              </SidebarActions>
-            </SidebarForm>
-          )}
-        </Formik>
+    <Formik
+      initialValues={{ selected: "" }}
+      enableReinitialize
+      onSubmit={({ selected }) =>
+        setSelected(matches.find((it) => it.id === selected))
+      }
+    >
+      {({ isSubmitting }) => (
+        <SidebarForm>
+          <SidebarContent title={title}>
+            <RadioGroupField name="selected" required="Bitte auswählen">
+              <Stack gap={1}>
+                {matches.map((match) => (
+                  <SelectableCard key={match.id} value={match.id}>
+                    {renderMatchCard(match)}
+                  </SelectableCard>
+                ))}
+              </Stack>
+            </RadioGroupField>
+          </SidebarContent>
+          <SidebarActions>
+            <MultiFormButtonBar
+              submitting={isSubmitting}
+              submitLabel="Auswählen"
+              onCancel={onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
       )}
-    </>
+    </Formik>
   );
 }

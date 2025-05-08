@@ -14,6 +14,8 @@ export function DeactivationMessage() {
       invertedColors
       sx={{ alignItems: "flex-start" }}
       startDecorator={<WarningAmberOutlined fontSize="xl2" />}
+      role="note"
+      data-testid="alert"
     >
       <Box>
         <Typography level="title-md" color="danger" data-testid="title">

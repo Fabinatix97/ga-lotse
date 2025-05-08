@@ -80,7 +80,7 @@ export function useSearchParamLink(
   return `?${newSearch.toString()}`;
 }
 
-export function useSearchParamArray<K extends BooleanNumberStringNames>(
+function useSearchParamArray<K extends BooleanNumberStringNames>(
   param: string,
   castTo?: K,
   { pushState = false }: UseSearchParamOptions = {},

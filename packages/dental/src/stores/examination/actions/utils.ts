@@ -5,10 +5,11 @@
 
 import {
   Dentition,
+  QuadrantNumber,
   Tooth,
   ToothContext,
   isToothWithDiagnosis,
-} from "@/stores/examination/types";
+} from "../types";
 
 export function resolveTooth(
   toothContext: ToothContext,
@@ -30,4 +31,12 @@ export function firstToothWithDiagnosisIndex(teeth: Tooth[]): number {
 
 export function lastToothWithDiagnosisIndex(teeth: Tooth[]): number {
   return teeth.findLastIndex(isToothWithDiagnosis);
+}
+
+export function isInUpperJaw(quadrantNumber: QuadrantNumber): boolean {
+  return quadrantNumber === "Q1" || quadrantNumber === "Q2";
+}
+
+export function isInLowerJaw(quadrantNumber: QuadrantNumber): boolean {
+  return quadrantNumber === "Q3" || quadrantNumber === "Q4";
 }

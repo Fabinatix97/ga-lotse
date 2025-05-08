@@ -11,9 +11,9 @@ import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
-} from "@/api/models/ExaminationResult";
-import { ExaminationStatus } from "@/api/models/ExaminationStatus";
-import { EmptinessRules } from "@/types/examination";
+} from "../../../api/models/ExaminationResult";
+import { ExaminationStatus } from "../../../api/models/ExaminationStatus";
+import { EmptinessRules } from "../../../types/examination";
 
 export function canBeMarkedAbsent(
   status: ExaminationStatus,
@@ -58,9 +58,7 @@ const screeningExaminationResultEmptinessRules: EmptinessRules<ScreeningExaminat
     toothDiagnoses: (value) =>
       Object.values(value).every(
         (tooth) =>
-          tooth.mainResult === undefined &&
-          tooth.secondaryResult1 === undefined &&
-          tooth.secondaryResult2 === undefined,
+          tooth.mainResult === undefined && tooth.secondaryResult === undefined,
       ),
   };
 

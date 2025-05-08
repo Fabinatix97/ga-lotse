@@ -9,9 +9,10 @@ import { Box, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { useEffect } from "react";
 
-import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiMedicalHistory } from "@eshg/travel-medicine-api";
 
 import {
@@ -40,7 +41,7 @@ export function MedicalHistory({
   readOnly = false,
   onCancel,
 }: Readonly<MedicalHistoryProps>) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const patchMedicalHistory = usePatchMedicalHistory();
 
   async function sendUpdateRequest(request: PatchMedicalHistoryRequest) {
@@ -67,8 +68,8 @@ export function MedicalHistory({
   return (
     <Formik
       initialValues={medicalHistory}
-      onSubmit={handleSubmit}
       enableReinitialize
+      onSubmit={handleSubmit}
     >
       {({ getFieldProps, isSubmitting, setFieldValue, resetForm }) => {
         return (
@@ -110,7 +111,7 @@ export function MedicalHistory({
                                   elementIndex={elementIndex}
                                   sectionIndex={sectionIndex}
                                   readOnly={readOnly}
-                                ></MedicalHistoryRadioButtonElement>
+                                />
 
                                 {(
                                   getFieldProps(
@@ -159,7 +160,7 @@ export function MedicalHistory({
                                               .subElementText.questionText
                                           }
                                           readOnly={readOnly}
-                                        ></MedicalHistoryTextareaElement>
+                                        />
                                       </Stack>
                                     )}
                                   </>
@@ -194,10 +195,10 @@ export function MedicalHistory({
               )}
               <Stack gap={2}>
                 <TextareaField
-                  name={"note"}
-                  label={"Bemerkung"}
+                  name="note"
+                  label="Bemerkung"
                   validate={validateLength(0, 4000)}
-                  placeholder={"Bemerkung"}
+                  placeholder="Bemerkung"
                   readOnly={readOnly}
                 />
                 {!readOnly && (

@@ -15,7 +15,7 @@ import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 
-import { FormSheet } from "@/components/form/FormSheet";
+import { FormSheet } from "../form/FormSheet";
 
 import { TogglePersonSearchButtonProps } from "./TogglePersonSearchButton";
 

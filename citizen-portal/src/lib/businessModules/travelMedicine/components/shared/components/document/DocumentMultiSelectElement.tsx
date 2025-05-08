@@ -68,7 +68,7 @@ export function DocumentMultiSelectElement({
       }}
       gap={1}
     >
-      <Typography level={"body-md"}>{t("multiSelectWhich")}</Typography>
+      <Typography level="body-md">{t("multiSelectWhich")}</Typography>
       <List
         size="sm"
         role="group"
@@ -86,17 +86,17 @@ export function DocumentMultiSelectElement({
               }}
             >
               <Checkbox
-                size={"md"}
+                size="md"
                 name={`${parentPath}.subElementMultiSelect[${index}].answer`}
                 checked={
                   input.value.find(
                     (option) => option.questionText === questionText,
                   )?.answer ?? false
                 }
+                label={questionText}
                 onChange={async (value) => {
                   await handleCheckboxChange(value, questionText);
                 }}
-                label={questionText}
               />
             </ListItem>
           ),

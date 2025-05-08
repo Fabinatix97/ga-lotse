@@ -12,7 +12,7 @@ import {
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 
-export type Validator<TValue> = (value: TValue) => string | undefined;
+type Validator<TValue> = (value: TValue) => string | undefined;
 export interface ValidationRules<TValue> {
   required?: string;
   validate?: Validator<TValue>;
@@ -43,11 +43,11 @@ export function TextareaField(props: TextareaFieldProps) {
         sx={props.sxTextarea}
         name={props.name}
         value={field.input.value}
-        onChange={field.input.onChange}
-        onBlur={field.input.onBlur}
         minRows={props.minRows ?? 2}
         placeholder={props.placeholder}
         readOnly={props.readOnly}
+        onChange={field.input.onChange}
+        onBlur={field.input.onBlur}
       />
     </BaseField>
   );

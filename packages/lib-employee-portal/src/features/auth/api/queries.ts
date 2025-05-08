@@ -7,8 +7,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { ApiSelfUser } from "@eshg/base-api";
 
-import { userApiQueryKey } from "@/config/apiQueryKeys";
-import { useApi } from "@/contexts/api";
+import { userApiQueryKey } from "../../../config/apiQueryKeys";
+import { useApi } from "../../../contexts/api";
 
 function useGetSelfUserAndAccess<T>(select: (selfUser: ApiSelfUser) => T) {
   const { userApi } = useApi();

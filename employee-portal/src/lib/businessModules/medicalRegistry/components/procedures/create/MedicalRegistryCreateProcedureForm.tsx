@@ -146,7 +146,7 @@ export function MedicalRegistryCreateProcedureForm(
           <WrittenConfirmationForm name="writtenConfirmationForm" />
 
           <FormButtonBar
-            submitLabel={"Speichern"}
+            submitLabel="Speichern"
             submitting={isSubmitting}
             onCancel={handleCancel}
           />

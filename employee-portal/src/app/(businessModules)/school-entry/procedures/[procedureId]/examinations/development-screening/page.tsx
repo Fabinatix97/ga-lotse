@@ -79,7 +79,6 @@ export default function SchoolEntryDevelopmentScreeningPage(
           procedureId={procedureId}
           initialValues={mapToFormValues(developmentScreeningResult)}
           initialPercentiles={developmentScreeningResult.percentiles}
-          onSubmit={handleSubmit}
           valuesToMutationBundle={(values) => ({
             mutationOptions: updateDevelopmentScreeningResultOptions,
             variableSupplier: () =>
@@ -89,6 +88,7 @@ export default function SchoolEntryDevelopmentScreeningPage(
                 developmentScreeningResult.version,
               ),
           })}
+          onSubmit={handleSubmit}
         />
       </DisabledFormProvider>
     </ContentPanel>

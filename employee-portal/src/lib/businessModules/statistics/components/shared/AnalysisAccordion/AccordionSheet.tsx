@@ -13,7 +13,7 @@ import {
 } from "@mui/joy";
 import { ReactNode } from "react";
 
-export interface AccordionSheetProps {
+interface AccordionSheetProps {
   summary: ReactNode;
   controls?: ReactNode;
   details: ReactNode;

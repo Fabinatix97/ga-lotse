@@ -14,7 +14,7 @@ import {
   WeekdayCheckboxOption,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 
-export interface CheckboxGroupProps {
+interface CheckboxGroupProps {
   name: string;
   options: WeekdayCheckboxOption[];
   label: string;

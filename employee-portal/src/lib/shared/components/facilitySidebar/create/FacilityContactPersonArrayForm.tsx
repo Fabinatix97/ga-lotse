@@ -41,19 +41,19 @@ export function FacilityContactPersonArrayForm({
             // don't include any values in the key, as this would cause the input fields to lose focus
             const key = `contactPerson.${index}`;
             return (
-              <Stack component={"section"} key={key} gap={"inherit"}>
+              <Stack key={key} component="section" gap="inherit">
                 <Divider />
                 <Stack
-                  direction={"row"}
+                  direction="row"
                   justifyContent="space-between"
-                  alignItems={"center"}
+                  alignItems="center"
                 >
                   <Typography level="title-md">Kontaktperson</Typography>
                   {(values.length > 1 || !contactPersonRequired) && (
                     <IconButton
                       color="primary"
+                      aria-label="Kontaktperson löschen"
                       onClick={() => remove(index)}
-                      aria-label={"Kontaktperson löschen"}
                     >
                       <DeleteIcon />
                     </IconButton>

@@ -80,7 +80,7 @@ export function AnamnesisTitle() {
   );
 }
 
-export function AnamnesisOverview({
+function AnamnesisOverview({
   submitDisabled = false,
   submitLabel,
 }: {

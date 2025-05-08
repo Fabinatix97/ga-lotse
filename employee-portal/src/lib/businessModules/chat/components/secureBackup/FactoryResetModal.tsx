@@ -30,8 +30,8 @@ export function FactoryResetModal(
 
   return (
     <BaseModal
-      modalTitle="Alles zurücksetzen"
       key="reset-backup-modal"
+      modalTitle="Alles zurücksetzen"
       {...props}
     >
       <>
@@ -52,17 +52,17 @@ export function FactoryResetModal(
             size="sm"
             variant="outlined"
             color="neutral"
-            onClick={props.onClose}
             data-testid="confirmationDialogCancel"
+            onClick={props.onClose}
           >
             Abbrechen
           </Button>
           <Button
             size="sm"
             color={props.color}
-            loadingPosition={"start"}
-            onClick={handleFactoryResetClick}
+            loadingPosition="start"
             data-testid="confirmationDialogConfirm"
+            onClick={handleFactoryResetClick}
           >
             Alles zurücksetzen
           </Button>

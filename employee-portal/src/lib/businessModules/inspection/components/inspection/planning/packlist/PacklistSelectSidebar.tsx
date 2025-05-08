@@ -16,7 +16,7 @@ import {
 import { useGetAvailablePLDRs } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { PacklistSelectSidebarForm } from "@/lib/businessModules/inspection/components/inspection/planning/packlist/PacklistSelectSidebarForm";
 
-export interface PacklistSidebarProps {
+interface PacklistSidebarProps {
   open: boolean;
   inspectionExternalId: string;
   currentSelectedRevisions: ApiInspectionPLDRevision[];
@@ -46,9 +46,9 @@ function PacklistSelectSidebarWithQueries({
       {pldrsAvailable ? (
         <PacklistSelectSidebarForm
           inspectionExternalId={inspectionExternalId}
-          onClose={onClose}
           availablePldrs={availablePLDRs}
           currentSelectedRevisions={currentSelectedRevisions}
+          onClose={onClose}
         />
       ) : (
         <SidebarContent title="Packliste auswählen">

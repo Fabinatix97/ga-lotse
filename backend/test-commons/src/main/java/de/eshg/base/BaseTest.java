@@ -23,10 +23,8 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -34,37 +32,25 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-@ExtendWith(SoftAssertionsExtension.class)
+@ExtendWith({SoftAssertionsExtension.class})
 public abstract class BaseTest implements CapturedLoggingTraits {
   private static final Duration DEFAULT_TEST_TIMEOUT = Duration.ofSeconds(30);
   private static final Path DATA_TEST_TMP = Path.of("data/test/tmp");
 
   @InjectSoftAssertions protected SoftAssertions softly;
 
-  private ValidationFilenameHelper validationFilenameHelper;
+  @RegisterExtension
+  private final ValidationFilenameExtension validationFilenameExtension =
+      new ValidationFilenameExtension();
 
   @Override
   public FailedAssertionHandler failedAssertionHandler() {
     return callable -> softly.check(callable::call);
   }
 
-  @BeforeEach
-  void storeTestInfo(TestInfo testInfo) {
-    this.validationFilenameHelper = new ValidationFilenameHelper(testInfo);
-  }
-
-  @AfterEach
-  void clearTestInfo() {
-    this.validationFilenameHelper = null;
-  }
-
   @Override
   public String getTestName() {
-    return validationFilenameHelper.getTestName();
-  }
-
-  public String getTestClassName() {
-    return validationFilenameHelper.getTestClassName();
+    return validationFilenameExtension.getTestName();
   }
 
   @Override

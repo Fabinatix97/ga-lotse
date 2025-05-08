@@ -8,7 +8,7 @@ import { useState } from "react";
 
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
-import { OverlayBoundary } from "@/components/boundaries/OverlayBoundary";
+import { OverlayBoundary } from "../boundaries/OverlayBoundary";
 
 interface Props {
   name: string;
@@ -68,8 +68,8 @@ export function ChipWithTooltip(props: Props) {
       <OverlayBoundary>
         <BaseModal
           open={open}
-          onClose={() => setOpen(false)}
           modalTitle={props.modalTitle}
+          onClose={() => setOpen(false)}
         >
           <Typography>{props.name}</Typography>
         </BaseModal>

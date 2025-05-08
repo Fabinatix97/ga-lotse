@@ -63,7 +63,7 @@ export function WaitingRoomTable() {
             focusColumnAccessorKey: "lastName",
           }}
           minWidth={1200}
-        ></DataTable>
+        />
       </TableSheet>
     </TablePage>
   );

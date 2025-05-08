@@ -7,11 +7,11 @@
 
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 
+import { FileCard } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { useOpenDataApi } from "@/lib/opendata/api/clients";
-import { FileCard } from "@/lib/shared/components/FileCard";
 
 export function VersionFileCard({ version }: { version: ApiVersion }) {
   const { fileName, fileType, fileSize, publicationDate, externalId } = version;

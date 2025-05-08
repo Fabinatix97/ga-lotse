@@ -11,7 +11,7 @@ import {
   MedicalRegistryCreateProcedureFormValues,
   OccupationalInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { lifetimeDoctorNumberValidator } from "@eshg/lib-portal/businessModules/medicalRegistry/validator";
+import { useValidateLifetimeDoctorNumber } from "@eshg/lib-portal/businessModules/medicalRegistry/useValidators";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -19,14 +19,19 @@ import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 export function OccupationalInformationForm(props: NestedFormProps) {
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
+  const validateLifetimeDoctorNumber = useValidateLifetimeDoctorNumber();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
@@ -116,7 +121,7 @@ export function OccupationalInformationForm(props: NestedFormProps) {
         <InputField
           name={fieldName("lifetimeDoctorNumber")}
           label="Lebenslange Arztnummer (LAN)"
-          validate={lifetimeDoctorNumberValidator}
+          validate={validateLifetimeDoctorNumber}
         />
       </Grid>
       <Grid xxl={6} />

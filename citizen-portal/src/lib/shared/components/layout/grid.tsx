@@ -5,8 +5,9 @@
 
 "use client";
 
-import { Grid, Stack, styled } from "@mui/joy";
+import { Grid, Stack, StackProps, styled, useTheme } from "@mui/joy";
 import { Children, ReactNode } from "react";
+import { isFunction } from "remeda";
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
@@ -33,13 +34,13 @@ export const ColumnGrid = styled("div", {
     theme,
     children,
     templateColumns = "2fr 1fr",
-    templateAreas = "content sidebar",
+    templateAreas = "content side-panel",
   }) => ({
     display: "grid",
     gridTemplateColumns: templateColumns,
     gap: theme.spacing(GRID_SPACING),
     alignItems: "start",
-    gridTemplateAreas: new Array(Children.count(children) - 1)
+    gridTemplateAreas: new Array(Children.count(children))
       .fill(templateAreas)
       .map((t) => `"${t}"`)
       .join("\n"),
@@ -48,7 +49,7 @@ export const ColumnGrid = styled("div", {
       gridTemplateColumns: "1fr",
       gridTemplateAreas: `
         "content"
-        "sidebar"
+        "side-panel"
       `,
       display: "flex",
       flexDirection: "column",
@@ -58,6 +59,21 @@ export const ColumnGrid = styled("div", {
     },
   }),
 );
+export function ColumnGridSidePanel({ children, ...props }: StackProps) {
+  const theme = useTheme();
+  return (
+    <Stack
+      gap={GRID_SPACING}
+      sx={{
+        gridArea: "side-panel",
+        ...(isFunction(props.sx) ? props.sx(theme) : props.sx),
+      }}
+      {...props}
+    >
+      {children}
+    </Stack>
+  );
+}
 
 export function TwoColumnGrid(props: TwoColumnGridProps) {
   return (

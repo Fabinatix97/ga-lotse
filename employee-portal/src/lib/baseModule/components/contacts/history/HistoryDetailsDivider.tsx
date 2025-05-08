@@ -12,8 +12,8 @@ export function HistoryDetailsDivider({ enabled }: { enabled: boolean }) {
   }
 
   return (
-    <Divider orientation={"vertical"} sx={{ marginY: 1 }}>
-      <ArrowUpwardIcon size={"lg"} />
+    <Divider orientation="vertical" sx={{ marginY: 1 }}>
+      <ArrowUpwardIcon size="lg" />
     </Divider>
   );
 }

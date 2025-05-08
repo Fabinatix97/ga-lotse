@@ -11,15 +11,15 @@ import {
   ContentPanel,
   ContentPanelTitle,
   FormStack,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   mapOptionalValue,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
@@ -37,7 +37,7 @@ interface WaitingRoomValues {
 }
 
 export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const updateWaitingRoomDetails = useUpdateWaitingRoomDetails(
     props.procedure.id,
   );
@@ -59,8 +59,8 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
     <ContentPanel>
       <ContentPanelTitle>Wartezimmer</ContentPanelTitle>
       <Formik
-        onSubmit={handleSubmit}
         initialValues={mapToFormValues(props.procedure.waitingRoom)}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit, setFieldValue }) => {
           return (

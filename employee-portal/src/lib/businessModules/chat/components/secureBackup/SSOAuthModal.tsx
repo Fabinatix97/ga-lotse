@@ -91,10 +91,10 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
 
   return (
     <BaseModal
-      modalTitle="Nutzen Sie Single Sign On um fortzufahren"
       key="sso-auth-modal"
-      onClose={handleCancel}
+      modalTitle="Nutzen Sie Single Sign On um fortzufahren"
       open={!!values}
+      onClose={handleCancel}
     >
       <>
         <Typography textColor="text.secondary">
@@ -110,17 +110,17 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
             size="sm"
             variant="outlined"
             color="neutral"
-            onClick={handleCancel}
             data-testid="ssoAuthDialogCancel"
+            onClick={handleCancel}
           >
             Abbrechen
           </Button>
           <Button
             size="sm"
-            color={"primary"}
-            loadingPosition={"start"}
-            onClick={handleSSOClick}
+            color="primary"
+            loadingPosition="start"
             data-testid="ssoAuthDialogStart"
+            onClick={handleSSOClick}
           >
             Fortfahren
           </Button>

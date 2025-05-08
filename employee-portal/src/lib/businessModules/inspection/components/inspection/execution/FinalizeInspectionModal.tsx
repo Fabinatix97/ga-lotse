@@ -22,8 +22,8 @@ export function FinalizeInspectionModal({
   return (
     <QueryBoundary>
       <BaseModal
-        modalTitle="Signatur"
         key="finalize-inspection-modal"
+        modalTitle="Signatur"
         sx={{ width: 820, ...sx }}
         {...props}
       >

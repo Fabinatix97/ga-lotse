@@ -10,6 +10,7 @@ import {
   ButtonBar,
   ConfirmationDialog,
   DrawerProps,
+  FileCard,
   OverlayBoundary,
   SidebarActions,
   SidebarContent,
@@ -25,7 +26,6 @@ import {
 } from "@eshg/lib-procedures-api";
 
 import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures";
-import { FileCard } from "@/lib/shared/components/FileCard";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";
@@ -73,11 +73,11 @@ export function InboxProcedureDetailsSidebar({
             createInboxProcedure && (
               <Button
                 variant="plain"
-                onClick={createInboxProcedure}
                 disabled={
                   inboxProcedure.inboxProcedureStatus ===
                   ApiInboxProcedureStatus.Closed
                 }
+                onClick={createInboxProcedure}
               >
                 Vorgang anlegen
               </Button>
@@ -85,14 +85,14 @@ export function InboxProcedureDetailsSidebar({
           }
           right={
             <Button
-              onClick={() => {
-                setShowClosureModal(true);
-              }}
               color="danger"
               disabled={
                 inboxProcedure.inboxProcedureStatus ===
                 ApiInboxProcedureStatus.Closed
               }
+              onClick={() => {
+                setShowClosureModal(true);
+              }}
             >
               Vorgang schließen
             </Button>
@@ -102,8 +102,8 @@ export function InboxProcedureDetailsSidebar({
       {showClosureModal && (
         <InboxProcedureClosureModal
           inboxProcedureId={inboxProcedure.inboxProcedureId}
-          onClose={() => setShowClosureModal(false)}
           useCloseInboxProcedure={useCloseInboxProcedure}
+          onClose={() => setShowClosureModal(false)}
         />
       )}
     </>
@@ -396,13 +396,13 @@ function InboxProcedureClosureModal({
     <OverlayBoundary>
       <ConfirmationDialog
         open
-        onClose={onClose}
-        onConfirm={handleSubmit}
         title="Posteingangsvorgang schließen?"
         description="Diese Aktion kann nicht rückgängig gemacht werden."
         color="danger"
         confirmLabel="Ja, schließen"
         cancelLabel="Abbrechen"
+        onClose={onClose}
+        onConfirm={handleSubmit}
       />
     </OverlayBoundary>
   );

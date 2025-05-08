@@ -3,13 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  UseSuspenseQueryOptions,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
-import { ApiSchoolYearTransitionSortKey } from "@eshg/dental-api";
+import {
+  ApiGetSchoolYearTransitionResponse,
+  ApiSchoolYearTransitionSortKey,
+  ChildApi,
+  GetDaycaresForSchoolYearTransitionRequest,
+  GetSchoolsForSchoolYearTransitionRequest,
+} from "@eshg/dental-api";
 import {
   DataTable,
   MainContentLayout,
+  PaginatedList,
   Pagination,
   StickyToolbarLayout,
   TablePage,
@@ -22,14 +32,14 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 
-import { SchoolYearTransitionStatusChip } from "@/components/schoolYearTransition/SchoolYearTransitionStatusChip";
-import { routes } from "@/config/routes";
-import { useDentalApi } from "@/contexts/dental";
-import { InstitutionForTransition } from "@/features/children/api/models/SchoolYearTransitionResult";
-import { getSchoolsForTransitionQuery } from "@/features/children/api/queries/schoolYearTransition";
+import { SchoolYearTransitionStatusChip } from "../../../components/schoolYearTransition/SchoolYearTransitionStatusChip";
+import { routes } from "../../../config/routes";
+import { useDentalApi } from "../../../contexts/dental";
+import { InstitutionForTransition } from "../api/models/SchoolYearTransitionResult";
 
 const columnHelper = createColumnHelper<InstitutionForTransition>();
-function columns(institutionHeader: string) {
+
+function columns(institutionHeader: string, countHeader: string) {
   return [
     columnHelper.accessor("institution.name", {
       header: institutionHeader,
@@ -66,7 +76,7 @@ function columns(institutionHeader: string) {
       },
     }),
     columnHelper.accessor("completedCount", {
-      header: "Bearbeitete Gruppen",
+      header: countHeader,
       cell: (props) => `${props.getValue()} / ${props.row.original.totalCount}`,
       enableSorting: true,
       meta: {
@@ -99,6 +109,19 @@ const initialSorting: ColumnSort = {
 interface SchoolYearTransitionPageProps {
   titleSuffix: string;
   tableHeader: string;
+  countHeader: string;
+  queryOptions: (
+    childApi: ChildApi,
+    request:
+      | GetSchoolsForSchoolYearTransitionRequest
+      | GetDaycaresForSchoolYearTransitionRequest,
+  ) => UseSuspenseQueryOptions<
+    ApiGetSchoolYearTransitionResponse,
+    Error,
+    PaginatedList<InstitutionForTransition>,
+    any // eslint-disable-line @typescript-eslint/no-explicit-any
+  >;
+  route: (institutionId: string) => string;
 }
 
 export function SchoolYearTransitionBasePage(
@@ -112,8 +135,8 @@ export function SchoolYearTransitionBasePage(
     sortDirectionName: "sortDirection",
     initialSorting: initialSorting,
   });
-  const { data: institutionsForTransition } = useSuspenseQuery(
-    getSchoolsForTransitionQuery(childApi, {
+  const { data: institutionsForTransition, isFetching } = useSuspenseQuery(
+    props.queryOptions(childApi, {
       sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
       sortDirection: getSortDirection(tableControl.tableSorting),
       pageNumber: tableControl.paginationProps.pageNumber,
@@ -133,6 +156,7 @@ export function SchoolYearTransitionBasePage(
       <MainContentLayout fullViewportHeight>
         <TablePage data-testid="institutionsTable">
           <TableSheet
+            loading={isFetching}
             footer={
               <Pagination
                 totalCount={institutionsForTransition.totalNumberOfElements}
@@ -142,13 +166,10 @@ export function SchoolYearTransitionBasePage(
           >
             <DataTable
               data={institutionsForTransition.elements}
-              columns={columns(props.tableHeader)}
+              columns={columns(props.tableHeader, props.countHeader)}
               enableSortingRemoval={false}
               rowNavigation={{
-                route: (row) =>
-                  routes.children.schoolYearTransition.groups(
-                    row.original.institution.id,
-                  ),
+                route: (row) => props.route(row.original.institution.id),
                 focusColumnAccessorKey: "institution.name",
               }}
               minWidth={1250}

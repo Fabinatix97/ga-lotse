@@ -11,6 +11,8 @@ import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
 import de.eshg.config.domain.AbstractPrivacyDocumentsConfig;
 import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.config.i18n.MultiLangDocumentHelper;
+import de.eshg.config.i18n.MultiLangFileName;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
@@ -22,33 +24,44 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDocumentsConfig>
     extends EshgConfigurationService<T> {
 
+  public static final MultiLangFileName PRIVACY_NOTICE_FILE_NAME =
+      new MultiLangFileName("Datenschutz-Information.pdf", "privacy-notice.pdf");
+  public static final MultiLangFileName PRIVACY_POLICY_FILE_NAME =
+      new MultiLangFileName("Datenschutzerklaerung.pdf", "privacy-policy.pdf");
+  public static final MultiLangFileName PRIVACY_NOTICE_CONFIG_FILENAME =
+      MultiLangFileName.fromFilenameWithLanguageTags(PRIVACY_NOTICE_FILE_NAME.de());
+  public static final MultiLangFileName PRIVACY_POLICY_CONFIG_FILENAME =
+      MultiLangFileName.fromFilenameWithLanguageTags(PRIVACY_POLICY_FILE_NAME.de());
+
   protected AbstractPrivacyDocumentService(
       EntityManager entityManager, TransactionHelper transactionHelper, Class<T> configClass) {
     super(entityManager, transactionHelper, configClass);
   }
 
   @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getPrivacyNoticeDe() {
-    return PrivacyDocumentHelper.privacyNoticeAttachmentResponse(
-        getConfig().getPrivacyNotice().getDe().getContent());
+  public ResponseEntity<Resource> getPrivacyNotice() {
+    return MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
+        getConfig().getPrivacyNotice(), PRIVACY_NOTICE_FILE_NAME);
   }
 
   @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getPrivacyPolicyDe() {
-    return PrivacyDocumentHelper.privacyPolicyAttachmentResponse(
-        getConfig().getPrivacyPolicy().getDe().getContent());
+  public ResponseEntity<Resource> getPrivacyPolicy() {
+    return MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
+        getConfig().getPrivacyPolicy(), PRIVACY_POLICY_FILE_NAME);
   }
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public void updatePrivacyPolicy(MultiLangDocument privacyPolicyUpdate) {
+  public T updatePrivacyPolicy(MultiLangDocument privacyPolicyUpdate) {
     T config = getConfig();
     config.setPrivacyPolicy(updatePrivacyDocument(config.getPrivacyPolicy(), privacyPolicyUpdate));
+    return config;
   }
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public void updatePrivacyNotice(MultiLangDocument privacyNoticeUpdate) {
+  public T updatePrivacyNotice(MultiLangDocument privacyNoticeUpdate) {
     T config = getConfig();
     config.setPrivacyNotice(updatePrivacyDocument(config.getPrivacyNotice(), privacyNoticeUpdate));
+    return config;
   }
 
   protected MultiLangDocument updatePrivacyDocument(
@@ -69,7 +82,7 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
         toConfigurationStatus(config.getPrivacyPolicy()));
   }
 
-  private ConfigurationStatus toConfigurationStatus(MultiLangDocument privacyPolicy) {
+  protected ConfigurationStatus toConfigurationStatus(MultiLangDocument privacyPolicy) {
     if (privacyPolicy == null) {
       return ConfigurationStatus.COMPLETE;
     } else if (privacyPolicy.getEn() != null) {

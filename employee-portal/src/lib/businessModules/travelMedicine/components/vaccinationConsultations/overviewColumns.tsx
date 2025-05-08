@@ -37,19 +37,19 @@ function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
     bookingType === ApiAppointmentBookingType.AppointmentBlock
   ) {
     return (
-      <Chip color={"success"} size="md">
+      <Chip color="success" size="md">
         Gebucht
       </Chip>
     );
   } else if (bookingType === ApiAppointmentBookingType.Cancelled) {
     return (
-      <Chip color={"danger"} size="md">
+      <Chip color="danger" size="md">
         Abgesagt
       </Chip>
     );
   } else {
     return (
-      <Chip color={"warning"} size="md">
+      <Chip color="warning" size="md">
         Noch nicht gebucht
       </Chip>
     );

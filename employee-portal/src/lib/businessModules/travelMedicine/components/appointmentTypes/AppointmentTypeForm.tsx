@@ -59,8 +59,8 @@ export function AppointmentTypeForm(props: Readonly<AppointmentTypeFormProps>) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ initialValues, isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
@@ -68,19 +68,19 @@ export function AppointmentTypeForm(props: Readonly<AppointmentTypeFormProps>) {
             <Stack gap={2} rowGap={2}>
               <BaseField>
                 <FormLabel>
-                  <Typography level={"title-md"}>Typ</Typography>
+                  <Typography level="title-md">Typ</Typography>
                 </FormLabel>
                 <Input
                   placeholder={translateAppointmentType(
                     initialValues.appointmentTypeDto,
                   )}
-                  readOnly={true}
-                ></Input>
+                  readOnly
+                />
               </BaseField>
               <SingleAutocompleteField
                 label={
                   <FormLabel>
-                    <Typography level={"title-md"}>
+                    <Typography level="title-md">
                       Standarddauer (Minuten)
                     </Typography>
                   </FormLabel>

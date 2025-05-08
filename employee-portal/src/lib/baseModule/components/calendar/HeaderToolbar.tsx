@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CalendarApi } from "@fullcalendar/core/index.js";
+import { CalendarApi } from "@fullcalendar/core";
 import { Add, ChevronLeft, ChevronRight, Settings } from "@mui/icons-material";
 import {
   Button,
@@ -55,13 +55,13 @@ export function HeaderToolbar(props: {
 
   return (
     <Stack
-      direction={"row"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
       gap={1}
-      flexWrap={"wrap"}
+      flexWrap="wrap"
     >
-      <Stack direction={"row"} gap={1} alignItems={"center"}>
+      <Stack direction="row" gap={1} alignItems="center">
         <Button color="neutral" variant="outlined" onClick={props.goToToday}>
           Heute
         </Button>
@@ -69,8 +69,8 @@ export function HeaderToolbar(props: {
           <IconButton
             color="primary"
             variant="outlined"
-            onClick={props.goToPrevious}
             aria-label={previousIconLabel()}
+            onClick={props.goToPrevious}
           >
             <ChevronLeft />
           </IconButton>
@@ -79,8 +79,8 @@ export function HeaderToolbar(props: {
           <IconButton
             color="primary"
             variant="outlined"
-            onClick={props.goToNext}
             aria-label={nextIconLabel()}
+            onClick={props.goToNext}
           >
             <ChevronRight />
           </IconButton>
@@ -89,7 +89,7 @@ export function HeaderToolbar(props: {
           {props.title}
         </Typography>
       </Stack>
-      <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
+      <Stack direction="row" gap={2} flexWrap="wrap">
         <Select
           aria-label="Kalendaransicht"
           color="primary"
@@ -97,7 +97,7 @@ export function HeaderToolbar(props: {
           sx={{
             width: "13.5rem",
           }}
-          placeholder={"Monat"}
+          placeholder="Monat"
           value={props.viewType}
           onChange={(_, value) => {
             if (value) {
@@ -117,8 +117,8 @@ export function HeaderToolbar(props: {
           <IconButton
             color="primary"
             variant="outlined"
-            onClick={props.onSettingsButtonClick}
             aria-label={settingsLabel}
+            onClick={props.onSettingsButtonClick}
           >
             <Settings sx={{ fontSize: "var(--joy-fontSize-xl)" }} />
           </IconButton>

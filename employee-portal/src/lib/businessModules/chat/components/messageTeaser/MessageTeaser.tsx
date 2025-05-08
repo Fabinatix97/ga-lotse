@@ -16,7 +16,7 @@ import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { Presence } from "@/lib/businessModules/chat/shared/types";
 import { getStatusColor } from "@/lib/businessModules/chat/shared/utils";
 
-export interface BaseSnackbarProps {
+interface BaseSnackbarProps {
   snackbar: ChatSnackbarValues | undefined;
   onClose: () => void;
 }
@@ -47,17 +47,12 @@ export function MessageTeaser({
 
   return (
     <Snackbar
+      key={snackbar?.key}
       open={!!snackbar}
       variant="outlined"
       size="md"
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       autoHideDuration={5000}
-      key={snackbar?.key}
-      onClose={(_event, reason) => {
-        if (reason !== "clickaway") {
-          onClose();
-        }
-      }}
       slotProps={{
         root: {
           sx: {
@@ -69,6 +64,11 @@ export function MessageTeaser({
             },
           },
         },
+      }}
+      onClose={(_event, reason) => {
+        if (reason !== "clickaway") {
+          onClose();
+        }
       }}
     >
       {snackbar && (
@@ -93,7 +93,7 @@ export function MessageTeaser({
                     ),
                     marginRight: 0.8,
                   }}
-                ></Box>
+                />
               )}
               <Typography
                 level="title-md"
@@ -110,8 +110,8 @@ export function MessageTeaser({
             </Stack>
             <IconButton
               aria-label="Schließen"
-              onClick={onClose}
               color="primary"
+              onClick={onClose}
             >
               <CloseIcon />
             </IconButton>
@@ -120,7 +120,7 @@ export function MessageTeaser({
             level="body-md"
             maxWidth="18rem"
             textColor="common.black"
-            noWrap={true}
+            noWrap
             sx={{
               display: "-webkit-box",
               overflow: "hidden",

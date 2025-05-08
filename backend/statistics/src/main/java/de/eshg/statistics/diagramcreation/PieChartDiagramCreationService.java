@@ -16,6 +16,7 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.chart.PieChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
@@ -92,6 +93,20 @@ public class PieChartDiagramCreationService
   @Transactional
   public void fillDiagramData(UUID diagramId, Map<Object, Integer> chartDataHolder) {
     Diagram diagram = analysisService.getDiagramInternal(diagramId);
+
+    TableColumn tableColumn =
+        AggregationResultUtil.getTableColumn(
+            getPieChartConfiguration(diagram.getAnalysis()).getAttributeSelection(),
+            diagram.getAnalysis().getAggregationResult());
+
+    if (!tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
+      List<Object> keysToRemove =
+          chartDataHolder.entrySet().stream()
+              .filter(entry -> noRelevantValue(entry.getValue()))
+              .map(Map.Entry::getKey)
+              .toList();
+      keysToRemove.forEach(chartDataHolder::remove);
+    }
 
     List<KeyToCount> keyToCounts = mapToKeyToCounts(chartDataHolder);
 

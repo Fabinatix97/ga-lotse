@@ -34,10 +34,10 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 
-import { routes } from "@/config/routes";
-import { useDentalApi } from "@/contexts/dental";
-import { Child } from "@/features/children/api/models/Child";
-import { useGetChildrenQuery } from "@/features/children/api/queries/overview";
+import { routes } from "../../../../config/routes";
+import { useDentalApi } from "../../../../contexts/dental";
+import { Child } from "../../api/models/Child";
+import { useGetChildrenQuery } from "../../api/queries/overview";
 
 import {
   ChildrenFilterSettings,
@@ -135,20 +135,20 @@ export function ChildrenTable() {
             />,
           ]}
           right={[
-            <SchoolYearTransitionButton key="schoolYearTransition" />,
-            <ImportChildrenButton key="importChildren" />,
             <CreateChildButton key="createChild" />,
+            <ImportChildrenButton key="importChildren" />,
+            <SchoolYearTransitionButton key="schoolYearTransition" />,
           ]}
           alignItems="flex-end"
-          invertDomOrder={true}
+          invertDomOrder
         />
       }
       search={
         activePanel === "personSearch" && (
           <PersonSearchForm
             {...personSearch.formProps}
-            onChange={handleChangePersonSearch}
             allowPartialSearch
+            onChange={handleChangePersonSearch}
           />
         )
       }
@@ -220,7 +220,7 @@ const COLUMNS = [
     cell: (props) => formatDate(props.getValue()),
     enableSorting: true,
     meta: {
-      width: 150,
+      width: 160,
       canNavigate: {
         parentRow: true,
       },
@@ -242,7 +242,7 @@ const COLUMNS = [
     ),
     enableSorting: false,
     meta: {
-      width: 150,
+      width: 250,
     },
   }),
   columnHelper.accessor("institution", {
@@ -254,7 +254,7 @@ const COLUMNS = [
     ),
     enableSorting: false,
     meta: {
-      width: 180,
+      width: 250,
       canNavigate: {
         parentRow: true,
       },
@@ -276,7 +276,6 @@ const COLUMNS = [
     cell: (props) => formatSchoolYear(props.getValue()),
     enableSorting: true,
     meta: {
-      width: 50,
       canNavigate: {
         parentRow: true,
       },

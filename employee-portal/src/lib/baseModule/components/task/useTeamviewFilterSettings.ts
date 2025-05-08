@@ -10,14 +10,12 @@ import {
   EnumFilterDefinition,
   FilterValue,
   UseFilterSettings,
+  getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
 
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
-import {
-  buildOptionsFromUsers,
-  getSelectedFilterValues,
-} from "@/lib/shared/components/procedures/helper";
+import { buildOptionsFromUsers } from "@/lib/shared/components/procedures/helper";
 
 const FILTER_KEYS = {
   assigneeId: "assigneeId",
@@ -55,7 +53,7 @@ export function useTeamviewFilterSettings({
 }
 
 function getAssigneeFilter(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.assigneeId,
   );

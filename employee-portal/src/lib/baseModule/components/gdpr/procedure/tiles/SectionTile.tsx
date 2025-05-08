@@ -15,7 +15,7 @@ export function SectionTile({
 }: SheetProps & { id: string }) {
   return (
     <Sheet
-      component={"section"}
+      component="section"
       aria-labelledby={id}
       sx={{
         display: "grid",

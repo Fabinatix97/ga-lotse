@@ -3,23 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Add, Cached, PublishedWithChanges } from "@mui/icons-material";
-import { Button } from "@mui/joy";
+import {
+  Add,
+  ArrowDropDownOutlined,
+  FileUploadOutlined,
+} from "@mui/icons-material";
+import { Button, Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
-import { routes } from "@/config/routes";
-import { useCreateChildSidebar } from "@/features/children/components/createChild/CreateChildSidebar";
-import { useImportChildrenSidebar } from "@/features/children/components/import/ImportChildrenSidebar";
+import { routes } from "../../../../config/routes";
+import { useCreateChildSidebar } from "../createChild/CreateChildSidebar";
+import { useImportChildrenSidebar } from "../import/ImportChildrenSidebar";
 
 export function ImportChildrenButton() {
   const importChildrenSidebar = useImportChildrenSidebar();
 
   return (
     <Button
-      size="sm"
+      size="md"
       variant="outlined"
-      startDecorator={<Cached />}
+      startDecorator={<FileUploadOutlined />}
       onClick={importChildrenSidebar.open}
     >
       Daten importieren
@@ -32,24 +36,40 @@ export function CreateChildButton() {
 
   return (
     <Button
-      size="sm"
+      size="md"
+      variant="outlined"
       startDecorator={<Add />}
       onClick={createChildSidebar.open}
     >
-      Neues Kind anlegen
+      Kind anlegen
     </Button>
   );
 }
 
 export function SchoolYearTransitionButton() {
   return (
-    <InternalLinkButton
-      size="sm"
-      variant="outlined"
-      startDecorator={<PublishedWithChanges />}
-      href={routes.children.schoolYearTransition.schools}
-    >
-      Schuljahreswechsel
-    </InternalLinkButton>
+    <Dropdown>
+      <MenuButton
+        variant="solid"
+        color="primary"
+        endDecorator={<ArrowDropDownOutlined />}
+      >
+        Schuljahreswechsel
+      </MenuButton>
+      <Menu variant="soft" color="primary" sx={{ width: 198 }}>
+        <MenuItem
+          component={NavigationLink}
+          href={routes.children.schoolYearTransition.daycares}
+        >
+          Kitas
+        </MenuItem>
+        <MenuItem
+          component={NavigationLink}
+          href={routes.children.schoolYearTransition.schools}
+        >
+          Schulen
+        </MenuItem>
+      </Menu>
+    </Dropdown>
   );
 }

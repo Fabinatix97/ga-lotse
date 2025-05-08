@@ -30,7 +30,7 @@ export function useCreateDailyAppointmentBlocksForGroup() {
   });
 }
 
-export function useDeleteAppointmentBlockOptions(): MutationOptions<
+function useDeleteAppointmentBlockOptions(): MutationOptions<
   void,
   Error,
   DeleteAppointmentBlockRequest

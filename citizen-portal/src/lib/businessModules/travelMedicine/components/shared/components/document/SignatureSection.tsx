@@ -52,7 +52,7 @@ export function SignatureSection() {
         <InputField
           sx={{ width: "65%" }}
           label={null}
-          aria-label={"Signaturfeld"}
+          aria-label="Signaturfeld"
           placeholder="Max Mustermann"
           name="signer"
           data-testid="signature-section-name"
@@ -62,8 +62,8 @@ export function SignatureSection() {
             color="primary"
             variant="solid"
             sx={{ width: "100%" }}
-            onClick={() => setIsSignatureModalOpen(true)}
             data-testid="signature-section-button"
+            onClick={() => setIsSignatureModalOpen(true)}
           >
             {t("panelSection.modalButton")}
           </Button>
@@ -75,7 +75,7 @@ export function SignatureSection() {
         </Box>
         {isSignatureModalOpen && (
           <SignDocumentModal
-            open={true}
+            open
             onClose={() => setIsSignatureModalOpen(false)}
           />
         )}

@@ -14,15 +14,15 @@ export function HistoryChange({
 }) {
   return (
     <>
-      <Typography fontWeight="md" level={"body-sm"}>
+      <Typography fontWeight="md" level="body-sm">
         {label}
       </Typography>
       {value ? (
-        <Typography fontWeight="lg" level={"body-md"}>
+        <Typography fontWeight="lg" level="body-md">
           {value}
         </Typography>
       ) : (
-        <Typography color={"neutral"} level={"body-md"} component={"i"}>
+        <Typography color="neutral" level="body-md" component="i">
           - Keine Angaben -
         </Typography>
       )}

@@ -43,7 +43,7 @@ interface DocumentSidebarProps extends SidebarWithFormRefProps {
   isProcedureFinalized: boolean;
 }
 
-export type DocumentSidebarMode =
+type DocumentSidebarMode =
   | "default"
   | "editInformation"
   | "editNote"
@@ -146,48 +146,48 @@ function DocumentSidebar({
       {mode === "default" && (
         <DocumentForm
           title={document.documentTypeDe}
+          formRef={props.formRef}
+          initialValues={INITIAL_VALUES}
+          document={document}
+          submitLabel="Schließen"
+          isProcedureFinalized={isProcedureFinalized}
           onSubmit={handleDocumentSubmit}
           onCancel={handleCancel}
           onClose={props.onClose}
           onEditInformation={() => setMode("editInformation")}
           onEditNote={() => setMode("editNote")}
           onReject={() => setMode("reject")}
-          formRef={props.formRef}
-          initialValues={INITIAL_VALUES}
-          document={document}
-          submitLabel="Schließen"
-          isProcedureFinalized={isProcedureFinalized}
         />
       )}
       {mode === "editInformation" && (
         <EditDocumentInformationForm
           title="Angaben bearbeiten"
+          formRef={props.formRef}
+          initialValues={INITIAL_VALUES}
+          submitLabel="Speichern"
           onSubmit={handleEditInformation}
           onCancel={() => {
             setMode("default");
           }}
-          formRef={props.formRef}
-          initialValues={INITIAL_VALUES}
-          submitLabel="Speichern"
         />
       )}
       {mode === "editNote" && (
         <EditDocumentNoteForm
           title="Stichwörter bearbeiten"
+          formRef={props.formRef}
+          initialValues={INITIAL_VALUES}
+          submitLabel="Speichern"
           onSubmit={handleEditNote}
           onCancel={() => {
             setMode("default");
           }}
-          formRef={props.formRef}
-          initialValues={INITIAL_VALUES}
-          submitLabel="Speichern"
         />
       )}
       {mode === "reject" && (
         <RejectDocumentForm
-          onClose={props.onClose}
           formRef={props.formRef}
           document={document}
+          onClose={props.onClose}
         />
       )}
     </>

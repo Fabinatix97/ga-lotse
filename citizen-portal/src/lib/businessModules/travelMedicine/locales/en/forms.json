@@ -2,7 +2,11 @@
   "common": {
     "title": "Travel Medicine Vaccination Consultation",
     "requiredTitle": "*Required field",
-    "stepperTitle": "Step {{currentStepIndex}} of {{totalSteps}}"
+    "stepperTitle": "Step {{currentStepIndex}} of {{totalSteps}}",
+    "errors": {
+      "concurrentAppointment_errorMessage": "The appointment you selected has has already been reserved elsewhere in the meantime. Please select another free appointment.",
+      "concurrentAppointment_action": "Change Appointment"
+    }
   },
   "appointmentTypeFormContent": {
     "title": "Appointment Type",
@@ -101,13 +105,22 @@
     "closingGreeting": "Sincerely,",
     "healthDepartment": "Your Health Department"
   },
-  "appointmentOverviewSection": {
+  "overview": {
     "title": "Overview",
     "onNextStep": "Next",
     "onPrevStep": "Back",
     "onCancel": "Cancel",
-    "values": {
-      "confirmOnlineServices": "Send confirmation email",
+    "fields": {
+      "initialStepAppointmentType_label": "Concern",
+      "confirmOnlineServices_label": "Online services",
+      "confirmOnlineServices_value": "Send confirmation email",
+      "department_label": "Department",
+      "date_label": "Day, date",
+      "time_label": "Time, appointment duration",
+      "fullName_label": "Name",
+      "dateOfBirth_label": "Date of birth",
+      "emailAddress_label": "E-Mail address",
+      "travelData_label": "Travel data",
       "travelDuration": "Travel duration",
       "travelDestinations_one": "Travel destination",
       "travelDestinations_other": "Travel destinations",

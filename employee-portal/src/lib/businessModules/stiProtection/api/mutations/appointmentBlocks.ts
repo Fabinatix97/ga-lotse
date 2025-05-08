@@ -42,7 +42,7 @@ export function useCreateDailyAppointmentBlocksForGroup() {
   return useMutation(createDailyAppointmentBlocksForGroupOptions);
 }
 
-export function useDeleteAppointmentBlockOptions(): MutationOptions<
+function useDeleteAppointmentBlockOptions(): MutationOptions<
   void,
   Error,
   DeleteAppointmentBlockRequest

@@ -199,7 +199,7 @@
     "errors": "Please fill in all required fields. "
   },
   "validations": {
-    "requiredField": "Mandatory!",
+    "requiredField": "Please fill out.",
     "confirmation": "Please accept terms to continue."
   },
   "leave_form": {

@@ -22,15 +22,15 @@ import {
   styled,
 } from "@mui/joy";
 import { TOptions } from "i18next";
+// eslint-disable-next-line no-restricted-imports
+import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useRef } from "react";
-
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { MouseEvent, useRef } from "react";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { DeutschFlag } from "@/lib/i18n/flags/DeutschFlag";
 import { UKFlag } from "@/lib/i18n/flags/UKFlag";
-import { useGivenLang, useLang } from "@/lib/i18n/useLang";
+import { useGivenLang, useLang, useSwitchLanguage } from "@/lib/i18n/useLang";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 const languages = [
@@ -76,8 +76,8 @@ export function LanguagePicker() {
         }}
       >
         <LanguagePickerListItems
-          onClose={() => toggleButton.current?.click()}
           t={t}
+          onClose={() => toggleButton.current?.click()}
         />
       </Menu>
     </Dropdown>
@@ -102,7 +102,7 @@ export function LanguagePickerMobile({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation("languagePicker");
   return (
     <MenuList sx={{ border: "none", backgroundColor: "common.white" }}>
-      <LanguagePickerListItems onClose={onClose} t={t} />
+      <LanguagePickerListItems t={t} onClose={onClose} />
     </MenuList>
   );
 }
@@ -127,7 +127,7 @@ function LanguagePickerListItems({
       <Stack
         flexDirection="row"
         alignItems="center"
-        justifyContent={"space-between"}
+        justifyContent="space-between"
       >
         <Typography level="h3">{t("languages_title")}</Typography>
         <IconButton aria-label={t("close")} onClick={onClose}>
@@ -179,11 +179,21 @@ function LanguageOption({ option }: { option: LanguageOptionType }) {
     newPath = `${newPath}?${searchParams.toString()}`;
   }
 
+  const switchToNewLang = useSwitchLanguage();
+
+  function handleClick(e: MouseEvent<HTMLDivElement>) {
+    e.preventDefault();
+    void switchToNewLang(option.shortCode, newPath);
+  }
+
   return (
     <MenuItem
-      component={NavigationLink}
+      // We are using the restricted "Link" here because it
+      // allows us to handle the onClick ourselves
+      component={Link}
       href={newPath}
       sx={{ paddingInline: 0 }}
+      onClick={handleClick}
     >
       <ListItemDecorator>{option.image}</ListItemDecorator>
       <Typography level="body-md">{option.name}</Typography>

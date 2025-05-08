@@ -41,12 +41,12 @@ export class SectionElementComponentFactory {
   private createTextBlockComponent(index: number) {
     return (
       <TemplateTextBlock
+        key={index}
         sectionElementFormikPath={this.getTextBlockFormikPath(index)}
         sectionElementDeleteHandler={() =>
           this.sectionProps.sectionElementDeleteHandler(index)
         }
         label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Textblock`}
-        key={index}
       />
     );
   }
@@ -62,12 +62,12 @@ export class SectionElementComponentFactory {
   private createTemplateConfirmationComponent(index: number) {
     return (
       <TemplateConfirmation
+        key={index}
         sectionElementFormikPath={this.getTemplateConfirmationFormikPath(index)}
         sectionElementDeleteHandler={() =>
           this.sectionProps.sectionElementDeleteHandler(index)
         }
         label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Bestätigungsfeld`}
-        key={index}
       />
     );
   }
@@ -82,6 +82,7 @@ export class SectionElementComponentFactory {
   ) {
     return (
       <AnamnesisQuestion
+        key={index}
         anamnesisFormikPath={this.getAnamnesisFormikPath(index)}
         templateAnamnesisQuestion={sectionElement.anamnesisQuestion!}
         addSubElementHandler={() => this.addAnamnesisSubText(index)}
@@ -97,7 +98,6 @@ export class SectionElementComponentFactory {
         }
         sectionIndex={this.sectionIndex}
         elementIndex={index}
-        key={index}
       />
     );
   }

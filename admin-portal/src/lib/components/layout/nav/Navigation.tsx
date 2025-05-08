@@ -113,7 +113,6 @@ export function Navigation() {
     >
       <Button
         variant="plain"
-        onClick={() => setNavigationSidebarOpen(!navigationSidebarOpen)}
         sx={{
           whiteSpace: "nowrap",
           justifyContent: navigationSidebarOpen ? "space-between" : "center",
@@ -121,6 +120,7 @@ export function Navigation() {
           marginInline: 3,
           display: "flex",
         }}
+        onClick={() => setNavigationSidebarOpen(!navigationSidebarOpen)}
       >
         {navigationSidebarOpen && (
           <Typography level="body-sm" textColor="neutral.700">
@@ -132,8 +132,8 @@ export function Navigation() {
       <List>
         {itemsWithActorSubItems.map((item) => (
           <NavigationItem
-            open={navigationSidebarOpen}
             key={item.name}
+            open={navigationSidebarOpen}
             item={item}
           />
         ))}

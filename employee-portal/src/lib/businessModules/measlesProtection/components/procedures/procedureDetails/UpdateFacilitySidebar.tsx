@@ -51,12 +51,12 @@ function UpdateFacilitySidebar({
   return (
     <FacilityForm
       title="Einrichtung bearbeiten"
-      onSubmit={handleSubmit}
-      onCancel={onClose}
       sidebarFormRef={formRef}
       initialValues={mapApiFacilityToDefaultFacilityFormValues(facility)}
       mode="edit"
       submitLabel="Speichern"
+      onSubmit={handleSubmit}
+      onCancel={onClose}
     />
   );
 }

@@ -49,30 +49,28 @@ export function MedicalRegistryProcedureDetails(
   useDraftAlerts(procedure);
 
   return (
-    <>
-      <PageGrid>
-        <Grid xxs={12} md={9}>
-          <Stack spacing={SPACING}>
-            <ProfessionalDetailsSection procedure={procedure} />
-            <PracticesDetailsSection procedure={procedure} />
-          </Stack>
-        </Grid>
+    <PageGrid>
+      <Grid xxs={12} md={9}>
+        <Stack spacing={SPACING}>
+          <ProfessionalDetailsSection procedure={procedure} />
+          <PracticesDetailsSection procedure={procedure} />
+        </Stack>
+      </Grid>
 
-        <Grid xxs={12} md={3}>
-          <Stack spacing={SPACING}>
-            <WrittenConfirmationSection procedure={procedure} />
-            {isDraft && (
-              <>
-                <TypeOfChangeSection procedure={procedure} />
-                {hasMedicalRegistryAdminRole && (
-                  <DraftActions procedure={procedure} />
-                )}
-              </>
-            )}
-          </Stack>
-        </Grid>
-      </PageGrid>
-    </>
+      <Grid xxs={12} md={3}>
+        <Stack spacing={SPACING}>
+          <WrittenConfirmationSection procedure={procedure} />
+          {isDraft && (
+            <>
+              <TypeOfChangeSection procedure={procedure} />
+              {hasMedicalRegistryAdminRole && (
+                <DraftActions procedure={procedure} />
+              )}
+            </>
+          )}
+        </Stack>
+      </Grid>
+    </PageGrid>
   );
 }
 

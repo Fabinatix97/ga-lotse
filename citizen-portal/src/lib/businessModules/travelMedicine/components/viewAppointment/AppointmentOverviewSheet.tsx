@@ -23,7 +23,7 @@ export function AppointmentOverviewSheet(
   return props.appointments.length === 0 ? (
     <NoAppointments overviewAppointmentType={props.overviewAppointmentType} />
   ) : (
-    <Stack gap={2} data-testid={"appointment-overview-list"}>
+    <Stack gap={2} data-testid="appointment-overview-list">
       {props.appointments.map((appointment, idx) => (
         <AppointmentOverviewSheetButton
           key={idx}

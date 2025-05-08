@@ -19,7 +19,7 @@ import { AppointmentCalendarProps } from "./AppointmentCalendar";
 import { MonthSelectionProps } from "./MonthSelection";
 import { dateInMonthForm } from "./helpers";
 
-export interface DayProps
+interface DayProps
   extends Omit<
     AppointmentCalendarProps,
     "monthSelectionLabel" | keyof MonthSelectionProps
@@ -70,7 +70,7 @@ export function Day({
   }, [isFocused, cellRef]);
 
   if (date == null) {
-    return <div></div>;
+    return <div />;
   }
 
   const boldProp = isSunday(date)
@@ -111,9 +111,9 @@ export function Day({
     >
       <Button
         ref={cellRef}
-        component={"time"}
+        component="time"
+        aria-pressed={isSelected}
         dateTime={formatISO(date, { representation: "date" })}
-        onFocus={handleFocus}
         disabled={!hasAppointments}
         color={isSelected ? "primary" : "neutral"}
         variant={isSelected ? "solid" : "plain"}
@@ -128,6 +128,7 @@ export function Day({
           minHeight: "32px",
           width: "32px",
         }}
+        onFocus={handleFocus}
         onClick={() => onDaySelected(date)}
         {...tabIntoProps}
         {...boldProp}

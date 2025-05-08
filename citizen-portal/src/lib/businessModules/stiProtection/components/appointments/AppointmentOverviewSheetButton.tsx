@@ -68,8 +68,8 @@ export function AppointmentOverviewSheetButton({
 
   return (
     <InternalLinkButton
-      color={"neutral"}
-      variant={"plain"}
+      color="neutral"
+      variant="plain"
       sx={{ padding: 0 }}
       href={citizenRoutes.personalArea.index(accessCode)}
     >
@@ -133,8 +133,8 @@ export function AppointmentOverviewSheetButton({
           />
         </AppointmentOverviewSectionGrid>
         <ChevronRightOutlined
-          color={"primary"}
-          size={"md"}
+          color="primary"
+          size="md"
           sx={{
             alignSelf: isMobile ? "start" : "center",
           }}

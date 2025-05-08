@@ -72,7 +72,7 @@ public class ContactClient {
     }
   }
 
-  public void validateContactIsInstitutionWithCategory(
+  public InstitutionContactDto validateContactIsInstitutionWithCategory(
       UUID contactId, Set<InstitutionContactCategoryDto> categories) {
     try {
       ContactDto contact = getContact(contactId);
@@ -86,6 +86,7 @@ public class ContactClient {
             "Contact with id %s does not have a valid category. Expected one of: %s"
                 .formatted(contactId, expectedCategories));
       }
+      return institution;
     } catch (HttpClientErrorException.NotFound e) {
       throw new BadRequestException("Contact with id %s does not exist.".formatted(contactId));
     }

@@ -61,8 +61,8 @@ export function AdditionalInfoSection({
     <IconButton
       color="primary"
       variant="outlined"
+      aria-label="Zusatzinfos bearbeiten"
       onClick={() => setEditOpen(true)}
-      aria-label={"Zusatzinfos bearbeiten"}
     >
       <EditOutlined />
     </IconButton>
@@ -70,11 +70,7 @@ export function AdditionalInfoSection({
 
   return (
     <Stack rowGap={2}>
-      <InfoTile
-        title={"Zusatzinfos"}
-        name="additionalInfo"
-        controls={editAction}
-      >
+      <InfoTile title="Zusatzinfos" name="additionalInfo" controls={editAction}>
         <Stack gap={1}>
           <DetailsItem
             label="Personenstatus"
@@ -106,24 +102,24 @@ export function AdditionalInfoSection({
       </InfoTile>
       <Sheet component="section">
         {!procedure.isOpen ? (
-          <Button color="danger" onClick={handleReopenProcedure} fullWidth>
+          <Button color="danger" fullWidth onClick={handleReopenProcedure}>
             Vorgang wiedereröffnen
           </Button>
         ) : (
           <Button
-            onClick={() => setIsRequestingFinalize(true)}
             disabled={closeProcedure.isPending}
             loading={closeProcedure.isPending}
             fullWidth
+            onClick={() => setIsRequestingFinalize(true)}
           >
             Vorgang abschließen
           </Button>
         )}
       </Sheet>
       <ConfirmationDialog
-        title={"Vorgang abschließen?"}
-        description={"Möchten Sie diesen Vorgang wirklich abschließen?"}
-        confirmLabel={"Abschließen"}
+        title="Vorgang abschließen?"
+        description="Möchten Sie diesen Vorgang wirklich abschließen?"
+        confirmLabel="Abschließen"
         color="primary"
         open={isRequestingFinalize}
         onClose={() => setIsRequestingFinalize(false)}
@@ -131,8 +127,8 @@ export function AdditionalInfoSection({
       />
       <AdditionalInfoUpdateSidebar
         isOpen={_isEditOpen}
-        onClose={() => setEditOpen(false)}
         procedure={procedure}
+        onClose={() => setEditOpen(false)}
       />
       <ReopenProcedureModal />
     </Stack>

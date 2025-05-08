@@ -38,9 +38,7 @@ export function useMergePersonContactSidebar() {
   });
 }
 
-export function MergePersonContactSidebar(
-  props: MergePersonContactSidebarProps,
-) {
+function MergePersonContactSidebar(props: MergePersonContactSidebarProps) {
   const [state, setState] = useState<SidebarState>({
     stage: "select",
   });
@@ -50,10 +48,10 @@ export function MergePersonContactSidebar(
   if (state.stage === "select") {
     return (
       <SelectMergeTargetForm
-        onSubmit={(selected) => setState({ stage: "merge", selected })}
         renderCard={(contact) => <PersonContactCard contact={contact} />}
         firstContact={props.firstContact}
         secondContact={props.secondContact}
+        onSubmit={(selected) => setState({ stage: "merge", selected })}
         onClose={() => props.onClose(true)}
       />
     );
@@ -70,11 +68,11 @@ export function MergePersonContactSidebar(
           state.selected === "first" ? props.secondContact : props.firstContact,
       }}
       sidebarFormRef={props.formRef}
+      intoLabel="Kontakt A"
+      fromLabel="Kontakt B"
       onCancel={() => props.onClose(false)}
       onSuccess={() => props.onClose(true)}
       onBack={() => setState({ stage: "select" })}
-      intoLabel={"Kontakt A"}
-      fromLabel={"Kontakt B"}
     />
   );
 }

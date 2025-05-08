@@ -11,7 +11,6 @@ import { SidebarFormHandle } from "@eshg/lib-employee-portal";
 
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
-import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/mutations/useGetEvaluationTemplateDetails";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import {
   AnonymizedFieldValue,
@@ -58,8 +57,11 @@ export function willBeAnonymized(
       return mapAnonymizedFieldValueToBoolean(anonymized);
     case AnonymizationOptions.AlwaysAnonymize:
       return true;
+    case AnonymizationOptions.AlwaysInternal:
     case AnonymizationOptions.NotAnonymizable:
       return false;
+    case AnonymizationOptions.Neither:
+      throw new Error("A form with the option 'Neither' can't be submitted!");
   }
 }
 
@@ -75,7 +77,6 @@ export function CreateEvaluationFromScratchSidebar({
   formRef: Ref<SidebarFormHandle>;
 }) {
   const anonymizationEnabled = useIsNewFeatureEnabled("ANONYMIZATION");
-  const getEvaluationTemplateDetails = useGetEvaluationTemplateDetails();
   const addEvaluation = useAddEvaluation({
     onSuccess: () => onClose(true),
   });
@@ -106,9 +107,6 @@ export function CreateEvaluationFromScratchSidebar({
 
   async function onSubmit(model: CreateEvaluationFromScratchFormModel) {
     if (model[0].dataSourceId === CHOOSE_EVALUATION_TEMPLATE) {
-      const evaluationTemplate = await getEvaluationTemplateDetails(
-        model[1].evaluationTemplateId!,
-      );
       await addEvaluation({
         type: "AddEvaluationWithTemplateRequest",
         name: model[3].evaluationName.trim(),
@@ -117,7 +115,7 @@ export function CreateEvaluationFromScratchSidebar({
         templateId: model[1].evaluationTemplateId!,
         anonymized: willBeAnonymized(
           model[2].anonymized!,
-          evaluationTemplate.anonymizationOptions,
+          model[2].anonymizationOptions!,
         ),
       });
     } else {
@@ -177,9 +175,7 @@ export function CreateEvaluationFromScratchSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
-      onSubmit={onSubmit}
       steps={[
         () => ({
           title: "Neue Auswertung erstellen",
@@ -311,6 +307,8 @@ export function CreateEvaluationFromScratchSidebar({
           };
         },
       ]}
+      onClose={onClose}
+      onSubmit={onSubmit}
     />
   );
 }

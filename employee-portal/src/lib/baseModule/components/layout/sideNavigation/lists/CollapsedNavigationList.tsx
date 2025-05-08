@@ -58,7 +58,7 @@ export function CollapsedNavigationList({
         alignItems="center"
         sx={{ overflowY: "auto", overflowX: "hidden", gap: 3 }}
       >
-        <NavigationListContext value={true}>
+        <NavigationListContext value>
           <CollapsedNavigationListContext
             value={{ openMenuItemName, setOpenMenuItemName }}
           >

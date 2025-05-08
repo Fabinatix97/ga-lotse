@@ -5,7 +5,7 @@
 
 import { type Redirect } from "next/dist/lib/load-custom-routes";
 
-import { routes } from "./config/routes";
+import { routes } from "./config/routes.js";
 
 const redirects: Redirect[] = [
   {

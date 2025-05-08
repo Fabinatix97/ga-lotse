@@ -7,5 +7,4 @@ package de.eshg.config.api;
 
 import jakarta.validation.Valid;
 
-public record GetPrivacyDocumentConfigResponse(
-    @Valid PrivacyDocumentDto overwrittenPrivacyDocument) {}
+public record GetPrivacyDocumentConfigResponse(@Valid PrivacyDocumentDto privacyDocument) {}

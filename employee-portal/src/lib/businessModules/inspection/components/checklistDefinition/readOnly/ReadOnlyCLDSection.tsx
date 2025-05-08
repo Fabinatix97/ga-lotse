@@ -27,10 +27,10 @@ export function ReadOnlyCLDSection({
       <Stack gap={3} sx={{ ml: 2 }}>
         {section.elements.map((element, index) => (
           <ReadOnlyCLDElement
+            key={element.id}
             element={element}
             sectionIndex={sectionIndex}
             elementIndex={index}
-            key={element.id}
           />
         ))}
       </Stack>

@@ -35,7 +35,7 @@ interface AcceptProcedureSidebarProps extends SidebarWithFormRefProps {
   queryResults?: ApiGetReferencePersonResponse[];
 }
 
-export interface PatientFormValues extends SearchPersonFormValues {
+interface PatientFormValues extends SearchPersonFormValues {
   emailAddresses: OptionalFieldValue<string>[];
   phoneNumbers: OptionalFieldValue<string>[];
   address: OptionalFieldValue<ApiPersonAddress>;
@@ -89,7 +89,13 @@ function AcceptProcedureSidebar(props: Readonly<AcceptProcedureSidebarProps>) {
 
   return (
     <AcceptProcedureForm
-      title={"Vorgang starten"}
+      title="Vorgang starten"
+      submitLabel="Vorgang starten"
+      sidebarFormRef={props.formRef}
+      initialSearchState={personSearchFormInitialValues}
+      addressRequired={false}
+      queryResults={props.queryResults ?? undefined}
+      initialPatient={props.procedure.patient}
       onSelect={async ({ person }) => {
         let referencePersonId;
         if (instanceOfApiGetReferencePersonResponse(person)) {
@@ -98,13 +104,7 @@ function AcceptProcedureSidebar(props: Readonly<AcceptProcedureSidebarProps>) {
 
         await handleCreate(props.procedure.procedureId, referencePersonId);
       }}
-      submitLabel={"Vorgang starten"}
-      sidebarFormRef={props.formRef}
-      initialSearchState={personSearchFormInitialValues}
-      addressRequired={false}
       onCancel={props.onClose}
-      queryResults={props.queryResults ?? undefined}
-      initialPatient={props.procedure.patient}
     />
   );
 }

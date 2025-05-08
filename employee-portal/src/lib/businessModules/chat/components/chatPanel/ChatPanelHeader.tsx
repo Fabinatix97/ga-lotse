@@ -36,7 +36,7 @@ import {
   leaveRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
-export interface ChatPanelHeaderProps {
+interface ChatPanelHeaderProps {
   roomId: string;
 }
 

@@ -18,8 +18,8 @@ import {
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import { ChildDetails } from "@/features/children/api/models/ChildDetails";
-import { useUpdateAnnualChildPerson } from "@/features/children/api/mutations/details";
+import { ChildDetails } from "../../api/models/ChildDetails";
+import { useUpdateAnnualChildPerson } from "../../api/mutations/details";
 
 export function useUpdateAnnualChildPersonSidebar(): UseSidebarWithFormRefResult<UpdateAnnualChildPersonSidebarProps> {
   return useSidebarWithFormRef({
@@ -55,12 +55,12 @@ function UpdateAnnualChildPersonSidebar(
     <PersonSidebarForm
       mode="edit"
       title="Kind bearbeiten"
-      onCancel={() => onClose(false)}
-      onSubmit={handleSubmit}
       initialValues={mapChildDetailsToPersonFormValues(child)}
       component={DefaultPersonForm}
       sidebarFormRef={formRef}
       addressRequired
+      onCancel={() => onClose(false)}
+      onSubmit={handleSubmit}
     />
   );
 }

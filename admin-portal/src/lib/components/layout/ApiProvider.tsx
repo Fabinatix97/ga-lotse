@@ -6,11 +6,8 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode } from "react";
 
-export interface RequiresChildren {
-  children: ReactNode;
-}
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 const queryClient = new QueryClient({
   defaultOptions: {

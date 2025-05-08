@@ -31,7 +31,7 @@ interface SearchResultFormValues {
   selected: string;
 }
 
-export interface FacilitySearchResultsProps {
+interface FacilitySearchResultsProps {
   title: string;
 
   inputs: FacilitySearchFormValues;
@@ -77,6 +77,7 @@ export function FacilitySearchResults(props: FacilitySearchResultsProps) {
   return (
     <Formik
       initialValues={initialValues}
+      validate={validate}
       onSubmit={(values) => {
         if (values.selected === "new") {
           props.onCreateNew();
@@ -89,13 +90,12 @@ export function FacilitySearchResults(props: FacilitySearchResultsProps) {
         }
         return Promise.resolve();
       }}
-      validate={validate}
     >
       {({ errors }) => (
         <SidebarForm>
           <SidebarContent
             title={props.title}
-            subtitle={"Einrichtung auswählen"}
+            subtitle="Einrichtung auswählen"
             alert={getAlert(errors)}
             header={
               props.header ?? (
@@ -110,7 +110,7 @@ export function FacilitySearchResults(props: FacilitySearchResultsProps) {
                   </Button>
                   <Stack>
                     Bereits vorhandene Einträge zur Einrichtung:
-                    <Typography level={"title-md"}>
+                    <Typography level="title-md">
                       {props.inputs.name}
                     </Typography>
                   </Stack>
@@ -126,8 +126,8 @@ export function FacilitySearchResults(props: FacilitySearchResultsProps) {
                   }}
                 >
                   <NoSearchResults
-                    info={"Keine Treffer"}
-                    buttonLabel={"Neue Einrichtung anlegen"}
+                    info="Keine Treffer"
+                    buttonLabel="Neue Einrichtung anlegen"
                     onClick={() => props.onCreateNew()}
                   />
                 </Box>

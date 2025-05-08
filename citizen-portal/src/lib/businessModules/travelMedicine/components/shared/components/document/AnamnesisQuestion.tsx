@@ -59,7 +59,7 @@ export function AnamnesisQuestion(props: Readonly<AnamnesisQuestionProps>) {
               <DocumentTextareaElement
                 name={`${anamnesisPath}.subElementText.answer`}
                 label={props.anamnesisQuestion.subElementText.questionText}
-              ></DocumentTextareaElement>
+              />
             </Stack>
           )}
         </>

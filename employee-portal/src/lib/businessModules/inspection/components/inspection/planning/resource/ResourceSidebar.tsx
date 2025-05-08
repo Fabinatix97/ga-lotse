@@ -133,13 +133,13 @@ function ResourceSidebarWithQuery({
     <Sidebar open={open} onClose={onClose}>
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
         enableReinitialize
         validate={validateStartBeforeEnd}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, values, handleSubmit, touched, errors }) => (
           <SidebarForm onSubmit={handleSubmit}>
-            <SidebarContent title={"Ressource hinzufügen"}>
+            <SidebarContent title="Ressource hinzufügen">
               <ResourceSelectFields
                 plannedAppointment={plannedAppointment}
                 standardBufferTime={standardBufferTime}
@@ -311,7 +311,7 @@ function BookedResources({
         Im Zeitraum nicht verfügbare Ressourcen:
       </Typography>
       {bookedResources.map((it) => (
-        <BookedResource bookedResource={it} key={it.resource.id} />
+        <BookedResource key={it.resource.id} bookedResource={it} />
       ))}
     </Stack>
   );

@@ -25,9 +25,9 @@ export function ContactsTableTitle(props: ContactsTableTitleProps) {
       elementName={{ singular: "Kontakt", plural: "Kontakte" }}
     >
       <RowSelectionTableToolbarButton
-        onClick={() => props.onMerge(rowIds)}
         decorator={<MergeIcon />}
         disabled={rowIds.length !== 2}
+        onClick={() => props.onMerge(rowIds)}
       >
         Kontakte Zusammenführen
       </RowSelectionTableToolbarButton>

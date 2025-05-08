@@ -128,7 +128,7 @@ function toLabelValue([key, label]: [key: string, label: string]) {
   return { label, value: key };
 }
 
-export function useProceduresFilterState() {
+function useProceduresFilterState() {
   return useSearchParamStateProvider(filterDefinitions);
 }
 

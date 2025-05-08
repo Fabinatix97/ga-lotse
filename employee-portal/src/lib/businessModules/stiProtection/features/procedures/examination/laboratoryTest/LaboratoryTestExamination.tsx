@@ -6,9 +6,9 @@
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
   ApiLabStatus,
@@ -75,8 +75,8 @@ export function LaboratoryTestExamination(
           ? mapToFormValues(laboratoryTests)
           : defaultLaboratoryTestExaminationFormValues()
       }
-      onSubmit={onSubmit}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values }) => (
         <FormPlus sx={{ height: "100%" }}>
@@ -108,10 +108,10 @@ export function LaboratoryTestExamination(
                   testRequestedPath="syphilisTestRequested"
                   label="Syphilis (Labortest)"
                   dataPath="syphilisTestData"
-                  bottomField={
+                  middleField={
                     <CheckboxField
                       name="syphilisTestData.hadSyphilis"
-                      label="Hatte Syphilis"
+                      label="Seronarbe"
                     />
                   }
                 />
@@ -202,13 +202,13 @@ export function LaboratoryTestExamination(
 function ExaminationTabInfo() {
   return (
     <Sheet>
-      <Typography level={"h3"} mb={3}>
+      <Typography level="h3" mb={3}>
         Labortests
       </Typography>
       <Stack
         component="section"
         gap={3}
-        aria-label={"Weitere Angaben zu den Labortests"}
+        aria-label="Weitere Angaben zu den Labortests"
       >
         <TextareaFieldWithTextTemplates
           name="generalRemarks"
@@ -226,7 +226,7 @@ function ExaminationTabInfo() {
 function HepatitisInfo({ variant }: { variant: "A" | "B" | "C" }) {
   return (
     <Alert
-      color={"primary"}
+      color="primary"
       message={`Bei der Durchführung des Hepatits-${variant}-Tests muss eine Bescheinigung zur Meldepflicht ausgedruckt und von dem/der Bürger:in unterschrieben werden.`}
     />
   );

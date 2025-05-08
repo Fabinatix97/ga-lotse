@@ -12,7 +12,7 @@ import {
   ApiTravelType,
 } from "@eshg/travel-medicine-api";
 
-export interface AppointmentFormValues {
+interface AppointmentFormValues {
   patient: PatientFormValues;
   travelInformation: TravelInformationFormValues;
   initialStepAppointmentType: OptionalFieldValue<ApiAppointmentType>;

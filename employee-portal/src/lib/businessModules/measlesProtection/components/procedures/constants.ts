@@ -105,14 +105,14 @@ export const submissionResultOptions = Object.entries(
   value: value as ApiSubmissionResult,
 }));
 
-export const LetterType = {
+const LetterType = {
   LetterToPatient: "LETTER_TO_PATIENT",
   LetterToCustodian: "LETTER_TO_CUSTODIAN",
   LetterToFacility: "LETTER_TO_FACILITY",
 } as const;
-export type LetterType = (typeof LetterType)[keyof typeof LetterType];
+type LetterType = (typeof LetterType)[keyof typeof LetterType];
 
-export const letterTypeLabels: Record<LetterType, string> = {
+const letterTypeLabels: Record<LetterType, string> = {
   LETTER_TO_PATIENT: "Anschreiben an betroffene Person",
   LETTER_TO_CUSTODIAN: "Anschreiben an Personsorgeberechtigte",
   LETTER_TO_FACILITY: "Anschreiben an Einrichtung",
@@ -124,18 +124,6 @@ export const LetterCreationType = {
 } as const;
 export type LetterCreationType =
   (typeof LetterCreationType)[keyof typeof LetterCreationType];
-
-export const letterCreationTypeLabels = {
-  AUTOMATIC: "Neues Anschreiben erzeugen",
-  MANUAL: "Versendetes Anschreiben hochladen",
-} as const;
-
-export const letterCreationTypeOptions = Object.entries(
-  letterCreationTypeLabels,
-).map(([value, label]) => ({
-  label,
-  value,
-}));
 
 export const letterTypeOptions = Object.entries(letterTypeLabels).map(
   ([value, label]) => ({

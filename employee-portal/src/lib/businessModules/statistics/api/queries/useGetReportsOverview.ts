@@ -44,7 +44,7 @@ import { ReportOverviewFilterKey } from "@/lib/businessModules/statistics/compon
 
 import { reportApiQueryKey } from "./apiQueryKeys";
 
-export function mapSingleReports(
+function mapSingleReports(
   singleReport: ApiReportInfo,
   reportSeries: ApiReportSeries,
   isChild = false,
@@ -153,7 +153,7 @@ export function mapPageRequestWithFilterToApi(
   };
 }
 
-export function createQueryGetReportsOverview(
+function createQueryGetReportsOverview(
   pageRequest: PageRequest,
   filterValues: FilterValue[],
   reportSeriesApi: ReportSeriesApi,

@@ -30,7 +30,7 @@ export default function NewInformationStatementTemplatePage() {
       }
     >
       <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
-        <InformationStatementTemplateEditor templateId={""} />
+        <InformationStatementTemplateEditor templateId="" />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

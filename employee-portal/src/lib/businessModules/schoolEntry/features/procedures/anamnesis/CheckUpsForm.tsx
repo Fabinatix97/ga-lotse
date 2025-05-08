@@ -55,8 +55,8 @@ export function CheckUpsForm(props: CheckUpsFormProps) {
       <Stack direction="row" gap={4}>
         <SetAllBooleanWithUnknownSelect
           label="Alle"
-          onChange={setAllCheckUpFields}
           sx={BOOLEAN_SELECT_STYLE}
+          onChange={setAllCheckUpFields}
         />
         <Stack direction="row" gap={4} flexWrap="wrap">
           {CHECKUPS.map((checkUp) => (

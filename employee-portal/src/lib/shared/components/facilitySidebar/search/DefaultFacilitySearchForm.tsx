@@ -8,20 +8,20 @@ import { FormikProps } from "formik";
 import { PropsWithChildren } from "react";
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
 export function DefaultFacilitySearchForm<
   TValues extends FacilitySearchFormValues,
 >(props: PropsWithChildren<FormikProps<TValues>>) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   return (
     <Stack gap={2}>
       <InputField
-        name={"name"}
-        label={"Name der Einrichtung"}
-        required={"Bitte den Namen der Einrichtung angeben"}
+        name="name"
+        label="Name der Einrichtung"
+        required="Bitte den Namen der Einrichtung angeben"
         validate={validateLength(1, 300)}
       />
       {props.children}

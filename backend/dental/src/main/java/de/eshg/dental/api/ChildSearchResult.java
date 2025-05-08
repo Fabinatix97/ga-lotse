@@ -15,5 +15,5 @@ public record ChildSearchResult(
     @NotNull String firstName,
     @NotNull String lastName,
     @NotNull LocalDate dateOfBirth,
-    @NotNull String groupName,
+    String groupName,
     GenderDto gender) {}

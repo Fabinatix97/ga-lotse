@@ -9,7 +9,7 @@ import {
   DateRange,
   MedicalServicesOutlined,
 } from "@mui/icons-material";
-import { Box, Sheet, Stack, Typography } from "@mui/joy";
+import { Box, Sheet, Stack, Typography, useTheme } from "@mui/joy";
 import { formatDate } from "date-fns";
 import { Formik, useFormikContext } from "formik";
 import {
@@ -35,6 +35,10 @@ import { useCancelPendingAppointment } from "@/lib/businessModules/stiProtection
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { useLocale } from "@/lib/i18n/useLocale";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
@@ -48,17 +52,16 @@ import { StepButtons, StepButtonsProps } from "./StepButtons";
 type InitialValues<T extends FormDataWithoutConcern> = {
   readonly [K in keyof T]: T[K] | "" | null;
 };
-export type StepLayoutProps<T extends FormDataWithoutConcern> =
-  PropsWithChildren<
-    {
-      initialValues: InitialValues<T>;
-      onSubmit: (
-        e: T,
-      ) => Promise<
-        FormDataWithoutConcern | void | typeof PortalErrorCode.Conflict
-      > | void;
-    } & Omit<StepButtonsProps, "onCancel">
-  >;
+type StepLayoutProps<T extends FormDataWithoutConcern> = PropsWithChildren<
+  {
+    initialValues: InitialValues<T>;
+    onSubmit: (
+      e: T,
+    ) => Promise<
+      FormDataWithoutConcern | void | typeof PortalErrorCode.Conflict
+    > | void;
+  } & Omit<StepButtonsProps, "onCancel">
+>;
 
 export function StepLayout<T extends FormDataWithoutConcern>({
   children,
@@ -143,7 +146,7 @@ export function StepLayout<T extends FormDataWithoutConcern>({
   );
 }
 
-export function DirtyCheck({
+function DirtyCheck({
   handleConfirmCancel,
   hasBookedAppointment,
   hasCreatedAccount,
@@ -155,19 +158,20 @@ export function DirtyCheck({
   const { t } = useTranslation("stiProtection/forms");
   const { isValid, dirty } = useFormikContext();
   const isAccountCreatedAndShared = dirty && isValid && hasCreatedAccount;
+  const i18nKey = hasCreatedAccount ? "leave_without_pin" : "cancel_booking";
   return (
     <ConfirmLeaveDirtyFormEffect
-      title={t("cancel_booking.title")}
-      description={t("cancel_booking.message")}
-      cancelLabel={t("cancel_booking.cancel")}
-      confirmLabel={t("cancel_booking.confirm")}
+      title={t(`${i18nKey}.title`)}
+      description={t(`${i18nKey}.message`)}
+      cancelLabel={t(`${i18nKey}.cancel`)}
+      confirmLabel={t(`${i18nKey}.confirm`)}
       isDirty={hasBookedAppointment && !isAccountCreatedAndShared}
       onConfirm={handleConfirmCancel}
     />
   );
 }
 
-export function BookAppointmentTitle() {
+function BookAppointmentTitle() {
   const { t } = useTranslation("stiProtection/forms");
   const { currentStepIndex, totalSteps } = useStepContext();
   return (
@@ -191,7 +195,7 @@ export function BookAppointmentTitle() {
   );
 }
 
-export function ConflictError({
+function ConflictError({
   hasConflict,
   scrollToErrorRef,
 }: {
@@ -225,47 +229,46 @@ export function ConflictError({
   );
 }
 
-export function AppointmentOverview(buttonProps: StepButtonsProps) {
+function AppointmentOverview(buttonProps: StepButtonsProps) {
   const { t } = useTranslation("stiProtection/forms");
   const [{ concern, ...data }] = useFormData<AppointmentFormData>();
   const locale = useLocale();
+  const theme = useTheme();
 
   const concernLabel =
     concern === ApiConcern.SexWork
       ? t("common.sex_work")
       : t("common.hiv_sti_consultation");
   return (
-    <Sheet
-      sx={(theme) => ({
+    <ContentSheet
+      sx={{
         [theme.breakpoints.down("md")]: { display: "none" },
-      })}
+      }}
     >
-      <Stack gap={3}>
-        <Typography level="h2">{t("common.overview_title")}</Typography>
-        <Stack gap={2}>
+      <ContentSheetTitle>{t("common.overview_title")}</ContentSheetTitle>
+      <Stack gap={2}>
+        <Row sx={{ flexWrap: "nowrap" }}>
+          <MedicalServicesOutlined /> {concernLabel}
+        </Row>
+        {data.date != null ? (
           <Row sx={{ flexWrap: "nowrap" }}>
-            <MedicalServicesOutlined /> {concernLabel}
+            <DateRange />
+            {formatDate(data.date, "EEEE, d. MMMM y", { locale })}
           </Row>
-          {data.date != null ? (
-            <Row sx={{ flexWrap: "nowrap" }}>
-              <DateRange />
-              {formatDate(data.date, "EEEE, d. MMMM y", { locale })}
-            </Row>
-          ) : null}
-          {data.appointment != null ? (
-            <Row sx={{ flexWrap: "nowrap" }}>
-              <AccessTimeOutlined />
-              {formatDate(data.appointment.start, "HH:mm", { locale })}
-            </Row>
-          ) : null}
-          {data.birthYear ? (
-            <Row sx={{ flexWrap: "nowrap" }}>
-              <CakeOutlined /> {data.birthYear}
-            </Row>
-          ) : null}
-        </Stack>
-        <StepButtons {...buttonProps} />
+        ) : null}
+        {data.appointment != null ? (
+          <Row sx={{ flexWrap: "nowrap" }}>
+            <AccessTimeOutlined />
+            {formatDate(data.appointment.start, "HH:mm", { locale })}
+          </Row>
+        ) : null}
+        {data.birthYear ? (
+          <Row sx={{ flexWrap: "nowrap" }}>
+            <CakeOutlined /> {data.birthYear}
+          </Row>
+        ) : null}
       </Stack>
-    </Sheet>
+      <StepButtons {...buttonProps} />
+    </ContentSheet>
   );
 }

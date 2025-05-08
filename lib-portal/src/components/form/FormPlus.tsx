@@ -8,6 +8,7 @@ import { SxProps } from "@mui/joy/styles/types";
 // eslint-disable-next-line no-restricted-imports
 import { Form, FormikFormProps, useFormikContext } from "formik";
 import { RefObject, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import { usePrevious } from "../../hooks/usePrevious";
 
@@ -74,8 +75,27 @@ export function scrollToFirstFormError(
   label.scrollIntoView({ behavior: "smooth" });
 }
 
+function useRevalidateOnLanguageChange(enabled: boolean) {
+  const { validateForm } = useFormikContext();
+  const {
+    i18n: { language },
+  } = useTranslation();
+  const languageRef = useRef(language);
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    if (languageRef.current === language) {
+      return;
+    }
+    void validateForm();
+    languageRef.current = language;
+  }, [enabled, language, validateForm]);
+}
+
 interface FormPlusOptions {
   scrollToError?: boolean;
+  revalidateOnLanguageChange?: boolean;
   sx?: SxProps;
 }
 
@@ -85,19 +105,21 @@ interface FormPlusOptions {
 export function FormPlus({
   children,
   scrollToError = true,
+  revalidateOnLanguageChange = true,
   ...props
 }: Omit<FormikFormProps, "autoComplete" | "noValidate" | "ref" | "style"> &
   FormPlusOptions) {
   const formRef = useRef<HTMLFormElement | null>(null);
   useScrollToError({ enabled: scrollToError, formRef });
+  useRevalidateOnLanguageChange(revalidateOnLanguageChange);
 
   return (
     <Box
       component={Form}
       autoComplete="off"
       {...props}
-      noValidate
       ref={formRef}
+      noValidate
     >
       {children}
     </Box>

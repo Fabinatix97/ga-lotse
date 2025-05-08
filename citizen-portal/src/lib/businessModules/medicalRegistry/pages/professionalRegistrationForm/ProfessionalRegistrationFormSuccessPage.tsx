@@ -26,8 +26,8 @@ export function ProfessionalRegistrationFormSuccessPage(
         {t("successPage.content")}
       </Typography>
       <Button
-        onClick={() => props.setShowSuccessPage(false)}
         sx={{ marginTop: 2 }}
+        onClick={() => props.setShowSuccessPage(false)}
       >
         {t("successPage.createNewEntry")}
       </Button>

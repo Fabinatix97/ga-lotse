@@ -9,7 +9,7 @@ import { InspectionGeoApi } from "@eshg/inspection-api";
 
 import { inspectionGeoApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 
-export function getReverseGeoCodeQueryKey(
+function getReverseGeoCodeQueryKey(
   city: string,
   country: string,
   street: string,

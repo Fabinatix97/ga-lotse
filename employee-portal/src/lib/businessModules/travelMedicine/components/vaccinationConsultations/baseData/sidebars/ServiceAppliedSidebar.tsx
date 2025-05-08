@@ -122,8 +122,6 @@ function ServiceAppliedSidebar(props: Readonly<ServiceAppliedSidebarProps>) {
       allPhysicians={allPhysicians}
       allMedicalAssistants={allMedicalAssistants}
       formRef={props.formRef}
-      onCancel={props.onClose}
-      onSubmit={handleSubmit}
       title={
         props.service.status === ApiServiceStatus.Planned
           ? "Impfung durchgeführt"
@@ -134,6 +132,8 @@ function ServiceAppliedSidebar(props: Readonly<ServiceAppliedSidebarProps>) {
           ? "Geimpft"
           : "Speichern"
       }
+      onCancel={props.onClose}
+      onSubmit={handleSubmit}
     />
   );
 }

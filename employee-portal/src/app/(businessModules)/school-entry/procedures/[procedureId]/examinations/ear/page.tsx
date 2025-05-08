@@ -63,12 +63,12 @@ export default function SchoolEntryHearingTestPage(
       <DisabledFormProvider disabled={procedure.isClosed}>
         <HearingTestForm
           initialValues={mapToFormValues(hearingTestResult)}
-          onSubmit={handleSubmit}
           valuesToMutationBundle={(values) => ({
             mutationOptions: updateHearingTestResultOptions,
             variableSupplier: () =>
               mapToRequest(procedureId, values, hearingTestResult.version),
           })}
+          onSubmit={handleSubmit}
         />
       </DisabledFormProvider>
     </ContentPanel>

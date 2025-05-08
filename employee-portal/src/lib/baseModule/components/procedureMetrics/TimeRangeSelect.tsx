@@ -23,15 +23,15 @@ export function TimeRangeSelect(props: {
   );
 
   return (
-    <Stack direction="row" flexWrap="wrap" justifyContent={"flex-end"}>
+    <Stack direction="row" flexWrap="wrap" justifyContent="flex-end">
       <Select
         size="sm"
         sx={{
           width: 200,
         }}
         color="primary"
-        placeholder={"Zeitraum auswählen"}
-        aria-label={"Zeitraum"}
+        placeholder="Zeitraum auswählen"
+        aria-label="Zeitraum"
         value={props.selectedTimeRange}
         onChange={(_, value) => {
           if (value) {

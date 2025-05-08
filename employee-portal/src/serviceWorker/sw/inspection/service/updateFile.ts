@@ -28,7 +28,7 @@ const API_INSPECTION_CHECKLISTS_PATH_PATTERN = new RegExp(
   "i",
 );
 
-export function getApiInspectionChecklistFilePath(fileId: string) {
+function getApiInspectionChecklistFilePath(fileId: string) {
   return `/api/inspection/checklists/file/${fileId}`;
 }
 

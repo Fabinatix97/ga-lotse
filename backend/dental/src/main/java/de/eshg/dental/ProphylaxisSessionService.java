@@ -7,8 +7,9 @@ package de.eshg.dental;
 
 import com.google.common.collect.Sets;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.UserDto;
@@ -20,6 +21,7 @@ import de.eshg.dental.api.UpdateExaminationsInBulkRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionExaminationsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionParticipantsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionRequest;
+import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.client.PersonClient;
@@ -97,7 +99,7 @@ public class ProphylaxisSessionService {
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
-    validator.validateInstitution(request.institutionId());
+    validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
     validator.validateTechnicalGroups(request.dentistIds(), request.zfaIds());
     validator.validateDentitionType(request.dentitionType(), request.isScreening());
 
@@ -114,6 +116,7 @@ public class ProphylaxisSessionService {
     List<Child> children =
         childRepository.findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(
             request.institutionId(), request.groupName(), ProcedureStatus.OPEN);
+
     if (children.isEmpty()) {
       throw new BadRequestException("The requested group does not contain any children.");
     }
@@ -169,10 +172,9 @@ public class ProphylaxisSessionService {
     ProphylaxisSession prophylaxisSession = findProphylaxisSession(prophylaxisSessionId);
 
     List<Examination> examinations = prophylaxisSession.getExaminations();
-    Map<UUID, GetPersonFileStateResponse> fileStatesById =
-        fetchPersonFileStatesInBulk(examinations);
+    Map<UUID, ChildWithAugmentedData> fileStatesById = fetchPersonFileStatesInBulk(examinations);
 
-    Map<Examination, GetPersonFileStateResponse> examinationMap =
+    Map<Examination, ChildWithAugmentedData> examinationMap =
         examinations.stream()
             .collect(
                 StreamUtil.toLinkedHashMap(
@@ -268,12 +270,13 @@ public class ProphylaxisSessionService {
             .isBefore(prophylaxisSession.getDateAndTime());
   }
 
-  private Map<UUID, GetPersonFileStateResponse> fetchPersonFileStatesInBulk(
+  private Map<UUID, ChildWithAugmentedData> fetchPersonFileStatesInBulk(
       List<Examination> examinations) {
     List<Child> children = examinations.stream().map(Examination::getChild).toList();
-
-    return personClient.fetchPersonDataInBulk(children).stream()
-        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
+    List<ChildWithAugmentedData> augmentedChildren =
+        childService.augmentWithChildAndContactData(children);
+    return augmentedChildren.stream()
+        .collect(StreamUtil.toLinkedHashMap(child -> child.child().getChildIdFromCentralFile()));
   }
 
   private Map<UUID, ContactDto> fetchContactsInBulk(Streamable<ProphylaxisSession> sessions) {
@@ -355,8 +358,11 @@ public class ProphylaxisSessionService {
     Validator.validateUpdatableFields(
         persistedProphylaxisSession,
         mapProphylaxisSessionRequest(new ProphylaxisSession(), updateRequest));
-    validator.validateGroupAtInstitutionExists(
-        persistedProphylaxisSession.getInstitutionId(), updateRequest.groupName());
+
+    if (isSchool(persistedProphylaxisSession.getInstitutionId())) {
+      validator.validateGroupAtInstitutionExists(
+          persistedProphylaxisSession.getInstitutionId(), updateRequest.groupName());
+    }
     validator.validateDentitionType(updateRequest.dentitionType(), updateRequest.isScreening());
 
     mapProphylaxisSessionRequest(persistedProphylaxisSession, updateRequest);
@@ -364,6 +370,12 @@ public class ProphylaxisSessionService {
     prophylaxisSessionRepository.flush();
 
     return getProphylaxisSessionWithDetails(persistedProphylaxisSession.getExternalId());
+  }
+
+  private boolean isSchool(UUID institutionId) {
+    ContactDto contact = contactClient.getContact(institutionId);
+    return contact instanceof InstitutionContactDto institutionContactDto
+        && institutionContactDto.category().equals(InstitutionContactCategoryDto.SCHOOL);
   }
 
   public void closeProphylaxisSession(UUID prophylaxisSessionId, long version) {

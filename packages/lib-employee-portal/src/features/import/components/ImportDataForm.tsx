@@ -9,13 +9,13 @@ import { Ref } from "react";
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { FormButtonBar } from "@/components/form/FormButtonBar";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
-import { SidebarFormHandle } from "@/features/drawer/types/sidebar";
-import { ImportStatistics } from "@/features/import/types/ImportStatistics";
-import { ImportDataResult } from "@/features/import/utils/parseImportResult";
+import { FormButtonBar } from "../../../components/form/FormButtonBar";
+import { SidebarActions } from "../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../drawer/components/SidebarContent";
+import { SidebarForm } from "../../drawer/components/SidebarForm";
+import { SidebarFormHandle } from "../../drawer/types/sidebar";
+import { ImportStatistics } from "../types/ImportStatistics";
+import { ImportDataResult } from "../utils/parseImportResult";
 
 import { ImportResult } from "./ImportResult";
 
@@ -57,9 +57,9 @@ export function ImportDataForm({
           <FormButtonBar
             submitLabel="Importieren"
             submitting={isSubmitting}
+            size="sm"
             onCancel={wasImportSuccessful ? undefined : onClose}
             onFinish={wasImportSuccessful ? onClose : undefined}
-            size="sm"
           />
         </SidebarActions>
       )}

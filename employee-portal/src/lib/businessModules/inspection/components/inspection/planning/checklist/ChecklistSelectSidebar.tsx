@@ -16,7 +16,7 @@ import {
 import { useGetAvailableCLDVs } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { ChecklistSelectSidebarForm } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebarForm";
 
-export interface ChecklistSidebarProps {
+interface ChecklistSidebarProps {
   open: boolean;
   inspectionExternalId: string;
   withCoreVersions: boolean;
@@ -50,9 +50,9 @@ function ChecklistSelectSidebarWithQueries({
       {cldsAvailable ? (
         <ChecklistSelectSidebarForm
           inspectionExternalId={inspectionExternalId}
-          onClose={onClose}
           availableCldvs={availableCLDVs}
           currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
+          onClose={onClose}
         />
       ) : (
         <SidebarContent title="Checkliste auswählen">

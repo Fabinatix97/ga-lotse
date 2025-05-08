@@ -54,12 +54,12 @@ function UpdateChildSidebar({
     <PersonSidebarForm
       mode="edit"
       title="Kind bearbeiten"
-      onCancel={() => onClose(false)}
-      onSubmit={handleSubmit}
       initialValues={mapPersonDetailsToForm(child)}
       component={DefaultPersonForm}
       sidebarFormRef={formRef}
       addressRequired
+      onCancel={() => onClose(false)}
+      onSubmit={handleSubmit}
     />
   );
 }

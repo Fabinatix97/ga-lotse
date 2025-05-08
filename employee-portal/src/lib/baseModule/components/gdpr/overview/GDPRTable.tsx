@@ -68,14 +68,14 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
           right={
             hasWritePerms && (
               <Button
-                onClick={() => sidebar.open()}
                 startDecorator={<AddIcon />}
+                onClick={() => sidebar.open()}
               >
                 DSGVO Vorgang anlegen
               </Button>
             )
           }
-          invertDomOrder={true}
+          invertDomOrder
         />
       }
     >

@@ -33,6 +33,7 @@ public class CitizenListRowValueMapper implements RowValueMapper<CitizenListRow>
         values.getCustodians(),
         values.getChild().phoneNumber(),
         null,
+        null,
         null);
   }
 }

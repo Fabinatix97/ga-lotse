@@ -7,9 +7,9 @@ import { isDefined } from "remeda";
 
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
-import { ToothDiagnoses } from "@/api/models/ExaminationResult";
-import { ToothDiagnosis } from "@/api/models/ToothDiagnosis";
-import { OPTIONAL_TEETH, RELATED_TEETH } from "@/config/teeth";
+import { ToothDiagnoses } from "../../api/models/ExaminationResult";
+import { ToothDiagnosis } from "../../api/models/ToothDiagnosis";
+import { OPTIONAL_TEETH, RELATED_TEETH } from "../../config/teeth";
 
 import {
   INITIALLY_TOGGLED_OPTIONAL_TEETH,
@@ -165,8 +165,7 @@ export function createToothWithDiagnosis(
     toothType: TOOTH_TYPES[toothNumber],
     isRemovable: OPTIONAL_TEETH.has(toothNumber),
     mainResult: createToothResult(diagnosis?.mainResult),
-    secondaryResult1: createToothResult(diagnosis?.secondaryResult1),
-    secondaryResult2: createToothResult(diagnosis?.secondaryResult2),
+    secondaryResult: createToothResult(diagnosis?.secondaryResult),
     previousResults,
   };
 }
@@ -192,11 +191,9 @@ export function resolveToothDiagnosisResult(
   toothDiagnoses: ToothDiagnoses,
 ): ToothDiagnosisResult[] {
   const toothDiagnosis = toothDiagnoses[toothNumber];
-  return [
-    toothDiagnosis?.mainResult,
-    toothDiagnosis?.secondaryResult1,
-    toothDiagnosis?.secondaryResult2,
-  ].filter(isDefined);
+  return [toothDiagnosis?.mainResult, toothDiagnosis?.secondaryResult].filter(
+    isDefined,
+  );
 }
 
 export function createToothResult(value = "", isInvalid = false): ToothResult {

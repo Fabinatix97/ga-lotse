@@ -7,9 +7,9 @@ package de.eshg.security.auth.synapse;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.security.auth.AuthProperties;
-import org.matrix.logout.ApiClient;
-import org.matrix.logout.api.SessionManagementApi;
-import org.matrix.logout.auth.HttpBearerAuth;
+import org.matrix.whoami.ApiClient;
+import org.matrix.whoami.api.SessionManagementApi;
+import org.matrix.whoami.auth.HttpBearerAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,19 +23,20 @@ public class MatrixLogoutClient {
 
   private final SessionManagementApi sessionManagementApi;
   private final SynapseTokenDataHolder synapseTokenDataHolder;
-  private final AuthProperties authProperties;
+  private final MatrixRefreshClient matrixRefreshClient;
 
   public MatrixLogoutClient(
       AuthProperties authProperties,
       RestClient.Builder restClientBuilder,
-      SynapseTokenDataHolder synapseTokenDataHolder) {
+      SynapseTokenDataHolder synapseTokenDataHolder,
+      MatrixRefreshClient matrixRefreshClient) {
     this.synapseTokenDataHolder = synapseTokenDataHolder;
-    this.authProperties = authProperties;
     ApiClient apiClient = new ApiClient(restClientBuilder.build());
     apiClient.setBasePath(
         MatrixClientUtils.replaceSchemeHostAndPort(apiClient.getBasePath(), authProperties));
     configureBearerAuth(apiClient, synapseTokenDataHolder);
     this.sessionManagementApi = new SessionManagementApi(apiClient);
+    this.matrixRefreshClient = matrixRefreshClient;
   }
 
   private void configureBearerAuth(
@@ -52,21 +53,30 @@ public class MatrixLogoutClient {
     return synapseTokenDataHolder.getSynapseTokenData() != null;
   }
 
+  /**
+   * Invalidates SynapseRefreshToken, clears cached SynapseAccessToken and SynapseRefreshToken.
+   *
+   * <p>NOTICE: Calling synapse/logout endpoint destroys deviceId and Olm session on the server,
+   * forcing user to create new device on next login which will **not** be able to decrypt chat
+   * message history since all the room keys were stored on deviceId destroyed by synapse/logout! In
+   * order to work around this unfortunate design flaw we are calling synapse/refresh endpoint in
+   * order to invalidate current SynapseRefreshToken, and then we don't cache the newly obtained
+   * SynapseRefreshToken.
+   */
   public void logout() {
     if (isLoggedIn()) {
-      if (authProperties.synapse().activeLogoutEnabled()) {
-        log.debug(
-            "Calling Synapse logout for deviceId={}.",
-            synapseTokenDataHolder.getSynapseTokenData().deviceId());
-        sessionManagementApi.logout();
-      } else {
-        log.warn(
-            "Active Logout is disabled until proper SSSS backup handling is implemented in the frontend. "
-                + "Reason: Calling synapse/logout endpoint destroys deviceId and Olm session on the server. "
-                + "Frontend using this deviceId would no longer be able to decrypt incoming messages.");
-      }
-    } else {
-      log.trace("Skipping logout call - No active Synapse session.");
+      log.debug(
+          "Calling synapse/refresh token endpoint in order to invalidate current SynapseRefreshToken.");
+      SynapseTokenData refreshedSynapseTokenData =
+          matrixRefreshClient.refresh(synapseTokenDataHolder.getSynapseTokenData());
+      synapseTokenDataHolder.setSynapseTokenData(refreshedSynapseTokenData);
+
+      // SynapseRefreshToken is invalidated **only** if the new SynapseAccessToken is used at least
+      // once:
+      sessionManagementApi.getTokenOwner();
+
+      log.debug("Remove SynapseTokenData from cache");
+      synapseTokenDataHolder.setSynapseTokenData(null);
     }
   }
 }

@@ -26,12 +26,11 @@ import { mapFormValuesToApi } from "./helpers";
 
 const INITIAL_VALUES: FormDataWithoutConcern = defaultAnamnesisFormValues();
 
-export const StepKey = {
+const StepKey = {
   GeneralStep: "GeneralStep",
   PreviousIllnessesStep: "PreviousIllnessesStep",
   PreventionStep: "PreventionStep",
 } as const;
-export type StepKey = (typeof StepKey)[keyof typeof StepKey];
 
 const steps = [
   <GeneralStep key={StepKey.GeneralStep} />,
@@ -71,8 +70,8 @@ export function AnamnesisStepper() {
             <AnamnesisTitle />
             <Formik
               initialValues={INITIAL_VALUES}
-              onSubmit={handleSubmit}
               innerRef={anamnesisFormRef}
+              onSubmit={handleSubmit}
             >
               <AnamnesisStepLayout>{currentNode}</AnamnesisStepLayout>
             </Formik>

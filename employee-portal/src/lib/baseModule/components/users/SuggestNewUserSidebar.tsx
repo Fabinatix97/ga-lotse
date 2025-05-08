@@ -25,7 +25,7 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
 import { usePhoneNumberValidator } from "@/lib/baseModule/components/users/validation";
@@ -83,7 +83,7 @@ function SuggestNewUserFormSidebar({
   formRef,
   availableGroups,
 }: SuggestNewUserFormSidebarProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const phoneNumberValidator = usePhoneNumberValidator();
   const suggestUser = useSuggestUser();
 
@@ -115,14 +115,14 @@ function SuggestNewUserFormSidebar({
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title={"Benutzer vorschlagen"}>
+          <SidebarContent title="Benutzer vorschlagen">
             <Grid container spacing={2}>
               <Grid xxs={12}>
                 <InputField
-                  name={"username"}
-                  label={"Benutzername"}
-                  placeholder={"Beispielsweise erika.mustermann"}
-                  required={"Bitte einen Benutzernamen angeben"}
+                  name="username"
+                  label="Benutzername"
+                  placeholder="Beispielsweise erika.mustermann"
+                  required="Bitte einen Benutzernamen angeben"
                   validate={validatePipe(
                     validateLength(3, 200),
                     validateUsernameCharacters,
@@ -131,9 +131,9 @@ function SuggestNewUserFormSidebar({
               </Grid>
               <Grid xxs={12}>
                 <EmailField
-                  name={"email"}
-                  label={"E-Mail"}
-                  required={"Bitte eine E-Mail angeben"}
+                  name="email"
+                  label="E-Mail"
+                  required="Bitte eine E-Mail angeben"
                 />
               </Grid>
               <Grid xxs={6}>
@@ -154,39 +154,39 @@ function SuggestNewUserFormSidebar({
               </Grid>
               <Grid xxs={12} sm={6}>
                 <InputField
-                  name={"firstName"}
-                  label={"Vorname"}
-                  required={"Bitte einen Vornamen angeben"}
+                  name="firstName"
+                  label="Vorname"
+                  required="Bitte einen Vornamen angeben"
                   validate={validateLength(2, 200)}
                 />
               </Grid>
               <Grid xxs={12} sm={6}>
                 <InputField
-                  name={"lastName"}
-                  label={"Nachname"}
-                  required={"Bitte einen Nachnamen angeben"}
+                  name="lastName"
+                  label="Nachname"
+                  required="Bitte einen Nachnamen angeben"
                   validate={validateLength(2, 200)}
                 />
               </Grid>
               <Grid xxs={12}>
                 <PhoneNumberField
-                  name={"phoneNumber"}
-                  label={"Telefonnummer"}
+                  name="phoneNumber"
+                  label="Telefonnummer"
                   validate={phoneNumberValidator}
                 />
               </Grid>
               <Grid xxs={12}>
                 <SelectField
                   multiple
-                  name={`groups`}
-                  label={`Gruppen`}
+                  name="groups"
+                  label="Gruppen"
                   options={availableGroups.map((name) => ({
                     value: name,
                     label: translateUserGroup(name),
                   }))}
                   renderValue={(groups) =>
                     groups.map((group) => (
-                      <Chip key={group.value} color={"primary"}>
+                      <Chip key={group.value} color="primary">
                         {group.label}
                       </Chip>
                     ))
@@ -197,7 +197,7 @@ function SuggestNewUserFormSidebar({
           </SidebarContent>
           <SidebarActions>
             <FormButtonBar
-              submitLabel={"Vorschlagen"}
+              submitLabel="Vorschlagen"
               submitting={isSubmitting}
               onCancel={() => onClose(false)}
             />

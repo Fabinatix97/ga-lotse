@@ -54,8 +54,8 @@ function EntryDetailsSidebar({
     return (
       <EditEntrySidebarContent
         version={data}
-        onAbort={() => setIsEditing(false)}
         formRef={formRef}
+        onAbort={() => setIsEditing(false)}
       />
     );
   }

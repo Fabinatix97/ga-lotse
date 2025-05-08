@@ -56,7 +56,7 @@ export const auditLogAccessibleColumns = [
           color="primary"
           startDecorator={
             <VisibilityOutlined
-              size={"md"}
+              size="md"
               color="primary"
               aria-label="anzeigen"
             />

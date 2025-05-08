@@ -11,7 +11,7 @@ import { ApiOrthodonticFinding } from "@eshg/dental-api";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 
-import { ORTHODONTIC_FINDINGS } from "@/translations/examination";
+import { ORTHODONTIC_FINDINGS } from "../../translations/examination";
 
 const ORTHODONTIC_FINDINGS_OPTIONS =
   buildEnumOptions<ApiOrthodonticFinding>(ORTHODONTIC_FINDINGS);
@@ -47,7 +47,7 @@ export function OrthodonticFindingsField() {
       name="orthodonticFindings"
       label="KFO-Anomalien"
       options={options}
-      multiple={true}
+      multiple
       renderValue={() => valueItems}
     />
   );

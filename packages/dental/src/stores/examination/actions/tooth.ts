@@ -5,20 +5,20 @@
 
 import { ApiTooth } from "@eshg/dental-api";
 
-import { ToothDiagnosis } from "@/api/models/ToothDiagnosis";
-import { RELATED_TEETH } from "@/config/teeth";
-import { ExaminationState } from "@/stores/examination/examinationStore";
+import { ToothDiagnosis } from "../../../api/models/ToothDiagnosis";
+import { RELATED_TEETH } from "../../../config/teeth";
+import { ExaminationState } from "../examinationStore";
 import {
   createToothWithDiagnosis,
   resolveToothDiagnosisResult,
-} from "@/stores/examination/factories";
+} from "../factories";
 import {
   AddableTooth,
   Dentition,
   ToothContext,
   ToothWithDiagnosis,
   isAddableTooth,
-} from "@/stores/examination/types";
+} from "../types";
 
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
 import { hasAnyResult } from "./result";

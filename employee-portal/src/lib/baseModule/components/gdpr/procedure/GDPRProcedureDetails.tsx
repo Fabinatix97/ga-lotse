@@ -178,7 +178,7 @@ export function GDPRProcedureDetails({
           </SectionTile>
         ))}
       </Stack>
-      <Stack gap={3} flexBasis={"50ch"}>
+      <Stack gap={3} flexBasis="50ch">
         <QueryBoundary>
           <ProcedureDetailsTile procedure={procedure} />
         </QueryBoundary>

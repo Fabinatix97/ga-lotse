@@ -8,21 +8,23 @@
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import { ButtonBar } from "@/components/buttons/ButtonBar";
-import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
-import { useCreateProcedureLabelSidebar } from "@/features/procedureLabels/components/CreateProcedureLabelSidebar";
-import { useUpdateProcedureLabelSidebar } from "@/features/procedureLabels/components/UpdateProcedureLabelSidebar";
-import { ProcedureLabelClient } from "@/features/procedureLabels/types/procedureLabelClient";
-import { procedureLabelColumns } from "@/features/procedureLabels/utils/procedureLabelsTableColumns";
-import { DataTable } from "@/features/table/components/DataTable";
-import { TablePage } from "@/features/table/components/TablePage";
-import { TableSheet } from "@/features/table/components/TableSheet";
+import { ButtonBar } from "../../../components/buttons/ButtonBar";
+import { DataTable } from "../../table/components/DataTable";
+import { TablePage } from "../../table/components/TablePage";
+import { TableSheet } from "../../table/components/TableSheet";
+import { ProcedureLabel } from "../api/models/ProcedureLabel";
+import { ProcedureLabelClient } from "../types/procedureLabelClient";
+import { procedureLabelColumns } from "../utils/procedureLabelsTableColumns";
+
+import { useCreateProcedureLabelSidebar } from "./CreateProcedureLabelSidebar";
+import { useUpdateProcedureLabelSidebar } from "./UpdateProcedureLabelSidebar";
 
 interface ProcedureLabelsTableProps {
   procedureLabels: ProcedureLabel[];
   loading: boolean;
   procedureLabelApi: ProcedureLabelClient;
   hasReadOnlyProcedureLabels: boolean;
+  canUserWrite: boolean;
 }
 
 export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
@@ -30,41 +32,42 @@ export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
   const updateProcedureLabelSidebar = useUpdateProcedureLabelSidebar();
 
   return (
-    <>
-      <TablePage
-        controls={
+    <TablePage
+      controls={
+        props.canUserWrite ? (
           <ButtonBar
             right={
               <Button
                 startDecorator={<Add />}
+                size="sm"
                 onClick={() =>
                   createProcedureLabelSidebar.open({
                     labelApi: props.procedureLabelApi,
                   })
                 }
-                size="sm"
               >
                 Kennung hinzufügen
               </Button>
             }
           />
-        }
-      >
-        <TableSheet loading={props.loading}>
-          <DataTable
-            data={props.procedureLabels}
-            columns={procedureLabelColumns({
-              onEdit: (item) =>
-                updateProcedureLabelSidebar.open({
-                  procedureLabelApi: props.procedureLabelApi,
-                  procedureLabel: item,
-                }),
-              hasReadOnlyProcedureLabels: props.hasReadOnlyProcedureLabels,
-            })}
-            minWidth={750}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+        ) : null
+      }
+    >
+      <TableSheet loading={props.loading}>
+        <DataTable
+          data={props.procedureLabels}
+          columns={procedureLabelColumns({
+            onEdit: (item) =>
+              updateProcedureLabelSidebar.open({
+                procedureLabelApi: props.procedureLabelApi,
+                procedureLabel: item,
+              }),
+            hasReadOnlyProcedureLabels: props.hasReadOnlyProcedureLabels,
+            canUserWrite: props.canUserWrite,
+          })}
+          minWidth={750}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

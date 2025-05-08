@@ -17,7 +17,7 @@ import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { UserFromDirectory } from "@/lib/businessModules/chat/shared/types";
 import { getChatUser } from "@/lib/businessModules/chat/shared/utils";
 
-export interface MemberInfoViewProps {
+interface MemberInfoViewProps {
   userId: string;
   onClose: () => void;
 }

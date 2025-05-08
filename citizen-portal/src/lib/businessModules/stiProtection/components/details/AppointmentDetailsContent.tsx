@@ -24,10 +24,8 @@ import {
 } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiCitizenProcedure, ApiConcern } from "@eshg/sti-protection-api";
 
-import {
-  useAnonymousIdentificationDocumentQuery,
-  useDepartmentInfo,
-} from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
+import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
+import { useDepartmentInfo } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
 import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
 import { DownloadDocumentCard } from "@/lib/businessModules/stiProtection/components/shared/DownloadDocumentCard";
 import { MedicalHistoryCard } from "@/lib/businessModules/stiProtection/components/shared/MedicalHistoryCard";
@@ -53,12 +51,10 @@ import { DepartmentInfoProps } from "@/lib/shared/types";
 
 export function AppointmentDetailsContent() {
   const [{ procedure }] = useFormData<{ procedure: ApiCitizenProcedure }>();
-  const { person, appointment, concern, medicalHistorySubmitted } = procedure;
+  const { appointment, concern, medicalHistorySubmitted } = procedure;
   const { t } = useTranslation("stiProtection/appointmentInfo");
-  const { code } = useLocale();
   const citizenRoutes = useConcernedCitizenRoutes(concern);
-  const { data: departmentInfo } = useDepartmentInfo(concern);
-  const document = useAnonymousIdentificationDocumentQuery(procedure.id);
+  const document = useAnonymousIdentificationDocumentQuery();
 
   const hasUpcomingAppointment = appointment != null;
 
@@ -89,33 +85,43 @@ export function AppointmentDetailsContent() {
           />
         </ContentSheet>
       ) : null}
-      <ContentSheet>
-        <ContentSheetTitle>{t("info.title")}</ContentSheetTitle>
-        <InfoSectionGrid>
-          <YearOfBirthSection yearOfBirth={person.yearOfBirth} />
-          <ServiceSection concern={concern} />
-          {hasUpcomingAppointment ? (
-            <AppointmentDateSection date={appointment.start} locale={code} />
-          ) : null}
-          {hasUpcomingAppointment ? (
-            <AppointmentTimeSection
-              time={appointment.start}
-              duration={durationBetweenDatesInMinutes(
-                appointment.start,
-                appointment.end,
-              )}
-              locale={code}
-            />
-          ) : null}
-          <AddressSection
-            department={departmentInfo}
-            localePath="stiProtection/overview"
-          />
-          <InternetSection concern={concern} />
-          <ContactSection department={departmentInfo} />
-        </InfoSectionGrid>
-      </ContentSheet>
     </GridColumnStack>
+  );
+}
+export function Information() {
+  const [{ procedure }] = useFormData<{ procedure: ApiCitizenProcedure }>();
+  const { person, appointment, concern } = procedure;
+  const { t } = useTranslation("stiProtection/appointmentInfo");
+  const { code } = useLocale();
+  const { data: departmentInfo } = useDepartmentInfo(concern);
+  const hasUpcomingAppointment = appointment != null;
+  return (
+    <ContentSheet>
+      <ContentSheetTitle>{t("info.title")}</ContentSheetTitle>
+      <InfoSectionGrid>
+        <YearOfBirthSection yearOfBirth={person.yearOfBirth} />
+        <ServiceSection concern={concern} />
+        {hasUpcomingAppointment ? (
+          <AppointmentDateSection date={appointment.start} locale={code} />
+        ) : null}
+        {hasUpcomingAppointment ? (
+          <AppointmentTimeSection
+            time={appointment.start}
+            duration={durationBetweenDatesInMinutes(
+              appointment.start,
+              appointment.end,
+            )}
+            locale={code}
+          />
+        ) : null}
+        <AddressSection
+          department={departmentInfo}
+          localePath="stiProtection/overview"
+        />
+        <InternetSection concern={concern} />
+        <ContactSection department={departmentInfo} />
+      </InfoSectionGrid>
+    </ContentSheet>
   );
 }
 
@@ -194,7 +200,7 @@ function InternetSection({ concern }: { concern?: ApiConcern }) {
   return (
     <InfoSection icon={<LaptopMacOutlined />}>
       <InfoSectionTitle>{t("info.internet_section.title")}</InfoSectionTitle>
-      <InternalLink href={"/"}>
+      <InternalLink href="/">
         {t("info.internet_section.health_department")}
       </InternalLink>
       <InternalLink href={ref}>

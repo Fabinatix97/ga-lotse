@@ -144,8 +144,7 @@ public final class ExaminationMapper {
     }
     ToothDiagnosis toothDiagnosis = new ToothDiagnosis();
     toothDiagnosis.setMainResult(mapToDomain(dto.mainResult()));
-    toothDiagnosis.setSecondaryResult1(mapToDomain(dto.secondaryResult1()));
-    toothDiagnosis.setSecondaryResult2(mapToDomain(dto.secondaryResult2()));
+    toothDiagnosis.setSecondaryResult(mapToDomain(dto.secondaryResult()));
     return toothDiagnosis;
   }
 
@@ -156,8 +155,7 @@ public final class ExaminationMapper {
     return new ToothDiagnosisDto(
         mapToDto(tooth),
         mapToDto(toothDiagnosis.mainResult()),
-        mapToDto(toothDiagnosis.secondaryResult1()),
-        mapToDto(toothDiagnosis.secondaryResult2()));
+        mapToDto(toothDiagnosis.secondaryResult()));
   }
 
   private static MainResultDto mapToDto(MainResult mainResult) {

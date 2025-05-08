@@ -41,12 +41,12 @@ export function NavMenu({
 
   return (
     <Box
+      ref={boxRef}
       component="nav"
       display="flex"
       flexDirection="row"
       flex={1}
       paddingBlock={1}
-      ref={boxRef}
     >
       {navigationItems.map((item) => (
         <NavMenuItem
@@ -86,7 +86,6 @@ function NavMenuItem({
         onOpenChange={(_, isOpen) => handleOpenChange(isOpen)}
       >
         <MenuButton
-          onClick={handleClick}
           variant="plain"
           size="lg"
           color="primary"
@@ -96,6 +95,7 @@ function NavMenuItem({
               color: (theme) => `${theme.palette.primary.outlinedColor}`,
             },
           }}
+          onClick={handleClick}
         >
           <Typography
             component="p"
@@ -146,7 +146,7 @@ function NavMenuItem({
                 <ListItemDecorator>
                   <GradientIcon iconClass={subItem.icon} size="md" />
                 </ListItemDecorator>
-                <Box display={"flex"} flexDirection={"column"}>
+                <Box display="flex" flexDirection="column">
                   <Typography
                     level="title-md"
                     color={selected ? "primary" : undefined}

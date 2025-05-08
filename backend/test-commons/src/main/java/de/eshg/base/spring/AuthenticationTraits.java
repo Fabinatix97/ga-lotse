@@ -88,7 +88,9 @@ public interface AuthenticationTraits {
   private static HttpHeaders newHttpHeaders(
       AccessToken accessToken, MultiValueMap<String, String> customHeaders) {
     HttpHeaders headers = new HttpHeaders();
-    headers.setBearerAuth(accessToken.jwt());
+    if (accessToken.jwt() != null) {
+      headers.setBearerAuth(accessToken.jwt());
+    }
 
     if (customHeaders != null) {
       headers.addAll(customHeaders);

@@ -167,8 +167,8 @@ function DownloadFileButton({
       variant="soft"
       color="warning"
       startDecorator={<FileDownloadOutlined />}
-      onClick={() => download()}
       sx={{ justifyContent: "flex-start" }}
+      onClick={() => download()}
     >
       {children}
     </Button>

@@ -7,9 +7,9 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { ChildApi } from "@eshg/dental-api";
 
-import { childApiQueryKey } from "@/config/apiQueryKeys";
-import { mapChildDetails } from "@/features/children/api/models/ChildDetails";
-import { mapChildExamination } from "@/features/children/api/models/ChildExamination";
+import { childApiQueryKey } from "../../../../config/apiQueryKeys";
+import { mapChildDetails } from "../models/ChildDetails";
+import { mapChildExamination } from "../models/ChildExamination";
 
 export function getChildDetailsQuery(childApi: ChildApi, childId: string) {
   return queryOptions({

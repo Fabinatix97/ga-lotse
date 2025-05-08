@@ -28,7 +28,7 @@ import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/ro
 import { useFetchTasksForTeamViewOptions } from "@/lib/businessModules/inspection/api/queries/useFetchTasksForTeamViewOptions";
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
 
-export interface TaskCounts {
+interface TaskCounts {
   nonOverdueTaskCount: number;
   overdueTaskCount: number;
 }
@@ -129,11 +129,11 @@ export function Teamview(props: Readonly<TeamviewPageProps>) {
         />
       }
       filterSettings={
-        filterSettings.filterSettingsVisible && (
+        filterSettings.filterSettingsVisible ? (
           <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
             <FilterSettings {...filterSettings.filterSettingsProps} />
           </FilterSettingsSheet>
-        )
+        ) : null
       }
     >
       <TableSheet>

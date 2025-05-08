@@ -44,10 +44,8 @@ function UploadTemplateSidebar(props: UploadTemplateSidebarProps) {
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
       saveLabel="Hochladen"
-      onSubmit={onSubmit}
       steps={[
         () => ({
           title: "Auswertungsvorlage hochladen",
@@ -62,6 +60,8 @@ function UploadTemplateSidebar(props: UploadTemplateSidebarProps) {
           },
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={onSubmit}
     />
   );
 }

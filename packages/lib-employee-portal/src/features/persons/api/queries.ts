@@ -11,8 +11,11 @@ import {
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 
-import { facilityApiQueryKey, personApiQueryKey } from "@/config/apiQueryKeys";
-import { useApi } from "@/contexts/api";
+import {
+  facilityApiQueryKey,
+  personApiQueryKey,
+} from "../../../config/apiQueryKeys";
+import { useApi } from "../../../contexts/api";
 
 export function useSearchReferencePersonsQuery(
   request: SearchReferencePersonsRequest,

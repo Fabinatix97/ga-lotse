@@ -25,7 +25,7 @@ export interface ProcessImportFormValues {
   file: File | null;
 }
 
-export interface ProcessImportFormProps {
+interface ProcessImportFormProps {
   onSubmit: (values: ProcessImportFormValues) => Promise<void>;
   onClose: () => void;
 }
@@ -39,7 +39,7 @@ export function ProcessImportForm({
   onClose: handleClose,
 }: Readonly<ProcessImportFormProps>) {
   return (
-    <Formik onSubmit={handleSubmit} initialValues={INITIAL_VALUES}>
+    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {({ isSubmitting }) => (
         <SidebarForm>
           <SidebarContent title="Daten importieren">
@@ -57,7 +57,7 @@ export function ProcessImportForm({
             <ButtonBar
               right={
                 <>
-                  <Button onClick={handleClose} variant="soft" color="neutral">
+                  <Button variant="soft" color="neutral" onClick={handleClose}>
                     Abbrechen
                   </Button>
                   <SubmitButton submitting={isSubmitting}>
@@ -83,8 +83,8 @@ function DownloadTemplateButton() {
     <ButtonLink
       startDecorator={<FileDownload />}
       fontSize="sm"
-      onClick={() => templateFile.download()}
       sx={{ justifyContent: "flex-start" }}
+      onClick={() => templateFile.download()}
     >
       Beispiel-Datei herunterladen
     </ButtonLink>

@@ -23,7 +23,7 @@ function getLabStatusProgress(status: ApiLabStatus): number {
   return statuses.indexOf(status);
 }
 
-export interface LabStatusIndicatorProps {
+interface LabStatusIndicatorProps {
   labStatus: ApiLabStatus;
 }
 
@@ -33,13 +33,13 @@ export function LabStatusIndicator(props: LabStatusIndicatorProps) {
 
   return (
     <Sheet>
-      <Typography level={"h3"} mb={3}>
+      <Typography level="h3" mb={3}>
         Labortests Fortschritt
       </Typography>
       <Stack
         component="section"
         gap={1}
-        aria-label={"Fortschritsanzeige der Labortests"}
+        aria-label="Fortschritsanzeige der Labortests"
       >
         {DISPLAYED_STATUS.map((status, index) => (
           <StatusIndicator

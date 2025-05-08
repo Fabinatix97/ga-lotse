@@ -10,11 +10,11 @@ import { GetTextBlocksRequest } from "@eshg/inspection-api";
 import { useTextBlockApi } from "@/lib/businessModules/inspection/api/clients";
 import { textBlockApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 
-export function textBlockGettersQueryKey(request: GetTextBlocksRequest) {
+function textBlockGettersQueryKey(request: GetTextBlocksRequest) {
   return textBlockApiQueryKey(["textBlockGetters", request]);
 }
 
-export function getTextBlocksQueryKey(request: GetTextBlocksRequest) {
+function getTextBlocksQueryKey(request: GetTextBlocksRequest) {
   return textBlockApiQueryKey([
     textBlockGettersQueryKey(request),
     "getTextBlocks",

@@ -24,7 +24,7 @@ export function TypeSwitchButtons({
         padding: 0,
       }}
     >
-      <ToggleButtonGroup data-testid={"type-switch-buttons"} color="neutral">
+      <ToggleButtonGroup data-testid="type-switch-buttons" color="neutral">
         <Button
           data-testid={
             overviewAppointmentType === OverviewAppointmentType.UPCOMING
@@ -36,7 +36,7 @@ export function TypeSwitchButtons({
               ? "solid"
               : "plain"
           }
-          color={"primary"}
+          color="primary"
           sx={(theme) => ({
             flex: 1,
             height: "40px",
@@ -60,7 +60,7 @@ export function TypeSwitchButtons({
               ? "solid"
               : "plain"
           }
-          color={"primary"}
+          color="primary"
           sx={(theme) => ({
             flex: 1,
             height: "40px",

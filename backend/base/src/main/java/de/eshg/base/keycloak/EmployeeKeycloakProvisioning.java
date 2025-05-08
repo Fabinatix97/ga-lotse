@@ -12,8 +12,6 @@ import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ADMIN_CLI_CLIENT_ID
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.BROKER_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.REALM_MANAGEMENT_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SECURITY_ADMIN_CONSOLE_CLIENT_ID;
-import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_ID_PREFIX;
-import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_NAME_PREFIX;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.getClientRepresentationAttributes;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -32,7 +30,6 @@ import org.keycloak.representations.idm.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * The purpose of this component is to encapsulate ESHG-specific logic for provisioning Keycloak.
@@ -42,15 +39,11 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
 
   public static final String BEAN_NAME = "employeeKeycloakProvisioning";
   public static final String CUSTOM_BROWSER_FLOW_ALIAS = "custom browser flow";
-  private final URI synapseUrl;
-  private final String synapseClientSecret;
 
   public EmployeeKeycloakProvisioning(
       EmployeeKeycloakClient employeeKeycloakClient,
       KeycloakProperties keycloakProperties,
       @Value("${eshg.employee-portal.reverse-proxy.url}") URI reverseProxyUrl,
-      @Value("${eshg.synapse.url:}") URI synapseUrl,
-      @Value("${eshg.synapse.client.secret:}") String synapseClientSecret,
       MutexService mutexService) {
     super(
         employeeKeycloakClient,
@@ -58,8 +51,6 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
         reverseProxyUrl,
         keycloakProperties.employeeRealm(),
         mutexService);
-    this.synapseUrl = synapseUrl;
-    this.synapseClientSecret = synapseClientSecret;
   }
 
   @VisibleForTesting
@@ -100,12 +91,6 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     List<ClientRepresentation> keycloakClients = new ArrayList<>();
     keycloakClients.add(buildEshgAuthServiceClient());
     keycloakClients.addAll(buildModuleClients(configuredModuleClientSecrets));
-    if (StringUtils.isNotBlank(synapseClientSecret)) {
-      keycloakClients.add(buildEshgSynapseClient());
-    } else {
-      log.info(
-          "Secret for Synapse client have not been provided, therefore it will NOT be provisioned.");
-    }
 
     keycloakClient.createOrUpdateClients(keycloakClients);
     keycloakClient.updateClientServiceAccountUserRoles(
@@ -181,26 +166,6 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
             authentication.updateRequiredAction(action.getProviderId(), action.representation());
           }
         });
-  }
-
-  private ClientRepresentation buildEshgSynapseClient() {
-    ClientRepresentation clientRepresentation = new ClientRepresentation();
-    clientRepresentation.setClientId(SYSTEM_CLIENT_ID_PREFIX + "synapse");
-    clientRepresentation.setName(SYSTEM_CLIENT_NAME_PREFIX + "Matrix Chat Client");
-    clientRepresentation.setFrontchannelLogout(false);
-    clientRepresentation.setWebOrigins(List.of("+"));
-    clientRepresentation.setSecret(synapseClientSecret);
-    clientRepresentation.setPublicClient(false);
-    clientRepresentation.setDefaultClientScopes(List.of(ESHG_CLIENT_SCOPE_NAME));
-    clientRepresentation.setOptionalClientScopes(List.of());
-    clientRepresentation.setAttributes(getClientRepresentationAttributes(Map.of()));
-    clientRepresentation.setRedirectUris(
-        List.of(
-            UriComponentsBuilder.fromUri(synapseUrl)
-                .path("/_synapse/client/oidc/callback")
-                .toUriString()));
-
-    return clientRepresentation;
   }
 
   private List<ClientRepresentation> buildModuleClients(

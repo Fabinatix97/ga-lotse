@@ -25,9 +25,9 @@ export function RefreshButton({ queryKey, loading }: RefreshButtonProps) {
     <Button
       startDecorator={<Cached />}
       variant="outlined"
-      onClick={refresh}
       loading={loading}
       loadingPosition="start"
+      onClick={refresh}
     >
       Aktualisieren
     </Button>

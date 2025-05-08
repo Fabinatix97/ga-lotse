@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMutation } from "@tanstack/react-query";
-
 import {
   ApiAddUserRequest,
   ApiEmployeeUserKeys,
@@ -91,32 +89,5 @@ export function useInvalidateUserSessions() {
     mutationFn: (sessions: string[]) =>
       userApi.invalidateActiveSessions({ sessions }),
     onSuccess: () => snackbar.confirmation("Sitzungen wurden getrennt."),
-  });
-}
-
-export function useUpdateSelfUserChatUsername() {
-  const userApi = useUserApi();
-  const snackbar = useSnackbar();
-
-  return useMutation({
-    mutationFn: async ({
-      externalChatUsername,
-      phoneNumber,
-      salutation,
-      title,
-    }: ApiUpdateSelfUserRequest) => {
-      await userApi.updateSelfUser({
-        phoneNumber,
-        externalChatUsername,
-        salutation,
-        title,
-      });
-    },
-    onSuccess: () => {
-      snackbar.confirmation("Profil gespeichert");
-    },
-    onError: () => {
-      snackbar.error("Profil nicht gespeichert");
-    },
   });
 }

@@ -37,7 +37,7 @@ export function DocumentSection(props: Readonly<DocumentProps>) {
       {props.documentHeader}
       <Stack gap={4}>
         {props.documentSection.sectionElements.map((element, index) => (
-          <Stack gap={2} key={index} data-testid={`document-element-${index}`}>
+          <Stack key={index} gap={2} data-testid={`document-element-${index}`}>
             <>
               {element.anamnesisQuestion && (
                 <AnamnesisQuestion

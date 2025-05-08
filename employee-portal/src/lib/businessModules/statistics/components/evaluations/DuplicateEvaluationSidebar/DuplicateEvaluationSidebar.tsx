@@ -52,9 +52,7 @@ function DuplicateEvaluationSidebar(props: DuplicateEvaluationSidebarProps) {
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={handleSubmit}
       steps={[
         () => ({
           title: "Auswertung duplizieren",
@@ -70,6 +68,8 @@ function DuplicateEvaluationSidebar(props: DuplicateEvaluationSidebarProps) {
           },
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={handleSubmit}
     />
   );
 }

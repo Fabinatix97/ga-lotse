@@ -21,7 +21,7 @@ import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 export default function AuditlogPage() {
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Auditlog"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Auditlog" />}>
       <MainContentLayout fullViewportHeight>
         <RestrictedPage requiredUserRole={ApiUserRole.AuditlogDecryptAndAccess}>
           <AuditlogView />

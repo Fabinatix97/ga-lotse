@@ -10,6 +10,7 @@ import { FieldArray } from "formik";
 import { ComponentType, ReactNode, useEffect, useRef, useState } from "react";
 import { isDefined } from "remeda";
 
+import { useTranslation } from "../../i18n/useTranslation";
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 import { FormAddMoreButton } from "../form/FormAddMoreButton";
@@ -42,6 +43,7 @@ export function getIndexLabel(label: ReactNode, index: number) {
 }
 
 export function InputArrayField(props: InputArrayFieldProps) {
+  const { t } = useTranslation();
   const FieldComponent = props.fieldComponent ?? InputField;
   const field = useBaseField(props);
   const minCount = Math.max(1, props.minCount ?? 1);
@@ -97,13 +99,13 @@ export function InputArrayField(props: InputArrayFieldProps) {
                   sx={{
                     display: canRemove ? undefined : "none",
                   }}
-                  color={"danger"}
-                  aria-label={"Entfernen"}
+                  color="danger"
+                  aria-label={t("common.delete")}
+                  disabled={disabled}
                   onClick={() => {
                     setActionFlag({ action: "delete", onIndex: index });
                     remove(index);
                   }}
-                  disabled={disabled}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -113,6 +115,7 @@ export function InputArrayField(props: InputArrayFieldProps) {
             />
           ))}
           <FormAddMoreButton
+            disabled={disabled}
             onClick={() => {
               setActionFlag({
                 action: "add",
@@ -120,7 +123,6 @@ export function InputArrayField(props: InputArrayFieldProps) {
               });
               push("");
             }}
-            disabled={disabled}
           >
             {props.addMoreLabel}
           </FormAddMoreButton>

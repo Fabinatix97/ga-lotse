@@ -94,10 +94,6 @@ export function formatTravelDestinations(
   return `${label} ${travelDestinations}`;
 }
 
-export function formatTravelStartDate(label: string, travelStartDate: string) {
-  return `${label} ${travelStartDate}`;
-}
-
 export function travelDestinationsTranslation(
   destinations: ApiCountryCode[],
   translateCountry: (countryCode: ApiCountryCode) => string,

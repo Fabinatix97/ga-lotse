@@ -151,8 +151,8 @@ export function VersionSheet({
           backgroundColor: (theme) => theme.palette.neutral.plainHoverBg,
         },
       }}
-      onClick={handleSheetClicked}
       aria-label={label}
+      onClick={handleSheetClicked}
     >
       <Stack direction="column" gap={2}>
         <Stack direction="row" gap={2}>
@@ -182,7 +182,7 @@ export function VersionSheet({
         {nameChange && (
           <Stack direction="row">
             <Alert
-              color={"primary"}
+              color="primary"
               message={`Die Checkliste wurde umbenannt zu „${nameChange}”.`}
               sx={{ width: "100%" }}
             />

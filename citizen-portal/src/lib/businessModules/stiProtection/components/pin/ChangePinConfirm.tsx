@@ -42,7 +42,7 @@ export function ChangePinConfirm() {
         </ContentSheet>
       }
       sidePanel={
-        <ContentSheet sx={{ gridArea: "sidebar" }}>
+        <ContentSheet>
           <SubmitButton submitting={isSubmitting}>
             {t("confirm.link_label")}
           </SubmitButton>

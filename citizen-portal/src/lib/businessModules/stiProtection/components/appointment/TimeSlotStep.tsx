@@ -4,10 +4,9 @@
  */
 
 import assert from "assert";
-import { startOfMonth } from "date-fns";
+import { isSameDay, startOfMonth } from "date-fns";
 import { prop, sortBy } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 
@@ -89,24 +88,24 @@ export function TimeSlotStep() {
     };
   }
 
+  function handleDateSelected(value: Date) {
+    if (formData.date != null && isSameDay(value, formData.date)) {
+      return;
+    }
+    setFormData({
+      date: value,
+      appointment: undefined,
+    });
+  }
+
   return (
     <StepLayout initialValues={initialValues} onSubmit={onSubmit}>
       <StepSubTitle title={t("time_slot.title")} />
-      <Alert
-        color="primary"
-        title={t("time_slot.consent_note_title")}
-        message={t("time_slot.consent_note_message")}
-      />
       <AppointmentPickerSection
         appointments={sortedAppointments}
         name="appointment"
         t={t}
-        onDateSelected={(value) =>
-          setFormData({
-            date: value,
-            appointment: undefined,
-          })
-        }
+        onDateSelected={handleDateSelected}
         onAppointmentSelected={(value) => setFormData({ appointment: value })}
       />
     </StepLayout>

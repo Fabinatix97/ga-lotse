@@ -39,14 +39,14 @@ export function MultiAutocompleteField(props: MultiAutocompleteFieldProps) {
     <BaseField {...fieldProps}>
       <CustomAutocomplete
         {...autocompleteProps}
-        multiple={true}
+        multiple
         freeSolo={false}
         value={field.input.value}
+        options={props.options.map((opt) => opt.value)}
         onChange={(_, newValue) => {
           handleChange(newValue);
         }}
         onInputChange={handleInputChange}
-        options={props.options.map((opt) => opt.value)}
       />
     </BaseField>
   );

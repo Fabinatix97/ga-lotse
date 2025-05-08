@@ -25,7 +25,7 @@ export function useMetadataDetailsSidebar() {
   });
 }
 
-export function MetadataDetailsSidebar({
+function MetadataDetailsSidebar({
   metadata,
 }: Readonly<CreateChecklistVersionsSidebarProps>) {
   const createdAt = isNonNullish(metadata?.createdAt)
@@ -35,10 +35,10 @@ export function MetadataDetailsSidebar({
   return (
     <SidebarContent title="Details">
       <Grid container direction="column" gap={2}>
-        <DetailsItem label={"Beschreibung"} value={metadata?.description} />
-        <DetailsItem label={"Änderungshinweis"} value={metadata?.changeLog} />
-        <DetailsItem label={"Kontakt"} value={metadata?.contact} />
-        <DetailsItem label={"Erstellt am"} value={createdAt} />
+        <DetailsItem label="Beschreibung" value={metadata?.description} />
+        <DetailsItem label="Änderungshinweis" value={metadata?.changeLog} />
+        <DetailsItem label="Kontakt" value={metadata?.contact} />
+        <DetailsItem label="Erstellt am" value={createdAt} />
       </Grid>
     </SidebarContent>
   );

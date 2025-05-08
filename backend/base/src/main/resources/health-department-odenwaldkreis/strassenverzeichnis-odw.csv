@@ -1,0 +1,3479 @@
+Straßennummer;Straßenname;Folge;Hausnr. (von);Zusatz zur Hausnr (von);Hausnr. (bis);Zusatz zur Hausnr (bis);Ortsbezirk;Stadtteil Name;Stadtbezirk;Stadtbezirksvorst;Schiedsleutebezirk;Sozialrathaus Name;Polizeirevier;Postleitzahl
+;Alter Postweg;ungerade;1;;25;;;;;;;;;64385
+;Alter Weg;ungerade;1;;49;;;;;;;;;64385
+;Am Berg;ungerade;1;;11;;;;;;;;;64385
+;Am Eichelberg;ungerade;1;;19;;;;;;;;;64385
+;Am Flutgraben;ungerade;1;;7;;;;;;;;;64385
+;Am Fuchsstein;ungerade;1;;1;;;;;;;;;64385
+;Am Großen Stein;ungerade;1;;31;;;;;;;;;64385
+;Am Lackenberg;ungerade;1;;3;;;;;;;;;64385
+;Am Morsberg;ungerade;1;;27;;;;;;;;;64385
+;Am Pfeifferssteg;ungerade;1;;5;;;;;;;;;64385
+;Am Schafacker;ungerade;1;;27;;;;;;;;;64385
+;Am Schloßberg;ungerade;1;;3;;;;;;;;;64385
+;Am Schnellerts;ungerade;1;;5;;;;;;;;;64385
+;Am Sonnenberg;ungerade;1;;29;;;;;;;;;64385
+;Am Sägewerk;ungerade;1;;1;;;;;;;;;64385
+;Am Tannenberg;ungerade;1;;9;;;;;;;;;64385
+;Am Viertelsberg;ungerade;1;;7;;;;;;;;;64385
+;Amselweg;ungerade;1;;27;;;;;;;;;64385
+;An der Beine;ungerade;1;;7;;;;;;;;;64385
+;An der Ruh;ungerade;1;;7;;;;;;;;;64385
+;Außenliegend;ungerade;1;;1;;;;;;;;;64385
+;Außerhalb;ungerade;1;;3;;;;;;;;;64385
+;Birkenhag;ungerade;1;;43;;;;;;;;;64385
+;Blauer Weg;ungerade;1;;3;;;;;;;;;64385
+;Blütenstraße;ungerade;1;;11;;;;;;;;;64385
+;Brunnenstraße;ungerade;1;;1;;;;;;;;;64385
+;Brühlstraße;ungerade;1;;17;;;;;;;;;64385
+;Buchenstraße;ungerade;1;;15;;;;;;;;;64385
+;Burgviertel;ungerade;1;;21;;;;;;;;;64385
+;Crumbacher Straße;ungerade;1;;25;;;;;;;;;64385
+;Dachsbergweg;ungerade;1;;1;;;;;;;;;64385
+;Darmstädter Straße;ungerade;1;;45;;;;;;;;;64385
+;Dorfweg;ungerade;1;;15;;;;;;;;;64385
+;Eberbach;ungerade;1;;9;;;;;;;;;64385
+;Eberbacher Weg;ungerade;1;;37;;;;;;;;;64385
+;Eichendorffstraße;ungerade;1;;17;;;;;;;;;64385
+;Erzbacher Weg;ungerade;1;;37;;;;;;;;;64385
+;Finkenweg;ungerade;1;;7;;;;;;;;;64385
+;Freiheitsstraße;ungerade;1;;33;;;;;;;;;64385
+;Frohnhofen;ungerade;1;;5;;;;;;;;;64385
+;Gartenstraße;ungerade;1;;43;;;;;;;;;64385
+;Georg-Anthes-Straße;ungerade;1;;3;;;;;;;;;64385
+;Goethestraße;ungerade;1;;53;;;;;;;;;64385
+;Gräbenweg;ungerade;1;;3;;;;;;;;;64385
+;Guldenstraße;ungerade;1;;25;;;;;;;;;64385
+;Gumpener Straße;ungerade;1;;63;;;;;;;;;64385
+;Gutleutstraße;ungerade;1;;7;;;;;;;;;64385
+;Heidelberger Straße;ungerade;1;;101;;;;;;;;;64385
+;Heinrichstraße;ungerade;1;;7;;;;;;;;;64385
+;Helene-Göttmann-Straße;ungerade;1;;17;;;;;;;;;64385
+;Hembacher Weg;ungerade;1;;9;;;;;;;;;64385
+;Hermann-Löns-Straße;ungerade;1;;7;;;;;;;;;64385
+;Hofweg;ungerade;1;;17;;;;;;;;;64385
+;Hohlweg;ungerade;1;;3;;;;;;;;;64385
+;Hutzwiese;ungerade;1;;15;;;;;;;;;64385
+;Hönigeweg;ungerade;1;;3;;;;;;;;;64385
+;Hügelstraße;ungerade;1;;3;;;;;;;;;64385
+;Im Gesäß;ungerade;1;;1;;;;;;;;;64385
+;Im Tiergarten;ungerade;1;;1;;;;;;;;;64385
+;Im Unterdorf;ungerade;1;;45;;;;;;;;;64385
+;In der Aue;ungerade;1;;29;;;;;;;;;64385
+;In der Fürthwiese;ungerade;1;;15;;;;;;;;;64385
+;Jahnstraße;ungerade;1;;23;;;;;;;;;64385
+;Kirchstraße;ungerade;1;;41;;;;;;;;;64385
+;Konrad-Adenauer-Allee;ungerade;1;;5;;;;;;;;;64385
+;Korngasse;ungerade;1;;13;;;;;;;;;64385
+;Langlosenweg;ungerade;1;;15;;;;;;;;;64385
+;Laudenauer Straße;ungerade;1;;49;;;;;;;;;64385
+;Lindenfelser Weg;ungerade;1;;21;;;;;;;;;64385
+;Marktplatz;ungerade;1;;15;;;;;;;;;64385
+;Mergbachstraße;ungerade;1;;81;;;;;;;;;64385
+;Michelbacher Straße;ungerade;1;;27;;;;;;;;;64385
+;Michelstädter Straße;ungerade;1;;5;;;;;;;;;64385
+;Mossauer Weg;ungerade;1;;7;;;;;;;;;64385
+;Mühlstraße;ungerade;1;;11;;;;;;;;;64385
+;Nibelungenstraße;ungerade;1;;21;;;;;;;;;64385
+;Panoramastraße;ungerade;1;;19;;;;;;;;;64385
+;Pfalzstraße;ungerade;1;;67;;;;;;;;;64385
+;Quellenstraße;ungerade;1;;9;;;;;;;;;64385
+;Rathausplatz;ungerade;1;;7;;;;;;;;;64385
+;Reichelsheimer Weg;ungerade;1;;37;;;;;;;;;64385
+;Rohrbacher Straße;ungerade;1;;21;;;;;;;;;64385
+;Sandweg;ungerade;1;;25;;;;;;;;;64385
+;Scheffelstraße;ungerade;1;;15;;;;;;;;;64385
+;Schlossblick;ungerade;1;;25;;;;;;;;;64385
+;Schulstraße;ungerade;1;;15;;;;;;;;;64385
+;Schwestergasse;ungerade;1;;11;;;;;;;;;64385
+;Schwimmbadstraße;ungerade;1;;31;;;;;;;;;64385
+;Siegfriedstraße;ungerade;1;;33;;;;;;;;;64385
+;Steinstraße;ungerade;1;;13;;;;;;;;;64385
+;Stickelbergweg;ungerade;1;;3;;;;;;;;;64385
+;Sudetenstraße;ungerade;1;;105;;;;;;;;;64385
+;Uhlandstraße;ungerade;1;;3;;;;;;;;;64385
+;Wiesenstraße;ungerade;1;;9;;;;;;;;;64385
+;Wünschbacher Straße;ungerade;1;;15;;;;;;;;;64385
+;Ziegelhüttenstraße;ungerade;1;;11;;;;;;;;;64385
+;Zu den Windhöfen;ungerade;1;;11;;;;;;;;;64385
+;Affhöllerbacher Straße;ungerade;1;;31;;;Nieder-Kainsbach;;;;;;64395
+;Am Alten Bahnhof;ungerade;1;;51;;;;;;;;;64395
+;Am Haufensteinberg;ungerade;1;;59;;;;;;;;;64395
+;Am Huthweg;ungerade;1;;9;;;;;;;;;64395
+;Am Kirschberg;ungerade;1;;3;;;;;;;;;64395
+;Am Klinger Weg;ungerade;1;;3;;;;;;;;;64395
+;Am Klärwerk;ungerade;1;;1;;;;;;;;;64395
+;Am Kreuz;ungerade;1;;11;;;;;;;;;64395
+;Am Mühlberg;ungerade;1;;9;;;Affhöllerbach;;;;;;64395
+;Am Pfaffengraben;ungerade;1;;11;;;;;;;;;64395
+;Am Pfarracker;ungerade;1;;33;;;;;;;;;64395
+;Am Reechberg;ungerade;1;;17;;;;;;;;;64395
+;Am Sportplatz;ungerade;1;;29;;;;;;;;;64395
+;Am Steinerts;ungerade;1;;9;;;;;;;;;64395
+;Am Talweg;ungerade;1;;17;;;;;;;;;64395
+;Am Wendehammer;ungerade;1;;3;;;Nieder-Kainsbach;;;;;;64395
+;Amselweg;ungerade;1;;7;;;;;;;;;64395
+;An der Galgeneiche;ungerade;1;;45;;;;;;;;;64395
+;An der Hornsmühle;ungerade;1;;7;;;;;;;;;64395
+;Auf der Höh;ungerade;1;;19;;;;;;;;;64395
+;Bachgasse;ungerade;1;;19;;;Nieder-Kainsbach;;;;;;64395
+;Bahnhofstraße;ungerade;1;;81;;;;;;;;;64395
+;Bergweg;ungerade;1;;5;;;;;;;;;64395
+;Berndsgasse;ungerade;1;;3;;;;;;;;;64395
+;Borngasse;ungerade;1;;1;;;Nieder-Kainsbach;;;;;;64395
+;Buchenweg;ungerade;1;;15;;;;;;;;;64395
+;Böllsteiner Straße;ungerade;1;;7;;;Affhöllerbach;;;;;;64395
+;Darmstädter Straße;ungerade;1;;65;;;;;;;;;64395
+;Eichenweg;ungerade;1;;11;;;;;;;;;64395
+;Eichwäldchenweg;ungerade;1;;3;;;;;;;;;64395
+;Erlenweg;ungerade;1;;9;;;;;;;;;64395
+;Ezyer Straße;ungerade;1;;5;;;;;;;;;64395
+;Fasanenweg;ungerade;1;;7;;;;;;;;;64395
+;Finkenweg;ungerade;1;;13;;;;;;;;;64395
+;Friedhofstraße;ungerade;1;;9;;;Nieder-Kainsbach;;;;;;64395
+;Friedrich-Ebert-Straße;ungerade;1;;21;;;;;;;;;64395
+;Gartenstraße;ungerade;1;;5;;;Nieder-Kainsbach;;;;;;64395
+;Georg-Ackermann-Straße;ungerade;1;;1;;;Nieder-Kainsbach;;;;;;64395
+;Goethestraße;ungerade;1;;1;;;Nieder-Kainsbach;;;;;;64395
+;Grundweg;ungerade;1;;19;;;;;;;;;64395
+;Hanse Lucke;ungerade;1;;17;;;;;;;;;64395
+;Heidelberger Straße;ungerade;1;;91;;;;;;;;;64395
+;Hippelsbach;ungerade;1;;15;;;;;;;;;64395
+;Hochstraße;ungerade;1;;23;;;;;;;;;64395
+;Hornsmühle;ungerade;1;;7;;;;;;;;;64395
+;Hubertusstraße;ungerade;1;;15;;;;;;;;;64395
+;Höchster Straße;ungerade;1;;29;;;;;;;;;64395
+;Höhenweg;ungerade;1;;7;;;Affhöllerbach;;;;;;64395
+;Im Birkerts;ungerade;1;;1;;;;;;;;;64395
+;Im Frohngrund;ungerade;1;;9;;;;;;;;;64395
+;Im Sellerts;ungerade;1;;39;;;;;;;;;64395
+;Im Sommergrund;ungerade;1;;19;;;;;;;;;64395
+;In der Hohl;ungerade;1;;23;;;;;;;;;64395
+;In der Strieth;ungerade;1;;13;;;;;;;;;64395
+;Jahnstraße;ungerade;1;;15;;;;;;;;;64395
+;Karl-Neff-Straße;ungerade;1;;7;;;Nieder-Kainsbach;;;;;;64395
+;Karl-Schäfer-Straße;ungerade;1;;23;;;;;;;;;64395
+;Kirchbachstraße;ungerade;1;;23;;;;;;;;;64395
+;Kreuzstraße;ungerade;1;;19;;;;;;;;;64395
+;Krämergasse;ungerade;1;;1;;;Affhöllerbach;;;;;;64395
+;Lerchenweg;ungerade;1;;3;;;;;;;;;64395
+;Lindenstraße;ungerade;1;;13;;;Affhöllerbach;;;;;;64395
+;Moorbachstraße;ungerade;1;;31;;;;;;;;;64395
+;Mummenroth;ungerade;1;;9;;;;;;;;;64395
+;Mühlweg;ungerade;1;;15;;;Nieder-Kainsbach;;;;;;64395
+;Nonroder Straße;ungerade;1;;21;;;;;;;;;64395
+;Odenwaldring;ungerade;1;;9;;;;;;;;;64395
+;Ortsringweg;ungerade;1;;9;;;;;;;;;64395
+;Pfarrberg;ungerade;1;;15;;;;;;;;;64395
+;Ringstraße;ungerade;1;;27;;;;;;;;;64395
+;Rodensteinstraße;ungerade;1;;11;;;;;;;;;64395
+;Römerberg;ungerade;1;;31;;;;;;;;;64395
+;Schafhof Außerhalb;ungerade;1;;1;;;;;;;;;64395
+;Schafhofweg;ungerade;1;;21;;;;;;;;;64395
+;Schlangenäcker;ungerade;1;;11;;;Nieder-Kainsbach;;;;;;64395
+;Siedlungsweg;ungerade;1;;9;;;Nieder-Kainsbach;;;;;;64395
+;Sonnenweg;ungerade;1;;3;;;;;;;;;64395
+;Steinmauerstraße;ungerade;1;;3;;;Nieder-Kainsbach;;;;;;64395
+;Waldschmiede;ungerade;1;;1;;;;;;;;;64395
+;Waldstraße;ungerade;1;;91;;;;;;;;;64395
+;Wersauer Straße;ungerade;1;;5;;;;;;;;;64395
+;Wiesenhof;ungerade;1;;1;;;;;;;;;64395
+;Wiesenstraße;ungerade;1;;3;;;;;;;;;64395
+;Zeileichstraße;ungerade;1;;31;;;Nieder-Kainsbach;;;;;;64395
+;Ziegelgasse;ungerade;1;;3;;;Nieder-Kainsbach;;;;;;64395
+;Adalbert-Stifter-Straße;ungerade;1;;9;;;;;;;;;64407
+;Allee;ungerade;1;;43;;;;;;;;;64407
+;Am Hexenberg;ungerade;1;;57;;;;;;;;;64407
+;Am Lohberg;ungerade;1;;7;;;;;;;;;64407
+;Am Weinberg;ungerade;1;;3;;;;;;;;;64407
+;Auf dem Zieglers;ungerade;1;;17;;;;;;;;;64407
+;Auf der Beine;ungerade;1;;21;;;;;;;;;64407
+;Bahnhofstraße;ungerade;1;;47;;;;;;;;;64407
+;Berliner Straße;ungerade;1;;5;;;;;;;;;64407
+;Bierbach;ungerade;1;;1;;;;;;;;;64407
+;Brunhildstraße;ungerade;1;;25;;;;;;;;;64407
+;Brunnenweg;ungerade;1;;11;;;;;;;;;64407
+;Christiansweg;ungerade;1;;7;;;;;;;;;64407
+;Eberbach;ungerade;1;;1;;;;;;;;;64407
+;Eckgartenstraße;ungerade;1;;5;;;;;;;;;64407
+;Eichendorffstraße;ungerade;1;;1;;;;;;;;;64407
+;Erbacher Straße;ungerade;1;;53;;;;;;;;;64407
+;Erlau;ungerade;1;;7;;;;;;;;;64407
+;Friedhofstraße;ungerade;1;;43;;;;;;;;;64407
+;Georg-Büchner-Straße;ungerade;1;;51;;;;;;;;;64407
+;Goethestraße;ungerade;1;;9;;;;;;;;;64407
+;Güttersbach;ungerade;1;;1;;;;;;;;;64407
+;Hagenstraße;ungerade;1;;23;;;;;;;;;64407
+;Heinrich-Heine-Weg;ungerade;1;;9;;;;;;;;;64407
+;Holzwiese;ungerade;1;;1;;;;;;;;;64407
+;Höllerheck;ungerade;1;;1;;;;;;;;;64407
+;Hügelstraße;ungerade;1;;3;;;;;;;;;64407
+;Industriestraße;ungerade;1;;19;;;;;;;;;64407
+;Kriemhildstraße;ungerade;1;;3;;;;;;;;;64407
+;Lessingstraße;ungerade;1;;41;;;;;;;;;64407
+;Lichtenberger Straße;ungerade;1;;25;;;;;;;;;64407
+;Meierei;ungerade;1;;1;;;;;;;;;64407
+;Michelbach;ungerade;1;;11;;;;;;;;;64407
+;Mozartstraße;ungerade;1;;9;;;;;;;;;64407
+;Parkweg;ungerade;1;;9;;;;;;;;;64407
+;Pretlackstraße;ungerade;1;;9;;;;;;;;;64407
+;Raiffeisenstraße;ungerade;1;;15;;;;;;;;;64407
+;Rodenstein;ungerade;1;;1;;;;;;;;;64407
+;Rodensteiner Straße;ungerade;1;;73;;;;;;;;;64407
+;Römersberg;ungerade;1;;27;;;;;;;;;64407
+;Schafhofgasse;ungerade;1;;39;;;;;;;;;64407
+;Schillerstraße;ungerade;1;;53;;;;;;;;;64407
+;Schleiersbach;ungerade;1;;1;;;;;;;;;64407
+;Schmahlmühle;ungerade;1;;1;;;;;;;;;64407
+;Siedlerweg;ungerade;1;;31;;;;;;;;;64407
+;Siegfriedstraße;ungerade;1;;11;;;;;;;;;64407
+;Stegmühle;ungerade;1;;1;;;;;;;;;64407
+;Waldfrieden;ungerade;1;;1;;;;;;;;;64407
+;Wingertsberg;ungerade;1;;11;;;;;;;;;64407
+;Wingertsgasse;ungerade;1;;9;;;;;;;;;64407
+;Ahornstraße;ungerade;1;;7;;;;;;;;;64711
+;Alexander-von-Humboldt-Straße;ungerade;1;;19;;;;;;;;;64711
+;Alfred-Kehrer-Straße;ungerade;1;;1;;;;;;;;;64711
+;Almendweg;ungerade;1;;15;;;;;;;;;64711
+;Alte Poststraße;ungerade;1;;9;;;;;;;;;64711
+;Alter Elsbacher Weg;ungerade;1;;19;;;;;;;;;64711
+;Alter Weg;ungerade;1;;25;;;;;;;;;64711
+;Am Badbrunnen;ungerade;1;;3;;;;;;;;;64711
+;Am Brühl;ungerade;1;;49;;;;;;;;;64711
+;Am Diebsberg;ungerade;1;;13;;;;;;;;;64711
+;Am Drachenfeld;ungerade;1;;31;;;;;;;;;64711
+;Am Krebsbach;ungerade;1;;51;;;;;;;;;64711
+;Am Lettacker;ungerade;1;;11;;;;;;;;;64711
+;Am Mühlberg;ungerade;1;;21;;;;;;;;;64711
+;Am Neurott;ungerade;1;;15;;;;;;;;;64711
+;Am Pfarrgarten;ungerade;1;;7;;;;;;;;;64711
+;Am Reihberg;ungerade;1;;27;;;;;;;;;64711
+;Am Scheuerberg;ungerade;1;;41;;;;;;;;;64711
+;Am Schlehdorn;ungerade;1;;3;;;;;;;;;64711
+;Am Schöllenberg;ungerade;1;;9;;;;;;;;;64711
+;Am Sommergarten;ungerade;1;;11;;;;;;;;;64711
+;Am Thoracker;ungerade;1;;21;;;;;;;;;64711
+;Am Wiesengrund;ungerade;1;;11;;;;;;;;;64711
+;Amselweg;ungerade;1;;21;;;;;;;;;64711
+;An der Halbmauer;ungerade;1;;9;;;;;;;;;64711
+;Anemonenweg;ungerade;1;;1;;;;;;;;;64711
+;Aspenweg;ungerade;1;;13;;;;;;;;;64711
+;Auf der Halle;ungerade;1;;35;;;;;;;;;64711
+;Auf der Röder;ungerade;1;;31;;;;;;;;;64711
+;Außerhalb Lauerbach;ungerade;1;;1;;;;;;;;;64711
+;Außerhalb Schönnen;ungerade;1;;1;;;;;;;;;64711
+;Bahnhofsplatz;ungerade;1;;1;;;;;;;;;64711
+;Bahnstraße;ungerade;1;;43;;;;;;;;;64711
+;Berliner Straße;ungerade;1;;19;;;;;;;;;64711
+;Brudergrundweg;ungerade;1;;57;;;;;;;;;64711
+;Brunnenhohl;ungerade;1;;1;;;;;;;;;64711
+;Brückenstraße;ungerade;1;;31;;;;;;;;;64711
+;Buchenweg;ungerade;1;;19;;;;;;;;;64711
+;Bullauer Straße;ungerade;1;;89;;;;;;;;;64711
+;Bürgermeister-Mohr-Straße;ungerade;1;;25;;;;;;;;;64711
+;Carl-Benz-Straße;ungerade;1;;25;;;;;;;;;64711
+;Carlo-Mierendorff-Straße;ungerade;1;;21;;;;;;;;;64711
+;Cranachstraße;ungerade;1;;15;;;;;;;;;64711
+;Damaschkestraße;ungerade;1;;41;;;;;;;;;64711
+;Danziger Straße;ungerade;1;;31;;;;;;;;;64711
+;Die Gasse;ungerade;1;;9;;;;;;;;;64711
+;Dietrich-Bonhoeffer-Weg;ungerade;1;;17;;;;;;;;;64711
+;Dresdener Straße;ungerade;1;;9;;;;;;;;;64711
+;Dürerstraße;ungerade;1;;41;;;;;;;;;64711
+;Eck;ungerade;1;;13;;;;;;;;;64711
+;Eichendorffstraße;ungerade;1;;19;;;;;;;;;64711
+;Elsbacher Weg;ungerade;1;;29;;;;;;;;;64711
+;Erbacher Straße;ungerade;1;;31;;;;;;;;;64711
+;Erbucher Weg;ungerade;1;;7;;;;;;;;;64711
+;Eutergrundweg;ungerade;1;;33;;;;;;;;;64711
+;Falkenweg;ungerade;1;;3;;;;;;;;;64711
+;Finkenweg;ungerade;1;;1;;;;;;;;;64711
+;Forsthausstraße;ungerade;1;;21;;;;;;;;;64711
+;Fortunastraße;ungerade;1;;67;;;;;;;;;64711
+;Friedhofstraße;ungerade;1;;93;;;;;;;;;64711
+;Friedrich-Ebert-Straße;ungerade;1;;15;;;;;;;;;64711
+;Gabelsbergerstraße;ungerade;1;;25;;;;;;;;;64711
+;Gartenweg;ungerade;1;;17;;;;;;;;;64711
+;Gelbe Heide;ungerade;1;;11;;;;;;;;;64711
+;Gerhart-Hauptmann-Straße;ungerade;1;;23;;;;;;;;;64711
+;Geschwister-Scholl-Straße;ungerade;1;;23;;;;;;;;;64711
+;Gewerbepark Gräsig;ungerade;1;;75;;;;;;;;;64711
+;Grünewaldstraße;ungerade;1;;3;;;;;;;;;64711
+;Günterfürster Straße;ungerade;1;;3;;;;;;;;;64711
+;Haisterbacher Straße;ungerade;1;;37;;;;;;;;;64711
+;Hammer;ungerade;1;;1;;;;;;;;;64711
+;Heinrich-List-Weg;ungerade;1;;13;;;;;;;;;64711
+;Helmholtzstraße;ungerade;1;;9;;;;;;;;;64711
+;Hohenbugstraße;ungerade;1;;37;;;;;;;;;64711
+;Hohl;ungerade;1;;1;;;;;;;;;64711
+;Holunderweg;ungerade;1;;27;;;;;;;;;64711
+;Höhenweg;ungerade;1;;21;;;;;;;;;64711
+;Im Herrenrott;ungerade;1;;19;;;;;;;;;64711
+;Im Schelmenfeld;ungerade;1;;15;;;;;;;;;64711
+;Immanuel-Kant-Straße;ungerade;1;;15;;;;;;;;;64711
+;In den Bergen;ungerade;1;;29;;;;;;;;;64711
+;In den Neuwiesen;ungerade;1;;3;;;;;;;;;64711
+;In den Rosengärten;ungerade;1;;45;;;;;;;;;64711
+;In den Steingärten;ungerade;1;;39;;;;;;;;;64711
+;In der Katzenklinge;ungerade;1;;13;;;;;;;;;64711
+;In der Klinge;ungerade;1;;5;;;;;;;;;64711
+;In der Seife;ungerade;1;;3;;;;;;;;;64711
+;Jahnstraße;ungerade;1;;33;;;;;;;;;64711
+;Johann-Ehrhardt-Straße;ungerade;1;;17;;;;;;;;;64711
+;Johann-Sebastian-Bach-Straße;ungerade;1;;43;;;;;;;;;64711
+;Kirchweg;ungerade;1;;5;;;;;;;;;64711
+;Kißlichweg;ungerade;1;;33;;;;;;;;;64711
+;Kobigweg;ungerade;1;;19;;;;;;;;;64711
+;Krähenberger Weg;ungerade;1;;23;;;;;;;;;64711
+;Lindenstraße;ungerade;1;;13;;;;;;;;;64711
+;Litzertweg;ungerade;1;;33;;;;;;;;;64711
+;Lohbergweg;ungerade;1;;13;;;;;;;;;64711
+;Marktplatz;ungerade;1;;15;;;;;;;;;64711
+;Neue Lustgartenstraße;ungerade;1;;7;;;;;;;;;64711
+;Oberer Erbacher Weg;ungerade;1;;7;;;;;;;;;64711
+;Oberer Hellrain;ungerade;1;;17;;;;;;;;;64711
+;Oppertsweg;ungerade;1;;19;;;;;;;;;64711
+;Ostring;ungerade;1;;15;;;;;;;;;64711
+;Otto-Heinrich-Engel-Weg;ungerade;1;;13;;;;;;;;;64711
+;Pestalozzistraße;ungerade;1;;43;;;;;;;;;64711
+;Pfarrgasse;ungerade;1;;13;;;;;;;;;64711
+;Rubensstraße;ungerade;1;;21;;;;;;;;;64711
+;Schillerstraße;ungerade;1;;27;;;;;;;;;64711
+;Schmitt-Lynker-Straße;ungerade;1;;11;;;;;;;;;64711
+;Schöneberger Weg;ungerade;1;;11;;;;;;;;;64711
+;Schönnemer Straße;ungerade;1;;53;;;;;;;;;64711
+;Siedlerweg;ungerade;1;;25;;;;;;;;;64711
+;Siedlung Rolle;ungerade;1;;33;;;;;;;;;64711
+;Sophienstraße;ungerade;1;;111;;;;;;;;;64711
+;Spitzwegpfad;ungerade;1;;7;;;;;;;;;64711
+;Sportplatzweg;ungerade;1;;13;;;;;;;;;64711
+;Steinbruchweg;ungerade;1;;7;;;;;;;;;64711
+;Sylvester-Stockh-Straße;ungerade;1;;33;;;;;;;;;64711
+;Sägewerk;ungerade;1;;3;;;;;;;;;64711
+;Telemannstraße;ungerade;1;;5;;;;;;;;;64711
+;Unterdorf;ungerade;1;;27;;;;;;;;;64711
+;Untere Seewiese;ungerade;1;;33;;;;;;;;;64711
+;Unterer Erbacher Weg;ungerade;1;;17;;;;;;;;;64711
+;Unterer Reihberg;ungerade;1;;9;;;;;;;;;64711
+;Wilhelm-Leuschner-Straße;ungerade;1;;27;;;;;;;;;64711
+;Zum Viadukt;ungerade;1;;53;;;;;;;;;64711
+;Zur Hertelsmühle;ungerade;1;;1;;;;;;;;;64711
+;Zur Mühlwiese;ungerade;1;;47;;;;;;;;;64711
+;Zur Schönen Aussicht;ungerade;1;;11;;;;;;;;;64711
+;Adolf-Friedrich-Pfreundt-Straße;ungerade;1;;27;;;;;;;;;64720
+;Alfred-Maul-Straße;ungerade;1;;13;;;;;;;;;64720
+;Alsfelder Straße;ungerade;1;;33;;;;;;;;;64720
+;Alte Hohl;ungerade;1;;1;;;;;;;;;64720
+;Am Alten Graben;ungerade;1;;7;;;;;;;;;64720
+;Am Berg;ungerade;1;;21;;;;;;;;;64720
+;Am Dalles;ungerade;1;;9;;;;;;;;;64720
+;Am Donnersberg;ungerade;1;;31;;;;;;;;;64720
+;Am Festplatz;ungerade;1;;11;;;;;;;;;64720
+;Am Hermannsberg;ungerade;1;;5;;;;;;;;;64720
+;Am Hermannstempel;ungerade;1;;3;;;;;;;;;64720
+;Am Heuberg;ungerade;1;;19;;;;;;;;;64720
+;Am Hohen Rain;ungerade;1;;13;;;;;;;;;64720
+;Am Hollerbusch;ungerade;1;;45;;;;;;;;;64720
+;Am Kalksteinbruch;ungerade;1;;5;;;;;;;;;64720
+;Am Kirchenfeld;ungerade;1;;17;;;;;;;;;64720
+;Am Kirchenplatz;ungerade;1;;7;;;;;;;;;64720
+;Am Kisselberg;ungerade;1;;7;;;;;;;;;64720
+;Am Kühberg;ungerade;1;;37;;;;;;;;;64720
+;Am Rehtor;ungerade;1;;17;;;;;;;;;64720
+;Am Roten Erz;ungerade;1;;7;;;;;;;;;64720
+;Am Rotzenberg;ungerade;1;;15;;;;;;;;;64720
+;Am Schafberg;ungerade;1;;21;;;;;;;;;64720
+;Am Schelmengraben;ungerade;1;;13;;;;;;;;;64720
+;Am Sonnenhang;ungerade;1;;9;;;;;;;;;64720
+;Am Stadion;ungerade;1;;17;;;;;;;;;64720
+;Am Weiher;ungerade;1;;15;;;;;;;;;64720
+;Am Wiesental;ungerade;1;;171;;;;;;;;;64720
+;Am Wäldchen;ungerade;1;;19;;;;;;;;;64720
+;Amselweg;ungerade;1;;1;;;;;;;;;64720
+;An den Hauswiesen;ungerade;1;;21;;;;;;;;;64720
+;An der Basilika;ungerade;1;;11;;;;;;;;;64720
+;An der Kalksteingrube;ungerade;1;;9;;;;;;;;;64720
+;An der Leimenkaute;ungerade;1;;1;;;;;;;;;64720
+;An der Marbach;ungerade;1;;37;;;;;;;;;64720
+;An der Meisterei;ungerade;1;;9;;;;;;;;;64720
+;An der Römerburg;ungerade;1;;9;;;;;;;;;64720
+;An der Steinbach;ungerade;1;;31;;;;;;;;;64720
+;Außenliegend Hubertus;ungerade;1;;1;;;;;;;;;64720
+;Außerhalb Heuberger Hof;ungerade;1;;1;;;;;;;;;64720
+;Außerhalb Ohrnbach;ungerade;1;;1;;;Ohrenbach;;;;;;64720
+;Bachgasse;ungerade;1;;5;;;;;;;;;64720
+;Bad Hersfelder Weg;ungerade;1;;5;;;;;;;;;64720
+;Bahnhofstraße;ungerade;1;;47;;;;;;;;;64720
+;Behringer Straße;ungerade;1;;7;;;;;;;;;64720
+;Bensheimer Weg;ungerade;1;;5;;;;;;;;;64720
+;Berliner Straße;ungerade;1;;23;;;;;;;;;64720
+;Bgm.-Adam-Wöber-Straße;ungerade;1;;31;;;;;;;;;64720
+;Birkenstraße;ungerade;1;;17;;;;;;;;;64720
+;Braunstraße;ungerade;1;;25;;;;;;;;;64720
+;Bremhof;ungerade;1;;15;;;;;;;;;64720
+;Bremhofer Weg;ungerade;1;;23;;;;;;;;;64720
+;Chemnitzer Straße;ungerade;1;;7;;;;;;;;;64720
+;Dekan-Groh-Straße;ungerade;1;;5;;;;;;;;;64720
+;Dorfstraße;ungerade;1;;139;;;;;;;;;64720
+;Dr.-Albach-Straße;ungerade;1;;39;;;;;;;;;64720
+;Dr.-Hans-Kudlich-Straße;ungerade;1;;11;;;;;;;;;64720
+;Dr.-Kurt-Schumacher-Ring;ungerade;1;;31;;;;;;;;;64720
+;Drosselweg;ungerade;1;;23;;;;;;;;;64720
+;Eichenstraße;ungerade;1;;45;;;;;;;;;64720
+;Einhardspforte;ungerade;1;;3;;;;;;;;;64720
+;Eisenacher Straße;ungerade;1;;3;;;;;;;;;64720
+;Elsterweg;ungerade;1;;5;;;;;;;;;64720
+;Erbacher Straße;ungerade;1;;93;;;;;;;;;64720
+;Erfurter Straße;ungerade;1;;3;;;;;;;;;64720
+;Erlenweg;ungerade;1;;7;;;;;;;;;64720
+;Eulbach-Jagdschloß;ungerade;1;;5;;;;;;;;;64720
+;Eutergrund;ungerade;1;;1;;;;;;;;;64720
+;Fabrikstraße;ungerade;1;;17;;;;;;;;;64720
+;Fasanenweg;ungerade;1;;9;;;;;;;;;64720
+;Feriendorf;ungerade;1;;99;;;;;;;;;64720
+;Forsthaus Achtbuchen;ungerade;1;;1;;;;;;;;;64720
+;Forsthaus Kohlgrube;ungerade;1;;1;;;;;;;;;64720
+;Frankfurter Straße;ungerade;1;;45;;;;;;;;;64720
+;Freiburgstraße;ungerade;1;;31;;;;;;;;;64720
+;Friedberger Weg;ungerade;1;;9;;;;;;;;;64720
+;Friedhofstraße;ungerade;1;;57;;;;;;;;;64720
+;Friedrich-Ebert-Straße;ungerade;1;;87;;;;;;;;;64720
+;G.-W.-Horlebein-Straße;ungerade;1;;19;;;;;;;;;64720
+;Georg-Glenz-Straße;ungerade;1;;41;;;;;;;;;64720
+;Georg-Seip-Straße;ungerade;1;;15;;;;;;;;;64720
+;Geyersmühle;ungerade;1;;1;;;;;;;;;64720
+;Goethestraße;ungerade;1;;41;;;;;;;;;64720
+;Gräsigweg;ungerade;1;;7;;;;;;;;;64720
+;Grätz-Markersdorfer-Straße;ungerade;1;;39;;;;;;;;;64720
+;Hainhaus;ungerade;1;;13;;;;;;;;;64720
+;Hammerweg;ungerade;1;;45;;;;;;;;;64720
+;Hauptstraße;ungerade;1;;121;;;;;;;;;64720
+;Hegweg;ungerade;1;;11;;;;;;;;;64720
+;Heinrich-Ritzel-Straße;ungerade;1;;39;;;;;;;;;64720
+;Heinrichstraße;ungerade;1;;9;;;;;;;;;64720
+;Heintze-Metzler-Straße;ungerade;1;;13;;;;;;;;;64720
+;Hellmut-Hoffmann-Straße;ungerade;1;;21;;;;;;;;;64720
+;Hesselbacher Straße;ungerade;1;;33;;;;;;;;;64720
+;Heubergweg;ungerade;1;;15;;;;;;;;;64720
+;Hochstraße;ungerade;1;;45;;;;;;;;;64720
+;Hohenloher Weg;ungerade;1;;23;;;;;;;;;64720
+;Hohlweg;ungerade;1;;7;;;;;;;;;64720
+;Hubener Weg;ungerade;1;;17;;;;;;;;;64720
+;Hubertusweg;ungerade;1;;1;;;;;;;;;64720
+;Höchster Weg;ungerade;1;;5;;;;;;;;;64720
+;Höhenstraße;ungerade;1;;29;;;;;;;;;64720
+;Im Fürstenauer Forst;ungerade;1;;15;;;;;;;;;64720
+;Im Hardtfeld;ungerade;1;;11;;;;;;;;;64720
+;Im Krähennest;ungerade;1;;5;;;;;;;;;64720
+;Im Rod;ungerade;1;;5;;;;;;;;;64720
+;In den Dorfwiesen;ungerade;1;;23;;;;;;;;;64720
+;In den Hofgärten;ungerade;1;;29;;;;;;;;;64720
+;In den Oberen Gärten;ungerade;1;;7;;;;;;;;;64720
+;In den Schmelzäckern;ungerade;1;;13;;;;;;;;;64720
+;In den Zwölf Morgen;ungerade;1;;23;;;;;;;;;64720
+;Industriestraße;ungerade;1;;17;;;;;;;;;64720
+;Jahnstraße;ungerade;1;;111;;;;;;;;;64720
+;Johann-Kredel-Straße;ungerade;1;;7;;;;;;;;;64720
+;Johanniter Straße;ungerade;1;;11;;;;;;;;;64720
+;Justus-Liebig-Straße;ungerade;1;;5;;;;;;;;;64720
+;Kasseler Weg;ungerade;1;;13;;;;;;;;;64720
+;Kellereibergstraße;ungerade;1;;33;;;;;;;;;64720
+;Kettelerstraße;ungerade;1;;23;;;;;;;;;64720
+;Kilian-Spiegel-Straße;ungerade;1;;15;;;;;;;;;64720
+;Kiliansweg;ungerade;1;;5;;;;;;;;;64720
+;Kimbacher Straße;ungerade;1;;23;;;;;;;;;64720
+;Kleine Gasse;ungerade;1;;7;;;;;;;;;64720
+;Kohlgrube;ungerade;1;;71;;;;;;;;;64720
+;Kronenweg;ungerade;1;;29;;;;;;;;;64720
+;Krummer Weg;ungerade;1;;1;;;;;;;;;64720
+;Königsberger Straße;ungerade;1;;15;;;;;;;;;64720
+;Landrat-Hoffmann-Straße;ungerade;1;;23;;;;;;;;;64720
+;Landrat-Neff-Straße;ungerade;1;;9;;;;;;;;;64720
+;Langen-Brombacher Straße;ungerade;1;;15;;;;;;;;;64720
+;Leineweberweg;ungerade;1;;9;;;;;;;;;64720
+;Leipziger Straße;ungerade;1;;31;;;;;;;;;64720
+;Lindenplatz;ungerade;1;;5;;;;;;;;;64720
+;Lindenstraße;ungerade;1;;19;;;;;;;;;64720
+;Ludwig-Arzt-Straße;ungerade;1;;13;;;;;;;;;64720
+;Ludwig-Kurz-Straße;ungerade;1;;7;;;;;;;;;64720
+;Magdeburger Straße;ungerade;1;;7;;;;;;;;;64720
+;Mangelsbach;ungerade;1;;13;;;;;;;;;64720
+;Marktplatz;ungerade;1;;9;;;;;;;;;64720
+;Marktstraße;ungerade;1;;13;;;;;;;;;64720
+;Martin-Luther-Straße;ungerade;1;;19;;;;;;;;;64720
+;Meisenweg;ungerade;1;;3;;;;;;;;;64720
+;Michael-Haas-Straße;ungerade;1;;21;;;;;;;;;64720
+;Michelshof;ungerade;1;;1;;;;;;;;;64720
+;Mittlerer Weg;ungerade;1;;7;;;;;;;;;64720
+;Mossauer Straße;ungerade;1;;17;;;;;;;;;64720
+;Mühlstraße;ungerade;1;;11;;;;;;;;;64720
+;Nelkenweg;ungerade;1;;13;;;;;;;;;64720
+;Neudorf;ungerade;1;;13;;;;;;;;;64720
+;Neutorstraße;ungerade;1;;25;;;;;;;;;64720
+;Nibelungenstraße;ungerade;1;;53;;;;;;;;;64720
+;Obere Hardt;ungerade;1;;27;;;;;;;;;64720
+;Obere Pfarrgasse;ungerade;1;;33;;;;;;;;;64720
+;Odenwaldstraße;ungerade;1;;5;;;;;;;;;64720
+;Pelarstraße;ungerade;1;;21;;;;;;;;;64720
+;Pfarrgewann;ungerade;1;;29;;;;;;;;;64720
+;Philipp-Buxbaum-Straße;ungerade;1;;5;;;;;;;;;64720
+;Rehbacher Weg;ungerade;1;;7;;;;;;;;;64720
+;Reinstraße;ungerade;1;;13;;;;;;;;;64720
+;Rosenweg;ungerade;1;;7;;;;;;;;;64720
+;Rödeweg;ungerade;1;;3;;;;;;;;;64720
+;Römerstraße;ungerade;1;;51;;;;;;;;;64720
+;Sandweg;ungerade;1;;5;;;;;;;;;64720
+;Schanzenweg;ungerade;1;;13;;;;;;;;;64720
+;Scharfenbergstraße;ungerade;1;;13;;;;;;;;;64720
+;Schlesische Straße;ungerade;1;;11;;;;;;;;;64720
+;Schloßplatz;ungerade;1;;3;;;;;;;;;64720
+;Schulzengasse;ungerade;1;;33;;;;;;;;;64720
+;Schäfergasse;ungerade;1;;7;;;;;;;;;64720
+;Schützenstraße;ungerade;1;;19;;;;;;;;;64720
+;Spessartstraße;ungerade;1;;15;;;;;;;;;64720
+;Stadtring;ungerade;1;;269;;;;;;;;;64720
+;Stephansweg;ungerade;1;;15;;;;;;;;;64720
+;Stockheimer Ring;ungerade;1;;13;;;;;;;;;64720
+;Tannenweg;ungerade;1;;7;;;;;;;;;64720
+;Taunusstraße;ungerade;1;;5;;;;;;;;;64720
+;Uhlandstraße;ungerade;1;;1;;;;;;;;;64720
+;Untere Hardt;ungerade;1;;15;;;;;;;;;64720
+;Untere Pfarrgasse;ungerade;1;;25;;;;;;;;;64720
+;Unterer Hammer;ungerade;1;;33;;;;;;;;;64720
+;Unterwegswiesenstraße;ungerade;1;;5;;;;;;;;;64720
+;Viernheimer Weg;ungerade;1;;9;;;;;;;;;64720
+;Vogelsbergstraße;ungerade;1;;7;;;;;;;;;64720
+;Waldstraße;ungerade;1;;125;;;;;;;;;64720
+;Weidenweg;ungerade;1;;7;;;;;;;;;64720
+;Weimarer Straße;ungerade;1;;9;;;;;;;;;64720
+;Weyprechtstraße;ungerade;1;;9;;;;;;;;;64720
+;Wiesbadener Straße;ungerade;1;;9;;;;;;;;;64720
+;Wiesenweg;ungerade;1;;25;;;;;;;;;64720
+;Wilhelm-Leuschner-Straße;ungerade;1;;53;;;;;;;;;64720
+;Wingertsweg;ungerade;1;;49;;;;;;;;;64720
+;Wirtsweg;ungerade;1;;5;;;;;;;;;64720
+;Zum Römerbad;ungerade;1;;41;;;;;;;;;64720
+;Zur Hainstermühle;ungerade;1;;15;;;;;;;;;64720
+;d' Orvillestraße;ungerade;1;;53;;;;;;;;;64720
+;Alexanderstraße;ungerade;1;;17;;;;;;;;;64732
+;Am Berg;ungerade;1;;11;;;;;;;;;64732
+;Am Busch;ungerade;1;;7;;;;;;;;;64732
+;Am Eichberg;ungerade;1;;27;;;;;;;;;64732
+;Am Galgenberg;ungerade;1;;13;;;;;;;;;64732
+;Am Gickelsgraben;ungerade;1;;9;;;;;;;;;64732
+;Am Großen Garten;ungerade;1;;3;;;;;;;;;64732
+;Am Gänsbrunnen;ungerade;1;;23;;;;;;;;;64732
+;Am Gänsertsberg;ungerade;1;;3;;;;;;;;;64732
+;Am Hang;ungerade;1;;5;;;;;;;;;64732
+;Am Hirtenberg;ungerade;1;;15;;;;;;;;;64732
+;Am Momartsberg;ungerade;1;;39;;;;;;;;;64732
+;Am Mulgraben;ungerade;1;;1;;;;;;;;;64732
+;Am Mühlberg;ungerade;1;;7;;;;;;;;;64732
+;Am Rosengarten;ungerade;1;;41;;;;;;;;;64732
+;Am Römerbrunnen;ungerade;1;;1;;;;;;;;;64732
+;Am Schaufelsbaum;ungerade;1;;15;;;;;;;;;64732
+;Am Tannenkopf;ungerade;1;;9;;;;;;;;;64732
+;Am Weidenkopf;ungerade;1;;21;;;;;;;;;64732
+;Am Weilbach;ungerade;1;;1;;;;;;;;;64732
+;Am Weinertsberg;ungerade;1;;5;;;;;;;;;64732
+;Am Zieglersberg;ungerade;1;;7;;;;;;;;;64732
+;Amselstraße;ungerade;1;;15;;;;;;;;;64732
+;An der Dorfbach;ungerade;1;;7;;;;;;;;;64732
+;An der Gasse;ungerade;1;;9;;;;;;;;;64732
+;An der Scheed;ungerade;1;;9;;;;;;;;;64732
+;An der Alten Schule;ungerade;1;;5;;;;;;;;;64732
+;August-Schäfer-Weg;ungerade;1;;47;;;;;;;;;64732
+;Bahnhofsplatz;ungerade;1;;7;;;;;;;;;64732
+;Bahnhofstraße;ungerade;1;;53;;;;;;;;;64732
+;Berggartenstraße;ungerade;1;;77;;;;;;;;;64732
+;Berliner Straße;ungerade;1;;9;;;;;;;;;64732
+;Birkenweg;ungerade;1;;11;;;;;;;;;64732
+;Breslauer Straße;ungerade;1;;19;;;;;;;;;64732
+;Brombachtaler Straße;ungerade;1;;43;;;;;;;;;64732
+;Brunnengasse;ungerade;1;;9;;;;;;;;;64732
+;Brückenweg;ungerade;1;;3;;;;;;;;;64732
+;Buchenweg;ungerade;1;;17;;;;;;;;;64732
+;Bürgermeister-Weigel-Straße;ungerade;1;;21;;;;;;;;;64732
+;Dekan-Groh-Straße;ungerade;1;;19;;;;;;;;;64732
+;Dresdener Straße;ungerade;1;;13;;;;;;;;;64732
+;Eichelsweg;ungerade;1;;15;;;;;;;;;64732
+;Elisabethenstraße;ungerade;1;;17;;;;;;;;;64732
+;Faltenweg;ungerade;1;;21;;;;;;;;;64732
+;Forststraße;ungerade;1;;11;;;;;;;;;64732
+;Franz-Holl-Straße;ungerade;1;;27;;;;;;;;;64732
+;Friedrich-Ebert-Straße;ungerade;1;;9;;;;;;;;;64732
+;Friedrichstraße;ungerade;1;;29;;;;;;;;;64732
+;Fürstengrunder Straße;ungerade;1;;129;;;;;;;;;64732
+;Gartenweg;ungerade;1;;17;;;;;;;;;64732
+;Georg-Vetter-Straße;ungerade;1;;15;;;;;;;;;64732
+;Gumpersberger Straße;ungerade;1;;27;;;;;;;;;64732
+;Hauswiesenweg;ungerade;1;;5;;;;;;;;;64732
+;Helmertweg;ungerade;1;;21;;;;;;;;;64732
+;Heubergweg;ungerade;1;;91;;;;;;;;;64732
+;Hohe Straße;ungerade;1;;81;;;;;;;;;64732
+;Hummetröther Straße;ungerade;1;;53;;;;;;;;;64732
+;Im Strietchen;ungerade;1;;17;;;;;;;;;64732
+;Jakob-Maul-Straße;ungerade;1;;19;;;;;;;;;64732
+;Kantstraße;ungerade;1;;19;;;;;;;;;64732
+;Kimbacher Straße;ungerade;1;;221;;;;;;;;;64732
+;Kirchweg;ungerade;1;;7;;;;;;;;;64732
+;Klosterwaldstraße;ungerade;1;;13;;;;;;;;;64732
+;Korngasse;ungerade;1;;5;;;;;;;;;64732
+;Königer Straße;ungerade;1;;41;;;;;;;;;64732
+;Leipziger Straße;ungerade;1;;5;;;;;;;;;64732
+;Lärchenweg;ungerade;1;;11;;;;;;;;;64732
+;Magdeburger Straße;ungerade;1;;23;;;;;;;;;64732
+;Mainstraße;ungerade;1;;41;;;;;;;;;64732
+;Martin-Luther-Straße;ungerade;1;;19;;;;;;;;;64732
+;Michelstädter Straße;ungerade;1;;59;;;;;;;;;64732
+;Momarter Straße;ungerade;1;;45;;;;;;;;;64732
+;Mümlingstraße;ungerade;1;;23;;;;;;;;;64732
+;Nieder-Kinziger Straße;ungerade;1;;71;;;;;;;;;64732
+;Nordring;ungerade;1;;15;;;;;;;;;64732
+;Odenwaldstraße;ungerade;1;;29;;;;;;;;;64732
+;Oskar-Zimper-Straße;ungerade;1;;43;;;;;;;;;64732
+;Paul-Zander-Straße;ungerade;1;;13;;;;;;;;;64732
+;Pestalozzistraße;ungerade;1;;11;;;;;;;;;64732
+;Pfälzer Höfe;ungerade;1;;5;;;;;;;;;64732
+;Philipp-Schmunck-Straße;ungerade;1;;13;;;;;;;;;64732
+;Rehweg;ungerade;1;;7;;;;;;;;;64732
+;Rue d´Argentat;ungerade;1;;5;;;;;;;;;64732
+;ST. Momart Außenliegend;ungerade;1;;1;;;;;;;;;64732
+;Sackgasse;ungerade;1;;7;;;;;;;;;64732
+;Schillerstraße;ungerade;1;;19;;;;;;;;;64732
+;Schloßplatz;ungerade;1;;11;;;;;;;;;64732
+;Schwalbenstraße;ungerade;1;;15;;;;;;;;;64732
+;Schwimmbadstraße;ungerade;1;;33;;;;;;;;;64732
+;Sommerbergring;ungerade;1;;33;;;;;;;;;64732
+;Stettiner Straße;ungerade;1;;17;;;;;;;;;64732
+;Südring;ungerade;1;;41;;;;;;;;;64732
+;Talblickstraße;ungerade;1;;33;;;;;;;;;64732
+;Tannenbergstraße;ungerade;1;;7;;;;;;;;;64732
+;Waldstraße;ungerade;1;;21;;;;;;;;;64732
+;Weiten-Gesäßer Straße;ungerade;1;;29;;;;;;;;;64732
+;Werkstraße;ungerade;1;;39;;;;;;;;;64732
+;Weyprechtstraße;ungerade;1;;57;;;;;;;;;64732
+;Zwischen den Gräben;ungerade;1;;5;;;;;;;;;64732
+;Albert-Einstein-Straße;ungerade;1;;15;;;;;;;;;64739
+;Allmenweg;ungerade;1;;7;;;;;;;;;64739
+;Am Besenberg;ungerade;1;;5;;;;;;;;;64739
+;Am Blitzberg;ungerade;1;;19;;;;;;;;;64739
+;Am Dachsrain;ungerade;1;;17;;;;;;;;;64739
+;Am Galgenberg;ungerade;1;;17;;;;;;;;;64739
+;Am Hain;ungerade;1;;13;;;;;;;;;64739
+;Am Kirchpfad;ungerade;1;;7;;;;;;;;;64739
+;Am Koppelwald;ungerade;1;;13;;;;;;;;;64739
+;Am Lutherheim;ungerade;1;;1;;;;;;;;;64739
+;Am Neuen Berg;ungerade;1;;17;;;;;;;;;64739
+;Am Runden Stein;ungerade;1;;11;;;;;;;;;64739
+;Am Schorschberg;ungerade;1;;15;;;;;;;;;64739
+;Am See;ungerade;1;;9;;;;;;;;;64739
+;Am Steinberg;ungerade;1;;9;;;;;;;;;64739
+;Am Stutz;ungerade;1;;3;;;;;;;;;64739
+;Am Südhang;ungerade;1;;25;;;;;;;;;64739
+;Am Taubenbrunnen;ungerade;1;;41;;;;;;;;;64739
+;Am Wasserfall;ungerade;1;;1;;;;;;;;;64739
+;Am Wäldchesberg;ungerade;1;;5;;;;;;;;;64739
+;Am Zentwald;ungerade;1;;19;;;;;;;;;64739
+;Amselweg;ungerade;1;;3;;;;;;;;;64739
+;An der Hasselbach;ungerade;1;;9;;;;;;;;;64739
+;An der Kempfsruh;ungerade;1;;31;;;;;;;;;64739
+;An der Kleinen Weide;ungerade;1;;5;;;;;;;;;64739
+;An der Lauerwiese;ungerade;1;;19;;;;;;;;;64739
+;An der Mümling;ungerade;1;;13;;;;;;;;;64739
+;An der Strieth;ungerade;1;;27;;;;;;;;;64739
+;An der Ziegelhütte;ungerade;1;;15;;;;;;;;;64739
+;Annelsbacher Tal;ungerade;1;;51;;;;;;;;;64739
+;Annelsbacher Weg;ungerade;1;;3;;;;;;;;;64739
+;Apotheker-Haas-Weg;ungerade;1;;9;;;;;;;;;64739
+;Bachgasse;ungerade;1;;11;;;;;;;;;64739
+;Bahnhofstraße;ungerade;1;;31;;;;;;;;;64739
+;Beethovenstraße;ungerade;1;;19;;;;;;;;;64739
+;Beinegasse;ungerade;1;;45;;;;;;;;;64739
+;Berbigstraße;ungerade;1;;49;;;;;;;;;64739
+;Bergblick;ungerade;1;;7;;;;;;;;;64739
+;Berghof;ungerade;1;;1;;;;;;;;;64739
+;Bergstraße;ungerade;1;;25;;;;;;;;;64739
+;Borngartenweg;ungerade;1;;1;;;;;;;;;64739
+;Breubergstraße;ungerade;1;;23;;;;;;;;;64739
+;Brunnenstraße;ungerade;1;;5;;;;;;;;;64739
+;Brückenstraße;ungerade;1;;13;;;;;;;;;64739
+;Bürgermeister-Dörr-Straße;ungerade;1;;11;;;;;;;;;64739
+;Bürgermeister-Heusel-Straße;ungerade;1;;13;;;;;;;;;64739
+;Centallmenweg;ungerade;1;;43;;;;;;;;;64739
+;Darmstädter Straße;ungerade;1;;51;;;;;;;;;64739
+;Dr.-Kornmesser-Straße;ungerade;1;;47;;;;;;;;;64739
+;Emylisweg;ungerade;1;;11;;;;;;;;;64739
+;Erbacher Straße;ungerade;1;;71;;;;;;;;;64739
+;Fichtenstraße;ungerade;1;;27;;;;;;;;;64739
+;Forsteler Straße;ungerade;1;;15;;;;;;;;;64739
+;Forststraße;ungerade;1;;7;;;;;;;;;64739
+;Frankfurter Straße;ungerade;1;;53;;;;;;;;;64739
+;Friedhofsweg;ungerade;1;;5;;;;;;;;;64739
+;Friedrich-Veith-Straße;ungerade;1;;27;;;;;;;;;64739
+;Gartenstraße;ungerade;1;;9;;;;;;;;;64739
+;Goethestraße;ungerade;1;;3;;;;;;;;;64739
+;Grüner Weg;ungerade;1;;11;;;;;;;;;64739
+;Hassenröther Straße;ungerade;1;;43;;;;;;;;;64739
+;Heilbronner Straße;ungerade;1;;13;;;;;;;;;64739
+;Helmut-Erb-Straße;ungerade;1;;15;;;;;;;;;64739
+;Hermann-Kahn-Weg;ungerade;1;;15;;;;;;;;;64739
+;Hochstraße;ungerade;1;;55;;;;;;;;;64739
+;Hohebergweg;ungerade;1;;27;;;;;;;;;64739
+;Hohlweg;ungerade;1;;1;;;;;;;;;64739
+;Höllerbacher Straße;ungerade;1;;17;;;;;;;;;64739
+;Im Alten Hof;ungerade;1;;1;;;;;;;;;64739
+;Im Failing;ungerade;1;;25;;;;;;;;;64739
+;In den Pfarrwiesen;ungerade;1;;1;;;;;;;;;64739
+;In den Schafhecken;ungerade;1;;23;;;;;;;;;64739
+;In den Seewiesen;ungerade;1;;3;;;;;;;;;64739
+;Jägerstraße;ungerade;1;;27;;;;;;;;;64739
+;Kastellstraße;ungerade;1;;1;;;;;;;;;64739
+;Kinziger Straße;ungerade;1;;11;;;;;;;;;64739
+;Kirchberg;ungerade;1;;3;;;;;;;;;64739
+;Kirchweg;ungerade;1;;29;;;;;;;;;64739
+;Kleingärtenweg;ungerade;1;;39;;;;;;;;;64739
+;Krautgartenweg;ungerade;1;;7;;;;;;;;;64739
+;Königsberger Straße;ungerade;1;;23;;;;;;;;;64739
+;Marktplatz;ungerade;1;;3;;;;;;;;;64739
+;Montmelianer Platz;ungerade;1;;5;;;;;;;;;64739
+;Mühlgraben;ungerade;1;;9;;;;;;;;;64739
+;Mühlweg;ungerade;1;;23;;;;;;;;;64739
+;Mümling-Grumbacher Straße;ungerade;1;;69;;;;;;;;;64739
+;Mümlingstraße;ungerade;1;;7;;;;;;;;;64739
+;Mümlingtalring;ungerade;1;;13;;;;;;;;;64739
+;Neckarstraße;ungerade;1;;25;;;;;;;;;64739
+;Ober-Klinger Weg;ungerade;1;;5;;;;;;;;;64739
+;Oberhöchster Straße;ungerade;1;;53;;;;;;;;;64739
+;Obrunnweg;ungerade;1;;31;;;;;;;;;64739
+;Pfarrstraße;ungerade;1;;5;;;;;;;;;64739
+;Pfirschbacher Straße;ungerade;1;;49;;;;;;;;;64739
+;Rimhorner Straße;ungerade;1;;13;;;;;;;;;64739
+;Ringstraße;ungerade;1;;17;;;;;;;;;64739
+;Rollgasse;ungerade;1;;11;;;;;;;;;64739
+;Rondellstraße;ungerade;1;;47;;;;;;;;;64739
+;Rosenweg;ungerade;1;;5;;;;;;;;;64739
+;Sandbergstraße;ungerade;1;;15;;;;;;;;;64739
+;Schafheckenweg;ungerade;1;;5;;;;;;;;;64739
+;Schillerstraße;ungerade;1;;23;;;;;;;;;64739
+;Schulstraße;ungerade;1;;35;;;;;;;;;64739
+;Schwimmbadstraße;ungerade;1;;9;;;;;;;;;64739
+;Siedlungsweg;ungerade;1;;13;;;;;;;;;64739
+;Siegfriedstraße;ungerade;1;;17;;;;;;;;;64739
+;Sonnenberg;ungerade;1;;11;;;;;;;;;64739
+;Spessartstraße;ungerade;1;;23;;;;;;;;;64739
+;Stockwiesenstraße;ungerade;1;;31;;;;;;;;;64739
+;Straße am Berg;ungerade;1;;27;;;;;;;;;64739
+;Talblick;ungerade;1;;11;;;;;;;;;64739
+;Weilertsweg;ungerade;1;;29;;;;;;;;;64739
+;Wernher-von-Braun-Straße;ungerade;1;;9;;;;;;;;;64739
+;Wiesenweg;ungerade;1;;19;;;;;;;;;64739
+;Wilhelminenstraße;ungerade;1;;29;;;;;;;;;64739
+;Windhof;ungerade;1;;1;;;;;;;;;64739
+;Ziegelhüttenweg;ungerade;1;;77;;;;;;;;;64739
+;Zu den Birken;ungerade;1;;15;;;;;;;;;64739
+;Zum Gerstenfeld;ungerade;1;;7;;;;;;;;;64739
+;Zum Hartberg;ungerade;1;;27;;;;;;;;;64739
+;Zum Herrgottsbrunnen;ungerade;1;;13;;;;;;;;;64739
+;Zum Wehr;ungerade;1;;5;;;;;;;;;64739
+;Zur Haselburg;ungerade;1;;51;;;;;;;;;64739
+;Albert-Schweitzer-Straße;ungerade;1;;5;;;;;;;;;64747
+;Am Bergfeld;ungerade;1;;35;;;;;;;;;64747
+;Am Grohberg;ungerade;1;;13;;;;;;;;;64747
+;Am Hang;ungerade;1;;1;;;;;;;;;64747
+;Am Hardtwald;ungerade;1;;39;;;;;;;;;64747
+;Am Niehlrain;ungerade;1;;15;;;;;;;;;64747
+;Am Rangenberg;ungerade;1;;43;;;;;;;;;64747
+;Am Roten Rain;ungerade;1;;19;;;;;;;;;64747
+;Am Römerbad;ungerade;1;;23;;;;;;;;;64747
+;Am Tiergarten;ungerade;1;;7;;;;;;;;;64747
+;Am Traumblick;ungerade;1;;1;;;;;;;;;64747
+;Am Ziegelgraben;ungerade;1;;17;;;;;;;;;64747
+;An der Bleiche;ungerade;1;;1;;;;;;;;;64747
+;An der Schulzenwiese;ungerade;1;;13;;;;;;;;;64747
+;Arnheiter Hof;ungerade;1;;1;;;;;;;;;64747
+;Arnheiter Straße;ungerade;1;;27;;;;;;;;;64747
+;Bei den Seewiesen;ungerade;1;;5;;;;;;;;;64747
+;Birkenstraße;ungerade;1;;19;;;;;;;;;64747
+;Breitenbacher Straße;ungerade;1;;19;;;;;;;;;64747
+;Breubergblick;ungerade;1;;23;;;;;;;;;64747
+;Breubergstraße;ungerade;1;;27;;;;;;;;;64747
+;Brückenstraße;ungerade;1;;11;;;;;;;;;64747
+;Burg Breuberg;ungerade;1;;1;;;;;;;;;64747
+;Burgstraße;ungerade;1;;19;;;;;;;;;64747
+;Burgterrasse;ungerade;1;;1;;;;;;;;;64747
+;Dammstraße;ungerade;1;;29;;;;;;;;;64747
+;Erbacher Straße;ungerade;1;;43;;;;;;;;;64747
+;Faßäckerweg;ungerade;1;;1;;;;;;;;;64747
+;Fliederstraße;ungerade;1;;47;;;;;;;;;64747
+;Forsthaus;ungerade;1;;1;;;;;;;;;64747
+;Forsthausstraße;ungerade;1;;21;;;;;;;;;64747
+;Friedrich-Veith-Straße;ungerade;1;;31;;;;;;;;;64747
+;Fritz-Keller-Straße;ungerade;1;;21;;;;;;;;;64747
+;Fuchsweg;ungerade;1;;17;;;;;;;;;64747
+;Gartenweg;ungerade;1;;1;;;;;;;;;64747
+;Geisrain;ungerade;1;;1;;;;;;;;;64747
+;Groß-Umstädter Straße;ungerade;1;;11;;;;;;;;;64747
+;Hainstädter Straße;ungerade;1;;21;;;;;;;;;64747
+;Hammer;ungerade;1;;5;;;;;;;;;64747
+;Hermann-Löns-Straße;ungerade;1;;5;;;;;;;;;64747
+;Herrnackerstraße;ungerade;1;;33;;;;;;;;;64747
+;Heubacher Straße;ungerade;1;;39;;;;;;;;;64747
+;Höchster Straße;ungerade;1;;39;;;;;;;;;64747
+;Hügelstraße;ungerade;1;;21;;;;;;;;;64747
+;Im Hebst;ungerade;1;;15;;;;;;;;;64747
+;Im Kirschgarten;ungerade;1;;1;;;;;;;;;64747
+;Im Steigersfeld;ungerade;1;;17;;;;;;;;;64747
+;In den Bodenäckern;ungerade;1;;37;;;;;;;;;64747
+;In den Schadenhecken;ungerade;1;;51;;;;;;;;;64747
+;In den sechs Morgen;ungerade;1;;7;;;;;;;;;64747
+;Industriestraße;ungerade;1;;7;;;;;;;;;64747
+;Kapellenweg;ungerade;1;;1;;;;;;;;;64747
+;Kappesserweg;ungerade;1;;1;;;;;;;;;64747
+;Karl-Marx-Straße;ungerade;1;;7;;;;;;;;;64747
+;Killinger Mühle;ungerade;1;;1;;;;;;;;;64747
+;Kirchstraße;ungerade;1;;31;;;;;;;;;64747
+;Kreuzfeldstraße;ungerade;1;;17;;;;;;;;;64747
+;Kreuzstraße;ungerade;1;;19;;;;;;;;;64747
+;Lauterweg;ungerade;1;;31;;;;;;;;;64747
+;Leonhard-Herbert-Straße;ungerade;1;;33;;;;;;;;;64747
+;Lilienstraße;ungerade;1;;11;;;;;;;;;64747
+;Lindenstraße;ungerade;1;;51;;;;;;;;;64747
+;Mainstraße;ungerade;1;;125;;;;;;;;;64747
+;Marktplatz;ungerade;1;;13;;;;;;;;;64747
+;Mühlhäuser Straße;ungerade;1;;35;;;;;;;;;64747
+;Nelkenstraße;ungerade;1;;5;;;;;;;;;64747
+;Neumannstraße;ungerade;1;;7;;;;;;;;;64747
+;Neustädter Straße;ungerade;1;;33;;;;;;;;;64747
+;Nordendstraße;ungerade;1;;9;;;;;;;;;64747
+;Odenwaldring;ungerade;1;;31;;;;;;;;;64747
+;Quellenstraße;ungerade;1;;17;;;;;;;;;64747
+;Rabenweg;ungerade;1;;5;;;;;;;;;64747
+;Rauwaldstraße;ungerade;1;;7;;;;;;;;;64747
+;Ringstraße;ungerade;1;;31;;;;;;;;;64747
+;Robert-Koch-Straße;ungerade;1;;17;;;;;;;;;64747
+;Rosenbach;ungerade;1;;11;;;;;;;;;64747
+;Rosenstraße;ungerade;1;;37;;;;;;;;;64747
+;Römerberg;ungerade;1;;9;;;;;;;;;64747
+;Sackgasse;ungerade;1;;19;;;;;;;;;64747
+;Schulstraße;ungerade;1;;1;;;;;;;;;64747
+;Schönbergerstraße;ungerade;1;;3;;;;;;;;;64747
+;Sophienhof;ungerade;1;;1;;;;;;;;;64747
+;Spatmühle;ungerade;1;;1;;;;;;;;;64747
+;Spessartstraße;ungerade;1;;59;;;;;;;;;64747
+;Sudetenstraße;ungerade;1;;19;;;;;;;;;64747
+;Talstraße;ungerade;1;;21;;;;;;;;;64747
+;Tannenhof;ungerade;1;;1;;;;;;;;;64747
+;Tulpenstraße;ungerade;1;;19;;;;;;;;;64747
+;Vierteläcker;ungerade;1;;1;;;;;;;;;64747
+;Waldstraße;ungerade;1;;17;;;;;;;;;64747
+;Weinbergstraße;ungerade;1;;33;;;;;;;;;64747
+;Welshgestüt;ungerade;1;;1;;;;;;;;;64747
+;Westendstraße;ungerade;1;;27;;;;;;;;;64747
+;Wolfenmühle;ungerade;1;;7;;;;;;;;;64747
+;Wolferhof;ungerade;1;;1;;;;;;;;;64747
+;Zu den Eichen;ungerade;1;;3;;;;;;;;;64747
+;Zu den Hermetsäckern;ungerade;1;;7;;;;;;;;;64747
+;Zum Hasengarten;ungerade;1;;7;;;;;;;;;64747
+;Zum Pitschgrund;ungerade;1;;23;;;;;;;;;64747
+;Am Graben;ungerade;1;;3;;;;;;;;;64750
+;Am Haingrunder Weg;ungerade;1;;1;;;;;;;;;64750
+;Am Hofgarten;ungerade;1;;23;;;;;;;;;64750
+;Am Hühnerberg;ungerade;1;;3;;;;;;;;;64750
+;Am Rain;ungerade;1;;9;;;;;;;;;64750
+;Angelhof;ungerade;1;;5;;;;;;;;;64750
+;Angelhofstraße;ungerade;1;;51;;;;;;;;;64750
+;Baierberg;ungerade;1;;1;;;;;;;;;64750
+;Bergfeldstraße;ungerade;1;;7;;;;;;;;;64750
+;Blütenstraße;ungerade;1;;13;;;;;;;;;64750
+;Bogenstraße;ungerade;1;;31;;;;;;;;;64750
+;Breitenbrunner Straße;ungerade;1;;1;;;;;;;;;64750
+;Breubergstraße;ungerade;1;;17;;;;;;;;;64750
+;Brunnenstraße;ungerade;1;;15;;;;;;;;;64750
+;Brückenstraße;ungerade;1;;11;;;;;;;;;64750
+;Eckertshofstraße;ungerade;1;;11;;;;;;;;;64750
+;Eisenbacher Straße;ungerade;1;;7;;;;;;;;;64750
+;Elsa-Brandström-Straße;ungerade;1;;7;;;;;;;;;64750
+;Erbacher Straße;ungerade;1;;59;;;;;;;;;64750
+;Eulbacher Straße;ungerade;1;;37;;;;;;;;;64750
+;Finkenweg;ungerade;1;;5;;;;;;;;;64750
+;Forsthausstraße;ungerade;1;;13;;;;;;;;;64750
+;Forststraße;ungerade;1;;19;;;;;;;;;64750
+;Friedrich-Seeger-Straße;ungerade;1;;31;;;;;;;;;64750
+;Frühlingstraße;ungerade;1;;3;;;;;;;;;64750
+;Furthstraße;ungerade;1;;37;;;;;;;;;64750
+;Gartenstraße;ungerade;1;;5;;;;;;;;;64750
+;Goethestraße;ungerade;1;;7;;;;;;;;;64750
+;Goldbachstraße;ungerade;1;;15;;;;;;;;;64750
+;Haingraben;ungerade;1;;5;;;;;;;;;64750
+;Haingründer Straße;ungerade;1;;11;;;;;;;;;64750
+;Hainstraße;ungerade;1;;11;;;;;;;;;64750
+;Hardtstraße;ungerade;1;;33;;;;;;;;;64750
+;Hauptstraße;ungerade;1;;97;;;;;;;;;64750
+;Hengmantel;ungerade;1;;5;;;;;;;;;64750
+;Hengmantelstraße;ungerade;1;;15;;;;;;;;;64750
+;Höchster Straße;ungerade;1;;67;;;;;;;;;64750
+;Im Sachsenhausen;ungerade;1;;19;;;;;;;;;64750
+;In den Gärten;ungerade;1;;19;;;;;;;;;64750
+;In der Delle;ungerade;1;;19;;;;;;;;;64750
+;Jocksberg;ungerade;1;;33;;;;;;;;;64750
+;Johann-Saul-Straße;ungerade;1;;7;;;;;;;;;64750
+;Kirschberg;ungerade;1;;11;;;;;;;;;64750
+;Klingenstraße;ungerade;1;;31;;;;;;;;;64750
+;Kreuzstraße;ungerade;1;;21;;;;;;;;;64750
+;Königer Weg;ungerade;1;;9;;;;;;;;;64750
+;Lessingstraße;ungerade;1;;35;;;;;;;;;64750
+;Lützelbacher Straße;ungerade;1;;11;;;;;;;;;64750
+;Mainstraße;ungerade;1;;57;;;;;;;;;64750
+;Maintalblick;ungerade;1;;29;;;;;;;;;64750
+;Mühleiche;ungerade;1;;41;;;;;;;;;64750
+;Mühlhäuser Straße;ungerade;1;;17;;;;;;;;;64750
+;Mümlingstraße;ungerade;1;;27;;;;;;;;;64750
+;Neffeberg;ungerade;1;;37;;;;;;;;;64750
+;Nelkenstraße;ungerade;1;;19;;;;;;;;;64750
+;Neustädter Straße;ungerade;1;;37;;;;;;;;;64750
+;Obernburger Straße;ungerade;1;;37;;;;;;;;;64750
+;Obrunnstraße;ungerade;1;;3;;;;;;;;;64750
+;Odenwaldstraße;ungerade;1;;95;;;;;;;;;64750
+;Pestalozzistraße;ungerade;1;;17;;;;;;;;;64750
+;Philippsgasse;ungerade;1;;13;;;;;;;;;64750
+;Pretlackstraße;ungerade;1;;31;;;;;;;;;64750
+;Raibacher Straße;ungerade;1;;3;;;;;;;;;64750
+;Rathausstraße;ungerade;1;;37;;;;;;;;;64750
+;Rodensteinstraße;ungerade;1;;17;;;;;;;;;64750
+;Rosenstraße;ungerade;1;;35;;;;;;;;;64750
+;Rother Berg;ungerade;1;;21;;;;;;;;;64750
+;Römergasse;ungerade;1;;23;;;;;;;;;64750
+;Sandweg;ungerade;1;;1;;;;;;;;;64750
+;Schillerstraße;ungerade;1;;53;;;;;;;;;64750
+;Schulstraße;ungerade;1;;41;;;;;;;;;64750
+;Schwannenweg;ungerade;1;;7;;;;;;;;;64750
+;Seckmauerer Straße;ungerade;1;;43;;;;;;;;;64750
+;Sonnenstraße;ungerade;1;;35;;;;;;;;;64750
+;Spessartstraße;ungerade;1;;33;;;;;;;;;64750
+;Steffersberg;ungerade;1;;1;;;;;;;;;64750
+;Steinbachweg;ungerade;1;;11;;;;;;;;;64750
+;Tulpenstraße;ungerade;1;;17;;;;;;;;;64750
+;Waldhausstraße;ungerade;1;;15;;;;;;;;;64750
+;Waldstraße;ungerade;1;;33;;;;;;;;;64750
+;Weinbergstraße;ungerade;1;;23;;;;;;;;;64750
+;Wiebelsbacher Straße;ungerade;1;;5;;;;;;;;;64750
+;Wiesenweg;ungerade;1;;15;;;;;;;;;64750
+;Wolfstraße;ungerade;1;;63;;;;;;;;;64750
+;Wörther Straße;ungerade;1;;41;;;;;;;;;64750
+;Zu den Nußbaumäckern;ungerade;1;;1;;;;;;;;;64750
+;Zum Bildacker;ungerade;1;;7;;;;;;;;;64750
+;Zum Damm;ungerade;1;;11;;;;;;;;;64750
+;Zum Schlangengraben;ungerade;1;;11;;;;;;;;;64750
+;Zur Quelle;ungerade;1;;31;;;;;;;;;64750
+;Affhöllerbacher Straße;ungerade;1;;13;;;;;;;;;64753
+;Ahlertweg;ungerade;1;;45;;;;;;;;;64753
+;Am Berg;ungerade;1;;9;;;;;;;;;64753
+;Am Bildstein;ungerade;1;;1;;;;;;;;;64753
+;Am Bollberg;ungerade;1;;5;;;;;;;;;64753
+;Am Buchengraben;ungerade;1;;3;;;;;;;;;64753
+;Am Golfplatz;ungerade;1;;1;;;;;;;;;64753
+;Am Kirchberg;ungerade;1;;5;;;;;;;;;64753
+;Am Lipsenberg;ungerade;1;;7;;;;;;;;;64753
+;Am Sandberg;ungerade;1;;1;;;;;;;;;64753
+;Am Sonnenberg;ungerade;1;;27;;;;;;;;;64753
+;Am Sportplatz;ungerade;1;;9;;;;;;;;;64753
+;Am Steinbruch;ungerade;1;;3;;;;;;;;;64753
+;Amselweg;ungerade;1;;31;;;;;;;;;64753
+;An der Steinert;ungerade;1;;3;;;;;;;;;64753
+;Auf der Herberg;ungerade;1;;27;;;;;;;;;64753
+;Bad Königer Weg;ungerade;1;;11;;;;;;;;;64753
+;Balsbach;ungerade;1;;13;;;;;;;;;64753
+;Baumgartenweg;ungerade;1;;3;;;;;;;;;64753
+;Bergstraße;ungerade;1;;5;;;;;;;;;64753
+;Birkenweg;ungerade;1;;5;;;;;;;;;64753
+;Birkerter Weg;ungerade;1;;5;;;;;;;;;64753
+;Brensbacher Straße;ungerade;1;;7;;;;;;;;;64753
+;Breuberger Straße;ungerade;1;;19;;;;;;;;;64753
+;Burghof;ungerade;1;;7;;;;;;;;;64753
+;Böckswiese;ungerade;1;;3;;;;;;;;;64753
+;Dammweg;ungerade;1;;15;;;;;;;;;64753
+;Die Seewiesen;ungerade;1;;15;;;;;;;;;64753
+;Dorfstraße;ungerade;1;;31;;;;;;;;;64753
+;Drosselweg;ungerade;1;;35;;;;;;;;;64753
+;Eichelsweg;ungerade;1;;23;;;;;;;;;64753
+;Finkenweg;ungerade;1;;29;;;;;;;;;64753
+;Gartenstraße;ungerade;1;;21;;;;;;;;;64753
+;Hochstraße;ungerade;1;;47;;;;;;;;;64753
+;Hof Herrenberg;ungerade;1;;3;;;;;;;;;64753
+;Hohlweg;ungerade;1;;1;;;;;;;;;64753
+;Höhenstraße;ungerade;1;;71;;;;;;;;;64753
+;Im Alten Garten;ungerade;1;;21;;;;;;;;;64753
+;Im Büschel;ungerade;1;;1;;;;;;;;;64753
+;Im Hägel;ungerade;1;;9;;;;;;;;;64753
+;Jahnstraße;ungerade;1;;33;;;;;;;;;64753
+;Johann-Adam-Groh-Straße;ungerade;1;;33;;;;;;;;;64753
+;Kirchbrombacher Straße;ungerade;1;;31;;;;;;;;;64753
+;Lupinenweg;ungerade;1;;1;;;;;;;;;64753
+;Martin-Luther-Weg;ungerade;1;;13;;;;;;;;;64753
+;Müllertsweg;ungerade;1;;5;;;;;;;;;64753
+;Oberdörfer Straße;ungerade;1;;101;;;;;;;;;64753
+;Obere Gasse;ungerade;1;;19;;;;;;;;;64753
+;Oberer Gründelsweg;ungerade;1;;11;;;;;;;;;64753
+;Pfälzer Straße;ungerade;1;;27;;;;;;;;;64753
+;Rodweg;ungerade;1;;15;;;;;;;;;64753
+;Schulstraße;ungerade;1;;37;;;;;;;;;64753
+;Schwimmbadstraße;ungerade;1;;1;;;;;;;;;64753
+;Steinertsweg;ungerade;1;;43;;;;;;;;;64753
+;Waldstraße;ungerade;1;;5;;;;;;;;;64753
+;Wallbacher Weg;ungerade;1;;1;;;;;;;;;64753
+;Wilhelm-Adrian-Straße;ungerade;1;;25;;;;;;;;;64753
+;Zeller Straße;ungerade;1;;189;;;;;;;;;64753
+;Zum Felsen;ungerade;1;;3;;;;;;;;;64753
+;Zum Langenstein;ungerade;1;;11;;;;;;;;;64753
+;Almenweg;ungerade;1;;13;;;;;;;;;64756
+;Alter Weg;ungerade;1;;21;;;;;;;;;64756
+;Am Bach;ungerade;1;;1;;;;;;;;;64756
+;Am Böhlacker;ungerade;1;;9;;;;;;;;;64756
+;Am Helmsberg;ungerade;1;;7;;;;;;;;;64756
+;Am Hertelsberg;ungerade;1;;5;;;;;;;;;64756
+;Am Hopfengarten;ungerade;1;;1;;;;;;;;;64756
+;Am Kirchberg;ungerade;1;;35;;;;;;;;;64756
+;Am Kirchweg;ungerade;1;;1;;;;;;;;;64756
+;Am Märzbrunnen;ungerade;1;;17;;;;;;;;;64756
+;Am Rehholz;ungerade;1;;3;;;;;;;;;64756
+;Am Vogelherd;ungerade;1;;1;;;;;;;;;64756
+;An der Halle;ungerade;1;;7;;;;;;;;;64756
+;Außerhalb;ungerade;1;;5;;;;;;;;;64756
+;Eichenweg;ungerade;1;;1;;;;;;;;;64756
+;Erbacher Straße;ungerade;1;;49;;;;;;;;;64756
+;Fürther Straße;ungerade;1;;57;;;;;;;;;64756
+;Grasellenbacher Weg;ungerade;1;;29;;;;;;;;;64756
+;Güttersbacher Straße;ungerade;1;;55;;;;;;;;;64756
+;Hardtstraße;ungerade;1;;19;;;;;;;;;64756
+;Hauptstraße;ungerade;1;;121;;;;;;;;;64756
+;Hiltersklinger Weg;ungerade;1;;37;;;;;;;;;64756
+;Ihrigstraße;ungerade;1;;43;;;;;;;;;64756
+;Im Städtel;ungerade;1;;1;;;;;;;;;64756
+;In der Großen Harras;ungerade;1;;11;;;;;;;;;64756
+;In der Kleinen Harras;ungerade;1;;65;;;;;;;;;64756
+;In der Klinge;ungerade;1;;7;;;;;;;;;64756
+;Lindelstraße;ungerade;1;;27;;;;;;;;;64756
+;Molkereiweg;ungerade;1;;9;;;;;;;;;64756
+;Mossauer Straße;ungerade;1;;17;;;;;;;;;64756
+;Neudorf;ungerade;1;;37;;;;;;;;;64756
+;Obere Siegfriedstraße;ungerade;1;;51;;;;;;;;;64756
+;Ortsstraße;ungerade;1;;185;;;;;;;;;64756
+;Siegfriedstraße;ungerade;1;;49;;;;;;;;;64756
+;Sommerhelle;ungerade;1;;19;;;;;;;;;64756
+;Untere Siegfriedstraße;ungerade;1;;23;;;;;;;;;64756
+;Wiesenstraße;ungerade;1;;13;;;;;;;;;64756
+;Adalbert-Stifter-Straße;ungerade;1;;29;;;;;;;;;64760
+;Airlenbacher Straße;ungerade;1;;9;;;;;;;;;64760
+;Alte Straße;ungerade;1;;51;;;;;;;;;64760
+;Alter Weg;ungerade;1;;63;;;;;;;;;64760
+;Am Finkenberg;ungerade;1;;15;;;Hinterbach;;;;;;64760
+;Am Herrweg;ungerade;1;;5;;;;;;;;;64760
+;Am Hof;ungerade;1;;1;;;;;;;;;64760
+;Am Kastell;ungerade;1;;5;;;;;;;;;64760
+;Am Röderwald;ungerade;1;;7;;;;;;;;;64760
+;Am Schulwald;ungerade;1;;1;;;;;;;;;64760
+;Am Sensberg;ungerade;1;;5;;;;;;;;;64760
+;Am Sonnenhang;ungerade;1;;15;;;;;;;;;64760
+;Am Spielplatz;ungerade;1;;1;;;;;;;;;64760
+;Am Sportplatz;ungerade;1;;3;;;;;;;;;64760
+;Am Tannenberg;ungerade;1;;1;;;;;;;;;64760
+;Am Tunnel;ungerade;1;;3;;;;;;;;;64760
+;Am Waldesrand;ungerade;1;;25;;;;;;;;;64760
+;Am Wetterberg;ungerade;1;;3;;;Hinterbach;;;;;;64760
+;Am Wolfsbuckel;ungerade;1;;41;;;;;;;;;64760
+;Amselweg;ungerade;1;;17;;;;;;;;;64760
+;An den Brunnenwiesen;ungerade;1;;7;;;;;;;;;64760
+;An der Alten Buche;ungerade;1;;1;;;;;;;;;64760
+;An der Gasse;ungerade;1;;21;;;;;;;;;64760
+;An der Sensbach;ungerade;1;;1;;;;;;;;;64760
+;Außerhalb Hesselbach;ungerade;1;;1;;;;;;;;;64760
+;Bahnpfad;ungerade;1;;1;;;;;;;;;64760
+;Bergmühlenweg;ungerade;1;;1;;;;;;;;;64760
+;Bergstraße;ungerade;1;;59;;;;;;;;;64760
+;Bergweg;ungerade;1;;7;;;;;;;;;64760
+;Bergwiesenweg;ungerade;1;;7;;;;;;;;;64760
+;Birkenhöhe;ungerade;1;;63;;;;;;;;;64760
+;Birkenweg;ungerade;1;;15;;;Hinterbach;;;;;;64760
+;Brunnengasse;ungerade;1;;17;;;;;;;;;64760
+;Brunnenstraße;ungerade;1;;37;;;Finkenbach;;;;;;64760
+;Brückenweg;ungerade;1;;5;;;;;;;;;64760
+;Buckelweg;ungerade;1;;13;;;;;;;;;64760
+;Bürgermeister-Müller-Straße;ungerade;1;;5;;;;;;;;;64760
+;Eberbacher Straße;ungerade;1;;23;;;;;;;;;64760
+;Eckbüschel;ungerade;1;;7;;;;;;;;;64760
+;Ecksgasse;ungerade;1;;15;;;;;;;;;64760
+;Eichenstraße;ungerade;1;;95;;;;;;;;;64760
+;Falken-Gesäßer Straße;ungerade;1;;9;;;Finkenbach;;;;;;64760
+;Falkenbergstraße;ungerade;1;;3;;;;;;;;;64760
+;Feldstraße;ungerade;1;;25;;;;;;;;;64760
+;Finkenbacher Straße;ungerade;1;;47;;;;;;;;;64760
+;Finkenbacher Weg;ungerade;1;;17;;;;;;;;;64760
+;Forststraße;ungerade;1;;7;;;Hinterbach;;;;;;64760
+;Freiensteinstraße;ungerade;1;;13;;;;;;;;;64760
+;Freiherr-vom-Stein-Straße;ungerade;1;;39;;;;;;;;;64760
+;Friedhofstraße;ungerade;1;;5;;;;;;;;;64760
+;Friedrichsdorf;ungerade;1;;1;;;;;;;;;64760
+;Friedrichsdorfer Straße;ungerade;1;;7;;;;;;;;;64760
+;Gaimühle;ungerade;1;;1;;;;;;;;;64760
+;Gammelsbacher Weg;ungerade;1;;5;;;;;;;;;64760
+;Gartenstraße;ungerade;1;;11;;;;;;;;;64760
+;Geißgasse;ungerade;1;;29;;;;;;;;;64760
+;Gewerbepark Odenwald;ungerade;1;;1;;;;;;;;;64760
+;Goethestraße;ungerade;1;;17;;;;;;;;;64760
+;Güttersbacher Weg;ungerade;1;;41;;;;;;;;;64760
+;Hammerfeld;ungerade;1;;21;;;;;;;;;64760
+;Hardtweg;ungerade;1;;41;;;;;;;;;64760
+;Hasensprung;ungerade;1;;31;;;;;;;;;64760
+;Hauptstraße;ungerade;1;;71;;;;;;;;;64760
+;Hebstahler Straße;ungerade;1;;115;;;;;;;;;64760
+;Helmsgrundstraße;ungerade;1;;7;;;;;;;;;64760
+;Hessenecker Straße;ungerade;1;;3;;;;;;;;;64760
+;Heugasse;ungerade;1;;27;;;;;;;;;64760
+;Hindenburgstraße;ungerade;1;;11;;;;;;;;;64760
+;Hirschhorner Straße;ungerade;1;;101;;;;;;;;;64760
+;Hirschsprung;ungerade;1;;19;;;;;;;;;64760
+;Hochstraße;ungerade;1;;53;;;;;;;;;64760
+;Hofstraße;ungerade;1;;9;;;;;;;;;64760
+;Hofwiese;ungerade;1;;17;;;;;;;;;64760
+;Hohberg;ungerade;1;;5;;;;;;;;;64760
+;Hohbergweg;ungerade;1;;5;;;;;;;;;64760
+;Häfengasse;ungerade;1;;29;;;;;;;;;64760
+;Höhenstraße;ungerade;1;;19;;;;;;;;;64760
+;Im Breischengrund;ungerade;1;;13;;;Finkenbach;;;;;;64760
+;Im Eck;ungerade;1;;21;;;;;;;;;64760
+;Im Gässel;ungerade;1;;5;;;;;;;;;64760
+;Im Himmelreich;ungerade;1;;11;;;;;;;;;64760
+;Im Homerich;ungerade;1;;13;;;;;;;;;64760
+;Im Lenzengrund;ungerade;1;;7;;;Finkenbach;;;;;;64760
+;Im Scheibengrund;ungerade;1;;11;;;Finkenbach;;;;;;64760
+;Im Schulzengrund;ungerade;1;;9;;;Finkenbach;;;;;;64760
+;Im Wettergrund;ungerade;1;;29;;;Finkenbach;;;;;;64760
+;Jahnstraße;ungerade;1;;29;;;;;;;;;64760
+;Jockelweg;ungerade;1;;3;;;;;;;;;64760
+;Karl-Hans-Strobl-Straße;ungerade;1;;21;;;;;;;;;64760
+;Kirchweg;ungerade;1;;39;;;;;;;;;64760
+;Kreuzweg;ungerade;1;;29;;;;;;;;;64760
+;Krähberg;ungerade;1;;1;;;;;;;;;64760
+;Kätchen-Paulus-Straße;ungerade;1;;19;;;;;;;;;64760
+;Königsberger Straße;ungerade;1;;23;;;;;;;;;64760
+;Landwehrstraße;ungerade;1;;29;;;;;;;;;64760
+;Langeforststraße;ungerade;1;;5;;;;;;;;;64760
+;Langer Grund;ungerade;1;;3;;;;;;;;;64760
+;Liebigstraße;ungerade;1;;7;;;;;;;;;64760
+;Liederbachweg;ungerade;1;;15;;;;;;;;;64760
+;Limesstraße;ungerade;1;;31;;;;;;;;;64760
+;Lindengasse;ungerade;1;;11;;;;;;;;;64760
+;Marktplatz;ungerade;1;;7;;;;;;;;;64760
+;Marktstraße;ungerade;1;;17;;;;;;;;;64760
+;Martin-Luther-Straße;ungerade;1;;25;;;;;;;;;64760
+;Metzkeil;ungerade;1;;5;;;;;;;;;64760
+;Mittlerer Weg;ungerade;1;;27;;;;;;;;;64760
+;Mühlstraße;ungerade;1;;7;;;;;;;;;64760
+;Mühlweg;ungerade;1;;45;;;;;;;;;64760
+;Mümlingtalstraße;ungerade;1;;95;;;;;;;;;64760
+;Neckarstraße;ungerade;1;;39;;;;;;;;;64760
+;Neckartalstraße;ungerade;1;;165;;;;;;;;;64760
+;Neue Straße;ungerade;1;;1;;;;;;;;;64760
+;Ober den Wiesen;ungerade;1;;5;;;;;;;;;64760
+;Obere Ortsstraße;ungerade;1;;55;;;;;;;;;64760
+;Obere Siegfriedstraße;ungerade;1;;61;;;;;;;;;64760
+;Obere Talstraße;ungerade;1;;13;;;;;;;;;64760
+;Oberer Bergweg;ungerade;1;;19;;;;;;;;;64760
+;Oberer Erbsenbach;ungerade;1;;47;;;;;;;;;64760
+;Odenwälder Landstraße;ungerade;1;;43;;;;;;;;;64760
+;Olfener Straße;ungerade;1;;33;;;Hinterbach;;;;;;64760
+;Poststraße;ungerade;1;;29;;;;;;;;;64760
+;Postweg;ungerade;1;;41;;;;;;;;;64760
+;Prof.-Braun-Straße;ungerade;1;;27;;;;;;;;;64760
+;Quellenweg;ungerade;1;;11;;;;;;;;;64760
+;Raubacher Straße;ungerade;1;;17;;;;;;;;;64760
+;Reußenkreuz;ungerade;1;;13;;;;;;;;;64760
+;Ringstraße;ungerade;1;;35;;;;;;;;;64760
+;Rote Erde;ungerade;1;;1;;;;;;;;;64760
+;Römerstraße;ungerade;1;;5;;;;;;;;;64760
+;Sauersgrund;ungerade;1;;3;;;;;;;;;64760
+;Schillerstraße;ungerade;1;;7;;;;;;;;;64760
+;Schulstraße;ungerade;1;;17;;;;;;;;;64760
+;Schweizersdelle;ungerade;1;;25;;;;;;;;;64760
+;Schöllenbacher Weg;ungerade;1;;5;;;;;;;;;64760
+;Seeweg;ungerade;1;;1;;;;;;;;;64760
+;Seewiese;ungerade;1;;1;;;;;;;;;64760
+;Sepps Weg;ungerade;1;;7;;;;;;;;;64760
+;Siedlerweg;ungerade;1;;37;;;;;;;;;64760
+;Siemensstraße;ungerade;1;;5;;;;;;;;;64760
+;Sommerberg;ungerade;1;;19;;;;;;;;;64760
+;Sonnenweg;ungerade;1;;3;;;;;;;;;64760
+;Spälterwaldstraße;ungerade;1;;9;;;;;;;;;64760
+;Steingrund;ungerade;1;;31;;;;;;;;;64760
+;Steinweg;ungerade;1;;5;;;;;;;;;64760
+;Sudetenstraße;ungerade;1;;9;;;;;;;;;64760
+;Talblick;ungerade;1;;3;;;;;;;;;64760
+;Turmstraße;ungerade;1;;79;;;;;;;;;64760
+;Untere Ortsstraße;ungerade;1;;27;;;;;;;;;64760
+;Untere Siegfriedstraße;ungerade;1;;11;;;;;;;;;64760
+;Unterer Erbsenbach;ungerade;1;;13;;;;;;;;;64760
+;Waldstraße;ungerade;1;;33;;;;;;;;;64760
+;Weißenbörner Weg;ungerade;1;;1;;;;;;;;;64760
+;Wetterbergstraße;ungerade;1;;43;;;Finkenbach;;;;;;64760
+;Wiesenrain;ungerade;1;;7;;;;;;;;;64760
+;Wiesenstraße;ungerade;1;;17;;;;;;;;;64760
+;Wiesenweg;ungerade;1;;9;;;;;;;;;64760
+;Winterhelle;ungerade;1;;5;;;;;;;;;64760
+;Zum Bikepark;ungerade;1;;1;;;;;;;;;64760
+;Zum Krähberg;ungerade;1;;57;;;;;;;;;64760
+;Zum Reitweg;ungerade;1;;7;;;;;;;;;64760
+;Zur Quelle;ungerade;1;;17;;;;;;;;;64760
+;Am Bodenacker;ungerade;3;;21;;;;;;;;;64385
+;Am Borngraben;ungerade;3;;9;;;;;;;;;64385
+;Am Gänsberg;ungerade;3;;11;;;;;;;;;64385
+;Am Hochgericht;ungerade;3;;3;;;;;;;;;64385
+;Am Langacker;ungerade;3;;23;;;;;;;;;64385
+;Bachgasse;ungerade;3;;7;;;;;;;;;64385
+;Bahnhofstraße;ungerade;3;;15;;;;;;;;;64385
+;Beerfurther Straße;ungerade;3;;81;;;;;;;;;64385
+;Bismarckstraße;ungerade;3;;49;;;;;;;;;64385
+;Brückenstraße;ungerade;3;;13;;;;;;;;;64385
+;Burgstraße;ungerade;3;;17;;;;;;;;;64385
+;Denkmalsweg;ungerade;3;;11;;;;;;;;;64385
+;Die Alme;ungerade;3;;17;;;;;;;;;64385
+;Formbachstraße;ungerade;3;;349;;;;;;;;;64385
+;Gersprenztalstraße;ungerade;3;;59;;;;;;;;;64385
+;Hardtweg;ungerade;3;;27;;;;;;;;;64385
+;Hasenbuckelweg;ungerade;3;;5;;;;;;;;;64385
+;Hirschwirtsstraße;ungerade;3;;7;;;;;;;;;64385
+;Hochstraße;ungerade;3;;17;;;;;;;;;64385
+;Höhenweg;ungerade;3;;23;;;;;;;;;64385
+;Klingenweg;ungerade;3;;27;;;;;;;;;64385
+;Krautweg;ungerade;3;;35;;;;;;;;;64385
+;Königsbrunnenstraße;ungerade;3;;7;;;;;;;;;64385
+;Lindenfelser Straße;ungerade;3;;17;;;;;;;;;64385
+;Mühlgasse;ungerade;3;;15;;;;;;;;;64385
+;Ostertalstraße;ungerade;3;;59;;;;;;;;;64385
+;Rodensteiner Straße;ungerade;3;;35;;;;;;;;;64385
+;Roseneck;ungerade;3;;17;;;;;;;;;64385
+;Schillerstraße;ungerade;3;;21;;;;;;;;;64385
+;Am Grenzgraben;ungerade;3;;3;;;Nieder-Kainsbach;;;;;;64395
+;Am Oberwald;ungerade;3;;21;;;;;;;;;64395
+;Andreas-Bock-Straße;ungerade;3;;3;;;;;;;;;64395
+;Auf der Beine;ungerade;3;;35;;;;;;;;;64395
+;Außerhalb;ungerade;3;;7;;;;;;;;;64395
+;Backhausstraße;ungerade;3;;33;;;;;;;;;64395
+;Brensbacher Straße;ungerade;3;;45;;;;;;;;;64395
+;Eiergasse;ungerade;3;;9;;;;;;;;;64395
+;Heinrichstraße;ungerade;3;;17;;;Affhöllerbach;;;;;;64395
+;Hintergasse;ungerade;3;;17;;;;;;;;;64395
+;Karl-Maser-Straße;ungerade;3;;17;;;;;;;;;64395
+;Kilsbach;ungerade;3;;5;;;;;;;;;64395
+;Kilsbacher Straße;ungerade;3;;19;;;Affhöllerbach;;;;;;64395
+;Kirchstraße;ungerade;3;;15;;;;;;;;;64395
+;Römerpfad;ungerade;3;;3;;;;;;;;;64395
+;Schnellertsberg;ungerade;3;;51;;;;;;;;;64395
+;Schulstraße;ungerade;3;;21;;;;;;;;;64395
+;Sudetenstraße;ungerade;3;;19;;;;;;;;;64395
+;Tannenweg;ungerade;3;;5;;;;;;;;;64395
+;Darmstädter Straße;ungerade;3;;67;;;;;;;;;64407
+;Elisabethenstraße;ungerade;3;;11;;;;;;;;;64407
+;Jahnstraße;ungerade;3;;19;;;;;;;;;64407
+;Klostergasse;ungerade;3;;7;;;;;;;;;64407
+;Sandweg;ungerade;3;;11;;;;;;;;;64407
+;Saroltastraße;ungerade;3;;45;;;;;;;;;64407
+;Scheffelstraße;ungerade;3;;31;;;;;;;;;64407
+;Schleiersbacher Straße;ungerade;3;;63;;;;;;;;;64407
+;Albert-Schweitzer-Straße;ungerade;3;;33;;;;;;;;;64711
+;Am Berg;ungerade;3;;27;;;;;;;;;64711
+;Am Hang;ungerade;3;;5;;;;;;;;;64711
+;Am Klippelberg;ungerade;3;;17;;;;;;;;;64711
+;Am Mümlingbogen;ungerade;3;;5;;;;;;;;;64711
+;Am Roßbächlein;ungerade;3;;21;;;;;;;;;64711
+;Am Stutz;ungerade;3;;7;;;;;;;;;64711
+;Anne-Frank-Straße;ungerade;3;;15;;;;;;;;;64711
+;Auf der Höhe;ungerade;3;;9;;;;;;;;;64711
+;Baumgärten;ungerade;3;;21;;;;;;;;;64711
+;Birkenweg;ungerade;3;;3;;;;;;;;;64711
+;Breslauer Straße;ungerade;3;;5;;;;;;;;;64711
+;Bullauer Bild;ungerade;3;;3;;;;;;;;;64711
+;Bürgermeister-Dengler-Straße;ungerade;3;;51;;;;;;;;;64711
+;Bürgermeister-Volk-Straße;ungerade;3;;9;;;;;;;;;64711
+;Carl-Kern-Weg;ungerade;3;;3;;;;;;;;;64711
+;Dellenweg;ungerade;3;;3;;;;;;;;;64711
+;Eichenweg;ungerade;3;;33;;;;;;;;;64711
+;Erdbachweg;ungerade;3;;9;;;;;;;;;64711
+;Franz-Marc-Weg;ungerade;3;;3;;;;;;;;;64711
+;Gebrüder-Grimm-Straße;ungerade;3;;3;;;;;;;;;64711
+;Geißbergweg;ungerade;3;;27;;;;;;;;;64711
+;Goethestraße;ungerade;3;;11;;;;;;;;;64711
+;Greta-Bickelhaupt-Weg;ungerade;3;;9;;;;;;;;;64711
+;Hauptstraße;ungerade;3;;61;;;;;;;;;64711
+;Heinrich-Heine-Straße;ungerade;3;;33;;;;;;;;;64711
+;Hellegasse;ungerade;3;;5;;;;;;;;;64711
+;Hofweg;ungerade;3;;7;;;;;;;;;64711
+;Hohlgarten;ungerade;3;;3;;;;;;;;;64711
+;Hohlweg;ungerade;3;;5;;;;;;;;;64711
+;Im Dorf;ungerade;3;;25;;;;;;;;;64711
+;In den Brunnenäckern;ungerade;3;;5;;;;;;;;;64711
+;In der Sommerhelle;ungerade;3;;15;;;;;;;;;64711
+;Kreuzweg;ungerade;3;;69;;;;;;;;;64711
+;Königsberger Straße;ungerade;3;;13;;;;;;;;;64711
+;Leibnizstraße;ungerade;3;;21;;;;;;;;;64711
+;Lessingstraße;ungerade;3;;3;;;;;;;;;64711
+;Liebermannstraße;ungerade;3;;11;;;;;;;;;64711
+;Marbach;ungerade;3;;3;;;;;;;;;64711
+;Martin-Luther-Straße;ungerade;3;;81;;;;;;;;;64711
+;Mossauer Straße;ungerade;3;;13;;;;;;;;;64711
+;Mozartstraße;ungerade;3;;21;;;;;;;;;64711
+;Mümlingweg;ungerade;3;;15;;;;;;;;;64711
+;Neckarstraße;ungerade;3;;157;;;;;;;;;64711
+;Nees-von-Esenbeck-Straße;ungerade;3;;11;;;;;;;;;64711
+;Obere Marktstraße;ungerade;3;;81;;;;;;;;;64711
+;Otto-Glenz-Straße;ungerade;3;;3;;;;;;;;;64711
+;Robert-Bosch-Straße;ungerade;3;;15;;;;;;;;;64711
+;Robert-Koch-Straße;ungerade;3;;7;;;;;;;;;64711
+;Rolleweg;ungerade;3;;35;;;;;;;;;64711
+;Scheuerbergweg;ungerade;3;;3;;;;;;;;;64711
+;Schmidt-Rottluff-Straße;ungerade;3;;3;;;;;;;;;64711
+;Schulhohlstraße;ungerade;3;;15;;;;;;;;;64711
+;Schöllenbacher Weg;ungerade;3;;15;;;;;;;;;64711
+;Sommerseite;ungerade;3;;7;;;;;;;;;64711
+;Spitzgartenweg;ungerade;3;;3;;;;;;;;;64711
+;Städtel;ungerade;3;;19;;;;;;;;;64711
+;Tannenweg;ungerade;3;;7;;;;;;;;;64711
+;Uhlandstraße;ungerade;3;;35;;;;;;;;;64711
+;Untere Stadtwiese;ungerade;3;;3;;;;;;;;;64711
+;Unterer Hellrain;ungerade;3;;19;;;;;;;;;64711
+;Waldstraße;ungerade;3;;23;;;;;;;;;64711
+;Westring;ungerade;3;;83;;;;;;;;;64711
+;Wiesenweg;ungerade;3;;11;;;;;;;;;64711
+;Zur Steinwiese;ungerade;3;;3;;;;;;;;;64711
+;Am Eckertsberg;ungerade;3;;29;;;;;;;;;64720
+;Am Kellersgraben;ungerade;3;;13;;;;;;;;;64720
+;Am Rosengarten;ungerade;3;;3;;;;;;;;;64720
+;Am Stadtgarten;ungerade;3;;5;;;;;;;;;64720
+;An der Alten Schule;ungerade;3;;11;;;;;;;;;64720
+;An der Odenwaldhalle;ungerade;3;;9;;;;;;;;;64720
+;Außerhalb Steinbach;ungerade;3;;3;;;;;;;;;64720
+;Beerfeldener Weg;ungerade;3;;5;;;;;;;;;64720
+;Breitenbrunner Weg;ungerade;3;;13;;;;;;;;;64720
+;Breuberger Weg;ungerade;3;;7;;;;;;;;;64720
+;Brückenstraße;ungerade;3;;7;;;;;;;;;64720
+;Buchäckerweg;ungerade;3;;9;;;;;;;;;64720
+;Damaschkestraße;ungerade;3;;15;;;;;;;;;64720
+;Danziger Straße;ungerade;3;;9;;;;;;;;;64720
+;Eulbacher Weg;ungerade;3;;17;;;;;;;;;64720
+;Faltersweg;ungerade;3;;23;;;;;;;;;64720
+;Ferdinand-Creutz-Straße;ungerade;3;;21;;;;;;;;;64720
+;Geschwister-Scholl-Straße;ungerade;3;;11;;;;;;;;;64720
+;Große Gasse;ungerade;3;;19;;;;;;;;;64720
+;Hanauer Weg;ungerade;3;;11;;;;;;;;;64720
+;Heinrich-Arzt-Straße;ungerade;3;;19;;;;;;;;;64720
+;Hieronymusstraße;ungerade;3;;33;;;;;;;;;64720
+;Hulster Straße;ungerade;3;;15;;;;;;;;;64720
+;Häfnergasse;ungerade;3;;15;;;;;;;;;64720
+;Im Eck;ungerade;3;;33;;;;;;;;;64720
+;Jockelsbuckel;ungerade;3;;5;;;;;;;;;64720
+;Karlstraße;ungerade;3;;15;;;;;;;;;64720
+;Kreuzweg;ungerade;3;;37;;;;;;;;;64720
+;Kutschenweg;ungerade;3;;3;;;;;;;;;64720
+;Mauerstraße;ungerade;3;;25;;;;;;;;;64720
+;Momarter Weg;ungerade;3;;55;;;;;;;;;64720
+;Mömlinger Weg;ungerade;3;;5;;;;;;;;;64720
+;Müllerweg;ungerade;3;;5;;;;;;;;;64720
+;Ohrnbachtalstraße;ungerade;3;;73;;;;;;;;;64720
+;Pfungstädter Weg;ungerade;3;;15;;;;;;;;;64720
+;Postweg;ungerade;3;;11;;;;;;;;;64720
+;Rathausgäßchen;ungerade;3;;7;;;;;;;;;64720
+;Rudolf-Marburg-Straße;ungerade;3;;43;;;;;;;;;64720
+;Schneidersweg;ungerade;3;;13;;;;;;;;;64720
+;Schulstraße;ungerade;3;;35;;;;;;;;;64720
+;Schwalbenweg;ungerade;3;;7;;;;;;;;;64720
+;Stefan-Hoog-Straße;ungerade;3;;39;;;;;;;;;64720
+;Stettiner Straße;ungerade;3;;5;;;;;;;;;64720
+;Stockheimer Weg;ungerade;3;;9;;;;;;;;;64720
+;Untere Schillerstraße;ungerade;3;;13;;;;;;;;;64720
+;Walther-Rathenau-Allee;ungerade;3;;41;;;;;;;;;64720
+;Weißenfelser Straße;ungerade;3;;5;;;;;;;;;64720
+;Wetzlarer Weg;ungerade;3;;7;;;;;;;;;64720
+;Zeller Straße;ungerade;3;;33;;;;;;;;;64720
+;Am Bach;ungerade;3;;5;;;;;;;;;64732
+;Am Kalkofen;ungerade;3;;27;;;;;;;;;64732
+;Am Roten Rain;ungerade;3;;25;;;;;;;;;64732
+;Am Steinbruch;ungerade;3;;31;;;;;;;;;64732
+;Am Trieb;ungerade;3;;27;;;;;;;;;64732
+;Bad König Außenliegend;ungerade;3;;45;;;;;;;;;64732
+;Bleichstraße;ungerade;3;;9;;;;;;;;;64732
+;Danziger Straße;ungerade;3;;7;;;;;;;;;64732
+;Erfurter Straße;ungerade;3;;9;;;;;;;;;64732
+;Goethestraße;ungerade;3;;11;;;;;;;;;64732
+;Hainhausweg;ungerade;3;;25;;;;;;;;;64732
+;Hardtbergweg;ungerade;3;;9;;;;;;;;;64732
+;Höhenstraße;ungerade;3;;67;;;;;;;;;64732
+;Im Fässjeseck;ungerade;3;;19;;;;;;;;;64732
+;Im Neuroth;ungerade;3;;45;;;;;;;;;64732
+;Jahnstraße;ungerade;3;;37;;;;;;;;;64732
+;Karlstraße;ungerade;3;;11;;;;;;;;;64732
+;Königsberger Straße;ungerade;3;;13;;;;;;;;;64732
+;Mozartstraße;ungerade;3;;29;;;;;;;;;64732
+;Mühlstraße;ungerade;3;;21;;;;;;;;;64732
+;Odenwaldbaumstraße;ungerade;3;;25;;;;;;;;;64732
+;Parkstraße;ungerade;3;;9;;;;;;;;;64732
+;ST. Ober-Kinzig Außerhalb;ungerade;3;;3;;;;;;;;;64732
+;Sandbergstraße;ungerade;3;;23;;;;;;;;;64732
+;Schulstraße;ungerade;3;;21;;;;;;;;;64732
+;Walter-Wiederhold-Straße;ungerade;3;;3;;;;;;;;;64732
+;Zeller Gewerbezentrum;ungerade;3;;27;;;;;;;;;64732
+;Am Damm;ungerade;3;;11;;;;;;;;;64739
+;Am Roten Rain;ungerade;3;;5;;;;;;;;;64739
+;Am Teich;ungerade;3;;5;;;;;;;;;64739
+;Am Weinberg;ungerade;3;;33;;;;;;;;;64739
+;Am Wingertsrain;ungerade;3;;15;;;;;;;;;64739
+;Aschaffenburger Straße;ungerade;3;;71;;;;;;;;;64739
+;Bergweg;ungerade;3;;11;;;;;;;;;64739
+;Bismarckstraße;ungerade;3;;59;;;;;;;;;64739
+;Bürgermeister-Wolf-Straße;ungerade;3;;21;;;;;;;;;64739
+;Dusenbacher Straße;ungerade;3;;49;;;;;;;;;64739
+;Eichestraße;ungerade;3;;17;;;;;;;;;64739
+;Elisabethenstraße;ungerade;3;;15;;;;;;;;;64739
+;Forsthausstraße;ungerade;3;;41;;;;;;;;;64739
+;Im Eck;ungerade;3;;11;;;;;;;;;64739
+;Im Elzig;ungerade;3;;9;;;;;;;;;64739
+;Im Wolfsgrund;ungerade;3;;55;;;;;;;;;64739
+;Im Wäldchen;ungerade;3;;7;;;;;;;;;64739
+;Kellereistraße;ungerade;3;;15;;;;;;;;;64739
+;Knosbergstraße;ungerade;3;;31;;;;;;;;;64739
+;Kreuzweg;ungerade;3;;11;;;;;;;;;64739
+;Nickelsweg;ungerade;3;;9;;;;;;;;;64739
+;Otto-Hahn-Straße;ungerade;3;;19;;;;;;;;;64739
+;Otzbergstraße;ungerade;3;;15;;;;;;;;;64739
+;Pestalozzistraße;ungerade;3;;59;;;;;;;;;64739
+;Rehwiesenstraße;ungerade;3;;17;;;;;;;;;64739
+;Sandbacher Straße;ungerade;3;;21;;;;;;;;;64739
+;Schwanenstraße;ungerade;3;;27;;;;;;;;;64739
+;Steinmetzstraße;ungerade;3;;3;;;;;;;;;64739
+;Talstraße;ungerade;3;;9;;;;;;;;;64739
+;Uferstraße;ungerade;3;;3;;;;;;;;;64739
+;Waldstraße;ungerade;3;;27;;;;;;;;;64739
+;Weiherstraße;ungerade;3;;15;;;;;;;;;64739
+;Zum Sportplatz;ungerade;3;;23;;;;;;;;;64739
+;Zur Friedenslinde;ungerade;3;;5;;;;;;;;;64739
+;Am Kohlplatz;ungerade;3;;57;;;;;;;;;64747
+;Am Steinbruch;ungerade;3;;19;;;;;;;;;64747
+;Amorbachstraße;ungerade;3;;19;;;;;;;;;64747
+;Bergstraße;ungerade;3;;11;;;;;;;;;64747
+;Brunnenstraße;ungerade;3;;37;;;;;;;;;64747
+;Ernst-Ludwig-Straße;ungerade;3;;115;;;;;;;;;64747
+;Friedensstraße;ungerade;3;;5;;;;;;;;;64747
+;Im Ehrlich;ungerade;3;;25;;;;;;;;;64747
+;Mühlhausen;ungerade;3;;17;;;;;;;;;64747
+;Mümlingstraße;ungerade;3;;11;;;;;;;;;64747
+;Wald-Amorbacher Straße;ungerade;3;;21;;;;;;;;;64747
+;Wertheimer Straße;ungerade;3;;29;;;;;;;;;64747
+;Wilhelm-Leuschner-Straße;ungerade;3;;13;;;;;;;;;64747
+;Wingertstraße;ungerade;3;;3;;;;;;;;;64747
+;Alter Neustädter Weg;ungerade;3;;13;;;;;;;;;64750
+;Am Berg;ungerade;3;;3;;;;;;;;;64750
+;Bachgasse;ungerade;3;;5;;;;;;;;;64750
+;Bachstraße;ungerade;3;;3;;;;;;;;;64750
+;Beckshöhe;ungerade;3;;27;;;;;;;;;64750
+;Bergstraße;ungerade;3;;13;;;;;;;;;64750
+;Birkenweg;ungerade;3;;3;;;;;;;;;64750
+;Haagstraße;ungerade;3;;17;;;;;;;;;64750
+;Hochstraße;ungerade;3;;41;;;;;;;;;64750
+;Höhenweg;ungerade;3;;9;;;;;;;;;64750
+;Jahnstraße;ungerade;3;;35;;;;;;;;;64750
+;Karl-Brunnengräber-Straße;ungerade;3;;13;;;;;;;;;64750
+;Lindenstraße;ungerade;3;;15;;;;;;;;;64750
+;Maihohl;ungerade;3;;11;;;;;;;;;64750
+;Talweg;ungerade;3;;19;;;;;;;;;64750
+;Fasanenweg;ungerade;3;;29;;;;;;;;;64753
+;Hauptstraße;ungerade;3;;101;;;;;;;;;64753
+;Im Grund;ungerade;3;;9;;;;;;;;;64753
+;Kinziger Straße;ungerade;3;;5;;;;;;;;;64753
+;Müllerweg;ungerade;3;;5;;;;;;;;;64753
+;Obere Höfe;ungerade;3;;7;;;;;;;;;64753
+;Zur Kreuzdelle;ungerade;3;;3;;;;;;;;;64753
+;Außenliegend;ungerade;3;;3;;;;;;;;;64756
+;Birkenrain;ungerade;3;;13;;;;;;;;;64756
+;Geisbergweg;ungerade;3;;37;;;;;;;;;64756
+;Kirchstraße;ungerade;3;;43;;;;;;;;;64756
+;Ringstraße;ungerade;3;;51;;;;;;;;;64756
+;Waldstraße;ungerade;3;;3;;;;;;;;;64756
+;Almenweg;ungerade;3;;19;;;;;;;;;64760
+;Alte Chaussee;ungerade;3;;19;;;;;;;;;64760
+;Alter Schöllenbacher Weg;ungerade;3;;17;;;;;;;;;64760
+;Am Hang;ungerade;3;;21;;;;;;;;;64760
+;Am Kirchberg;ungerade;3;;7;;;;;;;;;64760
+;Am Südhang;ungerade;3;;11;;;Finkenbach;;;;;;64760
+;Außerhalb Hebstahl;ungerade;3;;3;;;;;;;;;64760
+;Beerfelder Straße;ungerade;3;;67;;;Hinterbach;;;;;;64760
+;Bullauer Weg;ungerade;3;;9;;;;;;;;;64760
+;Eberbacher Weg;ungerade;3;;145;;;;;;;;;64760
+;Fichtenweg;ungerade;3;;39;;;;;;;;;64760
+;Friedhofsweg;ungerade;3;;27;;;;;;;;;64760
+;Friedrich-Ebert-Straße;ungerade;3;;55;;;;;;;;;64760
+;Gabelsbergerstraße;ungerade;3;;13;;;;;;;;;64760
+;Gammelsbacher Straße;ungerade;3;;171;;;;;;;;;64760
+;Gasse;ungerade;3;;23;;;;;;;;;64760
+;Grünesgasse;ungerade;3;;35;;;;;;;;;64760
+;Grüneshof;ungerade;3;;15;;;;;;;;;64760
+;Haintal;ungerade;3;;3;;;;;;;;;64760
+;Hammerdelle;ungerade;3;;17;;;;;;;;;64760
+;Himmelreichweg;ungerade;3;;27;;;;;;;;;64760
+;Hinterbacher Straße;ungerade;3;;49;;;Hinterbach;;;;;;64760
+;Im Schulzenfeld;ungerade;3;;59;;;;;;;;;64760
+;Im Talgrund;ungerade;3;;15;;;;;;;;;64760
+;Im Trieb;ungerade;3;;9;;;;;;;;;64760
+;Kailbacher Tor;ungerade;3;;5;;;;;;;;;64760
+;Krähberger Weg;ungerade;3;;49;;;;;;;;;64760
+;Landrat-Ackermann-Straße;ungerade;3;;35;;;;;;;;;64760
+;Leonhardshof;ungerade;3;;73;;;;;;;;;64760
+;Neuer Weg;ungerade;3;;9;;;;;;;;;64760
+;Neustraße;ungerade;3;;25;;;;;;;;;64760
+;Oberdorfstraße;ungerade;3;;15;;;;;;;;;64760
+;Oberer Mühlweg;ungerade;3;;41;;;;;;;;;64760
+;Odenwaldstraße;ungerade;3;;37;;;;;;;;;64760
+;Raudelle;ungerade;3;;67;;;;;;;;;64760
+;Ritterstraße;ungerade;3;;17;;;;;;;;;64760
+;Rollgasse;ungerade;3;;15;;;;;;;;;64760
+;Salmshütte;ungerade;3;;27;;;;;;;;;64760
+;Schwimmbadstraße;ungerade;3;;27;;;;;;;;;64760
+;Siefertsweg;ungerade;3;;7;;;;;;;;;64760
+;Theodor-Heuss-Straße;ungerade;3;;19;;;;;;;;;64760
+;Wehrstraße;ungerade;3;;15;;;;;;;;;64760
+;Wolfsdelle;ungerade;3;;3;;;;;;;;;64760
+;Zum Roten Wasser;ungerade;3;;25;;;;;;;;;64760
+;Zum Wäldchen;ungerade;3;;9;;;;;;;;;64760
+;Forststraße;ungerade;5;;53;;;;;;;;;64385
+;Im Eck;ungerade;5;;11;;;;;;;;;64385
+;Im Oberdorf;ungerade;5;;27;;;;;;;;;64385
+;Küfersweg;ungerade;5;;23;;;;;;;;;64385
+;Rangenweg;ungerade;5;;15;;;;;;;;;64385
+;Am Pechofen;ungerade;5;;9;;;;;;;;;64395
+;Beineäcker;ungerade;5;;7;;;;;;;;;64395
+;Beuneberg;ungerade;5;;33;;;;;;;;;64395
+;Bierbach;ungerade;5;;13;;;;;;;;;64395
+;Gehringstraße;ungerade;5;;51;;;;;;;;;64395
+;Mummenröther Straße;ungerade;5;;5;;;;;;;;;64395
+;Schnellertsweg;ungerade;5;;15;;;;;;;;;64395
+;Heimstättenstraße;ungerade;5;;49;;;;;;;;;64407
+;Am Südhang;ungerade;5;;13;;;;;;;;;64711
+;An der Lohmühle;ungerade;5;;15;;;;;;;;;64711
+;An der Zentlinde;ungerade;5;;31;;;;;;;;;64711
+;Der Trieb;ungerade;5;;9;;;;;;;;;64711
+;Ebersberger Straße;ungerade;5;;77;;;;;;;;;64711
+;Elsa-Brändström-Straße;ungerade;5;;13;;;;;;;;;64711
+;Erlenbacher Straße;ungerade;5;;73;;;;;;;;;64711
+;Heinrich-Ritzel-Straße;ungerade;5;;21;;;;;;;;;64711
+;In der Altwiese;ungerade;5;;11;;;;;;;;;64711
+;Lauerbacher Weg;ungerade;5;;27;;;;;;;;;64711
+;Nibelungenstraße;ungerade;5;;5;;;;;;;;;64711
+;Rudolf-Diesel-Straße;ungerade;5;;11;;;;;;;;;64711
+;Talweg;ungerade;5;;5;;;;;;;;;64711
+;Werner-von-Siemens-Straße;ungerade;5;;83;;;;;;;;;64711
+;Am Berg beim Gartenhaus;ungerade;5;;7;;;;;;;;;64720
+;Am Trieb;ungerade;5;;59;;;;;;;;;64720
+;An der Büttenwiese;ungerade;5;;29;;;;;;;;;64720
+;Breslauer Straße;ungerade;5;;17;;;;;;;;;64720
+;Brunnthal;ungerade;5;;11;;;;;;;;;64720
+;Contistraße;ungerade;5;;21;;;;;;;;;64720
+;Gartenweg;ungerade;5;;21;;;;;;;;;64720
+;Heinrich-Keidel-Straße;ungerade;5;;15;;;;;;;;;64720
+;Kurpfälzer Straße;ungerade;5;;17;;;;;;;;;64720
+;Landrat-Ackermann-Straße;ungerade;5;;55;;;;;;;;;64720
+;Limesstraße;ungerade;5;;15;;;;;;;;;64720
+;Nikolaus-Matz-Straße;ungerade;5;;7;;;;;;;;;64720
+;Oberhammerwiesenstraße;ungerade;5;;5;;;;;;;;;64720
+;Pestalozzistraße;ungerade;5;;25;;;;;;;;;64720
+;Roßbacher Weg;ungerade;5;;13;;;;;;;;;64720
+;Schloßstraße;ungerade;5;;51;;;;;;;;;64720
+;Schulbuckel;ungerade;5;;11;;;;;;;;;64720
+;Sperberweg;ungerade;5;;9;;;;;;;;;64720
+;Steinweg;ungerade;5;;15;;;;;;;;;64720
+;An den Seen;ungerade;5;;33;;;;;;;;;64732
+;Im Kimbachtal;ungerade;5;;77;;;;;;;;;64732
+;In der Pfalz;ungerade;5;;11;;;;;;;;;64732
+;In der Ringau;ungerade;5;;5;;;;;;;;;64732
+;Kreuzäckerweg;ungerade;5;;5;;;;;;;;;64732
+;Rimhorner Graben;ungerade;5;;13;;;;;;;;;64732
+;ST. Zell Außenliegend;ungerade;5;;5;;;;;;;;;64732
+;Theodor-Heuss-Straße;ungerade;5;;15;;;;;;;;;64732
+;Wingertstraße;ungerade;5;;7;;;;;;;;;64732
+;Am Borberg;ungerade;5;;9;;;;;;;;;64739
+;Am Hang;ungerade;5;;55;;;;;;;;;64739
+;Breslauer Straße;ungerade;5;;33;;;;;;;;;64739
+;Friedrich-Ebert-Straße;ungerade;5;;43;;;;;;;;;64739
+;Hainweg;ungerade;5;;21;;;;;;;;;64739
+;Hügelstraße;ungerade;5;;7;;;;;;;;;64739
+;Industriestraße;ungerade;5;;5;;;;;;;;;64739
+;Nonnenweg;ungerade;5;;63;;;;;;;;;64739
+;Nählingsweg;ungerade;5;;5;;;;;;;;;64739
+;Sudetenstraße;ungerade;5;;23;;;;;;;;;64739
+;In der Wingertsmauer;ungerade;5;;7;;;;;;;;;64747
+;Außerhalb;ungerade;5;;13;;;;;;;;;64750
+;Im Bangert;ungerade;5;;65;;;;;;;;;64750
+;Im Nußbaumgewann;ungerade;5;;13;;;;;;;;;64750
+;Kirchstraße;ungerade;5;;7;;;;;;;;;64750
+;Reiterspfad;ungerade;5;;13;;;;;;;;;64750
+;Rhönstraße;ungerade;5;;5;;;;;;;;;64750
+;Siedlung;ungerade;5;;51;;;;;;;;;64750
+;Zange;ungerade;5;;19;;;;;;;;;64750
+;Erbacher Straße;ungerade;5;;29;;;;;;;;;64753
+;Am Ritschrain;ungerade;5;;11;;;;;;;;;64756
+;Kriemhildenstraße;ungerade;5;;11;;;;;;;;;64756
+;Ober-Mossauer Straße;ungerade;5;;5;;;;;;;;;64756
+;Schulstraße;ungerade;5;;7;;;;;;;;;64756
+;Am Schloßberg;ungerade;5;;35;;;;;;;;;64760
+;Forsthausstraße;ungerade;5;;19;;;;;;;;;64760
+;Gerhart-Hauptmann-Straße;ungerade;5;;29;;;;;;;;;64760
+;Hammerweg;ungerade;5;;11;;;;;;;;;64760
+;Kirchstraße;ungerade;5;;11;;;;;;;;;64760
+;Lückenweg;ungerade;5;;13;;;;;;;;;64760
+;Sensbergstraße;ungerade;5;;7;;;;;;;;;64760
+;Sommerhelle;ungerade;5;;15;;;;;;;;;64760
+;Talstraße;ungerade;5;;19;;;;;;;;;64760
+;Unterdorfstraße;ungerade;5;;35;;;;;;;;;64760
+;Unterer Bergweg;ungerade;5;;11;;;;;;;;;64760
+;Walterbachweg;ungerade;5;;75;;;;;;;;;64760
+;Zum Bubenkreuz;ungerade;5;;13;;;;;;;;;64760
+;Reichenberger Straße;ungerade;7;;15;;;;;;;;;64385
+;Talstraße;ungerade;7;;125;;;;;;;;;64385
+;Waldstraße;ungerade;7;;39;;;;;;;;;64385
+;Am Hang;ungerade;7;;7;;;Affhöllerbach;;;;;;64395
+;Am Schaafgarten;ungerade;7;;21;;;;;;;;;64395
+;Breubergstraße;ungerade;7;;77;;;;;;;;;64395
+;In der Reffe;ungerade;7;;25;;;;;;;;;64395
+;Otzbergstraße;ungerade;7;;33;;;;;;;;;64395
+;Seedamm;ungerade;7;;13;;;;;;;;;64407
+;Am Langen Acker;ungerade;7;;7;;;;;;;;;64711
+;Beethovenstraße;ungerade;7;;25;;;;;;;;;64711
+;Bleichstraße;ungerade;7;;19;;;;;;;;;64711
+;Hochstraße;ungerade;7;;37;;;;;;;;;64711
+;Illigstraße;ungerade;7;;11;;;;;;;;;64711
+;Im Gräsig;ungerade;7;;7;;;;;;;;;64711
+;Kollwitzstraße;ungerade;7;;19;;;;;;;;;64711
+;Marbachstraße;ungerade;7;;31;;;;;;;;;64711
+;Rembrandtstraße;ungerade;7;;9;;;;;;;;;64711
+;Dr.-Anton-Leber-Straße;ungerade;7;;11;;;;;;;;;64720
+;Dresdener Straße;ungerade;7;;11;;;;;;;;;64720
+;Fritz-Kredel-Straße;ungerade;7;;15;;;;;;;;;64720
+;Ludwig-Bogen-Straße;ungerade;7;;19;;;;;;;;;64720
+;Sudetenstraße;ungerade;7;;7;;;;;;;;;64720
+;Am Bärenklingengraben;ungerade;7;;9;;;;;;;;;64732
+;An den Herrenhäusern;ungerade;7;;7;;;;;;;;;64732
+;Am Sandberg;ungerade;7;;9;;;;;;;;;64739
+;Bernhardstraße;ungerade;7;;17;;;;;;;;;64747
+;Rosenbacher Weg;ungerade;7;;19;;;;;;;;;64747
+;Schwimmbadstraße;ungerade;7;;45;;;;;;;;;64747
+;Am Engelsberg;ungerade;7;;17;;;;;;;;;64753
+;Ballengrundweg;ungerade;7;;19;;;;;;;;;64753
+;Friedhofsweg;ungerade;7;;7;;;;;;;;;64753
+;Pfarrgasse;ungerade;7;;9;;;;;;;;;64753
+;Mösselbachweg;ungerade;7;;17;;;;;;;;;64756
+;Neuer Weg;ungerade;7;;7;;;;;;;;;64756
+;Auf der Sommerseite;ungerade;7;;7;;;;;;;;;64760
+;Brückenstraße;ungerade;7;;9;;;;;;;;;64760
+;Ernst-Ludwig-Edelmann-Straße;ungerade;7;;13;;;;;;;;;64760
+;Hainbrunner Straße;ungerade;7;;57;;;Finkenbach;;;;;;64760
+;Heckenmühle;ungerade;7;;15;;;;;;;;;64760
+;Heugrundstraße;ungerade;7;;7;;;;;;;;;64760
+;Judengasse;ungerade;7;;13;;;;;;;;;64760
+;Kutschenweg;ungerade;7;;41;;;;;;;;;64760
+;Ortsstraße;ungerade;7;;33;;;;;;;;;64760
+;Fabrikstraße;ungerade;9;;15;;;;;;;;;64385
+;Neuhausstraße;ungerade;9;;11;;;;;;;;;64385
+;Brunnenkopfweg;ungerade;9;;9;;;;;;;;;64711
+;Dreiseetalstraße;ungerade;9;;83;;;;;;;;;64711
+;Ortsstraße;ungerade;9;;41;;;;;;;;;64711
+;Außerhalb;ungerade;9;;47;;;;;;;;;64720
+;Mittelweg;ungerade;9;;55;;;;;;;;;64720
+;Erbacher Straße;ungerade;9;;31;;;;;;;;;64732
+;Frankfurter Straße;ungerade;9;;75;;;;;;;;;64732
+;Lindenstraße;ungerade;9;;55;;;;;;;;;64732
+;Groß-Umstädter Straße;ungerade;9;;59;;;;;;;;;64739
+;Himmelsleiter;ungerade;9;;9;;;;;;;;;64739
+;Jahnstraße;ungerade;9;;31;;;;;;;;;64739
+;Oberlehrer-Wolf-Straße;ungerade;9;;15;;;;;;;;;64739
+;Falltorstraße;ungerade;9;;9;;;;;;;;;64747
+;Hohlstraße;ungerade;9;;27;;;;;;;;;64747
+;Am Bahndamm;ungerade;9;;9;;;;;;;;;64760
+;Lindenallee;ungerade;9;;45;;;;;;;;;64760
+;Sensbacher Straße;ungerade;9;;151;;;;;;;;;64760
+;Pestalozzistraße;ungerade;11;;21;;;;;;;;;64385
+;Egerländer Straße;ungerade;11;;41;;;;;;;;;64395
+;An der Stadtschule;ungerade;11;;15;;;;;;;;;64720
+;Einhardstraße;ungerade;11;;101;;;;;;;;;64720
+;Am Mönchsberg;ungerade;11;;11;;;;;;;;;64732
+;Lärchenweg;ungerade;11;;11;;;;;;;;;64739
+;An der Roten Mauer;ungerade;11;;27;;;;;;;;;64747
+;Am Mühlberg;ungerade;11;;25;;;;;;;;;64756
+;Elsbacher Weg;ungerade;11;;11;;;;;;;;;64756
+;Am Freudenberg;ungerade;11;;21;;;;;;;;;64760
+;Dieselstraße;ungerade;11;;33;;;;;;;;;64760
+;Marbach;ungerade;11;;23;;;;;;;;;64760
+;Siegfriedstraße;ungerade;11;;59;;;;;;;;;64760
+;Sportplatzweg;ungerade;11;;19;;;;;;;;;64760
+;Viehmarktsplatz;ungerade;11;;11;;;;;;;;;64760
+;Wilhelm-Bechtold-Straße;ungerade;11;;11;;;;;;;;;64760
+;Brunnenstraße;ungerade;13;;29;;;;;;;;;64711
+;Leipziger Straße;ungerade;13;;17;;;;;;;;;64711
+;Böltener Straße;ungerade;13;;23;;;;;;;;;64739
+;Reichelsheimer Straße;ungerade;13;;15;;;;;;;;;64753
+;Am Hornungsrain;ungerade;13;;13;;;;;;;;;64760
+;Michelstädter Straße;ungerade;15;;23;;;;;;;;;64711
+;Mühlstraße;ungerade;15;;19;;;;;;;;;64711
+;Schulweg;ungerade;15;;15;;;;;;;;;64711
+;Am Schmalberg;ungerade;15;;23;;;;;;;;;64720
+;In den Hauswiesen;ungerade;15;;15;;;;;;;;;64720
+;Obere Schillerstraße;ungerade;15;;33;;;;;;;;;64720
+;Bachgasse;ungerade;15;;17;;;;;;;;;64732
+;Almenweg;ungerade;15;;27;;;;;;;;;64747
+;Tannhäuser Grund;ungerade;15;;23;;;;;;;;;64753
+;Amorbacher Straße;ungerade;17;;37;;;;;;;;;64720
+;Kappenrainweg;ungerade;17;;17;;;;;;;;;64720
+;Fürstenauer Eck;ungerade;17;;31;;;;;;;;;64753
+;Bahnhofstraße;ungerade;17;;83;;;;;;;;;64760
+;Birkenweg;ungerade;19;;29;;;Affhöllerbach;;;;;;64395
+;Erbacher Straße;ungerade;19;;99;;;Nieder-Kainsbach;;;;;;64395
+;Im Tal;ungerade;19;;51;;;;;;;;;64711
+;Am Dachsberg;ungerade;19;;49;;;;;;;;;64756
+;Erbacher Straße;ungerade;19;;115;;;;;;;;;64760
+;Bezenbach;ungerade;21;;27;;;;;;;;;64385
+;Am Holzfeld;ungerade;21;;47;;;;;;;;;64711
+;Zum Löwengrund;ungerade;21;;21;;;;;;;;;64711
+;Relystraße;ungerade;21;;45;;;;;;;;;64720
+;Darmstädter Straße;ungerade;21;;133;;;;;;;;;64732
+;Sachsenhäuser Straße;ungerade;21;;53;;;;;;;;;64753
+;Grundstraße;ungerade;23;;127;;;;;;;;;64385
+;Winterkastener Straße;ungerade;23;;31;;;;;;;;;64385
+;Stockheimer Ring;ungerade;23;;23;;;;;;;;;64711
+;Rumillystraße;ungerade;23;;43;;;;;;;;;64720
+;Bürgergraben;ungerade;25;;41;;;;;;;;;64739
+;Friedhofstraße;ungerade;25;;41;;;;;;;;;64739
+;Kriemhildstraße;ungerade;27;;79;;;;;;;;;64385
+;Zum Roßbacher Hof;ungerade;27;;37;;;;;;;;;64711
+;Eulbacher Straße;ungerade;29;;61;;;;;;;;;64711
+;Am Wingertsbuckel;ungerade;29;;41;;;;;;;;;64760
+;Am Hang;ungerade;31;;33;;;;;;;;;64720
+;Bahnhofstraße;ungerade;31;;37;;;;;;;;;64747
+;Mannheimer Landstraße;ungerade;33;;37;;;Nieder-Kainsbach;;;;;;64395
+;Asselbrunn;ungerade;33;;65;;;;;;;;;64720
+;Hüttenthaler Straße;ungerade;33;;107;;;;;;;;;64756
+;Illertstraße;ungerade;35;;35;;;;;;;;;64711
+;Am Schloßgraben;ungerade;45;;45;;;;;;;;;64711
+;Außerhalb;ungerade;45;;45;;;;;;;;;64747
+;Mainstraße;ungerade;47;;65;;;;;;;;;64739
+;Darmstädter Straße;ungerade;49;;119;;;;;;;;;64720
+;Alter Postweg;gerade;2;;24;;;;;;;;;64385
+;Alter Weg;gerade;2;;66;;;;;;;;;64385
+;Am Berg;gerade;2;;8;;;;;;;;;64385
+;Am Borngraben;gerade;2;;4;;;;;;;;;64385
+;Am Eichelberg;gerade;2;;20;;;;;;;;;64385
+;Am Fuchsstein;gerade;2;;2;;;;;;;;;64385
+;Am Großen Stein;gerade;2;;34;;;;;;;;;64385
+;Am Gänsberg;gerade;2;;26;;;;;;;;;64385
+;Am Lackenberg;gerade;2;;2;;;;;;;;;64385
+;Am Langacker;gerade;2;;24;;;;;;;;;64385
+;Am Morsberg;gerade;2;;20;;;;;;;;;64385
+;Am Schafacker;gerade;2;;28;;;;;;;;;64385
+;Am Schloßberg;gerade;2;;4;;;;;;;;;64385
+;Am Sonnenberg;gerade;2;;40;;;;;;;;;64385
+;Am Tannenberg;gerade;2;;10;;;;;;;;;64385
+;Am Viertelsberg;gerade;2;;8;;;;;;;;;64385
+;Amselweg;gerade;2;;18;;;;;;;;;64385
+;An der Ruh;gerade;2;;22;;;;;;;;;64385
+;Außerhalb;gerade;2;;2;;;;;;;;;64385
+;Bachgasse;gerade;2;;2;;;;;;;;;64385
+;Beerbachstraße;gerade;2;;2;;;;;;;;;64385
+;Bezenbach;gerade;2;;36;;;;;;;;;64385
+;Birkenhag;gerade;2;;48;;;;;;;;;64385
+;Blauer Weg;gerade;2;;2;;;;;;;;;64385
+;Brunnenstraße;gerade;2;;22;;;;;;;;;64385
+;Brühlstraße;gerade;2;;22;;;;;;;;;64385
+;Dachsbergweg;gerade;2;;6;;;;;;;;;64385
+;Darmstädter Straße;gerade;2;;80;;;;;;;;;64385
+;Dorfweg;gerade;2;;26;;;;;;;;;64385
+;Eberbach;gerade;2;;10;;;;;;;;;64385
+;Eberbacher Weg;gerade;2;;64;;;;;;;;;64385
+;Eichendorffstraße;gerade;2;;16;;;;;;;;;64385
+;Erzbacher Weg;gerade;2;;38;;;;;;;;;64385
+;Finkenweg;gerade;2;;8;;;;;;;;;64385
+;Frohnhofen;gerade;2;;6;;;;;;;;;64385
+;Gartenstraße;gerade;2;;36;;;;;;;;;64385
+;Goethestraße;gerade;2;;40;;;;;;;;;64385
+;Guldenstraße;gerade;2;;26;;;;;;;;;64385
+;Gutleutstraße;gerade;2;;10;;;;;;;;;64385
+;Heidelberger Straße;gerade;2;;120;;;;;;;;;64385
+;Heinrichstraße;gerade;2;;6;;;;;;;;;64385
+;Helene-Göttmann-Straße;gerade;2;;24;;;;;;;;;64385
+;Hermann-Löns-Straße;gerade;2;;2;;;;;;;;;64385
+;Hirschwirtsstraße;gerade;2;;8;;;;;;;;;64385
+;Hochstraße;gerade;2;;10;;;;;;;;;64385
+;Hohlweg;gerade;2;;2;;;;;;;;;64385
+;Hönigeweg;gerade;2;;4;;;;;;;;;64385
+;Hügelstraße;gerade;2;;14;;;;;;;;;64385
+;Im Gesäß;gerade;2;;4;;;;;;;;;64385
+;Im Oberdorf;gerade;2;;40;;;;;;;;;64385
+;In der Aue;gerade;2;;28;;;;;;;;;64385
+;In der Fürthwiese;gerade;2;;8;;;;;;;;;64385
+;Jahnstraße;gerade;2;;28;;;;;;;;;64385
+;Kirchstraße;gerade;2;;20;;;;;;;;;64385
+;Klingenweg;gerade;2;;26;;;;;;;;;64385
+;Korngasse;gerade;2;;22;;;;;;;;;64385
+;Krautweg;gerade;2;;32;;;;;;;;;64385
+;Kriemhildstraße;gerade;2;;72;;;;;;;;;64385
+;Königsbrunnenstraße;gerade;2;;4;;;;;;;;;64385
+;Küfersweg;gerade;2;;20;;;;;;;;;64385
+;Langlosenweg;gerade;2;;16;;;;;;;;;64385
+;Laudenauer Straße;gerade;2;;46;;;;;;;;;64385
+;Lindenfelser Straße;gerade;2;;22;;;;;;;;;64385
+;Lindenfelser Weg;gerade;2;;12;;;;;;;;;64385
+;Marktplatz;gerade;2;;14;;;;;;;;;64385
+;Michelbacher Straße;gerade;2;;22;;;;;;;;;64385
+;Michelstädter Straße;gerade;2;;8;;;;;;;;;64385
+;Mühlgasse;gerade;2;;24;;;;;;;;;64385
+;Panoramastraße;gerade;2;;12;;;;;;;;;64385
+;Pestalozzistraße;gerade;2;;10;;;;;;;;;64385
+;Pfalzstraße;gerade;2;;70;;;;;;;;;64385
+;Quellenstraße;gerade;2;;6;;;;;;;;;64385
+;Rathausplatz;gerade;2;;6;;;;;;;;;64385
+;Rodensteiner Straße;gerade;2;;44;;;;;;;;;64385
+;Rohrbacher Straße;gerade;2;;80;;;;;;;;;64385
+;Scheffelstraße;gerade;2;;28;;;;;;;;;64385
+;Schillerstraße;gerade;2;;20;;;;;;;;;64385
+;Schlossblick;gerade;2;;30;;;;;;;;;64385
+;Schulstraße;gerade;2;;8;;;;;;;;;64385
+;Siegfriedstraße;gerade;2;;66;;;;;;;;;64385
+;Steinstraße;gerade;2;;2;;;;;;;;;64385
+;Stickelbergweg;gerade;2;;14;;;;;;;;;64385
+;Sudetenstraße;gerade;2;;74;;;;;;;;;64385
+;Waldstraße;gerade;2;;38;;;;;;;;;64385
+;Wiesenstraße;gerade;2;;12;;;;;;;;;64385
+;Winterkastener Straße;gerade;2;;32;;;;;;;;;64385
+;Wünschbacher Straße;gerade;2;;22;;;;;;;;;64385
+;Ziegelhüttenstraße;gerade;2;;16;;;;;;;;;64385
+;Am Alten Bahnhof;gerade;2;;24;;;;;;;;;64395
+;Am Feuerstein;gerade;2;;6;;;Nieder-Kainsbach;;;;;;64395
+;Am Hang;gerade;2;;8;;;Affhöllerbach;;;;;;64395
+;Am Haufensteinberg;gerade;2;;62;;;;;;;;;64395
+;Am Huthweg;gerade;2;;12;;;;;;;;;64395
+;Am Kirschberg;gerade;2;;6;;;;;;;;;64395
+;Am Klinger Weg;gerade;2;;8;;;;;;;;;64395
+;Am Kreuz;gerade;2;;12;;;;;;;;;64395
+;Am Mühlberg;gerade;2;;10;;;Affhöllerbach;;;;;;64395
+;Am Oberwald;gerade;2;;42;;;;;;;;;64395
+;Am Pechofen;gerade;2;;2;;;;;;;;;64395
+;Am Reechberg;gerade;2;;14;;;;;;;;;64395
+;Am Schaafgarten;gerade;2;;26;;;;;;;;;64395
+;Am Sportplatz;gerade;2;;28;;;;;;;;;64395
+;Am Talweg;gerade;2;;4;;;;;;;;;64395
+;Am Wendehammer;gerade;2;;6;;;Nieder-Kainsbach;;;;;;64395
+;Am Wingertsberg;gerade;2;;6;;;;;;;;;64395
+;An der Galgeneiche;gerade;2;;56;;;;;;;;;64395
+;An der Hornsmühle;gerade;2;;10;;;;;;;;;64395
+;Andreas-Bock-Straße;gerade;2;;14;;;;;;;;;64395
+;Auf der Höh;gerade;2;;6;;;;;;;;;64395
+;Außerhalb;gerade;2;;18;;;;;;;;;64395
+;Backhausstraße;gerade;2;;20;;;;;;;;;64395
+;Beineäcker;gerade;2;;12;;;;;;;;;64395
+;Berndsgasse;gerade;2;;2;;;;;;;;;64395
+;Beuneberg;gerade;2;;20;;;;;;;;;64395
+;Bierbach;gerade;2;;12;;;;;;;;;64395
+;Borngasse;gerade;2;;4;;;Nieder-Kainsbach;;;;;;64395
+;Brensbacher Straße;gerade;2;;80;;;;;;;;;64395
+;Buchenweg;gerade;2;;12;;;;;;;;;64395
+;Böllsteiner Straße;gerade;2;;12;;;Affhöllerbach;;;;;;64395
+;Darmstädter Landstraße;gerade;2;;2;;;Nieder-Kainsbach;;;;;;64395
+;Darmstädter Straße;gerade;2;;60;;;;;;;;;64395
+;Eichenweg;gerade;2;;8;;;;;;;;;64395
+;Eiergasse;gerade;2;;12;;;;;;;;;64395
+;Erlenweg;gerade;2;;10;;;;;;;;;64395
+;Fasanenweg;gerade;2;;6;;;;;;;;;64395
+;Finkenweg;gerade;2;;10;;;;;;;;;64395
+;Friedhofstraße;gerade;2;;8;;;Nieder-Kainsbach;;;;;;64395
+;Gehringstraße;gerade;2;;52;;;;;;;;;64395
+;Georg-Ackermann-Straße;gerade;2;;16;;;Nieder-Kainsbach;;;;;;64395
+;Goethestraße;gerade;2;;20;;;Nieder-Kainsbach;;;;;;64395
+;Hanse Lucke;gerade;2;;32;;;;;;;;;64395
+;Heidelberger Straße;gerade;2;;100;;;;;;;;;64395
+;Heinrichstraße;gerade;2;;18;;;Affhöllerbach;;;;;;64395
+;Hintergasse;gerade;2;;24;;;;;;;;;64395
+;Hochstraße;gerade;2;;22;;;;;;;;;64395
+;Hornsmühle;gerade;2;;6;;;;;;;;;64395
+;Hubertusstraße;gerade;2;;14;;;;;;;;;64395
+;Höchster Straße;gerade;2;;102;;;;;;;;;64395
+;Höhenweg;gerade;2;;6;;;Affhöllerbach;;;;;;64395
+;Im Frohngrund;gerade;2;;14;;;;;;;;;64395
+;Im Sellerts;gerade;2;;38;;;;;;;;;64395
+;Im Sommergrund;gerade;2;;4;;;;;;;;;64395
+;In der Hohl;gerade;2;;26;;;;;;;;;64395
+;In der Strieth;gerade;2;;30;;;;;;;;;64395
+;Jahnstraße;gerade;2;;12;;;;;;;;;64395
+;Kilsbach;gerade;2;;8;;;Nieder-Kainsbach;;;;;;64395
+;Kirchbachstraße;gerade;2;;16;;;;;;;;;64395
+;Kreuzstraße;gerade;2;;16;;;;;;;;;64395
+;Krämergasse;gerade;2;;2;;;Affhöllerbach;;;;;;64395
+;Lerchenweg;gerade;2;;6;;;;;;;;;64395
+;Lindenstraße;gerade;2;;12;;;Affhöllerbach;;;;;;64395
+;Moorbachstraße;gerade;2;;20;;;;;;;;;64395
+;Mummenröther Straße;gerade;2;;2;;;;;;;;;64395
+;Nonroder Straße;gerade;2;;12;;;;;;;;;64395
+;Ochsenwiesenweg;gerade;2;;6;;;;;;;;;64395
+;Odenwaldring;gerade;2;;26;;;;;;;;;64395
+;Ortsringweg;gerade;2;;10;;;;;;;;;64395
+;Otzbergstraße;gerade;2;;30;;;;;;;;;64395
+;Pfarrberg;gerade;2;;12;;;;;;;;;64395
+;Ringstraße;gerade;2;;14;;;;;;;;;64395
+;Rodensteinstraße;gerade;2;;18;;;;;;;;;64395
+;Römerberg;gerade;2;;30;;;;;;;;;64395
+;Römerpfad;gerade;2;;4;;;;;;;;;64395
+;Schlangenäcker;gerade;2;;12;;;Nieder-Kainsbach;;;;;;64395
+;Schnellertsberg;gerade;2;;50;;;;;;;;;64395
+;Schnellertsweg;gerade;2;;18;;;;;;;;;64395
+;Schulstraße;gerade;2;;30;;;;;;;;;64395
+;Siedlungsweg;gerade;2;;12;;;Nieder-Kainsbach;;;;;;64395
+;Sonnenweg;gerade;2;;2;;;;;;;;;64395
+;Steinmauerstraße;gerade;2;;2;;;Nieder-Kainsbach;;;;;;64395
+;Sudetenstraße;gerade;2;;20;;;;;;;;;64395
+;Tannenweg;gerade;2;;4;;;;;;;;;64395
+;Wiesenstraße;gerade;2;;8;;;;;;;;;64395
+;Ziegelgasse;gerade;2;;12;;;Nieder-Kainsbach;;;;;;64395
+;Adalbert-Stifter-Straße;gerade;2;;10;;;;;;;;;64407
+;Allee;gerade;2;;46;;;;;;;;;64407
+;Am Hexenberg;gerade;2;;54;;;;;;;;;64407
+;Am Lohberg;gerade;2;;4;;;;;;;;;64407
+;Am Weinberg;gerade;2;;2;;;;;;;;;64407
+;Auf dem Zieglers;gerade;2;;8;;;;;;;;;64407
+;Auf der Beine;gerade;2;;18;;;;;;;;;64407
+;Bahnhofstraße;gerade;2;;52;;;;;;;;;64407
+;Berliner Straße;gerade;2;;12;;;;;;;;;64407
+;Brunhildstraße;gerade;2;;14;;;;;;;;;64407
+;Christiansweg;gerade;2;;8;;;;;;;;;64407
+;Darmstädter Straße;gerade;2;;56;;;;;;;;;64407
+;Eckgartenstraße;gerade;2;;6;;;;;;;;;64407
+;Eichendorffstraße;gerade;2;;10;;;;;;;;;64407
+;Erlau;gerade;2;;8;;;;;;;;;64407
+;Friedhofstraße;gerade;2;;26;;;;;;;;;64407
+;Georg-Büchner-Straße;gerade;2;;56;;;;;;;;;64407
+;Güttersbach;gerade;2;;2;;;;;;;;;64407
+;Hagenstraße;gerade;2;;18;;;;;;;;;64407
+;Heimstättenstraße;gerade;2;;34;;;;;;;;;64407
+;Heinrich-Heine-Weg;gerade;2;;14;;;;;;;;;64407
+;Hügelstraße;gerade;2;;2;;;;;;;;;64407
+;Industriestraße;gerade;2;;12;;;;;;;;;64407
+;Jahnstraße;gerade;2;;16;;;;;;;;;64407
+;Kriemhildstraße;gerade;2;;8;;;;;;;;;64407
+;Lessingstraße;gerade;2;;34;;;;;;;;;64407
+;Lichtenberger Straße;gerade;2;;30;;;;;;;;;64407
+;Meierei;gerade;2;;2;;;;;;;;;64407
+;Michelbach;gerade;2;;6;;;;;;;;;64407
+;Mozartstraße;gerade;2;;2;;;;;;;;;64407
+;Parkweg;gerade;2;;10;;;;;;;;;64407
+;Pretlackstraße;gerade;2;;10;;;;;;;;;64407
+;Raiffeisenstraße;gerade;2;;22;;;;;;;;;64407
+;Rodensteiner Straße;gerade;2;;62;;;;;;;;;64407
+;Römersberg;gerade;2;;18;;;;;;;;;64407
+;Sandweg;gerade;2;;16;;;;;;;;;64407
+;Schafhofgasse;gerade;2;;42;;;;;;;;;64407
+;Scheffelstraße;gerade;2;;12;;;;;;;;;64407
+;Schillerstraße;gerade;2;;84;;;;;;;;;64407
+;Schleiersbacher Straße;gerade;2;;58;;;;;;;;;64407
+;Siedlerweg;gerade;2;;20;;;;;;;;;64407
+;Siegfriedstraße;gerade;2;;20;;;;;;;;;64407
+;Waldfrieden;gerade;2;;2;;;;;;;;;64407
+;Wingertsberg;gerade;2;;8;;;;;;;;;64407
+;Ahornstraße;gerade;2;;8;;;;;;;;;64711
+;Alexander-von-Humboldt-Straße;gerade;2;;18;;;;;;;;;64711
+;Alfred-Kehrer-Straße;gerade;2;;16;;;;;;;;;64711
+;Almendweg;gerade;2;;4;;;;;;;;;64711
+;Alter Weg;gerade;2;;24;;;;;;;;;64711
+;Am Drachenfeld;gerade;2;;12;;;;;;;;;64711
+;Am Hang;gerade;2;;2;;;;;;;;;64711
+;Am Holzfeld;gerade;2;;28;;;;;;;;;64711
+;Am Klippelberg;gerade;2;;12;;;;;;;;;64711
+;Am Krebsbach;gerade;2;;38;;;;;;;;;64711
+;Am Langen Acker;gerade;2;;12;;;;;;;;;64711
+;Am Lettacker;gerade;2;;12;;;;;;;;;64711
+;Am Löwenbrunnen;gerade;2;;26;;;;;;;;;64711
+;Am Mühlberg;gerade;2;;22;;;;;;;;;64711
+;Am Mümlingbogen;gerade;2;;4;;;;;;;;;64711
+;Am Neurott;gerade;2;;12;;;;;;;;;64711
+;Am Pfarrgarten;gerade;2;;16;;;;;;;;;64711
+;Am Reihberg;gerade;2;;22;;;;;;;;;64711
+;Am Schloßgraben;gerade;2;;54;;;;;;;;;64711
+;Am Schöllenberg;gerade;2;;10;;;;;;;;;64711
+;Am Südhang;gerade;2;;22;;;;;;;;;64711
+;Am Thoracker;gerade;2;;20;;;;;;;;;64711
+;Am Treppenweg;gerade;2;;14;;;;;;;;;64711
+;Amselweg;gerade;2;;18;;;;;;;;;64711
+;An der Halbmauer;gerade;2;;8;;;;;;;;;64711
+;An der Lohmühle;gerade;2;;2;;;;;;;;;64711
+;An der Zentlinde;gerade;2;;44;;;;;;;;;64711
+;Anemonenweg;gerade;2;;4;;;;;;;;;64711
+;Aspenweg;gerade;2;;6;;;;;;;;;64711
+;Auf der Halle;gerade;2;;36;;;;;;;;;64711
+;Auf der Höhe;gerade;2;;2;;;;;;;;;64711
+;Auf der Röder;gerade;2;;34;;;;;;;;;64711
+;Bahnstraße;gerade;2;;26;;;;;;;;;64711
+;Baumgärten;gerade;2;;16;;;;;;;;;64711
+;Berliner Straße;gerade;2;;24;;;;;;;;;64711
+;Birkenweg;gerade;2;;10;;;;;;;;;64711
+;Breslauer Straße;gerade;2;;4;;;;;;;;;64711
+;Brunnenhohl;gerade;2;;4;;;;;;;;;64711
+;Brückenstraße;gerade;2;;8;;;;;;;;;64711
+;Buchenweg;gerade;2;;16;;;;;;;;;64711
+;Bullauer Straße;gerade;2;;80;;;;;;;;;64711
+;Bürgermeister-Dengler-Straße;gerade;2;;36;;;;;;;;;64711
+;Bürgermeister-Volk-Straße;gerade;2;;4;;;;;;;;;64711
+;Carlo-Mierendorff-Straße;gerade;2;;18;;;;;;;;;64711
+;Clemens-von-Brentano-Weg;gerade;2;;4;;;;;;;;;64711
+;Cranachstraße;gerade;2;;16;;;;;;;;;64711
+;Damaschkestraße;gerade;2;;64;;;;;;;;;64711
+;Danziger Straße;gerade;2;;34;;;;;;;;;64711
+;Dellenweg;gerade;2;;8;;;;;;;;;64711
+;Der Trieb;gerade;2;;2;;;;;;;;;64711
+;Dreiseetalstraße;gerade;2;;100;;;;;;;;;64711
+;Dresdener Straße;gerade;2;;8;;;;;;;;;64711
+;Eck;gerade;2;;8;;;;;;;;;64711
+;Eichenweg;gerade;2;;22;;;;;;;;;64711
+;Elsbacher Weg;gerade;2;;28;;;;;;;;;64711
+;Erbacher Straße;gerade;2;;30;;;;;;;;;64711
+;Erdbachweg;gerade;2;;8;;;;;;;;;64711
+;Ernsbacher Weg;gerade;2;;30;;;;;;;;;64711
+;Falkenweg;gerade;2;;8;;;;;;;;;64711
+;Forsthausstraße;gerade;2;;22;;;;;;;;;64711
+;Fortunastraße;gerade;2;;64;;;;;;;;;64711
+;Franz-Marc-Weg;gerade;2;;8;;;;;;;;;64711
+;Friedrich-Ebert-Straße;gerade;2;;30;;;;;;;;;64711
+;Gabelsbergerstraße;gerade;2;;18;;;;;;;;;64711
+;Gartenweg;gerade;2;;4;;;;;;;;;64711
+;Gebrüder-Grimm-Straße;gerade;2;;8;;;;;;;;;64711
+;Geißbergweg;gerade;2;;34;;;;;;;;;64711
+;Gelbe Heide;gerade;2;;24;;;;;;;;;64711
+;Gerhart-Hauptmann-Straße;gerade;2;;26;;;;;;;;;64711
+;Geschwister-Scholl-Straße;gerade;2;;34;;;;;;;;;64711
+;Gewerbepark Gräsig;gerade;2;;76;;;;;;;;;64711
+;Goethestraße;gerade;2;;28;;;;;;;;;64711
+;Haisterbacher Straße;gerade;2;;38;;;;;;;;;64711
+;Hauptstraße;gerade;2;;58;;;;;;;;;64711
+;Heinrich-Heine-Straße;gerade;2;;34;;;;;;;;;64711
+;Heinrich-List-Weg;gerade;2;;8;;;;;;;;;64711
+;Helmholtzstraße;gerade;2;;8;;;;;;;;;64711
+;Hochstraße;gerade;2;;28;;;;;;;;;64711
+;Hohenbugstraße;gerade;2;;66;;;;;;;;;64711
+;Hohl;gerade;2;;12;;;;;;;;;64711
+;Hohlweg;gerade;2;;6;;;;;;;;;64711
+;Höhenweg;gerade;2;;20;;;;;;;;;64711
+;Illertstraße;gerade;2;;46;;;;;;;;;64711
+;Im Schelmenfeld;gerade;2;;2;;;;;;;;;64711
+;In den Bergen;gerade;2;;42;;;;;;;;;64711
+;In den Brunnenäckern;gerade;2;;8;;;;;;;;;64711
+;In den Neuwiesen;gerade;2;;6;;;;;;;;;64711
+;In den Steingärten;gerade;2;;40;;;;;;;;;64711
+;In der Altwiese;gerade;2;;10;;;;;;;;;64711
+;In der Katzenklinge;gerade;2;;16;;;;;;;;;64711
+;Jahnstraße;gerade;2;;32;;;;;;;;;64711
+;Johann-Ehrhardt-Straße;gerade;2;;16;;;;;;;;;64711
+;Johann-Sebastian-Bach-Straße;gerade;2;;20;;;;;;;;;64711
+;Kirchweg;gerade;2;;4;;;;;;;;;64711
+;Kißlichweg;gerade;2;;26;;;;;;;;;64711
+;Kobigweg;gerade;2;;18;;;;;;;;;64711
+;Kollwitzstraße;gerade;2;;16;;;;;;;;;64711
+;Kreuzweg;gerade;2;;74;;;;;;;;;64711
+;Krähenberger Weg;gerade;2;;24;;;;;;;;;64711
+;Leibnizstraße;gerade;2;;24;;;;;;;;;64711
+;Liebermannstraße;gerade;2;;8;;;;;;;;;64711
+;Litzertweg;gerade;2;;34;;;;;;;;;64711
+;Lohbergweg;gerade;2;;10;;;;;;;;;64711
+;Lustgartenstraße;gerade;2;;2;;;;;;;;;64711
+;Lärchenweg;gerade;2;;8;;;;;;;;;64711
+;Marbach;gerade;2;;2;;;;;;;;;64711
+;Marbachstraße;gerade;2;;32;;;;;;;;;64711
+;Martin-Luther-Straße;gerade;2;;76;;;;;;;;;64711
+;Michelstädter Straße;gerade;2;;34;;;;;;;;;64711
+;Mossauer Straße;gerade;2;;22;;;;;;;;;64711
+;Mozartstraße;gerade;2;;16;;;;;;;;;64711
+;Mühlweg;gerade;2;;6;;;;;;;;;64711
+;Mümlingweg;gerade;2;;2;;;;;;;;;64711
+;Neckarstraße;gerade;2;;128;;;;;;;;;64711
+;Neue Lustgartenstraße;gerade;2;;4;;;;;;;;;64711
+;Oberer Erbacher Weg;gerade;2;;6;;;;;;;;;64711
+;Oberer Hellrain;gerade;2;;18;;;;;;;;;64711
+;Oppertsweg;gerade;2;;22;;;;;;;;;64711
+;Ostring;gerade;2;;6;;;;;;;;;64711
+;Pestalozzistraße;gerade;2;;44;;;;;;;;;64711
+;Philipp-Reis-Straße;gerade;2;;2;;;;;;;;;64711
+;Picassostraße;gerade;2;;4;;;;;;;;;64711
+;Rembrandtstraße;gerade;2;;12;;;;;;;;;64711
+;Rubensstraße;gerade;2;;24;;;;;;;;;64711
+;Sandwiese;gerade;2;;2;;;;;;;;;64711
+;Schillerstraße;gerade;2;;26;;;;;;;;;64711
+;Schmidt-Rottluff-Straße;gerade;2;;2;;;;;;;;;64711
+;Schmitt-Lynker-Straße;gerade;2;;18;;;;;;;;;64711
+;Schulhohlstraße;gerade;2;;28;;;;;;;;;64711
+;Schöllenbacher Weg;gerade;2;;22;;;;;;;;;64711
+;Schöllenbergweg;gerade;2;;4;;;;;;;;;64711
+;Schönnemer Straße;gerade;2;;68;;;;;;;;;64711
+;Siedlerweg;gerade;2;;18;;;;;;;;;64711
+;Sophienstraße;gerade;2;;94;;;;;;;;;64711
+;Spitzgartenweg;gerade;2;;2;;;;;;;;;64711
+;Sportplatzweg;gerade;2;;14;;;;;;;;;64711
+;Städtel;gerade;2;;32;;;;;;;;;64711
+;Sylvester-Stockh-Straße;gerade;2;;30;;;;;;;;;64711
+;Sägewerk;gerade;2;;28;;;;;;;;;64711
+;Telemannstraße;gerade;2;;6;;;;;;;;;64711
+;Unterdorf;gerade;2;;38;;;;;;;;;64711
+;Unterer Erbacher Weg;gerade;2;;20;;;;;;;;;64711
+;Unterer Hellrain;gerade;2;;24;;;;;;;;;64711
+;Unterer Reihberg;gerade;2;;6;;;;;;;;;64711
+;Waldstraße;gerade;2;;28;;;;;;;;;64711
+;Wiesenweg;gerade;2;;6;;;;;;;;;64711
+;Zum Buchwaldskopf;gerade;2;;10;;;;;;;;;64711
+;Zum Herrenberg;gerade;2;;2;;;;;;;;;64711
+;Zum Oberdorf;gerade;2;;4;;;;;;;;;64711
+;Zum Viadukt;gerade;2;;50;;;;;;;;;64711
+;Zur Mühlwiese;gerade;2;;50;;;;;;;;;64711
+;Zur Schönen Aussicht;gerade;2;;12;;;;;;;;;64711
+;Adolf-Friedrich-Pfreundt-Straße;gerade;2;;28;;;;;;;;;64720
+;Alsfelder Straße;gerade;2;;20;;;;;;;;;64720
+;Alte Hohl;gerade;2;;30;;;;;;;;;64720
+;Am Alten Graben;gerade;2;;4;;;;;;;;;64720
+;Am Berg;gerade;2;;24;;;;;;;;;64720
+;Am Donnersberg;gerade;2;;30;;;;;;;;;64720
+;Am Eckertsberg;gerade;2;;14;;;;;;;;;64720
+;Am Hang;gerade;2;;30;;;;;;;;;64720
+;Am Hermannsberg;gerade;2;;10;;;;;;;;;64720
+;Am Heuberg;gerade;2;;12;;;;;;;;;64720
+;Am Hohen Rain;gerade;2;;20;;;;;;;;;64720
+;Am Hollerbusch;gerade;2;;30;;;;;;;;;64720
+;Am Kalksteinbruch;gerade;2;;4;;;;;;;;;64720
+;Am Kirchenplatz;gerade;2;;4;;;;;;;;;64720
+;Am Kisselberg;gerade;2;;8;;;;;;;;;64720
+;Am Kühberg;gerade;2;;28;;;;;;;;;64720
+;Am Rehtor;gerade;2;;24;;;;;;;;;64720
+;Am Roten Erz;gerade;2;;10;;;;;;;;;64720
+;Am Rotzenberg;gerade;2;;12;;;;;;;;;64720
+;Am Schelmengraben;gerade;2;;10;;;;;;;;;64720
+;Am Schneidersberg;gerade;2;;8;;;;;;;;;64720
+;Am Sonnenhang;gerade;2;;8;;;;;;;;;64720
+;Am Spritzenhaus;gerade;2;;2;;;;;;;;;64720
+;Am Stadion;gerade;2;;14;;;;;;;;;64720
+;Am Stadtgarten;gerade;2;;4;;;;;;;;;64720
+;Am Weiher;gerade;2;;12;;;;;;;;;64720
+;Am Wiesental;gerade;2;;120;;;;;;;;;64720
+;Am Wäldchen;gerade;2;;8;;;;;;;;;64720
+;An den Hauswiesen;gerade;2;;30;;;;;;;;;64720
+;An der Alten Schule;gerade;2;;16;;;;;;;;;64720
+;An der Basilika;gerade;2;;14;;;;;;;;;64720
+;An der Büttenwiese;gerade;2;;26;;;;;;;;;64720
+;An der Kalksteingrube;gerade;2;;8;;;;;;;;;64720
+;An der Leimenkaute;gerade;2;;6;;;;;;;;;64720
+;An der Marbach;gerade;2;;28;;;;;;;;;64720
+;An der Meisterei;gerade;2;;10;;;;;;;;;64720
+;An der Römerburg;gerade;2;;12;;;;;;;;;64720
+;An der Steinbach;gerade;2;;44;;;;;;;;;64720
+;Asselbrunn;gerade;2;;56;;;;;;;;;64720
+;Außenliegende Gebäude - Habrich;gerade;2;;2;;;;;;;;;64720
+;Außerhalb;gerade;2;;66;;;;;;;;;64720
+;Bachgasse;gerade;2;;6;;;;;;;;;64720
+;Bad Hersfelder Weg;gerade;2;;6;;;;;;;;;64720
+;Bahnhofstraße;gerade;2;;58;;;;;;;;;64720
+;Beerfeldener Weg;gerade;2;;6;;;;;;;;;64720
+;Behringer Straße;gerade;2;;8;;;;;;;;;64720
+;Berliner Straße;gerade;2;;20;;;;;;;;;64720
+;Bgm.-Adam-Wöber-Straße;gerade;2;;30;;;;;;;;;64720
+;Braunstraße;gerade;2;;26;;;;;;;;;64720
+;Bremhof;gerade;2;;18;;;;;;;;;64720
+;Bremhofer Weg;gerade;2;;22;;;;;;;;;64720
+;Brückenstraße;gerade;2;;2;;;;;;;;;64720
+;Buchäckerweg;gerade;2;;8;;;;;;;;;64720
+;Chemnitzer Straße;gerade;2;;8;;;;;;;;;64720
+;Danziger Straße;gerade;2;;8;;;;;;;;;64720
+;Dekan-Groh-Straße;gerade;2;;4;;;;;;;;;64720
+;Dr.-Albach-Straße;gerade;2;;38;;;;;;;;;64720
+;Dr.-Anton-Leber-Straße;gerade;2;;10;;;;;;;;;64720
+;Dr.-Hans-Kudlich-Straße;gerade;2;;10;;;;;;;;;64720
+;Dr.-Kurt-Schumacher-Ring;gerade;2;;58;;;;;;;;;64720
+;Dresdener Straße;gerade;2;;18;;;;;;;;;64720
+;Eichenstraße;gerade;2;;36;;;;;;;;;64720
+;Einhardspforte;gerade;2;;2;;;;;;;;;64720
+;Eisenacher Straße;gerade;2;;4;;;;;;;;;64720
+;Eisenbacher Weg;gerade;2;;2;;;;;;;;;64720
+;Erbacher Straße;gerade;2;;80;;;;;;;;;64720
+;Erfurter Straße;gerade;2;;6;;;;;;;;;64720
+;Erlenweg;gerade;2;;14;;;;;;;;;64720
+;Eulbacher Weg;gerade;2;;16;;;;;;;;;64720
+;Eutergrund;gerade;2;;6;;;;;;;;;64720
+;Faltersweg;gerade;2;;22;;;;;;;;;64720
+;Fasanenweg;gerade;2;;14;;;;;;;;;64720
+;Ferdinand-Creutz-Straße;gerade;2;;28;;;;;;;;;64720
+;Feriendorf;gerade;2;;104;;;;;;;;;64720
+;Frankfurter Straße;gerade;2;;8;;;;;;;;;64720
+;Freiburgstraße;gerade;2;;28;;;;;;;;;64720
+;Friedberger Weg;gerade;2;;6;;;;;;;;;64720
+;Friedhofstraße;gerade;2;;54;;;;;;;;;64720
+;Friedrich-Ebert-Straße;gerade;2;;102;;;;;;;;;64720
+;Fritz-Kredel-Straße;gerade;2;;18;;;;;;;;;64720
+;Gabelsbergerstraße;gerade;2;;4;;;;;;;;;64720
+;Gartenweg;gerade;2;;22;;;;;;;;;64720
+;Georg-Seip-Straße;gerade;2;;4;;;;;;;;;64720
+;Geyerstal;gerade;2;;2;;;;;;;;;64720
+;Goethestraße;gerade;2;;34;;;;;;;;;64720
+;Große Gasse;gerade;2;;20;;;;;;;;;64720
+;Gräsigweg;gerade;2;;8;;;;;;;;;64720
+;Hainhaus;gerade;2;;4;;;;;;;;;64720
+;Hammerweg;gerade;2;;44;;;;;;;;;64720
+;Hanauer Weg;gerade;2;;10;;;;;;;;;64720
+;Hegweg;gerade;2;;2;;;;;;;;;64720
+;Heinrich-Keidel-Straße;gerade;2;;16;;;;;;;;;64720
+;Heinrich-Ritzel-Straße;gerade;2;;24;;;;;;;;;64720
+;Heinrichstraße;gerade;2;;8;;;;;;;;;64720
+;Heintze-Metzler-Straße;gerade;2;;10;;;;;;;;;64720
+;Hesselbacher Straße;gerade;2;;38;;;;;;;;;64720
+;Heubergweg;gerade;2;;16;;;;;;;;;64720
+;Hieronymusstraße;gerade;2;;32;;;;;;;;;64720
+;Hohenloher Weg;gerade;2;;22;;;;;;;;;64720
+;Hohlweg;gerade;2;;20;;;;;;;;;64720
+;Hubener Weg;gerade;2;;16;;;;;;;;;64720
+;Hulster Straße;gerade;2;;2;;;;;;;;;64720
+;Höhenstraße;gerade;2;;50;;;;;;;;;64720
+;Im Eck;gerade;2;;40;;;;;;;;;64720
+;Im Fürstenauer Forst;gerade;2;;18;;;;;;;;;64720
+;Im Hardtfeld;gerade;2;;8;;;;;;;;;64720
+;Im Rod;gerade;2;;16;;;;;;;;;64720
+;In den Dorfwiesen;gerade;2;;20;;;;;;;;;64720
+;In den Zwölf Morgen;gerade;2;;28;;;;;;;;;64720
+;Jahnstraße;gerade;2;;122;;;;;;;;;64720
+;Johann-Kredel-Straße;gerade;2;;10;;;;;;;;;64720
+;Justus-Liebig-Straße;gerade;2;;12;;;;;;;;;64720
+;Karlstraße;gerade;2;;14;;;;;;;;;64720
+;Kasseler Weg;gerade;2;;12;;;;;;;;;64720
+;Kellereibergstraße;gerade;2;;30;;;;;;;;;64720
+;Kettelerstraße;gerade;2;;26;;;;;;;;;64720
+;Kilian-Spiegel-Straße;gerade;2;;20;;;;;;;;;64720
+;Kiliansweg;gerade;2;;4;;;;;;;;;64720
+;Kimbacher Straße;gerade;2;;36;;;;;;;;;64720
+;Kronenweg;gerade;2;;20;;;;;;;;;64720
+;Kurpfälzer Straße;gerade;2;;30;;;;;;;;;64720
+;Kutschenweg;gerade;2;;2;;;;;;;;;64720
+;Königsberger Straße;gerade;2;;14;;;;;;;;;64720
+;Landrat-Hoffmann-Straße;gerade;2;;6;;;;;;;;;64720
+;Landrat-Neff-Straße;gerade;2;;2;;;;;;;;;64720
+;Langen-Brombacher Straße;gerade;2;;24;;;;;;;;;64720
+;Leineweberweg;gerade;2;;10;;;;;;;;;64720
+;Leipziger Straße;gerade;2;;32;;;;;;;;;64720
+;Lindenplatz;gerade;2;;6;;;;;;;;;64720
+;Lindenstraße;gerade;2;;24;;;;;;;;;64720
+;Ludwig-Arzt-Straße;gerade;2;;6;;;;;;;;;64720
+;Ludwig-Bogen-Straße;gerade;2;;20;;;;;;;;;64720
+;Ludwig-Kurz-Straße;gerade;2;;14;;;;;;;;;64720
+;Magdeburger Straße;gerade;2;;6;;;;;;;;;64720
+;Mangelsbach;gerade;2;;8;;;;;;;;;64720
+;Marburger Weg;gerade;2;;8;;;;;;;;;64720
+;Marktplatz;gerade;2;;8;;;;;;;;;64720
+;Michael-Haas-Straße;gerade;2;;16;;;;;;;;;64720
+;Mittelweg;gerade;2;;54;;;;;;;;;64720
+;Mittlerer Weg;gerade;2;;2;;;;;;;;;64720
+;Momarter Weg;gerade;2;;52;;;;;;;;;64720
+;Mossauer Straße;gerade;2;;32;;;;;;;;;64720
+;Mömlinger Weg;gerade;2;;2;;;;;;;;;64720
+;Mühlstraße;gerade;2;;28;;;;;;;;;64720
+;Neudorf;gerade;2;;16;;;;;;;;;64720
+;Neutorstraße;gerade;2;;16;;;;;;;;;64720
+;Nibelungenstraße;gerade;2;;40;;;;;;;;;64720
+;Nikolaus-Matz-Straße;gerade;2;;10;;;;;;;;;64720
+;Oberhammerwiesenstraße;gerade;2;;2;;;;;;;;;64720
+;Odenwaldstraße;gerade;2;;14;;;;;;;;;64720
+;Ohrnbachtalstraße;gerade;2;;86;;;;;;;;;64720
+;Pelarstraße;gerade;2;;16;;;;;;;;;64720
+;Pfarrgewann;gerade;2;;22;;;;;;;;;64720
+;Philipp-Buxbaum-Straße;gerade;2;;4;;;;;;;;;64720
+;Postweg;gerade;2;;12;;;;;;;;;64720
+;Prof.-Hartmann-Straße;gerade;2;;10;;;;;;;;;64720
+;Rehbacher Weg;gerade;2;;14;;;;;;;;;64720
+;Rosengässchen;gerade;2;;2;;;;;;;;;64720
+;Rosenweg;gerade;2;;8;;;;;;;;;64720
+;Rödeweg;gerade;2;;2;;;;;;;;;64720
+;Römerstraße;gerade;2;;72;;;;;;;;;64720
+;Schanzenweg;gerade;2;;14;;;;;;;;;64720
+;Scharfenbergstraße;gerade;2;;10;;;;;;;;;64720
+;Schlesische Straße;gerade;2;;8;;;;;;;;;64720
+;Schloßplatz;gerade;2;;2;;;;;;;;;64720
+;Schloßstraße;gerade;2;;58;;;;;;;;;64720
+;Schneidersweg;gerade;2;;14;;;;;;;;;64720
+;Schwalbenweg;gerade;2;;8;;;;;;;;;64720
+;Schützenstraße;gerade;2;;22;;;;;;;;;64720
+;Sperberweg;gerade;2;;2;;;;;;;;;64720
+;Spessartstraße;gerade;2;;12;;;;;;;;;64720
+;Stadtring;gerade;2;;300;;;;;;;;;64720
+;Steinweg;gerade;2;;20;;;;;;;;;64720
+;Stettiner Straße;gerade;2;;4;;;;;;;;;64720
+;Stockheimer Hohl;gerade;2;;18;;;;;;;;;64720
+;Stockheimer Ring;gerade;2;;18;;;;;;;;;64720
+;Tannenweg;gerade;2;;10;;;;;;;;;64720
+;Taunusstraße;gerade;2;;12;;;;;;;;;64720
+;Uhlandstraße;gerade;2;;6;;;;;;;;;64720
+;Untere Hardt;gerade;2;;14;;;;;;;;;64720
+;Untere Pfarrgasse;gerade;2;;16;;;;;;;;;64720
+;Unterer Hammer;gerade;2;;24;;;;;;;;;64720
+;Unterwegswiesenstraße;gerade;2;;8;;;;;;;;;64720
+;Viernheimer Weg;gerade;2;;8;;;;;;;;;64720
+;Vogelsbergstraße;gerade;2;;8;;;;;;;;;64720
+;Waldstraße;gerade;2;;132;;;;;;;;;64720
+;Walther-Rathenau-Allee;gerade;2;;24;;;;;;;;;64720
+;Weidenweg;gerade;2;;8;;;;;;;;;64720
+;Weimarer Straße;gerade;2;;8;;;;;;;;;64720
+;Wetzlarer Weg;gerade;2;;4;;;;;;;;;64720
+;Weyprechtstraße;gerade;2;;10;;;;;;;;;64720
+;Wiesbadener Straße;gerade;2;;12;;;;;;;;;64720
+;Wiesenweg;gerade;2;;36;;;;;;;;;64720
+;Wilhelm-Leuschner-Straße;gerade;2;;50;;;;;;;;;64720
+;Zeller Straße;gerade;2;;28;;;;;;;;;64720
+;Zum Römerbad;gerade;2;;46;;;;;;;;;64720
+;d' Orvillestraße;gerade;2;;44;;;;;;;;;64720
+;Alexanderstraße;gerade;2;;24;;;;;;;;;64732
+;Am Berg;gerade;2;;12;;;;;;;;;64732
+;Am Busch;gerade;2;;6;;;;;;;;;64732
+;Am Eichberg;gerade;2;;22;;;;;;;;;64732
+;Am Gickelsgraben;gerade;2;;20;;;;;;;;;64732
+;Am Gänsbrunnen;gerade;2;;8;;;;;;;;;64732
+;Am Gänsertsberg;gerade;2;;6;;;;;;;;;64732
+;Am Hang;gerade;2;;4;;;;;;;;;64732
+;Am Kalkofen;gerade;2;;24;;;;;;;;;64732
+;Am Momartsberg;gerade;2;;34;;;;;;;;;64732
+;Am Mulgraben;gerade;2;;10;;;;;;;;;64732
+;Am Rosengarten;gerade;2;;20;;;;;;;;;64732
+;Am Römerbrunnen;gerade;2;;8;;;;;;;;;64732
+;Am Steinbruch;gerade;2;;32;;;;;;;;;64732
+;Am Tannenkopf;gerade;2;;10;;;;;;;;;64732
+;Am Trieb;gerade;2;;16;;;;;;;;;64732
+;Am Weidenkopf;gerade;2;;22;;;;;;;;;64732
+;Am Weilbach;gerade;2;;8;;;;;;;;;64732
+;Am Weinertsberg;gerade;2;;8;;;;;;;;;64732
+;Amselstraße;gerade;2;;16;;;;;;;;;64732
+;An der Gasse;gerade;2;;12;;;;;;;;;64732
+;An der Alten Schule;gerade;2;;8;;;;;;;;;64732
+;Bahnhofsplatz;gerade;2;;2;;;;;;;;;64732
+;Berggartenstraße;gerade;2;;52;;;;;;;;;64732
+;Birkenweg;gerade;2;;10;;;;;;;;;64732
+;Bleichstraße;gerade;2;;10;;;;;;;;;64732
+;Breslauer Straße;gerade;2;;24;;;;;;;;;64732
+;Brombachtaler Straße;gerade;2;;40;;;;;;;;;64732
+;Brunnengasse;gerade;2;;20;;;;;;;;;64732
+;Brückenweg;gerade;2;;8;;;;;;;;;64732
+;Buchenweg;gerade;2;;16;;;;;;;;;64732
+;Bürgermeister-Weigel-Straße;gerade;2;;18;;;;;;;;;64732
+;Danziger Straße;gerade;2;;8;;;;;;;;;64732
+;Dresdener Straße;gerade;2;;12;;;;;;;;;64732
+;Eichelsweg;gerade;2;;20;;;;;;;;;64732
+;Elisabethenstraße;gerade;2;;14;;;;;;;;;64732
+;Erbacher Straße;gerade;2;;36;;;;;;;;;64732
+;Erfurter Straße;gerade;2;;12;;;;;;;;;64732
+;Faltenweg;gerade;2;;24;;;;;;;;;64732
+;Forststraße;gerade;2;;26;;;;;;;;;64732
+;Frankfurter Straße;gerade;2;;76;;;;;;;;;64732
+;Franz-Holl-Straße;gerade;2;;24;;;;;;;;;64732
+;Friedrich-Ebert-Straße;gerade;2;;52;;;;;;;;;64732
+;Fürstengrunder Straße;gerade;2;;130;;;;;;;;;64732
+;Georg-Vetter-Straße;gerade;2;;18;;;;;;;;;64732
+;Goethestraße;gerade;2;;10;;;;;;;;;64732
+;Gumpersberger Straße;gerade;2;;42;;;;;;;;;64732
+;Hainhausweg;gerade;2;;14;;;;;;;;;64732
+;Hardtbergweg;gerade;2;;10;;;;;;;;;64732
+;Hauswiesenweg;gerade;2;;24;;;;;;;;;64732
+;Helmertweg;gerade;2;;62;;;;;;;;;64732
+;Heubergweg;gerade;2;;88;;;;;;;;;64732
+;Heuselsmühle;gerade;2;;2;;;;;;;;;64732
+;Hummetröther Straße;gerade;2;;52;;;;;;;;;64732
+;Höhenstraße;gerade;2;;76;;;;;;;;;64732
+;Im Fässjeseck;gerade;2;;48;;;;;;;;;64732
+;Im Kimbachtal;gerade;2;;84;;;;;;;;;64732
+;Jakob-Maul-Straße;gerade;2;;20;;;;;;;;;64732
+;Kantstraße;gerade;2;;22;;;;;;;;;64732
+;Kirchweg;gerade;2;;10;;;;;;;;;64732
+;Kleiner Weg;gerade;2;;6;;;;;;;;;64732
+;Klosterwaldstraße;gerade;2;;16;;;;;;;;;64732
+;Königer Straße;gerade;2;;36;;;;;;;;;64732
+;Königsberger Straße;gerade;2;;14;;;;;;;;;64732
+;Leipziger Straße;gerade;2;;10;;;;;;;;;64732
+;Lindenstraße;gerade;2;;52;;;;;;;;;64732
+;Linnigweg;gerade;2;;10;;;;;;;;;64732
+;Lärchenweg;gerade;2;;12;;;;;;;;;64732
+;Magdeburger Straße;gerade;2;;58;;;;;;;;;64732
+;Mainstraße;gerade;2;;44;;;;;;;;;64732
+;Michelstädter Straße;gerade;2;;58;;;;;;;;;64732
+;Momarter Straße;gerade;2;;46;;;;;;;;;64732
+;Mozartstraße;gerade;2;;22;;;;;;;;;64732
+;Mühlstraße;gerade;2;;32;;;;;;;;;64732
+;Nieder-Kinziger Straße;gerade;2;;54;;;;;;;;;64732
+;Nordring;gerade;2;;26;;;;;;;;;64732
+;Odenwaldstraße;gerade;2;;30;;;;;;;;;64732
+;Oskar-Zimper-Straße;gerade;2;;46;;;;;;;;;64732
+;Parkstraße;gerade;2;;8;;;;;;;;;64732
+;Paul-Zander-Straße;gerade;2;;8;;;;;;;;;64732
+;Pestalozzistraße;gerade;2;;14;;;;;;;;;64732
+;Philipp-Schmunck-Straße;gerade;2;;18;;;;;;;;;64732
+;Rimhorner Graben;gerade;2;;12;;;;;;;;;64732
+;Rue d´Argentat;gerade;2;;10;;;;;;;;;64732
+;ST. Ober-Kinzig Außerhalb;gerade;2;;4;;;;;;;;;64732
+;ST. Zell Außenliegend;gerade;2;;18;;;;;;;;;64732
+;Sackgasse;gerade;2;;8;;;;;;;;;64732
+;Sandbergstraße;gerade;2;;24;;;;;;;;;64732
+;Schloßplatz;gerade;2;;12;;;;;;;;;64732
+;Schulstraße;gerade;2;;26;;;;;;;;;64732
+;Schwalbenstraße;gerade;2;;16;;;;;;;;;64732
+;Schwimmbadstraße;gerade;2;;38;;;;;;;;;64732
+;Sommerbergring;gerade;2;;20;;;;;;;;;64732
+;Südring;gerade;2;;40;;;;;;;;;64732
+;Talblickstraße;gerade;2;;40;;;;;;;;;64732
+;Waldstraße;gerade;2;;36;;;;;;;;;64732
+;Weiten-Gesäßer Straße;gerade;2;;12;;;;;;;;;64732
+;Weyprechtstraße;gerade;2;;78;;;;;;;;;64732
+;Wingertstraße;gerade;2;;10;;;;;;;;;64732
+;Zeller Gewerbezentrum;gerade;2;;26;;;;;;;;;64732
+;Albert-Einstein-Straße;gerade;2;;14;;;;;;;;;64739
+;Am Besenberg;gerade;2;;12;;;;;;;;;64739
+;Am Dachsrain;gerade;2;;28;;;;;;;;;64739
+;Am Damm;gerade;2;;2;;;;;;;;;64739
+;Am Galgenberg;gerade;2;;20;;;;;;;;;64739
+;Am Hain;gerade;2;;14;;;;;;;;;64739
+;Am Hang;gerade;2;;50;;;;;;;;;64739
+;Am Kirchpfad;gerade;2;;10;;;;;;;;;64739
+;Am Runden Stein;gerade;2;;10;;;;;;;;;64739
+;Am Sandberg;gerade;2;;6;;;;;;;;;64739
+;Am Schorschberg;gerade;2;;32;;;;;;;;;64739
+;Am See;gerade;2;;28;;;;;;;;;64739
+;Am Steinberg;gerade;2;;18;;;;;;;;;64739
+;Am Stutz;gerade;2;;6;;;;;;;;;64739
+;Am Südhang;gerade;2;;16;;;;;;;;;64739
+;Am Teich;gerade;2;;4;;;;;;;;;64739
+;Am Wald;gerade;2;;10;;;;;;;;;64739
+;Am Wäldchesberg;gerade;2;;4;;;;;;;;;64739
+;Am Zentwald;gerade;2;;20;;;;;;;;;64739
+;An der Hasselbach;gerade;2;;4;;;;;;;;;64739
+;An der Kleinen Weide;gerade;2;;8;;;;;;;;;64739
+;An der Lauerwiese;gerade;2;;16;;;;;;;;;64739
+;Apotheker-Haas-Weg;gerade;2;;6;;;;;;;;;64739
+;Aschaffenburger Straße;gerade;2;;54;;;;;;;;;64739
+;Bachgasse;gerade;2;;18;;;;;;;;;64739
+;Bahnhofstraße;gerade;2;;40;;;;;;;;;64739
+;Beinegasse;gerade;2;;48;;;;;;;;;64739
+;Berbigstraße;gerade;2;;56;;;;;;;;;64739
+;Bergstraße;gerade;2;;24;;;;;;;;;64739
+;Bismarckstraße;gerade;2;;64;;;;;;;;;64739
+;Borngartenweg;gerade;2;;4;;;;;;;;;64739
+;Breubergstraße;gerade;2;;30;;;;;;;;;64739
+;Brunnenstraße;gerade;2;;10;;;;;;;;;64739
+;Brückenstraße;gerade;2;;8;;;;;;;;;64739
+;Bürgermeister-Dörr-Straße;gerade;2;;10;;;;;;;;;64739
+;Bürgermeister-Heusel-Straße;gerade;2;;12;;;;;;;;;64739
+;Bürgermeister-Wolf-Straße;gerade;2;;14;;;;;;;;;64739
+;Darmstädter Straße;gerade;2;;42;;;;;;;;;64739
+;Eichestraße;gerade;2;;16;;;;;;;;;64739
+;Emylisweg;gerade;2;;20;;;;;;;;;64739
+;Erbacher Straße;gerade;2;;90;;;;;;;;;64739
+;Fichtenstraße;gerade;2;;26;;;;;;;;;64739
+;Forsteler Straße;gerade;2;;12;;;;;;;;;64739
+;Forststraße;gerade;2;;6;;;;;;;;;64739
+;Frankfurter Straße;gerade;2;;84;;;;;;;;;64739
+;Friedrich-Ebert-Straße;gerade;2;;48;;;;;;;;;64739
+;Friedrich-Veith-Straße;gerade;2;;24;;;;;;;;;64739
+;Gartenstraße;gerade;2;;6;;;;;;;;;64739
+;Grüner Weg;gerade;2;;16;;;;;;;;;64739
+;Hassenröther Straße;gerade;2;;42;;;;;;;;;64739
+;Heilbronner Straße;gerade;2;;20;;;;;;;;;64739
+;Helmut-Erb-Straße;gerade;2;;8;;;;;;;;;64739
+;Hermann-Kahn-Weg;gerade;2;;14;;;;;;;;;64739
+;Hochstraße;gerade;2;;50;;;;;;;;;64739
+;Hohebergweg;gerade;2;;20;;;;;;;;;64739
+;Hohlweg;gerade;2;;4;;;;;;;;;64739
+;Höllerbacher Straße;gerade;2;;20;;;;;;;;;64739
+;Hügelstraße;gerade;2;;14;;;;;;;;;64739
+;Im Alten Hof;gerade;2;;2;;;;;;;;;64739
+;Im Failing;gerade;2;;26;;;;;;;;;64739
+;Im Wäldchen;gerade;2;;4;;;;;;;;;64739
+;In den Schafhecken;gerade;2;;22;;;;;;;;;64739
+;Jägerstraße;gerade;2;;4;;;;;;;;;64739
+;Kinziger Straße;gerade;2;;10;;;;;;;;;64739
+;Kirchberg;gerade;2;;2;;;;;;;;;64739
+;Knosbergstraße;gerade;2;;24;;;;;;;;;64739
+;Krautgartenweg;gerade;2;;8;;;;;;;;;64739
+;Königsberger Straße;gerade;2;;24;;;;;;;;;64739
+;Marktplatz;gerade;2;;2;;;;;;;;;64739
+;Montmelianer Platz;gerade;2;;4;;;;;;;;;64739
+;Mümling-Grumbacher Straße;gerade;2;;48;;;;;;;;;64739
+;Mümlingtalring;gerade;2;;12;;;;;;;;;64739
+;Neckarstraße;gerade;2;;24;;;;;;;;;64739
+;Nickelsweg;gerade;2;;6;;;;;;;;;64739
+;Oberlehrer-Wolf-Straße;gerade;2;;16;;;;;;;;;64739
+;Obrunnweg;gerade;2;;36;;;;;;;;;64739
+;Otzbergstraße;gerade;2;;14;;;;;;;;;64739
+;Pfirschbacher Straße;gerade;2;;40;;;;;;;;;64739
+;Ringstraße;gerade;2;;22;;;;;;;;;64739
+;Rollgasse;gerade;2;;14;;;;;;;;;64739
+;Rondellstraße;gerade;2;;48;;;;;;;;;64739
+;Rosenweg;gerade;2;;4;;;;;;;;;64739
+;Sandbacher Straße;gerade;2;;20;;;;;;;;;64739
+;Sandbergstraße;gerade;2;;28;;;;;;;;;64739
+;Schafheckenweg;gerade;2;;8;;;;;;;;;64739
+;Schillerstraße;gerade;2;;22;;;;;;;;;64739
+;Schulstraße;gerade;2;;62;;;;;;;;;64739
+;Schwimmbadstraße;gerade;2;;12;;;;;;;;;64739
+;Siegfriedstraße;gerade;2;;20;;;;;;;;;64739
+;Sonnenberg;gerade;2;;14;;;;;;;;;64739
+;Spessartstraße;gerade;2;;48;;;;;;;;;64739
+;Steinmetzstraße;gerade;2;;10;;;;;;;;;64739
+;Stockwiesenstraße;gerade;2;;34;;;;;;;;;64739
+;Straße am Berg;gerade;2;;24;;;;;;;;;64739
+;Sudetenstraße;gerade;2;;26;;;;;;;;;64739
+;Talblick;gerade;2;;12;;;;;;;;;64739
+;Talstraße;gerade;2;;54;;;;;;;;;64739
+;Waldstraße;gerade;2;;28;;;;;;;;;64739
+;Weiherstraße;gerade;2;;12;;;;;;;;;64739
+;Weilertsweg;gerade;2;;30;;;;;;;;;64739
+;Wernher-von-Braun-Straße;gerade;2;;8;;;;;;;;;64739
+;Zum Gerstenfeld;gerade;2;;2;;;;;;;;;64739
+;Zum Hartberg;gerade;2;;24;;;;;;;;;64739
+;Zum Herrgottsbrunnen;gerade;2;;10;;;;;;;;;64739
+;Zum Wehr;gerade;2;;10;;;;;;;;;64739
+;Albert-Schweitzer-Straße;gerade;2;;10;;;;;;;;;64747
+;Am Grohberg;gerade;2;;22;;;;;;;;;64747
+;Am Hang;gerade;2;;2;;;;;;;;;64747
+;Am Hardtwald;gerade;2;;36;;;;;;;;;64747
+;Am Roten Rain;gerade;2;;10;;;;;;;;;64747
+;Am Römerbad;gerade;2;;28;;;;;;;;;64747
+;Am Steinbruch;gerade;2;;16;;;;;;;;;64747
+;Am Ziegelgraben;gerade;2;;16;;;;;;;;;64747
+;Am alten Sägewerk;gerade;2;;6;;;;;;;;;64747
+;Amorbachstraße;gerade;2;;20;;;;;;;;;64747
+;An der Roten Mauer;gerade;2;;16;;;;;;;;;64747
+;Arnheiter Hof;gerade;2;;2;;;;;;;;;64747
+;Arnheiter Straße;gerade;2;;26;;;;;;;;;64747
+;Bahnhofstraße;gerade;2;;38;;;;;;;;;64747
+;Bergstraße;gerade;2;;14;;;;;;;;;64747
+;Bernhardstraße;gerade;2;;20;;;;;;;;;64747
+;Birkenstraße;gerade;2;;8;;;;;;;;;64747
+;Breubergblick;gerade;2;;28;;;;;;;;;64747
+;Erbacher Straße;gerade;2;;50;;;;;;;;;64747
+;Ernst-Ludwig-Straße;gerade;2;;114;;;;;;;;;64747
+;Falltorstraße;gerade;2;;14;;;;;;;;;64747
+;Faßäckerweg;gerade;2;;8;;;;;;;;;64747
+;Fliederstraße;gerade;2;;42;;;;;;;;;64747
+;Forsthausstraße;gerade;2;;22;;;;;;;;;64747
+;Friedensstraße;gerade;2;;8;;;;;;;;;64747
+;Friedhofstraße;gerade;2;;2;;;;;;;;;64747
+;Fritz-Keller-Straße;gerade;2;;8;;;;;;;;;64747
+;Fuchsweg;gerade;2;;24;;;;;;;;;64747
+;Gartenweg;gerade;2;;8;;;;;;;;;64747
+;Geisrain;gerade;2;;38;;;;;;;;;64747
+;Groß-Umstädter Straße;gerade;2;;12;;;;;;;;;64747
+;Hainstädter Straße;gerade;2;;18;;;;;;;;;64747
+;Hammer;gerade;2;;4;;;;;;;;;64747
+;Hermann-Löns-Straße;gerade;2;;14;;;;;;;;;64747
+;Herrnackerstraße;gerade;2;;52;;;;;;;;;64747
+;Heubacher Straße;gerade;2;;34;;;;;;;;;64747
+;Hohlstraße;gerade;2;;26;;;;;;;;;64747
+;Höchster Straße;gerade;2;;64;;;;;;;;;64747
+;Hügelstraße;gerade;2;;36;;;;;;;;;64747
+;Im Breungesgraben;gerade;2;;8;;;;;;;;;64747
+;Im Ehrlich;gerade;2;;28;;;;;;;;;64747
+;Im Hebst;gerade;2;;8;;;;;;;;;64747
+;Im Steigersfeld;gerade;2;;22;;;;;;;;;64747
+;In den Bodenäckern;gerade;2;;32;;;;;;;;;64747
+;In den sechs Morgen;gerade;2;;8;;;;;;;;;64747
+;Industriestraße;gerade;2;;22;;;;;;;;;64747
+;Kapellenweg;gerade;2;;6;;;;;;;;;64747
+;Kappesserweg;gerade;2;;2;;;;;;;;;64747
+;Karl-Marx-Straße;gerade;2;;14;;;;;;;;;64747
+;Kirchberg;gerade;2;;14;;;;;;;;;64747
+;Kirchstraße;gerade;2;;28;;;;;;;;;64747
+;Kreuzfeldstraße;gerade;2;;10;;;;;;;;;64747
+;Kreuzstraße;gerade;2;;6;;;;;;;;;64747
+;Lauterweg;gerade;2;;26;;;;;;;;;64747
+;Leonhard-Herbert-Straße;gerade;2;;30;;;;;;;;;64747
+;Marktplatz;gerade;2;;12;;;;;;;;;64747
+;Mühlhausen;gerade;2;;22;;;;;;;;;64747
+;Mühlhäuser Straße;gerade;2;;24;;;;;;;;;64747
+;Nelkenstraße;gerade;2;;18;;;;;;;;;64747
+;Neumannstraße;gerade;2;;14;;;;;;;;;64747
+;Neustädter Straße;gerade;2;;26;;;;;;;;;64747
+;Nordendstraße;gerade;2;;4;;;;;;;;;64747
+;Odenwaldring;gerade;2;;68;;;;;;;;;64747
+;Quellenstraße;gerade;2;;18;;;;;;;;;64747
+;Rabenweg;gerade;2;;8;;;;;;;;;64747
+;Rauwaldstraße;gerade;2;;6;;;;;;;;;64747
+;Ringstraße;gerade;2;;32;;;;;;;;;64747
+;Rosenbach;gerade;2;;10;;;;;;;;;64747
+;Sackgasse;gerade;2;;14;;;;;;;;;64747
+;Schulstraße;gerade;2;;22;;;;;;;;;64747
+;Schönbergerstraße;gerade;2;;4;;;;;;;;;64747
+;Spessartstraße;gerade;2;;70;;;;;;;;;64747
+;Talstraße;gerade;2;;30;;;;;;;;;64747
+;Vierteläcker;gerade;2;;2;;;;;;;;;64747
+;Wald-Amorbacher Straße;gerade;2;;24;;;;;;;;;64747
+;Waldstraße;gerade;2;;14;;;;;;;;;64747
+;Weinbergstraße;gerade;2;;36;;;;;;;;;64747
+;Wertheimer Straße;gerade;2;;44;;;;;;;;;64747
+;Westendstraße;gerade;2;;20;;;;;;;;;64747
+;Wingertstraße;gerade;2;;4;;;;;;;;;64747
+;Wolfenmühle;gerade;2;;6;;;;;;;;;64747
+;Zu den Eichen;gerade;2;;10;;;;;;;;;64747
+;Zum Hasengarten;gerade;2;;16;;;;;;;;;64747
+;Zum Pitschgrund;gerade;2;;14;;;;;;;;;64747
+;Alter Neustädter Weg;gerade;2;;16;;;;;;;;;64750
+;Am Berg;gerade;2;;4;;;;;;;;;64750
+;Am Graben;gerade;2;;10;;;;;;;;;64750
+;Am Hofgarten;gerade;2;;12;;;;;;;;;64750
+;Am Hühnerberg;gerade;2;;6;;;;;;;;;64750
+;Am Rain;gerade;2;;6;;;;;;;;;64750
+;Angelhofstraße;gerade;2;;44;;;;;;;;;64750
+;Außerhalb;gerade;2;;2;;;;;;;;;64750
+;Bachgasse;gerade;2;;2;;;;;;;;;64750
+;Bachstraße;gerade;2;;4;;;;;;;;;64750
+;Baierberg;gerade;2;;6;;;;;;;;;64750
+;Beckshöhe;gerade;2;;26;;;;;;;;;64750
+;Bergfeldstraße;gerade;2;;10;;;;;;;;;64750
+;Bergstraße;gerade;2;;8;;;;;;;;;64750
+;Birkenweg;gerade;2;;4;;;;;;;;;64750
+;Blütenstraße;gerade;2;;12;;;;;;;;;64750
+;Bogenstraße;gerade;2;;26;;;;;;;;;64750
+;Bonifatiusweg;gerade;2;;10;;;;;;;;;64750
+;Breitenbrunner Straße;gerade;2;;4;;;;;;;;;64750
+;Breubergstraße;gerade;2;;44;;;;;;;;;64750
+;Eckertshofstraße;gerade;2;;6;;;;;;;;;64750
+;Eisenbacher Straße;gerade;2;;12;;;;;;;;;64750
+;Erbacher Straße;gerade;2;;66;;;;;;;;;64750
+;Eulbacher Straße;gerade;2;;36;;;;;;;;;64750
+;Forsthausstraße;gerade;2;;8;;;;;;;;;64750
+;Forststraße;gerade;2;;4;;;;;;;;;64750
+;Friedhofstraße;gerade;2;;20;;;;;;;;;64750
+;Friedhofsweg;gerade;2;;14;;;;;;;;;64750
+;Frühlingstraße;gerade;2;;4;;;;;;;;;64750
+;Furthstraße;gerade;2;;30;;;;;;;;;64750
+;Gartenstraße;gerade;2;;6;;;;;;;;;64750
+;Haagstraße;gerade;2;;16;;;;;;;;;64750
+;Haingraben;gerade;2;;2;;;;;;;;;64750
+;Haingründer Straße;gerade;2;;14;;;;;;;;;64750
+;Hainstraße;gerade;2;;12;;;;;;;;;64750
+;Hardtstraße;gerade;2;;16;;;;;;;;;64750
+;Hengmantel;gerade;2;;6;;;;;;;;;64750
+;Hengmantelstraße;gerade;2;;16;;;;;;;;;64750
+;Hochstraße;gerade;2;;14;;;;;;;;;64750
+;Höhenweg;gerade;2;;10;;;;;;;;;64750
+;Im Katzengraben;gerade;2;;10;;;;;;;;;64750
+;Im Nußbaumgewann;gerade;2;;26;;;;;;;;;64750
+;Im Sachsenhausen;gerade;2;;12;;;;;;;;;64750
+;In den Gärten;gerade;2;;8;;;;;;;;;64750
+;In der Delle;gerade;2;;10;;;;;;;;;64750
+;Jahnstraße;gerade;2;;28;;;;;;;;;64750
+;Jocksberg;gerade;2;;34;;;;;;;;;64750
+;Johann-Saul-Straße;gerade;2;;14;;;;;;;;;64750
+;Karl-Brunnengräber-Straße;gerade;2;;28;;;;;;;;;64750
+;Kirchstraße;gerade;2;;12;;;;;;;;;64750
+;Kirschberg;gerade;2;;24;;;;;;;;;64750
+;Kirschgraben;gerade;2;;2;;;;;;;;;64750
+;Klingenstraße;gerade;2;;34;;;;;;;;;64750
+;Kreuzstraße;gerade;2;;22;;;;;;;;;64750
+;Königer Weg;gerade;2;;6;;;;;;;;;64750
+;Lessingstraße;gerade;2;;24;;;;;;;;;64750
+;Lindenstraße;gerade;2;;14;;;;;;;;;64750
+;Lützelbacher Straße;gerade;2;;30;;;;;;;;;64750
+;Mainstraße;gerade;2;;42;;;;;;;;;64750
+;Maintalblick;gerade;2;;40;;;;;;;;;64750
+;Mühlhäuser Straße;gerade;2;;20;;;;;;;;;64750
+;Mümlingstraße;gerade;2;;70;;;;;;;;;64750
+;Neffeberg;gerade;2;;38;;;;;;;;;64750
+;Nelkenstraße;gerade;2;;16;;;;;;;;;64750
+;Neustädter Straße;gerade;2;;34;;;;;;;;;64750
+;Obernburger Straße;gerade;2;;26;;;;;;;;;64750
+;Obrunnstraße;gerade;2;;36;;;;;;;;;64750
+;Pestalozzistraße;gerade;2;;30;;;;;;;;;64750
+;Philippsgasse;gerade;2;;30;;;;;;;;;64750
+;Pretlackstraße;gerade;2;;28;;;;;;;;;64750
+;Raibacher Straße;gerade;2;;22;;;;;;;;;64750
+;Rathausstraße;gerade;2;;42;;;;;;;;;64750
+;Reiterspfad;gerade;2;;12;;;;;;;;;64750
+;Rhönstraße;gerade;2;;8;;;;;;;;;64750
+;Rodensteinstraße;gerade;2;;30;;;;;;;;;64750
+;Rosenstraße;gerade;2;;24;;;;;;;;;64750
+;Rother Berg;gerade;2;;26;;;;;;;;;64750
+;Römergasse;gerade;2;;24;;;;;;;;;64750
+;Sandweg;gerade;2;;4;;;;;;;;;64750
+;Schillerstraße;gerade;2;;54;;;;;;;;;64750
+;Schulstraße;gerade;2;;42;;;;;;;;;64750
+;Schwannenweg;gerade;2;;6;;;;;;;;;64750
+;Seckmauerer Straße;gerade;2;;40;;;;;;;;;64750
+;Siedlung;gerade;2;;64;;;;;;;;;64750
+;Sonnenstraße;gerade;2;;36;;;;;;;;;64750
+;Spessartstraße;gerade;2;;30;;;;;;;;;64750
+;Steffersberg;gerade;2;;6;;;;;;;;;64750
+;Talweg;gerade;2;;22;;;;;;;;;64750
+;Trieb;gerade;2;;8;;;;;;;;;64750
+;Tulpenstraße;gerade;2;;28;;;;;;;;;64750
+;Waldstraße;gerade;2;;62;;;;;;;;;64750
+;Weinbergstraße;gerade;2;;18;;;;;;;;;64750
+;Wiebelsbacher Straße;gerade;2;;20;;;;;;;;;64750
+;Wolfstraße;gerade;2;;48;;;;;;;;;64750
+;Wörther Straße;gerade;2;;38;;;;;;;;;64750
+;Zange;gerade;2;;34;;;;;;;;;64750
+;Zu den Nußbaumäckern;gerade;2;;6;;;;;;;;;64750
+;Zum Bildacker;gerade;2;;8;;;;;;;;;64750
+;Zum Damm;gerade;2;;2;;;;;;;;;64750
+;Zum Schlangengraben;gerade;2;;10;;;;;;;;;64750
+;Zur Quelle;gerade;2;;16;;;;;;;;;64750
+;Affhöllerbacher Straße;gerade;2;;12;;;;;;;;;64753
+;Ahlertweg;gerade;2;;48;;;;;;;;;64753
+;Am Berg;gerade;2;;4;;;;;;;;;64753
+;Am Bildstein;gerade;2;;4;;;;;;;;;64753
+;Am Bollberg;gerade;2;;12;;;;;;;;;64753
+;Am Buchengraben;gerade;2;;4;;;;;;;;;64753
+;Am Engelsberg;gerade;2;;22;;;;;;;;;64753
+;Am Kirchberg;gerade;2;;2;;;;;;;;;64753
+;Am Sandberg;gerade;2;;2;;;;;;;;;64753
+;Am Sonnenberg;gerade;2;;30;;;;;;;;;64753
+;Am Steinbruch;gerade;2;;2;;;;;;;;;64753
+;Amselweg;gerade;2;;30;;;;;;;;;64753
+;Auf der Herberg;gerade;2;;24;;;;;;;;;64753
+;Bad Königer Weg;gerade;2;;8;;;;;;;;;64753
+;Ballengrundweg;gerade;2;;16;;;;;;;;;64753
+;Balsbach;gerade;2;;10;;;;;;;;;64753
+;Baumgartenweg;gerade;2;;4;;;;;;;;;64753
+;Bergstraße;gerade;2;;16;;;;;;;;;64753
+;Birkenweg;gerade;2;;2;;;;;;;;;64753
+;Birkerter Weg;gerade;2;;10;;;;;;;;;64753
+;Brensbacher Straße;gerade;2;;8;;;;;;;;;64753
+;Breuberger Straße;gerade;2;;10;;;;;;;;;64753
+;Burghof;gerade;2;;16;;;;;;;;;64753
+;Böckswiese;gerade;2;;12;;;;;;;;;64753
+;Dammweg;gerade;2;;30;;;;;;;;;64753
+;Die Seewiesen;gerade;2;;6;;;;;;;;;64753
+;Drosselweg;gerade;2;;32;;;;;;;;;64753
+;Fasanenweg;gerade;2;;30;;;;;;;;;64753
+;Finkenweg;gerade;2;;24;;;;;;;;;64753
+;Friedhofsweg;gerade;2;;10;;;;;;;;;64753
+;Gartenstraße;gerade;2;;16;;;;;;;;;64753
+;Hauptstraße;gerade;2;;134;;;;;;;;;64753
+;Hochstraße;gerade;2;;50;;;;;;;;;64753
+;Hof Herrenberg;gerade;2;;4;;;;;;;;;64753
+;Hohlweg;gerade;2;;2;;;;;;;;;64753
+;Höhenstraße;gerade;2;;40;;;;;;;;;64753
+;Im Alten Garten;gerade;2;;22;;;;;;;;;64753
+;Im Brügel;gerade;2;;2;;;;;;;;;64753
+;Im Büschel;gerade;2;;10;;;;;;;;;64753
+;Im Grund;gerade;2;;8;;;;;;;;;64753
+;Jahnstraße;gerade;2;;36;;;;;;;;;64753
+;Johann-Adam-Groh-Straße;gerade;2;;26;;;;;;;;;64753
+;Kinziger Straße;gerade;2;;10;;;;;;;;;64753
+;Kirchbrombacher Straße;gerade;2;;50;;;;;;;;;64753
+;Kuhweg;gerade;2;;6;;;;;;;;;64753
+;Lupinenweg;gerade;2;;2;;;;;;;;;64753
+;Martin-Luther-Weg;gerade;2;;10;;;;;;;;;64753
+;Müllertsweg;gerade;2;;8;;;;;;;;;64753
+;Müllerweg;gerade;2;;2;;;;;;;;;64753
+;Oberdörfer Straße;gerade;2;;76;;;;;;;;;64753
+;Obere Gasse;gerade;2;;20;;;;;;;;;64753
+;Oberer Gründelsweg;gerade;2;;18;;;;;;;;;64753
+;Pfarrgasse;gerade;2;;8;;;;;;;;;64753
+;Pfälzer Straße;gerade;2;;30;;;;;;;;;64753
+;Rodweg;gerade;2;;20;;;;;;;;;64753
+;Schulstraße;gerade;2;;40;;;;;;;;;64753
+;Schulweg;gerade;2;;2;;;;;;;;;64753
+;Staudenweg;gerade;2;;10;;;;;;;;;64753
+;Tannhäuser Grund;gerade;2;;48;;;;;;;;;64753
+;Waldstraße;gerade;2;;12;;;;;;;;;64753
+;Wallbacher Weg;gerade;2;;4;;;;;;;;;64753
+;Wiesenweg;gerade;2;;6;;;;;;;;;64753
+;Wilhelm-Adrian-Straße;gerade;2;;16;;;;;;;;;64753
+;Zeller Straße;gerade;2;;120;;;;;;;;;64753
+;Zum Felsen;gerade;2;;2;;;;;;;;;64753
+;Zum Langenstein;gerade;2;;6;;;;;;;;;64753
+;Zur Kreuzdelle;gerade;2;;2;;;;;;;;;64753
+;Almenweg;gerade;2;;24;;;;;;;;;64756
+;Alter Weg;gerade;2;;24;;;;;;;;;64756
+;Am Bach;gerade;2;;2;;;;;;;;;64756
+;Am Böhlacker;gerade;2;;2;;;;;;;;;64756
+;Am Hertelsberg;gerade;2;;4;;;;;;;;;64756
+;Am Kirchberg;gerade;2;;30;;;;;;;;;64756
+;Am Kirchweg;gerade;2;;8;;;;;;;;;64756
+;Am Märzbrunnen;gerade;2;;18;;;;;;;;;64756
+;Am Ritschrain;gerade;2;;12;;;;;;;;;64756
+;Eichenweg;gerade;2;;2;;;;;;;;;64756
+;Erbacher Straße;gerade;2;;44;;;;;;;;;64756
+;Fürther Straße;gerade;2;;106;;;;;;;;;64756
+;Geisbergweg;gerade;2;;24;;;;;;;;;64756
+;Güttersbacher Straße;gerade;2;;66;;;;;;;;;64756
+;Hardtstraße;gerade;2;;20;;;;;;;;;64756
+;Hiltersklinger Weg;gerade;2;;38;;;;;;;;;64756
+;Ihrigstraße;gerade;2;;48;;;;;;;;;64756
+;In der Kleinen Harras;gerade;2;;84;;;;;;;;;64756
+;In der Klinge;gerade;2;;10;;;;;;;;;64756
+;Kriemhildenstraße;gerade;2;;16;;;;;;;;;64756
+;Neben der Hohl;gerade;2;;12;;;;;;;;;64756
+;Neudorf;gerade;2;;34;;;;;;;;;64756
+;Neuer Weg;gerade;2;;32;;;;;;;;;64756
+;Ortsstraße;gerade;2;;168;;;;;;;;;64756
+;Siegfriedstraße;gerade;2;;100;;;;;;;;;64756
+;Sommerhelle;gerade;2;;22;;;;;;;;;64756
+;Untere Siegfriedstraße;gerade;2;;52;;;;;;;;;64756
+;Waldstraße;gerade;2;;4;;;;;;;;;64756
+;Wiesenstraße;gerade;2;;24;;;;;;;;;64756
+;Adalbert-Stifter-Straße;gerade;2;;12;;;;;;;;;64760
+;Am Bahndamm;gerade;2;;8;;;;;;;;;64760
+;Am Finkenberg;gerade;2;;18;;;Hinterbach;;;;;;64760
+;Am Hang;gerade;2;;8;;;;;;;;;64760
+;Am Hof;gerade;2;;2;;;;;;;;;64760
+;Am Kirchberg;gerade;2;;24;;;;;;;;;64760
+;Am Röderwald;gerade;2;;10;;;;;;;;;64760
+;Am Schulwald;gerade;2;;2;;;;;;;;;64760
+;Am Sensberg;gerade;2;;16;;;;;;;;;64760
+;Am Spielplatz;gerade;2;;4;;;;;;;;;64760
+;Am Sportplatz;gerade;2;;4;;;;;;;;;64760
+;Am Südhang;gerade;2;;12;;;Finkenbach;;;;;;64760
+;Am Tannenberg;gerade;2;;2;;;;;;;;;64760
+;Am Tunnel;gerade;2;;2;;;;;;;;;64760
+;Am Wetterberg;gerade;2;;4;;;Hinterbach;;;;;;64760
+;Amselweg;gerade;2;;4;;;;;;;;;64760
+;An den Brunnenwiesen;gerade;2;;8;;;;;;;;;64760
+;An der Alten Buche;gerade;2;;6;;;;;;;;;64760
+;An der Sensbach;gerade;2;;2;;;;;;;;;64760
+;Auf der Sommerseite;gerade;2;;6;;;;;;;;;64760
+;Außerhalb Hebstahl;gerade;2;;6;;;;;;;;;64760
+;Bahnhofstraße;gerade;2;;58;;;;;;;;;64760
+;Beerfelder Straße;gerade;2;;68;;;Hinterbach;;;;;;64760
+;Bergmühlenweg;gerade;2;;10;;;;;;;;;64760
+;Bergstraße;gerade;2;;38;;;;;;;;;64760
+;Bergweg;gerade;2;;14;;;;;;;;;64760
+;Birkenhöhe;gerade;2;;66;;;;;;;;;64760
+;Brunnengasse;gerade;2;;24;;;;;;;;;64760
+;Bürgermeister-Müller-Straße;gerade;2;;6;;;;;;;;;64760
+;Das Tolle Rott;gerade;2;;8;;;;;;;;;64760
+;Dieselstraße;gerade;2;;26;;;;;;;;;64760
+;Eberbacher Straße;gerade;2;;24;;;;;;;;;64760
+;Eberbacher Weg;gerade;2;;112;;;;;;;;;64760
+;Eckbüschel;gerade;2;;4;;;;;;;;;64760
+;Ecksgasse;gerade;2;;10;;;;;;;;;64760
+;Eduardstal;gerade;2;;2;;;;;;;;;64760
+;Falkenbergstraße;gerade;2;;18;;;;;;;;;64760
+;Feldstraße;gerade;2;;28;;;;;;;;;64760
+;Finkenbacher Straße;gerade;2;;62;;;;;;;;;64760
+;Finkenbacher Weg;gerade;2;;20;;;;;;;;;64760
+;Forsthausstraße;gerade;2;;14;;;;;;;;;64760
+;Freiensteinstraße;gerade;2;;16;;;;;;;;;64760
+;Friedhofstraße;gerade;2;;20;;;;;;;;;64760
+;Friedhofsweg;gerade;2;;46;;;;;;;;;64760
+;Friedrich-Ebert-Straße;gerade;2;;52;;;;;;;;;64760
+;Friedrichsdorfer Straße;gerade;2;;4;;;;;;;;;64760
+;Gabelsbergerstraße;gerade;2;;14;;;;;;;;;64760
+;Gammelsbacher Straße;gerade;2;;80;;;;;;;;;64760
+;Gammelsbacher Weg;gerade;2;;18;;;;;;;;;64760
+;Gartenstraße;gerade;2;;18;;;;;;;;;64760
+;Gasse;gerade;2;;50;;;;;;;;;64760
+;Gebhardshütte;gerade;2;;14;;;;;;;;;64760
+;Gerhart-Hauptmann-Straße;gerade;2;;26;;;;;;;;;64760
+;Goethestraße;gerade;2;;44;;;;;;;;;64760
+;Grünesgasse;gerade;2;;28;;;;;;;;;64760
+;Güttersbacher Weg;gerade;2;;30;;;;;;;;;64760
+;Hainbrunner Straße;gerade;2;;58;;;Finkenbach;;;;;;64760
+;Haintal;gerade;2;;2;;;;;;;;;64760
+;Hammerdelle;gerade;2;;18;;;;;;;;;64760
+;Hammerfeld;gerade;2;;26;;;;;;;;;64760
+;Hammerweg;gerade;2;;6;;;;;;;;;64760
+;Hasensprung;gerade;2;;20;;;;;;;;;64760
+;Hauptstraße;gerade;2;;50;;;;;;;;;64760
+;Heckenmühle;gerade;2;;30;;;;;;;;;64760
+;Hessenecker Straße;gerade;2;;4;;;;;;;;;64760
+;Heugasse;gerade;2;;18;;;;;;;;;64760
+;Heugrundstraße;gerade;2;;6;;;;;;;;;64760
+;Hindenburgstraße;gerade;2;;18;;;;;;;;;64760
+;Hinterbacher Straße;gerade;2;;32;;;Finkenbach;;;;;;64760
+;Hirschhorner Straße;gerade;2;;130;;;;;;;;;64760
+;Hirschsprung;gerade;2;;12;;;;;;;;;64760
+;Hochstraße;gerade;2;;34;;;;;;;;;64760
+;Hofstraße;gerade;2;;28;;;;;;;;;64760
+;Hofwiese;gerade;2;;20;;;;;;;;;64760
+;Hohbergweg;gerade;2;;8;;;;;;;;;64760
+;Hohl;gerade;2;;4;;;;;;;;;64760
+;Höhenstraße;gerade;2;;26;;;;;;;;;64760
+;Im Breischengrund;gerade;2;;6;;;Finkenbach;;;;;;64760
+;Im Eck;gerade;2;;14;;;;;;;;;64760
+;Im Himmelreich;gerade;2;;26;;;;;;;;;64760
+;Im Homerich;gerade;2;;34;;;;;;;;;64760
+;Im Lenzengrund;gerade;2;;8;;;Finkenbach;;;;;;64760
+;Im Scheibengrund;gerade;2;;8;;;Finkenbach;;;;;;64760
+;Im Schulzenfeld;gerade;2;;26;;;;;;;;;64760
+;Im Trieb;gerade;2;;4;;;;;;;;;64760
+;Judengasse;gerade;2;;14;;;;;;;;;64760
+;Kailbacher Straße;gerade;2;;6;;;;;;;;;64760
+;Kailbacher Tor;gerade;2;;2;;;;;;;;;64760
+;Karl-Hans-Strobl-Straße;gerade;2;;50;;;;;;;;;64760
+;Kirchstraße;gerade;2;;28;;;;;;;;;64760
+;Kirchweg;gerade;2;;32;;;;;;;;;64760
+;Kreuzweg;gerade;2;;24;;;;;;;;;64760
+;Krähberger Weg;gerade;2;;58;;;;;;;;;64760
+;Kurzer Weg;gerade;2;;4;;;;;;;;;64760
+;Kätchen-Paulus-Straße;gerade;2;;18;;;;;;;;;64760
+;Königsberger Straße;gerade;2;;24;;;;;;;;;64760
+;Landrat-Ackermann-Straße;gerade;2;;32;;;;;;;;;64760
+;Langeforststraße;gerade;2;;6;;;;;;;;;64760
+;Langer Grund;gerade;2;;2;;;;;;;;;64760
+;Liebigstraße;gerade;2;;12;;;;;;;;;64760
+;Limesstraße;gerade;2;;38;;;;;;;;;64760
+;Lindenallee;gerade;2;;36;;;;;;;;;64760
+;Lindengasse;gerade;2;;10;;;;;;;;;64760
+;Marbach;gerade;2;;26;;;;;;;;;64760
+;Marktplatz;gerade;2;;10;;;;;;;;;64760
+;Marktstraße;gerade;2;;4;;;;;;;;;64760
+;Metzkeil;gerade;2;;4;;;;;;;;;64760
+;Mittlerer Weg;gerade;2;;16;;;;;;;;;64760
+;Mühlstraße;gerade;2;;4;;;;;;;;;64760
+;Mühlweg;gerade;2;;40;;;;;;;;;64760
+;Neckarstraße;gerade;2;;26;;;;;;;;;64760
+;Neckartalstraße;gerade;2;;172;;;;;;;;;64760
+;Neue Straße;gerade;2;;4;;;;;;;;;64760
+;Neuer Weg;gerade;2;;4;;;;;;;;;64760
+;Neustraße;gerade;2;;30;;;;;;;;;64760
+;Obere Ortsstraße;gerade;2;;22;;;;;;;;;64760
+;Obere Siegfriedstraße;gerade;2;;100;;;;;;;;;64760
+;Obere Talstraße;gerade;2;;16;;;;;;;;;64760
+;Oberer Erbsenbach;gerade;2;;32;;;;;;;;;64760
+;Odenwaldstraße;gerade;2;;42;;;;;;;;;64760
+;Poststraße;gerade;2;;38;;;;;;;;;64760
+;Postweg;gerade;2;;36;;;;;;;;;64760
+;Prof.-Braun-Straße;gerade;2;;34;;;;;;;;;64760
+;Raubacher Straße;gerade;2;;24;;;;;;;;;64760
+;Raudelle;gerade;2;;68;;;;;;;;;64760
+;Reußenkreuz;gerade;2;;12;;;;;;;;;64760
+;Ringstraße;gerade;2;;24;;;;;;;;;64760
+;Rollgasse;gerade;2;;16;;;;;;;;;64760
+;Rosenweg;gerade;2;;12;;;;;;;;;64760
+;Rothenberger Straße;gerade;2;;8;;;;;;;;;64760
+;Salmshütte;gerade;2;;8;;;;;;;;;64760
+;Sauersgrund;gerade;2;;4;;;;;;;;;64760
+;Schillerstraße;gerade;2;;10;;;;;;;;;64760
+;Schulstraße;gerade;2;;14;;;;;;;;;64760
+;Schweizersdelle;gerade;2;;14;;;;;;;;;64760
+;Schöllenbacher Weg;gerade;2;;4;;;;;;;;;64760
+;Seewiese;gerade;2;;4;;;;;;;;;64760
+;Sensbacher Straße;gerade;2;;138;;;;;;;;;64760
+;Sensbergstraße;gerade;2;;22;;;;;;;;;64760
+;Sepps Weg;gerade;2;;2;;;;;;;;;64760
+;Siedlerweg;gerade;2;;36;;;;;;;;;64760
+;Siegfriedstraße;gerade;2;;64;;;;;;;;;64760
+;Sommerberg;gerade;2;;20;;;;;;;;;64760
+;Sommerhelle;gerade;2;;2;;;;;;;;;64760
+;Sonnenhöhe;gerade;2;;10;;;;;;;;;64760
+;Sonnenweg;gerade;2;;6;;;;;;;;;64760
+;Spälterwaldstraße;gerade;2;;26;;;;;;;;;64760
+;Steingrund;gerade;2;;34;;;;;;;;;64760
+;Steinweg;gerade;2;;4;;;;;;;;;64760
+;Sudetenstraße;gerade;2;;14;;;;;;;;;64760
+;Talblick;gerade;2;;6;;;;;;;;;64760
+;Talstraße;gerade;2;;12;;;;;;;;;64760
+;Theodor-Heuss-Straße;gerade;2;;22;;;;;;;;;64760
+;Unterdorfstraße;gerade;2;;34;;;;;;;;;64760
+;Untere Ortsstraße;gerade;2;;56;;;;;;;;;64760
+;Waldstraße;gerade;2;;34;;;;;;;;;64760
+;Walterbachweg;gerade;2;;56;;;;;;;;;64760
+;Wehrstraße;gerade;2;;8;;;;;;;;;64760
+;Weißenbörner Weg;gerade;2;;4;;;;;;;;;64760
+;Wiesenstraße;gerade;2;;4;;;;;;;;;64760
+;Wiesenweg;gerade;2;;10;;;;;;;;;64760
+;Wolfsdelle;gerade;2;;24;;;;;;;;;64760
+;Zum Bubenkreuz;gerade;2;;16;;;;;;;;;64760
+;Zum Krähberg;gerade;2;;28;;;;;;;;;64760
+;Zum Roten Wasser;gerade;2;;24;;;;;;;;;64760
+;Am Bodenacker;gerade;4;;14;;;;;;;;;64385
+;Am Flutgraben;gerade;4;;10;;;;;;;;;64385
+;Am Hochgericht;gerade;4;;4;;;;;;;;;64385
+;Am Pfeifferssteg;gerade;4;;6;;;;;;;;;64385
+;Bahnhofstraße;gerade;4;;32;;;;;;;;;64385
+;Beerfurther Straße;gerade;4;;64;;;;;;;;;64385
+;Bismarckstraße;gerade;4;;58;;;;;;;;;64385
+;Brückenstraße;gerade;4;;16;;;;;;;;;64385
+;Buchenstraße;gerade;4;;8;;;;;;;;;64385
+;Burgstraße;gerade;4;;14;;;;;;;;;64385
+;Denkmalsweg;gerade;4;;18;;;;;;;;;64385
+;Die Alme;gerade;4;;24;;;;;;;;;64385
+;Hardtweg;gerade;4;;30;;;;;;;;;64385
+;Hembacher Weg;gerade;4;;8;;;;;;;;;64385
+;Hutzwiese;gerade;4;;18;;;;;;;;;64385
+;Im Unterdorf;gerade;4;;40;;;;;;;;;64385
+;Konrad-Adenauer-Allee;gerade;4;;22;;;;;;;;;64385
+;Mergbachstraße;gerade;4;;82;;;;;;;;;64385
+;Mossauer Weg;gerade;4;;12;;;;;;;;;64385
+;Nibelungenstraße;gerade;4;;42;;;;;;;;;64385
+;Reichenberger Straße;gerade;4;;16;;;;;;;;;64385
+;Sandweg;gerade;4;;50;;;;;;;;;64385
+;Schwestergasse;gerade;4;;4;;;;;;;;;64385
+;Affhöllerbacher Straße;gerade;4;;46;;;Nieder-Kainsbach;;;;;;64395
+;Am Grundacker;gerade;4;;4;;;Nieder-Kainsbach;;;;;;64395
+;Am Pfaffengraben;gerade;4;;24;;;;;;;;;64395
+;Am Steinerts;gerade;4;;12;;;;;;;;;64395
+;Bahnhofstraße;gerade;4;;82;;;;;;;;;64395
+;Breubergstraße;gerade;4;;76;;;;;;;;;64395
+;Gartenstraße;gerade;4;;12;;;Nieder-Kainsbach;;;;;;64395
+;Grundweg;gerade;4;;8;;;;;;;;;64395
+;In der Reffe;gerade;4;;36;;;;;;;;;64395
+;Karl-Maser-Straße;gerade;4;;34;;;;;;;;;64395
+;Karl-Neff-Straße;gerade;4;;10;;;Nieder-Kainsbach;;;;;;64395
+;Karl-Schäfer-Straße;gerade;4;;30;;;;;;;;;64395
+;Kilsbacher Straße;gerade;4;;18;;;Affhöllerbach;;;;;;64395
+;Mühlweg;gerade;4;;12;;;Nieder-Kainsbach;;;;;;64395
+;Rosenweg;gerade;4;;4;;;;;;;;;64395
+;Waldstraße;gerade;4;;60;;;;;;;;;64395
+;Wersauer Straße;gerade;4;;12;;;;;;;;;64395
+;Zeileichstraße;gerade;4;;36;;;Nieder-Kainsbach;;;;;;64395
+;Brunnenweg;gerade;4;;8;;;;;;;;;64407
+;Elisabethenstraße;gerade;4;;18;;;;;;;;;64407
+;Klostergasse;gerade;4;;4;;;;;;;;;64407
+;Seedamm;gerade;4;;14;;;;;;;;;64407
+;Albert-Schweitzer-Straße;gerade;4;;34;;;;;;;;;64711
+;Alte Poststraße;gerade;4;;6;;;;;;;;;64711
+;Am Badbrunnen;gerade;4;;8;;;;;;;;;64711
+;Am Berg;gerade;4;;24;;;;;;;;;64711
+;Am Diebsberg;gerade;4;;12;;;;;;;;;64711
+;Am Scheuerberg;gerade;4;;34;;;;;;;;;64711
+;Am Schlehdorn;gerade;4;;12;;;;;;;;;64711
+;Am Sommergarten;gerade;4;;4;;;;;;;;;64711
+;Am Wiesengrund;gerade;4;;4;;;;;;;;;64711
+;Anne-Frank-Straße;gerade;4;;38;;;;;;;;;64711
+;Beethovenstraße;gerade;4;;26;;;;;;;;;64711
+;Bleichstraße;gerade;4;;22;;;;;;;;;64711
+;Bullauer Bild;gerade;4;;4;;;;;;;;;64711
+;Carl-Benz-Straße;gerade;4;;20;;;;;;;;;64711
+;Carl-Kern-Weg;gerade;4;;4;;;;;;;;;64711
+;Die Gasse;gerade;4;;6;;;;;;;;;64711
+;Dürerstraße;gerade;4;;30;;;;;;;;;64711
+;Eichendorffstraße;gerade;4;;22;;;;;;;;;64711
+;Elsa-Brändström-Straße;gerade;4;;6;;;;;;;;;64711
+;Erlenbacher Straße;gerade;4;;64;;;;;;;;;64711
+;Eulbacher Straße;gerade;4;;58;;;;;;;;;64711
+;Finkenweg;gerade;4;;4;;;;;;;;;64711
+;Friedhofstraße;gerade;4;;90;;;;;;;;;64711
+;Graf-Franz-Straße;gerade;4;;8;;;;;;;;;64711
+;Günterfürster Straße;gerade;4;;8;;;;;;;;;64711
+;Hellegasse;gerade;4;;4;;;;;;;;;64711
+;Hofweg;gerade;4;;22;;;;;;;;;64711
+;Hohlgarten;gerade;4;;6;;;;;;;;;64711
+;Holunderweg;gerade;4;;16;;;;;;;;;64711
+;In der Klinge;gerade;4;;14;;;;;;;;;64711
+;Lessingstraße;gerade;4;;8;;;;;;;;;64711
+;Lindenstraße;gerade;4;;10;;;;;;;;;64711
+;Obere Stadtwiese;gerade;4;;50;;;;;;;;;64711
+;Pfarrgasse;gerade;4;;16;;;;;;;;;64711
+;Rolleweg;gerade;4;;34;;;;;;;;;64711
+;Scheuerbergweg;gerade;4;;6;;;;;;;;;64711
+;Siedlung Rolle;gerade;4;;32;;;;;;;;;64711
+;Steinbruchweg;gerade;4;;10;;;;;;;;;64711
+;Uhlandstraße;gerade;4;;44;;;;;;;;;64711
+;Werner-von-Siemens-Straße;gerade;4;;106;;;;;;;;;64711
+;Westring;gerade;4;;90;;;;;;;;;64711
+;Zur Hardt;gerade;4;;22;;;;;;;;;64711
+;Zur Steinwiese;gerade;4;;18;;;;;;;;;64711
+;Am Berg beim Gartenhaus;gerade;4;;8;;;;;;;;;64720
+;Am Dalles;gerade;4;;16;;;;;;;;;64720
+;Am Kellersgraben;gerade;4;;12;;;;;;;;;64720
+;Am Schafberg;gerade;4;;14;;;;;;;;;64720
+;Am Stutz;gerade;4;;4;;;;;;;;;64720
+;Am Trieb;gerade;4;;48;;;;;;;;;64720
+;An der Odenwaldhalle;gerade;4;;10;;;;;;;;;64720
+;Außerhalb CVJM;gerade;4;;4;;;;;;;;;64720
+;Außerhalb Steinbach;gerade;4;;4;;;;;;;;;64720
+;Außerhalb Würzberg;gerade;4;;6;;;;;;;;;64720
+;Bensheimer Weg;gerade;4;;8;;;;;;;;;64720
+;Breuberger Weg;gerade;4;;8;;;;;;;;;64720
+;Contistraße;gerade;4;;4;;;;;;;;;64720
+;Dorfstraße;gerade;4;;118;;;;;;;;;64720
+;Einhardstraße;gerade;4;;140;;;;;;;;;64720
+;Eulbach-Jagdschloß;gerade;4;;6;;;;;;;;;64720
+;Fabrikstraße;gerade;4;;22;;;;;;;;;64720
+;Fliederweg;gerade;4;;4;;;;;;;;;64720
+;G.-W.-Horlebein-Straße;gerade;4;;16;;;;;;;;;64720
+;Georg-Glenz-Straße;gerade;4;;50;;;;;;;;;64720
+;Geschwister-Scholl-Straße;gerade;4;;18;;;;;;;;;64720
+;Grätz-Markersdorfer-Straße;gerade;4;;36;;;;;;;;;64720
+;Hauptstraße;gerade;4;;118;;;;;;;;;64720
+;Heinrich-Arzt-Straße;gerade;4;;20;;;;;;;;;64720
+;Hubertusweg;gerade;4;;6;;;;;;;;;64720
+;Höchster Weg;gerade;4;;8;;;;;;;;;64720
+;In den Hofgärten;gerade;4;;34;;;;;;;;;64720
+;In den Schmelzäckern;gerade;4;;18;;;;;;;;;64720
+;Kreuzweg;gerade;4;;34;;;;;;;;;64720
+;Limesstraße;gerade;4;;22;;;;;;;;;64720
+;Martin-Luther-Straße;gerade;4;;16;;;;;;;;;64720
+;Pestalozzistraße;gerade;4;;18;;;;;;;;;64720
+;Reinstraße;gerade;4;;16;;;;;;;;;64720
+;Relystraße;gerade;4;;48;;;;;;;;;64720
+;Schulstraße;gerade;4;;40;;;;;;;;;64720
+;Stephansweg;gerade;4;;10;;;;;;;;;64720
+;Stockheimer Weg;gerade;4;;14;;;;;;;;;64720
+;Sudetenstraße;gerade;4;;16;;;;;;;;;64720
+;Untere Schillerstraße;gerade;4;;14;;;;;;;;;64720
+;Weyrichsweg;gerade;4;;6;;;;;;;;;64720
+;Wingertsweg;gerade;4;;40;;;;;;;;;64720
+;Wirtsweg;gerade;4;;4;;;;;;;;;64720
+;Zur Hainstermühle;gerade;4;;10;;;;;;;;;64720
+;Am Bahndamm;gerade;4;;4;;;;;;;;;64732
+;Am Großen Garten;gerade;4;;8;;;;;;;;;64732
+;Am Hirtenberg;gerade;4;;14;;;;;;;;;64732
+;Am Roten Rain;gerade;4;;24;;;;;;;;;64732
+;Am Schaufelsbaum;gerade;4;;14;;;;;;;;;64732
+;An den Herrenhäusern;gerade;4;;6;;;;;;;;;64732
+;An den Seen;gerade;4;;38;;;;;;;;;64732
+;An der Dorfbach;gerade;4;;10;;;;;;;;;64732
+;An der Scheed;gerade;4;;8;;;;;;;;;64732
+;Bahnhofstraße;gerade;4;;54;;;;;;;;;64732
+;Berliner Straße;gerade;4;;6;;;;;;;;;64732
+;Friedhofsweg;gerade;4;;8;;;;;;;;;64732
+;Friedrichstraße;gerade;4;;16;;;;;;;;;64732
+;Gartenweg;gerade;4;;8;;;;;;;;;64732
+;Hohe Straße;gerade;4;;94;;;;;;;;;64732
+;Im Neuroth;gerade;4;;42;;;;;;;;;64732
+;Jahnstraße;gerade;4;;30;;;;;;;;;64732
+;Mümlingstraße;gerade;4;;12;;;;;;;;;64732
+;Pfälzer Höfe;gerade;4;;6;;;;;;;;;64732
+;Rehweg;gerade;4;;8;;;;;;;;;64732
+;Schillerstraße;gerade;4;;18;;;;;;;;;64732
+;Stettiner Straße;gerade;4;;14;;;;;;;;;64732
+;Tannenbergstraße;gerade;4;;6;;;;;;;;;64732
+;Theodor-Heuss-Straße;gerade;4;;18;;;;;;;;;64732
+;Walter-Wiederhold-Straße;gerade;4;;14;;;;;;;;;64732
+;Zum Kurpark;gerade;4;;4;;;;;;;;;64732
+;Allmenweg;gerade;4;;10;;;;;;;;;64739
+;Am Borberg;gerade;4;;10;;;;;;;;;64739
+;Am Koppelwald;gerade;4;;16;;;;;;;;;64739
+;Am Wingertsrain;gerade;4;;8;;;;;;;;;64739
+;Amselweg;gerade;4;;4;;;;;;;;;64739
+;An der Mümling;gerade;4;;18;;;;;;;;;64739
+;Außerhalb;gerade;4;;4;;;;;;;;;64739
+;Beethovenstraße;gerade;4;;16;;;;;;;;;64739
+;Bergweg;gerade;4;;8;;;;;;;;;64739
+;Breslauer Straße;gerade;4;;36;;;;;;;;;64739
+;Centallmenweg;gerade;4;;46;;;;;;;;;64739
+;Eckgasse;gerade;4;;16;;;;;;;;;64739
+;Elisabethenstraße;gerade;4;;12;;;;;;;;;64739
+;Finkenweg;gerade;4;;8;;;;;;;;;64739
+;Friedhofstraße;gerade;4;;30;;;;;;;;;64739
+;Friedhofsweg;gerade;4;;4;;;;;;;;;64739
+;Goethestraße;gerade;4;;16;;;;;;;;;64739
+;Im Elzig;gerade;4;;18;;;;;;;;;64739
+;Im Wolfsgrund;gerade;4;;64;;;;;;;;;64739
+;In den Pfarrwiesen;gerade;4;;4;;;;;;;;;64739
+;Industriestraße;gerade;4;;18;;;;;;;;;64739
+;Kellereistraße;gerade;4;;18;;;;;;;;;64739
+;Kreuzweg;gerade;4;;10;;;;;;;;;64739
+;Mühlgraben;gerade;4;;10;;;;;;;;;64739
+;Nonnenweg;gerade;4;;36;;;;;;;;;64739
+;Otto-Hahn-Straße;gerade;4;;10;;;;;;;;;64739
+;Pfarrstraße;gerade;4;;4;;;;;;;;;64739
+;Rehwiesenstraße;gerade;4;;28;;;;;;;;;64739
+;Rimhorner Straße;gerade;4;;34;;;;;;;;;64739
+;Schwanenstraße;gerade;4;;26;;;;;;;;;64739
+;Tannenweg;gerade;4;;8;;;;;;;;;64739
+;Taunusstraße;gerade;4;;16;;;;;;;;;64739
+;Uferstraße;gerade;4;;6;;;;;;;;;64739
+;Wiesenweg;gerade;4;;12;;;;;;;;;64739
+;Zu den Birken;gerade;4;;12;;;;;;;;;64739
+;Zum Sportplatz;gerade;4;;16;;;;;;;;;64739
+;Almenweg;gerade;4;;30;;;;;;;;;64747
+;Am Tiergarten;gerade;4;;26;;;;;;;;;64747
+;An der Bleiche;gerade;4;;16;;;;;;;;;64747
+;Breitenbacher Straße;gerade;4;;6;;;;;;;;;64747
+;Breubergstraße;gerade;4;;40;;;;;;;;;64747
+;Brunnenstraße;gerade;4;;54;;;;;;;;;64747
+;Burgstraße;gerade;4;;6;;;;;;;;;64747
+;Dammstraße;gerade;4;;18;;;;;;;;;64747
+;Friedrich-Veith-Straße;gerade;4;;24;;;;;;;;;64747
+;In den Schadenhecken;gerade;4;;56;;;;;;;;;64747
+;Mümlingstraße;gerade;4;;10;;;;;;;;;64747
+;Robert-Koch-Straße;gerade;4;;66;;;;;;;;;64747
+;Rosenbacher Weg;gerade;4;;4;;;;;;;;;64747
+;Rosenstraße;gerade;4;;42;;;;;;;;;64747
+;Römerberg;gerade;4;;10;;;;;;;;;64747
+;Schwimmbadstraße;gerade;4;;36;;;;;;;;;64747
+;Tulpenstraße;gerade;4;;18;;;;;;;;;64747
+;Brunnenstraße;gerade;4;;20;;;;;;;;;64750
+;Friedrich-Seeger-Straße;gerade;4;;18;;;;;;;;;64750
+;Goethestraße;gerade;4;;16;;;;;;;;;64750
+;Goldbachstraße;gerade;4;;20;;;;;;;;;64750
+;Im Bangert;gerade;4;;42;;;;;;;;;64750
+;Maihohl;gerade;4;;14;;;;;;;;;64750
+;Eichelsweg;gerade;4;;20;;;;;;;;;64753
+;Erbacher Straße;gerade;4;;26;;;;;;;;;64753
+;Reichelsheimer Straße;gerade;4;;4;;;;;;;;;64753
+;Sachsenhäuser Straße;gerade;4;;46;;;;;;;;;64753
+;Steinertsweg;gerade;4;;44;;;;;;;;;64753
+;Am Hopfengarten;gerade;4;;4;;;;;;;;;64756
+;Am Vogelherd;gerade;4;;4;;;;;;;;;64756
+;An der Halle;gerade;4;;4;;;;;;;;;64756
+;Außenliegend;gerade;4;;4;;;;;;;;;64756
+;Außerhalb;gerade;4;;4;;;;;;;;;64756
+;Birkenrain;gerade;4;;10;;;;;;;;;64756
+;Grasellenbacher Weg;gerade;4;;32;;;;;;;;;64756
+;Hauptstraße;gerade;4;;116;;;;;;;;;64756
+;Im Städtel;gerade;4;;4;;;;;;;;;64756
+;Mossauer Straße;gerade;4;;8;;;;;;;;;64756
+;Airlenbacher Straße;gerade;4;;12;;;;;;;;;64760
+;Alter Weg;gerade;4;;4;;;;;;;;;64760
+;Am Herrweg;gerade;4;;8;;;;;;;;;64760
+;Beerfeldener Weg;gerade;4;;40;;;;;;;;;64760
+;Bergwiesenweg;gerade;4;;8;;;;;;;;;64760
+;Birkenweg;gerade;4;;8;;;Hinterbach;;;;;;64760
+;Brunnenstraße;gerade;4;;42;;;Finkenbach;;;;;;64760
+;Brückenstraße;gerade;4;;26;;;;;;;;;64760
+;Buckelweg;gerade;4;;18;;;;;;;;;64760
+;Bullauer Weg;gerade;4;;4;;;;;;;;;64760
+;Falken-Gesäßer Straße;gerade;4;;8;;;Finkenbach;;;;;;64760
+;Fichtenweg;gerade;4;;38;;;;;;;;;64760
+;Freiherr-vom-Stein-Straße;gerade;4;;38;;;;;;;;;64760
+;Hardtweg;gerade;4;;32;;;;;;;;;64760
+;Hebstahler Straße;gerade;4;;116;;;;;;;;;64760
+;Himmelreichweg;gerade;4;;26;;;;;;;;;64760
+;Häfengasse;gerade;4;;40;;;;;;;;;64760
+;Jahnstraße;gerade;4;;22;;;;;;;;;64760
+;Landwehrstraße;gerade;4;;52;;;;;;;;;64760
+;Leonhardshof;gerade;4;;72;;;;;;;;;64760
+;Martin-Luther-Straße;gerade;4;;26;;;;;;;;;64760
+;Mümlingtalstraße;gerade;4;;78;;;;;;;;;64760
+;Oberdorfstraße;gerade;4;;20;;;;;;;;;64760
+;Odenwälder Landstraße;gerade;4;;48;;;;;;;;;64760
+;Olfener Straße;gerade;4;;14;;;Hinterbach;;;;;;64760
+;Quellenweg;gerade;4;;40;;;;;;;;;64760
+;Römerstraße;gerade;4;;6;;;;;;;;;64760
+;Siefertsweg;gerade;4;;18;;;;;;;;;64760
+;Siemensstraße;gerade;4;;8;;;;;;;;;64760
+;Steinerstegsweg;gerade;4;;4;;;;;;;;;64760
+;Turmstraße;gerade;4;;74;;;;;;;;;64760
+;Unterer Erbsenbach;gerade;4;;22;;;;;;;;;64760
+;Viehmarktsplatz;gerade;4;;12;;;;;;;;;64760
+;Wetterbergstraße;gerade;4;;48;;;Finkenbach;;;;;;64760
+;Zur Quelle;gerade;4;;18;;;;;;;;;64760
+;Burgviertel;gerade;6;;22;;;;;;;;;64385
+;Forststraße;gerade;6;;62;;;;;;;;;64385
+;Gersprenztalstraße;gerade;6;;52;;;;;;;;;64385
+;Im Eck;gerade;6;;20;;;;;;;;;64385
+;Mühlstraße;gerade;6;;10;;;;;;;;;64385
+;Ostertalstraße;gerade;6;;70;;;;;;;;;64385
+;Rangenweg;gerade;6;;20;;;;;;;;;64385
+;Roseneck;gerade;6;;20;;;;;;;;;64385
+;Schwimmbadstraße;gerade;6;;46;;;;;;;;;64385
+;Uhlandstraße;gerade;6;;12;;;;;;;;;64385
+;Friedrich-Ebert-Straße;gerade;6;;20;;;;;;;;;64395
+;Schafhofweg;gerade;6;;14;;;;;;;;;64395
+;Erbacher Straße;gerade;6;;72;;;;;;;;;64407
+;Saroltastraße;gerade;6;;56;;;;;;;;;64407
+;Alter Elsbacher Weg;gerade;6;;22;;;;;;;;;64711
+;Am Brühl;gerade;6;;50;;;;;;;;;64711
+;Bürgermeister-Mohr-Straße;gerade;6;;30;;;;;;;;;64711
+;Dietrich-Bonhoeffer-Weg;gerade;6;;16;;;;;;;;;64711
+;Ebersberger Straße;gerade;6;;70;;;;;;;;;64711
+;Erbucher Weg;gerade;6;;8;;;;;;;;;64711
+;Eutergrundweg;gerade;6;;8;;;;;;;;;64711
+;Greta-Bickelhaupt-Weg;gerade;6;;18;;;;;;;;;64711
+;Im Dorf;gerade;6;;22;;;;;;;;;64711
+;Im Herrenrott;gerade;6;;20;;;;;;;;;64711
+;Immanuel-Kant-Straße;gerade;6;;12;;;;;;;;;64711
+;In den Rosengärten;gerade;6;;56;;;;;;;;;64711
+;Lohmühle;gerade;6;;12;;;;;;;;;64711
+;Marktplatz;gerade;6;;6;;;;;;;;;64711
+;Nees-von-Esenbeck-Straße;gerade;6;;12;;;;;;;;;64711
+;Ortsstraße;gerade;6;;34;;;;;;;;;64711
+;Robert-Koch-Straße;gerade;6;;8;;;;;;;;;64711
+;Roßbacher Weg;gerade;6;;12;;;;;;;;;64711
+;Wilhelm-Leuschner-Straße;gerade;6;;18;;;;;;;;;64711
+;Winterseite;gerade;6;;8;;;;;;;;;64711
+;Alfred-Maul-Straße;gerade;6;;16;;;;;;;;;64720
+;Am Kirchenfeld;gerade;6;;12;;;;;;;;;64720
+;Außerhalb Ponyhof;gerade;6;;6;;;;;;;;;64720
+;Breitenbrunner Weg;gerade;6;;20;;;;;;;;;64720
+;Breslauer Straße;gerade;6;;14;;;;;;;;;64720
+;Damaschkestraße;gerade;6;;16;;;;;;;;;64720
+;In den Oberen Gärten;gerade;6;;6;;;;;;;;;64720
+;Jockelsbuckel;gerade;6;;6;;;;;;;;;64720
+;Johanniter Straße;gerade;6;;8;;;;;;;;;64720
+;Kappenrainweg;gerade;6;;8;;;;;;;;;64720
+;Krummer Weg;gerade;6;;14;;;;;;;;;64720
+;Obere Hardt;gerade;6;;22;;;;;;;;;64720
+;Rathausgäßchen;gerade;6;;6;;;;;;;;;64720
+;Rudolf-Marburg-Straße;gerade;6;;40;;;;;;;;;64720
+;Schulbuckel;gerade;6;;6;;;;;;;;;64720
+;Stefan-Hoog-Straße;gerade;6;;30;;;;;;;;;64720
+;Weißenfelser Straße;gerade;6;;10;;;;;;;;;64720
+;Am Bach;gerade;6;;12;;;;;;;;;64732
+;Dekan-Groh-Straße;gerade;6;;24;;;;;;;;;64732
+;Im Strietchen;gerade;6;;16;;;;;;;;;64732
+;In den Schafäckern;gerade;6;;6;;;;;;;;;64732
+;In der Pfalz;gerade;6;;10;;;;;;;;;64732
+;Odenwaldbaumstraße;gerade;6;;46;;;;;;;;;64732
+;Strathweg;gerade;6;;6;;;;;;;;;64732
+;Am Blitzberg;gerade;6;;20;;;;;;;;;64739
+;Am Linsengraben;gerade;6;;6;;;;;;;;;64739
+;An der Kempfsruh;gerade;6;;48;;;;;;;;;64739
+;An der Strieth;gerade;6;;10;;;;;;;;;64739
+;An der Ziegelhütte;gerade;6;;32;;;;;;;;;64739
+;Bergblick;gerade;6;;10;;;;;;;;;64739
+;Bürgergraben;gerade;6;;18;;;;;;;;;64739
+;Dusenbacher Straße;gerade;6;;72;;;;;;;;;64739
+;Forsthausstraße;gerade;6;;16;;;;;;;;;64739
+;Groß-Umstädter Straße;gerade;6;;74;;;;;;;;;64739
+;Im Eck;gerade;6;;6;;;;;;;;;64739
+;In der Aue;gerade;6;;10;;;;;;;;;64739
+;Kastellstraße;gerade;6;;6;;;;;;;;;64739
+;Kirchweg;gerade;6;;16;;;;;;;;;64739
+;Mühlweg;gerade;6;;22;;;;;;;;;64739
+;Mümlingstraße;gerade;6;;18;;;;;;;;;64739
+;Nählingsweg;gerade;6;;6;;;;;;;;;64739
+;Oberhöchster Straße;gerade;6;;26;;;;;;;;;64739
+;Wilhelminenstraße;gerade;6;;8;;;;;;;;;64739
+;Brückenstraße;gerade;6;;40;;;;;;;;;64747
+;Lilienstraße;gerade;6;;6;;;;;;;;;64747
+;Mainstraße;gerade;6;;98;;;;;;;;;64747
+;Brückenstraße;gerade;6;;8;;;;;;;;;64750
+;Finkenweg;gerade;6;;6;;;;;;;;;64750
+;Höchster Straße;gerade;6;;58;;;;;;;;;64750
+;Odenwaldstraße;gerade;6;;100;;;;;;;;;64750
+;Am Volksbrunnen;gerade;6;;10;;;;;;;;;64753
+;Obere Beine;gerade;6;;6;;;;;;;;;64753
+;Obere Höfe;gerade;6;;8;;;;;;;;;64753
+;Am Rehholz;gerade;6;;6;;;;;;;;;64756
+;Elsbacher Weg;gerade;6;;12;;;;;;;;;64756
+;Kirchstraße;gerade;6;;42;;;;;;;;;64756
+;Mösselbachweg;gerade;6;;6;;;;;;;;;64756
+;Ortsweg;gerade;6;;6;;;;;;;;;64756
+;Alte Chaussee;gerade;6;;6;;;;;;;;;64760
+;Eichenstraße;gerade;6;;88;;;;;;;;;64760
+;Erbacher Straße;gerade;6;;90;;;;;;;;;64760
+;Ernst-Ludwig-Edelmann-Straße;gerade;6;;12;;;;;;;;;64760
+;Geißgasse;gerade;6;;14;;;;;;;;;64760
+;Grüneshof;gerade;6;;12;;;;;;;;;64760
+;Hohberg;gerade;6;;6;;;;;;;;;64760
+;Im Gässel;gerade;6;;8;;;;;;;;;64760
+;Lückenweg;gerade;6;;18;;;;;;;;;64760
+;Ortsstraße;gerade;6;;36;;;;;;;;;64760
+;Schwimmbadstraße;gerade;6;;32;;;;;;;;;64760
+;Zum Reitweg;gerade;6;;10;;;;;;;;;64760
+;Hofweg;gerade;8;;16;;;;;;;;;64385
+;Neuhausstraße;gerade;8;;8;;;;;;;;;64385
+;Reichelsheimer Weg;gerade;8;;34;;;;;;;;;64385
+;Talstraße;gerade;8;;128;;;;;;;;;64385
+;Zu den Windhöfen;gerade;8;;12;;;;;;;;;64385
+;Bergweg;gerade;8;;8;;;;;;;;;64395
+;Egerländer Straße;gerade;8;;38;;;;;;;;;64395
+;An der Stadtwiese;gerade;8;;8;;;;;;;;;64711
+;Illigstraße;gerade;8;;12;;;;;;;;;64711
+;Im Gräsig;gerade;8;;8;;;;;;;;;64711
+;In der Sommerhelle;gerade;8;;8;;;;;;;;;64711
+;Lauerbacher Weg;gerade;8;;20;;;;;;;;;64711
+;Schöneberger Weg;gerade;8;;8;;;;;;;;;64711
+;Sommerseite;gerade;8;;12;;;;;;;;;64711
+;Untere Stadtwiese;gerade;8;;28;;;;;;;;;64711
+;Hellmut-Hoffmann-Straße;gerade;8;;14;;;;;;;;;64720
+;Hochstraße;gerade;8;;42;;;;;;;;;64720
+;Am Bärenklingengraben;gerade;8;;16;;;;;;;;;64732
+;Kimbacher Straße;gerade;8;;218;;;;;;;;;64732
+;ST. Momart Außenliegend;gerade;8;;8;;;;;;;;;64732
+;Am Lutherheim;gerade;8;;10;;;;;;;;;64739
+;Am Neuen Berg;gerade;8;;62;;;;;;;;;64739
+;Himmelsleiter;gerade;8;;10;;;;;;;;;64739
+;Pestalozzistraße;gerade;8;;66;;;;;;;;;64739
+;Zur Haselburg;gerade;8;;18;;;;;;;;;64739
+;Lindenstraße;gerade;8;;46;;;;;;;;;64747
+;Wilhelm-Leuschner-Straße;gerade;8;;18;;;;;;;;;64747
+;Hauptstraße;gerade;8;;100;;;;;;;;;64750
+;Steinbachweg;gerade;8;;8;;;;;;;;;64750
+;Alte Straße;gerade;8;;46;;;;;;;;;64760
+;Alter Schöllenbacher Weg;gerade;8;;8;;;;;;;;;64760
+;Am Schloßberg;gerade;8;;40;;;;;;;;;64760
+;Am Waldesrand;gerade;8;;8;;;;;;;;;64760
+;Am Wolfsbuckel;gerade;8;;46;;;;;;;;;64760
+;Forststraße;gerade;8;;14;;;Hinterbach;;;;;;64760
+;Liederbachweg;gerade;8;;8;;;;;;;;;64760
+;Ritterstraße;gerade;8;;46;;;;;;;;;64760
+;Untere Siegfriedstraße;gerade;8;;24;;;;;;;;;64760
+;Winterhelle;gerade;8;;8;;;;;;;;;64760
+;Fabrikstraße;gerade;10;;30;;;;;;;;;64385
+;Höhenweg;gerade;10;;36;;;;;;;;;64385
+;Brunnenkopfweg;gerade;10;;10;;;;;;;;;64711
+;Heideweg;gerade;10;;10;;;;;;;;;64711
+;Königsberger Straße;gerade;10;;10;;;;;;;;;64711
+;Schulweg;gerade;10;;10;;;;;;;;;64711
+;Stockheimer Ring;gerade;10;;26;;;;;;;;;64711
+;An der Stadtschule;gerade;10;;14;;;;;;;;;64720
+;Häfnergasse;gerade;10;;24;;;;;;;;;64720
+;Kleine Gasse;gerade;10;;12;;;;;;;;;64720
+;Michelstädter Straße;gerade;10;;14;;;;;;;;;64720
+;Obere Pfarrgasse;gerade;10;;32;;;;;;;;;64720
+;Pfungstädter Weg;gerade;10;;14;;;;;;;;;64720
+;Bad König Außenliegend;gerade;10;;50;;;;;;;;;64732
+;Böltener Straße;gerade;10;;10;;;;;;;;;64739
+;Dr.-Kornmesser-Straße;gerade;10;;42;;;;;;;;;64739
+;Zur Friedenslinde;gerade;10;;12;;;;;;;;;64739
+;Am Kohlplatz;gerade;10;;110;;;;;;;;;64747
+;Waldhausstraße;gerade;10;;10;;;;;;;;;64750
+;Ringstraße;gerade;10;;42;;;;;;;;;64756
+;Am Wingertsbuckel;gerade;10;;42;;;;;;;;;64760
+;Im Wettergrund;gerade;10;;44;;;Finkenbach;;;;;;64760
+;Wilhelm-Bechtold-Straße;gerade;10;;12;;;;;;;;;64760
+;Blütenstraße;gerade;12;;22;;;;;;;;;64385
+;Crumbacher Straße;gerade;12;;26;;;;;;;;;64385
+;Freiheitsstraße;gerade;12;;20;;;;;;;;;64385
+;Gumpener Straße;gerade;12;;72;;;;;;;;;64385
+;Leipziger Straße;gerade;12;;22;;;;;;;;;64711
+;Tannenweg;gerade;12;;20;;;;;;;;;64711
+;Zum Löwengrund;gerade;12;;26;;;;;;;;;64711
+;Kohlgrube;gerade;12;;72;;;;;;;;;64720
+;Landrat-Ackermann-Straße;gerade;12;;60;;;;;;;;;64720
+;Mauerstraße;gerade;12;;20;;;;;;;;;64720
+;August-Schäfer-Weg;gerade;12;;16;;;;;;;;;64732
+;Darmstädter Straße;gerade;12;;148;;;;;;;;;64732
+;Am Taubenbrunnen;gerade;12;;28;;;;;;;;;64739
+;Jahnstraße;gerade;12;;12;;;;;;;;;64739
+;Siedlungsweg;gerade;12;;12;;;;;;;;;64739
+;Im oberen Bruch;gerade;12;;12;;;;;;;;;64747
+;Obere Siegfriedstraße;gerade;12;;22;;;;;;;;;64756
+;Almenweg;gerade;12;;16;;;;;;;;;64760
+;Am Freudenberg;gerade;12;;20;;;;;;;;;64760
+;Kutschenweg;gerade;12;;40;;;;;;;;;64760
+;Sportplatzweg;gerade;12;;40;;;;;;;;;64760
+;Formbachstraße;gerade;14;;348;;;;;;;;;64385
+;Auf der Beine;gerade;14;;28;;;;;;;;;64395
+;Robert-Bosch-Straße;gerade;14;;14;;;;;;;;;64711
+;Am Schmalberg;gerade;14;;26;;;;;;;;;64720
+;Martin-Luther-Straße;gerade;14;;18;;;;;;;;;64732
+;Kleingärtenweg;gerade;14;;26;;;;;;;;;64739
+;Am Sonnenhang;gerade;14;;14;;;;;;;;;64760
+;Im Talgrund;gerade;14;;16;;;;;;;;;64760
+;Oberer Mühlweg;gerade;14;;50;;;;;;;;;64760
+;Zum Wäldchen;gerade;14;;18;;;;;;;;;64760
+;Mummenroth;gerade;16;;16;;;;;;;;;64395
+;Marktstraße;gerade;16;;20;;;;;;;;;64720
+;Obere Schillerstraße;gerade;16;;36;;;;;;;;;64720
+;Am Niehlrain;gerade;16;;18;;;;;;;;;64747
+;Dorfstraße;gerade;16;;24;;;;;;;;;64753
+;Fürstenauer Eck;gerade;16;;30;;;;;;;;;64753
+;Brunnenstraße;gerade;18;;52;;;;;;;;;64711
+;Im Tal;gerade;18;;38;;;;;;;;;64711
+;Bachgasse;gerade;18;;20;;;;;;;;;64732
+;Ziegelhüttenweg;gerade;18;;74;;;;;;;;;64739
+;Mühleiche;gerade;18;;34;;;;;;;;;64750
+;Wiesenweg;gerade;18;;20;;;;;;;;;64750
+;Hasenbuckelweg;gerade;20;;20;;;;;;;;;64385
+;Birkenweg;gerade;20;;40;;;Affhöllerbach;;;;;;64395
+;Erbacher Straße;gerade;20;;100;;;Nieder-Kainsbach;;;;;;64395
+;Untere Seewiese;gerade;20;;20;;;;;;;;;64711
+;Außerhalb;gerade;22;;22;;;;;;;;;64747
+;Am Dachsberg;gerade;24;;34;;;;;;;;;64756
+;Rumillystraße;gerade;26;;56;;;;;;;;;64720
+;Annelsbacher Tal;gerade;26;;46;;;;;;;;;64739
+;Lindelstraße;gerade;26;;28;;;;;;;;;64756
+;Grundstraße;gerade;28;;126;;;;;;;;;64385
+;Crumbacher Straße;gerade;28;;28;;;;;;;;;64407
+;Am Rangenberg;gerade;28;;32;;;;;;;;;64747
+;Hüttenthaler Straße;gerade;28;;100;;;;;;;;;64756
+;Zum Roßbacher Hof;gerade;30;;36;;;;;;;;;64711
+;Schulzengasse;gerade;30;;30;;;;;;;;;64720
+;Werkstraße;gerade;30;;32;;;;;;;;;64732
+;Darmstädter Straße;gerade;34;;124;;;;;;;;;64720
+;Mainstraße;gerade;34;;58;;;;;;;;;64739
+;Mannheimer Landstraße;gerade;36;;50;;;Nieder-Kainsbach;;;;;;64395
+;Spatmühle;gerade;42;;42;;;;;;;;;64747
+;Obere Marktstraße;gerade;48;;82;;;;;;;;;64711
+;Außenliegend;gerade;112;;112;;;;;;;;;64732

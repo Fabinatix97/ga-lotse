@@ -6,20 +6,17 @@
 import { SetStateAction, useCallback, useId, useState } from "react";
 import { isDeepEqual } from "remeda";
 
-import { validateDateSpan } from "@/features/filters/components/filterFields/DateSpanFilter";
-import { validateYear } from "@/features/filters/components/filterFields/YearFilter";
-import { ActiveFilterProps } from "@/features/filters/components/filterSettings/ActiveFilter";
-import { FilterSettingsProps } from "@/features/filters/components/filterSettings/FilterSettings";
-import { FilterSettingsSheetProps } from "@/features/filters/components/filterSettings/FilterSettingsSheet";
-import { ToggleFilterButtonProps } from "@/features/filters/components/filterSettings/ToggleFilterButton";
-import { DateSpanFilterDefinition } from "@/features/filters/types/DateSpanFilter";
-import { FilterDefinition } from "@/features/filters/types/FilterDefinition";
-import {
-  FilterDraftValue,
-  FilterValue,
-} from "@/features/filters/types/FilterValue";
-import { mapActiveToDraftValues } from "@/features/filters/utils/mapActiveToDraftValues";
-import { mapDraftToActiveValues } from "@/features/filters/utils/mapDraftToActiveValues";
+import { validateDateSpan } from "../components/filterFields/DateSpanFilter";
+import { validateYear } from "../components/filterFields/YearFilter";
+import { ActiveFilterProps } from "../components/filterSettings/ActiveFilter";
+import { FilterSettingsProps } from "../components/filterSettings/FilterSettings";
+import { FilterSettingsSheetProps } from "../components/filterSettings/FilterSettingsSheet";
+import { ToggleFilterButtonProps } from "../components/filterSettings/ToggleFilterButton";
+import { DateSpanFilterDefinition } from "../types/DateSpanFilter";
+import { FilterDefinition } from "../types/FilterDefinition";
+import { FilterDraftValue, FilterValue } from "../types/FilterValue";
+import { mapActiveToDraftValues } from "../utils/mapActiveToDraftValues";
+import { mapDraftToActiveValues } from "../utils/mapDraftToActiveValues";
 
 export interface FilterSettingsStateProvider {
   filterSettingsVisible: boolean;

@@ -47,13 +47,13 @@ export function SearchFilter({
       type="search"
       startDecorator={<SearchIcon />}
       defaultValue={searchParams.get(searchParamName) ?? undefined}
-      onChange={(event) => {
-        onValueChange(event.target.value);
-      }}
       slotProps={{
         input: {
           role: "searchbox",
         },
+      }}
+      onChange={(event) => {
+        onValueChange(event.target.value);
       }}
     />
   );

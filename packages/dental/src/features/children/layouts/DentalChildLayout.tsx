@@ -9,8 +9,8 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
-import { ChildToolbar } from "@/features/children/components/ChildToolbar";
-import { useChildRouteParams } from "@/features/children/hooks/useChildRouteParams";
+import { ChildToolbar } from "../components/ChildToolbar";
+import { useChildRouteParams } from "../hooks/useChildRouteParams";
 
 export function DentalChildLayout(props: DynamicLayoutProps) {
   const { childId } = useChildRouteParams(props.params);

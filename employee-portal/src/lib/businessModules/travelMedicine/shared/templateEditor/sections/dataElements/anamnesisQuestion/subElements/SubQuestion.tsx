@@ -31,7 +31,7 @@ export function SubQuestion({
           : "Textfeld wird nur bei Ja angezeigt"}
       </Grid>
       <Grid xs={12}>
-        <Stack direction="row" spacing={1} alignItems={"flex-start"}>
+        <Stack direction="row" spacing={1} alignItems="flex-start">
           <InputField
             label
             aria-label={
@@ -46,13 +46,13 @@ export function SubQuestion({
             validate={validateLabelText()}
             data-testid="element-subelement-text"
           />
-          <Stack alignItems="center" paddingTop={"6px"}>
+          <Stack alignItems="center" paddingTop="6px">
             <IconButton
               aria-label="Entfernen"
               color="warning"
               variant="outlined"
-              onClick={subQuestionDeleteHandler}
               title="Unterfrage löschen"
+              onClick={subQuestionDeleteHandler}
             >
               <DeleteOutlineIcon />
             </IconButton>

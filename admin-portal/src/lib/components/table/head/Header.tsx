@@ -20,7 +20,7 @@ const StyledHeaderCell = styled("th")(({ theme }) => ({
   "--TableCell-paddingX": theme.spacing(1.5),
 }));
 
-export type HeaderProps = PropsWithChildren<{
+type HeaderProps = PropsWithChildren<{
   canSort: boolean;
   isSorted: false | SortDirection;
   onSort?: (event: unknown) => void;
@@ -47,7 +47,6 @@ export function Header(props: HeaderProps) {
           color="neutral"
           textColor={props.isSorted ? "primary.plainColor" : undefined}
           fontWeight="lg"
-          onClick={props.onSort}
           endDecorator={
             props.canSort && (
               <ArrowDropDownIcon
@@ -65,6 +64,7 @@ export function Header(props: HeaderProps) {
             },
             "&:hover": { "& svg": { opacity: 1 } },
           }}
+          onClick={props.onSort}
         >
           {props.children}
         </ButtonLink>

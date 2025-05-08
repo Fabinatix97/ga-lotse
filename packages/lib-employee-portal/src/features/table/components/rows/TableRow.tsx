@@ -10,8 +10,8 @@ import { doNothing, isDefined } from "remeda";
 
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 
-import { DataCell } from "@/features/table/components/cells/DataCell";
-import { RowNavigation } from "@/features/table/types/rowNavigation";
+import { RowNavigation } from "../../types/rowNavigation";
+import { DataCell } from "../cells/DataCell";
 
 const StyledRow = styled("tr")<{ subRow: boolean }>(({ theme, subRow }) => ({
   background: subRow ? theme.palette.background.level2 : undefined,
@@ -180,6 +180,7 @@ export function TableRow<TData>({
 
           return (
             <DataCell
+              key={cell.id}
               role={isRowHeader ? "rowheader" : undefined}
               colSpan={
                 isParentRow(row) &&
@@ -189,7 +190,6 @@ export function TableRow<TData>({
               }
               canNavigate={canNavigate}
               isClickableElement={isClickableElement}
-              key={cell.id}
               meta={cell.column.columnDef.meta}
               className={canNavigate ? "cellCanNavigate" : undefined}
               onClick={canNavigate ? handleNavigate : undefined}

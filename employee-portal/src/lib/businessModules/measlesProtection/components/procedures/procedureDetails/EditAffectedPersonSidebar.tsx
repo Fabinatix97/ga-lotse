@@ -3,70 +3,84 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-"use client";
-
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
-  type ApiAffectedPerson,
-  ApiDomesticAddress,
-} from "@eshg/measles-protection-api";
+  DefaultPersonForm,
+  DefaultPersonFormValues,
+  PersonSidebarForm,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  mapApiAddressToForm,
+  mapOptional,
+  mapToPersonAddRequest,
+  normalizeListInputs,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiAffectedPerson } from "@eshg/measles-protection-api";
 
-import { MEASLES_PROTECTION_AFFECTED_PERSON_CONFIG } from "@/lib/businessModules/measlesProtection/components/procedures/createProceduresForm/NewPersonButton";
-import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";
-import { LegacyPersonSidebar } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
-import { BASE_PERSON_VALUES } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
-import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
-import { Mode } from "@/lib/shared/components/legacyPersonSidebar/personSidebarHelper";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
+import { useEditAffectedPerson } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 
-export function EditAffectedPersonSidebar({
+export function useEditAffectedPersonSidebar(): UseSidebarWithFormRefResult<EditAffectedPersonSidebarProps> {
+  return useSidebarWithFormRef({ component: EditAffectedPersonSidebar });
+}
+
+interface EditAffectedPersonSidebarProps extends SidebarWithFormRefProps {
+  procedureId: string;
+  person: ApiAffectedPerson;
+}
+function EditAffectedPersonSidebar({
+  procedureId,
   person,
-}: {
-  readonly person: ApiAffectedPerson;
-}) {
-  const [open, setOpen] = useSearchParam("edit-affected", "boolean");
-  const snackbar = useSnackbar();
+  formRef,
+  onClose,
+}: Readonly<EditAffectedPersonSidebarProps>) {
+  const editAffectedPerson = useEditAffectedPerson();
 
-  function handleClose() {
-    setOpen(false);
+  async function handleSubmit(values: DefaultPersonFormValues) {
+    const request = mapToPersonAddRequest(values);
+    await editAffectedPerson.mutateAsync(
+      {
+        procedureId: procedureId,
+        person: { ...request, address: request.contactAddress! },
+      },
+      {
+        onSuccess: () => {
+          onClose(true);
+        },
+      },
+    );
   }
 
   return (
-    <LegacyPersonSidebar
-      open={open}
-      mode={Mode.editInCentralFile}
-      personFormTitle={"Betroffene Person bearbeiten"}
-      config={MEASLES_PROTECTION_AFFECTED_PERSON_CONFIG}
-      person={toPersonFormData(person)}
-      onClose={handleClose}
-      onSubmit={(_data) => {
-        snackbar.notification("Hier passiert bald was.");
-        return Promise.resolve();
-      }}
+    <PersonSidebarForm
+      mode="edit"
+      title="Betroffene Person bearbeiten"
+      sidebarFormRef={formRef}
+      initialValues={mapPersonDetailsToForm(person)}
+      component={DefaultPersonForm}
+      addressRequired
+      onCancel={onClose}
+      onSubmit={handleSubmit}
     />
   );
 }
-function toPersonFormData(person: ApiAffectedPerson): LegacyPerson {
-  const address = person.address as ApiDomesticAddress;
+
+function mapPersonDetailsToForm(
+  person: ApiAffectedPerson,
+): DefaultPersonFormValues {
   return {
-    ...BASE_PERSON_VALUES,
-    salutation: person.salutation,
-    title: person.title,
+    salutation: person.salutation ?? "",
+    title: person.title ?? "",
     firstName: person.firstName,
     lastName: person.lastName,
     dateOfBirth: toDateString(person.dateOfBirth),
-    gender: person.gender,
-    nameAtBirth: person.nameAtBirth,
-    placeOfBirth: person.placeOfBirth,
+    gender: person.gender ?? "",
     countryOfBirth: person.countryOfBirth ?? "",
-    postalAddress: {
-      ...address,
-      houseNumber: address.houseNumber!,
-      type: ApiFacilityAddressType.Postal,
-      addressAddition: address.addressAddition?.trim() ?? "",
-    },
-    emailAddresses: person.emailAddresses ?? [],
-    phoneNumbers: person.phoneNumbers ?? [],
+    nameAtBirth: person.nameAtBirth ?? "",
+    placeOfBirth: person.placeOfBirth ?? "",
+    emailAddresses: normalizeListInputs(person.emailAddresses),
+    phoneNumbers: normalizeListInputs(person.phoneNumbers),
+    contactAddress: mapOptional(person.address, mapApiAddressToForm),
+    differentBillingAddress: undefined,
   };
 }

@@ -5,12 +5,9 @@
 
 "use client";
 
-import { Typography } from "@mui/joy";
-
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { ContactAndAvailability } from "@/lib/businessModules/stiProtection/components/ContactAndAvailability";
-import { TranslatedList } from "@/lib/businessModules/stiProtection/components/shared/TranslatedList";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
@@ -23,35 +20,37 @@ interface LandingpageContentProps {
 }
 
 export function LandingpageContent({ concern }: LandingpageContentProps) {
-  const { t } = useTranslation("stiProtection/overview");
+  const { t, TransTypography } = useTranslation("stiProtection/overview");
+  const isSexWork = concern === ApiConcern.SexWork;
+  const i18nPrefix = isSexWork ? "sex_work" : "sti_consultation";
 
   return (
     <GridColumnStack>
       <ContentSheet>
-        <ContentSheetTitle>{t("information.title")}</ContentSheetTitle>
-        <Typography>{t("information.invitation")}</Typography>
-        <Typography>{t("information.cancellation")}</Typography>
+        <ContentSheetTitle>
+          {t(`${i18nPrefix}.information.title`)}
+        </ContentSheetTitle>
+        <TransTypography i18nKey={`${i18nPrefix}.information.offer`} />
+        {isSexWork ? null : (
+          <TransTypography i18nKey={`${i18nPrefix}.information.applies_to`} />
+        )}
+        <TransTypography i18nKey={`${i18nPrefix}.information.test_results`} />
+        <TransTypography i18nKey={`${i18nPrefix}.information.other_services`} />
 
-        <TranslatedList
-          baseKey="information"
-          headingKey="applies_to_heading"
-          listKey="applies_to_list"
-          localePath="stiProtection/overview"
-        />
-
-        <TranslatedList
-          baseKey="information"
-          headingKey="tests_available_heading"
-          listKey="tests_available_list"
-          localePath="stiProtection/overview"
-        />
-
-        <TranslatedList
-          baseKey="information"
-          headingKey="exceptions_heading"
-          listKey="exceptions_list"
-          localePath="stiProtection/overview"
-        />
+        <section>
+          <TransTypography
+            level="title-md"
+            i18nKey={`${i18nPrefix}.information.costs_heading`}
+          />
+          <TransTypography i18nKey={`${i18nPrefix}.information.costs_info`} />
+        </section>
+        <section>
+          <TransTypography
+            level="title-md"
+            i18nKey={`${i18nPrefix}.information.notice_heading`}
+          />
+          <TransTypography i18nKey={`${i18nPrefix}.information.notice_info`} />
+        </section>
       </ContentSheet>
       <ContactAndAvailability concern={concern} />
     </GridColumnStack>

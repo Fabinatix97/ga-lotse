@@ -50,9 +50,9 @@ export function SidePanelNavigation({
         >
           <Button
             {...getSidePanelNavItemStyles(tab.tabId === activeTabId)}
-            onClick={() => onActiveTabChange(tab)}
             startDecorator={tab.startDecorator}
             sx={{ flex: 1, justifyContent: "flex-start", textAlign: "left" }}
+            onClick={() => onActiveTabChange(tab)}
           >
             {tab.label}
           </Button>

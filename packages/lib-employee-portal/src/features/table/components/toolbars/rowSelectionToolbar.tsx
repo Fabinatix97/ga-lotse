@@ -18,7 +18,7 @@ import { ReactNode } from "react";
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { mapRowSelectionToRowIds } from "@/features/table/hooks/useRowSelection";
+import { mapRowSelectionToRowIds } from "../../hooks/useRowSelection";
 
 const StyledSheet = styled(Sheet)(({ theme }) => ({
   display: "flex",
@@ -41,10 +41,10 @@ export function RowSelectionTableToolbar(props: RowSelectionTableToolbarProps) {
 
   return (
     <StyledSheet variant="soft">
-      <Stack direction="row" gap={2} alignItems={"center"}>
+      <Stack direction="row" gap={2} alignItems="center">
         <SubdirectoryArrowRightOutlined
-          size={"sm"}
-          color={"neutral"}
+          size="sm"
+          color="neutral"
           sx={{
             rotate: "90deg",
           }}
@@ -62,7 +62,7 @@ export function RowSelectionTableToolbar(props: RowSelectionTableToolbarProps) {
         </Typography>
         {props.children && (
           <>
-            <Divider orientation={"vertical"} sx={{ marginY: 1 }} />
+            <Divider orientation="vertical" sx={{ marginY: 1 }} />
             {props.children}
           </>
         )}

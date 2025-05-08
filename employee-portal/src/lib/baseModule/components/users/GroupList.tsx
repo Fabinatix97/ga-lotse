@@ -11,9 +11,9 @@ import { translateUserGroup } from "@/lib/shared/helpers/users";
 
 export function GroupList({ groups }: { groups: ApiUserGroup[] }) {
   return (
-    <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
+    <Stack direction="row" gap={1} flexWrap="wrap">
       {groups.map((group) => (
-        <Chip key={group.name} color={"primary"} variant={"soft"}>
+        <Chip key={group.name} color="primary" variant="soft">
           {translateUserGroup(group.name)}
         </Chip>
       ))}

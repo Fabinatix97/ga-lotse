@@ -185,10 +185,7 @@ export async function bootstrapNewSecretStorage(
   }
 }
 
-export function createSecretStorageKey(
-  cryptoApi: CryptoApi,
-  passphrase: string,
-) {
+function createSecretStorageKey(cryptoApi: CryptoApi, passphrase: string) {
   return cryptoApi.createRecoveryKeyFromPassphrase(passphrase);
 }
 

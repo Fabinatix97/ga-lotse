@@ -23,7 +23,9 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_DESCRIPTION.formatted("Begehungsmodul Landesamt"),
       Module.INSPECTION_LANDESAMT),
   SCHOOL_ENTRY_LEADER(
-      LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("ESU"), Module.SCHOOL_ENTRY),
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Einschulungsuntersuchung"),
+      Module.SCHOOL_ENTRY),
   TRAVEL_MEDICINE_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Impfberatung"), Module.TRAVEL_MEDICINE),
   MEASLES_PROTECTION_LEADER(
@@ -38,7 +40,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME,
       LEADER_DESCRIPTION.formatted("Medizinalaufsicht"),
       Module.MEDICAL_REGISTRY),
-  DENTAL_LEADER(LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("ZAD"), Module.DENTAL),
+  DENTAL_LEADER(
+      LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Zahnärztlicher Dienst"), Module.DENTAL),
   OPEN_DATA_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Open Data"), Module.OPEN_DATA),
   OFFICIAL_MEDICAL_SERVICE_LEADER(
@@ -286,6 +289,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   SCHOOL_ENTRY_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Einschulungsuntersuchung"),
+      "Standardberechtigung für das Fachmodul",
       Module.SCHOOL_ENTRY,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
@@ -346,6 +350,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   DENTAL_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Zahnärztlicher Dienst"),
+      "Standardberechtigung für das Fachmodul",
       Module.DENTAL,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
@@ -412,7 +417,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   private enum Module {
     BASE("Grundmodul"),
-    SCHOOL_ENTRY("Einschulungsuntersuchungsmodul"),
+    SCHOOL_ENTRY("Einschulungsuntersuchung"),
     INSPECTION("Begehungsmodul"),
     INSPECTION_LANDESAMT("Begehungsmodul Landesamt"),
     TRAVEL_MEDICINE("Impfberatung"),

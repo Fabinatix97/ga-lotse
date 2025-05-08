@@ -11,7 +11,7 @@ import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { ExaminationFormValues } from "@/types/examination";
+import { ExaminationFormValues } from "../../../../types/examination";
 
 interface ProphylaxisSessionExaminationFormProps extends RequiresChildren {
   form: FormikProps<ExaminationFormValues>;

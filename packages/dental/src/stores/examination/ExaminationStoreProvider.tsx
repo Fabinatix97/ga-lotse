@@ -14,7 +14,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   ExaminationResult,
   ExaminationResultWithDate,
-} from "@/api/models/ExaminationResult";
+} from "../../api/models/ExaminationResult";
 
 import {
   ExaminationStore,

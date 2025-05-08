@@ -11,7 +11,7 @@ import {
   diagramTypeNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 
-export interface AnalysisAccordionSummaryProps {
+interface AnalysisAccordionSummaryProps {
   analysis: Analysis;
 }
 

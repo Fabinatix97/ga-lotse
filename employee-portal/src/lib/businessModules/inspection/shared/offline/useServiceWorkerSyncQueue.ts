@@ -6,9 +6,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
+import { useIsOffline } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 import {
   DELETE_FILE_FAILED_WITH_404,
   REPLAY_ABORTED,

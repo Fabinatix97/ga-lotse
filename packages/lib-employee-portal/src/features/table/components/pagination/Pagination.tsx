@@ -16,11 +16,11 @@ import { SelectProps, Stack, Typography } from "@mui/joy";
 import { LiveAnnouncer } from "@eshg/lib-portal/components/liveAnnouncer/LiveAnnouncer";
 import { getLastPage } from "@eshg/lib-portal/helpers/paginationHelper";
 
-import { IconButton } from "@/components/buttons/IconButton";
+import { IconButton } from "../../../../components/buttons/IconButton";
 import {
   getCurrentCountText,
   getPageSizeOptions,
-} from "@/features/table/utils/pagination";
+} from "../../utils/pagination";
 
 import { RowsPerPageSelect } from "./RowsPerPageSelect";
 
@@ -87,15 +87,9 @@ export function Pagination(props: Readonly<PaginationProps>) {
         message={`${props.totalCount} Einträge vorhanden`}
         active={props.totalCount > 1}
       />
-      <Stack
-        mt={3}
-        flexDirection="row"
-        gap={2}
-        justifyContent={"space-between"}
-      >
+      <Stack mt={3} flexDirection="row" gap={2} justifyContent="space-between">
         <RowsPerPageSelect
           value={`${props.pageSize}`}
-          onChange={props.onPageSizeChange}
           options={getPageSizeOptions(
             props.pageSizeOptions,
             " Zeilen pro Seite",
@@ -107,37 +101,38 @@ export function Pagination(props: Readonly<PaginationProps>) {
               md: "flex",
             },
           }}
+          onChange={props.onPageSizeChange}
         />
         <Stack
-          flexDirection={"row"}
+          flexDirection="row"
           gap={{ xxs: 1, md: 3 }}
           justifyContent={{ xxs: "space-between", md: "flex-end" }}
-          alignItems={"center"}
+          alignItems="center"
           flex={1}
         >
           <RowsPerPageSelect
             value={`${props.pageSize}`}
-            onChange={props.onPageSizeChange}
             options={getPageSizeOptions(props.pageSizeOptions, "")}
             sx={{
               display: displayShowLimitSelect,
             }}
+            onChange={props.onPageSizeChange}
           />
           <Stack
             display={displayHideLimitSelect}
-            flexDirection={"row"}
+            flexDirection="row"
             gap={1}
-            alignItems={"center"}
+            alignItems="center"
           >
             <IconButton
-              label={"Zur ersten Seite"}
+              label="Zur ersten Seite"
               ariaDisabled={isFirstPage}
               onClick={goToFirstPage}
             >
               <SkipPrevious />
             </IconButton>
             <IconButton
-              label={"Zur vorherigen Seite"}
+              label="Zur vorherigen Seite"
               ariaDisabled={isFirstPage}
               onClick={goToPreviousPage}
             >
@@ -145,9 +140,9 @@ export function Pagination(props: Readonly<PaginationProps>) {
             </IconButton>
           </Stack>
           <Stack
-            flexDirection={"row"}
-            gap={"4px"}
-            alignItems={"center"}
+            flexDirection="row"
+            gap="4px"
+            alignItems="center"
             data-testid="page-details"
           >
             <Typography level="title-sm" textColor="text.secondary">
@@ -164,19 +159,19 @@ export function Pagination(props: Readonly<PaginationProps>) {
           </Stack>
           <Stack
             display={displayHideLimitSelect}
-            flexDirection={"row"}
+            flexDirection="row"
             gap={1}
-            alignItems={"center"}
+            alignItems="center"
           >
             <IconButton
-              label={"Zur nächsten Seite"}
+              label="Zur nächsten Seite"
               ariaDisabled={isLastPage}
               onClick={goToNextPage}
             >
               <ChevronRight />
             </IconButton>
             <IconButton
-              label={"Zur letzten Seite"}
+              label="Zur letzten Seite"
               ariaDisabled={isLastPage}
               onClick={goToLastPage}
             >
@@ -185,19 +180,19 @@ export function Pagination(props: Readonly<PaginationProps>) {
           </Stack>
           <Stack
             display={displayShowLimitSelect}
-            flexDirection={"row"}
+            flexDirection="row"
             gap={1}
-            alignItems={"center"}
+            alignItems="center"
           >
             <IconButton
-              label={"Zur vorherigen Seite"}
+              label="Zur vorherigen Seite"
               ariaDisabled={isFirstPage}
               onClick={goToPreviousPage}
             >
               <ChevronLeft />
             </IconButton>
             <IconButton
-              label={"Zur nächsten Seite"}
+              label="Zur nächsten Seite"
               ariaDisabled={isLastPage}
               onClick={goToNextPage}
             >

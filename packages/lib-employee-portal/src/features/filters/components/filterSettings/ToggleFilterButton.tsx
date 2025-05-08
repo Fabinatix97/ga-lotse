@@ -10,7 +10,7 @@ import { FilterListOff, FilterListOutlined } from "@mui/icons-material";
 import {
   ToggleExpandButton,
   ToggleExpandButtonProps,
-} from "@/components/buttons/ToggleExpandButton";
+} from "../../../../components/buttons/ToggleExpandButton";
 
 export interface ToggleFilterButtonProps
   extends Omit<ToggleExpandButtonProps, "expanded"> {

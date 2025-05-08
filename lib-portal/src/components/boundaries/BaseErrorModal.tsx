@@ -18,7 +18,7 @@ export interface ErrorModalProps {
   onClose?: () => void;
 }
 
-export type BaseErrorModalProps = WithRequired<ErrorModalProps, "title">;
+type BaseErrorModalProps = WithRequired<ErrorModalProps, "title">;
 
 export function BaseErrorModal(props: BaseErrorModalProps) {
   const { reset } = useQueryErrorResetBoundary();

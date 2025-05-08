@@ -9,12 +9,12 @@ import {
   InputProps,
   Select,
   SelectProps,
+  styled,
 } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 
-import { isEmptyString } from "../../helpers/guards";
 import { BaseField } from "../formFields/BaseField";
 import {
   BooleanSelectField,
@@ -29,16 +29,11 @@ import {
 } from "../formFields/SelectObjectField";
 
 const SOFT_REQUIRED_INPUT_PROPS = {
-  variant: "soft",
   color: "primary",
 } as const satisfies InputProps;
 
-const SOFT_REQUIRED_MARKER = {
-  "data-soft-required": "",
-};
-
-const SOFT_REQUIRED_BUTTON_MARKER = {
-  button: SOFT_REQUIRED_MARKER,
+const SOFT_REQUIRED_STYLES = {
+  borderWidth: 2,
 };
 
 export type FieldOrientation = "horizontal" | "vertical";
@@ -54,41 +49,26 @@ interface SoftRequiredFieldProps {
   softRequired?: boolean;
 }
 
-function SoftRequiredSelect<
+export const StyledSelect = styled(Select)(
+  SOFT_REQUIRED_STYLES,
+) as typeof Select;
+
+export function SoftRequiredSelect<
   TValue extends NonNullable<unknown>,
   TMultiple extends boolean,
 >(props: SelectProps<TValue, TMultiple>) {
-  const markAsSoftRequired =
-    (props.value === null || props.value === undefined) &&
-    props.disabled !== true;
-  const additionalProps = markAsSoftRequired ? SOFT_REQUIRED_INPUT_PROPS : null;
-  const slotProps = markAsSoftRequired
-    ? SOFT_REQUIRED_BUTTON_MARKER
-    : undefined;
   return (
-    <Select<TValue, TMultiple>
+    <StyledSelect<TValue, TMultiple>
+      {...SOFT_REQUIRED_INPUT_PROPS}
       {...props}
-      {...additionalProps}
-      slotProps={slotProps}
     />
   );
 }
 
-function addSoftRequiredInputMarker(slotProps: InputProps["slotProps"]) {
-  return {
-    ...slotProps,
-    input: { ...slotProps?.input, ...SOFT_REQUIRED_MARKER },
-  };
-}
+const StyledInput = styled(Input)(SOFT_REQUIRED_STYLES) as typeof Input;
 
 export function SoftRequiredInput(props: InputProps) {
-  const markAsSoftRequired =
-    isEmptyString(props.value) && props.disabled !== true;
-  const additionalProps = markAsSoftRequired ? SOFT_REQUIRED_INPUT_PROPS : null;
-  const slotProps = markAsSoftRequired
-    ? addSoftRequiredInputMarker(props.slotProps)
-    : props.slotProps;
-  return <Input {...props} {...additionalProps} slotProps={slotProps} />;
+  return <StyledInput {...SOFT_REQUIRED_INPUT_PROPS} {...props} />;
 }
 
 export interface SoftRequiredSelectFieldProps<
@@ -165,22 +145,18 @@ export function SoftRequiredSelectObjectField<
   );
 }
 
+const StyledCustomAutocomplete = styled(CustomAutocomplete)(
+  SOFT_REQUIRED_STYLES,
+) as typeof CustomAutocomplete;
+
 function SoftRequiredSelectObject<
   TValue extends NonNullable<unknown>,
   TMultiple extends boolean,
 >(props: AutocompleteProps<TValue, TMultiple, false, false>) {
-  const markAsSoftRequired =
-    (props.value === null || props.value === undefined) &&
-    props.disabled !== true;
-  const additionalProps = markAsSoftRequired ? SOFT_REQUIRED_INPUT_PROPS : null;
-  const slotProps = markAsSoftRequired
-    ? { input: SOFT_REQUIRED_MARKER }
-    : undefined;
   return (
-    <CustomAutocomplete<TValue, TMultiple, false, false>
+    <StyledCustomAutocomplete<TValue, TMultiple, false, false>
+      {...SOFT_REQUIRED_INPUT_PROPS}
       {...props}
-      {...additionalProps}
-      slotProps={slotProps}
     />
   );
 }

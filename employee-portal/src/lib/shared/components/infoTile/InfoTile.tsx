@@ -10,7 +10,7 @@ import { ReactNode } from "react";
 import { DetailsSection, InformationSheet } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-export interface InfoTileProps extends RequiresChildren {
+interface InfoTileProps extends RequiresChildren {
   name: string;
   title: string;
   onEdit?: () => void;
@@ -36,8 +36,8 @@ export function InfoTile({
         <DetailsSection
           data-testid={name}
           title={title}
-          onEdit={onEdit}
           buttons={controls}
+          onEdit={onEdit}
         >
           <Grid container columns={1} spacing={2} flexGrow={1}>
             <Grid xs flex={1}>

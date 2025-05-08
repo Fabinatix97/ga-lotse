@@ -130,10 +130,10 @@ function AddServiceAppointmentSidebar(
       freeConsultationBlockAppointments={freeConsultationBlockAppointments}
       freeVaccinationBlockAppointments={freeVaccinationBlockAppointments}
       formRef={props.formRef}
+      title="Impftermin"
+      submitLabel="Erstellen"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Impftermin"}
-      submitLabel={"Erstellen"}
     />
   );
 }

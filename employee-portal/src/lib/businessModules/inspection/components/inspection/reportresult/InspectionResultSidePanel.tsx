@@ -9,7 +9,7 @@ import { Button } from "@mui/joy";
 import { useState } from "react";
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem, useIsOffline } from "@eshg/lib-employee-portal";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
@@ -22,7 +22,6 @@ import {
 } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function InspectionResultSidePanel({
   inspection,
@@ -41,7 +40,6 @@ export function InspectionResultSidePanel({
     <InfoTile
       name="result"
       title="Bewertung"
-      onEdit={editable && hasResult ? () => setSidebar(true) : undefined}
       footer={
         editable &&
         !hasResult && (
@@ -54,6 +52,7 @@ export function InspectionResultSidePanel({
           </Button>
         )
       }
+      onEdit={editable && hasResult ? () => setSidebar(true) : undefined}
     >
       {hasResult && (
         <>
@@ -93,11 +92,11 @@ export function InspectionResultSidePanel({
 
       <InspectionResultSidebar
         open={sidebar}
-        onClose={() => setSidebar(false)}
         procedureId={inspection.externalId}
         result={inspection.result}
         followupInfo={followupInfo}
         executedAppointment={inspection.executedAppointment!.start}
+        onClose={() => setSidebar(false)}
       />
     </InfoTile>
   );

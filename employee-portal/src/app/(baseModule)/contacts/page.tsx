@@ -56,7 +56,7 @@ export default function ContactsOverviewPage() {
   const searchParams = useSearchParams();
   const validatedParams = parseSearchParams(searchParams);
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Kontakte"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Kontakte" />}>
       <MainContentLayout fullViewportHeight>
         <ContactsOverview params={validatedParams} />
       </MainContentLayout>

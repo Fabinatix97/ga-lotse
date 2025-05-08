@@ -56,3 +56,7 @@ export const baseFeatureTogglesApiQueryKey = queryKeyFactory(
 export const configApiQueryKey = queryKeyFactory(
   baseApiQueryKey(["configApi"]),
 );
+
+export const departmentApiQueryKey = queryKeyFactory(
+  baseApiQueryKey(["departmentApi"]),
+);

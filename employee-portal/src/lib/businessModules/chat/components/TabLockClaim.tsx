@@ -22,7 +22,7 @@ export function TabLockClaim({ onConfirm }: { onConfirm: () => void }) {
           auf &#34;Weiter&#34;, um den Chat hier zu öffnen und das andere
           Fenster zu schließen.
         </Typography>
-        <Button onClick={onConfirm} sx={{ marginTop: 2 }}>
+        <Button sx={{ marginTop: 2 }} onClick={onConfirm}>
           Weiter
         </Button>
       </Stack>

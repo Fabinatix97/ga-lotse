@@ -10,7 +10,7 @@ export const ENUM_EMPTY_FIELDS_VALUE = "__EMPTY_FIELDS_VALUE__";
 export const ENUM_TRUE_VALUE = "yes";
 export const ENUM_FALSE_VALUE = "no";
 
-export const emptyFieldsOption: EnumFilterOption = {
+const emptyFieldsOption: EnumFilterOption = {
   label: "Leere Felder",
   value: ENUM_EMPTY_FIELDS_VALUE,
 };

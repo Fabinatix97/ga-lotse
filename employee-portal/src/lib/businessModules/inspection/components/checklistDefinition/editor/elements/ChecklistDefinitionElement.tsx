@@ -16,7 +16,8 @@ import {
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/joy";
 
 import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
-import { CheckboxField, InformationSheet } from "@eshg/lib-employee-portal";
+import { InformationSheet } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 
@@ -111,6 +112,7 @@ export function ChecklistDefinitionElement({
               placeholder="Funktion auswählen"
               required="Bitte wählen Sie einen Antworttyp aus."
               sx={{ width: "17rem" }}
+              options={typeOptions}
               onChange={(newValue) => {
                 changeType(
                   newValue as
@@ -123,7 +125,6 @@ export function ChecklistDefinitionElement({
                     | null,
                 );
               }}
-              options={typeOptions}
             />
           </>
         }
@@ -172,7 +173,7 @@ export function ChecklistDefinitionElement({
         spacing={2}
         paddingLeft={2}
         paddingRight={2}
-        alignItems={"center"}
+        alignItems="center"
       >
         <Divider
           sx={{

@@ -27,7 +27,7 @@ export function ProcedureCreatedByTile(props: Readonly<ProcedureOriginProps>) {
     >
       <Grid xs={12} pl={0} py={0}>
         <DetailsItem
-          label={"Vorgang erstellt von:"}
+          label="Vorgang erstellt von:"
           value={translateCreatedByUserType(
             props.initialValues.createdByUserType,
           )}

@@ -18,7 +18,7 @@ import { translateInspectionAnnouncement } from "@/lib/businessModules/inspectio
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface AnnouncementTileProps {
+interface AnnouncementTileProps {
   readonly?: boolean;
   procedureId: string;
   announcement?: ApiInspectionAnnouncement;
@@ -54,7 +54,6 @@ export function AnnouncementTile({
     <InfoTile
       name="announcement"
       title="Ankündigungen"
-      onEdit={handleEdit}
       footer={
         <>
           {showAddButton && (
@@ -70,6 +69,7 @@ export function AnnouncementTile({
           />
         </>
       }
+      onEdit={handleEdit}
     >
       <DetailsItem label="Datum" value={date} />
       <DetailsItem

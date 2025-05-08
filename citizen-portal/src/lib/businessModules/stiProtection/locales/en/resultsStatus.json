@@ -39,7 +39,7 @@
   },
   "go_to_card": {
     "title": "Would you like to see your results status?",
-    "body": "After your visit to the office, the tests are processed. You can check the status of your your test results online at any time.",
+    "body": "After your visit to the office, the tests are processed. You can check the status of your test results online at any time.",
     "link_label": "View status of results"
   }
 }

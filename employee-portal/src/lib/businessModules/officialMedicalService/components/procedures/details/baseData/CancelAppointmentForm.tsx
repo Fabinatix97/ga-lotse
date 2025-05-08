@@ -13,8 +13,8 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 export interface CancelAppointmentFormValues {
   reasonForRejection: string;
@@ -38,8 +38,8 @@ export function CancelAppointmentForm(
   return (
     <Formik
       initialValues={INITIAL_VALUES}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>

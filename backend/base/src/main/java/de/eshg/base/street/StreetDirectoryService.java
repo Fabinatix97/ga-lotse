@@ -9,6 +9,7 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.csv.CsvMapper;
 import de.eshg.base.street.csv.StreetDirectoryCsvEntry;
+import de.eshg.persistence.TransactionHelper;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.trie.PatriciaTrie;
@@ -32,10 +33,14 @@ public class StreetDirectoryService implements StreetDirectory {
   private final PatriciaTrie<StreetDirectoryEntry> directory;
 
   @Autowired
-  public StreetDirectoryService(DepartmentConfigurationService departmentConfigurationService) {
+  public StreetDirectoryService(
+      DepartmentConfigurationService departmentConfigurationService,
+      TransactionHelper transactionHelper) {
     this(
         CsvMapper.csvToBeans(
-            departmentConfigurationService.getStreetDirectory(), StreetDirectoryCsvEntry.class));
+            transactionHelper.executeInTransaction(
+                departmentConfigurationService::getStreetDirectory),
+            StreetDirectoryCsvEntry.class));
   }
 
   public StreetDirectoryService(List<StreetDirectoryCsvEntry> csvEntries) {

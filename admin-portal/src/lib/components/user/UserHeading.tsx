@@ -22,9 +22,9 @@ export function UserHeading() {
   return (
     <Stack alignItems="center" gap={1}>
       <Button
-        startDecorator={adminName && <Person color="inherit" />}
-        onClick={() => setOpenDetails(!openDetails)}
+        startDecorator={adminName ? <Person color="inherit" /> : null}
         loading={!!(isFetching + isMutating)}
+        onClick={() => setOpenDetails(!openDetails)}
       >
         <Typography>{adminName}</Typography>
       </Button>

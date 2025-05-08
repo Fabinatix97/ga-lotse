@@ -111,7 +111,7 @@ function AuditLogAuthorizeSidebar({
     >
       {({ errors, setFieldValue, values }) => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title={"Freigabeoptionen"}>
+          <SidebarContent title="Freigabeoptionen">
             <DetailsColumn sx={{ gap: 2 }}>
               <AuditLogSheet date={date} source={source} />
               <AuditLogGranteesSheet
@@ -135,7 +135,7 @@ function AuditLogAuthorizeSidebar({
           </SidebarContent>
           <SidebarActions>
             <FormButtonBar
-              submitLabel={"Freigeben"}
+              submitLabel="Freigeben"
               submitting={false}
               onCancel={() => onClose(false)}
             />
@@ -158,9 +158,9 @@ function AuditLogGranteesSheet({
         {!isEmpty(grantedAccesses) ? (
           grantedAccesses.map((access, index) => (
             <Sheet
+              key={access.idOfGrantedUser}
               variant="soft"
               sx={{ backgroundColor: "white", padding: 1 }}
-              key={access.idOfGrantedUser}
               data-testid={"grantee-" + index}
             >
               <Stack
@@ -212,7 +212,7 @@ function AuditLogAuthorizeConfirmationDescription({
       </Typography>
       <List sx={{ listStyleType: "disc", ml: 2, p: 0 }}>
         {users.map((user) => (
-          <ListItem sx={{ display: "list-item" }} key={user.userId}>
+          <ListItem key={user.userId} sx={{ display: "list-item" }}>
             <Typography level="body-sm" sx={{ fontWeight: "bold" }}>
               {formatUserName(user)}
             </Typography>

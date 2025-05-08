@@ -14,7 +14,7 @@ import { getContactAddressLine } from "@/lib/baseModule/components/contacts/help
 export function PersonContactCard({ contact }: { contact: ApiPersonContact }) {
   return (
     <Stack sx={{ minWidth: 0 }}>
-      <Typography level={"title-md"} noWrap>
+      <Typography level="title-md" noWrap>
         {formatPersonName({
           firstName: contact.firstName,
           lastName: contact.name,

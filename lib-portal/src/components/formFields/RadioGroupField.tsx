@@ -83,8 +83,8 @@ function InnerRadioGroupField({
       <RadioGroup
         name={fieldInputName}
         value={fieldInputValue}
-        onChange={handleChange}
         orientation={orientation}
+        onChange={handleChange}
       >
         {children}
       </RadioGroup>

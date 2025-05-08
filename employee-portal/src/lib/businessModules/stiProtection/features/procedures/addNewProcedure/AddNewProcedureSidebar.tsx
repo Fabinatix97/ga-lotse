@@ -24,10 +24,7 @@ import {
   ApiGender,
 } from "@eshg/sti-protection-api";
 
-import {
-  useCreateStiProcedureMutation,
-  useCreateStiProcedureOptions,
-} from "@/lib/businessModules/stiProtection/api/mutations/procedures";
+import { useCreateStiProcedureMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import {
   AppointmentForm,
   CreateAppointmentForm,
@@ -118,7 +115,6 @@ export function AddNewProcedureSidebar() {
   >();
 
   const snackbar = useSnackbar();
-  const addNewProcedureOptions = useCreateStiProcedureOptions();
   const addNewProcedure = useCreateStiProcedureMutation({
     onSuccess: (data: ApiCreateProcedureResponse) => {
       setIsOpen(false);
@@ -162,37 +158,30 @@ export function AddNewProcedureSidebar() {
       <Sidebar open={isOpen} onClose={handleClose}>
         <Formik
           initialValues={initialValues}
-          onSubmit={handleNext}
           validate={step.validate}
+          onSubmit={handleNext}
         >
-          {({ values }) => (
-            <SidebarForm ref={sidebarFormRef}>
-              <ConfirmLeaveDirtyFormEffect
-                onSaveMutation={{
-                  mutationOptions: addNewProcedureOptions,
-                  variableSupplier: () => mapProcedureFormToApi(values),
+          <SidebarForm ref={sidebarFormRef}>
+            <ConfirmLeaveDirtyFormEffect />
+            <SidebarContent title={step.title} subtitle={step.subTitle}>
+              <Fields
+                jumpToAppointmentSelection={() => {
+                  changeToStep(1);
+                }}
+                jumpToPersonalData={() => {
+                  changeToStep(2);
                 }}
               />
-              <SidebarContent title={step.title} subtitle={step.subTitle}>
-                <Fields
-                  jumpToAppointmentSelection={() => {
-                    changeToStep(1);
-                  }}
-                  jumpToPersonalData={() => {
-                    changeToStep(2);
-                  }}
-                />
-              </SidebarContent>
-              <SidebarActions>
-                <MultiFormButtonBar
-                  submitting={addNewProcedure.isPending}
-                  onCancel={handleClose}
-                  onBack={isOnFirstStep ? undefined : handlePrev}
-                  submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
-                />
-              </SidebarActions>
-            </SidebarForm>
-          )}
+            </SidebarContent>
+            <SidebarActions>
+              <MultiFormButtonBar
+                submitting={addNewProcedure.isPending}
+                submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
+                onCancel={handleClose}
+                onBack={isOnFirstStep ? undefined : handlePrev}
+              />
+            </SidebarActions>
+          </SidebarForm>
         </Formik>
       </Sidebar>
       <SharePinModal pinToShare={dataToShare?.pin} onShared={pinIsShared} />

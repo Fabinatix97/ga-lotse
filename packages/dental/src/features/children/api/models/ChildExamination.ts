@@ -19,11 +19,11 @@ import {
 import {
   ExaminationResult,
   mapExaminationResult,
-} from "@/api/models/ExaminationResult";
+} from "../../../../api/models/ExaminationResult";
 import {
   ExaminationStatus,
   mapToExaminationStatus,
-} from "@/api/models/ExaminationStatus";
+} from "../../../../api/models/ExaminationStatus";
 
 export interface ChildExamination extends BaseEntity, Versioned {
   readonly dateAndTime: Date;

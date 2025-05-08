@@ -7,7 +7,7 @@ import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 
-export interface ModuleErrorModalProps {
+interface ModuleErrorModalProps {
   open: boolean;
   onClose: () => void;
   moduleName: string;
@@ -17,9 +17,9 @@ export function ModuleErrorModal(props: ModuleErrorModalProps) {
   return (
     <BaseModal
       open={props.open}
-      onClose={props.onClose}
       modalTitle={`${props.moduleName} momentan nicht erreichbar`}
       color="danger"
+      onClose={props.onClose}
     >
       <Stack gap={4}>
         <Stack gap={2}>
@@ -44,7 +44,7 @@ export function ModuleErrorModal(props: ModuleErrorModalProps) {
             Administrator.
           </Typography>
         </Stack>
-        <Stack direction={"row"} gap={2} alignSelf={"end"}>
+        <Stack direction="row" gap={2} alignSelf="end">
           <Button
             size="sm"
             variant="outlined"

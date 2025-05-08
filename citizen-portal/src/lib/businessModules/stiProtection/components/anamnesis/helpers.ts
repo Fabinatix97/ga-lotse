@@ -3,17 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  MonthAndYear,
-  mapMonthAndYear,
-} from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import {
-  mapBoolToYesOrNo,
-  mapYesOrNoToBool,
-} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import { mapYesOrNoToBool } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { isEmptyString, isInteger } from "@eshg/lib-portal/helpers/guards";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiConcern,
   ApiCreateMedicalHistoryRequest,
@@ -23,7 +15,6 @@ import {
   ApiPreviousIllness,
   ApiRiskContact,
   ApiRiskFactors,
-  ApiSexWorkMedicalHistory,
   ApiSexWorkRiskContact,
 } from "@eshg/sti-protection-api";
 
@@ -34,30 +25,16 @@ import {
   PreventionData,
   PreviousIllnessesForm,
   SexualOrientationAndContactData,
-  defaultExaminations,
 } from "./AnamnesisStepper.config";
-import {
-  StandardExaminationQuestion,
-  StandardRiskQuestion,
-} from "./Steps/options";
 
-export function validatePositiveInteger(value: OptionalFieldValue<number>) {
-  const isPositiveInteger = isInteger(value) && value > 0;
-  if (isEmptyString(value) || isPositiveInteger) {
-    return undefined;
-  }
-
-  return "Bitte eine positive ganze Zahl angeben.";
-}
-
-export function guardValue<T>(
+function guardValue<T>(
   guard: boolean | null | undefined,
   value: T,
 ): T | undefined {
   return guard ? value : undefined;
 }
 
-export function mapOptional<T, K>(
+function mapOptional<T, K>(
   val: T | undefined | null,
   predicate: (t: T) => K,
 ): K | undefined {
@@ -65,186 +42,6 @@ export function mapOptional<T, K>(
     return;
   }
   return predicate(val);
-}
-
-function mapToExaminationFormQuestion(
-  option: boolean | undefined,
-  examinationDate: Date | undefined,
-): StandardExaminationQuestion {
-  return {
-    hadExamination: mapBoolToYesOrNo(option),
-    examinationDate: {
-      month: examinationDate?.getMonth() ?? null,
-      year: examinationDate?.getFullYear() ?? "",
-    },
-  };
-}
-
-function mapApiExaminationToForm(
-  examinations?: ApiExamination,
-): ExaminationData {
-  if (examinations == null) {
-    return defaultExaminations;
-  }
-
-  return {
-    hepA: mapToExaminationFormQuestion(
-      examinations.hepA,
-      examinations.hepADate,
-    ),
-    hepB: mapToExaminationFormQuestion(
-      examinations.hepB,
-      examinations.hepBDate,
-    ),
-    hepC: mapToExaminationFormQuestion(
-      examinations.hepC,
-      examinations.hepCDate,
-    ),
-    hiv: mapToExaminationFormQuestion(examinations.hiv, examinations.hivDate),
-    syphilis: mapToExaminationFormQuestion(
-      examinations.syphilis,
-      examinations.syphilisDate,
-    ),
-    gonorrhea: mapToExaminationFormQuestion(
-      examinations.gonorrhea,
-      examinations.gonorrheaDate,
-    ),
-    chlamydia: mapToExaminationFormQuestion(
-      examinations.chlamydia,
-      examinations.chlamydiaDate,
-    ),
-  };
-}
-
-export function mapToFormValues(
-  apiData: ApiGetMedicalHistory200Response,
-): FormDataWithoutConcern {
-  return {
-    general: mapApiGeneralToForm(apiData),
-    examinations: mapApiExaminationToForm(apiData.examinations),
-    previousIllnesses: mapApiPreviousIllnessesToForm(apiData.previousIllnesses),
-    sexualOrientationAndContact: {
-      numberOfSexualPartnersLast12Months:
-        apiData.riskContacts?.numberOfSexualPartnersLast12Months ?? "",
-      sexualContactFactors:
-        fromSet(apiData.riskContacts?.partnerRiskFactors) ?? [],
-      sexualContactGenders: fromSet(apiData.riskContacts?.sexualContacts),
-      sexualOrientation: apiData.riskContacts?.sexualOrientation ?? null,
-      startInSexWork: mapToMonthAndYear(
-        ifSexWork(apiData, (d) => d.sexWorkRiskContacts?.startInSexWorkDate),
-      ),
-      sexWorkType:
-        ifSexWork(apiData, (d) =>
-          fromSet(d.sexWorkRiskContacts?.sexWorkLocations),
-        ) ?? [],
-    },
-    prevention: {
-      infoAboutPrepDesired: mapBoolToYesOrNo(
-        apiData.prevention?.infoAboutPrepDesired,
-      ),
-      safeSexRegularity: apiData.prevention?.safeSexPractice ?? "",
-      stiProtectiveMeasures: fromSet(apiData.prevention?.protectionMethodsUsed),
-      vaccinations: fromSet(apiData.prevention?.vaccinations),
-    },
-    standardRiskFactors: {
-      unprotectedVaginal: mapRiskQuestion(
-        apiData.riskFactors?.riskActivityDateVaginalIntercourse,
-        apiData.riskFactors?.riskActivityDateVaginalIntercourseDate,
-      ),
-      unprotectedAnal: mapRiskQuestion(
-        apiData.riskFactors?.riskActivityDateAnalIntercourse,
-        apiData.riskFactors?.riskActivityDateAnalIntercourseDate,
-      ),
-      unprotectedOral: mapRiskQuestion(
-        apiData.riskFactors?.riskActivityDateOralIntercourse,
-        apiData.riskFactors?.riskActivityDateOralIntercourseDate,
-      ),
-    },
-    otherRisks: {
-      taken: mapBoolToYesOrNo(apiData.riskFactors?.otherRiskActivities),
-      description: apiData.riskFactors?.otherRiskActivitiesData ?? "",
-    },
-    remarks: apiData.additionalComments ?? "",
-  };
-}
-function mapApiPreviousIllnessesToForm(
-  apiData: ApiPreviousIllness | undefined,
-): PreviousIllnessesForm {
-  return {
-    chlamydia: mapBoolToYesOrNo(apiData?.chlamydia),
-    gonorrhea: mapBoolToYesOrNo(apiData?.gonorrhea),
-    hepA: mapBoolToYesOrNo(apiData?.hepA),
-    hepB: mapBoolToYesOrNo(apiData?.hepB),
-    hepC: mapBoolToYesOrNo(apiData?.hepC),
-    hiv: mapBoolToYesOrNo(apiData?.hiv),
-    syphilis: mapBoolToYesOrNo(apiData?.syphilis),
-    other: mapBoolToYesOrNo(apiData?.other),
-    otherData: apiData?.otherData ?? "",
-  };
-}
-function mapApiGeneralToForm(
-  apiData: ApiGetMedicalHistory200Response,
-): GeneralData {
-  return {
-    examinationReason: apiData.examinationReason ?? "",
-    relationshipModel: apiData.relationshipModel ?? "",
-    contactToClarifyDate: toISODateString(apiData.contactToClarifyDate) ?? "",
-    currentSymptoms: apiData.currentSymptoms ?? "",
-    lastCancerScreening:
-      ifSexWork(apiData, (s) => toISODateString(s.lastCancerScreeningDate)) ??
-      "",
-    lastMenstruation:
-      ifSexWork(apiData, (s) => toISODateString(s.lastMenstruationDate)) ?? "",
-    hasBeenPregnant:
-      ifSexWork(apiData, (s) => mapBoolToYesOrNo(s.previouslyPregnant)) ?? null,
-    medications: ifSexWork(apiData, (s) => s.medications) ?? "",
-    knownOperationsOrIllnesses:
-      ifSexWork(apiData, (s) => s.knownOperations) ?? "",
-    numberOfBirthsOrAbortions:
-      ifSexWork(apiData, (s) => s.amountAbortions) ?? "",
-    numberOfPregnancies: ifSexWork(apiData, (s) => s.amountPregnancies) ?? "",
-  };
-}
-
-function ifSexWork<T>(
-  data: ApiGetMedicalHistory200Response,
-  predicate: (d: ApiSexWorkMedicalHistory) => T,
-): T | undefined {
-  if (data.type !== "SexWorkMedicalHistory") {
-    return;
-  }
-  return predicate(data);
-}
-
-function toISODateString(d: Date | undefined | null) {
-  if (d == null) {
-    return;
-  }
-  return d.toISOString().slice(0, 10);
-}
-
-function fromSet<T>(set: Set<T> | null | undefined): T[] {
-  if (set == null) {
-    return [];
-  }
-  return Array.from(set);
-}
-
-function mapRiskQuestion(
-  hasRisk: boolean | undefined,
-  date: Date | undefined,
-): StandardRiskQuestion {
-  return {
-    taken: mapBoolToYesOrNo(hasRisk),
-    lastIncident: mapToMonthAndYear(date),
-  };
-}
-
-function mapToMonthAndYear(date: Date | null | undefined): MonthAndYear {
-  if (date == null) {
-    return { month: null, year: "" };
-  }
-  return { month: date.getMonth(), year: date.getFullYear() };
 }
 
 export function mapFormValuesToApi({

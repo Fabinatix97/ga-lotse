@@ -35,6 +35,8 @@ export function ChatNoAccessAlert({
       invertedColors
       sx={{ alignItems: "flex-start" }}
       startDecorator={<WarningAmberOutlined fontSize="xl2" />}
+      role="note"
+      data-testid="alert"
     >
       <Box>
         <Typography level="title-md" color={color} data-testid="title">

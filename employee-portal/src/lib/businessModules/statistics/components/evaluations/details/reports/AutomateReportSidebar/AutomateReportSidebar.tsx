@@ -52,10 +52,8 @@ function AutomateReportSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
       saveLabel="Speichern"
-      onSubmit={(model) => addAutoReportSeries(evaluationId, model[0])}
       steps={[
         () => ({
           title: "Report automatisieren",
@@ -65,6 +63,8 @@ function AutomateReportSidebar({
           initialValues,
         }),
       ]}
+      onClose={onClose}
+      onSubmit={(model) => addAutoReportSeries(evaluationId, model[0])}
     />
   );
 }

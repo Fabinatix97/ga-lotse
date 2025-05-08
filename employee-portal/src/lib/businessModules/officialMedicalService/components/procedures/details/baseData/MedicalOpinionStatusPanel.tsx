@@ -9,11 +9,11 @@ import {
   ButtonBar,
   DetailsItem,
   FormStack,
-  TextareaField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import {
@@ -100,8 +100,8 @@ export function MedicalOpinionStatusPanel({
       {!isProcedureClosed() && !isMedicalOpinionAccomplished() ? (
         <Formik
           initialValues={initialValues}
-          onSubmit={(values, helpers) => handleSubmit(values, helpers)}
           enableReinitialize
+          onSubmit={(values, helpers) => handleSubmit(values, helpers)}
         >
           {({ isSubmitting, handleSubmit, values }) => {
             return (
@@ -122,7 +122,7 @@ export function MedicalOpinionStatusPanel({
                       options={buildEnumOptions(
                         STATUS_NAMES_MEDICAL_OPINION_RESULT,
                       )}
-                      required={"Bitte Ergebnis angeben."}
+                      required="Bitte Ergebnis angeben."
                     />
                     <TextareaField
                       label="Abschließende Bemerkung"
@@ -150,7 +150,7 @@ export function MedicalOpinionStatusPanel({
                 procedure.medicalOpinionStatus
               ]
             }
-          ></DetailsItem>
+          />
           <DetailsItem
             label="Ergebnis"
             value={
@@ -160,11 +160,11 @@ export function MedicalOpinionStatusPanel({
                   ]
                 : undefined
             }
-          ></DetailsItem>
+          />
           <DetailsItem
             label="Abschließende Bemerkung"
             value={procedure.medicalOpinionComment ?? "-"}
-          ></DetailsItem>
+          />
         </>
       )}
     </InfoTile>

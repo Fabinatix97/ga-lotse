@@ -18,6 +18,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import {
+  ApiDataOrigin,
   ApiDomesticAddress,
   ApiEmployeeOmsProcedureDetails,
   ApiPostboxAddress,
@@ -126,11 +127,11 @@ export function AffectedPersonPanel({
             placement="bottom"
           >
             <IconButton
-              onClick={handleClickCopyPersonData}
               color="primary"
               variant="outlined"
               size="sm"
               aria-label="Copy the address data to create a letterhead"
+              onClick={handleClickCopyPersonData}
             >
               <CopyAll />
             </IconButton>
@@ -151,7 +152,11 @@ export function AffectedPersonPanel({
         </Stack>
       }
     >
-      <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
+      <CentralFilePersonDetails
+        person={person}
+        columnSx={COLUMN_STYLE}
+        showHumanReadableId={person.dataOrigin !== ApiDataOrigin.External}
+      />
     </InfoTile>
   );
 }

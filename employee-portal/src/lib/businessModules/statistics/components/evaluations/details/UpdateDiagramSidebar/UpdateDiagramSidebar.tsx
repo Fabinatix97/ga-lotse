@@ -35,9 +35,7 @@ function UpdateDiagramSidebar(props: UpdateDiagramSidebarProps) {
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={updateDiagram}
       steps={[
         () => ({
           title: "Änderungen speichern",
@@ -50,6 +48,8 @@ function UpdateDiagramSidebar(props: UpdateDiagramSidebarProps) {
           },
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={updateDiagram}
     />
   );
 }

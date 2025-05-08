@@ -11,17 +11,17 @@ import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonDiffResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
-import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
-import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
+import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
+import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.measlesprotection.api.AffectedPersonDto;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.rest.service.error.NotFoundException;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -69,23 +69,24 @@ public class PersonClient {
 
   public ProcedureWithPersonDetailsData augmentWithPersonDetails(
       MeaslesProtectionProcedure procedure) {
-    return augmentWithPersonDetails(List.of(procedure)).collect(StreamUtil.toSingleElement());
+    return augmentWithPersonDetails(List.of(procedure), true).collect(StreamUtil.toSingleElement());
   }
 
   public Stream<ProcedureWithPersonDetailsData> augmentWithPersonDetails(
-      List<MeaslesProtectionProcedure> procedures) {
+      List<MeaslesProtectionProcedure> procedures, boolean checkOutdated) {
     if (procedures.isEmpty()) {
       return Stream.empty();
     }
 
-    Map<UUID, GetPersonFileStateResponse> personsById = fetchAllRelatedPersons(procedures);
+    Map<UUID, GetPersonFileStateResponse> personsById =
+        fetchAllRelatedPersons(procedures, checkOutdated);
 
     return procedures.stream()
         .map(procedure -> extractRelatedPersonDetailsData(procedure, personsById));
   }
 
   private Map<UUID, GetPersonFileStateResponse> fetchAllRelatedPersons(
-      List<MeaslesProtectionProcedure> procedures) {
+      List<MeaslesProtectionProcedure> procedures, boolean checkOutdated) {
     List<UUID> personIdsToFetch =
         procedures.stream()
             .map(Procedure::getRelatedPersons)
@@ -94,7 +95,8 @@ public class PersonClient {
             .toList();
 
     GetPersonFileStatesResponse response =
-        personApi.getPersonFileStates(new GetPersonFileStatesRequest(personIdsToFetch));
+        personApi.getPersonFileStates(
+            new GetPersonFileStatesRequest(personIdsToFetch, checkOutdated));
 
     if (response.personFileStates().size() != personIdsToFetch.size()) {
       throw new IllegalStateException("Some persons were not found in the central file.");
@@ -118,18 +120,8 @@ public class PersonClient {
     return new ProcedureWithPersonDetailsData(procedure, personDto, custodianDtos);
   }
 
-  public PersonFileStateIdsWithSameReferencePerson getPersonFileStateIdsWithSameReferencePerson(
-      String firstName, String lastName, LocalDate dateOfBirth) {
-    SearchReferencePersonsResponse referencePersons =
-        personApi.searchReferencePersons(firstName, lastName, dateOfBirth);
-    List<UUID> referencePersonIds =
-        referencePersons.persons().stream().map(GetReferencePersonResponse::id).toList();
-    List<UUID> fileStateIds =
-        referencePersonIds.stream()
-            .map(personApi::getPersonFileStateIdsAssociatedWithReferencePerson)
-            .flatMap(response -> response.fileStateIds().stream())
-            .toList();
-    return new PersonFileStateIdsWithSameReferencePerson(fileStateIds);
+  public List<UUID> getPersonFileStatesAssociatedWith(UUID personId) {
+    return personApi.getPersonFileStateIdsAssociatedWithReferencePerson(personId).fileStateIds();
   }
 
   public void markCentralFileStatesForDeletion(UUID[] personIds) {
@@ -140,5 +132,18 @@ public class PersonClient {
     if (log.isInfoEnabled()) {
       log.info("Marked central file state(s) {} for deletion", Arrays.toString(personIds));
     }
+  }
+
+  public AddPersonFileStateResponse updatePersonFileStateAndReference(
+      UUID id, UpdatePersonRequest request) {
+    return personApi.updatePersonFileStateAndReference(id, request);
+  }
+
+  public UUID syncPersonFileState(UUID fileStateId, long referenceVersion) {
+    return personApi.syncFileState(fileStateId, new SyncFileStateRequest(referenceVersion)).id();
+  }
+
+  public GetPersonDiffResponse getPersonDiff(UUID fileStateId) {
+    return personApi.getPersonDiff(fileStateId);
   }
 }

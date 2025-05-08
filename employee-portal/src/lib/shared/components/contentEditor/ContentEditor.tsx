@@ -26,7 +26,7 @@ import { ContentElementPalette } from "@/lib/shared/components/contentEditor/Con
 import { ContentElementPropertySheet } from "@/lib/shared/components/contentEditor/ContentElementPropertySheet";
 import { PaletteItem } from "@/lib/shared/components/contentEditor/types";
 
-export interface ContentEditorProps {
+interface ContentEditorProps {
   editorData: ApiEditor;
   palette: PaletteItem[];
   editorApi: EditorApiInterface;
@@ -231,12 +231,12 @@ export function ContentEditor({
       >
         <ContentElementPalette
           palette={palette}
-          onItemAdd={handleAddPaletteItem}
           sx={{
             maxHeight: "100%",
             overflow: "auto",
             padding: { xxs: 2, lg: 3 },
           }}
+          onItemAdd={handleAddPaletteItem}
         />
       </Box>
       <Box
@@ -250,13 +250,13 @@ export function ContentEditor({
         <ContentDisplay
           elements={elements}
           selectedElement={selectedElement}
-          onElementSelected={setSelectedElement}
           sx={{
             maxHeight: "100%",
             overflow: "auto",
             padding: { xxs: 2, lg: 3 },
           }}
           imagesBasePath={imagesBasePath}
+          onElementSelected={setSelectedElement}
         />
       </Box>
       <Box
@@ -268,15 +268,15 @@ export function ContentEditor({
       >
         <ContentElementPropertySheet
           element={selectedElement}
-          onMoveUp={handleMoveUp}
-          onMoveDown={handleMoveDown}
-          onDelete={handleDelete}
-          onUpdate={handleUpdate}
           sx={{
             maxHeight: "100%",
             overflow: "auto",
             padding: { xxs: 2, lg: 3 },
           }}
+          onMoveUp={handleMoveUp}
+          onMoveDown={handleMoveDown}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
         />
       </Box>
     </Box>

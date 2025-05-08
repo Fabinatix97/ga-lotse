@@ -56,7 +56,7 @@ export function ReportAutomationTile({
         <Stack gap={5}>
           <Stack gap={3}>
             <LabelValuePair
-              label={"Status"}
+              label="Status"
               value={
                 <ReportSeriesStateChip
                   value={

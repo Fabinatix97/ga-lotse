@@ -37,13 +37,13 @@ export function SwitchField(props: SwitchFieldProps) {
     >
       <Switch
         checked={field.input.value}
-        onChange={(checked) => field.helpers.setValue(checked.target.checked)}
         sx={{
           "--Switch-trackRadius": "16px",
           "--Switch-trackHeight": "24px",
           "--Switch-trackWidth": "49px",
           "--Switch-thumbSize": "16px",
         }}
+        onChange={(checked) => field.helpers.setValue(checked.target.checked)}
       />
     </FieldComponent>
   );

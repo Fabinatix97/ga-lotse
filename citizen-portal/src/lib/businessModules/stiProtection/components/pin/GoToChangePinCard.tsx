@@ -19,11 +19,11 @@ export function GoToChangePinCard() {
   const citizenRoutes = useCitizenRoutes();
 
   return (
-    <ContentSheet sx={{ gridArea: "sidebar" }}>
+    <ContentSheet>
       <ContentSheetTitle>{t("go_to_card.title")}</ContentSheetTitle>
       <Typography>{t("go_to_card.body")}</Typography>
       <InternalLinkButton
-        variant={"outlined"}
+        variant="outlined"
         href={citizenRoutes.personalArea.pin}
       >
         {t("go_to_card.link_label")}

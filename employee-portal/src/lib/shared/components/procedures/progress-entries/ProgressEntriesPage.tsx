@@ -17,7 +17,10 @@ import {
   InformationSheet,
   OverlayBoundary,
   PageGrid,
+  Timeline,
+  TimelineEntry,
   ToggleFilterButton,
+  useIsOffline,
 } from "@eshg/lib-employee-portal";
 
 import { useGetUsersByGroupQuery } from "@/lib/baseModule/api/queries/users";
@@ -26,9 +29,6 @@ import { useDeletionProps } from "@/lib/shared/components/procedures/progress-en
 import { useProgressEntriesFilterSettings } from "@/lib/shared/components/procedures/progress-entries/hooks/useProgressEntriesFilterSettings";
 import { useFetchProgressEntries } from "@/lib/shared/components/procedures/progress-entries/queries/progressEntryApi";
 import { ApprovalRequestsOverviewSidebar } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ApprovalRequestsOverviewSidebar";
-import { Timeline } from "@/lib/shared/components/timeline/Timeline";
-import { TimelineEntry } from "@/lib/shared/components/timeline/TimelineEntry";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 import { FileCardWithActions } from "./FileCardWithActions";
 import {
@@ -105,7 +105,7 @@ export function ProgressEntriesPage({
   );
 }
 
-export function ProgressEntriesPageComponent() {
+function ProgressEntriesPageComponent() {
   const progressEntriesContext = useContext(ProgressEntriesContext);
   const { filterSettings } = progressEntriesContext.config;
   const { entryIdForDetails } = progressEntriesContext.state;
@@ -158,8 +158,8 @@ export function ProgressEntriesPageComponent() {
             !isReadOnly &&
             !isOffline && (
               <Button
-                onClick={openCreateProgressEntrySidebar}
                 startDecorator={<AddIcon />}
+                onClick={openCreateProgressEntrySidebar}
               >
                 Neuen Verlaufseintrag erstellen
               </Button>
@@ -277,8 +277,8 @@ function ProgressEntriesInformationSheet({
         {timelineEntryProps.map((entryProps) => (
           <TimelineEntry
             {...entryProps}
-            data-testid="progressEntry"
             key={entryProps.key}
+            data-testid="progressEntry"
           />
         ))}
       </Timeline>

@@ -44,7 +44,7 @@ const StyledLegend = styled("legend")({
   marginBottom: 16,
 });
 
-export interface CheckboxGroupProps {
+interface CheckboxGroupProps {
   mode: Mode;
   name: string;
   element: ApiAssignableService[] | ApiAppliedService[];
@@ -96,60 +96,58 @@ export function CheckboxGroup({
   const ariaLabelId = `${labelId}-label`;
 
   return (
-    <>
-      <StyledFieldSet>
-        <StyledLegend id={ariaLabelId}>{label}</StyledLegend>
+    <StyledFieldSet>
+      <StyledLegend id={ariaLabelId}>{label}</StyledLegend>
 
-        <List size="sm" sx={{ rowGap: 2, py: 0 }} aria-labelledby={ariaLabelId}>
-          {props.mode == Mode.assignableService
-            ? (element as ApiAssignableService[])?.map((val, index) => (
-                <ListItem
-                  key={index}
-                  sx={{
-                    "--ListItem-paddingY": 0,
-                    "--ListItem-minHeight": "1rem",
-                    "--ListItem-paddingLeft": 0,
-                  }}
-                >
-                  <Checkbox
-                    name={`serviceChecks[${index}]`}
-                    label={`${val.serviceDescription}${val.vaccinationNumber ? ` - Nr. ${val.vaccinationNumber}` : ""}${val.vaccinationNumber && val.vaccinationNumber > 1 ? ` (+ ${val.latency} Woche/n)` : ""}`}
-                    checked={
-                      input.value.find(
-                        (service) => service.serviceId === val.serviceId,
-                      ) !== undefined
-                    }
-                    onChange={(e) => handleCheckboxChange(e, val)}
-                  />
-                </ListItem>
-              ))
-            : (element as ApiAppliedService[])?.map((val, index) => (
-                <ListItem
-                  key={index}
-                  sx={{
-                    "--ListItem-paddingY": 0,
-                    "--ListItem-minHeight": "1rem",
-                    "--ListItem-paddingLeft": 0,
-                  }}
-                >
-                  <Checkbox
-                    name={`appliedServices[${index}]`}
-                    label={val.serviceDescription}
-                    checked={
-                      input.value.find(
-                        (service) => service.serviceId === val.serviceId,
-                      ) !== undefined
-                    }
-                    onChange={(e) => handleCheckboxChange(e, val)}
-                  />
-                </ListItem>
-              ))}
-          {}
-        </List>
-        <FormControl error={!!meta.error}>
-          <FormHelperText sx={{ pt: 1 }}>{helperText}</FormHelperText>
-        </FormControl>
-      </StyledFieldSet>
-    </>
+      <List size="sm" sx={{ rowGap: 2, py: 0 }} aria-labelledby={ariaLabelId}>
+        {props.mode == Mode.assignableService
+          ? (element as ApiAssignableService[])?.map((val, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  "--ListItem-paddingY": 0,
+                  "--ListItem-minHeight": "1rem",
+                  "--ListItem-paddingLeft": 0,
+                }}
+              >
+                <Checkbox
+                  name={`serviceChecks[${index}]`}
+                  label={`${val.serviceDescription}${val.vaccinationNumber ? ` - Nr. ${val.vaccinationNumber}` : ""}${val.vaccinationNumber && val.vaccinationNumber > 1 ? ` (+ ${val.latency} Woche/n)` : ""}`}
+                  checked={
+                    input.value.find(
+                      (service) => service.serviceId === val.serviceId,
+                    ) !== undefined
+                  }
+                  onChange={(e) => handleCheckboxChange(e, val)}
+                />
+              </ListItem>
+            ))
+          : (element as ApiAppliedService[])?.map((val, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  "--ListItem-paddingY": 0,
+                  "--ListItem-minHeight": "1rem",
+                  "--ListItem-paddingLeft": 0,
+                }}
+              >
+                <Checkbox
+                  name={`appliedServices[${index}]`}
+                  label={val.serviceDescription}
+                  checked={
+                    input.value.find(
+                      (service) => service.serviceId === val.serviceId,
+                    ) !== undefined
+                  }
+                  onChange={(e) => handleCheckboxChange(e, val)}
+                />
+              </ListItem>
+            ))}
+        {}
+      </List>
+      <FormControl error={!!meta.error}>
+        <FormHelperText sx={{ pt: 1 }}>{helperText}</FormHelperText>
+      </FormControl>
+    </StyledFieldSet>
   );
 }

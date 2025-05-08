@@ -31,7 +31,7 @@ export interface MedicationFormData {
   date: string;
 }
 
-export const API_DIAGNOSIS_TEST_LABELS = {
+const API_DIAGNOSIS_TEST_LABELS = {
   [ApiTestType.WesternBlot]: "Westernblot",
   [ApiTestType.P24]: "p24",
   [ApiTestType.Pcr]: "PCR",

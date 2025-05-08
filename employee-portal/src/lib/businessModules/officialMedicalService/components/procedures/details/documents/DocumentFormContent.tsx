@@ -55,7 +55,7 @@ export function DocumentFormContent(props: {
           gap={3}
           direction="row"
           flexWrap="wrap"
-          width={"90%"}
+          width="90%"
           data-testid="core-data"
         >
           <ChipItem
@@ -80,7 +80,7 @@ export function DocumentFormContent(props: {
             />
           )}
           <ChipItem
-            label={"Upload-Option"}
+            label="Upload-Option"
             color={props.document.uploadInCitizenPortal ? "warning" : "neutral"}
             value={
               props.document.uploadInCitizenPortal
@@ -105,11 +105,11 @@ export function DocumentFormContent(props: {
             </>
           )}
         <Stack gap={2}>
-          <Typography level={"title-md"}>Dateien</Typography>
+          <Typography level="title-md">Dateien</Typography>
           {props.document.documentStatus === ApiDocumentStatus.Submitted &&
             props.document.reasonForRejection && (
               <>
-                <Alert color={"warning"} startDecorator={<WarningAmber />}>
+                <Alert color="warning" startDecorator={<WarningAmber />}>
                   Neu hochgeladene Dateien nach Ablehnung
                 </Alert>
                 <DetailsItem
@@ -121,7 +121,7 @@ export function DocumentFormContent(props: {
           <FilesSection
             name="files"
             canAdd={canAddFiles}
-            canRemoveLast={true}
+            canRemoveLast
             withInitialField={false}
             addLabel="Datei hinzufügen"
             files={props.document.files}
@@ -158,12 +158,12 @@ export function DocumentFormContent(props: {
 
         <Divider orientation="horizontal" />
         <Stack direction="column" gap={2} data-testid="additional-info">
-          <Stack direction={"row"} gap={2} justifyContent={"space-between"}>
+          <Stack direction="row" gap={2} justifyContent="space-between">
             <Typography level="title-md">Dokument-Angaben</Typography>
             {props.document.documentStatus === ApiDocumentStatus.Missing &&
               !props.isProcedureFinalized && (
                 <EditButton
-                  aria-label={"Dokument-Angaben bearbeiten"}
+                  aria-label="Dokument-Angaben bearbeiten"
                   onClick={props.onEditInformation}
                 />
               )}

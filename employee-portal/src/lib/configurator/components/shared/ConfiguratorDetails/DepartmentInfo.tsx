@@ -5,16 +5,20 @@
 
 import { FormikValues } from "formik";
 import { useMemo } from "react";
-import { isDeepEqual } from "remeda";
+import { isDeepEqual, isNullish } from "remeda";
 
-import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configuratorModuleName";
-import { useUpdateDepartmentInfo } from "@/lib/configurator/api/mutations/useUpdateDepartmentInfo";
-import { useGetDepartmentInfo } from "@/lib/configurator/api/queries/useGetDepartmentInfo";
 import {
   ConfiguratorForm,
   FormSection,
 } from "@/lib/configurator/components/shared/ConfiguratorForm";
+import {
+  configuratorNameMapping,
+  getTabNamesByEndpointName,
+} from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+import { useUpdateDepartmentInfo } from "@/lib/shared/api/mutations/configurator/useUpdateDepartmentInfo";
+import { useGetDepartmentInfo } from "@/lib/shared/api/queries/configurator/departmentInfo";
 
 enum FormNames {
   USE_INFO_OF_HEALTH_DEPARTMENT = "useInfoOfHealthDepartment",
@@ -46,12 +50,7 @@ export interface DepartmentInfoFormModel extends FormikValues {
   [FormNames.LONGITUDE]: number | "";
 }
 
-export type DepartmentInfoModuleName = Exclude<
-  ConfiguratorModuleName,
-  "officialMedicalService" | "opendata"
->;
-
-export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
+export function DepartmentInfo(props: { module: ConfiguratorModuleName }) {
   const { currentTabStatus } = useTabStatus({
     moduleName: props.module,
     endpointName: "DEPARTMENT_INFO",
@@ -60,7 +59,7 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
     props.module,
   );
   const updateDepartmentInfo = useUpdateDepartmentInfo(props.module);
-  const showChooser = props.module !== "baseModule";
+  const showChooser = props.module !== "BASE";
 
   function onSubmit(model: DepartmentInfoFormModel) {
     if (
@@ -73,22 +72,13 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
   }
 
   function title() {
-    switch (props.module) {
-      case "baseModule":
-        return "Angaben zum Gesundheitsamt";
-      case "measlesProtection":
-        return "Angaben zur Fachabteilung Masernschutz";
-      case "medicalRegistry":
-        return "Angaben zur Fachabteilung Medizinalaufsicht";
-      case "schoolEntry":
-        return "Angaben zur Fachabteilung Einschulung";
-      case "sexWork":
-        return "Angaben zur Fachabteilung Sexarbeit";
-      case "stiProtection":
-        return "Angaben zur Fachabteilung HIV-STI-Beratung";
-      case "travelMedicine":
-        return "Angaben zur Fachabteilung Impfberatung";
-    }
+    if (props.module === "BASE") {
+      return getTabNamesByEndpointName(props.module, "DEPARTMENT_INFO");
+    } else
+      return `${getTabNamesByEndpointName(
+        props.module,
+        "DEPARTMENT_INFO",
+      )} ${configuratorNameMapping[props.module]}`;
   }
 
   const sections = useMemo(() => {
@@ -307,6 +297,9 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
   }, [showChooser, defaultValues]);
 
   const initialValues = useMemo(() => {
+    if (isNullish(moduleValues)) {
+      return defaultValues;
+    }
     if (
       isDeepEqual(moduleValues, defaultValues) ||
       Object.values(moduleValues).every(
@@ -330,8 +323,8 @@ export function DepartmentInfo(props: { module: DepartmentInfoModuleName }) {
         },
       ]}
       initialValues={initialValues}
-      onSubmit={onSubmit}
       status={currentTabStatus}
+      onSubmit={onSubmit}
     />
   );
 }

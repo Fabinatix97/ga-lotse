@@ -6,7 +6,7 @@
 import { UnfoldLessOutlined, UnfoldMoreOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-export interface ToggleExpandedButtonProps {
+interface ToggleExpandedButtonProps {
   someExpanded: boolean;
   onExpandAll: () => void;
   onCollapseAll: () => void;

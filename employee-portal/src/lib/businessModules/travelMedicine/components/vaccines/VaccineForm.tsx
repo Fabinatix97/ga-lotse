@@ -21,7 +21,12 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  validatePipe,
+  validatePositiveInteger,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import {
   ApiDisease,
   ApiInventoryVaccineWithoutRmbiVaccine,
@@ -31,10 +36,9 @@ import { routes } from "@/lib/baseModule/shared/routes";
 import {
   validateBatchId,
   validateNonNegativeNumberWithAtMostTwoDecimalDigits,
-  validatePositiveInteger,
 } from "@/lib/shared/helpers/validators";
 
-export interface VaccineFormLoadings {
+interface VaccineFormLoadings {
   // We're currently unable to display the inventory vaccine select box when
   // editing a vaccine. The only problem is the inventory vaccine name of the
   // vaccine itself; the API only gets us those which are unused.
@@ -159,13 +163,13 @@ function inventoryVaccinesSelect(loadings: Readonly<VaccineFormLoadings>) {
 }
 
 export function VaccineForm(props: Readonly<VaccineFormProps>) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   return (
     <Formik
       initialValues={props.initialValues}
-      enableReinitialize={true}
-      onSubmit={props.onSubmit}
+      enableReinitialize
       validate={validateForm}
+      onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
@@ -182,9 +186,13 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
               <NumberField
                 name="fee"
                 label="Preis in €"
-                min={0.0}
-                validate={validateNonNegativeNumberWithAtMostTwoDecimalDigits}
-                required={"Bitte einen Preis angeben"}
+                min={0}
+                max={999999}
+                validate={validatePipe(
+                  validateRange(0, 999999),
+                  validateNonNegativeNumberWithAtMostTwoDecimalDigits,
+                )}
+                required="Bitte einen Preis angeben"
               />
               <InputField
                 name="currentBatchId"
@@ -196,7 +204,7 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
                   {({ push, remove }) => (
                     <>
                       {values.offsets.map((value, index) => (
-                        <Stack gap={2} rowGap={2} key={index}>
+                        <Stack key={index} gap={2} rowGap={2}>
                           <Grid container columnSpacing={2} rowGap={2}>
                             <Grid xs={12}>
                               <Typography level="title-md">
@@ -218,7 +226,7 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
                                   "--IconButton-size":
                                     "var(--Input-minHeight, 2rem)",
                                 }}
-                                aria-label={`Entfernen`}
+                                aria-label="Entfernen"
                                 color="danger"
                                 variant="outlined"
                                 onClick={() => remove(index)}

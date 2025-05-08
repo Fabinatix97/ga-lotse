@@ -27,7 +27,7 @@ export interface AppointmentBlockGroup extends AppointmentBlockMeasles {
 
 export type AppointmentDurationsMeasles = Record<ApiAppointmentType, number>;
 
-export function mapAppointmentBlock(
+function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
 ): AppointmentBlockMeasles {
   return {

@@ -5,8 +5,9 @@
 
 import { ApiContactCategory } from "@eshg/base-api";
 
-import { SelectContactField } from "@/features/contacts/components/SelectContactField";
-import { CONTACT_CATEGORY_NAMES } from "@/features/contacts/translations";
+import { CONTACT_CATEGORY_NAMES } from "../translations";
+
+import { SelectContactField } from "./SelectContactField";
 
 interface SearchContactFieldProps {
   name: string;

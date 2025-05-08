@@ -14,8 +14,11 @@ import {
   SidebarContent,
 } from "@eshg/lib-employee-portal";
 
-import { Dentition } from "@/stores/examination/types";
-import { calculateDecayRisk, calculateDecayStatus } from "@/utils/examination";
+import { Dentition } from "../../stores/examination/types";
+import {
+  calculateDecayRisk,
+  calculateDecayStatus,
+} from "../../utils/examination";
 
 import { DecayHistoryRow, DecayHistoryTable } from "./DecayHistoryTable";
 
@@ -56,9 +59,9 @@ export function DecayHistorySidebar(props: DecayHistorySidebarProps) {
         <ButtonBar
           right={[
             <Button
+              key="close"
               color="neutral"
               variant="soft"
-              key="close"
               onClick={() => props.onClose()}
             >
               Schließen

@@ -64,8 +64,8 @@ export function TravelDataForm(props: Readonly<TravelDataFormProps>) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, setFieldValue }) => (
         <SidebarForm ref={props.formRef}>
@@ -75,6 +75,7 @@ export function TravelDataForm(props: Readonly<TravelDataFormProps>) {
                 name="travelType"
                 label="Reiseart"
                 options={VACCINATION_CONSULTATION_TRAVEL_TYPE_OPTIONS}
+                required="Bitte eine Reiseart auswählen."
                 onChange={async (option) => {
                   if (option === ApiTravelType.NoTravel) {
                     setHideTravelData(true);
@@ -89,19 +90,18 @@ export function TravelDataForm(props: Readonly<TravelDataFormProps>) {
                     setHideTravelData(false);
                   }
                 }}
-                required="Bitte eine Reiseart auswählen."
               />
               {!hideTravelData ? (
                 <>
                   <CountryFieldMulti
-                    name={"travelDestinations"}
-                    label={"Reiseziele"}
+                    name="travelDestinations"
+                    label="Reiseziele"
                   />
-                  <DateField name={"travelStartDate"} label={"Reisebeginn"} />
+                  <DateField name="travelStartDate" label="Reisebeginn" />
                   <Grid container columnSpacing={2}>
                     <Grid xs={6}>
                       <NumberField
-                        name={"travelTimeAmount"}
+                        name="travelTimeAmount"
                         label="Reisedauer"
                         validate={validateIntegerAnd(
                           validateRange(MIN_TRAVEL_TIME, MAX_TRAVEL_TIME),
@@ -112,7 +112,7 @@ export function TravelDataForm(props: Readonly<TravelDataFormProps>) {
                     </Grid>
                     <Grid xs={6}>
                       <SelectField
-                        name={"travelTimeUnit"}
+                        name="travelTimeUnit"
                         label="Einheit"
                         options={VACCINATION_CONSULTATION_TRAVEL_TIME_UNITS}
                       />

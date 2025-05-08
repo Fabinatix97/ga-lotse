@@ -35,7 +35,7 @@ export function HighlightedText({
   return (
     <>
       {parts.map((part, index) => (
-        <Box component="span" key={`${index}-${part}`}>
+        <Box key={`${index}-${part}`} component="span">
           {index > 0 && (
             <Box
               component="mark"

@@ -11,8 +11,8 @@ import {
   ExaminationResult,
   ExaminationResultWithDate,
   ScreeningExaminationResult,
-} from "@/api/models/ExaminationResult";
-import { ToothDiagnosis } from "@/api/models/ToothDiagnosis";
+} from "../../api/models/ExaminationResult";
+import { ToothDiagnosis } from "../../api/models/ToothDiagnosis";
 
 import { calculateDmftValuesByDentitionType } from "./actions/dmftValues";
 import { setFocus } from "./actions/focus";
@@ -21,22 +21,14 @@ import { navigateTo } from "./actions/navigateTo";
 import {
   hasAnyResult,
   setMainResult,
-  setSecondaryResult1,
-  setSecondaryResult2,
+  setSecondaryResult,
 } from "./actions/result";
 import { SubmitResult, submit } from "./actions/submit";
 import { addTooth, removeTooth, toggleToothType } from "./actions/tooth";
 import { createDentitionByType } from "./factories";
-import {
-  Dentition,
-  DmftValues,
-  ElementContext,
-  ExaminationView,
-  ToothContext,
-} from "./types";
+import { Dentition, DmftValues, ElementContext, ToothContext } from "./types";
 
 export interface ExaminationState {
-  currentView: ExaminationView;
   currentFocus: ElementContext | undefined;
   dentition: Dentition;
   dmftValues: DmftValuesByDentitionType;
@@ -46,7 +38,6 @@ export interface ExaminationState {
 }
 
 interface ExaminationActions {
-  setView: (newView: ExaminationView) => void;
   setFocus: (focus: ElementContext | undefined) => void;
   navigateFrom: (direction: NavigateDirection) => void;
   navigateTo: (toothContext: ToothContext) => void;
@@ -56,8 +47,7 @@ interface ExaminationActions {
   toggleToothType: ToothAction;
 
   setMainResult: SetToothResultAction;
-  setSecondaryResult1: SetToothResultAction;
-  setSecondaryResult2: SetToothResultAction;
+  setSecondaryResult: SetToothResultAction;
   submit: () => SubmitResult;
 
   toggleDentition: (dentitionType: ApiDentitionType) => void;
@@ -108,10 +98,7 @@ export function initExaminationStore(
     previousToothDiagnoses,
   );
 
-  const currentView: ExaminationView = "UPPER_JAW";
-
   return {
-    currentView,
     dentition,
     currentFocus: undefined,
     dmftValues: calculateDmftValuesByDentitionType(dentition),
@@ -124,7 +111,6 @@ export function initExaminationStore(
 export function createExaminationStore(initialState: ExaminationState) {
   return createStore<ExaminationStore>()((set, get) => ({
     ...initialState,
-    setView: (newView: ExaminationView) => set({ currentView: newView }),
     addTooth: (toothContext: ToothContext) => {
       set((state) => addTooth(toothContext, state.dentition));
     },
@@ -145,10 +131,8 @@ export function createExaminationStore(initialState: ExaminationState) {
     },
     setMainResult: (toothContext: ToothContext, newValue: string) =>
       set((state) => setMainResult(toothContext, newValue, state)),
-    setSecondaryResult1: (toothContext: ToothContext, newValue: string) =>
-      set((state) => setSecondaryResult1(toothContext, newValue, state)),
-    setSecondaryResult2: (toothContext: ToothContext, newValue: string) =>
-      set((state) => setSecondaryResult2(toothContext, newValue, state)),
+    setSecondaryResult: (toothContext: ToothContext, newValue: string) =>
+      set((state) => setSecondaryResult(toothContext, newValue, state)),
     submit: () => submit(get(), set),
     navigateFrom: (direction) => set((state) => navigateFrom(direction, state)),
     navigateTo: (toothContext) =>

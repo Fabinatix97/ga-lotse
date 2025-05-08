@@ -202,9 +202,9 @@ export default function PlaygroundChartsPage() {
       endDecorator={
         <Switch
           checked={aspectScale}
-          onChange={(event) => setAspectScale(event.target.checked)}
           startDecorator={<p>0.75 (default)</p>}
           endDecorator={<p>1</p>}
+          onChange={(event) => setAspectScale(event.target.checked)}
         />
       }
     >
@@ -393,6 +393,27 @@ export default function PlaygroundChartsPage() {
         {
           label: "Schildkröte",
           value: 7,
+        },
+      ],
+    },
+  ];
+
+  const barChartGroupedWithOnlyOneGroup = [
+    {
+      label: "Wild",
+      attributes: [
+        {
+          label: "Hund",
+          value: 5,
+        },
+      ],
+    },
+    {
+      label: "Domestiziert",
+      attributes: [
+        {
+          label: "Hund",
+          value: 20,
         },
       ],
     },
@@ -784,7 +805,11 @@ export default function PlaygroundChartsPage() {
         <PlaygroundChartBox
           title="Balkendiagramm simpel"
           chart={
-            <BarChart diagramData={barChartSimple} orientation={orientation} />
+            <BarChart
+              diagramData={barChartSimple}
+              isDataGrouped={false}
+              orientation={orientation}
+            />
           }
           switches={[orientationSwitch]}
         />
@@ -793,6 +818,7 @@ export default function PlaygroundChartsPage() {
           chart={
             <BarChart
               diagramData={barChartSimpleWithNegativeValues}
+              isDataGrouped={false}
               orientation={orientation}
             />
           }
@@ -803,6 +829,7 @@ export default function PlaygroundChartsPage() {
           chart={
             <BarChart
               diagramData={barChartGrouped}
+              isDataGrouped
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -815,6 +842,20 @@ export default function PlaygroundChartsPage() {
           chart={
             <BarChart
               diagramData={barChartGroupedWithNegativeValues}
+              isDataGrouped
+              orientation={orientation}
+              grouping={grouping}
+              scaling={scaling}
+            />
+          }
+          switches={[orientationSwitch, groupingSwitch, scalingSwitch]}
+        />
+        <PlaygroundChartBox
+          title="Balkendiagramm gruppiert mit nur einer Gruppe"
+          chart={
+            <BarChart
+              diagramData={barChartGroupedWithOnlyOneGroup}
+              isDataGrouped
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -827,6 +868,7 @@ export default function PlaygroundChartsPage() {
           chart={
             <BarChart
               diagramData={barChartMuchData}
+              isDataGrouped
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -839,6 +881,7 @@ export default function PlaygroundChartsPage() {
           chart={
             <BarChart
               diagramData={barChartLongLabels}
+              isDataGrouped={false}
               orientation={orientation}
             />
           }
@@ -849,6 +892,7 @@ export default function PlaygroundChartsPage() {
           chart={
             <BarChart
               diagramData={barChartManyLongSecondaryAttributes}
+              isDataGrouped
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -874,13 +918,16 @@ export default function PlaygroundChartsPage() {
         />
         <PlaygroundChartBox
           title="Histogramm simpel"
-          chart={<Histogram diagramData={histogramSimple} />}
+          chart={
+            <Histogram diagramData={histogramSimple} isDataGrouped={false} />
+          }
         />
         <PlaygroundChartBox
           title="Histogramm gruppiert"
           chart={
             <Histogram
               diagramData={histogramGrouped}
+              isDataGrouped
               grouping={grouping}
               scaling={scaling}
             />
@@ -892,6 +939,19 @@ export default function PlaygroundChartsPage() {
           chart={
             <Histogram
               diagramData={histogramWithNegativeValues}
+              isDataGrouped
+              grouping={grouping}
+              scaling={scaling}
+            />
+          }
+          switches={[groupingSwitch, scalingSwitch]}
+        />
+        <PlaygroundChartBox
+          title="Histogramm gruppiert mit nur einer Gruppe"
+          chart={
+            <Histogram
+              diagramData={histogramSimple}
+              isDataGrouped
               grouping={grouping}
               scaling={scaling}
             />
@@ -900,7 +960,12 @@ export default function PlaygroundChartsPage() {
         />
         <PlaygroundChartBox
           title="Histogramm mit vielen Werten"
-          chart={<Histogram diagramData={histogramWithManyValues} />}
+          chart={
+            <Histogram
+              isDataGrouped={false}
+              diagramData={histogramWithManyValues}
+            />
+          }
         />
         <PlaygroundChartBox
           title="Liniendiagramm simpel"

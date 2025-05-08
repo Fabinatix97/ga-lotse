@@ -27,7 +27,7 @@ import { ButtonLink } from "../buttons/ButtonLink";
 
 import { addSnackbarToQueue, removeSnackbarFromQueue } from "./snackbarUtils";
 
-export type SnackbarVariant = "notification" | "error" | "confirmation";
+type SnackbarVariant = "notification" | "error" | "confirmation";
 
 const snackbarColorMapping = {
   notification: "primary",
@@ -35,7 +35,7 @@ const snackbarColorMapping = {
   confirmation: "success",
 } satisfies Record<SnackbarVariant, ColorPaletteProp>;
 
-export interface SnackbarAction {
+interface SnackbarAction {
   name: string;
   onClick: () => void;
 }
@@ -60,7 +60,7 @@ export interface SnackbarValues {
 
 type SnackbarPropsKeyOptional = Optional<SnackbarValues, "key">;
 
-export type SnackbarProps = Omit<SnackbarPropsKeyOptional, "text" | "variant">;
+type SnackbarProps = Omit<SnackbarPropsKeyOptional, "text" | "variant">;
 
 export interface SnackbarComponentProps
   extends Omit<JoySnackbarProps, "color"> {
@@ -98,18 +98,18 @@ function BaseSnackbar({
             <ButtonLink
               color="primary"
               fontSize="sm"
+              sx={{ paddingInline: 0.5 }}
               onClick={() => {
                 action.onClick();
                 setOpen(false);
               }}
-              sx={{ paddingInline: 0.5 }}
             >
               {action.name}
             </ButtonLink>
           )}
           {manualClose && (
             <ButtonLink
-              color={"primary"}
+              color="primary"
               aria-label={closeLabel}
               onClick={() => setOpen(false)}
             >
@@ -118,7 +118,7 @@ function BaseSnackbar({
           )}
           <ButtonLink
             tabIndex={-1}
-            aria-hidden={true}
+            aria-hidden
             aria-label="Technical test close button"
             data-testid="snackbar-internal-close-button"
             sx={{ opacity: 0 }}
@@ -126,6 +126,12 @@ function BaseSnackbar({
           />
         </>
       }
+      data-testid="snackbar"
+      slotProps={{
+        root: {
+          role: "alert",
+        },
+      }}
       onClose={(_event, reason) => {
         // there are three reasons why a snackbar is being closed (besides being
         // closed by the "manualClose" button, see above): "timeout",
@@ -137,12 +143,6 @@ function BaseSnackbar({
         }
       }}
       onUnmount={onUnmount}
-      data-testid="snackbar"
-      slotProps={{
-        root: {
-          role: "alert",
-        },
-      }}
     >
       {text}
     </SnackbarComponent>
@@ -169,13 +169,14 @@ export function SnackbarProvider({
       <>
         {queue.map((snackbarValues, index) => (
           <BaseSnackbar
-            component={snackbar}
             key={snackbarValues.key}
+            component={snackbar}
             text={snackbarValues.text}
             closeLabel={closeLabel}
             variant={snackbarValues.variant}
             manualClose={snackbarValues.manualClose}
             action={snackbarValues.action}
+            position={index}
             onUnmount={() =>
               setQueue((prevQueue) =>
                 removeSnackbarFromQueue({
@@ -184,7 +185,6 @@ export function SnackbarProvider({
                 }),
               )
             }
-            position={index}
           />
         ))}
       </>

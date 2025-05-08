@@ -46,8 +46,8 @@ function UpdateResourceSidebar(props: UpdateResourceSidebarProps) {
   return (
     <ResourceForm
       formRef={props.formRef}
-      title={"Ressource bearbeiten"}
-      submitLabel={"Speichern"}
+      title="Ressource bearbeiten"
+      submitLabel="Speichern"
       labels={props.labels}
       initialValues={{
         name: props.resource.name,

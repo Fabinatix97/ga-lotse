@@ -59,7 +59,7 @@ export function informationStatementColumns(
       header: "Krankheiten",
       enableSorting: false,
       cell: (props) => (
-        <LabelList labels={props.getValue()} maxVisible={5} chipSize={"md"} />
+        <LabelList labels={props.getValue()} maxVisible={5} chipSize="md" />
       ),
       meta: {
         canNavigate: {

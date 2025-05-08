@@ -21,7 +21,7 @@ export function RadioSheets({ children, ...props }: RadioGroupFieldProps) {
   );
 }
 
-export interface RadioSheetOptionProps {
+interface RadioSheetOptionProps {
   value: string;
   name: string;
   label: string;

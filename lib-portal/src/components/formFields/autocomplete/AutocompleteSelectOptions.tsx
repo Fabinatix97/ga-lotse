@@ -20,9 +20,9 @@ export function renderAutocompleteSelectOptions(
     return (
       <AutocompleteOption
         {...optionProps}
-        onClick={option?.disabled ? undefined : optionProps.onClick}
-        aria-disabled={option?.disabled}
         key={value}
+        aria-disabled={option?.disabled}
+        onClick={option?.disabled ? undefined : optionProps.onClick}
       >
         <Typography
           level="body-sm"

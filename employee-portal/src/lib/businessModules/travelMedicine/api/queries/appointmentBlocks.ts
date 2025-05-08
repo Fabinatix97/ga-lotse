@@ -7,7 +7,6 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlockGroupRequest,
@@ -33,26 +32,6 @@ export function useGetAppointmentBlockGroupsQuery(
         .getAppointmentBlockGroupsRaw(request)
         .then(unwrapRawResponse),
     select: mapPaginatedList(mapAppointmentBlockGroup),
-  });
-}
-
-export function useGetFreeAppointmentsUnsuspended(
-  appointmentType: ApiAppointmentType,
-  earliestDate?: Date,
-) {
-  const appointmentApi = useAppointmentBlockApi();
-
-  return useHandledBackgroundQuery({
-    queryKey: appointmentBlockApiQueryKey([
-      "getFreeAppointments",
-      appointmentType,
-      earliestDate,
-    ]),
-    queryFn: () =>
-      appointmentApi.getFreeAppointments(appointmentType, earliestDate),
-    select: (response) => response.appointments.map(mapAppointment),
-    gcTime: 60000,
-    staleTime: 60000,
   });
 }
 

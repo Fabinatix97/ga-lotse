@@ -14,7 +14,7 @@ const StatusUnfulfilled = styled(CheckCircleOutlineOutlined)(({ theme }) => ({
   fill: theme.colorSchemes.light.palette.text.tertiary,
 }));
 
-export interface StatusIndicatorProps {
+interface StatusIndicatorProps {
   name: string;
   phase: number;
   progress: number;
@@ -27,12 +27,7 @@ export function StatusIndicator(props: StatusIndicatorProps) {
   const ariaLabel = `Status: '${name}' ist ${fulfilled ? "erfüllt" : "unerfüllt"}`;
 
   return (
-    <Stack
-      component={"section"}
-      direction={"row"}
-      gap={1}
-      aria-label={ariaLabel}
-    >
+    <Stack component="section" direction="row" gap={1} aria-label={ariaLabel}>
       <StatusIcon />
       <Typography>{name}</Typography>
     </Stack>

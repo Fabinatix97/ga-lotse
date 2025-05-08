@@ -200,9 +200,9 @@ export function PacklistDefinitionOverviewTable() {
           <ButtonBar
             right={
               <Button
-                type={"submit"}
-                onClick={handleAddButtonClick}
+                type="submit"
                 startDecorator={<Add />}
+                onClick={handleAddButtonClick}
               >
                 Neue Definition anlegen
               </Button>
@@ -220,31 +220,31 @@ export function PacklistDefinitionOverviewTable() {
       )}
       {userActivity.type === "edit-packlist" && (
         <EditPacklistDefinitionSidebar
-          onClose={handleSidebarClosed}
           readonly={false}
           revisionId={userActivity.revisionId}
           version={userActivity.version}
+          onClose={handleSidebarClosed}
         />
       )}
       {userActivity.type === "view-packlist-revision" && (
         <EditPacklistDefinitionSidebar
-          onClose={handleSidebarClosed}
-          readonly={true}
+          readonly
           revisionId={userActivity.revisionId}
-          onClickNewRevision={handleEditButtonClick}
           version={userActivity.version}
+          onClose={handleSidebarClosed}
+          onClickNewRevision={handleEditButtonClick}
         />
       )}
       {userActivity.type === "view-history" && (
         <PacklistRevisionsSidebar
           open
-          onClose={handleSidebarClosed}
           packlistDefinitionId={userActivity.packlistDefinitionId}
+          version={userActivity.version}
+          onClose={handleSidebarClosed}
           onClickOnRevision={(defId, version, revisionId) =>
             handleViewRevisionClick(defId, version, revisionId, true)
           }
           onClickNewRevision={handleEditButtonClick}
-          version={userActivity.version}
         />
       )}
     </>

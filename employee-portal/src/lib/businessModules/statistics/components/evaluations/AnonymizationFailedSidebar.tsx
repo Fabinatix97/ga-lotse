@@ -91,12 +91,12 @@ function AttributeList(props: {
   attributes: string[];
 }) {
   if (props.attributes.length === 0) {
-    return <></>;
+    return null;
   }
 
   return (
     <Stack gap={0.5}>
-      <Stack flexDirection="row">
+      <Stack flexDirection="row" alignItems="center">
         <Typography level="title-md">{props.label}</Typography>
         <SlimInfoIconTooltipButton infoText={props.info} title={props.label} />
       </Stack>

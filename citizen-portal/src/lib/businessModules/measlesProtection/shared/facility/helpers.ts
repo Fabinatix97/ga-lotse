@@ -17,21 +17,21 @@ import {
   FacilityFormInputs,
 } from "@/lib/businessModules/measlesProtection/components/reportCase/types";
 
-export function mapContactPersonToApi(
+function mapContactPersonToApi(
   contactPerson: FacilityContactPersonFormInputs,
 ): ApiFacilityContactPerson {
   return {
-    emailAddress: contactPerson.emailAddress.trim(),
-    firstName: contactPerson.firstName.trim(),
+    emailAddress: mapOptionalValue(contactPerson.emailAddress)?.trim(),
+    firstName: mapOptionalValue(contactPerson.firstName)?.trim(),
     lastName: contactPerson.lastName.trim(),
-    phoneNumber: contactPerson.phoneNumber.trim(),
+    phoneNumber: mapOptionalValue(contactPerson.phoneNumber)?.trim(),
     role: mapOptionalValue(contactPerson.role)?.trim(),
     salutation: mapOptionalValue(contactPerson.salutation),
     title: mapOptionalValue(contactPerson.title)?.trim(),
   };
 }
 
-export function mapFacilityAddressToApi(
+function mapFacilityAddressToApi(
   address: FacilityContactAddressFormInputs,
 ): ApiAddFacilityFileStateRequestContactAddress | undefined {
   switch (address.type) {

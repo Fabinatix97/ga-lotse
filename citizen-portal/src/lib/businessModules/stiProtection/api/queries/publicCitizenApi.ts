@@ -5,14 +5,13 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionPublicCitizenApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-export function useDepartmentInfoQuery(concern: ApiConcern) {
+function useDepartmentInfoQuery(concern: ApiConcern) {
   const publicCitizenApi = useCitizenPublicApi();
   return queryOptions({
     ...SEMI_STATIC_QUERY_OPTIONS,
@@ -33,7 +32,7 @@ interface GetFreeAppointmentsParams {
   earliestDate: Date;
 }
 
-export function useFreeAppointmentsQuery({
+function useFreeAppointmentsQuery({
   concern,
   earliestDate,
 }: GetFreeAppointmentsParams) {
@@ -55,7 +54,7 @@ export function useFreeAppointments(params: GetFreeAppointmentsParams) {
   return useSuspenseQuery(useFreeAppointmentsQuery(params));
 }
 
-export function useOpeningHoursQuery(concern: ApiConcern) {
+function useOpeningHoursQuery(concern: ApiConcern) {
   const publicCitizenApi = useCitizenPublicApi();
   return queryOptions({
     queryKey: stiProtectionPublicCitizenApiQueryKey(["openingHours", concern]),
@@ -65,13 +64,4 @@ export function useOpeningHoursQuery(concern: ApiConcern) {
 
 export function useOpeningHours(concern: ApiConcern) {
   return useSuspenseQuery(useOpeningHoursQuery(concern));
-}
-
-export function useAnonymousIdentificationDocumentQuery(procedureId: string) {
-  const publicCitizenApi = useCitizenPublicApi();
-  return useFileDownload(() =>
-    publicCitizenApi.getCitizenAnonymousIdentificationDocumentRaw({
-      id: procedureId,
-    }),
-  );
 }

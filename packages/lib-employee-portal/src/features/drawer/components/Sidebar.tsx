@@ -8,8 +8,8 @@ import { PropsWithChildren } from "react";
 
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 
-import { SIDEBAR_PADDING } from "@/features/drawer/config/sidebar";
-import { useHeaderHeights } from "@/hooks/useHeaderHeights";
+import { useHeaderHeights } from "../../../hooks/useHeaderHeights";
+import { SIDEBAR_PADDING } from "../config/sidebar";
 
 export type SidebarProps = PropsWithChildren<
   Pick<DrawerProps, "open" | "onClose" | "aria-label">
@@ -38,7 +38,6 @@ export function Sidebar({
     <Drawer
       anchor="right"
       open={open}
-      onClose={handleClose}
       sx={{ zIndex: zIndex ?? "sidebar" }}
       slotProps={{
         content: {
@@ -53,6 +52,7 @@ export function Sidebar({
           },
         },
       }}
+      onClose={handleClose}
     >
       <Stack
         sx={{

@@ -39,10 +39,10 @@ import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-import { ChildSearchResult } from "@/features/children/api/models/ChildSearchResult";
-import { useSearchChildren } from "@/features/children/api/queries/overview";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { useUpdateProphylaxisSessionParticipants } from "@/features/prophylaxisSessions/api/mutations/details";
+import { ChildSearchResult } from "../../../children/api/models/ChildSearchResult";
+import { useSearchChildren } from "../../../children/api/queries/overview";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
+import { useUpdateProphylaxisSessionParticipants } from "../../api/mutations/details";
 
 export function useAddChildToProphylaxisSessionSidebar(): UseSidebarResult<AddChildToProphylaxisSessionSidebarProps> {
   return useSidebar({
@@ -111,7 +111,7 @@ function AddChildToProphylaxisSessionSidebar(
             <Stack gap={2}>
               <InputField
                 name="searchString"
-                label={"Kind suchen"}
+                label="Kind suchen"
                 startDecorator={<SearchRounded />}
                 autoFocus
               />
@@ -125,9 +125,9 @@ function AddChildToProphylaxisSessionSidebar(
           <SidebarActions>
             <FormButtonBar
               submitLabel="Hinzufügen"
-              onCancel={props.onClose}
               submitting={isSubmitting}
               submitDisabled={values.selected === ""}
+              onCancel={props.onClose}
             />
           </SidebarActions>
         </SidebarForm>
@@ -203,7 +203,7 @@ function ResultCard(props: ResultCardProps) {
           icon={CakeOutlined}
           text={formatDate(child.dateOfBirth)}
         />
-        <TextWithIcon icon={GroupsOutlined} text={child.groupName} />
+        <TextWithIcon icon={GroupsOutlined} text={child.groupName ?? ""} />
         {badge}
       </Stack>
     </SelectableCard>

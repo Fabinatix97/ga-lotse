@@ -39,8 +39,8 @@ export function NavigationList(props: NavigationProps) {
             variant="plain"
             color="neutral"
             startDecorator={<ChevronLeftOutlined />}
-            onClick={() => props.setNavigationState({ type: "main-menu" })}
             sx={{ justifyContent: "flex-start", padding: 2 }}
+            onClick={() => props.setNavigationState({ type: "main-menu" })}
           >
             <Typography
               level="body-md"

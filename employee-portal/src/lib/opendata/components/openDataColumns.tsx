@@ -25,7 +25,7 @@ type ResourceOrVersion =
       resource: ApiResource;
     };
 
-export type OpenDataRow = {
+type OpenDataRow = {
   name: string;
   description?: string;
   version?: string;
@@ -35,8 +35,7 @@ export type OpenDataRow = {
   subRows?: OpenDataVersion[];
 } & ResourceOrVersion;
 
-export type OpenDataVersion = OpenDataRow & { type: "version" };
-export type OpenDataResource = OpenDataRow & { type: "resource" };
+type OpenDataVersion = OpenDataRow & { type: "version" };
 
 const columnHelper = createColumnHelper<OpenDataRow>();
 

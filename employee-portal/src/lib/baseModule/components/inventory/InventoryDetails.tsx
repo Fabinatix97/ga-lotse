@@ -33,26 +33,22 @@ export function InventoryDetails({
         component="section"
         gap={1}
       >
-        <Stack direction={"row"} justifyContent={"space-between"}>
-          <Typography
-            id={"inventory-details-header"}
-            level={"h4"}
-            component={"h2"}
-          >
+        <Stack direction="row" justifyContent="space-between">
+          <Typography id="inventory-details-header" level="h4" component="h2">
             Details
           </Typography>
           {hasWritePerms && (
             <EditButton
-              aria-label={"Details ändern"}
+              aria-label="Details ändern"
               onClick={() => inventoryUpdateSidebar.open({ inventory, labels })}
             />
           )}
         </Stack>
 
-        <DetailsCell name={"name"} label="Name" value={inventory.name} />
+        <DetailsCell name="name" label="Name" value={inventory.name} />
 
         <DetailsCell
-          name={"type"}
+          name="type"
           label="Typ"
           value={inventoryItemTypeNames[inventory.type]}
         />
@@ -63,43 +59,41 @@ export function InventoryDetails({
               name="minCount"
               label="Mindestbestand"
               value={
-                <Stack direction={"row"} gap={1}>
-                  <LowCountWarning visible={true} />
-                  <Typography level={"title-md"}>
-                    {inventory.minCount}
-                  </Typography>
+                <Stack direction="row" gap={1}>
+                  <LowCountWarning visible />
+                  <Typography level="title-md">{inventory.minCount}</Typography>
                 </Stack>
               }
             />
           ) : (
             <DetailsCell
-              name={"minCount"}
+              name="minCount"
               label="Mindestbestand"
               value={inventory.minCount.toString()}
             />
           )}
           <DetailsCell
-            name={"count"}
+            name="count"
             label="Bestand"
             value={inventory.count.toString()}
           />
         </DetailsRow>
 
         <DetailsCell
-          name={"articleNumber"}
-          label={"Artikelnummer"}
+          name="articleNumber"
+          label="Artikelnummer"
           value={inventory.articleNumber ?? ""}
         />
         {inventory.labels.length > 0 && (
           <DetailsCell
-            name={"labels"}
-            label={"Labels"}
+            name="labels"
+            label="Labels"
             value={<LabelList labels={inventory.labels} maxVisible={3} />}
           />
         )}
         <DetailsCell
-          name={"description"}
-          label={"Beschreibung"}
+          name="description"
+          label="Beschreibung"
           value={inventory.description ?? ""}
         />
       </Stack>

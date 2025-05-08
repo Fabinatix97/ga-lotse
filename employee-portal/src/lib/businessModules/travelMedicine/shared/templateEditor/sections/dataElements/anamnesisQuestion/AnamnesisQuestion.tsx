@@ -25,7 +25,7 @@ export function createEmptySubTextElement() {
   return subtextElement;
 }
 
-export interface AnamnesisQuestionProp {
+interface AnamnesisQuestionProp {
   anamnesisFormikPath: string;
   templateAnamnesisQuestion: ApiTemplateAnamnesisQuestion;
   addSubElementHandler: () => void;
@@ -50,10 +50,7 @@ export function AnamnesisQuestion({
       <DataElementHeading>Anamnesefrage</DataElementHeading>
       {mainQuestion}
       <Box sx={{ paddingLeft: 4, mt: 2 }}>
-        <FieldArray
-          name={multiSelectElementsFormikPath}
-          validateOnChange={true}
-        >
+        <FieldArray name={multiSelectElementsFormikPath} validateOnChange>
           {({ push, remove }) => (
             <>
               {templateAnamnesisQuestion.subElementMultiSelect.length > 0 && (
@@ -81,17 +78,17 @@ export function AnamnesisQuestion({
               {!templateAnamnesisQuestion.subElementText && (
                 <Button
                   startDecorator={<Add />}
-                  onClick={addSubElementHandler}
                   variant="plain"
+                  onClick={addSubElementHandler}
                 >
                   Text hinzufügen
                 </Button>
               )}
               <Button
                 startDecorator={<Add />}
-                onClick={() => push(createEmptySubTextElement())}
                 variant="plain"
                 data-testid="element-add-multi-select-button"
+                onClick={() => push(createEmptySubTextElement())}
               >
                 {templateAnamnesisQuestion.subElementMultiSelect.length == 0
                   ? "Mehrfachauswahl hinzufügen"

@@ -3,15 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EventAvailableOutlined } from "@mui/icons-material";
 import { useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import {
+  getCloseable,
+  getErrorAction,
+  getErrorDescription,
+} from "@eshg/lib-portal/errorHandling/errorMappers";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointment,
@@ -36,6 +43,7 @@ import { mapToPostCitizenProcedureRequest } from "@/lib/businessModules/official
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { MultiStepFormTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormWrapper";
 import { useTranslation } from "@/lib/i18n/client";
+import { FormSuccessSheet } from "@/lib/shared/components/form/FormSuccessSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 
 export interface AppointmentFormValues {
@@ -115,18 +123,49 @@ const INITIAL_VALUES: AppointmentFormValues = {
 
 export function AppointmentForm() {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
-  const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const postCitizenProcedure = usePostCitizenProcedure();
   const citizenPublicApi = useCitizenPublicApi();
   const queryClient = useQueryClient();
+  const alert = useAlert();
 
-  async function handleSubmit(values: AppointmentFormValues) {
+  async function handleSubmit(
+    values: AppointmentFormValues,
+    setStep: (index: number) => void,
+  ) {
     const request: PostCitizenProcedureRequest =
       mapToPostCitizenProcedureRequest(values);
 
     await postCitizenProcedure.mutateAsync(request, {
-      onSuccess: () => router.push(citizenRoutes.overview),
+      onError: (error) => {
+        if (
+          error instanceof Error &&
+          error.message.startsWith("The requested time slot does not")
+        ) {
+          alert.error({
+            message: t("common.errors.concurrentAppointment", {
+              context: "errorMessage",
+            }),
+            action: {
+              text: t("common.errors.concurrentAppointment", {
+                context: "action",
+              }),
+              onClick: () => setStep(STEPS.indexOf(AppointmentStepWrapper) + 1),
+            },
+          });
+        } else {
+          const { errorCode } = resolveError(error);
+          const { title, message } = getErrorDescription(errorCode);
+
+          alert.error({
+            title,
+            message,
+            action: getErrorAction(errorCode),
+            closeable: getCloseable(errorCode),
+          });
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
     });
   }
 
@@ -161,7 +200,7 @@ export function AppointmentForm() {
   return (
     <DepartmentContextProvider>
       <MultiStepForm<AppointmentFormValues> steps={STEPS}>
-        {({ Outlet, currentStep, totalSteps }) => (
+        {({ Outlet, currentStep, totalSteps, setStep }) => (
           <>
             <MultiStepFormTitle
               title={t("common.title")}
@@ -171,24 +210,42 @@ export function AppointmentForm() {
               })}
               withLogoutButton={false}
             />
-            <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-              {(formikProps) => (
-                <FormPlus>
-                  {currentStep !== STEPS.indexOf(AppointmentStepWrapper) + 1 ? (
-                    <TwoColumnGrid
-                      content={<Outlet {...formikProps} />}
-                      sidePanel={
-                        <AppointmentFormSidePanel
-                          backendValidation={backendValidation}
-                        />
-                      }
-                    />
-                  ) : (
-                    <AppointmentStepWrapper />
-                  )}
-                </FormPlus>
-              )}
-            </Formik>
+            {postCitizenProcedure.isSuccess ? (
+              <FormSuccessSheet
+                icon={EventAvailableOutlined}
+                title={t("success.title")}
+                description={t("success.description")}
+                buttonLabel={t("success.buttonLabel")}
+                buttonHref={citizenRoutes.overview}
+              />
+            ) : (
+              <Formik
+                initialValues={INITIAL_VALUES}
+                validate={() => {
+                  // validate gets triggered on blur, so we use it to clear our error alert
+                  alert.close();
+                }}
+                onSubmit={(values) => handleSubmit(values, setStep)}
+              >
+                {(formikProps) => (
+                  <FormPlus>
+                    {currentStep !==
+                    STEPS.indexOf(AppointmentStepWrapper) + 1 ? (
+                      <TwoColumnGrid
+                        content={<Outlet {...formikProps} />}
+                        sidePanel={
+                          <AppointmentFormSidePanel
+                            backendValidation={backendValidation}
+                          />
+                        }
+                      />
+                    ) : (
+                      <AppointmentStepWrapper />
+                    )}
+                  </FormPlus>
+                )}
+              </Formik>
+            )}
           </>
         )}
       </MultiStepForm>

@@ -6,10 +6,8 @@
 import {
   ApiAddPersonFileStateRequest,
   ApiGetReferenceFacilityResponse,
-  ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
 import {
-  BaseAddressFormInputs,
   DefaultPersonFormValues,
   mapApiAddressToForm,
   mapBaseAddressToApi,
@@ -19,7 +17,6 @@ import {
   normalizeListInputs,
 } from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAffectedPerson,
   ApiAppointmentState,
@@ -43,27 +40,6 @@ export function mapToAffectedPerson(
   return {
     ...person,
     contactAddress: person.contactAddress!,
-    version: 0,
-  };
-}
-
-export function mapPerson(
-  person: ApiGetReferencePersonResponse,
-): ApiAffectedPerson {
-  return {
-    ...person,
-    title: mapOptionalValue(person.title),
-    salutation: mapOptionalValue(person.salutation),
-    gender: mapOptionalValue(person.gender),
-    firstName: person.firstName,
-    lastName: person.lastName,
-    dateOfBirth: new Date(person.dateOfBirth),
-    placeOfBirth: mapOptionalValue(person.placeOfBirth),
-    nameAtBirth: mapOptionalValue(person.nameAtBirth),
-    countryOfBirth: mapOptionalValue(person.countryOfBirth),
-    contactAddress: mapBaseAddressToApi(
-      person.contactAddress as BaseAddressFormInputs,
-    ),
     version: 0,
   };
 }

@@ -145,10 +145,10 @@ export function CreateAppointmentBlockGroupForm() {
       initialValues={INITIAL_VALUES}
       allPhysicians={allPhysicians}
       allMedicalAssistants={allMedicalAssistants}
-      onSubmit={handleSubmit}
       validateAvailability={validateAvailability}
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}
+      onSubmit={handleSubmit}
     />
   );
 }

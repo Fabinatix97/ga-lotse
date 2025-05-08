@@ -6,12 +6,12 @@
 import { Add, Delete } from "@mui/icons-material";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray, useField } from "formik";
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
-export interface OpeningHoursFieldProps {
+interface OpeningHoursFieldProps {
   name: string;
   english?: boolean;
 }
@@ -26,14 +26,13 @@ export interface OpeningHoursFieldValue {
 
 export function OpeningHoursField(props: OpeningHoursFieldProps) {
   const [input, _, helpers] = useField<OpeningHoursFieldValue>(props.name);
-  const [amountRows, setAmountRows] = useState<number>(1);
+  const amountRows = input.value.rows.length || 1;
 
   async function deleteRow(index: number) {
     if (amountRows === 1) {
       return;
     }
 
-    setAmountRows(amountRows - 1);
     const newValue = {
       ...input.value,
       rows: input.value.rows.toSpliced(index, 1),
@@ -47,7 +46,6 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
       rows: [...input.value.rows, { weekday: "", timeWindow: "" }],
     };
     await helpers.setValue(newValue);
-    setAmountRows(amountRows + 1);
   }
 
   function validateField(
@@ -94,7 +92,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
   const rows: ReactElement[] = [];
   for (let i = 0; i < amountRows; ++i) {
     rows.push(
-      <Stack gap={0.5} key={`row-${amountRows}-${i + 1}`}>
+      <Stack key={`row-${amountRows}-${i + 1}`} gap={0.5}>
         <Typography level="title-md">{`Zeile ${i + 1}`}</Typography>
         <Stack direction="row" gap={3}>
           <InputField
@@ -125,8 +123,8 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
             <IconButton
               color="danger"
               variant="outlined"
-              onClick={() => deleteRow(i)}
               sx={{ marginTop: "auto" }}
+              onClick={() => deleteRow(i)}
             >
               <Delete />
             </IconButton>
@@ -146,11 +144,11 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
             <Button
               color="primary"
               variant="plain"
-              onClick={addRow}
               sx={{
                 alignSelf: "flex-start",
               }}
               startDecorator={<Add />}
+              onClick={addRow}
             >
               Weitere Zeile
             </Button>

@@ -58,7 +58,7 @@ function createTemplateRequest(
   };
 }
 
-export function getTemplateName(template: ApiInformationStatementTemplate) {
+function getTemplateName(template: ApiInformationStatementTemplate) {
   return template.state === ApiInformationStatementTemplateState.Final
     ? `Kopie von: ${template.name}`
     : template.name;
@@ -160,7 +160,7 @@ export function InformationStatementTemplateEditor(
   }
 
   return (
-    <Formik initialValues={template} onSubmit={handleSubmit} enableReinitialize>
+    <Formik initialValues={template} enableReinitialize onSubmit={handleSubmit}>
       {({ isSubmitting, values }) => (
         <FormPlus
           sx={{ height: "100%", overflow: "hidden" }}

@@ -123,15 +123,15 @@ export function BirthDataAndChildInformationForm(
           label="Anzahl Geschwister / im Haushalt lebende Kinder"
           min={0}
           sx={{ width: "80px" }}
-          onChange={handleChange}
           softRequired
+          onChange={handleChange}
         />
         {!isEmptyString(numberOfSiblings) &&
           Array.from(Array(numberOfSiblings).keys()).map((index) => (
             <YearField
+              key={index}
               name={additionalChildInfo(`siblingsBirthYears.${index}`)}
               label={`Geburtsjahr Geschwisterkind ${index + 1}`}
-              key={index}
               component={HorizontalField}
               min={1900}
               max={new Date().getFullYear()}

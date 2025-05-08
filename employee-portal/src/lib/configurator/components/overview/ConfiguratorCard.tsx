@@ -18,7 +18,7 @@ export function ConfiguratorCard({
 }: {
   title: string;
   link: string;
-  status?: ConfiguratorStatus;
+  status: ConfiguratorStatus;
 }) {
   return (
     <Card sx={{ padding: 3 }}>

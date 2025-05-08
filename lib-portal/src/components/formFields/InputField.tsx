@@ -128,10 +128,6 @@ const MemoizedInputField = memo(function InnerInputField(
         name={props.name}
         value={fieldInputValue}
         placeholder={props.placeholder}
-        onChange={handleChange}
-        onFocus={props.onFocus}
-        onBlur={handleBlur}
-        onClick={props.onClick}
         readOnly={props.readOnly}
         disabled={disabled}
         startDecorator={props.startDecorator}
@@ -150,6 +146,10 @@ const MemoizedInputField = memo(function InnerInputField(
             max: props.type === "date" ? "9999-12-31" : undefined,
           },
         }}
+        onChange={handleChange}
+        onFocus={props.onFocus}
+        onBlur={handleBlur}
+        onClick={props.onClick}
       />
     </FieldComponent>
   );

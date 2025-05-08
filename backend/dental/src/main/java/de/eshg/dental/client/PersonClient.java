@@ -45,7 +45,7 @@ public class PersonClient {
         personApi.getPersonFileStates(new GetPersonFileStatesRequest(fileStateIds, sortParameters));
 
     int expectedResponseSize =
-        sortParameters == null
+        !hasPagination(sortParameters)
             ? fileStateIds.size()
             : Math.min(
                 sortParameters.pageSize(),
@@ -55,6 +55,12 @@ public class PersonClient {
     }
 
     return response.personFileStates();
+  }
+
+  private boolean hasPagination(GetPersonFileStatesSortParameters sortParameters) {
+    return sortParameters != null
+        && sortParameters.pageSize() != null
+        && sortParameters.pageNumber() != null;
   }
 
   public List<GetPersonFileStateResponse> fetchPersonDataInBulk(List<Child> children) {

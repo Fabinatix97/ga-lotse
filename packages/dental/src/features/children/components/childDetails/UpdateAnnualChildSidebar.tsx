@@ -29,16 +29,16 @@ import {
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-import { Institution } from "@/api/models/Institution";
-import { SearchGroupField } from "@/components/group/SearchGroupField";
-import { childApiQueryKey } from "@/config/apiQueryKeys";
-import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
-import { useDentalApi } from "@/contexts/dental";
-import { ChildDetails } from "@/features/children/api/models/ChildDetails";
-import { useUpdateAnnualChild } from "@/features/children/api/mutations/details";
+import { Institution } from "../../../../api/models/Institution";
+import { SearchGroupField } from "../../../../components/group/SearchGroupField";
+import { childApiQueryKey } from "../../../../config/apiQueryKeys";
+import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
+import { useDentalApi } from "../../../../contexts/dental";
+import { ChildDetails } from "../../api/models/ChildDetails";
+import { useUpdateAnnualChild } from "../../api/mutations/details";
 
 interface FluoridationConsent {
   consented: boolean;
@@ -54,7 +54,7 @@ export function useUpdateAnnualChildSidebar(): UseSidebarWithFormRefResult<Updat
 
 interface UpdateAnnualChildValues {
   institution: Institution;
-  groupName: string;
+  groupName?: string;
   fluoridationConsent?: FluoridationConsent;
   procedureLabels: ProcedureLabel[];
 }
@@ -105,7 +105,7 @@ function mapValues(
   return {
     childId: annualChild.id,
     apiUpdateChildRequest: {
-      groupName: values.groupName,
+      groupName: mapOptionalValue(values.groupName),
       institutionId: values.institution.id,
       fluoridationConsent:
         values.fluoridationConsent &&
@@ -128,7 +128,7 @@ function mapValues(
 }
 
 function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
-  const { validatePastOrTodayDate } = useValidators();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const { procedureLabelApi } = useDentalApi();
   const annualChild = props.child;
   const form = useUpdateAnnualChildForm(annualChild, () => props.onClose(true));
@@ -143,75 +143,71 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
   }
 
   return (
-    <>
-      <FormikProvider value={form}>
-        <SidebarForm ref={props.formRef}>
-          <SidebarContent title="Zusatzinfos">
-            <Stack gap={2}>
-              <SelectMultipleContactsField
-                name="institution"
-                label="Einrichtung"
-                categories={SCHOOL_OR_DAYCARE_CONTACT}
-              />
-              <Divider />
-              <SearchGroupField
-                name="groupName"
-                label="Gruppe"
-                institutionId={annualChild.institution.id}
-                freeSolo
-              />
-              <ProcedureLabelSelection
-                procedureLabelApi={procedureLabelApi}
-                procedureLabelApiQueryKey={childApiQueryKey}
-              />
-              <Divider />
-              <Typography>Einverständnis zur Fluoridierung</Typography>
-              <Stack direction="row" gap={2} flexWrap="wrap">
-                <BooleanSelectField
-                  name="fluoridationConsent.consented"
-                  label="Einverständnis"
-                  required={
-                    isDefined(values.fluoridationConsent?.dateOfConsent) &&
-                    !isEmptyString(values.fluoridationConsent.dateOfConsent)
-                      ? 'Bitte "Ja" oder "Nein" auswählen.'
-                      : undefined
-                  }
-                  allowDeselection
-                />
-                <DateField
-                  name="fluoridationConsent.dateOfConsent"
-                  label="Datum"
-                  validate={(value) =>
-                    isDefined(value)
-                      ? validatePastOrTodayDate(value)
-                      : undefined
-                  }
-                  required={
-                    isDefined(values.fluoridationConsent?.consented) &&
-                    !isEmptyString(values.fluoridationConsent.consented)
-                      ? "Bitte das Datum der Einverständniserklärung angeben."
-                      : undefined
-                  }
-                />
-                <BooleanSelectField
-                  name="fluoridationConsent.hasAllergy"
-                  label="Allergie"
-                  allowDeselection
-                  sx={{ width: "120px" }}
-                  validate={(value) => validateAllergy(value)}
-                />
-              </Stack>
-            </Stack>
-          </SidebarContent>
-          <SidebarActions>
-            <FormButtonBar
-              submitting={isSubmitting}
-              submitLabel="Speichern"
-              onCancel={props.onClose}
+    <FormikProvider value={form}>
+      <SidebarForm ref={props.formRef}>
+        <SidebarContent title="Zusatzinfos">
+          <Stack gap={2}>
+            <SelectMultipleContactsField
+              name="institution"
+              label="Einrichtung"
+              categories={SCHOOL_OR_DAYCARE_CONTACT}
             />
-          </SidebarActions>
-        </SidebarForm>
-      </FormikProvider>
-    </>
+            <Divider />
+            <SearchGroupField
+              name="groupName"
+              label="Gruppe"
+              institution={annualChild.institution}
+              freeSolo
+            />
+            <ProcedureLabelSelection
+              procedureLabelApi={procedureLabelApi}
+              procedureLabelApiQueryKey={childApiQueryKey}
+            />
+            <Divider />
+            <Typography>Einverständnis zur Fluoridierung</Typography>
+            <Stack direction="row" gap={2} flexWrap="wrap">
+              <BooleanSelectField
+                name="fluoridationConsent.consented"
+                label="Einverständnis"
+                required={
+                  isDefined(values.fluoridationConsent?.dateOfConsent) &&
+                  !isEmptyString(values.fluoridationConsent.dateOfConsent)
+                    ? 'Bitte "Ja" oder "Nein" auswählen.'
+                    : undefined
+                }
+                allowDeselection
+              />
+              <DateField
+                name="fluoridationConsent.dateOfConsent"
+                label="Datum"
+                validate={(value) =>
+                  isDefined(value) ? validatePastOrTodayDate(value) : undefined
+                }
+                required={
+                  isDefined(values.fluoridationConsent?.consented) &&
+                  !isEmptyString(values.fluoridationConsent.consented)
+                    ? "Bitte das Datum der Einverständniserklärung angeben."
+                    : undefined
+                }
+              />
+              <BooleanSelectField
+                name="fluoridationConsent.hasAllergy"
+                label="Allergie"
+                allowDeselection
+                sx={{ width: "120px" }}
+                validate={(value) => validateAllergy(value)}
+              />
+            </Stack>
+          </Stack>
+        </SidebarContent>
+        <SidebarActions>
+          <FormButtonBar
+            submitting={isSubmitting}
+            submitLabel="Speichern"
+            onCancel={props.onClose}
+          />
+        </SidebarActions>
+      </SidebarForm>
+    </FormikProvider>
   );
 }

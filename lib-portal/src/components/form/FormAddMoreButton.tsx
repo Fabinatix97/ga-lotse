@@ -14,9 +14,9 @@ type FormAddMoreButtonProps = Omit<
 export function FormAddMoreButton(props: FormAddMoreButtonProps) {
   return (
     <Button
-      color={"primary"}
-      variant={"plain"}
-      size={"sm"}
+      color="primary"
+      variant="plain"
+      size="sm"
       sx={{ justifyContent: "flex-start" }}
       startDecorator={<AddIcon />}
       {...props}

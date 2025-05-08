@@ -7,6 +7,7 @@ dependencies {
     implementation project(':file-commons')
     implementation project(':business-module-persistence-commons')
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'commons-io:commons-io:latest.release'
 
     testImplementation project(':test-commons')
     testImplementation testFixtures(project(':business-module-persistence-commons'))

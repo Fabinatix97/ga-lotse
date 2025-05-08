@@ -15,11 +15,7 @@ export default function UsageNotesPage() {
   return (
     <StickyToolbarLayout
       toolbar={
-        <Toolbar
-          title={
-            "Nutzungshinweise für die sichere Benutzung des Mitarbeitenden-Portals"
-          }
-        />
+        <Toolbar title="Nutzungshinweise für die sichere Benutzung des Mitarbeitenden-Portals" />
       }
     >
       <MainContentLayout>

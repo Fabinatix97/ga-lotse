@@ -45,9 +45,7 @@ export function MetadataCell<TData>(
   const content = props.getValue()?.content;
   if (content) {
     return (
-      <SPre
-        dangerouslySetInnerHTML={{ __html: syntaxHighlight(content) }}
-      ></SPre>
+      <SPre dangerouslySetInnerHTML={{ __html: syntaxHighlight(content) }} />
     );
   } else {
     return <EmptyCell />;

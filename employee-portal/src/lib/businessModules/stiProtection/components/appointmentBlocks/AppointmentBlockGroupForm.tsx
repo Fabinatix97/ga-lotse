@@ -16,17 +16,14 @@ import {
 } from "@eshg/sti-protection-api";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
-import { useCreateDailyAppointmentBlocksForGroupOptions } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
-import { mapFormValues } from "./CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 export interface AppointmentBlockGroupValues {
@@ -114,9 +111,6 @@ export function AppointmentBlockGroupForm({
   consultants = [],
   physicians = [],
 }: Readonly<AppointmentBlockGroupFormProps>) {
-  const createDailyAppointmentBlocksForGroupOptions =
-    useCreateDailyAppointmentBlocksForGroupOptions();
-
   const physicianOptions = physicians.map(userToOption);
   const consultantOptions = consultants.map(userToOption);
   const appointmentDurations = Object.fromEntries(
@@ -129,17 +123,11 @@ export function AppointmentBlockGroupForm({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={onSubmit}
       validate={(values) => validateForm(values, appointmentTypes)}
+      onSubmit={onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
         <FormSheet gap={5} onSubmit={handleSubmit}>
-          <ConfirmLeaveDirtyFormEffect
-            onSaveMutation={{
-              mutationOptions: createDailyAppointmentBlocksForGroupOptions,
-              variableSupplier: () => mapFormValues(values),
-            }}
-          />
           <Stack gap={4}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}

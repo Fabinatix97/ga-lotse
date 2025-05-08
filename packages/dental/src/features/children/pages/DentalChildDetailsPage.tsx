@@ -10,13 +10,13 @@ import { ContentPanel, PageGrid } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { useDentalApi } from "@/contexts/dental";
-import { getChildDetailsQuery } from "@/features/children/api/queries/details";
-import { AdditionalInformationDetailsSection } from "@/features/children/components/childDetails/AdditionalInformationDetailsSection";
-import { ChildDetailsSection } from "@/features/children/components/childDetails/ChildDetailsSection";
-import { InstitutionHistoryDetailsSection } from "@/features/children/components/childDetails/InstitutionHistoryDetailsSection";
-import { useChildRouteParams } from "@/features/children/hooks/useChildRouteParams";
-import { DentalChildRouteParams } from "@/features/children/schemas/DentalChildRouteParams";
+import { useDentalApi } from "../../../contexts/dental";
+import { getChildDetailsQuery } from "../api/queries/details";
+import { AdditionalInformationDetailsSection } from "../components/childDetails/AdditionalInformationDetailsSection";
+import { ChildDetailsSection } from "../components/childDetails/ChildDetailsSection";
+import { InstitutionHistoryDetailsSection } from "../components/childDetails/InstitutionHistoryDetailsSection";
+import { useChildRouteParams } from "../hooks/useChildRouteParams";
+import { DentalChildRouteParams } from "../schemas/DentalChildRouteParams";
 
 const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 

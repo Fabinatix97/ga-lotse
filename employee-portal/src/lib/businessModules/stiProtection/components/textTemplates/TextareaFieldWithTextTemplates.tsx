@@ -8,9 +8,12 @@ import { Button, styled } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { KeyboardEvent, useRef } from "react";
 
-import { TextareaField, TextareaFieldProps } from "@eshg/lib-employee-portal";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FieldSetColumn } from "@eshg/lib-portal/components/formFields/FieldSetControl";
+import {
+  TextareaField,
+  TextareaFieldProps,
+} from "@eshg/lib-portal/components/formFields/TextareaField";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 
 import { AppendText, TextTemplatesSidebar } from "./TextTemplatesSidebar";
@@ -21,7 +24,7 @@ import {
 } from "./nextInsertPoint";
 import { useSidebarFromSearchParam } from "./useSidebarFromSearchParam";
 
-export interface TextareaWithTextTemplatesProps extends TextareaFieldProps {
+interface TextareaWithTextTemplatesProps extends TextareaFieldProps {
   context: ApiTextTemplateContext;
 }
 
@@ -87,8 +90,8 @@ export function TextareaFieldWithTextTemplates({
           startDecorator={<Add />}
           aria-keyshortcuts="Control+Space"
           variant="plain"
-          onClick={open}
           title="Menü der Textvorlagen öffnen (Strg+Leertaste)"
+          onClick={open}
         >
           Textvorlage einfügen
         </Button>

@@ -11,11 +11,11 @@ import { type ApiInspection } from "@eshg/inspection-api";
 import {
   useConfirmationDialog,
   useHasUserRoleCheck,
+  useIsOffline,
 } from "@eshg/lib-employee-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function InspectionLockInfo({
   inspection,
@@ -45,33 +45,33 @@ export function InspectionLockInfo({
     });
   }
 
+  if (inspection?.lockedByUser === undefined) {
+    return null;
+  }
+
   return (
-    <>
-      {inspection?.lockedByUser && (
-        <Box
-          sx={{
-            display: "flex",
-            ml: "auto",
-            mr: "auto",
-          }}
+    <Box
+      sx={{
+        display: "flex",
+        ml: "auto",
+        mr: "auto",
+      }}
+    >
+      <Typography level="body-md" color="neutral" noWrap>
+        Gesperrt durch <UserLink user={inspection?.lockedByUser} />
+      </Typography>
+      {isTeamlead && !isOffline && (
+        <IconButton
+          aria-label="Sperrung aufheben"
+          variant="plain"
+          color="danger"
+          size="sm"
+          sx={{ minHeight: 0 }}
+          onClick={() => handleUnlockClick()}
         >
-          <Typography level="body-md" color="neutral" noWrap>
-            Gesperrt durch {<UserLink user={inspection?.lockedByUser} />}
-          </Typography>
-          {isTeamlead && !isOffline && (
-            <IconButton
-              aria-label="Sperrung aufheben"
-              variant="plain"
-              color="danger"
-              size="sm"
-              sx={{ minHeight: 0 }}
-              onClick={() => handleUnlockClick()}
-            >
-              <Clear />
-            </IconButton>
-          )}
-        </Box>
+          <Clear />
+        </IconButton>
       )}
-    </>
+    </Box>
   );
 }

@@ -15,7 +15,7 @@ export function MedicalRegistryCreateProcedureSuccessPage(
   return (
     <>
       <Typography>Eintrag erfolgreich angelegt!</Typography>
-      <Button onClick={props.onButtonClick} sx={{ marginTop: 2 }}>
+      <Button sx={{ marginTop: 2 }} onClick={props.onButtonClick}>
         Neuen Eintrag anlegen
       </Button>
     </>

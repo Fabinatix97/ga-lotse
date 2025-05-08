@@ -40,7 +40,7 @@ class InternationalizationAutoconfiguration {
   @Bean(DispatcherServlet.LOCALE_RESOLVER_BEAN_NAME)
   LocaleResolver localeResolver() {
     AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-    localeResolver.setDefaultLocale(Language.GERMAN.getLocale());
+    localeResolver.setDefaultLocale(Language.DEFAULT.getLocale());
     localeResolver.setSupportedLocales(
         Arrays.stream(Language.values()).map(Language::getLocale).toList());
     return localeResolver;

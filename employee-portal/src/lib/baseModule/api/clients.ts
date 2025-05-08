@@ -20,7 +20,6 @@ import {
   ProcedureAggregationApi,
   PublicConfigApi,
   ResourceApi,
-  StreetApi,
   TaskAggregationApi,
   TaskMetricsApi,
   UserApi,
@@ -38,11 +37,6 @@ export function useConfiguration() {
 export function useBaseFeatureTogglesApi() {
   const configuration = useConfiguration();
   return new BaseFeatureTogglesApi(configuration);
-}
-
-export function useStreetApi() {
-  const configuration = useConfiguration();
-  return new StreetApi(configuration);
 }
 
 export function useContactApi() {

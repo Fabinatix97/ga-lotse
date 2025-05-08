@@ -71,8 +71,8 @@ public final class BaseUrls {
         DEPARTMENT_API_MARKDOWN + "/employee";
     public static final String DEPARTMENT_API_MARKDOWN_RELEASE_NOTES =
         DEPARTMENT_API_MARKDOWN + "/release-notes";
-    public static final String DECLARATION_OF_ACCESSIBILITY_MARKDOWN_CONFIG_API =
-        "/declaration-of-accessibility";
+    public static final String ACCESSIBILITY_STATEMENT_MARKDOWN_CONFIG_API =
+        "/accessibility-statement";
     public static final String ACKNOWLEDGEMENTS_MARKDOWN_CONFIG_API = "/acknowledgements";
     public static final String CONTACT_MARKDOWN_CONFIG_API = "/contact";
     public static final String IMPRINT_MARKDOWN_CONFIG_API = "/imprint";

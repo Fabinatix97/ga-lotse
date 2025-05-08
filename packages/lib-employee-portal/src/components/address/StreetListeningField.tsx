@@ -11,7 +11,7 @@ import {
   InputFieldProps,
 } from "@eshg/lib-portal/components/formFields/InputField";
 
-import { useGetPostCodeAndCityForStreet } from "@/api/queries/streets";
+import { useGetPostCodeAndCityForStreet } from "../../api/queries/streets";
 
 interface StreetListeningFieldProps
   extends Omit<InputFieldProps, "options" | "loading" | "freeSolo"> {

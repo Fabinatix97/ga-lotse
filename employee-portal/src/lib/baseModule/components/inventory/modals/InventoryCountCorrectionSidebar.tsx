@@ -38,13 +38,13 @@ function CountDifference({
   return (
     <Grid container spacing={1}>
       <Grid xxs={4}>
-        <Typography level={"title-md"}>Aktueller Bestand</Typography>
+        <Typography level="title-md">Aktueller Bestand</Typography>
       </Grid>
       <Grid xxs={8}>
         <Typography>{currentCount}</Typography>
       </Grid>
       <Grid xxs={4}>
-        <Typography level={"title-md"}>Neuer Bestand</Typography>
+        <Typography level="title-md">Neuer Bestand</Typography>
       </Grid>
       <Grid xxs={8}>
         <Typography>{newCount}</Typography>
@@ -102,26 +102,26 @@ function InventoryCountCorrectionSidebar({
     >
       {() => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title={"Inventur durchführen"}>
+          <SidebarContent title="Inventur durchführen">
             <Stack spacing={2}>
               <Alert
-                color={"warning"}
-                title={"Achtung!"}
+                color="warning"
+                title="Achtung!"
                 message={
                   "Der Bestand des Inventars kann vom tatsächlichen Inhalt des Lagers abweichen. " +
                   "Buchungsaufträge werden direkt vom Bestand abgezogen, bevor diese abgeholt wurden."
                 }
               />
               <NumberField
-                name={"newCount"}
-                label={"Neuer Bestand"}
-                required={"Bitte den neuen Bestand angeben"}
+                name="newCount"
+                label="Neuer Bestand"
+                required="Bitte den neuen Bestand angeben"
               />
             </Stack>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitLabel={"Durchführen"}
+              submitLabel="Durchführen"
               submitting={false}
               onCancel={onClose}
             />

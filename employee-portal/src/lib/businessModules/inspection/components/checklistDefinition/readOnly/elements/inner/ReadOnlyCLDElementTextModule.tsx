@@ -7,7 +7,7 @@ import { Check, Close } from "@mui/icons-material";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-export interface ReadOnlyCLDElementTextModuleProps {
+interface ReadOnlyCLDElementTextModuleProps {
   textModuleFalse?: string;
   textModuleTrue?: string;
   text: string;

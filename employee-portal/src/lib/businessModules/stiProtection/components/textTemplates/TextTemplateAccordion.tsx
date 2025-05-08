@@ -96,8 +96,8 @@ function AddTextTemplateButton({
   return (
     <AnimatedIconButton
       aria-keyshortcuts={`${shortcut}`}
-      color={"primary"}
-      variant={"outlined"}
+      color="primary"
+      variant="outlined"
       aria-disabled={isAppending}
       title={`Vorlage einfügen${shortcut ? ` (${shortcut})` : ""}`}
       sx={{ alignSelf: "start" }}

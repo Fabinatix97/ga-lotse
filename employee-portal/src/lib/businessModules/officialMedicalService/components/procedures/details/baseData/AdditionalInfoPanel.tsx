@@ -43,12 +43,21 @@ export function AdditionalInfoPanel({
       }
     >
       {isDefined(procedure.concern) && procedure.concern.highPriority && (
-        <Alert color="danger" startDecorator={<InfoOutlined />}>
+        <Alert
+          color="danger"
+          startDecorator={<InfoOutlined />}
+          data-testid="alert"
+        >
           Dringender Fall
         </Alert>
       )}
       {!procedure.concern && procedure.status === ApiProcedureStatus.Draft && (
-        <Alert color="warning" startDecorator={<InfoOutlined />}>
+        <Alert
+          color="warning"
+          startDecorator={<InfoOutlined />}
+          role="note"
+          data-testid="alert"
+        >
           Um einen Vorgang anzulegen, muss ein Anliegen ergänzt werden.
         </Alert>
       )}

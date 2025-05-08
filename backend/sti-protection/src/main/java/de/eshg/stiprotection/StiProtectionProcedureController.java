@@ -5,12 +5,14 @@
 
 package de.eshg.stiprotection;
 
+import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.APPOINTMENT_ADDED;
 import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.FOLLOW_UP_CREATED;
 import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -101,7 +103,9 @@ public class StiProtectionProcedureController {
       @Valid @RequestBody CreateProcedureRequest request) {
     StiProtectionProcedure procedure =
         stiProtectionService.createProcedure(
-            ConcernMapper.toDatabaseType(request.concern()), StiProcedureOrigin.EMPLOYEE_PORTAL);
+            ConcernMapper.toDatabaseType(request.concern()),
+            ProcedureStatus.OPEN,
+            StiProcedureOrigin.EMPLOYEE_PORTAL);
     stiProtectionService.addPerson(procedure, PersonMapper.toDataType(request));
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
     String pin = stiProtectionService.generatePin();
@@ -176,6 +180,7 @@ public class StiProtectionProcedureController {
       @PathVariable("id") UUID procedureId, @Valid @RequestBody CreateAppointmentRequest request) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
+    progressEntryUtil.addProgressEntry(procedureId, APPOINTMENT_ADDED, TriggerType.EMPLOYEE);
   }
 
   @PutMapping("/{id}/appointment")
@@ -286,7 +291,9 @@ public class StiProtectionProcedureController {
 
     StiProtectionProcedure followUpProcedure =
         stiProtectionService.createProcedure(
-            ConcernMapper.toDatabaseType(request.concern()), StiProcedureOrigin.EMPLOYEE_PORTAL);
+            ConcernMapper.toDatabaseType(request.concern()),
+            ProcedureStatus.OPEN,
+            StiProcedureOrigin.EMPLOYEE_PORTAL);
     followUpProcedure.setFollowUp(true);
     stiProtectionService.addPerson(
         followUpProcedure, PersonMapper.toDataType(procedure.getPerson()));

@@ -21,6 +21,7 @@ import de.eshg.base.resource.ResourceApi;
 import de.eshg.base.statistics.BaseStatisticsApi;
 import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.base.user.UserApi;
+import de.eshg.rest.client.AcceptLanguageForwardingInterceptor;
 import de.eshg.rest.client.BearerAuthInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
@@ -141,6 +142,7 @@ class BaseClientAutoConfiguration {
             .baseUrl(baseClientProperties.getServiceUrl())
             .requestInterceptor(new BearerAuthInterceptor())
             .requestInterceptor(new CorrelationIdForwardingInterceptor())
+            .requestInterceptor(new AcceptLanguageForwardingInterceptor())
             .build();
     RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
 

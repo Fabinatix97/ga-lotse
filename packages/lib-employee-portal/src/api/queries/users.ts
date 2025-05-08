@@ -7,8 +7,8 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { ApiGetUsersResponse, ApiUser } from "@eshg/base-api";
 
-import { userApiQueryKey } from "@/config/apiQueryKeys";
-import { useApi } from "@/contexts/api";
+import { userApiQueryKey } from "../../config/apiQueryKeys";
+import { useApi } from "../../contexts/api";
 
 export function useGetUsersByGroupQuery(groupName: string) {
   const { userApi } = useApi();

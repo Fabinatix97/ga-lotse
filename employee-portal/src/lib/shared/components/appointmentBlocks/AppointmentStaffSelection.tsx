@@ -10,11 +10,11 @@ import { NamedUser, UserField } from "@eshg/lib-employee-portal";
 
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
-export const BUTTON_STYLES: SxProps = {
+const BUTTON_STYLES: SxProps = {
   marginTop: "27px", // vertically align button to form fields, taking validation errors into account
 };
 
-export interface AppointmentStaffSelectionProps {
+interface AppointmentStaffSelectionProps {
   physicianOptions: NamedUser[];
   physicianRequired?: string;
   medicalAssistantOptions?: NamedUser[];
@@ -67,8 +67,8 @@ export function AppointmentStaffSelection(
       <Grid xs={4}>
         <Button
           variant="outlined"
-          onClick={() => props.validateAvailability()}
           sx={BUTTON_STYLES}
+          onClick={() => props.validateAvailability()}
         >
           Verfügbarkeit prüfen
         </Button>

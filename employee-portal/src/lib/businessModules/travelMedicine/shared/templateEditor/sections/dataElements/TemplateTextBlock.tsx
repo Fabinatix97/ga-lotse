@@ -6,13 +6,13 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { IconButton, Stack } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementBox";
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";
 import { validateTextBlock } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
-export interface TemplateTextBlockProps {
+interface TemplateTextBlockProps {
   sectionElementFormikPath: string;
   sectionElementDeleteHandler: () => void;
   label: string;
@@ -22,7 +22,7 @@ export function TemplateTextBlock(props: Readonly<TemplateTextBlockProps>) {
   return (
     <DataElementBox data-testid="section-element-textbox">
       <DataElementHeading>Textblock</DataElementHeading>
-      <Stack direction="row" spacing={1} alignItems={"flex-start"}>
+      <Stack direction="row" spacing={1} alignItems="flex-start">
         <TextareaField
           label
           aria-label={props.label}
@@ -32,14 +32,14 @@ export function TemplateTextBlock(props: Readonly<TemplateTextBlockProps>) {
           validate={validateTextBlock()}
           data-testid="element-main-text"
         />
-        <Stack alignItems="center" paddingTop={"6px"}>
+        <Stack alignItems="center" paddingTop="6px">
           <IconButton
-            onClick={props.sectionElementDeleteHandler}
             aria-label="Entfernen"
             color="warning"
             variant="outlined"
             title="Entfernen"
             data-testid="element-delete-button"
+            onClick={props.sectionElementDeleteHandler}
           >
             <DeleteOutlineIcon />
           </IconButton>

@@ -95,7 +95,7 @@ export function PageBanner(props: PageBannerProps) {
               desktop: "1.33",
             })}
           >
-            {department.city}
+            {department.name.replace(/^Gesundheitsamt\s+/, "")}
           </Typography>
         </Box>
       </PageContent>

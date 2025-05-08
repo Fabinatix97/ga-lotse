@@ -6,7 +6,7 @@
 import { createContext, useContext } from "react";
 
 /** Indicates if the side navigation is collapsed (true) or expanded (false). */
-export type NavigationListContextValue = boolean;
+type NavigationListContextValue = boolean;
 
 export const NavigationListContext =
   createContext<NavigationListContextValue | null>(null);

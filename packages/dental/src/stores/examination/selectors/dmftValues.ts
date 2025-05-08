@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationState } from "@/stores/examination/examinationStore";
-import { DmftValues } from "@/stores/examination/types";
+import { ExaminationState } from "../examinationStore";
+import { DmftValues } from "../types";
 
 interface CalculatedDmftValues {
   primaryTeeth: number;

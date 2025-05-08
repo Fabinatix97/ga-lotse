@@ -28,7 +28,7 @@ import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 
 import { SidebarStep, SidebarStepContentProps } from "./sidebarStep";
 
-export interface SidebarStepperProps<TStepperFormModel extends FormikValues[]>
+interface SidebarStepperProps<TStepperFormModel extends FormikValues[]>
   extends SidebarWithFormRefProps {
   steps: {
     [K in keyof TStepperFormModel]: SidebarStep<
@@ -128,23 +128,12 @@ export function SidebarStepper<TStepperFormModel extends FormikValues[]>({
 
   return (
     <Formik
+      key={stepperState.stepIndex}
       initialValues={
         stepperState.values[stepperState.stepIndex] ??
         currentStepProps.initialValues
       }
       innerRef={formikRef}
-      onSubmit={async (values) => {
-        const nextStepperValues = changeCurrentStepInStepperValues(values);
-
-        if (isLastStep) {
-          await onSubmit(nextStepperValues as TStepperFormModel);
-        }
-
-        setStepperState((prevState) => ({
-          values: nextStepperValues,
-          stepIndex: prevState.stepIndex + 1,
-        }));
-      }}
       validate={(model) => {
         const errors = currentStepProps.validator?.(model);
         if (errors === undefined) {
@@ -161,7 +150,18 @@ export function SidebarStepper<TStepperFormModel extends FormikValues[]>({
         }
         return errors;
       }}
-      key={stepperState.stepIndex}
+      onSubmit={async (values) => {
+        const nextStepperValues = changeCurrentStepInStepperValues(values);
+
+        if (isLastStep) {
+          await onSubmit(nextStepperValues as TStepperFormModel);
+        }
+
+        setStepperState((prevState) => ({
+          values: nextStepperValues,
+          stepIndex: prevState.stepIndex + 1,
+        }));
+      }}
     >
       {({ isSubmitting, values, handleSubmit, isValid }) => {
         return (
@@ -200,14 +200,15 @@ export function SidebarStepper<TStepperFormModel extends FormikValues[]>({
                       variant="soft"
                       color="neutral"
                       sx={{ marginRight: 2 }}
-                      onClick={onPreviousStep}
                       disabled={isDisabledPreviousStep || isSubmitting}
+                      onClick={onPreviousStep}
                     >
                       Zurück
                     </Button>
                   )}
                   {isLastStep && isDefined(confirmationDialog) ? (
                     <Button
+                      loading={isSubmitting}
                       onClick={() => {
                         if (isValid) {
                           openConfirmationDialog({
@@ -216,7 +217,6 @@ export function SidebarStepper<TStepperFormModel extends FormikValues[]>({
                           });
                         }
                       }}
-                      loading={isSubmitting}
                     >
                       {saveLabel}
                     </Button>

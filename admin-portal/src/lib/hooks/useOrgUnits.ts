@@ -43,7 +43,7 @@ export type OrgUnit = PartialOrgUnitWithId &
 
 export const ORG_UNITS_QUERY = ["org-units"];
 
-export function fetchOrgUnits(
+function fetchOrgUnits(
   adminApi: ServiceDirectoryAdminApi,
 ): () => Promise<ApiGetOrgUnitsResponse> {
   return async (): Promise<ApiGetOrgUnitsResponse> => {

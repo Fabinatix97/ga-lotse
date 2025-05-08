@@ -37,7 +37,7 @@ export function ContentDisplay({
   }
 
   return (
-    <InformationSheet sx={sx} dataTestId={"editor-display"}>
+    <InformationSheet sx={sx} dataTestId="editor-display">
       {elements?.map((element, index) => (
         <SelectableBox
           key={element.id}
@@ -45,8 +45,8 @@ export function ContentDisplay({
           selected={element === selectedElement}
           highlighted={element.highlighted}
           readonly={readonly}
-          onClick={() => elementClicked(element)}
           dataTestId={`editor-display-element-${index}`}
+          onClick={() => elementClicked(element)}
         >
           <ContentElement
             element={element}
@@ -85,7 +85,6 @@ function SelectableBox({
     >
       <Box
         id={id}
-        onClick={onClick}
         sx={{
           padding: 1,
           cursor: readonly ? "default" : "pointer",
@@ -100,6 +99,7 @@ function SelectableBox({
               }
             : undefined,
         }}
+        onClick={onClick}
       >
         {children}
       </Box>

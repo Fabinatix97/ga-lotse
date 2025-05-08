@@ -35,7 +35,7 @@ import {
   useArchiveAdminFilterSettings,
 } from "@/lib/shared/components/archiving/hooks/useArchiveAdminFilterSettings";
 
-export type ArchiveAdminTableProps = Omit<ArchiveAdminViewProps, "title">;
+type ArchiveAdminTableProps = Omit<ArchiveAdminViewProps, "title">;
 
 export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
   const tableControl = useTableControl({
@@ -122,28 +122,28 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
             totalElements > 0 ? (
               <>
                 <Button
-                  onClick={handleDeleteAction}
                   disabled={bulkUpdateProceduresArchivingRelevance.isPending}
                   loading={bulkUpdateProceduresArchivingRelevance.isPending}
                   loadingPosition="start"
                   variant="outlined"
                   startDecorator={<DeleteOutlined />}
+                  onClick={handleDeleteAction}
                 >
                   Alle löschen
                 </Button>
                 <Button
-                  onClick={handleExportAction}
                   disabled={exportRelevantProcedures.isPending}
                   loading={exportRelevantProcedures.isPending}
                   loadingPosition="start"
                   startDecorator={<DownloadOutlined />}
+                  onClick={handleExportAction}
                 >
                   Alle als ZIP exportieren
                 </Button>
               </>
             ) : undefined
           }
-          invertDomOrder={true}
+          invertDomOrder
         />
       }
       filterSettings={

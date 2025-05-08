@@ -31,8 +31,7 @@ import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutati
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
 import { formatImportedCount } from "@/lib/businessModules/inspection/components/processImport/formatters";
 
-export interface ProcessImportResultProps
-  extends PotentialDuplicatesFilterProps {
+interface ProcessImportResultProps extends PotentialDuplicatesFilterProps {
   result: ImportProcessResult;
   onClose: () => void;
 }
@@ -83,9 +82,9 @@ export function ProcessImportResult({
           right={
             <>
               <Button
-                onClick={onFilterForDuplicates}
                 variant="soft"
                 color="neutral"
+                onClick={onFilterForDuplicates}
               >
                 Duplikate prüfen
               </Button>
@@ -146,11 +145,11 @@ function FileDownload({ file }: Readonly<{ file: File }>) {
 
   return (
     <Button
-      onClick={handleDownload}
       variant="soft"
       color="warning"
       startDecorator={<FileDownloadOutlined />}
       sx={{ justifyContent: "flex-start" }}
+      onClick={handleDownload}
     >
       {file.name}
     </Button>

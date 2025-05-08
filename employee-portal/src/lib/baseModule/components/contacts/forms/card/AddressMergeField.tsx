@@ -46,46 +46,41 @@ function AddressOption({ address }: { address: BaseAddressFormInputs }) {
   return (
     <Stack gap={1}>
       <DetailsCell
-        name={"differentName"}
-        label={"Abweichender Empfänger"}
+        name="differentName"
+        label="Abweichender Empfänger"
         value={address.differentName}
       />
       <DetailsCell
-        name={"postbox"}
-        label={"Postfachnummer"}
+        name="postbox"
+        label="Postfachnummer"
         value={address.postbox}
       />
-      {address.street && (
+      {address.street ? (
         <DetailsCell
-          name={"street"}
-          label={"Straße und Haus-Nr."}
+          name="street"
+          label="Straße und Haus-Nr."
           value={formatList([address.street, address.houseNumber], " ")}
         />
-      )}
+      ) : null}
 
       <DetailsCell
-        name={"addressAddition"}
-        label={"Adresszusatz"}
+        name="addressAddition"
+        label="Adresszusatz"
         value={address.addressAddition}
       />
       <DetailsRow>
         <DetailsCell
-          name={"postalCode"}
-          label={"Postleitzahl"}
+          name="postalCode"
+          label="Postleitzahl"
           value={address.postalCode}
         />
-        <DetailsCell
-          name={"city"}
-          label={"Ort"}
-          value={address.city}
-          avoidWrap
-        />
+        <DetailsCell name="city" label="Ort" value={address.city} avoidWrap />
       </DetailsRow>
 
       {address.country !== ApiCountryCode.De && (
         <DetailsCell
-          name={"country"}
-          label={"Land"}
+          name="country"
+          label="Land"
           value={translateCountry(address.country)}
         />
       )}
@@ -107,8 +102,8 @@ export function AddressMergeField({
     const titleId = `${fieldProps.name}-title`;
     return (
       isDefined(value) && (
-        <Stack component={"section"} gap={"inherit"} aria-labelledby={titleId}>
-          <Typography component={"h2"} level={"title-md"} id={titleId}>
+        <Stack component="section" gap="inherit" aria-labelledby={titleId}>
+          <Typography component="h2" level="title-md" id={titleId}>
             {fieldProps.label}
           </Typography>
           <BaseAddressDetailsColumn address={value} />
@@ -127,9 +122,9 @@ export function AddressMergeField({
     <FormControl error={error} required={required}>
       <FormLabel htmlFor={input.name}>{fieldProps.label}</FormLabel>
       <RadioGroup
-        onChange={(event) => void handleChange(event)}
         value={selectedLabel}
         name={input.name}
+        onChange={(event) => void handleChange(event)}
       >
         <Stack gap={3}>
           {options.map(({ label, value }, index) => (
@@ -140,8 +135,8 @@ export function AddressMergeField({
                 <Stack gap={2}>
                   {label}
                   {isDefined(value) && (
-                    <Sheet variant={"soft"}>
-                      <Typography whiteSpace={"preserve"}>
+                    <Sheet variant="soft">
+                      <Typography whiteSpace="preserve">
                         <AddressOption address={value} />
                       </Typography>
                     </Sheet>

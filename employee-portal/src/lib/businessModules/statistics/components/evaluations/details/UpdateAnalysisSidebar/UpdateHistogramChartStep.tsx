@@ -9,7 +9,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 
 import { UpdateAnalysisStep, UpdateNameStepFormModel } from "./UpdateNameStep";
 
-export type UpdateHistogramChartStepProps = SidebarStepContentProps<
+type UpdateHistogramChartStepProps = SidebarStepContentProps<
   HistogramChartMetaFormModel & UpdateNameStepFormModel
 > & {
   showGroupedConfigurations: boolean;

@@ -22,10 +22,10 @@ export function VaccinationStep() {
     <FormSheet data-testid="vaccination-data-content-form">
       <FormSheetTitle>{t("vaccinationFormContent.title")}</FormSheetTitle>
       <Stack gap={2}>
-        <Typography level={"body-md"}>
+        <Typography level="body-md">
           {t("vaccinationFormContent.info")}
         </Typography>
-        <Stack width={"50%"}>
+        <Stack width="50%">
           <List>
             {diseases.map((el, index) => (
               <ListItem key={`vaccine[${el.name}.${index}]`}>

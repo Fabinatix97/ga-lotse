@@ -73,10 +73,7 @@ public record AuthProperties(
 
   record UserAgentMinimumVersion(Pattern userAgentPattern, String minimumVersion) {}
 
-  public record SynapseProperties(
-      @Valid SynapseInternal internal,
-      Duration refreshClockSkew,
-      @NotNull Boolean activeLogoutEnabled) {
+  public record SynapseProperties(@Valid SynapseInternal internal, Duration refreshClockSkew) {
 
     public record SynapseInternal(@NotNull URI url) {}
   }

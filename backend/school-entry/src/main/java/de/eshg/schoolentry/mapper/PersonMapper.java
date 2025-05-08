@@ -55,6 +55,7 @@ public final class PersonMapper {
         childData.placeOfBirth(),
         childData.countryOfBirth(),
         childData.phoneNumber() != null ? List.of(childData.phoneNumber()) : null,
+        childData.email() != null ? List.of(childData.email()) : null,
         AddressMapper.mapToDto(childData.address()));
   }
 

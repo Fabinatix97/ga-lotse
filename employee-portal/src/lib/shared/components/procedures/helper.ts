@@ -12,7 +12,6 @@ import {
   ApiTaskType,
   ApiUser,
 } from "@eshg/base-api";
-import { EnumFilterValue, FilterValue } from "@eshg/lib-employee-portal";
 import {
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
@@ -117,25 +116,6 @@ export function buildOptionsFromProgressEntryClasses() {
   return Object.values(ApiProgressEntryClass).map(
     buildOptionFromProgressEntryClass,
   );
-}
-
-export function buildOptionsFromRecord(optionEntries: Record<string, string>) {
-  return Object.entries(optionEntries).map((optionEntry) => {
-    return {
-      label: optionEntry[1],
-      value: optionEntry[0],
-    };
-  });
-}
-
-export function getSelectedFilterValues(
-  filters: FilterValue[],
-  ...key: string[]
-) {
-  return filters
-    .filter((filterValue) => key.includes(filterValue.key))
-    .map((filterValue) => filterValue as EnumFilterValue)
-    .flatMap((filterValue) => filterValue.selectedValues);
 }
 
 export function buildRouteWithParams(

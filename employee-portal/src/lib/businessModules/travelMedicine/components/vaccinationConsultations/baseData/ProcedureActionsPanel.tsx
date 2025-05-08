@@ -91,7 +91,7 @@ export function ProcedureActionsPanel(
 
   if (props.procedure.status === ApiProcedureStatus.Open) {
     buttons.push(
-      <Button key="closeProcedure" onClick={handleCloseProcedure} fullWidth>
+      <Button key="closeProcedure" fullWidth onClick={handleCloseProcedure}>
         Vorgang schließen
       </Button>,
     );
@@ -102,8 +102,8 @@ export function ProcedureActionsPanel(
       <Button
         key="reopenProcedure"
         color="danger"
-        onClick={handleReopenProcedure}
         fullWidth
+        onClick={handleReopenProcedure}
       >
         Vorgang wiedereröffnen
       </Button>,
@@ -113,7 +113,7 @@ export function ProcedureActionsPanel(
   if (props.procedure.status === ApiProcedureStatus.Draft) {
     buttons.push(
       <Grid container spacing={2}>
-        <Grid xs={6} display={"flex"}>
+        <Grid xs={6} display="flex">
           <OpenModalButton
             key="reopenProcedure"
             renderModal={(modalProps) => (
@@ -129,10 +129,11 @@ export function ProcedureActionsPanel(
             Vorgang abbrechen
           </OpenModalButton>
         </Grid>
-        <Grid xs={6} display={"flex"}>
+        <Grid xs={6} display="flex">
           <Button
             key="startProcedure"
             color="primary"
+            fullWidth
             onClick={async () => {
               if (query.isSuccess && query.data.persons.length > 0) {
                 acceptProcedureSidebar.open({
@@ -145,7 +146,6 @@ export function ProcedureActionsPanel(
                 await handleCreate(props.procedure.procedureId);
               }
             }}
-            fullWidth
           >
             Vorgang starten
           </Button>

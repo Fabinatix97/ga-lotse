@@ -9,24 +9,22 @@ import { Formik } from "formik";
 
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import { FormButtonBar } from "@/components/form/FormButtonBar";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/features/drawer/hooks/useSidebar";
-import { DrawerProps } from "@/features/drawer/types/drawer";
-import { useCreateProcedureLabel } from "@/features/procedureLabels/api/mutations";
-import {
-  ProcedureLabelFormFields,
-  ProcedureLabelValues,
-} from "@/features/procedureLabels/components/ProcedureLabelFormFields";
+import { FormButtonBar } from "../../../components/form/FormButtonBar";
+import { SidebarActions } from "../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../drawer/components/SidebarContent";
+import { SidebarForm } from "../../drawer/components/SidebarForm";
+import { UseSidebarResult, useSidebar } from "../../drawer/hooks/useSidebar";
+import { DrawerProps } from "../../drawer/types/drawer";
+import { useCreateProcedureLabel } from "../api/mutations";
 import {
   CreateProcedureLabelRequest,
   ProcedureLabelClient,
-} from "@/features/procedureLabels/types/procedureLabelClient";
+} from "../types/procedureLabelClient";
+
+import {
+  ProcedureLabelFormFields,
+  ProcedureLabelValues,
+} from "./ProcedureLabelFormFields";
 
 export function useCreateProcedureLabelSidebar(): UseSidebarResult<CreateProcedureLabelSidebarProps> {
   return useSidebar({
@@ -53,25 +51,23 @@ function CreateProcedureLabelSidebar(props: CreateProcedureLabelSidebarProps) {
   }
 
   return (
-    <>
-      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        {({ isSubmitting }) => (
-          <SidebarForm>
-            <SidebarContent title="Kennung hinzufügen">
-              <ProcedureLabelFormFields />
-            </SidebarContent>
+    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+      {({ isSubmitting }) => (
+        <SidebarForm>
+          <SidebarContent title="Kennung hinzufügen">
+            <ProcedureLabelFormFields />
+          </SidebarContent>
 
-            <SidebarActions>
-              <FormButtonBar
-                submitLabel="Hinzufügen"
-                submitting={isSubmitting}
-                onCancel={props.onClose}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </>
+          <SidebarActions>
+            <FormButtonBar
+              submitLabel="Hinzufügen"
+              submitting={isSubmitting}
+              onCancel={props.onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 

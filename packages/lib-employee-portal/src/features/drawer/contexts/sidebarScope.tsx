@@ -10,7 +10,7 @@ import { createContext, useContext } from "react";
 import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { SidebarSlot } from "@/features/drawer/components/SidebarSlot";
+import { SidebarSlot } from "../components/SidebarSlot";
 
 const SidebarScopeContext = createContext<string | undefined>(undefined);
 

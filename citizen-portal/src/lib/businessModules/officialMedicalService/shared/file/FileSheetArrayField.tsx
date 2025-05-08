@@ -7,8 +7,8 @@ import { FormControl } from "@mui/joy";
 import { isDefined, splice } from "remeda";
 
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
+import { useValidateFileType } from "@eshg/lib-portal/hooks/useValidators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import {
@@ -19,9 +19,8 @@ import {
   fileToFileDescriptor,
   toArray,
 } from "@/lib/businessModules/officialMedicalService/shared/file/helpers";
-import { useTranslation } from "@/lib/i18n/client";
 
-export interface FileSheetArrayFieldProps
+interface FileSheetArrayFieldProps
   extends Omit<FieldProps<File[] | null>, "label" | "validate">,
     Pick<FileSheetArrayProps, "accept" | "labels" | "mode"> {
   handleFileUpload?: (files: File[]) => void;
@@ -38,11 +37,8 @@ export function FileSheetArrayField({
     ...props,
   });
 
-  const { i18n } = useTranslation();
-  const validateType = validateFileType(
-    accept,
-    i18n.resolvedLanguage ?? "de-DE",
-  );
+  const validateFileType = useValidateFileType();
+  const validateType = validateFileType(accept);
 
   async function handleChange(files: File[]) {
     await field.helpers.setTouched(true);
@@ -85,9 +81,6 @@ export function FileSheetArrayField({
     <FormControl error={field.error} required={field.required}>
       <FileSheetArray
         files={displayFiles}
-        onChange={handleChange}
-        onRemove={handleRemove}
-        onRemoveAll={handleRemoveAll}
         accept={accept}
         error={field.error}
         required={field.required}
@@ -95,6 +88,9 @@ export function FileSheetArrayField({
         helperTexts={helperTexts}
         labels={labels}
         mode={props.mode}
+        onChange={handleChange}
+        onRemove={handleRemove}
+        onRemoveAll={handleRemoveAll}
         onFileUpload={() => props.handleFileUpload?.(field.input.value ?? [])}
       />
     </FormControl>

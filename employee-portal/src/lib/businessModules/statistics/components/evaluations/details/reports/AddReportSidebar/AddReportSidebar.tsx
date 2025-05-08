@@ -43,10 +43,8 @@ function AddReportSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
       saveLabel="Erstellen"
-      onSubmit={(model) => addReport(evaluationId, model[0])}
       steps={[
         () => ({
           title: "Report erstellen",
@@ -56,6 +54,8 @@ function AddReportSidebar({
           initialValues,
         }),
       ]}
+      onClose={onClose}
+      onSubmit={(model) => addReport(evaluationId, model[0])}
     />
   );
 }

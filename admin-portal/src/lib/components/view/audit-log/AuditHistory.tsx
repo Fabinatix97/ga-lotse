@@ -122,7 +122,7 @@ export function AuditHistory({
         indicator={
           <HistoryEntryIndicator
             entryType={getEntryType(diffs)}
-            variant={"soft"}
+            variant="soft"
           />
         }
       >
@@ -139,8 +139,8 @@ export function AuditHistory({
         <TimelineEntry
           label={t("auditLogEmptyLabel")}
           title={t("auditLogEmptyTitle")}
-          indicator={<EmptyHistoryEntryIndicator variant={"soft"} />}
-        ></TimelineEntry>
+          indicator={<EmptyHistoryEntryIndicator variant="soft" />}
+        />
       ) : (
         entries
       )}
@@ -265,13 +265,11 @@ function getDiffs(
 
 function Label({ revision }: Readonly<{ revision: Revision }>) {
   return (
-    <>
-      {revision.timestamp.toLocaleString() +
-        " | " +
-        revision.author +
-        " | " +
-        revision.ip}
-    </>
+    revision.timestamp.toLocaleString() +
+    " | " +
+    revision.author +
+    " | " +
+    revision.ip
   );
 }
 

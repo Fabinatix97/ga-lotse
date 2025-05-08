@@ -8,7 +8,7 @@ import { SvgIconProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { createElement } from "react";
 
-export interface GradientIconProps extends Omit<SvgIconProps, "style"> {
+interface GradientIconProps extends Omit<SvgIconProps, "style"> {
   iconClass: SvgIconComponent;
   sx?: SxProps;
 }

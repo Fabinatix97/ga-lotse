@@ -23,10 +23,10 @@ export function ReportDownloadButtons({
   return (
     <>
       <Button
-        onClick={() => reportFile.download()}
         variant="plain"
         color="neutral"
         startDecorator={<FileDownloadOutlined />}
+        onClick={() => reportFile.download()}
       >
         Download
       </Button>

@@ -20,7 +20,7 @@ import { isDefined } from "remeda";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { ValidationRules } from "@eshg/lib-portal/types/form";
 
-export interface RadioGroupFieldProps
+interface RadioGroupFieldProps
   extends ValidationRules<string>,
     PropsWithChildren {
   name: string;
@@ -68,9 +68,9 @@ export function RadioGroupField({
         <RadioGroup
           name={input.name}
           value={input.value}
-          onChange={handleChange}
           orientation={orientation}
           sx={sx}
+          onChange={handleChange}
         >
           {children}
         </RadioGroup>

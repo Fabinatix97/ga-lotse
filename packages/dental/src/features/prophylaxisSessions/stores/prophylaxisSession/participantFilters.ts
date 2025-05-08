@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 export interface ParticipantFilters {
   gender: GenderFilter;

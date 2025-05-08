@@ -63,7 +63,6 @@ function SelectRowCheckbox(props: SelectRowCheckboxProps) {
       color="primary"
       checked={props.selected}
       indeterminate={props.indeterminate}
-      onChange={props.toggleSelected}
       slotProps={{
         input: {
           "aria-label": props.selected
@@ -71,6 +70,7 @@ function SelectRowCheckbox(props: SelectRowCheckboxProps) {
             : props.ariaLabelSelect,
         },
       }}
+      onChange={props.toggleSelected}
     />
   );
 }

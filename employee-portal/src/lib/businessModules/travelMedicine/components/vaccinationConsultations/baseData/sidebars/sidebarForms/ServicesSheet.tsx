@@ -7,9 +7,13 @@ import { Add } from "@mui/icons-material";
 import { Button, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import {
+  validatePipe,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
 import {
   ApiDisease,
   ApiOtherServiceTemplate,
@@ -73,9 +77,12 @@ export function ServicesSheet(props: Readonly<ServicesSheetProps>) {
                         name={`services.${index}.fee`}
                         label="Preis in €"
                         required="Bitte einen Preis in € angeben"
-                        validate={
-                          validateNonNegativeNumberWithAtMostTwoDecimalDigits
-                        }
+                        min={0}
+                        max={999999}
+                        validate={validatePipe(
+                          validateRange(0, 999999),
+                          validateNonNegativeNumberWithAtMostTwoDecimalDigits,
+                        )}
                       />
                     </>
                   )}

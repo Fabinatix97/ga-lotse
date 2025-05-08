@@ -27,13 +27,13 @@ import { TemplateEditorButtonBar } from "@/lib/businessModules/travelMedicine/sh
 import { TemplateEditorMainContent } from "@/lib/businessModules/travelMedicine/shared/templateEditor/TemplateEditorMainContent";
 import { createEmptySection } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/TemplateSectionList";
 
-export function getTemplateTitle(template: ApiMedicalHistoryTemplate) {
+function getTemplateTitle(template: ApiMedicalHistoryTemplate) {
   return template.state === ApiMedicalHistoryTemplateState.Final
     ? `Kopie von: ${template.title}`
     : template.title;
 }
 
-export interface FormTemplate {
+interface FormTemplate {
   title: string;
   state: ApiMedicalHistoryTemplateState;
   sections: ApiTemplateSection[];

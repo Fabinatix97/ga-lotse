@@ -86,11 +86,11 @@ export function VisuoMotorSkillsForm(props: VisuoMotorSkillsFormProps) {
             name={fieldName("points")}
             label="Punkte"
             sx={FIXED_WIDTH_STYLE}
-            onChange={handleVisuoMotorChange}
             validate={validateVisuoMotor}
             min={MIN_0}
             max={MAX_99}
             softRequired
+            onChange={handleVisuoMotorChange}
           />
           <StatusChip aria-label="Bewertung Visuomotorik" minWidth="sm">
             {mapExaminationEvaluation(props.points)}

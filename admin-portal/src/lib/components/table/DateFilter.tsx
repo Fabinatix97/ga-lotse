@@ -57,13 +57,13 @@ export function DateFilter(
       <Input
         type="date"
         defaultValue={searchParams.get(props.searchParamName) ?? ""}
-        onChange={handleChange}
         size="sm"
         sx={{
           ...props.sx,
         }}
         placeholder={props.placeholder}
         aria-label={props.placeholder}
+        onChange={handleChange}
       />
     </FormControl>
   );

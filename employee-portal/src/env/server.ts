@@ -43,8 +43,6 @@ const schema = object({
   PUBLIC_DENTAL_BACKEND_URL: urlSchema,
   PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: urlSchema,
 
-  MARKDOWN_PAGE_DIRECTORY: string(),
-
   PUBLIC_MATRIX_SERVER_URL: urlSchema,
 });
 

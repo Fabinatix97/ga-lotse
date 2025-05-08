@@ -14,8 +14,9 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 
-import { useCloseGroupsInBulk } from "@/features/children/api/mutations/schoolYearTransition";
-import { SchoolYearTransitionGroupList } from "@/features/children/components/schoolTransition/SchoolYearTransitionGroupList";
+import { useCloseGroupsInBulk } from "../../api/mutations/schoolYearTransition";
+
+import { SchoolYearTransitionGroupList } from "./SchoolYearTransitionGroupList";
 
 export function useSchoolLeavingSidebar(): UseSidebarResult<SchoolLeavingSidebarProps> {
   return useSidebar({
@@ -29,7 +30,7 @@ interface SchoolLeavingSidebarProps extends DrawerProps {
   leavingGroupNames: string[];
 }
 
-export function SchoolLeavingSidebar({
+function SchoolLeavingSidebar({
   institutionId,
   institutionName,
   leavingGroupNames,
@@ -50,27 +51,25 @@ export function SchoolLeavingSidebar({
   }
   return (
     <>
-      <SidebarContent title={"Schuljahreswechsel"}>
+      <SidebarContent title="Schuljahreswechsel">
         <SchoolYearTransitionGroupList
           institutionName={institutionName}
-          info={
-            "Folgende Gruppen verlassen die Schule und wechseln in den Status abgeschlossen"
-          }
-          infoColor={"success"}
+          info="Folgende Gruppen verlassen die Schule und wechseln in den Status abgeschlossen"
+          infoColor="success"
           rows={leavingGroupNames}
         />
       </SidebarContent>
       <SidebarActions>
         <ButtonBar
-          left={
-            <Button color="neutral" variant="soft" onClick={() => onClose()}>
-              Abbrechen
-            </Button>
-          }
           right={
-            <Button onClick={handleLeavingSchool}>
-              Schulabgang durchführen
-            </Button>
+            <>
+              <Button color="neutral" variant="soft" onClick={() => onClose()}>
+                Abbrechen
+              </Button>
+              <Button onClick={handleLeavingSchool}>
+                Schulabgang durchführen
+              </Button>
+            </>
           }
         />
       </SidebarActions>

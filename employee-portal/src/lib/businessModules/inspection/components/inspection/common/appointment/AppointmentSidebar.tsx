@@ -31,7 +31,7 @@ import {
   toLocalDateTime,
 } from "@/lib/shared/helpers/dateTime";
 
-export interface AppointmentSidebarProps {
+interface AppointmentSidebarProps {
   open: boolean;
   onClose: () => void;
   procedureId: string;
@@ -105,11 +105,11 @@ function AppointmentSidebarWithMutations({
     <Sidebar open={open} onClose={handleClose}>
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit, values, setValues }) => (
-          <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
+          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
             <SidebarContent title={title}>
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>
@@ -148,8 +148,8 @@ function AppointmentSidebarWithMutations({
             <SidebarActions>
               <FormButtonBar
                 submitting={isSubmitting}
-                onCancel={handleClose}
                 submitLabel="Speichern"
+                onCancel={handleClose}
               />
             </SidebarActions>
           </SidebarForm>
@@ -159,7 +159,7 @@ function AppointmentSidebarWithMutations({
   );
 }
 
-export function validateAppointmentEndTime(
+function validateAppointmentEndTime(
   value: string,
   appointment: AppointmentFormType | undefined,
 ) {

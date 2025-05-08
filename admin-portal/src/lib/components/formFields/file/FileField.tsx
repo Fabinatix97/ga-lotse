@@ -52,7 +52,7 @@ function renderLabel(
   return <FormLabel {...labelProps}>{label}</FormLabel>;
 }
 
-export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
+interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
   label: string | ((labelProps: FileLabelProps) => ReactNode);
   accept?: FileType | FileType[];
   placeholder?: string;
@@ -96,8 +96,9 @@ export function FileField(props: Readonly<FileFieldProps>) {
           sx={{ marginBottom: 2 }}
           activeDragOver={dropState === "copy"}
           error={field.error || dropState === "no-drop"}
-          onClick={() => fileInputRef.current?.click()}
           aria-controls={fileInputId}
+          aria-describedby={`${fileInputId}-helper-text`}
+          onClick={() => fileInputRef.current?.click()}
           onDragOver={handleFileDrag}
           onDrop={handleFileDrop}
           onDragLeave={handleFileDragLeave}
@@ -112,11 +113,13 @@ export function FileField(props: Readonly<FileFieldProps>) {
           placeholder={props.placeholder}
           accept={acceptedMimeTypes}
           required={field.required}
-          onChange={handleChange}
           tabIndex={-1}
+          onChange={handleChange}
         />
         {isDefined(field.helperText) && (
-          <FormHelperText>{field.helperText}</FormHelperText>
+          <FormHelperText id={`${fileInputId}-helper-text`}>
+            {field.helperText}
+          </FormHelperText>
         )}
       </Stack>
     </FormControl>

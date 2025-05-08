@@ -52,7 +52,7 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
     List<String> emailAddresses = optional(faker, randomListOfEmails(7));
     AddressDto contactAddress =
         switch (category) {
-          case SCHOOL, HEALTH_DEPARTMENT -> createDomesticAddress(faker);
+          case SCHOOL, DAYCARE, HEALTH_DEPARTMENT -> createDomesticAddress(faker);
           case null, default -> createAddress(faker);
         };
     AddressDto differentBillingAddress = optional(faker, createAddress());
@@ -65,6 +65,8 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
     List<InstitutionContactCategoryDto> values =
         Arrays.stream(InstitutionContactCategoryDto.values())
             .filter(Predicate.not(InstitutionContactCategoryDto.SCHOOL::equals))
+            .filter(Predicate.not(InstitutionContactCategoryDto.HEALTH_DEPARTMENT::equals))
+            .filter(Predicate.not(InstitutionContactCategoryDto.DAYCARE::equals))
             .toList();
     return () -> optional(faker, randomElement(values));
   }

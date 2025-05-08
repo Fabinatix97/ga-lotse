@@ -5,7 +5,7 @@
 
 import { ReactNode } from "react";
 
-import { DrawerFallbackOptions } from "@/features/drawer/contexts/drawer";
+import { DrawerFallbackOptions } from "../contexts/drawer";
 
 export interface DrawerProps {
   /**

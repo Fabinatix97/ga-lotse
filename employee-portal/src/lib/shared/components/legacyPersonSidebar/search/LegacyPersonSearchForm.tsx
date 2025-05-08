@@ -48,48 +48,46 @@ export function LegacyPersonSearchForm({
   }
 
   return (
-    <>
-      <Formik
-        initialValues={initialFormValues ?? MINIMAL_PERSON_VALUES}
-        onSubmit={handleSubmit}
-        enableReinitialize
-      >
-        {({ isSubmitting }) => (
-          <SidebarForm ref={sidebarFormRef}>
-            <SidebarContent title={title}>
-              <Typography sx={{ mb: 2 }}>Nach einer Person suchen</Typography>
-              <Stack gap={4}>
-                {additionalFields?.()}
-                <InputField
-                  name="firstName"
-                  label="Vorname"
-                  required="Bitte einen Vornamen angeben."
-                />
-                <InputField
-                  name="lastName"
-                  label="Nachname"
-                  required="Bitte einen Nachnamen angeben."
-                />
-                <DateField
-                  name="dateOfBirth"
-                  label="Geburtsdatum"
-                  required="Bitte ein Geburtsdatum angeben."
-                  validate={validateDateOfBirth}
-                />
-                <SubmitButton
-                  submitting={loading === true || isSubmitting}
-                  startDecorator={<SearchIcon />}
-                  sx={{ alignSelf: "end" }}
-                >
-                  Suche
-                </SubmitButton>
-              </Stack>
-            </SidebarContent>
+    <Formik
+      initialValues={initialFormValues ?? MINIMAL_PERSON_VALUES}
+      enableReinitialize
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <SidebarForm ref={sidebarFormRef}>
+          <SidebarContent title={title}>
+            <Typography sx={{ mb: 2 }}>Nach einer Person suchen</Typography>
+            <Stack gap={4}>
+              {additionalFields?.()}
+              <InputField
+                name="firstName"
+                label="Vorname"
+                required="Bitte einen Vornamen angeben."
+              />
+              <InputField
+                name="lastName"
+                label="Nachname"
+                required="Bitte einen Nachnamen angeben."
+              />
+              <DateField
+                name="dateOfBirth"
+                label="Geburtsdatum"
+                required="Bitte ein Geburtsdatum angeben."
+                validate={validateDateOfBirth}
+              />
+              <SubmitButton
+                submitting={loading === true || isSubmitting}
+                startDecorator={<SearchIcon />}
+                sx={{ alignSelf: "end" }}
+              >
+                Suche
+              </SubmitButton>
+            </Stack>
+          </SidebarContent>
 
-            <SidebarActions>{cancelButton}</SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </>
+          <SidebarActions>{cancelButton}</SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }

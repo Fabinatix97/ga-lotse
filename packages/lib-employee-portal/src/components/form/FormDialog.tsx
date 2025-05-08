@@ -49,8 +49,8 @@ export function FormDialog<T extends FormikValues>({
                     size="sm"
                     variant="outlined"
                     color="neutral"
-                    onClick={onClose}
                     data-testid="formDialogCancel"
+                    onClick={onClose}
                   >
                     {cancelLabel}
                   </Button>
@@ -59,7 +59,7 @@ export function FormDialog<T extends FormikValues>({
                     size="sm"
                     color={color}
                     loading={isSubmitting}
-                    loadingPosition={"start"}
+                    loadingPosition="start"
                     data-testid="formDialogConfirm"
                   >
                     {confirmLabel}

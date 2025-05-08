@@ -77,10 +77,10 @@ function AssignServiceSidebar(props: Readonly<AssignServiceSidebarProps>) {
       }}
       allAvailableAppointments={allAvailableAppointments}
       formRef={props.formRef}
+      title="Impftermin"
+      submitLabel="Speichern"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Impftermin"}
-      submitLabel={"Speichern"}
     />
   );
 }

@@ -78,9 +78,7 @@ function CreateDiagramSidebar(props: CreateDiagramSidebarProps) {
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={saveDiagramStepOnSubmit}
       steps={[
         () => ({
           title: "Filter für Diagramm festlegen",
@@ -106,6 +104,8 @@ function CreateDiagramSidebar(props: CreateDiagramSidebarProps) {
           },
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={saveDiagramStepOnSubmit}
     />
   );
 }

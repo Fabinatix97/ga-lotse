@@ -17,11 +17,15 @@ import de.eshg.inspection.facility.api.InspLinkBaseFacilityResponse;
 import de.eshg.inspection.facility.api.InspPendingFacilitiesOverviewResponse;
 import de.eshg.inspection.facility.api.InspUpdateFacilityRequest;
 import de.eshg.inspection.facility.export.FacilityExportService;
+import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.persistence.IntentionalWritingTransaction;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.Resource;
@@ -50,10 +54,15 @@ public class FacilityController {
   private final FacilityService facilityService;
   private final FacilityExportService facilityExportService;
 
+  private final AuditLogger auditLogger;
+
   public FacilityController(
-      FacilityService facilityService, FacilityExportService facilityExportService) {
+      FacilityService facilityService,
+      FacilityExportService facilityExportService,
+      AuditLogger auditLogger) {
     this.facilityService = facilityService;
     this.facilityExportService = facilityExportService;
+    this.auditLogger = auditLogger;
   }
 
   @PostMapping
@@ -94,8 +103,13 @@ public class FacilityController {
   @GetMapping(path = "/export-banned")
   @ApiResponse(responseCode = "200", description = "Exported banned facilities")
   @Operation(summary = "Export banned facilities")
-  @Transactional(readOnly = true)
+  @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public ResponseEntity<Resource> exportBannedFacilities() {
+    auditLogger.log(
+        "Export von Einrichtungen",
+        "Export untersagter Einrichtungen",
+        Map.of("durch Benutzer", CurrentUserHelper.getCurrentUserId().toString()));
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,

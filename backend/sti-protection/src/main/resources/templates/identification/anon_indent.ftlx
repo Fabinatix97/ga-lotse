@@ -45,7 +45,7 @@
                 <br/>
                 ${appointment.time} Uhr
                 <br/>
-                <span>Planen Sie für den Termin inkl. Wartezeit bitte etwa ${appointment.durationMinutes} Minuten ein.</span>
+                <span>Planen Sie für den Termin inkl. Wartezeit bitte etwa ${durationMinutesRounded} Minuten ein.</span>
               </td>
               <td style="width: 350px;">
                 ${sender.department.name}
@@ -76,7 +76,7 @@
                 <br/>
                 <ol>
                   <li>Scannen Sie mit Ihrem Smartphone den QR&#8209;Code oder rufen Sie die nebenstehende URL auf.</li>
-                  <li>Geben Sie den Anmeldecode und Ihr Passwort ein.</li>
+                  <li>Geben Sie den Anmeldecode und ihre PIN ein.</li>
                 </ol>
               </td>
             </tr>

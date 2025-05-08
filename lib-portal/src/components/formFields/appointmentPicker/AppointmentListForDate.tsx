@@ -27,7 +27,7 @@ export type AppointmentListLabelType =
   | ((date: Date, locale: string) => string)
   | string;
 
-export interface UseAppointmentListProps<T extends Appointment> {
+interface UseAppointmentListProps<T extends Appointment> {
   selectedDay: Date | undefined;
   monthAppointments: T[];
   listLabel: AppointmentListLabelType;
@@ -138,12 +138,12 @@ export function AppointmentListForDate<T extends Appointment>({
             !!field.input.value && isAppointmentEqual(field.input.value, apt);
           return (
             <ListItem
-              sx={{ padding: 0, minHeight: 0 }}
               key={apt.start.getTime()}
+              sx={{ padding: 0, minHeight: 0 }}
             >
               <Chip
                 variant={isSelected ? "solid" : "soft"}
-                color={"primary"}
+                color="primary"
                 sx={{
                   minWidth: "4.7rem",
                   textAlign: "center",
@@ -166,10 +166,9 @@ export function AppointmentListForDate<T extends Appointment>({
                   value={apt.start}
                   color="primary"
                   checked={isSelected}
-                  onChange={createOnSelected(apt)}
                   label={
                     <Typography
-                      component={"time"}
+                      component="time"
                       dateTime={apt.start.toTimeString().slice(0, 5)}
                       level="title-md"
                       sx={{
@@ -183,6 +182,7 @@ export function AppointmentListForDate<T extends Appointment>({
                       {optionLabel(apt, locale)}
                     </Typography>
                   }
+                  onChange={createOnSelected(apt)}
                 />
               </Chip>
             </ListItem>

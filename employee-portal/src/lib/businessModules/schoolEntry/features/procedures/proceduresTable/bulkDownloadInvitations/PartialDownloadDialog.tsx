@@ -48,10 +48,10 @@ export function PartialDownloadDialog(props: PartialDownloadDialogProps) {
           </Button>
           <Button
             color="primary"
-            onClick={props.onConfirm}
             loading={props.isPending}
             loadingPosition="start"
             disabled={props.isPending}
+            onClick={props.onConfirm}
           >
             {downloadButtonText}
           </Button>

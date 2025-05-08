@@ -40,7 +40,7 @@ const BOOKING_STATE_COLORS: EnumMap<ApiBookingState, DefaultColorPalette> = {
   [ApiBookingState.Withdrawn]: "danger",
 } as const;
 
-export function AppointmentAlert({ appointment }: AppointmentCardProps) {
+function AppointmentAlert({ appointment }: AppointmentCardProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
   const color: ColorPaletteProp =

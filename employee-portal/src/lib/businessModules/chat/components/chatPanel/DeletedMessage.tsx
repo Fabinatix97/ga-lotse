@@ -23,7 +23,7 @@ export function DeletedMessage({ isSent }: Readonly<DeletedMessageProps>) {
         marginRight: 1,
       }}
     >
-      <Stack direction={"row"}>
+      <Stack direction="row">
         <DeleteOutlineIcon
           sx={{
             color: isSent ? "background.body" : "text.primary",

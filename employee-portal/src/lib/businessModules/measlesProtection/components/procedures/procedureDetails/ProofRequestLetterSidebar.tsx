@@ -189,10 +189,10 @@ function CreateProofRequestLetterSidebarForm({
       {({ isSubmitting, setFieldValue }) => (
         <SidebarForm>
           <SidebarContent
-            title={"Anschreiben zur Nachweisvorlage erstellen"}
+            title="Anschreiben zur Nachweisvorlage erstellen"
             header={
               <Typography
-                textColor={"text.secondary"}
+                textColor="text.secondary"
                 sx={{
                   fontSize: "16px",
                   fontWeight: "600",
@@ -206,12 +206,12 @@ function CreateProofRequestLetterSidebarForm({
             <Stack gap={3}>
               <LetterRecipientField procedure={procedure} />
               <DateAndButtonRow
-                onButtonClick={() => setFieldValue("deadline", todayInSixWeeks)}
                 buttonLabel="Heute in 6 Wochen"
                 name="deadline"
                 label="Frist"
                 required="Bitte ein Fristdatum angeben."
-              ></DateAndButtonRow>
+                onButtonClick={() => setFieldValue("deadline", todayInSixWeeks)}
+              />
             </Stack>
           </SidebarContent>
           <SidebarActions>
@@ -262,10 +262,10 @@ function PreviewProofRequestLetterSidebarForm({
       {({ isSubmitting }) => (
         <SidebarForm>
           <SidebarContent
-            title={"Anschreiben zur Nachweisvorlage erstellen"}
+            title="Anschreiben zur Nachweisvorlage erstellen"
             header={
               <Typography
-                textColor={"text.secondary"}
+                textColor="text.secondary"
                 sx={{
                   fontSize: "16px",
                   fontWeight: "600",
@@ -284,17 +284,17 @@ function PreviewProofRequestLetterSidebarForm({
             >
               <IconButton
                 disabled={false}
-                label={"In neuem Tab öffnen"}
-                onClick={openFile}
+                label="In neuem Tab öffnen"
                 sx={{
                   backgroundColor: "transparent",
                   padding: "4px 16px",
                   "&:hover": { backgroundColor: "transparent" },
                 }}
+                onClick={openFile}
               >
                 <Stack direction="row" spacing={1}>
                   <Typography
-                    textColor={"text.primary"}
+                    textColor="text.primary"
                     sx={{
                       fontSize: "16px",
                       fontWeight: "600",

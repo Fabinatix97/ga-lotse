@@ -77,10 +77,10 @@ export function InfoPanelHeader({
         <IconButton
           variant="outlined"
           aria-label="close sidebar"
-          onClick={close}
           sx={{
             borderColor: "primary.outlinedBorder",
           }}
+          onClick={close}
         >
           <CloseIcon color="primary" />
         </IconButton>

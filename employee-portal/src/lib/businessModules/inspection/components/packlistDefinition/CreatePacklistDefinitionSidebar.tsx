@@ -19,9 +19,9 @@ export function CreatePacklistDefinitionSidebar({
   return (
     <CreateOrEditPacklistDefinitionSidebar
       open
-      onClose={onClose}
-      title={"Packliste erstellen"}
+      title="Packliste erstellen"
       objectTypes={objectTypes}
+      onClose={onClose}
     />
   );
 }

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { routes } from "@/config/routes";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { routes } from "../../../config/routes";
+import { ProphylaxisSessionExamination } from "../api/models/ProphylaxisSessionExamination";
+import { useProphylaxisSessionStore } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 interface UseParticipantNavigationResult {
   gotoPreviousParticipant?: (submit?: boolean) => Promise<void>;

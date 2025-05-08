@@ -18,7 +18,7 @@ import type {
   ApiInspection,
   ApiInspectionTravelTime,
 } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem, useIsOffline } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 
@@ -28,11 +28,10 @@ import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/
 import { TravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 const DATE_TIME_CLOCK_SUFFIX = " Uhr";
 
-export interface TravelTimeTileProps {
+interface TravelTimeTileProps {
   readonly?: boolean;
   inspection: ApiInspection;
   facilityAddress?: ApiAddFacilityFileStateRequestContactAddress;
@@ -127,22 +126,22 @@ export function TravelTimeTile({
     <InfoTile
       name="travelTime"
       title="Fahrzeiten"
-      onEdit={showEdit ? () => setOpen(true) : undefined}
       footer={
         !isOffline && (
           <Button
-            onClick={handleClickRoutePlanner}
             loading={isPending}
             variant="outlined"
             endDecorator={<ArrowForwardIcon />}
             data-target={
               openStreetMapUrl ?? "https://routing.openstreetmap.de/"
             }
+            onClick={handleClickRoutePlanner}
           >
             Routenplaner
           </Button>
         )
       }
+      onEdit={showEdit ? () => setOpen(true) : undefined}
     >
       {addressString && (
         <Stack
@@ -153,11 +152,11 @@ export function TravelTimeTile({
         >
           {addressString}
           <IconButton
-            onClick={handleClickCopyAddress}
             color="primary"
             variant="plain"
             size="sm"
             aria-label={`Copy: ${addressString}`}
+            onClick={handleClickCopyAddress}
           >
             <CopyAllIcon />
           </IconButton>
@@ -165,11 +164,11 @@ export function TravelTimeTile({
       )}
       <TravelTimeSidebar
         open={open}
-        onClose={() => setOpen(false)}
         procedureId={inspection.externalId}
         objectType={inspection.facility?.objectType}
         appointment={inspection.plannedAppointment}
         travelTime={inspection.travelTime}
+        onClose={() => setOpen(false)}
       />
       <Grid container columnSpacing={2} rowSpacing={3}>
         {showTravelStart && (

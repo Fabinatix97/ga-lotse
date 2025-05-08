@@ -13,4 +13,5 @@ public record ChildFilterParameters(
     @Min(1900) Integer yearFilter,
     UUID institutionIdFilter,
     String groupNameFilter,
+    Boolean noGroupFilter,
     List<UUID> procedureLabelsFilter) {}

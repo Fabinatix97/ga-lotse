@@ -5,12 +5,7 @@
 
 "use client";
 
-import {
-  queryOptions,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useEffect } from "react";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { InspectionApi } from "@eshg/inspection-api";
 
@@ -43,24 +38,17 @@ export function getAvailablePLDRsQueryKey(inspectionId: string) {
   ]);
 }
 
-export function getFacilityDuplicatesQueryKey(inspectionId: string) {
+function getFacilityDuplicatesQueryKey(inspectionId: string) {
   return inspectionApiQueryKey([
     inspectionGettersQueryKey(inspectionId),
     "getFacilityDuplicates",
   ]);
 }
 
-export function getInspectionDuplicatesQueryKey(inspectionId: string) {
+function getInspectionDuplicatesQueryKey(inspectionId: string) {
   return inspectionApiQueryKey([
     inspectionGettersQueryKey(inspectionId),
     "getInspectionDuplicates",
-  ]);
-}
-
-export function postInspectionViewedQueryKey(inspectionId: string) {
-  return inspectionApiQueryKey([
-    inspectionGettersQueryKey(inspectionId),
-    "postInspectionViewed",
   ]);
 }
 
@@ -128,16 +116,4 @@ export function useGetInspectionDuplicates(procedureId: string) {
     queryKey: getInspectionDuplicatesQueryKey(procedureId),
     queryFn: () => inspectionApi.getInspectionDuplicates(procedureId),
   });
-}
-
-export function useInspectionViewed(inspectionId: string) {
-  const queryClient = useQueryClient();
-  const inspectionApi = useInspectionApi();
-
-  useEffect(() => {
-    void queryClient.fetchQuery({
-      queryKey: postInspectionViewedQueryKey(inspectionId),
-      queryFn: () => inspectionApi.inspectionViewed(inspectionId),
-    });
-  }, [queryClient, inspectionApi, inspectionId]);
 }

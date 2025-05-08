@@ -77,8 +77,8 @@ export function CreateProcedureSidebar() {
   return (
     <Button
       startDecorator={<Add />}
-      onClick={() => personSidebar.open()}
       size={BUTTON_SIZE}
+      onClick={() => personSidebar.open()}
     >
       Neuen Vorgang anlegen
     </Button>

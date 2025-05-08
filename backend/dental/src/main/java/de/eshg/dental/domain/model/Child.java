@@ -41,7 +41,6 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   private UUID institutionId;
 
   @DataSensitivity(PROTECTED)
-  @Column(nullable = false)
   private String groupName;
 
   @ManyToMany

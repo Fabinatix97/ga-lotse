@@ -85,10 +85,10 @@ export function ChecklistDefinitionSectionsList() {
           </DragDropContext>
 
           <Button
-            onClick={() => push(createNewSection())}
             variant="plain"
             startDecorator={<CreateNewFolder />}
             sx={{ alignSelf: "flex-start" }}
+            onClick={() => push(createNewSection())}
           >
             Neue Sektion erstellen
           </Button>

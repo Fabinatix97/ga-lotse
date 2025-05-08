@@ -19,19 +19,25 @@ import de.eshg.base.centralfile.api.person.AddPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStatesResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
+import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
+import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildFilterParameters;
+import de.eshg.dental.api.ChildForTransitionDto;
+import de.eshg.dental.api.ChildForTransitionSortKey;
 import de.eshg.dental.api.ChildNameDto;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSearchResult;
 import de.eshg.dental.api.ChildSortKey;
+import de.eshg.dental.api.ChildrenForTransitionSortParameters;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.GroupForTransitionDto;
+import de.eshg.dental.api.GroupPromotionDto;
 import de.eshg.dental.api.InstitutionForTransitionDto;
 import de.eshg.dental.api.SchoolYearTransitionFilterParameters;
 import de.eshg.dental.api.SchoolYearTransitionPaginationAndSortParameters;
@@ -60,6 +66,7 @@ import de.eshg.dental.importer.ChildRowReader;
 import de.eshg.dental.mapper.ChildMapper;
 import de.eshg.dental.mapper.InstitutionMapper;
 import de.eshg.dental.statistic.StatisticsCalculationHelper;
+import de.eshg.dental.util.ChildForTransitionPageSpec;
 import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
@@ -84,6 +91,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -128,6 +136,7 @@ public class ChildService {
   private final ProcedureSearchService<Child> procedureSearchService;
   private final ProcedureQuery procedureQuery;
   private final ProcedureLabelRepository procedureLabelRepository;
+  private final Validator validator;
 
   public ChildService(
       Clock clock,
@@ -140,7 +149,8 @@ public class ChildService {
       ProgressEntryUtil progressEntryUtil,
       ProcedureSearchService<Child> procedureSearchService,
       ProcedureQuery procedureQuery,
-      ProcedureLabelRepository procedureLabelRepository) {
+      ProcedureLabelRepository procedureLabelRepository,
+      Validator validator) {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.childRepository = childRepository;
@@ -152,6 +162,7 @@ public class ChildService {
     this.procedureSearchService = procedureSearchService;
     this.procedureQuery = procedureQuery;
     this.procedureLabelRepository = procedureLabelRepository;
+    this.validator = validator;
   }
 
   Child createChild(CreateChildRequest request) {
@@ -165,6 +176,12 @@ public class ChildService {
   }
 
   private Child createChild(CreateChildRequest request, UUID personId) {
+    Child createdChild = createChild(personId);
+    ChildMapper.mapToChild(request, createdChild);
+    return createdChild;
+  }
+
+  public Child createChild(UUID personId) {
     Child createdChild = new Child();
     createdChild.setProcedureType(ProcedureType.DENTAL_CHILD);
     createdChild.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
@@ -172,12 +189,13 @@ public class ChildService {
     person.setPersonType(Person.PERSON_TYPE_USED_FOR_CHILDREN);
     person.setCentralFileStateId(personId);
     createdChild.addRelatedPerson(person);
-    ChildMapper.mapToChild(request, createdChild);
     return createdChild;
   }
 
-  public Map<CreateChildRequest, Child> createChildren(
-      List<CreateChildRequest> requests, DataOriginDto dataOrigin) {
+  public Map<CreateChildRequest, Child> createChildrenAndUpdateProcedureLabels(
+      List<CreateChildRequest> requests,
+      Map<PersonKeyAttributes, Child> previouslyClosedChildren,
+      DataOriginDto dataOrigin) {
     if (requests.isEmpty()) {
       return Map.of();
     }
@@ -189,10 +207,49 @@ public class ChildService {
       Child child = createChild(requests.get(i), childFileStateIds.get(i));
       CreateChildRequest request = requests.get(i);
       ChildMapper.mapToChild(request, child);
+
+      if (!previouslyClosedChildren.isEmpty()) {
+        PersonKeyAttributes key =
+            new PersonKeyAttributes(request.firstName(), request.lastName(), request.dateOfBirth());
+        Child closedChild = previouslyClosedChildren.get(key);
+        if (closedChild != null) {
+          child.setProcedureLabels(new ArrayList<>(closedChild.getProcedureLabels()));
+        }
+      }
       childRepository.save(child);
       createdChildren.put(request, child);
     }
     return createdChildren;
+  }
+
+  public void updateReferencePersons(Map<CreateChildRequest, Child> createdChildren) {
+    for (Map.Entry<CreateChildRequest, Child> entry : createdChildren.entrySet()) {
+      CreateChildRequest request = entry.getKey();
+      Child child = entry.getValue();
+
+      GetReferencePersonResponse referencePerson =
+          personApi.getReferencePerson(child.getChildIdFromCentralFile());
+      AddPersonFileStateResponse addPersonFileStateResponse =
+          personApi.updateReferencePerson(
+              referencePerson.id(),
+              new UpdateReferencePersonRequest(
+                  new de.eshg.base.centralfile.api.person.UpdatePersonRequest(
+                      request.title(),
+                      request.salutation(),
+                      request.gender(),
+                      request.firstName(),
+                      request.lastName(),
+                      request.dateOfBirth(),
+                      request.nameAtBirth(),
+                      request.placeOfBirth(),
+                      request.countryOfBirth(),
+                      request.emailAddresses(),
+                      request.phoneNumbers(),
+                      request.contactAddress(),
+                      request.differentBillingAddress()),
+                  referencePerson.version()));
+      child.getChild().setCentralFileStateId(addPersonFileStateResponse.id());
+    }
   }
 
   public void validateNoDuplicateExistsAndClosePreviousChildren(CreateChildRequest request) {
@@ -416,7 +473,7 @@ public class ChildService {
         .toList();
   }
 
-  private List<ChildWithAugmentedData> augmentWithChildAndContactData(List<Child> children) {
+  public List<ChildWithAugmentedData> augmentWithChildAndContactData(List<Child> children) {
     Map<UUID, GetPersonFileStateResponse> persons =
         personClient.fetchPersonDataInBulk(children).stream()
             .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
@@ -451,13 +508,19 @@ public class ChildService {
           ChildImporter importer =
               new ChildImporter(
                   sheet,
-                  new ChildRowReader(sheet, clock, actualColumns),
+                  new ChildRowReader(sheet, clock, actualColumns, isDaycare(institutionId)),
                   new FeedbackColumnAccessor(actualColumns, ChildColumn.CHILD_ID.getHeader()),
                   institutionId,
                   year,
                   this);
           return importer.process();
         });
+  }
+
+  private boolean isDaycare(UUID institutionId) {
+    ContactDto contact = contactClient.getContact(institutionId);
+    return contact instanceof InstitutionContactDto institutionContactDto
+        && institutionContactDto.category().equals(InstitutionContactCategoryDto.DAYCARE);
   }
 
   private PagedChildren getChildrenWithPersonAttributeSortKey(
@@ -507,11 +570,15 @@ public class ChildService {
 
   public void updateChildData(Child child, UpdateChildRequest request) {
     ValidationUtil.validateVersion(request.version(), child);
-
+    validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
     boolean updateGroup = !Objects.equals(request.groupName(), child.getGroupName());
     if (updateGroup) {
       log.debug("Updating group name: '{}' → '{}'", child.getGroupName(), request.groupName());
-      child.setGroupName(request.groupName());
+      if (request.groupName() != null) {
+        child.setGroupName(request.groupName().trim());
+      } else {
+        child.setGroupName(null);
+      }
     }
 
     boolean updateInstitution = !Objects.equals(request.institutionId(), child.getInstitutionId());
@@ -597,9 +664,12 @@ public class ChildService {
         .toList();
   }
 
-  public void closeChildrenInBulk(List<UUID> childIds) {
+  public void closeChildrenInBulk(List<UUID> childIds, boolean isXlsxImport) {
     List<Child> childrenToClose = childRepository.findByExternalIdsForUpdate(childIds).toList();
-    Validator.validateAllChildrenAreOpenAndOfYear(childrenToClose, Year.now(clock).minusYears(1));
+    // xlsx-import must be able to close children of all previous years
+    if (!isXlsxImport) {
+      validateAllChildrenAreOpenAndOfCurrentYear(childrenToClose);
+    }
     closeChildren(childrenToClose);
   }
 
@@ -619,6 +689,97 @@ public class ChildService {
     for (Child child : childrenToClose) {
       closeChild(child);
     }
+  }
+
+  private void validateAllChildrenAreOpenAndOfCurrentYear(List<Child> childrenToClose) {
+    Validator.validateAllChildrenAreOpenAndOfYear(childrenToClose, Year.now(clock).minusYears(1));
+  }
+
+  public List<UUID> promoteChildrenInBulk(List<UUID> childIds) {
+    List<Child> childrenToPromote = childRepository.findByExternalIdsForUpdate(childIds).toList();
+    validateAllChildrenAreOpenAndOfCurrentYear(childrenToPromote);
+    return promoteChildren(childrenToPromote, Function.identity());
+  }
+
+  public List<UUID> promoteGroupsInBulk(
+      UUID institutionId, List<GroupPromotionDto> groupTransitions) {
+    Year currentSchoolYear = Year.now(clock).minusYears(1);
+    Validator.validateUniquenessOfOriginGroupNames(groupTransitions);
+
+    Map<String, String> groupTransitionsMap =
+        groupTransitions.stream()
+            .collect(
+                Collectors.toMap(
+                    GroupPromotionDto::originGroupName, GroupPromotionDto::targetGroupName));
+
+    List<Child> childrenToPromote =
+        childRepository.findByInstitutionIdAndGroupNameAndYearForUpdate(
+            institutionId, groupTransitionsMap.keySet().stream().toList(), currentSchoolYear);
+
+    return promoteChildren(childrenToPromote, groupTransitionsMap::get);
+  }
+
+  private List<UUID> promoteChildren(
+      List<Child> childrenToPromote, Function<String, String> groupNameTransitions) {
+    log.info(
+        "Promoting {} {}",
+        childrenToPromote.size(),
+        childrenToPromote.size() == 1 ? "child" : "children");
+
+    if (childrenToPromote.isEmpty()) {
+      return List.of();
+    }
+
+    Year newSchoolYear = Year.now(clock);
+    List<UUID> newFileStateIds = duplicatePersonFileStates(childrenToPromote).personFileStateIds();
+
+    List<UUID> promotedChildren = new ArrayList<>();
+    for (int i = 0; i < childrenToPromote.size(); i++) {
+      Child childToPromote = childrenToPromote.get(i);
+      UUID fileStateId = newFileStateIds.get(i);
+      String newGroupName = groupNameTransitions.apply(childToPromote.getGroupName());
+
+      Child promotedChild = createChild(fileStateId);
+      promotedChild.setYear(newSchoolYear);
+      promotedChild.setGroupName(newGroupName);
+      promotedChild.setInstitutionId(childToPromote.getInstitutionId());
+      promotedChild.setProcedureLabels(new ArrayList<>(childToPromote.getProcedureLabels()));
+      childRepository.save(promotedChild);
+
+      promotedChildren.add(promotedChild.getExternalId());
+    }
+
+    closeChildrenInBulk(childrenToPromote.stream().map(Child::getExternalId).toList(), false);
+
+    return promotedChildren;
+  }
+
+  private AddPersonFileStatesResponse duplicatePersonFileStates(List<Child> children) {
+    List<GetPersonFileStateResponse> personFileStates =
+        personClient.fetchPersonDataInBulk(children);
+    List<AddPersonFileStateRequest> fileStateAddRequests =
+        personFileStates.stream().map(ChildService::buildFileStateAddRequest).toList();
+    return personApi.addPersonFileStates(new AddPersonFileStatesRequest(fileStateAddRequests));
+  }
+
+  private static AddPersonFileStateRequest buildFileStateAddRequest(
+      GetPersonFileStateResponse personFileState) {
+    return new AddPersonFileStateRequest(
+        new PersonDetailsDto(
+            personFileState.title(),
+            personFileState.salutation(),
+            personFileState.gender(),
+            personFileState.firstName(),
+            personFileState.lastName(),
+            personFileState.dateOfBirth(),
+            personFileState.nameAtBirth(),
+            personFileState.placeOfBirth(),
+            personFileState.countryOfBirth(),
+            personFileState.emailAddresses(),
+            personFileState.phoneNumbers(),
+            personFileState.contactAddress(),
+            personFileState.differentBillingAddress()),
+        personFileState.dataOrigin());
   }
 
   void updateChildPerson(Child child, UpdatePersonRequest request) {
@@ -715,6 +876,71 @@ public class ChildService {
         .toList();
   }
 
+  public List<ChildForTransitionDto> getChildrenForSchoolYearTransition(
+      UUID institutionId, ChildrenForTransitionSortParameters sortParameters) {
+    Year currentSchoolYear = Year.now(clock).minusYears(1);
+
+    ChildForTransitionSpecification childSpecification =
+        new ChildForTransitionSpecification(sortParameters, currentSchoolYear, institutionId);
+    ChildForTransitionPageSpec pageSpec =
+        ChildForTransitionSpecification.toPageSpec(sortParameters);
+    boolean sortKeyIsPersonAttribute =
+        Optional.ofNullable(sortParameters.sortKey())
+            .map(ChildForTransitionSortKey::isPersonAttribute)
+            .orElse(false);
+    if (sortKeyIsPersonAttribute) {
+      return getChildrenForTransitionWithPersonAttributeSortKey(pageSpec, childSpecification);
+    }
+
+    List<Child> openChildren = childRepository.findAll(childSpecification);
+    List<ChildWithAugmentedData> augmentedChildren = augmentWithChildData(openChildren);
+    return augmentedChildren.stream().map(this::mapToChildForTransitionDto).toList();
+  }
+
+  private ChildForTransitionDto mapToChildForTransitionDto(ChildWithAugmentedData augmentedData) {
+    GetPersonFileStateResponse personData = augmentedData.personData();
+    return new ChildForTransitionDto(
+        augmentedData.child().getExternalId(),
+        personData.firstName(),
+        personData.lastName(),
+        personData.gender(),
+        augmentedData.child().getGroupName(),
+        personData.dateOfBirth());
+  }
+
+  private List<ChildForTransitionDto> getChildrenForTransitionWithPersonAttributeSortKey(
+      ChildForTransitionPageSpec pageSpec, ChildForTransitionSpecification childSpecification) {
+    List<UUID> childIds = findAllChildIds(childSpecification);
+
+    List<UUID> pagedAndSortedFileStateIds =
+        personClient
+            .fetchPersonDataInBulk(
+                childIds,
+                new GetPersonFileStatesSortParameters(
+                    pageSpec.sortKey().asPersonsSortKey(), pageSpec.direction(), null, null))
+            .stream()
+            .map(GetPersonFileStateResponse::id)
+            .toList();
+
+    List<Child> result =
+        childRepository
+            .findByRelatedPersonsCentralFileStateIds(
+                pagedAndSortedFileStateIds, Person.PERSON_TYPE_USED_FOR_CHILDREN)
+            .stream()
+            .sorted(
+                Comparator.comparingInt(
+                    child -> {
+                      int index =
+                          pagedAndSortedFileStateIds.indexOf(child.getChildIdFromCentralFile());
+                      Assert.isTrue(index >= 0, "Unexpected index: " + index);
+                      return index;
+                    }))
+            .toList();
+
+    List<ChildWithAugmentedData> augmentedChildren = augmentWithChildData(result);
+    return augmentedChildren.stream().map(this::mapToChildForTransitionDto).toList();
+  }
+
   record ChildWithScore(GetPersonFileStateResponse fileState, Child child, int score) {
 
     private ChildSearchResult mapToChildSearchResult() {
@@ -766,21 +992,50 @@ public class ChildService {
     return ExceptionUtil.notFoundException(Child.class);
   }
 
-  PagedInstitutionsForTransition searchInstitutionsForSchoolYearTransition(
+  PagedInstitutionsForTransition searchSchoolsForSchoolYearTransition(
+      SchoolYearTransitionPaginationAndSortParameters paginationAndSortParameters,
+      SchoolYearTransitionFilterParameters filterParameters,
+      SchoolYearTransitionSearchParameters searchParameters) {
+    return searchInstitutionsForSchoolYearTransition(
+        InstitutionContactCategoryDto.SCHOOL,
+        paginationAndSortParameters,
+        filterParameters,
+        searchParameters);
+  }
+
+  PagedInstitutionsForTransition searchDaycaresForSchoolYearTransition(
+      SchoolYearTransitionPaginationAndSortParameters paginationAndSortParameters,
+      SchoolYearTransitionFilterParameters filterParameters,
+      SchoolYearTransitionSearchParameters searchParameters) {
+    return searchInstitutionsForSchoolYearTransition(
+        InstitutionContactCategoryDto.DAYCARE,
+        paginationAndSortParameters,
+        filterParameters,
+        searchParameters);
+  }
+
+  private PagedInstitutionsForTransition searchInstitutionsForSchoolYearTransition(
       InstitutionContactCategoryDto contactCategory,
       SchoolYearTransitionPaginationAndSortParameters paginationAndSortParameters,
       SchoolYearTransitionFilterParameters filterParameters,
       SchoolYearTransitionSearchParameters searchParameters) {
+    Year currentSchoolYear = Year.now(clock).minusYears(1);
+    List<ChildRepository.InstitutionCounts> institutionCounts = new ArrayList<>();
+    if (contactCategory == InstitutionContactCategoryDto.SCHOOL) {
+      institutionCounts.addAll(
+          childRepository.getInstitutionsAndCompletedGroups(currentSchoolYear));
+    } else if (contactCategory == InstitutionContactCategoryDto.DAYCARE) {
+      institutionCounts.addAll(
+          childRepository.getInstitutionsAndCompletedChildren(currentSchoolYear));
+    }
 
-    List<ChildRepository.InstitutionGroupCounts> institutionGroupCounts =
-        childRepository.getInstitutionsAndCompletedGroups(Year.now(clock).minusYears(1));
-    Map<UUID, ChildRepository.InstitutionGroupCounts> institutionGroupCountByInstitution =
-        institutionGroupCounts.stream()
+    Map<UUID, ChildRepository.InstitutionCounts> institutionCountByInstitution =
+        institutionCounts.stream()
             .collect(
                 Collectors.toMap(
-                    ChildRepository.InstitutionGroupCounts::getInstitutionId, Function.identity()));
+                    ChildRepository.InstitutionCounts::getInstitutionId, Function.identity()));
 
-    List<UUID> institutionIds = institutionGroupCountByInstitution.keySet().stream().toList();
+    List<UUID> institutionIds = institutionCountByInstitution.keySet().stream().toList();
     Map<UUID, InstitutionContactDto> augmentedInstitutions =
         contactClient
             .getBulkContacts(institutionIds)
@@ -794,10 +1049,10 @@ public class ChildService {
     Stream<InstitutionForTransitionDto> institutionsForTransition =
         institutionContacts.map(
             institution -> {
-              ChildRepository.InstitutionGroupCounts searchGroupsResult =
-                  institutionGroupCountByInstitution.get(institution.id());
-              int completedCount = searchGroupsResult.getCompletedGroups();
-              int totalCount = searchGroupsResult.getTotalGroups();
+              ChildRepository.InstitutionCounts searchResult =
+                  institutionCountByInstitution.get(institution.id());
+              int completedCount = searchResult.getCompletedCount();
+              int totalCount = searchResult.getTotalCount();
 
               return new InstitutionForTransitionDto(
                   InstitutionMapper.mapToInstitutionWithAddressDto(institution),
@@ -839,27 +1094,24 @@ public class ChildService {
           case ID ->
               Comparator.comparing(
                   institutionForTransition -> institutionForTransition.institution().id());
-          case COMPLETED_COUNT ->
-              Comparator.comparing(InstitutionForTransitionDto::completedCount)
-                  .thenComparing(
-                      institutionForTransition -> institutionForTransition.institution().name());
-          case STATUS ->
-              Comparator.comparing(InstitutionForTransitionDto::status)
-                  .thenComparing(
-                      institutionForTransition -> institutionForTransition.institution().name());
+          case COMPLETED_COUNT -> Comparator.comparing(InstitutionForTransitionDto::completedCount);
+          case STATUS -> Comparator.comparing(InstitutionForTransitionDto::status);
           case NAME ->
               Comparator.comparing(
                   (InstitutionForTransitionDto institutionForTransition) ->
                       institutionForTransition.institution().name());
         };
 
-    comparator =
-        comparator.thenComparing(
-            institutionForTransition -> institutionForTransition.institution().id());
-
     if (SortDirection.DESC.equals(sortDirection)) {
-      return comparator.reversed();
+      comparator = comparator.reversed();
     }
+
+    comparator =
+        comparator
+            .thenComparing(
+                institutionForTransition -> institutionForTransition.institution().name())
+            .thenComparing(institutionForTransition -> institutionForTransition.institution().id());
+
     return comparator;
   }
 

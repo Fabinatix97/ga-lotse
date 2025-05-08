@@ -20,9 +20,9 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
   const { userPresence, sharePresence } = useGetSelfUserPresence();
   return (
     <Stack
-      direction={"row"}
+      direction="row"
       gap={2}
-      alignItems={"center"}
+      alignItems="center"
       sx={{
         paddingRight: SIDEBAR_PADDING,
       }}
@@ -41,7 +41,7 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
           },
         }}
       >
-        <UserAvatar user={selfUser} size={"lg"} />
+        <UserAvatar user={selfUser} size="lg" />
       </Badge>
       <Stack
         sx={{
@@ -53,11 +53,7 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
           },
         }}
       >
-        <DialogTitle
-          sx={{ color: "text.primary" }}
-          component={"h1"}
-          level={"h3"}
-        >
+        <DialogTitle sx={{ color: "text.primary" }} component="h1" level="h3">
           {formatUserName(selfUser)}
         </DialogTitle>
         <Typography>@{selfUser.username}</Typography>

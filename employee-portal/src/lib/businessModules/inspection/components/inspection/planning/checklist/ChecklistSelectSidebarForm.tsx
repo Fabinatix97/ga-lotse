@@ -13,20 +13,20 @@ import {
   ApiInspectionCLDVersion,
 } from "@eshg/inspection-api";
 import {
-  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 
-export interface ChecklistSelectSidebarFormProps {
+interface ChecklistSelectSidebarFormProps {
   onClose: () => void;
   inspectionExternalId: string;
   currentSelectedNonCoreVersions: ApiInspectionCLDVersion[];
@@ -104,13 +104,13 @@ export function ChecklistSelectSidebarForm({
   return (
     <Formik
       initialValues={initial_values}
-      onSubmit={handleSubmit}
       enableReinitialize
       validate={validate}
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting, handleSubmit, setFieldValue, values, errors }) => (
-        <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
-          <SidebarContent title={"Checkliste auswählen"}>
+        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+          <SidebarContent title="Checkliste auswählen">
             <Stack direction="column" spacing={2}>
               {isExpandable && (
                 <SelectedVersionsForm
@@ -122,15 +122,15 @@ export function ChecklistSelectSidebarForm({
                 />
               )}
               {coreVersions.length > 0 && (
-                <Stack direction="column" data-testid={"core-checklists"}>
+                <Stack direction="column" data-testid="core-checklists">
                   <Typography>
                     Es werden folgende Kernchecklisten hinzugefügt:
                   </Typography>
                   {coreVersions.map((coreCldv) => (
                     <Typography
+                      key={coreCldv.versionId}
                       sx={{ display: "flex" }}
                       level="body-md"
-                      key={coreCldv.versionId}
                     >
                       {coreCldv.name + " (Version "}
                       {!coreCldv.isExpandable && <Lock />}
@@ -219,11 +219,11 @@ function SelectedVersionsForm({
               key={versionId}
               name={fieldName(versionId)}
               label={label}
+              size="md"
+              variant="outlined"
               onChange={async (ev) => {
                 await handleChange(versionId, ev.target.checked);
               }}
-              size="md"
-              variant="outlined"
             />
           );
         })}

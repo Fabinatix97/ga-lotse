@@ -26,7 +26,7 @@ export function HorizontalFieldLabelEnd(props: BaseFieldProps) {
 
   return (
     <StyledFormControl orientation="horizontal" {...formControlProps}>
-      <Stack direction="row" alignContent="center" gap={"8px"}>
+      <Stack direction="row" alignContent="center" gap="8px">
         {children}
         {renderLabel(label)}
       </Stack>

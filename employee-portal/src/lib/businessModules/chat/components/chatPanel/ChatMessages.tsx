@@ -143,7 +143,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                 }}
               >
                 {isSystemMessage(message) ? (
-                  <ChatSystemMessage message={message} key={message.id} />
+                  <ChatSystemMessage key={message.id} message={message} />
                 ) : (
                   <ChatBubble
                     variant={

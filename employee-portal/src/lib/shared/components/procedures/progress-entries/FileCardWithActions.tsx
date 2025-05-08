@@ -11,13 +11,10 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useContext } from "react";
 import { isDefined } from "remeda";
 
+import { FileCard, FileCardActionProps } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ApiAbstractFile } from "@eshg/lib-procedures-api";
 
-import {
-  FileCard,
-  FileCardActionProps,
-} from "@/lib/shared/components/FileCard";
 import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
 
 import {
@@ -26,14 +23,14 @@ import {
 } from "./ProgressEntriesContext";
 import { mapToFileCardProps } from "./mapper";
 
-export interface FileCardWithActionsProps {
+interface FileCardWithActionsProps {
   /** if set, includes an additional 'Details' link in actions menu */
   detailsProgressEntryId?: string;
   /** the file to display */
   file: ApiAbstractFile;
 }
 
-export interface FileCardWithDownloadProps {
+interface FileCardWithDownloadProps {
   file: ApiAbstractFile;
 }
 

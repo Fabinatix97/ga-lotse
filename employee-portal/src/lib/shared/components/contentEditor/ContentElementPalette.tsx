@@ -40,7 +40,7 @@ export function ContentElementPalette({
   }
 
   return (
-    <InformationSheet sx={sx} dataTestId={"editor-templates"}>
+    <InformationSheet sx={sx} dataTestId="editor-templates">
       <Typography level="h3" component="p">
         Vorlagen
       </Typography>

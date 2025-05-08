@@ -43,9 +43,7 @@ function ImportGeoShapeSidebar(props: SidebarWithFormRefProps) {
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={handleSubmit}
       steps={[
         () => ({
           title: "Daten importieren",
@@ -55,6 +53,8 @@ function ImportGeoShapeSidebar(props: SidebarWithFormRefProps) {
           initialValues,
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={handleSubmit}
     />
   );
 }

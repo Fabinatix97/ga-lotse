@@ -17,9 +17,8 @@ export function ProcedureTabHeader({
 
   return (
     <TabNavigationHeader titleAsH1>
-      <TabNavigationHeaderTypography>AZ</TabNavigationHeaderTypography>
       <TabNavigationHeaderTypography>
-        {procedure.person.yearOfBirth}
+        Geburtsjahr: {procedure.person.yearOfBirth}
       </TabNavigationHeaderTypography>
     </TabNavigationHeader>
   );

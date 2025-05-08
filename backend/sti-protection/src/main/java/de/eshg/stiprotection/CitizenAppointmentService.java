@@ -12,6 +12,7 @@ import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialReq
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.stiprotection.persistence.Appointments;
 import de.eshg.stiprotection.persistence.data.PersonData;
@@ -44,7 +45,8 @@ public class CitizenAppointmentService {
   }
 
   public StiProtectionProcedure createProcedureWithExpiryDate(Concern concern) {
-    StiProtectionProcedure procedure = stiProtectionService.saveProcedure(concern, CITIZEN_PORTAL);
+    StiProtectionProcedure procedure =
+        stiProtectionService.saveProcedure(concern, ProcedureStatus.DRAFT, CITIZEN_PORTAL);
     ProcedureExpiration procedureExpiration = new ProcedureExpiration(procedure);
     procedureExpirationRepository.save(procedureExpiration);
     return procedure;
@@ -107,5 +109,9 @@ public class CitizenAppointmentService {
 
   public StiProtectionProcedure findByExternalId(UUID procedureId) {
     return stiProtectionService.findByExternalId(procedureId);
+  }
+
+  public void finalizeDraftProcedure(UUID procedureId) {
+    stiProtectionService.openProcedure(procedureId);
   }
 }

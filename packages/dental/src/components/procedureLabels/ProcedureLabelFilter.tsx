@@ -10,8 +10,8 @@ import {
   ProcedureLabelAutocomplete,
 } from "@eshg/lib-employee-portal";
 
-import { procedureLabelApiQueryKey } from "@/config/apiQueryKeys";
-import { useDentalApi } from "@/contexts/dental";
+import { procedureLabelApiQueryKey } from "../../config/apiQueryKeys";
+import { useDentalApi } from "../../contexts/dental";
 
 interface ProcedureLabelFilterProps {
   label: string;
@@ -27,9 +27,9 @@ export function ProcedureLabelFilter(props: ProcedureLabelFilterProps) {
       <ProcedureLabelAutocomplete
         name="labels"
         value={props.values ?? []}
-        onChange={props.onChange}
         procedureLabelApi={procedureLabelApi}
         procedureLabelApiQueryKey={procedureLabelApiQueryKey}
+        onChange={props.onChange}
       />
     </FormControl>
   );

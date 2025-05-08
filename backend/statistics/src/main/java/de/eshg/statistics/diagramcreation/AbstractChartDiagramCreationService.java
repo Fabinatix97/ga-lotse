@@ -23,6 +23,7 @@ import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -199,25 +200,63 @@ public abstract class AbstractChartDiagramCreationService<D> {
     };
   }
 
-  protected static <T> void fillChartDataHolderWithMissingValues(
-      Map<T, Map<Object, Integer>> chartDataHolder, boolean onlyPrimaryAttribute) {
+  protected static <T> void cleanUpChartDataHolderKeys(
+      Map<T, Map<Object, Integer>> chartDataHolder,
+      boolean withAllPrimaryKeys,
+      boolean onlyPrimaryAttribute,
+      boolean withAllSecondaryKeys) {
     if (onlyPrimaryAttribute) {
-      chartDataHolder
-          .keySet()
-          .forEach(key -> chartDataHolder.get(key).computeIfAbsent(key, k -> 0));
+      if (withAllPrimaryKeys) {
+        chartDataHolder
+            .keySet()
+            .forEach(key -> chartDataHolder.get(key).computeIfAbsent(key, k -> 0));
+      } else {
+        List<T> keysToRemove =
+            chartDataHolder.entrySet().stream()
+                .filter(entry -> noRelevantValue(entry.getValue().get(entry.getKey())))
+                .map(Map.Entry::getKey)
+                .toList();
+        keysToRemove.forEach(chartDataHolder::remove);
+      }
     } else {
-      Set<Object> secondaryKeys =
+      List<T> primaryKeysToRemove;
+      if (withAllPrimaryKeys) {
+        primaryKeysToRemove = Collections.emptyList();
+      } else {
+        primaryKeysToRemove =
+            chartDataHolder.keySet().stream()
+                .filter(
+                    key ->
+                        chartDataHolder.get(key).entrySet().stream()
+                            .allMatch(entry -> noRelevantValue(entry.getValue())))
+                .toList();
+      }
+      primaryKeysToRemove.forEach(chartDataHolder::remove);
+
+      Set<Object> secondaryKeysToHave =
           chartDataHolder.values().stream()
-              .map(Map::keySet)
+              .map(Map::entrySet)
               .flatMap(Collection::stream)
+              .filter(entry -> withAllSecondaryKeys || !noRelevantValue(entry.getValue()))
+              .map(Map.Entry::getKey)
               .collect(Collectors.toSet());
       chartDataHolder
           .values()
           .forEach(
-              secondaryToIntegerMap ->
-                  secondaryKeys.forEach(
-                      key -> secondaryToIntegerMap.computeIfAbsent(key, secondaryKey -> 0)));
+              secondaryToIntegerMap -> {
+                List<Object> keysToRemove =
+                    secondaryToIntegerMap.keySet().stream()
+                        .filter(key -> !secondaryKeysToHave.contains(key))
+                        .toList();
+                keysToRemove.forEach(secondaryToIntegerMap::remove);
+                secondaryKeysToHave.forEach(
+                    key -> secondaryToIntegerMap.computeIfAbsent(key, secondaryKey -> 0));
+              });
     }
+  }
+
+  protected static boolean noRelevantValue(Integer value) {
+    return value == null || value == 0;
   }
 
   protected static List<KeyToCount> mapToKeyToCounts(

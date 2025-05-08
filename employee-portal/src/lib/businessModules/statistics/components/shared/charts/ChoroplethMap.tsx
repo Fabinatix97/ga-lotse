@@ -18,7 +18,7 @@ import {
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
 import { getChoroplethAggregationMethod } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 
-export interface ChoroplethMapProps {
+interface ChoroplethMapProps {
   diagramData: AnalysisDiagramChoroplethMap["data"];
   colorScheme: DiagramColorScheme;
   characteristicParameter?: DiagramCharacteristicParameter;

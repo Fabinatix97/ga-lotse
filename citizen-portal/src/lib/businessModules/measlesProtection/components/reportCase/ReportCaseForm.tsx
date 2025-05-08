@@ -79,7 +79,7 @@ export const reportCaseFormPages = {
   },
 };
 
-export type ReportCaseFormPageOption = keyof typeof reportCaseFormPages;
+type ReportCaseFormPageOption = keyof typeof reportCaseFormPages;
 export function getPageNumber(page: ReportCaseFormPageOption) {
   return reportCaseFormPages[page].pageNumber;
 }
@@ -95,7 +95,7 @@ const reportCaseSubformStyles: SxProps = {
   }),
 };
 
-export interface ReportMeaslesCaseFormProps {
+interface ReportMeaslesCaseFormProps {
   onSubmit: (reports: ReportMeaslesCase) => Promise<void>;
 }
 
@@ -228,8 +228,8 @@ export function ReportCaseForm({ onSubmit }: ReportMeaslesCaseFormProps) {
   ) : (
     <Formik
       initialValues={formValues}
-      onSubmit={handleFormSubmit}
       innerRef={formRef}
+      onSubmit={handleFormSubmit}
     >
       {() => (
         <Box

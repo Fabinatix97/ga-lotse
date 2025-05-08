@@ -5,8 +5,8 @@
 
 import { ApiMainResult } from "@eshg/dental-api";
 
-import { QUADRANT_NUMBERS, WISDOM_TEETH } from "@/stores/examination/constants";
-import { DmftValuesByDentitionType } from "@/stores/examination/examinationStore";
+import { QUADRANT_NUMBERS, WISDOM_TEETH } from "../constants";
+import { DmftValuesByDentitionType } from "../examinationStore";
 import {
   AddableTooth,
   Dentition,
@@ -14,7 +14,7 @@ import {
   Tooth,
   ToothType,
   ToothWithDiagnosis,
-} from "@/stores/examination/types";
+} from "../types";
 
 export function calculateDmftValuesByDentitionType(
   dentition: Dentition,

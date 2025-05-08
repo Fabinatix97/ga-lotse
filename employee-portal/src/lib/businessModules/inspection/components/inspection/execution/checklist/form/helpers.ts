@@ -14,7 +14,7 @@ import {
   ApiUpdateChecklistElementsInner,
 } from "@eshg/inspection-api";
 
-export type FormCheckboxField = Omit<ApiCLCheckboxField, "checked"> & {
+type FormCheckboxField = Omit<ApiCLCheckboxField, "checked"> & {
   checked: string;
 };
 

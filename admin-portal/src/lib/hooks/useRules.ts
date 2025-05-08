@@ -41,7 +41,7 @@ export type Rule = PartialRuleWithId &
   };
 export const RULES_QUERY = ["rules"];
 
-export function fetchRules(adminApi: ServiceDirectoryAdminApi) {
+function fetchRules(adminApi: ServiceDirectoryAdminApi) {
   return async (): Promise<ApiGetRulesResponse> => {
     return await adminApi.getAllRules().then(
       (response) => {

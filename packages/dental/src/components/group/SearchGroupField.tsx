@@ -5,21 +5,34 @@
 
 import { CircularProgress } from "@mui/joy";
 
+import { ApiContactCategory } from "@eshg/base-api";
 import { mapToSelectOption } from "@eshg/lib-employee-portal";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { NullableFieldValue } from "@eshg/lib-portal/types/form";
 
-import { useSearchInstitutionGroupsQuery } from "@/api/queries/groups";
+import { Institution } from "../../api/models/Institution";
+import { useSearchInstitutionGroupsQuery } from "../../api/queries/groups";
 
 interface SearchGroupFieldProps {
   name: string;
   label: string;
-  institutionId: string;
+  institution: NullableFieldValue<Institution>;
   freeSolo?: boolean;
   disabled?: boolean;
 }
 
+function isSchool(institution: Institution | null): boolean {
+  if (institution === null) {
+    return false;
+  }
+
+  return institution.category === ApiContactCategory.School;
+}
+
 export function SearchGroupField(props: SearchGroupFieldProps) {
-  const searchGroups = useSearchInstitutionGroupsQuery(props.institutionId);
+  const searchGroups = useSearchInstitutionGroupsQuery(
+    props.institution?.id ?? "",
+  );
   const groups = searchGroups.isSuccess ? searchGroups.data : [];
   const options = groups.map(mapToSelectOption);
 
@@ -27,7 +40,9 @@ export function SearchGroupField(props: SearchGroupFieldProps) {
     <SingleAutocompleteField
       name={props.name}
       label={props.label}
-      required="Bitte eine Gruppe angeben."
+      required={
+        isSchool(props.institution) ? "Bitte eine Gruppe angeben." : undefined
+      }
       options={options}
       placeholder="Gruppe suchen"
       loading={searchGroups.isFetching}

@@ -39,7 +39,6 @@ export function ExpandedNavigationList({
       {showCollapseButton && (
         <Button
           variant="plain"
-          onClick={onCollapse}
           sx={{
             whiteSpace: "nowrap",
             justifyContent: "space-between",
@@ -47,6 +46,7 @@ export function ExpandedNavigationList({
             marginInline: "0.5rem",
             display: "flex",
           }}
+          onClick={onCollapse}
         >
           <Typography level="body-sm" textColor="text.secondary">
             Menü einklappen

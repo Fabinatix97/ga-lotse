@@ -19,7 +19,7 @@ import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesP
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
-export interface AppointmentCardProps {
+interface AppointmentCardProps {
   appointment?: ApiAppointment;
   procedureClosed: boolean;
   procedureId: string;
@@ -82,7 +82,7 @@ export function AppointmentCard({
         )
       }
     >
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+      <Stack spacing={3} alignItems="start" width="100%">
         {appointment ? (
           <Stack gap={1} sx={{ flexBasis: "auto" }}>
             <DetailsItem label="Datum" value={formatDate(appointment.start)} />

@@ -11,7 +11,7 @@ import {
   CreateProcedureLabelRequest,
   ProcedureLabelClient,
   UpdateProcedureLabelRequest,
-} from "@/features/procedureLabels/types/procedureLabelClient";
+} from "../types/procedureLabelClient";
 
 export function useCreateProcedureLabel(
   procedureLabelApi: ProcedureLabelClient,

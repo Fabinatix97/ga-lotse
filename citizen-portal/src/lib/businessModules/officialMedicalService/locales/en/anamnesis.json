@@ -1,0 +1,453 @@
+{
+  "common": {
+    "requiredTitle": "*Required",
+    "stepTitle": "Step {{currentStepIndex}} of {{totalSteps}}",
+    "title": "Official Medical Service Medial History Form"
+  },
+  "content": {
+    "infoBox": "[EN]Alle Angaben unterliegen der Schweigepflicht. Es besteht die Moglichkeit, das Formular auch vor Ort auszuftllen, ohne dadurch Nachteile zu erfahren.",
+    "affectedPerson": {
+      "title": "[EN]Angaben zur Person",
+      "fillingPerson": {
+        "label": "[EN]Angaben zur ausfüllenden Person",
+        "required": "[EN]Pflichtfeld ausfüllen",
+        "values": {
+          "AFFECTED_PERSON": "[EN]Ich habe diesen Bogen selbst ausgefüllt.",
+          "LEGAL_GUARDIAN": "[EN]Eine andere Person hat diesen Bogen für mich ausgefüllt."
+        }
+      },
+      "maritalStatus": {
+        "label": "[EN]Familienstand",
+        "placeholder": "[EN]Auswählen",
+        "required": "[EN]Pflichtfeld ausfüllen",
+        "values": {
+          "UNMARRIED": "[EN]Ledig",
+          "MARRIED": "[EN]Verheiratet",
+          "WIDOWED": "[EN]Verwitwet",
+          "DIVORCED": "[EN]Geschieden",
+          "NO_SELECTION": "[EN]Keine Auswahl"
+        }
+      },
+      "numberOfChildren": {
+        "label": "[EN]Anzahl Kinder",
+        "required": "[EN]Pflichtfeld ausfüllen"
+      },
+      "yearsOfBirthOfChildren": {
+        "label": "[EN]Geburtsjahr Kind {{index}}",
+        "firstChildLabel": "[EN]Geburtsjahr erstes Kind",
+        "lastChildLabel": "[EN]Geburtsjahr letztes Kind"
+      },
+      "occupation": {
+        "label": "[EN]Beruf"
+      }
+    },
+    "currentHealthCondition": {
+      "title": "[EN]Aktuelle Beschwerden",
+      "currentMedicalConditionsInfo": {
+        "answer": {
+          "label": "[EN]Liegen aktuell Beschwerden vor?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "descriptionOfCondition": {
+          "label": "[EN]Beschreibung der Beschwerde",
+          "placeholder": "[EN]Auswählen",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "values": {
+            "ATTACKS": "[EN]Anfälle",
+            "LACK_OF_APPETITE": "[EN]Appetitlosigkeit",
+            "SHORTNESS_OF_BREATH": "[EN]Atemnot",
+            "JOINT_TROUBLE": "[EN]Gelenkbeschwerden",
+            "EAR_NOSE_THROAT": "[EN]Hals / Nase / Ohren",
+            "HEART_TROUBLE": "[EN]Herzbeschwerden",
+            "COUGH": "[EN]Husten",
+            "HEADACHE": "[EN]Kopfschmerzen",
+            "NIGHT_SWEATS": "[EN]Nachtschweiß",
+            "NERVOUS_TROUBLE": "[EN]Nervöse Beschwerden",
+            "PAINFUL_URINATION": "[EN]Schmerzhaftes Wasserlassen",
+            "IMPAIRED_VISION_EYE_TROUBLE": "[EN]Sehstörungen / Augenbeschwerden",
+            "MOOD_AND_MOTIVATION_SWINGS": "[EN]Stimmungs- und Antriebsschwankungen",
+            "WEIGHT_LOSS_OR_GAIN": "[EN]Gewichtsabnahme / -zunahme",
+            "RHEUMATIC_DISORDERS": "[EN]Rheumatische Beschwerden",
+            "BACK_PAIN": "[EN]Rückenschmerzen",
+            "PAIN": "[EN]Schmerzen",
+            "HEARING_LOSS": "[EN]Schwerhörigkeit",
+            "INSOMNIA": "[EN]Schlafstörungen",
+            "VERTIGO": "[EN]Schwindel",
+            "ADDICTION": "[EN]Suchtkrankheiten / ehemalige Suchtkrankheiten",
+            "INDIGESTION": "[EN]Verdauungsbeschwerden",
+            "TREMBLING": "[EN]Zittern",
+            "OTHER": "[EN]Sonstiges (Konkretisieren in “Nähere Angaben”)",
+            "NO_SELECTION": "[EN]Keine Auswahl"
+          }
+        },
+        "particulars": {
+          "label": "[EN]Nähere Angaben",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "medicalImagingFindingsInfo": {
+        "answer": {
+          "label": "[EN]Ergaben bildgebende Verfahren (Röntgen, CT, MRT) Befunde?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "result": {
+          "label": "[EN]Ergebnis",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "medicationDietarySupplementsOrDrugsInfo": {
+        "answer": {
+          "label": "[EN]Nehmen Sie zurzeit oder haben Sie in der Vergangenheit Medikamente, Nahrungsergänzungsmittel oder Drogen eingenommen?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "substances": {
+          "label": "[EN]Mittel angeben",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "healthyAndCapableInfo": {
+        "answer": {
+          "label": "[EN]Fühlen Sie sich gesund und leistungsfähig?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "sportsInfo": {
+        "answer": {
+          "label": "[EN]Betätigen Sie sich sportlich?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "formOfSport": {
+          "label": "[EN]Sportart",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "opticalAidInfo": {
+        "answer": {
+          "label": "[EN]Tragen Sie eine Sehhilfe?",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "values": {
+            "YES_GLASSES": "[EN]Ja, Brille",
+            "YES_CONTACT_LENSES": "[EN]Ja, Kontaktlinsen",
+            "NO": "[EN]Nein"
+          }
+        }
+      },
+      "primaryCareDoctorOrAttendingPhysician": {
+        "label": "[EN]Wie heißt Ihr Hausarzt oder behandelnder Arzt",
+        "required": "[EN]Pflichtfeld ausfüllen"
+      }
+    },
+    "healthFitnessAndDisability": {
+      "title": "[EN]Gesundheitliche Eignung und Behinderung",
+      "priorExaminationInfo": {
+        "hasPriorExaminations": {
+          "label": "[EN]Wurden Sie schon einmal auf Ihre gesundheitliche Eignung untersucht (z. B. Musterung, Gesundheitsamt, Betriebsärztlicher Dienst)?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "year": {
+          "label": "[EN]Wann?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "place": {
+          "label": "[EN]Wo?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "reason": {
+          "label": "[EN]Weshalb?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "result": {
+          "label": "[EN]Ergebnis",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "disabilityInfo": {
+        "hasDisability": {
+          "label": "[EN]Besteht eine Behinderung oder liegt ein Bescheid des Versorgungsamtes über eine Behinderung bzw.\nSchwerbehinderung vor?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "reason": {
+          "label": "[EN]Weshalb?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "degree": {
+          "label": "[EN]Grad der Behinderung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      }
+    },
+    "medicalHistory": {
+      "title": "[EN]Gesundheitliche Vorgeschichte",
+      "hadPastDiseasesOrDisabilities": {
+        "label": "[EN]Hatten Sie in der Vergangenheit Krankheiten oder Behinderungen?",
+        "required": "[EN]Pflichtfeld ausfüllen"
+      },
+      "heartDiseaseInfo": {
+        "answer": {
+          "label": "[EN]Herz-, Kreislauf-, Gefäßerkrankungen",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "placeholder": "[EN]Auswählen",
+          "values": {
+            "HYPERTENSION_HYPOTENSION": "[EN]Hypertonie / Hypotonie (hoher / niedriger Blutdruck)",
+            "CARDIAC_ARRHYTHMIA": "[EN]Herzrythmusstörungen: Bradycardie / Tachykardie (langsamer / schneller Herzschlag)",
+            "CORONARY_HEART_DISEASE": "[EN]Koronare Herzkrankheit (KHK)",
+            "HEART_ATTACK": "[EN]Herzinfarkt",
+            "STROKE": "[EN]Schlaganfall"
+          }
+        },
+        "bypass": {
+          "label": "[EN]Bypass"
+        },
+        "stent": {
+          "label": "[EN]Stent"
+        }
+      },
+      "nervousSystemInfo": {
+        "answer": {
+          "label": "[EN]Nervensystem (z.B. Kopfschmerzen, Migräne, Multiple Skelose (MS), Epilepsie, Parkinson, etc.)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "bonesJointsAndSpineInfo": {
+        "answer": {
+          "label": "[EN]Knochen- und Gelenksystem / Wirbelsäule",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "bladderKidneysAbdominalOrganInfo": {
+        "answer": {
+          "label": "[EN]Blase, Nieren, Unterleibsorgan (z.B. Harnwegsinfekte, Nierenbeckenentzündung, Endometriose, etc.)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "allergiesAndIntoleranceInfo": {
+        "answer": {
+          "label": "[EN]Allergien / Unverträglichkeiten (z.B. Lactose, Fructose, Medikamente, Heuschnupfen)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "earNoseThroatInfo": {
+        "answer": {
+          "label": "[EN]Hals / Nasen / Ohren",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "bronchiaLungsInfo": {
+        "answer": {
+          "label": "[EN]Bronchien / Lunge (z.B. Astma bronchiale, COPD)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "cancerInfo": {
+        "answer": {
+          "label": "[EN]Krebserkrankung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "whichAndWhen": {
+          "label": "[EN]Welche und wann?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "chemoRadiationTherapy": {
+          "label": "[EN]Chemo- / Strahlentherapie"
+        }
+      },
+      "stomachAndIntestinesInfo": {
+        "answer": {
+          "label": "[EN]Magen / Darm (z.B. Morbus Crohn, Colitis ulcerosa)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "liverInfo": {
+        "answer": {
+          "label": "[EN]Leber (z.B. Fettleber (Steatosis hepatis), Hepatitis, Gallensteine, Gallenblase)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "diabetesInfo": {
+        "answer": {
+          "label": "[EN]Diabetes",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "eatingDisorderInfo": {
+        "answer": {
+          "label": "[EN]Essstörung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "placeholder": "[EN]Auswählen",
+          "values": {
+            "ANOREXIE_NERVOSA": "[EN]Anorexie Nervosa (Magersucht)",
+            "BULIMIE_NERVOSA": "[EN]Bulimie Nervosa (Ess-Brech-Sucht)"
+          }
+        }
+      },
+      "mentalIllnessInfo": {
+        "answer": {
+          "label": "[EN]Psychische Erkrankung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "description": {
+          "label": "[EN]Beschreibung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "placeholder": "[EN]Auswählen",
+          "values": {
+            "DEPRESSION": "[EN]Depression",
+            "ANXIETY_DISORDER": "[EN]Angststörung",
+            "SOMATIZATION_DISORDER": "[EN]Somatisierungsstörung",
+            "BORDERLINE": "[EN]Borderline",
+            "BIPOLAR_DISORDER": "[EN]Bipolare Störung",
+            "PSYCHOSIS": "[EN]Psychose",
+            "OBSESSIVE_COMPULSIVE_DISORDER": "[EN]Zwangsstörung"
+          }
+        }
+      },
+      "thyroidInfo": {
+        "answer": {
+          "label": "[EN]Schilddrüse",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "placeholder": "[EN]Auswählen",
+          "values": {
+            "HYPOTHYREOSIS": "[EN]Hypothyreose (Schilddrüsenunterfunktion)",
+            "NODULE": "[EN]Knoten (kalt, warm, heiß)",
+            "HYPERTHYREOISIS": "[EN]Hyperthyreose (Schilddrüsenüberfunktion)",
+            "HASHIMOTO_THYREOIDITIS": "[EN]Hashimoto-Thyreoiditis"
+          }
+        }
+      },
+      "addictionsInfo": {
+        "answer": {
+          "label": "[EN]Suchterkrankungen",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "description": {
+          "label": "[EN]Beschreibung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "which": {
+          "label": "[EN]Welche?",
+          "required": "[EN]Pflichtfeld ausfüllen",
+          "placeholder": "[EN]Auswählen",
+          "values": {
+            "ALCOHOL": "[EN]Alkohol",
+            "CANNABIS": "[EN]Cannabis",
+            "NICOTINE": "[EN]Nikotine",
+            "ILLEGAL_DRUGS": "[EN]Illegale Drogen"
+          }
+        },
+        "amount": {
+          "label": "[EN]Tägliche / wöchentliche / monatliche Menge",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "since": {
+          "label": "[EN]Seit wann",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "notAnymoreSince": {
+          "label": "[EN]Nicht mehr seit"
+        }
+      },
+      "tuberculosis": {
+        "answer": {
+          "label": "[EN]Tuberkulose",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "overweightInfo": {
+        "answer": {
+          "label": "[EN]Übergewicht / Adipositas",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "description": {
+          "label": "[EN]Beschreibung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "heightInCm": {
+          "label": "[EN]Körpergröße (in cm)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "weightInKg": {
+          "label": "[EN]Körpergewicht (in kg)",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "boneFractureBrainTraumaInfo": {
+        "answer": {
+          "label": "[EN]Unfälle: Knochenbruch / Hirntrauma",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "description": {
+          "label": "[EN]Beschreibung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "whatWhenAndWhere": {
+          "label": "[EN]Was, wann und wie?",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      },
+      "miscellaneousInfo": {
+        "answer": {
+          "label": "[EN]Sonstiges",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        },
+        "description": {
+          "label": "[EN]Beschreibung",
+          "required": "[EN]Pflichtfeld ausfüllen"
+        }
+      }
+    },
+    "retirement": {
+      "title": "[EN]Antrag auf Rente",
+      "appliedForRetirement": {
+        "label": "[EN]Haben Sie eine Rente beantragt?",
+        "required": "[EN]Pflichtfeld ausfüllen"
+      },
+      "reason": {
+        "label": "[EN]Weshalb?",
+        "required": "[EN]Pflichtfeld ausfüllen"
+      },
+      "reductionOfEarningCapacity": {
+        "label": "[EN]Minderung der Erwerbsfähigkeit",
+        "required": "[EN]Pflichtfeld ausfüllen"
+      }
+    },
+    "booleanWithUnknown": {
+      "values": {
+        "YES": "[EN]Ja",
+        "NO": "[EN]Nein",
+        "DONT_KNOW": "[EN]Weiß ich nicht"
+      }
+    }
+  },
+  "sidePanel": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "next": "Next",
+    "submit": "Submit Medical History"
+  },
+  "snackbar": {
+    "submit_success": "Medical history form saved."
+  }
+}

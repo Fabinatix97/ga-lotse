@@ -188,6 +188,11 @@ public class PointBasedChartDiagramCreationService
     PointBasedChartConfiguration chartConfiguration =
         getPointBasedChartConfiguration(diagram.getAnalysis());
 
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            chartConfiguration.getSecondaryAttributeSelection(),
+            diagram.getAnalysis().getAggregationResult());
+
     Comparator<DataPointHolder> comparator =
         Comparator.comparing(DataPointHolder::xCoordinate)
             .thenComparing(DataPointHolder::yCoordinate)
@@ -212,11 +217,14 @@ public class PointBasedChartDiagramCreationService
               key -> {
                 List<DataPoint> dataPoints =
                     chartDataHolder.get(key).stream().sorted(comparator).map(mapFunction).toList();
-                DataPointGroup dataPointGroup = new DataPointGroup();
-                dataPointGroup.setKey(String.valueOf(key));
-                dataPointGroup.addDataPoints(dataPoints);
-                dataPointGroups.add(dataPointGroup);
-                evaluatedDataAmount.addAndGet(dataPoints.size());
+                if (!dataPoints.isEmpty()
+                    || secondaryTableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
+                  DataPointGroup dataPointGroup = new DataPointGroup();
+                  dataPointGroup.setKey(String.valueOf(key));
+                  dataPointGroup.addDataPoints(dataPoints);
+                  dataPointGroups.add(dataPointGroup);
+                  evaluatedDataAmount.addAndGet(dataPoints.size());
+                }
               });
     }
 

@@ -13,9 +13,9 @@ export interface SelectOption<TValue extends string = string> {
 export function SelectOptions(props: { options: SelectOption[] }) {
   return props.options.map((option) => (
     <Option
-      onClick={(event) => event.stopPropagation()}
       key={option.value}
       value={option.value}
+      onClick={(event) => event.stopPropagation()}
     >
       {option.label}
     </Option>

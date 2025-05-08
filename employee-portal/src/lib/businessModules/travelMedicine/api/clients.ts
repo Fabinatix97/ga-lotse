@@ -20,7 +20,6 @@ import {
   ProcedureApi,
   ProcedureStepApi,
   ProgressEntryApi,
-  TravelMedicineFeatureTogglesPublicApi,
   UnusedBaseInventoryVaccineApi,
   VaccinationConsultationApi,
   VaccineApi,
@@ -99,10 +98,6 @@ export function useFileApi() {
 
 export function useApprovalRequestApi() {
   return new ApprovalRequestApi(useConfiguration());
-}
-
-export function useFeatureTogglesApi() {
-  return new TravelMedicineFeatureTogglesPublicApi(useConfiguration());
 }
 
 export function useArchivingApi() {

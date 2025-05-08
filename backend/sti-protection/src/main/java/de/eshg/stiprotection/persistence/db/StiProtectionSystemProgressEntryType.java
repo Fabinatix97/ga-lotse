@@ -10,6 +10,7 @@ public enum StiProtectionSystemProgressEntryType {
   PERSON_DETAILS_UPDATED("Die Angaben zur Person wurden aktualisiert."),
   RAPID_TEST_EXAMINATION_UPDATED("Die Schnelltests wurden aktualisiert."),
   LABORATORY_TEST_EXAMINATION_UPDATED("Die Labortests wurden aktualisiert."),
+  APPOINTMENT_ADDED("Ein neuer Termin wurde gebucht."),
   APPOINTMENT_REBOOKED("Der Termin wurde verschoben auf den %s."),
   APPOINTMENT_CANCELLED("Ein Termin wurde storniert."),
   APPOINTMENT_FINALIZED("Ein Termin wurde als abgeschlossen markiert."),

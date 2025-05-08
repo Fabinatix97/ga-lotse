@@ -11,8 +11,8 @@ import {
   DetailsSection,
 } from "@eshg/lib-employee-portal";
 
-import { FluoridationConsentInformationSection } from "@/components/fluoridationConsent/FluoridationConsentInformationSection";
-import { ChildDetails } from "@/features/children/api/models/ChildDetails";
+import { FluoridationConsentInformationSection } from "../../../../components/fluoridationConsent/FluoridationConsentInformationSection";
+import { ChildDetails } from "../../api/models/ChildDetails";
 
 import { useUpdateAnnualChildSidebar } from "./UpdateAnnualChildSidebar";
 
@@ -30,8 +30,8 @@ export function AdditionalInformationDetailsSection(
   return (
     <DetailsSection
       title="Zusatzinfos"
-      onEdit={() => updateAnnualChildSidebar.open({ child })}
       canEdit={!child.isClosed}
+      onEdit={() => updateAnnualChildSidebar.open({ child })}
     >
       <Stack gap={1}>
         <DetailsItem label="Einrichtung" value={child.institution.name} />

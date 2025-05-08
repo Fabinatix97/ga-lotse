@@ -31,6 +31,9 @@
     "available": "available"
   },
   "appointment_overview": {
+    "concern": "concern",
+    "date": "Date",
+    "time": "Time",
     "clock": " o'clock",
     "rebook_appointment_button": "Reschedule appointment",
     "cancel_button": "Cancel"

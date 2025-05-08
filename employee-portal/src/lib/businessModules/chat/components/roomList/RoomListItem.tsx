@@ -22,7 +22,7 @@ import {
   isDMRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
-export interface RoomListItemProps {
+interface RoomListItemProps {
   room: Room;
   messageReads: string[];
   unreadNotifications?: number;

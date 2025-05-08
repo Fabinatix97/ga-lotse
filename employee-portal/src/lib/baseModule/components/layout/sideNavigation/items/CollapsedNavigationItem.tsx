@@ -95,8 +95,8 @@ export function CollapsedNavigationErrorItem({
     <>
       <ModuleErrorModal
         open={errorModalOpen}
-        onClose={() => setErrorModalOpen(false)}
         moduleName={item.name}
+        onClose={() => setErrorModalOpen(false)}
       />
       <ListItem>
         <Tooltip
@@ -254,14 +254,14 @@ export function CollapsedNavigationParentItem({
         </MenuButton>
       </ListItem>
       <Menu
+        keepMounted
+        disablePortal
+        modifiers={modifiers}
+        placement="right-start"
         onClose={() => setOpenMenuItemName(null)}
-        keepMounted={true}
-        disablePortal={true}
         onMouseLeave={() => {
           onLeaveMenu(() => isOnButton.current);
         }}
-        modifiers={modifiers}
-        placement="right-start"
       >
         <MenuItem disabled>
           <Typography noWrap level="body-sm">
@@ -270,7 +270,6 @@ export function CollapsedNavigationParentItem({
         </MenuItem>
         {item.subItems.map((subItem) => (
           <MenuItem
-            onClick={() => setOpenMenuItemName(null)}
             key={`${subItem.href}-${subItem.name}`}
             component={NavigationLink}
             href={subItem.href ?? ""}
@@ -278,6 +277,7 @@ export function CollapsedNavigationParentItem({
             aria-current={
               isItemSelected(subItem, pathname) ? "page" : undefined
             }
+            onClick={() => setOpenMenuItemName(null)}
           >
             <ListItemContent
               sx={{

@@ -39,7 +39,7 @@ export function TravelDataStep() {
       </FormSheetTitle>
       <Stack gap={2}>
         <CountryFieldMulti
-          name={"travelInformation.travelDestinations"}
+          name="travelInformation.travelDestinations"
           label={t("travelDataFormContent.fields.travelDestinations")}
           required={
             values.travelInformation.travelType !== ApiTravelType.NoTravel
@@ -48,7 +48,7 @@ export function TravelDataStep() {
           }
         />
         <DateField
-          name={"travelInformation.travelStartDate"}
+          name="travelInformation.travelStartDate"
           label={t("travelDataFormContent.fields.travelStartDate")}
           required={
             values.travelInformation.travelType !== ApiTravelType.NoTravel
@@ -58,7 +58,7 @@ export function TravelDataStep() {
           validate={validateTodayOrFutureDate}
         />
         <NumberField
-          name={"travelInformation.travelTimeAmount"}
+          name="travelInformation.travelTimeAmount"
           label={t("travelDataFormContent.fields.travelTimeAmount")}
           required={
             values.travelInformation.travelType !== ApiTravelType.NoTravel
@@ -72,7 +72,7 @@ export function TravelDataStep() {
           max={MAX_TRAVEL_TIME}
         />
         <SelectField
-          name={"travelInformation.travelTimeUnit"}
+          name="travelInformation.travelTimeUnit"
           label={t("travelDataFormContent.fields.travelTimeUnit")}
           options={VACCINATION_CONSULTATION_TRAVEL_TIME_UNITS}
           required={

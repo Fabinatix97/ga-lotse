@@ -32,7 +32,7 @@ export interface Task {
   readonly taskType: ApiTaskType;
 }
 
-export interface GetAggregatedTasksResponse {
+interface GetAggregatedTasksResponse {
   count: number;
   tasks: Task[];
   resolvedUsers: Record<string, ApiUser>;

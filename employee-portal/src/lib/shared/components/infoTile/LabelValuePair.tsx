@@ -10,7 +10,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 export function StyledValue(props: RequiresChildren) {
   return (
-    <Typography flex={1} level={"title-md"}>
+    <Typography flex={1} level="title-md">
       {props.children}
     </Typography>
   );
@@ -21,8 +21,8 @@ export function LabelValuePair(props: {
   value: string | ReactElement;
 }) {
   return (
-    <Stack direction={"row"} gap={1}>
-      <Typography flex={1} level={"body-md"}>
+    <Stack direction="row" gap={1}>
+      <Typography flex={1} level="body-md">
         {props.label}
       </Typography>
       {typeof props.value === "string" ? (

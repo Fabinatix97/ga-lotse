@@ -33,7 +33,7 @@ export function TravelTypeStep() {
         name="travelInformation.travelType"
         required={t("travelTypeFormContent.error")}
         sx={{ gap: 2 }}
-        withErrorDecorator={true}
+        withErrorDecorator
         onChange={async (value) => {
           if (value === ApiTravelType.NoTravel) {
             await setFieldValue("travelInformation.travelDestinations", []);
@@ -54,7 +54,7 @@ export function TravelTypeStep() {
                 alignItems: "center",
               }),
             }}
-          ></RadioSheet>
+          />
         ))}
       </RadioGroupField>
     </FormSheet>

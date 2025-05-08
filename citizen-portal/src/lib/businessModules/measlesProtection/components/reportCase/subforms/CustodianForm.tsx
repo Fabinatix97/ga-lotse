@@ -27,7 +27,7 @@ import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField"
 import { isAdult, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateEmail } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import Loading from "@/app/[lang]/loading";
 import {
@@ -56,7 +56,7 @@ import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
 import { AddressForm, createEmptyAddress } from "./AddressForm";
 
-export interface NestedFormProps {
+interface NestedFormProps {
   name: string;
 }
 
@@ -86,97 +86,92 @@ interface CustodianFormProps extends NestedFormProps {
   onCheckAddressMatch?: (checked: boolean) => void;
 }
 
-export function CustodianForm({
-  onCheckAddressMatch,
-  name,
-}: CustodianFormProps) {
+function CustodianForm({ onCheckAddressMatch, name }: CustodianFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const { setFieldValue } = useFormikContext();
   const fieldName = createFieldNameMapper<CustodianFormInputs>(name);
 
   return (
-    <>
-      <Grid container spacing={2} data-testid="custodianForm">
-        <Grid xxs={12} xs={6}>
-          <SelectField
-            name={fieldName("salutation")}
-            label={t("common.personalDetails.salutation")}
-            options={salutationOptions(t)}
-          />
-        </Grid>
-        <Grid xxs={12} xs={6}>
-          <SelectField
-            name={fieldName("title")}
-            label={t("common.personalDetails.title")}
-            options={titleOptions(t)}
-          />
-        </Grid>
-        <Grid xxs={12} xs={6}>
-          <InputField
-            name={fieldName("firstName")}
-            label={t("common.personalDetails.firstName")}
-            required={t("common.personalDetails.firstName_required")}
-            validate={validateLength(1, FIRST_NAME_MAX_LENGTH)}
-          />
-        </Grid>
-        <Grid xxs={12} xs={6}>
-          <InputField
-            name={fieldName("lastName")}
-            label={t("common.personalDetails.lastName")}
-            required={t("common.personalDetails.lastName_required")}
-            validate={validateLength(1, LAST_NAME_MAX_LENGTH)}
-          />
-        </Grid>
-        <Grid xxs={12} xs={6}>
-          <SelectField
-            name={fieldName("gender")}
-            label={t("common.personalDetails.gender")}
-            options={genderOptions(t)}
-          />
-        </Grid>
-        <Grid xxs={12} xs={6}>
-          <DateField
-            name={fieldName("dateOfBirth")}
-            label={t("common.personalDetails.dateOfBirth")}
-            required={t("common.personalDetails.dateOfBirth_required")}
-          />
-        </Grid>
-        <AddressForm
-          name={fieldName("address")}
-          onCheckAddressMatch={(checked) => {
-            if (onCheckAddressMatch) onCheckAddressMatch(checked);
-          }}
-          addressMatchLabel={t("custodian.address_match")}
+    <Grid container spacing={2} data-testid="custodianForm">
+      <Grid xxs={12} xs={6}>
+        <SelectField
+          name={fieldName("salutation")}
+          label={t("common.personalDetails.salutation")}
+          options={salutationOptions(t)}
         />
-        <FormSectionLabel value={t("custodian.contact_info")} />
-        <Grid xxs={12} xs={6}>
-          <InputField
-            type="email"
-            name={fieldName("emailAddresses")}
-            label={t("common.personalDetails.emailAddress")}
-            onChange={(value) =>
-              setFieldValue(fieldName("emailAddresses"), [value])
-            }
-            validate={(value) =>
-              validateEmail(t("common.personalDetails.emailAddress_required"))(
-                Array.isArray(value) ? (value[0] as string) : value,
-              )
-            }
-          />
-        </Grid>
-        <Grid xxs={12} xs={6}>
-          <InputField
-            type="tel"
-            name={fieldName("phoneNumbers")}
-            label={t("common.personalDetails.phoneNumber")}
-            onChange={(value) =>
-              setFieldValue(fieldName("phoneNumbers"), [value])
-            }
-          />
-        </Grid>
       </Grid>
-    </>
+      <Grid xxs={12} xs={6}>
+        <SelectField
+          name={fieldName("title")}
+          label={t("common.personalDetails.title")}
+          options={titleOptions(t)}
+        />
+      </Grid>
+      <Grid xxs={12} xs={6}>
+        <InputField
+          name={fieldName("firstName")}
+          label={t("common.personalDetails.firstName")}
+          required={t("common.personalDetails.firstName_required")}
+          validate={validateLength(1, FIRST_NAME_MAX_LENGTH)}
+        />
+      </Grid>
+      <Grid xxs={12} xs={6}>
+        <InputField
+          name={fieldName("lastName")}
+          label={t("common.personalDetails.lastName")}
+          required={t("common.personalDetails.lastName_required")}
+          validate={validateLength(1, LAST_NAME_MAX_LENGTH)}
+        />
+      </Grid>
+      <Grid xxs={12} xs={6}>
+        <SelectField
+          name={fieldName("gender")}
+          label={t("common.personalDetails.gender")}
+          options={genderOptions(t)}
+        />
+      </Grid>
+      <Grid xxs={12} xs={6}>
+        <DateField
+          name={fieldName("dateOfBirth")}
+          label={t("common.personalDetails.dateOfBirth")}
+          required={t("common.personalDetails.dateOfBirth_required")}
+        />
+      </Grid>
+      <AddressForm
+        name={fieldName("address")}
+        addressMatchLabel={t("custodian.address_match")}
+        onCheckAddressMatch={(checked) => {
+          if (onCheckAddressMatch) onCheckAddressMatch(checked);
+        }}
+      />
+      <FormSectionLabel value={t("custodian.contact_info")} />
+      <Grid xxs={12} xs={6}>
+        <InputField
+          type="email"
+          name={fieldName("emailAddresses")}
+          label={t("common.personalDetails.emailAddress")}
+          validate={(value) =>
+            validateEmail(t("common.personalDetails.emailAddress_required"))(
+              Array.isArray(value) ? (value[0] as string) : value,
+            )
+          }
+          onChange={(value) =>
+            setFieldValue(fieldName("emailAddresses"), [value])
+          }
+        />
+      </Grid>
+      <Grid xxs={12} xs={6}>
+        <InputField
+          type="tel"
+          name={fieldName("phoneNumbers")}
+          label={t("common.personalDetails.phoneNumber")}
+          onChange={(value) =>
+            setFieldValue(fieldName("phoneNumbers"), [value])
+          }
+        />
+      </Grid>
+    </Grid>
   );
 }
 
@@ -245,7 +240,7 @@ export function CustodiansFieldArray({
     <>
       <Stack component="div" gap={2} rowGap={2} sx={sx}>
         <FormHeader>{t("common.custodian_other")}</FormHeader>
-        <Grid container xxs={12} justifyContent={"flex-end"}>
+        <Grid container xxs={12} justifyContent="flex-end">
           <Typography level="body-xs">{`* ${t("common.requiredField")}`}</Typography>
         </Grid>
         <Grid xxs={12}>
@@ -297,8 +292,8 @@ export function CustodiansFieldArray({
                               {!(custodianIndex == 0 && custodianRequired) && (
                                 <IconButton
                                   color="primary"
-                                  onClick={() => remove(custodianIndex)}
                                   aria-label={`${sectionHeader} löschen`}
+                                  onClick={() => remove(custodianIndex)}
                                 >
                                   <DeleteOutline />
                                 </IconButton>
@@ -323,16 +318,16 @@ export function CustodiansFieldArray({
                       <Divider />
                     </Grid>
                     <Button
-                      onClick={() => push(createEmptyCustodian())}
                       variant="plain"
                       color="primary"
                       startDecorator={<Add />}
-                      size={"sm"}
+                      size="sm"
                       sx={{
                         p: 2,
                         "--Button-minHeight": 0,
                         alignSelf: "flex-start",
                       }}
+                      onClick={() => push(createEmptyCustodian())}
                     >
                       Kontaktperson hinzufügen
                     </Button>
@@ -347,9 +342,9 @@ export function CustodiansFieldArray({
         isSubmitting={isSubmitting}
         facilityName={facilityName}
         cancelLabel={t("common.back")}
-        onCancel={onCancel}
         showFacilityContactPerson
         showAffected={{ current: true }}
+        onCancel={onCancel}
       />
     </>
   );

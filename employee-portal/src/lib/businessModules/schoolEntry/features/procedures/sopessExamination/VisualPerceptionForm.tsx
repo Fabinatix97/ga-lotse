@@ -86,11 +86,11 @@ export function VisualPerceptionForm(props: VisualPerceptionFormProps) {
             name={fieldName("points")}
             label="Punkte"
             sx={FIXED_WIDTH_STYLE}
-            onChange={handleVisualPerceptionChange}
             validate={validateVisualPerception}
             min={MIN_0}
             max={MAX_99}
             softRequired
+            onChange={handleVisualPerceptionChange}
           />
           <StatusChip aria-label="Bewertung Visuelle Perzeption" minWidth="sm">
             {mapExaminationEvaluation(props.points)}

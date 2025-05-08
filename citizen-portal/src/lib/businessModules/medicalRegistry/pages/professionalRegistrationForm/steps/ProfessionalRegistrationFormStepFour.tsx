@@ -141,7 +141,7 @@ export function ProfessionalRegistrationFormStepFour() {
               <Grid xxs={6}>
                 {otherRelevantDocuments.length <
                   MAX_OTHER_RELEVANT_DOCUMENTS && (
-                  <Button onClick={() => push(null)} startDecorator={<Add />}>
+                  <Button startDecorator={<Add />} onClick={() => push(null)}>
                     {t(
                       "stepFour.contentSheetOne.label.anotherRelevantDocument",
                     )}
@@ -153,7 +153,7 @@ export function ProfessionalRegistrationFormStepFour() {
         </FieldArray>
       </ContentSheet>
 
-      {shouldEnable("employees", changeType) && employeesEmployed && (
+      {shouldEnable("employees", changeType) && employeesEmployed ? (
         <ContentSheet>
           <Typography level="h2">
             {t("stepFour.contentSheetTwo.pageTitle")}
@@ -171,7 +171,7 @@ export function ProfessionalRegistrationFormStepFour() {
             />
           </Sheet>
         </ContentSheet>
-      )}
+      ) : null}
     </Stack>
   );
 }

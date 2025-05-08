@@ -16,9 +16,12 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
 public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
+  boolean isGroupNameOptional;
 
-  public ChildRowReader(Sheet sheet, Clock clock, List<ChildColumn> actualColumns) {
+  public ChildRowReader(
+      Sheet sheet, Clock clock, List<ChildColumn> actualColumns, boolean isGroupNameOptional) {
     super(sheet, actualColumns, ChildRow::new, clock);
+    this.isGroupNameOptional = isGroupNameOptional;
   }
 
   private static final AddressColumns<ChildColumn> CHILD_ADDRESS_COLUMNS =
@@ -40,7 +43,7 @@ public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
         cellAsString(col, FIRST_NAME, errorHandler),
         cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
-        cellAsString(col, GROUP, errorHandler),
+        cellAsString(col, GROUP, isGroupNameOptional, false, errorHandler),
         readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, false));
   }
 }

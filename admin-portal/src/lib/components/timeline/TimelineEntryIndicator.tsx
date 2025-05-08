@@ -10,7 +10,7 @@ export function TimelineEntryIndicator(props: StepIndicatorProps) {
   return (
     <StepIndicator
       {...props}
-      variant={"plain"}
+      variant="plain"
       sx={{
         borderWidth: "1px",
         borderStyle: "solid",

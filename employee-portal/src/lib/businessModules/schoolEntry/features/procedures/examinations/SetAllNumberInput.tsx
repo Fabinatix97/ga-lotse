@@ -30,6 +30,7 @@ export function SetAllNumberInput(props: SetAllNumberInput) {
       <Input
         value={value}
         type="number"
+        disabled={disabled}
         onChange={(event) => {
           const newValue = event.target.valueAsNumber;
           if (Number.isNaN(newValue) || props.validate(newValue)) {
@@ -39,7 +40,6 @@ export function SetAllNumberInput(props: SetAllNumberInput) {
           props.onChange(newValue);
         }}
         onBlur={() => setValue("")}
-        disabled={disabled}
       />
     </FieldComponent>
   );

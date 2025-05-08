@@ -12,7 +12,7 @@ import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/temp
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";
 import { validateConfirmationField } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
-export interface TemplateConfirmationProps {
+interface TemplateConfirmationProps {
   sectionElementFormikPath: string;
   sectionElementDeleteHandler: () => void;
   label: string;
@@ -23,7 +23,7 @@ export function TemplateConfirmation(
   return (
     <DataElementBox data-testid="section-element-confirmation">
       <DataElementHeading>Bestätigungsfeld</DataElementHeading>
-      <Stack direction="row" spacing={1} alignItems={"flex-start"}>
+      <Stack direction="row" spacing={1} alignItems="flex-start">
         <InputField
           label
           aria-label={props.label}
@@ -33,14 +33,14 @@ export function TemplateConfirmation(
           validate={validateConfirmationField()}
           data-testid="element-main-text"
         />
-        <Stack alignItems="center" paddingTop={"6px"}>
+        <Stack alignItems="center" paddingTop="6px">
           <IconButton
-            onClick={props.sectionElementDeleteHandler}
             aria-label="Entfernen"
             color="warning"
             variant="outlined"
             title="Entfernen"
             data-testid="element-delete-button"
+            onClick={props.sectionElementDeleteHandler}
           >
             <DeleteOutlineIcon />
           </IconButton>

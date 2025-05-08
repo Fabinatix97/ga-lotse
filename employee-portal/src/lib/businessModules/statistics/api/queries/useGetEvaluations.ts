@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
-
 import {
   DateSpanFilterValue,
   EnumFilterValue,
@@ -17,7 +15,6 @@ import {
   EvaluationApi,
 } from "@eshg/statistics-api";
 
-import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";
 import { mapDateSpanFilterToApiDateSpan } from "@/lib/businessModules/statistics/api/mapper/mapDateSpanFilterToApiDateSpan";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
@@ -115,16 +112,6 @@ export function createQueryGetEvaluations(
       ),
     select: mapGetEvaluations,
   };
-}
-
-export function useGetEvaluations(
-  pageRequest: PageRequest,
-  filterValues: FilterValue[],
-) {
-  const evaluationApi = useEvaluationApi();
-  return useSuspenseQuery(
-    createQueryGetEvaluations(evaluationApi, pageRequest, filterValues),
-  );
 }
 
 function mapGetEvaluations(

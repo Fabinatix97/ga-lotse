@@ -35,8 +35,6 @@ import {
 } from "./AppointmentListForDate";
 import { Weekday, formatTime } from "./helpers";
 
-export { FIELD_LABELS_DE } from "./labels";
-
 export interface Appointment {
   start: Date;
   end?: Date;
@@ -208,7 +206,6 @@ export function AppointmentPickerField<T extends Appointment>({
       calendar={
         <AppointmentCalendar
           selectedDay={active ? selectedDay : undefined}
-          onDateSelected={setSelectedDay}
           currentMonth={currentMonth}
           setCurrentMonth={setCurrentMonth}
           appointments={dateAppointments}
@@ -220,6 +217,7 @@ export function AppointmentPickerField<T extends Appointment>({
           padDays={padDays}
           errorMessageId={hasCalendarError ? calendarErrorId : undefined}
           locale={locale}
+          onDateSelected={setSelectedDay}
         />
       }
       locale={locale}
@@ -234,12 +232,12 @@ export function AppointmentPickerField<T extends Appointment>({
             {...listProps}
             field={field}
             date={active ? selectedDay : undefined}
-            onAppointmentSelected={onAppointmentSelected}
             isAppointmentEqual={isAppointmentEqual}
             optionLabel={(a, l) =>
               formatTime(a.start, l, slotProps?.list?.trimLeadingZero)
             }
             locale={locale}
+            onAppointmentSelected={onAppointmentSelected}
           />
           {field.helperText != null &&
             (field.helperText !== error || !hasCalendarError) && (
@@ -264,10 +262,10 @@ function DefaultLayout({
   const sxProps = [{ margin: 0, padding: 0, border: 0 }, ...givenSx];
   return (
     <Stack
-      component={"fieldset"}
+      component="fieldset"
       sx={sxProps}
       className={className}
-      aria-label={"Terminkalender"}
+      aria-label="Terminkalender"
     >
       {calendar}
       {calendarError}

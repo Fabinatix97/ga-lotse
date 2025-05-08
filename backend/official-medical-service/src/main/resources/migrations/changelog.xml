@@ -15,4 +15,5 @@
   <include file="migrations/0005_labcodes.xml"/>
   <include file="migrations/0006_anamnesis.xml"/>
   <include file="migrations/0007_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="migrations/0008_opening_hours_update_pt2.xml"/>
 </databaseChangeLog>

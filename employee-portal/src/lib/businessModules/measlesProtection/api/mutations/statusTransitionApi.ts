@@ -9,11 +9,11 @@ import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import { useStatusTransitionApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 
-export interface UseCloseProcedureRequest {
+interface UseCloseProcedureRequest {
   procedureId: string;
 }
 
-export interface UseReopenProcedureRequest {
+interface UseReopenProcedureRequest {
   procedureId: string;
 }
 

@@ -11,8 +11,8 @@ export function SearchFooter(props: { onCreatePerson: () => void }) {
     <Button
       variant="plain"
       startDecorator={<AddOutlined />}
-      onClick={props.onCreatePerson}
       sx={{ alignSelf: "start" }}
+      onClick={props.onCreatePerson}
     >
       Person neu anlegen
     </Button>

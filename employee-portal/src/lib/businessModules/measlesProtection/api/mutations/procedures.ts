@@ -7,7 +7,6 @@
 
 import { isNullish } from "remeda";
 
-import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
 import { getFilenameFromHeader } from "@eshg/lib-portal/api/files/download";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
@@ -19,16 +18,16 @@ import {
   ApiAccessRestriction,
   ApiAccessRestrictionLetter,
   ApiAddCustodianRequest,
-  ApiAddCustodianResponse,
   ApiAddFacilityRequest,
   ApiAddFacilityResponse,
+  ApiAffectedPersonDetails,
   ApiCaseStatus,
   ApiCreateAccessRestriction,
   ApiCreateAccessRestrictionLetter,
   ApiCreateMonetaryFine,
   ApiCreatePersonRequest,
-  ApiCreatePersonResponse,
   ApiCreateProofRequestLetter,
+  ApiCustodianDetails,
   ApiDataOrigin,
   ApiGetProcedure200Response,
   ApiMPFacilityType,
@@ -37,6 +36,8 @@ import {
   ApiProofSubmission,
   ApiResponse,
   ApiSaveProofRequestLetter,
+  ApiSyncAffectedPersonRequest,
+  ApiSyncCustodianRequest,
   ApiSyncFacilityRequest,
   ApiUpdateAccessRestriction,
   ApiUpdateProcedureRequest,
@@ -104,16 +105,15 @@ export function useSubmitDraftProcedureMutation({
   });
 }
 
-export function useCreateDraftProcedureMutation({
-  onSuccess,
-  onError,
-}: MutationPassThrough<ApiCreatePersonRequest, ApiCreatePersonResponse> = {}) {
+export function useCreateDraftProcedure() {
   const api = useDraftProcedureApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: (data: ApiCreatePersonRequest) => api.createPerson(data),
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
-    onSuccess,
-    onError,
+    mutationKey: measlesProtectionApiQueryKey(["createPerson"]),
+    onSuccess: () => {
+      snackbar.confirmation("Vorgang erfolgreich angelegt.");
+    },
   });
 }
 
@@ -122,26 +122,66 @@ interface AddCustodianParams {
   data: ApiAddCustodianRequest;
 }
 
-export function useAddCustodianMutation({
-  onSuccess,
-  onError,
-}: MutationPassThrough<AddCustodianParams, ApiAddCustodianResponse>) {
+export function useAddCustodian() {
   const api = useDraftProcedureApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: ({ procedureId, data }: AddCustodianParams) =>
       api.addCustodian(procedureId, data),
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
-    onSuccess,
-    onError,
+    mutationKey: measlesProtectionApiQueryKey(["addCustodian"]),
+    onSuccess: () => {
+      snackbar.confirmation("Personensorgeberechtigte:r erfolgreich angelegt.");
+    },
   });
 }
 
-export function useProceduresForPersonSearch() {
-  const measlesProtectionApi = useProtectionProcedureApi();
+interface PatchCustodianParams {
+  procedureId: string;
+  custodianId: string;
+  custodian: ApiCustodianDetails;
+}
+
+export function useEditCustodian() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
-    mutationFn: async (person: ApiGetReferencePersonResponse) =>
-      measlesProtectionApi.getProceduresForPerson({ person }),
-    mutationKey: measlesProtectionApiQueryKey(["procedures", "for-person"]),
+    mutationFn: ({
+      procedureId,
+      custodianId,
+      custodian,
+    }: PatchCustodianParams) => {
+      return api.editCustodian(procedureId, custodianId, {
+        custodianDetails: custodian,
+      });
+    },
+    mutationKey: measlesProtectionApiQueryKey(["editCustodian"]),
+    onSuccess: () => {
+      snackbar.confirmation("Änderungen an PSB erfolgreich gespeichert.");
+    },
+  });
+}
+
+interface SyncCustodianParams {
+  procedureId: string;
+  custodianId: string;
+  request: ApiSyncCustodianRequest;
+}
+
+export function useSyncCustodian() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: ({
+      procedureId,
+      custodianId,
+      request,
+    }: SyncCustodianParams): Promise<void> => {
+      return api.syncCustodian(procedureId, custodianId, request);
+    },
+    mutationKey: measlesProtectionApiQueryKey(["syncCustodian"]),
+    onSuccess: () => {
+      snackbar.confirmation("PSB erfolgreich synchronisiert.");
+    },
   });
 }
 
@@ -335,8 +375,6 @@ export type MeaslesFacility = DefaultFacilityFormValues &
     otherFacilityTypeInformation?: string;
   }>;
 
-// In the base module emails and phone numbers for contact persons are optional
-// We need to look into it why that is different with our module
 function mapMeaslesFacilityToApiAddFacilityRequest(
   facility: MeaslesFacility,
 ): ApiAddFacilityRequest {
@@ -349,9 +387,9 @@ function mapMeaslesFacilityToApiAddFacilityRequest(
         : undefined,
       contactPersons: facility.contactPersons?.map((person) => ({
         ...person,
-        firstName: person.firstName,
-        emailAddress: person.emailAddress,
-        phoneNumber: person.phoneNumber,
+        firstName: mapOptionalValue(person.firstName),
+        emailAddress: mapOptionalValue(person.emailAddress),
+        phoneNumber: mapOptionalValue(person.phoneNumber),
         salutation: mapOptionalValue(person.salutation),
         title: mapOptionalValue(person.title),
         role: mapOptionalValue(person.role),
@@ -453,5 +491,48 @@ export function useUpdateCaseStatusMutation({
     mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
+  });
+}
+
+interface PatchAffectedPersonParams {
+  procedureId: string;
+  person: ApiAffectedPersonDetails;
+}
+
+export function useEditAffectedPerson() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: ({ procedureId, person }: PatchAffectedPersonParams) => {
+      return api.editAffectedPerson(procedureId, {
+        affectedPersonDetails: person,
+      });
+    },
+    mutationKey: measlesProtectionApiQueryKey(["editAffectedPerson"]),
+    onSuccess: () => {
+      snackbar.confirmation("Betroffene Person erfolgreich bearbeitet.");
+    },
+  });
+}
+
+interface SyncAffectedPersonParams {
+  procedureId: string;
+  request: ApiSyncAffectedPersonRequest;
+}
+
+export function useSyncAffectedPerson() {
+  const api = useProtectionProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: ({
+      procedureId,
+      request,
+    }: SyncAffectedPersonParams): Promise<void> => {
+      return api.syncAffectedPerson(procedureId, request);
+    },
+    mutationKey: measlesProtectionApiQueryKey(["syncAffectedPerson"]),
+    onSuccess: () => {
+      snackbar.confirmation("Personendaten erfolgreich synchronisiert.");
+    },
   });
 }

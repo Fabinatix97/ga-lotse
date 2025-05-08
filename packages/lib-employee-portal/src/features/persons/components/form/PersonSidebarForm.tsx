@@ -6,12 +6,9 @@
 import { Formik } from "formik";
 import { ComponentType, Ref } from "react";
 
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
-import { SidebarFormHandle } from "@/features/drawer/types/sidebar";
-import {
-  PersonFormProps,
-  PersonFormValues,
-} from "@/features/persons/types/personForm";
+import { SidebarForm } from "../../../drawer/components/SidebarForm";
+import { SidebarFormHandle } from "../../../drawer/types/sidebar";
+import { PersonFormProps, PersonFormValues } from "../../types/personForm";
 
 export interface PersonSidebarFormProps<TValues> {
   title: string;
@@ -36,8 +33,8 @@ export function PersonSidebarForm<TValues extends PersonFormValues>(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {(formikProps) => (
         <SidebarForm ref={props.sidebarFormRef}>

@@ -36,8 +36,8 @@ export function TravelDataTile(procedure: Readonly<TravelDataTileProps>) {
     <DetailsSection
       data-testid="travelData"
       title="Reisedaten"
-      onEdit={() => travelDataSidebar.open(procedure)}
       canEdit={!procedure.isProcedureClosed}
+      onEdit={() => travelDataSidebar.open(procedure)}
     >
       <Stack direction={{ xxs: "column", md: "row" }} gap={3}>
         <Stack sx={{ flexGrow: 1, maxWidth: "calc(100%/2)" }} gap={1}>

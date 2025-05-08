@@ -16,6 +16,9 @@ import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLin
 import { env } from "@/env/server";
 import { TitleAndSheetContentLayout } from "@/lib/shared/components/layout/TitleAndSheetContentLayout";
 
+/***
+ * @deprecated Use ClientMarkdownPage instead.
+ */
 export async function MarkdownPage({
   pageType,
   title,

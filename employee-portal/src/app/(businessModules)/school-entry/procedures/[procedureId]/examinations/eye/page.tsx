@@ -63,12 +63,12 @@ export default function SchoolEntryEyeExaminationPage(
       <DisabledFormProvider disabled={procedure.isClosed}>
         <EyeExaminationForm
           initialValues={mapToFormValues(eyeExaminationResult)}
-          onSubmit={handleSubmit}
           valuesToMutationBundle={(values) => ({
             mutationOptions: updateEyeExaminationResultOptions,
             variableSupplier: () =>
               mapToRequest(procedureId, values, eyeExaminationResult.version),
           })}
+          onSubmit={handleSubmit}
         />
       </DisabledFormProvider>
     </ContentPanel>

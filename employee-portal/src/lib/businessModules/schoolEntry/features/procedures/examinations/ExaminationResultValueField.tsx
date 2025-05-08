@@ -10,7 +10,7 @@ import {
 
 import { EXAMINATION_RESULT_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 
-export type ExaminationResultValueFieldProps = Omit<
+type ExaminationResultValueFieldProps = Omit<
   SoftRequiredSelectFieldProps<false>,
   "options"
 >;

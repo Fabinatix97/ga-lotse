@@ -117,8 +117,8 @@ export function ProcedureActionsPanel(
         <Button
           key="startProcedure"
           color="primary"
-          onClick={handleAcceptDraftProcedure}
           fullWidth
+          onClick={handleAcceptDraftProcedure}
         >
           Vorgang anlegen
         </Button>,

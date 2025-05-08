@@ -29,8 +29,7 @@ export function isEqualTimeSpan(timeSpan1: TimeSpan, timeSpan2: TimeSpan) {
   return timeSpan1.start === timeSpan2.start && timeSpan1.end === timeSpan2.end;
 }
 
-export interface TimeSpanFieldProps
-  extends Omit<FieldProps<TimeSpan>, "label"> {
+interface TimeSpanFieldProps extends Omit<FieldProps<TimeSpan>, "label"> {
   initialExplicitStartAndEndChecked?: boolean;
   label?: string;
 }
@@ -68,21 +67,21 @@ export function TimeSpanField(props: TimeSpanFieldProps) {
         </Select>
       </FormControl>
       <Stack gap={2}>
-        <Stack direction={"row"} gap={1}>
+        <Stack direction="row" gap={1}>
           <Typography
-            component={"label"}
+            component="label"
             level="body-md"
             sx={{ "--Typography-gap": "8px" }}
             startDecorator={
               <Switch
                 variant="outlined"
                 checked={checked}
-                onChange={(event) => onCheckedChange(event.target.checked)}
                 sx={{
                   "--Switch-trackWidth": "48px",
                   "--Switch-trackHeight": "24px",
                   "--Switch-thumbSize": "16px",
                 }}
+                onChange={(event) => onCheckedChange(event.target.checked)}
               />
             }
           >

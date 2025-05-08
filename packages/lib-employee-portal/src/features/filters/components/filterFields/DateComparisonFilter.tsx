@@ -13,7 +13,7 @@ import {
   DateComparisonFilterDefinition,
   DateComparisonFilterValue,
   DateComparisonOperator,
-} from "@/features/filters/types/DateComparisonFilter";
+} from "../../types/DateComparisonFilter";
 
 interface DateComparisonFilterProps {
   definition: DateComparisonFilterDefinition;
@@ -77,8 +77,8 @@ export function DateComparisonFilter(props: DateComparisonFilterProps) {
           id="date-comparison-filter"
           type="date"
           value={props.value?.value ?? ""}
-          onChange={(event) => handleChange(event.target.value)}
           sx={{ width: "100%" }}
+          onChange={(event) => handleChange(event.target.value)}
         />
       </FormControl>
     </Stack>

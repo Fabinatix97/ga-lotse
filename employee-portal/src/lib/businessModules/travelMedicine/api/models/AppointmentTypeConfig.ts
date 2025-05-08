@@ -9,7 +9,7 @@ import {
   ApiAppointmentTypeConfig,
 } from "@eshg/travel-medicine-api";
 
-export interface AppointmentTypeConfig extends BaseEntity {
+interface AppointmentTypeConfig extends BaseEntity {
   readonly appointmentTypeDto: ApiAppointmentType;
   readonly standardDurationInMinutes: number;
 }

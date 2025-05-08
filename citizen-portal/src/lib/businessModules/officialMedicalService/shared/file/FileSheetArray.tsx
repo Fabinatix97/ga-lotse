@@ -31,8 +31,8 @@ import {
 import { isDefined } from "remeda";
 
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
+import { useValidateFileType } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -46,7 +46,7 @@ import {
   StyledRemoveButton,
 } from "@/lib/shared/components/form/file/buttonVariants";
 
-export interface FileSheetArrayLabels {
+interface FileSheetArrayLabels {
   label: string;
   placeholder: string;
   helperText: string;
@@ -155,21 +155,22 @@ export function FileSheetArray({
               <FileInput
                 fileInputRef={fileInputRef}
                 fileInputId={fileInputId}
-                onChange={onChange}
                 accept={accept}
                 name={name}
                 required={required}
                 error={error}
                 labels={labels}
+                ariaDescribedBy={`${fileInputId}-helper-text`}
+                onChange={onChange}
               />
             )}
           </Box>
         </HeaderGrid>
         <FileStack
           files={files}
-          onRemove={showAddRemoveButtons ? onRemove : undefined}
           labels={labels}
           helperTexts={helperTexts}
+          onRemove={showAddRemoveButtons ? onRemove : undefined}
         >
           {isDefined(onRemoveAll) && showAddRemoveButtons && (
             <Stack gap={0}>
@@ -182,13 +183,13 @@ export function FileSheetArray({
                 </Typography>
               )}
               <StyledRemoveButton
-                onClick={() => onRemoveAll()}
                 sx={{
                   alignSelf: "end",
                   fontSize: theme.fontSize.md,
                   fontWeight: theme.fontWeight.md,
                   paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
                 }}
+                onClick={() => onRemoveAll()}
               >
                 {labels.removeAllFiles}
               </StyledRemoveButton>
@@ -248,7 +249,7 @@ export function HeaderGrid({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
-export function FooterGrid({ children }: Readonly<PropsWithChildren>) {
+function FooterGrid({ children }: Readonly<PropsWithChildren>) {
   return (
     <Box
       sx={{
@@ -314,6 +315,7 @@ interface FileInputProps {
   required?: boolean;
   error?: boolean;
   labels: Pick<FileSheetArrayLabels, "placeholder">;
+  ariaDescribedBy?: string;
 }
 
 function FileInput({
@@ -325,14 +327,12 @@ function FileInput({
   required = false,
   error = false,
   labels,
+  ariaDescribedBy,
 }: Readonly<FileInputProps>) {
   const acceptMimeTypes = accept.map((type) => type.mimeType).join(",");
 
-  const { i18n } = useTranslation();
-  const validateType = validateFileType(
-    accept,
-    i18n.resolvedLanguage ?? "de-DE",
-  );
+  const validateFileType = useValidateFileType();
+  const validateType = validateFileType(accept);
 
   const { dropState, handleFileDrag, handleFileDrop, handleFileDragLeave } =
     useDragAndDropMultiple({
@@ -359,12 +359,13 @@ function FileInput({
       <FileButton
         activeDragOver={dropState === "copy"}
         error={error || dropState === "no-drop"}
-        onClick={handleButtonClick}
         aria-controls={fileInputId}
+        sx={{ backgroundColor: "white", height: "40px", minWidth: "100%" }}
+        aria-describedby={ariaDescribedBy}
+        onClick={handleButtonClick}
         onDragOver={handleFileDrag}
         onDrop={handleFileDrop}
         onDragLeave={handleFileDragLeave}
-        sx={{ backgroundColor: "white", height: "40px", minWidth: "100%" }}
       >
         {labels.placeholder}
       </FileButton>
@@ -376,15 +377,15 @@ function FileInput({
         placeholder={labels.placeholder}
         accept={acceptMimeTypes}
         required={required}
-        onChange={handleInputChange}
         tabIndex={-1}
         multiple
+        onChange={handleInputChange}
       />
     </>
   );
 }
 
-export type FileStackProps = PropsWithChildren<
+type FileStackProps = PropsWithChildren<
   Pick<FileSheetArrayProps, "files" | "onRemove"> & {
     labels: Pick<FileSheetArrayLabels, "removeFile">;
     helperTexts?: string[];
@@ -414,8 +415,8 @@ function FileStack({
           key={`${file.name}.${index}`}
           file={file}
           removeLabel={`${labels.removeFile}.${index}`}
-          onRemove={onRemove ? () => onRemove(index) : undefined}
           helperText={helperTexts ? helperTexts[index] : undefined}
+          onRemove={onRemove ? () => onRemove(index) : undefined}
         />
       ))}
       {children}

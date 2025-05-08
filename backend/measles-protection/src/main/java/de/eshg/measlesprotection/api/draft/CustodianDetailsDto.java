@@ -8,6 +8,7 @@ package de.eshg.measlesprotection.api.draft;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.measlesprotection.validation.Adult;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ public record CustodianDetailsDto(
         LocalDate dateOfBirth,
     List<@NotBlank String> phoneNumbers,
     List<@Email String> emailAddresses,
+    CountryCode countryOfBirth,
     GenderDto gender,
     String nameAtBirth,
     String placeOfBirth,

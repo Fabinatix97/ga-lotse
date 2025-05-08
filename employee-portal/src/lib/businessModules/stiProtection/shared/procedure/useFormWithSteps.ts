@@ -5,14 +5,14 @@
 
 import { ReactNode, useReducer } from "react";
 
-export interface Step<TProps, TForm> {
+interface Step<TProps, TForm> {
   title: string;
   subTitle: string;
   fields: (props: TProps) => ReactNode;
   validate?: (form: TForm) => Partial<Record<keyof TForm, string>> | undefined;
 }
 
-export interface UseFormWithStepsArgs<TForm, TStep> {
+interface UseFormWithStepsArgs<TForm, TStep> {
   steps: Step<TStep, TForm>[];
   onFinalSubmit: (form: TForm) => Promise<unknown>;
 }

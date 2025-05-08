@@ -7,6 +7,15 @@ plugins {
 def srcDir = project.layout.projectDirectory.dir('src')
 def libDir = project.layout.buildDirectory.dir('lib')
 
+def isBundlingActive() {
+  if (!project.hasProperty('skipBundle')) {
+    return true
+  }
+
+  def skippedProjects = project.property('skipBundle').toString().split(",")
+  return !skippedProjects.contains(project.name)
+}
+
 tasks.register('bundle', PnpmTask) {
   group = 'package'
   dependsOn 'prepareEnvironment'
@@ -17,10 +26,14 @@ tasks.register('bundle', PnpmTask) {
   inputs.files fileTree(srcDir)
   outputs.dir libDir
   args = ['tsup']
+
+  onlyIf {
+    isBundlingActive()
+  }
 }
 
 tasks.register('dev', PnpmTask) {
   group = 'package'
-  dependsOn 'prepareEnvironment'
+  dependsOn rootProject.tasks.installDependencies
   args = ['tsup', '--watch']
 }

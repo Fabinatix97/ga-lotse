@@ -11,10 +11,13 @@ import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries
 import { FormDataProvider } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import { ColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
-import { AppointmentDetailsContent } from "./AppointmentDetailsContent";
+import {
+  AppointmentDetailsContent,
+  Information,
+} from "./AppointmentDetailsContent";
 import { AppointmentDetailsSidePanel } from "./AppointmentDetailsSidePanel";
 
 export function ViewAppointmentDetailsPage() {
@@ -34,10 +37,11 @@ export function ViewAppointmentDetailsPage() {
           >
             {t(titleKey)}
           </PageTitle>
-          <TwoColumnGrid
-            content={<AppointmentDetailsContent />}
-            sidePanel={<AppointmentDetailsSidePanel />}
-          />
+          <ColumnGrid>
+            <AppointmentDetailsContent />
+            <AppointmentDetailsSidePanel />
+            <Information />
+          </ColumnGrid>
         </FormDataProvider>
       </PageContent>
     </PageLayout>

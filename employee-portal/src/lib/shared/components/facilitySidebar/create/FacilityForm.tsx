@@ -27,7 +27,7 @@ import {
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import {
   MeaslesFacilityTypeSelect,
@@ -70,7 +70,7 @@ export function getInitialFacilityFormValues(
   };
 }
 
-export interface FacilityFormProps {
+interface FacilityFormProps {
   title: string;
   submitLabel?: string;
   searchInputs?: FacilitySearchFormValues;
@@ -89,7 +89,7 @@ export interface FacilityFormProps {
 }
 
 export function FacilityForm(props: FacilityFormProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const initialValues: DefaultFacilityFormValues =
     props.initialValues ?? getInitialFacilityFormValues(props.searchInputs);
 
@@ -98,8 +98,8 @@ export function FacilityForm(props: FacilityFormProps) {
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, values }) => (
         <SidebarForm ref={props.sidebarFormRef}>
@@ -112,7 +112,7 @@ export function FacilityForm(props: FacilityFormProps) {
             <Stack gap={2}>
               <InputField
                 name={fieldName("name")}
-                label={"Name"}
+                label="Name"
                 validate={validateLength(1, 300)}
                 required={
                   props.mode === "edit"
@@ -149,13 +149,13 @@ export function FacilityForm(props: FacilityFormProps) {
               <Divider />
 
               <Box
-                component={"section"}
-                aria-label={"E-Mail-Adressen"}
+                component="section"
+                aria-label="E-Mail-Adressen"
                 sx={{ display: "contents" }}
               >
                 <InputArrayField
                   name={fieldName("emailAddresses")}
-                  addMoreLabel={"E-Mail-Adresse hinzufügen"}
+                  addMoreLabel="E-Mail-Adresse hinzufügen"
                   fieldComponent={EmailField}
                   label={(index) => getIndexLabel("E-Mail-Adresse", index)}
                   validateEach={validateLength(6, 254)}
@@ -163,13 +163,13 @@ export function FacilityForm(props: FacilityFormProps) {
               </Box>
 
               <Box
-                component={"section"}
-                aria-label={"Telefonnummern"}
+                component="section"
+                aria-label="Telefonnummern"
                 sx={{ display: "contents" }}
               >
                 <InputArrayField
                   name={fieldName("phoneNumbers")}
-                  addMoreLabel={"Telefonnummer hinzufügen"}
+                  addMoreLabel="Telefonnummer hinzufügen"
                   fieldComponent={PhoneNumberField}
                   label={(index) => getIndexLabel("Telefonnummer", index)}
                   validateEach={validateLength(1, 23)}

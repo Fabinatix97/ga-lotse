@@ -5,9 +5,9 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 
 import {

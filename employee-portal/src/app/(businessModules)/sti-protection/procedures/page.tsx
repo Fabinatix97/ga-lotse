@@ -5,8 +5,6 @@
 
 "use client";
 
-import { Stack } from "@mui/joy";
-
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -20,9 +18,7 @@ export default function STIProtectionProceduresPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="HIV-STI" />}>
       <MainContentLayout fullViewportHeight>
-        <Stack gap={3} pb={3}>
-          <StiProtectionProceduresTable />
-        </Stack>
+        <StiProtectionProceduresTable />
         <AddNewProcedureSidebar />
       </MainContentLayout>
     </StickyToolbarLayout>

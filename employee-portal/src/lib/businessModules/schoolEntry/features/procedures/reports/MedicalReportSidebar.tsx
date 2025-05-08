@@ -12,14 +12,14 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarWithFormRefProps,
-  TextareaField,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { useCreateMedicalReport } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 
@@ -44,7 +44,7 @@ const initialValues: MedicalReportValues = {
 };
 
 function MedicalReportSidebar(props: MedicalReportSidebarProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const createMedicalReport = useCreateMedicalReport(props.procedureId);
   const { download } = useFileDownload(createMedicalReport.mutateAsync);
 

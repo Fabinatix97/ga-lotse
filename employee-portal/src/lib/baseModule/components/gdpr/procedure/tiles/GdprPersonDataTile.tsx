@@ -36,10 +36,8 @@ export function GdprPersonDataTile({
   columnSx: SxProps;
 }) {
   return (
-    <SectionTile id={"procedure-identity-details"}>
-      <SectionTitle id={"procedure-identity-details"}>
-        Antragsteller
-      </SectionTitle>
+    <SectionTile id="procedure-identity-details">
+      <SectionTitle id="procedure-identity-details">Antragsteller</SectionTitle>
       <Stack
         direction={{ xxs: "column", md: "row" }}
         gap={3}

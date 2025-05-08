@@ -36,66 +36,60 @@ export function UserTable() {
   const suggestUserSidebar = useSuggestNewUserSidebar();
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        controls={
-          <Stack
-            direction={"row"}
-            justifyContent={"space-between"}
-            alignItems={"flex-start"}
-            flexWrap={"wrap"}
-            gap={2}
-          >
-            <Sheet
-              sx={{
-                paddingInline: 1,
-                paddingBlock: 0.5,
-                minWidth: "fit-content",
-                display: "flex",
-                alignItems: "center",
-                gap: "1ch",
-              }}
-            >
-              Aktive Filter:
-              <Chip
-                variant={"soft"}
-                color={"primary"}
-                startDecorator={<LockIcon />}
-              >
-                Eigene Abteilungen
-              </Chip>
-            </Sheet>
-            {isLeader && (
-              <Button
-                startDecorator={<AddIcon />}
-                onClick={() =>
-                  suggestUserSidebar.open({
-                    availableGroups: selfGroups,
-                  })
-                }
-                sx={{
-                  minWidth: "fit-content",
-                }}
-              >
-                Neuen Benutzer vorschlagen
-              </Button>
-            )}
-          </Stack>
-        }
-      >
-        <TableSheet loading={isFetching}>
-          <DataTable
-            minWidth="75rem"
-            columns={userColumns}
-            data={users}
-            rowNavigation={{
-              route: (row) => routes.users.details(row.original.userId),
-              focusColumnAccessorKey: "lastName",
+    <TablePage
+      fullHeight
+      controls={
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          flexWrap="wrap"
+          gap={2}
+        >
+          <Sheet
+            sx={{
+              paddingInline: 1,
+              paddingBlock: 0.5,
+              minWidth: "fit-content",
+              display: "flex",
+              alignItems: "center",
+              gap: "1ch",
             }}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+          >
+            Aktive Filter:
+            <Chip variant="soft" color="primary" startDecorator={<LockIcon />}>
+              Eigene Abteilungen
+            </Chip>
+          </Sheet>
+          {isLeader && (
+            <Button
+              startDecorator={<AddIcon />}
+              sx={{
+                minWidth: "fit-content",
+              }}
+              onClick={() =>
+                suggestUserSidebar.open({
+                  availableGroups: selfGroups,
+                })
+              }
+            >
+              Neuen Benutzer vorschlagen
+            </Button>
+          )}
+        </Stack>
+      }
+    >
+      <TableSheet loading={isFetching}>
+        <DataTable
+          minWidth="75rem"
+          columns={userColumns}
+          data={users}
+          rowNavigation={{
+            route: (row) => routes.users.details(row.original.userId),
+            focusColumnAccessorKey: "lastName",
+          }}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

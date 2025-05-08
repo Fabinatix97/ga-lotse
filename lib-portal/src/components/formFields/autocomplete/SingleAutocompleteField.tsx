@@ -49,17 +49,17 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
       <CustomAutocomplete
         {...autocompleteProps}
         multiple={false}
-        freeSolo={true}
+        freeSolo
         forcePopupIcon={!props.freeSolo}
         value={field.input.value}
-        onChange={(_, newValue) => {
-          handleChange(newValue);
-        }}
-        onInputChange={handleInputChange}
         options={props.options.map((opt) => opt.value)}
         filterOptions={props.disableFiltering ? identity() : undefined}
         disabled={disabled || props.disabled}
         popupIcon={props.popupIcon}
+        onChange={(_, newValue) => {
+          handleChange(newValue);
+        }}
+        onInputChange={handleInputChange}
       />
     </BaseField>
   );

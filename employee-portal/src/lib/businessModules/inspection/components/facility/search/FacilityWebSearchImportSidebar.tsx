@@ -5,7 +5,6 @@
 
 import { Card, Chip, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
-import { isDefined } from "remeda";
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
@@ -99,34 +98,35 @@ function FacilityWebSearchImportSidebar(
 
   const webSearchEntry = props.webSearchEntry;
 
-  if (isDefined(webSearchEntry)) {
-    return (
-      <FacilitySidebar
-        mode={"import"}
-        title={"Neuen Vorgang anlegen"}
-        searchResultHeaderComponent={
-          <OsmFacilityCard
-            facility={createBaseFacilityFromWebSearchEntry(webSearchEntry)}
-          />
-        }
-        initialSearchInputs={{
-          name: webSearchEntry.name,
-        }}
-        onCreateNew={async (values) => {
-          await handleSaveFacility(values.createInputs, webSearchEntry.id);
-        }}
-        onSelect={async (values) => {
-          await handleSelectFacility(values.facility, webSearchEntry.id);
-        }}
-        formRef={props.formRef}
-        onClose={props.onClose}
-        getInitialCreateInputs={() => ({
-          ...createBaseFacilityFromWebSearchEntry(webSearchEntry),
-        })}
-      />
-    );
+  if (webSearchEntry === undefined) {
+    return null;
   }
-  return <></>;
+
+  return (
+    <FacilitySidebar
+      mode="import"
+      title="Neuen Vorgang anlegen"
+      searchResultHeaderComponent={
+        <OsmFacilityCard
+          facility={createBaseFacilityFromWebSearchEntry(webSearchEntry)}
+        />
+      }
+      initialSearchInputs={{
+        name: webSearchEntry.name,
+      }}
+      formRef={props.formRef}
+      getInitialCreateInputs={() => ({
+        ...createBaseFacilityFromWebSearchEntry(webSearchEntry),
+      })}
+      onCreateNew={async (values) => {
+        await handleSaveFacility(values.createInputs, webSearchEntry.id);
+      }}
+      onSelect={async (values) => {
+        await handleSelectFacility(values.facility, webSearchEntry.id);
+      }}
+      onClose={props.onClose}
+    />
+  );
 }
 
 function createBaseFacilityFromWebSearchEntry(

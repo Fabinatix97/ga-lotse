@@ -47,7 +47,7 @@ export function LetterRecipientField<
 
   return (
     <WrappedSelectField
-      name={"recipientId"}
+      name="recipientId"
       label="Empfänger"
       //readOnly={options.length === 1} //TODO: Not yet supported?!
       options={options}

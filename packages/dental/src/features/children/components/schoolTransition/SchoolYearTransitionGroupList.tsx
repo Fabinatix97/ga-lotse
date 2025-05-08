@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ArrowForward } from "@mui/icons-material";
+import { ArrowForward, ErrorOutlineOutlined } from "@mui/icons-material";
 import {
   ColorPaletteProp,
   List,
@@ -16,11 +16,15 @@ import {
   useTheme,
 } from "@mui/joy";
 
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+
 interface SchoolYearTransitionGroupListProps {
   institutionName: string;
   info: string;
   infoColor: ColorPaletteProp;
   rows: string[];
+  nextYearAction?: boolean;
+  warning?: string;
 }
 
 export function SchoolYearTransitionGroupList(
@@ -40,6 +44,13 @@ export function SchoolYearTransitionGroupList(
         <InfoTypography color={props.infoColor} fontWeight={600}>
           {props.info}
         </InfoTypography>
+        {props.warning && (
+          <WarningTypography
+            startDecorator={<ErrorOutlineOutlined color="danger" />}
+          >
+            {props.warning}
+          </WarningTypography>
+        )}
         <GroupList>
           {props.rows.map((row, rowIndex) => (
             <>
@@ -51,7 +62,17 @@ export function SchoolYearTransitionGroupList(
                   <Typography fontWeight={600}>{row}</Typography>
                 </Stack>
                 <ArrowForward />
-                <Typography fontWeight={600}>Schulabgang</Typography>
+                {props.nextYearAction ? (
+                  <TextareaField
+                    name={`groupNames.${rowIndex}.targetGroupName`}
+                    label="Nächstes Schuljahr"
+                    minRows={1}
+                    sxTextarea={{ width: 150 }}
+                    required="Bitte ausfüllen"
+                  />
+                ) : (
+                  <Typography fontWeight={600}>Schulabgang</Typography>
+                )}
               </GroupListItem>
               {rowIndex < props.rows.length - 1 && (
                 <ListDivider inset="gutter" />
@@ -83,4 +104,10 @@ const InfoTypography = styled(Typography)(({ theme }) => ({
   borderRadius: theme.radius.lg,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
+}));
+
+const WarningTypography = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(3),
+  color: theme.palette.danger.plainColor,
+  alignItems: "flex-start",
 }));

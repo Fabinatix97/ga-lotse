@@ -48,7 +48,6 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   private ProphylaxisType type;
 
   @DataSensitivity(PSEUDONYMIZED)
-  @Column(nullable = false)
   private String groupName;
 
   @DataSensitivity(PSEUDONYMIZED)

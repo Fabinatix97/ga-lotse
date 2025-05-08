@@ -8,12 +8,10 @@
 import { createContext, useContext, useState } from "react";
 import { isNullish } from "remeda";
 
-import { ApiUserRole } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 
-export type ReopenProcedureDetails = Pick<
+type ReopenProcedureDetails = Pick<
   ApiGetProcedure200Response,
   "id" | "affectedPerson"
 >;
@@ -33,9 +31,7 @@ interface ProceduresContextProps {
   };
 }
 
-export const ProceduresContext = createContext<ProceduresContextProps | null>(
-  null,
-);
+const ProceduresContext = createContext<ProceduresContextProps | null>(null);
 
 export function ProceduresProvider(props: RequiresChildren) {
   const [procedureIdForDeletion, setProcedureIdForDeletion] = useState<
@@ -78,14 +74,6 @@ export function ProceduresProvider(props: RequiresChildren) {
       {props.children}
     </ProceduresContext>
   );
-}
-
-export function useHasDeletionRights() {
-  return useHasUserRoleCheck(ApiUserRole.MeaslesProtectionLeader);
-}
-
-export function useHasReopenRights() {
-  return useHasUserRoleCheck(ApiUserRole.MeaslesProtectionLeader);
 }
 
 export function useProceduresContext() {

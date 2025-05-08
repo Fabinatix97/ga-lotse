@@ -11,7 +11,7 @@ import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { useTranslation } from "@/lib/i18n/client";
@@ -24,7 +24,7 @@ export function GdprObjectionFormDialog(props: {
   const addGdprProcedure = useAddGdprProcedure();
   const resetAlertContext = useResetAlertContext();
   const { t } = useTranslation("gdpr");
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
 
   function handleClose() {
     resetAlertContext();
@@ -50,8 +50,8 @@ export function GdprObjectionFormDialog(props: {
   return (
     <BaseModal
       modalTitle={t("start_procedure_dialog.RIGHT_TO_OBJECT.title")}
-      onClose={handleClose}
       open={props.open}
+      onClose={handleClose}
     >
       {props.open && (
         <Formik initialValues={{ matterOfConcern: "" }} onSubmit={handleSubmit}>

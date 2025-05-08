@@ -22,10 +22,8 @@ import {
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  AppointmentPickerField,
-  FIELD_LABELS_DE,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { AppointmentPickerField } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
 import {
   isDateCurrentDateOrGreater,
   toDateTimeString,
@@ -207,10 +205,10 @@ function EmbeddedAppointmentSidebar({
             </SidebarContent>
             <AppointmentSidebarActions
               isSubmitting={isSubmitting}
-              onClose={handleClose}
               stepIndex={values.step}
               changeToStep={(s) => setFieldValue("step", s, false)}
               lastStepIndex={lastStepIndex}
+              onClose={handleClose}
             />
           </SidebarForm>
         );
@@ -269,9 +267,9 @@ function AppointmentSidebarActions({
     <SidebarActions>
       <MultiFormButtonBar
         submitting={isSubmitting}
+        submitLabel={submitLabel}
         onCancel={() => onClose(true)}
         onBack={isOnFirstStep ? undefined : () => changeToStep(stepIndex - 1)}
-        submitLabel={submitLabel}
       />
     </SidebarActions>
   );
@@ -330,7 +328,7 @@ function BookingForm({
         {allowSelfBooking && (
           <RadioAccordionItem
             sx={{ "& .MuiAccordionDetails-root": { height: 0 } }}
-            value={"SelfBooking"}
+            value="SelfBooking"
             label="Selbstbuchung"
           />
         )}

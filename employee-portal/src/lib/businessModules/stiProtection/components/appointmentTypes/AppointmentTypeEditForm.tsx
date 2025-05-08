@@ -62,7 +62,7 @@ export function AppointmentTypeEditForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      enableReinitialize={true}
+      enableReinitialize
       onSubmit={props.onSubmit}
     >
       {({ initialValues, isSubmitting, handleSubmit }) => (
@@ -71,19 +71,19 @@ export function AppointmentTypeEditForm(
             <Stack gap={2} rowGap={2}>
               <BaseField>
                 <FormLabel>
-                  <Typography level={"title-md"}>Typ</Typography>
+                  <Typography level="title-md">Typ</Typography>
                 </FormLabel>
                 <Input
                   placeholder={
                     APPOINTMENT_TYPES[initialValues.appointmentTypeDto]
                   }
-                  readOnly={true}
-                ></Input>
+                  readOnly
+                />
               </BaseField>
               <SingleAutocompleteField
                 label={
                   <FormLabel>
-                    <Typography level={"title-md"}>
+                    <Typography level="title-md">
                       Standarddauer (Minuten)
                     </Typography>
                   </FormLabel>

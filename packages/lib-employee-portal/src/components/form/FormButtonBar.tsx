@@ -10,7 +10,7 @@ import { isDefined } from "remeda";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
-import { ButtonBar } from "@/components/buttons/ButtonBar";
+import { ButtonBar } from "../buttons/ButtonBar";
 
 function createLinkOrButton(
   label: string,
@@ -71,9 +71,9 @@ export function FormButtonBar({
   } else {
     rightButtons.push(
       <SubmitButton
+        key={props.submitLabel}
         submitting={props.submitting}
         disabled={props.submitDisabled}
-        key={props.submitLabel}
         size={props.size}
       >
         {props.submitLabel}

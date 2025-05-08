@@ -42,18 +42,6 @@ export function mapMergeValue<T>(
   return into === from ? (into ?? "") : UnselectedValue;
 }
 
-export function isValidAddress(
-  address: BaseAddress | BaseAddressFormInputs | undefined,
-): boolean {
-  return (
-    isDefined(address) &&
-    address.city !== "" &&
-    address.postalCode !== "" &&
-    ((address.type === "DomesticAddress" && address.street.trim() !== "") ||
-      (address.type === "PostboxAddress" && address.postbox.trim() !== ""))
-  );
-}
-
 export function distinctConcat<T>(listA: T[], listB: T[]): T[] {
   return [...new Set(listA.concat(listB))];
 }

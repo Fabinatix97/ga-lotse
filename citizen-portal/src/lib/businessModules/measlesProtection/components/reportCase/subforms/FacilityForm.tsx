@@ -30,7 +30,7 @@ import {
   createEmptyContactPerson,
 } from "./ContactPersonForm";
 
-export interface NestedFormProps {
+interface NestedFormProps {
   name: string;
 }
 
@@ -62,7 +62,7 @@ export function FacilityForm({ onCancel, name, sx }: FacilityFormProps) {
     <>
       <Stack component="div" gap={2} rowGap={2} sx={sx}>
         <FormHeader>{t("facility.title")}</FormHeader>
-        <Grid container xxs={12} justifyContent={"flex-end"}>
+        <Grid container xxs={12} justifyContent="flex-end">
           <Typography level="body-xs">{`* ${t("common.requiredField")}`}</Typography>
         </Grid>
         <Grid xxs={12}>
@@ -86,7 +86,7 @@ export function FacilityForm({ onCancel, name, sx }: FacilityFormProps) {
         {facilityType && facilityType === ApiFacilityType.Other && (
           <Grid xxs={12}>
             <InputField
-              name={"otherFacilityTypeInformation"}
+              name="otherFacilityTypeInformation"
               label={t("facility.fields.facilityTypeOther")}
               required="Bitte einen spezifischen anderen Typ angeben."
             />

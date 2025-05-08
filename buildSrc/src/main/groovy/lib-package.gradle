@@ -20,18 +20,7 @@ typescript {
   include = ['**/*.ts', '**/*.tsx', '*.js']
 }
 
-def typesDir = layout.buildDirectory.dir('types')
 def configDir = rootProject.layout.projectDirectory.dir('config')
-
-tasks.register('resolveTsPaths', PnpmTask) {
-  mustRunAfter 'format', 'lintFix'
-  group = 'package'
-  inputs.dir typesDir
-  outputs.dir typesDir
-
-  args = ['resolve-tspaths', '--out', typesDir.get().asFile.absolutePath]
-}
-
 
 tasks.register('assemble') {
   group = 'package'
@@ -54,13 +43,7 @@ tasks.named('lintFix').configure {
 }
 
 tasks.named('compile').configure {
-  finalizedBy 'resolveTsPaths'
   inputs.file configDir.file('tsconfig.lib.json')
-  outputs.dir typesDir
-
-  doFirst {
-    delete typesDir
-  }
 }
 
 tasks.named('bundle').configure {

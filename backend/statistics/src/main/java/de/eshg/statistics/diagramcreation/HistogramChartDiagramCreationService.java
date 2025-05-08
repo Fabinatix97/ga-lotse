@@ -18,6 +18,7 @@ import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.chart.HistogramBin;
 import de.eshg.statistics.persistence.entity.chart.HistogramChartConfiguration;
@@ -161,8 +162,17 @@ public class HistogramChartDiagramCreationService
     Diagram diagram = analysisService.getDiagramInternal(diagramId);
     HistogramChartConfiguration chartConfiguration =
         getHistogramChartConfiguration(diagram.getAnalysis());
-    fillChartDataHolderWithMissingValues(
-        chartDataHolder, chartConfiguration.getSecondaryAttributeSelection() == null);
+
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            chartConfiguration.getSecondaryAttributeSelection(),
+            diagram.getAnalysis().getAggregationResult());
+    cleanUpChartDataHolderKeys(
+        chartDataHolder,
+        true,
+        chartConfiguration.getSecondaryAttributeSelection() == null,
+        secondaryTableColumn != null
+            && secondaryTableColumn.getValueType().equals(TableColumnValueType.BOOLEAN));
 
     List<HistogramGroupData> histogramGroupDatas =
         chartConfiguration.getBins().stream()

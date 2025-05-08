@@ -70,7 +70,6 @@ export function CheckboxGroupField<T extends SelectOption = SelectOption>(
 
   return (
     <FieldSetControl
-      onBlur={field.input.onBlur}
       legend={props.label}
       legendLevel={props.labelLevel}
       helperText={field.helperText}
@@ -78,10 +77,10 @@ export function CheckboxGroupField<T extends SelectOption = SelectOption>(
       error={field.error}
       groupHelperTextId={groupHelperTextId}
       sx={props.sx}
+      onBlur={field.input.onBlur}
     >
       <Checkboxes
         orientation={props.orientation}
-        onChange={handleChange}
         options={props.options}
         selected={field.input.value}
         name={props.name}
@@ -91,6 +90,7 @@ export function CheckboxGroupField<T extends SelectOption = SelectOption>(
         size={props.size}
         groupHelperTextId={field.helperText ? groupHelperTextId : undefined}
         sx={props.sxCheckboxes}
+        onChange={handleChange}
       />
       {props.children}
     </FieldSetControl>
@@ -154,12 +154,11 @@ function Checkboxes<T extends AccessibleSelectOption>({
       }}
     >
       {options.map((t) => (
-        <FormControl error={error} key={name + t.value}>
+        <FormControl key={name + t.value} error={error}>
           <Checkbox
             checked={selected?.includes(t.value) ?? false}
             value={t.value}
             label={t.label}
-            onChange={onChange}
             disabled={disabled}
             readOnly={readOnly}
             size={size}
@@ -169,6 +168,7 @@ function Checkboxes<T extends AccessibleSelectOption>({
                 "aria-label": t.ariaLabel,
               },
             }}
+            onChange={onChange}
           />
         </FormControl>
       ))}

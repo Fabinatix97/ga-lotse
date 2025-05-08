@@ -37,11 +37,7 @@ function SaveAsEvaluationTemplateSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
-      onSubmit={(model) =>
-        addEvaluationTemplate(evaluationId, model[0]).then(() => void 0)
-      }
       steps={[
         () => ({
           title: "Vorlage speichern",
@@ -55,6 +51,10 @@ function SaveAsEvaluationTemplateSidebar({
           },
         }),
       ]}
+      onClose={onClose}
+      onSubmit={(model) =>
+        addEvaluationTemplate(evaluationId, model[0]).then(() => void 0)
+      }
     />
   );
 }

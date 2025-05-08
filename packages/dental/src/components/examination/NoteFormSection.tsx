@@ -3,13 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InformationSheet } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { FormLabel } from "@mui/joy";
+
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+
+import {
+  ExaminationSectionTitle,
+  ExaminationSheet,
+} from "./ExaminationSection";
 
 export function NoteFormSection() {
   return (
-    <InformationSheet>
-      <InputField type="text" label="Bemerkung" name="note" />
-    </InformationSheet>
+    <ExaminationSheet component="section">
+      <TextareaField
+        name="note"
+        label={
+          <FormLabel>
+            <ExaminationSectionTitle marginBottom={3}>
+              Kommentar
+            </ExaminationSectionTitle>
+          </FormLabel>
+        }
+      />
+    </ExaminationSheet>
   );
 }

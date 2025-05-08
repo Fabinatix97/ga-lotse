@@ -12,6 +12,7 @@ import { Legend } from "@eshg/lib-portal/components/formFields/Legend";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
@@ -21,7 +22,6 @@ import {
   sexualContactGenderOptions,
   sexualOrientationOptions,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export function SexualOrientationAndContact({
   isForSexWork,
@@ -56,7 +56,7 @@ export function SexualOrientationAndContact({
         <CheckboxGroupField
           sx={{ gridColumnStart: 1, gridColumnEnd: 3 }}
           name="sexualOrientationAndContact.sexualContactFactors"
-          label={"Bisherige Sexpartner:innen ist/hat"}
+          label="Bisherige Sexpartner:innen ist/hat"
           options={sexualContactFactorOptions}
         />
         {isForSexWork ? (
@@ -71,7 +71,7 @@ export function SexualOrientationAndContact({
             <CheckboxGroupField
               sx={{ gridColumnStart: 1, gridColumnEnd: 3 }}
               name="sexualOrientationAndContact.sexWorkType"
-              label={"Arbeitsstätte"}
+              label="Arbeitsstätte"
               options={sexWorkTypeOptions}
             />
           </>

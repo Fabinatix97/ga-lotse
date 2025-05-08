@@ -18,7 +18,7 @@ interface SortSelectProps {
   "aria-label"?: string;
 }
 
-export const sortOrderNames = {
+const sortOrderNames = {
   [ApiProgressEntrySortOrder.Asc]: "Älteste zuerst",
   [ApiProgressEntrySortOrder.Desc]: "Neueste zuerst",
 } satisfies Record<ApiProgressEntrySortOrder, string>;
@@ -40,18 +40,18 @@ export function SortSelect(props: SortSelectProps) {
           : ApiProgressEntrySortOrder.Desc
       }
       color="primary"
-      onChange={(_, value) => {
-        if (value !== null) {
-          replaceSearchParams([{ name: "sortOrder", value: value }]);
-        }
-      }}
       slotProps={{
         button: {
           "aria-label": ariaLabel,
         },
       }}
+      onChange={(_, value) => {
+        if (value !== null) {
+          replaceSearchParams([{ name: "sortOrder", value: value }]);
+        }
+      }}
     >
-      <SelectOptions options={buildEnumOptions(sortOrderNames)}></SelectOptions>
+      <SelectOptions options={buildEnumOptions(sortOrderNames)} />
     </Select>
   );
 }

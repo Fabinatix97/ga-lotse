@@ -53,8 +53,8 @@ export function MonthSelection({
           variant="outlined"
           title={prevMonthLabel}
           aria-controls={monthYearId}
-          onClick={() => setCurrentMonth(previousMonth)}
           disabled={previousMonth < nowMonth}
+          onClick={() => setCurrentMonth(previousMonth)}
           {...slotProps?.arrows}
         >
           <ChevronLeft />

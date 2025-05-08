@@ -10,16 +10,20 @@ import { Formik } from "formik";
 import { Ref } from "react";
 
 import {
-  CheckboxField,
   MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  validatePipe,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/shared/helpers/validators";
 
@@ -40,12 +44,12 @@ interface DiseaseFormProps {
 }
 
 export function DiseaseForm(props: Readonly<DiseaseFormProps>) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
@@ -60,8 +64,12 @@ export function DiseaseForm(props: Readonly<DiseaseFormProps>) {
               <NumberField
                 name="estimatedFee"
                 label="Preisangabe in € für das Bürgerportal"
-                min={0.0}
-                validate={validateNonNegativeNumberWithAtMostTwoDecimalDigits}
+                min={0}
+                max={999999}
+                validate={validatePipe(
+                  validateRange(0, 999999),
+                  validateNonNegativeNumberWithAtMostTwoDecimalDigits,
+                )}
               />
               <CheckboxField
                 name="visibleToCitizenPortal"

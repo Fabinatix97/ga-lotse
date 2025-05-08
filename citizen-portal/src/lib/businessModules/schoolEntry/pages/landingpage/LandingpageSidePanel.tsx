@@ -37,8 +37,8 @@ export function LandingpageSidePanel() {
       <Typography>{t("personalArea.information")}</Typography>
       <Formik
         initialValues={INITIAL_VALUES}
-        onSubmit={handleConfirm}
         component={PrivacyPolicyConfirmationForm}
+        onSubmit={handleConfirm}
       />
     </ContentSheet>
   );

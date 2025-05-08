@@ -27,7 +27,7 @@ export function AuditlogCreatePasswordView() {
         right={<CreatePasswordButton setOpen={setOpen} />}
       />
       <Sheet
-        data-testid={"auditlogSheet"}
+        data-testid="auditlogSheet"
         sx={{
           mt: 2,
           display: "flex",
@@ -37,8 +37,8 @@ export function AuditlogCreatePasswordView() {
           border: "none",
         }}
       >
-        <Stack alignItems={"center"} gap={2}>
-          <CancelOutlined fontSize={"xl4"} />
+        <Stack alignItems="center" gap={2}>
+          <CancelOutlined fontSize="xl4" />
           <Typography>
             Passwort erstellen, um Audit Logs aufzuzeichnen
           </Typography>
@@ -66,7 +66,7 @@ function CreatePasswordButton({
   setOpen,
 }: Readonly<CreatePasswordButtonProps>) {
   return (
-    <Button onClick={() => setOpen(true)} startDecorator={<KeyOutlined />}>
+    <Button startDecorator={<KeyOutlined />} onClick={() => setOpen(true)}>
       Passwort erstellen
     </Button>
   );

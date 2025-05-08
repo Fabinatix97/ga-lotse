@@ -5,18 +5,17 @@
 
 import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
-import { isDefined } from "remeda";
+import { range } from "remeda";
 
 import { toDateString, toUtcDate } from "../../helpers/dateTime";
 import { isEmptyString } from "../../helpers/guards";
 import { useMonthAndYearValidationsRules } from "../../hooks/useMonthAndYearValidations";
+import { useTranslation } from "../../i18n/useTranslation";
 import { OptionalFieldValue } from "../../types/form";
-import {
-  SoftRequiredNumberField,
-  SoftRequiredSelectObjectField,
-} from "../form/fieldVariants";
 
 import { HorizontalField } from "./HorizontalField";
+import { NumberField } from "./NumberField";
+import { SelectObjectField } from "./SelectObjectField";
 
 export interface MonthAndYear {
   month: number | null;
@@ -31,20 +30,16 @@ export function mapMonthAndYear(monthAndYear: MonthAndYear) {
     : undefined;
 }
 
-const MONTH_VALUES = [
-  "Januar",
-  "Februar",
-  "März",
-  "April",
-  "Mai",
-  "Juni",
-  "Juli",
-  "August",
-  "September",
-  "Oktober",
-  "November",
-  "Dezember",
-];
+function useGetMonthLabel() {
+  const { i18n } = useTranslation();
+  const date = new Date();
+  date.setDate(1);
+
+  return (idx: number) => {
+    date.setMonth(idx);
+    return date.toLocaleString(i18n.language, { month: "long" });
+  };
+}
 
 export interface MonthAndYearFieldsProps {
   fieldName: string;
@@ -53,43 +48,35 @@ export interface MonthAndYearFieldsProps {
   yearLabel?: ReactNode;
   monthValues?: string[];
   testId?: string;
-  softRequired?: boolean;
 }
 
 export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
-  const monthValues = props.monthValues ?? MONTH_VALUES;
-  const monthOptions: number[] = monthValues.map((_, index) => index);
-
-  function getMonthLabel(monthNumber: number) {
-    return isDefined(monthValues.at(monthNumber))
-      ? monthValues.at(monthNumber)!
-      : "";
-  }
+  const { t } = useTranslation();
+  const monthOptions: number[] = range(0, 12);
+  const getMonthLabel = useGetMonthLabel();
 
   const { month, year } = useMonthAndYearValidationsRules(props.fieldName);
 
   return (
     <Stack direction="row" gap={2} data-testid={props.testId}>
-      <SoftRequiredSelectObjectField
+      <SelectObjectField
         name={`${props.fieldName}.month`}
-        label={props.monthLabel ?? "Monat"}
+        label={props.monthLabel ?? t("common.month")}
         options={monthOptions}
         getOptionLabel={getMonthLabel}
         component={HorizontalField}
         sx={{ width: "170px" }}
         validate={month.validate}
         required={month.required}
-        softRequired={props.softRequired}
       />
-      <SoftRequiredNumberField
+      <NumberField
         name={`${props.fieldName}.year`}
-        label={props.yearLabel ?? "Jahr"}
+        label={props.yearLabel ?? t("common.year")}
         sx={{ width: "85px" }}
         component={HorizontalField}
         min={1900}
         validate={year.validate}
         required={year.required}
-        softRequired={props.softRequired}
       />
     </Stack>
   );

@@ -107,7 +107,6 @@ export function FloatingLabelInput({
       startDecorator={startDecorator}
       type={type}
       defaultValue={defaultValue}
-      onChange={onChange}
       slots={{ input: InnerInput }}
       slotProps={{
         input: {
@@ -120,6 +119,7 @@ export function FloatingLabelInput({
         "--Input-minHeight": "56px",
         "--Input-radius": "12px",
       }}
+      onChange={onChange}
     />
   );
 }

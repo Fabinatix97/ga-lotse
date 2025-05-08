@@ -14,7 +14,7 @@ import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAut
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FieldProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-import { formatSchoolYear } from "@/utils/formatters";
+import { formatSchoolYear } from "../../utils/formatters";
 
 interface SchoolYearAutocompleteProps
   extends Omit<

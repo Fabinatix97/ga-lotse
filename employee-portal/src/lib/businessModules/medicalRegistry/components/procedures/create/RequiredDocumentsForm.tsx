@@ -56,9 +56,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
           <Grid xxs={6}>
             <FileField
               name={fieldName("license")}
-              label={
-                "Berufserlaubnisurkunde / Approbationsurkunde als JPG hochladen"
-              }
+              label="Berufserlaubnisurkunde / Approbationsurkunde als JPG hochladen"
               accept={FileType.Jpeg}
               maxFileSize={config.maxFileSize}
               required={
@@ -76,7 +74,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
       <Grid xxs={6}>
         <FileField
           name={fieldName("identificationDocument")}
-          label={"Ausweis / Reisepass als JPG hochladen"}
+          label="Ausweis / Reisepass als JPG hochladen"
           accept={FileType.Jpeg}
           maxFileSize={config.maxFileSize}
           required={requiredFieldMessage}
@@ -89,7 +87,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
           <Grid xxs={6}>
             <FileField
               name={fieldName("workPermit")}
-              label={"Arbeitserlaubnis als JPG hochladen"}
+              label="Arbeitserlaubnis als JPG hochladen"
               accept={FileType.Jpeg}
               maxFileSize={config.maxFileSize}
               required={requiredFieldMessage}
@@ -115,7 +113,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
                   >
                     <FileField
                       name={`requiredDocumentsForm.otherRelevantDocuments.${index}`}
-                      label={"Sonstiges Dokument als JPG hochladen"}
+                      label="Sonstiges Dokument als JPG hochladen"
                       accept={FileType.Jpeg}
                       required={requiredFieldMessage}
                       maxFileSize={config.maxFileSize}
@@ -139,7 +137,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
             ))}
             <Grid xxs={6}>
               {otherRelevantDocuments.length < MAX_OTHER_RELEVANT_DOCUMENTS && (
-                <Button onClick={() => push(null)} startDecorator={<Add />}>
+                <Button startDecorator={<Add />} onClick={() => push(null)}>
                   Weiteres Dokument hinzufügen
                 </Button>
               )}

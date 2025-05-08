@@ -17,8 +17,8 @@ export function DecoratedInputField(props: BaseFieldProps) {
       sx={formControlProps.sx}
     >
       {renderLabel(label)}
-      <Stack direction={"row"} alignItems={"center"} gap={2}>
-        <Box width={"100%"}>{children}</Box>
+      <Stack direction="row" alignItems="center" gap={2}>
+        <Box width="100%">{children}</Box>
         {fieldDecorator}
       </Stack>
       {renderHelperText(helperText)}

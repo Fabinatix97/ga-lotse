@@ -8,7 +8,7 @@ import { parse } from "valibot";
 
 import { RouteParams } from "@eshg/lib-portal/types/pageParams";
 
-import { DentalChildRouteParams } from "@/features/children/schemas/DentalChildRouteParams";
+import { DentalChildRouteParams } from "../schemas/DentalChildRouteParams";
 
 export function useChildRouteParams(
   asyncParams: Promise<RouteParams>,

@@ -75,21 +75,10 @@ export function SelectObjectField<
         options={props.options}
         getOptionLabel={props.getOptionLabel}
         getOptionKey={props.getOptionLabel}
-        onChange={(_, newValue) => {
-          const emptyValue = props.multiple ? [] : null;
-          const value = (newValue ?? emptyValue) as SelectObjectFieldValue<
-            TValue,
-            TMultiple
-          >;
-          void field.helpers.setValue(value);
-          props.onValueChanged?.(value);
-        }}
         filterOptions={props.disableFiltering ? identity() : undefined}
-        onBlur={field.input.onBlur}
         multiple={props.multiple}
         placeholder={props.placeholder}
         disabled={disabled || props.disabled}
-        onInputChange={props.onInputChange}
         loading={props.loading}
         endDecorator={
           props.loading ? (
@@ -99,6 +88,17 @@ export function SelectObjectField<
           )
         }
         sx={props.sx}
+        onChange={(_, newValue) => {
+          const emptyValue = props.multiple ? [] : null;
+          const value = (newValue ?? emptyValue) as SelectObjectFieldValue<
+            TValue,
+            TMultiple
+          >;
+          void field.helpers.setValue(value);
+          props.onValueChanged?.(value);
+        }}
+        onBlur={field.input.onBlur}
+        onInputChange={props.onInputChange}
       />
     </FieldComponent>
   );

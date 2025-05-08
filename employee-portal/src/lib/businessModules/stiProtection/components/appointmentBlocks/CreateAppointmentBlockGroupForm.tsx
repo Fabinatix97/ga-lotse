@@ -154,10 +154,10 @@ export function CreateAppointmentBlockGroupForm() {
       blockedStaff={blockedStaff}
       consultants={allConsultants}
       physicians={allPhysicians}
+      validateAvailability={validateAvailability}
       onSubmit={async (values) => {
         await handleSubmit(values);
       }}
-      validateAvailability={validateAvailability}
     />
   );
 }

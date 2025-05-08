@@ -49,7 +49,7 @@ export function BackupSetupView() {
   return (
     <>
       <Sheet
-        data-testid={"create-key-backup"}
+        data-testid="create-key-backup"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -57,12 +57,12 @@ export function BackupSetupView() {
           flex: 1,
         }}
       >
-        <Stack alignItems={"center"} gap={2}>
-          <CancelOutlined fontSize={"xl4"} />
+        <Stack alignItems="center" gap={2}>
+          <CancelOutlined fontSize="xl4" />
           <Typography>{stateContent.subheader}</Typography>
           <Button
-            onClick={() => setOpen(true)}
             startDecorator={<KeyOutlined />}
+            onClick={() => setOpen(true)}
           >
             {stateContent.header}
           </Button>
@@ -73,16 +73,16 @@ export function BackupSetupView() {
         {clientState === ClientState.CreateKeyBackup && (
           <CreateBackupSidebar
             open={open}
-            onClose={() => setOpen(false)}
             content={stateContent}
+            onClose={() => setOpen(false)}
           />
         )}
 
         {clientState === ClientState.RestoreKeyBackup && (
           <RestoreBackupSidebar
             open={open}
-            onClose={() => setOpen(false)}
             content={stateContent}
+            onClose={() => setOpen(false)}
           />
         )}
       </OverlayBoundary>

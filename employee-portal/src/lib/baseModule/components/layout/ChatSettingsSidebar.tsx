@@ -38,7 +38,7 @@ import {
   setPresenceOnline,
 } from "@/lib/businessModules/chat/shared/utils";
 
-export function useChatUserSidebar(): UseSidebarResult {
+function useChatUserSidebar(): UseSidebarResult {
   return useSidebar({
     component: ChatSettingsSidebar,
   });
@@ -199,21 +199,21 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           <Typography level="body-sm" mt={10}>
             Sie haben den
             <Button
-              onClick={() => setTermsOfUseModal(true)}
               variant="plain"
               sx={{
                 paddingX: 1,
                 "&:hover": { backgroundColor: "transparent" },
               }}
+              onClick={() => setTermsOfUseModal(true)}
             >
               Nutzungsbedingungen
             </Button>
             zur Chatfunktion zugestimmt
           </Typography>
           <Button
-            onClick={() => setDeactivateModalOpen(true)}
             sx={{ alignSelf: "flex-start", mt: 2 }}
             color="danger"
+            onClick={() => setDeactivateModalOpen(true)}
           >
             Account deaktivieren
           </Button>
@@ -223,23 +223,23 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
       <SidebarActions>
         <Button
           sx={{ alignSelf: "end" }}
+          endDecorator={<OpenInNew />}
           onClick={() => {
             onClose();
             tryNavigate(routes.chat);
           }}
-          endDecorator={<OpenInNew />}
         >
           Chatbereich
         </Button>
       </SidebarActions>
       <DeactivateModal
-        onClose={() => setDeactivateModalOpen(false)}
         open={deactivateModalOpen}
+        onClose={() => setDeactivateModalOpen(false)}
         onConfirm={() => setDoubleConfirmationModalOpen(true)}
       />
       <DoubleConfirmModal
-        onClose={() => setDoubleConfirmationModalOpen(false)}
         open={doubleConfirmationModalOpen}
+        onClose={() => setDoubleConfirmationModalOpen(false)}
         onConfirm={handleDeleteUserAccount}
         onCancel={() => setDoubleConfirmationModalOpen(false)}
       />
@@ -258,14 +258,14 @@ export function ChatSettingsButton() {
   const chatSidebar = useChatUserSidebar();
   return (
     <Button
-      variant={"plain"}
-      size={"md"}
+      variant="plain"
+      size="md"
       startDecorator={<ChatOutlinedIcon />}
-      onClick={chatSidebar.open}
       sx={{
         paddingInline: 1,
         justifyContent: "flex-start",
       }}
+      onClick={chatSidebar.open}
     >
       Chat Einstellungen
     </Button>

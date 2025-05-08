@@ -36,7 +36,7 @@ export function PacklistDefinitionElementsList({
         key={element.id}
         element={element}
         elementIndex={elementIndex}
-        readOnlyMode={true}
+        readOnlyMode
       />
     ));
   }
@@ -100,10 +100,10 @@ export function PacklistDefinitionElementsList({
 
             <Button
               disabled={readOnlyMode}
-              onClick={() => push(createNewElement())}
               variant="plain"
               startDecorator={<Add />}
               sx={{ alignSelf: "flex-start" }}
+              onClick={() => push(createNewElement())}
             >
               Neuen Eintrag erstellen
             </Button>

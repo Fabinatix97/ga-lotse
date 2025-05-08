@@ -9,9 +9,10 @@ import {
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 
-import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
-import { ProcedureLabelAutocomplete } from "@/features/procedureLabels/components/ProcedureLabelAutocomplete";
-import { ProcedureLabelClient } from "@/features/procedureLabels/types/procedureLabelClient";
+import { ProcedureLabel } from "../api/models/ProcedureLabel";
+import { ProcedureLabelClient } from "../types/procedureLabelClient";
+
+import { ProcedureLabelAutocomplete } from "./ProcedureLabelAutocomplete";
 
 interface ProcedureLabelSelectionProps {
   onChange?: (newValue: ProcedureLabel[]) => void;
@@ -29,12 +30,12 @@ export function ProcedureLabelSelection(props: ProcedureLabelSelectionProps) {
       <ProcedureLabelAutocomplete
         name={field.input.name}
         value={field.input.value}
+        procedureLabelApi={props.procedureLabelApi}
+        procedureLabelApiQueryKey={props.procedureLabelApiQueryKey}
         onChange={(newValue) => {
           void field.helpers.setValue(newValue);
           props.onChange?.(newValue);
         }}
-        procedureLabelApi={props.procedureLabelApi}
-        procedureLabelApiQueryKey={props.procedureLabelApiQueryKey}
       />
     </BaseField>
   );

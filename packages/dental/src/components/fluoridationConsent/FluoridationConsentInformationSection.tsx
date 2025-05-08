@@ -3,15 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
+import { useId } from "react";
 import { isDefined } from "remeda";
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { DetailsItem, formatBoolean } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatOptional } from "@eshg/lib-portal/formatters/optional";
 
-import { OpenHistorySidebarButton } from "@/components/examination/OpenHistorySidebarButton";
-import { useFluoridationConsentHistorySidebar } from "@/components/fluoridationConsent/FluoridationConsentHistorySidebar";
+import {
+  ExaminationSectionHeader,
+  ExaminationSectionSecondaryTitle,
+} from "../examination/ExaminationSection";
+import { OpenHistorySidebarButton } from "../examination/OpenHistorySidebarButton";
+
+import { useFluoridationConsentHistorySidebar } from "./FluoridationConsentHistorySidebar";
 
 interface FluoridationConsentInformationSectionProps {
   allFluoridationConsents: ApiFluoridationConsent[];
@@ -20,6 +27,7 @@ interface FluoridationConsentInformationSectionProps {
 export function FluoridationConsentInformationSection(
   props: FluoridationConsentInformationSectionProps,
 ) {
+  const titleId = useId();
   const fluoridationConsent = props.allFluoridationConsents[0];
   const fluoridationOverviewSidebar = useFluoridationConsentHistorySidebar();
 
@@ -32,19 +40,24 @@ export function FluoridationConsentInformationSection(
     );
   }
   return (
-    <>
-      <Stack direction="row" alignItems="center" gap={2} flexWrap="wrap">
-        <Typography fontWeight={600}>Fluoridierung</Typography>
+    <Stack
+      component="section"
+      direction="column"
+      gap={2}
+      aria-labelledby={titleId}
+    >
+      <ExaminationSectionHeader>
+        <ExaminationSectionSecondaryTitle titleId={titleId}>
+          Fluoridierung
+        </ExaminationSectionSecondaryTitle>
         <OpenHistorySidebarButton
           onClick={() =>
             fluoridationOverviewSidebar.open({
               allFluoridationConsents: props.allFluoridationConsents,
             })
           }
-        >
-          Übersicht
-        </OpenHistorySidebarButton>
-      </Stack>
+        />
+      </ExaminationSectionHeader>
       <Stack direction="row" gap={3} flexWrap="wrap">
         <DetailsItem
           label="Einverständnis"
@@ -56,9 +69,9 @@ export function FluoridationConsentInformationSection(
         />
         <DetailsItem
           label="Allergie"
-          value={formatBoolean(fluoridationConsent.hasAllergy)}
+          value={formatOptional(fluoridationConsent.hasAllergy, formatBoolean)}
         />
       </Stack>
-    </>
+    </Stack>
   );
 }

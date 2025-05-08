@@ -57,7 +57,7 @@ export function ContactAndAvailability({
   );
 }
 
-export function PhoneNumbersSection({ department }: DepartmentInfoProps) {
+function PhoneNumbersSection({ department }: DepartmentInfoProps) {
   const { t } = useTranslation("stiProtection/overview");
   return (
     <InfoSection icon={<CallOutlined />}>
@@ -71,7 +71,7 @@ export function PhoneNumbersSection({ department }: DepartmentInfoProps) {
   );
 }
 
-export function EmailSection({ department }: DepartmentInfoProps) {
+function EmailSection({ department }: DepartmentInfoProps) {
   const { t } = useTranslation("stiProtection/overview");
   const email = department.email;
   return (

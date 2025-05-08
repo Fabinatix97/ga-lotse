@@ -14,22 +14,20 @@ import {
   ExaminationState,
   HasResultState,
   PreviousDiagnosesState,
-} from "@/stores/examination/examinationStore";
-import {
-  createAddableTooth,
-  createToothResult,
-} from "@/stores/examination/factories";
+} from "../examinationStore";
+import { createAddableTooth, createToothResult } from "../factories";
 import {
   Dentition,
   Tooth,
   ToothContext,
   ToothResult,
   ToothWithDiagnosis,
-} from "@/stores/examination/types";
+} from "../types";
 
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
 import { NavigateFromOutputState, navigateFrom } from "./navigateFrom";
 import { toggleToothType } from "./tooth";
+import { isInUpperJaw } from "./utils";
 
 type SetResultState = Pick<ExaminationState, "dentition">;
 type SetMainResultState = SetResultState & NavigateFromOutputState;
@@ -39,8 +37,7 @@ export function setMainResult(
   newValue: string,
   state: SetMainResultState & PreviousDiagnosesState,
 ): SetMainResultState & DmftValuesState & DirtyState & HasResultState {
-  const { dentition, currentView, currentFocus, previousToothDiagnoses } =
-    state;
+  const { dentition, currentFocus, previousToothDiagnoses } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
 
   if (
@@ -50,25 +47,23 @@ export function setMainResult(
   ) {
     return {
       ...toggleToothType(toothContext, dentition, previousToothDiagnoses),
-      currentView,
       hasResult: hasAnyResult(dentition),
     };
   }
 
   const isInvalid = isEmptyString(newValue)
-    ? !isEmptyString(tooth.secondaryResult1.value) ||
-      !isEmptyString(tooth.secondaryResult2.value)
+    ? !isEmptyString(tooth.secondaryResult.value)
     : !isValidMainResult(newValue);
 
-  const navigateDirection = currentView === "UPPER_JAW" ? "RIGHT" : "LEFT";
+  const navigateDirection = isInUpperJaw(toothContext.quadrantNumber)
+    ? "RIGHT"
+    : "LEFT";
   const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
     mainResult: createToothResult(newValue, isInvalid),
   });
 
   return {
-    ...(isInvalid
-      ? { currentView, currentFocus }
-      : navigateFrom(navigateDirection, state)),
+    ...(isInvalid ? { currentFocus } : navigateFrom(navigateDirection, state)),
     dentition: newDentition,
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
@@ -76,7 +71,7 @@ export function setMainResult(
   };
 }
 
-export function setSecondaryResult1(
+export function setSecondaryResult(
   toothContext: ToothContext,
   newValue: string,
   state: SetResultState,
@@ -87,44 +82,11 @@ export function setSecondaryResult1(
   const isInvalid =
     !isEmptyString(newValue) && !isValidSecondaryResult(newValue);
 
-  const mainResult = setMainResultInvalidIfEmpty(
-    tooth.mainResult,
-    tooth.secondaryResult2,
-    newValue,
-  );
+  const mainResult = setMainResultInvalidIfEmpty(tooth.mainResult, newValue);
 
   const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
     mainResult,
-    secondaryResult1: createToothResult(newValue, isInvalid),
-  });
-
-  return {
-    dentition: newDentition,
-    dirty: true,
-    hasResult: hasAnyResult(newDentition),
-  };
-}
-
-export function setSecondaryResult2(
-  toothContext: ToothContext,
-  newValue: string,
-  state: SetResultState,
-): SetResultState & DirtyState & HasResultState {
-  const { dentition } = state;
-  const tooth = getToothFromToothContext(dentition, toothContext);
-
-  const isInvalid =
-    !isEmptyString(newValue) && !isValidSecondaryResult(newValue);
-
-  const mainResult = setMainResultInvalidIfEmpty(
-    tooth.mainResult,
-    tooth.secondaryResult1,
-    newValue,
-  );
-
-  const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
-    mainResult,
-    secondaryResult2: createToothResult(newValue, isInvalid),
+    secondaryResult: createToothResult(newValue, isInvalid),
   });
 
   return {
@@ -136,11 +98,10 @@ export function setSecondaryResult2(
 
 function setMainResultInvalidIfEmpty(
   mainResult: ToothResult,
-  secondaryResult: ToothResult,
   newValue: string,
 ) {
   if (isEmptyToothResult(mainResult)) {
-    if (isEmptyString(newValue) && isEmptyToothResult(secondaryResult)) {
+    if (isEmptyString(newValue)) {
       return createToothResult(mainResult.value, false);
     } else {
       return createToothResult("", true);
@@ -217,8 +178,7 @@ export function hasAnyResult(dentition: Dentition): boolean {
         tooth.type === "ToothWithDiagnosis" &&
         !(
           isEmpty(tooth.mainResult.value) &&
-          isEmpty(tooth.secondaryResult1.value) &&
-          isEmpty(tooth.secondaryResult2.value)
+          isEmpty(tooth.secondaryResult.value)
         ),
     );
 }

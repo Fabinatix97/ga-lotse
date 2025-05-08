@@ -6,11 +6,11 @@
 import { startTransition, useState } from "react";
 import { isNonNull } from "remeda";
 
-import { PaginationProps } from "@/features/table/components/pagination/Pagination";
+import { PaginationProps } from "../components/pagination/Pagination";
 import {
   DEFAULT_PAGE_SIZE,
   DEFAULT_PAGE_SIZE_OPTIONS,
-} from "@/features/table/config/pagination";
+} from "../config/pagination";
 
 interface UsePagination {
   resetPageNumber: () => void;

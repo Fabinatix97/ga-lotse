@@ -61,7 +61,7 @@ export function useGetChecklistDefinitionVersions(defId: string) {
   });
 }
 
-export function getChecklistDefinitionFromCentralRepoQuery(
+function getChecklistDefinitionFromCentralRepoQuery(
   repoApi: ChecklistDefinitionCentralRepoApi,
   repositoryID: number,
   repositoryVersion: number,

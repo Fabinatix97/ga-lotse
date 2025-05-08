@@ -56,8 +56,8 @@ export function MedicalHistoriesContent({
         <IconButton
           color="primary"
           variant="outlined"
+          aria-label="Anamnese herunterladen"
           onClick={() => getMedicalHistoryPdf(medicalHistoryId)}
-          aria-label={"Anamnese herunterladen"}
         >
           <DownloadOutlined />
         </IconButton>
@@ -92,9 +92,9 @@ export function MedicalHistoriesContent({
       direction={{ md: "row" }}
       sx={{ flex: "1 1 auto" }}
       gap={2}
-      display={"flex"}
+      display="flex"
     >
-      <Stack data-testid="content" display={"flex"} sx={{ flex: "1 1 auto" }}>
+      <Stack data-testid="content" display="flex" sx={{ flex: "1 1 auto" }}>
         <InformationSheet sx={{ flex: "1 1 auto" }}>
           {medicalHistory && (
             <DetailsSection
@@ -104,11 +104,11 @@ export function MedicalHistoriesContent({
                   ? `${formatDate(medicalHistory.appointment)} Folgeanamnese`
                   : `${formatDate(medicalHistory.appointment)} Hauptanamnese`
               }
+              canEdit={!editMode && !isProcedureClosed()}
+              buttons={downloadAction(medicalHistory.id)}
               onEdit={() => {
                 setEditMode(!editMode);
               }}
-              canEdit={!editMode && !isProcedureClosed()}
-              buttons={downloadAction(medicalHistory.id)}
             >
               <MedicalHistory
                 medicalHistory={medicalHistory}
@@ -117,7 +117,7 @@ export function MedicalHistoriesContent({
                 onCancel={() => {
                   setEditMode(false);
                 }}
-              ></MedicalHistory>
+              />
             </DetailsSection>
           )}
         </InformationSheet>
@@ -138,10 +138,6 @@ export function MedicalHistoriesContent({
                       <EditNoteIcon />
                     )
                   }
-                  onClick={() => {
-                    setMedicalHistory(value);
-                    resetAlertContext();
-                  }}
                   variant="outlined"
                   aria-current={
                     medicalHistory?.id === value.id ? "true" : undefined
@@ -153,6 +149,10 @@ export function MedicalHistoriesContent({
                         }
                       : undefined
                   }
+                  onClick={() => {
+                    setMedicalHistory(value);
+                    resetAlertContext();
+                  }}
                 >
                   {value.followUp
                     ? `${formatDate(value.appointment)} Folgeanamnese`

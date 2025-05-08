@@ -94,9 +94,9 @@ export function CertificateForm(props: Readonly<CertificateFormProps>) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
       validate={validateSidebar}
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, values, setFieldValue }) => (
         <SidebarForm ref={props.formRef}>

@@ -29,7 +29,7 @@ interface SettingsSidebarProps extends DrawerProps {
   onDisplayedCalendarIdsChanged: Dispatch<SetStateAction<string[]>>;
 }
 
-export function SettingsSidebar({
+function SettingsSidebar({
   calendars,
   initialDisplayedCalenderIds,
   onDisplayedCalendarIdsChanged,
@@ -44,7 +44,7 @@ export function SettingsSidebar({
   }
 
   return (
-    <SidebarContent title={"Kalender Einstellungen"}>
+    <SidebarContent title="Kalender Einstellungen">
       <CalendarSelector
         calendars={calendars}
         displayedCalendarIds={displayedCalendarIds}

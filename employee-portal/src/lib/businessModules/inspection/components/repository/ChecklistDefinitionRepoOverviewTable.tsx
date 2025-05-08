@@ -114,20 +114,18 @@ export function ChecklistDefinitionRepoOverviewTable() {
   });
 
   return (
-    <>
-      <TablePage fullHeight>
-        <TableSheet loading={isFetching}>
-          <DataTable
-            data={repoMetadataList}
-            columns={columns}
-            rowNavigation={{
-              route: getRepoOverviewRowRoute,
-              focusColumnAccessorKey: "name",
-            }}
-            striped
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+    <TablePage fullHeight>
+      <TableSheet loading={isFetching}>
+        <DataTable
+          data={repoMetadataList}
+          columns={columns}
+          rowNavigation={{
+            route: getRepoOverviewRowRoute,
+            focusColumnAccessorKey: "name",
+          }}
+          striped
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

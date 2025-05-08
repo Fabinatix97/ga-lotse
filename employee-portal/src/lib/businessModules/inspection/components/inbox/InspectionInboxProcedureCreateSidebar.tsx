@@ -91,17 +91,17 @@ export function InspectionInboxProcedureCreateSidebar({
       title="Neuen Vorgang anlegen"
       searchResultHeaderComponent={false}
       initialSearchInputs={initialSearchInputs}
+      formRef={formRef}
+      getInitialCreateInputs={(searchInputs?: FacilitySearchFormValues) => ({
+        ...createBaseFacilityFromInboxProcedure(inboxProcedure, searchInputs),
+      })}
       onCreateNew={async (values) => {
         await handleSaveFacility(values.createInputs);
       }}
       onSelect={async (values) => {
         await handleSelectFacility(values.facility);
       }}
-      formRef={formRef}
       onClose={onClose}
-      getInitialCreateInputs={(searchInputs?: FacilitySearchFormValues) => ({
-        ...createBaseFacilityFromInboxProcedure(inboxProcedure, searchInputs),
-      })}
     />
   );
 }

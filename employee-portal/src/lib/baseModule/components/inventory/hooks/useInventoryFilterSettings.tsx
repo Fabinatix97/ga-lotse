@@ -104,8 +104,8 @@ export function useInventoryFilterSettings(
         <Stack gap={2}>
           <SingleSelectFilter
             options={inventoryTypeOptions}
-            placeholder={"Typ"}
-            searchParamName={"type"}
+            placeholder="Typ"
+            searchParamName="type"
             tableControl={props.tableControl}
             sx={{
               width: undefined,
@@ -116,8 +116,8 @@ export function useInventoryFilterSettings(
               label: label.name,
               value: label.name,
             }))}
-            placeholder={"Label"}
-            searchParamName={"label"}
+            placeholder="Label"
+            searchParamName="label"
             tableControl={props.tableControl}
             sx={{
               width: undefined,

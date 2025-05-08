@@ -5,13 +5,21 @@
 
 "use client";
 
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import {
+  getCloseable,
+  getErrorAction,
+  getErrorDescription,
+} from "@eshg/lib-portal/errorHandling/errorMappers";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { ApiBookingState } from "@eshg/official-medical-service-api";
 
 import { usePutAppointmentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
+import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/citizenAuthApi";
 import {
   BookAppointmentFormValues,
@@ -36,6 +44,8 @@ export default function CitizenOmsEntryPage() {
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
+  const alert = useAlert();
+  const queryClient = useQueryClient();
 
   const bookAppointment = usePutAppointmentCitizen(
     procedure.appointment?.bookingState === ApiBookingState.Booked
@@ -45,14 +55,47 @@ export default function CitizenOmsEntryPage() {
 
   async function handleSubmit(values: BookAppointmentFormValues) {
     if (!values.appointment) return;
-    await bookAppointment.mutateAsync({
-      appointmentId: procedure.appointment?.appointmentId ?? "",
-      apiAppointment: {
-        start: values.appointment.start,
-        end: values.appointment.end,
+    await bookAppointment.mutateAsync(
+      {
+        appointmentId: procedure.appointment?.appointmentId ?? "",
+        apiAppointment: {
+          start: values.appointment.start,
+          end: values.appointment.end,
+        },
       },
-    });
-    router.push(citizenRoutes.personalArea.index(accessCode));
+      {
+        onSuccess: () =>
+          router.push(citizenRoutes.personalArea.index(accessCode)),
+        onError: (error) => {
+          if (
+            error instanceof Error &&
+            error.message.startsWith("The requested time slot does not")
+          ) {
+            alert.error({
+              message: t("common.errors.concurrentAppointment", {
+                context: "errorMessage",
+              }),
+            });
+            void (async () =>
+              await queryClient.invalidateQueries({
+                queryKey: citizenPublicApiQueryKey([
+                  "getFreeAppointmentsForCitizen",
+                ]),
+              }));
+          } else {
+            const { errorCode } = resolveError(error);
+            const { title, message } = getErrorDescription(errorCode);
+
+            alert.error({
+              title,
+              message,
+              action: getErrorAction(errorCode),
+              closeable: getCloseable(errorCode),
+            });
+          }
+        },
+      },
+    );
   }
 
   return (

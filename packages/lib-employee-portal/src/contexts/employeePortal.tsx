@@ -7,8 +7,9 @@
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { ApiProvider } from "@/contexts/api";
-import { LayoutConfig, LayoutConfigProvider } from "@/contexts/layoutConfig";
+import { ApiProvider } from "./api";
+import { LayoutConfig, LayoutConfigProvider } from "./layoutConfig";
+import { SidenavProvider } from "./sidenav";
 
 interface EmployeePortalProviderProps extends RequiresChildren {
   baseUrl: string;
@@ -19,7 +20,7 @@ export function EmployeePortalProvider(props: EmployeePortalProviderProps) {
   return (
     <ApiProvider baseUrl={props.baseUrl}>
       <LayoutConfigProvider config={props.layoutConfig}>
-        {props.children}
+        <SidenavProvider>{props.children}</SidenavProvider>
       </LayoutConfigProvider>
     </ApiProvider>
   );

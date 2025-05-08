@@ -33,43 +33,41 @@ export function ChecklistDefinitionElementsList({
   return (
     <FieldArray name={`context.sections.${sectionIndex}.elements`}>
       {({ push, remove, replace, move }) => (
-        <>
-          <DragDropContext
-            nonce={nonce}
-            onDragEnd={(result) => {
-              if (result.reason !== "DROP") return;
-              if (result.destination === null) return;
-              if (result.destination.index === result.source.index) return;
-              move(result.source.index, result.destination.index);
-            }}
-          >
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <Stack
-                  spacing={2}
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  sx={getListStyle(snapshot.isDraggingOver)}
-                >
-                  {values.context.sections[sectionIndex]?.elements.map(
-                    (element, elementIndex) => (
-                      <MemoizedDraggableChecklistDefinitionElement
-                        key={element.id}
-                        element={element}
-                        elementIndex={elementIndex}
-                        sectionIndex={sectionIndex}
-                        push={push}
-                        remove={remove}
-                        replace={replace}
-                      />
-                    ),
-                  )}
-                  {provided.placeholder}
-                </Stack>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </>
+        <DragDropContext
+          nonce={nonce}
+          onDragEnd={(result) => {
+            if (result.reason !== "DROP") return;
+            if (result.destination === null) return;
+            if (result.destination.index === result.source.index) return;
+            move(result.source.index, result.destination.index);
+          }}
+        >
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <Stack
+                spacing={2}
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                sx={getListStyle(snapshot.isDraggingOver)}
+              >
+                {values.context.sections[sectionIndex]?.elements.map(
+                  (element, elementIndex) => (
+                    <MemoizedDraggableChecklistDefinitionElement
+                      key={element.id}
+                      element={element}
+                      elementIndex={elementIndex}
+                      sectionIndex={sectionIndex}
+                      push={push}
+                      remove={remove}
+                      replace={replace}
+                    />
+                  ),
+                )}
+                {provided.placeholder}
+              </Stack>
+            )}
+          </Droppable>
+        </DragDropContext>
       )}
     </FieldArray>
   );
@@ -106,8 +104,8 @@ const MemoizedDraggableChecklistDefinitionElement = memo(
             )}
           >
             <ChecklistDefinitionElement
-              dragHandleProps={provided.dragHandleProps}
               key={element.id}
+              dragHandleProps={provided.dragHandleProps}
               element={element}
               setElement={(element) => replace(elementIndex, element)}
               deleteElement={() => remove(elementIndex)}

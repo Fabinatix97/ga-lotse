@@ -96,8 +96,8 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       validate={(values) => validateForm(values, props.allAppointmentTypes)}
+      onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
         <FormSheet gap={5} onSubmit={handleSubmit}>

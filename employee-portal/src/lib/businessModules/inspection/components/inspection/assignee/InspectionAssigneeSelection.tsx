@@ -11,7 +11,7 @@ import { AssigneeAutocompleteField } from "@/lib/businessModules/inspection/comp
 import { AssigneeInfo } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeInfo";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 
-export interface InspectionAssigneeSelectionProps {
+interface InspectionAssigneeSelectionProps {
   selfUser: ApiUser;
   onSelfAssign: () => void;
   currentAssigneeName: string | null;
@@ -41,7 +41,7 @@ export function InspectionAssigneeSelection(
           assigneeName={
             props.currentAssigneeName ?? selfUserOption?.label ?? ""
           }
-        ></AssigneeInfo>
+        />
       ) : (
         <AssigneeAutocompleteField
           name={props.assigneeIdFieldValueName}

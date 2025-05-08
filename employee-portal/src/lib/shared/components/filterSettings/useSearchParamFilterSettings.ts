@@ -11,7 +11,7 @@ import {
 
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 
-export type UseSearchParamFilterSettingsParams = Omit<
+type UseSearchParamFilterSettingsParams = Omit<
   UseFilterSettingsParams,
   "stateProvider"
 >;

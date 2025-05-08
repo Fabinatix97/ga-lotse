@@ -7,6 +7,8 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
+import { useTranslation } from "../../i18n/useTranslation";
+
 import { FieldSetControl } from "./FieldSetControl";
 import { RadioButtonsField, RadioButtonsFieldProps } from "./RadioButtonsField";
 
@@ -38,12 +40,13 @@ export function YesOrNoWithFollowUp({
   onReset,
   ...radioProps
 }: YesOrNoWithFollowUpProps) {
+  const { t } = useTranslation();
   const { getFieldMeta } = useFormikContext();
   const { value } = getFieldMeta(radioProps.name);
   const followUpOn = followUpOnNo ? "no" : "yes";
   const options = [
-    { label: positiveLabel ?? "Ja", value: "yes" },
-    { label: negativeLabel ?? "Nein", value: "no" },
+    { label: positiveLabel ?? t("common.yes"), value: "yes" },
+    { label: negativeLabel ?? t("common.no"), value: "no" },
   ];
   const show = value === followUpOn;
   const showBelow = show && !inlineFollowUp;
@@ -76,9 +79,9 @@ export function YesOrNoWithFollowUp({
       <RadioButtonsField
         resetLabel={resetLabel}
         resettable
-        onReset={onReset}
         options={options}
         orientation={optionsOrientation}
+        onReset={onReset}
         {...radioProps}
         additionalField={showInline ? children : undefined}
       />

@@ -19,11 +19,8 @@ import { NewCustodianButton } from "@/lib/businessModules/measlesProtection/comp
 import { MeaslesProtectionLayout } from "@/lib/businessModules/measlesProtection/layout/MeaslesProtectionLayout";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
-import { AddCustodianSidebar } from "./AddCustodianSidebar";
 import { AffectedPerson } from "./AffectedPerson";
 import { Custodians } from "./Custodians";
-import { EditAffectedPersonSidebar } from "./EditAffectedPersonSidebar";
-import { EditCustodianSidebar } from "./EditCustodianSidebar";
 import { Facility } from "./Facility";
 import { NewFacilityButton } from "./NewFacilityButton";
 import { UpdateProcedureSection } from "./UpdateProcedureSection";
@@ -74,9 +71,6 @@ export function MeaslesProtectionProcedureDraftClientPage({
           />
         </Grid>
       </Grid>
-      <AddCustodianSidebar procedure={procedure} />
-      <EditCustodianSidebar custodians={procedure.custodians} />
-      <EditAffectedPersonSidebar person={procedure.affectedPerson} />
     </MeaslesProtectionLayout>
   );
 }
@@ -85,7 +79,7 @@ function AddButtons({ procedure }: { procedure: ApiDraftMeaslesProcedure }) {
   return (
     <Grid container spacing={3}>
       <Grid xs={6}>
-        <NewCustodianButton />
+        <NewCustodianButton procedureId={procedure.id} />
       </Grid>
       {!procedure.facility && (
         <Grid xs={6}>

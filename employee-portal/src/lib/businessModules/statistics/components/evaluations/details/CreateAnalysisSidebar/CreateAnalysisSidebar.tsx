@@ -100,9 +100,7 @@ function CreateAnalysisSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
-      onSubmit={createAnalysisAndDiagramWithoutFilters}
       steps={[
         () => ({
           title: "Darstellung wählen",
@@ -179,6 +177,8 @@ function CreateAnalysisSidebar({
           initialValues: { name: "" },
         }),
       ]}
+      onClose={onClose}
+      onSubmit={createAnalysisAndDiagramWithoutFilters}
     />
   );
 }

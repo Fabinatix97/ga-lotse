@@ -57,8 +57,8 @@ export function PinStep() {
   return (
     <StepLayout
       initialValues={initialValues}
-      onSubmit={onSubmit}
       submit={t("pin.submit")}
+      onSubmit={onSubmit}
     >
       <StepSubTitle title={t("pin.title")} />
       <Alert color="primary" message={t("pin.notice")} />

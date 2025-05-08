@@ -41,11 +41,11 @@ export function CloseProcedureModal(props: CloseProcedureModalProps) {
     <BaseModalWithInfo
       modalTitle="Vorgang abschließen?"
       description="Nach Abschluss können keine Daten mehr geändert werden."
+      color="primary"
       onConfirm={async () => {
         await closeOpenProcedure.mutateAsync({ id: props.procedure.id });
       }}
       onCancel={props.onClose}
-      color="primary"
       {...props}
     />
   ) : (
@@ -108,7 +108,7 @@ function getRequirements(
   return items;
 }
 
-export type ButtonBarProps = Pick<
+type ButtonBarProps = Pick<
   ConfirmationDialogProps,
   "onClose" | "onConfirm" | "onCancel" | "color"
 >;
@@ -131,10 +131,10 @@ function BaseModalWithInfo({ ...props }: BaseModalWithProps) {
       {isDefined(props.children) && props.children}
       {isDefined(props.onConfirm) && isDefined(props.onCancel) && (
         <BaseConfirmationDialogButtonBar
-          onConfirm={props.onConfirm}
           handleCancel={props.onCancel}
           confirmLabel="Abschließen"
           cancelLabel="Abbrechen"
+          onConfirm={props.onConfirm}
           {...props}
         />
       )}

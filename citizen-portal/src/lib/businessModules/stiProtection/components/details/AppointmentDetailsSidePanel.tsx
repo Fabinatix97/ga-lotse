@@ -21,6 +21,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ColumnGridSidePanel } from "@/lib/shared/components/layout/grid";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { GoToResultsStatusCard } from "./GoToResultsStatusCard";
@@ -59,7 +60,7 @@ export function AppointmentDetailsSidePanel() {
   }
 
   return (
-    <Stack gap={2}>
+    <ColumnGridSidePanel>
       <ContentSheet>
         <ContentSheetTitle>{t("personal_area.title")}</ContentSheetTitle>
         <Stack gap={2}>
@@ -86,6 +87,6 @@ export function AppointmentDetailsSidePanel() {
       </ContentSheet>
       <GoToResultsStatusCard />
       <GoToChangePinCard />
-    </Stack>
+    </ColumnGridSidePanel>
   );
 }

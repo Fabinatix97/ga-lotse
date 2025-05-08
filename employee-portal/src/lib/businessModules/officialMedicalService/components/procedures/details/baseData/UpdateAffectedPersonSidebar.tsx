@@ -57,14 +57,14 @@ function UpdateAffectedPersonSidebar({
 
   return (
     <PersonSidebarForm
-      mode={"edit"}
-      title={"Betroffene Person bearbeiten"}
-      onCancel={onClose}
-      onSubmit={handleSubmit}
+      mode="edit"
+      title="Betroffene Person bearbeiten"
       sidebarFormRef={formRef}
       initialValues={mapPersonDetailsToForm(affectedPerson)}
       component={DefaultPersonForm}
       addressRequired
+      onCancel={onClose}
+      onSubmit={handleSubmit}
     />
   );
 }

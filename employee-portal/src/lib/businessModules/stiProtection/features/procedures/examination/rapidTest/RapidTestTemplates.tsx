@@ -7,8 +7,9 @@ import { Grid, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
-import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
@@ -16,7 +17,7 @@ import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
 import { RapidTestExaminationData } from "./helpers";
 
-export interface RapidTestProps extends PropsWithChildren {
+interface RapidTestProps extends PropsWithChildren {
   name: string;
   label: string;
 }
@@ -53,7 +54,7 @@ function RapidTest(props: RapidTestProps) {
   );
 }
 
-export interface RapidTestWithBooleanResultProps extends RapidTestProps {
+interface RapidTestWithBooleanResultProps extends RapidTestProps {
   number: string;
   result: string;
   positiveFieldLabel?: string;
@@ -78,13 +79,13 @@ export function RapidTestWithBooleanResult(
   return (
     <RapidTest label={label} name={name}>
       <Grid xxs={12} md={6} xxl={3}>
-        <InputField name={number} label={"Nummer"} />
+        <InputField name={number} label="Nummer" />
       </Grid>
       <Grid xxs={12} md={6} xxl={3}>
         <YesOrNoWithFollowUp
           name={result}
-          label={"Ergebnis"}
-          negativeLabel={"Negativ"}
+          label="Ergebnis"
+          negativeLabel="Negativ"
           positiveLabel={positiveFieldLabel}
           required={hasNumber() ? "Bitte das Testergebnis angeben" : undefined}
         />
@@ -93,7 +94,7 @@ export function RapidTestWithBooleanResult(
   );
 }
 
-export interface RapidTestWithTextResultProps extends RapidTestProps {
+interface RapidTestWithTextResultProps extends RapidTestProps {
   result: string;
   positiveFieldLabel?: string;
 }
@@ -104,13 +105,13 @@ export function RapidTestWithTextResult(props: RapidTestWithTextResultProps) {
   return (
     <RapidTest label={label} name={name}>
       <Grid xxs={12} md={12} xxl={6}>
-        <TextareaField name={result} label={"Ergebnis"} minRows={3} />
+        <TextareaField name={result} label="Ergebnis" minRows={3} />
       </Grid>
     </RapidTest>
   );
 }
 
-export interface RapidTestWithUnitStringResultProps extends RapidTestProps {
+interface RapidTestWithUnitStringResultProps extends RapidTestProps {
   result: string;
   unitText: string;
 }

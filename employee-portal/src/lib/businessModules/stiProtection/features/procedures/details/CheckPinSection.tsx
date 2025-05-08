@@ -50,16 +50,16 @@ export function CheckPinSection({
                 name="pin"
                 type={checkboxType}
                 required="Geben Sie eine PIN ein."
-                onChange={() => setPinToCheck(undefined)}
                 endDecorator={
                   <ViewToggle
                     checkboxType={checkboxType}
                     toggleCheckboxType={toggleCheckboxType}
                   />
                 }
-                autoComplete={"off"}
+                autoComplete="off"
                 sx={{ overflow: "hidden", flex: 1 }}
                 validate={validatePin}
+                onChange={() => setPinToCheck(undefined)}
               />
               <CheckButton isSubmitting={isPinValid.isFetching} />
             </Row>
@@ -90,7 +90,7 @@ function ViewToggle({
   toggleCheckboxType: () => void;
 }) {
   return (
-    <IconButton onClick={() => toggleCheckboxType()} aria-hidden>
+    <IconButton aria-hidden onClick={() => toggleCheckboxType()}>
       {checkboxType === "password" ? (
         <VisibilityOutlined />
       ) : (

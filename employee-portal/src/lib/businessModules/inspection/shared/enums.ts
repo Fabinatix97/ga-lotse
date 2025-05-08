@@ -119,7 +119,7 @@ export function translateFollowupType(followupType: ApiFollowupType) {
   return followupTypeNames[followupType];
 }
 
-export const inspectionAnnouncementNames = {
+const inspectionAnnouncementNames = {
   [ApiInspectionAnnouncementType.Email]: "E-Mail",
   [ApiInspectionAnnouncementType.Phone]: "Telefon",
 } satisfies Record<ApiInspectionAnnouncementType, string>;

@@ -23,7 +23,7 @@ const validateParallelExaminations = validatePipe(
   validateRange(1, 10),
 );
 
-export interface AppointmentBlockGroupFieldsProps {
+interface AppointmentBlockGroupFieldsProps {
   appointmentBlocksWithDays?: AppointmentBlockGroupValuesWithDays[];
   options: SelectOption[];
   showParallelExaminations?: boolean;

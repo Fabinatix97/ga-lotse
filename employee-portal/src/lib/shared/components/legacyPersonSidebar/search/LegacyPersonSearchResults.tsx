@@ -77,8 +77,8 @@ export function LegacyPersonSearchResults({
   return (
     <Formik
       initialValues={{ selected: null }}
-      onSubmit={handleSubmit}
       validate={validate}
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting, errors }) => (
         <SidebarForm>
@@ -90,8 +90,8 @@ export function LegacyPersonSearchResults({
           >
             {persons.length === 0 ? (
               <NoSearchResults
-                info={"Keine Treffer"}
-                buttonLabel={"Person neu anlegen"}
+                info="Keine Treffer"
+                buttonLabel="Person neu anlegen"
                 onClick={onCreatePerson}
               />
             ) : (
@@ -111,7 +111,7 @@ export function LegacyPersonSearchResults({
 
           <SidebarActions>
             <MultiFormButtonBar
-              submitLabel={"Weiter"}
+              submitLabel="Weiter"
               submitting={isSubmitting}
               onCancel={onCancel}
               onBack={onBack}

@@ -56,6 +56,7 @@ export function PinField(props: PinFieldProps) {
     comparisonError: getPropertyIf(props, "comparisonError", isString),
     compareWith,
   });
+
   const { input, helpers, required, helperText, error } = useBaseField<string>({
     type: "",
     name: props.name,
@@ -78,15 +79,19 @@ export function PinField(props: PinFieldProps) {
           const digit = valueParts[index] ?? "";
           return (
             <PinDigit
+              key={index}
               aria-label={props.digitLabel(index + 1)}
               slotProps={{
-                input: { maxLength: 1, sx: { textAlign: "center" } },
+                input: {
+                  inputMode: "numeric",
+                  maxLength: 1,
+                  sx: { textAlign: "center" },
+                },
               }}
               value={digit}
-              key={index}
               name={`${props.name}.${index}`}
-              onBlur={input.onBlur}
               inputMode="numeric"
+              onBlur={input.onBlur}
               {...events}
               error={error && isDigitInvalid(digit, index, compareWith)}
               required={required}
@@ -123,7 +128,7 @@ function useValidation({
   );
 }
 
-function isDigitInvalid(
+export function isDigitInvalid(
   value: string,
   index: number,
   compareWith: string | undefined,
@@ -131,17 +136,18 @@ function isDigitInvalid(
   if (!value) {
     return true;
   }
-  if (isNaN(parseInt(value))) {
+  if (isNaN(parseInt(value, 10))) {
     return true;
   }
   if (!compareWith) {
     return false;
   }
+
   const compareParts = compareWith.split("-");
   return compareParts[index] !== value;
 }
 
-function validateWhole({
+export function validateWhole({
   requiredError,
   invalidError,
   comparisonError,
@@ -149,13 +155,13 @@ function validateWhole({
 }: UseValidationArgs) {
   return (value: string) => {
     const valueParts = value.split("-");
-    if (!value || valueParts.some((k) => !k.trim())) {
+    if (requiredError && (!value || valueParts.some((k) => !k.trim()))) {
       return requiredError;
     }
-    if (valueParts.some((k) => isNaN(parseInt(k)))) {
+    if (invalidError && valueParts.some((k) => isNaN(parseInt(k, 10)))) {
       return invalidError;
     }
-    if (compareWith !== value) {
+    if (comparisonError && compareWith !== value) {
       return comparisonError;
     }
   };

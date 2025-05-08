@@ -5,7 +5,8 @@
 
 import { Typography, useTheme } from "@mui/joy";
 
-import { CheckboxField, TextareaField } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   YesOrNoFieldData,
   YesOrNoWithFollowUp,

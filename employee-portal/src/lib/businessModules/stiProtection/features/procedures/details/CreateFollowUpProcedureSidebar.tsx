@@ -151,9 +151,9 @@ export function CreateFollowUpProcedureSidebar({
               <SidebarActions>
                 <MultiFormButtonBar
                   submitting={createFollowUpProcedure.isPending}
+                  submitLabel={isOnLastStep ? "Folgevorgang anlegen" : "Weiter"}
                   onCancel={handleClose}
                   onBack={isOnFirstStep ? undefined : handlePrev}
-                  submitLabel={isOnLastStep ? "Folgevorgang anlegen" : "Weiter"}
                 />
               </SidebarActions>
             </SidebarForm>
@@ -174,7 +174,7 @@ function CreateFollowUpProcedureTypeAndInfo({
 
   return (
     <>
-      <Typography level={"title-md"}>Art der Beratung</Typography>
+      <Typography level="title-md">Art der Beratung</Typography>
       <Stack gap={3}>
         <SelectableCardsField
           name="concern"
@@ -182,7 +182,7 @@ function CreateFollowUpProcedureTypeAndInfo({
           options={CONCERN_OPTIONS}
         />
         <Alert
-          color={"primary"}
+          color="primary"
           message={
             <>
               Ausschließlich folgende Daten werden übernommen:
@@ -199,7 +199,7 @@ function CreateFollowUpProcedureTypeAndInfo({
         />
         {openAppointment ? (
           <Alert
-            color={"warning"}
+            color="warning"
             message="Es existieren noch offene Termine, welche bei der Anlage eines Folgevorgangs storniert werden."
           />
         ) : null}
@@ -215,7 +215,7 @@ function CreateFollowUpProcedureAppointmentForm() {
 
   return (
     <Stack gap={1}>
-      <Typography level={"title-md"}>{title}</Typography>
+      <Typography level="title-md">{title}</Typography>
       <AppointmentForm />
     </Stack>
   );

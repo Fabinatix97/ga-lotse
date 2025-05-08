@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CopyAllOutlined, InfoOutlined } from "@mui/icons-material";
-import { Alert, Sheet, Stack, Typography } from "@mui/joy";
+import { CopyAllOutlined } from "@mui/icons-material";
+import { Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 
@@ -83,31 +84,23 @@ export function CLDInfoCard({
         {cldVersion.isCoreChecklist && !cldVersion.context.expandable && (
           <Alert
             color="primary"
-            startDecorator={<InfoOutlined />}
             sx={{ alignItems: "flex-start" }}
-          >
-            Exklusive Kern-Checklisten sind nicht mit anderen Checklisten
-            kombinierbar
-          </Alert>
+            message="Exklusive Kern-Checklisten sind nicht mit anderen Checklisten kombinierbar"
+          />
         )}
         {cldVersion.isCoreChecklist && !canEditCoreChecklists && (
           <Alert
             color="primary"
-            startDecorator={<InfoOutlined />}
             sx={{ alignItems: "flex-start" }}
-          >
-            Sie können keine neuen Versionen von Kern-Checklisten anlegen.
-          </Alert>
+            message="Sie können keine neuen Versionen von Kern-Checklisten anlegen."
+          />
         )}
         {!isNewestVersion && (
           <Alert
             color="primary"
-            startDecorator={<InfoOutlined />}
             sx={{ alignItems: "flex-start" }}
-          >
-            Eine neue Version kann nur auf Basis der aktuellsten Version
-            erstellt werden.
-          </Alert>
+            message="Eine neue Version kann nur auf Basis der aktuellsten Version erstellt werden."
+          />
         )}
         {canCreateNewVersion && (
           <InternalLinkButton

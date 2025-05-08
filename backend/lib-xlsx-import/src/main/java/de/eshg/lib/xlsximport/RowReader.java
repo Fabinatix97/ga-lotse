@@ -10,6 +10,7 @@ import de.eshg.base.SalutationDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
+import de.eshg.validation.constraints.EmailAddressConstraint;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
@@ -145,6 +147,28 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
 
   protected static String cellAsString(Cell cell, ErrorHandler errorHandler) {
     return cellAsString(cell, false, false, errorHandler);
+  }
+
+  protected String cellAsEmailString(
+      ColumnAccessor<C> col, C column, boolean optional, ErrorHandler errorHandler) {
+    Cell cell = col.get(column);
+
+    if (isOptionalBlank(cell, optional)
+        || invalidType(cell, List.of(CellType.STRING), errorHandler)) {
+      return null;
+    }
+
+    String value = cell.getStringCellValue().trim();
+    if (!isValidEmail(value)) {
+      errorHandler.handleError(cell, "Ungültiger Wert");
+    }
+    return value;
+  }
+
+  private boolean isValidEmail(String value) {
+    return Pattern.compile(EmailAddressConstraint.E_MAIL_PATTERN, Pattern.CASE_INSENSITIVE)
+        .matcher(value)
+        .matches();
   }
 
   protected String cellAsString(

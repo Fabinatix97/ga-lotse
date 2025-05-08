@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { TextareaField } from "@/lib/shared/components/form/TextareaField";
@@ -18,7 +18,7 @@ export function DocumentTextareaElement({
   name,
 }: Readonly<DocumentTextareaElementProps>) {
   const { t } = useTranslation(["travelMedicine/document"]);
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
 
   return (
     <TextareaField

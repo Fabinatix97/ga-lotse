@@ -24,7 +24,7 @@ export function InformationCard() {
   const { department } = useDepartmentContext();
 
   return (
-    <ContentSheet data-testid={"information-card"}>
+    <ContentSheet data-testid="information-card">
       <ContentSheetTitle>{t("appointmentInformation.title")}</ContentSheetTitle>
       {isDefined(department) && (
         <Alert
@@ -54,7 +54,7 @@ export function InformationCard() {
         {t("appointmentInformation.requiredDocuments_header")}
       </Typography>
       <TranslatedList
-        ns={"officialMedicalService/appointment"}
+        ns="officialMedicalService/appointment"
         translationKey="appointmentInformation.requiredDocuments_list"
         sx={{ fontWeight: theme.fontWeight.xl }}
       />

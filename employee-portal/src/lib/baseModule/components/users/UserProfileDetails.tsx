@@ -55,8 +55,8 @@ export function UserProfileDetails({
 
   return (
     <Sheet
-      component={"section"}
-      aria-labelledby={"user-profiler-header"}
+      component="section"
+      aria-labelledby="user-profiler-header"
       sx={{
         display: "flex",
         flex: 1,
@@ -64,13 +64,13 @@ export function UserProfileDetails({
       }}
     >
       <Stack gap={2} flex={1}>
-        <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
-          <Typography level={"h3"} component={"h2"} id={"user-profiler-header"}>
+        <Stack direction="row" gap={1} justifyContent="space-between">
+          <Typography level="h3" component="h2" id="user-profiler-header">
             Profil
           </Typography>
           {isSelf && (
             <EditButton
-              aria-label={"Profil bearbeiten"}
+              aria-label="Profil bearbeiten"
               onClick={() =>
                 updateSidebar.open({
                   selfUser: user,
@@ -94,7 +94,7 @@ export function UserProfileDetails({
               flexBasis: { md: "140px" },
             }}
           >
-            <UserAvatar user={user} size={"lg"} />
+            <UserAvatar user={user} size="lg" />
           </Stack>
 
           <Stack
@@ -121,44 +121,44 @@ export function UserProfileDetails({
               )}
 
               <DetailsCell
-                name={"firstName"}
-                label={"Vorname"}
+                name="firstName"
+                label="Vorname"
                 value={user.firstName}
               />
               <DetailsCell
-                name={"lastName"}
-                label={"Nachname"}
+                name="lastName"
+                label="Nachname"
                 value={user.lastName}
               />
               <DetailsCell
-                name={"username"}
-                label={"Benutzername"}
+                name="username"
+                label="Benutzername"
                 value={user.username}
               />
               <DetailsCell
-                name={"enabled"}
-                label={"Benutzerstatus"}
+                name="enabled"
+                label="Benutzerstatus"
                 value={user.enabled ? "" : "Deaktiviert"}
               />
             </DetailsColumn>
 
             <DetailsColumn>
               <ExternalLinkDetailsCell
-                name={"email"}
-                label={"E-Mail-Adresse"}
+                name="email"
+                label="E-Mail-Adresse"
                 value={user.email}
                 href={emailHref}
               />
               <DetailsCell
-                name={"phoneNumber"}
-                label={"Telefonnummer"}
+                name="phoneNumber"
+                label="Telefonnummer"
                 value={user.phoneNumber}
               />
               {showChatUsername && user.externalChatUsername && (
                 <>
                   <DetailsCell
-                    name={"externalChatUsername"}
-                    label={"Chat-ID"}
+                    name="externalChatUsername"
+                    label="Chat-ID"
                     valueIsDiv
                     value={
                       <ChatUserId userId={user.externalChatUsername} noLabel />
@@ -181,8 +181,8 @@ export function UserProfileDetails({
             {groups.length > 0 && (
               <DetailsColumn>
                 <DetailsCell
-                  name={"groups"}
-                  label={"Abteilung"}
+                  name="groups"
+                  label="Abteilung"
                   value={<GroupList groups={groups} />}
                   valueIsDiv
                 />

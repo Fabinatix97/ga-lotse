@@ -120,8 +120,8 @@ export function InformationStatementStepper() {
       {({ Outlet, currentStep, totalSteps }) => (
         <Formik
           initialValues={initialFormikValues}
-          onSubmit={async (values) => handleSubmit(statementId, values)}
           validate={validateForm}
+          onSubmit={async (values) => handleSubmit(statementId, values)}
         >
           {(formikProps) => (
             <Stack gap={2}>
@@ -131,36 +131,34 @@ export function InformationStatementStepper() {
                   currentStepIndex: currentStep,
                   totalSteps: totalSteps,
                 })}
-                withLogoutButton={true}
+                withLogoutButton
               />
               <FormPlus>
-                <>
-                  {isMobile ? (
-                    <OneColumnGrid
-                      contentTop={null}
-                      contentCenter={
-                        <>
-                          {<Outlet {...formikProps} />}
-                          <InformationStatementPanel
-                            informationStatement={informationStatement}
-                            onRouteBack={routeBackToDetails}
-                          />
-                        </>
-                      }
-                      contentBottom={null}
-                    />
-                  ) : (
-                    <TwoColumnGrid
-                      content={<Outlet {...formikProps} />}
-                      sidePanel={
+                {isMobile ? (
+                  <OneColumnGrid
+                    contentTop={null}
+                    contentCenter={
+                      <>
+                        <Outlet {...formikProps} />
                         <InformationStatementPanel
                           informationStatement={informationStatement}
                           onRouteBack={routeBackToDetails}
                         />
-                      }
-                    />
-                  )}
-                </>
+                      </>
+                    }
+                    contentBottom={null}
+                  />
+                ) : (
+                  <TwoColumnGrid
+                    content={<Outlet {...formikProps} />}
+                    sidePanel={
+                      <InformationStatementPanel
+                        informationStatement={informationStatement}
+                        onRouteBack={routeBackToDetails}
+                      />
+                    }
+                  />
+                )}
               </FormPlus>
             </Stack>
           )}

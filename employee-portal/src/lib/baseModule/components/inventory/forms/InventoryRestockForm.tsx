@@ -15,12 +15,12 @@ import {
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
-export interface InventoryManagementValues {
+interface InventoryManagementValues {
   count: OptionalFieldValue<number>;
 }
 
@@ -39,21 +39,21 @@ export function InventoryRestockForm(props: InventoryRestockFormProps) {
   return (
     <Formik
       initialValues={emptyValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
-          <SidebarContent title={"Inventar auffüllen"}>
+          <SidebarContent title="Inventar auffüllen">
             <Stack gap={2}>
               <DetailsCell
-                name={"minCount"}
-                label={"Mindestbestand"}
+                name="minCount"
+                label="Mindestbestand"
                 value={props.minCount}
               />
               <NumberField
-                name={"count"}
-                label={"Menge"}
+                name="count"
+                label="Menge"
                 required="Bitte eine Menge angeben"
                 validate={validatePositiveInteger}
               />
@@ -61,7 +61,7 @@ export function InventoryRestockForm(props: InventoryRestockFormProps) {
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitLabel={"Auffüllen"}
+              submitLabel="Auffüllen"
               submitting={isSubmitting}
               onCancel={props.onClose}
             />

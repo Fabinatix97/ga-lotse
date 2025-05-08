@@ -7,7 +7,7 @@ import { Button, Stack } from "@mui/joy";
 
 import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 
-export interface MultiStepFormButtonBarProps {
+interface MultiStepFormButtonBarProps {
   onNextStep?: { title: string; action: () => Promise<void> };
   onPrevStep?: { title: string; action: () => void };
   onCancel?: { title: string; action: () => void };
@@ -26,11 +26,11 @@ export function MultiStepFormButtonBar(props: MultiStepFormButtonBarProps) {
         {props.onNextStep?.title}
       </Button>
       {!isFirstStep && (
-        <Button variant={"outlined"} onClick={props.onPrevStep?.action}>
+        <Button variant="outlined" onClick={props.onPrevStep?.action}>
           {props.onPrevStep?.title}
         </Button>
       )}
-      <Button onClick={props.onCancel?.action} variant="soft" color={"neutral"}>
+      <Button variant="soft" color="neutral" onClick={props.onCancel?.action}>
         {props.onCancel?.title}
       </Button>
     </Stack>

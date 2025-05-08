@@ -31,11 +31,7 @@ export function TableSheet(props: TableSheetProps): ReactElement {
     <StyledSheet aria-label={props["aria-label"]}>
       <Stack flex={1} overflow="auto">
         {props.title}
-        {props.hideTable ? (
-          <Box flex={1} overflow="auto"></Box>
-        ) : (
-          props.children
-        )}
+        {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}
       </Stack>
       {props.footer}
       {props.loading && <LoadingOverlay zIndex={zIndexTable} />}

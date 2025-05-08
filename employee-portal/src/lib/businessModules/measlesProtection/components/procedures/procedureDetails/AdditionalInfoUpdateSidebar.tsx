@@ -96,7 +96,7 @@ const AdditionalInfoUpdateSidebarFields = forwardRef<
 
   return (
     <>
-      <SidebarContent title={"Zusatzinfos"}>
+      <SidebarContent title="Zusatzinfos">
         <Stack gap={3}>
           <UpdateProcedureSectionFields />
         </Stack>

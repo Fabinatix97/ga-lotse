@@ -80,12 +80,12 @@ export function SocioEducationalFields(props: SocioEducationalFieldsProps) {
       <Stack direction="row" gap={5} alignItems="flex-start" flexWrap="wrap">
         <SetAllBooleanSelect
           label={<FlexLabel>Maßnahmen</FlexLabel>}
-          onChange={setAllSocioEducational}
           sx={BOOLEAN_SELECT_STYLE}
+          onChange={setAllSocioEducational}
         />
         <Stack gap={3} direction="row" flexWrap="wrap">
           {BOOLEAN_FIELD_GROUPS.map((booleanFields, index) => (
-            <Stack gap={1} key={index}>
+            <Stack key={index} gap={1}>
               {booleanFields.map((field) => (
                 <SoftRequiredBooleanSelectField
                   key={field.name}

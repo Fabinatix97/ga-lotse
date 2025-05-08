@@ -10,7 +10,7 @@ import { isDefined, isNonNullish } from "remeda";
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 
-import { SIDEBAR_PADDING } from "@/features/drawer/config/sidebar";
+import { SIDEBAR_PADDING } from "../config/sidebar";
 
 const AlertContainer = styled(Stack)(({ theme }) => ({
   paddingInline: theme.spacing(SIDEBAR_PADDING),
@@ -55,9 +55,9 @@ export function SidebarContent({
           </DialogTitle>
           {subtitle && (
             <Typography
-              level={"title-sm"}
-              color={"neutral"}
-              data-testid={"sidebarContent.subtitle"}
+              level="title-sm"
+              color="neutral"
+              data-testid="sidebarContent.subtitle"
             >
               {subtitle}
             </Typography>

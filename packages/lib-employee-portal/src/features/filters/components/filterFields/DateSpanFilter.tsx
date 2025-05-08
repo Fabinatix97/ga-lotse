@@ -10,7 +10,7 @@ import { isEmpty } from "remeda";
 import {
   DateSpanFilterDefinition,
   DateSpanFilterValue,
-} from "@/features/filters/types/DateSpanFilter";
+} from "../../types/DateSpanFilter";
 
 interface DateSpanFilterProps {
   definition: DateSpanFilterDefinition;
@@ -62,10 +62,10 @@ export function DateSpanFilter(props: DateSpanFilterProps) {
         <Input
           type="date"
           value={props.value?.startDate ?? ""}
-          onChange={(event) => handleStartDateChange(event.target.value)}
           slotProps={{
             input: { max: props.value?.endDate ?? maxInput(props.definition) },
           }}
+          onChange={(event) => handleStartDateChange(event.target.value)}
         />
       </FormControl>
       <FormControl>
@@ -73,13 +73,13 @@ export function DateSpanFilter(props: DateSpanFilterProps) {
         <Input
           type="date"
           value={props.value?.endDate ?? ""}
-          onChange={(event) => handleEndDateChange(event.target.value)}
           slotProps={{
             input: {
               min: props.value?.startDate,
               max: maxInput(props.definition),
             },
           }}
+          onChange={(event) => handleEndDateChange(event.target.value)}
         />
       </FormControl>
       {props.definition.showTodayButton && (

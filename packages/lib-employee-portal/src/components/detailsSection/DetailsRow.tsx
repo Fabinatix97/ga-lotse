@@ -16,10 +16,10 @@ interface DetailsRowProps {
 export function DetailsRow(props: DetailsRowProps) {
   return (
     <Stack
-      direction={"row"}
+      direction="row"
       columnGap={props.columnGap ?? 3}
       rowGap={props.rowGap ?? 1}
-      flexWrap={"wrap"}
+      flexWrap="wrap"
       alignItems={props.alignItems ?? "stretch"}
     >
       {props.children}

@@ -17,11 +17,12 @@ import {
   ApiInspectionType,
   ApiObjectType,
 } from "@eshg/inspection-api";
-import { TextareaField, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import {
   formatPersonName,
@@ -148,12 +149,12 @@ export function AdditionalInfoTile({
             <Divider />
             <InspectionAssigneeSelection
               selfUser={selfUser}
-              onSelfAssign={() => handleSelfAssign(setFieldValue)}
               currentAssigneeName={values.assigneeName}
               currentAssigneeId={values.assigneeId}
               onlySelfAssignable={onlySelfAssignable}
               assigneeIdFieldValueName="assigneeId"
               allAssignableUsers={allAssignableUsers}
+              onSelfAssign={() => handleSelfAssign(setFieldValue)}
             />
             <Divider sx={{ marginBottom: 2 }} />
             <ButtonBar isSubmitting={isSubmitting} />

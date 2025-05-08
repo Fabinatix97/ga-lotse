@@ -6,6 +6,7 @@
 package de.eshg.schoolentry.util;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -17,14 +18,18 @@ import org.springframework.stereotype.Component;
 public class ProcedureTypeAssignmentHelper {
 
   private final SchoolEntryProperties schoolEntryProperties;
+  private final SchoolEntryConfigService schoolEntryConfigService;
 
-  public ProcedureTypeAssignmentHelper(SchoolEntryProperties schoolEntryProperties) {
+  public ProcedureTypeAssignmentHelper(
+      SchoolEntryProperties schoolEntryProperties,
+      SchoolEntryConfigService schoolEntryConfigService) {
     this.schoolEntryProperties = schoolEntryProperties;
+    this.schoolEntryConfigService = schoolEntryConfigService;
   }
 
   public ProcedureType getProcedureTypeForSchoolListImport(
       boolean isEntryLevel, LocalDate dateOfBirth, Year schoolYear) {
-    if (schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport()) {
+    if (schoolEntryConfigService.isDirectProcedureTypeAssignmentOnImport()) {
       return suggestProcedureType(isEntryLevel, dateOfBirth, schoolYear);
     }
     return ProcedureType.DRAFT_SCHOOL_IMPORT;

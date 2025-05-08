@@ -26,7 +26,7 @@ export interface EvaluationTemplateStepAutocompleteEntry {
   name: string;
 }
 
-export interface ChooseEvaluationTemplateStepProps
+interface ChooseEvaluationTemplateStepProps
   extends SidebarStepContentProps<ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel> {
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
 }

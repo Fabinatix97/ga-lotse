@@ -91,7 +91,6 @@ export default function SchoolEntryAnamnesisPage(
       <DisabledFormProvider disabled={procedure.isClosed}>
         <AnamnesisForm
           initialValues={mapToFormValues(anamnesis)}
-          onSubmit={handleSubmit}
           dateOfBirth={procedure.child.dateOfBirth}
           countryCodes={countryCodes}
           valuesToMutationBundle={(values) => ({
@@ -99,6 +98,7 @@ export default function SchoolEntryAnamnesisPage(
             variableSupplier: () =>
               mapToRequest(procedureId, values, anamnesis.version),
           })}
+          onSubmit={handleSubmit}
         />
       </DisabledFormProvider>
     </ContentPanel>

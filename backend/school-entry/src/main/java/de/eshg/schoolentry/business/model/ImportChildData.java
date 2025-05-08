@@ -18,15 +18,17 @@ public record ImportChildData(
     CountryCode countryOfBirth,
     GenderDto gender,
     AddressData address,
-    String phoneNumber) {
+    String phoneNumber,
+    String email) {
   public ImportChildData(
       String firstName,
       String lastName,
       LocalDate dateOfBirth,
       GenderDto gender,
       AddressData address,
-      String phoneNumber) {
-    this(firstName, lastName, dateOfBirth, null, null, gender, address, phoneNumber);
+      String phoneNumber,
+      String email) {
+    this(firstName, lastName, dateOfBirth, null, null, gender, address, phoneNumber, email);
   }
 
   public ImportChildData(
@@ -37,6 +39,15 @@ public record ImportChildData(
       CountryCode countryOfBirth,
       GenderDto gender,
       AddressData address) {
-    this(firstName, lastName, dateOfBirth, placeOfBirth, countryOfBirth, gender, address, null);
+    this(
+        firstName,
+        lastName,
+        dateOfBirth,
+        placeOfBirth,
+        countryOfBirth,
+        gender,
+        address,
+        null,
+        null);
   }
 }

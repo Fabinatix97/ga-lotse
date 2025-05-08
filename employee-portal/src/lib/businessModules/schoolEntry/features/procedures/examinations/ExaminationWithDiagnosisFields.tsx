@@ -54,7 +54,7 @@ export function isExaminationResultWithoutDiagnosis(
   );
 }
 
-export const FIXED_WIDTH_EXAMINATION_RESULT_STYLE: SxProps = {
+const FIXED_WIDTH_EXAMINATION_RESULT_STYLE: SxProps = {
   ...FIXED_WIDTH_STYLE,
   width: "235px",
 };
@@ -84,10 +84,10 @@ export function ExaminationWithDiagnosisFields(
       <ExaminationResultValueField
         name={fieldName("examinationResult.examinationResultValue")}
         label={<FlexLabel>{props.examinationResultLabel}</FlexLabel>}
-        onChange={onChangeExaminationResultValue}
         sx={FIXED_WIDTH_EXAMINATION_RESULT_STYLE}
         renderValue={getAbbreviation}
         softRequired
+        onChange={onChangeExaminationResultValue}
       />
       <Icd10CodeField
         name={fieldName("icd10Codes")}

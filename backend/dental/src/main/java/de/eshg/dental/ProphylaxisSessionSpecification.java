@@ -15,6 +15,7 @@ import de.eshg.dental.domain.model.ProphylaxisStatus;
 import de.eshg.dental.domain.model.ProphylaxisType;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -79,22 +80,39 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
   }
 
   private Order getPrimarySortOrder(CriteriaBuilder cb, Root<ProphylaxisSession> root) {
-    Path<?> sortPath = mapToSortPath(root);
+    Expression<?> sortPath = mapToSortPath(root, cb);
     return switch (sortDirection) {
       case ASC -> cb.asc(sortPath);
       case DESC -> cb.desc(sortPath);
     };
   }
 
-  private Path<?> mapToSortPath(Root<ProphylaxisSession> root) {
+  private Expression<?> mapToSortPath(Root<ProphylaxisSession> root, CriteriaBuilder cb) {
     return switch (sortKey) {
       case ID -> root.get(ProphylaxisSession_.id);
       case TYPE -> root.get(ProphylaxisSession_.type);
-      case GROUP_NAME -> root.get(ProphylaxisSession_.groupName);
+      case GROUP_NAME -> nullsLastString(root.get(ProphylaxisSession_.groupName), cb);
       case DATE_AND_TIME -> root.get(ProphylaxisSession_.dateAndTime);
       case IS_SCREENING -> root.get(ProphylaxisSession_.isScreening);
       case FLUORIDATION_VARNISH -> root.get(ProphylaxisSession_.fluoridationVarnish);
       case STATUS -> root.get(ProphylaxisSession_.status);
     };
+  }
+
+  private Expression<String> nullsLastString(Path<String> instantPath, CriteriaBuilder cb) {
+    String valueWhenNull =
+        switch (sortDirection) {
+          case ASC -> null;
+          case DESC -> "";
+        };
+    return nullsLast(instantPath, cb, valueWhenNull);
+  }
+
+  // This is a workaround because the CriteriaBuilder currently does not support
+  // generating SQL’s "NULLS LAST"
+  // It’s supposed to be added in Java Persistence 3.2 / Hibernate 7.0
+  private static <T> Expression<T> nullsLast(
+      Path<T> instantPath, CriteriaBuilder cb, T valueWhenNull) {
+    return cb.coalesce(instantPath, cb.literal(valueWhenNull));
   }
 }

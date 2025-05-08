@@ -18,7 +18,7 @@ export const AnalysisSortOrder = {
 export type AnalysisSortOrder =
   (typeof AnalysisSortOrder)[keyof typeof AnalysisSortOrder];
 
-export const analysisSortOrderOptions: EnumMap<AnalysisSortOrder> = {
+const analysisSortOrderOptions: EnumMap<AnalysisSortOrder> = {
   [AnalysisSortOrder.NameAscending]: "Alphabetisch A-Z",
   [AnalysisSortOrder.NameDescending]: "Alphabetisch Z-A",
 };
@@ -35,7 +35,7 @@ export function sortAnalyses(
   }
 }
 
-export interface AnalysisSortOrderSelectProps {
+interface AnalysisSortOrderSelectProps {
   sortOrder: AnalysisSortOrder;
   onSortOrderChange: (value: AnalysisSortOrder) => void;
 }

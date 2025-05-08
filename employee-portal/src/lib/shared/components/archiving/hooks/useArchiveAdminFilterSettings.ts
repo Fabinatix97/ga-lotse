@@ -7,11 +7,11 @@ import {
   FilterDefinition,
   FilterValue,
   UseFilterSettings,
+  getSelectedEnumFilterValues,
 } from "@eshg/lib-employee-portal";
 import { GetRelevantArchivableProceduresRequest } from "@eshg/lib-procedures-api";
 
 import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
-import { getSelectedFilterValues } from "@/lib/shared/components/procedures/helper";
 import { getFilterDate } from "@/lib/shared/helpers/filter";
 
 const FILTER_KEYS = {
@@ -55,7 +55,7 @@ export function useArchiveAdminFilterSettings(): UseFilterSettings {
 export function getRelevantArchivableProceduresFilters(
   filterValues: FilterValue[],
 ): Pick<GetRelevantArchivableProceduresRequest, "closedAtDay" | "exported"> {
-  const visibilityValues = getSelectedFilterValues(
+  const visibilityValues = getSelectedEnumFilterValues(
     filterValues,
     FILTER_KEYS.visibility,
   );

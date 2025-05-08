@@ -123,13 +123,13 @@ function ActionTile(props: ActionTileProps) {
         {props.children}
       </Typography>
       <Button
-        onClick={props.onClick}
         sx={{
           margin: 3,
           width: "calc(100% * 2/3)",
           minWidth: "fit-content",
           placeSelf: "center",
         }}
+        onClick={props.onClick}
       >
         {props.buttonLabel}
       </Button>

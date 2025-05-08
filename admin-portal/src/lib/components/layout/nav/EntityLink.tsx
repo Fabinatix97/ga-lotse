@@ -19,7 +19,7 @@ export const EntityLink = forwardRef(
     ref,
   ) => {
     if (!props.linkTo) {
-      return <>{props.children}</>;
+      return props.children;
     }
     const href = `/${props.linkTo}?${props.name ?? "id"}=${props.value}`;
     return (
@@ -29,9 +29,9 @@ export const EntityLink = forwardRef(
           ref={ref}
           {...omit(props, ["linkTo", "name", "value"])}
           component={NextLink}
-          onClick={(event) => event.stopPropagation()}
           href={href}
           sx={{ textAlignLast: "justify", display: "inline" }}
+          onClick={(event) => event.stopPropagation()}
         >
           {props.children}
         </JoyLink>

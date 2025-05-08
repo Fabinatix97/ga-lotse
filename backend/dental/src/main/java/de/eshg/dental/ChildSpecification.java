@@ -17,6 +17,7 @@ import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.ListJoin;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Path;
@@ -41,6 +42,7 @@ class ChildSpecification implements Specification<Child> {
   private final Integer yearFilter;
   private final UUID institutionIdFilter;
   private final String groupNameFilter;
+  private final Boolean noGroupFilter;
   private final ArrayList<UUID> procedureLabelFilter;
 
   public ChildSpecification(
@@ -49,6 +51,7 @@ class ChildSpecification implements Specification<Child> {
     yearFilter = filterParameters.yearFilter();
     institutionIdFilter = filterParameters.institutionIdFilter();
     groupNameFilter = filterParameters.groupNameFilter();
+    noGroupFilter = filterParameters.noGroupFilter();
     sortKey = paginationAndSortParameters.sortKeyOrFallback(ChildSortKey.ID);
     sortDirection = paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC);
     procedureLabelFilter = (ArrayList<UUID>) filterParameters.procedureLabelsFilter();
@@ -84,6 +87,8 @@ class ChildSpecification implements Specification<Child> {
 
     if (groupNameFilter != null) {
       conjunctions.add(cb.equal(root.get(Child_.groupName), groupNameFilter));
+    } else if (Boolean.TRUE.equals(noGroupFilter)) {
+      conjunctions.add(cb.isNull(root.get(Child_.groupName)));
     }
 
     if (yearFilter != null) {
@@ -108,18 +113,19 @@ class ChildSpecification implements Specification<Child> {
   }
 
   private Order getPrimarySortOrder(CriteriaBuilder cb, Root<Child> root) {
-    Path<?> sortPath = mapToSortPath(root);
+    Expression<?> sortPath = mapToSortPath(root, cb);
+
     return switch (sortDirection) {
       case ASC -> cb.asc(sortPath);
       case DESC -> cb.desc(sortPath);
     };
   }
 
-  private Path<?> mapToSortPath(Root<Child> root) {
+  private Expression<?> mapToSortPath(Root<Child> root, CriteriaBuilder cb) {
     return switch (sortKey) {
       case ID -> root.get(Child_.id);
       case YEAR -> root.get(Child_.year);
-      case GROUP_NAME -> root.get(Child_.groupName);
+      case GROUP_NAME -> nullsLastString(root.get(Child_.groupName), cb);
       case FIRST_NAME, LAST_NAME, DATE_OF_BIRTH -> {
         Assert.isTrue(
             sortKey.isPersonAttribute(),
@@ -127,5 +133,22 @@ class ChildSpecification implements Specification<Child> {
         throw new IllegalArgumentException("Unexpected sort key: " + sortKey);
       }
     };
+  }
+
+  private Expression<String> nullsLastString(Path<String> instantPath, CriteriaBuilder cb) {
+    String valueWhenNull =
+        switch (sortDirection) {
+          case ASC -> null;
+          case DESC -> "";
+        };
+    return nullsLast(instantPath, cb, valueWhenNull);
+  }
+
+  // This is a workaround because the CriteriaBuilder currently does not support
+  // generating SQL’s "NULLS LAST"
+  // It’s supposed to be added in Java Persistence 3.2 / Hibernate 7.0
+  private static <T> Expression<T> nullsLast(
+      Path<T> instantPath, CriteriaBuilder cb, T valueWhenNull) {
+    return cb.coalesce(instantPath, cb.literal(valueWhenNull));
   }
 }

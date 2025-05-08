@@ -20,7 +20,7 @@ Before starting, make sure you have the following software installed:
 
 === Starting the GA-Lotse architecture
 
-For a fast setup, you can use the pre-configured Gradle tasks as specified link:docs/gradle.adoc#_root_project_tasks[here] in chapter "Root project tasks".
+For a fast setup, you can use the pre-configured Gradle tasks as specified in chapter link:docs/gradle.adoc#_root_project_tasks[Root project tasks].
 
 NOTE: These tasks will launch all microservices simultaneously and are therefore resource intensive.
 
@@ -36,7 +36,7 @@ NOTE: To make the startup more sequential and robust, the Gradle property `-Pslo
 
 === Starting Services Separately
 
-If you wish to conserve resources, you can start the services individually. See the instructions available link:docs/frontend.adoc#_getting_started[here] in chapter "Getting started" details on starting each microservice separately.
+If you wish to conserve resources, you can start the services individually. See the instructions available in chapter link:docs/frontend.adoc#_getting_started[Getting started] on starting each microservice separately.
 
 === Portal Localhost Ports
 
@@ -46,9 +46,9 @@ Once the services are running, the portals will be accessible at the following l
 * Citizen Portal: http://localhost:4001
 * Admin Portal: http://localhost:4002
 * Keycloak: http://localhost:9090
-* port mappings for all services see link:backend/README.md[here].
+* port mappings for all services see link:backend/README.md[backend readme].
 
-Login information for the test users can be found link:backend/README.md[here].
+Login information for the test users can be found in the link:backend/README.md[backend readme].
 
 NOTE: For a local setup, the admin portal/service directory are started, but the full functionality of the service mesh is not started, i.e., communication rules in the admin portal have no impact on the actual microservice communication.
 

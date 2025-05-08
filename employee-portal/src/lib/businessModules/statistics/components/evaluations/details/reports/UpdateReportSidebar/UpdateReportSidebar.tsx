@@ -53,9 +53,7 @@ function UpdateReportSidebar({
 
   return (
     <SidebarStepper
-      onClose={onClose}
       formRef={formRef}
-      onSubmit={onSubmit}
       steps={[
         () => ({
           title:
@@ -68,6 +66,8 @@ function UpdateReportSidebar({
           initialValues,
         }),
       ]}
+      onClose={onClose}
+      onSubmit={onSubmit}
     />
   );
 }

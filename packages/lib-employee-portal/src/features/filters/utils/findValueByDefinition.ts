@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FilterDefinition } from "@/features/filters/types/FilterDefinition";
-import { FilterDraftValue } from "@/features/filters/types/FilterValue";
+import { FilterDefinition } from "../types/FilterDefinition";
+import { FilterDraftValue } from "../types/FilterValue";
 
 type DraftValueByDefinition<TDefinition extends FilterDefinition> = Extract<
   FilterDraftValue,

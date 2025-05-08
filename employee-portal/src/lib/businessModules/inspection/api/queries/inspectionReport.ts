@@ -40,7 +40,7 @@ export function useGetInspectionAndLoadEditor(inspectionId: string) {
   );
 }
 
-export function getInspectionAndLoadEditorQuery(
+function getInspectionAndLoadEditorQuery(
   inspectionApi: InspectionApi,
   editorApi: EditorApi,
   inspectionId: string,

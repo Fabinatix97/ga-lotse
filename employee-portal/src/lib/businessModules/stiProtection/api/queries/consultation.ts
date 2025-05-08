@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
 import { useConsultationApi } from "@/lib/businessModules/stiProtection/api/clients";
 
@@ -17,8 +17,4 @@ export function useConsultationQueryOptions(procedureId: string) {
       examinationApi.getConsultation(procedureId, { signal }),
     queryKey: stiProtectionApiQueryKey([procedureId, "consultation"]),
   });
-}
-
-export function useConsultationQuery(procedureId: string) {
-  return useSuspenseQuery(useConsultationQueryOptions(procedureId));
 }

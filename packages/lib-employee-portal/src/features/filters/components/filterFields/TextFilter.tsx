@@ -5,10 +5,7 @@
 
 import { Input } from "@mui/joy";
 
-import {
-  TextFilterDefinition,
-  TextFilterValue,
-} from "@/features/filters/types/TextFilter";
+import { TextFilterDefinition, TextFilterValue } from "../../types/TextFilter";
 
 interface TextFilterProps {
   definition: TextFilterDefinition;
@@ -33,8 +30,8 @@ export function TextFilter(props: TextFilterProps) {
     <Input
       type="text"
       value={props.value?.value ?? ""}
-      onChange={(event) => handleChange(event.target.value)}
       sx={{ width: "100%" }}
+      onChange={(event) => handleChange(event.target.value)}
     />
   );
 }

@@ -70,7 +70,7 @@ export type Actor = PartialActorWithId &
     _parent?: Actor;
   };
 
-export const NEW_ACTOR_PARENT_ID = "NEW_ACTOR_PARENT_ID";
+const NEW_ACTOR_PARENT_ID = "NEW_ACTOR_PARENT_ID";
 
 const columnHelper = createColumnHelper<Actor>();
 // eslint-disable-next-line func-style

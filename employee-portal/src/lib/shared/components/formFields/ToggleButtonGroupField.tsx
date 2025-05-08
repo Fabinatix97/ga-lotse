@@ -33,6 +33,9 @@ export function ToggleButtonGroupField(props: ToggleButtonGroupFieldProps) {
       <ToggleButtonGroup
         value={field.input.value}
         disabled={props.disabled}
+        variant="outlined"
+        color="primary"
+        sx={{ width: "100%" }}
         onChange={(_, newValue) => {
           if (!newValue) {
             return;
@@ -40,9 +43,6 @@ export function ToggleButtonGroupField(props: ToggleButtonGroupFieldProps) {
 
           void field.helpers.setValue(newValue);
         }}
-        variant="outlined"
-        color="primary"
-        sx={{ width: "100%" }}
       >
         {props.options.map((it) => (
           <Button key={it.label} value={it.value} sx={{ width: "100%" }}>

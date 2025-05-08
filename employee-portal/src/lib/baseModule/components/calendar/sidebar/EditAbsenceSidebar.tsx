@@ -111,11 +111,11 @@ function EditAbsenceSidebar({
       initialValues={mapEventToFormValues(event)}
       onSubmit={(values) => saveEventWithConfirmation(values, event)}
     >
-      <SidebarContent title={"Abwesenheit Ändern"}>
+      <SidebarContent title="Abwesenheit Ändern">
         <EventFormInputs />
       </SidebarContent>
       <SidebarActions>
-        <Stack justifyContent={"space-between"} direction={"row"}>
+        <Stack justifyContent="space-between" direction="row">
           <Button
             variant="plain"
             color="danger"

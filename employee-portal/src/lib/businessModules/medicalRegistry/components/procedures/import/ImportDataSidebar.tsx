@@ -116,7 +116,7 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
           />
         )}
         {status === "idle" && (
-          <Formik onSubmit={handleSubmit} initialValues={{ importFile: null }}>
+          <Formik initialValues={{ importFile: null }} onSubmit={handleSubmit}>
             <ImportDataFormSidebar onClose={handleClose} />
           </Formik>
         )}

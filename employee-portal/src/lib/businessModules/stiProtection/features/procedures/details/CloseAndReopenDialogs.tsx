@@ -117,7 +117,7 @@ export function CloseConfirmationDialog({
   );
 }
 
-export function CloseWithOpenAppointmentConfirmationDialog({
+function CloseWithOpenAppointmentConfirmationDialog({
   open,
   onClose,
   onConfirm,
@@ -156,7 +156,7 @@ export function ReopenConfirmationDialog({
   const personDetails = "person" in procedure ? procedure.person : procedure;
   return (
     <ConfirmationDialog
-      title={"Vorgang wiedereröffnen?"}
+      title="Vorgang wiedereröffnen?"
       confirmLabel="Wiedereröffnen"
       description="Durch das wiedereröffnen können existierende Daten geändert werden."
       color="danger"

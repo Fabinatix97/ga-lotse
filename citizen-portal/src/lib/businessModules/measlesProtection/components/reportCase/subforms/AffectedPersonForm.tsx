@@ -16,7 +16,7 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateEmail } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { ApiReportingReason } from "@eshg/measles-protection-api";
 
 import Loading from "@/app/[lang]/loading";
@@ -86,7 +86,7 @@ interface AffectedPersonFormProps {
 
 export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const {
     setFieldValue,
     isSubmitting,
@@ -126,7 +126,7 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
     <>
       <Stack component="div" gap={2} rowGap={2} sx={sx}>
         <FormHeader>{`${t("affectedPerson.title")} ${currentAffectedPersonIndex + 1}`}</FormHeader>
-        <Grid container xxs={12} justifyContent={"flex-end"}>
+        <Grid container xxs={12} justifyContent="flex-end">
           <Typography level="body-xs">{`* ${t("common.requiredField")}`}</Typography>
         </Grid>
         <Grid xxs={12}>
@@ -217,13 +217,13 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
                 type="email"
                 name={fieldName("emailAddresses")}
                 label={t("common.personalDetails.emailAddress")}
-                onChange={(value) =>
-                  setFieldValue(fieldName("emailAddresses"), [value])
-                }
                 validate={(value) =>
                   validateEmail(
                     t("common.personalDetails.emailAddress_required"),
                   )(Array.isArray(value) ? (value[0] as string) : value)
+                }
+                onChange={(value) =>
+                  setFieldValue(fieldName("emailAddresses"), [value])
                 }
               />
             </Grid>
@@ -244,8 +244,8 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
         isSubmitting={isSubmitting}
         facilityName={facilityName}
         cancelLabel={t("common.back")}
-        onCancel={onCancel}
         showFacilityContactPerson
+        onCancel={onCancel}
       />
     </>
   );

@@ -147,6 +147,33 @@
         "tags" : [ "PrivacyDocument" ]
       }
     },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-policy" : {
       "get" : {
         "operationId" : "getPrivacyPolicyConfig",
@@ -187,6 +214,33 @@
         },
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -373,6 +427,44 @@
         },
         "tags" : [ "TestHelper" ]
       }
+    },
+    "/test/privacy-documents/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNotice",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "privacy-document-test-controller" ]
+      }
+    },
+    "/test/privacy-documents/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicy",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "privacy-document-test-controller" ]
+      }
     }
   },
   "components" : {
@@ -499,7 +591,7 @@
       "GetPrivacyDocumentConfigResponse" : {
         "type" : "object",
         "properties" : {
-          "overwrittenPrivacyDocument" : {
+          "privacyDocument" : {
             "$ref" : "#/components/schemas/PrivacyDocument"
           }
         }
@@ -523,6 +615,10 @@
       "InterceptionType" : {
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
       },
       "OpeningHours" : {
         "required" : [ "de", "en" ],

@@ -63,7 +63,7 @@ export function CreateOrEditPacklistDefinitionSidebar(
   );
 }
 
-export function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
+function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
   open,
   onClose,
   pldRevision,
@@ -132,11 +132,11 @@ export function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
     <Sidebar open={open} onClose={handleClose}>
       <Formik
         initialValues={formData}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
+          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
             <SidebarContent title={title}>
               <Stack spacing={2}>
                 <PacklistDefinitionHeaderRow
@@ -146,8 +146,8 @@ export function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
                   modifiedBy={pldRevision?.modifiedBy}
                   defId={pldRevision?.defId}
                   revisionId={pldRevision?.id}
-                  onClickNewRevision={onClickNewRevision}
                   version={version}
+                  onClickNewRevision={onClickNewRevision}
                 />
                 <PacklistDefinitionHeaderCard
                   readOnlyMode={readOnlyMode}
@@ -161,15 +161,15 @@ export function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
               {readOnlyMode ? (
                 <FormButtonBar
                   submitting={isSubmitting}
-                  onCancel={handleClose}
                   submitLabel="Speichern"
+                  onCancel={handleClose}
                   onFinish={handleClose}
                 />
               ) : (
                 <FormButtonBar
                   submitting={isSubmitting}
-                  onCancel={handleClose}
                   submitLabel="Speichern"
+                  onCancel={handleClose}
                 />
               )}
             </SidebarActions>

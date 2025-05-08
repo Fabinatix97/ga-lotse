@@ -7,7 +7,7 @@ import { Add, ContentPaste, Gesture, Subject } from "@mui/icons-material";
 import Button from "@mui/joy/Button";
 import Stack from "@mui/joy/Stack";
 
-export interface SectionButtonBarProps {
+interface SectionButtonBarProps {
   textBlockButtonAction: () => void;
   anamnesisButtonAction: () => void;
   confirmationButtonAction: () => void;

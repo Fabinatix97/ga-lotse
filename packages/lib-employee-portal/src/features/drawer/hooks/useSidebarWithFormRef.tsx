@@ -5,13 +5,11 @@
 
 import { Ref, useRef } from "react";
 
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/features/drawer/hooks/useSidebar";
-import { DrawerOpenOptions, DrawerProps } from "@/features/drawer/types/drawer";
-import { SidebarFormHandle } from "@/features/drawer/types/sidebar";
-import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
+import { useConfirmationDialog } from "../../../hooks/useConfirmationDialog";
+import { DrawerOpenOptions, DrawerProps } from "../types/drawer";
+import { SidebarFormHandle } from "../types/sidebar";
+
+import { UseSidebarResult, useSidebar } from "./useSidebar";
 
 export interface SidebarWithFormRefProps extends DrawerProps {
   formRef: Ref<SidebarFormHandle>;

@@ -9,10 +9,10 @@ import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmatio
 export function LeaveChatConfirmation(props: ConfirmationDialogProps) {
   return (
     <ConfirmationDialog
+      key="leave-room-dialog"
       color="danger"
       title="Wollen Sie den Chat wirklich verlassen?"
       description="Wenn Sie den Chat verlassen, können Sie keine neuen Nachrichten mehr empfangen."
-      key="leave-room-dialog"
       confirmLabel="Verlassen"
       {...props}
     />

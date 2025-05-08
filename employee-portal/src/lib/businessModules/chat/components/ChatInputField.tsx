@@ -22,7 +22,7 @@ import {
 import { StyledInputProps } from "@eshg/lib-portal/components/formFields/types";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 
-export interface ChatInputFieldProps
+interface ChatInputFieldProps
   extends FieldProps<string>,
     FieldComponentProps,
     StyledInputProps {
@@ -83,10 +83,6 @@ export function ChatInputField(props: Readonly<ChatInputFieldProps>) {
         name={props.name}
         value={field.input.value}
         placeholder={props.placeholder}
-        onChange={handleChange}
-        onFocus={props.onFocus}
-        onBlur={handleBlur}
-        onClick={props.onClick}
         startDecorator={props.startDecorator}
         endDecorator={props.endDecorator}
         color={props.primary ? "primary" : undefined}
@@ -107,6 +103,10 @@ export function ChatInputField(props: Readonly<ChatInputFieldProps>) {
             },
           },
         }}
+        onChange={handleChange}
+        onFocus={props.onFocus}
+        onBlur={handleBlur}
+        onClick={props.onClick}
       />
     </FieldComponent>
   );

@@ -82,7 +82,7 @@ export function DetailsHistory({
               Zurück
             </Button>
           }
-        ></ButtonBar>
+        />
       </SidebarActions>
     </>
   );
@@ -106,7 +106,7 @@ function FileDescriptionHistory({ fileId }: { fileId: string }) {
 }
 
 function History({ items }: { items: HistoryItem[] | undefined }) {
-  if (!isDefined(items)) return <></>;
+  if (!isDefined(items)) return null;
   const currentState = items[0];
   const previousStates = items.slice(1);
   return (

@@ -15,7 +15,7 @@ import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 import { OriginalEvaluation } from "./DuplicateEvaluationSidebar";
 import { DuplicateEvaluationFormModel } from "./duplicateEvaluationFormModel";
 
-export interface DuplicateEvaluationStepProps
+interface DuplicateEvaluationStepProps
   extends SidebarStepContentProps<DuplicateEvaluationFormModel> {
   originalEvaluation: OriginalEvaluation;
   defaultNewEvaluationName: string;
@@ -46,9 +46,9 @@ export function DuplicateEvaluationStep(props: DuplicateEvaluationStepProps) {
         </Typography>
       </Stack>
       <Alert
-        color={"primary"}
+        color="primary"
         message="Die Analysen und Diagramme werden ebenfalls mit dupliziert."
-      ></Alert>
+      />
     </Stack>
   );
 }

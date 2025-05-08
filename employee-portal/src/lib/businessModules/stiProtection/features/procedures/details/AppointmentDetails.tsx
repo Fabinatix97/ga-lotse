@@ -124,13 +124,13 @@ export function AppointmentDetails({
           />
         </TablePage>
       </DetailsSection>
-      <Stack display={"flex"} alignItems={"flex-start"}>
+      <Stack display="flex" alignItems="flex-start">
         {onlyIfOpen(
           <Button
             variant="plain"
             aria-label="Termin buchen"
-            onClick={() => setIsOpenCreateAppointment(true)}
             startDecorator={<CalendarAddDay />}
+            onClick={() => setIsOpenCreateAppointment(true)}
           >
             Termin buchen
           </Button>,

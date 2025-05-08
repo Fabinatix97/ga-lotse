@@ -32,8 +32,8 @@ export function Risks() {
         {Object.entries(values.standardRiskFactors).map(
           ([riskName, { lastIncident }]: [string, StandardRiskQuestion]) => (
             <YesOrNoWithFollowUp
-              sx={{ gridColumn: 1 }}
               key={riskName}
+              sx={{ gridColumn: 1 }}
               label={standardRiskFactorNames[riskName as StandardRiskFactor]}
               name={`standardRiskFactors.${riskName}.taken`}
             >
@@ -50,7 +50,7 @@ export function Risks() {
         <YesOrNoWithFollowUp
           sx={{ gridColumn: 1 }}
           label="Andere Risikosituation"
-          name={`otherRisks.taken`}
+          name="otherRisks.taken"
         >
           <InputField name="otherRisks.description" label="Wenn ja, welche?" />
         </YesOrNoWithFollowUp>

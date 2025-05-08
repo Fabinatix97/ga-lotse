@@ -65,6 +65,7 @@ function AddPersonContactSidebar({
     <>
       {formState.flowStep === "IMPORT" && (
         <PersonContactImportForm
+          sidebarFormRef={formRef}
           onImported={(values) =>
             setFormState({
               initialValues: values,
@@ -79,15 +80,14 @@ function AddPersonContactSidebar({
             })
           }
           onClose={() => onClose(false)}
-          sidebarFormRef={formRef}
         />
       )}
       {formState.flowStep === "CREATE" && (
         <ContactEntityForm
-          type={"PERSON"}
+          type="PERSON"
           initialValues={formState.initialValues}
-          onClose={() => onClose(false)}
           sidebarFormRef={formRef}
+          onClose={() => onClose(false)}
         />
       )}
       {formState.flowStep === "SEARCH" && (
@@ -108,11 +108,11 @@ function AddPersonContactSidebar({
         <MergePersonContactForm
           into={formState.into}
           from={formState.from}
-          intoLabel={"Aktuell"}
-          fromLabel={"Importiert"}
+          intoLabel="Aktuell"
+          fromLabel="Importiert"
+          sidebarFormRef={formRef}
           onCancel={() => onClose(false)}
           onSuccess={() => onClose(true)}
-          sidebarFormRef={formRef}
         />
       )}
     </>

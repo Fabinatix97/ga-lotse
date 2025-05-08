@@ -16,9 +16,6 @@ export function SideNavigation(props: NavigationProps) {
   return (
     <Drawer
       open={props.navigationState.type !== "closed"}
-      onClose={() => {
-        props.setNavigationState({ type: "closed" });
-      }}
       sx={{
         display: byBreakpoint({
           mobile: "block",
@@ -34,6 +31,9 @@ export function SideNavigation(props: NavigationProps) {
             top: headerHeightMobile,
           },
         },
+      }}
+      onClose={() => {
+        props.setNavigationState({ type: "closed" });
       }}
     >
       <Stack overflow="auto" height={`calc(100vh - ${headerHeightMobile})`}>

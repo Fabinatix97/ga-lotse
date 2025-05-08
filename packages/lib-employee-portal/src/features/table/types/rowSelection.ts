@@ -9,7 +9,7 @@ import {
   RowSelectionTableState,
 } from "@tanstack/react-table";
 
-import { ToggleSelectColumnProps } from "@/features/table/components/columns/ToggleSelectColumn";
+import { ToggleSelectColumnProps } from "../components/columns/ToggleSelectColumn";
 
 export interface RowSelectionProps<TData>
   extends Pick<

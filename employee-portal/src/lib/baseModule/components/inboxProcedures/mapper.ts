@@ -28,19 +28,6 @@ import {
 
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";
 
-export function mapValuesToFileData(
-  values: CreateInboxProcedureValues,
-): FormData {
-  const formData = new FormData();
-  const progressEntry = values.inboxProgressEntry;
-  const file = progressEntry.file;
-  const type = progressEntry.type;
-  if (PROGRESS_ENTRY_TYPES_WITH_FILE_UPLOAD.includes(type) && file !== null) {
-    formData.append("file", file);
-  }
-  return formData;
-}
-
 export function mapValuesToFile(
   values: CreateInboxProcedureValues,
 ): File | undefined {

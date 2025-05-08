@@ -4,14 +4,14 @@
  */
 
 import { validatePipe } from "../../helpers/validators";
-import { useValidators } from "../../hooks/useValidators";
+import { useValidateEmail } from "../../hooks/useValidators";
 
 import { InputField, InputFieldProps } from "./InputField";
 
 type EmailFieldProps = Omit<InputFieldProps, "type">;
 
 export function EmailField(props: EmailFieldProps) {
-  const { validateEmail } = useValidators();
+  const validateEmail = useValidateEmail();
 
   return (
     <InputField

@@ -70,10 +70,10 @@ export function Pagination(props: Readonly<PaginationProps>) {
     return (
       <PaginationButton
         key={pageIndex}
+        isCurrent={pageIndex === props.pageNumber}
         onClick={() => {
           props.onPageChange(pageIndex);
         }}
-        isCurrent={pageIndex === props.pageNumber}
       >
         {paginationItem}
       </PaginationButton>
@@ -130,9 +130,9 @@ function PaginationButton(
     <Button
       {...buttonProps}
       sx={{ ...buttonProps.sx, px: 2 }}
-      onClick={props.onClick}
       color={props.isCurrent ? "primary" : buttonProps.color}
       variant={props.isCurrent ? "solid" : buttonProps.variant}
+      onClick={props.onClick}
     >
       {props.children}
     </Button>

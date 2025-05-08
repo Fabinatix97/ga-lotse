@@ -53,8 +53,8 @@ export function DocumentsTable({ procedureId }: Readonly<DocumentsTableProps>) {
             right={
               <Button
                 endDecorator={<AddOutlined />}
-                onClick={() => addDocumentSidebar.open({ procedureId })}
                 aria-label="Dokument hinzufügen"
+                onClick={() => addDocumentSidebar.open({ procedureId })}
               >
                 Dokument hinzufügen
               </Button>
@@ -94,8 +94,8 @@ export function DocumentsTable({ procedureId }: Readonly<DocumentsTableProps>) {
           }}
           noDataComponent={() => (
             <NoDocumentsAvailable
-              onAdd={() => addDocumentSidebar.open({ procedureId })}
               isProcedureFinalized={isProcedureFinalized(procedureDetails)}
+              onAdd={() => addDocumentSidebar.open({ procedureId })}
             />
           )}
           minWidth={1200}
@@ -129,8 +129,8 @@ function NoDocumentsAvailable({
       {!isProcedureFinalized && (
         <Button
           endDecorator={<AddOutlined />}
-          onClick={onAdd}
           aria-label="Dokument hinzufügen"
+          onClick={onAdd}
         >
           Dokument hinzufügen
         </Button>

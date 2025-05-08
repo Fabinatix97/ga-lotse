@@ -13,7 +13,7 @@ import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FlexInputFieldProps } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";
 import { InputWithDeleteButton } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/InputWithDeleteButton";
 
-export interface OptionalInputFieldProps extends FlexInputFieldProps {
+interface OptionalInputFieldProps extends FlexInputFieldProps {
   addButtonLabel: string;
 }
 

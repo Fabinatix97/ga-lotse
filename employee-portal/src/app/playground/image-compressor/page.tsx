@@ -33,7 +33,7 @@ export default function PlaygroundImageCompressorPage() {
     queryKey: getQueryKey(originalFile, quality, maxSize),
     queryFn: async () => {
       if (!originalFile) {
-        return;
+        throw new Error("Missing originalFile");
       }
 
       return compressImage(originalFile, {

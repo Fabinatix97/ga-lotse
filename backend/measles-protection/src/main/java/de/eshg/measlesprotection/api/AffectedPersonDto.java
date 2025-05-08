@@ -39,5 +39,6 @@ public record AffectedPersonDto(
     SalutationDto salutation,
     String title,
     RoleStatusDto roleStatus,
-    @NotNull @Valid AddressDto address)
+    @NotNull @Valid AddressDto address,
+    @Valid AffectedPersonSyncDto affectedPersonSync)
     implements PersonBaseDto {}

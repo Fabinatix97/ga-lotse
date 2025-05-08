@@ -163,8 +163,8 @@ export function ChecklistDefinitionOverviewTable({
       {userActivity.type === "view-history" && (
         <ChecklistVersionsSidebar
           open
-          onClose={handleSidebarClosed}
           checklistDefinition={userActivity.checklistDefinition}
+          onClose={handleSidebarClosed}
           onUploadCldClick={() =>
             handleUploadRepoButtonClick(userActivity.checklistDefinition)
           }
@@ -177,9 +177,9 @@ export function ChecklistDefinitionOverviewTable({
       {userActivity.type === "upload-cld-to-repo" && (
         <UploadChecklistToRepoSidebar
           open
-          onClose={handleSidebarClosed}
           checklistDefinition={userActivity.checklistDefinition}
           create={userActivity.create}
+          onClose={handleSidebarClosed}
         />
       )}
     </>

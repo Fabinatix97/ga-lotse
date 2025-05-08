@@ -15,6 +15,7 @@ import de.eshg.schoolentry.statistics.options.ChildLanguageKnowledge;
 import de.eshg.schoolentry.statistics.options.DoctorLetterValue;
 import de.eshg.schoolentry.statistics.options.EvaluationResult;
 import de.eshg.schoolentry.statistics.options.GuardianLanguageKnowledge;
+import de.eshg.schoolentry.statistics.options.Hand;
 import de.eshg.schoolentry.statistics.options.Language;
 import java.util.Objects;
 import java.util.Optional;
@@ -165,7 +166,10 @@ public class SopessStatistics {
               SopessExaminationResult::getDoctorLetterKnowledgeThinking,
               DoctorLetterValue::convertDoctorLetterValueToValue);
       case HAND ->
-          getSopessExaminationAttribute(procedure, SopessExaminationResult::getHandednessValue);
+          getSopessExaminationAttribute(
+              procedure,
+              SopessExaminationResult::getHandednessValue,
+              Hand::convertHandednessValueToValue);
       case ESPR ->
           getSopessExaminationAttribute(
               procedure,
@@ -243,8 +247,8 @@ public class SopessStatistics {
         .orElse(null);
   }
 
-  private static Integer articulationPointSumOrNull(Stream<ArticulationValue> values) {
-    return articulationPointSum(values).orElse(null);
+  private static String articulationPointSumOrNull(Stream<ArticulationValue> values) {
+    return articulationPointSum(values).map(Object::toString).orElse(null);
   }
 
   private static <T> T getSopessExaminationAttribute(
@@ -333,7 +337,7 @@ public class SopessStatistics {
   }
 
   public static EvaluationResult prepositionsAssessment(Integer value) {
-    return evaluateResult(value, Range.closed(0, 4), Range.closed(5, 5), Range.closed(6, 7));
+    return evaluateResult(value, Range.closed(0, 4), Range.closed(5, 5), Range.closed(6, 8));
   }
 
   private static String pluralsAssessmentAndGetValue(Integer value) {

@@ -70,25 +70,20 @@ export function UserCalendar(props: {
   }
 
   return (
-    <>
-      <Calendar
-        ref={calendarRef}
-        onNewEventButtonClick={openAddAbsenceSidebar}
-        calendars={calendars}
-        displayedCalendarIds={displayedCalendarIds}
-        onEventClick={(event) => {
-          if (
-            event.type === "VACATION" &&
-            event.calendarId === userCalendarId
-          ) {
-            openEditAbsenceSidebar(event);
-          }
-          if (event.type === "BUSINESS_CASE") {
-            openViewEventSidebar(event);
-          }
-        }}
-        onSettingsButtonClick={openSettingsSidebar}
-      />
-    </>
+    <Calendar
+      ref={calendarRef}
+      calendars={calendars}
+      displayedCalendarIds={displayedCalendarIds}
+      onNewEventButtonClick={openAddAbsenceSidebar}
+      onEventClick={(event) => {
+        if (event.type === "VACATION" && event.calendarId === userCalendarId) {
+          openEditAbsenceSidebar(event);
+        }
+        if (event.type === "BUSINESS_CASE") {
+          openViewEventSidebar(event);
+        }
+      }}
+      onSettingsButtonClick={openSettingsSidebar}
+    />
   );
 }

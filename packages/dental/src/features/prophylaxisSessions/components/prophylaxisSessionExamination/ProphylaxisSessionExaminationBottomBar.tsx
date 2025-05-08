@@ -20,12 +20,12 @@ import {
   OverlayBoundary,
 } from "@eshg/lib-employee-portal";
 
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { ChangeReasonForAbsenceModal } from "@/features/prophylaxisSessions/components/absence/ChangeReasonForAbsenceModal";
-import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
-import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
-import { selectCanBeMarkedAbsent } from "@/stores/examination/selectors/canBeMarkedAbsent";
-import { ExaminationFormValues } from "@/types/examination";
+import { useExaminationStore } from "../../../../stores/examination/ExaminationStoreProvider";
+import { selectCanBeMarkedAbsent } from "../../../../stores/examination/selectors/canBeMarkedAbsent";
+import { ExaminationFormValues } from "../../../../types/examination";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
+import { useProphylaxisSessionStore } from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { ChangeReasonForAbsenceModal } from "../absence/ChangeReasonForAbsenceModal";
 
 interface ProphylaxisSessionExaminationBottomBarProps {
   onPreviousParticipantClicked?: (submit?: boolean) => void;
@@ -123,9 +123,9 @@ export function ProphylaxisSessionExaminationBottomBar(
       <OverlayBoundary>
         <ChangeReasonForAbsenceModal
           open={dialogOpen}
+          examination={examination}
           onSubmit={onParticipantAbsentSubmit}
           onCancel={() => setDialogOpen(false)}
-          examination={examination}
         />
       </OverlayBoundary>
     </BottomToolbar>

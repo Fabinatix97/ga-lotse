@@ -36,7 +36,7 @@ import { useGlobalFilter } from "@/lib/hooks/useGlobalFilter";
 
 import { OverridableTableRow } from "./TableRow";
 
-export interface EditableTableProps<
+interface EditableTableProps<
   TData extends UniqueEntity & OverridableEntity<TData> & EditableEntity,
 > {
   data: TableOptions<TData>["data"];
@@ -169,13 +169,11 @@ export function EditableTable<
               reactTable={reactTable}
             />
             <tbody>
-              {
-                <EmptyTableHint
-                  empty={!props.data.length}
-                  allFiltered={!rows.length}
-                  columns={reactTable.getAllColumns().length}
-                />
-              }
+              <EmptyTableHint
+                empty={!props.data.length}
+                allFiltered={!rows.length}
+                columns={reactTable.getAllColumns().length}
+              />
               {rows.map((row, i) => {
                 return (
                   <Fragment key={row.id}>

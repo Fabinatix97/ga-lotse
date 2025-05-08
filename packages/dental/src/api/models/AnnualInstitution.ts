@@ -9,7 +9,7 @@ import { Institution, mapInstitution } from "./Institution";
 
 export interface AnnualInstitution {
   readonly institution: Institution;
-  readonly groupName: string;
+  readonly groupName?: string;
   readonly year: number;
 }
 

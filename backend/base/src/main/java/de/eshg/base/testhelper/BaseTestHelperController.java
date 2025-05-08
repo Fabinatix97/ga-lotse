@@ -126,6 +126,11 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
+  public SearchContactsResponse populateDaycareContacts(PopulationRequest request) {
+    return baseTestHelperService.populateDaycareContacts(request.numberOfEntitiesToPopulate());
+  }
+
+  @Override
   public SearchContactsResponse populateHealthDepartmentContacts(PopulationRequest request) {
     return baseTestHelperService.populateHealthDepartmentsContacts(
         request.numberOfEntitiesToPopulate());

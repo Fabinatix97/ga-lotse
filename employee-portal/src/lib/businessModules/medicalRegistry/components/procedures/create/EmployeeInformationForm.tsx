@@ -60,7 +60,7 @@ export function EmployeeInformationForm(props: NestedFormProps) {
           <Grid xxs={6}>
             <FileField
               name={fieldName("employeesFile")}
-              label={"Mitarbeiter:innen-Liste als JPG hochladen"}
+              label="Mitarbeiter:innen-Liste als JPG hochladen"
               accept={FileType.Jpeg}
               required={requiredFieldMessage}
               maxFileSize={config.maxFileSize}

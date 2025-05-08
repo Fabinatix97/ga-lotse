@@ -8,6 +8,7 @@ package de.eshg.base.street;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.csv.CsvMapper;
 import de.eshg.base.street.csv.MunicipalityDirectoryCsvEntry;
+import de.eshg.persistence.TransactionHelper;
 import java.util.List;
 import org.apache.commons.lang3.Range;
 import org.springframework.stereotype.Component;
@@ -28,10 +29,13 @@ public class MunicipalityDirectory {
 
   private final List<DirectoryEntry> entries;
 
-  public MunicipalityDirectory(DepartmentConfigurationService departmentConfigurationService) {
+  public MunicipalityDirectory(
+      DepartmentConfigurationService departmentConfigurationService,
+      TransactionHelper transactionHelper) {
     List<MunicipalityDirectoryCsvEntry> csvEntries =
         CsvMapper.csvToBeans(
-            departmentConfigurationService.getMunicipalityDirectory(),
+            transactionHelper.executeInTransaction(
+                departmentConfigurationService::getMunicipalityDirectory),
             MunicipalityDirectoryCsvEntry.class);
     this.entries = convertToDirectoryStructure(csvEntries);
   }

@@ -27,10 +27,10 @@ import {
 
 import { TravelInformationOverviewDetails } from "@/lib/businessModules/travelMedicine/components/appointment/steps/overview/TravelInformationOverviewDetails";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
-import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useDepartmentContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/DepartmentContext";
 import { APPOINTMENT_TYPE } from "@/lib/businessModules/travelMedicine/helpers/translations";
 import { useTranslation } from "@/lib/i18n/client";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import { formatDepartmentAddress } from "@/lib/shared/formatters/address";
 
 export function AppointmentOverviewDetails() {
@@ -49,29 +49,45 @@ export function AppointmentOverviewDetails() {
   return (
     <Stack gap={1} data-testid="appointment-overview-summary">
       {currentStep > 1 && values.initialStepAppointmentType && (
-        <DetailsField
+        <DetailsItem
+          label={t("overview.fields.initialStepAppointmentType", {
+            context: "label",
+          })}
           value={APPOINTMENT_TYPE[values.initialStepAppointmentType]}
           icon={<VaccinesOutlined />}
+          hiddenLabel
         />
       )}
       {isDefined(department) && (
-        <DetailsField
+        <DetailsItem
+          label={t("overview.fields.department", {
+            context: "label",
+          })}
           value={formatDepartmentAddress(department)}
           icon={<FmdGoodOutlined />}
+          hiddenLabel
         />
       )}
       {currentStep > 2 && (
         <>
           {appointmentStart && (
-            <DetailsField
+            <DetailsItem
+              label={t("overview.fields.date", {
+                context: "label",
+              })}
               value={formatDateToFullReadableString(appointmentStart)}
               icon={<DateRange />}
+              hiddenLabel
             />
           )}
           {durationInMinutes && (
-            <DetailsField
-              value={`${formatTime(appointmentStart)} ${t("appointmentOverviewSection.values.appointmentDuration", { durationInMinutes })}`}
+            <DetailsItem
+              label={t("overview.fields.time", {
+                context: "label",
+              })}
+              value={`${formatTime(appointmentStart)} ${t("overview.fields.appointmentDuration", { durationInMinutes })}`}
               icon={<AccessTimeOutlined />}
+              hiddenLabel
             />
           )}
         </>
@@ -79,36 +95,52 @@ export function AppointmentOverviewDetails() {
       {currentStep > 5 && (
         <>
           {values.patient.firstName && values.patient.lastName && (
-            <DetailsField
+            <DetailsItem
+              label={t("overview.fields.fullName", {
+                context: "label",
+              })}
               value={formatPersonName(values.patient)}
               icon={<PersonOutlined />}
+              hiddenLabel
             />
           )}
           {values.patient.dateOfBirth && (
-            <DetailsField
+            <DetailsItem
+              label={t("overview.fields.dateOfBirth", {
+                context: "label",
+              })}
               value={formatDate(new Date(values.patient.dateOfBirth))}
               icon={<CakeOutlined />}
+              hiddenLabel
             />
           )}
         </>
       )}
       {currentStep > 3 && values.travelInformation.travelType && (
-        <TravelInformationOverviewDetails></TravelInformationOverviewDetails>
+        <TravelInformationOverviewDetails />
       )}
       {currentStep > 5 && (
         <>
           {values.patient.emailAddresses && (
-            <DetailsField
+            <DetailsItem
+              label={t("overview.fields.emailAddress", {
+                context: "label",
+              })}
               value={values.patient.emailAddresses}
               icon={<MailOutlined />}
+              hiddenLabel
             />
           )}
           {values.confirmOnlineServices && (
-            <DetailsField
-              value={t(
-                "appointmentOverviewSection.values.confirmOnlineServices",
-              )}
+            <DetailsItem
+              label={t("overview.fields.confirmOnlineServices", {
+                context: "label",
+              })}
+              value={t("overview.fields.confirmOnlineServices", {
+                context: "value",
+              })}
               icon={<MarkEmailReadOutlined />}
+              hiddenLabel
             />
           )}
         </>

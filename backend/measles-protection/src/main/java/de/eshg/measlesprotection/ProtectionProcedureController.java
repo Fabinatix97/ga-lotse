@@ -7,18 +7,22 @@ package de.eshg.measlesprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.measlesprotection.api.CaseStatusDto;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresPaginationOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresResponse;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresSortOptions;
-import de.eshg.measlesprotection.api.GetProceduresForPersonRequest;
 import de.eshg.measlesprotection.api.GetProceduresForPersonResponse;
+import de.eshg.measlesprotection.api.PatchAffectedPersonRequest;
+import de.eshg.measlesprotection.api.PatchCustodianRequest;
 import de.eshg.measlesprotection.api.ProtectionProcedureDto;
+import de.eshg.measlesprotection.api.SyncAffectedPersonRequest;
+import de.eshg.measlesprotection.api.SyncCustodianRequest;
 import de.eshg.measlesprotection.api.SyncFacilityRequest;
 import de.eshg.measlesprotection.api.UpdateProcedureRequest;
+import de.eshg.measlesprotection.api.draft.AffectedPersonDetailsDto;
+import de.eshg.measlesprotection.api.draft.CustodianDetailsDto;
 import de.eshg.measlesprotection.api.draft.EditFacilityResponse;
 import de.eshg.measlesprotection.mapper.GetProceduresForPersonMapper;
 import de.eshg.measlesprotection.mapper.ToDtoMappers;
@@ -115,14 +119,11 @@ public class ProtectionProcedureController {
         detailsDataPage.totalPages(), detailsDataPage.totalElements(), procedures);
   }
 
-  @PostMapping("/for-person")
+  @GetMapping("/for-person/{id}")
   @Operation(summary = "Get all measles protection procedures for a given person.")
-  public GetProceduresForPersonResponse getProceduresForPerson(
-      @Valid @RequestBody GetProceduresForPersonRequest request) {
-    AddPersonFileStateRequest person = request.person();
+  public GetProceduresForPersonResponse getProceduresForPerson(@PathVariable("id") UUID id) {
     List<MeaslesProtectionProcedure> procedures =
-        measlesProtectionService.getProceduresForPerson(
-            person.firstName(), person.lastName(), person.dateOfBirth());
+        measlesProtectionService.getProceduresForPerson(id);
     return getProceduresForPersonMapper.map(procedures);
   }
 
@@ -144,5 +145,37 @@ public class ProtectionProcedureController {
   public void syncFacility(
       @PathVariable("id") UUID id, @Valid @RequestBody SyncFacilityRequest request) {
     measlesProtectionService.syncFacility(id, request);
+  }
+
+  @PostMapping("{id}/affected-person/edit")
+  @Operation(summary = "Updates affected person from a measles protection procedure.")
+  public AffectedPersonDetailsDto editAffectedPerson(
+      @PathVariable("id") UUID id, @Valid @RequestBody PatchAffectedPersonRequest request) {
+    return measlesProtectionService.editAffectedPerson(id, request);
+  }
+
+  @PostMapping("{id}/affected-person/sync")
+  @Operation(summary = "Synchronize affected person data.")
+  public void syncAffectedPerson(
+      @PathVariable("id") UUID id, @Valid @RequestBody SyncAffectedPersonRequest request) {
+    measlesProtectionService.syncAffectedPerson(id, request);
+  }
+
+  @PostMapping("{procedureId}/custodian/{custodianId}/edit")
+  @Operation(summary = "Updates custodian from a measles protection procedure.")
+  public CustodianDetailsDto editCustodian(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("custodianId") UUID custodianId,
+      @Valid @RequestBody PatchCustodianRequest request) {
+    return measlesProtectionService.editCustodian(procedureId, custodianId, request);
+  }
+
+  @PostMapping("{procedureId}/custodian/{custodianId}/sync")
+  @Operation(summary = "Synchronize custodian data.")
+  public void syncCustodian(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("custodianId") UUID custodianId,
+      @Valid @RequestBody SyncCustodianRequest request) {
+    measlesProtectionService.syncCustodian(procedureId, custodianId, request);
   }
 }

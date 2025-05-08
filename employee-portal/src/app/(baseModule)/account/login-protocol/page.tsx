@@ -38,9 +38,9 @@ const columns = [
     enableSorting: false,
     cell: (props) =>
       props.getValue() === ApiUserEventType.Login ? (
-        <Chip color={"success"}>Login</Chip>
+        <Chip color="success">Login</Chip>
       ) : (
-        <Chip color={"danger"}>Login fehlgeschlagen</Chip>
+        <Chip color="danger">Login fehlgeschlagen</Chip>
       ),
     meta: {
       width: "15rem",
@@ -83,9 +83,9 @@ export default function UserLoginProtocolPage() {
   const { elements, hasNext } = data;
 
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Anmeldeprotokoll"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Anmeldeprotokoll" />}>
       <MainContentLayout fullViewportHeight>
-        <TablePage fullHeight data-testid={"login-protocol-table"}>
+        <TablePage fullHeight data-testid="login-protocol-table">
           <TableSheet
             loading={isFetching}
             footer={
@@ -99,7 +99,7 @@ export default function UserLoginProtocolPage() {
               />
             }
           >
-            <DataTable data={elements} columns={columns} minWidth={"40rem"} />
+            <DataTable data={elements} columns={columns} minWidth="40rem" />
           </TableSheet>
         </TablePage>
       </MainContentLayout>

@@ -22,7 +22,7 @@ import {
   useChecklistDefinitionCentralRepoApi,
 } from "@/lib/businessModules/inspection/api/clients";
 
-export type FormCLContext = Omit<
+type FormCLContext = Omit<
   ApiCLContext,
   "id" | "defId" | "validFrom" | "validTo" | "version"
 >;

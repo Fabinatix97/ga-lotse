@@ -144,16 +144,16 @@ function OfflinePasswordPromptInner() {
 
   return state.getExistingPassword ? (
     <OfflineExistingPasswordDialog
-      onPassword={handlePassword}
-      onClear={handleClear}
       waiting={state.passwordSent}
       retry={state.retry}
+      onPassword={handlePassword}
+      onClear={handleClear}
     />
   ) : (
     <OfflineNewPasswordDialog
+      waiting={state.passwordSent}
       onPassword={handlePassword}
       onClear={handleClear}
-      waiting={state.passwordSent}
     />
   );
 }

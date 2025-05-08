@@ -81,14 +81,14 @@ function ContactOnlySidebar(props: SidebarProps) {
       >
         {({ isSubmitting, values }) => (
           <SidebarForm>
-            <SidebarContent title={"Kontaktadresse"}>
+            <SidebarContent title="Kontaktadresse">
               <Grid container spacing={2}>
-                <ContactAddressForm name={""} type={values.type} />
+                <ContactAddressForm name="" type={values.type} />
               </Grid>
             </SidebarContent>
             <SidebarActions>
               <FormButtonBar
-                submitLabel={"Speichern"}
+                submitLabel="Speichern"
                 submitting={isSubmitting}
               />
             </SidebarActions>
@@ -111,14 +111,14 @@ function BillingOnlySidebar(props: SidebarProps) {
       >
         {({ isSubmitting, values }) => (
           <SidebarForm>
-            <SidebarContent title={"Kontaktadresse"}>
+            <SidebarContent title="Kontaktadresse">
               <Grid container spacing={2}>
-                <BillingAddressForm name={""} type={values.type} />
+                <BillingAddressForm name="" type={values.type} />
               </Grid>
             </SidebarContent>
             <SidebarActions>
               <FormButtonBar
-                submitLabel={"Speichern"}
+                submitLabel="Speichern"
                 submitting={isSubmitting}
               />
             </SidebarActions>
@@ -153,7 +153,7 @@ function OptionalBillingSidebar(props: SidebarProps) {
       >
         {({ isSubmitting, values }) => (
           <SidebarForm>
-            <SidebarContent title={"Kontaktadresse"}>
+            <SidebarContent title="Kontaktadresse">
               <Grid container spacing={2}>
                 <ContactAddressForm
                   name={fieldName("contact")}
@@ -167,7 +167,7 @@ function OptionalBillingSidebar(props: SidebarProps) {
             </SidebarContent>
             <SidebarActions>
               <FormButtonBar
-                submitLabel={"Speichern"}
+                submitLabel="Speichern"
                 submitting={isSubmitting}
               />
             </SidebarActions>

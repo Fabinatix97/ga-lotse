@@ -47,8 +47,8 @@ export function ShareAuthStep() {
   return (
     <StepLayout
       initialValues={initialValues}
-      onSubmit={onSubmit}
       submit={t("share_auth.submit")}
+      onSubmit={onSubmit}
     >
       <StepSubTitle title={t("share_auth.title")} />
       <Typography>{t("share_auth.text")}</Typography>

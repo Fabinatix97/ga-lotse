@@ -48,9 +48,7 @@ function UpdateAnalysisSidebar(props: UpdateAnalysisSidebarProps) {
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={updateAnalysis}
       steps={[
         () => {
           switch (props.diagramConfiguration.type) {
@@ -142,6 +140,8 @@ function UpdateAnalysisSidebar(props: UpdateAnalysisSidebarProps) {
           }
         },
       ]}
+      onClose={props.onClose}
+      onSubmit={updateAnalysis}
     />
   );
 }

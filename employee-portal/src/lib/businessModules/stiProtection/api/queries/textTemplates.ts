@@ -14,7 +14,7 @@ import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { useTextTemplateApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { textTemplateApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-export function useTextTemplatesQuery(contexts?: ApiTextTemplateContext[]) {
+function useTextTemplatesQuery(contexts?: ApiTextTemplateContext[]) {
   const textTemplateApi = useTextTemplateApi();
   return queryOptions({
     queryKey: textTemplateApiQueryKey(["list", ...(contexts ?? [])]),

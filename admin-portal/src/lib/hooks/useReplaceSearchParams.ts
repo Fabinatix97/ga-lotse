@@ -9,7 +9,7 @@ import { isNonNullish } from "remeda";
 
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 
-export type SearchParamValue =
+type SearchParamValue =
   | string
   | number
   | string[]
@@ -17,7 +17,7 @@ export type SearchParamValue =
   | null
   | undefined;
 
-export interface SearchParamReplacement {
+interface SearchParamReplacement {
   name: string;
   value: SearchParamValue;
 }

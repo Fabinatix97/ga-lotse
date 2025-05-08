@@ -19,9 +19,7 @@ export function EntryDirectDeletionModal(props: EntryDeletionModalProps) {
   );
 }
 
-export function EntryDirectDeletionModalContent(
-  props: EntryDeletionModalProps,
-) {
+function EntryDirectDeletionModalContent(props: EntryDeletionModalProps) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
   const { progressEntryApi } = progressEntriesContext.config;
   const { entryIdForDeletion } = progressEntriesContext.state;
@@ -30,6 +28,11 @@ export function EntryDirectDeletionModalContent(
   return (
     <ConfirmationDialog
       open={entryIdForDeletion !== null}
+      title="Verlaufseintrag löschen?"
+      description="Diese Aktion kann nicht rückgängig gemacht werden."
+      color="danger"
+      confirmLabel="Ja, löschen"
+      cancelLabel="Abbrechen"
       onClose={closeEntryDeletionModal}
       onConfirm={() => {
         if (entryIdForDeletion !== null)
@@ -37,11 +40,6 @@ export function EntryDirectDeletionModalContent(
             onSuccess: props.onSuccessfulDeletion,
           });
       }}
-      title="Verlaufseintrag löschen?"
-      description="Diese Aktion kann nicht rückgängig gemacht werden."
-      color="danger"
-      confirmLabel="Ja, löschen"
-      cancelLabel="Abbrechen"
     />
   );
 }

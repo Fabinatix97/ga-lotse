@@ -110,7 +110,7 @@ export function RepoCLDInfoCard({
         </Typography>
         <Button onClick={openDetails}>Details</Button>
         {showSyncButton && (
-          <SubmitButton onClick={handleSubmit} submitting={isPending}>
+          <SubmitButton submitting={isPending} onClick={handleSubmit}>
             {isNewVersion(metadata.localCldRepoVersion) && "Übernehmen"}
             {isUpdateableVersion(
               centralRepoVersion,

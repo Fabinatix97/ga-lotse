@@ -11,12 +11,14 @@ import { isEmpty } from "remeda";
 
 import { ApiProcedureStatus } from "@eshg/base-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import {
+  AnamnesisFormValues,
+  defaultAnamnesisFormValues,
+} from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/formConfig";
+import { cleanOptionalValues } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/helpers";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
-import {
-  ApiYesNoDontKnowAnswer,
-  PatchAnamnesisRequest,
-} from "@eshg/official-medical-service-api";
+import { PatchAnamnesisRequest } from "@eshg/official-medical-service-api";
 
 import { usePatchAnamnesisOptions } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import {
@@ -26,11 +28,6 @@ import {
 import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { AnamnesisForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/anamnesis/AnamnesisForm";
 import {
-  AnamnesisFormValues,
-  defaultAnamnesisFormValues,
-} from "@/lib/businessModules/officialMedicalService/components/procedures/details/anamnesis/AnamnesisForm.config";
-import {
-  cleanOptionalValues,
   mapToFormValues,
   mapToRequest,
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/anamnesis/helpers";
@@ -50,15 +47,7 @@ export default function OfficialMedicalServiceAnamnesisPage(
   async function handleSubmit(values: AnamnesisFormValues) {
     const request: PatchAnamnesisRequest = mapToRequest(
       id,
-      cleanOptionalValues(values, [
-        { key: "hasPriorExaminations", value: false },
-        { key: "hasDisability", value: false },
-        { key: "appliedForRetirement", value: false },
-        { key: "hadPastDiseasesOrDisabilities", value: false },
-        { key: "answer", value: false },
-        { key: "answer", value: ApiYesNoDontKnowAnswer.No },
-        { key: "answer", value: ApiYesNoDontKnowAnswer.DontKnow },
-      ]),
+      cleanOptionalValues(values),
     );
     await patchAnamnesis.mutateAsync(request);
   }
@@ -73,11 +62,11 @@ export default function OfficialMedicalServiceAnamnesisPage(
             ? mapToFormValues(anamnesis)
             : defaultAnamnesisFormValues()
         }
-        onSubmit={handleSubmit}
         valuesToMutationBundle={(values) => ({
           mutationOptions: patchAnamnesisOptions,
           variableSupplier: () => mapToRequest(id, values),
         })}
+        onSubmit={handleSubmit}
       />
     </DisabledFormProvider>
   );

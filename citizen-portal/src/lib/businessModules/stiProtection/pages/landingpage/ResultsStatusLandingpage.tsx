@@ -17,7 +17,10 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import { ColumnGrid } from "@/lib/shared/components/layout/grid";
+import {
+  ColumnGrid,
+  ColumnGridSidePanel,
+} from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export function ResultsStatusLandingPage() {
@@ -28,7 +31,9 @@ export function ResultsStatusLandingPage() {
         <PageTitle>{t("title")}</PageTitle>
         <ColumnGrid>
           <InformationCard />
-          <GoToResultsStatusCard variant="landing" />
+          <ColumnGridSidePanel>
+            <GoToResultsStatusCard variant="landing" />
+          </ColumnGridSidePanel>
         </ColumnGrid>
       </PageContent>
     </PageLayout>

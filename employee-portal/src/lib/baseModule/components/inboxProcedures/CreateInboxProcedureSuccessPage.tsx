@@ -15,7 +15,7 @@ export function CreateInboxProcedureSuccessPage(
   return (
     <>
       <Typography>Posteingangsvorgang erfolgreich angelegt!</Typography>
-      <Button onClick={props.onButtonClick} sx={{ marginTop: 2 }}>
+      <Button sx={{ marginTop: 2 }} onClick={props.onButtonClick}>
         Neuen Posteingangsvorgang anlegen
       </Button>
     </>

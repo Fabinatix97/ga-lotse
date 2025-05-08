@@ -13,15 +13,13 @@ import {
 export interface ToothDiagnosis {
   readonly tooth: ApiTooth;
   readonly mainResult?: ApiMainResult;
-  readonly secondaryResult1?: ApiSecondaryResult;
-  readonly secondaryResult2?: ApiSecondaryResult;
+  readonly secondaryResult?: ApiSecondaryResult;
 }
 
 export function mapToothDiagnosis(response: ApiToothDiagnosis): ToothDiagnosis {
   return {
     tooth: response.tooth,
     mainResult: response.mainResult,
-    secondaryResult1: response.secondaryResult1,
-    secondaryResult2: response.secondaryResult2,
+    secondaryResult: response.secondaryResult,
   };
 }

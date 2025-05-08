@@ -9,5 +9,6 @@ public enum ConfigurationEndpoint {
   PRIVACY_POLICY,
   PRIVACY_NOTICE,
   OPENING_HOURS,
-  DEPARTMENT_INFO()
+  DEPARTMENT_INFO,
+  SCHOOL_ENTRY
 }

@@ -21,8 +21,9 @@ import {
   formatChartLabel,
 } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
-export interface BarChartProps {
+interface BarChartProps {
   diagramData: AnalysisDiagramBarChart["data"];
+  isDataGrouped: boolean;
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
   orientation?: DiagramOrientation;
@@ -104,8 +105,7 @@ export function transformToRelativeData(data: DataGroups | number[]) {
 
 export function BarChart(props: BarChartProps) {
   const grouping = evaluateGrouping(props.grouping, props.scaling);
-  const isStackedSeries = (props.diagramData[0]?.attributes?.length ?? 0) > 1;
-  const series = isStackedSeries
+  const series = props.isDataGrouped
     ? mapToStackedSeries(props.diagramData)
     : mapToUnstackedSeries(props.diagramData);
 
@@ -161,7 +161,7 @@ export function BarChart(props: BarChartProps) {
     grid: {
       containLabel: true,
     },
-    series: isStackedSeries
+    series: props.isDataGrouped
       ? Object.keys(series.data).map((serie) => {
           return {
             name: serie,

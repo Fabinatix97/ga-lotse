@@ -55,7 +55,7 @@ const restrictDefaultIconImportsPattern = {
 function noRestrictedImportsRuleOptions(packageType) {
   return {
     patterns: [
-      restrictRelativeImportsPattern,
+      ...(packageType === "app" ? [restrictRelativeImportsPattern] : []),
       ...(packageType === "lib" ? [restrictDefaultIconImportsPattern] : []),
       {
         group: ["@mui/material", "@mui/material/*"],
@@ -109,6 +109,23 @@ const nextBaseConfig = defineConfig(
   ...eslintBaseConfig,
   {
     rules: {
+      "react/jsx-no-constructed-context-values": "error",
+      "react/jsx-no-useless-fragment": "error",
+      "react/self-closing-comp": "error",
+      "react/jsx-boolean-value": ["error", "never"],
+      "react/jsx-curly-brace-presence": [
+        "error",
+        { props: "never", children: "never", propElementValues: "always" },
+      ],
+      "react/jsx-sort-props": [
+        "error",
+        {
+          noSortAlphabetically: true,
+          reservedFirst: ["key", "ref"],
+          callbacksLast: true,
+        },
+      ],
+
       "no-restricted-globals": [
         "error",
         {

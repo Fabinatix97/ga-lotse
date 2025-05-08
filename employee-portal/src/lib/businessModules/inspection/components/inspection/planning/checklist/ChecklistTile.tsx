@@ -25,7 +25,7 @@ import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/compone
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface ChecklistTileProps {
+interface ChecklistTileProps {
   readonly?: boolean;
   inspection: ApiInspection;
   availableCldvs: ApiInspectionAvailableCLDVersionsResponse;
@@ -112,11 +112,6 @@ export function ChecklistTile({
     <InfoTile
       name="checklistDefinition"
       title="Checkliste"
-      onEdit={
-        !listIsEmpty && !readonly && !isFollowupInspection
-          ? () => setChecklistSidebar(true)
-          : undefined
-      }
       footer={
         listIsEmpty &&
         !readonly &&
@@ -125,6 +120,11 @@ export function ChecklistTile({
             Checkliste auswählen
           </InfoTileAddButton>
         )
+      }
+      onEdit={
+        !listIsEmpty && !readonly && !isFollowupInspection
+          ? () => setChecklistSidebar(true)
+          : undefined
       }
     >
       {checklistSidebar && (
@@ -147,9 +147,9 @@ export function ChecklistTile({
         {inspection.selectedChecklistDefinitionVersions.map((version, idx) => {
           return (
             <Stack
+              key={"version-info-" + version.name + "-" + idx}
               direction="row"
               spacing={2}
-              key={"version-info-" + version.name + "-" + idx}
             >
               <Stack
                 direction="row"

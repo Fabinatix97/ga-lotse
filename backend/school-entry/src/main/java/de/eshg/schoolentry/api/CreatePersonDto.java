@@ -74,4 +74,31 @@ public record CreatePersonDto(
         contactAddress,
         null);
   }
+
+  public CreatePersonDto(
+      GenderDto gender,
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth,
+      String placeOfBirth,
+      CountryCode countryOfBirth,
+      List<String> phoneNumbers,
+      List<String> emailAddresses,
+      AddressDto contactAddress) {
+    this(
+        null,
+        null,
+        null,
+        gender,
+        firstName,
+        lastName,
+        dateOfBirth,
+        null,
+        placeOfBirth,
+        countryOfBirth,
+        emailAddresses,
+        phoneNumbers,
+        contactAddress,
+        null);
+  }
 }

@@ -35,7 +35,7 @@ import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/Toggl
 
 import { ConfigureChoroplethChartMetaOptions } from "./ConfigureChoroplethChartMetaOptions";
 
-export interface ConfigureChoroplethChartStepProps
+interface ConfigureChoroplethChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
   choroplethMaps: GeoShapeInfo[];

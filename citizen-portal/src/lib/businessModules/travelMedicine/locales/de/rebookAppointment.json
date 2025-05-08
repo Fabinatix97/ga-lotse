@@ -1,4 +1,7 @@
 {
+  "errors": {
+    "concurrentAppointment_errorMessage": "Der ausgewählte Termin wurde in der Zwischenzeit schon anderweitig reserviert. Bitte wählen Sie einen anderen freien Termin."
+  },
   "header": {
     "title": "Termin (um)buchen",
     "logout": "Mein Bereich verlassen"
@@ -22,7 +25,8 @@
   },
   "sidePanel": {
     "title": "Übersicht",
-    "dateAndTime": "{{ appointmentStart }} Uhr",
+    "date_label": "Tag, Datum",
+    "time_label": "Uhrzeit, Termindauer",
     "appointmentDuration": "(Dauer: {{ durationInMinutes }} Minuten)",
     "postponeAppointment": "Termin verschieben",
     "bookAppointment": "Termin buchen",

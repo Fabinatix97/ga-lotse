@@ -85,8 +85,8 @@ export function ChecklistDefinitionSection({
     >
       <Accordion defaultExpanded>
         <Stack
-          spacing={2}
           key={section?.id}
+          spacing={2}
           component="section"
           aria-label={`Sektion ${defaultIndex}`}
         >
@@ -141,7 +141,7 @@ export function ChecklistDefinitionSection({
             >
               <Stack spacing={2} sx={{ marginLeft: "3rem" }}>
                 <ChecklistDefinitionElementsList sectionIndex={sectionIndex} />
-                <Stack spacing={2} direction={"row"}>
+                <Stack spacing={2} direction="row">
                   <Button
                     color="neutral"
                     startDecorator={<Add />}

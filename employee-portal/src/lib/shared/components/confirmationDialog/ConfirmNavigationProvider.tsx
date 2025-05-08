@@ -45,7 +45,6 @@ export function ConfirmNavigationProvider({ children }: RequiresChildren) {
       });
     } else {
       openConfirmationDialog({
-        onDeny: onNavigate,
         title: "Änderungen verwerfen?",
         color: "danger",
         description:

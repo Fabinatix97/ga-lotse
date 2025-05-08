@@ -60,22 +60,22 @@ function ReviewInspectionDuplicateSidebar({
 
   return (
     <>
-      <SidebarContent title={"Duplikatprüfung (Vorgang)"}>
-        <Stack direction={"column"} spacing={2}>
+      <SidebarContent title="Duplikatprüfung (Vorgang)">
+        <Stack direction="column" spacing={2}>
           <Alert
             color="primary"
             message="Es gibt ein potentielles Duplikat in der Datenbank. Sie können den importierten Vorgang bestätigen oder mit einem vorhandenen Vorgang zusammenführen."
           />
-          <Stack direction={"column"} spacing={2}>
+          <Stack direction="column" spacing={2}>
             <Typography level="h4" component="p" sx={{ marginTop: 2 }}>
               Importierter Vorgang:
             </Typography>
             <InspectionDuplicateTile
               inspection={inspectionDuplicates.importedInspection}
               importedInspection={inspectionDuplicates.importedInspection}
-              isImportedInspection={true}
-              testId={"importedProcess"}
-            ></InspectionDuplicateTile>
+              isImportedInspection
+              testId="importedProcess"
+            />
             <Typography level="h4" component="p" sx={{ marginTop: 2 }}>
               Bereits existierende Vorgänge:
             </Typography>
@@ -85,8 +85,8 @@ function ReviewInspectionDuplicateSidebar({
                 inspection={inspection}
                 importedInspection={inspectionDuplicates.importedInspection}
                 isImportedInspection={false}
-                testId={"existingProcess"}
-              ></InspectionDuplicateTile>
+                testId="existingProcess"
+              />
             ))}
           </Stack>
         </Stack>
@@ -98,23 +98,23 @@ function ReviewInspectionDuplicateSidebar({
             <>
               <Button
                 component="a"
-                onClick={() => handleSubmit(false)}
                 variant="solid"
                 color="neutral"
                 sx={{
                   alignSelf: "end",
                 }}
+                onClick={() => handleSubmit(false)}
               >
                 Verwerfen
               </Button>
               <Button
                 component="a"
-                onClick={() => handleSubmit(true)}
                 variant="solid"
                 color="primary"
                 sx={{
                   alignSelf: "end",
                 }}
+                onClick={() => handleSubmit(true)}
               >
                 Import bestätigen
               </Button>

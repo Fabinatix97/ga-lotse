@@ -7,7 +7,7 @@ import { Stack, Typography } from "@mui/joy";
 
 import { SelectableCard } from "@eshg/lib-employee-portal";
 
-export interface SelectCardProps {
+interface SelectCardProps {
   title: string;
   texts?: string[];
   value: unknown;

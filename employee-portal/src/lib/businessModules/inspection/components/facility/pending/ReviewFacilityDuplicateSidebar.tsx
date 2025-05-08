@@ -66,8 +66,8 @@ function ReviewFacilityDuplicateSidebar({
 
   return (
     <>
-      <SidebarContent title={"Duplikatprüfung (Einrichtung)"}>
-        <Stack direction={"column"} spacing={2}>
+      <SidebarContent title="Duplikatprüfung (Einrichtung)">
+        <Stack direction="column" spacing={2}>
           <Alert
             color="primary"
             message="Es gibt ein potentielles Duplikat in der Datenbank. Sie können die importierte Einrichtung bestätigen oder mit einer vorhandenen Einrichtung zusammenführen."
@@ -77,19 +77,19 @@ function ReviewFacilityDuplicateSidebar({
             name="facilities-radio-group"
             onChange={(event) => setSelectedReferenceId(event.target.value)}
           >
-            <Stack direction={"column"} spacing={2}>
+            <Stack direction="column" spacing={2}>
               <FacilityDuplicateTile
                 facility={facilityDuplicateReview.importedFacility}
                 importedFacility={facilityDuplicateReview.importedFacility}
-                isImportedFacility={true}
-              ></FacilityDuplicateTile>
+                isImportedFacility
+              />
               {facilityDuplicateReview.existingFacilities.map((facility) => (
                 <FacilityDuplicateTile
                   key={facility.referenceId}
                   facility={facility}
                   importedFacility={facilityDuplicateReview.importedFacility}
                   isImportedFacility={false}
-                ></FacilityDuplicateTile>
+                />
               ))}
             </Stack>
           </RadioGroup>
@@ -101,10 +101,10 @@ function ReviewFacilityDuplicateSidebar({
           right={
             <Button
               component="a"
-              onClick={handleSubmit}
               variant="solid"
               color="primary"
               sx={{ alignSelf: "end" }}
+              onClick={handleSubmit}
             >
               Bestätigen
             </Button>

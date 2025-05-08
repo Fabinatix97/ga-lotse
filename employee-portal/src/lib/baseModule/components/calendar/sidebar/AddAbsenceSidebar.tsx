@@ -59,7 +59,7 @@ function AddAbsenceSidebar({
 
   return (
     <EventForm onSubmit={(values) => saveEvent(values)}>
-      <SidebarContent title={"Neue Abwesenheit"}>
+      <SidebarContent title="Neue Abwesenheit">
         <EventFormInputs />
       </SidebarContent>
       <SidebarActions>

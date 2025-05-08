@@ -12,7 +12,6 @@ import de.eshg.lib.xlsximport.util.FileResponseUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.importer.ImportService;
 import de.eshg.schoolentry.importer.ImportType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,7 +49,7 @@ public class ImportController {
   private final Resource citizenListTemplate;
   private final Resource schoolListTemplate;
   private final Resource pastProcedureListTemplate;
-  private final SchoolEntryProperties schoolEntryProperties;
+  private final SchoolEntryConfigService schoolEntryConfigService;
   private final Validator validator;
   private final Clock clock;
   private final SchoolEntryFeatureToggle featureToggle;
@@ -61,7 +60,7 @@ public class ImportController {
       @Value("classpath:templates/import/SchoolListTemplate.xlsx") Resource schoolListTemplate,
       @Value("classpath:templates/import/PastProcedureListTemplate.xlsx")
           Resource pastProcedureListTemplate,
-      SchoolEntryProperties schoolEntryProperties,
+      SchoolEntryConfigService schoolEntryConfigService,
       Validator validator,
       Clock clock,
       SchoolEntryFeatureToggle featureToggle) {
@@ -69,7 +68,7 @@ public class ImportController {
     this.citizenListTemplate = citizenListTemplate;
     this.schoolListTemplate = schoolListTemplate;
     this.pastProcedureListTemplate = pastProcedureListTemplate;
-    this.schoolEntryProperties = schoolEntryProperties;
+    this.schoolEntryConfigService = schoolEntryConfigService;
     this.validator = validator;
     this.clock = clock;
     this.featureToggle = featureToggle;
@@ -86,7 +85,7 @@ public class ImportController {
       @RequestPart("file") MultipartFile file)
       throws IOException {
 
-    if (schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport()) {
+    if (schoolEntryConfigService.isDirectProcedureTypeAssignmentOnImport()) {
       throw new BadRequestException(
           "Citizen list import is not allowed when direct procedure type assignment is enabled.");
     }

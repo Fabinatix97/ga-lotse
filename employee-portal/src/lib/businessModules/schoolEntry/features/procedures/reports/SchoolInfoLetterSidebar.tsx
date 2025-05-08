@@ -8,17 +8,17 @@ import { Formik } from "formik";
 
 import {
   ButtonBar,
-  CheckboxField,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarWithFormRefProps,
-  TextareaField,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiCreateSchoolInfoLetterRequest } from "@eshg/school-entry-api";
@@ -63,66 +63,62 @@ function SchoolInfoLetterSidebar(props: SchoolInfoLetterSidebarProps) {
   }
 
   return (
-    <>
-      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        {({ handleSubmit, isSubmitting }) => (
-          <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
-            <SidebarContent title="Schulinfobrief erstellen">
-              <Stack gap={2}>
-                <TextareaField
-                  name="note"
-                  label="Bemerkung"
-                  minRows={15}
-                  sxTextarea={{ maxHeight: 450 }}
-                />
-                <CheckboxField
-                  name="consultationWithCustodianRecommended"
-                  label="Rücksprache mit den PSB empfohlen"
-                />
-                <CheckboxField
-                  name="meetingBetweenYouthHealthServicesAndSchoolManagementRecommended"
-                  label="Besprechung Kinder- und Jugendgesundheitsdienst mit Schulleitung"
-                />
-                <Divider />
-                <Typography level="h2">Elternwunsch</Typography>
-                <TextareaField
-                  name="parentsWishNote"
-                  label="Bemerkung"
-                  minRows={8}
-                  sxTextarea={{ maxHeight: 200 }}
-                />
-                <CheckboxField
-                  name="referredToFurtherConsultationFromSchool"
-                  label="auf weitere Beratung der Schule verwiesen"
-                />
-                <CheckboxField
-                  name="prefilled"
-                  label="Mit Ergebnissen aus der Anamnese und der Untersuchung vorausgefüllt"
-                />
-              </Stack>
-            </SidebarContent>
-            <SidebarActions>
-              <ButtonBar
-                left={
-                  <Button
-                    variant="plain"
-                    color="primary"
-                    onClick={() => props.onClose()}
-                  >
-                    Abbrechen
-                  </Button>
-                }
-                right={
-                  <SubmitButton submitting={isSubmitting}>
-                    Erstellen
-                  </SubmitButton>
-                }
+    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+      {({ handleSubmit, isSubmitting }) => (
+        <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
+          <SidebarContent title="Schulinfobrief erstellen">
+            <Stack gap={2}>
+              <TextareaField
+                name="note"
+                label="Bemerkung"
+                minRows={15}
+                sxTextarea={{ maxHeight: 450 }}
               />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </>
+              <CheckboxField
+                name="consultationWithCustodianRecommended"
+                label="Rücksprache mit den PSB empfohlen"
+              />
+              <CheckboxField
+                name="meetingBetweenYouthHealthServicesAndSchoolManagementRecommended"
+                label="Besprechung Kinder- und Jugendgesundheitsdienst mit Schulleitung"
+              />
+              <Divider />
+              <Typography level="h2">Elternwunsch</Typography>
+              <TextareaField
+                name="parentsWishNote"
+                label="Bemerkung"
+                minRows={8}
+                sxTextarea={{ maxHeight: 200 }}
+              />
+              <CheckboxField
+                name="referredToFurtherConsultationFromSchool"
+                label="auf weitere Beratung der Schule verwiesen"
+              />
+              <CheckboxField
+                name="prefilled"
+                label="Mit Ergebnissen aus der Anamnese und der Untersuchung vorausgefüllt"
+              />
+            </Stack>
+          </SidebarContent>
+          <SidebarActions>
+            <ButtonBar
+              left={
+                <Button
+                  variant="plain"
+                  color="primary"
+                  onClick={() => props.onClose()}
+                >
+                  Abbrechen
+                </Button>
+              }
+              right={
+                <SubmitButton submitting={isSubmitting}>Erstellen</SubmitButton>
+              }
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 

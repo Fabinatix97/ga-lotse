@@ -13,14 +13,14 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { ChatInputField } from "@/lib/businessModules/chat/components/ChatInputField";
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
-import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/InputComponent";
+import { TextareaComponent } from "@/lib/businessModules/chat/components/chatPanel/TextareaComponent";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import { delayed } from "@/lib/businessModules/chat/shared/utils";
 
-export interface DirectChatFormValues {
+interface DirectChatFormValues {
   invite: string[];
   chatName: string;
   message: string;
@@ -82,8 +82,8 @@ export function NewGroupChat({
     <Box sx={{ height: "100%" }}>
       <Formik<DirectChatFormValues>
         initialValues={{ invite: [], chatName: "", message: "" }}
-        onSubmit={handleStartGroupChat}
         validate={validateGroupForm}
+        onSubmit={handleStartGroupChat}
       >
         {({ values }) => (
           <FormPlus
@@ -122,7 +122,7 @@ export function NewGroupChat({
                 name="invite"
                 placeholder="Empfänger:in auswählen"
                 usersList={userList ?? []}
-                multiple={true}
+                multiple
               />
               <ChatInputField
                 type="text"
@@ -160,7 +160,7 @@ export function NewGroupChat({
                 </Stack>
               )}
             </Box>
-            <InputComponent
+            <TextareaComponent
               name="message"
               selectFieldName="mentionedUsers"
               roomMembers={[]}

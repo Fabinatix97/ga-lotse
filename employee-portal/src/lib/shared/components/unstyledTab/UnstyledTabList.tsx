@@ -32,9 +32,9 @@ export function UnstyledTabList<T extends TabProps["value"]>({
     >
       {tabListItems.map((tabListItem) => (
         <UnstyledTab<T>
+          key={tabListItem.value}
           id={`${tabListItem.value}-Tab`}
           value={tabListItem.value}
-          key={tabListItem.value}
         >
           {tabListItem.component}
         </UnstyledTab>

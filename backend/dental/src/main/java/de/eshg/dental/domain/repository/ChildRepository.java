@@ -61,8 +61,8 @@ public interface ChildRepository extends ProcedureRepository<Child> {
           """
         select
           institution_id as institutionId,
-          count(*) as totalGroups,
-          sum(case when totalChildren = completedChildren then 1 else 0 end) as completedGroups
+          count(*) as totalCount,
+          sum(case when totalChildren = completedChildren then 1 else 0 end) as completedCount
         from
           (
           select
@@ -80,14 +80,30 @@ public interface ChildRepository extends ProcedureRepository<Child> {
         group by
             institution_id
       """)
-  List<InstitutionGroupCounts> getInstitutionsAndCompletedGroups(
-      @Param("schoolYear") Year schoolYear);
+  List<InstitutionCounts> getInstitutionsAndCompletedGroups(@Param("schoolYear") Year schoolYear);
 
-  interface InstitutionGroupCounts {
+  @Query(
+      nativeQuery = true,
+      value =
+          """
+          select
+              institution_id as institutionId,
+              count(*) as totalCount,
+              sum(case when c.procedure_status = 'CLOSED' then 1 else 0 end) as completedCount
+          from
+              Child c
+          where
+              c.year = :schoolYear
+          group by
+              institution_id
+      """)
+  List<InstitutionCounts> getInstitutionsAndCompletedChildren(@Param("schoolYear") Year schoolYear);
+
+  interface InstitutionCounts {
     UUID getInstitutionId();
 
-    int getTotalGroups();
+    int getTotalCount();
 
-    int getCompletedGroups();
+    int getCompletedCount();
   }
 }

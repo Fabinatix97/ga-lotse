@@ -10,8 +10,7 @@ import { StepIndicatorProps } from "@mui/joy/StepIndicator/StepIndicatorProps";
 import { createElement } from "react";
 
 import { ApiHistoryEntryType } from "@eshg/base-api";
-
-import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
+import { TimelineEntryIndicator } from "@eshg/lib-employee-portal";
 
 const iconByType = {
   ADD: AddIcon,

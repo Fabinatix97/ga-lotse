@@ -44,7 +44,7 @@ export function useIcd10Sidebar(): UseSidebarResult<Icd10SidebarProps> {
   });
 }
 
-export interface Icd10SidebarProps extends DrawerProps {
+interface Icd10SidebarProps extends DrawerProps {
   onSubmit: (
     selectedCodes: ApiIcd10Code[],
   ) => Promise<void | FormikErrors<DiagnosisFormData>>;
@@ -67,7 +67,7 @@ function StyledTd({
   sx?: SxProps;
 }) {
   return (
-    <Box component={"td"} {...props}>
+    <Box component="td" {...props}>
       {children}
     </Box>
   );
@@ -136,7 +136,6 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
             <FormLabel>Suche</FormLabel>
             <Input
               value={searchString}
-              onChange={handleChangeSearchInput}
               startDecorator={<SearchOutlined />}
               endDecorator={
                 searchString.length > 0 && (
@@ -148,11 +147,11 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                   </IconButton>
                 )
               }
+              onChange={handleChangeSearchInput}
             />
           </FormControl>
           <Button
             variant="plain"
-            onClick={() => setSearchString("")}
             sx={{
               width: "fit-content",
               "&.Mui-disabled": {
@@ -160,6 +159,7 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
               },
             }}
             disabled={!searchString}
+            onClick={() => setSearchString("")}
           >
             {`${selectedCodes.length} Befunde ausgewählt`}
           </Button>
@@ -217,13 +217,13 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
           right={[
             <Button
               key="cancel"
-              onClick={() => props.onClose()}
               color="neutral"
               variant="soft"
+              onClick={() => props.onClose()}
             >
               Abbrechen
             </Button>,
-            <Button key="submit" onClick={handleSubmit} color="primary">
+            <Button key="submit" color="primary" onClick={handleSubmit}>
               Übernehmen
             </Button>,
           ]}

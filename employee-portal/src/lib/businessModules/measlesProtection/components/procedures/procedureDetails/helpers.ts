@@ -148,9 +148,9 @@ export function mapAdditionalInfoFormToApi(
   };
 }
 
-export type PersonType = "AffectedPerson" | "Custodian";
+type PersonType = "AffectedPerson" | "Custodian";
 
-export interface DisplayPerson {
+interface DisplayPerson {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
@@ -253,9 +253,9 @@ export function mapDefaultFacilityFormValuesToApiPutFacilityRequest(
         : undefined,
       contactPersons: facility.contactPersons?.map((person) => ({
         ...person,
-        firstName: person.firstName,
-        emailAddress: person.emailAddress,
-        phoneNumber: person.phoneNumber,
+        firstName: mapOptionalValue(person.firstName),
+        emailAddress: mapOptionalValue(person.emailAddress),
+        phoneNumber: mapOptionalValue(person.phoneNumber),
         salutation: mapOptionalValue(person.salutation),
         title: mapOptionalValue(person.title),
         role: mapOptionalValue(person.role),

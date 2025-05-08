@@ -22,13 +22,9 @@ import {
   AddressUnion,
   TypedDifferingFields,
   baseAddressDiffFieldNames,
-} from "@/features/persons/components/personSync/DifferingFields";
-import { SyncFormField } from "@/features/persons/components/personSync/SyncFormField";
-import {
-  DiffArrow,
-  SyncFormBlock,
-  SyncFormSection,
-} from "@/features/persons/components/personSync/SyncFormGrid";
+} from "../DifferingFields";
+import { SyncFormField } from "../SyncFormField";
+import { DiffArrow, SyncFormBlock, SyncFormSection } from "../SyncFormGrid";
 
 import { SyncBaseAddressSection } from "./SyncBaseAddressSection";
 import { SyncListSection } from "./SyncListSection";
@@ -102,7 +98,7 @@ export function BaseFacilityDiffForm({
         <SyncFormSection>
           <SyncFormBlock>
             <SyncFormField
-              label={"Name"}
+              label="Name"
               value={facilityDetailsDiff.fileState?.name}
               visible={changedFacilityDetailsFields.includes("name")}
             />
@@ -110,7 +106,7 @@ export function BaseFacilityDiffForm({
           <DiffArrow />
           <SyncFormBlock>
             <SyncFormField
-              label={"Name"}
+              label="Name"
               value={facilityDetailsDiff.reference?.name}
               visible={changedFacilityDetailsFields.includes("name")}
             />
@@ -149,12 +145,12 @@ export function BaseFacilityDiffForm({
           <ContactPersonDetailsBlock
             contactPerson={p.facilityContactPersonDtoDiffDto.fileState}
             changedFields={p.facilityContactPersonDtoDiffDto.differingFields}
-          ></ContactPersonDetailsBlock>
+          />
           <DiffArrow />
           <ContactPersonDetailsBlock
             contactPerson={p.facilityContactPersonDtoDiffDto.reference}
             changedFields={p.facilityContactPersonDtoDiffDto.differingFields}
-          ></ContactPersonDetailsBlock>
+          />
         </SyncFormSection>
       ))}
     </>
@@ -191,7 +187,7 @@ function ContactPersonDetailsBlock({
       )}
       {changedFields.includes("role") && (
         <SyncFormField
-          label={"Rolle"}
+          label="Rolle"
           value={contactPerson?.role}
           visible={changedFields.includes("role")}
         />

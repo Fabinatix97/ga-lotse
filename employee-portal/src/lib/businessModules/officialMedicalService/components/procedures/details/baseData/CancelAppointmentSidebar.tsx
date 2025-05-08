@@ -50,11 +50,11 @@ function CancelAppointmentSidebar(
 
   return (
     <CancelAppointmentForm
-      title={"Terminbuchung absagen"}
-      onSubmit={handleSubmit}
-      onCancel={props.onClose}
+      title="Terminbuchung absagen"
       formRef={props.formRef}
       submitLabel="Termin absagen"
+      onSubmit={handleSubmit}
+      onCancel={props.onClose}
     />
   );
 }

@@ -8,23 +8,28 @@ package de.eshg.dental;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.ChildDto;
 import de.eshg.dental.api.ChildFilterParameters;
+import de.eshg.dental.api.ChildForTransitionDto;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
+import de.eshg.dental.api.ChildrenForTransitionSortParameters;
 import de.eshg.dental.api.CloseChildrenBulkRequest;
 import de.eshg.dental.api.CloseGroupsBulkRequest;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.CreateChildResponse;
 import de.eshg.dental.api.ExaminationDto;
+import de.eshg.dental.api.GetChildrenForSchoolYearTransitionResponse;
 import de.eshg.dental.api.GetChildrenResponse;
 import de.eshg.dental.api.GetChildrenWithDetailsResponse;
 import de.eshg.dental.api.GetGroupsForSchoolYearTransitionResponse;
 import de.eshg.dental.api.GetInstitutionGroupsResponse;
 import de.eshg.dental.api.GetSchoolYearTransitionResponse;
 import de.eshg.dental.api.GroupForTransitionDto;
+import de.eshg.dental.api.PromoteBulkResponse;
+import de.eshg.dental.api.PromoteChildrenBulkRequest;
+import de.eshg.dental.api.PromoteGroupsBulkRequest;
 import de.eshg.dental.api.SchoolYearTransitionFilterParameters;
 import de.eshg.dental.api.SchoolYearTransitionPaginationAndSortParameters;
 import de.eshg.dental.api.SchoolYearTransitionSearchParameters;
@@ -41,6 +46,7 @@ import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.mapper.ChildMapper;
 import de.eshg.dental.mapper.ExaminationMapper;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
@@ -61,6 +67,8 @@ import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,23 +87,26 @@ public class ChildController {
   private final ExaminationService examinationService;
   private final Clock clock;
   private final Validator validator;
+  private final Resource childListTemplate;
 
   public ChildController(
       ChildService childService,
       ExaminationService examinationService,
       Clock clock,
-      Validator validator) {
+      Validator validator,
+      @Value("classpath:templates/import/ChildListTemplate.xlsx") Resource childListTemplate) {
     this.childService = childService;
     this.examinationService = examinationService;
     this.clock = clock;
     this.validator = validator;
+    this.childListTemplate = childListTemplate;
   }
 
   @PostMapping
   @Transactional
   @Operation(summary = "Creates a procedure for a child")
   public CreateChildResponse createChild(@Valid @RequestBody CreateChildRequest request) {
-    validator.validateInstitution(request.institutionId());
+    validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
 
     childService.validateNoDuplicateExistsAndClosePreviousChildren(request);
     Child child = childService.createChild(request);
@@ -175,7 +186,7 @@ public class ChildController {
     Child child = childService.findByExternalIdForUpdate(childId);
 
     ProcedureValidator.validateProcedureStatusNotClosed(child);
-    validator.validateInstitution(request.institutionId());
+    validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
     validator.validateFluoridationConsent(request.fluoridationConsent());
     childService.updateChildData(child, request);
     return getChildDetails(child);
@@ -236,6 +247,14 @@ public class ChildController {
     return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
   }
 
+  @GetMapping(
+      path = "/import/templates/child-list",
+      produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
+  @Operation(summary = "Get the XLSX child list template.")
+  public ResponseEntity<Resource> getChildListTemplate() {
+    return FileResponseUtil.getTemplateFileResponse(childListTemplate);
+  }
+
   @GetMapping("/institutions/{institutionId}/groups")
   @Transactional(readOnly = true)
   @Operation(summary = "Returns all created groups of an institution")
@@ -264,7 +283,24 @@ public class ChildController {
   @PostMapping("/school-year-transition/close-children")
   @Transactional
   public void closeChildrenInBulk(@Valid @RequestBody CloseChildrenBulkRequest request) {
-    childService.closeChildrenInBulk(request.childIds());
+    childService.closeChildrenInBulk(request.childIds(), false);
+  }
+
+  @PostMapping("/school-year-transition/promote-groups")
+  @Transactional
+  public PromoteBulkResponse promoteGroupsInBulk(
+      @Valid @RequestBody PromoteGroupsBulkRequest request) {
+    List<UUID> childIds =
+        childService.promoteGroupsInBulk(request.institutionId(), request.groupPromotions());
+    return new PromoteBulkResponse(childIds);
+  }
+
+  @PostMapping("/school-year-transition/promote-children")
+  @Transactional
+  public PromoteBulkResponse promoteChildrenInBulk(
+      @Valid @RequestBody PromoteChildrenBulkRequest request) {
+    List<UUID> childIds = childService.promoteChildrenInBulk(request.childIds());
+    return new PromoteBulkResponse(childIds);
   }
 
   @GetMapping("/schools-for-transition")
@@ -277,11 +313,24 @@ public class ChildController {
       @InlineParameterObject @ParameterObject @Valid
           SchoolYearTransitionSearchParameters searchParameters) {
     PagedInstitutionsForTransition pagedInstitutions =
-        childService.searchInstitutionsForSchoolYearTransition(
-            InstitutionContactCategoryDto.SCHOOL,
-            paginationAndSortParameters,
-            filterParameters,
-            searchParameters);
+        childService.searchSchoolsForSchoolYearTransition(
+            paginationAndSortParameters, filterParameters, searchParameters);
+    return new GetSchoolYearTransitionResponse(
+        pagedInstitutions.institutions(), pagedInstitutions.totalNumberOfInstitutions());
+  }
+
+  @GetMapping("/daycares-for-transition")
+  @Transactional(readOnly = true)
+  public GetSchoolYearTransitionResponse getDaycaresForSchoolYearTransition(
+      @InlineParameterObject @ParameterObject @Valid
+          SchoolYearTransitionPaginationAndSortParameters paginationAndSortParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          SchoolYearTransitionFilterParameters filterParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          SchoolYearTransitionSearchParameters searchParameters) {
+    PagedInstitutionsForTransition pagedInstitutions =
+        childService.searchDaycaresForSchoolYearTransition(
+            paginationAndSortParameters, filterParameters, searchParameters);
     return new GetSchoolYearTransitionResponse(
         pagedInstitutions.institutions(), pagedInstitutions.totalNumberOfInstitutions());
   }
@@ -293,5 +342,16 @@ public class ChildController {
     List<GroupForTransitionDto> groups =
         childService.getGroupsForSchoolYearTransition(institutionId);
     return new GetGroupsForSchoolYearTransitionResponse(groups);
+  }
+
+  @GetMapping("/children-for-transition/{institutionId}")
+  @Transactional(readOnly = true)
+  public GetChildrenForSchoolYearTransitionResponse getChildrenForSchoolYearTransition(
+      @PathVariable("institutionId") UUID institutionId,
+      @InlineParameterObject @ParameterObject @Valid
+          ChildrenForTransitionSortParameters sortParameters) {
+    List<ChildForTransitionDto> children =
+        childService.getChildrenForSchoolYearTransition(institutionId, sortParameters);
+    return new GetChildrenForSchoolYearTransitionResponse(children);
   }
 }

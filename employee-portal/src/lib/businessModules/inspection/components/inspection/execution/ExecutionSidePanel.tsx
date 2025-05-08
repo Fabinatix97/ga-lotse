@@ -23,7 +23,11 @@ import {
   ApiInspection,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
-import { DetailsItem, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  useConfirmationDialog,
+  useIsOffline,
+} from "@eshg/lib-employee-portal";
 import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
@@ -37,7 +41,6 @@ import {
 import { useChecklistValidateContext } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 interface ExecutionSidePanelProps {
   tabs: SidePanelNavigationTab[];
@@ -158,21 +161,21 @@ export function ExecutionSidePanel({
       <SidePanelNavigation
         tabs={tabs}
         activeTabId={activeTabId}
+        readOnly={readOnly || isOffline}
         onActiveTabChange={onActiveTabChange}
         onDeleteClick={onDeleteClick}
-        readOnly={readOnly || isOffline}
       />
 
       <Divider sx={{ marginY: 1 }} />
 
       <DetailsItem
-        label={"Durchführung durch"}
+        label="Durchführung durch"
         value={
           (inspection?.executedAppointment?.assignedTo && (
             <UserLink user={inspection?.executedAppointment?.assignedTo} />
           )) ?? (
             <Typography
-              data-testid={`user.value`}
+              data-testid="user.value"
               component="i"
               color="neutral"
               level="title-md"
@@ -189,9 +192,9 @@ export function ExecutionSidePanel({
         value={
           <Grid container alignItems="center">
             <Typography
-              role={"paragraph"}
-              component={"p"}
-              data-testid={`date.value`}
+              role="paragraph"
+              component="p"
+              data-testid="date.value"
               level="title-md"
               sx={{
                 width: undefined,
@@ -203,17 +206,17 @@ export function ExecutionSidePanel({
             </Typography>
             {!readOnly && (
               <IconButton
-                aria-label={`Termin ändern`}
+                aria-label="Termin ändern"
                 color="primary"
-                onClick={() => setApprovalSidebarOpen(true)}
                 sx={{ p: 0, ml: 1, minHeight: 0 }}
+                onClick={() => setApprovalSidebarOpen(true)}
               >
                 <EditIcon />
               </IconButton>
             )}
           </Grid>
         }
-      ></DetailsItem>
+      />
 
       {!readOnly && (
         <>
@@ -234,19 +237,19 @@ export function ExecutionSidePanel({
 
       {approvalSidebarOpen && (
         <AppointmentSidebar
-          open={true}
-          onClose={() => setApprovalSidebarOpen(false)}
+          open
           procedureId={inspection.externalId}
           appointment={inspection.executedAppointment}
-          forExecution={true}
+          forExecution
+          onClose={() => setApprovalSidebarOpen(false)}
         />
       )}
 
       {approveModalOpen && (
         <FinalizeInspectionModal
-          open={true}
-          onClose={() => setApproveModalOpen(false)}
+          open
           inspectionId={inspection.externalId}
+          onClose={() => setApproveModalOpen(false)}
         />
       )}
     </Sheet>

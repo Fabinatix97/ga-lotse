@@ -28,7 +28,7 @@ import {
   retryOperation,
 } from "@/lib/businessModules/chat/shared/utils";
 
-export const MEGOLM_ENCRYPTION_ALGORITHM = "m.megolm.v1.aes-sha2";
+const MEGOLM_ENCRYPTION_ALGORITHM = "m.megolm.v1.aes-sha2";
 
 export function useCreateNewChat() {
   const { matrixClient } = useChatClientContext();

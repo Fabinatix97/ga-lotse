@@ -28,7 +28,7 @@ import { resourceTypeNames } from "@/lib/baseModule/components/resources/constan
 import { useDeleteResource } from "@/lib/businessModules/inspection/api/mutations/resources";
 import { formatDateTimeRange } from "@/lib/shared/helpers/dateTime";
 
-export interface ResourcesTableProps {
+interface ResourcesTableProps {
   readonly?: boolean;
   data: ApiInspectionResource[];
   procedureId: string;

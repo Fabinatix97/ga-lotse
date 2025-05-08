@@ -25,9 +25,7 @@ interface StepContextProps {
   goBack: (numOfPages?: number) => void;
   currentNode?: ReactElement;
 }
-export const TravelMedicineStepContext = createContext<StepContextProps | null>(
-  null,
-);
+const TravelMedicineStepContext = createContext<StepContextProps | null>(null);
 
 interface StepContextProviderProps {
   steps: ReactElement[];

@@ -102,7 +102,7 @@ export function PatientPanel({
 
   return (
     <>
-      <InformationSheet data-testid={"patient"}>
+      <InformationSheet data-testid="patient">
         <DetailsSection
           data-testid="patient-card-tile"
           title="Patient"
@@ -140,13 +140,13 @@ export function PatientPanel({
           <PersonSidebar
             open={open}
             mode={PersonSidebarMode.editInCentralFile}
-            personFormTitle={"Patient bearbeiten"}
+            personFormTitle="Patient bearbeiten"
             config={TRAVEL_MEDICINE_EDIT_PERSON_CONFIG}
             person={mapToPersonFormData(patient)}
+            showPostalAddress
+            skipInitialAppointmentSelection
             onClose={handleClose}
             onSubmit={handleOnSubmit}
-            showPostalAddress={true}
-            skipInitialAppointmentSelection={true}
           />
         )}
       </OverlayBoundary>

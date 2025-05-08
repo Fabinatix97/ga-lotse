@@ -40,13 +40,13 @@ function EditReferenceFacilitySidebar(
   return (
     <FacilityForm
       title="Einrichtung bearbeiten"
-      onSubmit={handleSubmit}
-      onCancel={() => props.onClose()}
       sidebarFormRef={props.formRef}
       initialValues={mapReferenceFacilityToForm(props.facility)}
       addressOptional
       mode="edit"
       submitLabel="Speichern"
+      onSubmit={handleSubmit}
+      onCancel={() => props.onClose()}
     />
   );
 }

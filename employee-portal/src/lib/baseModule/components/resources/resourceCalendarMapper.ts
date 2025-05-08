@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EventInput } from "@fullcalendar/core/index.js";
+import { EventInput } from "@fullcalendar/core";
 import { eachDayOfInterval, isAfter, isSameDay, max, min } from "date-fns";
 
 import {
@@ -30,7 +30,7 @@ const colors = {
   service: theme.palette.warning[400],
 };
 
-export type ResourceEvent = Pick<
+type ResourceEvent = Pick<
   EventInput,
   "display" | "backgroundColor" | "allDay"
 > & {

@@ -78,7 +78,7 @@ export function EditAccessRestrictionSidebar({
   );
 }
 
-export function EditAccessRestrictionSidebarForm({
+function EditAccessRestrictionSidebarForm({
   accessRestriction,
 }: {
   accessRestriction: ApiAccessRestriction;
@@ -110,7 +110,7 @@ export function EditAccessRestrictionSidebarForm({
   return (
     <Sidebar open={open} onClose={() => setOpen(false)}>
       <SidebarForm onSubmit={handleRawSubmit}>
-        <SidebarContent title={"Betretungsverbot bearbeiten"}>
+        <SidebarContent title="Betretungsverbot bearbeiten">
           <Stack gap={3}>
             <DetailsItem
               label={fields.restrictionIssuedDate.label}
@@ -122,14 +122,14 @@ export function EditAccessRestrictionSidebarForm({
             />
             <Divider />
             <DateAndButtonRow
-              onButtonClick={() =>
-                setFieldValue("restrictionTerminationDate", today)
-              }
               buttonLabel={DateLabels.Today}
               name="restrictionTerminationDate"
               label={fields.restrictionTerminationDate.label}
               validate={validateDateString}
-            ></DateAndButtonRow>
+              onButtonClick={() =>
+                setFieldValue("restrictionTerminationDate", today)
+              }
+            />
           </Stack>
         </SidebarContent>
         <SidebarActions>

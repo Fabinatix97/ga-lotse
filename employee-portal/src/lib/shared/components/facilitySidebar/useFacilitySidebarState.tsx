@@ -12,7 +12,7 @@ import { FacilitySidebarProps } from "@/lib/shared/components/facilitySidebar/Fa
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 
-export type FacilitySidebarStage =
+type FacilitySidebarStage =
   | "loading"
   | "display"
   | "create"
@@ -20,7 +20,7 @@ export type FacilitySidebarStage =
   | "search"
   | "search_results";
 
-export interface FacilitySidebarState<TSearchValues> {
+interface FacilitySidebarState<TSearchValues> {
   stage: FacilitySidebarStage;
   createState?: DefaultFacilityFormValues;
   searchState: TSearchValues;
@@ -32,7 +32,7 @@ export interface FacilitySidebarState<TSearchValues> {
   backEnabled: boolean;
 }
 
-export type FacilitySidebarStateAction<TSearchValues> =
+type FacilitySidebarStateAction<TSearchValues> =
   | {
       type: "SEARCH_SUCCESS";
       results: ApiGetReferenceFacilityResponse[];
@@ -56,9 +56,9 @@ export type FacilitySidebarStateAction<TSearchValues> =
       createState?: DefaultFacilityFormValues;
     };
 
-export function defaultModeTransitions<
-  TSearchValues extends FacilitySearchFormValues,
->(initialSearchValues: TSearchValues) {
+function defaultModeTransitions<TSearchValues extends FacilitySearchFormValues>(
+  initialSearchValues: TSearchValues,
+) {
   function getInitialState(): FacilitySidebarState<TSearchValues> {
     return {
       stage: "search",
@@ -138,9 +138,9 @@ export function defaultModeTransitions<
   };
 }
 
-export function importModeTransitions<
-  TSearchValues extends FacilitySearchFormValues,
->(initialSearchValues: TSearchValues) {
+function importModeTransitions<TSearchValues extends FacilitySearchFormValues>(
+  initialSearchValues: TSearchValues,
+) {
   const {
     transition: defaultTransitions,
     getInitialState: defaultGetInitialState,

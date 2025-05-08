@@ -22,7 +22,7 @@ export function EmailSection({
       <ExternalLinkDetailsCell
         key={[emailAddress, index].join("-")}
         name={`emailAddresses.${index}`}
-        label={"E-Mail-Adresse"}
+        label="E-Mail-Adresse"
         value={emailAddress}
         href={emailHref}
       />

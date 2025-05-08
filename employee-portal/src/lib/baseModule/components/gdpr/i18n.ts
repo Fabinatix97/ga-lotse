@@ -20,7 +20,7 @@ export const typeTranslation = {
   RIGHT_TO_OBJECT: "Widerspruch",
 } as const satisfies Record<ApiGdprProcedureType, string>;
 
-export const gdprProcedureTypeToGdprArticle = {
+const gdprProcedureTypeToGdprArticle = {
   RIGHT_OF_ACCESS: `Art. 15 DSGVO`,
   RIGHT_TO_RECTIFICATION: `Art. 16 DSGVO`,
   RIGHT_TO_ERASURE: `Art. 17 DSGVO`,

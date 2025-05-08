@@ -59,7 +59,6 @@ export function FileSheet({
           <IconButton
             aria-label={removeLabel}
             color="danger"
-            onClick={() => onRemove()}
             sx={{
               minHeight: "24px",
               minWidth: "24px",
@@ -67,6 +66,7 @@ export function FileSheet({
               gridArea: "deleteButton",
               alignSelf: "start",
             }}
+            onClick={() => onRemove()}
           >
             <DeleteOutlined />
           </IconButton>

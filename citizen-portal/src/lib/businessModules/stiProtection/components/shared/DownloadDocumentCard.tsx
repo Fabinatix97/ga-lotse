@@ -13,7 +13,7 @@ import { FieldInputProps } from "formik";
 
 import { Row } from "@eshg/lib-portal/components/Row";
 
-export interface DownloadDocumentCardProps {
+interface DownloadDocumentCardProps {
   documentTitle: string;
   downloadLabel: string;
   downloadedLabel: string;

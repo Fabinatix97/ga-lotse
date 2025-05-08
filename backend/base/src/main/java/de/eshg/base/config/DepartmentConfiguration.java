@@ -35,6 +35,9 @@ public class DepartmentConfiguration extends BaseEntity {
   private Document municipalityDirectory;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean accessibilityStatementMarkdownsInitialized = true;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false)
   private MultiLangDocument citizenPortalAccessibilityStatementMarkdown;
@@ -45,9 +48,15 @@ public class DepartmentConfiguration extends BaseEntity {
   private MultiLangDocument employeePortalAccessibilityStatementMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean acknowledgementsMarkdownsInitialized = true;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false)
   private MultiLangDocument acknowledgementsMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean contactMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
@@ -55,9 +64,15 @@ public class DepartmentConfiguration extends BaseEntity {
   private MultiLangDocument contactMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean imprintMarkdownsInitialized = true;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JoinColumn(nullable = false)
   private MultiLangDocument imprintMarkdown;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean privacyPolicyMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
@@ -149,5 +164,47 @@ public class DepartmentConfiguration extends BaseEntity {
 
   public void setEmployeePortalPrivacyPolicyMarkdown(MultiLangDocument markdownEmployeePrivacy) {
     this.employeePortalPrivacyPolicyMarkdown = markdownEmployeePrivacy;
+  }
+
+  public boolean isAccessibilityStatementMarkdownsInitialized() {
+    return accessibilityStatementMarkdownsInitialized;
+  }
+
+  public void setAccessibilityStatementMarkdownsInitialized(
+      boolean accessibilityStatementMarkdownsInitialized) {
+    this.accessibilityStatementMarkdownsInitialized = accessibilityStatementMarkdownsInitialized;
+  }
+
+  public boolean isAcknowledgementsMarkdownsInitialized() {
+    return acknowledgementsMarkdownsInitialized;
+  }
+
+  public void setAcknowledgementsMarkdownsInitialized(
+      boolean acknowledgementsMarkdownsInitialized) {
+    this.acknowledgementsMarkdownsInitialized = acknowledgementsMarkdownsInitialized;
+  }
+
+  public boolean isContactMarkdownsInitialized() {
+    return contactMarkdownsInitialized;
+  }
+
+  public void setContactMarkdownsInitialized(boolean contactMarkdownsInitialized) {
+    this.contactMarkdownsInitialized = contactMarkdownsInitialized;
+  }
+
+  public boolean isImprintMarkdownsInitialized() {
+    return imprintMarkdownsInitialized;
+  }
+
+  public void setImprintMarkdownsInitialized(boolean imprintMarkdownsInitialized) {
+    this.imprintMarkdownsInitialized = imprintMarkdownsInitialized;
+  }
+
+  public boolean isPrivacyPolicyMarkdownsInitialized() {
+    return privacyPolicyMarkdownsInitialized;
+  }
+
+  public void setPrivacyPolicyMarkdownsInitialized(boolean privacyPolicyMarkdownsInitialized) {
+    this.privacyPolicyMarkdownsInitialized = privacyPolicyMarkdownsInitialized;
   }
 }

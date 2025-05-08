@@ -19,10 +19,6 @@ export function useGetRapidTestExaminationQueryOptions(procedureId: string) {
   });
 }
 
-export function useGetRapidTestExaminationQuery(procedureId: string) {
-  return useSuspenseQuery(useGetRapidTestExaminationQueryOptions(procedureId));
-}
-
 function useGetLaboratoryTestExaminationQueryOptions(procedureId: string) {
   const examinationApi = useExaminationApi();
 

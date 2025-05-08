@@ -57,7 +57,7 @@ export function AddAppointmentSidebar({ id }: { id: string }) {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      <AppointmentSidebarForm onClose={() => setOpen(false)} isOpen={open} />
+      <AppointmentSidebarForm isOpen={open} onClose={() => setOpen(false)} />
     </Formik>
   );
 }
@@ -93,7 +93,7 @@ export function EditAppointmentSidebar({ id }: { id: string }) {
       initialValues={{ appointment: procedure.appointment ?? null }}
       onSubmit={handleSubmit}
     >
-      <AppointmentSidebarForm onClose={() => setOpen(false)} isOpen={open} />
+      <AppointmentSidebarForm isOpen={open} onClose={() => setOpen(false)} />
     </Formik>
   );
 }
@@ -124,7 +124,7 @@ function AppointmentSidebarForm({
   return (
     <Sidebar open={isOpen} onClose={onClose}>
       <SidebarForm onSubmit={handleRawSubmit}>
-        <SidebarContent title={"Termin wählen"}>
+        <SidebarContent title="Termin wählen">
           <Stack gap={3}>
             <SelectObjectField
               name="appointment"

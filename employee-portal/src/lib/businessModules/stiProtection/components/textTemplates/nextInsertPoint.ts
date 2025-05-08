@@ -6,7 +6,7 @@
 import { isString } from "remeda";
 
 const replacementRegex = /\$(\d|\w|_)*/;
-export interface InsertPoint {
+interface InsertPoint {
   start: number;
   end: number;
 }

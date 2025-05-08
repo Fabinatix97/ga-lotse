@@ -12,10 +12,7 @@ import { ColumnMeta, SortDirection } from "@tanstack/react-table";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import {
-  StyledCellProps,
-  getHeaderCellStyles,
-} from "@/features/table/utils/cellStyles";
+import { StyledCellProps, getHeaderCellStyles } from "../../utils/cellStyles";
 
 const StyledHeaderCell = styled("th")<StyledCellProps>(({ theme, meta }) => ({
   // higher specificity needed to override default style from Joy table
@@ -48,7 +45,6 @@ export function HeaderCell(props: HeaderCellProps) {
           color="neutral"
           textColor={props.isSorted ? "primary.plainColor" : "text.primary"}
           fontWeight="lg"
-          onClick={props.onSort}
           aria-description="Aktivieren zum Sortieren"
           endDecorator={
             props.canSort && (
@@ -67,6 +63,7 @@ export function HeaderCell(props: HeaderCellProps) {
             },
             "&:hover": { "& svg": { opacity: 1 } },
           }}
+          onClick={props.onSort}
         >
           {props.children}
         </ButtonLink>

@@ -48,7 +48,7 @@ const MIN_0 = 0;
 const MIN_1 = 1;
 const MAX_10000 = 10000;
 
-export const FIXED_WIDTH_STYLE: SxProps = { width: "95px" };
+const FIXED_WIDTH_STYLE: SxProps = { width: "95px" };
 
 export interface MeasurementFieldsValues {
   height: OptionalFieldValue<number>;

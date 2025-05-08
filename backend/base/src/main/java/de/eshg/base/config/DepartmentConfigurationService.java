@@ -5,6 +5,13 @@
 
 package de.eshg.base.config;
 
+import static de.eshg.base.config.MarkdownMapper.mapToAccessibilityInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToAcknowledgementInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToContactInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToImprintInfo;
+import static de.eshg.base.config.MarkdownMapper.mapToPrivacyInfo;
+
+import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.config.api.CitizenAndEmployeeMarkdownInfo;
 import de.eshg.base.config.api.InternationalMarkdownInfo;
 import de.eshg.base.department.CitizenPortalMarkdownName;
@@ -20,6 +27,9 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.i18n.Language;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -29,17 +39,21 @@ public class DepartmentConfigurationService
     extends EshgConfigurationService<DepartmentConfiguration> {
 
   private static final String CONFIGURATION_ENDPOINT = "DEPARTMENT_CONFIG";
+  public static final String ACCESSIBILITY_STATEMENT_MARKDOWNS_ENDPOINT =
+      "ACCESSIBILITY_STATEMENT_MARKDOWNS_CONFIG";
+  public static final String ACKNOWLEDGEMENTS_MARKDOWNS_ENDPOINT =
+      "ACKNOWLEDGEMENTS_MARKDOWNS_CONFIG";
+  public static final String CONTACT_MARKDOWNS_ENDPOINT = "CONTACT_MARKDOWNS_CONFIG";
+  public static final String IMPRINT_MARKDOWNS_ENDPOINT = "IMPRINT_MARKDOWNS_CONFIG";
+  public static final String PRIVACY_POLICY_MARKDOWNS_ENDPOINT = "PRIVACY_POLICY_MARKDOWNS_CONFIG";
   private final InitialDepartmentConfiguration initialDepartmentConfiguration;
-  private final MarkdownMapper markdownMapper;
 
   public DepartmentConfigurationService(
       InitialDepartmentConfiguration initialDepartmentConfiguration,
       TransactionHelper transactionHelper,
-      EntityManager entityManager,
-      MarkdownMapper markdownMapper) {
+      EntityManager entityManager) {
     super(entityManager, transactionHelper, DepartmentConfiguration.class);
     this.initialDepartmentConfiguration = initialDepartmentConfiguration;
-    this.markdownMapper = markdownMapper;
   }
 
   @Override
@@ -48,17 +62,15 @@ public class DepartmentConfigurationService
   }
 
   public byte[] getLogo() {
-    return transactionHelper.executeInReadOnlyTransaction(() -> getConfig().getLogo().getContent());
+    return getConfig().getLogo().getContent();
   }
 
   public byte[] getStreetDirectory() {
-    return transactionHelper.executeInReadOnlyTransaction(
-        () -> getConfig().getStreetDirectory().getContent());
+    return getConfig().getStreetDirectory().getContent();
   }
 
   public byte[] getMunicipalityDirectory() {
-    return transactionHelper.executeInReadOnlyTransaction(
-        () -> getConfig().getMunicipalityDirectory().getContent());
+    return getConfig().getMunicipalityDirectory().getContent();
   }
 
   public byte[] getMarkdownWithGermanFallback(MarkdownName markdownName, Language language) {
@@ -103,58 +115,57 @@ public class DepartmentConfigurationService
   }
 
   public CitizenAndEmployeeMarkdownInfo getAccessibilityInfo() {
-    return markdownMapper.citizenAndEmployeeMarkdownInfoOf(
-        getConfig().getCitizenPortalAccessibilityStatementMarkdown(),
-            CitizenPortalMarkdownName.ACCESSIBILITY,
-        getConfig().getEmployeePortalAccessibilityStatementMarkdown(),
-            EmployeePortalMarkdownName.ACCESSIBILITY);
+    return mapToAccessibilityInfo(getConfig());
   }
 
   public InternationalMarkdownInfo getAcknowledgementsInfo() {
-    return markdownMapper.internationalMarkdownInfoOf(
-        getConfig().getAcknowledgementsMarkdown(), CitizenPortalMarkdownName.ACKNOWLEDGEMENTS);
+    return mapToAcknowledgementInfo(getConfig());
   }
 
   public InternationalMarkdownInfo getContactInfo() {
-    return markdownMapper.internationalMarkdownInfoOf(
-        getConfig().getContactMarkdown(), EmployeePortalMarkdownName.CONTACT);
+    return mapToContactInfo(getConfig());
   }
 
   public InternationalMarkdownInfo getImprintInfo() {
-    return markdownMapper.internationalMarkdownInfoOf(
-        getConfig().getImprintMarkdown(), CitizenPortalMarkdownName.IMPRINT);
+    return mapToImprintInfo(getConfig());
   }
 
   public CitizenAndEmployeeMarkdownInfo getPrivacyInfo() {
-    return markdownMapper.citizenAndEmployeeMarkdownInfoOf(
-        getConfig().getCitizenPortalPrivacyPolicyMarkdown(),
-        CitizenPortalMarkdownName.PRIVACY,
-        getConfig().getEmployeePortalPrivacyPolicyMarkdown(),
-        EmployeePortalMarkdownName.PRIVACY);
+    return mapToPrivacyInfo(getConfig());
   }
 
   public void updateAccessibility(
       MultiLangDocument citizenDocumentUpdate, MultiLangDocument employeeDocumentUpdate) {
-    update(getConfig().getCitizenPortalAccessibilityStatementMarkdown(), citizenDocumentUpdate);
-    update(getConfig().getEmployeePortalAccessibilityStatementMarkdown(), employeeDocumentUpdate);
+    DepartmentConfiguration config = getConfig();
+    config.setAccessibilityStatementMarkdownsInitialized(true);
+    update(config.getCitizenPortalAccessibilityStatementMarkdown(), citizenDocumentUpdate);
+    update(config.getEmployeePortalAccessibilityStatementMarkdown(), employeeDocumentUpdate);
   }
 
   public void updateAcknowledgements(MultiLangDocument documentUpdate) {
-    update(getConfig().getAcknowledgementsMarkdown(), documentUpdate);
+    DepartmentConfiguration config = getConfig();
+    config.setAcknowledgementsMarkdownsInitialized(true);
+    update(config.getAcknowledgementsMarkdown(), documentUpdate);
   }
 
   public void updateEmployeeContact(MultiLangDocument employeeDocumentUpdate) {
-    update(getConfig().getContactMarkdown(), employeeDocumentUpdate);
+    DepartmentConfiguration config = getConfig();
+    config.setContactMarkdownsInitialized(true);
+    update(config.getContactMarkdown(), employeeDocumentUpdate);
   }
 
   public void updateCitizenImprint(MultiLangDocument citizenDocumentUpdate) {
-    update(getConfig().getImprintMarkdown(), citizenDocumentUpdate);
+    DepartmentConfiguration config = getConfig();
+    config.setImprintMarkdownsInitialized(true);
+    update(config.getImprintMarkdown(), citizenDocumentUpdate);
   }
 
   public void updatePrivacy(
       MultiLangDocument citizenDocumentUpdate, MultiLangDocument employeeDocumentUpdate) {
-    update(getConfig().getCitizenPortalPrivacyPolicyMarkdown(), citizenDocumentUpdate);
-    update(getConfig().getEmployeePortalPrivacyPolicyMarkdown(), employeeDocumentUpdate);
+    DepartmentConfiguration config = getConfig();
+    config.setPrivacyPolicyMarkdownsInitialized(true);
+    update(config.getCitizenPortalPrivacyPolicyMarkdown(), citizenDocumentUpdate);
+    update(config.getEmployeePortalPrivacyPolicyMarkdown(), employeeDocumentUpdate);
   }
 
   private void update(MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
@@ -191,7 +202,81 @@ public class DepartmentConfigurationService
 
   @Override
   protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
-    return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE);
+    DepartmentConfiguration config = getConfig();
+    return MapUtils.orderedMapOfEntries(
+        Map.entry(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE),
+        getAccessibilityStatementConfigurationStatus(config),
+        getAcknowledgementsConfigurationStatus(config),
+        getContactConfigurationStatus(config),
+        getImprintConfigurationStatus(config),
+        getPrivacyPolicyConfigurationStatus(config));
+  }
+
+  @VisibleForTesting
+  void setNotInitialized() {
+    getConfig().setAccessibilityStatementMarkdownsInitialized(false);
+    getConfig().setAcknowledgementsMarkdownsInitialized(false);
+    getConfig().setContactMarkdownsInitialized(false);
+    getConfig().setImprintMarkdownsInitialized(false);
+    getConfig().setPrivacyPolicyMarkdownsInitialized(false);
+  }
+
+  private Map.Entry<String, ConfigurationStatus> getAccessibilityStatementConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        ACCESSIBILITY_STATEMENT_MARKDOWNS_ENDPOINT,
+        getConfigurationStatusOf(
+            config.isAccessibilityStatementMarkdownsInitialized(),
+            config.getCitizenPortalAccessibilityStatementMarkdown(),
+            config.getEmployeePortalAccessibilityStatementMarkdown()));
+  }
+
+  private Map.Entry<String, ConfigurationStatus> getAcknowledgementsConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        ACKNOWLEDGEMENTS_MARKDOWNS_ENDPOINT,
+        getConfigurationStatusOf(
+            config.isAcknowledgementsMarkdownsInitialized(), config.getAcknowledgementsMarkdown()));
+  }
+
+  private Map.Entry<String, ConfigurationStatus> getContactConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        CONTACT_MARKDOWNS_ENDPOINT,
+        getConfigurationStatusOf(
+            config.isContactMarkdownsInitialized(), config.getContactMarkdown()));
+  }
+
+  private Map.Entry<String, ConfigurationStatus> getImprintConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        IMPRINT_MARKDOWNS_ENDPOINT,
+        getConfigurationStatusOf(
+            config.isImprintMarkdownsInitialized(), config.getImprintMarkdown()));
+  }
+
+  private Map.Entry<String, ConfigurationStatus> getPrivacyPolicyConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        PRIVACY_POLICY_MARKDOWNS_ENDPOINT,
+        getConfigurationStatusOf(
+            config.isPrivacyPolicyMarkdownsInitialized(),
+            config.getCitizenPortalPrivacyPolicyMarkdown(),
+            config.getEmployeePortalPrivacyPolicyMarkdown()));
+  }
+
+  private ConfigurationStatus getConfigurationStatusOf(
+      boolean initialized, MultiLangDocument... multiLangDocuments) {
+    if (!initialized) {
+      return ConfigurationStatus.INCOMPLETE;
+    }
+    boolean hasEmptyEnglishDocuments =
+        Arrays.stream(multiLangDocuments).map(MultiLangDocument::getEn).anyMatch(Objects::isNull);
+    if (hasEmptyEnglishDocuments) {
+      return ConfigurationStatus.PARTIALLY_COMPLETE;
+    } else {
+      return ConfigurationStatus.COMPLETE;
+    }
   }
 
   private static Document mapToDocument(Resource resource) throws IOException {

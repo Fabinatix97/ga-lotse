@@ -27,8 +27,6 @@ export function EvaluationNameChangeModal(
   return (
     <FormDialog
       open={props.open}
-      onClose={props.onClose}
-      onSubmit={onSubmit}
       initialValues={{
         name: props.initialName,
       }}
@@ -37,6 +35,8 @@ export function EvaluationNameChangeModal(
       color="primary"
       confirmLabel="Speichern"
       cancelLabel="Abbrechen"
+      onClose={props.onClose}
+      onSubmit={onSubmit}
     >
       <InputField
         name="name"

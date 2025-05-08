@@ -34,7 +34,7 @@ import {
   validateProcedure,
 } from "./helpers";
 
-export type ProcedureFormProps = PropsWithChildren<{
+type ProcedureFormProps = PropsWithChildren<{
   initialValues: UpdateProcedureForm;
   submitProcedure: SubmitProcedure;
   validate?: FormValidator;
@@ -49,8 +49,8 @@ export function ProcedureForm({
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      onSubmit={(form) => submitProcedure(transformToValid(form))}
       validate={validate}
+      onSubmit={(form) => submitProcedure(transformToValid(form))}
     >
       <FormPlus sx={{ display: "contents" }}>{children}</FormPlus>
     </Formik>
@@ -125,7 +125,7 @@ export function UpdateProcedureSectionFields({
       <InvalidFormWarning errorMessages={errorMessages} />
 
       <WrappedSelectField
-        name={"roleStatus"}
+        name="roleStatus"
         label="Personenstatus"
         options={roleStatuses}
         required="Bitte einen Personenstatus auswählen."

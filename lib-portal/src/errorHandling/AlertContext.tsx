@@ -238,6 +238,7 @@ export function AlertSlot(props: AlertSlotProps) {
           {...commonAlertProps}
           {...alert.props}
           key={alert.alertId}
+          role="alert"
           onClose={
             alert.options.closeable
               ? () => alertContext.close(alert.alertId)

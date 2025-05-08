@@ -68,7 +68,7 @@ const columnHelper: ColumnHelper<ServicePlanEntry> =
 
 function formatDiseaseName(diseaseName: string | undefined) {
   return diseaseName ? (
-    <Chip color={"primary"} size="md">
+    <Chip color="primary" size="md">
       {diseaseName}
     </Chip>
   ) : (
@@ -368,14 +368,14 @@ export function servicePlanColumns({
         if (props.row.depth === 0) {
           const actionItems = renderGroupActionButtons(props.row.original);
           if (actionItems.length !== 0) {
-            return <ActionsMenu actionItems={actionItems} rowHeight={true} />;
+            return <ActionsMenu actionItems={actionItems} rowHeight />;
           }
           return;
         }
         return (
           <ActionsMenu
             actionItems={renderEntryActionButtons(props.row.original)}
-            rowHeight={true}
+            rowHeight
           />
         );
       },

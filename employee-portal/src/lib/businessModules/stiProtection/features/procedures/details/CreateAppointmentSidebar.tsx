@@ -196,11 +196,11 @@ export function CreateAppointmentSidebar({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={createAppointment.isPending}
+              submitLabel={isOnLastStep ? "Bestätigen" : "Weiter"}
               onCancel={handleClose}
               onBack={
                 isOnFirstStep ? undefined : () => changeToStep(stepIndex - 1)
               }
-              submitLabel={isOnLastStep ? "Bestätigen" : "Weiter"}
             />
           </SidebarActions>
         </SidebarForm>

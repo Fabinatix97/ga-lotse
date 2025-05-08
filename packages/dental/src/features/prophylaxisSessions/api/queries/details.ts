@@ -11,8 +11,8 @@ import {
 } from "@eshg/dental-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 
-import { prophylaxisSessionApiQueryKey } from "@/config/apiQueryKeys";
-import { mapProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
+import { prophylaxisSessionApiQueryKey } from "../../../../config/apiQueryKeys";
+import { mapProphylaxisSessionDetails } from "../models/ProphylaxisSessionDetails";
 
 export function getProphylaxisSessionQuery(
   prophylaxisSessionApi: ProphylaxisSessionApi,

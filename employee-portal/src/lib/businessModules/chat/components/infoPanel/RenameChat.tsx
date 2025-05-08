@@ -62,8 +62,8 @@ export function RenameChat({
         </Typography>
         <Formik
           initialValues={{ name: "" }}
-          onSubmit={handleRenameChat}
           validate={validateForm}
+          onSubmit={handleRenameChat}
         >
           <FormPlus>
             <InputField

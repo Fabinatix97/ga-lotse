@@ -27,7 +27,7 @@ import {
   NumberFilterNullInclusion,
   NumberFilterNumericComparison,
   defaultNumberFilterDraftValue,
-} from "@/features/filters/types/NumberFilter";
+} from "../../types/NumberFilter";
 
 const nullInclusionOptions: EnumMap<NumberFilterNullInclusion> = {
   EXCLUDE_NULL: "Ohne leere Felder",
@@ -64,13 +64,13 @@ export function NumberFilter(props: NumberFilterProps) {
         <FormControl>
           <RadioGroup
             value={draftValue.mode}
+            sx={{ gap: 2 }}
             onChange={(event) =>
               props.onChange({
                 ...draftValue,
                 mode: event.target.value as NumberFilterDraftComparisonMode,
               })
             }
-            sx={{ gap: 2 }}
           >
             <Radio
               value={NumberFilterDraftComparisonMode.Value}
@@ -162,6 +162,8 @@ function NumberRange(props: NumberRangeProps) {
             ]}
             min={props.definition.minValue}
             max={props.definition.maxValue}
+            marks
+            valueLabelDisplay="auto"
             onChange={(_event, value) => {
               if (Array.isArray(value)) {
                 props.onChange({
@@ -171,8 +173,6 @@ function NumberRange(props: NumberRangeProps) {
                 });
               }
             }}
-            marks
-            valueLabelDisplay="auto"
           />
         )}
       <Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>

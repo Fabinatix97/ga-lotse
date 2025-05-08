@@ -16,13 +16,13 @@ import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
-} from "@/api/models/ExaminationResult";
-import { ToothDiagnosis } from "@/api/models/ToothDiagnosis";
-import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
-import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
-import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "@/translations/examination";
-import { ExaminationFormValues } from "@/types/examination";
-import { mapToExaminationFormValues } from "@/utils/examination";
+} from "../../../api/models/ExaminationResult";
+import { ToothDiagnosis } from "../../../api/models/ToothDiagnosis";
+import { useExaminationStore } from "../../../stores/examination/ExaminationStoreProvider";
+import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "../../../translations/examination";
+import { ExaminationFormValues } from "../../../types/examination";
+import { mapToExaminationFormValues } from "../../../utils/examination";
+import { useProphylaxisSessionStore } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 interface ExaminationInputValues {
   result?: ExaminationResult;

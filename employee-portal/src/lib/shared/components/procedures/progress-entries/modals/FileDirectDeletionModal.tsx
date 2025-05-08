@@ -18,7 +18,7 @@ export function FileDirectDeletionModal() {
   );
 }
 
-export function FileDirectDeletionModalContent() {
+function FileDirectDeletionModalContent() {
   const progressEntriesContext = useContext(ProgressEntriesContext);
   const { fileApi } = progressEntriesContext.config;
   const { fileIdForDeletion } = progressEntriesContext.state;
@@ -27,15 +27,15 @@ export function FileDirectDeletionModalContent() {
   return (
     <ConfirmationDialog
       open={fileIdForDeletion !== null}
-      onClose={closeFileDeletionModal}
-      onConfirm={() => {
-        if (fileIdForDeletion !== null) deleteFile.mutate(fileIdForDeletion);
-      }}
       title="Datei löschen?"
       description="Diese Aktion kann nicht rückgängig gemacht werden."
       color="danger"
       confirmLabel="Ja, löschen"
       cancelLabel="Abbrechen"
+      onClose={closeFileDeletionModal}
+      onConfirm={() => {
+        if (fileIdForDeletion !== null) deleteFile.mutate(fileIdForDeletion);
+      }}
     />
   );
 }

@@ -6,7 +6,7 @@
 import { useEffect } from "react";
 import { StoreApi, useStore } from "zustand";
 
-import { ProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
+import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
 
 import { type ProphylaxisSessionStore } from "./prophylaxisSessionStore";
 

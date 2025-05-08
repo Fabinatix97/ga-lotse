@@ -6,13 +6,11 @@
 import { Grid, Stack, Typography } from "@mui/joy";
 import { isNullish } from "remeda";
 
-import {
-  ConfiguratorModuleName,
-  configuratorNameMapping,
-} from "@/lib/configurator/api/models/configuratorModuleName";
-import { useGetAllModulesStatuses } from "@/lib/configurator/api/queries/useGetAllModulesStatuses";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
+import { configuratorNameMapping } from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { getAllOtherModules } from "@/lib/configurator/components/shared/modulesStatusUtils";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+import { useGetAllModulesStatuses } from "@/lib/shared/api/queries/configurator/status";
 
 import { ConfiguratorCard } from "./ConfiguratorCard";
 import { AllModulesAlert } from "./ConfiguratorState";
@@ -32,7 +30,7 @@ export function ConfiguratorOverview(props: {
         <AllModulesAlert data={data} />
         <Typography level="h3">
           Konfiguration des{" "}
-          {props.module === "baseModule"
+          {props.module === "BASE"
             ? "Grundmoduls"
             : `Fachmoduls ${configuratorNameMapping[props.module]}`}
         </Typography>
@@ -43,7 +41,7 @@ export function ConfiguratorOverview(props: {
                 <ConfiguratorCard
                   title={tab.tabButtonName}
                   link={tab.link}
-                  status={tab.status}
+                  status={tab.status!} // raise error if status is undefined
                 />
               </Grid>
             ))}

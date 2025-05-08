@@ -13,7 +13,7 @@ import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.Pdf;
@@ -78,7 +78,7 @@ public class SchoolEntryController {
   private final Validator validator;
   private final Clock clock;
   private final SchoolEntryFeatureToggle featureToggle;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
   private final ProgressEntryUtil progressEntryUtil;
   private final AuditLogger auditLogger;
 
@@ -93,7 +93,7 @@ public class SchoolEntryController {
       Validator validator,
       Clock clock,
       SchoolEntryFeatureToggle featureToggle,
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       ProgressEntryUtil progressEntryUtil,
       AuditLogger auditLogger) {
     this.schoolEntryService = schoolEntryService;
@@ -106,7 +106,7 @@ public class SchoolEntryController {
     this.validator = validator;
     this.clock = clock;
     this.featureToggle = featureToggle;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
     this.progressEntryUtil = progressEntryUtil;
     this.auditLogger = auditLogger;
   }
@@ -613,7 +613,7 @@ public class SchoolEntryController {
   }
 
   private void assertLocationModeNotSet() {
-    if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE) {
+    if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE) {
       throw ExceptionUtil.badRequestExceptionUnsupportedLocationMode();
     }
   }

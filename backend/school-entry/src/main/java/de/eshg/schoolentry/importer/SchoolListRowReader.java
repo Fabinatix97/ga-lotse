@@ -43,11 +43,16 @@ class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
             new AddressColumns<>(STREET, HOUSE_NUMBER, POSTAL_CODE, CITY, ADDRESS_ADDITION),
             errorHandler,
             true),
-        readPhoneNumber(col, errorHandler));
+        readPhoneNumber(col, errorHandler),
+        readEmail(col, errorHandler));
   }
 
   private String readPhoneNumber(ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     return cellAsString(col, PHONE_NUMBER, true, true, errorHandler);
+  }
+
+  private String readEmail(ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
+    return col.hasColumn(EMAIL) ? cellAsEmailString(col, EMAIL, true, errorHandler) : null;
   }
 
   private boolean readEntryLevelFlag(

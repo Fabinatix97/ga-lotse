@@ -23,7 +23,6 @@ import {
 
 import { useCancelAppointmentByCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
 import { useTranslation } from "@/lib/i18n/client";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
@@ -32,6 +31,7 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
 interface PersonalAreaSidePanelProps {
   procedure: ApiGetCitizenProcedureDetailsResponse;
@@ -48,7 +48,7 @@ export function PersonalAreaSidePanel({
   });
 
   return (
-    <ContentSheet data-testid={"appointment-panel"}>
+    <ContentSheet data-testid="appointment-panel">
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
       <Stack direction="column" gap={2}>
         <DetailsItem
@@ -99,7 +99,7 @@ function renderActions(
     [ApiBookingState.Cancelled]: (
       <CancelledContent procedure={procedureDetails} />
     ),
-    [ApiBookingState.Withdrawn]: <></>,
+    [ApiBookingState.Withdrawn]: null,
   }[procedureDetails.appointment.bookingState];
 }
 
@@ -127,20 +127,19 @@ function BookedContent({ procedure }: PersonalAreaSidePanelProps) {
 
   return (
     <>
-      {isDefined(procedure.appointment?.bookingsRemaining) &&
-        procedure.appointment?.bookingsRemaining > 0 && (
-          <InternalLinkButton
-            variant="solid"
-            href={citizenRoutes.personalArea.rebook(accessCode)}
-          >
-            {t("overview.actions.booked.reschedule_appointment")}
-          </InternalLinkButton>
-        )}
+      {hasBookingsRemaining(procedure) && (
+        <InternalLinkButton
+          variant="solid"
+          href={citizenRoutes.personalArea.rebook(accessCode)}
+        >
+          {t("overview.actions.booked.reschedule_appointment")}
+        </InternalLinkButton>
+      )}
       <Button
         variant="outlined"
         color="danger"
-        onClick={handleCancelAppointment}
         sx={{ height: "40px" }}
+        onClick={handleCancelAppointment}
       >
         {t("overview.actions.booked.cancel_appointment")}
       </Button>
@@ -153,19 +152,18 @@ function CancelledContent({ procedure }: PersonalAreaSidePanelProps) {
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
 
+  if (!hasBookingsRemaining(procedure)) {
+    return null;
+  }
+
   return (
-    <>
-      {isDefined(procedure.appointment?.bookingsRemaining) &&
-        procedure.appointment?.bookingsRemaining > 0 && (
-          <InternalLinkButton
-            variant="solid"
-            href={citizenRoutes.personalArea.rebook(accessCode)}
-            sx={{ height: "40px" }}
-          >
-            {t("overview.actions.cancelled.reschedule_appointment")}
-          </InternalLinkButton>
-        )}
-    </>
+    <InternalLinkButton
+      variant="solid"
+      href={citizenRoutes.personalArea.rebook(accessCode)}
+      sx={{ height: "40px" }}
+    >
+      {t("overview.actions.cancelled.reschedule_appointment")}
+    </InternalLinkButton>
   );
 }
 
@@ -174,18 +172,24 @@ function BookableContent({ procedure }: PersonalAreaSidePanelProps) {
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
 
+  if (!hasBookingsRemaining(procedure)) {
+    return null;
+  }
+
   return (
-    <>
-      {isDefined(procedure.appointment?.bookingsRemaining) &&
-        procedure.appointment?.bookingsRemaining > 0 && (
-          <InternalLinkButton
-            variant="solid"
-            href={citizenRoutes.personalArea.rebook(accessCode)}
-            sx={{ height: "40px" }}
-          >
-            {t("overview.actions.bookable.book_appointment")}
-          </InternalLinkButton>
-        )}
-    </>
+    <InternalLinkButton
+      variant="solid"
+      href={citizenRoutes.personalArea.rebook(accessCode)}
+      sx={{ height: "40px" }}
+    >
+      {t("overview.actions.bookable.book_appointment")}
+    </InternalLinkButton>
   );
+}
+
+function hasBookingsRemaining(
+  procedure: ApiGetCitizenProcedureDetailsResponse,
+): boolean {
+  const bookingsRemaining = procedure.appointment?.bookingsRemaining;
+  return bookingsRemaining !== undefined && bookingsRemaining > 0;
 }

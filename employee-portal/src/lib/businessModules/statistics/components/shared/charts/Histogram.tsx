@@ -19,6 +19,7 @@ import { calculateRelativeFormatting } from "@/lib/businessModules/statistics/co
 
 interface HistogramProps {
   diagramData: AnalysisDiagramHistogram["data"];
+  isDataGrouped: boolean;
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
   eChartApi?: (eChartApi: ChartApi) => void;
@@ -75,7 +76,6 @@ function transformToRelativeData(dataGroups: DataGroups) {
 export function Histogram(props: HistogramProps) {
   const series = mapToStackedSeries(props.diagramData);
   const numAttributes = props.diagramData[0]?.attributes?.length ?? 1;
-  const isStackedSeries = numAttributes > 1;
   const barWidth =
     props.grouping === "STACKED" ? "99.8%" : `${99.8 / numAttributes}%`;
   const grouping = evaluateGrouping(props.grouping, props.scaling);
@@ -134,7 +134,7 @@ export function Histogram(props: HistogramProps) {
     grid: {
       containLabel: true,
     },
-    series: isStackedSeries
+    series: props.isDataGrouped
       ? seriesData
       : [
           {

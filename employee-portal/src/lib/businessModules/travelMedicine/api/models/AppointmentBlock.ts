@@ -26,7 +26,7 @@ export interface AppointmentBlock extends BaseEntity {
   readonly numberOfBookedAppointments: number;
 }
 
-export function mapAppointmentBlock(
+function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
 ): AppointmentBlock {
   return {

@@ -17,15 +17,14 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { useChecklistApi } from "@/lib/businessModules/inspection/api/clients";
 import { isServiceWorkerResponse } from "@/serviceWorker/common/common";
 
-export interface UploadChecklistFileParameter {
+interface UploadChecklistFileParameter {
   file: File;
   inspectionExternalId: string;
   checklistId: string;
   updateElementDto: ApiUpdateChecklistElementsInner;
 }
 
-export interface DeleteChecklistFileParameter
-  extends ChecklistDeleteFileRequest {
+interface DeleteChecklistFileParameter extends ChecklistDeleteFileRequest {
   fileName: string;
 }
 

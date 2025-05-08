@@ -32,8 +32,8 @@ export function EditDocumentNoteForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>

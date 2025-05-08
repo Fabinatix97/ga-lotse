@@ -7,6 +7,7 @@ import {
   AppointmentBlockApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
+  ArchivingApi,
   ConcernApi,
   Configuration,
   EmployeeOmsProcedureApi,
@@ -87,4 +88,9 @@ export function useWaitingRoomApi() {
 export function useGdprValidationTaskApi() {
   const configuration = useConfiguration();
   return new GdprValidationTaskApi(configuration);
+}
+
+export function useArchivingApi() {
+  const configuration = useConfiguration();
+  return new ArchivingApi(configuration);
 }

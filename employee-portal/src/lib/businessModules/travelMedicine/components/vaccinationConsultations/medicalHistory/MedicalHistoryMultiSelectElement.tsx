@@ -87,7 +87,7 @@ export function MedicalHistoryMultiSelectElement({
             }}
           >
             <Checkbox
-              size={"sm"}
+              size="sm"
               name={
                 "medicalHistoryContent.sections[" +
                 sectionIndex +
@@ -102,11 +102,11 @@ export function MedicalHistoryMultiSelectElement({
                   (option) => option.questionText === questionText,
                 )?.answer ?? false
               }
+              label={questionText}
+              disabled={readOnly}
               onChange={async (value) => {
                 await handleCheckboxChange(value, questionText);
               }}
-              label={questionText}
-              disabled={readOnly}
             />
           </ListItem>
         ))}

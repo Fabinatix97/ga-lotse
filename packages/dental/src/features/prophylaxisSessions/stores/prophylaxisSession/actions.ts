@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationResult } from "@/api/models/ExaminationResult";
-import { mapToExaminationStatus } from "@/api/models/ExaminationStatus";
+import { ExaminationResult } from "../../../../api/models/ExaminationResult";
+import { mapToExaminationStatus } from "../../../../api/models/ExaminationStatus";
 
 import { ParticipantFilters } from "./participantFilters";
 import { ProphylaxisSessionState } from "./prophylaxisSessionStore";

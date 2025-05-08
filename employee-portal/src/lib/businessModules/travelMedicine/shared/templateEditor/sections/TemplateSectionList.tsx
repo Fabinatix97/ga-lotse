@@ -21,7 +21,7 @@ export function createEmptySection() {
   return section;
 }
 
-export interface MedicalHistoryTemplateSectionListProp {
+interface MedicalHistoryTemplateSectionListProp {
   sections: ApiTemplateSection[];
 }
 
@@ -54,6 +54,7 @@ export function TemplateSectionList(
         <>
           {props.sections.map((section, index) => (
             <TemplateSection
+              key={index}
               sectionFormikPath={getSectionPath(index)}
               sectionElements={section.sectionElements}
               sectionTitle={
@@ -66,7 +67,6 @@ export function TemplateSectionList(
                 />
               }
               sectionIndex={index}
-              key={index}
             />
           ))}
           <Button

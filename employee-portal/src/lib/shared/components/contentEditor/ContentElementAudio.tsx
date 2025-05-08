@@ -7,12 +7,11 @@ import { OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
 import { ApiEditorElementAudios } from "@eshg/lib-editor-api";
-
 import {
   CustomFileType,
   FileCard,
   FileCardActionProps,
-} from "@/lib/shared/components/FileCard";
+} from "@eshg/lib-employee-portal";
 
 export function ContentElementAudios({
   element,
@@ -47,11 +46,11 @@ export function ContentElementAudios({
 
           return (
             <Stack
+              key={audio.externalId}
               direction="row"
               flexWrap="wrap"
               gap={1}
               mt={1}
-              key={audio.externalId}
             >
               <FileCard
                 name={audio.fileName ?? ""}

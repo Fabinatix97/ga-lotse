@@ -114,6 +114,7 @@ export function ChatBubble({
           sx={{
             color: isSent ? "background.body" : "text.primary",
             overflowWrap: "break-word",
+            whiteSpace: "pre-line",
           }}
         >
           {mentions.length
@@ -211,7 +212,7 @@ export function ChatBubble({
             <Button
               size="sm"
               color="danger"
-              loadingPosition={"start"}
+              loadingPosition="start"
               onClick={async () => {
                 await removeMessage(message.id);
                 setIsModalOpen(false);

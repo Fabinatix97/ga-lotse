@@ -71,7 +71,7 @@ export function ImportDataFormSidebar({ onClose }: ImportDataFormSidebarProps) {
         <ButtonBar
           right={
             <>
-              <Button onClick={() => onClose()} variant="soft" color="neutral">
+              <Button variant="soft" color="neutral" onClick={() => onClose()}>
                 Abbrechen
               </Button>
               <SubmitButton submitting={isSubmitting}>Importieren</SubmitButton>

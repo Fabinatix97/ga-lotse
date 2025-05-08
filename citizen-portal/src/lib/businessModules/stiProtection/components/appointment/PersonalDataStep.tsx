@@ -10,10 +10,10 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 
 import { useAddPersonalDetails } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
+import { useGenderOptions } from "@/lib/businessModules/stiProtection/components/shared/options";
 import { useTranslation } from "@/lib/i18n/client";
 
 import { useFormData } from "./AppointmentDataContext";
@@ -36,6 +36,7 @@ const initialValues = {
 
 export function PersonalDataStep() {
   const { t } = useTranslation("stiProtection/forms");
+  const genderOptions = useGenderOptions();
   const thisYear = new Date().getFullYear();
   const minYear = 1900;
   const [formData] = useFormData<AppointmentFormData>();
@@ -71,7 +72,7 @@ export function PersonalDataStep() {
       <PersonalDataGrid>
         <SelectField
           name="gender"
-          options={GENDER_OPTIONS}
+          options={genderOptions}
           label={t("personal_data.fields.gender")}
           required={t("personal_data.fields.gender_required")}
         />

@@ -7,8 +7,9 @@ import { Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { ApiUpdateEditorRequest } from "@eshg/lib-editor-api";
-import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 interface ContentElementTextEditorProps {
   text: string;
@@ -42,7 +43,7 @@ export function ContentElementTextEditor({
             />
             <Divider />
             <FormButtonBar
-              submitLabel={"Speichern"}
+              submitLabel="Speichern"
               submitting={isSubmitting}
               submitDisabled={!dirty}
             />

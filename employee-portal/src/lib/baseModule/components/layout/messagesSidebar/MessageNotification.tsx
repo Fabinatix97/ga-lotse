@@ -81,7 +81,7 @@ export function MessageNotification({
                     ),
                     marginRight: 0.8,
                   }}
-                ></Box>
+                />
               )}
               <Typography
                 level="title-md"
@@ -99,13 +99,13 @@ export function MessageNotification({
             </Box>
             <IconButton
               aria-label="Schließen"
+              color="primary"
               onClick={() =>
                 markAllMessagesAsRead({
                   matrixClient: matrixClient,
                   roomId: message.roomId,
                 })
               }
-              color="primary"
             >
               <CloseIcon />
             </IconButton>

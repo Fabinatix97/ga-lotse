@@ -95,15 +95,15 @@ export function AppointmentFormButtonBar() {
         title:
           currentStep === totalSteps
             ? t("confirmationSection.submit")
-            : t("appointmentOverviewSection.onNextStep"),
+            : t("overview.onNextStep"),
         action: () => handleValidation(handleNextStep),
       }}
       onPrevStep={{
-        title: t("appointmentOverviewSection.onPrevStep"),
+        title: t("overview.onPrevStep"),
         action: handlePrevStep,
       }}
       onCancel={{
-        title: t("appointmentOverviewSection.onCancel"),
+        title: t("overview.onCancel"),
         action: handleCancel,
       }}
     />

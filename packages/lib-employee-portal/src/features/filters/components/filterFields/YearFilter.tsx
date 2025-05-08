@@ -7,10 +7,7 @@ import { isValid, parse } from "date-fns";
 
 import { YearInput } from "@eshg/lib-portal/components/inputs/YearInput";
 
-import {
-  YearFilterDefinition,
-  YearFilterValue,
-} from "@/features/filters/types/YearFilter";
+import { YearFilterDefinition, YearFilterValue } from "../../types/YearFilter";
 
 interface YearFilterProps {
   definition: YearFilterDefinition;
@@ -33,8 +30,8 @@ export function YearFilter(props: YearFilterProps) {
   return (
     <YearInput
       value={props.value?.selectedValue ?? ""}
-      onChange={(event) => handleChange(event.target.value)}
       sx={{ width: "100%" }}
+      onChange={(event) => handleChange(event.target.value)}
     />
   );
 }

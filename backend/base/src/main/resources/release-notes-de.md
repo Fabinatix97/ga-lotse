@@ -2,8 +2,43 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.9
+_07.05.2025_
+
+Zehnter Release der Anwendung GA-Lotse.
+
+### Einschulungsuntersuchungen:
+
+* Erstellen von Vorgängen
+  * Zusätzliche optionale Spalten "E-Mail-Adresse" und "Bemerkung" im Exceldokument des Schullistenimports
+* Planung
+  * Nur Fachsbereichsleitung darf Kennungen anlegen/anpassen
+* Untersuchungstag
+  * Eingaben, die für den Abschluss eines Vorgangs verpflichtend sind, werden blau umrandet statt hinterlegt, um die Barrierefreiheit zu verbessern
+
+## GA-Lotse 1.8
+_23.04.2025_
+
+Neunter Release der Anwendung GA-Lotse.
+
+### Einschulungsuntersuchungen:
+
+* Planung
+  * Entfernen von Untersuchungstermin am Kind
+  * Leere Terminblöcke ohne vergebene Termine löschen
+
+### Masernschutz:
+
+* Planung
+  * Leere Terminblöcke ohne vergebene Termine löschen
+
+### Reisemedizinische Impfberatung:
+
+* Planung
+  * Leere Terminblöcke ohne vergebene Termine löschen
+
 ## GA-Lotse 1.7
-_02.04.2025_
+_09.04.2025_
 
 Achter Release der Anwendung GA-Lotse.
 
@@ -12,6 +47,14 @@ Achter Release der Anwendung GA-Lotse.
 * Automatisierte Bearbeitung von DSGVO-Anfragen (Datenauskunft, Datenlöschung, Berichtigung, Widerspruch) in zweistufigem Prozess
   * Anlage und Abschluss von DSGVO-Vorgängen im Grundmodul
   * Prüfung der Freigabe bzw. der Löschung der Daten in den Fachmodulen
+* Anlage und Abfrage von DSGVO-Vorgängen im Online-Portal durch Bürgerinnen und Bürger bzw. Unternehmen nach Authentifizierung mit BundID bzw. "Mein Unternehmenskonto"
+
+### Einschulungsuntersuchungen:
+
+* Planung
+  * Partielle Suche mit Vorname und Nachname oder Geburtsdatum nach offenen Vorgängen
+* Untersuchungstag
+  * Erstellung eines Schulinfobriefs ohne Vorbelegung aus Anamnese und Untersuchung
 
 ## GA-Lotse 1.6
 _15.01.2025_
@@ -44,7 +87,7 @@ Sechster Release der Anwendung GA-Lotse.
 ### Begehung:
 
 * Import von Einrichtungen und zugehörigen Begehungs-Vorgängen
-* Ableich vom beim Import entstandenen Duplikaten
+* Abgleich von beim Import entstandenen Duplikaten
   * von Vorgängen
   * von Einrichtungen
 * Statistik für Begehungen

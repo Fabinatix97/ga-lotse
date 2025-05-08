@@ -41,9 +41,9 @@ function FluoridationConsentHistorySidebar(
         <ButtonBar
           right={[
             <Button
+              key="close"
               color="neutral"
               variant="soft"
-              key="close"
               onClick={() => props.onClose()}
             >
               Schließen

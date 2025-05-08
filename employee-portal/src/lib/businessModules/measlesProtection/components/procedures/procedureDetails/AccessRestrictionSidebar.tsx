@@ -79,7 +79,7 @@ export function AccessRestrictionSidebar({ id }: { id: string }) {
   );
 }
 
-export function AccessRestrictionSidebarForm() {
+function AccessRestrictionSidebarForm() {
   const {
     isSubmitting,
     handleSubmit: handleRawSubmit,
@@ -97,33 +97,33 @@ export function AccessRestrictionSidebarForm() {
   return (
     <Sidebar open={open} onClose={() => setOpen(false)}>
       <SidebarForm onSubmit={handleRawSubmit}>
-        <SidebarContent title={"Betretungsverbot hinzufügen"}>
+        <SidebarContent title="Betretungsverbot hinzufügen">
           <Stack gap={3}>
             <DateAndButtonRow
-              onButtonClick={() =>
-                setFieldValue("restrictionIssuedDate", today)
-              }
               buttonLabel={DateLabels.Today}
               name="restrictionIssuedDate"
               label={fields.restrictionIssuedDate.label}
               required={fields.restrictionIssuedDate.requiredMessage}
-            ></DateAndButtonRow>
+              onButtonClick={() =>
+                setFieldValue("restrictionIssuedDate", today)
+              }
+            />
             <DateAndButtonRow
-              onButtonClick={() => setFieldValue("restrictionStartDate", today)}
               buttonLabel={DateLabels.Today}
               name="restrictionStartDate"
               label={fields.restrictionStartDate.label}
               required={fields.restrictionStartDate.requiredMessage}
-            ></DateAndButtonRow>
+              onButtonClick={() => setFieldValue("restrictionStartDate", today)}
+            />
             <Divider />
             <DateAndButtonRow
-              onButtonClick={() =>
-                setFieldValue("restrictionTerminationDate", today)
-              }
               buttonLabel={DateLabels.Today}
               name="restrictionTerminationDate"
               label={fields.restrictionTerminationDate.label}
-            ></DateAndButtonRow>
+              onButtonClick={() =>
+                setFieldValue("restrictionTerminationDate", today)
+              }
+            />
           </Stack>
         </SidebarContent>
         <SidebarActions>

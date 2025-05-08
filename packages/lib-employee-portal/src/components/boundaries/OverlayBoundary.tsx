@@ -10,7 +10,7 @@ import {
   BaseOverlayBoundaryProps,
 } from "@eshg/lib-portal/components/boundaries/BaseOverlayBoundary";
 
-import { EmployeePortalErrorModal } from "@/components/boundaries/EmployeePortalErrorModal";
+import { EmployeePortalErrorModal } from "./EmployeePortalErrorModal";
 
 type OverlayBoundaryProps = Omit<
   BaseOverlayBoundaryProps,

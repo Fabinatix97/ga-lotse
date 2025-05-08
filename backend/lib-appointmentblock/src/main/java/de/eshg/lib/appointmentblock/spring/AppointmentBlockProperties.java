@@ -17,7 +17,8 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "de.eshg.lib.appointmentblock")
-public final class AppointmentBlockProperties implements ResettableProperties {
+public final class AppointmentBlockProperties
+    implements ResettableProperties, AppointmentBlockConfig {
 
   @NotEmpty
   private Map<AppointmentType, @DurationMin(minutes = 1) Duration>
@@ -28,52 +29,63 @@ public final class AppointmentBlockProperties implements ResettableProperties {
   private boolean createAppointmentBlockForCurrentUser = true;
   private LocationSelectionMode locationSelectionMode = LocationSelectionMode.NONE;
 
+  @Override
   public Map<AppointmentType, Duration> getDefaultAppointmentTypeConfiguration() {
     return defaultAppointmentTypeConfiguration;
   }
 
+  @Override
   public Duration getDefaultAppointmentTypeConfiguration(AppointmentType appointmentType) {
     return getDefaultAppointmentTypeConfiguration().get(appointmentType);
   }
 
+  @Override
   public void setDefaultAppointmentTypeConfiguration(
       Map<AppointmentType, Duration> defaultAppointmentTypeConfiguration) {
     this.defaultAppointmentTypeConfiguration = defaultAppointmentTypeConfiguration;
   }
 
+  @Override
   public boolean isOverwriteAppointmentTypeConfigurationWithProperties() {
     return overwriteAppointmentTypeConfigurationWithProperties;
   }
 
+  @Override
   public void setOverwriteAppointmentTypeConfigurationWithProperties(
       boolean overwriteAppointmentTypeConfigurationWithProperties) {
     this.overwriteAppointmentTypeConfigurationWithProperties =
         overwriteAppointmentTypeConfigurationWithProperties;
   }
 
+  @Override
   public boolean isAllowAppointmentBlocksWithCalendarEventConflicts() {
     return allowAppointmentBlocksWithCalendarEventConflicts;
   }
 
+  @Override
   public void setAllowAppointmentBlocksWithCalendarEventConflicts(
       boolean allowAppointmentBlocksWithCalendarEventConflicts) {
     this.allowAppointmentBlocksWithCalendarEventConflicts =
         allowAppointmentBlocksWithCalendarEventConflicts;
   }
 
+  @Override
   public boolean isCreateAppointmentBlockForCurrentUser() {
     return createAppointmentBlockForCurrentUser;
   }
 
+  @Override
   public void setCreateAppointmentBlockForCurrentUser(
       boolean createAppointmentBlockForCurrentUser) {
     this.createAppointmentBlockForCurrentUser = createAppointmentBlockForCurrentUser;
   }
 
+  @Override
   public LocationSelectionMode getLocationSelectionMode() {
     return locationSelectionMode;
   }
 
+  @Override
   public void setLocationSelectionMode(LocationSelectionMode locationSelectionMode) {
     this.locationSelectionMode = locationSelectionMode;
   }

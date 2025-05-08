@@ -414,6 +414,33 @@
         "tags" : [ "PrivacyDocument" ]
       }
     },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-policy" : {
       "get" : {
         "operationId" : "getPrivacyPolicyConfig",
@@ -454,6 +481,33 @@
         },
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -4595,7 +4649,7 @@
       "GetPrivacyDocumentConfigResponse" : {
         "type" : "object",
         "properties" : {
-          "overwrittenPrivacyDocument" : {
+          "privacyDocument" : {
             "$ref" : "#/components/schemas/PrivacyDocument"
           }
         }
@@ -5296,6 +5350,10 @@
         "discriminator" : {
           "propertyName" : "@type"
         }
+      },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
       },
       "Mail" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],

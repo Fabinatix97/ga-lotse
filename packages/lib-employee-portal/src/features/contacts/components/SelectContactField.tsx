@@ -11,7 +11,7 @@ import {
   SelectObjectFieldValue,
 } from "@eshg/lib-portal/components/formFields/SelectObjectField";
 
-import { useSearchContacts } from "@/features/contacts/api/queries";
+import { useSearchContacts } from "../api/queries";
 
 interface SelectContactFieldProps {
   name: string;
@@ -37,14 +37,14 @@ export function SelectContactField(props: SelectContactFieldProps) {
       label={props.label}
       getOptionLabel={props.getOptionLabel ?? ((contact) => contact.name)}
       options={contacts}
-      onInputChange={(_, newInputValue) => setSearchString(newInputValue)}
       loading={query.isLoading}
-      onValueChanged={props.onChange}
       disableFiltering
       required={props.required}
       placeholder={props.placeholder}
       endDecorator={props.endDecorator}
       disabled={props.disabled}
+      onInputChange={(_, newInputValue) => setSearchString(newInputValue)}
+      onValueChanged={props.onChange}
     />
   );
 }

@@ -7,7 +7,7 @@ import Compressor from "compressorjs";
 
 import { env } from "@/env/client";
 
-export interface ImageCompressorOptions {
+interface ImageCompressorOptions {
   /***
    * The quality of the image after compression, a number between 0 and 1.
    *

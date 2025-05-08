@@ -24,7 +24,7 @@ import { validateRange } from "@eshg/lib-portal/helpers/validators";
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";
 import { useGetInventoryItems } from "@/lib/businessModules/inspection/api/queries/inventory";
 
-export interface InventorySidebarProps {
+interface InventorySidebarProps {
   open: boolean;
   onClose: () => void;
   procedureId: string;
@@ -82,7 +82,7 @@ function InventorySidebarWithQueryAndMutations({
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ isSubmitting, handleSubmit, values }) => (
           <SidebarForm onSubmit={handleSubmit}>
-            <SidebarContent title={"Inventar hinzufügen"}>
+            <SidebarContent title="Inventar hinzufügen">
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>
                   <SelectField

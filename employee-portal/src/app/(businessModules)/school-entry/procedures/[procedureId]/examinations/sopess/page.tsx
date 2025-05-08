@@ -69,7 +69,6 @@ export default function SchoolEntrySopessExaminationPage(
       <DisabledFormProvider disabled={procedure.isClosed}>
         <SopessExaminationForm
           initialValues={mapToFormValues(sopessExaminationResult)}
-          onSubmit={handleSubmit}
           valuesToMutationBundle={(values) => ({
             mutationOptions: updateSopessExaminationResultOptions,
             variableSupplier: () =>
@@ -79,6 +78,7 @@ export default function SchoolEntrySopessExaminationPage(
                 sopessExaminationResult.version,
               ),
           })}
+          onSubmit={handleSubmit}
         />
       </DisabledFormProvider>
     </ContentPanel>

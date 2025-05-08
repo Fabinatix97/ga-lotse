@@ -88,8 +88,8 @@ function NewEntrySidebar({
     <Formik
       key={prefilledValues.resourceName}
       initialValues={initialValues}
-      onSubmit={handleSubmitNewEntry}
       validate={validateOpenDataForm}
+      onSubmit={handleSubmitNewEntry}
     >
       {({ isSubmitting, handleSubmit }) => (
         <SidebarForm ref={formRef} onSubmit={handleSubmit}>

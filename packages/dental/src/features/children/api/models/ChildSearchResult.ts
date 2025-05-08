@@ -10,7 +10,7 @@ export interface ChildSearchResult {
   readonly firstName: string;
   readonly lastName: string;
   readonly dateOfBirth: Date;
-  readonly groupName: string;
+  readonly groupName?: string;
   readonly gender?: ApiGender;
 }
 

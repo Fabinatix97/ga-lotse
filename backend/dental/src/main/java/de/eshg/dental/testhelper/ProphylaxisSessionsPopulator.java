@@ -243,12 +243,9 @@ public class ProphylaxisSessionsPopulator
       if (mainResult == MainResultDto.U && ToothDto.isMolar(tooth)) {
         mainResult = MainResultDto.D;
       }
-      SecondaryResultDto secondaryResult1 =
+      SecondaryResultDto secondaryResult =
           optional(faker, randomElement(faker, SecondaryResultDto.values()));
-      SecondaryResultDto secondaryResult2 =
-          optional(faker, randomElement(faker, SecondaryResultDto.values()));
-      toothDiagnoses.add(
-          new ToothDiagnosisDto(tooth, mainResult, secondaryResult1, secondaryResult2));
+      toothDiagnoses.add(new ToothDiagnosisDto(tooth, mainResult, secondaryResult));
     }
     return toothDiagnoses;
   }

@@ -21,7 +21,7 @@ import de.eshg.base.icd10.api.FindIcd10CodesResponse;
 import de.eshg.base.icd10.api.Icd10CodeDto;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -70,17 +70,17 @@ public class Validator {
   private final Icd10CodeApi icd10CodeClient;
   private final ContactClient contactClient;
   private final Clock clock;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
 
   public Validator(
       Icd10CodeApi icd10CodeClient,
       ContactClient contactClient,
       Clock clock,
-      AppointmentBlockProperties appointmentBlockProperties) {
+      AppointmentBlockConfig appointmentBlockConfig) {
     this.icd10CodeClient = icd10CodeClient;
     this.contactClient = contactClient;
     this.clock = clock;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
   }
 
   static void validateOnlyOneOfSearchAndFilterParametersAreSet(
@@ -484,7 +484,7 @@ public class Validator {
   }
 
   public void validateLocationIdForImport(UUID locationId) {
-    if (appointmentBlockProperties.getLocationSelectionMode()
+    if (appointmentBlockConfig.getLocationSelectionMode()
         == LocationSelectionMode.HEALTH_DEPARTMENT) {
       if (locationId == null) {
         throw ExceptionUtil.badRequestExceptionMissingLocationId();

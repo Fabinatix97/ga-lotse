@@ -44,17 +44,17 @@ export function ExaminationTabNavPanel(
   return (
     <Stack gap={3}>
       <SidePanel>
-        <SidePanelTitle component={"h3"} fontSize={"1.25rem"}>
+        <SidePanelTitle component="h3" fontSize="1.25rem">
           Tests
         </SidePanelTitle>
         <SidePanelNav>
           {navItems.map((navItem) => (
-            <SidePanelNavLink href={navItem.href} key={navItem.name}>
-              <Stack direction="row" alignItems={"center"} gap={2}>
-                <Box display={"flex"} justifyContent={"center"}>
+            <SidePanelNavLink key={navItem.name} href={navItem.href}>
+              <Stack direction="row" alignItems="center" gap={2}>
+                <Box display="flex" justifyContent="center">
                   {navItem.icon}
                 </Box>
-                <Box display={"flex"} justifyContent={"center"}>
+                <Box display="flex" justifyContent="center">
                   {navItem.name}
                 </Box>
               </Stack>

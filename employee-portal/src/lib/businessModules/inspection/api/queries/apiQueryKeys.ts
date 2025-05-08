@@ -31,10 +31,6 @@ export const resourceApiQueryKey = queryKeyFactory(
   apiQueryKey(["resourceApi"]),
 );
 
-export const calendarEventApiQueryKey = queryKeyFactory(
-  apiQueryKey(["calendarEventApi"]),
-);
-
 export const inboxProcedureApiQueryKey = queryKeyFactory(
   apiQueryKey(["inboxProcedureApi"]),
 );

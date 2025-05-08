@@ -69,7 +69,7 @@ export function TaskBox({ task }: { task: ApiTask }) {
         flexWrap="wrap"
         paddingTop={1}
       >
-        <Stack spacing={2} direction="row" flexWrap={"wrap"}>
+        <Stack spacing={2} direction="row" flexWrap="wrap">
           <Chip>
             {task.createdAt.toLocaleString("de-DE", {
               dateStyle: "short",

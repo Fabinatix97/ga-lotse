@@ -28,7 +28,7 @@ export interface FeatureToggleQueryOptions<
   throwOnError?: boolean;
 }
 
-export interface UnsuspendedFeatureToggleQueryOptions<
+interface UnsuspendedFeatureToggleQueryOptions<
   TName extends string,
   TValue,
   TResponse extends FeatureToggles<TName> = FeatureToggles<TName>,

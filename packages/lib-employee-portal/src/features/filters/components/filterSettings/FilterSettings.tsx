@@ -9,18 +9,18 @@ import {
   SearchableGroup,
   SearchableGroupItem,
   SearchableGroups,
-} from "@/components/searchableGroups/SearchableGroups";
-import { DateComparisonFilter } from "@/features/filters/components/filterFields/DateComparisonFilter";
-import { DateFilter } from "@/features/filters/components/filterFields/DateFilter";
-import { DateSpanFilter } from "@/features/filters/components/filterFields/DateSpanFilter";
-import { EnumFilter } from "@/features/filters/components/filterFields/EnumFilter";
-import { EnumSingleFilter } from "@/features/filters/components/filterFields/EnumSingleFilter";
-import { NumberFilter } from "@/features/filters/components/filterFields/NumberFilter";
-import { TextFilter } from "@/features/filters/components/filterFields/TextFilter";
-import { YearFilter } from "@/features/filters/components/filterFields/YearFilter";
-import { FilterDefinition } from "@/features/filters/types/FilterDefinition";
-import { FilterDraftValue } from "@/features/filters/types/FilterValue";
-import { findValueByDefinition } from "@/features/filters/utils/findValueByDefinition";
+} from "../../../../components/searchableGroups/SearchableGroups";
+import { FilterDefinition } from "../../types/FilterDefinition";
+import { FilterDraftValue } from "../../types/FilterValue";
+import { findValueByDefinition } from "../../utils/findValueByDefinition";
+import { DateComparisonFilter } from "../filterFields/DateComparisonFilter";
+import { DateFilter } from "../filterFields/DateFilter";
+import { DateSpanFilter } from "../filterFields/DateSpanFilter";
+import { EnumFilter } from "../filterFields/EnumFilter";
+import { EnumSingleFilter } from "../filterFields/EnumSingleFilter";
+import { NumberFilter } from "../filterFields/NumberFilter";
+import { TextFilter } from "../filterFields/TextFilter";
+import { YearFilter } from "../filterFields/YearFilter";
 
 import { ActiveFilter, ActiveFilterProps } from "./ActiveFilter";
 import { FilterSettingsContent } from "./FilterSettingsContent";

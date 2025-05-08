@@ -108,12 +108,12 @@ export function RestoreBackupSidebar({
       <Sidebar open={open} onClose={handleClose}>
         <Formik
           initialValues={initialValues}
-          onSubmit={async (values) => {
-            await handleSubmit(values);
-          }}
           validateOnBlur={false}
           validateOnChange={false}
           validate={validateSecretStoragePassphrase}
+          onSubmit={async (values) => {
+            await handleSubmit(values);
+          }}
         >
           {({ isSubmitting }) => (
             <SidebarForm ref={formRef}>
@@ -125,10 +125,10 @@ export function RestoreBackupSidebar({
                     </Typography>
                   ))}
                   <PasswordField
-                    data-testid={"passphrase"}
-                    label={"Sicherheitsphrase vergeben"}
+                    data-testid="passphrase"
+                    label="Sicherheitsphrase vergeben"
                     name={fieldName("passphrase")}
-                    visibilityLabel={"visiblePassphrase"}
+                    visibilityLabel="visiblePassphrase"
                   />
                   {featureToggleResetPassphraseEnabled && (
                     <Stack direction="row" spacing={0.5}>

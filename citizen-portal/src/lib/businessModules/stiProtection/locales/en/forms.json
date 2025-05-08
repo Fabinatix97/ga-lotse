@@ -16,6 +16,12 @@
     "continue_button": "Continue",
     "back_button": "Back"
   },
+  "gender": {
+    "diverse": "Diverse",
+    "female": "Female",
+    "male": "Male",
+    "not_specified": "Prefer not to answer"
+  },
   "anamnesis": {
     "submit": "Submit medical history",
     "submit_success": "Medical history saved successfully.",
@@ -27,10 +33,14 @@
     "cancel": "Keep appointment",
     "confirm": "Yes, cancel"
   },
+  "leave_without_pin": {
+    "title": "Cancel the appointment?",
+    "message": "The PIN and registration code are required for authentication, we cannot process your appointment correctly without them.",
+    "cancel": "Keep appointment",
+    "confirm": "Yes, cancel"
+  },
   "time_slot": {
     "title": "Available Appointments",
-    "consent_note_title": "Consent",
-    "consent_note_message": "Derpy merpus pee derpler berps! Perp sherper herp terp herpy derpler. Sherper merp herpler herp pee. Derpler terpus, mer re berp der perp se?",
     "no_appointments_available": "Currently no appointments available",
     "try_later": "We will add more appointments shortly. Please try again at a later date."
   },
@@ -51,7 +61,7 @@
   "pin": {
     "title": "Set PIN",
     "submit": "Book appointment",
-    "notice": "To postpone appointments and verify your identity in office, you have to set a personal, numerical 6-digit PIN. The PIN can no longer be changed or checked after confirming.",
+    "notice": "To postpone appointments and verify your identity in office, you have to set a personal, numerical 6-digit PIN. The PIN can no longer be viewed after the appointment has been booked. You can change the PIN later in your area.",
     "set_pin": "PIN to set",
     "set_pin_required": "Please set a PIN.",
     "set_pin_invalid": "Please enter a 6-digit sequence of digits.",
@@ -72,10 +82,10 @@
     "available": "available"
   },
   "share_auth": {
-    "title": "PIN",
+    "title": "Note PIN and Download Document",
     "submit": "Show appointment",
-    "text": "It is important that you keep this PIN in a safe place because it is used to check your identity. You can use this PIN to move or change your appointments at a later date. Without the PIN, we cannot process your applications in the office correctly because it is required for authentication. It is also necessary to download the document that contains your PIN.",
-    "notice": "The PIN is needed for the appointment. Download the identification document and save the PIN.",
+    "text": "It is important that you keep this PIN in a safe place because it is used to check your identity. You can use this PIN to move or change your appointments at a later date. Without the PIN, we cannot process your applications in the office correctly because it is required for authentication. It is also necessary that you download the document.",
+    "notice": "Please make a note of your PIN and bring the document with you to your appointment. Both are required.",
     "pin_title": "Your personal 6-digit PIN:",
     "auth_document_title": "Document for anonymous identification",
     "auth_document_hint": "Please download the document",

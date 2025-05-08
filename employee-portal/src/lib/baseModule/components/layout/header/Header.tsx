@@ -7,23 +7,26 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Typography } from "@mui/joy";
 
-import { useLayoutConfig, useSidenav } from "@eshg/lib-employee-portal";
+import {
+  useIsOffline,
+  useLayoutConfig,
+  useSidenavDrawer,
+} from "@eshg/lib-employee-portal";
 import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 
 import { HeaderButtons } from "@/lib/baseModule/components/layout/header/HeaderButtons";
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function Header() {
-  const sidenav = useSidenav();
+  const sidenavDrawer = useSidenavDrawer();
   const isOffline = useIsOffline();
   const { appBarHeightMobile, appBarHeightDesktop } = useLayoutConfig();
 
   function toggleSidenav(): void {
-    if (sidenav.isOpen) {
-      sidenav.close();
+    if (sidenavDrawer.isOpen) {
+      sidenavDrawer.close();
     } else {
-      sidenav.open();
+      sidenavDrawer.open();
     }
   }
 
@@ -60,13 +63,15 @@ export function Header() {
       >
         {!isOffline && (
           <HeaderIconButton
-            aria-label={sidenav.isOpen ? "navigation-close" : "navigation-open"}
+            aria-label={
+              sidenavDrawer.isOpen ? "navigation-close" : "navigation-open"
+            }
             sx={{
               display: { xxs: "flex", lg: "none" },
             }}
             onClick={toggleSidenav}
           >
-            {sidenav.isOpen ? (
+            {sidenavDrawer.isOpen ? (
               <CloseIcon sx={{ color: "background.body" }} />
             ) : (
               <MenuIcon sx={{ color: "background.body" }} />

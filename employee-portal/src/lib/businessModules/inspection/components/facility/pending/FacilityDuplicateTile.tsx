@@ -11,7 +11,7 @@ import { ApiFacilityForDuplicateReview } from "@eshg/inspection-api";
 
 import { DuplicateTileLine } from "@/lib/businessModules/inspection/components/facility/pending/DuplicateTileLine";
 
-export interface FacilityDuplicateTileProps {
+interface FacilityDuplicateTileProps {
   facility: ApiFacilityForDuplicateReview;
   importedFacility: ApiFacilityForDuplicateReview;
   isImportedFacility: boolean;

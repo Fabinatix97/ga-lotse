@@ -19,5 +19,12 @@ export function validateConfigureDataSourceStep(
       timeSpan: result,
     };
   }
+
+  if (model.anonymizationOptions === "NEITHER") {
+    return {
+      anonymized:
+        "Erstellen einer Auswertung auf Basis dieser Vorlage nicht möglich.",
+    };
+  }
   return undefined;
 }

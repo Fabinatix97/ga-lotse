@@ -140,23 +140,23 @@ export function ProceduresTable(props: ProceduresTableProps) {
               }
               right={props.buttons}
               alignItems="flex-end"
-              invertDomOrder={true}
+              invertDomOrder
             />
           }
           search={
             currentValue === "personSearch" && (
-              <UnstyledTabPanel<PanelName> value={"personSearch"}>
+              <UnstyledTabPanel<PanelName> value="personSearch">
                 <PersonSearchForm
                   {...personSearch.formProps}
-                  onChange={handleChangePersonSearch}
                   allowPartialSearch
+                  onChange={handleChangePersonSearch}
                 />
               </UnstyledTabPanel>
             )
           }
           filterSettings={
             currentValue === "filters" && (
-              <UnstyledTabPanel<PanelName> value={"filters"}>
+              <UnstyledTabPanel<PanelName> value="filters">
                 <ProcedureFilterSettings
                   filterFormValues={filterFormValues}
                   setFilterFormValue={setFilterFormValue}

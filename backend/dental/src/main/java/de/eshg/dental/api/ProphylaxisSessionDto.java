@@ -7,7 +7,6 @@ package de.eshg.dental.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
@@ -17,7 +16,7 @@ public record ProphylaxisSessionDto(
     @NotNull UUID id,
     @NotNull Instant dateAndTime,
     @NotNull @Valid InstitutionDto institution,
-    @NotBlank String groupName,
+    String groupName,
     @NotNull ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     FluoridationVarnishDto fluoridationVarnish,

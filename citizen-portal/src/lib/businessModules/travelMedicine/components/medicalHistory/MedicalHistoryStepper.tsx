@@ -65,13 +65,13 @@ export function MedicalHistoryStepper() {
   return (
     <MultiStepFormWrapper
       initialValues={medicalHistory}
-      onSubmit={(values) => handleSubmit(values)}
       stepperTitle={t("header.stepText", {
         currentStepIndex: currentStep + 1,
         totalSteps: medicalHistory.sections.length,
       })}
       title={t("header.title")}
-      withLogoutButton={true}
+      withLogoutButton
+      onSubmit={(values) => handleSubmit(values)}
     >
       {isMobile ? (
         <OneColumnGrid

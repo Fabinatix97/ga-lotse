@@ -36,7 +36,7 @@ interface ViewEventSidebarProps extends DrawerProps {
   calendars: CalendarInfo[];
 }
 
-export function ViewEventSidebar({
+function ViewEventSidebar({
   event,
   calendars,
   onClose,
@@ -56,7 +56,7 @@ export function ViewEventSidebar({
             calendars.find((calendar) => calendar.id === event.calendarId)!
               .color
           }
-        ></EventView>
+        />
       </SidebarContent>
       <SidebarActions>
         <Stack direction="row" justifyContent="flex-end">

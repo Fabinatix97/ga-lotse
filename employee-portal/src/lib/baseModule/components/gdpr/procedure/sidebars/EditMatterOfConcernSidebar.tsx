@@ -13,10 +13,10 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarWithFormRefProps,
-  TextareaField,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 
@@ -65,22 +65,14 @@ function EditMatterOfConcernSidebar({
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title={"Vorgang bearbeiten"}>
+          <SidebarContent title="Vorgang bearbeiten">
             <Stack gap={2}>
-              <InputField
-                label={"Erstellt"}
-                name={fieldName("date")}
-                readOnly
-              />
-              <InputField
-                label={"Status"}
-                name={fieldName("status")}
-                readOnly
-              />
+              <InputField label="Erstellt" name={fieldName("date")} readOnly />
+              <InputField label="Status" name={fieldName("status")} readOnly />
               <TextareaField
-                label={"Anliegen"}
+                label="Anliegen"
                 name={fieldName("matterOfConcern")}
-                required={"Bitte ein Anliegen angeben."}
+                required="Bitte ein Anliegen angeben."
                 sxTextarea={{
                   minHeight: "6rem",
                 }}
@@ -90,7 +82,7 @@ function EditMatterOfConcernSidebar({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={isSubmitting}
-              submitLabel={"Speichern"}
+              submitLabel="Speichern"
               onCancel={() => onClose(false)}
             />
           </SidebarActions>

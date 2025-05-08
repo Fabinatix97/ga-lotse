@@ -67,16 +67,16 @@ export function ChecklistDefinitionElementMultiInner({
             elementIndex={elementIndex}
             itemIndex={index}
             item={item}
-            onDelete={() => deleteItem(index)}
             hideDeleteButton={hideDeleteButton}
+            onDelete={() => deleteItem(index)}
           />
         );
       })}
       <Button
-        onClick={() => addItem()}
         startDecorator={<Add />}
         sx={{ alignSelf: "flex-start" }}
         variant="plain"
+        onClick={() => addItem()}
       >
         Antwortmöglichkeit hinzufügen
       </Button>

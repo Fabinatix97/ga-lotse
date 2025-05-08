@@ -14,9 +14,9 @@ import {
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-import { useDentalApi } from "@/contexts/dental";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { getProphylaxisSessionQuery } from "@/features/prophylaxisSessions/api/queries/details";
+import { useDentalApi } from "../../../../contexts/dental";
+import { ProphylaxisSessionExamination } from "../models/ProphylaxisSessionExamination";
+import { getProphylaxisSessionQuery } from "../queries/details";
 
 export function useUpdateProphylaxisSession(prophylaxisSessionId: string) {
   const { prophylaxisSessionApi } = useDentalApi();

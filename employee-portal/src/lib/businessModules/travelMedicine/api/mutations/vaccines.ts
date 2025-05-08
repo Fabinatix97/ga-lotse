@@ -9,7 +9,7 @@ import { ApiPostPutVaccineRequest } from "@eshg/travel-medicine-api";
 
 import { useVaccineApi } from "@/lib/businessModules/travelMedicine/api/clients";
 
-export interface PostPutVaccineRequest {
+interface PostPutVaccineRequest {
   id: string;
   values: ApiPostPutVaccineRequest;
 }

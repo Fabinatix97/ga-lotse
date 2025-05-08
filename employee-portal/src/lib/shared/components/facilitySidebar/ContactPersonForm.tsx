@@ -15,7 +15,7 @@ import {
   TITLE_OPTIONS,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { MainContactSwitchField } from "@/lib/shared/components/facilitySidebar/MainContactSwitchField";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
@@ -33,7 +33,7 @@ export function ContactPersonForm({
   extraFieldsBottom,
   allowMainContactPerson,
 }: ContactPersonFormProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper<BaseFacilityContactPerson>(name);
 
   return (

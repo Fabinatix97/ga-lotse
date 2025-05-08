@@ -11,7 +11,6 @@ import { isDefined } from "remeda";
 
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
 import {
-  CheckboxField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -20,6 +19,7 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -51,7 +51,7 @@ const emptyValues: AddServiceFormValues = {
   wholeDay: true,
 };
 
-export function AddServiceFormInputs() {
+function AddServiceFormInputs() {
   const { values, setFieldValue } = useFormikContext<AddServiceFormValues>();
   return (
     <Stack flexDirection="column" gap={2}>
@@ -81,7 +81,7 @@ export function AddServiceFormInputs() {
   );
 }
 
-export function AddServiceFormActions({ onCancel }: { onCancel: () => void }) {
+function AddServiceFormActions({ onCancel }: { onCancel: () => void }) {
   const { isSubmitting } = useFormikContext<AddServiceFormValues>();
   return (
     <FormButtonBar
@@ -92,7 +92,7 @@ export function AddServiceFormActions({ onCancel }: { onCancel: () => void }) {
   );
 }
 
-export function AddServiceForm({
+function AddServiceForm({
   initialValues,
   onSubmit,
   children,
@@ -104,9 +104,9 @@ export function AddServiceForm({
   return (
     <Formik
       initialValues={{ ...emptyValues, ...initialValues }}
-      onSubmit={onSubmit}
       validate={validateEndAfterStart}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       <FormPlus sx={{ display: "contents" }}>{children}</FormPlus>
     </Formik>
@@ -160,7 +160,7 @@ function AddServiceSidebar(props: AddServiceSidebarProps) {
         await saveService(values, undefined);
       }}
     >
-      <SidebarContent title={"Service eintragen"}>
+      <SidebarContent title="Service eintragen">
         <AddServiceFormInputs />
       </SidebarContent>
       <SidebarActions>
@@ -180,7 +180,7 @@ export function useEditServiceSidebar() {
   return useSidebarWithFormRef({ component: EditServiceSidebar });
 }
 
-export function EditServiceSidebar(props: EditServiceSidebarProps) {
+function EditServiceSidebar(props: EditServiceSidebarProps) {
   const { openConfirmationDialog } = useConfirmationDialog();
   const snackbar = useSnackbar();
   const submitCalendarEvent = useSubmitCalendarEvent();
@@ -246,11 +246,11 @@ export function EditServiceSidebar(props: EditServiceSidebarProps) {
       initialValues={mapEventToFormValues(props.event)}
       onSubmit={(values) => saveServiceWithConfirmation(values, props.event)}
     >
-      <SidebarContent title={"Service Eintrag bearbeiten"}>
+      <SidebarContent title="Service Eintrag bearbeiten">
         <AddServiceFormInputs />
       </SidebarContent>
       <SidebarActions>
-        <Stack justifyContent={"space-between"} direction={"row"}>
+        <Stack justifyContent="space-between" direction="row">
           <Button
             variant="plain"
             color="danger"

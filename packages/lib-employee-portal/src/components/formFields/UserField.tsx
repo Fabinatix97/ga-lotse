@@ -75,9 +75,6 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
           field.input.value.includes(option.userId),
         )}
         disableClearable={field.required}
-        onChange={(_, newValue) => {
-          setValue(newValue.map((user) => user.userId));
-        }}
         filterOptions={(options, params) => {
           const { inputValue } = params;
           return options.filter((opt) => {
@@ -92,18 +89,17 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
             return matchesOption && !matchesSelectedUser;
           });
         }}
-        onBlur={field.input.onBlur}
         placeholder={props.placeholder}
         options={props.options}
         getOptionLabel={(value) => formatUserName(value)}
         getOptionKey={(value) => value.userId}
         renderTags={(options, getTagProps) =>
           options.map((item, index) => (
-            <Tooltip title={getAvailability(item).title} key={index}>
+            <Tooltip key={index} title={getAvailability(item).title}>
               <Chip
-                variant={"soft"}
+                variant="soft"
                 color={getAvailability(item).color}
-                size={"sm"}
+                size="sm"
                 endDecorator={<Close fontSize="sm" />}
                 sx={{ minWidth: 0 }}
                 {...getTagProps({ index })}
@@ -119,6 +115,10 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
             disablePortal: true,
           },
         }}
+        onChange={(_, newValue) => {
+          setValue(newValue.map((user) => user.userId));
+        }}
+        onBlur={field.input.onBlur}
       />
     </BaseField>
   );

@@ -21,9 +21,9 @@ import {
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 
-import { useSearchInstitutionGroupsQuery } from "@/api/queries/groups";
-import { ProcedureLabelFilter } from "@/components/procedureLabels/ProcedureLabelFilter";
-import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
+import { useSearchInstitutionGroupsQuery } from "../../../../api/queries/groups";
+import { ProcedureLabelFilter } from "../../../../components/procedureLabels/ProcedureLabelFilter";
+import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 
 export type ChildrenFilters = Pick<
   GetChildrenRequest,
@@ -98,6 +98,11 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
           <ResettableSingleSelect
             aria-label="Gruppe"
             value={props.filterFormValues.groupNameFilter ?? ""}
+            otherEndDecorator={
+              searchGroups.isLoading ? (
+                <CircularProgress size="sm" />
+              ) : undefined
+            }
             onChange={(_, newValue) => {
               if (newValue === null) {
                 return;
@@ -107,11 +112,6 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
             onResetSelect={() => {
               props.setFilterFormValue("groupNameFilter", undefined);
             }}
-            otherEndDecorator={
-              searchGroups.isLoading ? (
-                <CircularProgress size="sm" />
-              ) : undefined
-            }
           >
             <SelectOptions options={groupOptions} />
           </ResettableSingleSelect>

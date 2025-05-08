@@ -15,11 +15,8 @@ import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-import { useDentalApi } from "@/contexts/dental";
-import {
-  getChildDetailsQuery,
-  getExaminationQuery,
-} from "@/features/children/api/queries/details";
+import { useDentalApi } from "../../../../contexts/dental";
+import { getChildDetailsQuery, getExaminationQuery } from "../queries/details";
 
 export function useUpdateAnnualChildPerson(childId: string) {
   const { childApi } = useDentalApi();

@@ -11,7 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 
-import { ProphylaxisSessionsTable } from "@/features/prophylaxisSessions/components/prophylaxisSessionsOverview/ProphylaxisSessionsTable";
+import { ProphylaxisSessionsTable } from "../components/prophylaxisSessionsOverview/ProphylaxisSessionsTable";
 
 export function DentalProphylaxisSessionsOverviewPage() {
   return (

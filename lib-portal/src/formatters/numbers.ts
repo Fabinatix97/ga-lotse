@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type LOCALE_OPTION = "auto" | "manual";
-
 interface AutoLocale {
   localeOption: "auto";
 }

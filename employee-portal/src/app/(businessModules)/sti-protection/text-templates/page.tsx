@@ -14,7 +14,7 @@ import { TextTemplatesOverviewTable } from "@/lib/businessModules/stiProtection/
 export default function TextTemplatesOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Textvorlagen" />}>
-      <MainContentLayout>
+      <MainContentLayout fullViewportHeight>
         <TextTemplatesOverviewTable />
       </MainContentLayout>
     </StickyToolbarLayout>

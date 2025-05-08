@@ -49,8 +49,8 @@ These are necessary for the e2e tests and for developing performance tests again
 [cols="1,1"]
 |===
 | *Command*                                     | *Description*
-| `./gradlew [project-name]:run`                | Start the application in production mode
-| `./gradlew [project-name]:runDev [-Pwebpack]` | Start the application in development mode (hot-code reloading). Use `-Pwebpack` to use webpack instead of Turbopack (default).
+| `./gradlew [project-name]:run [-Pturbo]`      | Start the application in production mode. Use `-Pwebpack` to use Turbopack instead of Webpack (default).
+| `./gradlew [project-name]:runDev [-Pwebpack]` | Start the application in development mode (hot-code reloading). Use `-Pwebpack` to use Webpack instead of Turbopack (default).
 | `./gradlew [project-name]:build`              | Run all checks and builds the {project-name}
 | `./gradlew [project-name]:test [-Pcoverage]`  | Run all tests in a single run. Add `-Pcoverage` to enable coverage reporting.
 | `./gradlew [project-name]:testWatch`          | Run all tests in watch mode (reruns tests when they change)
@@ -58,13 +58,56 @@ These are necessary for the e2e tests and for developing performance tests again
 | `./gradlew [project-name]:inspect`            | Inspects the project for unused files, dependencies and exports
 | `./gradlew [project-name]:inspectFix`         | Automatically fixes inspection issues.
 |===
-*Notice:* The `run` task is recommended over the `runDev` task for demos and reviews, because in development mode, pages will be built ad-hoc. This can significantly reduce the runtime performance, especially when using screen sharing.
 
 *Notice:* Please replace `[project-name]` with the corresponding name of the subproject, e.g., `employee-portal`.
+
+=== Tasks for portal subprojects
+
+[cols="1,1"]
+|===
+| *Command*                                     | *Description*
+| `./gradlew [project-name]:run`                | Start the application in production mode
+| `./gradlew [project-name]:runDev [-Pwebpack]` | Start the application in development mode (hot-code reloading). Use `-Pwebpack` to use webpack instead of Turbopack (default).
+| `./gradlew [project-name]:analyzeBundle`      | Generates a visual report of the size of each module and their dependencies
+|===
+
+*Notice:* The `run` task is recommended over the `runDev` task for demos and reviews, because in development mode, pages will be built ad-hoc. This can significantly reduce the runtime performance, especially when using screen sharing.
 
 *Development mode:* Use the development mode if you are actively developing and want to use hot-code reloading. The development mode has short startup times, but is slower when initially rendering a page. In development mode, each page is built ad-hoc upon navigation.
 
 *Production mode:* Use the production mode if you are not actively developing or want to run a lot of e2e tests. The production mode builds everything upfront which takes a while. Once the server is started, all pages are available immediately. However, when new changes are added the production server to be stopped and rebuilt.
+
+=== Tasks for library subprojects
+
+[cols="1,1"]
+|===
+| *Command*                      | *Description*
+| `./gradlew [project-name]:dev` | Compiles the library in watch mode, enabling HMR during development
+|===
+
+*Notice:* The `dev` task can be used in combination with the `runDev` task to enable HMR while developing in a library used by an application:
+
+.Example
+[,sh]
+-----
+./gradlew :dental:dev
+./gradlew :employee-portal:runDev -PskipBundle=dental
+-----
+
+For HMR to work correctly:
+
+- `dev` needs to be started and ready before `runDev`
+- `-PskipBundle` needs to be set to the library subproject to skip normal bundling, which is not compatible with HMR
+
+To run multiple packages in dev mode, correct ordering from generic to specific and parameterization is required:
+
+.Example
+[,sh]
+-----
+./gradlew :lib-employee-portal:dev
+./gradlew :dental:dev -PskipBundle=lib-employee-portal
+./gradlew :employee-portal:runDev -PskipBundle=lib-employee-portal,dental
+-----
 
 == E2E Tasks
 The e2e tasks run in the e2e project.

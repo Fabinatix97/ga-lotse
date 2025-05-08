@@ -40,12 +40,12 @@ export function UnstyledTabs<T extends TabProps["value"] | null>({
         backgroundColor: "inherit",
         height: "100%",
       }}
+      value={tabValue}
       onChange={(_e, value) => {
         if (previousTabValue !== value) {
           setTabValue(value as T | null);
         }
       }}
-      value={tabValue}
       {...props}
     >
       {isFunction(children)

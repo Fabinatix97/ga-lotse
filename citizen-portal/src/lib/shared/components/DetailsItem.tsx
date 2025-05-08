@@ -3,21 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Stack, StackProps, Typography, TypographyProps } from "@mui/joy";
-import { ComponentType, ReactNode, useId } from "react";
-import { isString } from "remeda";
+import { Stack, StackProps, TypographyProps } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
+import { ReactNode } from "react";
 
-import { SectionStack } from "@/lib/shared/components/infoSection";
+import {
+  BaseDetailsItem,
+  BaseDetailsItemLabel,
+  BaseDetailsItemProps,
+  BaseDetailsItemValue,
+} from "@eshg/lib-portal/components/details/BaseDetailsItem";
 
-export interface DetailsItemProps<TLabelProps, TValueProps> {
-  label: TypographyProps["children"];
-  value: TypographyProps["children"] | undefined;
+interface DetailsItemProps<
+  TLabelProps extends TypographyProps,
+  TValueProps extends TypographyProps,
+> extends Omit<BaseDetailsItemProps<TLabelProps, TValueProps>, "slotProps"> {
   icon?: ReactNode;
-
-  slots?: {
-    label?: ComponentType<TLabelProps>;
-    value?: ComponentType<TValueProps>;
-  };
+  hiddenLabel?: boolean;
   slotProps?: {
     label?: Omit<TLabelProps, "children">;
     value?: Omit<TValueProps, "children">;
@@ -27,81 +29,53 @@ export interface DetailsItemProps<TLabelProps, TValueProps> {
 }
 
 export function DetailsItem<
-  TLabelProps = TypographyProps,
-  TValueProps = TypographyProps,
->(props: DetailsItemProps<TLabelProps, TValueProps>) {
-  const LabelComponent = props.slots?.label ?? DetailsItemLabel;
-  const DefaultValueComponent = DetailsItemValue;
-  const ValueComponent = props.slots?.value ?? DefaultValueComponent;
+  TLabelProps extends TypographyProps,
+  TValueProps extends TypographyProps,
+>({
+  hiddenLabel = false,
+  ...props
+}: DetailsItemProps<TLabelProps, TValueProps>) {
+  const isVisuallyHidden = hiddenLabel ? visuallyHidden : undefined;
 
-  const labelProps = props.slotProps?.label;
-  const valueProps = props.slotProps?.value;
+  const LabelComponent = props.slots?.label ?? DetailsItemLabelCitizen;
+  const ValueComponent = props.slots?.value ?? DetailsItemValueCitizen;
 
-  const isValueEmpty =
-    props.value === undefined ||
-    (isString(props.value) && props.value.trim() === "");
-
-  const id = useId();
-
-  if (isValueEmpty) {
-    return null;
-  }
+  const labelProps = { sx: isVisuallyHidden, ...props.slotProps?.label };
+  const stackProps = props.slotProps?.stack;
 
   return (
-    <SectionStack
-      component="section"
+    <Stack
       direction="row"
       gap={2}
       sx={{ ...props.slotProps?.root?.sx }}
+      {...props.slotProps?.root}
     >
       {props.icon}
-      <Stack
-        gap={0.5}
-        {...props.slotProps?.stack}
-        sx={{
-          overflow: "hidden",
-          flexGrow: 1,
-          ...props.slotProps?.stack?.sx,
+      <BaseDetailsItem
+        {...props}
+        slots={{ label: LabelComponent, value: ValueComponent }}
+        slotProps={{
+          stack: {
+            gap: 0.5,
+            ...stackProps,
+            sx: {
+              overflow: "hidden",
+              flexGrow: 1,
+              ...stackProps?.sx,
+            },
+          },
+          label: { ...(labelProps as TLabelProps) },
+          ...props.slotProps,
         }}
-      >
-        <LabelComponent {...(labelProps as TLabelProps)} id={id}>
-          {props.label}
-        </LabelComponent>
-        <ValueComponent {...(valueProps as TValueProps)} aria-labelledby={id}>
-          {props.value}
-        </ValueComponent>
-      </Stack>
-    </SectionStack>
+      />
+    </Stack>
   );
 }
 
-export function DetailsItemLabel({ sx, ...props }: TypographyProps) {
-  return (
-    <Typography
-      level="title-md"
-      noWrap
-      sx={{
-        width: "fit-content",
-        maxWidth: "100%",
-        ...sx,
-      }}
-      {...props}
-    />
-  );
+export function DetailsItemLabelCitizen(props: Omit<TypographyProps, "level">) {
+  return <BaseDetailsItemLabel level="title-md" {...props} />;
 }
 
-export function DetailsItemValue({ sx, ...props }: TypographyProps) {
-  return (
-    <Typography
-      level="body-md"
-      sx={{
-        hyphens: "auto",
-        textWrap: "pretty",
-        wordBreak: "normal",
-        overflowWrap: "anywhere",
-        ...sx,
-      }}
-      {...props}
-    />
-  );
+export function DetailsItemValueCitizen(props: Omit<TypographyProps, "level">) {
+  return <BaseDetailsItemValue level="body-md" {...props} />;
 }

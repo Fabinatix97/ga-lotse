@@ -15,11 +15,11 @@ import {
 } from "formik";
 import { PropsWithChildren } from "react";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -77,8 +77,8 @@ export function DiagnosisForm({
   return (
     <Formik
       initialValues={mapApiToForm(diagnosis)}
-      onSubmit={onSubmit}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values }) => (
         <FormPlus sx={{ height: "100%" }}>
@@ -251,11 +251,11 @@ function MedicationsSection({ remove, push, form }: FieldArrayRenderProps) {
             <IconButton
               title={`Medikament ${index + 1} löschen`}
               color="danger"
-              onClick={() => remove(index)}
               sx={{
                 alignSelf: "start",
                 marginTop: verticallyAlignWithRowInputFieldMargin,
               }}
+              onClick={() => remove(index)}
             >
               <Delete />
             </IconButton>

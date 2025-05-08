@@ -21,14 +21,14 @@ import {
 import { Fragment, ReactNode } from "react";
 import { isDefined, isFunction } from "remeda";
 
-import { NoEntriesMessage } from "@/components/NoEntriesMessage";
-import { addFeatureColumns } from "@/features/table/components/columns/addFeatureColumns";
-import { RowNavigation } from "@/features/table/types/rowNavigation";
-import { RowSelectionProps } from "@/features/table/types/rowSelection";
-import { SubRowColumns } from "@/features/table/types/subRowColumns";
-import { TableSortingProps } from "@/features/table/types/tableSorting";
+import { NoEntriesMessage } from "../../../components/NoEntriesMessage";
+import { RowNavigation } from "../types/rowNavigation";
+import { RowSelectionProps } from "../types/rowSelection";
+import { SubRowColumns } from "../types/subRowColumns";
+import { TableSortingProps } from "../types/tableSorting";
 
 import { HeaderCell } from "./cells/HeaderCell";
+import { addFeatureColumns } from "./columns/addFeatureColumns";
 import { TableRow } from "./rows/TableRow";
 import { TableSubRow } from "./rows/TableSubRow";
 

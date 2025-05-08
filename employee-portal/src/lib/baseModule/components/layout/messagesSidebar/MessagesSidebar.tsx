@@ -31,11 +31,11 @@ function MessagesSidebar({ onClose }: DrawerProps) {
       <SidebarActions>
         <Button
           sx={{ alignSelf: "end" }}
+          endDecorator={<OpenInNew />}
           onClick={() => {
             onClose();
             tryNavigate(routes.chat);
           }}
-          endDecorator={<OpenInNew />}
         >
           Chatbereich
         </Button>

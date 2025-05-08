@@ -16,7 +16,7 @@ import { entityToString } from "@/lib/helpers/entityToString";
 import { partitionByUuids } from "@/lib/helpers/uuid";
 import { useOrgUnitsQuery } from "@/lib/hooks/useOrgUnits";
 
-export class ErrorMessage {
+class ErrorMessage {
   message: string;
 
   tokens: string[];

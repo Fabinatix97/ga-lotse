@@ -9,11 +9,11 @@ import { useId } from "react";
 
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 
-import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
+import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 
 import { DownloadDocumentCard } from "./DownloadDocumentCard";
 
-export interface DownloadDocumentCardFieldProps {
+interface DownloadDocumentCardFieldProps {
   documentTitle: string;
   required: string;
   hint: string;
@@ -43,7 +43,7 @@ export function DownloadDocumentCardField(
   return (
     <FormControl
       error={error}
-      component={"section"}
+      component="section"
       aria-describedby={sectionDescId}
     >
       <DownloadDocumentCard
@@ -52,8 +52,8 @@ export function DownloadDocumentCardField(
         documentTitle={props.documentTitle}
         downloadLabel={props.downloadLabel}
         downloadedLabel={props.downloadedLabel}
-        onClick={() => downloadAnonIdentificationDoc()}
         hasDownloadedDoc={hasDownloadedDoc}
+        onClick={() => downloadAnonIdentificationDoc()}
       />
       <FormHelperText>{helperText}</FormHelperText>
     </FormControl>

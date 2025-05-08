@@ -3,13 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationState } from "@/stores/examination/examinationStore";
-import {
-  ElementContext,
-  ExaminationView,
-  Tooth,
-  ToothElement,
-} from "@/stores/examination/types";
+import { ExaminationState } from "../examinationStore";
+import { ElementContext, Tooth, ToothElement } from "../types";
 
 type FocusOutputState = Pick<ExaminationState, "currentFocus">;
 
@@ -23,11 +18,8 @@ export function setFocus(
   };
 }
 
-export function initElement(
-  view: ExaminationView,
-  toothType: Tooth["type"],
-): ToothElement {
-  if (toothType === "AddableTooth" || view === "FULL_DENTITION") {
+export function initElement(toothType: Tooth["type"]): ToothElement {
+  if (toothType === "AddableTooth") {
     return "toothButton";
   }
 

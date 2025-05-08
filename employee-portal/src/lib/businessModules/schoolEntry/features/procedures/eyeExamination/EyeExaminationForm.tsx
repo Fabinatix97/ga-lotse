@@ -8,12 +8,9 @@
 import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
-import {
-  CheckboxField,
-  FormFooter,
-  FormStack,
-  TextareaField,
-} from "@eshg/lib-employee-portal";
+import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   FormProps,
   OptionalFieldValue,
@@ -155,10 +152,10 @@ export function EyeExaminationForm(props: EyeExaminationFormProps) {
             <Grid xs={6} xxl={2} spacing={3}>
               <SetAllExaminationResultsSelect
                 label="Alle"
+                orientation="vertical"
                 onChange={(value) =>
                   setAllExaminationFields(value, setFieldValue)
                 }
-                orientation="vertical"
               />
             </Grid>
             <Grid xs={12} xxl={5}>
@@ -172,7 +169,7 @@ export function EyeExaminationForm(props: EyeExaminationFormProps) {
                 />
                 <Stack gap={3} direction="row">
                   {CHECKBOX_GROUPS.map((checkboxes, index) => (
-                    <Stack gap={3} key={index}>
+                    <Stack key={index} gap={3}>
                       {checkboxes.map(({ name, label }) => (
                         <CheckboxField
                           key={name}

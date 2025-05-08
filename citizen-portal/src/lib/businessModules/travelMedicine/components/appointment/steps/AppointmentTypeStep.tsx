@@ -113,7 +113,7 @@ export function AppointmentTypeStep() {
         <FormSheetTitle>{t("appointmentTypeFormContent.title")}</FormSheetTitle>
         <Alert
           title={t("appointmentTypeFormContent.infoHeader")}
-          color={"primary"}
+          color="primary"
           message={<AlertMessage />}
           messageComponent="span"
         />
@@ -121,7 +121,7 @@ export function AppointmentTypeStep() {
           name="initialStepAppointmentType"
           sx={{ gap: 2 }}
           required={t("appointmentTypeFormContent.fields.error")}
-          withErrorDecorator={true}
+          withErrorDecorator
           onChange={() => {
             if (isAppointmentResetNeeded()) {
               resetAppointmentBlockDateValue();
@@ -153,7 +153,7 @@ export function AppointmentTypeStep() {
                 alignItems: "center",
               }),
             }}
-          ></RadioSheet>
+          />
           <RadioSheet
             label={t("appointmentTypeFormContent.fields.consultation.label")}
             value={ApiAppointmentType.Consultation}
@@ -179,7 +179,7 @@ export function AppointmentTypeStep() {
                 alignItems: "center",
               }),
             }}
-          ></RadioSheet>
+          />
         </RadioGroupField>
 
         <Typography>
@@ -199,9 +199,9 @@ export function AppointmentTypeStep() {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography level={"title-md"}>
+            <Typography level="title-md">
               {t("appointmentTypeFormContent.confirmation.label")}
-              <Typography level={"body-md"}>
+              <Typography level="body-md">
                 {t("appointmentTypeFormContent.confirmation.subtitle")}
               </Typography>
             </Typography>
@@ -221,8 +221,8 @@ export function AppointmentTypeStep() {
 
       <InfoModal
         modalTitle={modalTitle}
-        onClose={() => setIsOpen((isOpen) => !isOpen)}
         open={isOpen}
+        onClose={() => setIsOpen((isOpen) => !isOpen)}
       >
         {handleModalText(allAppointmentTypesForCitizen, modalTitle, t)}
       </InfoModal>

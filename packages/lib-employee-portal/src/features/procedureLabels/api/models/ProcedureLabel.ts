@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseEntity, mapBaseEntity } from "@/api/models/BaseEntity";
-import { Versioned, mapVersioned } from "@/api/models/Versioned";
+import { BaseEntity, mapBaseEntity } from "../../../../api/models/BaseEntity";
+import { Versioned, mapVersioned } from "../../../../api/models/Versioned";
 
 export interface ProcedureLabel extends BaseEntity, Versioned {
   readonly name: string;

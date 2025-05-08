@@ -11,7 +11,7 @@ import { SupportedLanguage } from "@/lib/i18n/options";
 import { useGivenLang } from "@/lib/i18n/useLang";
 import { accessCodeRoute } from "@/lib/shared/helpers/accessCode";
 
-export function citizenRoutes(locale: SupportedLanguage | undefined) {
+function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
     `${baseRoutes(locale).citizenPath.index}/sexuelle-gesundheit`,
     (stiProtectionPath) => ({
@@ -41,8 +41,6 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
     }),
   );
 }
-
-export type CitizenRoutes = ReturnType<typeof citizenRoutes>;
 
 export function useCitizenRoutes() {
   const locale = useGivenLang();

@@ -20,10 +20,10 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
-  TextareaField,
   useGetSelfUser,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
 import {
@@ -31,7 +31,7 @@ import {
   useUpdateChecklistDefinitionToCentralRepo,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 
-export interface UploadChecklistToRepoSidebarProps {
+interface UploadChecklistToRepoSidebarProps {
   open: boolean;
   onClose: () => void;
   checklistDefinition?: ApiChecklistDefinition;
@@ -98,7 +98,7 @@ function UploadChecklistToRepoSidebarWithMutations({
     <Sidebar open={open} onClose={handleClose}>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
+          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
             <SidebarContent
               title={
                 create ? "Checkliste hochladen" : "Checkliste aktualisieren"
@@ -111,13 +111,13 @@ function UploadChecklistToRepoSidebarWithMutations({
                   required={create ? "Bitte einen Kontakt angeben." : undefined}
                 />
                 <TextareaField
-                  name={"description"}
-                  label={"Beschreibung"}
+                  name="description"
+                  label="Beschreibung"
                   required={
                     create ? "Bitte eine Beschreibung angeben." : undefined
                   }
                 />
-                <TextareaField name={"changeLog"} label={"Änderungshinweis"} />
+                <TextareaField name="changeLog" label="Änderungshinweis" />
               </Stack>
             </SidebarContent>
             <SidebarActions>

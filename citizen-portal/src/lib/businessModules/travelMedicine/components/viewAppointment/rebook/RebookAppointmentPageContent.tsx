@@ -3,10 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from "@tanstack/react-query";
 import { isAfter, isEqual } from "date-fns";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import {
+  getCloseable,
+  getErrorAction,
+  getErrorDescription,
+} from "@eshg/lib-portal/errorHandling/errorMappers";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { ApiAppointment } from "@eshg/travel-medicine-api";
 
@@ -14,6 +22,7 @@ import {
   PutAppointmentRequest,
   usePutAppointment,
 } from "@/lib/businessModules/travelMedicine/api/mutations/citizenAuthApi";
+import { citizenPublicApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/apiQueryKeys";
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { NoAppointments } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/NoAppointments";
 import { NoAppointmentsContent } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/NoAppointmentsContent";
@@ -21,6 +30,7 @@ import { useIdContext } from "@/lib/businessModules/travelMedicine/components/sh
 import { RebookAppointment } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointment";
 import { RebookAppointmentSidePanel } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointmentSidePanel";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import {
   OneColumnGrid,
@@ -43,6 +53,9 @@ export function RebookAppointmentPageContent() {
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const putAppointment = usePutAppointment();
+  const alert = useAlert();
+  const { t } = useTranslation(["travelMedicine/rebookAppointment"]);
+  const queryClient = useQueryClient();
 
   const freeAppointments = useGetFreeAppointmentsForCitizen(
     idContext.appointmentDetails.summaryDto.appointmentType,
@@ -69,6 +82,34 @@ export function RebookAppointmentPageContent() {
     };
     await putAppointment.mutateAsync(request, {
       onSuccess: () => routeBackToDetails(),
+      onError: (error) => {
+        if (
+          error instanceof Error &&
+          error.message.startsWith("The requested time slot does not")
+        ) {
+          alert.error({
+            message: t("errors.concurrentAppointment", {
+              context: "errorMessage",
+            }),
+          });
+          void (async () =>
+            await queryClient.invalidateQueries({
+              queryKey: citizenPublicApiQueryKey([
+                "getFreeAppointmentsForCitizen",
+              ]),
+            }));
+        } else {
+          const { errorCode } = resolveError(error);
+          const { title, message } = getErrorDescription(errorCode);
+
+          alert.error({
+            title,
+            message,
+            action: getErrorAction(errorCode),
+            closeable: getCloseable(errorCode),
+          });
+        }
+      },
     });
   }
 

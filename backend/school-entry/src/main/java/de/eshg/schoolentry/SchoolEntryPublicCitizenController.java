@@ -60,13 +60,13 @@ public class SchoolEntryPublicCitizenController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNoticeDe();
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicyDe();
+    return privacyDocumentService.getPrivacyPolicy();
   }
 }

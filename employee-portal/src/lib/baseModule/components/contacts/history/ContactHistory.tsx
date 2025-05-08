@@ -15,16 +15,16 @@ import {
   ApiPersonContactChange,
   ApiUser,
 } from "@eshg/base-api";
+import {
+  Timeline,
+  TimelineEntry,
+  TimelineEntryProps,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 
 import { HistoryEntryIndicator } from "@/lib/baseModule/components/contacts/history/HistoryEntryIndicator";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { Timeline } from "@/lib/shared/components/timeline/Timeline";
-import {
-  TimelineEntry,
-  TimelineEntryProps,
-} from "@/lib/shared/components/timeline/TimelineEntry";
 
 export function ContactHistory({
   history,
@@ -49,7 +49,7 @@ export function ContactHistory({
             title={title}
             label={label}
             indicator={
-              <HistoryEntryIndicator entryType={entry.type} variant={"soft"} />
+              <HistoryEntryIndicator entryType={entry.type} variant="soft" />
             }
             buttonProps={{
               onClick: () =>

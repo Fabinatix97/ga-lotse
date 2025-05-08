@@ -22,7 +22,7 @@ import {
   validateAllChecklists,
 } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
 
-export interface ValidationErrors {
+interface ValidationErrors {
   elementId: string;
   element: RefObject<HTMLDivElement | null>;
   errors: FormikErrors<CLFormElement> | null;

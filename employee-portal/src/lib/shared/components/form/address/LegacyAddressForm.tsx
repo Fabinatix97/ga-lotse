@@ -11,11 +11,8 @@ import { useState } from "react";
 
 import { CountryField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiCountryCode } from "@eshg/measles-protection-api";
 
@@ -26,9 +23,6 @@ const LEGACY_ADDRESS_TYPE_LABELS = {
   [ApiFacilityAddressType.Postal]: "Postanschrift",
   [ApiFacilityAddressType.Billing]: "Rechnungsanschrift",
 };
-
-export const LEGACY_ADDRESS_TYPE_OPTIONS =
-  buildEnumOptions<ApiFacilityAddressType>(LEGACY_ADDRESS_TYPE_LABELS);
 
 export interface LegacyBaseAddress {
   addressAddition?: string;
@@ -62,7 +56,7 @@ interface LegacyAddressFormProps extends NestedFormProps {
 }
 
 export function LegacyAddressForm(props: LegacyAddressFormProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper(props.name);
   const { setFieldValue } = useFormikContext<LegacyPerson>();
   const [show, setShow] = useState(props.show ?? !props.isOptional);
@@ -71,6 +65,10 @@ export function LegacyAddressForm(props: LegacyAddressFormProps) {
     <>
       {props.isOptional && !show && (
         <Button
+          variant="plain"
+          color="primary"
+          startDecorator={<AddIcon />}
+          sx={{ alignSelf: "start" }}
           onClick={() => {
             setShow(true);
             return setFieldValue(
@@ -78,10 +76,6 @@ export function LegacyAddressForm(props: LegacyAddressFormProps) {
               createEmptyLegacyAddress(props.type),
             );
           }}
-          variant="plain"
-          color="primary"
-          startDecorator={<AddIcon />}
-          sx={{ alignSelf: "start" }}
         >
           {`Abweichende ${LEGACY_ADDRESS_TYPE_LABELS[props.type]} eingeben`}
         </Button>

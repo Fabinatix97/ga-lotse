@@ -39,7 +39,7 @@ export function StaticActorSelectorCell(
         columnId={props.column.id}
         rowId={props.row.original.id}
         linkName={linkName}
-      ></ActorsChip>
+      />
     </Stack>
   );
 }

@@ -23,7 +23,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -49,7 +49,7 @@ public class AppointmentBlockGroupsPopulator
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
   private final AppointmentBlockController appointmentBlockController;
   private final AppointmentBlockGroupRepository appointmentBlockGroupRepository;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
   private final Optional<TechnicalGroup> groupPhysicians;
   private final Optional<TechnicalGroup> groupMfas;
   private final Optional<TechnicalGroup> groupConsultants;
@@ -64,7 +64,7 @@ public class AppointmentBlockGroupsPopulator
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       AppointmentBlockController appointmentBlockController,
       AppointmentBlockGroupRepository appointmentBlockGroupRepository,
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       @Qualifier(TECHNICAL_GROUP_PHYSICIANS) Optional<TechnicalGroup> groupPhysicians,
       @Qualifier(TECHNICAL_GROUP_MFAS) Optional<TechnicalGroup> groupMfas,
       @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants,
@@ -82,7 +82,7 @@ public class AppointmentBlockGroupsPopulator
     this.appointmentBlockController =
         RequestContextFaker.withFakedRequestContextsIfNecessary(appointmentBlockController);
     this.appointmentBlockGroupRepository = appointmentBlockGroupRepository;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
     this.groupPhysicians = groupPhysicians;
     this.groupMfas = groupMfas;
     this.groupConsultants = groupConsultants;
@@ -102,7 +102,7 @@ public class AppointmentBlockGroupsPopulator
   protected CreateAppointmentBlockGroupResponse populate(
       int index, Faker faker, UniqueValueProvider uniqueValueProvider) {
     List<AppointmentType> appointmentTypes =
-        appointmentBlockProperties.getDefaultAppointmentTypeConfiguration().keySet().stream()
+        appointmentBlockConfig.getDefaultAppointmentTypeConfiguration().keySet().stream()
             .sorted()
             .toList();
 
@@ -119,7 +119,7 @@ public class AppointmentBlockGroupsPopulator
     Instant start = zonedDateTimeStart.toInstant();
     DayOfWeekDto dayOfWeek = DayOfWeekDtoMapper.toDto(zonedDateTimeStart.getDayOfWeek());
     Duration appointmentDuration =
-        appointmentBlockProperties.getDefaultAppointmentTypeConfiguration().get(type);
+        appointmentBlockConfig.getDefaultAppointmentTypeConfiguration().get(type);
     Instant end = start.plus(appointmentDuration.multipliedBy(faker.random().nextInt(1, 5)));
 
     List<UUID> physicianIds = getRandomUserIdAsList(faker, groupPhysicians);
@@ -127,7 +127,7 @@ public class AppointmentBlockGroupsPopulator
     List<UUID> consultantIds = getRandomUserIdAsList(faker, groupConsultants);
 
     UUID locationId =
-        switch (appointmentBlockProperties.getLocationSelectionMode()) {
+        switch (appointmentBlockConfig.getLocationSelectionMode()) {
           case NONE -> null;
           case HEALTH_DEPARTMENT ->
               getIdOfFirstContactForCategory(InstitutionContactCategoryDto.HEALTH_DEPARTMENT);

@@ -133,8 +133,8 @@ export function ExpandedNavigationErrorItem({
     <>
       <ModuleErrorModal
         open={errorModalOpen}
-        onClose={() => setErrorModalOpen(false)}
         moduleName={item.name}
+        onClose={() => setErrorModalOpen(false)}
       />
       <ListItem>
         <ListItemButton
@@ -196,12 +196,12 @@ export function ExpandedNavigationParentItem({
     <ListItem nested>
       <ListItemButton
         role="button"
-        onClick={() => setExpanded((prevState) => !prevState)}
         selected={selected && !expanded}
         sx={listItemButtonStyle(expanded)}
         id={buttonId}
         aria-expanded={expanded}
         aria-controls={expandableContentId}
+        onClick={() => setExpanded((prevState) => !prevState)}
       >
         <Decorator selected={selected}>{item.decorator}</Decorator>
         <ItemLabel selected={selected}>{item.name}</ItemLabel>

@@ -55,9 +55,7 @@ export function useRelationshipModelOptions(): SelectOption<string, string>[] {
   ];
 }
 
-export type NotEndsWith<T, K extends string> = T extends `${infer _J}${K}`
-  ? never
-  : T;
+type NotEndsWith<T, K extends string> = T extends `${infer _J}${K}` ? never : T;
 
 export type ExaminableIllnesses = NotEndsWith<keyof ApiExamination, "Date">;
 

@@ -29,7 +29,11 @@ public final class ChildMapper {
 
   public static void mapToChild(CreateChildRequest request, Child child) {
     child.setYear(Year.of(request.year()));
-    child.setGroupName(request.groupName());
+    if (request.groupName() != null) {
+      child.setGroupName(request.groupName().trim());
+    } else {
+      child.setGroupName(null);
+    }
     child.setInstitutionId(request.institutionId());
   }
 
@@ -63,7 +67,10 @@ public final class ChildMapper {
         augmentedChild.personData().contactAddress(),
         augmentedChild.personData().differentBillingAddress(),
         augmentedChild.child().getYear().getValue(),
-        augmentedChild.child().getGroupName(),
+        augmentedChild.child().getGroupName() != null
+                && !augmentedChild.child().getGroupName().isBlank()
+            ? augmentedChild.child().getGroupName().trim()
+            : null,
         ProcedureLabelMapper.toDto(augmentedChild.child().getProcedureLabels()),
         mapExaminationsToDto(examinations),
         institutions == null ? List.of() : institutions,

@@ -72,31 +72,31 @@ export function ProcedureMetricsDisplay() {
       />
       <Stack role="list" direction="row" flexWrap="wrap" gap={2}>
         <FlashCard
-          color={"background"}
+          color="background"
           title={columnName.totalCount}
           figure={`${sumProcedureCounts("totalCount")}`}
           icon={<DeviceHubOutlined fontSize="xl4" />}
         />
         <FlashCard
-          color={"warning"}
+          color="warning"
           title={columnName.openOrDraftCount}
           figure={`${sumProcedureCounts("openOrDraftCount")}`}
           icon={<OpenInNewOutlined fontSize="xl4" />}
         />
         <FlashCard
-          color={"primary"}
+          color="primary"
           title={columnName.inProgressCount}
           figure={`${sumProcedureCounts("inProgressCount")}`}
           icon={<EditOutlined fontSize="xl4" />}
         />
         <FlashCard
-          color={"danger"}
+          color="danger"
           title={columnName.abortedCount}
           figure={`${sumProcedureCounts("abortedCount")}`}
           icon={<WarningAmberOutlined fontSize="xl4" />}
         />
         <FlashCard
-          color={"success"}
+          color="success"
           title={columnName.closedCount}
           figure={`${sumProcedureCounts("closedCount")}`}
           icon={<CheckOutlined fontSize="xl4" />}

@@ -14,10 +14,10 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
@@ -46,8 +46,8 @@ export function ResourceForm(props: ResourceFormProps) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
@@ -60,21 +60,21 @@ export function ResourceForm(props: ResourceFormProps) {
               />
               {props.canChooseType && (
                 <SelectField
-                  name={"type"}
-                  label={"Typ"}
+                  name="type"
+                  label="Typ"
                   options={resourceTypeOptions}
-                  required={"Bitte einen Typ angeben"}
+                  required="Bitte einen Typ angeben"
                 />
               )}
-              <InputField name={"articleNumber"} label={"Artikelnummer"} />
+              <InputField name="articleNumber" label="Artikelnummer" />
               <LabelField
                 options={props.labels.map((label) => label.name)}
-                name={"labelNames"}
-                label={"Labels"}
+                name="labelNames"
+                label="Labels"
               />
               <TextareaField
-                name={"description"}
-                label={"Beschreibung"}
+                name="description"
+                label="Beschreibung"
                 sxTextarea={{ minHeight: 130 }}
               />
             </Stack>

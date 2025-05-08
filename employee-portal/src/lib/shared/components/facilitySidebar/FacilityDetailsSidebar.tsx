@@ -47,7 +47,7 @@ export type ReferenceFacilityWithOptionalMeaslesFacilityType =
     measlesFacilityType?: MeaslesFacilityTypeSelectFormValues;
   };
 
-export interface FacilityDetailsSidebarProps {
+interface FacilityDetailsSidebarProps {
   title: string;
   submitLabel: string;
   facility: ReferenceFacilityWithOptionalMeaslesFacilityType;
@@ -69,8 +69,8 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
         ...props.facility,
         measlesFacilityType: { type: "", otherFacilityTypeInformation: "" },
       }}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm>
@@ -79,7 +79,7 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
             subtitle="Ausgewählte Einrichtung"
           >
             <Stack gap={2}>
-              <DetailsItem label={"Name"} value={facility.name} />
+              <DetailsItem label="Name" value={facility.name} />
               {props.showMeaslesFacilityType && <MeaslesFacilityTypeSelect />}
 
               {isDefined(facility.contactAddress) && (
@@ -104,14 +104,14 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
                   {facility.emailAddresses.map((email, index) => (
                     <DetailsItem
                       key={`${email}-${index}`}
-                      label={"E-Mail-Adresse"}
+                      label="E-Mail-Adresse"
                       value={email}
                     />
                   ))}
                   {facility.phoneNumbers.map((phoneNumber, index) => (
                     <DetailsItem
                       key={`${phoneNumber}-${index}`}
-                      label={"Telefonnummer"}
+                      label="Telefonnummer"
                       value={phoneNumber}
                     />
                   ))}
@@ -144,8 +144,8 @@ function ContactPersonDetails(props: {
     props.contactPersons.length > 0 && (
       <>
         <Divider />
-        <Typography level={"title-md"}>Kontaktpersonen</Typography>
-        <StyledAccordionGroup variant={"outlined"}>
+        <Typography level="title-md">Kontaktpersonen</Typography>
+        <StyledAccordionGroup variant="outlined">
           {props.contactPersons.map((person, index) => (
             <Accordion
               key={`${person.firstName}.${person.lastName}.${index}`}
@@ -157,7 +157,7 @@ function ContactPersonDetails(props: {
               <AccordionDetails>
                 <DetailsRow>
                   <DetailsItem
-                    label={"Anrede"}
+                    label="Anrede"
                     value={
                       isDefined(person.salutation)
                         ? SALUTATION_VALUES[person.salutation]
@@ -165,23 +165,20 @@ function ContactPersonDetails(props: {
                     }
                   />
                   <DetailsItem
-                    label={"Titel"}
+                    label="Titel"
                     value={getOptionalTitle(person.title)}
                   />
                 </DetailsRow>
-                <DetailsItem label={"Rolle"} value={person.role} />
+                <DetailsItem label="Rolle" value={person.role} />
                 <DetailsRow>
-                  <DetailsItem label={"Vorname"} value={person.firstName} />
-                  <DetailsItem label={"Nachname"} value={person.lastName} />
+                  <DetailsItem label="Vorname" value={person.firstName} />
+                  <DetailsItem label="Nachname" value={person.lastName} />
                 </DetailsRow>
                 <DetailsItem
-                  label={"E-Mail-Adresse"}
+                  label="E-Mail-Adresse"
                   value={person.emailAddress}
                 />
-                <DetailsItem
-                  label={"Telefonnummer"}
-                  value={person.phoneNumber}
-                />
+                <DetailsItem label="Telefonnummer" value={person.phoneNumber} />
               </AccordionDetails>
             </Accordion>
           ))}

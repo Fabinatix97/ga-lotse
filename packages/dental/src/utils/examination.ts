@@ -5,23 +5,30 @@
 
 import { isDefined } from "remeda";
 
-import { ApiDecayStatus, ApiDentitionType } from "@eshg/dental-api";
+import {
+  ApiDecayStatus,
+  ApiDentitionType,
+  ApiToothDiagnosis,
+} from "@eshg/dental-api";
 import { formatBoolean } from "@eshg/lib-employee-portal";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import { ExaminationResult } from "@/api/models/ExaminationResult";
-import { DecayHistoryItem } from "@/components/examination/DecayHistorySidebar";
-import { DecayHistoryRow } from "@/components/examination/DecayHistoryTable";
-import { calculateDmftValuesByDentitionType } from "@/stores/examination/actions/dmftValues";
-import { calculateDecayRiskValue } from "@/stores/examination/selectors/decayRisk";
-import { selectDecayStatus } from "@/stores/examination/selectors/decayStatus";
-import { selectDmftValues } from "@/stores/examination/selectors/dmftValues";
-import { DECAY_STATUS } from "@/translations/examination";
+import {
+  ExaminationResult,
+  ToothDiagnoses,
+} from "../api/models/ExaminationResult";
+import { DecayHistoryItem } from "../components/examination/DecayHistorySidebar";
+import { DecayHistoryRow } from "../components/examination/DecayHistoryTable";
+import { calculateDmftValuesByDentitionType } from "../stores/examination/actions/dmftValues";
+import { calculateDecayRiskValue } from "../stores/examination/selectors/decayRisk";
+import { selectDecayStatus } from "../stores/examination/selectors/decayStatus";
+import { selectDmftValues } from "../stores/examination/selectors/dmftValues";
+import { DECAY_STATUS } from "../translations/examination";
 import {
   AdditionalInformationFormValues,
   ExaminationFormValues,
-} from "@/types/examination";
+} from "../types/examination";
 
 const EMPTY_VALUE = "-";
 
@@ -125,4 +132,14 @@ function mapExaminationResultFormValues(
     gingivitis: false,
     parodontitis: false,
   };
+}
+
+export function mapToothDiagnosesToRequest(
+  toothDiagnoses: ToothDiagnoses,
+): ApiToothDiagnosis[] {
+  return Object.values(toothDiagnoses).map((toothDiagnosis) => ({
+    tooth: toothDiagnosis.tooth,
+    mainResult: toothDiagnosis.mainResult,
+    secondaryResult: toothDiagnosis.secondaryResult,
+  }));
 }

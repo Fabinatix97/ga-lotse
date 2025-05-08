@@ -45,9 +45,7 @@ const initialValues = {
 
 type InitialValues = typeof initialValues;
 
-export type MakeRequest = (
-  authData: AuthDict | null,
-) => Promise<UIAResponse<void>>;
+type MakeRequest = (authData: AuthDict | null) => Promise<UIAResponse<void>>;
 
 export interface SSOAuthModalValues {
   makeRequest: MakeRequest;
@@ -173,9 +171,6 @@ export function CreateBackupSidebar({
       <Sidebar open={open} onClose={handleClose}>
         <Formik
           initialValues={initialValues}
-          onSubmit={async (values) => {
-            await handleSubmit(values);
-          }}
           validate={(values) => {
             if (
               !validatePassword(values.passphrase, values.repeatedPassphrase)
@@ -185,6 +180,9 @@ export function CreateBackupSidebar({
           }}
           validateOnBlur={false}
           validateOnChange={false}
+          onSubmit={async (values) => {
+            await handleSubmit(values);
+          }}
         >
           {({ isSubmitting, values, errors }) => (
             <SidebarForm ref={formRef}>
@@ -196,16 +194,16 @@ export function CreateBackupSidebar({
                     </Typography>
                   ))}
                   <PasswordField
-                    data-testid={"passphrase"}
-                    label={"Sicherheitsphrase vergeben"}
+                    data-testid="passphrase"
+                    label="Sicherheitsphrase vergeben"
                     name={fieldName("passphrase")}
-                    visibilityLabel={"visiblePassphrase"}
+                    visibilityLabel="visiblePassphrase"
                   />
                   <PasswordField
-                    data-testid={"repeatedPassphrase"}
-                    label={"Sicherheitsphrase wiederholen"}
+                    data-testid="repeatedPassphrase"
+                    label="Sicherheitsphrase wiederholen"
                     name={fieldName("repeatedPassphrase")}
-                    visibilityLabel={"visibleRepeatedPassphrase"}
+                    visibilityLabel="visibleRepeatedPassphrase"
                   />
                 </Stack>
                 <PasswortRequirementHints
@@ -244,7 +242,7 @@ function PasswortRequirementHints({
   return (
     <Stack gap={0.5} mt={3}>
       {erroneous && (
-        <Typography mb={2} color={"danger"} fontSize={"small"}>
+        <Typography mb={2} color="danger" fontSize="small">
           Bitte beachten Sie die Sicherheitsphrasenanforderungen
         </Typography>
       )}
@@ -252,7 +250,7 @@ function PasswortRequirementHints({
       <Typography
         mb={1}
         color={erroneous ? "danger" : "neutral"}
-        fontSize={"small"}
+        fontSize="small"
       >
         Anforderungen an Sicherheitsphrasen:
       </Typography>
@@ -260,11 +258,11 @@ function PasswortRequirementHints({
       {getPasswordValidityInfo(password, repeatedPassword).map(
         ({ message, valid }) => (
           <Typography
-            fontWeight={"lighter"}
-            startDecorator={getPasswordRuleDecorator(valid)}
             key={message}
+            fontWeight="lighter"
+            startDecorator={getPasswordRuleDecorator(valid)}
             color={getPasswordRuleColor(valid, erroneous)}
-            fontSize={"small"}
+            fontSize="small"
           >
             {message}
           </Typography>

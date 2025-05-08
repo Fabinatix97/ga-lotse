@@ -26,10 +26,10 @@ export function ReadOnlyCLDElementMultiSelect(
       <List sx={{ rowGap: 2 }} aria-label="Antwortmöglichkeiten">
         {element.items?.map((option) => (
           <FieldOption
+            key={option.id}
             option={option}
             type={element.type}
             elementTitle={`${sectionIndex + 1}.${elementIndex + 1}.`}
-            key={option.id}
           />
         ))}
       </List>

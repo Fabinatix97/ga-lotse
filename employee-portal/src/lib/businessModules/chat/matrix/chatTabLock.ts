@@ -13,7 +13,7 @@ import { logger } from "@/lib/businessModules/chat/shared/helpers";
  * Reason to do this is to prevent corrupting indexedDB crypto store by multiple
  * instances of matrixClients overwriting encryption keys inside it.
  */
-export const TAB_LOCK_CONSTANTS = {
+const TAB_LOCK_CONSTANTS = {
   CHAT_LOCK_HEARTBEAT: "mx_chat_lock_heartbeat",
   MOST_RECENT_CHAT_TAB_ID: "mx_most_recent_chat_tab_id",
   TAB_LOCK_TIMEOUT_MS: 30000,

@@ -8,16 +8,17 @@ import { Radio, Stack } from "@mui/joy";
 import { FormikValues } from "formik";
 
 import {
-  CheckboxField,
+  FileCard,
+  FileCardProps,
   FileField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 
 import { OpeningHoursField } from "@/lib/configurator/components/shared/OpeningHoursField";
-import { FileCard, FileCardProps } from "@/lib/shared/components/FileCard";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
 interface Width {
@@ -208,7 +209,7 @@ export function RenderField({
         >
           <Stack gap={2}>
             {field.options.map((option) => (
-              <Stack direction="row" gap={1} key={option.value}>
+              <Stack key={option.value} direction="row" gap={1}>
                 <Radio
                   value={option.value}
                   label={option.label}

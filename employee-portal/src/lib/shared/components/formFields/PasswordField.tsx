@@ -26,7 +26,6 @@ export function PasswordField(props: Readonly<PasswordInputProps>) {
       {...props}
       type={visible ? "text" : "password"}
       untrimmedInput
-      onBlur={() => setVisible(false)}
       endDecorator={
         <IconButton
           sx={{
@@ -43,6 +42,7 @@ export function PasswordField(props: Readonly<PasswordInputProps>) {
           {visible ? <VisibilityOffOutlined /> : <VisibilityOutlined />}
         </IconButton>
       }
+      onBlur={() => setVisible(false)}
     />
   );
 }

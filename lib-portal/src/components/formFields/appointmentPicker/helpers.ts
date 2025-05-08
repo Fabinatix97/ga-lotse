@@ -75,7 +75,7 @@ export function getDaysInAndAroundMonth(
   return days;
 }
 
-export function monthNameForm(locale: string) {
+function monthNameForm(locale: string) {
   return Intl.DateTimeFormat(locale, { month: "long" });
 }
 
@@ -133,15 +133,6 @@ export function formatTime(date: Date, locale: string, trimLeading?: boolean) {
     return trimLeadingZero(formatted);
   }
   return formatted;
-}
-
-export function dateFullForm(locale: string) {
-  return Intl.DateTimeFormat(locale, {
-    month: "long",
-    day: "numeric",
-    weekday: "long",
-    year: "numeric",
-  });
 }
 
 export function isSameAppointment(

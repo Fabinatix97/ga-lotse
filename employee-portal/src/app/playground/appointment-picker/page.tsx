@@ -24,8 +24,8 @@ import { AppointmentListProps } from "@eshg/lib-portal/components/formFields/app
 import {
   AppointmentPickerField,
   AppointmentPickerLayoutProps,
-  FIELD_LABELS_DE,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 const now = new Date();
@@ -76,7 +76,7 @@ export default function AppointmentPickerPlaygroundPage() {
                 currentMonth={month}
                 setCurrentMonth={setMonth}
                 monthAppointments={appointments}
-                required={true}
+                required
                 labels={FIELD_LABELS_DE}
               />
               <div>
@@ -98,7 +98,7 @@ export default function AppointmentPickerPlaygroundPage() {
                 currentMonth={month}
                 setCurrentMonth={setMonth}
                 monthAppointments={appointments}
-                required={true}
+                required
                 labels={FIELD_LABELS_DE}
                 layout={AltLayout}
                 appointmentList={AltAppointmentList}
@@ -159,15 +159,15 @@ function AltAppointmentList<T extends Appointment>({
           const isSelected = field.input.value === apt;
           return (
             <ListItem
-              sx={{ padding: 0, minHeight: 0 }}
               key={apt.start.getTime()}
+              sx={{ padding: 0, minHeight: 0 }}
             >
               <time dateTime={apt.start.toTimeString().slice(0, 5)}>
                 <Button
                   type="submit"
-                  onClick={createOnSelected(apt)}
                   aria-selected={isSelected}
                   sx={{ display: "flex", justifyContent: "center", gap: 1 }}
+                  onClick={createOnSelected(apt)}
                 >
                   {isSelected && <CheckBox />}
                   {apt.start.toLocaleTimeString()}

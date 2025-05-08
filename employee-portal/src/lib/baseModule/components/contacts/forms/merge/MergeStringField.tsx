@@ -10,7 +10,7 @@ import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
-export interface MergeStringFieldProps extends FieldProps<string> {
+interface MergeStringFieldProps extends FieldProps<string> {
   target: string | undefined;
   source: string | undefined;
   getOptionLabel?: (value: string) => string | undefined;
@@ -76,11 +76,11 @@ export function MergeStringField({
 
   return (
     <SelectField
-      placeholder={"Auswählen..."}
+      placeholder="Auswählen..."
       options={selectOptions}
       sx={{ flex: 1 }}
       {...fieldProps}
-      required={"Bitte auswählen"}
+      required="Bitte auswählen"
       renderValue={(option) => getLabel(normalizeValue(option?.value))}
     />
   );
@@ -92,7 +92,7 @@ function AnnotatedSelectOption(props: { label: string; title: string }) {
       <Typography fontSize="xs" fontWeight="lg" textColor="text.secondary">
         {props.title}
       </Typography>
-      <Typography level={"body-md"}>{props.label}</Typography>
+      <Typography level="body-md">{props.label}</Typography>
     </Stack>
   );
 }

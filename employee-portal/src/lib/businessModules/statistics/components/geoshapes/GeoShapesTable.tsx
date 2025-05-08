@@ -38,7 +38,7 @@ function ImportGeoShapesButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-export interface GeoShapesTableProps {
+interface GeoShapesTableProps {
   onImportGeoShapesClick: () => void;
 }
 
@@ -134,8 +134,8 @@ export function GeoShapesTable({
               <NoSearchResults
                 info="Keine Geo-Shapes vorhanden"
                 buttonLabel="Geo-Shapes importieren"
-                onClick={onImportGeoShapesClick}
                 decorator={<FileUploadOutlinedIcon />}
+                onClick={onImportGeoShapesClick}
               />
             </Box>
           )}

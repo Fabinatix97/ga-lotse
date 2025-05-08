@@ -7,6 +7,7 @@ import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isNonNullish } from "remeda";
 
+import { useTranslation } from "../../i18n/useTranslation";
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 import { YearInput } from "../inputs/YearInput";
@@ -34,12 +35,13 @@ export function YearField({
   sx,
   ...props
 }: YearFieldProps) {
+  const { t } = useTranslation();
   const field = useBaseField<number>({
     name: name,
     type: "number",
     validate: (input) => {
       if (isNonNullish(input) && (input < min || input > max)) {
-        return `Bitte ein Jahr zwischen ${min} und ${max} eingeben`;
+        return t("validation.pleaseEnterYearInRange", { min, max });
       }
       return undefined;
     },

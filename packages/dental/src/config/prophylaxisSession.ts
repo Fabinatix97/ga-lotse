@@ -16,7 +16,7 @@ import {
   FLUORIDATION_VARNISH_TYPES,
   PROPHYLAXIS_STATUS,
   PROPHYLAXIS_TYPES,
-} from "@/translations/prophylaxisSession";
+} from "../translations/prophylaxisSession";
 
 export const DENTITION_TYPE_OPTIONS =
   buildEnumOptions<ApiDentitionType>(DENTITION_TYPES);

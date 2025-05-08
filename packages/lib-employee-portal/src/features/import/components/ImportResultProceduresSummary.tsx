@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { SummaryItem } from "@/features/import/components/SummaryItem";
+import { SummaryItem } from "./SummaryItem";
 
 interface ImportResultProcedures {
   created: number;

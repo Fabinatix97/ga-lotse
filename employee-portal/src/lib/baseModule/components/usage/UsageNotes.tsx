@@ -17,8 +17,8 @@ function Section({
   children,
 }: PropsWithChildren<{ id: string; title: string }>) {
   return (
-    <Stack component={"section"} aria-labelledby={id} gap={1}>
-      <Typography level={"h2"} id={id}>
+    <Stack component="section" aria-labelledby={id} gap={1}>
+      <Typography level="h2" id={id}>
         {title}
       </Typography>
       {children}
@@ -30,16 +30,16 @@ export function UsageNotes() {
   return (
     <StaticTextDocumentPanel>
       <Section
-        id={"general-recommendations"}
-        title={"Generelle Empfehlungen zur Nutzung"}
+        id="general-recommendations"
+        title="Generelle Empfehlungen zur Nutzung"
       >
         <Typography>
           Wir empfehlen die Beachtung der folgenden Hinweise zur sicheren
           Benutzung des Online-Portals.
         </Typography>
-        <Stack component={"ol"} gap={1}>
+        <Stack component="ol" gap={1}>
           <li>
-            <Typography level={"title-md"}>
+            <Typography level="title-md">
               Aktuellen Browser und Betriebssystem verwenden
             </Typography>
             <Typography>
@@ -54,7 +54,7 @@ export function UsageNotes() {
             </Typography>
           </li>
           <li>
-            <Typography level={"title-md"}>
+            <Typography level="title-md">
               Gerät bei Nichtbenutzung sperren
             </Typography>
             <Typography>
@@ -64,7 +64,7 @@ export function UsageNotes() {
             </Typography>
           </li>
           <li>
-            <Typography level={"title-md"}>
+            <Typography level="title-md">
               Browser nach der Nutzung der Anwendung schließen
             </Typography>
             <Typography>
@@ -76,11 +76,7 @@ export function UsageNotes() {
         </Stack>
         <Typography>
           Weitere Hinweise zur sicheren Nutzung finden Sie auf den{" "}
-          <LinkInNewTab
-            href={
-              "https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/cyber-sicherheitsempfehlungen_node.html"
-            }
-          >
+          <LinkInNewTab href="https://www.bsi.bund.de/DE/Themen/Verbraucherinnen-und-Verbraucher/Informationen-und-Empfehlungen/Cyber-Sicherheitsempfehlungen/cyber-sicherheitsempfehlungen_node.html">
             Webseiten
           </LinkInNewTab>{" "}
           des Bundesamts für Sicherheit in der Informationstechnik (BSI).
@@ -88,8 +84,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"passkey-passwordless-logins"}
-        title={"Hinweise zur Nutzung von Passkeys und passwortloser Anmeldung"}
+        id="passkey-passwordless-logins"
+        title="Hinweise zur Nutzung von Passkeys und passwortloser Anmeldung"
       >
         <Typography>
           Zur sicheren Anmeldung am Mitarbeitenden-Portal und Admin-Funktionen
@@ -109,8 +105,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"passkey-usage-possibilities"}
-        title={"Möglichkeiten der Nutzung von Passkeys"}
+        id="passkey-usage-possibilities"
+        title="Möglichkeiten der Nutzung von Passkeys"
       >
         <Typography>
           Bei der Nutzung von Passkeys sind verschiedene Optionen möglich.
@@ -128,8 +124,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"different-devices-and-logins"}
-        title={"Unterschiedliche Arten von Geräten und Anmeldungen"}
+        id="different-devices-and-logins"
+        title="Unterschiedliche Arten von Geräten und Anmeldungen"
       >
         <Typography>
           Zur Nutzung von Passkeys werden die Möglichkeiten mittels FIDO-Token
@@ -147,10 +143,7 @@ export function UsageNotes() {
         </Typography>
       </Section>
 
-      <Section
-        id={"passkey-registration"}
-        title={"Registrierung eines Passkeys"}
-      >
+      <Section id="passkey-registration" title="Registrierung eines Passkeys">
         <Typography>
           Zur Registrierung eines Passkeys erhalten Sie eine E-Mail. Nach Klick
           auf den entsprechenden Registrierungslink können Sie ihren Passkeys
@@ -163,8 +156,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"hardware-passkey-usage"}
-        title={"Nutzung von Passkeys mittels Hardware-Token"}
+        id="hardware-passkey-usage"
+        title="Nutzung von Passkeys mittels Hardware-Token"
       >
         <Typography>
           Passkeys können via USB-Stick mittels FIDO Standard genutzt werden.
@@ -181,8 +174,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"smartphone-passkeys"}
-        title={"Nutzung von Passkeys mittels Smartphone"}
+        id="smartphone-passkeys"
+        title="Nutzung von Passkeys mittels Smartphone"
       >
         <Typography>
           Zur Nutzung von Passkeys mittels Smartphone kann entweder der Passkey
@@ -194,8 +187,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"lost-passkey-protocol"}
-        title={"Umgang mit Verlust eines Passkeys"}
+        id="lost-passkey-protocol"
+        title="Umgang mit Verlust eines Passkeys"
       >
         <Typography>
           Bei Verlust eines Passkeys kann der jeweilige Passkey im Admin-Portal
@@ -205,8 +198,8 @@ export function UsageNotes() {
       </Section>
 
       <Section
-        id={"passkey-synchronization"}
-        title={"Synchronisation von Passkeys"}
+        id="passkey-synchronization"
+        title="Synchronisation von Passkeys"
       >
         <Typography>
           Es wird nicht empfohlen, Passkeys über Dienste von Dritten (iCloud,

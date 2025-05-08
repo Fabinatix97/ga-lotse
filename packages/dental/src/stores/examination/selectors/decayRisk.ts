@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationState } from "@/stores/examination/examinationStore";
+import { ExaminationState } from "../examinationStore";
 
 import { selectDmftValues } from "./dmftValues";
 

@@ -12,7 +12,7 @@ export interface EvaluationTemplateTableView {
   evaluationTemplates: EvaluationTemplateWithUserInfo[];
 }
 
-export interface EvaluationTemplate {
+interface EvaluationTemplate {
   id: string;
   name: string;
   createdAt: Date;

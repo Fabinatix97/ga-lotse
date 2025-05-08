@@ -40,34 +40,32 @@ export function ApprovalRequestsOverviewSidebar({
   }
 
   return (
-    <>
-      <Sidebar open={open} onClose={onClose}>
-        <SidebarContent title={`Löschanfragen (${approvalRequests.length})`}>
-          <Stack spacing={1}>
-            {approvalRequests.map((approvalRequest) => (
-              <ApprovalRequestCard
-                data-testid="approvalRequestCard"
-                key={approvalRequest.approvalRequestId}
-                {...approvalRequest}
-              />
-            ))}
-          </Stack>
-        </SidebarContent>
-        <SidebarActions>
-          <ButtonBar
-            left={
-              <Button color="neutral" variant="soft" onClick={onClose}>
-                Schließen
-              </Button>
-            }
-            right={
-              <Button color="danger" variant="solid" onClick={deleteAll}>
-                Alle löschen
-              </Button>
-            }
-          />
-        </SidebarActions>
-      </Sidebar>
-    </>
+    <Sidebar open={open} onClose={onClose}>
+      <SidebarContent title={`Löschanfragen (${approvalRequests.length})`}>
+        <Stack spacing={1}>
+          {approvalRequests.map((approvalRequest) => (
+            <ApprovalRequestCard
+              key={approvalRequest.approvalRequestId}
+              data-testid="approvalRequestCard"
+              {...approvalRequest}
+            />
+          ))}
+        </Stack>
+      </SidebarContent>
+      <SidebarActions>
+        <ButtonBar
+          left={
+            <Button color="neutral" variant="soft" onClick={onClose}>
+              Schließen
+            </Button>
+          }
+          right={
+            <Button color="danger" variant="solid" onClick={deleteAll}>
+              Alle löschen
+            </Button>
+          }
+        />
+      </SidebarActions>
+    </Sidebar>
   );
 }

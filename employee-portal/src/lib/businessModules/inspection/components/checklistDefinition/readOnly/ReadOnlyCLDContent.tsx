@@ -24,9 +24,9 @@ export function ReadOnlyCLDContent({
       <Stack gap={3}>
         {cldVersion.context.sections.map((section, index) => (
           <ReadOnlyCLDSection
+            key={section.id}
             section={section}
             sectionIndex={index}
-            key={section.id}
           />
         ))}
       </Stack>

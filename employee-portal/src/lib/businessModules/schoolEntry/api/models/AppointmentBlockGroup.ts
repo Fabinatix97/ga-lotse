@@ -57,7 +57,7 @@ export function mapAppointmentBlockGroup(
   };
 }
 
-export function mapAppointmentBlock(
+function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
 ): AppointmentBlock {
   return {

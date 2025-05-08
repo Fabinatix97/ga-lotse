@@ -24,9 +24,9 @@ export function ProcessImportButton({
 
   return (
     <Button
-      onClick={open}
       variant="outlined"
       startDecorator={<FileUploadOutlinedIcon />}
+      onClick={open}
     >
       Daten Importieren
     </Button>

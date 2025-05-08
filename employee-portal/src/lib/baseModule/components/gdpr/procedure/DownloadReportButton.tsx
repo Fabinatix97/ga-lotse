@@ -34,12 +34,12 @@ export function DownloadReportButton({
     <Sheet>
       <Button
         loading={loading}
-        loadingPosition={"start"}
-        onClick={() => openPreview()}
+        loadingPosition="start"
         sx={{
           width: "100%",
           minWidth: "fit-content",
         }}
+        onClick={() => openPreview()}
       >
         Antrag Dokument ansehen
       </Button>

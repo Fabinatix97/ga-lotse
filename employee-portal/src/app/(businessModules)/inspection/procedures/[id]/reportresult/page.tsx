@@ -29,9 +29,7 @@ export default function InspectionTabReportResultPage(
   if (disabled) {
     return (
       <InspectionTabDisabled
-        message={
-          "Um einen Bericht zu erstellen, muss eine Begehung abgeschlossen sein."
-        }
+        message="Um einen Bericht zu erstellen, muss eine Begehung abgeschlossen sein."
         margin={24}
         procedureId={id}
       />

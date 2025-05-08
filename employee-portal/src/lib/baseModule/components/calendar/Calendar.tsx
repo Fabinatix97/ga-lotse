@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  EventSourceFuncArg,
-  EventSourceInput,
-} from "@fullcalendar/core/index.js";
+import { EventSourceFuncArg, EventSourceInput } from "@fullcalendar/core";
 import deLocale from "@fullcalendar/core/locales/de";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
@@ -69,7 +66,7 @@ interface FullCalendarViewState {
   type: CalendarViewType;
 }
 
-export interface CalendarProps {
+interface CalendarProps {
   calendars: CalendarInfo[];
   displayedCalendarIds: string[];
   onNewEventButtonClick: () => void;
@@ -210,32 +207,32 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
         <HeaderToolbar
           title={fullCalendarView.title}
           viewType={fullCalendarView.type}
+          goToToday={() => fullCalendarRef.current?.getApi().today()}
+          goToPrevious={() => fullCalendarRef.current?.getApi().prev()}
+          goToNext={() => fullCalendarRef.current?.getApi().next()}
           onViewTypeChange={(view) => {
             queueMicrotask(() => {
               fullCalendarRef.current?.getApi().changeView(view);
             });
           }}
-          goToToday={() => fullCalendarRef.current?.getApi().today()}
-          goToPrevious={() => fullCalendarRef.current?.getApi().prev()}
-          goToNext={() => fullCalendarRef.current?.getApi().next()}
           onNewEventButtonClick={props.onNewEventButtonClick}
           onSettingsButtonClick={props.onSettingsButtonClick}
         />
         <Stack
           padding={2}
-          borderRadius={"lg"}
-          border={"1px solid"}
-          borderColor={"divider"}
-          color={"text.secondary"}
+          borderRadius="lg"
+          border="1px solid"
+          borderColor="divider"
+          color="text.secondary"
           flex={1}
           sx={(theme) => calendarSxProps(theme, fullCalendarView.type)}
         >
           <FullCalendar
-            eventTextColor={theme.palette.text.primary}
             ref={fullCalendarRef}
+            eventTextColor={theme.palette.text.primary}
             plugins={[timeGridPlugin, dayGridPlugin, listPlugin]}
             scrollTime={format(new Date(), "HH:00:00")}
-            height={"100%"}
+            height="100%"
             datesSet={({ view }) => {
               setFullCalendarView({
                 title: view.title,
@@ -253,11 +250,11 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
             eventSources={eventSources}
             headerToolbar={false}
             locale={deLocale}
-            nowIndicator={true}
+            nowIndicator
             weekNumbers={
               fullCalendarView.type === CalendarViewTypes.TimeGridWeek
             }
-            slotDuration={"01:00"}
+            slotDuration="01:00"
             slotLabelFormat={{
               hour: "numeric",
               minute: "2-digit",
@@ -288,7 +285,7 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
               hour: "numeric",
               minute: "2-digit",
             }}
-            defaultRangeSeparator={" bis "}
+            defaultRangeSeparator=" bis "
           />
         </Stack>
       </Stack>

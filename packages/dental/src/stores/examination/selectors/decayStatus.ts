@@ -5,7 +5,7 @@
 
 import { ApiDecayStatus } from "@eshg/dental-api";
 
-import { DmftValuesState } from "@/stores/examination/examinationStore";
+import { DmftValuesState } from "../examinationStore";
 
 import { selectDmftValues } from "./dmftValues";
 

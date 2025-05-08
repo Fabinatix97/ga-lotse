@@ -58,7 +58,7 @@ export default function InventoryDetailsPage(
       <MainContentLayout>
         <Stack gap={2}>
           {hasWritePerms && (
-            <Stack direction={"row"} justifyContent={"flex-end"}>
+            <Stack direction="row" justifyContent="flex-end">
               <Button
                 startDecorator={<AddIcon />}
                 sx={{ width: "fit-content" }}

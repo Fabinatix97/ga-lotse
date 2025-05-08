@@ -11,8 +11,8 @@ import {
   BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 
-import { useCloseProphylaxisSession } from "@/features/prophylaxisSessions/api/mutations/details";
-import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { useCloseProphylaxisSession } from "../../api/mutations/details";
+import { useProphylaxisSessionStore } from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 export function CloseProphylaxisSessionModal(
   props: Omit<BaseModalPropsRequiredClose, "children" | "modalTitle">,

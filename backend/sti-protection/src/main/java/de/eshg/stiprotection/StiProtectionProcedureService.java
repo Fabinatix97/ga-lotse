@@ -126,17 +126,19 @@ public class StiProtectionProcedureService {
   }
 
   public StiProtectionProcedure createProcedure(
-      Concern concern, StiProcedureOrigin stiProcedureOrigin) {
+      Concern concern, ProcedureStatus status, StiProcedureOrigin stiProcedureOrigin) {
     StiProtectionProcedure procedure =
-        StiProtectionProcedure.newProcedure(concern, stiProcedureOrigin, clock, auditLogger);
+        StiProtectionProcedure.newProcedure(
+            concern, status, stiProcedureOrigin, clock, auditLogger);
     procedure.addTask(createTask());
     return repository.save(procedure);
   }
 
   public StiProtectionProcedure saveProcedure(
-      Concern concern, StiProcedureOrigin stiProcedureOrigin) {
+      Concern concern, ProcedureStatus status, StiProcedureOrigin stiProcedureOrigin) {
     return repository.save(
-        StiProtectionProcedure.newProcedure(concern, stiProcedureOrigin, clock, auditLogger));
+        StiProtectionProcedure.newProcedure(
+            concern, status, stiProcedureOrigin, clock, auditLogger));
   }
 
   public void addPerson(StiProtectionProcedure procedure, PersonData personData) {
@@ -386,6 +388,16 @@ public class StiProtectionProcedureService {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     ProcedureStatus procedureStatus = procedure.getProcedureStatus();
     if (!procedureStatus.isOpen()) {
+      procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    } else {
+      throw unexpectedProcedureStatus(procedureId, procedureStatus);
+    }
+  }
+
+  public void openProcedure(UUID procedureId) {
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
+    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+    if (procedureStatus == ProcedureStatus.DRAFT) {
       procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     } else {
       throw unexpectedProcedureStatus(procedureId, procedureStatus);

@@ -30,15 +30,6 @@ export function TextInputClientFilter(
       placeholder={props.placeholder}
       aria-label={props.placeholder}
       type={inputType}
-      onChange={(event) => {
-        props.setInputField(event.target.value);
-      }}
-      onFocus={() => setInputType(props.type)}
-      onBlur={(event) => {
-        if (event.target.value == "") {
-          setInputType("search");
-        }
-      }}
       size="sm"
       sx={{
         width: 140,
@@ -48,6 +39,15 @@ export function TextInputClientFilter(
         input: {
           role: "searchbox",
         },
+      }}
+      onChange={(event) => {
+        props.setInputField(event.target.value);
+      }}
+      onFocus={() => setInputType(props.type)}
+      onBlur={(event) => {
+        if (event.target.value == "") {
+          setInputType("search");
+        }
       }}
     />
   );

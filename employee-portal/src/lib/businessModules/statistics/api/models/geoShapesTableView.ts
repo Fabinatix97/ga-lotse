@@ -22,7 +22,7 @@ export interface GeoShapeInfo {
   title: string;
 }
 
-export interface GeoShapesTableView {
+interface GeoShapesTableView {
   totalNumberOfElements: number;
   geoShapes: GeoShapeInfo[];
 }

@@ -40,8 +40,8 @@ export function DebouncedInput(
     <Input
       {...rest}
       value={stateValue}
-      onChange={handleChange}
       aria-labelledby={label}
+      onChange={handleChange}
     />
   );
 }

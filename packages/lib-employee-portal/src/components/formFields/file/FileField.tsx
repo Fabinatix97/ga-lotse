@@ -22,11 +22,11 @@ import {
   FileType,
 } from "@eshg/lib-portal/components/formFields/file/types";
 import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
-import {
-  validateFile,
-  validateFileType,
-} from "@eshg/lib-portal/components/formFields/file/validators";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
+import {
+  useValidateFile,
+  useValidateFileType,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 
 import { FileButton, FileInputButton } from "./buttonVariants";
@@ -77,14 +77,16 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const UploadButton =
     props.variant === "button" ? FileButton : FileInputButton;
 
+  const validateFileType = useValidateFileType();
+  const validateFile = useValidateFile();
   const acceptedFileTypes = resolveAcceptedFileTypes(props.accept);
-  const fileTypeErrorVal = validateFileType(acceptedFileTypes, "de-DE"); // TODO: use user's locale
+  const fileTypeErrorVal = validateFileType(acceptedFileTypes);
   const validate = validatePipe(
     fileTypeErrorVal,
-    validateFile(
-      acceptedFileTypes.flatMap((type) => type.extensions),
-      props.maxFileSize,
-    ),
+    validateFile({
+      acceptedExtensions: acceptedFileTypes.flatMap((type) => type.extensions),
+      maxFileSize: props.maxFileSize,
+    }),
     props.validate,
   );
   const field = useBaseField<File | null>({ ...props, validate });
@@ -133,8 +135,9 @@ export function FileField(props: Readonly<FileFieldProps>) {
           <UploadButton
             activeDragOver={dropState === "copy"}
             error={field.error || dropState === "no-drop"}
-            onClick={handleButtonClick}
             aria-controls={fileInputId}
+            aria-describedby={`${fileInputId}-helper-text`}
+            onClick={handleButtonClick}
             onDragOver={handleFileDrag}
             onDrop={handleFileDrop}
             onDragLeave={handleFileDragLeave}
@@ -149,8 +152,8 @@ export function FileField(props: Readonly<FileFieldProps>) {
             placeholder={placeholder}
             accept={acceptedMimeTypes}
             required={field.required}
-            onChange={handleChange}
             tabIndex={-1}
+            onChange={handleChange}
           />
           {isDefined(field.helperText) && (
             <FormHelperText id={`${fileInputId}-helper-text`}>

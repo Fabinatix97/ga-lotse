@@ -5,8 +5,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.3 (Debian 16.3-1.pgdg120+1)
--- Dumped by pg_dump version 16.3 (Debian 16.3-1.pgdg120+1)
+-- Dumped from database version 15.8 (Debian 15.8-1.pgdg120+1)
+-- Dumped by pg_dump version 15.8 (Debian 15.8-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -182,7 +182,7 @@ CREATE SEQUENCE public.account_data_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.account_data_sequence OWNER TO synapse;
+ALTER TABLE public.account_data_sequence OWNER TO synapse;
 
 --
 -- Name: account_validity; Type: TABLE; Schema: public; Owner: synapse
@@ -227,7 +227,7 @@ CREATE SEQUENCE public.application_services_txn_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.application_services_txn_id_seq OWNER TO synapse;
+ALTER TABLE public.application_services_txn_id_seq OWNER TO synapse;
 
 --
 -- Name: application_services_txns; Type: TABLE; Schema: public; Owner: synapse
@@ -345,7 +345,7 @@ CREATE SEQUENCE public.cache_invalidation_stream_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.cache_invalidation_stream_seq OWNER TO synapse;
+ALTER TABLE public.cache_invalidation_stream_seq OWNER TO synapse;
 
 --
 -- Name: current_state_delta_stream; Type: TABLE; Schema: public; Owner: synapse
@@ -616,7 +616,7 @@ CREATE SEQUENCE public.device_inbox_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.device_inbox_sequence OWNER TO synapse;
+ALTER TABLE public.device_inbox_sequence OWNER TO synapse;
 
 --
 -- Name: device_lists_changes_converted_stream_position; Type: TABLE; Schema: public; Owner: synapse
@@ -744,7 +744,7 @@ CREATE SEQUENCE public.device_lists_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.device_lists_sequence OWNER TO synapse;
+ALTER TABLE public.device_lists_sequence OWNER TO synapse;
 
 --
 -- Name: device_lists_stream; Type: TABLE; Schema: public; Owner: synapse
@@ -805,7 +805,7 @@ CREATE SEQUENCE public.e2e_cross_signing_keys_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.e2e_cross_signing_keys_sequence OWNER TO synapse;
+ALTER TABLE public.e2e_cross_signing_keys_sequence OWNER TO synapse;
 
 --
 -- Name: e2e_cross_signing_signatures; Type: TABLE; Schema: public; Owner: synapse
@@ -938,7 +938,7 @@ CREATE SEQUENCE public.event_auth_chain_id
     CACHE 1;
 
 
-ALTER SEQUENCE public.event_auth_chain_id OWNER TO synapse;
+ALTER TABLE public.event_auth_chain_id OWNER TO synapse;
 
 --
 -- Name: event_auth_chain_links; Type: TABLE; Schema: public; Owner: synapse
@@ -1278,7 +1278,7 @@ CREATE SEQUENCE public.events_backfill_stream_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.events_backfill_stream_seq OWNER TO synapse;
+ALTER TABLE public.events_backfill_stream_seq OWNER TO synapse;
 
 --
 -- Name: events_stream_seq; Type: SEQUENCE; Schema: public; Owner: synapse
@@ -1292,7 +1292,7 @@ CREATE SEQUENCE public.events_stream_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.events_stream_seq OWNER TO synapse;
+ALTER TABLE public.events_stream_seq OWNER TO synapse;
 
 --
 -- Name: ex_outlier_stream; Type: TABLE; Schema: public; Owner: synapse
@@ -1374,7 +1374,7 @@ CREATE SEQUENCE public.instance_map_instance_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.instance_map_instance_id_seq OWNER TO synapse;
+ALTER TABLE public.instance_map_instance_id_seq OWNER TO synapse;
 
 --
 -- Name: instance_map_instance_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: synapse
@@ -1413,7 +1413,8 @@ CREATE TABLE public.local_media_repository (
     url_cache text,
     last_access_ts bigint,
     safe_from_quarantine boolean DEFAULT false NOT NULL,
-    authenticated boolean DEFAULT false NOT NULL
+    authenticated boolean DEFAULT false NOT NULL,
+    sha256 text
 );
 
 
@@ -1575,7 +1576,7 @@ CREATE SEQUENCE public.presence_stream_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.presence_stream_sequence OWNER TO synapse;
+ALTER TABLE public.presence_stream_sequence OWNER TO synapse;
 
 --
 -- Name: profiles; Type: TABLE; Schema: public; Owner: synapse
@@ -1586,6 +1587,7 @@ CREATE TABLE public.profiles (
     displayname text,
     avatar_url text,
     full_user_id text,
+    fields jsonb,
     CONSTRAINT full_user_id_not_null CHECK ((full_user_id IS NOT NULL))
 );
 
@@ -1655,7 +1657,7 @@ CREATE SEQUENCE public.push_rules_stream_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.push_rules_stream_sequence OWNER TO synapse;
+ALTER TABLE public.push_rules_stream_sequence OWNER TO synapse;
 
 --
 -- Name: pusher_throttle; Type: TABLE; Schema: public; Owner: synapse
@@ -1711,7 +1713,7 @@ CREATE SEQUENCE public.pushers_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.pushers_sequence OWNER TO synapse;
+ALTER TABLE public.pushers_sequence OWNER TO synapse;
 
 --
 -- Name: ratelimit_override; Type: TABLE; Schema: public; Owner: synapse
@@ -1773,7 +1775,7 @@ CREATE SEQUENCE public.receipts_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.receipts_sequence OWNER TO synapse;
+ALTER TABLE public.receipts_sequence OWNER TO synapse;
 
 --
 -- Name: received_transactions; Type: TABLE; Schema: public; Owner: synapse
@@ -1864,7 +1866,8 @@ CREATE TABLE public.remote_media_cache (
     filesystem_id text,
     last_access_ts bigint,
     quarantined_by text,
-    authenticated boolean DEFAULT false NOT NULL
+    authenticated boolean DEFAULT false NOT NULL,
+    sha256 text
 );
 
 
@@ -1967,7 +1970,8 @@ CREATE TABLE public.room_memberships (
     forgotten integer DEFAULT 0,
     display_name text,
     avatar_url text,
-    event_stream_ordering bigint
+    event_stream_ordering bigint,
+    participant boolean DEFAULT false
 );
 
 
@@ -2390,7 +2394,7 @@ CREATE SEQUENCE public.state_group_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.state_group_id_seq OWNER TO synapse;
+ALTER TABLE public.state_group_id_seq OWNER TO synapse;
 
 --
 -- Name: state_groups; Type: TABLE; Schema: public; Owner: synapse
@@ -2404,6 +2408,45 @@ CREATE TABLE public.state_groups (
 
 
 ALTER TABLE public.state_groups OWNER TO synapse;
+
+--
+-- Name: state_groups_pending_deletion; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.state_groups_pending_deletion (
+    sequence_number bigint NOT NULL,
+    state_group bigint NOT NULL,
+    insertion_ts bigint NOT NULL
+);
+
+
+ALTER TABLE public.state_groups_pending_deletion OWNER TO synapse;
+
+--
+-- Name: state_groups_pending_deletion_sequence_number_seq; Type: SEQUENCE; Schema: public; Owner: synapse
+--
+
+ALTER TABLE public.state_groups_pending_deletion ALTER COLUMN sequence_number ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.state_groups_pending_deletion_sequence_number_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: state_groups_persisting; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.state_groups_persisting (
+    state_group bigint NOT NULL,
+    instance_name text NOT NULL
+);
+
+
+ALTER TABLE public.state_groups_persisting OWNER TO synapse;
 
 --
 -- Name: state_groups_state; Type: TABLE; Schema: public; Owner: synapse
@@ -2601,7 +2644,7 @@ CREATE SEQUENCE public.un_partial_stated_event_stream_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.un_partial_stated_event_stream_sequence OWNER TO synapse;
+ALTER TABLE public.un_partial_stated_event_stream_sequence OWNER TO synapse;
 
 --
 -- Name: un_partial_stated_room_stream; Type: TABLE; Schema: public; Owner: synapse
@@ -2628,7 +2671,7 @@ CREATE SEQUENCE public.un_partial_stated_room_stream_sequence
     CACHE 1;
 
 
-ALTER SEQUENCE public.un_partial_stated_room_stream_sequence OWNER TO synapse;
+ALTER TABLE public.un_partial_stated_room_stream_sequence OWNER TO synapse;
 
 --
 -- Name: user_daily_visits; Type: TABLE; Schema: public; Owner: synapse
@@ -2737,7 +2780,7 @@ CREATE SEQUENCE public.user_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_id_seq OWNER TO synapse;
+ALTER TABLE public.user_id_seq OWNER TO synapse;
 
 --
 -- Name: user_ips; Type: TABLE; Schema: public; Owner: synapse
@@ -2942,9 +2985,6 @@ ALTER TABLE ONLY public.instance_map ALTER COLUMN instance_id SET DEFAULT nextva
 --
 
 COPY public.access_tokens (id, user_id, device_id, token, valid_until_ms, puppets_user_id, last_validated, refresh_token_id, used) FROM stdin;
-2	@testuser1:synapse.local.dev	BPMXXVDUCI	syt_dGVzdHVzZXIx_GZuOBWyZRwLKNIAOieLt_0wO9QR	\N	\N	1725968857673	\N	f
-3	@testuser2:synapse.local.dev	RXIMDAEIPS	syt_dGVzdHVzZXIy_FKbuJWxXATBAWNYpwTRm_22Vqex	\N	\N	1725968863447	\N	f
-4	@admin:synapse.local.dev	AVOHDDOCEU	syt_YWRtaW4_wdeHUQwxaESbkyuItiOJ_2nphGL	1737304753154	\N	1737302953160	\N	f
 \.
 
 
@@ -2953,22 +2993,6 @@ COPY public.access_tokens (id, user_id, device_id, token, valid_until_ms, puppet
 --
 
 COPY public.account_data (user_id, account_data_type, stream_id, content, instance_name) FROM stdin;
-@testuser1:synapse.local.dev	org.matrix.msc3890.local_notification_settings.NSMZZFGEGB	3	{"is_silenced":false}	\N
-@testuser1:synapse.local.dev	im.vector.analytics	4	{"pseudonymousAnalyticsOptIn":false}	\N
-@testuser1:synapse.local.dev	m.secret_storage.key.sjvqW2Z4JVshxw2Afk7TICWUbljMXkqL	5	{"algorithm":"m.secret_storage.v1.aes-hmac-sha2","iv":"kprJpAjDgdVGyJIIQ1n9NA==","mac":"cNyc/xtBEv1p1/PYYM7KGoK2F10GqUeI4irEk9Vup6A="}	\N
-@testuser1:synapse.local.dev	m.secret_storage.default_key	6	{"key":"sjvqW2Z4JVshxw2Afk7TICWUbljMXkqL"}	\N
-@testuser1:synapse.local.dev	m.cross_signing.master	7	{"encrypted":{"sjvqW2Z4JVshxw2Afk7TICWUbljMXkqL":{"iv":"yMzTOR2OwE1swd8YRAU2ow==","ciphertext":"yI3+t2pJrxsDY/tpRcl9HycH3kpt2wHCRdAj7ifSUDRzJZR6DsKwsy54Gw==","mac":"jVgpVnRZ0f6P2jYQbtV16Yl+KqcwtBkcg35pFmeyE48="}}}	\N
-@testuser1:synapse.local.dev	m.cross_signing.user_signing	8	{"encrypted":{"sjvqW2Z4JVshxw2Afk7TICWUbljMXkqL":{"iv":"BCtd1b/b52NiOSaC2kRd4g==","ciphertext":"Rj0omiZrUE+tUTtDDDafxcOJKsJyDnt+ftprkoxvHuUkvxw7MjXwHNUUNA==","mac":"b/jgPyGBkoFm2sWM6DL1iQ5EtRB7/aBGAdm0DBJSYJI="}}}	\N
-@testuser1:synapse.local.dev	m.cross_signing.self_signing	9	{"encrypted":{"sjvqW2Z4JVshxw2Afk7TICWUbljMXkqL":{"iv":"WfhUrUQsCbVoBCENgzZ9Xw==","ciphertext":"YpvRW4JoXrXXYlFWy5qMrVresOSA5mDqGXt5IegUfCLhdHWGCn0nLtGAZg==","mac":"2svjxEl359Ht/i9RBYFYpPAfxqy2p5jKMZvZ4n54O3w="}}}	\N
-@testuser1:synapse.local.dev	m.megolm_backup.v1	10	{"encrypted":{"sjvqW2Z4JVshxw2Afk7TICWUbljMXkqL":{"iv":"FFRjikCqi3IpuHazNiImsQ==","ciphertext":"uGx0rCPo+2XVTYaFZ8t9ZFl07poJxYBMcUQF9c92kNfHZh/ngOxmRgHzvA==","mac":"DLeIeinl1Dk4gU46f+rLSpPdv7DvS7EKPoaSFftqPIk="}}}	\N
-@testuser2:synapse.local.dev	org.matrix.msc3890.local_notification_settings.VWJYXSFKXB	12	{"is_silenced":false}	\N
-@testuser2:synapse.local.dev	im.vector.analytics	13	{"pseudonymousAnalyticsOptIn":false}	\N
-@testuser2:synapse.local.dev	m.secret_storage.key.tAsnpaqFX0hXk54tsSv1qDDcTkCRpJey	14	{"algorithm":"m.secret_storage.v1.aes-hmac-sha2","iv":"/fULwPqXfRtbSeXsUzgnMA==","mac":"C+H2eySzmOK1GiBnJzW2rffGQXGu+4YebinrmA3vrdc="}	\N
-@testuser2:synapse.local.dev	m.secret_storage.default_key	15	{"key":"tAsnpaqFX0hXk54tsSv1qDDcTkCRpJey"}	\N
-@testuser2:synapse.local.dev	m.cross_signing.master	16	{"encrypted":{"tAsnpaqFX0hXk54tsSv1qDDcTkCRpJey":{"iv":"cSJHSxeurehZa0ALKoLQhg==","ciphertext":"IVs5zMT/iwkiQPnhRgz00QA/Y5QStPHiSVJ1gvhFQlUEiQ5qhKvli4cCmg==","mac":"I5A8zbszvTMolXRUwdKculY/LJk6RGdxyCPb8ziBnP8="}}}	\N
-@testuser2:synapse.local.dev	m.cross_signing.user_signing	17	{"encrypted":{"tAsnpaqFX0hXk54tsSv1qDDcTkCRpJey":{"iv":"YVLgiayQq64sG5RV5sSBww==","ciphertext":"HiiCeY0GGGcs0usq2m4yCpYaNdxz/K/+yZRK0D9B/6zaxkFfnqbwoBLm5g==","mac":"GP3H+KNAS5wevtp/yyluRIrdNKS2nSZtHbI/1HTFBgM="}}}	\N
-@testuser2:synapse.local.dev	m.cross_signing.self_signing	18	{"encrypted":{"tAsnpaqFX0hXk54tsSv1qDDcTkCRpJey":{"iv":"/16m9fvSU/xwNJ1T71c51Q==","ciphertext":"kVQPPeftiexSgmRioG6jTYBoUq6UTPKGi06LR4cftruQ3bthYyapDeoffA==","mac":"4cCixeiRf+3BMVuUI5sBfpnF4jQjiS2pEVCxfWLe+3s="}}}	\N
-@testuser2:synapse.local.dev	m.megolm_backup.v1	19	{"encrypted":{"tAsnpaqFX0hXk54tsSv1qDDcTkCRpJey":{"iv":"tVKywfPQM2oW8UmoERmnGA==","ciphertext":"0Y9uwTxcLgX0gr6/aLqmM6yTn7cqRGKUMUnALYRuFtXdchzBEw05R9xW3w==","mac":"DnI2nW8Xk1fzykwthAh0vKO8lmiCt8vW2Abo/JzYzJ4="}}}	\N
 \.
 
 
@@ -3086,15 +3110,23 @@ COPY public.applied_schema_deltas (version, file) FROM stdin;
 85	85/06_add_room_reports.sql
 86	86/01_authenticate_media.sql
 86	86/02_receipts_event_id_index.sql
-87	87/02_per_connection_state.sql
 87	87/01_sliding_sync_memberships.sql
+87	87/02_per_connection_state.sql
 87	87/03_current_state_index.sql
 88	88/01_add_delayed_events.sql
+88	88/01_custom_profile_fields.sql
 88	88/02_fix_sliding_sync_membership_snapshots_forgotten_column.sql
 88	88/03_add_otk_ts_added_index.sql
 88	88/04_current_state_delta_index.sql
 88	88/05_drop_old_otks.sql.postgres
 88	88/05_sliding_sync_room_config_index.sql
+88	88/06_events_received_ts_index.sql
+89	89/01_sliding_sync_membership_snapshot_index.sql
+89	89/01_state_groups_deletion.sql
+90	90/01_add_column_participant_room_memberships_table.sql
+90	90/02_delete_unreferenced_state_groups.sql
+90	90/03_remove_old_deletion_bg_update.sql
+91	91/01_media_hash.sql
 \.
 
 
@@ -3136,9 +3168,8 @@ COPY public.blocked_rooms (room_id, user_id) FROM stdin;
 --
 
 COPY public.cache_invalidation_stream_by_instance (stream_id, instance_name, cache_func, keys, invalidation_ts) FROM stdin;
-22	master	user_last_seen_monthly_active	\N	1737302708830
-23	master	get_monthly_active_count	{}	1737302708831
-24	master	get_user_by_id	{@admin:synapse.local.dev}	1737302953148
+2	master	user_last_seen_monthly_active	\N	1745503958830
+3	master	get_monthly_active_count	{}	1745503958831
 \.
 
 
@@ -3244,7 +3275,7 @@ COPY public.device_inbox (user_id, device_id, stream_id, message_json, instance_
 --
 
 COPY public.device_lists_changes_converted_stream_position (lock, stream_id, room_id, instance_name) FROM stdin;
-X	18		master
+X	1		\N
 \.
 
 
@@ -3309,15 +3340,6 @@ COPY public.device_lists_remote_resync (user_id, added_ts) FROM stdin;
 --
 
 COPY public.device_lists_stream (stream_id, user_id, device_id, instance_name) FROM stdin;
-2	@testuser1:synapse.local.dev	BPMXXVDUCI	master
-3	@testuser2:synapse.local.dev	RXIMDAEIPS	master
-7	@testuser1:synapse.local.dev	5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk	master
-8	@testuser1:synapse.local.dev	XqInPNQtd+paOBZE7rXwBfYY7r39sqQ6ssMRGaDL2Qg	master
-10	@testuser1:synapse.local.dev	NSMZZFGEGB	master
-14	@testuser2:synapse.local.dev	6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM	master
-15	@testuser2:synapse.local.dev	QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc	master
-17	@testuser2:synapse.local.dev	VWJYXSFKXB	master
-18	@admin:synapse.local.dev	AVOHDDOCEU	master
 \.
 
 
@@ -3326,15 +3348,6 @@ COPY public.device_lists_stream (stream_id, user_id, device_id, instance_name) F
 --
 
 COPY public.devices (user_id, device_id, display_name, last_seen, ip, user_agent, hidden) FROM stdin;
-@testuser1:synapse.local.dev	BPMXXVDUCI	\N	\N	\N	\N	f
-@testuser2:synapse.local.dev	RXIMDAEIPS	\N	\N	\N	\N	f
-@testuser1:synapse.local.dev	5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk	master signing key	\N	\N	\N	t
-@testuser1:synapse.local.dev	XqInPNQtd+paOBZE7rXwBfYY7r39sqQ6ssMRGaDL2Qg	self_signing signing key	\N	\N	\N	t
-@testuser1:synapse.local.dev	qRi+bikO9fbfuV4Y1zIandf30ql5HVdx4KtdI8AFVQE	user_signing signing key	\N	\N	\N	t
-@testuser2:synapse.local.dev	6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM	master signing key	\N	\N	\N	t
-@testuser2:synapse.local.dev	QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc	self_signing signing key	\N	\N	\N	t
-@testuser2:synapse.local.dev	+b3Uy1RlEu4Qki1BUfqZ0gjyJLtxNeBulbtUGAlC/Co	user_signing signing key	\N	\N	\N	t
-@admin:synapse.local.dev	AVOHDDOCEU	\N	\N	\N	\N	f
 \.
 
 
@@ -3343,12 +3356,6 @@ COPY public.devices (user_id, device_id, display_name, last_seen, ip, user_agent
 --
 
 COPY public.e2e_cross_signing_keys (user_id, keytype, keydata, stream_id, updatable_without_uia_before_ms, instance_name) FROM stdin;
-@testuser1:synapse.local.dev	master	{"keys":{"ed25519:5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk":"5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk"},"signatures":{"@testuser1:synapse.local.dev":{"ed25519:5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk":"QE2IvaEOJL9ZXwpe9RxzJkVyZ3n0ophmH7Nknq2RVd8Fo2XWOAluhKwjEewdwvE9i4KGzot2AIEjJLqfYE2TDA","ed25519:NSMZZFGEGB":"bEP42v6vrJ6bcfWwYVQ7qb/hua6F4P4uethoanECSVDXqPCLTghtMkeCIJjcdcPzaaYPRYFG1GSP+ZaeAEnNCA"}},"usage":["master"],"user_id":"@testuser1:synapse.local.dev"}	2	\N	master
-@testuser1:synapse.local.dev	self_signing	{"keys":{"ed25519:XqInPNQtd+paOBZE7rXwBfYY7r39sqQ6ssMRGaDL2Qg":"XqInPNQtd+paOBZE7rXwBfYY7r39sqQ6ssMRGaDL2Qg"},"signatures":{"@testuser1:synapse.local.dev":{"ed25519:5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk":"MnZljoai2Efy68B4UGzMVKVN07kkFSk3BY5wemNx6v/NSl4TeqAT6LJqtAZZO/RlbmiEw7QKObthqhbokaVfCw"}},"usage":["self_signing"],"user_id":"@testuser1:synapse.local.dev"}	3	\N	master
-@testuser1:synapse.local.dev	user_signing	{"keys":{"ed25519:qRi+bikO9fbfuV4Y1zIandf30ql5HVdx4KtdI8AFVQE":"qRi+bikO9fbfuV4Y1zIandf30ql5HVdx4KtdI8AFVQE"},"signatures":{"@testuser1:synapse.local.dev":{"ed25519:5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk":"yRVWYdmuk50BfNPNvJD9jH1pg8jtm8Mw35LuTAvwnwytMvITkMnqcpbZLeMei5NXhz7qUsUAHckj2V2/dFt9DA"}},"usage":["user_signing"],"user_id":"@testuser1:synapse.local.dev"}	4	\N	master
-@testuser2:synapse.local.dev	master	{"keys":{"ed25519:6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM":"6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM"},"signatures":{"@testuser2:synapse.local.dev":{"ed25519:6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM":"8oFstx2fcjZtpALkgNLw5ZXQy7o9m1S5ECOs3Zex3dtxzqo/2EONXutSP3rkdchf2vC4ouuzRy/LIeQ53aBjBw","ed25519:VWJYXSFKXB":"xC2DW6v6ME/g+U2TNiiLWibR9XSv3SCJ7lFx7/J1meM73dRWa5y/A1wndLdJugA3FXo1Wl4nBwjVjaZegoYPBw"}},"usage":["master"],"user_id":"@testuser2:synapse.local.dev"}	5	\N	master
-@testuser2:synapse.local.dev	self_signing	{"keys":{"ed25519:QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc":"QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc"},"signatures":{"@testuser2:synapse.local.dev":{"ed25519:6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM":"MKk8oY/wNbbDOE7a0v74GS6f6PwMsE2g5tIL2hm6ycO0/C4A6HqCdweEz7cPrPKAAfFEdUgIpOSb29KoG37QCw"}},"usage":["self_signing"],"user_id":"@testuser2:synapse.local.dev"}	6	\N	master
-@testuser2:synapse.local.dev	user_signing	{"keys":{"ed25519:+b3Uy1RlEu4Qki1BUfqZ0gjyJLtxNeBulbtUGAlC/Co":"+b3Uy1RlEu4Qki1BUfqZ0gjyJLtxNeBulbtUGAlC/Co"},"signatures":{"@testuser2:synapse.local.dev":{"ed25519:6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM":"8OUvg94gIsQO83ucTENzQ9dI6JC+GQyokurmZaeEt9PgfuzSJPIvI04IinXL2Er3f0dvb8RkpoprQr73lkN6Dg"}},"usage":["user_signing"],"user_id":"@testuser2:synapse.local.dev"}	7	\N	master
 \.
 
 
@@ -3357,8 +3364,6 @@ COPY public.e2e_cross_signing_keys (user_id, keytype, keydata, stream_id, updata
 --
 
 COPY public.e2e_cross_signing_signatures (user_id, key_id, target_user_id, target_device_id, signature) FROM stdin;
-@testuser1:synapse.local.dev	ed25519:XqInPNQtd+paOBZE7rXwBfYY7r39sqQ6ssMRGaDL2Qg	@testuser1:synapse.local.dev	NSMZZFGEGB	jKDwt+gIMzVJG0lxvMtGF6xEXRR1dLoNEB6oQe+7CRAz58uK16/jV+46OGwqDG7tk4nOkYPPcVMXGboTudr9DQ
-@testuser2:synapse.local.dev	ed25519:QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc	@testuser2:synapse.local.dev	VWJYXSFKXB	M0lp5ICSnhZwgOK4cwTdJxxttdluSTZfzcaCfBzB+dDt4o54Eh2pOi2hbb4KtWGgYDYyfVP4dcvnslIS+EG7BQ
 \.
 
 
@@ -3399,8 +3404,6 @@ COPY public.e2e_room_keys (user_id, room_id, session_id, version, first_message_
 --
 
 COPY public.e2e_room_keys_versions (user_id, version, algorithm, auth_data, deleted, etag) FROM stdin;
-@testuser1:synapse.local.dev	1	m.megolm_backup.v1.curve25519-aes-sha2	{"public_key":"YIzZQj2VytwSXPhAzgD/+gRt/gH4s/r8MKfK8uVYrnU","signatures":{"@testuser1:synapse.local.dev":{"ed25519:5SXU3u2pfXK8FzYteFH+MZTV10VlgTtmEUaLdY+vqHk":"FtsLL/w9gwxdIHgXqiHg/tZSTkKpv+BmKZj03bI16aOAUuoLyvuBT0J5Av6JoH/RjmOmrdYRGuE3NQwZD7cmAA","ed25519:NSMZZFGEGB":"D2HfuPp3WxAQUkjyzRT5RJ5NC8iKsf+jk8e39LDxY3FSkXVZDAhOxfSx76HNnRkWCG5tZvcTHiKHM32qrayjCQ"}}}	0	\N
-@testuser2:synapse.local.dev	1	m.megolm_backup.v1.curve25519-aes-sha2	{"public_key":"zKZ/2Pd5n0Qv23E0SBZ8mL+hYGOLXCEPLVvnn1NGB0g","signatures":{"@testuser2:synapse.local.dev":{"ed25519:6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM":"mlvIYH1YyrTRwjA+bysCpCp4eCSh4ImJOcsYZo1Sc6NVkBGlDctn0/tYYLze0K/CVns5JIqjm4MHh2PPb0TaDw","ed25519:VWJYXSFKXB":"07hwocQr4bUBsbuTgjsR9unidN6N8c+Izl0Q9eNkm5gvc2wESYRm8TRSnb8VqctQfgF4hJLWJt6Vb2lnkdOxBQ"}}}	0	\N
 \.
 
 
@@ -3644,7 +3647,7 @@ COPY public.local_current_membership (room_id, user_id, event_id, membership, ev
 -- Data for Name: local_media_repository; Type: TABLE DATA; Schema: public; Owner: synapse
 --
 
-COPY public.local_media_repository (media_id, media_type, media_length, created_ts, upload_name, user_id, quarantined_by, url_cache, last_access_ts, safe_from_quarantine, authenticated) FROM stdin;
+COPY public.local_media_repository (media_id, media_type, media_length, created_ts, upload_name, user_id, quarantined_by, url_cache, last_access_ts, safe_from_quarantine, authenticated, sha256) FROM stdin;
 \.
 
 
@@ -3685,8 +3688,6 @@ COPY public.monthly_active_users (user_id, "timestamp") FROM stdin;
 --
 
 COPY public.open_id_tokens (token, ts_valid_until_ms, user_id) FROM stdin;
-HLcPCbHfEKDhaJpyhqpeBtkH	1725972524776	@testuser1:synapse.local.dev
-yfsQbhDPcOEvtRvsMnNPOYBw	1725972567318	@testuser2:synapse.local.dev
 \.
 
 
@@ -3727,8 +3728,6 @@ COPY public.per_user_experimental_features (user_id, feature, enabled) FROM stdi
 --
 
 COPY public.presence_stream (stream_id, user_id, state, last_active_ts, last_federation_update_ts, last_user_sync_ts, status_msg, currently_active, instance_name) FROM stdin;
-6	@testuser1:synapse.local.dev	offline	1725968946810	1725968979664	1725968949968	\N	t	master
-7	@testuser2:synapse.local.dev	offline	1725968959331	1737302743693	1725968959331	\N	t	master
 \.
 
 
@@ -3736,10 +3735,7 @@ COPY public.presence_stream (stream_id, user_id, state, last_active_ts, last_fed
 -- Data for Name: profiles; Type: TABLE DATA; Schema: public; Owner: synapse
 --
 
-COPY public.profiles (user_id, displayname, avatar_url, full_user_id) FROM stdin;
-testuser1	testuser1	\N	@testuser1:synapse.local.dev
-testuser2	testuser2	\N	@testuser2:synapse.local.dev
-admin	admin	\N	@admin:synapse.local.dev
+COPY public.profiles (user_id, displayname, avatar_url, full_user_id, fields) FROM stdin;
 \.
 
 
@@ -3851,7 +3847,7 @@ COPY public.rejections (event_id, reason, last_check) FROM stdin;
 -- Data for Name: remote_media_cache; Type: TABLE DATA; Schema: public; Owner: synapse
 --
 
-COPY public.remote_media_cache (media_origin, media_id, media_type, created_ts, upload_name, media_length, filesystem_id, last_access_ts, quarantined_by, authenticated) FROM stdin;
+COPY public.remote_media_cache (media_origin, media_id, media_type, created_ts, upload_name, media_length, filesystem_id, last_access_ts, quarantined_by, authenticated, sha256) FROM stdin;
 \.
 
 
@@ -3908,7 +3904,7 @@ X	1
 -- Data for Name: room_memberships; Type: TABLE DATA; Schema: public; Owner: synapse
 --
 
-COPY public.room_memberships (event_id, user_id, sender, room_id, membership, forgotten, display_name, avatar_url, event_stream_ordering) FROM stdin;
+COPY public.room_memberships (event_id, user_id, sender, room_id, membership, forgotten, display_name, avatar_url, event_stream_ordering, participant) FROM stdin;
 \.
 
 
@@ -3981,7 +3977,7 @@ COPY public.rooms (room_id, is_public, creator, room_version, has_auth_chain_ind
 --
 
 COPY public.scheduled_tasks (id, action, status, "timestamp", resource_id, params, result, error) FROM stdin;
-delete_old_otks_task	delete_old_otks	complete	1737302768709	\N	\N	\N	\N
+delete_old_otks_task	delete_old_otks	complete	1745504018624	\N	\N	\N	\N
 \.
 
 
@@ -3999,7 +3995,7 @@ X	84
 --
 
 COPY public.schema_version (lock, version, upgraded) FROM stdin;
-X	88	t
+X	91	t
 \.
 
 
@@ -4116,6 +4112,22 @@ COPY public.state_groups (id, room_id, event_id) FROM stdin;
 
 
 --
+-- Data for Name: state_groups_pending_deletion; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.state_groups_pending_deletion (sequence_number, state_group, insertion_ts) FROM stdin;
+\.
+
+
+--
+-- Data for Name: state_groups_persisting; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.state_groups_persisting (state_group, instance_name) FROM stdin;
+\.
+
+
+--
 -- Data for Name: state_groups_state; Type: TABLE DATA; Schema: public; Owner: synapse
 --
 
@@ -4145,10 +4157,6 @@ COPY public.stream_ordering_to_exterm (stream_ordering, room_id, event_id) FROM 
 --
 
 COPY public.stream_positions (stream_name, instance_name, stream_id) FROM stdin;
-e2e_cross_signing_keys	master	7
-account_data	master	19
-presence_stream	master	7
-device_lists_stream	master	18
 \.
 
 
@@ -4245,9 +4253,6 @@ COPY public.user_daily_visits (user_id, device_id, "timestamp", user_agent) FROM
 --
 
 COPY public.user_directory (user_id, room_id, display_name, avatar_url) FROM stdin;
-@testuser1:synapse.local.dev	\N	testuser1	\N
-@testuser2:synapse.local.dev	\N	testuser2	\N
-@admin:synapse.local.dev	\N	admin	\N
 \.
 
 
@@ -4256,9 +4261,6 @@ COPY public.user_directory (user_id, room_id, display_name, avatar_url) FROM std
 --
 
 COPY public.user_directory_search (user_id, vector) FROM stdin;
-@testuser1:synapse.local.dev	'synapse.local.dev':2 'testuser1':1A,3B
-@testuser2:synapse.local.dev	'synapse.local.dev':2 'testuser2':1A,3B
-@admin:synapse.local.dev	'admin':1A,3B 'synapse.local.dev':2
 \.
 
 
@@ -4275,7 +4277,7 @@ COPY public.user_directory_stale_remote_users (user_id, user_server_name, next_t
 --
 
 COPY public.user_directory_stream_pos (lock, stream_id) FROM stdin;
-X	1
+X	-1
 \.
 
 
@@ -4292,8 +4294,6 @@ COPY public.user_external_ids (auth_provider, external_id, user_id) FROM stdin;
 --
 
 COPY public.user_filters (user_id, filter_id, filter_json, full_user_id) FROM stdin;
-testuser1	0	\\x7b22726f6f6d223a7b227374617465223a7b226c617a795f6c6f61645f6d656d62657273223a747275657d2c2274696d656c696e65223a7b22756e726561645f7468726561645f6e6f74696669636174696f6e73223a747275657d7d7d	@testuser1:synapse.local.dev
-testuser2	0	\\x7b22726f6f6d223a7b227374617465223a7b226c617a795f6c6f61645f6d656d62657273223a747275657d2c2274696d656c696e65223a7b22756e726561645f7468726561645f6e6f74696669636174696f6e73223a747275657d7d7d	@testuser2:synapse.local.dev
 \.
 
 
@@ -4310,8 +4310,6 @@ COPY public.user_ips (user_id, access_token, device_id, ip, user_agent, last_see
 --
 
 COPY public.user_signature_stream (stream_id, from_user_id, user_ids, instance_name) FROM stdin;
-6	@testuser1:synapse.local.dev	["@testuser1:synapse.local.dev"]	master
-13	@testuser2:synapse.local.dev	["@testuser2:synapse.local.dev"]	master
 \.
 
 
@@ -4320,9 +4318,6 @@ COPY public.user_signature_stream (stream_id, from_user_id, user_ids, instance_n
 --
 
 COPY public.user_stats_current (user_id, joined_rooms, completed_delta_stream_id) FROM stdin;
-@testuser1:synapse.local.dev	0	-1
-@testuser2:synapse.local.dev	0	-1
-@admin:synapse.local.dev	0	-1
 \.
 
 
@@ -4347,9 +4342,6 @@ COPY public.user_threepids (user_id, medium, address, validated_at, added_at) FR
 --
 
 COPY public.users (name, password_hash, creation_ts, admin, upgrade_ts, is_guest, appservice_id, consent_version, consent_server_notice_sent, user_type, deactivated, shadow_banned, consent_ts, approved, locked, suspended) FROM stdin;
-@testuser1:synapse.local.dev	$2b$12$ZCjwkIrkb5g76FMnuyZYZ.h3L3.tZEwZUasgi21wZww/IHhoJJXEO	1725968857	0	\N	0	\N	\N	\N	\N	0	f	\N	t	f	f
-@testuser2:synapse.local.dev	$2b$12$eZ9YU6VYPL5X.54/Luym9etjeOafqBf3.yMixOjF84taZOKOuYPze	1725968863	0	\N	0	\N	\N	\N	\N	0	f	\N	t	f	f
-@admin:synapse.local.dev	$2b$12$5dKsMLWO4kw6FNySb6v6Dus5VuRa2/SrolFml.LDfU7uCACi.niri	1737302953	1	\N	0	\N	\N	\N	\N	0	f	\N	t	f	f
 \.
 
 
@@ -4413,7 +4405,7 @@ COPY public.worker_read_write_locks_mode (lock_name, lock_key, write_lock, token
 -- Name: account_data_sequence; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.account_data_sequence', 19, true);
+SELECT pg_catalog.setval('public.account_data_sequence', 1, true);
 
 
 --
@@ -4427,7 +4419,7 @@ SELECT pg_catalog.setval('public.application_services_txn_id_seq', 1, false);
 -- Name: cache_invalidation_stream_seq; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.cache_invalidation_stream_seq', 24, true);
+SELECT pg_catalog.setval('public.cache_invalidation_stream_seq', 3, true);
 
 
 --
@@ -4441,14 +4433,14 @@ SELECT pg_catalog.setval('public.device_inbox_sequence', 1, true);
 -- Name: device_lists_sequence; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.device_lists_sequence', 18, true);
+SELECT pg_catalog.setval('public.device_lists_sequence', 1, true);
 
 
 --
 -- Name: e2e_cross_signing_keys_sequence; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.e2e_cross_signing_keys_sequence', 7, true);
+SELECT pg_catalog.setval('public.e2e_cross_signing_keys_sequence', 1, true);
 
 
 --
@@ -4483,7 +4475,7 @@ SELECT pg_catalog.setval('public.instance_map_instance_id_seq', 1, false);
 -- Name: presence_stream_sequence; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.presence_stream_sequence', 7, true);
+SELECT pg_catalog.setval('public.presence_stream_sequence', 1, true);
 
 
 --
@@ -4533,6 +4525,13 @@ SELECT pg_catalog.setval('public.sliding_sync_connections_connection_key_seq', 1
 --
 
 SELECT pg_catalog.setval('public.state_group_id_seq', 1, false);
+
+
+--
+-- Name: state_groups_pending_deletion_sequence_number_seq; Type: SEQUENCE SET; Schema: public; Owner: synapse
+--
+
+SELECT pg_catalog.setval('public.state_groups_pending_deletion_sequence_number_seq', 1, false);
 
 
 --
@@ -5258,6 +5257,22 @@ ALTER TABLE ONLY public.sliding_sync_membership_snapshots
 
 ALTER TABLE ONLY public.state_events
     ADD CONSTRAINT state_events_event_id_key UNIQUE (event_id);
+
+
+--
+-- Name: state_groups_pending_deletion state_groups_pending_deletion_pkey; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.state_groups_pending_deletion
+    ADD CONSTRAINT state_groups_pending_deletion_pkey PRIMARY KEY (sequence_number);
+
+
+--
+-- Name: state_groups_persisting state_groups_persisting_pkey; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.state_groups_persisting
+    ADD CONSTRAINT state_groups_persisting_pkey PRIMARY KEY (state_group, instance_name);
 
 
 --
@@ -6054,6 +6069,13 @@ CREATE INDEX local_current_membership_stream_ordering_idx ON public.local_curren
 
 
 --
+-- Name: local_media_repository_sha256; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX local_media_repository_sha256 ON public.local_media_repository USING btree (sha256) WHERE (sha256 IS NOT NULL);
+
+
+--
 -- Name: local_media_repository_thumbn_media_id_width_height_method_key; Type: INDEX; Schema: public; Owner: synapse
 --
 
@@ -6257,6 +6279,13 @@ CREATE INDEX received_transactions_ts ON public.received_transactions USING btre
 
 
 --
+-- Name: received_ts_idx; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX received_ts_idx ON public.events USING btree (received_ts) WHERE (type = 'm.room.member'::text);
+
+
+--
 -- Name: redactions_have_censored_ts; Type: INDEX; Schema: public; Owner: synapse
 --
 
@@ -6275,6 +6304,13 @@ CREATE INDEX redactions_redacts ON public.redactions USING btree (redacts);
 --
 
 CREATE INDEX refresh_tokens_next_token_id ON public.refresh_tokens USING btree (next_token_id) WHERE (next_token_id IS NOT NULL);
+
+
+--
+-- Name: remote_media_cache_sha256; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX remote_media_cache_sha256 ON public.remote_media_cache USING btree (sha256) WHERE (sha256 IS NOT NULL);
 
 
 --
@@ -6453,6 +6489,13 @@ CREATE UNIQUE INDEX sliding_sync_membership_snapshots_event_stream_ordering ON p
 
 
 --
+-- Name: sliding_sync_membership_snapshots_membership_event_id_idx; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX sliding_sync_membership_snapshots_membership_event_id_idx ON public.sliding_sync_membership_snapshots USING btree (membership_event_id);
+
+
+--
 -- Name: sliding_sync_membership_snapshots_user_id; Type: INDEX; Schema: public; Owner: synapse
 --
 
@@ -6471,6 +6514,27 @@ CREATE INDEX state_group_edges_prev_idx ON public.state_group_edges USING btree 
 --
 
 CREATE UNIQUE INDEX state_group_edges_unique_idx ON public.state_group_edges USING btree (state_group, prev_state_group);
+
+
+--
+-- Name: state_groups_pending_deletion_insertion_ts; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX state_groups_pending_deletion_insertion_ts ON public.state_groups_pending_deletion USING btree (insertion_ts);
+
+
+--
+-- Name: state_groups_pending_deletion_state_group; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE UNIQUE INDEX state_groups_pending_deletion_state_group ON public.state_groups_pending_deletion USING btree (state_group);
+
+
+--
+-- Name: state_groups_persisting_instance_name; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX state_groups_persisting_instance_name ON public.state_groups_persisting USING btree (instance_name);
 
 
 --

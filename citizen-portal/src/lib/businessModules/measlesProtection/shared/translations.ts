@@ -16,7 +16,7 @@ import {
 
 import { TranslateFn } from "@/lib/i18n/client";
 
-export const facilityTypeNames = {
+const facilityTypeNames = {
   [ApiMPFacilityType.School]: "common.facility_types.school",
   [ApiMPFacilityType.DayNursery]: "common.facility_types.day_nursery",
   [ApiMPFacilityType.Daycare]: "common.facility_types.daycare",
@@ -42,20 +42,20 @@ export const facilityTypeNames = {
   [ApiMPFacilityType.Other]: "common.facility_types.other",
 } satisfies Record<ApiMPFacilityType, string>;
 
-export const salutationNames: EnumMap<ApiSalutation> = {
+const salutationNames: EnumMap<ApiSalutation> = {
   [ApiSalutation.NotSpecified]: "base/translation:salutation.not_specified",
   [ApiSalutation.Neutral]: "base/translation:salutation.neutral",
   [ApiSalutation.Male]: "base/translation:salutation.male",
   [ApiSalutation.Female]: "base/translation:salutation.female",
 };
 
-export const titleNames: EnumMap<ApiTitle> = {
+const titleNames: EnumMap<ApiTitle> = {
   [ApiTitle.Dr]: "base/translation:title.dr",
   [ApiTitle.Prof]: "base/translation:title.prof",
   [ApiTitle.ProfDr]: "base/translation:title.prof_dr",
 };
 
-export const genderNames: EnumMap<ApiGender> = {
+const genderNames: EnumMap<ApiGender> = {
   [ApiGender.NotSpecified]: "base/translation:gender.not_specified",
   [ApiGender.Male]: "base/translation:gender.male",
   [ApiGender.Female]: "base/translation:gender.female",

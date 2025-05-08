@@ -26,7 +26,7 @@ export function ChatDeviceId({ device, isEncryptionReady }: ChatDeviceIdProps) {
         data-testid="matrix-device-id"
       >
         <Typography
-          component={"span"}
+          component="span"
           level="title-md"
           sx={{
             ...multiLineEllipsis(2),

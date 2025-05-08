@@ -19,8 +19,8 @@ import {
 import {
   mapApiAddressToForm,
   mapBaseAddressToApi,
-} from "@/components/address/helpers";
-import { DefaultPersonFormValues } from "@/features/persons/components/form/DefaultPersonForm";
+} from "../../../components/address/helpers";
+import { DefaultPersonFormValues } from "../components/form/DefaultPersonForm";
 
 import { isReferencePerson } from "./guards";
 

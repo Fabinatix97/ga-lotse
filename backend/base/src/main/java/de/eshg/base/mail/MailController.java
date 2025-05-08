@@ -30,6 +30,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -67,6 +68,7 @@ public class MailController implements MailApi {
   }
 
   @Override
+  @Transactional
   public void sendEmail(SendEmailRequest request) {
     MimeMessage mimeMessage = mailSender.createMimeMessage();
     try {

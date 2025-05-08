@@ -4,10 +4,6 @@
  */
 
 import {
-  Configuration as BaseConfiguration,
-  CitizenAccessCodeUserApi,
-} from "@eshg/base-api";
-import {
   AppointmentBlockApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
@@ -33,13 +29,6 @@ export function useConfiguration() {
     "PUBLIC_STI_PROTECTION_BACKEND_URL",
   );
   return new Configuration(configParameters);
-}
-
-function useBaseConfiguration() {
-  const configurationParameters = useEmployeePortalApiConfiguration(
-    "PUBLIC_BASE_BACKEND_URL",
-  );
-  return new BaseConfiguration(configurationParameters);
 }
 
 export function useStiProtectionProcedureApi() {
@@ -95,11 +84,6 @@ export function useArchivingApi() {
 export function useWaitingRoomApi() {
   const config = useConfiguration();
   return new WaitingRoomApi(config);
-}
-
-export function useCitizenAccessCodeUserApi() {
-  const config = useBaseConfiguration();
-  return new CitizenAccessCodeUserApi(config);
 }
 
 export function useExaminationApi() {

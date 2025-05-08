@@ -7,7 +7,7 @@ import { isNullish } from "remeda";
 
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import { BaseAddress } from "@/api/models/address";
+import { BaseAddress } from "../../api/models/address";
 
 import { BaseAddressFormInputs } from "./addressForms";
 

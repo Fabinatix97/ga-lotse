@@ -52,9 +52,7 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   isInvitationSentFilter: "Einladung versandt",
 };
 
-export const SCHOOL_CONTACT = new Set<ApiContactCategory>([
-  ApiContactCategory.School,
-]);
+const SCHOOL_CONTACT = new Set<ApiContactCategory>([ApiContactCategory.School]);
 
 function getFilterLabel(filterValue: ActiveFilter<keyof ProcedureFilters>) {
   return FILTER_NAMES[filterValue.key];
@@ -216,14 +214,14 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
             <ProcedureLabelAutocomplete
               name="labels"
               value={props.filterFormValues.labelsFilter ?? []}
+              procedureLabelApi={labelApi}
+              procedureLabelApiQueryKey={schoolEntryApiQueryKey}
               onChange={(newValue) => {
                 props.setFilterFormValue(
                   "labelsFilter",
                   isEmpty(newValue) ? undefined : newValue,
                 );
               }}
-              procedureLabelApi={labelApi}
-              procedureLabelApiQueryKey={schoolEntryApiQueryKey}
             />
           </FormControl>
         </FilterSettingsContent>

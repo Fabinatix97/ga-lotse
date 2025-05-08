@@ -37,6 +37,6 @@ export function VaccinationField(props: VaccinationFieldProps) {
       min={props.min ?? 0}
       max={props.max ?? 9}
       required={props.required}
-    ></SoftRequiredNumberField>
+    />
   );
 }

@@ -9,7 +9,7 @@ import { createContext, useContext, useState } from "react";
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { DentalClients, createClients } from "@/api/createClients";
+import { DentalClients, createClients } from "../api/createClients";
 
 const DentalContext = createContext<DentalClients | null>(null);
 

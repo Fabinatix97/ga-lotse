@@ -671,6 +671,33 @@
         "tags" : [ "PrivacyDocument" ]
       }
     },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-policy" : {
       "get" : {
         "operationId" : "getPrivacyPolicyConfig",
@@ -711,6 +738,33 @@
         },
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -2595,19 +2649,18 @@
         "tags" : [ "DraftProtectionProcedure" ]
       }
     },
-    "/protection-procedures/for-person" : {
-      "post" : {
+    "/protection-procedures/for-person/{id}" : {
+      "get" : {
         "operationId" : "getProceduresForPerson",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/GetProceduresForPersonRequest"
-              }
-            }
-          },
-          "required" : true
-        },
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -2856,6 +2909,75 @@
         },
         "summary" : "Create or attach an access restriction letter.",
         "tags" : [ "AccessRestriction" ]
+      }
+    },
+    "/protection-procedures/{id}/affected-person/edit" : {
+      "post" : {
+        "operationId" : "editAffectedPerson",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchAffectedPersonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AffectedPersonDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates affected person from a measles protection procedure.",
+        "tags" : [ "ProtectionProcedure" ]
+      }
+    },
+    "/protection-procedures/{id}/affected-person/sync" : {
+      "post" : {
+        "operationId" : "syncAffectedPerson",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncAffectedPersonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Synchronize affected person data.",
+        "tags" : [ "ProtectionProcedure" ]
       }
     },
     "/protection-procedures/{id}/case-status" : {
@@ -3304,6 +3426,91 @@
         },
         "summary" : "Close measles protection procedure.",
         "tags" : [ "StatusTransition" ]
+      }
+    },
+    "/protection-procedures/{procedureId}/custodian/{custodianId}/edit" : {
+      "post" : {
+        "operationId" : "editCustodian",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "custodianId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchCustodianRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CustodianDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates custodian from a measles protection procedure.",
+        "tags" : [ "ProtectionProcedure" ]
+      }
+    },
+    "/protection-procedures/{procedureId}/custodian/{custodianId}/sync" : {
+      "post" : {
+        "operationId" : "syncCustodian",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "custodianId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncCustodianRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Synchronize custodian data.",
+        "tags" : [ "ProtectionProcedure" ]
       }
     },
     "/protection-procedures/{procedureId}/delete-appointment" : {
@@ -4117,104 +4324,6 @@
           }
         }
       },
-      "AddPersonFileStateRequest" : {
-        "required" : [ "dataOrigin", "dateOfBirth", "firstName", "lastName" ],
-        "type" : "object",
-        "properties" : {
-          "contactAddress" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
-            }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
-            } ]
-          },
-          "countryOfBirth" : {
-            "$ref" : "#/components/schemas/CountryCode"
-          },
-          "dataOrigin" : {
-            "$ref" : "#/components/schemas/DataOrigin"
-          },
-          "dateOfBirth" : {
-            "type" : "string",
-            "description" : "The date of birth of the Person.",
-            "format" : "date",
-            "example" : "2000-01-01"
-          },
-          "differentBillingAddress" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
-            }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
-            } ]
-          },
-          "emailAddresses" : {
-            "type" : "array",
-            "description" : "A list of email addresses of the Person.",
-            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "firstName" : {
-            "maxLength" : 80,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The given name(s) of the Person.",
-            "example" : "John"
-          },
-          "gender" : {
-            "$ref" : "#/components/schemas/Gender"
-          },
-          "lastName" : {
-            "maxLength" : 120,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The last name of the Person.",
-            "example" : "Doe"
-          },
-          "nameAtBirth" : {
-            "maxLength" : 40,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The last name at birth of the Person.",
-            "example" : "Smith"
-          },
-          "phoneNumbers" : {
-            "type" : "array",
-            "description" : "A list of telephone numbers of the Person.",
-            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
-            "items" : {
-              "maxLength" : 23,
-              "minLength" : 1,
-              "type" : "string"
-            }
-          },
-          "placeOfBirth" : {
-            "maxLength" : 50,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The place of birth (without country) of the Person.",
-            "example" : "Berlin"
-          },
-          "referencePersonId" : {
-            "type" : "string",
-            "description" : "Id of a referencePerson. If this Id is provided, a new File State with the input attributes is created for that referencePerson, regardless of any matching logic.",
-            "format" : "uuid",
-            "example" : "UUID_2"
-          },
-          "salutation" : {
-            "$ref" : "#/components/schemas/Salutation"
-          },
-          "title" : {
-            "maxLength" : 119,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The academic title of a Person.",
-            "example" : "Prof. Dr."
-          }
-        },
-        "description" : "Request used for adding persons from non-external sources"
-      },
       "Address" : {
         "required" : [ "@type" ],
         "type" : "object",
@@ -4237,6 +4346,9 @@
             }, {
               "$ref" : "#/components/schemas/PostboxAddress"
             } ]
+          },
+          "affectedPersonSync" : {
+            "$ref" : "#/components/schemas/AffectedPersonSync"
           },
           "countryOfBirth" : {
             "$ref" : "#/components/schemas/CountryCode"
@@ -4371,6 +4483,23 @@
           }
         },
         "description" : "Used to include reporting data and role status with draft procedures submitted via the citizen portal measles reporting form."
+      },
+      "AffectedPersonSync" : {
+        "required" : [ "fileStateId", "outdated", "version" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "outdated" : {
+            "type" : "boolean"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "Appointment" : {
         "required" : [ "end", "start" ],
@@ -4959,60 +5088,15 @@
               "$ref" : "#/components/schemas/PostboxAddress"
             } ]
           },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
           "custodianId" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "dateOfBirth" : {
-            "type" : "string",
-            "description" : "Date of birth of the custodian.",
-            "format" : "date",
-            "example" : "1951-02-16"
-          },
-          "emailAddresses" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "firstName" : {
-            "type" : "string",
-            "description" : "First name of the custodian.",
-            "example" : "Mike"
-          },
-          "gender" : {
-            "$ref" : "#/components/schemas/Gender"
-          },
-          "lastName" : {
-            "type" : "string",
-            "description" : "Last name of the custodian.",
-            "example" : "Himmel"
-          },
-          "phoneNumbers" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "salutation" : {
-            "$ref" : "#/components/schemas/Salutation"
-          },
-          "title" : {
-            "type" : "string"
-          }
-        },
-        "description" : "Related to the affected person and required if the affected person is a minor."
-      },
-      "CustodianDetails" : {
-        "required" : [ "address", "dateOfBirth", "firstName", "lastName" ],
-        "type" : "object",
-        "properties" : {
-          "address" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
-            }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
-            } ]
+          "custodianSync" : {
+            "$ref" : "#/components/schemas/CustodianSync"
           },
           "dateOfBirth" : {
             "type" : "string",
@@ -5059,6 +5143,83 @@
           }
         },
         "description" : "Related to the affected person and required if the affected person is a minor."
+      },
+      "CustodianDetails" : {
+        "required" : [ "address", "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "Date of birth of the custodian.",
+            "format" : "date",
+            "example" : "1951-02-16"
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "type" : "string",
+            "description" : "First name of the custodian.",
+            "example" : "Mike"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "Last name of the custodian.",
+            "example" : "Himmel"
+          },
+          "nameAtBirth" : {
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Related to the affected person and required if the affected person is a minor."
+      },
+      "CustodianSync" : {
+        "required" : [ "fileStateId", "outdated", "version" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "outdated" : {
+            "type" : "boolean"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "DataOrigin" : {
         "type" : "string",
@@ -5432,7 +5593,7 @@
         }
       },
       "FacilityContactPerson" : {
-        "required" : [ "emailAddress", "firstName", "lastName", "phoneNumber" ],
+        "required" : [ "lastName" ],
         "type" : "object",
         "properties" : {
           "emailAddress" : {
@@ -6334,7 +6495,7 @@
       "GetPrivacyDocumentConfigResponse" : {
         "type" : "object",
         "properties" : {
-          "overwrittenPrivacyDocument" : {
+          "privacyDocument" : {
             "$ref" : "#/components/schemas/PrivacyDocument"
           }
         }
@@ -6382,15 +6543,6 @@
             "items" : {
               "$ref" : "#/components/schemas/ProcedureMetric"
             }
-          }
-        }
-      },
-      "GetProceduresForPersonRequest" : {
-        "required" : [ "person" ],
-        "type" : "object",
-        "properties" : {
-          "person" : {
-            "$ref" : "#/components/schemas/AddPersonFileStateRequest"
           }
         }
       },
@@ -6819,6 +6971,10 @@
           "propertyName" : "@type"
         }
       },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
+      },
       "MPFacilityType" : {
         "type" : "string",
         "description" : "Type of the facility.",
@@ -7098,6 +7254,24 @@
       "Operation" : {
         "type" : "string",
         "enum" : [ "DELETE" ]
+      },
+      "PatchAffectedPersonRequest" : {
+        "required" : [ "affectedPersonDetails" ],
+        "type" : "object",
+        "properties" : {
+          "affectedPersonDetails" : {
+            "$ref" : "#/components/schemas/AffectedPersonDetails"
+          }
+        }
+      },
+      "PatchCustodianRequest" : {
+        "required" : [ "custodianDetails" ],
+        "type" : "object",
+        "properties" : {
+          "custodianDetails" : {
+            "$ref" : "#/components/schemas/CustodianDetails"
+          }
+        }
       },
       "PatchManualProgressEntryRequest" : {
         "type" : "object",
@@ -7680,6 +7854,42 @@
         "description" : "The SubmissionResult describes the current state and the final outcome of a proof submission.\n",
         "example" : "PROOF_SUBMITTED",
         "enum" : [ "UNDER_REVIEW", "ATTENDED_NO_PROOF", "TEMP_MEDICAL_ATTEST", "MEDICAL_ATTEST", "PROOF_SUBMITTED" ]
+      },
+      "SyncAffectedPersonRequest" : {
+        "required" : [ "fileStateId", "personVersion", "referenceVersion" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "personVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SyncCustodianRequest" : {
+        "required" : [ "custodianVersion", "fileStateId", "referenceVersion" ],
+        "type" : "object",
+        "properties" : {
+          "custodianVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "SyncFacilityRequest" : {
         "required" : [ "facilityVersion", "fileStateId", "referenceVersion" ],

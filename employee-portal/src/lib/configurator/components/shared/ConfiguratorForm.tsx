@@ -137,8 +137,8 @@ function SectionContent({
               <Stack direction="row" gap={3}>
                 {row.fields.map((field) => (
                   <RenderField
-                    field={field}
                     key={field.name}
+                    field={field}
                     values={values}
                     deleteFile={deleteFile}
                     downloadFile={downloadFile}
@@ -191,19 +191,19 @@ export function ConfiguratorForm<T extends FormikValues>({
   return (
     <Formik
       initialValues={initialValues}
+      validateOnChange={false}
+      validateOnMount={false}
+      enableReinitialize
       onSubmit={(model) => {
         setShowError(false);
         return onSubmit(model);
       }}
-      validateOnChange={false}
-      validateOnMount={false}
-      enableReinitialize
     >
       {({ values, handleReset, isSubmitting, handleSubmit, errors, dirty }) => (
         <FormPlus data-testid="configurator-form">
           <ErrorListener
-            onError={() => setShowError(true)}
             noErrors={() => setShowError(false)}
+            onError={() => setShowError(true)}
           />
           <ConfirmLeaveDirtyFormEffect
             confirmationDialogProps={{
@@ -243,17 +243,15 @@ export function ConfiguratorForm<T extends FormikValues>({
                   <Stack gap={4}>
                     <Stack gap={1}>
                       <Typography level="h3">{sheet.title}</Typography>
-                      {isDefined(sheet.description) && (
-                        <>
-                          {typeof sheet.description === "string" ? (
-                            <Typography level="body-md">
-                              {sheet.description}
-                            </Typography>
-                          ) : (
-                            sheet.description
-                          )}
-                        </>
-                      )}
+                      {isDefined(sheet.description) ? (
+                        typeof sheet.description === "string" ? (
+                          <Typography level="body-md">
+                            {sheet.description}
+                          </Typography>
+                        ) : (
+                          sheet.description
+                        )
+                      ) : null}
                     </Stack>
                     {sheet.sections.map((section, index) => (
                       <Stack key={`sheet-${index}`} gap={3}>
@@ -265,22 +263,20 @@ export function ConfiguratorForm<T extends FormikValues>({
                                 {section.title}
                               </Typography>
                             )}
-                            {isDefined(section.description) && (
-                              <>
-                                {typeof section.description === "string" ? (
-                                  <Typography level="body-md">
-                                    {section.description}
-                                  </Typography>
-                                ) : (
-                                  section.description
-                                )}
-                              </>
-                            )}
+                            {isDefined(section.description) ? (
+                              typeof section.description === "string" ? (
+                                <Typography level="body-md">
+                                  {section.description}
+                                </Typography>
+                              ) : (
+                                section.description
+                              )
+                            ) : null}
                           </Stack>
                         )}
                         <SectionContent
-                          content={section.content}
                           key={`section-${index}`}
+                          content={section.content}
                           values={values}
                           deleteFile={(fileName) => deleteFile?.(fileName)}
                           downloadFile={(fileName) => downloadFile?.(fileName)}

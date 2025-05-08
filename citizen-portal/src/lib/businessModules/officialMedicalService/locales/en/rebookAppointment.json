@@ -2,7 +2,10 @@
   "common": {
     "title": "Book appointment",
     "requiredTitle": "*Required",
-    "logout": "Leave my area"
+    "logout": "Leave My Area",
+    "errors": {
+      "concurrentAppointment_errorMessage": "The appointment you've selected has just been reserved by another party. Please select another free appointment."
+    }
   },
   "content": {
     "title": "Available appointments",
@@ -35,7 +38,10 @@
   },
   "sidePanel": {
     "title": "Overview",
-    "dateAndTime": "{{ appointmentStart }}",
+    "date_label": "Day, date",
+    "time_label": "Time",
+    "time_value": "{{ appointmentStart }}",
+    "concernAndDuration_label": "Concern, expected appointment duration",
     "appointmentDuration": "(ca. {{ durationInMinutes }} minutes)",
     "bookAppointment_bookable": "Book appointment",
     "bookAppointment_cancelled": "Rebook appointment",

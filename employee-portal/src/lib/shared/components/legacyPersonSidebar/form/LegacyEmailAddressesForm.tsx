@@ -21,8 +21,8 @@ export function LegacyEmailAddressesForm(props: {
         <>
           {props.emailAddresses.map((_, index) => (
             <Grid
-              container
               key={index}
+              container
               direction="row"
               spacing={1}
               alignItems="flex-end"

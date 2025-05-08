@@ -15,5 +15,6 @@ public record ResolvedMergeProcedureData(
     CountryCode countryOfBirth,
     List<ImportCustodianData> custodians,
     String phoneNumber,
+    String email,
     Boolean isEntryLevel,
     Boolean isEarlyExamination) {}

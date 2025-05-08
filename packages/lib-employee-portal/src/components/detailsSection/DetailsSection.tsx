@@ -69,9 +69,9 @@ export function DetailsSection({
       <DetailsSectionHeader
         id={headerId}
         title={title}
+        buttons={buttons}
         onEdit={handleEdit}
         onDelete={canDelete !== false ? onDelete : undefined}
-        buttons={buttons}
       />
 
       {canRenderModal &&

@@ -15,8 +15,10 @@ import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/Boolea
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateNumber } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidateNumber,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
@@ -26,7 +28,8 @@ interface PracticeInformationFormProps extends NestedFormProps {
 }
 
 export function PracticeInformationForm(props: PracticeInformationFormProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
+  const validateNumber = useValidateNumber();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
@@ -68,7 +71,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <InputField
               name={fieldName("practiceName")}
-              label={"Praxisname / Einrichtungsname"}
+              label="Praxisname / Einrichtungsname"
               required={requiredFieldMessage}
               validate={validateLength(1, 300)}
             />
@@ -78,7 +81,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6} xxl={4.5}>
             <InputField
               name={fieldName("street")}
-              label={"Straße"}
+              label="Straße"
               required={requiredFieldMessage}
               validate={validateLength(1, 55)}
             />
@@ -86,7 +89,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6} xxl={1.5}>
             <InputField
               name={fieldName("houseNumber")}
-              label={"Hausnummer"}
+              label="Hausnummer"
               required={requiredFieldMessage}
               validate={validateLength(1, 11)}
             />
@@ -96,7 +99,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6} xxl={2}>
             <InputField
               name={fieldName("postalCode")}
-              label={"Postleitzahl"}
+              label="Postleitzahl"
               required={requiredFieldMessage}
               validate={validateLength(1, 20)}
             />
@@ -104,7 +107,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6} xxl={4}>
             <InputField
               name={fieldName("city")}
-              label={"Ort"}
+              label="Ort"
               required={requiredFieldMessage}
               validate={validateLength(1, 50)}
             />
@@ -114,7 +117,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <InputField
               name={fieldName("phoneNumber")}
-              label={"Telefon"}
+              label="Telefon"
               required={requiredFieldMessage}
               validate={validateLength(1, 23)}
             />
@@ -124,7 +127,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <EmailField
               name={fieldName("email")}
-              label={"Email"}
+              label="Email"
               required={requiredFieldMessage}
               validate={validateLength(1, 254)}
             />
@@ -134,7 +137,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <InputField
               name={fieldName("website")}
-              label={"Website"}
+              label="Website"
               validate={validateLength(6, 254)}
             />
           </Grid>
@@ -143,7 +146,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <InputField
               name={fieldName("openingHours")}
-              label={"Öffnungszeiten / Sprechzeiten"}
+              label="Öffnungszeiten / Sprechzeiten"
             />
           </Grid>
           <Grid xxl={6} />
@@ -151,7 +154,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <InputField
               name={fieldName("institutionIdentifier")}
-              label={"InstitutionsKennzeichen (IK)"}
+              label="InstitutionsKennzeichen (IK)"
               validate={validateNumber}
             />
           </Grid>
@@ -160,7 +163,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
           <Grid xxs={6}>
             <InputField
               name={fieldName("establishmentNumber")}
-              label={"Betriebsstättennummer (BSNR)"}
+              label="Betriebsstättennummer (BSNR)"
               validate={validateNumber}
             />
           </Grid>

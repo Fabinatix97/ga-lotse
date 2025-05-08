@@ -9,9 +9,9 @@ import { GetProphylaxisSessionsRequest } from "@eshg/dental-api";
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 
-import { prophylaxisSessionApiQueryKey } from "@/config/apiQueryKeys";
-import { useDentalApi } from "@/contexts/dental";
-import { mapProphylaxisSession } from "@/features/prophylaxisSessions/api/models/ProphylaxisSession";
+import { prophylaxisSessionApiQueryKey } from "../../../../config/apiQueryKeys";
+import { useDentalApi } from "../../../../contexts/dental";
+import { mapProphylaxisSession } from "../models/ProphylaxisSession";
 
 export function useGetProphylaxisSessions(
   request: GetProphylaxisSessionsRequest,

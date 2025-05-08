@@ -20,16 +20,16 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 import {
   useCreateIncident,
   useUpdateIncident,
 } from "@/lib/businessModules/inspection/api/mutations/incidents";
 
-export interface IncidentSidebarProps {
+interface IncidentSidebarProps {
   open: boolean;
   onClose: () => void;
   procedureId: string;
@@ -86,12 +86,12 @@ function IncidentSidebarInner({
     <Sidebar open={open} onClose={onClose}>
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
           <SidebarForm onSubmit={handleSubmit}>
-            <SidebarContent title={"Vorkommnis hinzufügen"}>
+            <SidebarContent title="Vorkommnis hinzufügen">
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>
                   {!isChecklistIncident && (
@@ -107,7 +107,7 @@ function IncidentSidebarInner({
                       value={
                         incident.title ?? (
                           <Typography
-                            data-testid={`title.value`}
+                            data-testid="title.value"
                             component="i"
                             color="neutral"
                             level="title-md"

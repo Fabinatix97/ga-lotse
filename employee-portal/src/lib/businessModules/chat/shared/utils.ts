@@ -16,8 +16,6 @@ import {
 } from "date-fns";
 import { de } from "date-fns/locale";
 import {
-  DeviceMap,
-  DeviceVerification,
   Direction,
   EventType,
   MatrixClient,
@@ -28,21 +26,9 @@ import {
   SetPresence,
   User,
 } from "matrix-js-sdk";
-import { CryptoApi } from "matrix-js-sdk/lib/crypto-api";
-import {
-  filter,
-  isEmpty,
-  isStrictEqual,
-  isString,
-  keys,
-  pickBy,
-  pipe,
-} from "remeda";
+import { filter, isStrictEqual, keys, pickBy, pipe } from "remeda";
 
-import {
-  fetchBackupInfo,
-  getCryptoApi,
-} from "@/lib/businessModules/chat/matrix/crypto";
+import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import {
@@ -196,17 +182,7 @@ export async function markAllMessagesAsRead({
   } catch {}
 }
 
-export function validateChatUsername(chatUsername: unknown) {
-  return (
-    isString(chatUsername) &&
-    !isEmpty(chatUsername) &&
-    chatUsername.startsWith("@")
-  );
-}
-
-export function extractHomeserverNameFromUserMatrixID(
-  loggedInUserId: string | null,
-) {
+function extractHomeserverNameFromUserMatrixID(loggedInUserId: string | null) {
   return loggedInUserId?.split(":")[1] ?? "";
 }
 
@@ -305,7 +281,7 @@ export function getDayLabel(date: Date): string {
   return format(localDate, "MMMM d, yyyy");
 }
 
-export function formatDateForChat(date: Date): string {
+function formatDateForChat(date: Date): string {
   const currentTime = new Date();
   if (isSameDay(currentTime, date)) {
     return format(date, "HH:mm");
@@ -724,42 +700,5 @@ export async function setPresenceOnline(matrixClient: MatrixClient) {
     await matrixClient.setPresence({ presence: SetPresence.Online });
   } catch (error) {
     logger.error("Failed to set user presence to online", error);
-  }
-}
-
-export async function setAllUserDevicesAsVerified(
-  matrixClient: MatrixClient,
-  userIds: string[],
-) {
-  try {
-    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
-    const usersDeviceMap: DeviceMap = await cryptoApi.getUserDeviceInfo(
-      userIds,
-      true,
-    );
-    for (const allUserDevices of usersDeviceMap.values()) {
-      if (allUserDevices.size === 0) {
-        logger.error(
-          "One of users does not have any encryption-capable devices",
-        );
-        return false;
-      }
-      for (const device of allUserDevices.values()) {
-        if (device.verified !== DeviceVerification.Verified) {
-          logger.warn(
-            `Setting User's ${device.userId} device ${device.deviceId} as verified`,
-          );
-          await cryptoApi.setDeviceVerified(
-            device.userId,
-            device.deviceId,
-            true,
-          );
-        }
-      }
-    }
-    return true;
-  } catch (e) {
-    logger.error("Error setAllUsersAsVerified", e);
-    return false;
   }
 }

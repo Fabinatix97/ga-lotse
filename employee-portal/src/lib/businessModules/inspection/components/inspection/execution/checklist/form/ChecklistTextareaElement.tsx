@@ -5,7 +5,7 @@
 
 import { ReactNode, useId } from "react";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";

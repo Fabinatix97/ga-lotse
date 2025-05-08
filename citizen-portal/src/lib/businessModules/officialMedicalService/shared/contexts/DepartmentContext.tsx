@@ -23,9 +23,7 @@ interface DepartmentContextProps {
   setDepartment: Dispatch<SetStateAction<ApiGetDepartmentInfoResponse>>;
 }
 
-export const DepartmentContext = createContext<DepartmentContextProps | null>(
-  null,
-);
+const DepartmentContext = createContext<DepartmentContextProps | null>(null);
 
 type DepartmentContextProviderProps = RequiresChildren;
 

@@ -22,7 +22,7 @@ export function AppointmentInfoSection() {
       <FormSheetTitle>{t("appointmentInfoSection.title")}</FormSheetTitle>
       <Alert
         title={t("appointmentInfoSection.alertHeader")}
-        color={"primary"}
+        color="primary"
         message={t("appointmentInfoSection.alertMessage")}
       />
       <Typography>

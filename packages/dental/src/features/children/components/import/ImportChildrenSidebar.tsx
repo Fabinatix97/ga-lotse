@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FileDownload } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 
@@ -17,13 +18,18 @@ import {
   formatInstitutionNameWithCategoryShort,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
+import {
+  downloadFileAndOpen,
+  useFileDownload,
+} from "@eshg/lib-portal/api/files/download";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
-import { useImportChildren } from "@/features/children/api/mutations/overview";
+import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
+import { useDentalApi } from "../../../../contexts/dental";
+import { useImportChildren } from "../../api/mutations/overview";
 
 export function useImportChildrenSidebar(): UseSidebarWithFormRefResult {
   return useSidebarWithFormRef({
@@ -65,15 +71,20 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
     );
   }
 
+  const { childApi } = useDentalApi();
+  const templateFile = useFileDownload(() =>
+    childApi.getChildListTemplateRaw(),
+  );
+
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {({}) => (
         <ImportDataForm
           title="Daten importieren"
           formRef={props.formRef}
-          onClose={props.onClose}
           wasImportSuccessful={importSuccessful}
           importResult={importResult}
+          onClose={props.onClose}
         >
           <Stack spacing={2}>
             <SelectContactField
@@ -99,6 +110,13 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
               accept={FileType.Xlsx}
               required="Bitte eine Datei auswählen."
             />
+            <ButtonLink
+              startDecorator={<FileDownload />}
+              fontSize="sm"
+              onClick={() => templateFile.download()}
+            >
+              Beispiel-Datei herunterladen
+            </ButtonLink>
           </Stack>
         </ImportDataForm>
       )}

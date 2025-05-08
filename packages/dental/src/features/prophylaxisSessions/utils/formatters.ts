@@ -5,7 +5,7 @@
 
 import { ApiFluoridationVarnish } from "@eshg/dental-api";
 
-import { FLUORIDATION_VARNISH_DESCRIPTIONS } from "@/translations/prophylaxisSession";
+import { FLUORIDATION_VARNISH_DESCRIPTIONS } from "../../../translations/prophylaxisSession";
 
 export function formatFluoridationVarnishDescription(
   fluoridationVarnish: ApiFluoridationVarnish | undefined,

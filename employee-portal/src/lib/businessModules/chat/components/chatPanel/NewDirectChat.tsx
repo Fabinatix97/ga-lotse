@@ -11,7 +11,7 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { DirectChatContent } from "@/lib/businessModules/chat/components/chatPanel/DirectChatContent";
-import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/InputComponent";
+import { TextareaComponent } from "@/lib/businessModules/chat/components/chatPanel/TextareaComponent";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
@@ -19,7 +19,7 @@ import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendM
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import { delayed, setDMRoom } from "@/lib/businessModules/chat/shared/utils";
 
-export interface DirectChatFormValues {
+interface DirectChatFormValues {
   invite: string | null;
   message: string;
 }
@@ -82,8 +82,8 @@ export function NewDirectChat({
     <Box sx={{ height: "100%" }}>
       <Formik<DirectChatFormValues>
         initialValues={{ invite: null, message: "" }}
-        onSubmit={handleStartDirectMessage}
         validate={validateDMForm}
+        onSubmit={handleStartDirectMessage}
       >
         <FormPlus
           sx={{
@@ -126,7 +126,7 @@ export function NewDirectChat({
             />
           </Box>
           <DirectChatContent />
-          <InputComponent
+          <TextareaComponent
             name="message"
             selectFieldName="mentionedUsers"
             roomMembers={[]}

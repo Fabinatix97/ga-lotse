@@ -48,7 +48,7 @@ type ConfigurationConstructor<TConfiguration> = new (
   params: ConfigurationParameters,
 ) => TConfiguration;
 
-export function useConfigurationByBusinessModule<TConfiguration>(
+function useConfigurationByBusinessModule<TConfiguration>(
   businessModule: ApiBusinessModule,
   Configuration: ConfigurationConstructor<TConfiguration>,
 ): TConfiguration {

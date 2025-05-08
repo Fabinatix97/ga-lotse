@@ -39,6 +39,7 @@ import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
 import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
+import de.eshg.rest.client.AcceptLanguageForwardingInterceptor;
 import de.eshg.rest.client.BearerAuthInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
@@ -135,6 +136,7 @@ public class BusinessModuleClient
             .baseUrl(url)
             .requestInterceptor(new BearerAuthInterceptor())
             .requestInterceptor(new CorrelationIdForwardingInterceptor())
+            .requestInterceptor(new AcceptLanguageForwardingInterceptor())
             .build();
 
     RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);

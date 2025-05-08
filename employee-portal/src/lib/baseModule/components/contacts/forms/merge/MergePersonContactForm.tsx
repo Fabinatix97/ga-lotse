@@ -153,16 +153,16 @@ export function MergePersonContactForm({
     >
       {({ isSubmitting, values }) => (
         <SidebarForm ref={sidebarFormRef}>
-          <SidebarContent title={"Person zusammenführen"}>
+          <SidebarContent title="Person zusammenführen">
             <Stack gap={3} divider={<Divider />}>
-              <Stack gap={"inherit"}>
+              <Stack gap="inherit">
                 <Grid container spacing={2}>
                   <Grid xxs={6}>
                     <MergeStringField
                       target={into.salutation}
                       source={from.data.salutation}
                       name={fieldName("salutation")}
-                      label={"Anrede"}
+                      label="Anrede"
                       emptyValue={ApiSalutation.NotSpecified}
                       getOptionLabel={(value) =>
                         SALUTATION_VALUES[
@@ -178,7 +178,7 @@ export function MergePersonContactForm({
                       target={into.title}
                       source={from.data.title}
                       name={fieldName("title")}
-                      label={"Titel"}
+                      label="Titel"
                       emptyValue={TITLE_VALUES.NotSpecified}
                       sourceValueLabel={fromLabel}
                       targetValueLabel={intoLabel}
@@ -189,7 +189,7 @@ export function MergePersonContactForm({
                   target={into.firstName}
                   source={from.data.firstName}
                   name={fieldName("firstName")}
-                  label={"Vorname"}
+                  label="Vorname"
                   sourceValueLabel={fromLabel}
                   targetValueLabel={intoLabel}
                 />
@@ -197,7 +197,7 @@ export function MergePersonContactForm({
                   target={into.name}
                   source={from.data.name}
                   name={fieldName("name")}
-                  label={"Name"}
+                  label="Name"
                   sourceValueLabel={fromLabel}
                   targetValueLabel={intoLabel}
                 />
@@ -206,7 +206,7 @@ export function MergePersonContactForm({
                     target={into.nameAtBirth}
                     source={from.data.nameAtBirth}
                     name={fieldName("nameAtBirth")}
-                    label={"Geburtsname"}
+                    label="Geburtsname"
                     sourceValueLabel={fromLabel}
                     targetValueLabel={intoLabel}
                   />
@@ -215,7 +215,7 @@ export function MergePersonContactForm({
                   target={into.gender}
                   source={from.data.gender}
                   name={fieldName("gender")}
-                  label={"Geschlecht"}
+                  label="Geschlecht"
                   emptyValue={ApiGender.NotSpecified}
                   getOptionLabel={(value) =>
                     GENDER_VALUES[value as keyof typeof GENDER_VALUES]
@@ -238,8 +238,8 @@ export function MergePersonContactForm({
                     },
                   ]}
                   name={fieldName("contactAddress")}
-                  label={"Kontaktadresse"}
-                  required={"Bitte auswählen"}
+                  label="Kontaktadresse"
+                  required="Bitte auswählen"
                   value={values.contactAddress}
                   readOnly={!requiresContactAddressMerge}
                 />
@@ -258,25 +258,25 @@ export function MergePersonContactForm({
                     },
                   ]}
                   name={fieldName("differentBillingAddress")}
-                  label={"Abweichende Rechnungsadresse"}
-                  required={"Bitte auswählen"}
+                  label="Abweichende Rechnungsadresse"
+                  required="Bitte auswählen"
                   value={values.differentBillingAddress}
                   readOnly={!requiresBillingAddressMerge}
                 />
               )}
-              <Stack gap={"inherit"}>
-                <Box component={"section"} aria-label={"E-Mail-Adressen"}>
+              <Stack gap="inherit">
+                <Box component="section" aria-label="E-Mail-Adressen">
                   <InputArrayField
                     name={fieldName("emailAddresses")}
                     label={(index) => getIndexLabel("E-Mail-Adresse", index)}
-                    addMoreLabel={"E-Mail-Adresse hinzufügen"}
+                    addMoreLabel="E-Mail-Adresse hinzufügen"
                   />
                 </Box>
-                <Box component={"section"} aria-label={"Telefonnummern"}>
+                <Box component="section" aria-label="Telefonnummern">
                   <InputArrayField
                     name={fieldName("phoneNumbers")}
                     label={(index) => getIndexLabel("Telefonnummer", index)}
-                    addMoreLabel={"Telefonnummer hinzufügen"}
+                    addMoreLabel="Telefonnummer hinzufügen"
                   />
                 </Box>
               </Stack>
@@ -285,7 +285,7 @@ export function MergePersonContactForm({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={isSubmitting}
-              submitLabel={"Bestätigen"}
+              submitLabel="Bestätigen"
               onCancel={onCancel}
               onBack={onBack}
             />

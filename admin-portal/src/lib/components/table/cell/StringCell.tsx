@@ -58,10 +58,10 @@ function EditableStringCell(
       size="sm"
       color={color}
       value={value}
-      onChange={handleChange}
-      onClick={(event) => event.stopPropagation()}
       timeoutMs={500}
       label={props.column.id}
+      onChange={handleChange}
+      onClick={(event) => event.stopPropagation()}
     />
   );
 }

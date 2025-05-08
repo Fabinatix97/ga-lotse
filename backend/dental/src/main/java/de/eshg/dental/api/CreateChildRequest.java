@@ -11,7 +11,6 @@ import de.eshg.base.address.AddressDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.validation.constraints.DateOfBirth;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -35,7 +34,7 @@ public record CreateChildRequest(
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress,
     @NotNull int year,
-    @NotBlank String groupName,
+    String groupName,
     @NotNull UUID institutionId) {
 
   public CreateChildRequest(

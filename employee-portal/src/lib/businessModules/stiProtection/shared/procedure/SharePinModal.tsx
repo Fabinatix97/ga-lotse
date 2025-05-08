@@ -6,10 +6,10 @@
 import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 
 export function SharePinModal({
   pinToShare,

@@ -7,12 +7,13 @@ import { TypographyProps } from "@mui/joy";
 import { ComponentProps } from "react";
 import { isString } from "remeda";
 
+import { BaseDetailsItemProps } from "@eshg/lib-portal/components/details/BaseDetailsItem";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 
-import { DetailsItem, DetailsItemProps, DetailsItemValue } from "./DetailsItem";
+import { DetailsItem, DetailsItemValueEmployee } from "./DetailsItem";
 
 type ReducedItemProps<TLabelProps> = Omit<
-  DetailsItemProps<
+  BaseDetailsItemProps<
     TLabelProps,
     ComponentProps<typeof DetailsValueExternalLink>
   >,
@@ -25,7 +26,7 @@ interface ExternalLinkDetailsItemProps<TLabelProps>
   href: (value: string) => string;
 }
 
-export function ExternalLinkDetailsItem<TLabelProps = TypographyProps>(
+export function ExternalLinkDetailsItem<TLabelProps extends TypographyProps>(
   props: ExternalLinkDetailsItemProps<TLabelProps>,
 ) {
   return (
@@ -54,13 +55,13 @@ function DetailsValueExternalLink({
   href: (value: string) => string;
 }) {
   return (
-    <DetailsItemValue {...props}>
+    <DetailsItemValueEmployee {...props}>
       <ExternalLink
         href={isString(children) ? href(children) : undefined}
         sx={{ wordBreak: "break-word", hyphens: "manual" }}
       >
         {children}
       </ExternalLink>
-    </DetailsItemValue>
+    </DetailsItemValueEmployee>
   );
 }

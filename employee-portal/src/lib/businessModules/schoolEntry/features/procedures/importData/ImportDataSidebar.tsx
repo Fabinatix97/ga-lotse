@@ -79,7 +79,6 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
       {({ values, setFieldValue, setTouched }) => (
         <ImportDataForm
           formRef={props.formRef}
-          onClose={props.onClose}
           importResult={importResult}
           wasImportSuccessful={isSuccess}
           title={
@@ -93,6 +92,7 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
               values.listType === ImportListType.PastProcedureList
             )
           }
+          onClose={props.onClose}
         >
           <ImportDataFields
             listType={values.listType}

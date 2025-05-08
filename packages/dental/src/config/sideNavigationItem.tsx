@@ -12,7 +12,7 @@ import {
   hasUserRole,
 } from "@eshg/lib-employee-portal";
 
-import { routes } from "@/config/routes";
+import { routes } from "./routes";
 
 const sideNavigationItem = {
   name: "Zahnärztl. Dienst",

@@ -23,7 +23,7 @@ import {
 import { SwitchField } from "@/lib/shared/components/formFields/SwitchField";
 
 type AdminFormValues = Record<string, boolean>;
-export interface AssignAdminProps {
+interface AssignAdminProps {
   roomId: string;
   onClose: () => void;
   onCancel: () => void;
@@ -99,8 +99,8 @@ export function AssignAdminView({
           <Typography level="title-lg">Admins bestimmen</Typography>
           <Formik
             initialValues={initialValues}
+            enableReinitialize
             onSubmit={handleSubmit}
-            enableReinitialize={true}
           >
             {({ initialValues }) => (
               <FormPlus>
@@ -128,7 +128,7 @@ export function AssignAdminView({
                         <Typography level="title-sm">{member.name}</Typography>
                       </Stack>
                       {initialValues[member.userId] ? (
-                        <Switch checked={true} size="lg" disabled />
+                        <Switch checked size="lg" disabled />
                       ) : (
                         <SwitchField name={`['${member.userId}']`} label="" />
                       )}
@@ -144,8 +144,8 @@ export function AssignAdminView({
                   <Button
                     type="buttom"
                     variant="soft"
-                    onClick={onCancel}
                     fullWidth
+                    onClick={onCancel}
                   >
                     Abbrechen
                   </Button>

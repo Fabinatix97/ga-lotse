@@ -15,9 +15,10 @@ import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
-} from "@/api/models/ExaminationResult";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { useUpdateProphylaxisSessionExaminations } from "@/features/prophylaxisSessions/api/mutations/details";
+} from "../../../../api/models/ExaminationResult";
+import { mapToothDiagnosesToRequest } from "../../../../utils/examination";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
+import { useUpdateProphylaxisSessionExaminations } from "../../api/mutations/details";
 
 import { useProphylaxisSessionStore } from "./ProphylaxisSessionStoreProvider";
 
@@ -104,7 +105,7 @@ function mapScreeningResult(
     calculus: screeningResult.calculus,
     gingivitis: screeningResult.gingivitis,
     parodontitis: screeningResult.parodontitis,
-    toothDiagnoses: Object.values(screeningResult.toothDiagnoses),
+    toothDiagnoses: mapToothDiagnosesToRequest(screeningResult.toothDiagnoses),
   };
 }
 

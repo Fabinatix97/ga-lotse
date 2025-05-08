@@ -180,10 +180,10 @@ export function ReportCaseOverviewCard({
           isSubmitting={isSubmitting}
           submitDisabled={submitDisabled}
           submitLabel={submitLabel}
-          onCancel={onCancel}
           cancelLabel={cancelLabel}
           actionButton={actionButton}
           finalSubmit={finalSubmit}
+          onCancel={onCancel}
         />
       </CardContent>
     </Card>
@@ -222,7 +222,7 @@ function ReportCaseOverviewCardButtons({
         {submitLabel ?? t("common.continue")}
       </SubmitButton>
       {actionButton}
-      <Button onClick={onCancel} variant="soft" color="neutral">
+      <Button variant="soft" color="neutral" onClick={onCancel}>
         {cancelLabel ?? t("common.cancel")}
       </Button>
     </Stack>

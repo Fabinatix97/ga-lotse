@@ -65,7 +65,7 @@ export function ChangePinForm() {
         </ContentSheet>
       }
       sidePanel={
-        <ContentSheet sx={{ gridArea: "sidebar" }}>
+        <ContentSheet>
           <SubmitButton submitting={isSubmitting}>
             {t("form.button_label")}
           </SubmitButton>

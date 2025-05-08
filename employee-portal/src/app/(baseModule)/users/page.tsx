@@ -15,7 +15,7 @@ import { UserTable } from "@/lib/baseModule/components/users/UserTable";
 
 export default function UserOverviewPage() {
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Benutzer"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Benutzer" />}>
       <MainContentLayout fullViewportHeight>
         <UserTable />
       </MainContentLayout>

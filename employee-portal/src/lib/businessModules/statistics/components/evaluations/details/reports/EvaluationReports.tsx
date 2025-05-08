@@ -365,10 +365,10 @@ export function EvaluationReports({
         <Stack sx={{ width: { lg: RIGHT_STACK_WIDTH, xxs: "100%" } }}>
           <ReportAutomationTile
             activeSeriesInfo={data.activeSeries}
-            onClickAutomate={openAutomateReportSidebar}
-            onClickDeactivate={deactivateReportSeriesWithConfirmation}
             updateReportSeries={openUpdateReportSidebar}
             canWrite={userPermissions.canWrite}
+            onClickAutomate={openAutomateReportSidebar}
+            onClickDeactivate={deactivateReportSeriesWithConfirmation}
           />
         </Stack>
       </Stack>

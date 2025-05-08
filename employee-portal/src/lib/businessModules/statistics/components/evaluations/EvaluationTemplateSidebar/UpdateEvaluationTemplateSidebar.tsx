@@ -39,13 +39,7 @@ function UpdateEvaluationTemplateSidebar(
 
   return (
     <SidebarStepper
-      onClose={props.onClose}
       formRef={props.formRef}
-      onSubmit={(model) =>
-        updateEvaluationTemplate(props.evaluationTemplateId, model[0]).then(
-          () => void 0,
-        )
-      }
       steps={[
         () => ({
           title: "Auswertungsvorlage bearbeiten",
@@ -59,6 +53,12 @@ function UpdateEvaluationTemplateSidebar(
           },
         }),
       ]}
+      onClose={props.onClose}
+      onSubmit={(model) =>
+        updateEvaluationTemplate(props.evaluationTemplateId, model[0]).then(
+          () => void 0,
+        )
+      }
     />
   );
 }

@@ -41,10 +41,10 @@ function UpdateContactSidebar({
     <ContactEntityForm
       contactId={contact.id}
       initialValues={mapContactToForm(contact)}
-      onClose={() => onClose(false)}
-      onUpdated={() => onClose(true)}
       type={contactDiscriminatorToEnum[contact.type]}
       sidebarFormRef={formRef}
+      onClose={() => onClose(false)}
+      onUpdated={() => onClose(true)}
     />
   );
 }

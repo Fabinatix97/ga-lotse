@@ -11,7 +11,6 @@ import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm
 import { ApiTravelTimeUnit, ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
-import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import {
   formatTravelDestinations,
   formatTravelDuration,
@@ -23,6 +22,7 @@ import {
 } from "@/lib/businessModules/travelMedicine/helpers/translations";
 import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 
 export function TravelInformationOverviewDetails() {
   const { t } = useTranslation(["travelMedicine/forms"]);
@@ -30,13 +30,10 @@ export function TravelInformationOverviewDetails() {
   const { translateCountry } = useTranslateCountry();
   const { currentStep } = useMultiStepForm();
 
-  const travelDurationLabel = t(
-    "appointmentOverviewSection.values.travelDuration",
-  );
-  const travelDestinationsLabel = t(
-    "appointmentOverviewSection.values.travelDestinations",
-    { count: values.travelInformation.travelDestinations.length },
-  );
+  const travelDurationLabel = t("overview.fields.travelDuration");
+  const travelDestinationsLabel = t("overview.fields.travelDestinations", {
+    count: values.travelInformation.travelDestinations.length,
+  });
 
   function isTravelDataComplete() {
     return (
@@ -52,11 +49,15 @@ export function TravelInformationOverviewDetails() {
   return (
     <Stack>
       {currentStep > 3 && (
-        <DetailsField
+        <DetailsItem
+          label={t("overview.fields.travelData", {
+            context: "label",
+          })}
           value={
             TRAVEL_TYPES[values.travelInformation.travelType as ApiTravelType]
           }
           icon={<TravelExploreOutlined />}
+          hiddenLabel
         />
       )}
       {currentStep > 4 && isTravelDataComplete() && (

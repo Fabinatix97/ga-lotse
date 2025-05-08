@@ -7,7 +7,7 @@ import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/
 
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 
-export interface AssigneeAutocompleteFieldProps {
+interface AssigneeAutocompleteFieldProps {
   name: string;
   options: AutocompleteSelectOption[];
 }

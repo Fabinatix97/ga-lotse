@@ -9,7 +9,7 @@ import { isArray, isString } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
 
-export interface TranslatedListProps {
+interface TranslatedListProps {
   baseKey: string;
   headingKey: string;
   listKey: string;

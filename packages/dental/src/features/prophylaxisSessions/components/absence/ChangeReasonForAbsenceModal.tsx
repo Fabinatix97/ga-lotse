@@ -14,7 +14,7 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 const ABSENCE_VALUES: Record<ApiReasonForAbsence, string> = {
   [ApiReasonForAbsence.NotAppeared]: "Nicht erschienen",
@@ -52,14 +52,14 @@ export function ChangeReasonForAbsenceModal(
   return (
     <FormDialog<ReasonForAbsenceFormValues>
       open={props.open ?? false}
-      onClose={props.onCancel}
-      onSubmit={onSubmit}
       initialValues={{ reasonForAbsence: initialReasonForAbsence }}
       title="Abwesenheit vermerken"
       description="Bitte geben Sie einen Grund für die Abwesenheit ein."
       color="primary"
       confirmLabel="Speichern"
       cancelLabel="Abbrechen"
+      onClose={props.onCancel}
+      onSubmit={onSubmit}
     >
       <SelectField
         sx={{ paddingTop: 2 }}

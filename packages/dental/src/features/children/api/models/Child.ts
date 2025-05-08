@@ -11,7 +11,10 @@ import {
   mapProcedureLabels,
 } from "@eshg/lib-employee-portal";
 
-import { Institution, mapInstitution } from "@/api/models/Institution";
+import {
+  Institution,
+  mapInstitution,
+} from "../../../../api/models/Institution";
 
 export interface Child extends BaseEntity {
   readonly firstName: string;
@@ -19,7 +22,7 @@ export interface Child extends BaseEntity {
   readonly gender: ApiGender;
   readonly dateOfBirth: Date;
   readonly year: number;
-  readonly groupName: string;
+  readonly groupName?: string;
   readonly institution: Institution;
   readonly isClosed: boolean;
   readonly procedureLabels: ProcedureLabel[];

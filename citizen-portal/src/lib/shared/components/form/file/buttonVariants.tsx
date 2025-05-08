@@ -6,11 +6,11 @@
 import { UploadOutlined } from "@mui/icons-material";
 import { Button, ButtonProps, styled } from "@mui/joy";
 
-export const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1, 6),
 }));
 
-export interface FileButtonProps
+interface FileButtonProps
   extends Pick<
     ButtonProps,
     | "sx"
@@ -21,6 +21,7 @@ export interface FileButtonProps
     | "onDragOver"
     | "onDragLeave"
     | "onDragEnd"
+    | "aria-describedby"
   > {
   activeDragOver?: boolean;
   error: boolean;

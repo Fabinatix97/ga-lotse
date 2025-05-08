@@ -114,7 +114,7 @@ export function AuditLogDecryptSidebar({
       >
         {({ isSubmitting }) => (
           <SidebarForm ref={formRef}>
-            <SidebarContent title={"Log File anzeigen"}>
+            <SidebarContent title="Log File anzeigen">
               <DetailsColumn sx={{ gap: 2 }}>
                 <AuditLogSheet date={date} source={sourceParam} />
                 <Stack gap={2} sx={{ mt: 2 }}>
@@ -123,8 +123,8 @@ export function AuditLogDecryptSidebar({
                     Bitte geben Sie zum Entschlüsseln Ihr Passwort ein.
                   </Typography>
                   <PasswordField
-                    data-testid={"passwordField"}
-                    label={"Passwort eingeben"}
+                    data-testid="passwordField"
+                    label="Passwort eingeben"
                     name={fieldName("password")}
                   />
                 </Stack>
@@ -132,7 +132,7 @@ export function AuditLogDecryptSidebar({
             </SidebarContent>
             <SidebarActions>
               <FormButtonBar
-                submitLabel={"Log File anzeigen"}
+                submitLabel="Log File anzeigen"
                 submitting={isSubmitting}
                 onCancel={handleCloseSidebar}
               />

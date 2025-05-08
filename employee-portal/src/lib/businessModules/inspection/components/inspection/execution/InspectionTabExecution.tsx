@@ -46,8 +46,6 @@ import { IncidentsPanel } from "@/lib/businessModules/inspection/components/insp
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 
-export type InspectionExecutionTabType = "CHECKLIST" | "INCIDENTS";
-
 type ActiveTabState = ({ tab: "CHECKLIST" } | { tab: "INCIDENTS" }) & {
   tabId: string;
   fallbackTabId: string; // in case tabId can not be found when tabs change, try a fallback to this id
@@ -263,10 +261,10 @@ export function InspectionTabExecution({
             activeTabId={tabState.tabId}
             inspection={inspection}
             checklists={checklists}
+            readOnly={readOnly}
             onActiveTabChange={handleActiveTabChange}
             onAddButtonClick={handleAddClick}
             onDeleteClick={handleDeleteClick}
-            readOnly={readOnly}
           />
         </Grid>
 

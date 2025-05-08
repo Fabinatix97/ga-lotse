@@ -67,13 +67,13 @@ export function ImportContent({
       <SubHeader header={t("importHeader")} />
       <Formik<ImportFormData>
         initialValues={{ file: null }}
-        onSubmit={handleSubmit}
         validateOnMount
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, isValid }) => (
           <FormPlus>
             <FileField
-              name={"file"}
+              name="file"
               label={t("importConfigLabel")}
               placeholder={t("selectImportConfig")}
               accept={FileType.Json}
@@ -86,9 +86,9 @@ export function ImportContent({
               </Typography>
             )}
             <SubmitButton
+              key="import-sd-config"
               submitting={isSubmitting}
               disabled={!isDbEmpty || !isValid}
-              key="import-sd-config"
             >
               {t("upload")}
             </SubmitButton>

@@ -88,21 +88,21 @@ function EditButton<TData extends UniqueEntity & EditableEntity>({
       <IconButton
         size="sm"
         aria-label={t("edit")}
+        disabled={!!row.original._staged.length}
         onClick={() => {
           edit(table, row);
         }}
-        disabled={!!row.original._staged.length}
       >
         <Edit />
       </IconButton>
       <IconButton
         size="sm"
         aria-label={t("delete")}
+        disabled={!!row.original._staged.length}
         onClick={(event) => {
           event.stopPropagation();
           deleteRow(table, row);
         }}
-        disabled={!!row.original._staged.length}
       >
         <Delete />
       </IconButton>
@@ -176,11 +176,11 @@ export function StagedRowButtons({
         <IconButton
           size="sm"
           aria-label={t("apply")}
+          disabled={!canAddEntity(row)}
           onClick={(event) => {
             event.stopPropagation();
             addEntity(row);
           }}
-          disabled={!canAddEntity(row)}
         >
           <Save />
         </IconButton>

@@ -18,7 +18,7 @@ import { TileDivider } from "@/lib/businessModules/inspection/components/inspect
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface ContactPersonTileProps {
+interface ContactPersonTileProps {
   contactPerson?: ApiFacilityContactPerson;
   readonly?: boolean;
   onEdit: () => void;

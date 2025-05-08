@@ -220,11 +220,11 @@ function AuditLogContent({
           />
           <Button
             size="sm"
-            onClick={handleDownload}
             endDecorator={<FileDownloadOutlined />}
             sx={{
               alignSelf: "flex-end",
             }}
+            onClick={handleDownload}
           >
             {t("downloadAuditLog")}
           </Button>

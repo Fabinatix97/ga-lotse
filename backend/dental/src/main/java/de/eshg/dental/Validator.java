@@ -11,11 +11,13 @@ import de.cronn.commons.lang.StreamUtil;
 import de.cronn.reflection.util.PropertyGetter;
 import de.cronn.reflection.util.PropertyUtils;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.DentitionTypeDto;
 import de.eshg.dental.api.FluoridationConsentDto;
+import de.eshg.dental.api.GroupPromotionDto;
 import de.eshg.dental.api.MainResultDto;
 import de.eshg.dental.api.ToothDiagnosisDto;
 import de.eshg.dental.api.ToothDto;
@@ -38,10 +40,12 @@ import java.beans.PropertyDescriptor;
 import java.time.Clock;
 import java.time.Year;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -79,6 +83,25 @@ public class Validator {
     contactClient.validateContactIsInstitutionWithCategory(
         institutionId,
         EnumSet.of(InstitutionContactCategoryDto.SCHOOL, InstitutionContactCategoryDto.DAYCARE));
+  }
+
+  public void validateInstitutionAndGroupName(UUID institutionId, String groupName) {
+    InstitutionContactDto institutionContactDto =
+        contactClient.validateContactIsInstitutionWithCategory(
+            institutionId,
+            EnumSet.of(
+                InstitutionContactCategoryDto.SCHOOL, InstitutionContactCategoryDto.DAYCARE));
+    InstitutionContactCategoryDto contactCategory = institutionContactDto.category();
+    if (contactCategory == InstitutionContactCategoryDto.SCHOOL
+        && (groupName == null || groupName.isBlank())) {
+      throw new BadRequestException(
+          ("Contact with id %s does not have a valid group name."
+                  + " Group name is only optional for category daycare.")
+              .formatted(institutionId));
+    } else if (contactCategory == InstitutionContactCategoryDto.DAYCARE
+        && (groupName != null && groupName.isBlank())) {
+      throw new BadRequestException("Group name must not be blank.");
+    }
   }
 
   public void validateGroupAtInstitutionExists(UUID institutionId, String groupName) {
@@ -151,14 +174,13 @@ public class Validator {
             .filter(
                 toothDiagnosis ->
                     toothDiagnosis.mainResult() == null
-                        && (toothDiagnosis.secondaryResult1() != null
-                            || toothDiagnosis.secondaryResult2() != null))
+                        && (toothDiagnosis.secondaryResult() != null))
             .map(ToothDiagnosisDto::tooth)
             .toList();
 
     if (!invalidDiagnoses.isEmpty()) {
       throw new BadRequestException(
-          "Invalid diagnoses for %s: Secondary results cannot be set without main result"
+          "Invalid diagnoses for %s: Secondary result cannot be set without main result"
               .formatted(invalidDiagnoses));
     }
   }
@@ -294,6 +316,21 @@ public class Validator {
       throw new BadRequestException(
           "Not all children are open procedures and of current year: "
               + childrenNotInCurrentSchoolYear);
+    }
+  }
+
+  public static void validateUniquenessOfOriginGroupNames(List<GroupPromotionDto> groupPromotions) {
+    Set<String> elements = new HashSet<>();
+    List<String> duplicatedGroups =
+        groupPromotions.stream()
+            .map(GroupPromotionDto::originGroupName)
+            .filter(groupName -> !elements.add(groupName))
+            .toList();
+
+    if (!duplicatedGroups.isEmpty()) {
+      throw new BadRequestException(
+          "Duplicate origin group names are not allowed: "
+              + StringUtils.join(duplicatedGroups, ", "));
     }
   }
 }

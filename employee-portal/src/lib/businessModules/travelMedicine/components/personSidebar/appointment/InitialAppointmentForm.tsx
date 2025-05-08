@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RefObject } from "@fullcalendar/core/preact.js";
+import { RefObject } from "@fullcalendar/core/preact";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -105,13 +105,13 @@ export function InitialAppointmentForm({
           format(new Date(), "yyyy-MM-dd'T'HH:mm"),
         isEditInitialAppointmentMode: false,
       }}
-      onSubmit={onSubmit}
       enableReinitialize
       validate={validateForm}
+      onSubmit={onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={sidebarFormRef}>
-          <SidebarContent title={"Termin"}>
+          <SidebarContent title="Termin">
             <Stack gap={2} rowGap={2}>
               <Sheet>
                 <SelectField
@@ -124,8 +124,8 @@ export function InitialAppointmentForm({
                     },
                     { value: ApiAppointmentType.Vaccination, label: "Impfung" },
                   ]}
-                  onChange={(type) => updateSelectOptions(type)}
                   sx={{ flexGrow: 1 }}
+                  onChange={(type) => updateSelectOptions(type)}
                 />
               </Sheet>
               <AppointmentRadioGroup

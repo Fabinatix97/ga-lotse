@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RefObject } from "@fullcalendar/core/preact.js";
+import { RefObject } from "@fullcalendar/core/preact";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
@@ -78,9 +78,9 @@ export function LegacyPersonForm({
   return (
     <Formik
       initialValues={person}
-      onSubmit={onSubmit}
       validate={validate}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values, isSubmitting }) => (
         <SidebarForm ref={sidebarFormRef}>

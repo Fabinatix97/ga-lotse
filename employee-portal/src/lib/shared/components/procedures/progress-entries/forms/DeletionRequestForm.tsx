@@ -6,9 +6,10 @@
 import { Button, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
-import { ButtonBar, TextareaField } from "@eshg/lib-employee-portal";
+import { ButtonBar } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 export interface DeletionRequestValues {
   reason: string;
@@ -41,17 +42,17 @@ export function DeletionRequestForm(props: DeletionRequestFormProps) {
           <ButtonBar
             right={[
               <Button
+                key={LABELS.cancel}
                 color="neutral"
                 variant="soft"
                 onClick={props.onCancel}
-                key={LABELS.cancel}
               >
                 {LABELS.cancel}
               </Button>,
               <SubmitButton
+                key={LABELS.submit}
                 color="danger"
                 submitting={isSubmitting}
-                key={LABELS.submit}
               >
                 {LABELS.submit}
               </SubmitButton>,

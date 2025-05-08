@@ -73,25 +73,23 @@ export function generateChecklistDefinitionOverviewTableColumns(
       id: "coreChecklist",
       cell: (info) => (
         <Stack direction="row" justifyContent="center">
-          {info.row.original.coreChecklist && (
-            <>
-              {info.row.original.expandable ? (
-                <CorechecklistIcon
-                  size="sm"
-                  aria-hidden={false}
-                  titleAccess="Kern-Checkliste"
-                  aria-label="Kern-Checkliste"
-                />
-              ) : (
-                <ExclusiveCorechecklistIcon
-                  size="sm"
-                  aria-hidden={false}
-                  titleAccess="Exklusive Kern-Checkliste"
-                  aria-label="Exklusive Kern-Checkliste"
-                />
-              )}
-            </>
-          )}
+          {info.row.original.coreChecklist ? (
+            info.row.original.expandable ? (
+              <CorechecklistIcon
+                size="sm"
+                aria-hidden={false}
+                titleAccess="Kern-Checkliste"
+                aria-label="Kern-Checkliste"
+              />
+            ) : (
+              <ExclusiveCorechecklistIcon
+                size="sm"
+                aria-hidden={false}
+                titleAccess="Exklusive Kern-Checkliste"
+                aria-label="Exklusive Kern-Checkliste"
+              />
+            )
+          ) : null}
         </Stack>
       ),
       meta: {

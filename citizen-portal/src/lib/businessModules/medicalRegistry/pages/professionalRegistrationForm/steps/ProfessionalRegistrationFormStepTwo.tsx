@@ -14,12 +14,15 @@ import {
   ProfessionalismInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
-import { lifetimeDoctorNumberValidator } from "@eshg/lib-portal/businessModules/medicalRegistry/validator";
+import { useValidateLifetimeDoctorNumber } from "@eshg/lib-portal/businessModules/medicalRegistry/useValidators";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,
@@ -37,7 +40,9 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const professionalTitleNamesOptions = buildEnumOptions(professionalTitleNames);
 
 export function ProfessionalRegistrationFormStepTwo() {
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
+  const validateLifetimeDoctorNumber = useValidateLifetimeDoctorNumber();
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
@@ -71,119 +76,117 @@ export function ProfessionalRegistrationFormStepTwo() {
   );
 
   return (
-    <>
-      <ContentSheet>
-        <Typography level="h2">{t("stepTwo.pageTitle")}</Typography>
-        {shouldEnable("profession", changeType) && (
-          <>
-            <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <SelectField
-                  name={occupationalInformationForm("professionalTitle")}
-                  label={t("stepTwo.label.professionalTitle")}
-                  options={translatedProfessionalTitleNamesOptions}
-                  required={t(requiredFieldMessageKey)}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <InputField
-                  name={occupationalInformationForm("fieldOfExpertise")}
-                  label={t("stepTwo.label.fieldOfExpertise")}
-                  validate={validateLength(1, 100)}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <InputField
-                  name={occupationalInformationForm("specialistTitle")}
-                  label={t("stepTwo.label.specialistTitle")}
-                  validate={validateLength(1, 100)}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <InputField
-                  name={occupationalInformationForm("furtherTraining")}
-                  label={t("stepTwo.label.furtherTraining")}
-                  validate={validateLength(1, 300)}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <InputField
-                  name={occupationalInformationForm("qualifications")}
-                  label={t("stepTwo.label.qualifications")}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <InputField
-                  name={occupationalInformationForm("lifetimeDoctorNumber")}
-                  label={t("stepTwo.label.lifetimeDoctorNumber")}
-                  validate={lifetimeDoctorNumberValidator}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <DateField
-                  name={occupationalInformationForm("approbationGrantedOn")}
-                  label={t("stepTwo.label.approbationGrantedOn")}
-                  required={
-                    changeType === ApiTypeOfChange.NewRegistration ||
-                    changeType === ApiTypeOfChange.ReRegistration
-                      ? t(requiredFieldMessageKey)
-                      : undefined
-                  }
-                  validate={validatePastOrTodayDate}
-                />
-              </Grid>
-              <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-                <InputField
-                  name={occupationalInformationForm(
-                    "approbationIssuingAuthority",
-                  )}
-                  label={t("stepTwo.label.approbationIssuingAuthority")}
-                  required={t(requiredFieldMessageKey)}
-                  validate={validateLength(1, 100)}
-                />
-              </Grid>
+    <ContentSheet>
+      <Typography level="h2">{t("stepTwo.pageTitle")}</Typography>
+      {shouldEnable("profession", changeType) && (
+        <>
+          <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <SelectField
+                name={occupationalInformationForm("professionalTitle")}
+                label={t("stepTwo.label.professionalTitle")}
+                options={translatedProfessionalTitleNamesOptions}
+                required={t(requiredFieldMessageKey)}
+              />
             </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <InputField
+                name={occupationalInformationForm("fieldOfExpertise")}
+                label={t("stepTwo.label.fieldOfExpertise")}
+                validate={validateLength(1, 100)}
+              />
+            </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <InputField
+                name={occupationalInformationForm("specialistTitle")}
+                label={t("stepTwo.label.specialistTitle")}
+                validate={validateLength(1, 100)}
+              />
+            </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <InputField
+                name={occupationalInformationForm("furtherTraining")}
+                label={t("stepTwo.label.furtherTraining")}
+                validate={validateLength(1, 300)}
+              />
+            </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <InputField
+                name={occupationalInformationForm("qualifications")}
+                label={t("stepTwo.label.qualifications")}
+              />
+            </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <InputField
+                name={occupationalInformationForm("lifetimeDoctorNumber")}
+                label={t("stepTwo.label.lifetimeDoctorNumber")}
+                validate={validateLifetimeDoctorNumber}
+              />
+            </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <DateField
+                name={occupationalInformationForm("approbationGrantedOn")}
+                label={t("stepTwo.label.approbationGrantedOn")}
+                required={
+                  changeType === ApiTypeOfChange.NewRegistration ||
+                  changeType === ApiTypeOfChange.ReRegistration
+                    ? t(requiredFieldMessageKey)
+                    : undefined
+                }
+                validate={validatePastOrTodayDate}
+              />
+            </Grid>
+            <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+              <InputField
+                name={occupationalInformationForm(
+                  "approbationIssuingAuthority",
+                )}
+                label={t("stepTwo.label.approbationIssuingAuthority")}
+                required={t(requiredFieldMessageKey)}
+                validate={validateLength(1, 100)}
+              />
+            </Grid>
+          </Grid>
 
-            <Typography level="h4" marginTop={3}>
-              {t("stepTwo.subTitle.professionalism")}
-            </Typography>
-            <RadioGroupField
-              name={professionalismInformationForm("employmentType")}
-              label={t("stepTwo.label.employmentType")}
-              orientation="horizontal"
-              required={t(requiredFieldMessageKey)}
-            >
-              <Radio
-                value={ApiEmploymentType.FullTime}
-                label={t("options.employmentType.FULL_TIME")}
-              />
-              <Radio
-                value={ApiEmploymentType.PartTime}
-                label={t("options.employmentType.PART_TIME")}
-              />
-            </RadioGroupField>
-            <RadioGroupField
-              name={professionalismInformationForm("employmentStatus")}
-              label={t("stepTwo.label.employmentStatus")}
-              orientation="horizontal"
-              required={t(requiredFieldMessageKey)}
-            >
-              <Radio
-                value={ApiEmploymentStatus.SelfEmployed}
-                label={t("options.employmentStatus.SELF_EMPLOYED")}
-              />
-              <Radio
-                value={ApiEmploymentStatus.Freelance}
-                label={t("options.employmentStatus.FREELANCE")}
-              />
-              <Radio
-                value={ApiEmploymentStatus.Employee}
-                label={t("options.employmentStatus.EMPLOYEE")}
-              />
-            </RadioGroupField>
-          </>
-        )}
-      </ContentSheet>
-    </>
+          <Typography level="h4" marginTop={3}>
+            {t("stepTwo.subTitle.professionalism")}
+          </Typography>
+          <RadioGroupField
+            name={professionalismInformationForm("employmentType")}
+            label={t("stepTwo.label.employmentType")}
+            orientation="horizontal"
+            required={t(requiredFieldMessageKey)}
+          >
+            <Radio
+              value={ApiEmploymentType.FullTime}
+              label={t("options.employmentType.FULL_TIME")}
+            />
+            <Radio
+              value={ApiEmploymentType.PartTime}
+              label={t("options.employmentType.PART_TIME")}
+            />
+          </RadioGroupField>
+          <RadioGroupField
+            name={professionalismInformationForm("employmentStatus")}
+            label={t("stepTwo.label.employmentStatus")}
+            orientation="horizontal"
+            required={t(requiredFieldMessageKey)}
+          >
+            <Radio
+              value={ApiEmploymentStatus.SelfEmployed}
+              label={t("options.employmentStatus.SELF_EMPLOYED")}
+            />
+            <Radio
+              value={ApiEmploymentStatus.Freelance}
+              label={t("options.employmentStatus.FREELANCE")}
+            />
+            <Radio
+              value={ApiEmploymentStatus.Employee}
+              label={t("options.employmentStatus.EMPLOYEE")}
+            />
+          </RadioGroupField>
+        </>
+      )}
+    </ContentSheet>
   );
 }

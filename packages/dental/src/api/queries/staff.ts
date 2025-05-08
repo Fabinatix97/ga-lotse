@@ -7,7 +7,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetUsersByGroupQuery } from "@eshg/lib-employee-portal";
 
-import { DentalUserGroup } from "@/config/userGroups";
+import { DentalUserGroup } from "../../config/userGroups";
 
 export function useGetStaff() {
   const getAllDentistsQuery = useGetUsersByGroupQuery(DentalUserGroup.Dentist);

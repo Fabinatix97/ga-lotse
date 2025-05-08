@@ -72,7 +72,7 @@ export function LegacyPersonSearch({
   }
 
   const header = (
-    <SearchHeader onBack={handleBack} searchArgs={searchRequest.data} />
+    <SearchHeader searchArgs={searchRequest.data} onBack={handleBack} />
   );
   const footer = (
     <SearchFooter onCreatePerson={() => onCreatePerson(searchRequest.data)} />
@@ -80,51 +80,49 @@ export function LegacyPersonSearch({
 
   const cancelButton = (
     <Button
+      color="neutral"
+      variant="soft"
+      sx={{ alignSelf: "end" }}
       onClick={() => {
         setSearchRequest(initialSearchState);
         onCancel();
       }}
-      color="neutral"
-      variant="soft"
-      sx={{ alignSelf: "end" }}
     >
       Abbrechen
     </Button>
   );
 
+  if (query.isSuccess && searchRequest.mode === "searching") {
+    return (
+      <LegacyPersonSearchResults
+        title={title}
+        header={header}
+        footer={footer}
+        persons={query.data?.persons}
+        onCancel={() => {
+          setSearchRequest(initialSearchState);
+          onCancel();
+        }}
+        onSelectPerson={onSelectPerson}
+        onCreatePerson={() => onCreatePerson(searchRequest.data)}
+      />
+    );
+  }
+
   return (
-    <>
-      {query.isSuccess && searchRequest.mode === "searching" ? (
-        <LegacyPersonSearchResults
-          title={title}
-          header={header}
-          footer={footer}
-          persons={query.data?.persons}
-          onCancel={() => {
-            setSearchRequest(initialSearchState);
-            onCancel();
-          }}
-          onSelectPerson={onSelectPerson}
-          onCreatePerson={() => onCreatePerson(searchRequest.data)}
-        />
-      ) : (
-        <LegacyPersonSearchForm
-          sidebarFormRef={sidebarFormRef}
-          onSubmit={(values) =>
-            setSearchRequest({
-              mode: "searching",
-              data: values,
-            })
-          }
-          loading={query.isLoading}
-          cancelButton={cancelButton}
-          title={title}
-          additionalFields={personSearchFormAdditionalFields}
-          initialFormValues={
-            personSearchFormInitialValues ?? searchRequest.data
-          }
-        />
-      )}
-    </>
+    <LegacyPersonSearchForm
+      sidebarFormRef={sidebarFormRef}
+      loading={query.isLoading}
+      cancelButton={cancelButton}
+      title={title}
+      additionalFields={personSearchFormAdditionalFields}
+      initialFormValues={personSearchFormInitialValues ?? searchRequest.data}
+      onSubmit={(values) =>
+        setSearchRequest({
+          mode: "searching",
+          data: values,
+        })
+      }
+    />
   );
 }

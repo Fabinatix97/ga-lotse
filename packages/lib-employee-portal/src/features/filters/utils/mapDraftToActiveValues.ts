@@ -10,18 +10,15 @@ import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   DateComparisonFilterDraftValue,
   DateComparisonFilterValue,
-} from "@/features/filters/types/DateComparisonFilter";
-import {
-  FilterDraftValue,
-  FilterValue,
-} from "@/features/filters/types/FilterValue";
+} from "../types/DateComparisonFilter";
+import { FilterDraftValue, FilterValue } from "../types/FilterValue";
 import {
   NumberFilterComparisonMode,
   NumberFilterDraftComparisonMode,
   NumberFilterDraftValue,
   NumberFilterNullInclusion,
   NumberFilterValue,
-} from "@/features/filters/types/NumberFilter";
+} from "../types/NumberFilter";
 
 export function mapDraftToActiveValues(
   draftValues: FilterDraftValue[],

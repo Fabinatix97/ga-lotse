@@ -12,7 +12,7 @@ import { AuditTableHeader } from "@/lib/components/view/audit-log/tables/AuditTa
 import { UniqueEntity } from "@/lib/helpers/entities";
 import { useTranslation } from "@/lib/i18n/client";
 
-export interface AuditTableProps<TData> {
+interface AuditTableProps<TData> {
   data: TableOptions<TData>["data"];
   columns: TableOptions<TData>["columns"];
   title: string;

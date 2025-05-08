@@ -28,7 +28,7 @@ export function DevelopmentScreeningResultFields() {
     <Stack direction="row" gap={3} flexWrap="wrap" sx={OFFSET_STYLE}>
       <SoftRequiredSelectField
         name="schoolRecommendation"
-        label={"Empfehlungen"}
+        label="Empfehlungen"
         options={SCHOOL_RECOMMENDATION_OPTIONS}
         renderValue={getAbbreviation}
         sx={{ ...FIXED_WIDTH_BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
@@ -36,14 +36,14 @@ export function DevelopmentScreeningResultFields() {
       />
       <SoftRequiredBooleanSelectField
         name="extraEffort"
-        label={"Mehraufwand"}
+        label="Mehraufwand"
         sx={{ ...FIXED_WIDTH_BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}
         allowDeselection
         softRequired
       />
       <SoftRequiredSelectField
         name="schoolFeedback"
-        label={"RM Schule"}
+        label="RM Schule"
         options={SCHOOL_FEEDBACK_OPTIONS}
         renderValue={getAbbreviation}
         sx={{ ...FIXED_WIDTH_BOOLEAN_SELECT_STYLE, ...BOLD_LABEL_STYLE }}

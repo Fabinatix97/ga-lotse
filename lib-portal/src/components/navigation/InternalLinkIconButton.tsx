@@ -12,5 +12,5 @@ export const InternalLinkIconButton = forwardRef<
   HTMLAnchorElement,
   Omit<IconButtonProps<typeof NavigationLink>, "component">
 >(function InternalLinkIconButton(props, ref) {
-  return <IconButton component={NavigationLink} ref={ref} {...props} />;
+  return <IconButton ref={ref} component={NavigationLink} {...props} />;
 });

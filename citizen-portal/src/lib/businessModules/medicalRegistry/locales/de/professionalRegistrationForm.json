@@ -200,7 +200,7 @@
     "errors": "Bitte füllen Sie erst alle Pflichtfelder aus."
   },
   "validations": {
-    "requiredField": "Pflichtfeld!",
+    "requiredField": "Bitte angeben.",
     "confirmation": "Bitte Zustimmung erteilen um fortzufahren."
   },
   "leave_form": {

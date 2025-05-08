@@ -56,7 +56,7 @@
     "homosexual": "is homosexual",
     "bisexual_male": "is bisexual man",
     "hiv_positive": "is HIV-positive",
-    "sti_positive": "has a sexually-transmitted illness",
+    "sti_positive": "has a sexually-transmitted infection",
     "injected_drugs": "has injected drugs",
     "sex_worker": "is a sex worker"
   },
@@ -64,7 +64,7 @@
     "title": "Prevention",
     "vaccinations": "Vaccinations",
     "safe_sex": "How often do you practice safe sex?",
-    "safe_sex_protective_measures": "With what do you protect yourself against sexually-transmitted illnesses?",
+    "safe_sex_protective_measures": "With what do you protect yourself against sexually-transmitted infections?",
     "info_about_PrEP_desired": "Would you like to receive information about PrEP?",
     "PrEP_info_modal": {
       "title": "PrEP (Pre-exposure prophylaxis)",
@@ -74,9 +74,9 @@
     "other_risks_description": "Which?"
   },
   "previous_illnesses": {
-    "title": "Previous Illnesses",
-    "subtitle": "Do you currently have or have you ever had any of the following illnesses?",
-    "other": "Other sexually-transmitted illness(es)",
+    "title": "Previous Infections",
+    "subtitle": "Do you currently have or have you ever had any of the following infections?",
+    "other": "Other sexually-transmitted infection(s)",
     "other_data": "Which?"
   },
   "remarks": {

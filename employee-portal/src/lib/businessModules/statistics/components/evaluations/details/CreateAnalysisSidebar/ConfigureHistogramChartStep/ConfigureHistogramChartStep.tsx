@@ -30,7 +30,7 @@ import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/Toggl
 
 import { ConfigureHistogramChartMetaOptions } from "./ConfigureHistogramChartMetaOptions";
 
-export interface ConfigureHistogramChartStepProps
+interface ConfigureHistogramChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
 }
@@ -121,6 +121,7 @@ export function ConfigureHistogramChartStep({
               values.minBin,
               values.maxBin,
             )}
+            isDataGrouped={showGroupedConfigurations}
             grouping={showGroupedConfigurations ? values.grouping : undefined}
             scaling={showGroupedConfigurations ? values.scaling : undefined}
           />

@@ -39,7 +39,7 @@ export function DecayHistoryTable(props: DecayHistoryTableProps) {
               ? { backgroundColor: theme.palette.danger.outlinedActiveBg }
               : {};
             return (
-              <Box component="tr" key={index} sx={rowStyle}>
+              <Box key={index} component="tr" sx={rowStyle}>
                 <td>{row.value}</td>
                 <td>{formatDate(row.dateOfExamination)}</td>
               </Box>

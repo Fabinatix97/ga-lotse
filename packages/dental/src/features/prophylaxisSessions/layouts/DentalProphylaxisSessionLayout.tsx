@@ -15,9 +15,9 @@ import {
 } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
-import { useDentalApi } from "@/contexts/dental";
-import { getProphylaxisSessionQuery } from "@/features/prophylaxisSessions/api/queries/details";
-import { ProphylaxisSessionStoreProvider } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { useDentalApi } from "../../../contexts/dental";
+import { getProphylaxisSessionQuery } from "../api/queries/details";
+import { ProphylaxisSessionStoreProvider } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type ProphylaxisSessionRouteParams = {

@@ -8,8 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ApiGetInstitutionGroupsResponse } from "@eshg/dental-api";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
 
-import { childApiQueryKey } from "@/config/apiQueryKeys";
-import { useDentalApi } from "@/contexts/dental";
+import { childApiQueryKey } from "../../config/apiQueryKeys";
+import { useDentalApi } from "../../contexts/dental";
 
 export function useSearchInstitutionGroupsQuery(institutionId: string) {
   const { childApi } = useDentalApi();

@@ -6,6 +6,8 @@
 package de.eshg.rest.service.security.config;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -44,9 +46,16 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
         .hasAnyRole(
             EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
 
+    requestMatchers(GET, BaseUrls.SchoolEntry.PROCEDURE_LABEL_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, EmployeePermissionRole.SCHOOL_ENTRY_LEADER);
+    requestMatchers(POST, BaseUrls.SchoolEntry.PROCEDURE_LABEL_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_LEADER);
+    requestMatchers(PUT, BaseUrls.SchoolEntry.PROCEDURE_LABEL_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_LEADER);
+
     requestMatchers(
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/**",
-            BaseUrls.SchoolEntry.PROCEDURE_LABEL_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.IMPORT_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
         .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);

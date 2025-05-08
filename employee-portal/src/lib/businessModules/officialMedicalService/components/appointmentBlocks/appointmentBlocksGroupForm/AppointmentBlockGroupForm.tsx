@@ -101,6 +101,7 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
+      validate={(values) => validateForm(values, appointmentTypesRecord)}
       onSubmit={async (values) => {
         if (hasAtLeastOneAppointmentInGroup(values, appointmentTypesRecord)) {
           await props.onSubmit(values);
@@ -110,7 +111,6 @@ export function AppointmentBlockGroupForm(
           );
         }
       }}
-      validate={(values) => validateForm(values, appointmentTypesRecord)}
     >
       {({ values, isSubmitting, handleSubmit }) => (
         <FormSheet gap={5} onSubmit={handleSubmit}>

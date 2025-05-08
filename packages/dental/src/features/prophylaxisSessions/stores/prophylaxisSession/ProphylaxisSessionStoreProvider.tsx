@@ -11,8 +11,8 @@ import { useShallow } from "zustand/react/shallow";
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { ProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
+import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 import { filterParticipants } from "./participantFilters";
 import { sortParticipants } from "./participantSorting";

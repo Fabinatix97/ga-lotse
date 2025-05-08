@@ -47,9 +47,9 @@ export function FacilitySyncForm({
 
   return (
     <CentralFileSyncForm
+      title={formatFacilityName(data.facilityDetailsDiff.fileState)}
       onAccept={handleSync}
       onCancel={() => router.back()}
-      title={formatFacilityName(data.facilityDetailsDiff.fileState)}
     >
       <BaseFacilityDiffForm diff={data} />
     </CentralFileSyncForm>

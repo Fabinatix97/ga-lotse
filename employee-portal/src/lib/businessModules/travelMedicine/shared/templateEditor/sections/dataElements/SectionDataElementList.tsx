@@ -22,7 +22,5 @@ export function SectionDataElementList(
   props: Readonly<TemplateSectionElementProp>,
 ) {
   const factory = new SectionElementComponentFactory(props);
-  const mappedSectionElements = factory.createSectionElementComponents();
-
-  return <>{mappedSectionElements}</>;
+  return factory.createSectionElementComponents();
 }

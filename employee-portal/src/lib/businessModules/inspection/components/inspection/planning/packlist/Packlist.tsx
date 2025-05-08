@@ -20,7 +20,7 @@ import {
 
 import { ApiPacklist } from "@eshg/inspection-api";
 
-export interface PacklistProps {
+interface PacklistProps {
   revisionName: string;
   packlist: ApiPacklist;
   handleCheck: (
@@ -42,7 +42,7 @@ export function Packlist({
   return (
     <AccordionGroup variant="plain" transition="0.5s">
       <Accordion sx={{ p: 0 }}>
-        <Stack direction="row" spacing={2} alignItems={"flex-start"}>
+        <Stack direction="row" spacing={2} alignItems="flex-start">
           <Grid
             sx={(theme) => ({
               bgcolor: theme.palette.neutral.softBg,
@@ -50,12 +50,12 @@ export function Packlist({
               borderRadius: theme.radius.md,
               flexGrow: 1,
             })}
-            alignItems={"flex-start"}
+            alignItems="flex-start"
           >
             <Stack
               direction="row"
               justifyContent="space-between"
-              alignItems={"flex-start"}
+              alignItems="flex-start"
             >
               <Typography fontSize="md" fontWeight="400" sx={{ width: "60%" }}>
                 {revisionName}
@@ -124,12 +124,12 @@ export function Packlist({
                       key={element.id}
                       name={element.text}
                       label={element.text}
-                      onChange={(ev) =>
-                        handleCheck(packlist.id, element.id, ev.target.checked)
-                      }
                       size="md"
                       variant="outlined"
                       checked={element.isChecked}
+                      onChange={(ev) =>
+                        handleCheck(packlist.id, element.id, ev.target.checked)
+                      }
                     />
                   );
                 })}

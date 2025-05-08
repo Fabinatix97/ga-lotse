@@ -8,7 +8,10 @@ import { Stack } from "@mui/joy";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal/hooks/useValidators";
 
 import {
   FormSheet,
@@ -19,7 +22,8 @@ import { useTranslation } from "@/lib/i18n/client";
 
 export function PersonalDataStep() {
   const { t } = useTranslation(["travelMedicine/forms"]);
-  const { validateLength, validatePastOrTodayDate } = useValidators();
+  const validateLength = useValidateLength();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
 
   return (
     <FormSheet data-testid="personal-data-content-form">
@@ -28,35 +32,35 @@ export function PersonalDataStep() {
       </FormSheetTitle>
       <Stack gap={2} sx={{ ".MuiFormLabel-root": { fontWeight: "sm" } }}>
         <InputField
-          name={"patient.firstName"}
+          name="patient.firstName"
           label={t("personalDataFormContent.fields.firstName")}
           required={t("personalDataFormContent.fields.firstName_required")}
           validate={validateLength(1, 80)}
         />
         <InputField
-          name={"patient.lastName"}
+          name="patient.lastName"
           label={t("personalDataFormContent.fields.lastName")}
           required={t("personalDataFormContent.fields.lastName_required")}
           validate={validateLength(1, 120)}
         />
         <DateField
-          name={"patient.dateOfBirth"}
+          name="patient.dateOfBirth"
           label={t("personalDataFormContent.fields.dateOfBirth")}
           required={t("personalDataFormContent.fields.dateOfBirth_required")}
           validate={validatePastOrTodayDate}
         />
         <InputField
-          name={"patient.phoneNumbers"}
+          name="patient.phoneNumbers"
           label={t("personalDataFormContent.fields.phoneNumbers")}
           // validate={validateLength(1, 23)} // toDo: add validatation
         />
         <EmailField
-          name={"patient.emailAddresses"}
+          name="patient.emailAddresses"
           label={t("personalDataFormContent.fields.emailAddresses")}
           required={t("personalDataFormContent.fields.emailAddresses_required")}
         />
         <CheckboxField
-          name={"confirmOnlineServices"}
+          name="confirmOnlineServices"
           label={t("personalDataFormContent.fields.confirmOnlineServices")}
           required={t(
             "personalDataFormContent.fields.confirmOnlineServices_required",

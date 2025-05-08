@@ -49,7 +49,7 @@ import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleS
 import { contactTableColumns } from "./columns";
 import { contactSearchParamNames } from "./constants";
 
-export interface ContactsTableProps {
+interface ContactsTableProps {
   elements: Contact[];
   totalNumberOfElements: number;
   onCreate: (
@@ -149,78 +149,76 @@ export function ContactsTable({
   }
 
   return (
-    <>
-      <TablePage
-        data-testid="contacts-table"
-        fullHeight
-        controls={
-          <Stack
-            direction="row"
-            flexWrap="wrap"
-            gap={2}
-            justifyContent="space-between"
-          >
-            <Stack direction="row" gap={2}>
-              <SearchFilter
-                label="Suche"
-                searchParamName={contactSearchParamNames.name}
-                tableControl={tableControl}
-                relevanceSortFieldName={"RELEVANCE"}
-              />
-              <ContactTypeFilter tableControl={tableControl} />
-              <SingleSelectFilter
-                searchParamName={contactSearchParamNames.categories}
-                placeholder={"Objekttyp"}
-                options={buildEnumOptions(CONTACT_CATEGORY_NAMES)}
-                tableControl={tableControl}
-                sx={{
-                  // width of longest option "Kindertagesstätte"
-                  width: "20ch",
-                }}
-              />
-            </Stack>
-            {hasWritePerms && (
-              <Stack direction={"row"} spacing={2}>
-                <ImportContactButton onImport={onImport} />
-                <CreateContactButton onCreate={onCreate} />
-              </Stack>
-            )}
+    <TablePage
+      data-testid="contacts-table"
+      fullHeight
+      controls={
+        <Stack
+          direction="row"
+          flexWrap="wrap"
+          gap={2}
+          justifyContent="space-between"
+        >
+          <Stack direction="row" gap={2}>
+            <SearchFilter
+              label="Suche"
+              searchParamName={contactSearchParamNames.name}
+              tableControl={tableControl}
+              relevanceSortFieldName="RELEVANCE"
+            />
+            <ContactTypeFilter tableControl={tableControl} />
+            <SingleSelectFilter
+              searchParamName={contactSearchParamNames.categories}
+              placeholder="Objekttyp"
+              options={buildEnumOptions(CONTACT_CATEGORY_NAMES)}
+              tableControl={tableControl}
+              sx={{
+                // width of longest option "Kindertagesstätte"
+                width: "20ch",
+              }}
+            />
           </Stack>
+          {hasWritePerms && (
+            <Stack direction="row" spacing={2}>
+              <ImportContactButton onImport={onImport} />
+              <CreateContactButton onCreate={onCreate} />
+            </Stack>
+          )}
+        </Stack>
+      }
+    >
+      <TableSheet
+        loading={loading}
+        title={
+          hasWritePerms && (
+            <ContactsTableTitle
+              rowSelection={rowSelection}
+              onMerge={handleMerge}
+            />
+          )
+        }
+        footer={
+          <Pagination
+            totalCount={totalNumberOfElements}
+            {...tableControl.paginationProps}
+          />
         }
       >
-        <TableSheet
-          loading={loading}
-          title={
-            hasWritePerms && (
-              <ContactsTableTitle
-                rowSelection={rowSelection}
-                onMerge={handleMerge}
-              />
-            )
-          }
-          footer={
-            <Pagination
-              totalCount={totalNumberOfElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={elements}
-            columns={contactTableColumns({
-              hasWritePerms,
-              onEdit: (contact) => updateSidebar.open({ contact }),
-            })}
-            sorting={tableControl.tableSorting}
-            rowNavigation={{
-              route: (row) => routes.contacts.details(row.original.id),
-              focusColumnAccessorKey: "name",
-            }}
-            rowSelectionProps={rowSelectionProps}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+        <DataTable
+          data={elements}
+          columns={contactTableColumns({
+            hasWritePerms,
+            onEdit: (contact) => updateSidebar.open({ contact }),
+          })}
+          sorting={tableControl.tableSorting}
+          rowNavigation={{
+            route: (row) => routes.contacts.details(row.original.id),
+            focusColumnAccessorKey: "name",
+          }}
+          rowSelectionProps={rowSelectionProps}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }
 
@@ -230,8 +228,8 @@ function CreateContactButton(props: Pick<ContactsTableProps, "onCreate">) {
       <MenuButton
         startDecorator={<AddIcon />}
         endDecorator={<UnfoldMoreIcon />}
-        color={"primary"}
-        variant={"solid"}
+        color="primary"
+        variant="solid"
       >
         Neuen Kontakt anlegen
       </MenuButton>
@@ -260,8 +258,8 @@ function ImportContactButton(props: Pick<ContactsTableProps, "onImport">) {
     <Dropdown>
       <MenuButton
         startDecorator={<CachedIcon />}
-        color={"primary"}
-        variant={"outlined"}
+        color="primary"
+        variant="outlined"
       >
         Kontakt Importieren
       </MenuButton>
@@ -291,7 +289,7 @@ function ContactTypeFilter(props: { tableControl: UseTableControlResult }) {
 
   return (
     <ToggleButtonGroup
-      aria-label={"Typ Filtern"}
+      aria-label="Typ Filtern"
       value={value}
       onChange={(_, newValue) => {
         props.tableControl.setFilter(

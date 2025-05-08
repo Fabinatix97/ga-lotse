@@ -321,10 +321,10 @@ export function PendingFacilitiesTable(
       </TablePage>
       {userActivity.type === "view-incidents" && (
         <PendingFacilitiesIncidentsSidebar
-          open={true}
-          onClose={handleSidebarClosed}
+          open
           inspectionId={userActivity.inspectionId}
           facilityName={userActivity.facilityName}
+          onClose={handleSidebarClosed}
         />
       )}
     </>

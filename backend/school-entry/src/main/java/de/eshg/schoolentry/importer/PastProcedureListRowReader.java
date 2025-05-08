@@ -365,6 +365,7 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
             new AddressColumns<>(STREET, HOUSE_NUMBER, POSTAL_CODE, CITY, ADDRESS_ADDITION),
             errorHandler,
             false),
+        null,
         null);
   }
 

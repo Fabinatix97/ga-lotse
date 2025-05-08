@@ -8,7 +8,7 @@
 import { Cell, Row } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
-import { SubRowColumns } from "@/features/table/types/subRowColumns";
+import { SubRowColumns } from "../../types/subRowColumns";
 
 export function TableSubRow<TData>({
   row,
@@ -27,7 +27,7 @@ export function TableSubRow<TData>({
             </td>
           );
         } else if (!subRowColumns[cell.column.id]?.skip) {
-          return <td key={cell.id}></td>;
+          return <td key={cell.id} />;
         }
       })}
     </tr>

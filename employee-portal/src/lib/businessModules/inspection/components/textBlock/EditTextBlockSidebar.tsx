@@ -17,10 +17,10 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import {
@@ -28,7 +28,7 @@ import {
   useUpdateTextBlock,
 } from "@/lib/businessModules/inspection/api/mutations/textblocks";
 
-export interface TextBlockSidebarProps {
+interface TextBlockSidebarProps {
   open: boolean;
   onClose: () => void;
   id?: string;
@@ -109,11 +109,11 @@ function EditTextBlockSidebarWithQueriesAndMutations({
     <Sidebar open={open} onClose={handleClose}>
       <Formik
         initialValues={initialValues}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
+          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
             <SidebarContent
               title={id ? "Textbaustein bearbeiten" : "Textbaustein erstellen"}
             >
@@ -143,8 +143,8 @@ function EditTextBlockSidebarWithQueriesAndMutations({
             <SidebarActions>
               <FormButtonBar
                 submitting={isSubmitting}
-                onCancel={handleClose}
                 submitLabel="Speichern"
+                onCancel={handleClose}
               />
             </SidebarActions>
           </SidebarForm>

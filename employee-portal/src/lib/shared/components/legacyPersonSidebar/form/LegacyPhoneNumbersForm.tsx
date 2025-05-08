@@ -21,8 +21,8 @@ export function LegacyPhoneNumbersForm(props: {
         <>
           {props.phoneNumbers.map((_, index) => (
             <Grid
-              container
               key={index}
+              container
               direction="row"
               spacing={1}
               alignItems="flex-end"

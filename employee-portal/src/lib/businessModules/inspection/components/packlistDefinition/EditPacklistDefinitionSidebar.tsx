@@ -48,7 +48,6 @@ export function EditPacklistDefinitionSidebar({
   return (
     <CreateOrEditPacklistDefinitionSidebar
       open
-      onClose={onClose}
       pldRevision={packlistRevision}
       readonly={readonly}
       title={
@@ -56,9 +55,10 @@ export function EditPacklistDefinitionSidebar({
           ? `Packlistendefinition ansehen: ${packlistRevision.name}`
           : `Packlistendefinition bearbeiten: ${packlistRevision.name}`
       }
-      onClickNewRevision={onClickNewRevision}
       version={version}
       objectTypes={objectTypes}
+      onClose={onClose}
+      onClickNewRevision={onClickNewRevision}
     />
   );
 }

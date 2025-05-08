@@ -15,11 +15,11 @@ import {
 } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
 
-import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { RebookAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointmentPageContent";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -61,13 +61,21 @@ export function RebookAppointmentSidePanel() {
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
       {appointmentStart && (
         <>
-          <DetailsField
+          <DetailsItem
+            label={t("overview.fields.date", {
+              context: "label",
+            })}
             value={formatDateToFullReadableString(appointmentStart)}
             icon={<DateRange />}
+            hiddenLabel
           />
-          <DetailsField
+          <DetailsItem
+            label={t("overview.fields.time", {
+              context: "label",
+            })}
             value={`${formatTime(appointmentStart)} ${t("sidePanel.appointmentDuration", { durationInMinutes })}`}
             icon={<AccessTimeOutlined />}
+            hiddenLabel
           />
         </>
       )}

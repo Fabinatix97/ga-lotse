@@ -55,24 +55,24 @@ export function InstitutionContactSearchForm({
       }}
     >
       <SidebarForm>
-        <SidebarContent title={"Neue Institution anlegen"}>
+        <SidebarContent title="Neue Institution anlegen">
           <Stack gap={2}>
-            <InputField label={"Name"} name={"name"} onChange={setName} />
-            <InputField name={"street"} label={"Straße"} onChange={setStreet} />
+            <InputField label="Name" name="name" onChange={setName} />
+            <InputField name="street" label="Straße" onChange={setStreet} />
             {enabled &&
               (query.isLoading || query.isPlaceholderData ? (
-                <LoadingIndicator marginBlock={"auto"} fullHeight />
+                <LoadingIndicator marginBlock="auto" fullHeight />
               ) : (
                 query.isSuccess && (
                   <ContactSearchFormResults
                     searchTerm={request.name}
-                    label={"Institution"}
+                    label="Institution"
                     elements={query.data.elements}
                     totalNumberOfElements={query.data.totalNumberOfElements}
-                    onCreateNew={() => onCreate(request.name, request.street)}
                     renderCard={(contact) => (
                       <InstitutionContactCard contact={contact} />
                     )}
+                    onCreateNew={() => onCreate(request.name, request.street)}
                   />
                 )
               ))}

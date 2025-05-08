@@ -106,11 +106,11 @@ export function ChecklistMultiSelectElement({
             }}
           >
             <Checkbox
-              size={"sm"}
+              size="sm"
               label={text}
               checked={input.value.includes(text)}
-              onChange={(e) => handleCheckboxChange(e, text)}
               readOnly={readOnly}
+              onChange={(e) => handleCheckboxChange(e, text)}
             />
           </ListItem>
         ))}

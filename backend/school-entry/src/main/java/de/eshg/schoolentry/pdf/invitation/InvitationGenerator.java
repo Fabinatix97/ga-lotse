@@ -10,7 +10,7 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
@@ -19,8 +19,8 @@ import de.eshg.lib.document.generator.qrcode.QrCodeGenerator;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
+import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.business.model.ChildData;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
@@ -54,8 +54,8 @@ public class InvitationGenerator extends AbstractGenerator {
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
   private final DepartmentClient departmentClient;
-  private final AppointmentBlockProperties appointmentBlockProperties;
-  private final SchoolEntryProperties schoolEntryProperties;
+  private final SchoolEntryConfigService schoolEntryConfigService;
+  private final AppointmentBlockConfig appointmentBlockConfig;
 
   public InvitationGenerator(
       @Value(INVITATION_TEMPLATE) ClassPathResource invitationTemplate,
@@ -64,13 +64,13 @@ public class InvitationGenerator extends AbstractGenerator {
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
       DocumentGenerator documentGenerator,
       Clock clock,
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       ContactClient contactClient,
-      SchoolEntryProperties schoolEntryProperties) {
+      SchoolEntryConfigService schoolEntryConfigService) {
     super(departmentInfoConfigService, contactClient);
     this.departmentClient = departmentClient;
-    this.appointmentBlockProperties = appointmentBlockProperties;
-    this.schoolEntryProperties = schoolEntryProperties;
+    this.schoolEntryConfigService = schoolEntryConfigService;
+    this.appointmentBlockConfig = appointmentBlockConfig;
     Assert.isTrue(invitationTemplate.exists(), () -> invitationTemplate + " does not exist");
     this.invitationTemplate = invitationTemplate;
     this.citizenPortalUrl = citizenPortalUrl;
@@ -96,7 +96,7 @@ public class InvitationGenerator extends AbstractGenerator {
     Address departmentAddress = getDepartmentAddress();
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
     Address examinationExecutionLocation;
-    if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE
+    if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
         && locationId != null) {
       examinationExecutionLocation = getAddressOfInstitution(locationId);
     } else {
@@ -150,7 +150,7 @@ public class InvitationGenerator extends AbstractGenerator {
         childAddress,
         examination,
         invitationInfo,
-        schoolEntryProperties.getPdfDocumentAccentColor(),
+        schoolEntryConfigService.getPdfDocumentAccentColor(),
         "#EBEBEB");
   }
 

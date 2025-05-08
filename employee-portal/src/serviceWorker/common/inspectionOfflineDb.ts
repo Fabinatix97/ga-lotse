@@ -8,7 +8,7 @@ import { DBSchema, IDBPDatabase, openDB } from "idb";
 const DB_NAME = "inspection-offline";
 export const DESIRED_INSPECTION_IDS = "desired-inspection-ids";
 export const SALT = "salt";
-export const REGISTRATION = "registration";
+const REGISTRATION = "registration";
 export type State = "fetching" | "deleting" | "success";
 
 interface InspectionRecord {

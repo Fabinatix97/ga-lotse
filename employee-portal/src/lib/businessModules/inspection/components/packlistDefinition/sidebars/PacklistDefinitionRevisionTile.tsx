@@ -37,7 +37,7 @@ export function PacklistDefinitionRevisionTile({
 }: Readonly<PacklistDefinitionRevisionTileProps>) {
   return (
     <Sheet variant="outlined" sx={{ mt: 1 }} aria-label={label}>
-      <Stack spacing={1} direction="row" alignItems={"flex-start"}>
+      <Stack spacing={1} direction="row" alignItems="flex-start">
         <Grid container>
           <FactCheckOutlined
             sx={{
@@ -72,16 +72,13 @@ export function PacklistDefinitionRevisionTile({
           </Stack>
           <Stack>
             <Stack>
-              <NameInfo
-                name={revision.name}
-                previousName={previousName}
-              ></NameInfo>
+              <NameInfo name={revision.name} previousName={previousName} />
             </Stack>
             <Stack>
               <ModifiedInfo
                 validFrom={revision.validFrom}
                 modifiedBy={revision.modifiedBy}
-              ></ModifiedInfo>
+              />
             </Stack>
             <Stack>
               <Typography>{revision.description}</Typography>

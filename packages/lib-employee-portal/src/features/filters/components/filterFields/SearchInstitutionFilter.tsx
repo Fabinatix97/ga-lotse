@@ -12,8 +12,8 @@ import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAut
 import {
   useGetOptionalContactQuery,
   useSearchContacts,
-} from "@/features/contacts/api/queries";
-import { mapContactToSelectOption } from "@/features/contacts/utils/mappers";
+} from "../../../contacts/api/queries";
+import { mapContactToSelectOption } from "../../../contacts/utils/mappers";
 
 interface SearchInstitutionFilterProps {
   institutionId: string | undefined;

@@ -20,9 +20,9 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import { useGetStaff } from "@/api/queries/staff";
-import { ProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
-import { useUpdateProphylaxisSession } from "@/features/prophylaxisSessions/api/mutations/details";
+import { useGetStaff } from "../../../../api/queries/staff";
+import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
+import { useUpdateProphylaxisSession } from "../../api/mutations/details";
 
 import {
   ProphylaxisSessionForm,
@@ -55,7 +55,7 @@ function UpdateProphylaxisSessionSidebar(
   const initialValues: ProphylaxisSessionFormValues = {
     dateAndTime: toDateTimeString(prophylaxisSession.dateAndTime),
     institution: prophylaxisSession.institution,
-    groupName: prophylaxisSession.groupName,
+    groupName: parseOptionalValue(prophylaxisSession.groupName),
     type: prophylaxisSession.type,
     isScreening: prophylaxisSession.isScreening,
     dentitionType: parseOptionalValue(prophylaxisSession.dentitionType),

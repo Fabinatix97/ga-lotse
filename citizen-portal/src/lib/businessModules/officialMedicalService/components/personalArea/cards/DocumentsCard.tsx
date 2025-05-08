@@ -18,13 +18,13 @@ import {
 import { usePostDocumentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { FileSheetArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArrayField";
 import { mapFileTypeForOmsFile } from "@/lib/businessModules/officialMedicalService/shared/file/helpers";
-import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
 function DocumentAlert({ document }: { document: ApiDocument }) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
@@ -76,7 +76,7 @@ export function DocumentsCard({
 
   return (
     <ContentSheet
-      data-testid={"documents-form"}
+      data-testid="documents-form"
       sx={{ paddingX: byBreakpoint({ mobile: 0, desktop: 3 }) }}
     >
       <ContentSheetTitle sx={{ px: byBreakpoint({ mobile: 2, desktop: 0 }) }}>

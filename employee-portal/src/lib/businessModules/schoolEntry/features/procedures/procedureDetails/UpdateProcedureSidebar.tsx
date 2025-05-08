@@ -10,7 +10,6 @@ import { isDefined } from "remeda";
 
 import { ApiContactCategory } from "@eshg/base-api";
 import {
-  CheckboxField,
   FormButtonBar,
   ProcedureLabel,
   ProcedureLabelSelection,
@@ -24,6 +23,7 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -39,7 +39,7 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointment,
@@ -67,7 +67,7 @@ export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateP
   });
 }
 
-export interface UpdateProcedureValues {
+interface UpdateProcedureValues {
   procedureType: ApiSchoolEntryProcedureType;
   procedureLabels: ProcedureLabel[];
   appointment: SelectObjectFieldValue<ApiAppointment, false>;
@@ -147,7 +147,7 @@ function useUpdateProcedureForm(
 }
 
 function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
-  const { validatePastOrTodayDate } = useValidators();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const labelApi = useLabelApi();
   const { procedure, locationSelectionMode } = props;
 
@@ -183,121 +183,119 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
   }, [clearAppointment, setFieldValue]);
 
   return (
-    <>
-      <FormikProvider value={form}>
-        <SidebarForm ref={props.formRef}>
-          <SidebarContent title="Zusatzinfos">
-            <Stack gap={2}>
-              <SelectField
-                label="Art"
-                name="procedureType"
-                options={
-                  isInitialEntryLevel
-                    ? PROCEDURE_TYPE_OPTIONS_ENTRY_LEVEL
-                    : PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT
-                }
-              />
-              <SchoolYearField name="schoolYear" label="Schuljahr" />
-              <ProcedureLabelSelection
-                procedureLabelApi={labelApi}
-                procedureLabelApiQueryKey={schoolEntryApiQueryKey}
-              />
-              <Divider />
-              <SelectContactField
-                name="school"
-                label="Schule"
-                placeholder="Schule suchen"
-                categories={new Set([ApiContactCategory.School])}
-              />
-              {isHealthDepartmentSelectionMode(locationSelectionMode) && (
-                <SelectContactField
-                  name="location"
-                  label="Gesundheitsamt"
-                  placeholder="Gesundheitsamt suchen"
-                  categories={new Set([ApiContactCategory.HealthDepartment])}
-                />
-              )}
-              <Divider />
-              <SelectObjectField
-                name="appointment"
-                label="Termin"
-                options={freeAppointments}
-                getOptionLabel={getAppointmentLabel}
-                loading={getFreeAppointments.isFetching}
-                disabled={hasNoFreeAppointments || isMissingChildAddress}
-                placeholder={
-                  hasNoFreeAppointments
-                    ? "Keine freien Termine verfügbar."
-                    : undefined
-                }
-                onValueChanged={() =>
-                  void setFieldValue("isInvitationSent", false)
-                }
-              />
-              {displayWarningWhen(isMissingChildAddress, {
-                title: "Adresse fehlt",
-                message:
-                  "Erfassen Sie die Adresse des Kindes, um einen Termin zuweisen und eine Einladung versenden zu können.",
-              })}
-              {displayWarningWhen(
-                isSchoolSelectionMode(locationSelectionMode) &&
-                  values.school === null,
-                {
-                  title: "Schule fehlt",
-                  message:
-                    "Erfassen Sie die Schule, um einen Termin zuweisen und eine Einladung versenden zu können.",
-                },
-              )}
-              {displayWarningWhen(
-                isHealthDepartmentSelectionMode(locationSelectionMode) &&
-                  values.location === null,
-                {
-                  title: "Gesundheitsamt fehlt",
-                  message:
-                    "Erfassen Sie das Gesundheitsamt, um einen Termin zuweisen und eine Einladung versenden zu können.",
-                },
-              )}
-              {displayWarningWhen(values.hasBeenClosed, {
-                title: "Keine Terminauswahl möglich",
-                message:
-                  "Ein neuer Termin kann nicht ausgewählt werden, weil der Vorgang bereits abgeschlossen wurde.",
-              })}
-              {values.appointment !== null && (
-                <CheckboxField
-                  name="isInvitationSent"
-                  label="Einladung versandt"
-                />
-              )}
-              <Divider />
-              <CheckboxField
-                name="isDeceased"
-                label="Kind verstorben"
-                onChange={(event) => {
-                  if (!event.target.checked) {
-                    void setFieldValue("deceased", "");
-                  }
-                }}
-              />
-              {values.isDeceased && (
-                <DateField
-                  name="deceased"
-                  label="am"
-                  component={HorizontalField}
-                  validate={validatePastOrTodayDate}
-                />
-              )}
-            </Stack>
-          </SidebarContent>
-          <SidebarActions>
-            <FormButtonBar
-              submitting={isSubmitting}
-              submitLabel="Speichern"
-              onCancel={props.onClose}
+    <FormikProvider value={form}>
+      <SidebarForm ref={props.formRef}>
+        <SidebarContent title="Zusatzinfos">
+          <Stack gap={2}>
+            <SelectField
+              label="Art"
+              name="procedureType"
+              options={
+                isInitialEntryLevel
+                  ? PROCEDURE_TYPE_OPTIONS_ENTRY_LEVEL
+                  : PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT
+              }
             />
-          </SidebarActions>
-        </SidebarForm>
-      </FormikProvider>
-    </>
+            <SchoolYearField name="schoolYear" label="Schuljahr" />
+            <ProcedureLabelSelection
+              procedureLabelApi={labelApi}
+              procedureLabelApiQueryKey={schoolEntryApiQueryKey}
+            />
+            <Divider />
+            <SelectContactField
+              name="school"
+              label="Schule"
+              placeholder="Schule suchen"
+              categories={new Set([ApiContactCategory.School])}
+            />
+            {isHealthDepartmentSelectionMode(locationSelectionMode) && (
+              <SelectContactField
+                name="location"
+                label="Gesundheitsamt"
+                placeholder="Gesundheitsamt suchen"
+                categories={new Set([ApiContactCategory.HealthDepartment])}
+              />
+            )}
+            <Divider />
+            <SelectObjectField
+              name="appointment"
+              label="Termin"
+              options={freeAppointments}
+              getOptionLabel={getAppointmentLabel}
+              loading={getFreeAppointments.isFetching}
+              disabled={hasNoFreeAppointments || isMissingChildAddress}
+              placeholder={
+                hasNoFreeAppointments
+                  ? "Keine freien Termine verfügbar."
+                  : undefined
+              }
+              onValueChanged={() =>
+                void setFieldValue("isInvitationSent", false)
+              }
+            />
+            {displayWarningWhen(isMissingChildAddress, {
+              title: "Adresse fehlt",
+              message:
+                "Erfassen Sie die Adresse des Kindes, um einen Termin zuweisen und eine Einladung versenden zu können.",
+            })}
+            {displayWarningWhen(
+              isSchoolSelectionMode(locationSelectionMode) &&
+                values.school === null,
+              {
+                title: "Schule fehlt",
+                message:
+                  "Erfassen Sie die Schule, um einen Termin zuweisen und eine Einladung versenden zu können.",
+              },
+            )}
+            {displayWarningWhen(
+              isHealthDepartmentSelectionMode(locationSelectionMode) &&
+                values.location === null,
+              {
+                title: "Gesundheitsamt fehlt",
+                message:
+                  "Erfassen Sie das Gesundheitsamt, um einen Termin zuweisen und eine Einladung versenden zu können.",
+              },
+            )}
+            {displayWarningWhen(values.hasBeenClosed, {
+              title: "Keine Terminauswahl möglich",
+              message:
+                "Ein neuer Termin kann nicht ausgewählt werden, weil der Vorgang bereits abgeschlossen wurde.",
+            })}
+            {values.appointment !== null && (
+              <CheckboxField
+                name="isInvitationSent"
+                label="Einladung versandt"
+              />
+            )}
+            <Divider />
+            <CheckboxField
+              name="isDeceased"
+              label="Kind verstorben"
+              onChange={(event) => {
+                if (!event.target.checked) {
+                  void setFieldValue("deceased", "");
+                }
+              }}
+            />
+            {values.isDeceased && (
+              <DateField
+                name="deceased"
+                label="am"
+                component={HorizontalField}
+                validate={validatePastOrTodayDate}
+              />
+            )}
+          </Stack>
+        </SidebarContent>
+        <SidebarActions>
+          <FormButtonBar
+            submitting={isSubmitting}
+            submitLabel="Speichern"
+            onCancel={props.onClose}
+          />
+        </SidebarActions>
+      </SidebarForm>
+    </FormikProvider>
   );
 }
 

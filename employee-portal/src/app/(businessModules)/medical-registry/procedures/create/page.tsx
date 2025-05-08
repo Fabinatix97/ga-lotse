@@ -27,7 +27,7 @@ export default function MedicalRegistryCreateProcedure() {
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          title={"Neuen Eintrag anlegen"}
+          title="Neuen Eintrag anlegen"
           backButton={<ToolbarBackButton href={routes.procedures.index} />}
         />
       }

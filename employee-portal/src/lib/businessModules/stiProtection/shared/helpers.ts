@@ -4,11 +4,11 @@
  */
 
 import { FormikState } from "formik";
+import { isPlainObject } from "remeda";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
-  ApiAppointmentHistoryEntry,
   ApiAppointmentType,
   ApiConcern,
   ApiStiProtectionProcedure,
@@ -26,6 +26,21 @@ export function concernToAppointmentType(
     case "RESULTS_REVIEW":
       return ApiAppointmentType.ResultsReview;
   }
+}
+
+export function getPropertyIf<T>(
+  obj: unknown,
+  prop: string,
+  predicate: (v: unknown) => v is T,
+): T | undefined {
+  if (!isPlainObject(obj) || !(prop in obj)) {
+    return;
+  }
+  const value = obj[prop];
+  if (!predicate(value)) {
+    return;
+  }
+  return value;
 }
 
 export function mapOptional<T, K>(
@@ -46,7 +61,7 @@ export function optionalInt(num: string | undefined): number | undefined {
   return !isNaN(parsed) ? parsed : undefined;
 }
 
-export type NoUndefined<T> = T extends object
+type NoUndefined<T> = T extends object
   ? {
       [K in keyof T]: Exclude<T[K], undefined>;
     }
@@ -91,30 +106,10 @@ export function mapOptionalString(
   return isNonEmptyString(input) ? input : undefined;
 }
 
-export function mapOptionalBool(
-  input: boolean | undefined,
-): boolean | undefined {
-  return input === true ? input : undefined;
-}
-
 export function areAllValuesUndefined(obj: unknown): boolean {
   return (
     obj == null || Object.values(obj).every((value) => value === undefined)
   );
-}
-
-export function getOpenAppointmentsFromProcedure(
-  procedure: ApiStiProtectionProcedure,
-): ApiAppointmentHistoryEntry[] {
-  let openAppointments: ApiAppointmentHistoryEntry[] = [];
-
-  if (procedure) {
-    openAppointments = procedure.appointmentHistory.filter(
-      ({ appointmentStatus }) => appointmentStatus === "OPEN",
-    );
-  }
-
-  return openAppointments;
 }
 
 export function useOnCancelForm<T>() {

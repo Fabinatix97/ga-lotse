@@ -35,15 +35,3 @@ export async function registerServiceWorker() {
 export async function isServiceWorkerRegistered(): Promise<boolean> {
   return !!(await getServiceWorkerRegistration());
 }
-
-export async function getRegistration() {
-  const sw = await window.workbox?.controlling;
-  const scriptUrl = sw?.scriptURL;
-  const registrations = await navigator.serviceWorker.getRegistrations();
-  for (const registration of registrations) {
-    if (registration.active?.scriptURL === scriptUrl) {
-      return registration;
-    }
-  }
-  return undefined;
-}

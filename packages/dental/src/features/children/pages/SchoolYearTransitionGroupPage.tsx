@@ -23,14 +23,14 @@ import {
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { routes } from "@/config/routes";
-import { useDentalApi } from "@/contexts/dental";
-import { GroupsForTransition } from "@/features/children/api/models/SchoolYearTransitionGroupResult";
-import { getGroupsForTransitionQuery } from "@/features/children/api/queries/schoolYearTransition";
-import { NoGroupsAvailable } from "@/features/children/components/schoolTransition/NoGroupsAvailable";
-import { SchoolYearTransitionGroupsTableTitle } from "@/features/children/components/schoolTransition/SchoolYearTransitionGroupsTableTitle";
-import { useGroupsRouteParams } from "@/features/children/hooks/useGroupsRouteParams";
-import { DentalGroupsRouteParams } from "@/features/children/schemas/DentalGroupsRouteParams";
+import { routes } from "../../../config/routes";
+import { useDentalApi } from "../../../contexts/dental";
+import { GroupsForTransition } from "../api/models/SchoolYearTransitionGroupResult";
+import { getGroupsForTransitionQuery } from "../api/queries/schoolYearTransition";
+import { NoDataAvailable } from "../components/schoolTransition/NoDataAvailable";
+import { SchoolYearTransitionGroupsTableTitle } from "../components/schoolTransition/SchoolYearTransitionGroupsTableTitle";
+import { useGroupsRouteParams } from "../hooks/useGroupsRouteParams";
+import { DentalGroupsRouteParams } from "../schemas/DentalGroupsRouteParams";
 
 const columnHelper = createColumnHelper<GroupsForTransition>();
 const columns = [
@@ -85,9 +85,7 @@ export function SchoolYearTransitionGroupPage(
         <Stack gap={2} sx={{ height: "inherit" }}>
           <Alert
             color="primary"
-            message={
-              "Sobald eine Gruppe für das kommende Schuljahr zugeordnet wurde, wird sie automatisch aus der Liste entfernt."
-            }
+            message="Sobald eine Gruppe für das kommende Schuljahr zugeordnet wurde, wird sie automatisch aus der Liste entfernt."
           />
           <TablePage data-testid="groupsTable" fullHeight>
             <TableSheet
@@ -106,7 +104,9 @@ export function SchoolYearTransitionGroupPage(
                 rowSelectionProps={rowSelectionProps}
                 enableSortingRemoval={false}
                 minWidth={600}
-                noDataComponent={() => <NoGroupsAvailable href={routeBack} />}
+                noDataComponent={() => (
+                  <NoDataAvailable href={routeBack} data="Gruppen" />
+                )}
               />
             </TableSheet>
           </TablePage>

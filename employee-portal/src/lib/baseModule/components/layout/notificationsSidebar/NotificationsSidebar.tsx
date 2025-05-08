@@ -5,7 +5,6 @@
 
 import { InfoOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
-import { isNonNullish } from "remeda";
 
 import { ApiGetAggregatedNotificationsResponse } from "@eshg/base-api";
 import {
@@ -49,9 +48,9 @@ function NotificationsSidebar(props: NotificationsSidebarProps) {
   return (
     <>
       <SidebarContent title="Benachrichtigungen">
-        {isNonNullish(props.notificationResponse) && (
+        {notificationsCount > 0 && (
           <Stack sx={{ marginTop: 3 }} gap={2}>
-            {props.notificationResponse.notifications.map((notification) => (
+            {props.notificationResponse!.notifications.map((notification) => (
               <Notification
                 key={notification.id}
                 notification={notification}
@@ -60,34 +59,31 @@ function NotificationsSidebar(props: NotificationsSidebarProps) {
             ))}
           </Stack>
         )}
-        {props.notificationResponse === null ||
-          (notificationsCount === 0 && (
-            <Stack gap={3} alignItems={"center"}>
-              <InfoOutlined
-                sx={{
-                  marginTop: { xxs: 5, sm: 10 },
-                  fontSize: { xxs: 80, sm: 128 },
-                }}
-              />
-              <Typography level="h4" component="h2">
-                Aktuell nichts Neues
-              </Typography>
-            </Stack>
-          ))}
+        {notificationsCount === 0 && (
+          <Stack gap={3} alignItems="center">
+            <InfoOutlined
+              sx={{
+                marginTop: { xxs: 5, sm: 10 },
+                fontSize: { xxs: 80, sm: 128 },
+              }}
+            />
+            <Typography level="h4" component="h2">
+              Aktuell nichts Neues
+            </Typography>
+          </Stack>
+        )}
       </SidebarContent>
-      {isNonNullish(props.notificationResponse) && (
-        <SidebarActions>
-          <Button
-            disabled={notificationsCount === 0}
-            onClick={() => {
-              handleMarkNotificationsAsRead(notificationIds);
-            }}
-            sx={{ alignSelf: "end" }}
-          >
-            Als gelesen markieren
-          </Button>
-        </SidebarActions>
-      )}
+      <SidebarActions>
+        <Button
+          disabled={notificationsCount === 0}
+          sx={{ alignSelf: "end" }}
+          onClick={() => {
+            handleMarkNotificationsAsRead(notificationIds);
+          }}
+        >
+          Als gelesen markieren
+        </Button>
+      </SidebarActions>
     </>
   );
 }

@@ -8,9 +8,9 @@ import { useMemo } from "react";
 import { isDefined } from "remeda";
 
 import { ApiObjectType } from "@eshg/inspection-api";
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 interface PacklistDefinitionHeaderCardProps {
   readOnlyMode: boolean;

@@ -5,10 +5,7 @@
 
 import { Checkbox, CheckboxProps, Stack } from "@mui/joy";
 
-import {
-  EnumFilterDefinition,
-  EnumFilterValue,
-} from "@/features/filters/types/EnumFilter";
+import { EnumFilterDefinition, EnumFilterValue } from "../../types/EnumFilter";
 
 function EnumFilterCheckbox(
   props: Required<Pick<CheckboxProps, "label" | "checked" | "onChange">>,

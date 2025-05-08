@@ -12,7 +12,11 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isDefined } from "remeda";
 
-import { FileField, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  FileCard,
+  FileField,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
@@ -22,7 +26,6 @@ import { ApiOmsFile } from "@eshg/official-medical-service-api";
 import { useOmsFileApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { AddDocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/AddDocumentForm";
 import { DocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
-import { FileCard } from "@/lib/shared/components/FileCard";
 import { useToggle } from "@/lib/shared/hooks/useToggle";
 
 interface FilesSectionProps {
@@ -148,9 +151,9 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
             (props.canRemoveLast ||
               (isDefined(values.files) && values.files.length >= 1)) && (
               <Button
-                color={"primary"}
-                variant={"plain"}
-                size={"sm"}
+                color="primary"
+                variant="plain"
+                size="sm"
                 sx={{ justifyContent: "flex-start" }}
                 startDecorator={<RemoveIcon />}
                 onClick={() => {

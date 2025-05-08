@@ -77,7 +77,12 @@ def registerGenerateMatrixClientTask(String type) {
     compileJava.dependsOn generateMatrixClientTask
 }
 
-def clients = ["login", "refresh", "logout"]
+def clients = [
+    "login",
+    "refresh",
+    "logout",
+    "whoami"
+]
 clients.forEach { String client ->
     registerGenerateMatrixClientTask(client)
 }

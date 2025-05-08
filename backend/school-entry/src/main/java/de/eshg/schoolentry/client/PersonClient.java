@@ -408,13 +408,24 @@ public class PersonClient {
       String placeOfBirth = childUpdate.placeOfBirth();
       CountryCode countryOfBirth = childUpdate.countryOfBirth();
       String phoneNumber = childUpdate.phoneNumber();
+      String emailAddress = childUpdate.email();
+
+      boolean phoneNumberIsNew = phoneNumber != null && !child.phoneNumbers().contains(phoneNumber);
+      boolean emailAddressIsNew =
+          emailAddress != null && !child.emailAddresses().contains(emailAddress);
 
       if ((placeOfBirth != null && !Objects.equals(child.placeOfBirth(), placeOfBirth))
           || (countryOfBirth != null && !Objects.equals(child.countryOfBirth(), countryOfBirth))
-          || (phoneNumber != null && !child.phoneNumbers().contains(phoneNumber))) {
+          || phoneNumberIsNew
+          || emailAddressIsNew) {
         List<String> phoneNumbers = new ArrayList<>(child.phoneNumbers());
-        if (phoneNumber != null && !child.phoneNumbers().contains(phoneNumber)) {
+        if (phoneNumberIsNew) {
           phoneNumbers.add(phoneNumber);
+        }
+
+        List<String> emailAddresses = new ArrayList<>(child.emailAddresses());
+        if (emailAddressIsNew) {
+          emailAddresses.add(emailAddress);
         }
 
         PersonDetailsDto updatedChildData =
@@ -428,7 +439,7 @@ public class PersonClient {
                 child.nameAtBirth(),
                 Optional.ofNullable(placeOfBirth).orElse(child.placeOfBirth()),
                 Optional.ofNullable(countryOfBirth).orElse(child.countryOfBirth()),
-                child.emailAddresses(),
+                emailAddresses,
                 phoneNumbers,
                 child.contactAddress(),
                 child.differentBillingAddress());

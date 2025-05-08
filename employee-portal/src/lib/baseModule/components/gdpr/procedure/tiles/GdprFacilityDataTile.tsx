@@ -27,7 +27,7 @@ export function GdprFacilityDataTile({
   columnSx: SxProps;
 }) {
   return (
-    <InfoTile name={"procedure-identity-details"} title={"Antragsteller"}>
+    <InfoTile name="procedure-identity-details" title="Antragsteller">
       <Stack
         direction={{ xxs: "column", md: "row" }}
         gap={3}
@@ -55,11 +55,11 @@ export function GdprFacilityDataTile({
           isNonEmptyString(identity.phoneNumber)) && (
           <DetailsColumn sx={columnSx}>
             <ExternalLinkDetailsItem
-              label={"E-Mail-Adresse"}
+              label="E-Mail-Adresse"
               value={identity.emailAddress}
               href={(value) => `mailto:${value}`}
             />
-            <DetailsItem label={"Telefonnummer"} value={identity.phoneNumber} />
+            <DetailsItem label="Telefonnummer" value={identity.phoneNumber} />
           </DetailsColumn>
         )}
       </Stack>

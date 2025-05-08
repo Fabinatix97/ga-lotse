@@ -45,10 +45,10 @@ function CreateEvaluationSidebar({
 
   return (
     <CreateEvaluationFromScratchSidebar
-      onClose={onClose}
       dataSources={dataSources}
       evaluationTemplates={apiTemplates}
       formRef={formRef}
+      onClose={onClose}
     />
   );
 }

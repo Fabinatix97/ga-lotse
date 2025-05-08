@@ -25,29 +25,27 @@ interface FilesSidebarProps {
 export function FilesSidebar({ open, onClose }: FilesSidebarProps) {
   const { files } = useProgressEntriesConfig();
   return (
-    <>
-      <Sidebar open={open} onClose={onClose}>
-        <SidebarContent title={`Alle Dateien(${files.length})`}>
-          <Stack spacing={1}>
-            {files.map(({ file, progressEntryId }) => (
-              <FileCardWithActions
-                key={`files-sidebar-${file.fileId}`}
-                detailsProgressEntryId={progressEntryId}
-                file={file}
-              />
-            ))}
-          </Stack>
-        </SidebarContent>
-        <SidebarActions>
-          <ButtonBar
-            right={
-              <Button color="neutral" variant="soft" onClick={onClose}>
-                Schließen
-              </Button>
-            }
-          />
-        </SidebarActions>
-      </Sidebar>
-    </>
+    <Sidebar open={open} onClose={onClose}>
+      <SidebarContent title={`Alle Dateien(${files.length})`}>
+        <Stack spacing={1}>
+          {files.map(({ file, progressEntryId }) => (
+            <FileCardWithActions
+              key={`files-sidebar-${file.fileId}`}
+              detailsProgressEntryId={progressEntryId}
+              file={file}
+            />
+          ))}
+        </Stack>
+      </SidebarContent>
+      <SidebarActions>
+        <ButtonBar
+          right={
+            <Button color="neutral" variant="soft" onClick={onClose}>
+              Schließen
+            </Button>
+          }
+        />
+      </SidebarActions>
+    </Sidebar>
   );
 }

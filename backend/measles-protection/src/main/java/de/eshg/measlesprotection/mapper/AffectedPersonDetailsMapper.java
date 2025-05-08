@@ -8,6 +8,8 @@ package de.eshg.measlesprotection.mapper;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
+import de.eshg.base.centralfile.api.person.PersonDetailsDto;
+import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.measlesprotection.api.draft.AffectedPersonDetailsDto;
 import de.eshg.measlesprotection.api.draft.CustodianDetailsDto;
 
@@ -25,7 +27,7 @@ public class AffectedPersonDetailsMapper {
         custodian.dateOfBirth(),
         custodian.nameAtBirth(),
         custodian.placeOfBirth(),
-        null,
+        custodian.countryOfBirth(),
         custodian.emailAddresses(),
         custodian.phoneNumbers(),
         custodian.address(),
@@ -44,7 +46,7 @@ public class AffectedPersonDetailsMapper {
         custodian.dateOfBirth(),
         custodian.nameAtBirth(),
         custodian.placeOfBirth(),
-        null,
+        custodian.countryOfBirth(),
         custodian.emailAddresses(),
         custodian.phoneNumbers(),
         custodian.address(),
@@ -85,6 +87,54 @@ public class AffectedPersonDetailsMapper {
         person.emailAddresses(),
         person.phoneNumbers(),
         person.address(),
+        null);
+  }
+
+  public static UpdatePersonRequest getUpdatePersonRequest(AffectedPersonDetailsDto personDetails) {
+    if (personDetails == null) {
+      return null;
+    }
+    return new UpdatePersonRequest(getPersonDetailsDto(personDetails));
+  }
+
+  public static UpdatePersonRequest getUpdatePersonRequest(CustodianDetailsDto personDetails) {
+    if (personDetails == null) {
+      return null;
+    }
+    return new UpdatePersonRequest(getPersonDetailsDto(personDetails));
+  }
+
+  public static PersonDetailsDto getPersonDetailsDto(AffectedPersonDetailsDto personDetails) {
+    return new PersonDetailsDto(
+        personDetails.title(),
+        personDetails.salutation(),
+        personDetails.gender(),
+        personDetails.firstName(),
+        personDetails.lastName(),
+        personDetails.dateOfBirth(),
+        personDetails.nameAtBirth(),
+        personDetails.placeOfBirth(),
+        personDetails.countryOfBirth(),
+        personDetails.emailAddresses(),
+        personDetails.phoneNumbers(),
+        personDetails.address(),
+        null);
+  }
+
+  public static PersonDetailsDto getPersonDetailsDto(CustodianDetailsDto personDetails) {
+    return new PersonDetailsDto(
+        personDetails.title(),
+        personDetails.salutation(),
+        personDetails.gender(),
+        personDetails.firstName(),
+        personDetails.lastName(),
+        personDetails.dateOfBirth(),
+        personDetails.nameAtBirth(),
+        personDetails.placeOfBirth(),
+        personDetails.countryOfBirth(),
+        personDetails.emailAddresses(),
+        personDetails.phoneNumbers(),
+        personDetails.address(),
         null);
   }
 }

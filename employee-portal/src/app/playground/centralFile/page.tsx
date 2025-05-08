@@ -15,7 +15,7 @@ import { centralFilePlaygroundRoutes } from "@/app/playground/centralFile/centra
 export default function PersonEditFlowsPage() {
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title={"Person edit flows playground"} />}
+      toolbar={<Toolbar title="Person edit flows playground" />}
     >
       <MainContentLayout>
         <ul>

@@ -85,8 +85,8 @@ export function CertificatesTable({
               <Button
                 sx={{ py: 1 / 2 }}
                 startDecorator={<AddOutlined />}
-                onClick={openCertificateSideBar}
                 data-testid="create-certificate-buttonbar"
+                onClick={openCertificateSideBar}
               >
                 Bescheinigung erstellen
               </Button>
@@ -122,8 +122,8 @@ export function CertificatesTable({
           <Button
             sx={{ py: 1 / 2 }}
             startDecorator={<AddOutlined />}
-            onClick={openCertificateSideBar}
             data-testid="create-certificate-empty-table"
+            onClick={openCertificateSideBar}
           >
             Bescheinigung erstellen
           </Button>

@@ -5,16 +5,6 @@
 
 import { ApiMainResult, ApiSecondaryResult, ApiTooth } from "@eshg/dental-api";
 
-export type ExaminationView = "UPPER_JAW" | "LOWER_JAW" | "FULL_DENTITION";
-
-export function isExaminationView(
-  value: number | string | null | undefined,
-): value is ExaminationView {
-  return ["UPPER_JAW", "LOWER_JAW", "FULL_DENTITION"].includes(
-    value as ExaminationView,
-  );
-}
-
 export type Dentition = Record<QuadrantNumber, Quadrant>;
 
 export interface Quadrant {
@@ -32,8 +22,7 @@ export interface ToothWithDiagnosis {
   toothType: ToothType;
   isRemovable: boolean;
   mainResult: ToothResult;
-  secondaryResult1: ToothResult;
-  secondaryResult2: ToothResult;
+  secondaryResult: ToothResult;
   previousResults: ToothDiagnosisResult[];
 }
 
@@ -78,10 +67,7 @@ export interface ToothContext {
 
 export type ToothElement = "toothButton" | ToothFieldElement;
 
-export type ToothFieldElement =
-  | "mainResultField"
-  | "secondaryResult1Field"
-  | "secondaryResult2Field";
+export type ToothFieldElement = "mainResultField" | "secondaryResultField";
 
 export interface ElementContext {
   toothContext: ToothContext;

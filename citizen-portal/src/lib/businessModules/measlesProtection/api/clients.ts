@@ -5,7 +5,6 @@
 
 import {
   Configuration,
-  FileApi,
   OrganisationPortalApi,
 } from "@eshg/measles-protection-api";
 
@@ -16,11 +15,6 @@ function useConfiguration() {
     "PUBLIC_MEASLES_PROTECTION_BACKEND_URL",
   );
   return new Configuration(configurationParameters);
-}
-
-export function useFileApi() {
-  const config = useConfiguration();
-  return new FileApi(config);
 }
 
 export function useOrganisationPortalApi(): OrganisationPortalApi {

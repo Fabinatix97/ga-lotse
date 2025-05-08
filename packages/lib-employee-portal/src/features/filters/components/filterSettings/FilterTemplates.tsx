@@ -9,9 +9,9 @@ import { useState } from "react";
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
-import { ActionsMenu } from "@/components/buttons/ActionsMenu";
-import { FormDialog } from "@/components/form/FormDialog";
-import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
+import { ActionsMenu } from "../../../../components/buttons/ActionsMenu";
+import { FormDialog } from "../../../../components/form/FormDialog";
+import { useConfirmationDialog } from "../../../../hooks/useConfirmationDialog";
 
 interface TemplateNameFormModel {
   templateName: string;
@@ -59,14 +59,14 @@ export function FilterTemplates(props: FilterTemplatesProps) {
     <>
       <FormDialog
         open={open}
-        onClose={() => setOpen(false)}
-        onSubmit={onSubmit}
         initialValues={{ templateName: "" }}
         confirmLabel="Speichern"
         cancelLabel="Abbrechen"
         color="primary"
         title="Filter-Vorlage speichern"
         description="Wählen Sie einen eindeutigen Namen für die Filter-Vorlage."
+        onClose={() => setOpen(false)}
+        onSubmit={onSubmit}
       >
         <InputField
           label="Name der Filter-Vorlage"

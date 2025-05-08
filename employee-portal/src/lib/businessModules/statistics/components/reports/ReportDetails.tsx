@@ -19,7 +19,7 @@ export function ReportDetails(props: ReportDetailsView) {
     dataSourceSensitivity: props.dataSource.sensitivity,
   };
   return (
-    <Stack gap={3} direction={"row"}>
+    <Stack gap={3} direction="row">
       <Box flex={2}>
         <AnalysisAccordion
           analyses={props.analyses}

@@ -2,7 +2,7 @@
   "common": {
     "pageTitle": "My concern",
     "requiredTitle": "*Required",
-    "logoutButton": "Leave my area"
+    "logoutButton": "Leave My Area"
   },
   "appointment": {
     "title": "Examination appointment",
@@ -33,7 +33,7 @@
       "title": "Medical history form",
       "helperText_MISSING": "not yet submitted",
       "helperText_SUMBITTED": "successfully submitted",
-      "placeholder": "Jetzt ausfüllen"
+      "placeholder": "Fill out"
     }
   },
   "contact": {
@@ -109,7 +109,7 @@
   "cancelAppointment": {
     "cancelModal": {
       "title": "Cancel your appointment?",
-      "description": "Are you sure you want to cancel your appointment? You can then book another appointment at any time.",
+      "description": "Are you sure you want to cancel your appointment? You can book another appointment at a later time.",
       "confirmLabel": "Yes, cancel",
       "cancelLabel": "Keep appointment"
     },

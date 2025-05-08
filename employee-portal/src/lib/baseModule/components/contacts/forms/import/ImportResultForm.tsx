@@ -56,11 +56,11 @@ export function ImportResultForm<TMatch extends { id: string }>({
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
           <SidebarContent title={`${label} vorhanden`}>
-            <RadioGroupField name={"selected"}>
+            <RadioGroupField name="selected">
               <Stack gap={2}>
                 <Typography>
                   Für die importierte {label}{" "}
-                  <Typography level={"title-md"}>
+                  <Typography level="title-md">
                     {searchResults.vCard.fullName}
                   </Typography>{" "}
                   sind bereits {searchResults.totalNumberOfMatches} ähnliche
@@ -78,7 +78,7 @@ export function ImportResultForm<TMatch extends { id: string }>({
                     background: "#C7F7C799",
                   }}
                 >
-                  <Typography level={"title-md"}>
+                  <Typography level="title-md">
                     {searchResults.vCard.fullName}
                   </Typography>
                   {isDefined(address) && (
@@ -102,13 +102,13 @@ export function ImportResultForm<TMatch extends { id: string }>({
                   <Typography>Vorhandenen Kontakt erweitern:</Typography>
                 )}
                 {searchResults.matches.map((contact) => (
-                  <SelectableCard value={contact.id} key={contact.id}>
+                  <SelectableCard key={contact.id} value={contact.id}>
                     <CardComponent contact={contact} />
                   </SelectableCard>
                 ))}
                 <Typography>oder</Typography>
-                <SelectableCard value={"new"}>
-                  <Typography level={"title-md"}>
+                <SelectableCard value="new">
+                  <Typography level="title-md">
                     als neue {label} anlegen
                   </Typography>
                 </SelectableCard>
@@ -118,7 +118,7 @@ export function ImportResultForm<TMatch extends { id: string }>({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={isSubmitting}
-              submitLabel={"Auswählen"}
+              submitLabel="Auswählen"
             />
           </SidebarActions>
         </SidebarForm>

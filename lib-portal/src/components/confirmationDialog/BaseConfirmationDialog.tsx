@@ -36,7 +36,7 @@ export interface ConfirmationDialogProps {
   buttonBarComponent?: (props: DioalogButtonBarProps) => ReactNode;
 }
 
-export type BaseConfirmationDialogProps = WithRequired<
+type BaseConfirmationDialogProps = WithRequired<
   ConfirmationDialogProps,
   "title" | "description" | "confirmLabel" | "cancelLabel"
 >;

@@ -3,19 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Typography } from "@mui/joy";
-import { ComponentProps } from "react";
+import { Button, ButtonProps } from "@mui/joy";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-
-export function OpenHistorySidebarButton(
-  props: ComponentProps<typeof ButtonLink>,
-) {
-  const { children, ...buttonProps } = props;
-
+export function OpenHistorySidebarButton(props: Omit<ButtonProps, "children">) {
   return (
-    <Typography color="primary">
-      (<ButtonLink {...buttonProps}>{children}</ButtonLink>)
-    </Typography>
+    <Button {...props} color="primary" variant="plain">
+      Historie
+    </Button>
   );
 }

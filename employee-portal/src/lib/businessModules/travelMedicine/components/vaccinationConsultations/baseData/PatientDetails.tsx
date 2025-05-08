@@ -33,7 +33,7 @@ import {
 
 import { instanceOfApiGetReferencePersonResponse } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
 
-export interface PatientDetailsProps {
+interface PatientDetailsProps {
   title: string;
   submitLabel: string;
   person: ApiGetReferencePersonResponse | ApiPatient;
@@ -87,8 +87,8 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
   return (
     <Formik
       initialValues={props.person}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm>
@@ -96,39 +96,39 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
             <Stack gap={2}>
               <DetailsRow>
                 <DetailsItem
-                  label={"Anrede"}
+                  label="Anrede"
                   value={SALUTATION_VALUES[person.salutation]}
                 />
                 <DetailsItem
-                  label={"Titel"}
+                  label="Titel"
                   value={getOptionalTitle(person.title)}
                   avoidWrap
                 />
               </DetailsRow>
               <DetailsRow>
-                <DetailsItem label={"Vorname"} value={person.firstName} />
-                <DetailsItem label={"Name"} value={person.lastName} avoidWrap />
+                <DetailsItem label="Vorname" value={person.firstName} />
+                <DetailsItem label="Name" value={person.lastName} avoidWrap />
               </DetailsRow>
               <DetailsRow>
                 <DetailsItem
-                  label={"Geburtsdatum"}
+                  label="Geburtsdatum"
                   value={formatDate(person.dateOfBirth)}
                 />
                 <DetailsItem
-                  label={"Geschlecht"}
+                  label="Geschlecht"
                   value={GENDER_VALUES[person.gender]}
                 />
               </DetailsRow>
               <DetailsItem
-                label={"Geburtsname"}
+                label="Geburtsname"
                 value={props.person.nameAtBirth}
               />
               <DetailsItem
-                label={"Geburtsort"}
+                label="Geburtsort"
                 value={props.person.placeOfBirth}
               />
               <DetailsItem
-                label={"Geburtsland"}
+                label="Geburtsland"
                 value={
                   isDefined(props.person.countryOfBirth)
                     ? translateCountry(props.person.countryOfBirth)
@@ -149,14 +149,14 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
                   {person.emailAddresses.map((email, index) => (
                     <DetailsItem
                       key={`${email}-${index}`}
-                      label={"E-Mail-Adresse"}
+                      label="E-Mail-Adresse"
                       value={email}
                     />
                   ))}
                   {person.phoneNumbers.map((phoneNumber, index) => (
                     <DetailsItem
                       key={`${phoneNumber}-${index}`}
-                      label={"Telefonnummer"}
+                      label="Telefonnummer"
                       value={phoneNumber}
                     />
                   ))}
@@ -166,7 +166,7 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
               {showInitialPatientEmailPhoneSection && (
                 <>
                   <Divider component="div" role="presentation">
-                    <Typography level={"title-sm"} color={"neutral"}>
+                    <Typography level="title-sm" color="neutral">
                       Gemeldete Kontaktdaten
                     </Typography>
                   </Divider>
@@ -174,7 +174,7 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
                     props.initialPatient.emailAddresses.map((email, index) => (
                       <DetailsItem
                         key={`initialPatient-${email}-${index}`}
-                        label={"E-Mail-Adresse"}
+                        label="E-Mail-Adresse"
                         value={email}
                       />
                     ))}
@@ -183,7 +183,7 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
                       (phoneNumber, index) => (
                         <DetailsItem
                           key={`initialPatient-${phoneNumber}-${index}`}
-                          label={"Telefonnummer"}
+                          label="Telefonnummer"
                           value={phoneNumber}
                         />
                       ),

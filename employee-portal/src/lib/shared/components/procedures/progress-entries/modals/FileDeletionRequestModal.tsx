@@ -40,8 +40,8 @@ export function FileDeletionRequestModal() {
     <BaseModal
       modalTitle="Datei Löschung beantragen?"
       open={fileIdForDeletion !== null}
-      onClose={handleClose}
       color="danger"
+      onClose={handleClose}
     >
       <Typography textColor="text.secondary">
         Durch Löschung der Datei bleibt der Verlaufseintrag bestehen.

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configuratorModuleName";
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 
 function getFilteredModules(
   data: Partial<ConfiguratorStatusOverview>,

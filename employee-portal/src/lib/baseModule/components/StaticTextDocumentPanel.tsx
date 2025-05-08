@@ -3,18 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack, StackProps, Typography } from "@mui/joy";
+import { Stack, StackProps } from "@mui/joy";
 
 import { ContentPanel } from "@eshg/lib-employee-portal";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-
-export function NoWrap({ children }: { children: string }) {
-  return (
-    <Typography component={"span"} noWrap sx={{ display: "inline" }}>
-      {children}
-    </Typography>
-  );
-}
 
 export function LinkInNewTab({
   href,
@@ -24,7 +16,7 @@ export function LinkInNewTab({
   children: string;
 }) {
   return (
-    <ExternalLink href={href} target={"_blank"}>
+    <ExternalLink href={href} target="_blank">
       {children}
     </ExternalLink>
   );

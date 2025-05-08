@@ -11,12 +11,15 @@ import {
 } from "@eshg/dental-api";
 import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
 
-import { Institution, mapInstitution } from "@/api/models/Institution";
+import {
+  Institution,
+  mapInstitution,
+} from "../../../../api/models/Institution";
 
 export interface ProphylaxisSession extends BaseEntity {
   dateAndTime: Date;
   institution: Institution;
-  groupName: string;
+  groupName?: string;
   type: ApiProphylaxisType;
   isScreening: boolean;
   fluoridationVarnish?: ApiFluoridationVarnish;

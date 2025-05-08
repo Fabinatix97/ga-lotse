@@ -6,9 +6,9 @@
 import { startTransition, useId, useState } from "react";
 import { isDefined } from "remeda";
 
-import { ActiveFilter } from "@/features/filters/components/filterSettings/ActiveFilter";
-import { FilterSettingsSheetProps } from "@/features/filters/components/filterSettings/FilterSettingsSheet";
-import { ToggleFilterButtonProps } from "@/features/filters/components/filterSettings/ToggleFilterButton";
+import { ActiveFilter } from "../components/filterSettings/ActiveFilter";
+import { FilterSettingsSheetProps } from "../components/filterSettings/FilterSettingsSheet";
+import { ToggleFilterButtonProps } from "../components/filterSettings/ToggleFilterButton";
 
 type FilterDictionary<TKey extends string> = Partial<Record<TKey, unknown>>;
 

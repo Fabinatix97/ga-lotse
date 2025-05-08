@@ -6,8 +6,8 @@
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import {
   ApiRapidTestExamination,
   ApiTextTemplateContext,
@@ -61,8 +61,8 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
           ? mapToFormValues(rapidTests)
           : defaultRapidTestExaminationFormValues()
       }
-      onSubmit={onSubmit}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values }) => (
         <FormPlus sx={{ height: "100%" }}>
@@ -147,13 +147,13 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
 function ExaminationTabInfo() {
   return (
     <Sheet>
-      <Typography level={"h3"} mb={3}>
+      <Typography level="h3" mb={3}>
         Schnelltests
       </Typography>
       <Stack
         component="section"
         gap={3}
-        aria-label={"Weitere Angaben zu den Schnelltests"}
+        aria-label="Weitere Angaben zu den Schnelltests"
       >
         <TextareaFieldWithTextTemplates
           name="generalRemarks"

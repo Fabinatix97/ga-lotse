@@ -8,35 +8,22 @@ package de.eshg.config.mapper;
 import de.eshg.base.department.LanguageDto;
 import de.eshg.config.api.DocumentDto;
 import de.eshg.config.api.PrivacyDocumentDto;
-import de.eshg.config.departmentinfo.PrivacyDocumentHelper;
 import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.config.i18n.MultiLangFileName;
 import de.eshg.rest.service.i18n.Language;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
 public class MultiLangDocumentMapper {
-  public static PrivacyDocumentDto mapToPrivacyPolicyDto(MultiLangDocument multiLangDocument) {
-    return mapToPrivacyDto(
-        multiLangDocument,
-        PrivacyDocumentHelper.PRIVACY_POLICY_DE_PDF_FILENAME,
-        PrivacyDocumentHelper.PRIVACY_POLICY_EN_PDF_FILENAME);
-  }
 
-  public static PrivacyDocumentDto mapToPrivacyNoticeDto(MultiLangDocument multiLangDocument) {
-    return mapToPrivacyDto(
-        multiLangDocument,
-        PrivacyDocumentHelper.PRIVACY_NOTICE_DE_PDF_FILENAME,
-        PrivacyDocumentHelper.PRIVACY_NOTICE_EN_PDF_FILENAME);
-  }
-
-  private static PrivacyDocumentDto mapToPrivacyDto(
-      MultiLangDocument multiLangDocument, String deFilename, String enFilename) {
+  public static PrivacyDocumentDto mapToPrivacyDto(
+      MultiLangDocument multiLangDocument, MultiLangFileName multiLangFileName) {
     if (multiLangDocument == null) {
       return null;
     }
     return new PrivacyDocumentDto(
-        mapToDto(deFilename, multiLangDocument.getDeFileSizeBytes()),
-        mapToDto(enFilename, multiLangDocument.getEnFileSizeBytes()));
+        mapToDto(multiLangFileName.de(), multiLangDocument.getDeFileSizeBytes()),
+        mapToDto(multiLangFileName.en(), multiLangDocument.getEnFileSizeBytes()));
   }
 
   private static DocumentDto mapToDto(String fileName, Integer fileSize) {

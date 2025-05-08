@@ -8,6 +8,7 @@
 import { CircularProgress, Switch, Typography } from "@mui/joy";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
+import { useIsOffline } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -25,7 +26,6 @@ import {
 import { useInspectionPrecacheState } from "@/lib/businessModules/inspection/shared/offline/useInspectionPrecacheState";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { usePrecacheInspections } from "@/lib/businessModules/inspection/shared/offline/usePrecacheInspections";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 import {
   GET_PASSWORD,
   GET_PASSWORD_ABORTED,
@@ -36,7 +36,7 @@ import {
 } from "@/serviceWorker/common/offlinePasswordBroadCastChannel";
 import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 
-export interface PrecacheOfflineSwitchProps {
+interface PrecacheOfflineSwitchProps {
   procedureId: string;
   currentPhase: ApiInspectionPhase;
   label?: string;
@@ -79,19 +79,15 @@ function OfflineSwitchInner({
 
   if (offline || hasntReachedExecutingPhase) return false;
 
-  const switchElement = (
-    <>
-      {["fetching", "deleting"].includes(state) ? (
-        <CircularProgress size="sm" />
-      ) : (
-        <Switch
-          checked={state === "success"}
-          onChange={async (event) =>
-            await (event.target.checked ? handleOffline() : handleOnline())
-          }
-        />
-      )}
-    </>
+  const switchElement = ["fetching", "deleting"].includes(state) ? (
+    <CircularProgress size="sm" />
+  ) : (
+    <Switch
+      checked={state === "success"}
+      onChange={async (event) =>
+        await (event.target.checked ? handleOffline() : handleOnline())
+      }
+    />
   );
 
   if (!label) return switchElement;

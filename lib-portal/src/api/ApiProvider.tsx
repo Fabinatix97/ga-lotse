@@ -116,8 +116,8 @@ export function ApiProvider(props: ApiProviderProps) {
           fallbackRender={({ error, resetErrorBoundary }) => (
             <ErrorAlert
               error={error as unknown}
-              onReset={resetErrorBoundary}
               sx={{ margin: 3 }}
+              onReset={resetErrorBoundary}
             />
           )}
         >

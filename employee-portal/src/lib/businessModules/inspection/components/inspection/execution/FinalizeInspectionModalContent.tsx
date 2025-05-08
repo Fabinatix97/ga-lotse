@@ -135,8 +135,8 @@ export function FinalizeInspectionModalContent({
           }}
         >
           <Box
-            component={"svg"}
             ref={svgRef}
+            component="svg"
             sx={{ width: "100%", height: "100%" }}
           />
         </Sheet>
@@ -155,20 +155,20 @@ export function FinalizeInspectionModalContent({
             <FormButtonBar
               submitting={isSubmitting}
               submitLabel="Abschließen"
-              onCancel={props.onClose}
               left={
                 <>
-                  <Button onClick={handleClear} variant="plain">
+                  <Button variant="plain" onClick={handleClear}>
                     Unterschrift leeren
                   </Button>
                   <Button
-                    onClick={handleSubmitWithoutSignature}
                     variant="plain"
+                    onClick={handleSubmitWithoutSignature}
                   >
                     Weiter ohne Unterschrift
                   </Button>
                 </>
               }
+              onCancel={props.onClose}
             />
           </FormPlus>
         )}

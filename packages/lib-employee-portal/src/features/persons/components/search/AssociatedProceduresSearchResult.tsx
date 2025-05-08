@@ -11,8 +11,8 @@ import { isDefined } from "remeda";
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
+import { SidebarActions } from "../../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../../drawer/components/SidebarContent";
 
 interface AssociatedProceduresSearchResultProps<TProcedure> {
   inputs: ApiGetReferencePersonResponse;
@@ -20,6 +20,9 @@ interface AssociatedProceduresSearchResultProps<TProcedure> {
   onCancel: () => void;
   onBack?: () => void;
   procedureCard: (props: { procedure: TProcedure }) => ReactNode;
+  allowSaveWithExistingProcedures?: boolean;
+  submitLabel?: string;
+  onSubmit: (person: ApiGetReferencePersonResponse) => Promise<void>;
 }
 export function AssociatedProceduresSearchResult<TProcedure>(
   props: AssociatedProceduresSearchResultProps<TProcedure>,
@@ -32,27 +35,25 @@ export function AssociatedProceduresSearchResult<TProcedure>(
       <SidebarContent
         title="Vorhandene Vorgänge"
         header={
-          <>
-            <Stack gap={2}>
-              {isDefined(props.onBack) && (
-                <Button
-                  variant="plain"
-                  startDecorator={<ArrowBackIosOutlined />}
-                  sx={{ alignSelf: "start", paddingInline: 0 }}
-                  onClick={props.onBack}
-                >
-                  Zurück
-                </Button>
-              )}
-              <Stack>
-                Bereits vorhandene Vorgänge zur Person:
-                <Typography level={"title-md"}>
-                  {props.inputs.firstName} {props.inputs.lastName},{" "}
-                  {formatDate(new Date(props.inputs.dateOfBirth))}
-                </Typography>
-              </Stack>
+          <Stack gap={2}>
+            {isDefined(props.onBack) && (
+              <Button
+                variant="plain"
+                startDecorator={<ArrowBackIosOutlined />}
+                sx={{ alignSelf: "start", paddingInline: 0 }}
+                onClick={props.onBack}
+              >
+                Zurück
+              </Button>
+            )}
+            <Stack>
+              Bereits vorhandene Vorgänge zur Person:
+              <Typography level="title-md">
+                {props.inputs.firstName} {props.inputs.lastName},{" "}
+                {formatDate(new Date(props.inputs.dateOfBirth))}
+              </Typography>
             </Stack>
-          </>
+          </Stack>
         }
       >
         <Stack gap={2}>
@@ -64,13 +65,23 @@ export function AssociatedProceduresSearchResult<TProcedure>(
       <SidebarActions>
         <Stack direction="row" gap={2} sx={{ justifyContent: "end" }}>
           <Button
-            onClick={props.onCancel}
             color="neutral"
             variant="soft"
             sx={{ alignSelf: "end" }}
+            onClick={props.onCancel}
           >
             Abbrechen
           </Button>
+          {props.allowSaveWithExistingProcedures && (
+            <Button
+              color="primary"
+              variant="solid"
+              sx={{ alignSelf: "end" }}
+              onClick={() => props.onSubmit(props.inputs)}
+            >
+              {props.submitLabel}
+            </Button>
+          )}
         </Stack>
       </SidebarActions>
     </>

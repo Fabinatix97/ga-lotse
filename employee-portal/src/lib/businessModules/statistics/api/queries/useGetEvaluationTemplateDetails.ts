@@ -45,6 +45,11 @@ export function mapToEvaluationTemplateDetails(
       canBeAnonymized: result.templateSensitivityInfo.canBeAnonymized,
       dataSourceSensitivity: result.templateSensitivityInfo.sensitivity,
       sensitiveDataAllowed: result.templateSensitivityInfo.sensitiveDataAllowed,
+      tooManyQuasiIdentifyingAttributes:
+        result.dataSources[0]!.dataAttributes.flatMap((it) => [
+          it.dataPrivacyCategory,
+          ...it.baseDataAttributes.map((bIt) => bIt.dataPrivacyCategory),
+        ]).filter((it) => it === "QUASI_IDENTIFYING").length > 5,
     }),
   };
 }

@@ -31,7 +31,7 @@ export function ContactSearchFormResults<T extends { id: string }>({
   renderCard,
 }: ContactSearchFormResultsProps<T>) {
   return (
-    <Stack gap={2} data-testid={"contact-search-results"}>
+    <Stack gap={2} data-testid="contact-search-results">
       {totalNumberOfElements === 0 ? (
         <EmptyResults
           label={label}
@@ -41,24 +41,24 @@ export function ContactSearchFormResults<T extends { id: string }>({
       ) : (
         <>
           <Typography>
-            <Typography level={"title-md"}>{totalNumberOfElements}</Typography>{" "}
+            <Typography level="title-md">{totalNumberOfElements}</Typography>{" "}
             {totalNumberOfElements === 1
               ? "ähnlicher Eintrag "
               : "ähnliche Einträge "}
             bereits vorhanden für:
             <br />
-            <Typography level={"title-md"}>{searchTerm}</Typography>
+            <Typography level="title-md">{searchTerm}</Typography>
           </Typography>
           <Stack gap={2}>
             {elements.map((element) => (
               <InternalLinkButton
                 key={element.id}
                 href={routes.contacts.details(element.id)}
-                target={"_blank"}
-                variant={"outlined"}
-                size={"lg"}
-                color={"primary"}
-                startDecorator={<OpenInNewIcon size={"lg"} />}
+                target="_blank"
+                variant="outlined"
+                size="lg"
+                color="primary"
+                startDecorator={<OpenInNewIcon size="lg" />}
                 sx={(theme) => ({
                   "--Button-margin": 0,
                   "--Button-paddingBlock": theme.spacing(2),
@@ -90,12 +90,12 @@ function EmptyResults({
   return (
     <>
       <Typography>
-        <Typography level={"title-md"}>0</Typography> Treffer für:
+        <Typography level="title-md">0</Typography> Treffer für:
         <br />
-        <Typography level={"title-md"}>{searchTerm}</Typography>
+        <Typography level="title-md">{searchTerm}</Typography>
       </Typography>
       <NoSearchResults
-        info={"Keine Treffer"}
+        info="Keine Treffer"
         buttonLabel={`Neue ${label} anlegen`}
         onClick={onCreateNew}
       />

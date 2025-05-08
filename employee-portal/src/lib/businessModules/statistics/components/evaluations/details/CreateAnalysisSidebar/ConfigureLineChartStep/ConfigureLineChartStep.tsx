@@ -26,7 +26,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 
 import { ConfigureLineChartMetaOptions } from "./ConfigureLineChartMetaOptions";
 
-export interface ConfigureLineChartStepProps
+interface ConfigureLineChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
 }
@@ -82,7 +82,7 @@ export function ConfigureLineChartStep({
         chart={
           showGroupedConfigurations ? (
             <LineChart
-              key={"groupedLineChart"}
+              key="groupedLineChart"
               diagramData={lineChartGroupedSampleData}
               configuration={{
                 axisRange: values.axisRange,
@@ -91,7 +91,7 @@ export function ConfigureLineChartStep({
             />
           ) : (
             <LineChart
-              key={"simpleLineChart"}
+              key="simpleLineChart"
               diagramData={lineChartSimpleSampleData}
               configuration={{
                 axisRange: values.axisRange,

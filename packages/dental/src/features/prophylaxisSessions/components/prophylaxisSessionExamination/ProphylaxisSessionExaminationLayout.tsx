@@ -8,21 +8,18 @@ import { isDefined } from "remeda";
 
 import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 
-import { AdditionalInformationFormSection } from "@/components/examination/AdditionalInformationFormSection";
-import { ExaminationChildDetailsSection } from "@/components/examination/ExaminationChildDetailsSection";
-import { ExaminationFormLayout } from "@/components/examination/ExaminationFormLayout";
-import { ExaminationFormSection } from "@/components/examination/ExaminationFormSection";
-import { NoteFormSection } from "@/components/examination/NoteFormSection";
-import { ProphylaxisSessionExamination } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
-import { ProphylaxisSessionExaminationBottomBar } from "@/features/prophylaxisSessions/components/prophylaxisSessionExamination/ProphylaxisSessionExaminationBottomBar";
-import { ProphylaxisSessionExaminationForm } from "@/features/prophylaxisSessions/components/prophylaxisSessionExamination/ProphylaxisSessionExaminationForm";
-import { ProphylaxisSessionExaminationToolbar } from "@/features/prophylaxisSessions/components/prophylaxisSessionExamination/ProphylaxisSessionExaminationToolbar";
-import { useParticipantNavigation } from "@/features/prophylaxisSessions/hooks/useParticipantNavigation";
-import { useProphylaxisSessionExaminationForm } from "@/features/prophylaxisSessions/hooks/useProphylaxisSessionExaminationForm";
+import { ExaminationFormLayout } from "../../../../components/examination/ExaminationFormLayout";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
+import { useParticipantNavigation } from "../../hooks/useParticipantNavigation";
+import { useProphylaxisSessionExaminationForm } from "../../hooks/useProphylaxisSessionExaminationForm";
 import {
   useFilteredPresentParticipants,
   useProphylaxisSessionStore,
-} from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+} from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+
+import { ProphylaxisSessionExaminationBottomBar } from "./ProphylaxisSessionExaminationBottomBar";
+import { ProphylaxisSessionExaminationForm } from "./ProphylaxisSessionExaminationForm";
+import { ProphylaxisSessionExaminationToolbar } from "./ProphylaxisSessionExaminationToolbar";
 
 interface ProphylaxisSessionExaminationLayoutProps {
   participant: ProphylaxisSessionExamination;
@@ -42,6 +39,7 @@ export function ProphylaxisSessionExaminationLayout(
   const fluoridationVarnish = useProphylaxisSessionStore(
     (state) => state.fluoridationVarnish,
   );
+  const isFluoridation = isDefined(fluoridationVarnish);
   const setExamination = useProphylaxisSessionStore(
     (state) => state.setExamination,
   );
@@ -69,11 +67,14 @@ export function ProphylaxisSessionExaminationLayout(
         <ProphylaxisSessionExaminationToolbar
           prophylaxisSessionId={prophylaxisSessionId}
           participant={participant}
+          status={participant.status}
           onBackClicked={examinationNavigation.gotoOverview}
         />
       }
       bottomToolbar={
         <ProphylaxisSessionExaminationBottomBar
+          examination={participant}
+          examinationFormValues={examinationForm.values}
           onPreviousParticipantClicked={
             isPresent
               ? examinationNavigation.gotoPreviousParticipant
@@ -83,40 +84,22 @@ export function ProphylaxisSessionExaminationLayout(
             isPresent ? examinationNavigation.gotoNextParticipant : undefined
           }
           onOverviewClicked={examinationNavigation.gotoOverview}
-          examination={participant}
-          examinationFormValues={examinationForm.values}
         />
       }
     >
       <ProphylaxisSessionExaminationForm form={examinationForm}>
         <ExaminationFormLayout
-          childInformation={
-            <ExaminationChildDetailsSection
-              firstName={participant.firstName}
-              lastName={participant.lastName}
-              dateOfBirth={participant.dateOfBirth}
-              dateOfExamination={dateOfExamination}
-              groupName={participant.groupName}
-              allFluoridationConsents={participant.allFluoridationConsents}
-            />
+          isScreening={isScreening}
+          isFluoridation={isFluoridation}
+          isFluoridationConsentGiven={
+            participant.currentFluoridationConsent?.consented
           }
-          additionalInformation={
-            <AdditionalInformationFormSection
-              screening={isScreening}
-              fluoridation={isDefined(fluoridationVarnish)}
-              fluoridationConsentGiven={
-                participant.currentFluoridationConsent?.consented
-              }
-              status={participant.status}
-              participantDateOfBirth={participant.dateOfBirth}
-              dateOfExamination={dateOfExamination}
-              previousExaminations={participant.previousExaminations}
-            />
-          }
-          dentalExamination={
-            isScreening ? <ExaminationFormSection /> : undefined
-          }
-          note={<NoteFormSection />}
+          dateAndTime={dateOfExamination}
+          groupName={participant.groupName ?? ""}
+          institutionName={participant.institutionName}
+          childId={participant.childId}
+          child={participant}
+          previousExaminations={participant.previousExaminations}
         />
       </ProphylaxisSessionExaminationForm>
     </StickyToolbarLayout>

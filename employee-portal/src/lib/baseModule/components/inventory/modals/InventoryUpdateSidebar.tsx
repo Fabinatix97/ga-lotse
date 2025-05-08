@@ -50,8 +50,8 @@ function InventoryUpdateSidebar({
       formRef={formRef}
       initialValues={mapInventoryItemToUpdateInventoryValues(inventory)}
       labels={labels}
-      title={"Inventar ändern"}
-      submitLabel={"Speichern"}
+      title="Inventar ändern"
+      submitLabel="Speichern"
       onSubmit={async (values) => {
         await handleSubmit(values);
       }}

@@ -55,7 +55,10 @@ public abstract class DentalPopulator<R> extends BasePopulator<R> {
                     null))
             .elements();
     if (contacts.isEmpty()) {
-      contacts = baseTestHelperApi.populateSchoolContacts(new PopulationRequest(10)).elements();
+      contacts.addAll(
+          baseTestHelperApi.populateSchoolContacts(new PopulationRequest(5)).elements());
+      contacts.addAll(
+          baseTestHelperApi.populateDaycareContacts(new PopulationRequest(5)).elements());
     }
 
     return BasePopulator.randomElement(faker, contacts).id();

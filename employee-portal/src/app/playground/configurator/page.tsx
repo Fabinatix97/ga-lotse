@@ -213,12 +213,6 @@ export default function ConfiguratorPage() {
           checkbox_name: true,
           radio_name: "VALUE_2",
         }}
-        onSubmit={(model) => {
-          // eslint-disable-next-line no-console
-          console.log("Model: ", model);
-          snackbar.confirmation("Die Änderungen wurden gespeichert.");
-          return Promise.resolve();
-        }}
         deleteFile={(fileName) => {
           // eslint-disable-next-line no-console
           console.log("Delete: ", fileName);
@@ -228,6 +222,12 @@ export default function ConfiguratorPage() {
           console.log("Download: ", fileName);
         }}
         status="COMPLETE"
+        onSubmit={(model) => {
+          // eslint-disable-next-line no-console
+          console.log("Model: ", model);
+          snackbar.confirmation("Die Änderungen wurden gespeichert.");
+          return Promise.resolve();
+        }}
       />
     </MainContentLayout>
   );

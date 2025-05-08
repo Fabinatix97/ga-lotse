@@ -32,11 +32,11 @@ export function IconButton(
       color="primary"
       variant={variant}
       size="sm"
-      onClick={props.onClick}
       sx={{
         '&[aria-disabled="true"]': disabledStyles,
         ...(props.sx ?? {}),
       }}
+      onClick={props.onClick}
     >
       {props.children}
     </JoyIconButton>

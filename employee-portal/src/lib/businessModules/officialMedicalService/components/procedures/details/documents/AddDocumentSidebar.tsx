@@ -64,11 +64,11 @@ function AddDocumentSidebar(props: Readonly<AddDocumentSidebarProps>) {
   return (
     <AddDocumentForm
       title="Dokument anlegen"
-      onSubmit={handleSubmit}
-      onCancel={props.onClose}
       formRef={props.formRef}
       initialValues={INITIAL_VALUES}
       submitLabel="Anlegen"
+      onSubmit={handleSubmit}
+      onCancel={props.onClose}
     />
   );
 }

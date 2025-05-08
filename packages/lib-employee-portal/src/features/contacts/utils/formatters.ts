@@ -5,7 +5,7 @@
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 
-import { CONTACT_CATEGORY_NAMES_SHORT } from "@/features/contacts/translations";
+import { CONTACT_CATEGORY_NAMES_SHORT } from "../translations";
 
 export function formatInstitutionNameWithCategoryShort(
   contact: ApiAddContact200Response,

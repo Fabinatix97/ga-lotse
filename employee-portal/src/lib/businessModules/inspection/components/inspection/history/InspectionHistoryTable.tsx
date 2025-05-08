@@ -13,6 +13,7 @@ import {
   DataTable,
   TablePage,
   TableSheet,
+  useIsOffline,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 
@@ -20,7 +21,6 @@ import { useGetFacilityHistory } from "@/lib/businessModules/inspection/api/quer
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 
 import {

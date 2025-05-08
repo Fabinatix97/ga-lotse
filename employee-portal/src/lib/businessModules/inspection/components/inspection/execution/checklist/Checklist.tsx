@@ -12,7 +12,7 @@ import { ApiChecklist } from "@eshg/inspection-api";
 
 import { ChecklistSection } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistSection";
 
-export interface ChecklistProps {
+interface ChecklistProps {
   checklist?: ApiChecklist;
   inspectionExternalId: string;
   readOnly?: boolean;

@@ -5,10 +5,7 @@
 
 import { styled } from "@mui/joy";
 
-import {
-  StyledCellProps,
-  getRowCellStyles,
-} from "@/features/table/utils/cellStyles";
+import { StyledCellProps, getRowCellStyles } from "../../utils/cellStyles";
 
 export const DataCell = styled("td")<
   { canNavigate: boolean; isClickableElement: boolean } & StyledCellProps

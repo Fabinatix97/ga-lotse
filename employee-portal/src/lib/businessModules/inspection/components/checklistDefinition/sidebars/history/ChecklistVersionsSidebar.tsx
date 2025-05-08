@@ -69,7 +69,7 @@ function ChecklistVersionsSidebarWithQuery({
 
   return (
     <Sidebar open={open} onClose={handleClose}>
-      <SidebarContent title={"Historie"}>
+      <SidebarContent title="Historie">
         <Stack direction="column" gap={4}>
           <Typography level="h4" component="p" textColor="text.primary">
             {`Versionen der ${newestVersion.isCoreChecklist ? "Kernchecklisten-Definition" : "Checklisten-Definition"}: „${newestVersion?.context.name ?? ""}”`}
@@ -83,11 +83,11 @@ function ChecklistVersionsSidebarWithQuery({
               key={newestVersion.context.id}
               definition={checklistDefinition}
               version={newestVersion}
-              isCurrentVersion={true}
+              isCurrentVersion
               nameChange={nameChangeMap.get(newestVersion.context.id)}
+              label="currentVersion"
               onUploadCldClick={onUploadCldClick}
               onUpdateCldClick={onUpdateCldClick}
-              label={"currentVersion"}
             />
             {oldVersions.length > 0 && (
               <Typography fontSize="14px" lineHeight="21px" fontWeight="500">
@@ -102,9 +102,9 @@ function ChecklistVersionsSidebarWithQuery({
                   version={version}
                   isCurrentVersion={false}
                   nameChange={nameChangeMap.get(version.context.id)}
+                  label="oldVersion"
                   onUploadCldClick={onUploadCldClick}
                   onUpdateCldClick={onUpdateCldClick}
-                  label={"oldVersion"}
                 />
               );
             })}
@@ -150,20 +150,20 @@ function ChecklistHint({
         version.context.deleted &&
         (version.isCoreChecklist ? (
           <Alert
-            color={"primary"}
+            color="primary"
             message={`Inaktive Checklisten können nicht für Begehungen eingesetzt werden.${canEditCoreChecklists ? " Sie können die Checkliste jedoch wieder auf aktiv setzen." : ""}`}
             sx={{ width: "100%" }}
           />
         ) : (
           <Alert
-            color={"primary"}
+            color="primary"
             message={`Inaktive Checklisten können nicht für Begehungen eingesetzt werden.${canEditChecklists ? " Sie können die Checkliste jedoch wieder auf aktiv setzen." : ""}`}
             sx={{ width: "100%" }}
           />
         ))}
       {version.isCoreChecklist && !canEditCoreChecklists && (
         <Alert
-          color={"primary"}
+          color="primary"
           message={`${!version.context.expandable ? "Exklusive " : ""}Kern-Checklisten können nur vom Landesamt erstellt werden.`}
           sx={{ width: "100%" }}
         />

@@ -17,7 +17,7 @@ import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/c
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
-export interface AppointmentTileProps {
+interface AppointmentTileProps {
   readonly?: boolean;
   inspection: ApiInspection;
   appointment?: ApiInspectionAppointment;
@@ -51,7 +51,6 @@ export function AppointmentTile({
     <InfoTile
       name="appointment"
       title="Termin"
-      onEdit={handleEdit}
       footer={
         <>
           {showAddButton && (
@@ -61,15 +60,16 @@ export function AppointmentTile({
           )}
           <AppointmentSidebar
             open={open}
-            onClose={handleClose}
             procedureId={inspection.externalId}
             appointment={inspection.plannedAppointment}
             hoursToAddToEndTime={
               inspection.facility?.objectType?.standardDuration ?? 0
             }
+            onClose={handleClose}
           />
         </>
       }
+      onEdit={handleEdit}
     >
       {!date && (
         <Alert

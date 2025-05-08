@@ -28,7 +28,7 @@ import { useGetSelfActiveSessions } from "@/lib/baseModule/api/queries/users";
 
 function DeviceIndicator({ label, icon }: { label: string; icon: ReactNode }) {
   return (
-    <Stack gap={1} direction={"row"} alignItems={"center"}>
+    <Stack gap={1} direction="row" alignItems="center">
       {icon}
       <Typography>{label}</Typography>
     </Stack>
@@ -58,9 +58,9 @@ function useColumns() {
         compareFn.isMobile(rowA.original, rowB.original),
       cell: (props) =>
         props.getValue() ? (
-          <DeviceIndicator label={"Mobil"} icon={<PhoneAndroidIcon />} />
+          <DeviceIndicator label="Mobil" icon={<PhoneAndroidIcon />} />
         ) : (
-          <DeviceIndicator label={"PC"} icon={<LaptopIcon />} />
+          <DeviceIndicator label="PC" icon={<LaptopIcon />} />
         ),
       meta: {
         width: "10ch",
@@ -102,7 +102,7 @@ function useColumns() {
         compareFn.isCurrent(rowA.original, rowB.original),
       cell: (props) =>
         props.getValue() ? (
-          <Chip color={"success"}>aktuelle Sitzung</Chip>
+          <Chip color="success">aktuelle Sitzung</Chip>
         ) : undefined,
     }),
     columnHelper.display({
@@ -112,7 +112,7 @@ function useColumns() {
       cell: (props) =>
         !props.row.original.isCurrent && (
           <Button
-            variant={"plain"}
+            variant="plain"
             startDecorator={<LogoutIcon />}
             onClick={() => invalidateSession(props.row.original.sessionId)}
           >
@@ -147,15 +147,15 @@ export default function AccountSecurityPage() {
   }
 
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Aktive Sitzungen"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Aktive Sitzungen" />}>
       <MainContentLayout>
         <Button
-          onClick={invalidateOtherSessions}
           startDecorator={<LogoutIcon />}
           sx={{
             marginInlineStart: "auto",
             marginBlockEnd: 2,
           }}
+          onClick={invalidateOtherSessions}
         >
           Inaktive Sitzungen trennen
         </Button>

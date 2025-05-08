@@ -24,13 +24,13 @@ function Navlink(
       {...props}
       // Since we only use client-side requests, there is only a small performance advantage for the user when prefetching server components.
       // By deactivating this, we reduce the load on the Next.js backend and the reverse proxy.
+      ref={ref}
       prefetch={false}
       onClick={(e) => {
         e.preventDefault();
         // eslint-disable-next-line @typescript-eslint/no-base-to-string
         tryNavigate(props.href.toString());
       }}
-      ref={ref}
     />
   );
 }

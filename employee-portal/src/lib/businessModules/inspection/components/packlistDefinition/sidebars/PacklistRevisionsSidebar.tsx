@@ -64,19 +64,21 @@ function PacklistRevisionsSidebarWithQuery({
 
   return (
     <Sidebar open={open} onClose={handleClose}>
-      <SidebarContent title={"Versionen"}>
+      <SidebarContent title="Versionen">
         <Typography
           level="h4"
           component="p"
-          textColor={"text.secondary"}
+          textColor="text.secondary"
           sx={{ mb: 2 }}
         >
           <Stack direction="row" spacing={0.5}>
-            {"Packliste"}: {newestRevision?.name ?? ""}
+            Packliste: {newestRevision?.name ?? ""}
           </Stack>
         </Typography>
         <Box display="flex" justifyContent="flex-end" sx={{ mb: 2 }}>
           <ButtonLink
+            variant="plain"
+            startDecorator={<AddIcon />}
             onClick={() =>
               onClickNewRevision(
                 newestRevision?.defId ?? "",
@@ -84,23 +86,21 @@ function PacklistRevisionsSidebarWithQuery({
                 newestRevision?.id ?? "",
               )
             }
-            variant="plain"
-            startDecorator={<AddIcon />}
           >
             Neue Version anlegen
           </ButtonLink>
         </Box>
-        <Stack direction={"column-reverse"}>
+        <Stack direction="column-reverse">
           {revisions.map((revision, index) => (
             <PacklistDefinitionRevisionTile
+              key={revision.id}
               revision={revision}
               previousName={
                 index === 0 ? undefined : revisions[index - 1]?.name
               }
-              key={revision.id}
-              onClickOnRevision={onClickOnRevision}
               version={version}
-              label={"versionTile"}
+              label="versionTile"
+              onClickOnRevision={onClickOnRevision}
             />
           ))}
         </Stack>

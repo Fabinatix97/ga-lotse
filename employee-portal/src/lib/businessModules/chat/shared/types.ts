@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormikErrors } from "formik";
 import {
   IPresenceOpts,
   MatrixEvent,
@@ -12,9 +11,6 @@ import {
   User,
 } from "matrix-js-sdk";
 import { isEmpty, isObjectType, isString } from "remeda";
-
-import { AlertProps } from "@eshg/lib-portal/components/Alert";
-import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
 
 import {
   CommunicationType,
@@ -60,20 +56,10 @@ export interface RoomEventDetails {
   isSent?: boolean;
 }
 
-export interface CreateRoomOptions {
-  name?: string;
-  invite: string[];
-}
-
 export type Presence = IPresenceOpts["presence"] | "deactivated";
 export type UsersPresence = Record<string, Presence>;
 
-export type ReadConfirmationsPerUser = Record<
-  string,
-  { eventId: string; timestamp: number }
->;
-export type ReadConfirmationsPerRoom = Record<string, ReadConfirmationsPerUser>;
-export interface ReceiptData {
+interface ReceiptData {
   ts: number;
 }
 export function isReceiptType(data: unknown): data is ReceiptData {
@@ -86,9 +72,7 @@ interface MessageType {
   formatted_body: string;
   "m.mentions": { user_ids: string[] };
 }
-export function isMessageType(
-  messageContent: unknown,
-): messageContent is MessageType {
+function isMessageType(messageContent: unknown): messageContent is MessageType {
   return isObjectType(messageContent) && "body" in messageContent;
 }
 
@@ -108,13 +92,6 @@ export interface ApiUser {
   avatar_url?: string | undefined;
 }
 
-export interface ChatBaseModal<T>
-  extends Pick<BaseModalProps, "open" | "onClose"> {
-  onSubmit: (data: T) => Promise<void>;
-  validateForm: (values: T) => FormikErrors<T>;
-  alertProps?: AlertProps;
-}
-
 export interface ChatUserSettings {
   accountDeactivated?: boolean;
   chatConsentAsked?: boolean;
@@ -128,15 +105,6 @@ export interface ChatUserSettings {
 export interface UserDevice {
   userId: string;
   deviceId: string;
-}
-
-export interface RoomLastMessage {
-  sender: User | null;
-  content: string;
-  timestamp: Date | null;
-  id: string;
-  roomId: string;
-  mentions: string[];
 }
 
 export interface ChatRoomMember {

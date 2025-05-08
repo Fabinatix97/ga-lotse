@@ -2,7 +2,10 @@
   "common": {
     "title": "Termin buchen",
     "requiredTitle": "*Plichtfeld",
-    "logout": "Mein Bereich verlassen"
+    "logout": "Mein Bereich verlassen",
+    "errors": {
+      "concurrentAppointment_errorMessage": "Der ausgewählte Termin wurde in der Zwischenzeit schon anderweitig reserviert. Bitte wählen Sie einen anderen freien Termin."
+    }
   },
   "content": {
     "title": "Verfügbare Termine",
@@ -35,7 +38,10 @@
   },
   "sidePanel": {
     "title": "Übersicht",
-    "dateAndTime": "{{ appointmentStart }} Uhr",
+    "date_label": "Tag, Datum",
+    "time_label": "Uhrzeit",
+    "time_value": "{{ appointmentStart }} Uhr",
+    "concernAndDuration_label": "Anliegen, voraussichtliche Termindauer",
     "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)",
     "bookAppointment_bookable": "Termin buchen",
     "bookAppointment_cancelled": "Termin neu buchen",

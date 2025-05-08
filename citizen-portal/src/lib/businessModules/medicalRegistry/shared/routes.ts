@@ -9,7 +9,7 @@ import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { SupportedLanguage } from "@/lib/i18n/options";
 import { useGivenLang } from "@/lib/i18n/useLang";
 
-export function citizenRoutes(locale: SupportedLanguage | undefined) {
+function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
     `${baseRoutes(locale).citizenPath.index}/berufskartei`,
     (medicalRegistryPath) => ({

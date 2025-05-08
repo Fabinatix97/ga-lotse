@@ -20,15 +20,15 @@ import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGro
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
-import { NoSearchResults } from "@/components/NoSearchResults";
-import { SelectableCard } from "@/components/cards/SelectableCard";
-import { MultiFormButtonBar } from "@/components/form/MultiFormButtonBar";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
-import { SIDEBAR_PADDING } from "@/features/drawer/config/sidebar";
-import { SidebarFormHandle } from "@/features/drawer/types/sidebar";
-import { PersonCardContent } from "@/features/persons/components/PersonCardContent";
+import { NoSearchResults } from "../../../../components/NoSearchResults";
+import { SelectableCard } from "../../../../components/cards/SelectableCard";
+import { MultiFormButtonBar } from "../../../../components/form/MultiFormButtonBar";
+import { SidebarActions } from "../../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../../drawer/components/SidebarContent";
+import { SidebarForm } from "../../../drawer/components/SidebarForm";
+import { SIDEBAR_PADDING } from "../../../drawer/config/sidebar";
+import { SidebarFormHandle } from "../../../drawer/types/sidebar";
+import { PersonCardContent } from "../PersonCardContent";
 
 import { SearchPersonFormValues } from "./SearchPersonSidebar";
 
@@ -63,8 +63,8 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
     <Formik
       key="search"
       initialValues={{ selected: "" }}
-      onSubmit={handleSelect}
       enableReinitialize
+      onSubmit={handleSelect}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.sidebarFormRef}>
@@ -72,84 +72,82 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
             title={props.title}
             subtitle={props.externalPerson ? undefined : "Person auswählen"}
             header={
-              <>
-                <Stack gap={2} marginRight={SIDEBAR_PADDING}>
-                  {isDefined(props.onBack) && (
-                    <Button
-                      variant="plain"
-                      startDecorator={<ArrowBackIosOutlined />}
-                      sx={{ alignSelf: "start", paddingInline: 0 }}
-                      onClick={props.onBack}
-                    >
-                      Eingabe ändern
-                    </Button>
-                  )}
-                  {props.externalPerson ? (
-                    <Stack gap={2}>
-                      {props.persons.length == 1 ? (
-                        <Typography>
-                          Für die gemeldete Person{" "}
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            {formatPersonName(props.inputs)}
-                          </Typography>{" "}
-                          ist bereits{" "}
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            {props.persons.length}
-                          </Typography>{" "}
-                          ähnlicher Eintrag vorhanden.
-                        </Typography>
-                      ) : (
-                        <Typography>
-                          Für die gemeldete Person{" "}
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            {formatPersonName(props.inputs)}
-                          </Typography>{" "}
-                          sind bereits{" "}
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            {props.persons.length}
-                          </Typography>{" "}
-                          ähnliche Einträge vorhanden.
-                        </Typography>
-                      )}
-                      <Sheet
-                        component="label"
-                        variant="outlined"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 2,
-                          borderRadius: "8px",
-                          backgroundColor: "#C7F7C799",
-                          borderColor: "#A1E8A1",
-                        }}
-                      >
-                        <PersonCardContent
-                          person={{
-                            firstName: props.inputs.firstName,
-                            lastName: props.inputs.lastName,
-                            dateOfBirth: new Date(props.inputs.dateOfBirth),
-                            dataOrigin: ApiDataOrigin.Manual,
-                            emailAddresses: [],
-                            gender: ApiGender.NotSpecified,
-                            id: "dummy-id",
-                            phoneNumbers: [],
-                            salutation: ApiSalutation.NotSpecified,
-                            version: 0,
-                            humanReadableId: "dummy-id",
-                          }}
-                        />
-                      </Sheet>
-                    </Stack>
-                  ) : (
-                    <Stack>
-                      <Typography level="title-md">
-                        {formatPersonName(props.inputs)},{" "}
-                        {formatDate(new Date(props.inputs.dateOfBirth))}
+              <Stack gap={2} marginRight={SIDEBAR_PADDING}>
+                {isDefined(props.onBack) && (
+                  <Button
+                    variant="plain"
+                    startDecorator={<ArrowBackIosOutlined />}
+                    sx={{ alignSelf: "start", paddingInline: 0 }}
+                    onClick={props.onBack}
+                  >
+                    Eingabe ändern
+                  </Button>
+                )}
+                {props.externalPerson ? (
+                  <Stack gap={2}>
+                    {props.persons.length == 1 ? (
+                      <Typography>
+                        Für die gemeldete Person{" "}
+                        <Typography sx={{ fontWeight: "bold" }}>
+                          {formatPersonName(props.inputs)}
+                        </Typography>{" "}
+                        ist bereits{" "}
+                        <Typography sx={{ fontWeight: "bold" }}>
+                          {props.persons.length}
+                        </Typography>{" "}
+                        ähnlicher Eintrag vorhanden.
                       </Typography>
-                    </Stack>
-                  )}
-                </Stack>
-              </>
+                    ) : (
+                      <Typography>
+                        Für die gemeldete Person{" "}
+                        <Typography sx={{ fontWeight: "bold" }}>
+                          {formatPersonName(props.inputs)}
+                        </Typography>{" "}
+                        sind bereits{" "}
+                        <Typography sx={{ fontWeight: "bold" }}>
+                          {props.persons.length}
+                        </Typography>{" "}
+                        ähnliche Einträge vorhanden.
+                      </Typography>
+                    )}
+                    <Sheet
+                      component="label"
+                      variant="outlined"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                        borderRadius: "8px",
+                        backgroundColor: "#C7F7C799",
+                        borderColor: "#A1E8A1",
+                      }}
+                    >
+                      <PersonCardContent
+                        person={{
+                          firstName: props.inputs.firstName,
+                          lastName: props.inputs.lastName,
+                          dateOfBirth: new Date(props.inputs.dateOfBirth),
+                          dataOrigin: ApiDataOrigin.Manual,
+                          emailAddresses: [],
+                          gender: ApiGender.NotSpecified,
+                          id: "dummy-id",
+                          phoneNumbers: [],
+                          salutation: ApiSalutation.NotSpecified,
+                          version: 0,
+                          humanReadableId: "dummy-id",
+                        }}
+                      />
+                    </Sheet>
+                  </Stack>
+                ) : (
+                  <Stack>
+                    <Typography level="title-md">
+                      {formatPersonName(props.inputs)},{" "}
+                      {formatDate(new Date(props.inputs.dateOfBirth))}
+                    </Typography>
+                  </Stack>
+                )}
+              </Stack>
             }
           >
             {props.persons.length === 0 ? (

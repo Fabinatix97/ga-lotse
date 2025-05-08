@@ -104,8 +104,8 @@ export function useResourcesFilterSettings(
         <Stack gap={2}>
           <SingleSelectFilter
             options={resourceTypeOptions}
-            placeholder={"Typ"}
-            searchParamName={"type"}
+            placeholder="Typ"
+            searchParamName="type"
             tableControl={props.tableControl}
             sx={{
               width: undefined,
@@ -116,8 +116,8 @@ export function useResourcesFilterSettings(
               label: label.name,
               value: label.name,
             }))}
-            placeholder={"Label"}
-            searchParamName={"label"}
+            placeholder="Label"
+            searchParamName="label"
             tableControl={props.tableControl}
             sx={{
               width: undefined,

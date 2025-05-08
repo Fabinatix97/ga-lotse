@@ -3,20 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  MainContentLayout,
-  StickyToolbarLayout,
-  Toolbar,
-} from "@eshg/lib-employee-portal";
+"use client";
 
-import { Acknowledgements } from "@/lib/baseModule/components/acknowledgements/Acknowledgements";
+import { useGetEmployeePortalMarkdown } from "@/lib/baseModule/api/queries/department";
+import { MarkdownPage } from "@/lib/baseModule/components/markdown/MarkdownPage";
 
 export default function AcknowledgementsPage() {
-  return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Danksagung"} />}>
-      <MainContentLayout>
-        <Acknowledgements />
-      </MainContentLayout>
-    </StickyToolbarLayout>
-  );
+  const source = useGetEmployeePortalMarkdown("ACKNOWLEDGEMENTS");
+  return <MarkdownPage title="Danksagung" source={source.data} />;
 }

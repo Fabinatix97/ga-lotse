@@ -17,7 +17,7 @@ import {
   TITLE_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
@@ -51,7 +51,7 @@ export const BASE_PERSON_VALUES = {
   countryOfBirth: "",
 } as LegacyBasePerson;
 
-export interface LegacyBasePersonFormProps {
+interface LegacyBasePersonFormProps {
   hiddenFields?: (keyof LegacyPerson)[];
   optionalFields?: (keyof Exclude<LegacyBasePerson, LegacyMinimalPerson>)[];
   disabledFields?: (keyof LegacyPerson)[];
@@ -62,7 +62,7 @@ export function LegacyBasePersonForm({
   optionalFields,
   disabledFields,
 }: LegacyBasePersonFormProps) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   return (
     <Stack gap={2} rowGap={2}>
       {(!hiddenFields?.includes("salutation") ||

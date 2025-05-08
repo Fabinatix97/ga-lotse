@@ -46,10 +46,10 @@ export function SopessExaminationFields(props: SopessExaminationFieldsProps) {
         options={SOPESS_EXAMINATION_RESULT_OPTIONS}
         name={props.examinationResultName}
         label={props.examinationResultLabel}
-        onChange={handleChangeExaminationResult}
         renderValue={getAbbreviation}
         sx={FIXED_WIDTH_STYLE}
         softRequired
+        onChange={handleChangeExaminationResult}
       />
       <SoftRequiredSelectField
         options={RESPONSE_DOCTOR_LETTER_OPTIONS}

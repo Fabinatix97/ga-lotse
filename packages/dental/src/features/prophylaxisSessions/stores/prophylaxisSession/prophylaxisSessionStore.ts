@@ -5,8 +5,8 @@
 
 import { createStore } from "zustand";
 
-import { ExaminationResult } from "@/api/models/ExaminationResult";
-import { ProphylaxisSessionDetails } from "@/features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
+import { ExaminationResult } from "../../../../api/models/ExaminationResult";
+import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
 
 import { setExamination, setParticipantFilters } from "./actions";
 import { ParticipantFilters } from "./participantFilters";
@@ -19,7 +19,7 @@ export interface ProphylaxisSessionState extends ProphylaxisSessionDetails {
   changedExaminationsById: Set<string>;
 }
 
-export interface ProphylaxisSessionActions {
+interface ProphylaxisSessionActions {
   setParticipantFilters: (filtersChange: Partial<ParticipantFilters>) => void;
   setParticipantSorting: (sorting: ParticipantSorting) => void;
   setProphylaxisSession: (

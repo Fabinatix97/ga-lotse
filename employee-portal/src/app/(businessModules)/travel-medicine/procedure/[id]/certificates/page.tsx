@@ -12,5 +12,5 @@ export default async function VaccinationConsultationCertificatesPage(
 ) {
   const { id } = await props.params;
 
-  return <CertificatesTable procedureId={id}></CertificatesTable>;
+  return <CertificatesTable procedureId={id} />;
 }

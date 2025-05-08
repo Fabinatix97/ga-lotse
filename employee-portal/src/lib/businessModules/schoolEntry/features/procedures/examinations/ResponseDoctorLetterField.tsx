@@ -12,7 +12,7 @@ import { ApiExaminationResultValue } from "@eshg/school-entry-api";
 
 import { RESPONSE_DOCTOR_LETTER_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 
-export interface ResponseDoctorLetterFieldProps
+interface ResponseDoctorLetterFieldProps
   extends Omit<SoftRequiredSelectFieldProps<false>, "options" | "disabled"> {
   examinationResultValue: OptionalFieldValue<ApiExaminationResultValue>;
 }

@@ -5,8 +5,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { streetApiQueryKey } from "@/config/apiQueryKeys";
-import { useApi } from "@/contexts/api";
+import { streetApiQueryKey } from "../../config/apiQueryKeys";
+import { useApi } from "../../contexts/api";
 
 export function useAutocompleteStreetQuery(
   { street }: { street: string },

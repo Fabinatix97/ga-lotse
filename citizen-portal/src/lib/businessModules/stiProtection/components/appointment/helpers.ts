@@ -37,10 +37,7 @@ export function mapToBookAppointment({
   };
 }
 
-export type InvalidYearRangeMessage = (
-  minYear: number,
-  maxYear: number,
-) => string;
+type InvalidYearRangeMessage = (minYear: number, maxYear: number) => string;
 export function validateYearWithinRange(
   minYear: number,
   maxYear: number,

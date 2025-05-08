@@ -13,7 +13,7 @@ import {
 } from "@/serviceWorker/sw/queue";
 import { getHeaders } from "@/serviceWorker/sw/util";
 
-export type UpdateCacheCallback = (
+type UpdateCacheCallback = (
   param: UpdateCacheCallbackParam,
 ) => UpdateCacheCallbackReturnValue;
 

@@ -11,5 +11,5 @@ import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/share
 export function PendingFacilitiesTableWrapper(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
-  return <PendingFacilitiesTable {...props}></PendingFacilitiesTable>;
+  return <PendingFacilitiesTable {...props} />;
 }

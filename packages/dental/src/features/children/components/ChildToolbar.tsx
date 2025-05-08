@@ -11,6 +11,7 @@ import {
   TimelineOutlined,
 } from "@mui/icons-material";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -21,9 +22,10 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 
-import { routes } from "@/config/routes";
-import { useDentalApi } from "@/contexts/dental";
-import { getChildDetailsQuery } from "@/features/children/api/queries/details";
+import { ExaminationStatusChip } from "../../../components/examination/ExaminationStatusChip";
+import { routes } from "../../../config/routes";
+import { useDentalApi } from "../../../contexts/dental";
+import { getChildDetailsQuery } from "../api/queries/details";
 
 interface ChildToolbarProps {
   childId: string;
@@ -37,6 +39,8 @@ export function ChildToolbar(props: ChildToolbarProps) {
     getChildDetailsQuery(childApi, childId),
   );
 
+  const latestExamination = child.examinations[0];
+
   return (
     <TabNavigationToolbar
       header={<PersonToolbarHeader person={child} />}
@@ -46,6 +50,11 @@ export function ChildToolbar(props: ChildToolbarProps) {
         ) : null
       }
       items={buildTabItems(childId)}
+      afterTabs={
+        isDefined(latestExamination) ? (
+          <ExaminationStatusChip status={latestExamination.status} />
+        ) : null
+      }
     />
   );
 }

@@ -77,8 +77,8 @@ export function InspectionReportEditor({
         editorData={editorData}
         palette={palette}
         editorApi={editorApi}
-        onAddItem={onAddItem}
         imagesBasePath={`${basePath}/checklists/file/`}
+        onAddItem={onAddItem}
       />
       <StickyBottomBox>
         <BottomToolbar>

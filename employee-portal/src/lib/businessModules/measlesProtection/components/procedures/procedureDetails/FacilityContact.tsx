@@ -16,11 +16,7 @@ import {
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
-export function FacilityContact({
-  person,
-}: {
-  person: ApiFacilityContactPerson;
-}) {
+function FacilityContact({ person }: { person: ApiFacilityContactPerson }) {
   return (
     <InfoTile
       title="Kontaktperson der Einrichtung"
@@ -60,8 +56,8 @@ export function FacilityContacts({
     <Grid container spacing={3}>
       {persons.map((person) => (
         <Grid
-          xs={6}
           key={person.firstName + person.lastName + person.emailAddress}
+          xs={6}
         >
           <FacilityContact person={person} />
         </Grid>

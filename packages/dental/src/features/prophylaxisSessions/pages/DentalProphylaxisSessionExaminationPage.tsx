@@ -11,9 +11,9 @@ import * as v from "valibot";
 import { UuidSchema } from "@eshg/lib-portal/schemas/pageParams";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { ProphylaxisSessionExaminationLayout } from "@/features/prophylaxisSessions/components/prophylaxisSessionExamination/ProphylaxisSessionExaminationLayout";
-import { useFilteredParticipants } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
-import { ExaminationStoreProvider } from "@/stores/examination/ExaminationStoreProvider";
+import { ExaminationStoreProvider } from "../../../stores/examination/ExaminationStoreProvider";
+import { ProphylaxisSessionExaminationLayout } from "../components/prophylaxisSessionExamination/ProphylaxisSessionExaminationLayout";
+import { useFilteredParticipants } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 const RouteParamsSchema = v.object({
   examinationId: UuidSchema,

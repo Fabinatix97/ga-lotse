@@ -46,7 +46,7 @@ export function ProcedureDetailsTab({
       <Grid xs={9}>
         <Stack spacing={SPACING}>
           {procedure.affectedPerson.dataOrigin === ApiDataOrigin.External && (
-            <Alert color={"warning"} startDecorator={<WarningAmberOutlined />}>
+            <Alert color="warning" startDecorator={<WarningAmberOutlined />}>
               Der Entwurf kommt aus einer externen Quelle. Sie müssen die
               Personendaten prüfen, bevor Sie den Vorgang anlegen können.
             </Alert>

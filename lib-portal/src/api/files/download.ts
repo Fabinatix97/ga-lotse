@@ -53,7 +53,7 @@ export function useFileDownload<TParams = void>(
   return { download, preview, isPending };
 }
 
-export async function parseBlobResponse(
+async function parseBlobResponse(
   apiResponse: ApiResponse<Blob>,
 ): Promise<File> {
   const rawResponse = apiResponse.raw;
@@ -85,7 +85,7 @@ export function downloadFileAndOpen(file: File): void {
   URL.revokeObjectURL(objectUrl);
 }
 
-export function downloadFileAndPreview(file: File): void {
+function downloadFileAndPreview(file: File): void {
   const objectUrl = URL.createObjectURL(file);
   window.open(objectUrl, "_blank");
   URL.revokeObjectURL(objectUrl);

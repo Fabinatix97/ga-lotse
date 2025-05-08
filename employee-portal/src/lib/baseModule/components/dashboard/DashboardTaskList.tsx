@@ -32,11 +32,11 @@ export function DashboardTaskList() {
       <Stack spacing={3}>
         <Stack
           direction="row"
-          justifyContent={"space-between"}
-          alignItems={"center"}
+          justifyContent="space-between"
+          alignItems="center"
         >
           <Typography level="h3">Aufgaben</Typography>
-          <Stack justifyContent={"flex-end"}>
+          <Stack justifyContent="flex-end">
             <InternalLinkButton
               variant="plain"
               href={routes.tasks.index}

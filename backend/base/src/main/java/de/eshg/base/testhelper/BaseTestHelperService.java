@@ -89,6 +89,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   private final InventoryPopulator inventoryPopulator;
   private final ContactPopulator contactPopulator;
   private final SchoolContactPopulator schoolContactPopulator;
+  private final DaycareContactPopulator daycareContactPopulator;
 
   private final Map<UsernamePassword, AccessToken> cachedAccessTokens = new ConcurrentHashMap<>();
 
@@ -111,7 +112,8 @@ public class BaseTestHelperService extends DefaultTestHelperService {
       SchoolContactPopulator schoolContactPopulator,
       List<TestHelperServiceResetAction> resetActions,
       EnvironmentConfig environmentConfig,
-      HealthDepartmentContactPopulator healthDepartmentContactPopulator) {
+      HealthDepartmentContactPopulator healthDepartmentContactPopulator,
+      DaycareContactPopulator daycareContactPopulator) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -132,6 +134,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     this.accessCodeGenerator = accessCodeGenerator;
     this.citizenKeycloakTestProvisioning = citizenKeycloakTestProvisioning;
     this.healthDepartmentContactPopulator = healthDepartmentContactPopulator;
+    this.daycareContactPopulator = daycareContactPopulator;
   }
 
   public void resetKeycloak() {
@@ -313,6 +316,12 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   public SearchContactsResponse populateSchoolContacts(int numberOfEntitiesToPopulate) {
     ListWithTotalNumber<ContactDto> result =
         schoolContactPopulator.populate(numberOfEntitiesToPopulate);
+    return new SearchContactsResponse(result.entities(), result.totalNumberOfElements());
+  }
+
+  public SearchContactsResponse populateDaycareContacts(int numberOfEntitiesToPopulate) {
+    ListWithTotalNumber<ContactDto> result =
+        daycareContactPopulator.populate(numberOfEntitiesToPopulate);
     return new SearchContactsResponse(result.entities(), result.totalNumberOfElements());
   }
 

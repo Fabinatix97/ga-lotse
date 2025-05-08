@@ -70,9 +70,9 @@ export function IncidentsPanel({
         {sidebarState.open && (
           <IncidentSidebar
             open
-            onClose={() => setSidebarState({ open: false })}
             procedureId={procedureId}
             incident={sidebarState.incident}
+            onClose={() => setSidebarState({ open: false })}
           />
         )}
       </Stack>

@@ -6,12 +6,11 @@
 import { Button, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
-import { FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar, useIsOffline } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 
 import { PasswordField } from "@/lib/shared/components/formFields/PasswordField";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 import { OfflinePasswordDialog } from "./OfflinePasswordDialog";
 

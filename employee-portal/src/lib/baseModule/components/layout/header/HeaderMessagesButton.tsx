@@ -39,7 +39,7 @@ export function HeaderMessagesButton() {
 
   return (
     <HeaderIconButton
-      aria-label={`${unreadMessagesCount} Benachrichtigungen`}
+      aria-label={`${unreadMessagesCount} Chat-Benachrichtigungen`}
       onClick={handleClick}
     >
       <Badge

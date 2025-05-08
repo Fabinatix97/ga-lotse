@@ -110,14 +110,14 @@ public enum StiLaboratoryTestsAttributes implements StiAttributes {
 
   LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED(
       BooleanAttribute.create(
-          "Gonorrhöe Test angefordert",
+          "Gonorrhoe Test angefordert",
           "LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
           false)),
 
   LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE(
       BooleanAttribute.create(
-          "Positiver Gonorrhöe Test",
+          "Positiver Gonorrhoe Test",
           "LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
           false)),
@@ -208,55 +208,58 @@ public enum StiLaboratoryTestsAttributes implements StiAttributes {
     }
 
     return switch (attribute) {
-      case LABORATORY_TESTS_HIV_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(HivTest.class).isPresent();
+      case LABORATORY_TESTS_HIV_TEST_REQUESTED -> mapTestRequested(laboratoryTests, HivTest.class);
       case LABORATORY_TESTS_HIV_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, HivTest.class);
       case LABORATORY_TESTS_SYPHILIS_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(SyphilisTest.class).isPresent();
+          mapTestRequested(laboratoryTests, SyphilisTest.class);
       case LABORATORY_TESTS_SYPHILIS_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, SyphilisTest.class);
       case LABORATORY_TESTS_HEPATITIS_A_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(HepatitisATest.class).isPresent();
+          mapTestRequested(laboratoryTests, HepatitisATest.class);
       case LABORATORY_TESTS_HEPATITIS_A_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, HepatitisATest.class);
       case LABORATORY_TESTS_HEPATITIS_B_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(HepatitisBTest.class).isPresent();
+          mapTestRequested(laboratoryTests, HepatitisBTest.class);
       case LABORATORY_TESTS_HEPATITIS_B_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, HepatitisBTest.class);
       case LABORATORY_TESTS_HEPATITIS_C_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(HepatitisCTest.class).isPresent();
+          mapTestRequested(laboratoryTests, HepatitisCTest.class);
       case LABORATORY_TESTS_HEPATITIS_C_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, HepatitisCTest.class);
       case LABORATORY_TESTS_CHLAMYDIA_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(ChlamydiaTest.class).isPresent();
+          mapTestRequested(laboratoryTests, ChlamydiaTest.class);
       case LABORATORY_TESTS_CHLAMYDIA_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, ChlamydiaTest.class);
       case LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(GonorrheaTest.class).isPresent();
+          mapTestRequested(laboratoryTests, GonorrheaTest.class);
       case LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, GonorrheaTest.class);
       case LABORATORY_TESTS_MYCOPLASMA_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(MycoplasmaTest.class).isPresent();
+          mapTestRequested(laboratoryTests, MycoplasmaTest.class);
       case LABORATORY_TESTS_MYCOPLASMA_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, MycoplasmaTest.class);
       case LABORATORY_TESTS_CANCER_SCREENING_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(CancerScreeningTest.class).isPresent();
+          mapTestRequested(laboratoryTests, CancerScreeningTest.class);
       case LABORATORY_TESTS_CANCER_SCREENING_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, CancerScreeningTest.class);
-      case LABORATORY_TESTS_HPV_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(HpvTest.class).isPresent();
+      case LABORATORY_TESTS_HPV_TEST_REQUESTED -> mapTestRequested(laboratoryTests, HpvTest.class);
       case LABORATORY_TESTS_HPV_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, HpvTest.class);
       case LABORATORY_TESTS_MPOX_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(MpoxTest.class).isPresent();
+          mapTestRequested(laboratoryTests, MpoxTest.class);
       case LABORATORY_TESTS_MPOX_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, MpoxTest.class);
       case LABORATORY_TESTS_OTHER_TEST_REQUESTED ->
-          laboratoryTests.getLabTest(OtherTests.class).isPresent();
+          mapTestRequested(laboratoryTests, OtherTests.class);
       case LABORATORY_TESTS_OTHER_TEST_RESULT_POSITIVE ->
           mapTestResult(laboratoryTests, OtherTests.class);
     };
+  }
+
+  private static <T extends LabTestData> Boolean mapTestRequested(
+      LaboratoryTestExamination laboratoryTests, Class<T> clazz) {
+    return laboratoryTests.getLabTest(clazz).isPresent();
   }
 
   private static Boolean mapTestResult(

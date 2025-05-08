@@ -12,6 +12,13 @@ import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import {
+  getCloseable,
+  getErrorAction,
+  getErrorDescription,
+} from "@eshg/lib-portal/errorHandling/errorMappers";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 
 import { usePostCitizenVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/citizenPublicApi";
 import { initialValues } from "@/lib/businessModules/travelMedicine/components/appointment/appointmentFormValuesFactory";
@@ -70,10 +77,12 @@ export function AppointmentStepper() {
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const [showSidepanel, setShowSidepanel] = useState(true);
+  const alert = useAlert();
 
   async function handleSubmit(
     values: InitialAppointmentFormValues,
     helpers: FormikHelpers<InitialAppointmentFormValues>,
+    setStep: (index: number) => void,
   ) {
     const request = mapToApiPostCitizenVaccinationConsultationRequest(values);
     await postCitizenVaccinationConsultation.mutateAsync(request, {
@@ -82,6 +91,35 @@ export function AppointmentStepper() {
         // change when successPage is present
         router.push(citizenRoutes.overview);
       },
+      onError: (error) => {
+        if (
+          error instanceof Error &&
+          error.message.startsWith("The requested time slot does not")
+        ) {
+          alert.error({
+            message: t("common.errors.concurrentAppointment", {
+              context: "errorMessage",
+            }),
+            action: {
+              text: t("common.errors.concurrentAppointment", {
+                context: "action",
+              }),
+              onClick: () => setStep(STEPS.indexOf(AppointmentContent) + 1),
+            },
+          });
+        } else {
+          const { errorCode } = resolveError(error);
+          const { title, message } = getErrorDescription(errorCode);
+
+          alert.error({
+            title,
+            message,
+            action: getErrorAction(errorCode),
+            closeable: getCloseable(errorCode),
+          });
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
     });
   }
 
@@ -89,7 +127,7 @@ export function AppointmentStepper() {
     <DepartmentContextProvider>
       <AppointmentStepperContext value={{ showSidepanel, setShowSidepanel }}>
         <MultiStepForm<InitialAppointmentFormValues> steps={STEPS}>
-          {({ Outlet, currentStep, totalSteps }) => (
+          {({ Outlet, currentStep, totalSteps, setStep }) => (
             <>
               <MultiStepFormTitle
                 title={t("common.title")}
@@ -101,7 +139,10 @@ export function AppointmentStepper() {
               />
               <Formik
                 initialValues={initialValues}
-                onSubmit={(values, helpers) => handleSubmit(values, helpers)}
+                validate={alert.close}
+                onSubmit={(values, helpers) =>
+                  handleSubmit(values, helpers, setStep)
+                }
               >
                 {(formikProps) => (
                   <FormPlus>

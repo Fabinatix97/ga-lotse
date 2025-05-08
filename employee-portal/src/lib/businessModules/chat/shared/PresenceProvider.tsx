@@ -16,11 +16,11 @@ import {
   UsersPresence,
 } from "@/lib/businessModules/chat/shared/types";
 
-export interface PresenceContextType {
+interface PresenceContextType {
   usersPresence: UsersPresence;
 }
 
-export const PresenceContext = createContext<PresenceContextType | null>(null);
+const PresenceContext = createContext<PresenceContextType | null>(null);
 
 export function PresenceProvider({ children }: Readonly<RequiresChildren>) {
   const { matrixClient, isClientPrepared } = useChatClientContext();

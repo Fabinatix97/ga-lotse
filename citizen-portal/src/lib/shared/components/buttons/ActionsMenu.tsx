@@ -19,13 +19,13 @@ import { ReactNode } from "react";
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
-export interface ActionsItem {
+interface ActionsItem {
   label: string;
   onClick: string | (() => void) | (() => Promise<void>);
   startDecorator?: ReactNode;
   color?: ColorPaletteProp;
 }
-export interface ActionsMenuProps extends MenuButtonProps {
+interface ActionsMenuProps extends MenuButtonProps {
   actionItems: ActionsItem[];
   actionDescription?: string;
   sx?: SxProps;
@@ -65,7 +65,7 @@ function ActionLabel({
   );
 }
 
-export function createActionsLinkOrButton(item: ActionsItem) {
+function createActionsLinkOrButton(item: ActionsItem) {
   if (typeof item.onClick === "string") {
     return (
       <MenuItem key={item.label} sx={{ padding: 0 }}>

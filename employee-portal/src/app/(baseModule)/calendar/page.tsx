@@ -19,7 +19,7 @@ export default function CalendarPage() {
     useGetRelevantCalendarsForCurrentUser();
 
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Kalender"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Kalender" />}>
       <MainContentLayout fullViewportHeight>
         <UserCalendar calendarsResponse={relevantCalendarsResponse} />
       </MainContentLayout>

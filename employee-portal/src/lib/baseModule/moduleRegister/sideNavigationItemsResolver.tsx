@@ -29,9 +29,9 @@ import { sideNavigationItems as statisticsSideNavigationItems } from "@/lib/busi
 import { resolveSideNavigationItems as resolveStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
 import { resolveConfiguratorSideNavigationItems } from "@/lib/configurator/shared/sideNavigationItem";
-import { sideNavigationItems as archivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
+import { useArchivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
 
-export type ResolveSideNavigationItems = (
+type ResolveSideNavigationItems = (
   params: SideNavigationItemsProps,
 ) => SideNavigationItem[];
 
@@ -68,6 +68,7 @@ function useBusinessItems(): SideNavigationItem[] {
 function useBaseItems(): SideNavigationItem[] {
   const chatSideNavigations = useChatSideNavigationItems();
   const baseSideNavigations = useBaseSideNavigationItems();
+  const archivingSideNavigationItems = useArchivingSideNavigationItems();
   const configurationSideNavigations = resolveConfiguratorSideNavigationItems();
 
   const baseItems: SideNavigationItem[][] = [

@@ -7,8 +7,9 @@ import { Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { ReactNode } from "react";
 
-import { CheckboxField, FormButtonBar } from "@eshg/lib-employee-portal";
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 
 import { DateOrDateTimeField } from "@/lib/shared/components/formFields/DateOrDateTimeField";
 import {
@@ -78,8 +79,8 @@ export function EventForm({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={onSubmit}
       validate={validateEndAfterStart}
+      onSubmit={onSubmit}
     >
       <FormPlus sx={{ display: "contents" }}>{children}</FormPlus>
     </Formik>

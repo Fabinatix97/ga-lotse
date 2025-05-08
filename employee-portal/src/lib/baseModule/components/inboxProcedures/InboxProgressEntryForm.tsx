@@ -8,13 +8,10 @@
 import { Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import {
-  FileField,
-  FileFieldProps,
-  TextareaField,
-} from "@eshg/lib-employee-portal";
+import { FileField, FileFieldProps } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import {
   buildEnumOptions,
@@ -49,7 +46,7 @@ const INBOX_PROGRESS_ENTRY_TYPES: EnumMap<ApiInboxProgressEntryType> = {
   [ApiInboxProgressEntryType.PhoneCall]: "Telefonanruf",
 };
 
-export function acceptedFileTypes(
+function acceptedFileTypes(
   type: OptionalFieldValue<ApiInboxProgressEntryType>,
 ): FileType[] {
   switch (type) {

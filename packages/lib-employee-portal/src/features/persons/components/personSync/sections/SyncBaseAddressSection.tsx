@@ -15,14 +15,10 @@ import {
   TaggedPostboxAddress,
   isDomesticAddress,
   isPostboxAddress,
-} from "@/api/models/address";
-import { SyncFormField } from "@/features/persons/components/personSync/SyncFormField";
-import {
-  DiffArrow,
-  SyncFormBlock,
-  SyncFormSection,
-} from "@/features/persons/components/personSync/SyncFormGrid";
-import { formatList } from "@/utils/formatters";
+} from "../../../../../api/models/address";
+import { formatList } from "../../../../../utils/formatters";
+import { SyncFormField } from "../SyncFormField";
+import { DiffArrow, SyncFormBlock, SyncFormSection } from "../SyncFormGrid";
 
 const ADDRESS_FIELD_NAME = {
   type: "Art",

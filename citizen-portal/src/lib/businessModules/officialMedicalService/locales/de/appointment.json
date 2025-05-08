@@ -3,8 +3,9 @@
     "title": "Amtsärztlicher Dienst",
     "requiredTitle": "*Pflichtfeld",
     "stepTitle": "Schritt {{currentStepIndex}} von {{totalSteps}}",
-    "snackbar": {
-      "success": "Anfrage für Ihr Anliegen wurde erfolgreich gesendet"
+    "errors": {
+      "concurrentAppointment_errorMessage": "Der ausgewählte Termin wurde in der Zwischenzeit schon anderweitig reserviert. Bitte wählen Sie einen anderen freien Termin.",
+      "concurrentAppointment_action": "Termin ändern"
     }
   },
   "concern": {
@@ -109,11 +110,20 @@
     "goForward": "Weiter",
     "goBack": "Zurück",
     "cancel": "Abbrechen",
-    "values": {
-      "confirmOnlineServices": "Bestätigungsmail senden",
-      "dateAndTime": "{{ appointmentStart }} Uhr",
+    "fields": {
+      "confirmOnlineServices_label": "Onlinedienstleistungen",
+      "confirmOnlineServices_value": "Bestätigungsmail senden",
+      "concernAndDuration_label": "Anliegen, voraussichtliche Termindauer",
       "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)",
-      "contactAddress": "{{ street }} <br> {{ city }} </br>"
+      "department_label": "Gesundheitsamt",
+      "date_label": "Tag, Datum",
+      "time_label": "Uhrzeit",
+      "time_value": "{{ appointmentStart }} Uhr",
+      "fullName_label": "Name",
+      "dateOfBirth_label": "Geburtsdatum",
+      "emailAddress_label": "E-Mailadresse",
+      "contactAddress_label": "Adresse",
+      "contactAddress_value": "{{ street }} <br> {{ city }} </br>"
     }
   },
   "appointmentInformation": {
@@ -133,7 +143,6 @@
     "submit": "Anliegen senden",
     "goBack": "Zurück",
     "cancel": "Abbrechen",
-    "success": "Anfrage für Ihr Anliegen wurde erfolgreich gesendet",
     "fields": {
       "confirmPrivacyNotice": "Ich akzeptiere den Datenschutzhinweis.",
       "privacyNotice": "Zum Datenschutzhinweis",
@@ -142,5 +151,10 @@
       "privacyPolicy": "Zur Datenschutzerklärung",
       "confirmPrivacyPolicy_required": "Bitte Zustimmung erteilen um fortzufahren."
     }
+  },
+  "success": {
+    "title": "Anliegen erfolgreich gesendet",
+    "description": "Sie haben Ihr Anliegen erfolgreich übermittelt. Sie erhalten von uns eine Bestätigung per E-Mail mit den nächsten Schritten.",
+    "buttonLabel": "Zur Informations-Seite"
   }
 }

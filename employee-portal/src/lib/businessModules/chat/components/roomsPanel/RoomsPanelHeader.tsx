@@ -45,14 +45,14 @@ export function RoomsPanelHeader({
             />
           }
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
           endDecorator={
             !!searchQuery?.length && (
-              <CloseIcon onClick={handleClose} size="sm" />
+              <CloseIcon size="sm" onClick={handleClose} />
             )
           }
           placeholder="Suche nach Konversation..."
           disabled={roomSearchDisabled}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Dropdown>
           <MenuButton

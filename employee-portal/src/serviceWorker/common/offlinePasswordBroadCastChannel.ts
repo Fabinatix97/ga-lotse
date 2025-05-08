@@ -20,7 +20,7 @@ enum MessageType {
   PreemptivePassword = "preemptive-password",
 }
 
-export interface PasswordMessage {
+interface PasswordMessage {
   type: MessageType.Password;
   password: string;
 }
@@ -45,7 +45,7 @@ export function isPasswordMessage(
   );
 }
 
-export interface PreemptivePasswordMessage {
+interface PreemptivePasswordMessage {
   type: MessageType.PreemptivePassword;
   password: string;
 }

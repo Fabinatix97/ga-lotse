@@ -13,8 +13,9 @@ import {
   ApiEditorElementQA,
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
-import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 interface ContentElementQAEditorProps {
   element: ApiEditorElementQA;
@@ -59,7 +60,7 @@ export function ContentElementQAEditor({
             ))}
             <Divider />
             <FormButtonBar
-              submitLabel={"Speichern"}
+              submitLabel="Speichern"
               submitting={isSubmitting}
               submitDisabled={!dirty}
             />

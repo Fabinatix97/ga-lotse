@@ -71,19 +71,19 @@ export function TaskMetricsDisplay(props: {
       />
       <Stack role="list" direction="row" flexWrap="wrap" gap={2}>
         <FlashCard
-          color={"primary"}
+          color="primary"
           title="Geschlossene Vorgänge"
           figure={`${taskMetrics.closedProcedureCount}`}
           icon={<CheckOutlined fontSize="xl4" />}
         />
         <FlashCard
-          color={"danger"}
+          color="danger"
           title="Langsamster Vorgang"
           figure={`${formatOptionalDuration(taskMetrics.slowestProcedures[0]?.duration)}`}
           icon={<HourglassEmptyOutlined fontSize="xl4" />}
         />
         <FlashCard
-          color={"success"}
+          color="success"
           title="Schnellster Vorgang"
           figure={`${formatOptionalDuration(taskMetrics.fastestProcedures[0]?.duration)}`}
           icon={<RocketLaunchOutlined fontSize="xl4" />}

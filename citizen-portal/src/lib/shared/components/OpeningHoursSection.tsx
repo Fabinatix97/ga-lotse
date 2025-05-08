@@ -6,7 +6,7 @@
 import { AccessTimeOutlined } from "@mui/icons-material";
 import { Stack, Typography, styled } from "@mui/joy";
 import { Fragment } from "react";
-import { isDefined, map, partition, pipe, zip } from "remeda";
+import { isDefined, map, partition, pipe, splitAt, zip } from "remeda";
 
 import { ApiGetOpeningHoursResponse } from "@eshg/travel-medicine-api";
 
@@ -15,6 +15,7 @@ import {
   InfoSection,
   InfoSectionTitle,
 } from "@/lib/shared/components/infoSection";
+import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
 interface OpeningHoursSectionProps {
   openingHours?: ApiGetOpeningHoursResponse;
@@ -25,58 +26,15 @@ export function OpeningHoursSection({
   openingHours,
   localePath,
 }: Readonly<OpeningHoursSectionProps>) {
-  const { t, i18n } = useTranslation([`${localePath}`]);
+  const { t } = useTranslation([`${localePath}`]);
 
-  const hasOpeningHours = isDefined(openingHours);
-  let openingHoursInSelectedLanguage: string[] = [];
-  let additionalInformation;
-
-  if (hasOpeningHours) {
-    if (i18n.language === "de") {
-      openingHoursInSelectedLanguage = openingHours.de;
-    } else {
-      openingHoursInSelectedLanguage = openingHours.en;
-    }
-
-    const openingHoursLength = openingHoursInSelectedLanguage.length;
-    if (openingHoursLength % 2 !== 0) {
-      additionalInformation =
-        openingHoursInSelectedLanguage[openingHoursLength - 1];
-    }
-  }
-  const [periods, availabilities] = partition(
-    openingHoursInSelectedLanguage.length > 1
-      ? openingHoursInSelectedLanguage
-      : [],
-    (_, index) => index % 2 === 0,
-  );
-  const pairedAvailability = pipe(
-    periods,
-    zip(availabilities),
-    map(
-      ([period, availability]) => [period, availability.split("\n")] as const,
-    ),
-  );
   return (
     <InfoSection icon={<AccessTimeOutlined />}>
       <InfoSectionTitle>
         {t("contact.opening_hours_section.title")}
       </InfoSectionTitle>
-      {hasOpeningHours ? (
-        <>
-          <Stack component="dl" sx={{ margin: 0 }}>
-            {pairedAvailability.map(([period, availabilities]) => (
-              <OpeningTime
-                key={period}
-                period={period}
-                availabilities={availabilities}
-              />
-            ))}
-          </Stack>
-          {additionalInformation && (
-            <Typography>{additionalInformation}</Typography>
-          )}
-        </>
+      {isDefined(openingHours) ? (
+        <OpeningHourStack openingHours={openingHours} />
       ) : (
         <Typography>
           {t("contact.opening_hours_section.information")}
@@ -86,9 +44,56 @@ export function OpeningHoursSection({
   );
 }
 
+function OpeningHourStack({
+  openingHours,
+}: {
+  openingHours: ApiGetOpeningHoursResponse;
+}) {
+  const translatedOpeningHours = useManualTranslation({
+    de: openingHours.de,
+    en: openingHours.en,
+  });
+
+  // If the length is odd, the last element is additional information
+  const [lines, [additionalInformation]] =
+    translatedOpeningHours.length % 2 !== 0
+      ? splitAt(translatedOpeningHours, -1)
+      : [translatedOpeningHours, []];
+
+  const pairedAvailability = pipe(
+    lines,
+    // ["Mo", "9:00", "Di", "10:00"] => [["Mo", "Di"], ["9:00", "10:00"]]
+    partition((_, index) => index % 2 === 0),
+    // [["Mo", "Di"], ["9:00", "10:00"]] => [["Mo", "9:00"], ["Di", "10:00"]]
+    ([periods, availabilities]) => zip(periods, availabilities),
+    // split availabilities by "\n" to later insert line breaks
+    map(
+      ([period, availability]) => [period, availability.split("\n")] as const,
+    ),
+  );
+
+  return (
+    <>
+      <Stack component="dl" sx={{ margin: 0 }}>
+        {pairedAvailability.map(([period, availabilities]) => (
+          <OpeningTime
+            key={period}
+            period={period}
+            availabilities={availabilities}
+          />
+        ))}
+      </Stack>
+      {additionalInformation && (
+        <Typography>{additionalInformation}</Typography>
+      )}
+    </>
+  );
+}
+
 const OpeningTimePair = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "auto 1fr",
+  // auto because not all modules are formatted the same way
+  gridTemplateColumns: "auto auto",
   gap: theme.spacing(2),
   margin: 0,
 }));
@@ -106,9 +111,9 @@ function OpeningTime({
         {period}
       </Typography>
       <Typography component="dd" sx={{ margin: 0 }}>
-        {availabilities.map((t, index) => (
-          <Fragment key={t}>
-            {t}
+        {availabilities.map((text, index) => (
+          <Fragment key={text}>
+            {text}
             {index !== availabilities.length - 1 ? <br /> : null}
           </Fragment>
         ))}

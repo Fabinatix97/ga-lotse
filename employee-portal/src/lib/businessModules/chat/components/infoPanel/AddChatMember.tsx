@@ -27,7 +27,7 @@ import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomM
 import { UserToInvite } from "@/lib/businessModules/chat/shared/types";
 import { getChatUserDirectory } from "@/lib/businessModules/chat/shared/utils";
 
-export interface AddChatMemberProps {
+interface AddChatMemberProps {
   roomId: string;
   onClose: () => void;
   onCancel: () => void;
@@ -137,15 +137,15 @@ export function AddChatMember({
         </Typography>
         <Formik
           initialValues={{ users: [] }}
-          onSubmit={handleAddRoomMember}
           validate={validateForm}
+          onSubmit={handleAddRoomMember}
         >
           <FormPlus>
             <UsersAutocomplete
               name="users"
               placeholder="Benutzer:in suchen"
               usersList={userList}
-              multiple={true}
+              multiple
             />
             <Stack direction="row" spacing={2} marginTop={1}>
               <Button type="button" fullWidth variant="soft" onClick={onCancel}>

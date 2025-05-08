@@ -25,12 +25,7 @@ export interface AppointmentBlockGroup extends AppointmentBlockStiProtection {
   readonly appointmentBlocks: AppointmentBlockStiProtection[];
 }
 
-export type AppointmentDurationsStiProtection = Record<
-  ApiAppointmentType,
-  number
->;
-
-export function mapAppointmentBlock(
+function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
 ): AppointmentBlockStiProtection {
   return {

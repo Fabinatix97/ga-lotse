@@ -5,8 +5,8 @@
 
 import { useRouter } from "next/navigation";
 
-import { SyncableEntity } from "@/features/persons/types/SyncableEntity";
-import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
+import { useConfirmationDialog } from "../../../hooks/useConfirmationDialog";
+import { SyncableEntity } from "../types/SyncableEntity";
 
 export function useSyncBarrier(
   syncRoute: string,

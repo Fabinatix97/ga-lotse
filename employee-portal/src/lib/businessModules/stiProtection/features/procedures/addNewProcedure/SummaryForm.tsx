@@ -7,6 +7,7 @@ import { EditOutlined } from "@mui/icons-material";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ReactNode, useId } from "react";
+import { isString } from "remeda";
 
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
@@ -14,7 +15,10 @@ import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
+import {
+  concernToAppointmentType,
+  getPropertyIf,
+} from "@/lib/businessModules/stiProtection/shared/helpers";
 import { sufficientText } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";
 import { getAppointmentDate } from "@/lib/businessModules/stiProtection/shared/procedure/mappers";
 
@@ -37,7 +41,7 @@ export interface AppointmentFieldSetProps {
   editAppointmentType?: ApiAppointmentType;
 }
 
-export interface SummaryFormProps extends AppointmentFieldSetProps {
+interface SummaryFormProps extends AppointmentFieldSetProps {
   appointmentSummary?: {
     title: string;
   };
@@ -71,7 +75,9 @@ export function SummaryForm({
   const dateAndTime = formatAppointmentDate(values);
   const concern = mapOptionalValue(values.concern) ?? startingConcern;
   const appointmentType =
-    editAppointmentType ?? ifDefined(concern, concernToAppointmentType);
+    editAppointmentType ??
+    getPropertyIf(values, "appointmentType", isString) ??
+    ifDefined(concern, concernToAppointmentType);
 
   return (
     <Stack gap={2}>
@@ -85,7 +91,10 @@ export function SummaryForm({
       />
       <LabelValuePair
         label="Terminart"
-        value={ifDefined(appointmentType, (t) => APPOINTMENT_TYPES[t])}
+        value={ifDefined(
+          appointmentType,
+          (t) => APPOINTMENT_TYPES[t as ApiAppointmentType],
+        )}
       />
       <LabelValuePair label="Datum und Zeit" value={dateAndTime} />
 

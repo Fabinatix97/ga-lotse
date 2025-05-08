@@ -12,7 +12,10 @@ import {
   type ApiInspPendingFacility,
   ApiProcedureStatus,
 } from "@eshg/inspection-api";
-import { PROCEDURE_STATUS_COLORS } from "@eshg/lib-employee-portal";
+import {
+  PROCEDURE_STATUS_COLORS,
+  useIsOffline,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { translateProcedureStatus } from "@/lib/baseModule/api/procedures/enums";
@@ -25,7 +28,6 @@ import {
 import { useInspectionPrecacheState } from "@/lib/businessModules/inspection/shared/offline/useInspectionPrecacheState";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 const columnHelper: ColumnHelper<ApiInspPendingFacility> =
   createColumnHelper<ApiInspPendingFacility>();
@@ -57,7 +59,7 @@ export function createInspectionHistoryColumns(
               </IconButton>
             }
             offline={
-              <IconButton aria-label="In neuem Tab öffnen" disabled={true}>
+              <IconButton aria-label="In neuem Tab öffnen" disabled>
                 <OpenInNewOutlined fontSize="xl" />
               </IconButton>
             }
@@ -217,7 +219,7 @@ export function getPendingFacilityRowRoute(row: Row<ApiInspPendingFacility>) {
     : routes.procedures.new(row.original.inspection!.id);
 }
 
-export function formatAddress({
+function formatAddress({
   street,
   houseNo,
   postalCode,
@@ -252,7 +254,7 @@ function GrayWhenOffline({
   );
 }
 
-export function OfflineFork({
+function OfflineFork({
   offline,
   online,
   procedureId,

@@ -107,7 +107,7 @@ function ProofSidebarForm() {
   return (
     <Sidebar open={open} onClose={() => setOpen(false)}>
       <SidebarForm onSubmit={handleRawSubmit}>
-        <SidebarContent title={"Nachweisvorlage hinzufügen"}>
+        <SidebarContent title="Nachweisvorlage hinzufügen">
           <Stack gap={3}>
             <WrappedSelectField
               name="submissionResult"
@@ -125,11 +125,11 @@ function ProofSidebarForm() {
             ) : null}
             <DateAndButtonRow
               buttonLabel="Heute"
-              onButtonClick={() => setFieldValue("submissionDate", today)}
               name="submissionDate"
               label="Vorlagedatum"
               required="Bitte ein Vorlagedatum angeben."
-            ></DateAndButtonRow>
+              onButtonClick={() => setFieldValue("submissionDate", today)}
+            />
             <FileField
               name="document"
               label="Dokument zur Nachweisvorlage"

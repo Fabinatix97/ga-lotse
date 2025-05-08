@@ -129,7 +129,7 @@ function EsuPersonSearchForm(
       <SelectField
         name="type"
         label="Art"
-        required={"Bitte Vorgangsart auswählen."}
+        required="Bitte Vorgangsart auswählen."
         options={PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT}
       />
       <DefaultSearchPersonFormFields />

@@ -7,13 +7,13 @@ import { isDefined } from "remeda";
 
 import { ApiTooth } from "@eshg/dental-api";
 
+import { ALL_TEETH, OPTIONAL_TEETH, RELATED_TEETH } from "../../config/teeth";
+
 import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
-} from "@/api/models/ExaminationResult";
-import { ALL_TEETH, OPTIONAL_TEETH, RELATED_TEETH } from "@/config/teeth";
-
+} from "./ExaminationResult";
 import { ToothDiagnosis } from "./ToothDiagnosis";
 
 export type ExaminationStatus = "OPEN" | "CLOSED" | "NOT_PRESENT";

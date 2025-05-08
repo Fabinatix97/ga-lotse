@@ -36,7 +36,7 @@ export const API_INSPECTION_INSPECTIONS_INCIDENT = new RegExp(
   "i",
 );
 
-export function getApiInspectionIncidentsPath(inspectionId: string) {
+function getApiInspectionIncidentsPath(inspectionId: string) {
   return `/api/inspection/inspections/${inspectionId}/incidents`;
 }
 

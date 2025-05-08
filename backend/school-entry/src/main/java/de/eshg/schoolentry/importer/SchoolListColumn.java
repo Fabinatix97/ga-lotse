@@ -18,8 +18,10 @@ public enum SchoolListColumn implements XlsxColumn {
   CITY("Ort"),
   ADDRESS_ADDITION("Adresszusatz"),
   PHONE_NUMBER("Telefonnummer"),
+  EMAIL("E-Mail-Adresse", Necessity.OPTIONAL),
   ENTRY_LEVEL("Eingangsstufe (Ja = X)"),
   EARLY_EXAMINATION("Frühe Untersuchung (Ja = X)"),
+  NOTE("Bemerkung", Necessity.OPTIONAL),
   STATUS(STATUS_COLUMN_HEADER, Necessity.ADD_IF_MISSING, STATUS_COLUMN_HEADER_WIDTH),
   PROCEDURE_ID(PROCEDURE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH),
   REFERENCE_ID(REFERENCE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH);
@@ -32,6 +34,10 @@ public enum SchoolListColumn implements XlsxColumn {
     this.header = header;
     this.necessity = necessity;
     this.columnWidth = columnWidth;
+  }
+
+  SchoolListColumn(String header, Necessity necessity) {
+    this(header, necessity, 0);
   }
 
   SchoolListColumn(String header) {

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useMutation } from "@tanstack/react-query";
+
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiPostCitizenVaccinationConsultationRequest } from "@eshg/travel-medicine-api";
 
@@ -13,9 +14,9 @@ export function usePostCitizenVaccinationConsultation() {
   const citizenPublicApi = useCitizenPublicApi();
   const snackbar = useSnackbar();
 
-  return useHandledMutation({
-    mutationFn: (data: ApiPostCitizenVaccinationConsultationRequest) => {
-      return citizenPublicApi.postVaccinationConsultationForCitizen(data);
+  return useMutation({
+    mutationFn: (request: ApiPostCitizenVaccinationConsultationRequest) => {
+      return citizenPublicApi.postVaccinationConsultationForCitizen(request);
     },
     onSuccess: () => {
       // change when behaviour is defined

@@ -44,7 +44,7 @@ export function ChatHeader({
         avatarUrl={avatarUrl}
         size="lg"
         userId={dmRoomMemberUserId}
-        disablePresence={true}
+        disablePresence
       />
       <Stack sx={{ flex: 1, overflow: "hidden" }}>
         <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>

@@ -55,70 +55,68 @@ export function ResourcesTable({ params }: ResourcesTableProps) {
   });
 
   return (
-    <>
-      <TablePage
-        data-testid="resources-table"
-        fullHeight
-        filterSettings={
-          filterSettings.filterSheetVisible && (
-            <FilterSettingsSheet>
-              <FilterSettingsContent
-                {...filterSettings.filterSettingsContentProps}
-              />
-            </FilterSettingsSheet>
-          )
-        }
-        controls={
-          <Stack
-            direction={"row"}
-            gap={2}
-            flexWrap={"wrap-reverse"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} gap={"inherit"} flexWrap={"wrap"}>
-              <ToggleFilterButton {...filterSettings.filterButtonProps} />
-              <SearchFilter
-                tableControl={tableControl}
-                searchParamName={"name"}
-                label={"Suche"}
-              />
-            </Stack>
-            {hasWritePerms && (
-              <Button
-                onClick={() =>
-                  addResourceSidebar.open({
-                    labels: labels.elements,
-                  })
-                }
-                startDecorator={<AddIcon />}
-              >
-                Ressource hinzufügen
-              </Button>
-            )}
+    <TablePage
+      data-testid="resources-table"
+      fullHeight
+      filterSettings={
+        filterSettings.filterSheetVisible && (
+          <FilterSettingsSheet>
+            <FilterSettingsContent
+              {...filterSettings.filterSettingsContentProps}
+            />
+          </FilterSettingsSheet>
+        )
+      }
+      controls={
+        <Stack
+          direction="row"
+          gap={2}
+          flexWrap="wrap-reverse"
+          justifyContent="space-between"
+        >
+          <Stack direction="row" gap="inherit" flexWrap="wrap">
+            <ToggleFilterButton {...filterSettings.filterButtonProps} />
+            <SearchFilter
+              tableControl={tableControl}
+              searchParamName="name"
+              label="Suche"
+            />
           </Stack>
+          {hasWritePerms && (
+            <Button
+              startDecorator={<AddIcon />}
+              onClick={() =>
+                addResourceSidebar.open({
+                  labels: labels.elements,
+                })
+              }
+            >
+              Ressource hinzufügen
+            </Button>
+          )}
+        </Stack>
+      }
+    >
+      <TableSheet
+        loading={isFetching}
+        footer={
+          <Pagination
+            totalCount={resources.totalNumberOfElements}
+            {...tableControl.paginationProps}
+          />
         }
       >
-        <TableSheet
-          loading={isFetching}
-          footer={
-            <Pagination
-              totalCount={resources.totalNumberOfElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={resources.elements}
-            columns={resourceTableColumns}
-            sorting={tableControl.tableSorting}
-            rowNavigation={{
-              route: (row) => routes.resources.details(row.original.id),
-              focusColumnAccessorKey: "name",
-            }}
-            minWidth="60rem"
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+        <DataTable
+          data={resources.elements}
+          columns={resourceTableColumns}
+          sorting={tableControl.tableSorting}
+          rowNavigation={{
+            route: (row) => routes.resources.details(row.original.id),
+            focusColumnAccessorKey: "name",
+          }}
+          minWidth="60rem"
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

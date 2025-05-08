@@ -6,32 +6,27 @@
 import { List, ListItem } from "@mui/joy";
 import { FormikValues } from "formik";
 
-import { ConfiguratorModuleName } from "@/lib/configurator/api/models/configuratorModuleName";
-import { useUpdateOpeningHours } from "@/lib/configurator/api/mutations/useUpdateOpeningHours";
-import { useGetOpeningHours } from "@/lib/configurator/api/queries/useGetOpeningHours";
 import {
   ConfiguratorForm,
   FormSection,
 } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { OpeningHoursFieldValue } from "@/lib/configurator/components/shared/OpeningHoursField";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+import { useUpdateOpeningHours } from "@/lib/shared/api/mutations/configurator/useUpdateOpeningHours";
+import { useGetOpeningHours } from "@/lib/shared/api/queries/configurator/openingHours";
 
 enum FormNames {
   ENGLISH = "opening_hours_english",
   GERMAN = "opening_hours_german",
 }
 
-export type OpeningHoursModuleName = Exclude<
-  ConfiguratorModuleName,
-  "baseModule" | "medicalRegistry"
->;
-
 export interface OpeningHoursFormModel extends FormikValues {
   [FormNames.GERMAN]: OpeningHoursFieldValue;
   [FormNames.ENGLISH]: OpeningHoursFieldValue;
 }
 
-export function OpeningHours(props: { module: OpeningHoursModuleName }) {
+export function OpeningHours(props: { module: ConfiguratorModuleName }) {
   const initialValues = useGetOpeningHours(props.module);
   const onSubmit = useUpdateOpeningHours(props.module);
   const { currentTabStatus } = useTabStatus({
@@ -96,8 +91,8 @@ export function OpeningHours(props: { module: OpeningHoursModuleName }) {
         },
       ]}
       initialValues={initialValues}
-      onSubmit={onSubmit}
       status={currentTabStatus}
+      onSubmit={onSubmit}
     />
   );
 }

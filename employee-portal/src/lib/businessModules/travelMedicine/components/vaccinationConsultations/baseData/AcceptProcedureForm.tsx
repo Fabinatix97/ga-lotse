@@ -39,7 +39,7 @@ type CreateFormProps<TSearchValues, TCreateValues> =
       createFormComponent?: never;
     };
 
-export type PersonSidebarProps<
+type PersonSidebarProps<
   TSearchValues extends SearchPersonFormValues = SearchPersonFormValues,
   TCreateValues extends PersonFormValues = DefaultPersonFormValues,
 > = SearchFormProps<TSearchValues> &
@@ -105,9 +105,9 @@ export function AcceptProcedureForm<
         <PersonSearchResults
           title={props.title}
           sidebarFormRef={props.sidebarFormRef}
-          onCancel={props.onCancel}
           inputs={state.searchState}
           persons={state.searchResult}
+          onCancel={props.onCancel}
           onSelectPerson={(person) =>
             setState((previous) => ({
               ...previous,

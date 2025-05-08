@@ -53,7 +53,7 @@ export function useCreateStiProcedureMutation({
   return useHandledMutation(options);
 }
 
-export function useCloseProcedureMutation({
+function useCloseProcedureMutation({
   onSuccess,
   onError,
 }: MutationPassThrough<string, void> = {}) {
@@ -80,7 +80,7 @@ export function useCloseProcedure({
   });
 }
 
-export function useReopenProcedureMutation({
+function useReopenProcedureMutation({
   onSuccess,
   onError,
 }: MutationPassThrough<string, void> = {}) {
@@ -149,7 +149,7 @@ interface UpdatePersonDetailsParams {
   data: ApiUpdatePersonDetailsRequest;
 }
 
-export function useUpdatePersonDetailsMutation({
+function useUpdatePersonDetailsMutation({
   onSuccess,
   onError,
 }: MutationPassThrough<UpdatePersonDetailsParams, void> = {}) {

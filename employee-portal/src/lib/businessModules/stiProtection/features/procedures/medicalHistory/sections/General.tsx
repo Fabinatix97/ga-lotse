@@ -5,31 +5,31 @@
 
 import { useFormikContext } from "formik";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
+import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
 import { relationshipModelOptions } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export function General({ isForSexWork }: { isForSexWork: boolean }) {
-  const { validatePastOrTodayDate } = useValidators();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const { values } = useFormikContext<MedicalHistoryFormData>();
 
   return (
     <SectionGrid aria-label="Allgemein" columns="3fr 3fr">
       <TextareaField
         name="general.examinationReason"
-        label={"Grund für die heutige Beratung"}
+        label="Grund für die heutige Beratung"
       />
       <TextareaField
         name="general.currentSymptoms"
-        label={"Aktuelle Beschwerden"}
+        label="Aktuelle Beschwerden"
       />
       <DateField
         name="general.contactToClarifyDate"

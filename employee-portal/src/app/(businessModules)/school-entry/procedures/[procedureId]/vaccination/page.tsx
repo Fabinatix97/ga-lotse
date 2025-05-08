@@ -73,12 +73,12 @@ export default function SchoolEntryVaccinationStatusPage(
       <DisabledFormProvider disabled={procedure.isClosed}>
         <VaccinationForm
           initialValues={mapToFormValues(vaccinationStatus)}
-          onSubmit={handleSubmit}
           valuesToMutationBundle={(values) => ({
             mutationOptions: updateVaccinationStatusOptions,
             variableSupplier: () =>
               mapToRequest(procedureId, values, vaccinationStatus.version),
           })}
+          onSubmit={handleSubmit}
         />
       </DisabledFormProvider>
     </ContentPanel>

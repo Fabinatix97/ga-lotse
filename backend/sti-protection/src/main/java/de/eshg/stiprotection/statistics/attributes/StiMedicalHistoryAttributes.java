@@ -10,8 +10,14 @@ import de.eshg.lib.statistics.attributes.BooleanAttribute;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import de.eshg.stiprotection.persistence.db.medicalhistory.Examination;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
+import de.eshg.stiprotection.persistence.db.medicalhistory.Prevention;
+import de.eshg.stiprotection.persistence.db.medicalhistory.PreviousIllness;
+import de.eshg.stiprotection.persistence.db.medicalhistory.RiskContact;
 import de.eshg.stiprotection.persistence.db.medicalhistory.Vaccination;
+import java.util.Optional;
+import java.util.function.Function;
 
 public enum StiMedicalHistoryAttributes implements StiAttributes {
   MEDICAL_HISTORY_PREV_HEPA_EXAM(
@@ -160,35 +166,87 @@ public enum StiMedicalHistoryAttributes implements StiAttributes {
     }
 
     return switch (attribute) {
-      case MEDICAL_HISTORY_PREV_HEPA_EXAM -> medicalHistory.getExaminations().getHepA();
-      case MEDICAL_HISTORY_PREV_HEPB_EXAM -> medicalHistory.getExaminations().getHepB();
-      case MEDICAL_HISTORY_PREV_HEPC_EXAM -> medicalHistory.getExaminations().getHepC();
-      case MEDICAL_HISTORY_PREV_HIV_EXAM -> medicalHistory.getExaminations().getHiv();
-      case MEDICAL_HISTORY_PREV_SYPHILIS_EXAM -> medicalHistory.getExaminations().getSyphilis();
-      case MEDICAL_HISTORY_PREV_GONORRHEA_EXAM -> medicalHistory.getExaminations().getGonorrhea();
-      case MEDICAL_HISTORY_PREV_CHLAMYDIA_EXAM -> medicalHistory.getExaminations().getChlamydia();
-      case MEDICAL_HISTORY_PREV_HEPA_INFECTION -> medicalHistory.getPreviousIllnesses().getHepA();
-      case MEDICAL_HISTORY_PREV_HEPB_INFECTION -> medicalHistory.getPreviousIllnesses().getHepB();
-      case MEDICAL_HISTORY_PREV_HEPC_INFECTION -> medicalHistory.getPreviousIllnesses().getHepC();
-      case MEDICAL_HISTORY_PREV_HIV_INFECTION -> medicalHistory.getPreviousIllnesses().getHiv();
+      case MEDICAL_HISTORY_PREV_HEPA_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getHepA);
+      case MEDICAL_HISTORY_PREV_HEPB_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getHepB);
+      case MEDICAL_HISTORY_PREV_HEPC_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getHepC);
+      case MEDICAL_HISTORY_PREV_HIV_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getHiv);
+      case MEDICAL_HISTORY_PREV_SYPHILIS_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getSyphilis);
+      case MEDICAL_HISTORY_PREV_GONORRHEA_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getGonorrhea);
+      case MEDICAL_HISTORY_PREV_CHLAMYDIA_EXAM ->
+          getExaminationAttribute(medicalHistory, Examination::getChlamydia);
+
+      case MEDICAL_HISTORY_PREV_HEPA_INFECTION ->
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getHepA);
+      case MEDICAL_HISTORY_PREV_HEPB_INFECTION ->
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getHepB);
+      case MEDICAL_HISTORY_PREV_HEPC_INFECTION ->
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getHepC);
+      case MEDICAL_HISTORY_PREV_HIV_INFECTION ->
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getHiv);
       case MEDICAL_HISTORY_PREV_SYPHILIS_INFECTION ->
-          medicalHistory.getPreviousIllnesses().getSyphilis();
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getSyphilis);
       case MEDICAL_HISTORY_PREV_GONORRHEA_INFECTION ->
-          medicalHistory.getPreviousIllnesses().getGonorrhea();
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getGonorrhea);
       case MEDICAL_HISTORY_PREV_CHLAMYDIA_INFECTION ->
-          medicalHistory.getPreviousIllnesses().getChlamydia();
+          getPreviousIllnessesAttribute(medicalHistory, PreviousIllness::getChlamydia);
+
       case MEDICAL_HISTORY_SEXUAL_ORIENTATION_PATIENT ->
-          medicalHistory.getRiskContacts().getSexualOrientation();
+          getRiskContactAttribute(medicalHistory, RiskContact::getSexualOrientation);
       case MEDICAL_HISTORY_NUMBER_OF_SEXUAL_PARTNERS_LAST_12_MONTHS ->
-          medicalHistory.getRiskContacts().getNumberOfSexualPartnersLast12Months();
+          getRiskContactAttribute(
+              medicalHistory, RiskContact::getNumberOfSexualPartnersLast12Months);
+
       case MEDICAL_HISTORY_HEPA_VACCINATION ->
-          medicalHistory.getPrevention().getVaccinations().contains(Vaccination.HEPATITIS_A);
+          mapVaccination(medicalHistory, Vaccination.HEPATITIS_A);
       case MEDICAL_HISTORY_HEPB_VACCINATION ->
-          medicalHistory.getPrevention().getVaccinations().contains(Vaccination.HEPATITIS_B);
-      case MEDICAL_HISTORY_HPV_VACCINATION ->
-          medicalHistory.getPrevention().getVaccinations().contains(Vaccination.HPV);
+          mapVaccination(medicalHistory, Vaccination.HEPATITIS_B);
+      case MEDICAL_HISTORY_HPV_VACCINATION -> mapVaccination(medicalHistory, Vaccination.HPV);
       case MEDICAL_HISTORY_SAFER_SEX_PRACTICE ->
-          medicalHistory.getPrevention().getSafeSexPractice();
+          getPrevention(medicalHistory).map(Prevention::getSafeSexPractice).orElse(null);
     };
+  }
+
+  private static <T> T getExaminationAttribute(
+      MedicalHistory medicalHistory, Function<Examination, T> examinationGetter) {
+    Examination examination = medicalHistory.getExaminations();
+    if (examination == null) {
+      return null;
+    }
+    return examinationGetter.apply(examination);
+  }
+
+  private static <T> T getPreviousIllnessesAttribute(
+      MedicalHistory medicalHistory, Function<PreviousIllness, T> prevIllnessGetter) {
+    PreviousIllness previousIllnesses = medicalHistory.getPreviousIllnesses();
+    if (previousIllnesses == null) {
+      return null;
+    }
+    return prevIllnessGetter.apply(previousIllnesses);
+  }
+
+  private static <T> T getRiskContactAttribute(
+      MedicalHistory medicalHistory, Function<RiskContact, T> riskContactGetter) {
+    RiskContact riskContacts = medicalHistory.getRiskContacts();
+    if (riskContacts == null) {
+      return null;
+    }
+    return riskContactGetter.apply(riskContacts);
+  }
+
+  private static Optional<Prevention> getPrevention(MedicalHistory medicalHistory) {
+    return Optional.ofNullable(medicalHistory).map(MedicalHistory::getPrevention);
+  }
+
+  private static Boolean mapVaccination(MedicalHistory medicalHistory, Vaccination vaccination) {
+    return getPrevention(medicalHistory)
+        .map(Prevention::getVaccinations)
+        .map(vaccinations -> vaccinations.contains(vaccination))
+        .orElse(null);
   }
 }

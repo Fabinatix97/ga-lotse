@@ -8,7 +8,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ApiGetBlockingEventsOfResourcesResponse,
   ApiResourceType,
-  GetResourcesRequest,
 } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 
@@ -17,15 +16,6 @@ import {
   useResourceApi,
 } from "@/lib/baseModule/api/clients";
 import { resourceApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-
-export function useGetResources(req: GetResourcesRequest = {}) {
-  const resourceApi = useResourceApi();
-  return useSuspenseQuery({
-    queryKey: resourceApiQueryKey(["getResources", req]),
-    queryFn: () => resourceApi.getResourcesRaw(req).then(unwrapRawResponse),
-    select: (response) => response.elements,
-  });
-}
 
 /**
  * Find resources of the given time and return blocking event information for

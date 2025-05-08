@@ -114,7 +114,7 @@ export function ValidationTaskProceduresTable({
         <DataTable
           data={procedures}
           columns={columns}
-          minWidth={"60rem"}
+          minWidth="60rem"
           rowNavigation={{
             route: (row) =>
               resolveProcedureDetailsRoute({

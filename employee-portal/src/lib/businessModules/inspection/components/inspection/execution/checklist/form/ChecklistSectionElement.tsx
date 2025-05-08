@@ -157,7 +157,7 @@ export function ChecklistSectionElement({
   }
 
   return (
-    <Formik initialValues={element} onSubmit={handleSubmit} enableReinitialize>
+    <Formik initialValues={element} enableReinitialize onSubmit={handleSubmit}>
       <ElementWrapper
         inspectionExternalId={inspectionExternalId}
         label={label}
@@ -273,8 +273,8 @@ function ElementWrapper({
           element={clFormElement}
           label={label}
           name={getFieldName(clFormElement.type)}
-          onChange={submitForm}
           readOnly={readOnly}
+          onChange={submitForm}
         />
       ) : (
         <AutoSubmitForm

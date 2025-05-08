@@ -93,7 +93,7 @@ export function ResourceDetail(props: {
 
   return (
     <Stack gap={2}>
-      <Stack spacing={1} alignItems={"flex-end"}>
+      <Stack spacing={1} alignItems="flex-end">
         <Button
           variant="solid"
           startDecorator={<Add />}
@@ -106,11 +106,11 @@ export function ResourceDetail(props: {
       <Stack direction={{ xxs: "column-reverse", md: "row" }} gap={2}>
         <InformationSheet data-testid="resource-details" sx={{ flex: 2 }}>
           <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
           >
-            <Typography component={"h2"} level="h3">
+            <Typography component="h2" level="h3">
               Details
             </Typography>
             {hasWritePerms && (
@@ -120,33 +120,29 @@ export function ResourceDetail(props: {
             )}
           </Stack>
           <Stack gap={1}>
+            <DetailsCell name="name" label="Name" value={props.resource.name} />
             <DetailsCell
-              name={"name"}
-              label="Name"
-              value={props.resource.name}
-            />
-            <DetailsCell
-              name={"type"}
+              name="type"
               label="Typ"
               value={resourceTypeNames[props.resource.type]}
             />
             <DetailsCell
-              name={"articleNumber"}
-              label={"Artikelnummer"}
+              name="articleNumber"
+              label="Artikelnummer"
               value={props.resource.articleNumber}
             />
             {props.resource.labels.length > 0 && (
               <DetailsCell
-                name={"labels"}
-                label={"Labels"}
+                name="labels"
+                label="Labels"
                 value={
                   <LabelList labels={props.resource.labels} maxVisible={3} />
                 }
               />
             )}
             <DetailsCell
-              name={"description"}
-              label={"Beschreibung"}
+              name="description"
+              label="Beschreibung"
               value={props.resource.description}
             />
           </Stack>

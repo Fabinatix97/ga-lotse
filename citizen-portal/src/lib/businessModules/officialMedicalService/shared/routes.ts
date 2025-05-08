@@ -10,7 +10,7 @@ import { SupportedLanguage } from "@/lib/i18n/options";
 import { useGivenLang } from "@/lib/i18n/useLang";
 import { accessCodeRoute } from "@/lib/shared/helpers/accessCode";
 
-export function citizenRoutes(locale: SupportedLanguage | undefined) {
+function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
     `${baseRoutes(locale).citizenPath.index}/amtsaerztlicherdienst`,
     (officialMedicalServicePath) => ({
@@ -20,14 +20,13 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
         officialMedicalServicePath("/mein-bereich"),
         (appointmentPath) => ({
           index: accessCodeRoute(appointmentPath("/")),
+          anamnesis: accessCodeRoute(appointmentPath("/anamnese")),
           rebook: accessCodeRoute(appointmentPath("/buchen")),
         }),
       ),
     }),
   );
 }
-
-export type CitizenRoutes = ReturnType<typeof citizenRoutes>;
 
 export function useCitizenRoutes() {
   const locale = useGivenLang();

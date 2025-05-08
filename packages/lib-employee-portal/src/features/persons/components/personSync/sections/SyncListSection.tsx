@@ -3,12 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SyncFormField } from "@/features/persons/components/personSync/SyncFormField";
-import {
-  DiffArrow,
-  SyncFormBlock,
-  SyncFormSection,
-} from "@/features/persons/components/personSync/SyncFormGrid";
+import { SyncFormField } from "../SyncFormField";
+import { DiffArrow, SyncFormBlock, SyncFormSection } from "../SyncFormGrid";
 
 export function SyncListSection({
   before,
@@ -24,9 +20,9 @@ export function SyncListSection({
       <SyncFormBlock>
         {before?.map((item, index) => (
           <SyncFormField
+            key={`${item}-${index}`}
             label={label}
             value={item}
-            key={`${item}-${index}`}
             visible
           />
         ))}
@@ -35,9 +31,9 @@ export function SyncListSection({
       <SyncFormBlock>
         {after?.map((item, index) => (
           <SyncFormField
+            key={`${item}-${index}`}
             label={label}
             value={item}
-            key={`${item}-${index}`}
             visible
           />
         ))}

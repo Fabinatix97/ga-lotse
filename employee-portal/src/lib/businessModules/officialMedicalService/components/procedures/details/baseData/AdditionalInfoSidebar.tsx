@@ -91,9 +91,7 @@ function AdditionalInfoSidebar(props: Readonly<AdditionalInfoSidebarProps>) {
 
   return (
     <AdditionalInfoForm
-      title={"Zusatzinfos"}
-      onSubmit={handleSubmit}
-      onCancel={props.onClose}
+      title="Zusatzinfos"
       formRef={props.formRef}
       procedureStatus={props.procedure.status}
       allPhysicians={allPhysicians}
@@ -115,6 +113,8 @@ function AdditionalInfoSidebar(props: Readonly<AdditionalInfoSidebarProps>) {
           : "",
       }}
       submitLabel="Speichern"
+      onSubmit={handleSubmit}
+      onCancel={props.onClose}
     />
   );
 }

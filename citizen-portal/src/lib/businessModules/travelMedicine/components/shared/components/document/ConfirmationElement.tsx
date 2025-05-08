@@ -25,15 +25,15 @@ export function ConfirmationElement({
   return (
     <Checkbox
       name={checkBoxPath}
+      label={confirmation.confirmationTextField}
+      checked={input.value?.answer ?? false}
+      data-testid="document-element-type-confirmation"
       onChange={async (event) => {
         const confirmation = { ...input.value };
         confirmation.answer = !!event.target?.checked;
         await helpers.setValue(confirmation);
         input.onChange(event);
       }}
-      label={confirmation.confirmationTextField}
-      checked={input.value?.answer ?? false}
-      data-testid="document-element-type-confirmation"
     />
   );
 }

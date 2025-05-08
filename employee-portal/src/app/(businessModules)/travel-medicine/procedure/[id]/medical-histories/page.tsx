@@ -12,5 +12,5 @@ export default async function MedicalHistories(
 ) {
   const { id } = await props.params;
 
-  return <MedicalHistoriesContent procedureId={id}></MedicalHistoriesContent>;
+  return <MedicalHistoriesContent procedureId={id} />;
 }

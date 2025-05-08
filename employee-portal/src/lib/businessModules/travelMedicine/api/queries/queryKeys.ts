@@ -57,12 +57,6 @@ export const progressEntryApiQueryKey = queryKeyFactory(
 
 export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
 
-export const travelMedicineFeatureTogglesPublicApiQueryKey = queryKeyFactory(
-  apiQueryKey(["travelMedicineFeatureTogglesPublicApi"]),
-);
-
-export const editorApiQueryKey = queryKeyFactory(apiQueryKey(["editorApi"]));
-
 export const archivingApiQueryKey = queryKeyFactory(
   apiQueryKey(["archivingApi"]),
 );

@@ -25,17 +25,17 @@ import {
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 
-import { ProphylaxisSessionStatusChip } from "@/components/prophylaxisSession/ProphylaxisSessionStatusChip";
-import { routes } from "@/config/routes";
-import { ProphylaxisSession } from "@/features/prophylaxisSessions/api/models/ProphylaxisSession";
-import { useGetProphylaxisSessions } from "@/features/prophylaxisSessions/api/queries/overview";
-import { CreateProphylaxisSessionButton } from "@/features/prophylaxisSessions/components/prophylaxisSessionsOverview/tableButtons";
-import { formatFluoridationVarnishDescription } from "@/features/prophylaxisSessions/utils/formatters";
+import { ProphylaxisSessionStatusChip } from "../../../../components/prophylaxisSession/ProphylaxisSessionStatusChip";
+import { routes } from "../../../../config/routes";
+import { ProphylaxisSession } from "../../api/models/ProphylaxisSession";
+import { useGetProphylaxisSessions } from "../../api/queries/overview";
+import { formatFluoridationVarnishDescription } from "../../utils/formatters";
 
 import {
   ProphylaxisSessionFilterSettings,
   ProphylaxisSessionFilters,
 } from "./ProphylaxisSessionFilterSettings";
+import { CreateProphylaxisSessionButton } from "./tableButtons";
 
 const INITIAL_SORTING: ColumnSort = {
   id: "id",
@@ -93,7 +93,7 @@ export function ProphylaxisSessionsTable() {
           ]}
           right={<CreateProphylaxisSessionButton />}
           alignItems="flex-end"
-          invertDomOrder={true}
+          invertDomOrder
         />
       }
       filterSettings={

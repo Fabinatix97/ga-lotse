@@ -16,6 +16,12 @@
     "continue_button": "Weiter",
     "back_button": "Zurück"
   },
+  "gender": {
+    "diverse": "Divers",
+    "female": "Weiblich",
+    "male": "Männlich",
+    "not_specified": "Keine Angabe"
+  },
   "anamnesis": {
     "submit": "Anamnesebogen absenden",
     "submit_success": "Die Anamnese wurde erfolgreich gespeichert.",
@@ -27,10 +33,14 @@
     "cancel": "Beibehalten",
     "confirm": "Ja, absagen"
   },
+  "leave_without_pin": {
+    "title": "Termin absagen?",
+    "message": "Ohne die PIN und Anmeldecode können wir Ihre Anträge nicht korrekt bearbeiten, da sie zur Authentifizierung erforderlich sind.",
+    "cancel": "Beibehalten",
+    "confirm": "Ja, absagen"
+  },
   "time_slot": {
     "title": "Verfügbare Termine",
-    "consent_note_title": "Einverständnis",
-    "consent_note_message": "Derpy merpus pee derpler berps! Perp sherper herp terp herpy derpler. Sherper merp herpler herp pee. Derpler terpus, mer re berp der perp se?",
     "no_appointments_available": "Derzeit sind keine Termine verfügbar",
     "try_later": "Wir schalten in Kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
   },
@@ -50,13 +60,13 @@
   "pin": {
     "title": "PIN festlegen",
     "submit": "Termin buchen",
-    "notice": "Um Termine zu verschieben und Ihre Identität im Amt zu verifizieren, müssen Sie eine persönliche, numerische 6-stellige PIN festlegen. Die PIN kann nach dem Bestätigen nicht mehr geändert oder geprüft werden.",
+    "notice": "Um Termine zu verschieben und Ihre Identität im Amt zu verifizieren, müssen Sie eine persönliche, numerische 6-stellige PIN festlegen. Die PIN kann nach der Terminbuchung nicht mehr eingesehen werden. Sie können die PIN später in Ihrem Bereich ändern.",
     "set_pin": "PIN festlegen",
     "set_pin_required": "Bitte einen PIN festlegen.",
     "set_pin_invalid": "Bitte geben Sie eine 6- stellige Ziffernfolge ein.",
     "set_pin_hint": "Geben Sie eine 6- stellige Ziffernfolge ein.",
     "repeat_pin": "PIN wiederholen",
-    "repeat_pin_required": "Bitte wiederholen Sie ihren PIN.",
+    "repeat_pin_required": "Bitte wiederholen Sie Ihre PIN.",
     "repeat_pin_mismatch": "PINS stimmen nicht überein.",
     "digit_label": "PIN-Ziffer {{digitNumber}} von {{maxDigits}}"
   },
@@ -71,10 +81,10 @@
     "available": "verfügbar"
   },
   "share_auth": {
-    "title": "PIN notieren ",
+    "title": "PIN notieren und Dokument herunterladen",
     "submit": "Termin anzeigen",
-    "text": "Es ist wichtig, dass Sie diese PIN an einem sicheren Ort aufbewahren, da sie zur Überprüfung Ihrer Identität verwendet wird. Sie können diese PIN verwenden, um Ihre Termine zu einem späteren Zeitpunkt zu verschieben oder zu ändern. Ohne die PIN können wir Ihre Anträge in der Geschäftsstelle nicht korrekt bearbeiten, da sie zur Authentifizierung erforderlich ist. Außerdem ist es notwendig, dass Sie das Dokument, das Ihre PIN enthält, herunterladen.",
-    "notice": "Die PIN wird für den Termin dringend benötigt. Laden Sie das Dokument mit der PIN herunter.",
+    "text": "Es ist wichtig, dass Sie diese PIN an einem sicheren Ort aufbewahren, da sie zur Überprüfung Ihrer Identität verwendet wird. Sie können diese PIN verwenden, um Ihre Termine zu einem späteren Zeitpunkt zu verschieben oder zu ändern. Ohne die PIN können wir Ihre Anträge in der Geschäftsstelle nicht korrekt bearbeiten, da sie zur Authentifizierung erforderlich ist. Außerdem ist es notwendig, dass Sie das Dokument herunterladen.",
+    "notice": "Bitte notieren Sie Ihre PIN und bringen Sie das Dokument zu Ihrem Termin mit. Beides wird benötigt.",
     "pin_title": "Ihre persönliche 6- stellige PIN: ",
     "auth_document_title": "Dokument zur anonymen Identifizierung",
     "auth_document_hint": "Bitte das Dokument herunterladen",

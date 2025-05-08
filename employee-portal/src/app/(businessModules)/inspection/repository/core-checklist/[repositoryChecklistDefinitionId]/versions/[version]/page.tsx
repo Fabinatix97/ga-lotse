@@ -50,7 +50,7 @@ export default function InspectionRepositoryPage(
             <RepoCLDInfoCard
               centralRepoId={repoCldId}
               centralRepoVersion={repoVersion}
-              isCoreChecklist={true}
+              isCoreChecklist
               cldVersion={checklistDefinition.versions[0]!}
               metadata={metadata}
             />

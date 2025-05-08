@@ -30,8 +30,8 @@ export function UserAbsence({
 
   return (
     <Sheet
-      component={"section"}
-      aria-labelledby={"user-profile-absence-header"}
+      component="section"
+      aria-labelledby="user-profile-absence-header"
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -39,17 +39,13 @@ export function UserAbsence({
         flex: { xxs: 1, md: "0 1 440px" },
       }}
     >
-      <Typography
-        level={"h3"}
-        component={"h2"}
-        id={"user-profile-absence-header"}
-      >
+      <Typography level="h3" component="h2" id="user-profile-absence-header">
         Abwesenheit
       </Typography>
       <Stack
-        justifyContent={"space-between"}
-        gap={"inherit"}
-        height={"100%"}
+        justifyContent="space-between"
+        gap="inherit"
+        height="100%"
         sx={(theme) => ({
           backgroundColor: theme.palette.background.level1,
           borderRadius: theme.radius.md,
@@ -68,11 +64,11 @@ export function UserAbsence({
           <Stack
             gap={1}
             flex={1}
-            alignItems={"center"}
-            justifyContent={"center"}
-            flexBasis={"150px"}
+            alignItems="center"
+            justifyContent="center"
+            flexBasis="150px"
           >
-            <DateRangeIcon size={"lg"} />
+            <DateRangeIcon size="lg" />
             <Typography>Keine Abwesenheiten eingetragen</Typography>
           </Stack>
         )}

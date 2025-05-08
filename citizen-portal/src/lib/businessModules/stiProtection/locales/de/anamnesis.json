@@ -12,7 +12,7 @@
   "privacyNotice": "Alle Angaben sind freiwillig und unterliegen der Schweigepflicht. Es besteht die Möglichkeit, das Formular auch vor Ort auszufüllen, ohne dadurch Nachteile zu erfahren.",
   "examinations": {
     "title": "Untersuchungen",
-    "subtitle": "Wurden Sie bereits auf die folgenden Krankheiten untersucht?",
+    "subtitle": "Wurden Sie bereits auf die folgenden Infektionen untersucht?",
     "had_examination": {
       "mostRecentExamDate": "Wann zuletzt?"
     },
@@ -56,7 +56,7 @@
     "homosexual": "ist homosexuell",
     "bisexual_male": "ist ein bisexueller Mann",
     "hiv_positive": "ist HIV-positiv",
-    "sti_positive": "hat eine sexuell übertragbare Krankheit",
+    "sti_positive": "hat eine sexuell übertragbare Infektion",
     "injected_drugs": "hat Drogen gespritzt",
     "sex_worker": "ist im Sexgewerbe tätig"
   },
@@ -64,7 +64,7 @@
     "title": "Prävention",
     "vaccinations": "Gegen was sind Sie geimpft?",
     "safe_sex": "Wie häufig praktizieren Sie Safer Sex?",
-    "safe_sex_protective_measures": "Womit schützen Sie sich gegen sexuell übertragbare Krankheiten?",
+    "safe_sex_protective_measures": "Womit schützen Sie sich gegen sexuell übertragbare Infektionen?",
     "info_about_PrEP_desired": "Wünschen Sie Informationen zu PrEP (Prä-Expositions-Prophylaxe)?",
     "PrEP_info_modal": {
       "title": "PrEP (Prä-Expositions-Prophylaxe)",
@@ -74,9 +74,9 @@
     "other_risks_description": "Welche?"
   },
   "previous_illnesses": {
-    "title": "Bisherige Krankheiten",
-    "subtitle": "Haben oder hatten Sie bereits eine der folgenden Krankheiten?",
-    "other": "Andere sexuell übertragbare Krankheit",
+    "title": "Bisherige Infektionen",
+    "subtitle": "Haben oder hatten Sie bereits eine der folgenden Infektionen?",
+    "other": "Andere sexuell übertragbare Infektion",
     "other_data": "Welche?"
   },
   "remarks": {

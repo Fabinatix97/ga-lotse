@@ -19,9 +19,6 @@ export function Sidebar({ open, onClose, children }: SidebarProps) {
     <Drawer
       anchor="right"
       open={open}
-      onClose={() => {
-        onClose((prevState) => !prevState);
-      }}
       slotProps={{
         content: {
           sx: {
@@ -30,6 +27,9 @@ export function Sidebar({ open, onClose, children }: SidebarProps) {
             gap: 2,
           },
         },
+      }}
+      onClose={() => {
+        onClose((prevState) => !prevState);
       }}
     >
       <ModalClose />

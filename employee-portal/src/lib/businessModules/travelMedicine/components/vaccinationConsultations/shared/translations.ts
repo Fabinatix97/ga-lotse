@@ -20,7 +20,7 @@ export enum MedicalHistoryAnswerStatusType {
   NotAnswered = "NOT_ANSWERED",
 }
 
-export type MedicalHistoryAnswerStatus =
+type MedicalHistoryAnswerStatus =
   (typeof MedicalHistoryAnswerStatusType)[keyof typeof MedicalHistoryAnswerStatusType];
 
 export const TRAVEL_TYPES: EnumMap<ApiTravelType> = {

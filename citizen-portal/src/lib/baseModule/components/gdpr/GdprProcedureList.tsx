@@ -114,23 +114,21 @@ function GdprProcedureSummary({
 }>) {
   const { t } = useTranslation("gdpr");
   return (
-    <>
-      <Stack
-        direction={byBreakpoint({ mobile: "column", desktop: "row" })}
-        flex={1}
+    <Stack
+      direction={byBreakpoint({ mobile: "column", desktop: "row" })}
+      flex={1}
+    >
+      <Typography
+        level="title-md"
+        sx={{
+          flex: 1,
+          maxWidth: "15rem",
+        }}
       >
-        <Typography
-          level="title-md"
-          sx={{
-            flex: 1,
-            maxWidth: "15rem",
-          }}
-        >
-          {t(`gdpr_procedure_summary.type.${procedure.type}`)}
-        </Typography>
-        <Typography>{formatDate(procedure.createdAt)}</Typography>
-      </Stack>
-    </>
+        {t(`gdpr_procedure_summary.type.${procedure.type}`)}
+      </Typography>
+      <Typography>{formatDate(procedure.createdAt)}</Typography>
+    </Stack>
   );
 }
 

@@ -9,6 +9,10 @@ import { Sheet, Stack, Typography } from "@mui/joy";
 import { useContext } from "react";
 import { isDefined, isEmpty } from "remeda";
 
+import {
+  TimelineEntryIndicator,
+  TimelineEntryProps,
+} from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
@@ -24,8 +28,6 @@ import {
   ProgressEntriesContext,
   useProgressEntriesConfig,
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
-import { TimelineEntryProps } from "@/lib/shared/components/timeline/TimelineEntry";
-import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
 
 import { EntryFile } from "./EntryFile";
 import {

@@ -80,9 +80,9 @@ export function ConfirmStartGdprProcedureDialog({
             {t("translation:common.cancel")}
           </Button>
           <Button
-            onClick={handleSubmit}
             loadingPosition="start"
             loading={isPending}
+            onClick={handleSubmit}
           >
             {t(`start_procedure_dialog.${type}.submit`)}
           </Button>

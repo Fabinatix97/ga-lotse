@@ -172,8 +172,6 @@ export function PersonSidebar({
       {personSidebarMode === PersonSidebarMode.bookAppointment ? (
         <OverlayBoundary>
           <InitialAppointmentForm
-            onSubmit={submitPersonAndAppointment}
-            onCancel={resetAndCloseForm}
             initialValues={{
               selectedPerson: selectedPerson!,
               initialStepAppointmentType: ApiAppointmentType.Consultation,
@@ -181,6 +179,8 @@ export function PersonSidebar({
                 consultationStandardDuration as number,
               bookingType: "" as ApiAppointmentBookingType,
             }}
+            onSubmit={submitPersonAndAppointment}
+            onCancel={resetAndCloseForm}
           />
         </OverlayBoundary>
       ) : personSidebarMode === PersonSidebarMode.editInCentralFile &&
@@ -189,25 +189,25 @@ export function PersonSidebar({
           sidebarFormRef={sidebarPersonFormRef}
           title={personFormTitle}
           person={selectedPerson ?? createNewPerson(person)}
-          onCancel={resetAndCloseForm}
           config={pConfig}
           validate={validate}
+          showPostalAddress={showPostalAddress}
+          skipInitialAppointmentSelection={skipInitialAppointmentSelection}
+          onCancel={resetAndCloseForm}
           onSubmit={(data) =>
             skipInitialAppointmentSelection ? submitPerson(data) : next(data)
           }
-          showPostalAddress={showPostalAddress}
-          skipInitialAppointmentSelection={skipInitialAppointmentSelection}
         />
       ) : (
         <OverlayBoundary>
           <LegacyPersonSearch
             sidebarFormRef={sidebarSearchFormRef}
-            onSelectPerson={handleSelectPerson}
-            onCreatePerson={handleCreatePerson}
-            onCancel={resetAndCloseForm}
             title={searchTitle}
             personSearchFormAdditionalFields={personSearchFormAdditionalFields}
             personSearchFormInitialValues={personSearchFormInitialValues}
+            onSelectPerson={handleSelectPerson}
+            onCreatePerson={handleCreatePerson}
+            onCancel={resetAndCloseForm}
           />
         </OverlayBoundary>
       )}

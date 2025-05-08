@@ -28,7 +28,7 @@ export function RadioSheet({ children, ...props }: RadioGroupFieldProps) {
   );
 }
 
-export interface RadioSheetOptionProps extends Pick<RadioProps, "disabled"> {
+interface RadioSheetOptionProps extends Pick<RadioProps, "disabled"> {
   value: string;
   name: string;
   label: string;

@@ -64,10 +64,10 @@ export function MedicalRegistryEntryOverviewControls(
               <ToggleFilterButton
                 {...props.filterSettings.filterButtonProps}
                 isFilterVisible={props.activePanel === "filters"}
-                onClick={() => props.toggleActivePanel("filters")}
                 activeFilters={
                   props.filterSettings.filterButtonProps.activeFilters
                 }
+                onClick={() => props.toggleActivePanel("filters")}
               />
             )}
             {!isEntrySearch && (

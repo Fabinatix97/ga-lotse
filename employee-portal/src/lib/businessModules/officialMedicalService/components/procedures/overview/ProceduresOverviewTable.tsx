@@ -203,7 +203,7 @@ export function ProceduresOverviewTable(
           ]}
           right={props.buttons}
           alignItems="flex-end"
-          invertDomOrder={true}
+          invertDomOrder
         />
       }
       data-testid="procedures-table"
@@ -212,11 +212,11 @@ export function ProceduresOverviewTable(
           {activePanel === "personSearch" && (
             <PersonSearchForm
               {...personSearch.formProps}
-              onChange={handleChangePersonSearch}
-              onReset={handleResetPersonSearch}
               allowPartialSearch
               disablePartialSearchAlert
               allowPersonIdSearch
+              onChange={handleChangePersonSearch}
+              onReset={handleResetPersonSearch}
             />
           )}
           {activePanel === "labCodeSearch" && (

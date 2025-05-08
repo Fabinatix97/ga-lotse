@@ -85,37 +85,35 @@ export function FacilityWebSearchResultsTable(
   }
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        controls={
-          <TableControls
-            tableControl={tableControl}
-            webSearchId={props.webSearch.id}
-            filters={props.filters}
-            savedQueries={props.webSearch.queries}
+    <TablePage
+      fullHeight
+      controls={
+        <TableControls
+          tableControl={tableControl}
+          webSearchId={props.webSearch.id}
+          filters={props.filters}
+          savedQueries={props.webSearch.queries}
+        />
+      }
+    >
+      <TableSheet
+        loading={props.loading}
+        footer={
+          <Pagination
+            totalCount={props.data.totalElements}
+            {...tableControl.paginationProps}
           />
         }
       >
-        <TableSheet
-          loading={props.loading}
-          footer={
-            <Pagination
-              totalCount={props.data.totalElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={props.data.entries}
-            columns={columns}
-            sorting={tableControl.tableSorting}
-            subRowColumns={subRowColumns}
-            striped
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+        <DataTable
+          data={props.data.entries}
+          columns={columns}
+          sorting={tableControl.tableSorting}
+          subRowColumns={subRowColumns}
+          striped
+        />
+      </TableSheet>
+    </TablePage>
   );
 }
 

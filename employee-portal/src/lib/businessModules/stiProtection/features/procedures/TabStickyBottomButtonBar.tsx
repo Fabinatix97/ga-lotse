@@ -16,7 +16,7 @@ import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/ap
 import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
-export interface TabStickyBottomButtonBarProps {
+interface TabStickyBottomButtonBarProps {
   left?: ReactNode | ReactNode[];
   onCancel?: () => void;
 }
@@ -44,6 +44,8 @@ export function TabStickyBottomButtonBar({
             <>
               <Button
                 variant="plain"
+                disabled={!dirty}
+                aria-disabled={isSubmitting || !dirty}
                 onClick={() => {
                   onCancelForm({
                     dirty,
@@ -56,8 +58,6 @@ export function TabStickyBottomButtonBar({
                   });
                   onCancel?.();
                 }}
-                disabled={!dirty}
-                aria-disabled={isSubmitting || !dirty}
               >
                 Abbrechen
               </Button>

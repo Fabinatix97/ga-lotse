@@ -53,8 +53,8 @@ function ExportButton({ data }: Readonly<{ data: ApiExportResponse }>) {
         alignSelf: "flex-start",
         marginBottom: 3,
       }}
-      onClick={handleExport}
       endDecorator={<FileDownloadOutlined />}
+      onClick={handleExport}
     >
       {t("exportConfig")}
     </Button>

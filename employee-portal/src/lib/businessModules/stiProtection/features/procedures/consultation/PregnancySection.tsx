@@ -6,15 +6,15 @@
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { CheckboxField } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import {
   BaseField,
   BaseFieldProps,
 } from "@eshg/lib-portal/components/formFields/BaseField";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
@@ -33,7 +33,7 @@ export function PregnancySection() {
   const { getFieldMeta } = useFormikContext();
   const { value } = getFieldMeta("pregnancy.hasPregnancyRelatedInfo");
   return (
-    <SectionGrid defaultColumn={1}>
+    <SectionGrid defaultColumn={1} sx={{ marginTop: 6 }}>
       <Typography level="h3">Schwangerschaftsbezogene Angaben</Typography>
       <CheckboxField
         name="pregnancy.hasPregnancyRelatedInfo"
@@ -45,7 +45,7 @@ export function PregnancySection() {
 }
 
 function PregnancySectionFields() {
-  const { validatePastOrTodayDate } = useValidators();
+  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   return (
     <>
       <Row gap={3}>

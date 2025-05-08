@@ -5,7 +5,6 @@
 
 package de.eshg.dental.api;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -15,7 +14,7 @@ import java.util.UUID;
 public record CreateProphylaxisSessionRequest(
     @NotNull Instant dateAndTime,
     @NotNull UUID institutionId,
-    @NotBlank String groupName,
+    String groupName,
     @NotNull ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     DentitionTypeDto dentitionType,

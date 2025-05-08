@@ -7,11 +7,13 @@ import { Divider, Grid } from "@mui/joy";
 import { FormikErrors, useFormikContext } from "formik";
 import { useState } from "react";
 
-import { CheckboxField, DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
+import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
 import { ApiVaccinationType } from "@eshg/travel-medicine-api";
 
 import { Disease } from "@/lib/businessModules/travelMedicine/api/models/Disease";
@@ -26,7 +28,6 @@ import {
   createVaccinesOptions,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { VACCINATION_TYPE } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 interface VaccinationFieldsProps {
   val: ServicesRequest;

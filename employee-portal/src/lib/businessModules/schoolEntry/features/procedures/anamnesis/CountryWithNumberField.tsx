@@ -36,9 +36,9 @@ export function CountryWithNumberField(props: CountryWithNumberFieldProps) {
         name={fieldName(props.name)}
         label={<FlexLabel>{props.label}</FlexLabel>}
         options={COUNTRY_CODE_OPTIONS}
-        onChange={props.onChange}
         sx={FIXED_WIDTH_STYLE}
         softRequired
+        onChange={props.onChange}
       />
       <StatusChip aria-label={`Ländergruppe ${props.label}`} minWidth="lg">
         {props.countryCode}

@@ -93,20 +93,20 @@ export function ProcedureDetailsTile({
 
   return (
     <>
-      <SectionTile id={"procedure-details"}>
-        <SectionTitle id={"procedure-details"}>
+      <SectionTile id="procedure-details">
+        <SectionTitle id="procedure-details">
           <Stack
-            component={"span"}
-            direction={"row"}
-            justifyContent={"space-between"}
+            component="span"
+            direction="row"
+            justifyContent="space-between"
           >
-            <Typography component={"span"}>Zusatzinfos</Typography>
+            <Typography component="span">Zusatzinfos</Typography>
             {requiresMatterOfConcern && isEditable && (
               <IconButton
-                size={"sm"}
-                color={"primary"}
-                variant={"outlined"}
-                aria-label={"Editieren"}
+                size="sm"
+                color="primary"
+                variant="outlined"
+                aria-label="Editieren"
                 onClick={() => editMatterOfConcernSidebar.open({ procedure })}
               >
                 <EditIcon />
@@ -118,11 +118,11 @@ export function ProcedureDetailsTile({
         <AlertSlot />
 
         <DetailsItem
-          label={"Erstellt"}
+          label="Erstellt"
           value={formatDateTime(procedure.createdAt)}
         />
         <DetailsItem
-          label={"Vorgangsart"}
+          label="Vorgangsart"
           value={
             isGdprPerson(procedure.identificationData)
               ? gdprProcedureTypeWithGdprArticle[procedure.type]
@@ -131,7 +131,7 @@ export function ProcedureDetailsTile({
           avoidWrap
         />
         <DetailsItem
-          label={"Status"}
+          label="Status"
           value={statusTranslation[procedure.status]}
         />
         <DetailsItem
@@ -185,9 +185,9 @@ export function ProcedureDetailsTile({
 
       <QueryBoundary>
         <CompleteProcedureDialog
+          key={closeModalMode}
           procedure={procedure}
           mode={closeModalMode}
-          key={closeModalMode}
           onClose={() => setCloseModalMode(undefined)}
         />
       </QueryBoundary>
@@ -212,7 +212,7 @@ function RefreshStatusButton({
     isVisible && (
       <Button
         loading={isPending}
-        loadingPosition={"start"}
+        loadingPosition="start"
         startDecorator={<RefreshIcon />}
         onClick={() =>
           startTransition(async () => {
@@ -314,8 +314,8 @@ function CompleteProcedureDialog({
     >
       <Formik
         initialValues={{ internalNote: "" }}
-        onSubmit={handleSubmit}
         enableReinitialize
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <FormPlus>

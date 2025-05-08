@@ -64,14 +64,14 @@ export function ConcernStep() {
   }, [data, appointmentTypes, setFieldValue, values.concern.index]);
 
   return (
-    <ContentSheet data-testid={"concern-form"}>
+    <ContentSheet data-testid="concern-form">
       <ContentSheetTitle>{t("concern.title")}</ContentSheetTitle>
       <Alert
         title={t("concern.infoText.title")}
         color="primary"
         message={t("concern.infoText.description")}
       />
-      <Typography level="body-md" data-testid={"description"}>
+      <Typography level="body-md" data-testid="description">
         {t("concern.description")}
       </Typography>
       {numberOfCategories > 1 && <ConcernFilters allConcerns={data} />}
@@ -103,7 +103,7 @@ export function ConcernStep() {
                       alignItems: "center",
                     }),
                   }}
-                ></RadioSheet>
+                />
               );
             })}
         </RadioGroupField>

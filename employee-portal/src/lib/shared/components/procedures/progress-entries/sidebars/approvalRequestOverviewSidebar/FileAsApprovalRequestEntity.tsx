@@ -25,21 +25,19 @@ export function FileAsApprovalRequestEntity({
     .approvalRequestsResponse!;
 
   return (
-    <>
-      <Stack spacing={1}>
-        <Typography level={"body-xs"} data-testid="createdAtAndBy">
-          {buildLabel(
-            approvalRequestEntity.createdAt,
-            formatUserName(
-              isDefined(approvalRequestEntity.createdBy)
-                ? resolvedUsers[approvalRequestEntity.createdBy]
-                : undefined,
-            ),
-          )}
-        </Typography>
-        <FileCardWithDownload file={approvalRequestEntity} />
-      </Stack>
-    </>
+    <Stack spacing={1}>
+      <Typography level="body-xs" data-testid="createdAtAndBy">
+        {buildLabel(
+          approvalRequestEntity.createdAt,
+          formatUserName(
+            isDefined(approvalRequestEntity.createdBy)
+              ? resolvedUsers[approvalRequestEntity.createdBy]
+              : undefined,
+          ),
+        )}
+      </Typography>
+      <FileCardWithDownload file={approvalRequestEntity} />
+    </Stack>
   );
 }
 

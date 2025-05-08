@@ -126,10 +126,10 @@ function AddServicePlanSidebar(props: Readonly<AddServicePlanSidebarProps>) {
       allVaccines={allVaccines ?? []}
       allDiseases={allDiseases ?? []}
       formRef={props.formRef}
+      title="Leistung"
+      submitLabel="Hinzufügen"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Leistung"}
-      submitLabel={"Hinzufügen"}
     />
   );
 }

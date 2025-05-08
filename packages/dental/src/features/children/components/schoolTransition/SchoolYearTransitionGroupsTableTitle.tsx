@@ -4,7 +4,7 @@
  */
 
 import { StopCircleOutlined, UploadOutlined } from "@mui/icons-material";
-import { Button, Divider } from "@mui/joy";
+import { Divider } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import {
@@ -13,8 +13,10 @@ import {
   mapRowSelectionToRowIds,
 } from "@eshg/lib-employee-portal";
 
-import { useCloseGroupsInBulk } from "@/features/children/api/mutations/schoolYearTransition";
-import { useSchoolLeavingSidebar } from "@/features/children/components/schoolTransition/SchoolLeavingSidebar";
+import { useCloseGroupsInBulk } from "../../api/mutations/schoolYearTransition";
+
+import { useSchoolLeavingSidebar } from "./SchoolLeavingSidebar";
+import { useSchoolPromotionSidebar } from "./SchoolPromotionSidebar";
 
 interface SchoolYearTransitionGroupsTableTitleProps {
   rowSelection: RowSelectionState;
@@ -28,6 +30,7 @@ export function SchoolYearTransitionGroupsTableTitle(
   const selectedGroups = mapRowSelectionToRowIds(props.rowSelection);
   const closeGroupsInBulk = useCloseGroupsInBulk();
   const schoolLeavingSidebar = useSchoolLeavingSidebar();
+  const schoolPromotionSidebar = useSchoolPromotionSidebar();
 
   return (
     <RowSelectionTableToolbar
@@ -39,10 +42,20 @@ export function SchoolYearTransitionGroupsTableTitle(
     >
       {selectedGroups.length > 0 && (
         <>
-          <Button startDecorator={<UploadOutlined />} variant="plain">
-            Gruppe hochstufen
-          </Button>
-          <Divider orientation={"vertical"} sx={{ marginY: 1 }} />
+          <RowSelectionTableToolbarButton
+            decorator={<UploadOutlined />}
+            color="primary"
+            onClick={() =>
+              schoolPromotionSidebar.open({
+                institutionId: props.institutionId,
+                institutionName: props.institutionName,
+                groupNames: selectedGroups,
+              })
+            }
+          >
+            Gruppen hochstufen
+          </RowSelectionTableToolbarButton>
+          <Divider orientation="vertical" sx={{ marginY: 1 }} />
           <RowSelectionTableToolbarButton
             decorator={<StopCircleOutlined />}
             isPending={closeGroupsInBulk.isPending}

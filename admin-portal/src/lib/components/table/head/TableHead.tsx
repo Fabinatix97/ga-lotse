@@ -41,13 +41,13 @@ export function TableHead<
                     key={header.id}
                     canSort={column.getCanSort()}
                     isSorted={column.getIsSorted()}
-                    onSort={column.getToggleSortingHandler()}
                     label={
                       isNonEmptyString(columnDef.header)
                         ? t(columnDef.header)
                         : meta?.headerLabel
                     }
                     id={column.id}
+                    onSort={column.getToggleSortingHandler()}
                   >
                     {flexRender(
                       isNonEmptyString(columnDef.header)
@@ -67,11 +67,11 @@ export function TableHead<
               {headerGroup.headers.map((header) => {
                 return (
                   <Box
+                    key={header.column.id}
                     component="th"
                     role={
                       header.column.id != TOGGLE_EXPAND_ID ? undefined : "none"
                     }
-                    key={header.column.id}
                     sx={{ maxWidth: "0" }}
                   >
                     <Filter table={props.reactTable} column={header.column} />

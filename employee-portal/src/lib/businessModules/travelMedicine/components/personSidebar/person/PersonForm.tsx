@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RefObject } from "@fullcalendar/core/preact.js";
+import { RefObject } from "@fullcalendar/core/preact";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
@@ -25,7 +25,7 @@ import { LegacyEmailAddressesForm } from "@/lib/shared/components/legacyPersonSi
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 import { LegacyPhoneNumbersForm } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPhoneNumbersForm";
 
-export interface PersonFormConfig {
+interface PersonFormConfig {
   hiddenFields?: (keyof LegacyPerson)[];
   optionalFields?: Exclude<keyof LegacyPerson, keyof LegacyMinimalPerson>[];
   disabledFields?: ("firstName" | "lastName" | "dateOfBirth")[];
@@ -59,9 +59,9 @@ export function PersonForm({
   return (
     <Formik
       initialValues={person}
-      onSubmit={onSubmit}
       validate={validate}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values, isSubmitting }) => (
         <SidebarForm ref={sidebarFormRef}>

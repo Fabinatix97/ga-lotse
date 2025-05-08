@@ -287,7 +287,7 @@ class DevelopmentScreeningStatistics {
         && isOk(developmentScreening.getMetabolism())
         && isOk(developmentScreening.getAbdomen())
         && isOk(developmentScreening.getEarNoseThroat())) {
-      return PhysicalExaminationResult.WITHOUT_FINDINGS;
+      return PhysicalExaminationResult.WITHOUT_FINDINGS.getValue();
     } else return PhysicalExaminationResult.UNKNOWN.getValue();
   }
 

@@ -16,20 +16,20 @@ import {
 export function AppointmentReviewStep() {
   const isMobile = useIsMobile();
 
+  if (isMobile) {
+    return (
+      <TwoColumnGrid
+        content={<AppointmentInfoSection />}
+        sidePanel={<AppointmentOverview />}
+      />
+    );
+  }
+
   return (
-    <>
-      {!isMobile ? (
-        <ThreeColumnGrid
-          contentLeft={<AppointmentInfoSection />}
-          contentRight={<AppointmentOverview />}
-          sidePanel={<ConfirmationSection />}
-        />
-      ) : (
-        <TwoColumnGrid
-          content={<AppointmentInfoSection />}
-          sidePanel={<AppointmentOverview />}
-        />
-      )}
-    </>
+    <ThreeColumnGrid
+      contentLeft={<AppointmentInfoSection />}
+      contentRight={<AppointmentOverview />}
+      sidePanel={<ConfirmationSection />}
+    />
   );
 }

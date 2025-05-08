@@ -12,7 +12,7 @@ import { FileDeletionRequestModal } from "@/lib/shared/components/procedures/pro
 import { FileDirectDeletionModal } from "@/lib/shared/components/procedures/progress-entries/modals/FileDirectDeletionModal";
 import { EntryDeletionModalProps } from "@/lib/shared/components/procedures/progress-entries/types";
 
-export interface DeletionProps {
+interface DeletionProps {
   name: string;
   FileModal: ComponentType;
   EntryModal: ComponentType<EntryDeletionModalProps>;

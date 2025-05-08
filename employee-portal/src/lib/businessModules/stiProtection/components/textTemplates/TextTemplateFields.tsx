@@ -5,10 +5,10 @@
 
 import { Stack } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 
 import { TextTemplateContextOptions } from "./constants";
 

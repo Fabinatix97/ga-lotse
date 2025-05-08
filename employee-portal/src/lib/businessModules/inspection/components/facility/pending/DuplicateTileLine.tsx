@@ -9,7 +9,7 @@ import { Chip, Stack } from "@mui/joy";
 
 import { LineWithPossibleExclamationMark } from "@/lib/businessModules/inspection/components/facility/pending/LineWithPossibleExclamationMark";
 
-export interface DuplicateTileLineProps<T> {
+interface DuplicateTileLineProps<T> {
   dataset: T;
   importedDataset: T;
   textExtractor: (d: T) => string;
@@ -30,7 +30,7 @@ export function DuplicateTileLine<T>({
     : textExtractor(importedDataset);
 
   return (
-    <Stack direction="row" alignItems={"center"} gap={1} flexWrap="wrap">
+    <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap">
       <Stack direction="row" gap={0} flexGrow={1} justifyContent="flex-start">
         <LineWithPossibleExclamationMark
           text={text}

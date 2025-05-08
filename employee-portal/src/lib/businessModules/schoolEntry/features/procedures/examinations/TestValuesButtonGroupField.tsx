@@ -64,11 +64,11 @@ export function TestValuesButtonGroupField<TValue extends string>(
         variant="soft"
         color="neutral"
         spacing={0.5}
+        aria-labelledby={labelId}
+        disabled={disabled}
         onChange={(_, newValue) =>
           void field.helpers.setValue((newValue ?? "") as TValue)
         }
-        aria-labelledby={labelId}
-        disabled={disabled}
       >
         {options.map((option) => (
           <TestValueButton

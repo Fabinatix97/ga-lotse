@@ -7,13 +7,15 @@ import { isEmpty, isNullish, isString } from "remeda";
 
 import { Validator } from "../../../types/form";
 
-import { formatFileSize } from "./helpers";
 import { FileLike, FileType } from "./types";
 
-export function validateFileType(
-  acceptedFileTypes: FileType[],
-  locale: string,
-): Validator<FileLike | null> {
+export function validateFileType({
+  acceptedFileTypes,
+  message,
+}: {
+  acceptedFileTypes: FileType[];
+  message: string;
+}): Validator<FileLike | null> {
   return (file) => {
     if (
       file === null ||
@@ -27,30 +29,31 @@ export function validateFileType(
       return undefined;
     }
 
-    const disjunctionList = new Intl.ListFormat(locale, {
-      style: "short",
-      type: "disjunction",
-    });
-    const acceptedFiles = acceptedFileTypes.map((fileType) => fileType.name);
-    const formattedFiles = disjunctionList.format(acceptedFiles);
-    return `Bitte eine Datei vom Typ ${formattedFiles} auswählen.`;
+    return message;
   };
 }
 
-export function validateFile(
-  acceptedExtensions?: string[],
-  maxFileSize?: number,
-) {
+export function validateFile({
+  acceptedExtensions,
+  maxFileSize,
+  messages,
+}: {
+  acceptedExtensions?: string[];
+  maxFileSize?: number;
+  messages: {
+    invalidName: string;
+    nameTooLong: string;
+    invalidExtension: string;
+    tooLarge: string;
+  };
+}): Validator<File | null> {
   function validateFile(file: File | null) {
     if (isNullish(file)) return undefined;
-    if (!fileNameIsValid(file))
-      return "Bitte eine Datei mit gültigem Dateinamen auswählen.";
-    if (fileNameIsTooLong(file))
-      return "Bitte eine Datei mit einem kürzeren Dateinamen auswählen.";
+    if (!fileNameIsValid(file)) return messages.invalidName;
+    if (fileNameIsTooLong(file)) return messages.nameTooLong;
     if (!fileHasAcceptedExtension(file, acceptedExtensions))
-      return "Bitte eine Datei mit einer gültigen Dateiendung auswählen.";
-    if (fileIsTooLarge(file, maxFileSize))
-      return `Bitte eine Datei kleiner ${formatFileSize(maxFileSize!)} auswählen.`;
+      return messages.invalidExtension;
+    if (fileIsTooLarge(file, maxFileSize)) return messages.tooLarge;
     return undefined;
   }
 

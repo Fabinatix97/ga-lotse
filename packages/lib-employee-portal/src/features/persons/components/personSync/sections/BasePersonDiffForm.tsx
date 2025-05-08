@@ -21,13 +21,9 @@ import {
   TypedDifferingFields,
   baseAddressDiffFieldNames,
   basePersonDiffFieldNames,
-} from "@/features/persons/components/personSync/DifferingFields";
-import { SyncFormField } from "@/features/persons/components/personSync/SyncFormField";
-import {
-  DiffArrow,
-  SyncFormBlock,
-  SyncFormSection,
-} from "@/features/persons/components/personSync/SyncFormGrid";
+} from "../DifferingFields";
+import { SyncFormField } from "../SyncFormField";
+import { DiffArrow, SyncFormBlock, SyncFormSection } from "../SyncFormGrid";
 
 import { SyncBaseAddressSection } from "./SyncBaseAddressSection";
 import { SyncListSection } from "./SyncListSection";

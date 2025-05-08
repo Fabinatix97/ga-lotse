@@ -5,10 +5,12 @@
 
 package de.eshg.config.departmentinfo;
 
+import static de.eshg.config.i18n.MultiLangDocumentHelper.forwardInternationalizedResponse;
+
 import de.eshg.base.department.DepartmentApi;
-import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.domain.PrivacyDocumentsConfig;
+import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.config.initialization.InitialPrivacyDocuments;
 import de.eshg.config.initialization.OptionalInitialPrivacyDocuments;
 import de.eshg.config.spring.ConditionalOnBusinessModule;
@@ -57,22 +59,24 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
 
   @Override
   @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getPrivacyNoticeDe() {
-    return PrivacyDocumentHelper.privacyNoticeAttachmentResponse(
-        Optional.ofNullable(getConfig().getPrivacyNotice())
-            .map(MultiLangDocument::getDe)
-            .map(Document::getContent)
-            .orElseGet(() -> getContentAsByteArray(departmentApi.getPrivacyNotice().getBody())));
+  public ResponseEntity<Resource> getPrivacyNotice() {
+    return Optional.ofNullable(getConfig().getPrivacyNotice())
+        .map(
+            privacyNotice ->
+                MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
+                    privacyNotice, PRIVACY_NOTICE_FILE_NAME))
+        .orElseGet(() -> forwardInternationalizedResponse(departmentApi.getPrivacyNotice()));
   }
 
   @Override
   @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getPrivacyPolicyDe() {
-    return PrivacyDocumentHelper.privacyPolicyAttachmentResponse(
-        Optional.ofNullable(getConfig().getPrivacyPolicy())
-            .map(MultiLangDocument::getDe)
-            .map(Document::getContent)
-            .orElseGet(() -> getContentAsByteArray(departmentApi.getPrivacyPolicy().getBody())));
+  public ResponseEntity<Resource> getPrivacyPolicy() {
+    return Optional.ofNullable(getConfig().getPrivacyPolicy())
+        .map(
+            privacyPolicy ->
+                MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
+                    privacyPolicy, PRIVACY_POLICY_FILE_NAME))
+        .orElseGet(() -> forwardInternationalizedResponse(departmentApi.getPrivacyPolicy()));
   }
 
   @Override

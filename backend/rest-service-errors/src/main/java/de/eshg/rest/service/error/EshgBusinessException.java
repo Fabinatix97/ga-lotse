@@ -24,11 +24,11 @@ public abstract class EshgBusinessException extends RuntimeException {
     this.clientVisibleMessage = clientVisibleMessage;
   }
 
-  ErrorCode getErrorCode() {
+  public ErrorCode getErrorCode() {
     return errorCode;
   }
 
-  String getClientVisibleMessage() {
+  public String getClientVisibleMessage() {
     return clientVisibleMessage;
   }
 }

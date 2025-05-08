@@ -5,12 +5,12 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { ImportStatistics } from "@/features/import/types/ImportStatistics";
+import { ImportStatistics } from "../types/ImportStatistics";
 import {
   formatDuplicatedRecordCount,
   formatFaultyRecordCount,
   formatTotalRecordCount,
-} from "@/features/import/utils/formatters";
+} from "../utils/formatters";
 
 import { FileDownloadButton } from "./FileDownloadButton";
 import { ImportResultProceduresSummary } from "./ImportResultProceduresSummary";

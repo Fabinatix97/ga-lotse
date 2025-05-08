@@ -42,6 +42,7 @@ export function MedicalHistoryRadioButtonElement({
         { value: "true", label: "Ja" },
         { value: "false", label: "Nein" },
       ]}
+      disabled={readOnly}
       onChange={async (value) => {
         if (value === "false" || !value) {
           if (element.anamnesisQuestion!.subElementText) {
@@ -89,7 +90,6 @@ export function MedicalHistoryRadioButtonElement({
           );
         }
       }}
-      disabled={readOnly}
     />
   );
 }

@@ -23,7 +23,7 @@ import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/
 
 import { ConfigureBarChartMetaOptions } from "./ConfigureBarChartMetaOptions";
 
-export interface ConfigureBarChartStepProps
+interface ConfigureBarChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
   attributes: FlatAttribute[];
 }
@@ -70,16 +70,18 @@ export function ConfigureBarChartStep({
         chart={
           showGroupedConfigurations ? (
             <BarChart
-              key={"groupedBarChart"}
+              key="groupedBarChart"
               diagramData={barChartGroupedSampleData}
+              isDataGrouped
               orientation={values.orientation}
               grouping={values.grouping}
               scaling={values.scaling}
             />
           ) : (
             <BarChart
-              key={"simpleBarChart"}
+              key="simpleBarChart"
               diagramData={barChartSimpleSampleData}
+              isDataGrouped={false}
               orientation={values.orientation}
             />
           )

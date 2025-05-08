@@ -6,7 +6,7 @@
 const uuidV4Re =
   /[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}/;
 
-export function extractUuid(str: string | undefined): string | undefined {
+function extractUuid(str: string | undefined): string | undefined {
   return str?.match(uuidV4Re)?.[0];
 }
 

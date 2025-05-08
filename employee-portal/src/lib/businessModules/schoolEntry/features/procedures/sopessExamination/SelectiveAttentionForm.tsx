@@ -11,10 +11,7 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
-import {
-  ApiDoctorLetterValue,
-  ApiSopessExaminationResultValue,
-} from "@eshg/school-entry-api";
+import { ApiSopessExaminationResultValue } from "@eshg/school-entry-api";
 
 import { StatusChip } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/StatusChip";
 import { FIXED_WIDTH_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
@@ -23,7 +20,6 @@ import { SopessExaminationFields } from "@/lib/businessModules/schoolEntry/featu
 import {
   MAX_99,
   MIN_0,
-  mapExaminationEvaluationToExaminationResultValue,
   validateValue,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
 import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
@@ -58,22 +54,6 @@ function validateSelectiveAttention(value: OptionalFieldValue<number>) {
 export function SelectiveAttentionForm(props: SelectiveAttentionFormProps) {
   const fieldName = createFieldNameMapper("psychologicalBehavior");
 
-  function handleSelectiveAttention(value: OptionalFieldValue<number>) {
-    const examinationEvaluation = mapExaminationEvaluation(value);
-    void props.setFieldValue(
-      fieldName("result"),
-      mapExaminationEvaluationToExaminationResultValue(examinationEvaluation),
-    );
-    if (examinationEvaluation !== EVALUATION_EXAMINATION_TYPES.CONSPICUOUS) {
-      void props.setFieldValue(fieldName("doctorLetter"), "");
-    } else {
-      void props.setFieldValue(
-        fieldName("doctorLetter"),
-        ApiDoctorLetterValue.NoReply,
-      );
-    }
-  }
-
   return (
     <Stack gap={2} data-testid="selectiveAttentionForm">
       <FormSectionTitle
@@ -86,7 +66,6 @@ export function SelectiveAttentionForm(props: SelectiveAttentionFormProps) {
             name={fieldName("points")}
             label="Punkte"
             sx={FIXED_WIDTH_STYLE}
-            onChange={handleSelectiveAttention}
             validate={validateSelectiveAttention}
             min={MIN_0}
             max={MAX_99}

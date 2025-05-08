@@ -25,13 +25,13 @@ export function AuditLogSheet({
       <DetailsRow alignItems="center" columnGap={4} rowGap={2}>
         <FeedOutlined />
         <DetailsCell
-          name={"createdAt"}
-          label={"Erstellungsdatum"}
+          name="createdAt"
+          label="Erstellungsdatum"
           value={formatDate(date)}
         />
         <DetailsCell
-          name={"source"}
-          label={"Modul"}
+          name="source"
+          label="Modul"
           value={auditLogSourceNames[ApiAuditLogSourceFromJSON(source)]}
         />
       </DetailsRow>

@@ -20,6 +20,7 @@ import {
   FilterValue,
   UseFilterSettings,
   UseTableControlResult,
+  getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
 
@@ -35,7 +36,6 @@ import {
   buildOptionsFromBusinessModules,
   buildOptionsFromTaskStatus,
   buildOptionsFromTaskTypes,
-  getSelectedFilterValues,
 } from "@/lib/shared/components/procedures/helper";
 
 export const FILTER_KEYS = {
@@ -168,7 +168,7 @@ function getTaskTypeFilterName(businessModule: ApiBusinessModule) {
 }
 
 function getBusinessModuleFilters(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.businessModule,
   ).map((v) => ApiBusinessModuleFromJSON(v));
@@ -176,7 +176,7 @@ function getBusinessModuleFilters(filters: FilterValue[]) {
 }
 
 function getTaskTypeFilters(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.taskTypeInspection,
     FILTER_KEYS.taskTypeSchoolEntry,
@@ -188,7 +188,7 @@ function getTaskTypeFilters(filters: FilterValue[]) {
 }
 
 function getAssignedByIdFilter(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.assignedById,
   );
@@ -196,7 +196,7 @@ function getAssignedByIdFilter(filters: FilterValue[]) {
 }
 
 function getTaskStatusFilter(filters: FilterValue[]) {
-  const selectedValues = getSelectedFilterValues(
+  const selectedValues = getSelectedEnumFilterValues(
     filters,
     FILTER_KEYS.taskStatus,
   ).map((v) => ApiTaskStatusFromJSON(v));

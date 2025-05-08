@@ -8,10 +8,11 @@ import { AutocompleteOption } from "@mui/joy";
 import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 
-import { ChipWithTooltip } from "@/components/chip/ChipWithTooltip";
-import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
-import { useGetProcedureLabels } from "@/features/procedureLabels/api/queries";
-import { ProcedureLabelClient } from "@/features/procedureLabels/types/procedureLabelClient";
+import { ProcedureLabel } from "../api/models/ProcedureLabel";
+import { useGetProcedureLabels } from "../api/queries";
+import { ProcedureLabelClient } from "../types/procedureLabelClient";
+
+import { ProcedureLabelChip } from "./ProcedureLabelChip";
 
 interface ProcedureLabelAutocompleteProps {
   name: string;
@@ -38,30 +39,23 @@ export function ProcedureLabelAutocomplete(
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       value={props.value}
-      onChange={(_, newValue) => {
-        props.onChange(newValue);
-      }}
       renderOption={(props, label) => (
         <AutocompleteOption {...props} key={label.id}>
-          <ChipWithTooltip
-            key={label.id}
-            name={label.name}
-            hexColor={label.hexColor}
-            modalTitle="Kennung"
-          />
+          <ProcedureLabelChip value={label} />
         </AutocompleteOption>
       )}
       renderTags={(tags, props) =>
         tags.map((label, index) => (
-          <ChipWithTooltip
+          <ProcedureLabelChip
             {...props({ index })}
             key={label.id}
-            name={label.name}
-            hexColor={label.hexColor}
-            modalTitle="Kennung"
+            value={label}
           />
         ))
       }
+      onChange={(_, newValue) => {
+        props.onChange(newValue);
+      }}
     />
   );
 }

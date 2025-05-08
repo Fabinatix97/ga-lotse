@@ -55,36 +55,32 @@ export function PersonContactSearchForm({
       }}
     >
       <SidebarForm>
-        <SidebarContent title={"Neue Person anlegen"}>
+        <SidebarContent title="Neue Person anlegen">
           <Stack gap={2}>
             <InputField
-              label={"Vorname"}
-              name={"firstName"}
+              label="Vorname"
+              name="firstName"
               onChange={setFirstName}
             />
-            <InputField
-              name={"lastName"}
-              label={"Name"}
-              onChange={setLastName}
-            />
+            <InputField name="lastName" label="Name" onChange={setLastName} />
             {enabled &&
               (query.isLoading || query.isPlaceholderData ? (
-                <LoadingIndicator marginBlock={"auto"} fullHeight />
+                <LoadingIndicator marginBlock="auto" fullHeight />
               ) : (
                 query.isSuccess && (
                   <ContactSearchFormResults
                     searchTerm={[request.firstName, request.name]
                       .join(" ")
                       .trim()}
-                    label={"Person"}
+                    label="Person"
                     elements={query.data.elements}
                     totalNumberOfElements={query.data.totalNumberOfElements}
-                    onCreateNew={() =>
-                      onCreate(request.firstName, request.name)
-                    }
                     renderCard={(contact) => (
                       <PersonContactCard contact={contact} />
                     )}
+                    onCreateNew={() =>
+                      onCreate(request.firstName, request.name)
+                    }
                   />
                 )
               ))}

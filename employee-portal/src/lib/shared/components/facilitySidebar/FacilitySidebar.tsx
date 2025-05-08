@@ -107,8 +107,8 @@ function EmbeddedFacilitySidebar<
     <>
       {state.stage === "loading" && (
         <LoadingStage
-          onCancel={() => props.onClose(false)}
           title={props.title}
+          onCancel={() => props.onClose(false)}
         />
       )}
       {state.stage === "search" && (
@@ -163,6 +163,9 @@ function EmbeddedFacilitySidebar<
               : undefined
           }
           mode={state.stage}
+          requiresContactPerson={props.requiresContactPerson}
+          allowMainContactPerson={props.allowMainContactPerson}
+          showMeaslesFacilityType={props.showMeaslesFacilityType}
           onCancel={() => props.onClose(false)}
           onBack={
             state.backEnabled
@@ -180,9 +183,6 @@ function EmbeddedFacilitySidebar<
             });
             return props.onClose(true);
           }}
-          requiresContactPerson={props.requiresContactPerson}
-          allowMainContactPerson={props.allowMainContactPerson}
-          showMeaslesFacilityType={props.showMeaslesFacilityType}
         />
       )}
       {state.stage === "display" && isDefined(state.selectedFacility) && (
@@ -190,6 +190,7 @@ function EmbeddedFacilitySidebar<
           title={props.title}
           submitLabel={props.submitLabel ?? "Vorgang anlegen"}
           facility={state.selectedFacility}
+          showMeaslesFacilityType={props.showMeaslesFacilityType}
           onSubmit={(facility) =>
             props
               .onSelect({
@@ -202,7 +203,6 @@ function EmbeddedFacilitySidebar<
             state.backEnabled ? () => dispatch({ type: "BACK" }) : undefined
           }
           onCancel={() => props.onClose(false)}
-          showMeaslesFacilityType={props.showMeaslesFacilityType}
         />
       )}
     </>

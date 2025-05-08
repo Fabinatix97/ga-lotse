@@ -14,7 +14,7 @@ import {
 
 import { UpdateNameStepFormModel } from "./UpdateNameStep";
 
-export type ChartMetaFormModel =
+type ChartMetaFormModel =
   | (Partial<BarChartMetaFormModel> & { type: DiagramType.BAR_CHART })
   | (Partial<HistogramChartMetaFormModel> & {
       type: DiagramType.HISTOGRAM_CHART;

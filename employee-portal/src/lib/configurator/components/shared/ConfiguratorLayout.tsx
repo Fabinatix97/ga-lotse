@@ -12,10 +12,8 @@ import {
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import {
-  ConfiguratorModuleName,
-  configuratorNameMapping,
-} from "@/lib/configurator/api/models/configuratorModuleName";
+import { configuratorNameMapping } from "@/lib/configurator/components/shared/configuratorNameMapping";
+import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 
 interface ConfiguratorLayoutProps extends RequiresChildren {
   module: ConfiguratorModuleName;
@@ -24,7 +22,7 @@ interface ConfiguratorLayoutProps extends RequiresChildren {
 
 export function ConfiguratorLayout(props: ConfiguratorLayoutProps) {
   function mapModuleNameToText() {
-    if (props.module === "baseModule") {
+    if (props.module === "BASE") {
       return configuratorNameMapping[props.module];
     }
     return `Modul „${configuratorNameMapping[props.module]}”`;

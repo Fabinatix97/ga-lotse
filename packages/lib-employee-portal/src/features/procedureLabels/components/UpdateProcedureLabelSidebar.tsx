@@ -12,25 +12,23 @@ import {
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 
-import { FormButtonBar } from "@/components/form/FormButtonBar";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/features/drawer/hooks/useSidebar";
-import { DrawerProps } from "@/features/drawer/types/drawer";
-import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
-import { useUpdateProcedureLabel } from "@/features/procedureLabels/api/mutations";
-import {
-  ProcedureLabelFormFields,
-  ProcedureLabelValues,
-} from "@/features/procedureLabels/components/ProcedureLabelFormFields";
+import { FormButtonBar } from "../../../components/form/FormButtonBar";
+import { SidebarActions } from "../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../drawer/components/SidebarContent";
+import { SidebarForm } from "../../drawer/components/SidebarForm";
+import { UseSidebarResult, useSidebar } from "../../drawer/hooks/useSidebar";
+import { DrawerProps } from "../../drawer/types/drawer";
+import { ProcedureLabel } from "../api/models/ProcedureLabel";
+import { useUpdateProcedureLabel } from "../api/mutations";
 import {
   ProcedureLabelClient,
   UpdateProcedureLabelRequest,
-} from "@/features/procedureLabels/types/procedureLabelClient";
+} from "../types/procedureLabelClient";
+
+import {
+  ProcedureLabelFormFields,
+  ProcedureLabelValues,
+} from "./ProcedureLabelFormFields";
 
 export function useUpdateProcedureLabelSidebar(): UseSidebarResult<UpdateProcedureLabelProps> {
   return useSidebar({
@@ -67,28 +65,26 @@ function UpdateProcedureLabelSidebar(props: UpdateProcedureLabelProps) {
   }
 
   return (
-    <>
-      <Formik
-        initialValues={mapToProcedureLabelForm(props.procedureLabel)}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <SidebarForm>
-            <SidebarContent title="Kennung bearbeiten">
-              <ProcedureLabelFormFields />
-            </SidebarContent>
+    <Formik
+      initialValues={mapToProcedureLabelForm(props.procedureLabel)}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <SidebarForm>
+          <SidebarContent title="Kennung bearbeiten">
+            <ProcedureLabelFormFields />
+          </SidebarContent>
 
-            <SidebarActions>
-              <FormButtonBar
-                submitLabel="Speichern"
-                submitting={isSubmitting}
-                onCancel={props.onClose}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </>
+          <SidebarActions>
+            <FormButtonBar
+              submitLabel="Speichern"
+              submitting={isSubmitting}
+              onCancel={props.onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 

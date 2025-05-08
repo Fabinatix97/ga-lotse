@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { createCountFormatter } from "@/utils/formatters";
+import { createCountFormatter } from "../../../utils/formatters";
 
 export const formatDuplicatedRecordCount = createCountFormatter(
   "doppelter Datensatz",

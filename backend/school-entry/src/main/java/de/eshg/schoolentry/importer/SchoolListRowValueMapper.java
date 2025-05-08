@@ -46,6 +46,7 @@ public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRow> {
         null,
         List.of(),
         values.getChild().phoneNumber(),
+        values.getChild().email(),
         values.isEntryLevel(),
         values.isEarlyExamination());
   }

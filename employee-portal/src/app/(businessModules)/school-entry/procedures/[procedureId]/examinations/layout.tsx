@@ -67,7 +67,7 @@ export default function SchoolEntryExaminationLayout(
             <SidePanelTitle>Untersuchungen</SidePanelTitle>
             <SidePanelNav>
               {navItems.map((navItem) => (
-                <SidePanelNavLink href={navItem.href} key={navItem.name}>
+                <SidePanelNavLink key={navItem.name} href={navItem.href}>
                   {navItem.name}
                 </SidePanelNavLink>
               ))}
@@ -113,8 +113,8 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
       </Button>
       <IncompleteProcedureAreasModal
         open={incompleteProcedureAreas.length > 0}
-        onClose={() => setIncompleteProcedureAreas([])}
         incompleteProcedureAreas={incompleteProcedureAreas}
+        onClose={() => setIncompleteProcedureAreas([])}
       />
       <Button
         variant="outlined"

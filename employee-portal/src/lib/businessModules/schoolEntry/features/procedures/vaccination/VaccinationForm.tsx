@@ -176,16 +176,16 @@ export function VaccinationForm(props: VaccinationFormProps) {
           />
           {VACCINATIONS.map((vaccinations, index) => (
             <Stack
+              key={index}
               gap={2}
               direction="row"
-              key={index}
               data-testid={`allRow${index}`}
             >
               <SetAllNumberInput
                 label="Alle"
-                onChange={(value) => setAllInRow(value, index, setFieldValue)}
                 sx={VACCINATION_FIELD_STYLE}
                 validate={validateIntegerAnd(validateRange(0, 9))}
+                onChange={(value) => setAllInRow(value, index, setFieldValue)}
               />
               <Stack direction="row" gap={2} flexWrap="wrap">
                 {vaccinations.map((vaccination) => (
@@ -205,9 +205,9 @@ export function VaccinationForm(props: VaccinationFormProps) {
                 <>
                   {values.otherVaccinations.map((values, index) => (
                     <Stack
+                      key={index}
                       direction="row"
                       gap={2}
-                      key={index}
                       data-testid="otherVaccinationForm"
                     >
                       <OtherVaccinationForm

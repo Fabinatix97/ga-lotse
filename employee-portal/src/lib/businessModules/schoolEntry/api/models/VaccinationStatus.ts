@@ -11,7 +11,7 @@ import {
   ApiVaccinationStatus,
 } from "@eshg/school-entry-api";
 
-export interface VaccinationStatus extends Versioned {
+interface VaccinationStatus extends Versioned {
   vaccinationScheme?: ApiVaccinationSchemeValue;
   diphtheria?: number;
   tetanus?: number;

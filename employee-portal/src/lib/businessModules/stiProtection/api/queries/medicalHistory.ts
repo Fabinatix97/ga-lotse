@@ -9,7 +9,7 @@ import { useMedicalHistoryApi } from "@/lib/businessModules/stiProtection/api/cl
 
 import { proceduresQueryKey } from "./apiQueryKeys";
 
-export function useGetMedicalHistoryQueryOptions(procedureId: string) {
+function useGetMedicalHistoryQueryOptions(procedureId: string) {
   const medicalHistoryApi = useMedicalHistoryApi();
 
   return queryOptions({

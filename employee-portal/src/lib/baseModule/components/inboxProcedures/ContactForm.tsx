@@ -81,13 +81,11 @@ export function ContactForm(props: NestedFormProps) {
             required="Bitte einen Typ auswählen."
           />
           {values.contact.type == ApiContactType.Facility && (
-            <>
-              <InputField
-                name={fieldName("facilityName")}
-                label="Name der Einrichtung"
-                required="Bitte den Namen der Einrichtung angeben."
-              />
-            </>
+            <InputField
+              name={fieldName("facilityName")}
+              label="Name der Einrichtung"
+              required="Bitte den Namen der Einrichtung angeben."
+            />
           )}
           <Stack direction="row" gap={2}>
             <Grid xs={6} padding={0}>

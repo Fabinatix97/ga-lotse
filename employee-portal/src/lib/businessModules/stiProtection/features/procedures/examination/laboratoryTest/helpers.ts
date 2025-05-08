@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isBoolean, isPlainObject, isString } from "remeda";
+import { isBoolean, isString } from "remeda";
 
 import {
   YesOrNoFieldData,
@@ -17,11 +17,12 @@ import {
 
 import {
   areAllValuesUndefined,
+  getPropertyIf,
   guardValue,
   mapOptionalString,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 
-export interface LaboratoryTestData {
+interface LaboratoryTestData {
   value: string;
   result: YesOrNoFieldData;
   remark: string;
@@ -29,28 +30,13 @@ export interface LaboratoryTestData {
   otherTestName?: string;
 }
 
-export const defaultLaboratoryTestFormData = {
+const defaultLaboratoryTestFormData = {
   value: "",
   result: null,
   remark: "",
 };
 
-function getPropertyIf<T>(
-  obj: unknown,
-  prop: string,
-  predicate: (v: unknown) => v is T,
-): T | undefined {
-  if (!isPlainObject(obj) || !(prop in obj)) {
-    return;
-  }
-  const value = obj[prop];
-  if (!predicate(value)) {
-    return;
-  }
-  return value;
-}
-
-export function mapApiLaboratoryTestToFormData(
+function mapApiLaboratoryTestToFormData(
   responseData: ApiLaboratoryTestExaminationLabTestDataInner | undefined,
 ): LaboratoryTestData {
   if (responseData === undefined) {
@@ -71,7 +57,7 @@ type LaboratorySampleTestResponseData =
     urethral?: boolean;
     anal?: boolean;
   };
-export function mapApiLaboratorySampleTestToFormData(
+function mapApiLaboratorySampleTestToFormData(
   responseData: LaboratorySampleTestResponseData | undefined,
 ): LaboratoryTestSamplesData {
   const values = mapApiLaboratoryTestToFormData(responseData);
@@ -92,7 +78,7 @@ type LaboratoryImmunityTestResponseData =
     vaccineTitre?: boolean;
     infection?: boolean;
   };
-export function mapApiLaboratoryImmunityTestToFormData(
+function mapApiLaboratoryImmunityTestToFormData(
   responseData: LaboratoryImmunityTestResponseData | undefined,
 ): LaboratoryTestImmunityData {
   const values = mapApiLaboratoryTestToFormData(responseData);
@@ -103,7 +89,7 @@ export function mapApiLaboratoryImmunityTestToFormData(
   };
 }
 
-export function mapLaboratoryTestFormDataToApi<
+function mapLaboratoryTestFormDataToApi<
   T extends ApiLaboratoryTestExaminationLabTestDataInner,
 >(type: T["type"], formData: LaboratoryTestData | null): T | undefined {
   if (formData === null) {
@@ -146,7 +132,7 @@ type ApiLaboratorySamplesTest = ApiLaboratoryTestVariant<{
   anal?: boolean;
 }>;
 
-export function mapLaboratoryImmunityTestFormDataToApi<
+function mapLaboratoryImmunityTestFormDataToApi<
   T extends ApiLaboratoryImmunityTest,
 >(type: T["type"], formData: LaboratoryTestImmunityData | null): T | undefined {
   if (formData == null) {
@@ -160,7 +146,7 @@ export function mapLaboratoryImmunityTestFormDataToApi<
   } as T;
 }
 
-export function mapLaboratorySamplesTestFormDataToApi<
+function mapLaboratorySamplesTestFormDataToApi<
   T extends ApiLaboratorySamplesTest,
 >(type: T["type"], formData: LaboratoryTestSamplesData | null): T | undefined {
   const values = mapLaboratoryTestFormDataToApi(type, formData);
@@ -173,18 +159,18 @@ export function mapLaboratorySamplesTestFormDataToApi<
   } as T;
 }
 
-export interface LaboratoryTestSamplesData extends LaboratoryTestData {
+interface LaboratoryTestSamplesData extends LaboratoryTestData {
   oralSampleRequested: boolean;
   urethralSampleRequested: boolean;
   analSampleRequested: boolean;
 }
 
-export interface LaboratoryTestImmunityData extends LaboratoryTestData {
+interface LaboratoryTestImmunityData extends LaboratoryTestData {
   vaccineTitre: boolean;
   infection: boolean;
 }
 
-export const defaultLaboratoryTestSamplesFormData = {
+const defaultLaboratoryTestSamplesFormData = {
   ...defaultLaboratoryTestFormData,
   oralSampleRequested: false,
   oralSampleData: defaultLaboratoryTestFormData,
@@ -193,22 +179,6 @@ export const defaultLaboratoryTestSamplesFormData = {
   analSampleRequested: false,
   analSampleData: defaultLaboratoryTestFormData,
 };
-
-export function mapApiLaboratoryTestSamplesToFormData(
-  responseData: ApiLaboratorySamplesTest | undefined,
-): LaboratoryTestSamplesData {
-  if (responseData === undefined) {
-    return defaultLaboratoryTestSamplesFormData;
-  }
-  const values = mapApiLaboratoryTestToFormData(responseData);
-
-  return {
-    ...values,
-    oralSampleRequested: responseData?.oral ?? false,
-    urethralSampleRequested: responseData?.urethral ?? false,
-    analSampleRequested: responseData?.anal ?? false,
-  };
-}
 
 export interface LaboratoryTestExaminationData {
   sampleBarcode?: string;

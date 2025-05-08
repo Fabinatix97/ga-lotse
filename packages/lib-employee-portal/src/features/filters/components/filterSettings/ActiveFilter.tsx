@@ -99,8 +99,8 @@ function ActiveFilterChip<TKey extends string = string>(
   return (
     <Chip
       component={ListItem}
-      variant={"soft"}
-      color={"primary"}
+      variant="soft"
+      color="primary"
       endDecorator={
         <ChipDelete
           aria-label={`${label} entfernen`}

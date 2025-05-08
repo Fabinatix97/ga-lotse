@@ -8,7 +8,7 @@ import { Slider } from "@mui/joy";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 
-export interface SliderFieldProps extends Omit<FieldProps<number>, "label"> {
+interface SliderFieldProps extends Omit<FieldProps<number>, "label"> {
   min: number;
   max: number;
   ariaLabel?: string;
@@ -23,11 +23,11 @@ export function SliderField(props: SliderFieldProps) {
       max={props.max}
       marks
       value={field.input.value}
-      onChange={(_, value) => field.helpers.setValue(value as number)}
       valueLabelDisplay="auto"
       size="lg"
       sx={{ zIndex: 2 }}
       aria-label={props.ariaLabel}
+      onChange={(_, value) => field.helpers.setValue(value as number)}
     />
   );
 }

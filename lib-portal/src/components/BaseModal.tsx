@@ -39,24 +39,22 @@ export function BaseModal({
   }
 
   return (
-    <>
-      <Modal open={open} color={color} onClose={handleClose}>
-        <ModalDialog sx={{ width: { xxs: 328, sm: 688 }, gap: 2, ...sx }}>
-          <DialogTitle color={color}>{modalTitle}</DialogTitle>
-          <AlertSlot />
-          {onClose ? (
-            <ModalClose
-              variant="outlined"
-              aria-label="Schließen"
-              color="primary"
-              sx={{
-                margin: 1,
-              }}
-            />
-          ) : null}
-          {children}
-        </ModalDialog>
-      </Modal>
-    </>
+    <Modal open={open} color={color} onClose={handleClose}>
+      <ModalDialog sx={{ width: { xxs: 328, sm: 688 }, gap: 2, ...sx }}>
+        <DialogTitle color={color}>{modalTitle}</DialogTitle>
+        <AlertSlot />
+        {onClose ? (
+          <ModalClose
+            variant="outlined"
+            aria-label="Schließen"
+            color="primary"
+            sx={{
+              margin: 1,
+            }}
+          />
+        ) : null}
+        {children}
+      </ModalDialog>
+    </Modal>
   );
 }

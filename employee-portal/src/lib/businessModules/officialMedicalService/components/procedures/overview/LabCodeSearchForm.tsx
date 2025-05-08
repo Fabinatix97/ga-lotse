@@ -73,7 +73,7 @@ export function LabCodeSearchForm(props: LabCodeSearchFormProps) {
             <InputField
               label="Laborcode"
               name="labCode"
-              required={"Bitte Laborcode eingeben"}
+              required="Bitte Laborcode eingeben"
             />
             <Button
               type="submit"
@@ -121,7 +121,7 @@ export function ToggleLabCodeSearchButton(
   );
 }
 
-export interface LabCodeSearchParams {
+interface LabCodeSearchParams {
   searchLabCode: string;
 }
 

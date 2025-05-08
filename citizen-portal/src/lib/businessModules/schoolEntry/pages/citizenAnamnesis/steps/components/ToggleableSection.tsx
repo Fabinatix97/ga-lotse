@@ -12,7 +12,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useTranslation } from "@/lib/i18n/client";
 
-export interface ToggleableSectionProps {
+interface ToggleableSectionProps {
   title?: string;
   name: string;
 }

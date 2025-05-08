@@ -109,7 +109,7 @@ export function ReportCaseSuccess() {
   );
 }
 
-export function ReportCaseSuccessActionsCard() {
+function ReportCaseSuccessActionsCard() {
   const { t } = useTranslation(["measlesProtection/forms"]);
   const replaceSearchParams = useReplaceSearchParams();
   const router = useRouter();
@@ -146,6 +146,7 @@ export function ReportCaseSuccessActionsCard() {
             {t("success.viewOpenCases")}
           </Button>
           <Button
+            variant="outlined"
             onClick={() => {
               resetForm({
                 values: {
@@ -156,13 +157,12 @@ export function ReportCaseSuccessActionsCard() {
               });
               goToPage(reportCaseFormPages.facilityInfo.pageNumber);
             }}
-            variant="outlined"
           >
             {t("success.reportAdditionalPerson")}
           </Button>
           <Button
-            onClick={() => router.push(routes.organizationPath.overview)}
             variant="outlined"
+            onClick={() => router.push(routes.organizationPath.overview)}
           >
             {t("success.returnToMeaslesProtectionHome")}
           </Button>

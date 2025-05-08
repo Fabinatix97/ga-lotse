@@ -16,8 +16,8 @@ import {
   DrawerFallbackOptions,
   DrawerInstance,
   useDrawerContext,
-} from "@/features/drawer/contexts/drawer";
-import { useSidebarScope } from "@/features/drawer/contexts/sidebarScope";
+} from "../contexts/drawer";
+import { useSidebarScope } from "../contexts/sidebarScope";
 
 import { Sidebar } from "./Sidebar";
 import { SidebarContent } from "./SidebarContent";

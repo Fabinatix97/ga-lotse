@@ -21,10 +21,10 @@ import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.XlsxColumn;
 import de.eshg.lib.xlsximport.model.AddressData;
+import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.time.Year;
 import java.util.EnumSet;
@@ -46,7 +46,7 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
   private final RowValueMapper<R> rowValueMapper;
   private final ImportType importType;
   private final UUID locationId;
-  private final SchoolEntryProperties schoolEntryProperties;
+  private final SchoolEntryConfigService schoolEntryConfigService;
 
   public CitizenOrSchoolListImporter(
       XSSFSheet sheet,
@@ -58,14 +58,14 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
       UUID locationId,
       Year schoolYear,
       ImportService importService,
-      SchoolEntryProperties schoolEntryProperties) {
+      SchoolEntryConfigService schoolEntryConfigService) {
     super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, importService);
     Assert.isTrue(
         EnumSet.of(SCHOOL_LIST, CITIZEN_LIST).contains(importType), "Unexpected import type");
     this.importType = importType;
     this.rowValueMapper = rowValueMapper;
     this.locationId = locationId;
-    this.schoolEntryProperties = schoolEntryProperties;
+    this.schoolEntryConfigService = schoolEntryConfigService;
   }
 
   @Override
@@ -83,7 +83,7 @@ public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends 
       stats.countMergeFailed();
     } else {
       Assert.isTrue(
-          !schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport(),
+          !schoolEntryConfigService.isDirectProcedureTypeAssignmentOnImport(),
           "Procedures of a draft type should not exist when direct procedure type assignment is enabled.");
       ProcedureWithChildData procedure = procedures.getFirst();
       UUID procedureId = procedure.procedure().getExternalId();

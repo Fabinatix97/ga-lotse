@@ -12,6 +12,7 @@ import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -72,8 +74,17 @@ public class InspectionController {
 
   @GetMapping(path = "/{id}")
   @Operation(summary = "Get details of an inspection")
-  @Transactional(readOnly = true)
+  @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public InspectionDto getInspection(@PathVariable("id") UUID externalId) {
+    auditLogger.log(
+        "Vorgangsbearbeitung",
+        "Abfrage Vorgangs-Details",
+        Map.of(
+            "ID des Vorgangs",
+            externalId.toString(),
+            "durch Benutzer",
+            CurrentUserHelper.getCurrentUserId().toString()));
     return inspectionService.loadInspectionDTO(externalId);
   }
 
@@ -210,9 +221,24 @@ associated reference facility
 
   @GetMapping(path = "/{id}/inspection-duplicates")
   @Operation(summary = "Get inspection duplicates of an inspection")
-  @Transactional(readOnly = true)
+  @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public InspectionDuplicateReviewDto getInspectionDuplicates(@PathVariable("id") UUID externalId) {
-    return reviewService.reviewInspectionDuplicates(externalId);
+    InspectionDuplicateReviewDto result = reviewService.reviewInspectionDuplicates(externalId);
+    auditLogger.log(
+        "Vorgangsbearbeitung",
+        "Abfrage Vorgangs-Details für Duplikatauflösung",
+        Map.of(
+            "IDs der Vorgänge",
+            Stream.concat(
+                    Stream.of(result.importedInspection()), result.existingInspections().stream())
+                .map(InspectionForDuplicateReviewDto::externalId)
+                .map(UUID::toString)
+                .toList()
+                .toString(),
+            "durch Benutzer",
+            CurrentUserHelper.getCurrentUserId().toString()));
+    return result;
   }
 
   @GetMapping(path = "/{id}/facility-duplicates")
@@ -220,20 +246,6 @@ associated reference facility
   @Transactional(readOnly = true)
   public FacilityDuplicateReviewDto getFacilityDuplicates(@PathVariable("id") UUID externalId) {
     return reviewService.reviewFacilityDuplicates(externalId);
-  }
-
-  @PostMapping(path = "/{id}/viewed")
-  @Operation(summary = "Mark inspection as viewed in audit-log")
-  public void inspectionViewed(
-      @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id) {
-    auditLogger.log(
-        "Vorgangsbearbeitung",
-        "Abfrage Vorgangs-Details",
-        Map.of(
-            "ID des Vorgangs",
-            id.toString(),
-            "durch Benutzer",
-            CurrentUserHelper.getCurrentUserId().toString()));
   }
 
   private static void validateAssignmentRole(UUID assigneeId) {

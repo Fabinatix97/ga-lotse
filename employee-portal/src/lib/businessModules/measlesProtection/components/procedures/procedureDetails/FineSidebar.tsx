@@ -75,15 +75,15 @@ function FineSidebarForm() {
   return (
     <Sidebar open={openFine} onClose={handleCancel}>
       <SidebarForm onSubmit={handleRawSubmit}>
-        <SidebarContent title={"Bußgeld erteilen"}>
+        <SidebarContent title="Bußgeld erteilen">
           <Stack gap={3}>
             <DateAndButtonRow
               buttonLabel="Heute"
-              onButtonClick={() => setFieldValue("fineIssuedDate", today)}
               name="fineIssuedDate"
               label="Erteilungsdatum"
               required="Bitte ein Erteilungsdatum angeben."
-            ></DateAndButtonRow>
+              onButtonClick={() => setFieldValue("fineIssuedDate", today)}
+            />
           </Stack>
         </SidebarContent>
         <SidebarActions>

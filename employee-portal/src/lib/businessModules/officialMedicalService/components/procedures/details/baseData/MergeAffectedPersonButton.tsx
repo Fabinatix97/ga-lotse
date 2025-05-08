@@ -128,6 +128,10 @@ function MergeAffectedPersonSidebar(props: MergeAffectedPersonSidebarProps) {
           lastName: props.procedure.affectedPerson.lastName,
           dateOfBirth: formatDate(props.procedure.affectedPerson.dateOfBirth),
         }}
+        sidebarFormRef={props.formRef}
+        title="Person vorhanden"
+        externalPerson
+        extendExistingContactText="Vorhandene Person erweitern:"
         onCancel={props.onClose}
         onCreatePerson={props.onClose} // We don't use the create button here, so it doesn't matter what we put here
         onSelectPerson={(person) => {
@@ -137,24 +141,20 @@ function MergeAffectedPersonSidebar(props: MergeAffectedPersonSidebarProps) {
             setState({ mode: "create" });
           }
         }}
-        sidebarFormRef={props.formRef}
-        title="Person vorhanden"
-        externalPerson={true}
-        extendExistingContactText="Vorhandene Person erweitern:"
       />
     );
   }
   if (state.mode === "create") {
     return (
       <PersonSidebarForm
-        title={"Personendaten anlegen"}
-        onCancel={props.onClose}
+        title="Personendaten anlegen"
         sidebarFormRef={props.formRef}
         component={DefaultPersonForm}
         initialValues={mapPersonDetailsToForm(props.procedure.affectedPerson)}
+        mode="edit"
+        submitLabel="Anlegen"
+        onCancel={props.onClose}
         onSubmit={handleSubmit}
-        mode={"edit"}
-        submitLabel={"Anlegen"}
       />
     );
   }
@@ -168,16 +168,16 @@ function MergeAffectedPersonSidebar(props: MergeAffectedPersonSidebarProps) {
             props.procedure.id,
           ),
         }}
-        fromLabel={"Person aus Vorgang"}
+        fromLabel="Person aus Vorgang"
         into={mapApiGetReferencePersonResponseToApiPersonContact(
           state.selectedPerson!,
         )}
-        intoLabel={"Person aus Liste"}
+        intoLabel="Person aus Liste"
+        sidebarFormRef={props.formRef}
+        withNameAtBirth
         onCancel={props.onClose}
         onSuccess={() => props.onClose(true)}
         onSubmit={handleSubmitMerge}
-        sidebarFormRef={props.formRef}
-        withNameAtBirth={true}
       />
     );
   }

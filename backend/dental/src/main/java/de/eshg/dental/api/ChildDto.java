@@ -22,7 +22,7 @@ public record ChildDto(
     @NotNull GenderDto gender,
     @NotNull LocalDate dateOfBirth,
     @NotNull int year,
-    @NotNull String groupName,
+    String groupName,
     @NotNull @Valid InstitutionDto institution,
     @NotNull ProcedureStatusDto status,
     @NotNull @Valid List<ProcedureLabelDto> procedureLabels) {}

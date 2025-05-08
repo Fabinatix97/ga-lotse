@@ -5,13 +5,14 @@
 
 import { Button, Radio } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { useFormikContext } from "formik";
-import { ReactNode } from "react";
+import { FormikContextType, useFormikContext } from "formik";
+import { ReactNode, memo } from "react";
 
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 
+import { useTranslation } from "../../i18n/useTranslation";
 import { ValidationRules } from "../../types/form";
 
 import { SelectOption } from "./SelectOptions";
@@ -63,12 +64,12 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>({
         readOnly={props.readOnly}
         orientation={props.orientation}
         required={!!props.required}
+        resettable={resettable}
+        additionalField={additionalField}
         onReset={() => {
           handleChange(null);
           if (onReset) onReset();
         }}
-        resettable={resettable}
-        additionalField={additionalField}
       />
     </RadioGroupField>
   );
@@ -87,7 +88,27 @@ interface RadioButtonsProps<T extends SelectOption> {
   additionalField?: ReactNode;
 }
 
-function RadioButtons<T extends SelectOption>({
+function RadioButtons<T extends SelectOption>(props: RadioButtonsProps<T>) {
+  const { getFieldMeta, setFieldValue } = useFormikContext();
+
+  return (
+    <MemoizedRadioButtons
+      {...props}
+      value={getFieldMeta<T>(props.name).value}
+      setFieldValue={setFieldValue}
+    />
+  );
+}
+
+const MemoizedRadioButtons = memo(InnerRadioButtons);
+
+interface InnerRadioButtonsProps<T extends SelectOption>
+  extends RadioButtonsProps<T> {
+  value: T;
+  setFieldValue: FormikContextType<T>["setFieldValue"];
+}
+
+function InnerRadioButtons<T extends SelectOption>({
   name,
   options,
   disabled,
@@ -96,11 +117,12 @@ function RadioButtons<T extends SelectOption>({
   required,
   onReset,
   resettable,
-  resetLabel = "Zurücksetzen",
+  resetLabel,
   additionalField,
-}: RadioButtonsProps<T>) {
-  const { getFieldMeta, setFieldValue } = useFormikContext();
-  const { value } = getFieldMeta(name);
+  value,
+  setFieldValue,
+}: InnerRadioButtonsProps<T>) {
+  const { t } = useTranslation();
 
   function handleReset() {
     void setFieldValue(name, null);
@@ -136,7 +158,7 @@ function RadioButtons<T extends SelectOption>({
           }}
           onClick={handleReset}
         >
-          {resetLabel}
+          {resetLabel ?? t("common.reset")}
         </Button>
       ) : undefined}
     </Row>

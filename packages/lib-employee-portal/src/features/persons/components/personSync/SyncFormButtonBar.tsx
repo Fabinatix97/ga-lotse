@@ -8,7 +8,7 @@ import { isString } from "remeda";
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
-import { useConfirmationDialog } from "@/hooks/useConfirmationDialog";
+import { useConfirmationDialog } from "../../../../hooks/useConfirmationDialog";
 
 export interface SyncFormButtonBarProps {
   onCancel: string | (() => void);
@@ -40,7 +40,7 @@ export function SyncFormButtonBar(props: SyncFormButtonBarProps) {
           Abbrechen
         </InternalLinkButton>
       ) : (
-        <Button onClick={props.onCancel} variant="plain">
+        <Button variant="plain" onClick={props.onCancel}>
           Abbrechen
         </Button>
       )}

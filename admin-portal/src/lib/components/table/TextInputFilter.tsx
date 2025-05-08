@@ -24,6 +24,11 @@ export function TextInputFilter(
       freeSolo
       autoSelect
       value={searchParams.get(props.searchParamName) ?? ""}
+      size="sm"
+      placeholder={props.placeholder}
+      aria-label={props.placeholder}
+      options={props.options}
+      aria-labelledby={props.searchParamName}
       onChange={(_event, value) => {
         replaceSearchParams([
           {
@@ -32,11 +37,6 @@ export function TextInputFilter(
           },
         ]);
       }}
-      size="sm"
-      placeholder={props.placeholder}
-      aria-label={props.placeholder}
-      options={props.options}
-      aria-labelledby={props.searchParamName}
     />
   );
 }

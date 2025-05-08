@@ -10,7 +10,7 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { DecoratedInputField } from "@eshg/lib-portal/components/formFields/DecoratedInputField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 
-export interface DateAndButtonRowProps extends FieldProps<string> {
+interface DateAndButtonRowProps extends FieldProps<string> {
   onButtonClick: MouseEventHandler;
   buttonLabel: string;
   readOnly?: boolean;
@@ -27,8 +27,8 @@ export function DateAndButtonRow(props: Readonly<DateAndButtonRowProps>) {
       fieldDecorator={
         <Button
           variant="soft"
-          onClick={props.onButtonClick}
           disabled={props.disabled}
+          onClick={props.onButtonClick}
         >
           {props.buttonLabel}
         </Button>

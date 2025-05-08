@@ -46,7 +46,7 @@ interface InformationStatementFormProps {
   submitLabel: string;
 }
 
-export interface SelectionOption {
+interface SelectionOption {
   label: string;
   value: string;
 }
@@ -88,25 +88,25 @@ export function InformationStatementForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, setFieldValue }) => (
         <SidebarForm ref={props.formRef}>
           <SidebarContent title={props.title}>
             <Stack flexDirection="column" gap={2}>
               <MultiAutocompleteField
-                name={"diseases"}
-                label={"Impfungen"}
+                name="diseases"
+                label="Impfungen"
                 options={diseaseOptions}
-                required={"Bitte mindestens eine Impfung auswählen."}
+                required="Bitte mindestens eine Impfung auswählen."
                 onChange={(newValues) =>
                   handleDiseaseChange(newValues, setFieldValue)
                 }
-              ></MultiAutocompleteField>
+              />
               <MultiAutocompleteField
-                name={"informationStatementTemplates"}
-                label={"Aufklärungsbögen"}
+                name="informationStatementTemplates"
+                label="Aufklärungsbögen"
                 options={
                   isEmpty(informationStatementTemplateOptions) &&
                   props.initialValues.diseases
@@ -116,8 +116,8 @@ export function InformationStatementForm(
                       )
                     : informationStatementTemplateOptions
                 }
-                required={"Bitte mindestens einen Aufklärungsbogen auswählen."}
-              ></MultiAutocompleteField>
+                required="Bitte mindestens einen Aufklärungsbogen auswählen."
+              />
             </Stack>
           </SidebarContent>
           <SidebarActions>

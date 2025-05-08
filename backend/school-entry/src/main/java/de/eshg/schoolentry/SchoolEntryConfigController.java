@@ -5,10 +5,8 @@
 
 package de.eshg.schoolentry;
 
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.GetSchoolEntryConfigResponse;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,20 +19,16 @@ public class SchoolEntryConfigController {
 
   public static final String BASE_URL = BaseUrls.SchoolEntry.CONFIG_CONTROLLER;
 
-  private final AppointmentBlockProperties appointmentBlockProperties;
-  private final SchoolEntryProperties schoolEntryProperties;
+  private final SchoolEntryConfigService schoolEntryConfigService;
 
-  public SchoolEntryConfigController(
-      AppointmentBlockProperties appointmentBlockProperties,
-      SchoolEntryProperties schoolEntryProperties) {
-    this.appointmentBlockProperties = appointmentBlockProperties;
-    this.schoolEntryProperties = schoolEntryProperties;
+  public SchoolEntryConfigController(SchoolEntryConfigService schoolEntryConfigService) {
+    this.schoolEntryConfigService = schoolEntryConfigService;
   }
 
   @GetMapping
   public GetSchoolEntryConfigResponse getConfig() {
     return new GetSchoolEntryConfigResponse(
-        appointmentBlockProperties.getLocationSelectionMode(),
-        schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport());
+        schoolEntryConfigService.getLocationSelectionMode(),
+        schoolEntryConfigService.isDirectProcedureTypeAssignmentOnImport());
   }
 }

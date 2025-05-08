@@ -5,16 +5,6 @@
 
 "use client";
 
-import { childApiQueryKey, useDentalApi } from "@eshg/dental";
-import { ProcedureLabelsPage } from "@eshg/lib-employee-portal";
+import { DentalProcedureLabelsOverviewPage } from "@eshg/dental";
 
-export default function LabelsOverviewPage() {
-  const { procedureLabelApi } = useDentalApi();
-
-  return (
-    <ProcedureLabelsPage
-      procedureLabelApi={procedureLabelApi}
-      procedureLabelApiQueryKey={childApiQueryKey}
-    />
-  );
-}
+export default DentalProcedureLabelsOverviewPage;

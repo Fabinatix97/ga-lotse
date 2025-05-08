@@ -5,7 +5,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
@@ -128,18 +128,18 @@ export function PhysicalExaminationFields(
       <Stack direction="row" gap={4} alignItems="flex-start" flexWrap="wrap">
         <SetAllExaminationResultsSelect
           label="Alle"
-          onChange={setAllPhysicalExaminations}
           sx={FIXED_WIDTH_STYLE}
+          onChange={setAllPhysicalExaminations}
         />
         <Stack direction="row" gap={4} flexWrap="wrap">
           {EXAMINATION_FIELD_GROUPS.map((examinationFields, index) => (
-            <Stack gap={1} key={index}>
+            <Stack key={index} gap={1}>
               {examinationFields.map((field) => (
                 <ExaminationWithDiagnosisFields
+                  key={field.name}
                   name={fieldName(field.name)}
                   values={field.values}
                   examinationResultLabel={field.label}
-                  key={field.name}
                   setFieldValue={props.setFieldValue}
                   onClickIcd10Code={props.onClickIcd10Code}
                 />

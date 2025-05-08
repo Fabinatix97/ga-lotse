@@ -61,7 +61,7 @@ export function OpenDataOverviewContent() {
           <Typography>{t("aboutSection.text")}</Typography>
         </ContentSheet>
 
-        {isMobile && <OpenDataFilters isMobile={true} />}
+        {isMobile && <OpenDataFilters isMobile />}
 
         <ContentSheet>
           {!isMobile && (
@@ -115,7 +115,7 @@ export function OpenDataOverviewContent() {
                     values={{
                       shownElements: data.versions.length,
                     }}
-                  ></Trans>
+                  />
                 </Typography>
               </Stack>
             </>
@@ -153,7 +153,7 @@ function OpenDataCard({ version }: { version: ApiVersion }) {
             <Stack
               gap={2}
               direction={byBreakpoint({ mobile: "column", desktop: "row" })}
-              justifyContent={"space-between"}
+              justifyContent="space-between"
             >
               <Typography level="h3" component="h3">
                 {version.versionName}

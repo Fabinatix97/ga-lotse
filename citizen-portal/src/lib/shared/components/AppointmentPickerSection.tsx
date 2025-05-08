@@ -81,16 +81,16 @@ export function AppointmentPickerSection<T extends Appointment>({
       setCurrentMonth={setMonth}
       autoSelectFirst={autoSelectFirst ? true : undefined}
       monthAppointments={appointments}
-      required={true}
+      required
       labels={labels}
-      onAppointmentSelected={onAppointmentSelected}
-      onDateSelected={onDateSelected}
       showWeekdays={["monday", "tuesday", "wednesday", "thursday", "friday"]}
       layout={AppointmentPickerCitizenLayout}
       padDays={false}
       appointmentList={TimeSlotList}
       slotProps={AppointmentPickerCitizenSlotProps}
       locale={code}
+      onAppointmentSelected={onAppointmentSelected}
+      onDateSelected={onDateSelected}
     />
   );
 }
@@ -175,7 +175,7 @@ function TimeSlotList<T extends Appointment>({
   }
 
   return (
-    <Stack gap={2} data-testid={"time-slot-list"}>
+    <Stack gap={2} data-testid="time-slot-list">
       <Typography level="title-md">{label}</Typography>
       <RadioGroup onChange={onSelected}>
         <ListGrid>

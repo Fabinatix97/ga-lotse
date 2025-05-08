@@ -28,7 +28,7 @@ import { deleteUndefined } from "@/lib/businessModules/stiProtection/shared/help
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
-export type EditPersonalDataForm = Pick<
+type EditPersonalDataForm = Pick<
   AddNewProcedureForm,
   | "gender"
   | "pronouns"
@@ -81,8 +81,8 @@ export function EditPersonalDataSidebar({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={updatePersonDetails.isPending}
+              submitLabel="Speichern"
               onCancel={handleClose}
-              submitLabel={"Speichern"}
             />
           </SidebarActions>
         </SidebarForm>

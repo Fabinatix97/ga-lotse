@@ -74,12 +74,12 @@ export default function PlaygroundMainContentLayoutPage() {
       </Typography>
       <Slider
         value={itemCount}
-        onChange={(_event, value) => setItemCount(value as number)}
         step={5}
         marks
         min={0}
         max={100}
         valueLabelDisplay="auto"
+        onChange={(_event, value) => setItemCount(value as number)}
       />
     </Sheet>
   );
@@ -94,11 +94,10 @@ export default function PlaygroundMainContentLayoutPage() {
           controls={controls}
           filterSettings={
             filterSettingsVisible && (
-              <FilterSettingsSheet onApply={doNothing} isDirty={true}>
+              <FilterSettingsSheet isDirty onApply={doNothing}>
                 <FilterSettings
                   definitions={[]}
                   draftValues={[]}
-                  onDraftValueChange={doNothing}
                   showActiveFilters={false}
                   activeFilterProps={{
                     filterValues: [],
@@ -107,6 +106,7 @@ export default function PlaygroundMainContentLayoutPage() {
                     deleteFilterValue: doNothing,
                     getFilterValueLabel: () => "",
                   }}
+                  onDraftValueChange={doNothing}
                 />
               </FilterSettingsSheet>
             )

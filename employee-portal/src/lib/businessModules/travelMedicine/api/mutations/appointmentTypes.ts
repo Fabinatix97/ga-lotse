@@ -9,7 +9,7 @@ import { ApiUpdateAppointmentTypeRequest } from "@eshg/travel-medicine-api";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/travelMedicine/api/clients";
 
-export interface ApiUpdateAppointmentTypeRequestWrapper {
+interface ApiUpdateAppointmentTypeRequestWrapper {
   request: ApiUpdateAppointmentTypeRequest;
   id: string;
 }

@@ -289,7 +289,7 @@ export function ServicePlanTable({
               }),
           })}
           striped={false}
-          initialExpanded={true}
+          initialExpanded
           minWidth={1700}
         />
       </TableSheet>

@@ -17,11 +17,11 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 
-import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
+import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 import {
   PROPHYLAXIS_STATUS_OPTIONS,
   PROPHYLAXIS_TYPE_OPTIONS,
-} from "@/config/prophylaxisSession";
+} from "../../../../config/prophylaxisSession";
 
 export type ProphylaxisSessionFilters = Pick<
   GetProphylaxisSessionsRequest,

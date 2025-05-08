@@ -14,9 +14,9 @@ import {
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
-import { useGetAllModulesStatuses } from "@/lib/configurator/api/queries/useGetAllModulesStatuses";
+import { useGetAllModulesStatuses } from "@/lib/shared/api/queries/configurator/status";
 
-import { routes } from "./routes";
+import { resolveConfiguratorRoute } from "./routes";
 
 function getEndDecorator(status?: ConfiguratorStatus) {
   switch (status) {
@@ -41,58 +41,87 @@ function ConfiguratorSideNavigationItem() {
         subItems: [
           {
             name: "Grundmodul",
-            href: routes.baseModule.index,
+            href: resolveConfiguratorRoute({
+              module: "BASE",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.baseModule?.moduleState),
+            endDecorator: getEndDecorator(data?.BASE?.moduleState),
           },
           {
             name: "Einschulung",
-            href: routes.schoolEntry.index,
+            href: resolveConfiguratorRoute({
+              module: "SCHOOL_ENTRY",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.schoolEntry?.moduleState),
+            endDecorator: getEndDecorator(data?.SCHOOL_ENTRY?.moduleState),
           },
           {
             name: "Impfberatung",
-            href: routes.travelMedicine.index,
+            href: resolveConfiguratorRoute({
+              module: "TRAVEL_MEDICINE",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.travelMedicine?.moduleState),
+            endDecorator: getEndDecorator(data?.TRAVEL_MEDICINE?.moduleState),
           },
           {
             name: "Masernschutz",
-            href: routes.measlesProtection.index,
+            href: resolveConfiguratorRoute({
+              module: "MEASLES_PROTECTION",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.measlesProtection?.moduleState),
+            endDecorator: getEndDecorator(
+              data?.MEASLES_PROTECTION?.moduleState,
+            ),
           },
           {
             name: "Open Data",
-            href: routes.opendata.index,
+            href: resolveConfiguratorRoute({
+              module: "OPEN_DATA",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.opendata?.moduleState),
+            endDecorator: getEndDecorator(data?.OPEN_DATA?.moduleState),
           },
           {
             name: "Medizinalaufsicht",
-            href: routes.medicalRegistry.index,
+            href: resolveConfiguratorRoute({
+              module: "MEDICAL_REGISTRY",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.medicalRegistry?.moduleState),
+            endDecorator: getEndDecorator(data?.MEDICAL_REGISTRY?.moduleState),
           },
           {
             name: "HIV-STI",
-            href: routes.stiProtection.index,
+            href: resolveConfiguratorRoute({
+              module: "STI_PROTECTION",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.stiProtection?.moduleState),
+            endDecorator: getEndDecorator(data?.STI_PROTECTION?.moduleState),
           },
           {
             name: "Sexarbeit",
-            href: routes.sexWork.index,
+            href: resolveConfiguratorRoute({
+              module: "SEX_WORK",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.sexWork?.moduleState),
+            endDecorator: getEndDecorator(data?.SEX_WORK?.moduleState),
           },
           {
             name: "Amtsärztliche Dienste",
-            href: routes.officialMedicalService.index,
+            href: resolveConfiguratorRoute({
+              module: "OFFICIAL_MEDICAL_SERVICE",
+              endpointName: "index",
+            }),
             accessCheck: sideNavigationItem.accessCheck,
             endDecorator: getEndDecorator(
-              data?.officialMedicalService?.moduleState,
+              data?.OFFICIAL_MEDICAL_SERVICE?.moduleState,
             ),
           },
         ],

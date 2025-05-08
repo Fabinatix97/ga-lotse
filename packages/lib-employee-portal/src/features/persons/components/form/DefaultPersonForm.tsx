@@ -25,23 +25,20 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import {
   BaseAddressFormInputs,
   ContactAddressForm,
-} from "@/components/address/addressForms";
-import { createEmptyAddress } from "@/components/address/helpers";
-import { MultiFormButtonBar } from "@/components/form/MultiFormButtonBar";
-import { CountryField } from "@/components/formFields/CountryField";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
-import { SearchPersonFormValues } from "@/features/persons/components/search/SearchPersonSidebar";
-import {
-  PersonFormProps,
-  PersonFormValues,
-} from "@/features/persons/types/personForm";
+} from "../../../../components/address/addressForms";
+import { createEmptyAddress } from "../../../../components/address/helpers";
+import { MultiFormButtonBar } from "../../../../components/form/MultiFormButtonBar";
+import { CountryField } from "../../../../components/formFields/CountryField";
+import { SidebarActions } from "../../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../../drawer/components/SidebarContent";
+import { PersonFormProps, PersonFormValues } from "../../types/personForm";
+import { SearchPersonFormValues } from "../search/SearchPersonSidebar";
 
 export interface DefaultPersonFormValues extends PersonFormValues {
   gender: OptionalFieldValue<ApiGender>;
@@ -83,7 +80,7 @@ export function defaultPersonFormValues({
 export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
   props: PersonFormProps<TValues>,
 ) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper<DefaultPersonFormValues>();
 
   return (
@@ -170,24 +167,27 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
 
           {isNonNullish(props.values.contactAddress) ? (
             <Box
-              component={"section"}
-              aria-labelledby={"contact-address-section-title"}
+              component="section"
+              aria-labelledby="contact-address-section-title"
               sx={{ display: "contents" }}
             >
               <Stack
-                direction={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
                 <Typography
-                  level={"title-md"}
+                  level="title-md"
                   sx={{ flex: 1 }}
-                  id={"contact-address-section-title"}
+                  id="contact-address-section-title"
                 >
                   Kontaktadresse
                 </Typography>
                 {props.addressRequired !== true && (
                   <IconButton
+                    aria-label="Kontaktadresse entfernen"
+                    sx={{ alignSelf: "flex-end" }}
+                    color="danger"
                     onClick={() =>
                       props.setFieldValue(
                         fieldName("contactAddress"),
@@ -195,9 +195,6 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
                         false,
                       )
                     }
-                    aria-label={"Kontaktadresse entfernen"}
-                    sx={{ alignSelf: "flex-end" }}
-                    color={"danger"}
                   >
                     <DeleteOutlined />
                   </IconButton>
@@ -226,10 +223,10 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
 
           <Divider />
 
-          <section aria-label={"E-Mail-Adressen"}>
+          <section aria-label="E-Mail-Adressen">
             <InputArrayField
               name={fieldName("emailAddresses")}
-              addMoreLabel={"E-Mail-Adresse hinzufügen"}
+              addMoreLabel="E-Mail-Adresse hinzufügen"
               fieldComponent={EmailField}
               label={(index) =>
                 getIndexLabel(PERSON_FIELD_NAME.emailAddresses, index)
@@ -238,10 +235,10 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
             />
           </section>
 
-          <section aria-label={"Telefonnummern"}>
+          <section aria-label="Telefonnummern">
             <InputArrayField
               name={fieldName("phoneNumbers")}
-              addMoreLabel={"Telefonnummer hinzufügen"}
+              addMoreLabel="Telefonnummer hinzufügen"
               label={(index) =>
                 getIndexLabel(PERSON_FIELD_NAME.phoneNumbers, index)
               }

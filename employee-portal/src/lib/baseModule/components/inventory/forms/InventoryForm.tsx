@@ -14,11 +14,11 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
-  TextareaField,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { inventoryTypeOptions } from "@/lib/baseModule/components/inventory/constants";
@@ -48,8 +48,8 @@ export function InventoryForm(props: UpdateInventoryFormProps) {
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
@@ -72,15 +72,15 @@ export function InventoryForm(props: UpdateInventoryFormProps) {
                 required="Bitte einen Mindestbestand angeben"
                 validate={validateNonNegativeInteger}
               />
-              <InputField name={"articleNumber"} label={"Artikelnummer"} />
+              <InputField name="articleNumber" label="Artikelnummer" />
               <LabelField
                 options={props.labels.map((label) => label.name)}
-                name={"labelNames"}
-                label={"Labels"}
+                name="labelNames"
+                label="Labels"
               />
               <TextareaField
-                name={"description"}
-                label={"Beschreibung"}
+                name="description"
+                label="Beschreibung"
                 sxTextarea={{ minHeight: 130 }}
               />
             </Stack>

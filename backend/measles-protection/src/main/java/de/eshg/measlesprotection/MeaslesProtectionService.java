@@ -12,6 +12,7 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -31,10 +32,17 @@ import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresPaginationOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresSortOptions;
 import de.eshg.measlesprotection.api.MPFacilityTypeDto;
+import de.eshg.measlesprotection.api.PatchAffectedPersonRequest;
+import de.eshg.measlesprotection.api.PatchCustodianRequest;
+import de.eshg.measlesprotection.api.SyncAffectedPersonRequest;
+import de.eshg.measlesprotection.api.SyncCustodianRequest;
 import de.eshg.measlesprotection.api.SyncFacilityRequest;
 import de.eshg.measlesprotection.api.UpdateProcedureRequest;
+import de.eshg.measlesprotection.api.draft.AffectedPersonDetailsDto;
+import de.eshg.measlesprotection.api.draft.CustodianDetailsDto;
 import de.eshg.measlesprotection.api.draft.EditFacilityResponse;
 import de.eshg.measlesprotection.mapper.AccessRestrictionMapper;
+import de.eshg.measlesprotection.mapper.AffectedPersonDetailsMapper;
 import de.eshg.measlesprotection.mapper.CaseStatusMapper;
 import de.eshg.measlesprotection.mapper.FacilityContactPersonMapper;
 import de.eshg.measlesprotection.mapper.MPFacilityTypeMapper;
@@ -46,7 +54,6 @@ import de.eshg.measlesprotection.mapper.SubmissionResultMapper;
 import de.eshg.measlesprotection.persistence.centralfile.FacilityClient;
 import de.eshg.measlesprotection.persistence.centralfile.FacilityData;
 import de.eshg.measlesprotection.persistence.centralfile.PersonClient;
-import de.eshg.measlesprotection.persistence.centralfile.PersonFileStateIdsWithSameReferencePerson;
 import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
 import de.eshg.measlesprotection.persistence.centralfile.ProcedureWithPersonDetailsData;
 import de.eshg.measlesprotection.persistence.db.CaseStatus;
@@ -163,7 +170,7 @@ public class MeaslesProtectionService {
 
     List<ProcedureDetailsData> detailsData =
         personClient
-            .augmentWithPersonDetails(allProcedures)
+            .augmentWithPersonDetails(allProcedures, false)
             .map(personDetails -> augmentWithFacilityDetails(personDetails, facilitiesById))
             .filter(byFilterOptions(filterOptions))
             .sorted(byComparatorOf(sortOptions))
@@ -356,11 +363,8 @@ public class MeaslesProtectionService {
   }
 
   @Transactional(readOnly = true)
-  public List<MeaslesProtectionProcedure> getProceduresForPerson(
-      String firstName, String lastName, LocalDate dateOfBirth) {
-    PersonFileStateIdsWithSameReferencePerson response =
-        personClient.getPersonFileStateIdsWithSameReferencePerson(firstName, lastName, dateOfBirth);
-    List<UUID> fileStateIds = response.fileStateIds();
+  public List<MeaslesProtectionProcedure> getProceduresForPerson(UUID personId) {
+    List<UUID> fileStateIds = personClient.getPersonFileStatesAssociatedWith(personId);
 
     return personRepository.findAll(centralFileStateIdIn(fileStateIds)).stream()
         .map(RelatedPerson::getProcedure)
@@ -440,5 +444,127 @@ public class MeaslesProtectionService {
         facilityClient.syncFacilityFileState(
             facility.getCentralFileStateId(), syncFacilityRequest.referenceVersion());
     facility.setCentralFileStateId(updatedFileStateId);
+  }
+
+  @Transactional
+  public AffectedPersonDetailsDto editAffectedPerson(UUID id, PatchAffectedPersonRequest request) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
+    if (!procedure.getProcedureStatus().isOpen()) {
+      throw new BadRequestException("Procedure is closed");
+    }
+
+    Person person =
+        procedure.getRelatedPersons().stream()
+            .filter(Person::isPatient)
+            .collect(StreamUtil.toSingleElement());
+    UUID previousFileStateId = person.getCentralFileStateId();
+
+    AddPersonFileStateResponse baseResponse =
+        personClient.updatePersonFileStateAndReference(
+            previousFileStateId,
+            AffectedPersonDetailsMapper.getUpdatePersonRequest(request.affectedPersonDetails()));
+
+    person.setCentralFileStateId(baseResponse.id());
+
+    return new AffectedPersonDetailsDto(
+        baseResponse.firstName(),
+        baseResponse.lastName(),
+        baseResponse.dateOfBirth(),
+        baseResponse.phoneNumbers(),
+        baseResponse.emailAddresses(),
+        baseResponse.countryOfBirth(),
+        baseResponse.gender(),
+        baseResponse.nameAtBirth(),
+        baseResponse.placeOfBirth(),
+        baseResponse.salutation(),
+        baseResponse.title(),
+        baseResponse.contactAddress(),
+        request.affectedPersonDetails().custodians());
+  }
+
+  @Transactional
+  public void syncAffectedPerson(UUID id, SyncAffectedPersonRequest syncAffectedPersonRequest) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
+    if (!procedure.getProcedureStatus().isOpen()) {
+      throw new BadRequestException("Procedure is closed");
+    }
+    UUID patientIdFromCentralFile = procedure.getPatientIdFromCentralFile();
+    Person affectedPerson =
+        procedure.getRelatedPersons().stream()
+            .filter(person -> person.getCentralFileStateId().equals(patientIdFromCentralFile))
+            .collect(StreamUtil.toSingleElement());
+
+    UUID updatedFileStateId =
+        personClient.syncPersonFileState(
+            patientIdFromCentralFile, syncAffectedPersonRequest.referenceVersion());
+    affectedPerson.setCentralFileStateId(updatedFileStateId);
+  }
+
+  @Transactional
+  public CustodianDetailsDto editCustodian(
+      UUID procedureId, UUID custodianId, PatchCustodianRequest request) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
+    if (!procedure.getProcedureStatus().isOpen()) {
+      throw new BadRequestException("Procedure is closed");
+    }
+
+    Optional<Person> optionalCustodian =
+        procedure.getRelatedPersons().stream()
+            .filter(
+                person ->
+                    person.getCentralFileStateId().equals(custodianId) && person.isCustodian())
+            .findFirst();
+    if (optionalCustodian.isEmpty()) {
+      throw new BadRequestException("Custodian does not exist");
+    }
+    Person custodian = optionalCustodian.get();
+    UUID previousFileStateId = custodian.getCentralFileStateId();
+
+    AddPersonFileStateResponse baseResponse =
+        personClient.updatePersonFileStateAndReference(
+            previousFileStateId,
+            AffectedPersonDetailsMapper.getUpdatePersonRequest(request.custodianDetails()));
+
+    custodian.setCentralFileStateId(baseResponse.id());
+
+    return new CustodianDetailsDto(
+        baseResponse.firstName(),
+        baseResponse.lastName(),
+        baseResponse.dateOfBirth(),
+        baseResponse.phoneNumbers(),
+        baseResponse.emailAddresses(),
+        baseResponse.countryOfBirth(),
+        baseResponse.gender(),
+        baseResponse.nameAtBirth(),
+        baseResponse.placeOfBirth(),
+        baseResponse.salutation(),
+        baseResponse.title(),
+        baseResponse.contactAddress());
+  }
+
+  @Transactional
+  public void syncCustodian(
+      UUID procedureId, UUID custodianId, SyncCustodianRequest syncCustodianRequest) {
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
+    if (!procedure.getProcedureStatus().isOpen()) {
+      throw new BadRequestException("Procedure is closed");
+    }
+
+    Optional<Person> optionalCustodian =
+        procedure.getRelatedPersons().stream()
+            .filter(
+                person ->
+                    person.getCentralFileStateId().equals(custodianId) && person.isCustodian())
+            .findFirst();
+    if (optionalCustodian.isEmpty()) {
+      throw new BadRequestException("Custodian does not exist");
+    }
+    Person custodian = optionalCustodian.get();
+    UUID custodianIdFromCentralFile = custodian.getCentralFileStateId();
+
+    UUID updatedFileStateId =
+        personClient.syncPersonFileState(
+            custodianIdFromCentralFile, syncCustodianRequest.referenceVersion());
+    custodian.setCentralFileStateId(updatedFileStateId);
   }
 }

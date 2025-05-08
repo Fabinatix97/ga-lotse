@@ -33,9 +33,9 @@ export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
         title="PSB - Personensorgeberechtigte:r"
       >
         <Button
-          color={"primary"}
-          variant={"plain"}
-          size={"sm"}
+          color="primary"
+          variant="plain"
+          size="sm"
           sx={{ justifyContent: "flex-start" }}
           startDecorator={<AddIcon />}
           onClick={() => personSidebar.open(props)}
@@ -74,10 +74,10 @@ function ConfiguredPersonSidebar(
     <PersonSidebar
       title="PSB hinzufügen"
       submitLabel="Hinzufügen"
+      formRef={props.formRef}
       onCreate={({ createInputs }) => handleCreate(createInputs)}
       onSelect={({ person }) => handleSelect(person)}
       onClose={props.onClose}
-      formRef={props.formRef}
     />
   );
 }

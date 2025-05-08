@@ -38,8 +38,8 @@ export function SetAllExaminationResultsSelect(
     <SetAllSelect<string>
       label={props.label}
       sx={props.sx}
-      onChange={props.onChange}
       orientation={props.orientation}
+      onChange={props.onChange}
     >
       <SelectOptions options={EXAMINATION_RESULT_OPTIONS} />
     </SetAllSelect>
@@ -53,10 +53,10 @@ export function SetAllBooleanSelect(
     <SetAllSelect<boolean>
       label={props.label}
       sx={props.sx}
-      onChange={props.onChange}
       orientation={props.orientation}
+      onChange={props.onChange}
     >
-      <Option value={true}>Ja</Option>
+      <Option value>Ja</Option>
       <Option value={false}>Nein</Option>
       <Option value="">{NO_SELECTION_LABEL}</Option>
     </SetAllSelect>
@@ -70,8 +70,8 @@ export function SetAllBooleanWithUnknownSelect(
     <SetAllSelect<string>
       label={props.label}
       sx={props.sx}
-      onChange={props.onChange}
       orientation={props.orientation}
+      onChange={props.onChange}
     >
       <SelectOptions options={BOOLEAN_WITH_UNKNOWN_OPTIONS} />
     </SetAllSelect>
@@ -88,13 +88,13 @@ function SetAllSelect<TValue extends SupportedTypes>(
     <FieldComponent label={props.label} sx={props.sx}>
       <Select
         value={null}
+        disabled={disabled}
         onChange={(_, newValue: TValue | null) => {
           if (newValue === null) {
             return;
           }
           props.onChange(newValue);
         }}
-        disabled={disabled}
       >
         {props.children}
       </Select>

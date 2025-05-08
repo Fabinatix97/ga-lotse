@@ -570,6 +570,26 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/auth/anon-ident-document" : {
+      "get" : {
+        "operationId" : "getCitizenAnonymousIdentificationDocument",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get an anonymous identification document for an appointment",
+        "tags" : [ "Citizen" ]
+      }
+    },
     "/citizen/auth/appointment" : {
       "delete" : {
         "operationId" : "cancelBookedAppointment",
@@ -716,8 +736,8 @@
       }
     },
     "/citizen/public/appointments/{id}/anon-ident-document" : {
-      "get" : {
-        "operationId" : "getCitizenAnonymousIdentificationDocument",
+      "post" : {
+        "operationId" : "getInitialCitizenAnonymousIdentificationDocument",
         "parameters" : [ {
           "in" : "path",
           "name" : "id",
@@ -4987,7 +5007,7 @@
         }
       },
       "CreateAnonymousUserResponse" : {
-        "required" : [ "accessCode", "procedureId", "userId" ],
+        "required" : [ "accessCode", "procedureId" ],
         "type" : "object",
         "properties" : {
           "accessCode" : {
@@ -5000,12 +5020,6 @@
           "procedureId" : {
             "type" : "string",
             "format" : "uuid"
-          },
-          "userId" : {
-            "type" : "string",
-            "description" : "ID of the anonymous citizen user",
-            "format" : "uuid",
-            "example" : "UUID_1"
           }
         }
       },
@@ -5024,7 +5038,7 @@
             "type" : "string",
             "description" : "Id of the AppointmentBlockGroup.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_1"
           }
         }
       },
@@ -5928,7 +5942,7 @@
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_1"
           },
           "numberOfBookedAppointments" : {
             "minimum" : 0,
@@ -5963,7 +5977,7 @@
             "type" : "string",
             "description" : "Id of the AppointmentBlockGroup.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_1"
           },
           "location" : {
             "$ref" : "#/components/schemas/AppointmentLocation"
@@ -6196,7 +6210,7 @@
             "type" : "string",
             "description" : "Id of the Facility.",
             "format" : "uuid",
-            "example" : "UUID_1"
+            "example" : "UUID_2"
           },
           "name" : {
             "maxLength" : 300,
@@ -6459,7 +6473,7 @@
             "type" : "string",
             "description" : "Id of the Person.",
             "format" : "uuid",
-            "example" : "UUID_1"
+            "example" : "UUID_2"
           },
           "lastName" : {
             "maxLength" : 120,

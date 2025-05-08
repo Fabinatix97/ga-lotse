@@ -105,28 +105,28 @@ function EditableActorSelectorCell(
       <SingleSelect
         label="federalState"
         value={value.federalState}
-        onChange={handleChange("federalState")}
         options={Object.values(ApiFederalState)}
         rowId={props.row.original.id}
         selector={columnId}
+        onChange={handleChange("federalState")}
       />
       <Divider />
       <SingleSelect
         label="orgUnitType"
         value={value.orgUnitType}
-        onChange={handleChange("orgUnitType")}
         options={Object.values(ApiAdminOrgUnitType)}
         rowId={props.row.original.id}
         selector={columnId}
+        onChange={handleChange("orgUnitType")}
       />
       <Divider />
       <TextInput
         label="orgUnitName"
         options={orgUnitNames}
         value={value.orgUnitName}
-        onChange={handleChange("orgUnitName")}
         rowId={props.row.original.id}
         selector={columnId}
+        onChange={handleChange("orgUnitName")}
       />
       <Divider />
       {/* We do this, so everything is in one line if there is enough space */}
@@ -134,19 +134,19 @@ function EditableActorSelectorCell(
         <SingleSelect
           label="actorType"
           value={value.actorType}
-          onChange={handleChange("actorType")}
           options={Object.values(ApiAdminActorType)}
           rowId={props.row.original.id}
           selector={columnId}
+          onChange={handleChange("actorType")}
         />
         <Divider />
         <TextInput
           label="actorName"
           options={actorNames}
           value={value.actorName}
-          onChange={handleChange("actorName")}
           rowId={props.row.original.id}
           selector={columnId}
+          onChange={handleChange("actorName")}
         />
       </Stack>
     </Stack>
@@ -237,11 +237,8 @@ function TextInput(
       freeSolo
       autoSelect
       value={props.value ?? ""}
-      onChange={(_event, value) => {
-        props.onChange(value ?? undefined);
-      }}
       size="sm"
-      placeholder={"*"}
+      placeholder="*"
       aria-label={props.label}
       options={props.options}
       sx={{ flex: "1 3 150px" }}
@@ -251,6 +248,9 @@ function TextInput(
         },
       }}
       color={color}
+      onChange={(_event, value) => {
+        props.onChange(value ?? undefined);
+      }}
     />
   );
 }

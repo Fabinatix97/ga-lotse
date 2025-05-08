@@ -16,13 +16,13 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 
-import { BaseAddressDetailsColumn } from "@/components/address/BaseAddressDetailsColumn";
-import { DetailsRow } from "@/components/detailsSection/DetailsRow";
-import { DetailsItem } from "@/components/detailsSection/items/DetailsItem";
-import { MultiFormButtonBar } from "@/components/form/MultiFormButtonBar";
-import { SidebarActions } from "@/features/drawer/components/SidebarActions";
-import { SidebarContent } from "@/features/drawer/components/SidebarContent";
-import { SidebarForm } from "@/features/drawer/components/SidebarForm";
+import { BaseAddressDetailsColumn } from "../../../../components/address/BaseAddressDetailsColumn";
+import { DetailsRow } from "../../../../components/detailsSection/DetailsRow";
+import { DetailsItem } from "../../../../components/detailsSection/items/DetailsItem";
+import { MultiFormButtonBar } from "../../../../components/form/MultiFormButtonBar";
+import { SidebarActions } from "../../../drawer/components/SidebarActions";
+import { SidebarContent } from "../../../drawer/components/SidebarContent";
+import { SidebarForm } from "../../../drawer/components/SidebarForm";
 
 interface PersonDetailsSidebarProps {
   title: string;
@@ -38,7 +38,7 @@ export function PersonDetailsSidebar(props: PersonDetailsSidebarProps) {
   const showEmailPhoneSection =
     person.phoneNumbers.length + person.emailAddresses.length > 0;
   return (
-    <Formik initialValues={person} onSubmit={props.onSubmit} enableReinitialize>
+    <Formik initialValues={person} enableReinitialize onSubmit={props.onSubmit}>
       {({ isSubmitting }) => (
         <SidebarForm>
           <SidebarContent title={props.title} subtitle="Ausgewählte Person">

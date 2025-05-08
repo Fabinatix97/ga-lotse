@@ -19,10 +19,7 @@ import {
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import {
-  BaseFacility,
-  BaseFacilityContactPerson,
-} from "@/lib/shared/components/facilitySidebar/types";
+import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
 
 export function streetAndHouseNumber(address?: {
   street?: string;
@@ -48,25 +45,6 @@ export function fullAddress(address?: {
     [streetAndHouseNumber(address), postalCodeAndCity(address)],
     ", ",
   );
-}
-
-/**
- * BaseFacility is still used in the legacy facility sidebar.
- */
-export function mapBaseFacilityToApiAddFacilityFileStateRequest(
-  baseFacility: BaseFacility & { differentBillingAddress?: void },
-): ApiAddFacilityFileStateRequest {
-  return {
-    name: baseFacility.name,
-    emailAddresses: baseFacility.emailAddresses,
-    phoneNumbers: baseFacility.phoneNumbers,
-    contactAddress: mapBaseAddressToApi(baseFacility.contactAddress),
-    differentBillingAddress: isNullish(baseFacility.billingAddress)
-      ? undefined
-      : mapBaseAddressToApi(baseFacility.billingAddress),
-    contactPersons: baseFacility.contactPersons.map(mapContactPersonToApi),
-    dataOrigin: ApiDataOrigin.Manual,
-  };
 }
 
 export function mapFacilityFormValuesToApiAddFacilityFileStateRequest(

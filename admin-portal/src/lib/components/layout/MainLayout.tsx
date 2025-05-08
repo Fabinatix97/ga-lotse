@@ -41,7 +41,7 @@ export function MainLayoutWithProviders({
   );
 }
 
-export function MainLayout({ children }: Readonly<PropsWithChildren>) {
+function MainLayout({ children }: Readonly<PropsWithChildren>) {
   return (
     <>
       <Heading />

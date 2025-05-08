@@ -37,7 +37,7 @@ export function isOneOfStagedEntity(
   );
 }
 
-export function isEditableRow<TData extends UniqueEntity & EditableEntity>(
+function isEditableRow<TData extends UniqueEntity & EditableEntity>(
   row: Row<TData> | Row<OrgUnit> | Row<Actor> | Row<Rule>,
 ): boolean {
   return (

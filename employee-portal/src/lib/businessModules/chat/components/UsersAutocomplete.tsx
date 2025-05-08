@@ -42,14 +42,6 @@ export function UsersAutocomplete({
         multiple={multiple}
         value={field.value}
         size="lg"
-        onChange={async (_, newValue) => {
-          if (multiple) {
-            const emptyValue: string[] = [];
-            await helpers.setValue(newValue ?? emptyValue);
-          } else {
-            await helpers.setValue(newValue);
-          }
-        }}
         placeholder={placeholder}
         options={usersList.map((opt) => opt.user_id)}
         getOptionLabel={(value) =>
@@ -145,8 +137,8 @@ export function UsersAutocomplete({
             );
             return (
               <Chip
-                variant="soft"
                 key={key}
+                variant="soft"
                 endDecorator={<ChipDelete {...tagProps} />}
                 color="primary"
               >
@@ -155,6 +147,14 @@ export function UsersAutocomplete({
             );
           })
         }
+        onChange={async (_, newValue) => {
+          if (multiple) {
+            const emptyValue: string[] = [];
+            await helpers.setValue(newValue ?? emptyValue);
+          } else {
+            await helpers.setValue(newValue);
+          }
+        }}
       />
       <Box sx={{ minHeight: "1.25rem" }}>
         {meta.error && (

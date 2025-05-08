@@ -5,9 +5,11 @@
 
 import { useTranslation } from "react-i18next";
 
+import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
+import { ContactAndAvailability } from "@/lib/businessModules/stiProtection/components/ContactAndAvailability";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import { ColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 import { ResultsStatusContent } from "./ResultsStatusContent";
@@ -15,6 +17,8 @@ import { ResultsStatusSidePanel } from "./ResultsStatusSidePanel";
 
 export function ResultsStatusPage() {
   const { t } = useTranslation("stiProtection/resultsStatus");
+  const { data: procedure } = useGetProcedure();
+  const { concern } = procedure;
 
   return (
     <PageLayout>
@@ -24,10 +28,11 @@ export function ResultsStatusPage() {
         >
           {t("title")}
         </PageTitle>
-        <TwoColumnGrid
-          content={<ResultsStatusContent />}
-          sidePanel={<ResultsStatusSidePanel />}
-        />
+        <ColumnGrid>
+          <ResultsStatusContent />
+          <ResultsStatusSidePanel />
+          <ContactAndAvailability concern={concern} />
+        </ColumnGrid>
       </PageContent>
     </PageLayout>
   );

@@ -19,19 +19,19 @@ import {
   mapToPersonAddRequest,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import {
+  mapOptionalValue,
+  mapRequiredValue,
+} from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-import { routes } from "@/config/routes";
-import { useDentalApi } from "@/contexts/dental";
-import { useCreateChild } from "@/features/children/api/mutations/overview";
-import { getChildrenByPersonQuery } from "@/features/children/api/queries/overview";
-import {
-  SearchChildForm,
-  SearchChildFormValues,
-} from "@/features/children/components/createChild/SearchChildForm";
+import { routes } from "../../../../config/routes";
+import { useDentalApi } from "../../../../contexts/dental";
+import { useCreateChild } from "../../api/mutations/overview";
+import { getChildrenByPersonQuery } from "../../api/queries/overview";
 
 import { ChildProcedureCard } from "./ChildProcedureCard";
+import { SearchChildForm, SearchChildFormValues } from "./SearchChildForm";
 
 const INITIAL_SEARCH_VALUES: SearchChildFormValues = {
   ...defaultSearchPersonValues(),
@@ -113,6 +113,6 @@ function mapToCreateChildRequest(
     ...child,
     year: mapRequiredValue(schoolYear),
     institutionId: mapRequiredValue(institutionId),
-    groupName: mapRequiredValue(groupName),
+    groupName: mapOptionalValue(groupName),
   };
 }

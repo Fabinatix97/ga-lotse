@@ -17,7 +17,7 @@ import {
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
-export interface ConfigureDataSourceStepProps
+interface ConfigureDataSourceStepProps
   extends SidebarStepContentProps<
     | ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel
     | ChooseAttributeStepOrConfigureDataSourceStepFormModel
@@ -29,22 +29,22 @@ export interface ConfigureDataSourceStepProps
 }
 
 export function ConfigureDataSourceStep(props: ConfigureDataSourceStepProps) {
+  if (props.isEvaluationTemplateBranch) {
+    return (
+      <ConfigureDataSourceFromTemplate
+        evaluationTemplateId={props.evaluationTemplateId!}
+        {...props}
+      />
+    );
+  }
+
   return (
-    <>
-      {props.isEvaluationTemplateBranch ? (
-        <ConfigureDataSourceFromTemplate
-          evaluationTemplateId={props.evaluationTemplateId!}
-          {...props}
-        />
-      ) : (
-        <ConfigureDataSource
-          name={props.dataSource!.name}
-          sensitivity={props.dataSource!.sensitivity}
-          anonymizationOptions={props.dataSource!.anonymizationOptions}
-          {...props}
-        />
-      )}
-    </>
+    <ConfigureDataSource
+      name={props.dataSource!.name}
+      sensitivity={props.dataSource!.sensitivity}
+      anonymizationOptions={props.dataSource!.anonymizationOptions}
+      {...props}
+    />
   );
 }
 

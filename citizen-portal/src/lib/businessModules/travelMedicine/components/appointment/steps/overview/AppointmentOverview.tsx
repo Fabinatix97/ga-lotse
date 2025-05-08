@@ -23,7 +23,7 @@ export function AppointmentOverview() {
 
   return (
     <FormSheet data-testid="appointment-overview">
-      <FormSheetTitle>{t("appointmentOverviewSection.title")}</FormSheetTitle>
+      <FormSheetTitle>{t("overview.title")}</FormSheetTitle>
       <AppointmentOverviewDetails />
       {!isMobile ? (
         !isLastStep && <AppointmentFormButtonBar />

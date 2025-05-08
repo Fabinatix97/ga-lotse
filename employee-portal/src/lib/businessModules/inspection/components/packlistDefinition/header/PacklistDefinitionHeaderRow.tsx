@@ -58,6 +58,9 @@ export function PacklistDefinitionHeaderRow({
 
       {readOnlyMode && (
         <ButtonLink
+          disabled={!canCreateNewRevision}
+          variant="plain"
+          startDecorator={<AddIcon />}
           onClick={
             onClickNewRevision
               ? () =>
@@ -68,9 +71,6 @@ export function PacklistDefinitionHeaderRow({
                   )
               : () => undefined
           }
-          disabled={!canCreateNewRevision}
-          variant="plain"
-          startDecorator={<AddIcon />}
         >
           Neue Version anlegen
         </ButtonLink>

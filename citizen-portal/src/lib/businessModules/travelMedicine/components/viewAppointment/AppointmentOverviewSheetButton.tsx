@@ -75,8 +75,8 @@ export function AppointmentOverviewSheetButton(
 
   return (
     <Button
-      color={"neutral"}
-      variant={"plain"}
+      color="neutral"
+      variant="plain"
       sx={{ padding: 0 }}
       onClick={() =>
         navigateToDetails(props.procedureId, props.appointment.procedureStepId)
@@ -161,8 +161,8 @@ export function AppointmentOverviewSheetButton(
           )}
         </AppointmentOverviewSectionGrid>
         <ChevronRightOutlined
-          color={"primary"}
-          size={"md"}
+          color="primary"
+          size="md"
           sx={{
             alignSelf: isMobile ? "start" : "center",
           }}

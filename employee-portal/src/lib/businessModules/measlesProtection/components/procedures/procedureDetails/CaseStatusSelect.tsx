@@ -48,7 +48,6 @@ export function CaseStatusSelect({
       <Select
         aria-label="Bearbeitungszustand"
         defaultValue={procedure.caseStatus}
-        onChange={onChange}
         variant="soft"
         color="warning"
         sx={{
@@ -59,6 +58,7 @@ export function CaseStatusSelect({
             placement: "bottom-start",
           },
         }}
+        onChange={onChange}
       >
         <SelectOptions options={optionsFromRecord(caseStatusNames)} />
       </Select>

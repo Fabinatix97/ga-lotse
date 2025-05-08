@@ -41,7 +41,7 @@ declare module "@tanstack/react-table" {
 
 export type CellStyle = "button";
 
-export interface TableProps<TData> {
+interface TableProps<TData> {
   data: TableOptions<TData>["data"];
   columns: TableOptions<TData>["columns"];
   initialColumnVisibility?: VisibilityState;
@@ -78,18 +78,16 @@ export function Table<TData extends UniqueEntity>(
     <Stack flexDirection="column" spacing={2}>
       <JoyTable stickyHeader noWrap sx={tableStyle} stripe="even">
         <TableHead
-          enableColumnHeaders={true}
+          enableColumnHeaders
           enableColumnFilter={false}
           reactTable={reactTable}
         />
         <tbody>
-          {
-            <EmptyTableHint
-              empty={!data.length}
-              allFiltered={!reactTable.getRowModel().rows.length}
-              columns={reactTable.getAllColumns().length}
-            />
-          }
+          <EmptyTableHint
+            empty={!data.length}
+            allFiltered={!reactTable.getRowModel().rows.length}
+            columns={reactTable.getAllColumns().length}
+          />
           {reactTable.getRowModel().rows.map((row) => {
             return (
               <Fragment key={row.id}>

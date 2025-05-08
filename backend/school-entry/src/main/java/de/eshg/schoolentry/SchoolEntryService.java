@@ -20,7 +20,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.LocationDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.*;
@@ -65,7 +65,7 @@ public class SchoolEntryService {
   private final ContactClient contactClient;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final AppointmentBlockService appointmentBlockService;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
   private final Clock clock;
   private final SchoolEntryProperties schoolEntryProperties;
   private final LabelService labelService;
@@ -84,7 +84,7 @@ public class SchoolEntryService {
       ContactClient contactClient,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       AppointmentBlockService appointmentBlockService,
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       Clock clock,
       SchoolEntryProperties schoolEntryProperties,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
@@ -100,7 +100,7 @@ public class SchoolEntryService {
     this.contactClient = contactClient;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.appointmentBlockService = appointmentBlockService;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
     this.clock = clock;
     this.schoolEntryProperties = schoolEntryProperties;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
@@ -459,7 +459,7 @@ public class SchoolEntryService {
 
     UUID appointmentLocationId = computeLocationIdForAppointment(procedure, schoolId, locationId);
 
-    if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE
+    if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
         && appointmentLocationId == null) {
       return List.of();
     }
@@ -482,7 +482,7 @@ public class SchoolEntryService {
   }
 
   UUID getAppointmentLocation(SchoolEntryProcedure procedure) {
-    return switch (appointmentBlockProperties.getLocationSelectionMode()) {
+    return switch (appointmentBlockConfig.getLocationSelectionMode()) {
       case NONE -> null;
       case SCHOOL -> procedure.getSchoolId();
       case HEALTH_DEPARTMENT -> procedure.getLocationId();
@@ -491,7 +491,7 @@ public class SchoolEntryService {
 
   private UUID computeLocationIdForAppointment(
       SchoolEntryProcedure procedure, UUID requestedSchoolId, UUID requestedLocationId) {
-    return switch (appointmentBlockProperties.getLocationSelectionMode()) {
+    return switch (appointmentBlockConfig.getLocationSelectionMode()) {
       case NONE -> null;
       case SCHOOL -> requestedSchoolId == null ? procedure.getSchoolId() : requestedSchoolId;
       case HEALTH_DEPARTMENT ->
@@ -544,7 +544,7 @@ public class SchoolEntryService {
     validator.validateChildHasAddress(childData);
 
     UUID locationId = getAppointmentLocation(procedure);
-    if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE
+    if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
         && locationId == null) {
       throw new BadRequestException("Appointment location is missing at procedure.");
     }
@@ -685,7 +685,7 @@ public class SchoolEntryService {
 
     updateSchoolId(procedure, procedure.getSchoolId(), request.schoolId());
 
-    if (appointmentBlockProperties.getLocationSelectionMode()
+    if (appointmentBlockConfig.getLocationSelectionMode()
         == LocationSelectionMode.HEALTH_DEPARTMENT) {
       updateLocationId(procedure, procedure.getLocationId(), request.locationId());
     } else {

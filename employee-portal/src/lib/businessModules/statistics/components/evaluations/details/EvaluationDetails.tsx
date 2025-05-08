@@ -146,9 +146,9 @@ export function EvaluationDetails(
       <OverlayBoundary>
         <EvaluationNameChangeModal
           open={isNameChangeModalOpen}
-          onClose={() => setIsNameChangeModalOpen(false)}
           initialName={props.title}
           evaluationId={props.evaluationId}
+          onClose={() => setIsNameChangeModalOpen(false)}
         />
       </OverlayBoundary>
       <InformationCards
@@ -161,8 +161,8 @@ export function EvaluationDetails(
         analyses={props.analyses}
         attributes={props.attributes}
         evaluatedDataAmountTotal={props.dataSource.datasetAmount}
-        onDiagramCreateClicked={openCreateDiagramSidebar}
         dataSourceSensitivity={props.dataSource.sensitivity}
+        onDiagramCreateClicked={openCreateDiagramSidebar}
       />
     </Stack>
   );

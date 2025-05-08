@@ -5,18 +5,11 @@
 
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
-import { OPTIONAL_TEETH } from "@/config/teeth";
+import { OPTIONAL_TEETH } from "../../config/teeth";
 
-import { ExaminationView, QuadrantNumber, ToothType } from "./types";
+import { QuadrantNumber, ToothType } from "./types";
 
 export const QUADRANT_NUMBERS: QuadrantNumber[] = ["Q1", "Q2", "Q3", "Q4"];
-
-export const JAW_VIEW_BY_QUADRANT: Record<QuadrantNumber, ExaminationView> = {
-  Q1: "UPPER_JAW",
-  Q2: "UPPER_JAW",
-  Q3: "LOWER_JAW",
-  Q4: "LOWER_JAW",
-};
 
 export const MIN_TOOTH_INDEX = 0;
 export const MAX_TOOTH_INDEX = 7;

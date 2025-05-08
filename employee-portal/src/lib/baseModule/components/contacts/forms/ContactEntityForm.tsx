@@ -108,27 +108,24 @@ export function ContactEntityForm({
               )}
               {isDefined(values.contactAddress) ? (
                 <Box
-                  component={"section"}
+                  component="section"
                   sx={{ display: "contents" }}
-                  aria-labelledby={"address-section-header"}
+                  aria-labelledby="address-section-header"
                 >
                   <Grid xxs={12}>
                     <Stack
                       gap={1}
-                      direction={"row"}
-                      justifyContent={"space-between"}
-                      alignItems={"center"}
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
                     >
-                      <Typography
-                        level={"title-lg"}
-                        id={"address-section-header"}
-                      >
+                      <Typography level="title-lg" id="address-section-header">
                         Kontaktadresse
                       </Typography>
                       {type === "PERSON" && (
                         <IconButton
-                          aria-label={"Kontaktadresse entfernen"}
-                          color={"primary"}
+                          aria-label="Kontaktadresse entfernen"
+                          color="primary"
                           onClick={() =>
                             setFieldValue("contactAddress", undefined, false)
                           }
@@ -140,10 +137,10 @@ export function ContactEntityForm({
                   </Grid>
                   <ContactAddressForm
                     type={values.contactAddress.type}
-                    name={"contactAddress"}
+                    name="contactAddress"
                   />
                   <OptionalBillingAddressForm
-                    name={"differentBillingAddress"}
+                    name="differentBillingAddress"
                     values={values.differentBillingAddress}
                   />
                 </Box>
@@ -166,28 +163,28 @@ export function ContactEntityForm({
                 <Divider />
               </Grid>
               <Grid
-                component={"section"}
+                component="section"
                 xxs={12}
-                data-testid={"email-address-array"}
-                aria-label={"E-Mail Adressen"}
+                data-testid="email-address-array"
+                aria-label="E-Mail Adressen"
               >
                 <InputArrayField
-                  name={"emailAddresses"}
+                  name="emailAddresses"
                   label={(index) => getIndexLabel("E-Mail-Adresse", index)}
-                  addMoreLabel={"E-Mail-Adresse hinzufügen"}
+                  addMoreLabel="E-Mail-Adresse hinzufügen"
                   fieldComponent={EmailField}
                 />
               </Grid>
               <Grid
-                component={"section"}
+                component="section"
                 xxs={12}
-                data-testid={"phone-number-array"}
-                aria-label={"Telefonnummern"}
+                data-testid="phone-number-array"
+                aria-label="Telefonnummern"
               >
                 <InputArrayField
-                  name={"phoneNumbers"}
+                  name="phoneNumbers"
                   label={(index) => getIndexLabel("Telefonnummer", index)}
-                  addMoreLabel={"Telefonnummer hinzufügen"}
+                  addMoreLabel="Telefonnummer hinzufügen"
                 />
               </Grid>
             </Grid>

@@ -26,15 +26,18 @@ import {
   ApiInventoryItemBookingHistory,
   ApiUser,
 } from "@eshg/base-api";
-import { DetailsSectionHeader, formatList } from "@eshg/lib-employee-portal";
+import {
+  DetailsSectionHeader,
+  Timeline,
+  TimelineEntry,
+  TimelineEntryIndicator,
+  formatList,
+} from "@eshg/lib-employee-portal";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 
-import { Timeline } from "@/lib/shared/components/timeline/Timeline";
-import { TimelineEntry } from "@/lib/shared/components/timeline/TimelineEntry";
-import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 
 const headerId = "inventory-management-history-header";
@@ -82,12 +85,12 @@ export function InventoryBooking({
       <Stack
         component="section"
         aria-labelledby={headerId}
-        direction={"row"}
-        justifyContent={"space-between"}
+        direction="row"
+        justifyContent="space-between"
       >
-        <Stack width={"100%"} gap={2}>
+        <Stack width="100%" gap={2}>
           <DetailsSectionHeader id={headerId} title={title} />
-          <Stack direction={"row"} gap={1}>
+          <Stack direction="row" gap={1}>
             <Stack flex={1}>
               <Timeline>
                 {elements.map((entry) => (
@@ -112,22 +115,22 @@ export function InventoryBooking({
             </Stack>
             <Stack gap={1}>
               <IconButton
-                aria-label={"Vorherige Seite"}
-                color={"primary"}
-                variant={"outlined"}
-                size={"sm"}
-                onClick={previousPage}
+                aria-label="Vorherige Seite"
+                color="primary"
+                variant="outlined"
+                size="sm"
                 disabled={disablePrevPage}
+                onClick={previousPage}
               >
                 <ExpandLessIcon />
               </IconButton>
               <IconButton
-                aria-label={"Nächste Seite"}
-                color={"primary"}
-                variant={"outlined"}
-                size={"sm"}
-                onClick={nextPage}
+                aria-label="Nächste Seite"
+                color="primary"
+                variant="outlined"
+                size="sm"
                 disabled={disableNextPage}
+                onClick={nextPage}
               >
                 <ExpandMoreIcon />
               </IconButton>

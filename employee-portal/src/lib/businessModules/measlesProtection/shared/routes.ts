@@ -17,11 +17,27 @@ export const routes = {
       progressEntries: `${proceduresPath}/${procedureId}/progress-entries`,
       syncFacility: (fileStateId: string, facilityVersion: number) =>
         `${proceduresPath}/${procedureId}/sync-facility/${fileStateId}/${facilityVersion}`,
+      syncAffectedPerson: (fileStateId: string, personVersion: number) =>
+        `${proceduresPath}/${procedureId}/sync-affected-person/${fileStateId}/${personVersion}`,
+      syncCustodian: (
+        custodianId: string,
+        fileStateId: string,
+        custodianVersion: number,
+      ) =>
+        `${proceduresPath}/${procedureId}/sync-custodian/${custodianId}/${fileStateId}/${custodianVersion}`,
     }),
     draft: (procedureId: string) => ({
       index: `${proceduresPath}/draft/${procedureId}`,
       syncFacility: (fileStateId: string, facilityVersion: number) =>
         `${proceduresPath}/draft/${procedureId}/sync-facility/${fileStateId}/${facilityVersion}`,
+      syncAffectedPerson: (fileStateId: string, personVersion: number) =>
+        `${proceduresPath}/draft/${procedureId}/sync-affected-person/${fileStateId}/${personVersion}`,
+      syncCustodian: (
+        custodianId: string,
+        fileStateId: string,
+        custodianVersion: number,
+      ) =>
+        `${proceduresPath}/draft/${procedureId}/sync-custodian/${custodianId}/${fileStateId}/${custodianVersion}`,
     }),
   },
   appointmentBlockGroups: {

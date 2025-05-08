@@ -55,9 +55,9 @@ export default function SyncPersonPage(props: DynamicPageProps) {
 
   return (
     <CentralFileSyncForm
+      title={formatPersonName(data.personDetailsDiff.fileState)}
       onAccept={handleSync}
       onCancel={() => router.back()}
-      title={formatPersonName(data.personDetailsDiff.fileState)}
     >
       <BasePersonDiffForm diff={data} />
     </CentralFileSyncForm>

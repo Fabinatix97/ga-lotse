@@ -35,7 +35,7 @@ export function useCertificateSidebar(): UseSidebarWithFormRefResult<Certificate
   });
 }
 
-export function CertificateSidebar(props: Readonly<CertificateSidebarProps>) {
+function CertificateSidebar(props: Readonly<CertificateSidebarProps>) {
   const postCertificate = usePostCertificate();
   const initialValues: CertificateFormValues = {
     ...props,
@@ -70,8 +70,8 @@ export function CertificateSidebar(props: Readonly<CertificateSidebarProps>) {
       formRef={props.formRef}
       procedureId={props.procedureId}
       stepsWithAppliedServices={props.stepsWithAppliedServices}
-      title={"Bescheinigung erstellen"}
-      submitButtonLabel={"Erstellen"}
+      title="Bescheinigung erstellen"
+      submitButtonLabel="Erstellen"
       onSubmit={handleSubmit}
       onCancel={props.onClose}
     />

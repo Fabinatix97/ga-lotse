@@ -9,7 +9,7 @@ import { SyntheticEvent } from "react";
 import {
   EnumSingleFilterDefinition,
   EnumSingleFilterValue,
-} from "@/features/filters/types/EnumSingleFilter";
+} from "../../types/EnumSingleFilter";
 
 interface EnumSingleFilterProps {
   definition: EnumSingleFilterDefinition;
@@ -40,9 +40,9 @@ export function EnumSingleFilter(props: EnumSingleFilterProps) {
     <Select
       placeholder={props.definition.placeholder}
       value={props.value?.selectedValue ?? null}
-      onChange={handleChange}
       sx={{ width: "100%" }}
       aria-label={props.definition.name}
+      onChange={handleChange}
     >
       {props.definition.options.map((option) => (
         <Option key={option.value} value={option.value}>

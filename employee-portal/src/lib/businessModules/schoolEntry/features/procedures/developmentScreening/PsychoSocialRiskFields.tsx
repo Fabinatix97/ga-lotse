@@ -57,8 +57,8 @@ export function PsychoSocialRiskFields(props: PsychoSocialRiskFieldsProps) {
       <Stack direction="row" gap={5} flexWrap="wrap">
         <SetAllBooleanSelect
           label="Alle"
-          onChange={setAllPsychSoz}
           sx={BOOLEAN_SELECT_STYLE}
+          onChange={setAllPsychSoz}
         />
         <Stack direction="row" gap={5} alignItems="center" flexWrap="wrap">
           {BOOLEAN_FIELDS.map((field) => (

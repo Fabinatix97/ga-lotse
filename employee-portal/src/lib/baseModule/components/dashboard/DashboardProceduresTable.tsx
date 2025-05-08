@@ -17,7 +17,7 @@ import {
 } from "@/lib/baseModule/components/procedures/columns";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 
-export const hiddenProceduresColumns: VisibilityState = {
+const hiddenProceduresColumns: VisibilityState = {
   createdAt: false,
   businessModule: false,
 };

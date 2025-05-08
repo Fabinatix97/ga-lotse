@@ -5,6 +5,7 @@
 
 import { isDefined, isEmpty } from "remeda";
 
+import { FileCardProps } from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAbstractFile,
@@ -16,7 +17,6 @@ import {
   ApiUpdateFileMetaDataRequest,
 } from "@eshg/lib-procedures-api";
 
-import { FileCardProps } from "@/lib/shared/components/FileCard";
 import {
   hasFileField,
   hasKeyDocumentTypeField,

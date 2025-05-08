@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Stack, Typography } from "@mui/joy";
+import { Typography } from "@mui/joy";
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
@@ -17,6 +17,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ColumnGridSidePanel } from "@/lib/shared/components/layout/grid";
 
 export function ResultsStatusSidePanel() {
   const { t } = useTranslation("stiProtection/resultsStatus");
@@ -29,7 +30,7 @@ export function ResultsStatusSidePanel() {
   const messageKey = hasResults ? "get_results" : "still_no_results";
 
   return (
-    <Stack gap={2} sx={{ gridArea: "sidebar" }}>
+    <ColumnGridSidePanel>
       <ContentSheet>
         <ContentSheetTitle>{t(`view.${messageKey}_title`)}</ContentSheetTitle>
         <Typography>{t(`view.${messageKey}_body`)}</Typography>
@@ -40,6 +41,6 @@ export function ResultsStatusSidePanel() {
         ) : null}
       </ContentSheet>
       <GoToChangePinCard />
-    </Stack>
+    </ColumnGridSidePanel>
   );
 }

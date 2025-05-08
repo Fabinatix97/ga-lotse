@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAddContact200Response } from "@eshg/base-api";
 import {
   DefaultSearchPersonForm,
   DefaultSearchPersonFormFields,
@@ -13,14 +12,18 @@ import {
   SelectContactField,
   formatInstitutionNameWithCategoryShort,
 } from "@eshg/lib-employee-portal";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  NullableFieldValue,
+  OptionalFieldValue,
+} from "@eshg/lib-portal/types/form";
 
-import { SearchGroupField } from "@/components/group/SearchGroupField";
-import { SCHOOL_OR_DAYCARE_CONTACT } from "@/config/contacts";
+import { Institution } from "../../../../api/models/Institution";
+import { SearchGroupField } from "../../../../components/group/SearchGroupField";
+import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 
 export interface SearchChildFormValues extends SearchPersonFormValues {
   schoolYear: OptionalFieldValue<number>;
-  institution: ApiAddContact200Response | null;
+  institution: NullableFieldValue<Institution>;
   groupName: OptionalFieldValue<string>;
 }
 
@@ -49,7 +52,7 @@ export function SearchChildForm(
       <SearchGroupField
         name="groupName"
         label="Wählen Sie eine Gruppe aus"
-        institutionId={props.values.institution?.id ?? ""}
+        institution={props.values.institution}
         freeSolo
       />
       <DefaultSearchPersonFormFields />

@@ -6,7 +6,7 @@
 import { Box, Card as JoyCard, Stack, Theme, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 
-export type metricsCardColors =
+type metricsCardColors =
   | "background"
   | "warning"
   | "primary"
@@ -54,26 +54,22 @@ export function FlashCard({
       }}
     >
       <Stack gap={1}>
-        <Stack
-          direction="row"
-          justifyContent={"space-between"}
-          paddingBottom={1}
-        >
+        <Stack direction="row" justifyContent="space-between" paddingBottom={1}>
           <Typography level="title-md" sx={{ color: "warning.700" }}>
             {title}
           </Typography>
           <Box
-            width={"8px"}
-            height={"8px"}
-            flexShrink={"0"}
-            bgcolor={"white"}
+            width="8px"
+            height="8px"
+            flexShrink="0"
+            bgcolor="white"
             borderRadius={8}
-          ></Box>
+          />
         </Stack>
         <Stack
           direction="row"
-          justifyContent={"space-between"}
-          alignItems={"center"}
+          justifyContent="space-between"
+          alignItems="center"
         >
           {icon}
           <Typography component="p" level="h4" sx={{ color: "warning.700" }}>

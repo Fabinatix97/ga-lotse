@@ -18,9 +18,9 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useTranslation } from "@/lib/i18n/client";
 import { useLocale } from "@/lib/i18n/useLocale";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -50,24 +50,30 @@ export function RebookAppointmentSidePanel({
     <ContentSheet>
       <ContentSheetTitle>{t("common.overview_title")}</ContentSheetTitle>
       <Stack gap={1} data-testid="appointment-summary">
-        <DetailsField
+        <DetailsItem
+          label={t("appointment_overview.concern")}
           value={t(`common.${concernTitleTranslationKey}`)}
           icon={<MedicalServicesOutlined />}
+          hiddenLabel
         />
         <>
           {values.date && (
-            <DetailsField
+            <DetailsItem
+              label={t("appointment_overview.date")}
               value={formatDate(values.date, "EEEE, d. MMMM y", { locale })}
               icon={<DateRange />}
+              hiddenLabel
             />
           )}
           {values.appointment?.start && (
-            <DetailsField
+            <DetailsItem
+              label={t("appointment_overview.time")}
               value={
                 formatDate(values.appointment.start, "HH:mm", { locale }) +
                 t("appointment_overview.clock")
               }
               icon={<AccessTimeOutlined />}
+              hiddenLabel
             />
           )}
         </>

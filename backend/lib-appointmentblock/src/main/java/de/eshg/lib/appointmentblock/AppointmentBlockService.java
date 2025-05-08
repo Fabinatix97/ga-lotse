@@ -30,7 +30,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentTypeRepository;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
@@ -70,7 +70,7 @@ public class AppointmentBlockService {
   private final ContactClient contactClient;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final AppointmentBlockValidator appointmentBlockValidator;
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
   private final Clock clock;
 
   public AppointmentBlockService(
@@ -81,7 +81,7 @@ public class AppointmentBlockService {
       ContactClient contactClient,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       AppointmentBlockValidator appointmentBlockValidator,
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       Clock clock) {
     this.appointmentBlockGroupRepository = appointmentBlockGroupRepository;
     this.appointmentBlockRepository = appointmentBlockRepository;
@@ -90,13 +90,13 @@ public class AppointmentBlockService {
     this.contactClient = contactClient;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.appointmentBlockValidator = appointmentBlockValidator;
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
     this.clock = clock;
   }
 
   private void checkForCalendarConflicts(
       List<UUID> usersForEvent, List<CreateAppointmentBlockData> appointmentBlockSlots) {
-    if (appointmentBlockProperties.isAllowAppointmentBlocksWithCalendarEventConflicts()
+    if (appointmentBlockConfig.isAllowAppointmentBlocksWithCalendarEventConflicts()
         || usersForEvent.isEmpty()) {
       return;
     }
@@ -279,7 +279,7 @@ public class AppointmentBlockService {
     if (consultants != null) {
       usersForEvent.addAll(consultants);
     }
-    if (appointmentBlockProperties.isCreateAppointmentBlockForCurrentUser()) {
+    if (appointmentBlockConfig.isCreateAppointmentBlockForCurrentUser()) {
       usersForEvent.add(CurrentUserHelper.getCurrentUserId());
     }
     if (usersForEvent.isEmpty()) {

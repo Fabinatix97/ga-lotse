@@ -9,7 +9,8 @@ dependencies {
     implementation project(':lib-contact')
     implementation project(':business-module-persistence-commons')
     implementation project(':lib-xlsx-import')
-    implementation project(":lib-statistics")
+    implementation project(':lib-statistics')
+    implementation project(':file-commons')
 
     implementation 'de.cronn:reflection-util:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'

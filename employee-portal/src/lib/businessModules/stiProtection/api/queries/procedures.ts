@@ -48,7 +48,7 @@ export function useStiProcedureQuery(procedureId?: string) {
   return useSuspenseQuery(options);
 }
 
-export function useStiProceduresQueryOptions(
+function useStiProceduresQueryOptions(
   page: PageRequest,
   sorting: TableSortingProps,
   filters: ProcedureFilters,
@@ -99,7 +99,7 @@ function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
   );
 }
 
-export function useStiProceduresSearchQueryOptions(searchQuery: string) {
+function useStiProceduresSearchQueryOptions(searchQuery: string) {
   const stiProtectionApi = useStiProtectionProcedureApi();
 
   return queryOptions({

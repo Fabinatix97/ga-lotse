@@ -14,7 +14,7 @@
     "@mui/material": "catalog:joy",
     "@tanstack/react-query": "catalog:common",
     "@tanstack/react-table": "catalog:common",
-    "asn1js": "3.0.5",
+    "asn1js": "3.0.6",
     "formik": "catalog:common",
     "i18next": "catalog:i18next",
     "i18next-resources-to-backend": "catalog:i18next",

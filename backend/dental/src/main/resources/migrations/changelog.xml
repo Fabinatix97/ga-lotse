@@ -52,5 +52,7 @@
   <include file="migrations/0042_extend_main_result_values.xml"/>
   <include file="migrations/0043_add_procedure_labels.xml"/>
   <include file="migrations/0044_add_prophylaxis_status.xml"/>
+  <include file="migrations/0045_drop_not_null_constraints_on_group_name.xml"/>
+  <include file="migrations/0046_remove_secondary_result2.xml"/>
 
 </databaseChangeLog>

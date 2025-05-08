@@ -10,6 +10,10 @@ import { isEmpty } from "remeda";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { isBlankString, isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isValidURL } from "@eshg/lib-portal/helpers/url";
+import {
+  validatePipe,
+  validatePositiveInteger,
+} from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { isInteger } from "@/lib/shared/helpers/guards";
@@ -37,15 +41,6 @@ export function validateNonNegativeInteger(value: OptionalFieldValue<number>) {
   }
 
   return "Bitte eine nicht-negative ganze Zahl angeben.";
-}
-
-export function validatePositiveInteger(value: OptionalFieldValue<number>) {
-  const isPositiveInteger = isInteger(value) && value > 0;
-  if (isEmptyString(value) || isPositiveInteger) {
-    return undefined;
-  }
-
-  return "Bitte eine positive ganze Zahl angeben.";
 }
 
 export function validatePositiveNumberWithAtMostTwoDecimalDigits(
@@ -134,4 +129,19 @@ export function validateRequiredBatchId(value: string) {
   } else {
     return validateBatchId(value);
   }
+}
+
+export const APPOINTMENT_DURATION_MIN_LENGTH = 1;
+export const APPOINTMENT_DURATION_MAX_LENGTH = 480;
+
+export function validateAppointmentDuration(value: OptionalFieldValue<number>) {
+  return validatePipe(validatePositiveInteger, () => {
+    let validationMessage;
+
+    if (!isEmptyString(value) && value > APPOINTMENT_DURATION_MAX_LENGTH) {
+      validationMessage = "Die Termindauer darf maximal 480 Minuten sein";
+    }
+
+    return validationMessage;
+  })(value);
 }

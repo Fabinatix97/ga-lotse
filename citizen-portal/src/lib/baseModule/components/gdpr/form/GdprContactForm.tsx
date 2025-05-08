@@ -14,7 +14,7 @@ import { ApiGdprProcedureType } from "@eshg/base-api";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { useTranslation } from "@/lib/i18n/client";
@@ -32,7 +32,7 @@ type ContactFormState = "initial" | "input" | "preview" | "submitted";
 
 export function GdprContactForm() {
   const { t } = useTranslation("gdpr");
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const [formState, setFormState] = useState<ContactFormState>("initial");
   const addGdprProcedure = useAddGdprProcedure();
 
@@ -115,9 +115,9 @@ export function GdprContactForm() {
                   {formState === "input" ? (
                     <>
                       <Button
-                        onClick={() => setFormState("initial")}
                         sx={{ minWidth: "fit-content" }}
                         variant="plain"
+                        onClick={() => setFormState("initial")}
                       >
                         {t("contact_form.cancel")}
                       </Button>
@@ -132,9 +132,9 @@ export function GdprContactForm() {
                   ) : (
                     <>
                       <Button
-                        onClick={() => setFormState("input")}
                         sx={{ minWidth: "fit-content" }}
                         variant="plain"
+                        onClick={() => setFormState("input")}
                       >
                         {t("contact_form.change_input")}
                       </Button>

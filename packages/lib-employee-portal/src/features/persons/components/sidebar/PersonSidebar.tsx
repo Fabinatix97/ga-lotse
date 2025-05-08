@@ -9,30 +9,27 @@ import { isDefined } from "remeda";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 
-import { SidebarWithFormRefProps } from "@/features/drawer/hooks/useSidebarWithFormRef";
-import { useSearchReferencePersonsQuery } from "@/features/persons/api/queries";
+import { useResetAlertContextOnChange } from "../../../../hooks/useResetAlertContextOnChange";
+import { SidebarWithFormRefProps } from "../../../drawer/hooks/useSidebarWithFormRef";
+import { useSearchReferencePersonsQuery } from "../../api/queries";
+import { PersonFormProps, PersonFormValues } from "../../types/personForm";
 import {
   DefaultPersonForm,
   DefaultPersonFormValues,
   defaultPersonFormValues,
-} from "@/features/persons/components/form/DefaultPersonForm";
-import { PersonSidebarForm } from "@/features/persons/components/form/PersonSidebarForm";
-import { AssociatedProceduresSearchResult } from "@/features/persons/components/search/AssociatedProceduresSearchResult";
+} from "../form/DefaultPersonForm";
+import { PersonSidebarForm } from "../form/PersonSidebarForm";
+import { AssociatedProceduresSearchResult } from "../search/AssociatedProceduresSearchResult";
 import {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,
-} from "@/features/persons/components/search/DefaultSearchPersonForm";
-import { PersonSearchResults } from "@/features/persons/components/search/PersonSearchResults";
+} from "../search/DefaultSearchPersonForm";
+import { PersonSearchResults } from "../search/PersonSearchResults";
 import {
   SearchPersonFormProps,
   SearchPersonFormValues,
   SearchPersonSidebar,
-} from "@/features/persons/components/search/SearchPersonSidebar";
-import {
-  PersonFormProps,
-  PersonFormValues,
-} from "@/features/persons/types/personForm";
-import { useResetAlertContextOnChange } from "@/hooks/useResetAlertContextOnChange";
+} from "../search/SearchPersonSidebar";
 
 import { PersonDetailsSidebar } from "./PersonDetailsSidebar";
 
@@ -66,6 +63,7 @@ interface AssociatedProceduresProps<TProcedure> {
     personId: string | undefined,
   ) => UseQueryOptions<any, DefaultError, TProcedure[], any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   cardComponent: (props: { procedure: TProcedure }) => ReactNode;
+  allowSaveWithExistingProcedures?: boolean;
 }
 
 const EMPTY_ASSOCIATED_PROCEDURES_QUERY = {
@@ -201,14 +199,14 @@ export function PersonSidebar<
       <SearchPersonSidebar<TSearchValues>
         searchFormTitle={props.title}
         sidebarFormRef={props.formRef}
-        onCancel={() => props.onClose(false)}
-        onBack={props.onBack}
         initialValues={state.searchState}
         searchFormComponent={SearchFormComponent}
         searching={
           state.mode === "search_results" &&
           searchReferencePersonsQuery.isLoading
         }
+        onCancel={() => props.onClose(false)}
+        onBack={props.onBack}
         onSearch={(values) =>
           setState((previous) => ({
             ...previous,
@@ -226,10 +224,10 @@ export function PersonSidebar<
         title={props.title}
         sidebarFormRef={props.formRef}
         loadingAssociatedProcedures={getAssociatedProceduresQuery.isLoading}
-        onCancel={() => props.onClose(false)}
-        onBack={() => setState((previous) => ({ ...previous, mode: "search" }))}
         inputs={state.searchState}
         persons={state.searchResult}
+        onCancel={() => props.onClose(false)}
+        onBack={() => setState((previous) => ({ ...previous, mode: "search" }))}
         onSelectPerson={(person) =>
           setState((previous) => ({
             ...previous,
@@ -256,9 +254,12 @@ export function PersonSidebar<
     return (
       <PersonSidebarForm<TCreateValues>
         title={props.title}
-        subtitle={"Person anlegen"}
+        subtitle="Person anlegen"
         submitLabel={props.submitLabel}
         sidebarFormRef={props.formRef}
+        addressRequired={props.addressRequired}
+        initialValues={state.createState}
+        component={CreateFormComponent}
         onCancel={() => props.onClose(false)}
         onBack={() =>
           setState((previous) => ({
@@ -274,9 +275,6 @@ export function PersonSidebar<
             })
             .then(() => props.onClose(true))
         }
-        addressRequired={props.addressRequired}
-        initialValues={state.createState}
-        component={CreateFormComponent}
       />
     );
   }
@@ -289,13 +287,25 @@ export function PersonSidebar<
     ) {
       return (
         <AssociatedProceduresSearchResult<TProcedure>
+          inputs={state.selectedPerson}
+          procedures={getAssociatedProceduresQuery.data}
+          procedureCard={associatedProcedures.cardComponent}
+          allowSaveWithExistingProcedures={
+            associatedProcedures.allowSaveWithExistingProcedures
+          }
+          submitLabel={props.submitLabel}
           onCancel={() => props.onClose(false)}
           onBack={() =>
             setState((previous) => ({ ...previous, mode: "search_results" }))
           }
-          inputs={state.selectedPerson}
-          procedures={getAssociatedProceduresQuery.data}
-          procedureCard={associatedProcedures.cardComponent}
+          onSubmit={(person) =>
+            props
+              .onSelect({
+                searchInputs: state.searchState,
+                person: person,
+              })
+              .then(() => props.onClose(true))
+          }
         />
       );
     } else {

@@ -33,7 +33,7 @@ export function NoAppointments({
         alignItems="center"
         spacing={2}
         sx={{ paddingBottom: "16px" }}
-        data-testid={`no-appointments`}
+        data-testid="no-appointments"
       >
         <DateRangeOutlined sx={{ fontSize: 70, color: "#97C3F0" }} />
         <Typography sx={{ fontWeight: "bold" }}>

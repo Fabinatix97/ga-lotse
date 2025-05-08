@@ -7,30 +7,26 @@ import { EditOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { ChipWithTooltip } from "@/components/chip/ChipWithTooltip";
-import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
+import { ProcedureLabel } from "../api/models/ProcedureLabel";
+import { ProcedureLabelChip } from "../components/ProcedureLabelChip";
 
 const columnHelper = createColumnHelper<ProcedureLabel>();
 
 interface ProcedureLabelColumnsProps {
   onEdit: (item: ProcedureLabel) => void;
   hasReadOnlyProcedureLabels: boolean;
+  canUserWrite: boolean;
 }
 
 export function procedureLabelColumns({
   onEdit,
   hasReadOnlyProcedureLabels,
+  canUserWrite,
 }: ProcedureLabelColumnsProps) {
   const defaultColumns = [
     columnHelper.accessor("name", {
       header: "Kennung",
-      cell: (props) => (
-        <ChipWithTooltip
-          name={props.row.original.name}
-          hexColor={props.row.original.hexColor}
-          modalTitle="Kennung"
-        />
-      ),
+      cell: (props) => <ProcedureLabelChip value={props.row.original} />,
       enableSorting: false,
       meta: {
         width: 240,
@@ -57,30 +53,32 @@ export function procedureLabelColumns({
       ]
     : [];
 
-  return [
-    ...defaultColumns,
-    ...readonlyColumns,
-    columnHelper.accessor("readonly", {
-      header: "Aktionen",
-      id: "actions",
-      cell: (props) =>
-        props.getValue() ? (
-          ""
-        ) : (
-          <Button
-            variant="plain"
-            color="neutral"
-            onClick={() => onEdit(props.cell.row.original)}
-            aria-label="Bearbeiten"
-            title="Bearbeiten"
-          >
-            <EditOutlined />
-          </Button>
-        ),
-      enableSorting: false,
-      meta: {
-        width: 80,
-      },
-    }),
-  ];
+  const actionColumns = canUserWrite
+    ? [
+        columnHelper.accessor("readonly", {
+          header: "Aktionen",
+          id: "actions",
+          cell: (props) =>
+            props.getValue() ? (
+              ""
+            ) : (
+              <Button
+                variant="plain"
+                color="neutral"
+                aria-label="Bearbeiten"
+                title="Bearbeiten"
+                onClick={() => onEdit(props.cell.row.original)}
+              >
+                <EditOutlined />
+              </Button>
+            ),
+          enableSorting: false,
+          meta: {
+            width: 80,
+          },
+        }),
+      ]
+    : [];
+
+  return [...defaultColumns, ...readonlyColumns, ...actionColumns];
 }

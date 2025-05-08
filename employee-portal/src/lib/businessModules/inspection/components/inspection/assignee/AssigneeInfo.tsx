@@ -5,7 +5,7 @@
 
 import { FormLabel } from "@mui/joy";
 
-export interface AssigneeInfoProps {
+interface AssigneeInfoProps {
   assigneeName: string;
 }
 

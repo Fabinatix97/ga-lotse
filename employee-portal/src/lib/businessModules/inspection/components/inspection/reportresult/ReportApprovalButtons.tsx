@@ -9,7 +9,7 @@ import { CheckOutlined, EditRoadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { useConfirmationDialog, useIsOffline } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -17,7 +17,6 @@ import { useApproveInspection } from "@/lib/businessModules/inspection/api/mutat
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function ReportApprovalButtons({
   inspection,

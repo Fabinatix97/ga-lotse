@@ -46,12 +46,12 @@ public class OrganisationPortalController {
   @GetMapping(path = "/documents/privacy-notice")
   @Operation(summary = "Get the privacy-notice document.")
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNoticeDe();
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicyDe();
+    return privacyDocumentService.getPrivacyPolicy();
   }
 }

@@ -8,7 +8,7 @@ import { isDefined } from "remeda";
 
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 
-import { ButtonBar } from "@/components/buttons/ButtonBar";
+import { ButtonBar } from "../buttons/ButtonBar";
 
 interface MultiFormButtonBarProps {
   onCancel?: () => void;
@@ -25,7 +25,7 @@ export function MultiFormButtonBar(props: MultiFormButtonBarProps) {
     <ButtonBar
       left={
         isDefined(props.onCancel) && (
-          <Button variant={"plain"} color={"primary"} onClick={props.onCancel}>
+          <Button variant="plain" color="primary" onClick={props.onCancel}>
             Abbrechen
           </Button>
         )
@@ -34,8 +34,8 @@ export function MultiFormButtonBar(props: MultiFormButtonBarProps) {
         <>
           {isDefined(props.onBack) && (
             <Button
-              variant={"soft"}
-              color={"neutral"}
+              variant="soft"
+              color="neutral"
               onClick={() => props.onBack?.()}
             >
               Zurück

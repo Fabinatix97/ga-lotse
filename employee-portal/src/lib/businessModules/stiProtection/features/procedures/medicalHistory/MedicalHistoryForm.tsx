@@ -11,9 +11,8 @@ import { SxProps } from "@mui/joy/styles/types";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   ApiConcern,
   ApiGetMedicalHistory200Response,
@@ -51,12 +50,6 @@ interface MedicalHistoryDocumentInfo {
   language?: MedicalHistoryDocumentLanguage;
   fileURL?: string;
 }
-
-export const AutoWidthHorizontalField = styled(HorizontalField)({
-  ".MuiStack-root": {
-    justifyContent: "space-between",
-  },
-});
 
 const PaddedDivider = styled(Divider)(({ theme }) => ({
   marginTop: theme.spacing(5),
@@ -118,8 +111,8 @@ export function MedicalHistoryForm({
           ? mapToFormValues(medicalHistory)
           : defaultMedicalHistoryFormValues()
       }
-      onSubmit={onSubmit}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values }) => (
         <FormPlus>
@@ -185,13 +178,13 @@ function DownloadButtons({
   return (
     <>
       <PrintButton
-        label={"Anamnesebogen auf Deutsch herunterladen"}
-        text={"Druckvorlage herunterladen (DE)"}
+        label="Anamnesebogen auf Deutsch herunterladen"
+        text="Druckvorlage herunterladen (DE)"
         onClick={() => fetchMedicalHistoryDocument(concern, "DE")}
       />
       <PrintButton
-        label={"Anamnesebogen auf Englisch herunterladen"}
-        text={"Druckvorlage herunterladen (EN)"}
+        label="Anamnesebogen auf Englisch herunterladen"
+        text="Druckvorlage herunterladen (EN)"
         onClick={() => fetchMedicalHistoryDocument(concern, "EN")}
       />
     </>
@@ -210,8 +203,8 @@ function PrintButton(props: PrintButtonProps) {
     <Button
       variant="plain"
       aria-label={props.label}
-      onClick={props.onClick}
       startDecorator={<Print />}
+      onClick={props.onClick}
     >
       {props.text}
     </Button>

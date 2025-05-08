@@ -84,10 +84,10 @@ function EditEarliestDateSidebar(
       )}
       procedureStepServices={procedureStepServices ?? []}
       formRef={props.formRef}
+      title="Buchbar ab bearbeiten"
+      submitLabel="Speichern"
       onCancel={props.onClose}
       onSubmit={handleSubmit}
-      title={"Buchbar ab bearbeiten"}
-      submitLabel={"Speichern"}
     />
   );
 }

@@ -57,13 +57,13 @@ export function ResourceCalendar(props: {
   return (
     <InformationSheet>
       <Stack
-        direction={"row"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
         paddingBottom={1.5}
-        flexWrap={"wrap"}
+        flexWrap="wrap"
       >
-        <Typography component={"h2"} level="h3">
+        <Typography component="h2" level="h3">
           Auslastung
         </Typography>
         {props.isTodayAvaliable && (

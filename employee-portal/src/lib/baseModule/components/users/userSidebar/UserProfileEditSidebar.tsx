@@ -101,8 +101,8 @@ function UserProfileEditSidebar({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleSubmit}
       enableReinitialize
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
@@ -129,13 +129,13 @@ function UserProfileEditSidebar({
               {isDefined(selfUser.email) && (
                 <InputField
                   name={fieldName("email")}
-                  label={"E-Mail-Adresse"}
+                  label="E-Mail-Adresse"
                   readOnly
                 />
               )}
 
               <PhoneNumberField
-                label={"Telefonnummer"}
+                label="Telefonnummer"
                 name={fieldName("phoneNumber")}
                 validate={phoneNumberValidator}
               />
@@ -144,8 +144,8 @@ function UserProfileEditSidebar({
                 <>
                   <Divider />
                   <DetailsCell
-                    name={"groups"}
-                    label={"Abteilung"}
+                    name="groups"
+                    label="Abteilung"
                     value={<GroupList groups={selfGroups} />}
                     valueIsDiv
                   />
@@ -156,8 +156,8 @@ function UserProfileEditSidebar({
                 <>
                   <Divider />
                   <DetailsCell
-                    name={"externalChatUsername"}
-                    label={"Chat-ID"}
+                    name="externalChatUsername"
+                    label="Chat-ID"
                     valueIsDiv
                     value={
                       <ChatUserId
@@ -174,7 +174,7 @@ function UserProfileEditSidebar({
           <SidebarActions>
             <MultiFormButtonBar
               submitting={isSubmitting}
-              submitLabel={"Speichern"}
+              submitLabel="Speichern"
               onCancel={() => onClose(false)}
             />
           </SidebarActions>

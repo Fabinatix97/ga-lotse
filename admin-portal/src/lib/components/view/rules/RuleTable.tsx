@@ -36,7 +36,7 @@ import {
 } from "@/lib/hooks/useRules";
 import { useRulesApi } from "@/lib/hooks/useRulesApi";
 
-export const NEW_RULE_PARENT_ID = "NEW_RULE_PARENT_ID";
+const NEW_RULE_PARENT_ID = "NEW_RULE_PARENT_ID";
 
 const columnHelper = createColumnHelper<Rule>();
 // eslint-disable-next-line func-style

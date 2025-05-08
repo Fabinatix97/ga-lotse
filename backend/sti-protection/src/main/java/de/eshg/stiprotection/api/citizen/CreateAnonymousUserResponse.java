@@ -12,11 +12,6 @@ import java.util.UUID;
 
 public record CreateAnonymousUserResponse(
     @Schema(
-            description = "ID of the anonymous citizen user",
-            example = "ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
-        @NotNull
-        UUID userId,
-    @Schema(
             description = "The access code for the anonymous citizen user",
             example = "Wzhu89yP4F728jVTT")
         @NotNull

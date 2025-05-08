@@ -64,5 +64,6 @@
   <include file="migrations/0054_add_markdown_documents.xml"/>
   <include file="migrations/0055_remove_security_txt.xml"/>
   <include file="migrations/0056_human_readable_person_id.xml"/>
-
+  <include file="migrations/0057_add_department_configuration_markdown_initialized.xml"/>
+  <include file="migrations/0058_privacy_documents_initialized.xml"/>
 </databaseChangeLog>

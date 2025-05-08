@@ -16,15 +16,13 @@ interface InfoPanelState {
   payload?: string;
 }
 
-export interface InfoPanelContextType {
+interface InfoPanelContextType {
   infoPanelState: InfoPanelState;
   setInfoPanelView: (view: InfoPanelView, payload?: string) => void;
   closeInfoPanel: () => void;
 }
 
-export const InfoPanelContext = createContext<InfoPanelContextType | null>(
-  null,
-);
+const InfoPanelContext = createContext<InfoPanelContextType | null>(null);
 
 export function InfoPanelProvider({ children }: RequiresChildren) {
   const [infoPanel, setInfoPanel] = useState<InfoPanelState>({

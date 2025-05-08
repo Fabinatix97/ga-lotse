@@ -118,7 +118,7 @@ export function isCategorical(valueType: AttributeType) {
   );
 }
 
-export function isInteger(valueType: AttributeType) {
+function isInteger(valueType: AttributeType) {
   return valueType === "IntegerAttribute";
 }
 
@@ -130,15 +130,15 @@ export function isNumeric(valueType: AttributeType) {
   );
 }
 
-export function isInterval(valueType: AttributeType) {
+function isInterval(valueType: AttributeType) {
   return isDecimalInterval(valueType) || isIntegerInterval(valueType);
 }
 
-export function isIntegerInterval(valueType: AttributeType) {
+function isIntegerInterval(valueType: AttributeType) {
   return valueType === "IntegerIntervalAttribute";
 }
 
-export function isDecimalInterval(valueType: AttributeType) {
+function isDecimalInterval(valueType: AttributeType) {
   return valueType === "DecimalIntervalAttribute";
 }
 

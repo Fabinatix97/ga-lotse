@@ -19,7 +19,7 @@ import {
   mapTableColumnHeadersToFlatAttributes,
 } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 
-export interface EvaluationDetailsTableView {
+interface EvaluationDetailsTableView {
   evaluationName: string;
   timeRangeStart: Date;
   timeRangeEnd: Date;

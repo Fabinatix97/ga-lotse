@@ -69,7 +69,7 @@ export function AppointmentDetailsSidePanel({
 
   return (
     <ContentSheet>
-      <Stack gap={"16px"}>
+      <Stack gap="16px">
         {!hasAccomplishedService && (
           <>
             <ContentSheetTitle sx={{ paddingBottom: "8px" }}>

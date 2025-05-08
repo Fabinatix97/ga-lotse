@@ -82,8 +82,8 @@ export function AppointmentCalendar({
   }
   return (
     <Box
-      onKeyDown={handleKeydown}
       aria-keyshortcuts="ArrowRight ArrowLeft ArrowDown ArrowUp Home End PageUp PageDown Space"
+      onKeyDown={handleKeydown}
     >
       <Row justifyContent="space-around">
         <MonthSelection
@@ -105,18 +105,18 @@ export function AppointmentCalendar({
           focusedDay={focusedDay}
           currentMonth={currentMonth}
           selectedDay={selectedDay}
-          onDateSelected={onDateSelected}
           appointments={appointments}
           padDays={padDays}
           showWeekdays={showWeekdays}
           locale={locale}
+          onDateSelected={onDateSelected}
         />
       </Row>
     </Box>
   );
 }
 
-export function MonthGrid({
+function MonthGrid({
   appointments,
   selectedDay,
   onDateSelected,
@@ -165,11 +165,11 @@ export function MonthGrid({
           appointments={appointments}
           selectedDay={selectedDay}
           focusedDay={focusedDay ?? null}
-          onDateSelected={onDateSelected}
-          onDayFocused={(day) => setFocusedDay(day)}
           currentInterval={currentInterval}
           locale={locale}
           isFirst={t === firstAvailableDay}
+          onDateSelected={onDateSelected}
+          onDayFocused={(day) => setFocusedDay(day)}
         />
       ))}
     </DaysGrid>

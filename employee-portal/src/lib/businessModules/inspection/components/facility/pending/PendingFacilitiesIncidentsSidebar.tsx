@@ -16,7 +16,7 @@ import {
 
 import { useGetIncidents } from "@/lib/businessModules/inspection/api/queries/incidents";
 
-export interface PendingFacilitiesIncidentsSidebarProps {
+interface PendingFacilitiesIncidentsSidebarProps {
   open: boolean;
   onClose: () => void;
   inspectionId: string;
@@ -46,7 +46,7 @@ function PendingFacilitiesIncidentsSidebarWithQueriesAndMutations({
       <SidebarContent title={`Vorkommnisse ${facilityName}`}>
         <Stack>
           {incidents.map((incident) => (
-            <IncidentTile incident={incident} key={incident.incidentId} />
+            <IncidentTile key={incident.incidentId} incident={incident} />
           ))}
         </Stack>
       </SidebarContent>
@@ -61,7 +61,7 @@ function IncidentTile({
     <Sheet variant="outlined" sx={{ mt: 1 }}>
       <Stack spacing={2}>
         <Stack>
-          <Typography component={"b"}>
+          <Typography component="b">
             <b>
               {incident.checklistNumber === undefined
                 ? `${incident.title}`

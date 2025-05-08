@@ -18,7 +18,7 @@ export interface FacilitySearchFormValues {
   name: string;
 }
 
-export interface FacilitySearchFormProps<TValues> {
+interface FacilitySearchFormProps<TValues> {
   title: string;
   loading: boolean;
   initialValues: TValues;
@@ -48,7 +48,7 @@ export function FacilitySearchForm<TValues extends FacilitySearchFormValues>(
           <SidebarActions>
             <MultiFormButtonBar
               submitting={props.loading || isSubmitting}
-              submitLabel={"Weiter"}
+              submitLabel="Weiter"
               onCancel={props.onCancel}
             />
           </SidebarActions>

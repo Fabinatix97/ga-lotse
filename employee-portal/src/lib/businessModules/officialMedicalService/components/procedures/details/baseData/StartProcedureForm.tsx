@@ -109,9 +109,9 @@ export function StartProcedureForm<
         <PersonSearchResults
           title={props.title}
           sidebarFormRef={props.sidebarFormRef}
-          onCancel={props.onCancel}
           inputs={state.searchState}
           persons={state.searchResult}
+          onCancel={props.onCancel}
           onSelectPerson={(person) => {
             setState((previous) => ({
               ...previous,
@@ -150,9 +150,14 @@ export function StartProcedureForm<
       {activeMode === "create" && (
         <PersonSidebarForm<TCreateValues>
           title={props.title}
-          subtitle={"Person anlegen"}
+          subtitle="Person anlegen"
           submitLabel={props.submitLabel}
           sidebarFormRef={props.sidebarFormRef}
+          addressRequired={props.addressRequired}
+          initialValues={state.createState}
+          component={
+            DefaultPersonForm as ComponentType<PersonFormProps<TCreateValues>>
+          }
           onCancel={props.onCancel}
           onBack={() =>
             setState((previous) => ({
@@ -164,11 +169,6 @@ export function StartProcedureForm<
             props.onSelect({
               person: values,
             })
-          }
-          addressRequired={props.addressRequired}
-          initialValues={state.createState}
-          component={
-            DefaultPersonForm as ComponentType<PersonFormProps<TCreateValues>>
           }
         />
       )}

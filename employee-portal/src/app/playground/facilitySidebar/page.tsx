@@ -40,25 +40,25 @@ export default function FacilitySidebarPlaygroundPage() {
 
   return (
     <StickyToolbarLayout
-      toolbar={<Toolbar title={"Facility Sidebar playground"} />}
+      toolbar={<Toolbar title="Facility Sidebar playground" />}
     >
       <MainContentLayout>
         <Stack gap={3}>
           <Button
-            onClick={() => facilitySidebar.open()}
             sx={{ width: "fit-content" }}
+            onClick={() => facilitySidebar.open()}
           >
             Default Sidebar
           </Button>
           <Button
-            onClick={() => extraSearchInputsFacilitySidebar.open()}
             sx={{ width: "fit-content" }}
+            onClick={() => extraSearchInputsFacilitySidebar.open()}
           >
             Sidebar with extra search inputs
           </Button>
           <Button
-            onClick={() => importFromOsmFacilitySidebar.open()}
             sx={{ width: "fit-content" }}
+            onClick={() => importFromOsmFacilitySidebar.open()}
           >
             WebSuche Import Sidebar
           </Button>
@@ -150,7 +150,7 @@ function ConfiguredImportFromOsmFacilitySidebar(
             color="success"
             sx={{ border: "1px solid #A1E8A1" }}
           >
-            <Typography level={"title-md"}>
+            <Typography level="title-md">
               Name der Importierten Einrichtung
             </Typography>
             <Typography>Portlandweg 4, 53227 Bonn</Typography>
@@ -173,8 +173,8 @@ function ExtendedSearchForm(props: FormikProps<ExtendedSearchFormValues>) {
   return (
     <DefaultFacilitySearchForm {...props}>
       <SelectField
-        name={"objectType"}
-        label={"Objekttyp"}
+        name="objectType"
+        label="Objekttyp"
         options={[
           {
             value: "SCHOOL",
@@ -185,7 +185,7 @@ function ExtendedSearchForm(props: FormikProps<ExtendedSearchFormValues>) {
             label: "Krankenhaus",
           },
         ]}
-        required={"Bitte einen Objekttyp angeben"}
+        required="Bitte einen Objekttyp angeben"
       />
     </DefaultFacilitySearchForm>
   );

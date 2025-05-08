@@ -80,10 +80,10 @@ export function AppointmentTypeOverviewTable() {
         {initialValues != null ? (
           <AppointmentTypeEditForm
             initialValues={initialValues}
-            getSubmitButtonLabel={"Speichern"}
+            getSubmitButtonLabel="Speichern"
+            title="Terminart bearbeiten"
             onSubmit={doSubmit}
             onCancel={closeAndCleanSidebarForm}
-            title={"Terminart bearbeiten"}
           />
         ) : null}
       </Sidebar>

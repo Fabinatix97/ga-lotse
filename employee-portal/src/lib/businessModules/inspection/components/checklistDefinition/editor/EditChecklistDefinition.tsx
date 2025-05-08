@@ -108,9 +108,9 @@ export function EditChecklistDefinition({
   return (
     <Formik
       initialValues={formData}
-      onSubmit={sendToBackend}
       enableReinitialize
       validateOnChange={false}
+      onSubmit={sendToBackend}
     >
       {({ isSubmitting }) => (
         <FormPlus>
@@ -165,10 +165,12 @@ function CantEditAlert({
             variant="solid"
             color="primary"
           >
-            Zur Lesansicht
+            Zur Leseansicht
           </InternalLinkButton>
         )
       }
+      role="note"
+      data-testid="alert"
     >
       Sie können diese Checklisten-Definitionen nicht bearbeiten.
     </Alert>

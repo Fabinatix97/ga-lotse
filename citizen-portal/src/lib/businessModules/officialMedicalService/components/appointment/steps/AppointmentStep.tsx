@@ -20,7 +20,7 @@ export function AppointmentStep({
   const { t } = useTranslation(["officialMedicalService/appointment"]);
 
   return (
-    <ContentSheet data-testid={"appointment-slot-form"}>
+    <ContentSheet data-testid="appointment-slot-form">
       <FormSheetTitle requiredTitle={t("common.requiredTitle")}>
         {t("appointment.title")}
       </FormSheetTitle>

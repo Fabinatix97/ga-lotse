@@ -23,14 +23,12 @@ import {
   FileType,
 } from "@eshg/lib-portal/components/formFields/file/types";
 import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
-import {
-  validateFile,
-  validateFileType,
-} from "@eshg/lib-portal/components/formFields/file/validators";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
+import {
+  useValidateFile,
+  useValidateFileType,
+} from "@eshg/lib-portal/hooks/useValidators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-
-import { useTranslation } from "@/lib/i18n/client";
 
 import { FileButton, StyledRemoveButton } from "./buttonVariants";
 
@@ -65,7 +63,7 @@ function renderLabel(
   );
 }
 
-export interface FileInformationTranslations {
+interface FileInformationTranslations {
   file: string;
   size: string;
 }
@@ -85,18 +83,16 @@ export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
 }
 
 export function FileField(props: Readonly<FileFieldProps>) {
-  const { i18n } = useTranslation();
+  const validateFileType = useValidateFileType();
+  const validateFile = useValidateFile();
   const acceptedFileTypes = resolveAcceptedFileTypes(props.accept);
-  const fileTypeErrorVal = validateFileType(
-    acceptedFileTypes,
-    i18n.resolvedLanguage ?? "de-DE",
-  );
+  const fileTypeErrorVal = validateFileType(acceptedFileTypes);
   const validate = validatePipe(
     fileTypeErrorVal,
-    validateFile(
-      acceptedFileTypes.flatMap((type) => type.extensions),
-      props.maxFileSize,
-    ),
+    validateFile({
+      acceptedExtensions: acceptedFileTypes.flatMap((type) => type.extensions),
+      maxFileSize: props.maxFileSize,
+    }),
     props.validate,
   );
   const field = useBaseField<File | null>({ ...props, validate });
@@ -142,9 +138,9 @@ export function FileField(props: Readonly<FileFieldProps>) {
       <Stack direction="row" flexWrap="wrap" gap={3} alignItems="center">
         <Stack direction="row" justifyContent="flex-start" flexGrow={1} gap={2}>
           {isFileSelected ? (
-            <CheckOutlined color={"success"} />
+            <CheckOutlined color="success" />
           ) : (
-            <CloseOutlined color={"danger"} />
+            <CloseOutlined color="danger" />
           )}
           <Stack>
             {renderLabel(props.label, { id: fileLabelId })}
@@ -169,11 +165,11 @@ export function FileField(props: Readonly<FileFieldProps>) {
           <Stack alignItems="end">
             {isFileSelected && (
               <StyledRemoveButton
+                sx={{ marginBottom: 0.5 }}
                 onClick={async () => {
                   fileInputRef.current!.value = "";
                   await field.helpers.setValue(null);
                 }}
-                sx={{ marginBottom: 0.5 }}
               >
                 {props.removeFile}
               </StyledRemoveButton>
@@ -182,8 +178,9 @@ export function FileField(props: Readonly<FileFieldProps>) {
             <FileButton
               activeDragOver={dropState === "copy"}
               error={field.error || dropState === "no-drop"}
-              onClick={handleButtonClick}
               aria-controls={fileLabelId}
+              aria-describedby={`${fileLabelId}-helper-text`}
+              onClick={handleButtonClick}
               onDragOver={handleFileDrag}
               onDrop={handleFileDrop}
               onDragLeave={handleFileDragLeave}
@@ -198,8 +195,8 @@ export function FileField(props: Readonly<FileFieldProps>) {
               placeholder={props.placeholder}
               accept={acceptedMimeTypes}
               required={field.required}
-              onChange={handleChange}
               tabIndex={-1}
+              onChange={handleChange}
             />
             {isDefined(field.helperText) && (
               <FormHelperText id={`${fileLabelId}-helper-text`}>

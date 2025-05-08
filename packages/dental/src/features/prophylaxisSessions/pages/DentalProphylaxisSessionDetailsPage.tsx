@@ -12,11 +12,11 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
-import { ProphylaxisSessionStatusChip } from "@/components/prophylaxisSession/ProphylaxisSessionStatusChip";
-import { routes } from "@/config/routes";
-import { ProphylaxisSessionDetails } from "@/features/prophylaxisSessions/components/prophylaxisSessionDetails/ProphylaxisSessionDetails";
-import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
-import { useSyncOutgoingProphylaxisSessionChanges } from "@/features/prophylaxisSessions/stores/prophylaxisSession/useSyncOutgoingProphylaxisSessionChanges";
+import { ProphylaxisSessionStatusChip } from "../../../components/prophylaxisSession/ProphylaxisSessionStatusChip";
+import { routes } from "../../../config/routes";
+import { ProphylaxisSessionDetails } from "../components/prophylaxisSessionDetails/ProphylaxisSessionDetails";
+import { useProphylaxisSessionStore } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { useSyncOutgoingProphylaxisSessionChanges } from "../stores/prophylaxisSession/useSyncOutgoingProphylaxisSessionChanges";
 
 export function DentalProphylaxisSessionDetailsPage() {
   const institutionName = useProphylaxisSessionStore(
@@ -40,7 +40,7 @@ export function DentalProphylaxisSessionDetailsPage() {
           afterTitle={
             <ProphylaxisSessionStatusChip
               status={prophylaxisSessionStatus}
-              data-testid={"status-chip"}
+              data-testid="status-chip"
             />
           }
         />

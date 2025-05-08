@@ -17,12 +17,12 @@ import {
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
-import { useProphylaxisSessionStore } from "@/features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
-import { formatFluoridationVarnishDescription } from "@/features/prophylaxisSessions/utils/formatters";
 import {
   DENTITION_TYPES,
   PROPHYLAXIS_TYPES,
-} from "@/translations/prophylaxisSession";
+} from "../../../../translations/prophylaxisSession";
+import { useProphylaxisSessionStore } from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { formatFluoridationVarnishDescription } from "../../utils/formatters";
 
 import { ProphylaxisSessionParticipantsTable } from "./ProphylaxisSessionParticipantsTable";
 import { useUpdateProphylaxisSessionSidebar } from "./UpdateProphylaxisSessionSidebar";
@@ -39,12 +39,12 @@ export function ProphylaxisSessionDetails() {
       <ContentPanel testId="prophylaxis-session-panel">
         <DetailsSection
           title="Allgemeine Informationen"
+          data-testid="prophylaxis-details"
           onEdit={() =>
             updateProphylaxisSidebar.open({
               prophylaxisSession: prophylaxisSession,
             })
           }
-          data-testid="prophylaxis-details"
         >
           <DetailsRow>
             <DetailsColumn>

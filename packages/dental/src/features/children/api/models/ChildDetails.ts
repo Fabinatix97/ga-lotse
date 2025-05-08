@@ -13,8 +13,8 @@ import {
 import {
   AnnualInstitution,
   mapAnnualInstitution,
-} from "@/api/models/AnnualInstitution";
-import { Institution } from "@/api/models/Institution";
+} from "../../../../api/models/AnnualInstitution";
+import { Institution } from "../../../../api/models/Institution";
 
 import { Child, mapChild } from "./Child";
 import { ChildExamination, mapChildExamination } from "./ChildExamination";

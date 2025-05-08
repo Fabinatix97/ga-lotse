@@ -5,7 +5,6 @@
 
 package de.eshg.dental.business.model;
 
-import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.domain.model.Examination;
@@ -18,7 +17,7 @@ import java.util.UUID;
 public record ProphylaxisSessionWithAugmentedData(
     ProphylaxisSession prophylaxisSession,
     ContactDto institution,
-    Map<Examination, GetPersonFileStateResponse> participants,
+    Map<Examination, ChildWithAugmentedData> participants,
     Map<UUID, UserDto> users,
     Map<UUID, List<Examination>> previousExaminationsByChildFileStateId,
     Map<UUID, List<FluoridationConsent>> allFluoridationConsentsByChildFileStateId) {}

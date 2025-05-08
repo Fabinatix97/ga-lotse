@@ -271,7 +271,7 @@ function columns(functions: {
   ];
 }
 
-export interface EvaluationsTableProps {
+interface EvaluationsTableProps {
   apiDataSources: ApiAvailableDataSource[];
   evaluationOverview: EvaluationOverview;
   loading: boolean;
@@ -399,8 +399,8 @@ export function EvaluationsTable({
                 <NoSearchResults
                   info="Keine Auswertungen vorhanden"
                   buttonLabel="Auswertung erstellen"
-                  onClick={onCreateEvaluationClick}
                   decorator={<Add />}
+                  onClick={onCreateEvaluationClick}
                 />
               </Box>
             )}
@@ -411,10 +411,10 @@ export function EvaluationsTable({
       {isDefined(nameChangeAction) && (
         <OverlayBoundary>
           <EvaluationNameChangeModal
-            open={true}
-            onClose={() => setNameChangeAction(undefined)}
+            open
             initialName={nameChangeAction.name}
             evaluationId={nameChangeAction.id}
+            onClose={() => setNameChangeAction(undefined)}
           />
         </OverlayBoundary>
       )}

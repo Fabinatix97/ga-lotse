@@ -6,9 +6,10 @@
 import { Button } from "@mui/joy";
 import { Formik } from "formik";
 
-import { ButtonBar, FormStack, TextareaField } from "@eshg/lib-employee-portal";
+import { ButtonBar, FormStack } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   mapOptionalValue,
   parseOptionalValue,
@@ -81,8 +82,8 @@ export function WaitingRoomPanel({
                 left={
                   <Button
                     variant="outlined"
-                    onClick={() => handleReset(setFieldValue)}
                     sx={{ flexGrow: 1 }}
+                    onClick={() => handleReset(setFieldValue)}
                   >
                     Zurücksetzen
                   </Button>

@@ -5,12 +5,8 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 
-import { useGetSelfUserPermissions } from "@/features/auth/api/queries";
-import {
-  AccessCheck,
-  checkAccess,
-  hasUserRole,
-} from "@/features/auth/utils/accessChecks";
+import { useGetSelfUserPermissions } from "../api/queries";
+import { AccessCheck, checkAccess, hasUserRole } from "../utils/accessChecks";
 
 export function useAccessControl() {
   const { data: selfUserPermissions } = useGetSelfUserPermissions();

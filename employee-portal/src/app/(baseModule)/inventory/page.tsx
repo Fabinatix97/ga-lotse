@@ -49,7 +49,7 @@ export default function InventoryOverviewPage() {
   const searchParams = useSearchParams();
   const params = parseSearchParams(searchParams);
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={"Inventar"} />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Inventar" />}>
       <MainContentLayout fullViewportHeight>
         <InventoryTable params={params} />
       </MainContentLayout>

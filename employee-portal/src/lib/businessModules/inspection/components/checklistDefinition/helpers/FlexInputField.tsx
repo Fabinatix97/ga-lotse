@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { Validator } from "@eshg/lib-portal/types/form";
 
 import {

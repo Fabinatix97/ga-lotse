@@ -26,7 +26,7 @@ export function UpdateEvaluationDataBasisStep(
         Neuer Betrachtungszeitraum
       </Typography>
       <TimeSpanField
-        initialExplicitStartAndEndChecked={true}
+        initialExplicitStartAndEndChecked
         name={props.fieldName("timeSpan")}
         label="Betrachtungszeitraum"
       />

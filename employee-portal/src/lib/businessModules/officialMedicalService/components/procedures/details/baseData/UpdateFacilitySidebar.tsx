@@ -46,13 +46,13 @@ export function UpdateFacilitySidebar({
   return (
     <FacilityForm
       title="Auftraggeber bearbeiten"
-      onSubmit={handleSubmit}
-      onCancel={onClose}
       sidebarFormRef={formRef}
       initialValues={mapApiFacilityToDefaultFacilityFormValues(facility)}
       mode="edit"
       submitLabel="Speichern"
-      allowMainContactPerson={true}
+      allowMainContactPerson
+      onSubmit={handleSubmit}
+      onCancel={onClose}
     />
   );
 }

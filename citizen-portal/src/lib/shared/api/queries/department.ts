@@ -9,7 +9,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
-import { DepartmentApi } from "@eshg/base-api";
+import { ApiCitizenPortalMarkdownName, DepartmentApi } from "@eshg/base-api";
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 
 import { useDepartmentApi } from "@/lib/shared/api/clients";
@@ -36,5 +36,22 @@ export function useGetDepartmentLogo() {
     queryKey: departmentApiQueryKey(["getDepartmentLogo"]),
     queryFn: () => departmentApi.getDepartmentLogo().then(URL.createObjectURL),
     throwOnError: false,
+  });
+}
+
+export function useGetCitizenPortalMarkdown(
+  name: ApiCitizenPortalMarkdownName,
+) {
+  const departmentApi = useDepartmentApi();
+  return useSuspenseQuery(getCitizenPortalMarkdownQuery(departmentApi, name));
+}
+
+function getCitizenPortalMarkdownQuery(
+  departmentApi: DepartmentApi,
+  name: ApiCitizenPortalMarkdownName,
+) {
+  return queryOptions({
+    queryKey: departmentApiQueryKey(["getCitizenPortalMarkdown", name]),
+    queryFn: () => departmentApi.getCitizenPortalMarkdown(name),
   });
 }

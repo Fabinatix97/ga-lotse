@@ -145,15 +145,15 @@ export function TextBlocksTable({
             left={
               <SearchFilter
                 tableControl={tableControl}
-                searchParamName={"searchQuery"}
-                label={"Suche"}
+                searchParamName="searchQuery"
+                label="Suche"
               />
             }
             right={
               <Button
-                type={"submit"}
-                onClick={handleAddButton}
+                type="submit"
                 startDecorator={<Add />}
+                onClick={handleAddButton}
               >
                 Textbaustein hinzufügen
               </Button>
@@ -179,8 +179,8 @@ export function TextBlocksTable({
         </TableSheet>
       </TablePage>
       <EditTextBlockSidebar
-        onClose={handleClose}
         open={state.open}
+        onClose={handleClose}
         {...state.textBlock}
       />
     </>

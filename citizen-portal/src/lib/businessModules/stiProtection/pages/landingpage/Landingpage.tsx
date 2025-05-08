@@ -17,12 +17,11 @@ import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 export function Landingpage({ concern }: { concern: ApiConcern }) {
   const { t } = useTranslation(["stiProtection/overview"]);
   const isSexWork = concern === ApiConcern.SexWork;
+  const i18nPrefix = isSexWork ? "sex_work" : "sti_consultation";
   return (
     <PageLayout banner="private">
       <PageContent>
-        <PageTitle>
-          {t(isSexWork ? "page_title_sex_work" : "page_title_sti_consultation")}
-        </PageTitle>
+        <PageTitle>{t(`${i18nPrefix}.page_title`)}</PageTitle>
         <TwoColumnGrid
           content={
             <LandingpageContent

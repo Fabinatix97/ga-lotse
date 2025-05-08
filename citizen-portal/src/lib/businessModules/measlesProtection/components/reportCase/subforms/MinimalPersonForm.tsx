@@ -11,7 +11,7 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import {
   FIRST_NAME_MAX_LENGTH,
@@ -50,7 +50,7 @@ const minimalPersonFormConfig = {
 };
 
 export function MinimalPersonForm(props: Readonly<NestedFormProps>) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper(props.name);
   return (
     <Stack gap={2} rowGap={2}>

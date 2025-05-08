@@ -9,6 +9,7 @@
   "dependencies": {
     "@eshg/base-api": "workspace:*",
     "@eshg/medical-registry-api": "workspace:*",
+    "@eshg/official-medical-service-api": "workspace:*",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",
     "@mui/material": "catalog:joy",
@@ -20,6 +21,7 @@
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-i18next": "catalog:i18next",
+    "react-markdown": "10.1.0",
     "remeda": "catalog:common",
     "uuid": "catalog:common",
     "valibot": "catalog:common"

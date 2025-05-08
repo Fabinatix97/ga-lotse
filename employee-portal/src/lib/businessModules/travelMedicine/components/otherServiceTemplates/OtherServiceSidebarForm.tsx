@@ -16,7 +16,11 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { useValidators } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  validatePipe,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
+import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 
 import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/shared/helpers/validators";
 
@@ -38,12 +42,12 @@ interface OtherServiceFormProps {
 export function OtherServiceSidebarForm(
   props: Readonly<OtherServiceFormProps>,
 ) {
-  const { validateLength } = useValidators();
+  const validateLength = useValidateLength();
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
@@ -59,7 +63,12 @@ export function OtherServiceSidebarForm(
                 name="fee"
                 label="Preis in €"
                 required="Bitte einen Preis angeben."
-                validate={validateNonNegativeNumberWithAtMostTwoDecimalDigits}
+                min={0}
+                max={999999}
+                validate={validatePipe(
+                  validateRange(0, 999999),
+                  validateNonNegativeNumberWithAtMostTwoDecimalDigits,
+                )}
               />
             </Stack>
           </SidebarContent>

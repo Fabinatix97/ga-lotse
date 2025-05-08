@@ -42,7 +42,6 @@ export function UserAutoCompleteField({
       multiple
       options={options}
       value={values}
-      onChange={(e, value) => setFieldValue("users", value)}
       getOptionLabel={(user) => formatUserName(user)}
       renderTags={(users, getTagProps) =>
         users.map((user, index) => (
@@ -64,6 +63,7 @@ export function UserAutoCompleteField({
           <UserOption user={user} />
         </AutocompleteOption>
       )}
+      onChange={(e, value) => setFieldValue("users", value)}
     />
   );
 }
@@ -72,7 +72,7 @@ function UserOption({ user }: { user: ApiUser }) {
   return (
     <>
       <ListItemDecorator>
-        <UserAvatar size={"sm"} user={user} />
+        <UserAvatar size="sm" user={user} />
       </ListItemDecorator>
       <ListItemContent>
         <Typography level="title-md">{formatUserName(user)}</Typography>
@@ -89,7 +89,7 @@ export function ErrorHints({
   return (
     <Stack gap={0.5} mt={3}>
       {erroneous && (
-        <Typography mb={2} color={"danger"} fontSize={"small"}>
+        <Typography mb={2} color="danger" fontSize="small">
           Bitte mindestens einen User auswählen.
         </Typography>
       )}

@@ -9,7 +9,7 @@ import { isNonNullish } from "remeda";
 
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 
-export type SearchParamValue =
+type SearchParamValue =
   | string
   | number
   | string[]

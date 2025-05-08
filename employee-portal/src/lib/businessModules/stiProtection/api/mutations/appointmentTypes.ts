@@ -13,7 +13,7 @@ import { useAppointmentTypeApi } from "@/lib/businessModules/stiProtection/api/c
 
 import { MutationPassThrough } from "./types";
 
-export interface UpdateAppointmentTypeRequestArgs {
+interface UpdateAppointmentTypeRequestArgs {
   request: ApiUpdateAppointmentTypeRequest;
   id: string;
 }

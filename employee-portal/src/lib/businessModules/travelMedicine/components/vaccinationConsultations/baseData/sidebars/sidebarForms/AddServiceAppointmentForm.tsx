@@ -126,9 +126,9 @@ export function AddServiceAppointmentForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
       enableReinitialize
       validate={validateForm}
+      onSubmit={props.onSubmit}
     >
       {({ isSubmitting, setFieldValue, setFieldTouched }) => (
         <SidebarForm ref={props.formRef}>

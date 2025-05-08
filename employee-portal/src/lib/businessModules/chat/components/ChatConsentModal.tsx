@@ -52,11 +52,11 @@ export function ChatConsentModal(props: ChatConsentModalProps) {
 
   return (
     <BaseModal
-      modalTitle="Hier koennten Ihre Nutzungsbedingungen stehen."
       key="chat-consent-modal"
+      modalTitle="Hier koennten Ihre Nutzungsbedingungen stehen."
       {...props}
-      onClose={handleCloseClick}
       data-testid="chat-consent-modal"
+      onClose={handleCloseClick}
     >
       <Stack direction="column" alignItems="center" spacing={2} marginTop={2}>
         <Box>

@@ -99,16 +99,16 @@ export function ProofTab({ procedureId }: Readonly<{ procedureId: string }>) {
         <Grid xxs={12} sm={6} xl={4}>
           <ProofSubmissionsCard
             proofSubmissions={proofSubmissions}
-            onClick={() => setOpenProof(true)}
             procedureClosed={procedureClosed}
+            onClick={() => setOpenProof(true)}
           />
         </Grid>
 
         <Grid xxs={12} sm={6} xl={4}>
           <FineCard
             monetaryFines={monetaryFines}
-            onClick={() => setOpenFine(true)}
             procedureClosed={procedureClosed}
+            onClick={() => setOpenFine(true)}
           />
         </Grid>
 
@@ -116,9 +116,9 @@ export function ProofTab({ procedureId }: Readonly<{ procedureId: string }>) {
           <AccessRestrictionCard
             procedure={procedure}
             accessRestriction={procedure.accessRestriction}
+            procedureClosed={procedureClosed}
             onClick={() => setOpenAccessRestriction(true)}
             onClickAddLetter={() => setOpenAccessRestrictionLetter(true)}
-            procedureClosed={procedureClosed}
           />
         </Grid>
         <Grid xxs={12} lg={6}>
@@ -163,7 +163,7 @@ function ProofSubmissionsCard({
       name="proofSubmission"
       sx={{ height: "100%" }}
     >
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+      <Stack spacing={3} alignItems="start" width="100%">
         {proofSubmissions.map((proof) => (
           <ProofTabEntry key={proof.externalId}>
             <DetailsItem
@@ -211,7 +211,7 @@ function FineCard({
 }: Readonly<FineCardProps>) {
   return (
     <InfoTile title="Bußgeld" name="fine" sx={{ height: "100%" }}>
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
+      <Stack spacing={3} alignItems="start" width="100%">
         {monetaryFines.length > 0 && (
           <Stack gap={1} sx={{ flexBasis: "auto" }}>
             {monetaryFines.map((fine) => (
@@ -253,13 +253,13 @@ function ProofRequestLetterCard({
 }: Readonly<ProofRequestLetterCardProps>) {
   return (
     <InfoTile
-      title={"Anschreiben Nachweisvorlage"}
+      title="Anschreiben Nachweisvorlage"
       name="proofSubmissionLetter"
       sx={{ height: "100%" }}
     >
-      <Stack spacing={3} width={"100%"} alignItems={"start"}>
+      <Stack spacing={3} width="100%" alignItems="start">
         {proofSubmissionLetters.map((letter, index) => (
-          <ProofTabEntry rowLayout key={index}>
+          <ProofTabEntry key={index} rowLayout>
             <DetailsItem
               label="Empfänger"
               value={formatName(

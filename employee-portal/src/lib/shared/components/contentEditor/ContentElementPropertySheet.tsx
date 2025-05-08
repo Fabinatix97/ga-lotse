@@ -33,7 +33,7 @@ export function ContentElementPropertySheet({
   sx,
 }: Readonly<ContentElementPropertySheetProps>) {
   return (
-    <InformationSheet sx={sx} dataTestId={"editor-properties"}>
+    <InformationSheet sx={sx} dataTestId="editor-properties">
       <Typography level="h3" component="p">
         Auswahl
       </Typography>

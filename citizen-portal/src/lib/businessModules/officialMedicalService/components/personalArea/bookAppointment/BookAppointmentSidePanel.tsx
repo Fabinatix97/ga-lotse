@@ -20,14 +20,14 @@ import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-se
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
-import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useTranslation } from "@/lib/i18n/client";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
+import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
 export function BookAppointmentSidePanel({
   procedure,
@@ -58,21 +58,33 @@ export function BookAppointmentSidePanel({
     <ContentSheet data-testid="overview">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
       <Stack gap={1} data-testid="appointment-summary">
-        <DetailsField
+        <DetailsItem
+          label={t("sidePanel.concernAndDuration", {
+            context: "label",
+          })}
           value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentTypeConfig?.standardDurationInMinutes })}`}
           icon={<MedicalServicesOutlined />}
+          hiddenLabel
         />
-        {values.appointment?.start && (
+        {values.appointment && (
           <>
-            <DetailsField
+            <DetailsItem
+              label={t("sidePanel.date", {
+                context: "label",
+              })}
               value={formatDateToFullReadableString(values.appointment?.start)}
               icon={<DateRange />}
+              hiddenLabel
             />
-            <DetailsField
-              value={t("sidePanel.dateAndTime", {
+            <DetailsItem
+              label={t("sidePanel.time", {
+                context: "label",
+              })}
+              value={t("sidePanel.time", {
                 appointmentStart: formatTime(values.appointment?.start),
               })}
               icon={<AccessTimeOutlined />}
+              hiddenLabel
             />
           </>
         )}

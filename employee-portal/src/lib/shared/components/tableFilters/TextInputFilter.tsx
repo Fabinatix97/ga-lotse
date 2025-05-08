@@ -37,13 +37,6 @@ export function TextInputFilter(
   return (
     <Input
       value={value}
-      onChange={(event) => setValue(event.target.value)}
-      onKeyUp={(event) => {
-        if (event.key === "Enter") {
-          updateSearchParam();
-        }
-      }}
-      onBlur={updateSearchParam}
       size="sm"
       sx={{
         width: 140,
@@ -51,6 +44,13 @@ export function TextInputFilter(
       }}
       placeholder={props.placeholder}
       aria-label={props.placeholder}
+      onChange={(event) => setValue(event.target.value)}
+      onKeyUp={(event) => {
+        if (event.key === "Enter") {
+          updateSearchParam();
+        }
+      }}
+      onBlur={updateSearchParam}
     />
   );
 }

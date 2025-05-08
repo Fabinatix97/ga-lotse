@@ -17,10 +17,7 @@ import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-import {
-  useInspectionApi,
-  useInspectionTestDataApi,
-} from "@/lib/businessModules/inspection/api/clients";
+import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 
 export function useStartInspection() {
   const inspectionApi = useInspectionApi();
@@ -96,16 +93,5 @@ export function useResolveInspectionDuplicate() {
   return useHandledMutation({
     mutationFn: (req: ResolveInspectionDuplicateRequest) =>
       inspectionApi.resolveInspectionDuplicateRaw(req).then(unwrapRawResponse),
-  });
-}
-
-export function useCreateTestData() {
-  const inspectionTestDataApi = useInspectionTestDataApi();
-  const snackbar = useSnackbar();
-  return useHandledMutation({
-    mutationFn: () => inspectionTestDataApi.createTestData(),
-    onSuccess: () => {
-      snackbar.confirmation("Testdaten erstellt.");
-    },
   });
 }

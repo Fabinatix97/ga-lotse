@@ -17,10 +17,10 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
-  TextareaField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiManualProgressEntryType } from "@eshg/lib-procedures-api";
@@ -107,29 +107,29 @@ function CreateProgressEntrySidebarContent({
             <SidebarContent title="Neuer Verlaufseintrag">
               <Stack spacing={3}>
                 <SelectField
-                  label={"Typ"}
-                  name={"type"}
+                  label="Typ"
+                  name="type"
                   options={buildEnumOptions(manualProgressEntryTypeNames)}
                   required="Bitte einen Typ auswählen."
                 />
                 {hasFileField(values.type) && (
                   <>
                     <FileField
-                      name={"file"}
-                      label={"Datei hochladen"}
+                      name="file"
+                      label="Datei hochladen"
                       accept={acceptedFileTypes(values.type)}
                       required="Bitte eine Datei auswählen."
                     />
                     <TextareaField
-                      name={"documentDescription"}
-                      label={"Dateibeschreibung"}
+                      name="documentDescription"
+                      label="Dateibeschreibung"
                     />
                   </>
                 )}
                 {hasKeyDocumentTypeField(values.type) && (
                   <SelectField
-                    label={"Dokumenttyp"}
-                    name={"keyDocumentType"}
+                    label="Dokumenttyp"
+                    name="keyDocumentType"
                     options={[
                       {
                         value: "",
@@ -138,7 +138,7 @@ function CreateProgressEntrySidebarContent({
                     ].concat(buildEnumOptions(keyDocumentTypes))}
                   />
                 )}
-                <TextareaField name={"text"} label={"Text"} />
+                <TextareaField name="text" label="Text" />
               </Stack>
             </SidebarContent>
             <SidebarActions>

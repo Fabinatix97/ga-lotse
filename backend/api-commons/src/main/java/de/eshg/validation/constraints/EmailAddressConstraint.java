@@ -17,11 +17,10 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {})
 @Target({ElementType.TYPE_USE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Email(
-    regexp =
-        "^(?=.{6,254})(?!\\.)(?!.*\\.\\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9]+(-+[A-Z0-9]+)*\\.)+[A-Z]{2,}$",
-    flags = Pattern.Flag.CASE_INSENSITIVE)
+@Email(regexp = EmailAddressConstraint.E_MAIL_PATTERN, flags = Pattern.Flag.CASE_INSENSITIVE)
 public @interface EmailAddressConstraint {
+  String E_MAIL_PATTERN =
+      "^(?=.{6,254})(?!\\.)(?!.*\\.\\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9]+(-+[A-Z0-9]+)*\\.)+[A-Z]{2,}$";
 
   String message() default "";
 

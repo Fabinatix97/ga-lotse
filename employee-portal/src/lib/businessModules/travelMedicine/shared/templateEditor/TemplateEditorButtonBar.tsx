@@ -33,16 +33,16 @@ export function TemplateEditorButtonBar({
               </InternalLinkButton>
               <SubmitButton
                 submitting={isSubmitting}
-                onClick={save}
                 variant="outlined"
                 disabled={disabled}
+                onClick={save}
               >
                 Entwurf speichern
               </SubmitButton>
               <SubmitButton
                 submitting={isSubmitting}
-                onClick={publish}
                 disabled={disabled}
+                onClick={publish}
               >
                 Veröffentlichen
               </SubmitButton>

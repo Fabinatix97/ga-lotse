@@ -8,6 +8,7 @@ import { ChipProps } from "@mui/joy";
 import {
   ApiDocumentStatus,
   ApiMedicalOpinionStatus,
+  ApiProcedureType,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
 
@@ -57,3 +58,5 @@ export const statusColorsWaitingStatus = {
   [ApiWaitingStatus.InConsultation]: "primary",
   [ApiWaitingStatus.Done]: "success",
 } satisfies Record<ApiWaitingStatus, ChipProps["color"]>;
+
+export const procedureTypes = [ApiProcedureType.OfficialMedicalService];

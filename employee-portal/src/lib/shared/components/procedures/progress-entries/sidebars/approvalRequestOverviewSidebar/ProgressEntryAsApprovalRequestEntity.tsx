@@ -28,39 +28,37 @@ export function ProgressEntryAsApprovalRequestEntity({
 
   const file = approvalRequestEntity.fileReference;
   return (
-    <>
-      <Stack spacing={1}>
-        <>
-          <Typography level={"body-xs"} data-testid="createdAtAndBy">
-            {buildLabel(
-              approvalRequestEntity.createdAt,
-              formatUserName(resolvedUsers[approvalRequestEntity.createdBy]),
-            )}
-          </Typography>
-          <Typography level={"title-md"} data-testid="entryTitle">
-            {
-              manualProgressEntryTitles[
-                approvalRequestEntity.manualProgressEntryType
-              ]
-            }
-          </Typography>
-          <Typography
-            level="body-xs"
-            whiteSpace="pre-wrap"
-            data-testid="entryNote"
-          >
-            {approvalRequestEntity.note}
-          </Typography>
-          {isDefined(file) &&
-            file.type !== "GenericFileReference" &&
-            (!file.deleted ? (
-              <FileCardWithDownload file={file} />
-            ) : (
-              <DeletionNote />
-            ))}
-        </>
-      </Stack>
-    </>
+    <Stack spacing={1}>
+      <>
+        <Typography level="body-xs" data-testid="createdAtAndBy">
+          {buildLabel(
+            approvalRequestEntity.createdAt,
+            formatUserName(resolvedUsers[approvalRequestEntity.createdBy]),
+          )}
+        </Typography>
+        <Typography level="title-md" data-testid="entryTitle">
+          {
+            manualProgressEntryTitles[
+              approvalRequestEntity.manualProgressEntryType
+            ]
+          }
+        </Typography>
+        <Typography
+          level="body-xs"
+          whiteSpace="pre-wrap"
+          data-testid="entryNote"
+        >
+          {approvalRequestEntity.note}
+        </Typography>
+        {isDefined(file) &&
+          file.type !== "GenericFileReference" &&
+          (!file.deleted ? (
+            <FileCardWithDownload file={file} />
+          ) : (
+            <DeletionNote />
+          ))}
+      </>
+    </Stack>
   );
 }
 

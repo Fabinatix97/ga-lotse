@@ -14,7 +14,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.rest.service.error.BadRequestException;
@@ -36,7 +36,7 @@ public class AppointmentBlockValidator {
   public static final String TECHNICAL_GROUP_MFAS = "technicalGroupMfas";
   public static final String TECHNICAL_GROUP_CONSULTANTS = "technicalGroupConsultants";
 
-  private final AppointmentBlockProperties appointmentBlockProperties;
+  private final AppointmentBlockConfig appointmentBlockConfig;
   private final UserApi userApi;
   private final ContactClient contactClient;
   private final Clock clock;
@@ -46,14 +46,14 @@ public class AppointmentBlockValidator {
   private final Optional<TechnicalGroup> groupConsultants;
 
   public AppointmentBlockValidator(
-      AppointmentBlockProperties appointmentBlockProperties,
+      AppointmentBlockConfig appointmentBlockConfig,
       UserApi userApi,
       ContactClient contactClient,
       Clock clock,
       @Qualifier(TECHNICAL_GROUP_PHYSICIANS) Optional<TechnicalGroup> groupPhysicians,
       @Qualifier(TECHNICAL_GROUP_MFAS) Optional<TechnicalGroup> groupMfas,
       @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants) {
-    this.appointmentBlockProperties = appointmentBlockProperties;
+    this.appointmentBlockConfig = appointmentBlockConfig;
     this.userApi = userApi;
     this.contactClient = contactClient;
     this.clock = clock;
@@ -136,8 +136,7 @@ public class AppointmentBlockValidator {
   }
 
   void validateLocation(UUID locationId) {
-    LocationSelectionMode locationSelectionMode =
-        appointmentBlockProperties.getLocationSelectionMode();
+    LocationSelectionMode locationSelectionMode = appointmentBlockConfig.getLocationSelectionMode();
 
     if (locationSelectionMode == LocationSelectionMode.NONE) {
       if (locationId != null) {

@@ -8,8 +8,8 @@ import { useShallow } from "zustand/react/shallow";
 
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 
-import { useExaminationStore } from "@/stores/examination/ExaminationStoreProvider";
-import { ElementContext } from "@/stores/examination/types";
+import { useExaminationStore } from "../ExaminationStoreProvider";
+import { ElementContext } from "../types";
 
 export function useElementFocus<TElement extends HTMLElement>(
   elementContext: ElementContext,

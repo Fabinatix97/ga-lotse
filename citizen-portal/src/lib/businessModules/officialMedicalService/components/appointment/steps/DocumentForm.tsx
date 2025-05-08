@@ -17,7 +17,7 @@ export function DocumentForm() {
   return (
     <ContentSheet
       sx={{ paddingX: byBreakpoint({ mobile: 0, desktop: 3 }) }}
-      data-testid={"documents-form"}
+      data-testid="documents-form"
     >
       <FormSheetTitle
         requiredTitle={t("common.requiredTitle")}

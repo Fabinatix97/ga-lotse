@@ -5,7 +5,7 @@
 
 import { ApiResponse } from "@eshg/base-api";
 
-import { ProcedureLabelResponse } from "@/features/procedureLabels/api/models/ProcedureLabel";
+import { ProcedureLabelResponse } from "../api/models/ProcedureLabel";
 
 export interface CreateProcedureLabelRequest {
   description?: string;

@@ -17,12 +17,12 @@ interface PaletteItemBase {
   name: string;
 }
 
-export interface PredefinedText extends PaletteItemBase {
+interface PredefinedText extends PaletteItemBase {
   type: PaletteItemType.TEXT;
   text: string;
 }
 
-export interface PredefinedTextBlock extends PaletteItemBase {
+interface PredefinedTextBlock extends PaletteItemBase {
   type: PaletteItemType.TEXTBLOCK;
   title: string;
   text: string;

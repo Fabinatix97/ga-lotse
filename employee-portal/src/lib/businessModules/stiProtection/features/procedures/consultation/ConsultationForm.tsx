@@ -56,8 +56,8 @@ export function ConsultationForm({
   return (
     <Formik
       initialValues={mapApiToForm(consultation)}
-      onSubmit={onSubmit}
       enableReinitialize
+      onSubmit={onSubmit}
     >
       {({ values }) => (
         <FormPlus>

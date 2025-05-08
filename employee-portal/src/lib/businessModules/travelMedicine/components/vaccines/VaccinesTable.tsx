@@ -61,44 +61,42 @@ export function VaccinesTable() {
   }
 
   return (
-    <>
-      <TablePage
-        controls={
-          <ButtonBar
-            right={
-              <Button
-                startDecorator={<AddIcon />}
-                onClick={() =>
-                  vaccineSidebar.open({
-                    vaccine: undefined,
-                    unusedInventoryVaccines:
-                      unusedInventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
-                    allDiseases: allDiseases,
-                  })
-                }
-              >
-                Impfstoff hinzufügen
-              </Button>
-            }
-          />
-        }
-      >
-        <TableSheet>
-          <DataTable
-            data={allVaccines}
-            columns={columns({
-              deleteEntry: deleteVaccineWithConfirmation,
-              editEntry: (vaccine) =>
+    <TablePage
+      controls={
+        <ButtonBar
+          right={
+            <Button
+              startDecorator={<AddIcon />}
+              onClick={() =>
                 vaccineSidebar.open({
-                  vaccine: vaccine,
+                  vaccine: undefined,
                   unusedInventoryVaccines:
                     unusedInventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
                   allDiseases: allDiseases,
-                }),
-            })}
-          />
-        </TableSheet>
-      </TablePage>
-    </>
+                })
+              }
+            >
+              Impfstoff hinzufügen
+            </Button>
+          }
+        />
+      }
+    >
+      <TableSheet>
+        <DataTable
+          data={allVaccines}
+          columns={columns({
+            deleteEntry: deleteVaccineWithConfirmation,
+            editEntry: (vaccine) =>
+              vaccineSidebar.open({
+                vaccine: vaccine,
+                unusedInventoryVaccines:
+                  unusedInventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
+                allDiseases: allDiseases,
+              }),
+          })}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

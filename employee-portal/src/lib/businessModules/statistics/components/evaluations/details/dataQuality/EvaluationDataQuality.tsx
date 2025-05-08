@@ -86,7 +86,7 @@ export function EvaluationDataQuality(data: ApiGetCompletenessDataResponse) {
       <DataQualityCards
         totalAttributesCount={totalAttributesCount}
         data={data.completenessOfAttributes}
-      ></DataQualityCards>
+      />
       <TablePage data-testid="evaluation-data-quality-table">
         <TableSheet>
           <DataTable
@@ -125,32 +125,32 @@ function DataQualityCards(props: {
       gap={2}
     >
       <FlashCard
-        color={"primary"}
-        title={"Anzahl der Attribute"}
+        color="primary"
+        title="Anzahl der Attribute"
         figure={`${props.totalAttributesCount}`}
         icon={<SummarizeOutlined sx={{ fontSize: "l" }} />}
       />
       <FlashCard
-        color={"primary"}
-        title={"Anteil leere Felder"}
+        color="primary"
+        title="Anteil leere Felder"
         figure={`${emptyFieldsMean.toFixed(2)} %`}
         icon={<IndeterminateCheckBoxOutlined sx={{ fontSize: "l" }} />}
       />
       <FlashCard
-        color={"primary"}
-        title={"Anteil unbekannte Werte"}
+        color="primary"
+        title="Anteil unbekannte Werte"
         figure={`${unknownValuesMean.toFixed(2)} %`}
         icon={<QuestionMarkOutlined sx={{ fontSize: "l" }} />}
       />
       <FlashCard
-        color={"danger"}
-        title={"Häufigkeit gesamt"}
+        color="danger"
+        title="Häufigkeit gesamt"
         figure={`${(emptyFieldsMean + unknownValuesMean).toFixed(2)} %`}
         icon={<MoodBadOutlined sx={{ fontSize: "l" }} />}
       />
       <FlashCard
-        color={"success"}
-        title={"Datenqualität"}
+        color="success"
+        title="Datenqualität"
         figure={`${(100 - emptyFieldsMean - unknownValuesMean).toFixed(2)} %`}
         icon={<DiamondOutlined sx={{ fontSize: "l" }} />}
       />

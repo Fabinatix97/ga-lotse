@@ -12,7 +12,7 @@ import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { useNavigateEffect } from "@eshg/lib-portal/hooks/useNavigateEffect";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { DrawerOpenOptions } from "@/features/drawer/types/drawer";
+import { DrawerOpenOptions } from "../types/drawer";
 
 interface DrawerContextValue {
   state: DrawerState;

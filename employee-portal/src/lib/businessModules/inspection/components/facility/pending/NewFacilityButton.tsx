@@ -37,7 +37,7 @@ export function NewFacilityButton() {
   });
 
   return (
-    <Button onClick={() => facilitySidebar.open()} startDecorator={<Add />}>
+    <Button startDecorator={<Add />} onClick={() => facilitySidebar.open()}>
       Neue Erstbesichtigung anlegen
     </Button>
   );

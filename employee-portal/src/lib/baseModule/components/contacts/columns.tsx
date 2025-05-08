@@ -125,20 +125,20 @@ export function contactTableColumns({
 
 function ContactType({ type }: { type: string }) {
   return (
-    <Stack justifyContent={"center"}>
+    <Stack justifyContent="center">
       {type === "PersonContact" ? (
         <PersonIcon
-          size={"sm"}
+          size="sm"
           aria-hidden={false}
-          titleAccess={"Person"}
-          aria-label={"Person"}
+          titleAccess="Person"
+          aria-label="Person"
         />
       ) : (
         <InstitutionIcon
-          size={"sm"}
+          size="sm"
           aria-hidden={false}
-          titleAccess={"Institution"}
-          aria-label={"Institution"}
+          titleAccess="Institution"
+          aria-label="Institution"
         />
       )}
     </Stack>

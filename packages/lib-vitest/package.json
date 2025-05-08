@@ -25,7 +25,6 @@
     "eslint-plugin-promise": "catalog:eslint",
     "eslint-plugin-unused-imports": "catalog:eslint",
     "prettier": "catalog:prettier",
-    "resolve-tspaths": "catalog:common",
     "tsup": "catalog:common",
     "typescript": "catalog:common",
     "typescript-eslint": "catalog:eslint",
