@@ -5,6 +5,7 @@
 
 import { FormControl, FormLabel, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useId } from "react";
 
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/businessModules/stiProtection/shared/constants";
 
 export function Examinations() {
+  const examinationDateId = useId();
   const { values } = useFormikContext<MedicalHistoryFormData>();
   return (
     <>
@@ -35,10 +37,13 @@ export function Examinations() {
               name={`examinations.${diseaseType}.hadExamination`}
             >
               <FormControl sx={{ gridColumn: 2 }}>
-                <FormLabel>Wenn ja, wann zuletzt?</FormLabel>
+                <FormLabel id={examinationDateId}>
+                  Wenn ja, wann zuletzt?
+                </FormLabel>
                 <MonthAndYearFields
                   fieldName={`examinations.${diseaseType}.examinationDate`}
                   date={examinationDate}
+                  aria-labelledby={examinationDateId}
                 />
               </FormControl>
             </YesOrNoWithFollowUp>

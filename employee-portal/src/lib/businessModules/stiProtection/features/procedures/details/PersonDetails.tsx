@@ -11,13 +11,13 @@ import {
   DetailsSection,
   EditButton,
   ResponsiveDivider,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { sufficientText } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { EDIT_PERSONAL_DATA_SEARCH_PARAM } from "./EditPersonalDataSidebar";
 
@@ -52,7 +52,7 @@ export function PersonDetails({
           <DetailsColumn>
             <DetailsItem
               label="Geburtsjahr"
-              value={procedure.person.yearOfBirth.toString()}
+              value={procedure.person.yearOfBirth}
             />
             <DetailsItem
               label="Biologisches Geschlecht"

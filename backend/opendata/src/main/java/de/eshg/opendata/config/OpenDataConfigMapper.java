@@ -5,8 +5,7 @@
 
 package de.eshg.opendata.config;
 
-import de.eshg.config.api.DocumentDto;
-import de.eshg.opendata.TermsOfUseHelper;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.opendata.api.OpenDataConfigDto;
 import de.eshg.opendata.api.UpdateOpenDataConfigRequest;
 import java.io.IOException;
@@ -23,19 +22,22 @@ final class OpenDataConfigMapper {
 
     return new OpenDataConfigDto(
         openDataConfiguration.getAuthor(),
-        new DocumentDto(
-            TermsOfUseHelper.TERMS_OF_USE_FILENAME,
-            openDataConfiguration.getTermsOfUseFileSizeBytes()),
+        MultiLangDocumentMapper.mapToDto(
+            openDataConfiguration.getTermsOfUse(),
+            OpenDataConfigService.TERMS_OF_USE_CONFIG_FILENAME),
         openDataConfiguration.getFallbackLicenseUrl());
   }
 
   public static OpenDataConfiguration mapToDomain(
-      UpdateOpenDataConfigRequest updateOpenDataConfigRequest, MultipartFile termsOfUse)
+      UpdateOpenDataConfigRequest updateOpenDataConfigRequest,
+      MultipartFile termsOfUseDe,
+      MultipartFile termsOfUseEn)
       throws IOException {
     OpenDataConfiguration openDataConfiguration = new OpenDataConfiguration();
     openDataConfiguration.setAuthor(updateOpenDataConfigRequest.author());
     openDataConfiguration.setFallbackLicenseUrl(updateOpenDataConfigRequest.fallbackLicenseUrl());
-    openDataConfiguration.setTermsOfUse(termsOfUse.getBytes());
+    openDataConfiguration.setTermsOfUse(
+        MultiLangDocumentMapper.mapToDomain(termsOfUseDe, termsOfUseEn));
     return openDataConfiguration;
   }
 }

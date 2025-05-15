@@ -8,7 +8,12 @@
 import { FormikProps } from "formik";
 import { useRef, useState } from "react";
 
-import { DataTable, Sidebar, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  Sidebar,
+  TableSheet,
+  useSearchParam,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiAppointmentTypeConfig } from "@eshg/sti-protection-api";
 
@@ -19,7 +24,6 @@ import {
   EditableAppointmentType,
 } from "@/lib/businessModules/stiProtection/components/appointmentTypes/AppointmentTypeEditForm";
 import { appointmentTypesColumns } from "@/lib/businessModules/stiProtection/components/appointmentTypes/columns";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export function AppointmentTypeOverviewTable() {
   const [sidebarOpenId, setSidebarOpenId] = useSearchParam("edit", "string");

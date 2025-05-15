@@ -15,6 +15,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -26,7 +27,6 @@ import {
 
 import { useUpdateAccessRestrictionMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import {
   ACCESS_RESTRICTION_FIELDS,

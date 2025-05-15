@@ -69,7 +69,12 @@ function FullDentitionHeader(props: ExaminationTitleProps) {
       <Typography id={props.titleId} level="h2">
         {props.children}
       </Typography>
-      <Stack direction="row" flexGrow={1} justifyContent="space-between">
+      <Stack
+        direction="row"
+        flexGrow={1}
+        justifyContent="space-between"
+        flexWrap="wrap"
+      >
         <ButtonLink onClick={findingsOverviewSidebar.open}>
           Befundwerte?
         </ButtonLink>

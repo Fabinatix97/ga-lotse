@@ -10,11 +10,13 @@ import static de.eshg.util.ResourceUtils.assertIsReadable;
 import de.eshg.base.config.BasePrivacyDocumentService.MandatoryInitialPrivacyDocuments;
 import de.eshg.base.config.persistence.entity.BasePrivacyDocumentsConfig;
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.departmentinfo.AbstractPrivacyDocumentService;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.initialization.InitialPrivacyDocuments;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.config.spring.DepartmentInfoPropertyBinding;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
@@ -37,8 +39,9 @@ public class BasePrivacyDocumentService
   BasePrivacyDocumentService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
-      MandatoryInitialPrivacyDocuments initialPrivacyDocuments) {
-    super(entityManager, transactionHelper, BasePrivacyDocumentsConfig.class);
+      MandatoryInitialPrivacyDocuments initialPrivacyDocuments,
+      AuditLogWriter auditLogWriter) {
+    super(entityManager, transactionHelper, auditLogWriter, BasePrivacyDocumentsConfig.class);
     this.initialPrivacyDocuments = initialPrivacyDocuments;
   }
 
@@ -95,7 +98,7 @@ public class BasePrivacyDocumentService
     if (!initialized) {
       return ConfigurationStatus.INCOMPLETE;
     }
-    return toConfigurationStatus(document);
+    return MultiLangDocumentMapper.mapToConfigurationStatus(document);
   }
 
   @ConfigurationProperties(DepartmentInfoPropertyBinding.DEFAULT_PROPERTY_PREFIX)

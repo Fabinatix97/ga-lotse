@@ -9,7 +9,7 @@ import {
   CalendarEventApi,
   Configuration,
   ContactApi,
-  DepartmentApi,
+  EmployeeDepartmentApi,
   FacilityApi,
   GdprProcedureApi,
   Icd10CodeApi,
@@ -19,6 +19,7 @@ import {
   PersonApi,
   ProcedureAggregationApi,
   PublicConfigApi,
+  PublicDepartmentApi,
   ResourceApi,
   TaskAggregationApi,
   TaskMetricsApi,
@@ -109,9 +110,14 @@ export function useNotificationAggregationApi() {
   return new NotificationAggregationApi(configuration);
 }
 
-export function useDepartmentApi() {
+export function useEmployeeDepartmentApi() {
   const configuration = useConfiguration();
-  return new DepartmentApi(configuration);
+  return new EmployeeDepartmentApi(configuration);
+}
+
+export function usePublicDepartmentApi() {
+  const configuration = useConfiguration();
+  return new PublicDepartmentApi(configuration);
 }
 
 export function useConfigApi() {

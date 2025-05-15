@@ -7,6 +7,7 @@
 
 import { use } from "react";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
@@ -26,10 +27,12 @@ export default function StiProtectionProcedureAnamnesisPage(
 
   return (
     <DisabledFormProvider disabled={!isOpen}>
-      <MedicalHistoryForm
-        procedure={procedure}
-        medicalHistory={medicalHistory}
-      />
+      <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
+        <MedicalHistoryForm
+          procedure={procedure}
+          medicalHistory={medicalHistory}
+        />
+      </MainContentLayout>
     </DisabledFormProvider>
   );
 }

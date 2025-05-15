@@ -55,6 +55,12 @@ export const eslintBaseConfig = defineConfig(
         },
       ],
 
+      "@typescript-eslint/switch-exhaustiveness-check": [
+        "error",
+        {
+          considerDefaultExhaustiveForUnions: true,
+        },
+      ],
       "@typescript-eslint/unbound-method": "off",
       "@typescript-eslint/no-misused-promises": [
         "error",

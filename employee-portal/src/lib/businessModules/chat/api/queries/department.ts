@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 
-import { useDepartmentApi } from "@/lib/baseModule/api/clients";
+import { usePublicDepartmentApi } from "@/lib/baseModule/api/clients";
 import { departmentApiQueryKey } from "@/lib/businessModules/chat/api/queries/apiQueryKeys";
 
 function getDepartmentQueryKey() {
@@ -15,7 +15,7 @@ function getDepartmentQueryKey() {
 }
 
 export function useGetDepartment() {
-  const departmentApi = useDepartmentApi();
+  const departmentApi = usePublicDepartmentApi();
   return useQuery({
     ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: getDepartmentQueryKey(),

@@ -19,7 +19,6 @@ import {
 
 import { useGetFacilityHistory } from "@/lib/businessModules/inspection/api/queries/facility";
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
 import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 
@@ -34,7 +33,6 @@ export function InspectionHistoryTable(
     inspectionId: string;
   }>,
 ) {
-  const isOfflineEnabled = useIsOfflineFeatureEnabled();
   const isOffline = useIsOffline();
   const { data: inspection } = useGetInspection(props.inspectionId);
 
@@ -51,13 +49,13 @@ export function InspectionHistoryTable(
   });
   const columns = createInspectionHistoryColumns(
     props.inspectionId,
-    isOfflineEnabled && !isOffline,
+    !isOffline,
   );
 
   const router = useRouter();
 
   function handleClick(row: Row<ApiInspPendingFacility>) {
-    if (!isOfflineEnabled || !isOffline) {
+    if (!isOffline) {
       router.push(getPendingFacilityRowRoute(row));
     }
 

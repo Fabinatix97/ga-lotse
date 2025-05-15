@@ -13,4 +13,4 @@ public record SchoolInfoLetterData(
     DepartmentLogo departmentLogo,
     Address office,
     Address school,
-    SchoolInfoLetterExamination examination) {}
+    SchoolInfoLetterExaminationDto examination) {}

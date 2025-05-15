@@ -7,7 +7,8 @@
 
 import { use } from "react";
 
-import { ApiUserRole } from "@eshg/base-api";
+import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
+import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
@@ -17,13 +18,8 @@ import {
   useProcedureApi,
   useProgressEntryApi,
 } from "@/lib/businessModules/travelMedicine/api/clients";
-import {
-  fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/travelMedicine/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/travelMedicine/shared/moduleUserGroup";
-import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
 export default function TravelMedicineProgressEntries(
   props: DynamicPageProps<EditInspectionRouteParams>,
@@ -37,15 +33,14 @@ export default function TravelMedicineProgressEntries(
 
   return (
     <ProgressEntriesPage
+      businessModule={ApiBusinessModule.TravelMedicine}
       procedureId={id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.TravelMedicineLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
-      progressEntryApiQueryKey={progressEntryApiQueryKey}
       progressEntryApi={progressEntryApi}
       procedureApi={procedureApi}
-      fileApiQueryKey={fileApiQueryKey}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
     />

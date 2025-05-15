@@ -15,6 +15,7 @@ import {
   FileCard,
   FileCardActionProps,
   FileField,
+  useGetPublicConfig,
 } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
@@ -23,7 +24,6 @@ import {
   FileType,
 } from "@eshg/lib-portal/components/formFields/file/types";
 
-import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
 import { useDeleteChecklistFile } from "@/lib/businessModules/inspection/api/mutations/checklist";
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
@@ -55,7 +55,7 @@ export function ChecklistFileElement({
   onChange,
   readOnly = false,
 }: Readonly<ChecklistFileElementProps>) {
-  const { data: config } = useServerConfig();
+  const { data: config } = useGetPublicConfig();
   const uploadTooltipTitleId = useId();
   if (element.type !== "IMAGE" && element.type !== "AUDIO") {
     return;

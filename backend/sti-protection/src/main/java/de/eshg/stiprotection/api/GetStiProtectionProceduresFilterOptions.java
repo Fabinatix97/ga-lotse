@@ -26,7 +26,7 @@ public record GetStiProtectionProceduresFilterOptions(
         LocalDate creationDateEnd,
     @BindParam("yearOfBirth")
         @Parameter
-        @Schema(type = "integer", description = "Indicates the year of birth of the person.")
+        @Schema(description = "Indicates the year of birth of the person.")
         @Past
         Year yearOfBirth,
     @Schema(description = "Start date of the appointment.")

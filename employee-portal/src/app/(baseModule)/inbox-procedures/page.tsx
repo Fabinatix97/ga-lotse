@@ -10,6 +10,7 @@ import { useState } from "react";
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
+  RestrictedPage,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
@@ -28,7 +29,6 @@ import {
   mapValuesToFile,
 } from "@/lib/baseModule/components/inboxProcedures/mapper";
 import { InboxAwareBusinessModule } from "@/lib/baseModule/components/inboxProcedures/types";
-import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 const initialValues: CreateInboxProcedureValues = {
   businessModule: "",

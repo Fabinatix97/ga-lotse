@@ -2518,7 +2518,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -3133,6 +3133,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -4841,6 +4842,7 @@
             "example" : "UUID_2"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"

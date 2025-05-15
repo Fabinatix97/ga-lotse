@@ -19,8 +19,7 @@ public record PersonDto(
         @NotNull
         UUID id,
     @NotNull GenderDto gender,
-    @Schema(description = "The year of birth of the person.", example = "2000", type = "integer")
-        @NotNull
+    @Schema(description = "The year of birth of the person.", example = "2000") @NotNull
         Year yearOfBirth,
     @Schema(description = "The prefered pronouns for the person.", example = "xier / dier")
         String pronouns,

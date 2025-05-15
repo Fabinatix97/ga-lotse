@@ -12,6 +12,7 @@ import {
   DrawerProps,
   FileCard,
   OverlayBoundary,
+  PROCEDURE_TYPE_NAMES,
   SidebarActions,
   SidebarContent,
   formatList,
@@ -27,7 +28,6 @@ import {
 
 import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";
 import { UseCloseInboxProcedure } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
 import {
@@ -137,7 +137,7 @@ function InboxProcedureSection({
   const creatorName = formatUserName(creatorUser);
   const procedureTypeName =
     inboxProcedureType !== undefined
-      ? procedureTypeNames[inboxProcedureType]
+      ? PROCEDURE_TYPE_NAMES[inboxProcedureType]
       : undefined;
 
   return (

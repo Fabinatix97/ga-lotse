@@ -46,7 +46,7 @@ export function MessageNotification({
   return (
     <Card
       variant="plain"
-      data-testid="notification"
+      data-testid={`notification-${sender?.displayName}`}
       size="sm"
       slotProps={{
         root: {
@@ -85,6 +85,7 @@ export function MessageNotification({
               )}
               <Typography
                 level="title-md"
+                data-testid="sender-name"
                 sx={{
                   fontWeight: "bold",
                   height: "1.5rem",
@@ -116,6 +117,7 @@ export function MessageNotification({
                 ? message.content
                 : `${sender?.displayName}: ${message.content}`}
               <Typography
+                data-testid="timestamp"
                 component="span"
                 flexShrink={0}
                 paddingLeft="4px"

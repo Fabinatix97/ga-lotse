@@ -562,6 +562,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -592,7 +593,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -620,17 +621,31 @@
         "type" : "string",
         "enum" : [ "GERMAN", "ENGLISH" ]
       },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "OpeningHours" : {
         "required" : [ "de", "en" ],
         "type" : "object",
         "properties" : {
           "de" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
             }
           },
           "en" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -652,18 +667,6 @@
           "totalNumberOfEntities" : {
             "type" : "integer",
             "format" : "int64"
-          }
-        }
-      },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
           }
         }
       },

@@ -123,6 +123,7 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
             <IconButton
               color="danger"
               variant="outlined"
+              aria-label="Zeile löschen"
               sx={{ marginTop: "auto" }}
               onClick={() => deleteRow(i)}
             >

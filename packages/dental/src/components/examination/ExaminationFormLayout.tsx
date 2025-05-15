@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { ApiGender } from "@eshg/base-api";
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { ProcedureLabel, useSidenav } from "@eshg/lib-employee-portal";
+import { useIsBreakpointDown } from "@eshg/lib-portal/hooks/theme";
 
 import { ExaminationResultWithDate } from "../../api/models/ExaminationResult";
 import { FullDentitionFormSection } from "../fullDentition/FullDentitionFormSection";
@@ -18,6 +19,7 @@ import { FullDentitionFormSection } from "../fullDentition/FullDentitionFormSect
 import { AdditionalInformationFormSection } from "./AdditionalInformationFormSection";
 import { AutomatedValuesSection } from "./AutomatedValuesSection";
 import { ExaminationChildDetailsSection } from "./ExaminationChildDetailsSection";
+import { InstructionValuesSection } from "./InstructionValuesSection";
 import { NoteFormSection } from "./NoteFormSection";
 
 interface ExaminedChild {
@@ -66,6 +68,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
   );
   const note = <NoteFormSection />;
 
+  const isLowerResolution = useIsBreakpointDown("xl");
   useCollapseSidenavOnMount();
 
   if (!(isScreening || isFluoridation)) {
@@ -97,6 +100,32 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
     );
   }
 
+  const automatedValues = (
+    <AutomatedValuesSection
+      dateOfExamination={dateAndTime}
+      participantDateOfBirth={child.dateOfBirth}
+      previousExaminations={previousExaminations}
+    />
+  );
+  const instructionValues = <InstructionValuesSection />;
+
+  if (isLowerResolution) {
+    return (
+      <Grid container columns={9} spacing={3}>
+        <Grid xxs={9}>
+          <FullDentitionFormSection />
+        </Grid>
+        <Grid xxs={5.5}>{additionalInformation}</Grid>
+        <Grid xxs={3.5}>{childDetails}</Grid>
+        <Grid container xxs={4.5} columns={1}>
+          <Grid xxs={1}>{automatedValues}</Grid>
+          <Grid xxs={1}>{note}</Grid>
+        </Grid>
+        <Grid xxs={4.5}>{instructionValues}</Grid>
+      </Grid>
+    );
+  }
+
   return (
     <Grid container columns={11} spacing={3}>
       <Grid xxs={11}>
@@ -107,12 +136,9 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
         <Grid xxs={3}>{childDetails}</Grid>
         <Grid xxs={8}>{note}</Grid>
       </Grid>
-      <Grid xxs={3}>
-        <AutomatedValuesSection
-          dateOfExamination={dateAndTime}
-          participantDateOfBirth={child.dateOfBirth}
-          previousExaminations={previousExaminations}
-        />
+      <Grid container xxs={3} columns={1}>
+        <Grid xxs={1}>{automatedValues}</Grid>
+        <Grid xxs={1}>{instructionValues}</Grid>
       </Grid>
     </Grid>
   );

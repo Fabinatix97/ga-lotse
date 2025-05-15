@@ -107,6 +107,10 @@ function AnonymizationAlert() {
 function SensitivityInfo(props: {
   sensitivity: DataSourceSensitivity | undefined;
 }) {
+  if (props.sensitivity === undefined) {
+    return null;
+  }
+
   switch (props.sensitivity) {
     case DataSourceSensitivity.Sensitive:
       return (

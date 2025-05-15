@@ -421,11 +421,20 @@ public class ProgressEntryService {
     procedure.addProgressEntry(progressEntry);
   }
 
-  public void createProgressEntryForAnamnesisChanged(OmsProcedure procedure) {
+  public void createProgressEntryForAnamnesisChangedByEmployee(OmsProcedure procedure) {
     String note = "Die Inhalte der Anamnese wurden geändert.";
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
-            OmsProgressEntryType.ANAMNESIS_CHANGED.name(), note, TriggerType.EMPLOYEE);
+            OmsProgressEntryType.ANAMNESIS_CHANGED_BY_EMPLOYEE.name(), note, TriggerType.EMPLOYEE);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForAnamnesisChangedByCitizen(OmsProcedure procedure) {
+    String note = "Die Inhalte der Anamnese wurden geändert.";
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.ANAMNESIS_CHANGED_BY_CITIZEN.name(), note, TriggerType.CITIZEN);
     progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }

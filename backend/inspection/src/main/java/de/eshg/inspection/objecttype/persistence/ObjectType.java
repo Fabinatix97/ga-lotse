@@ -49,6 +49,9 @@ public class ObjectType extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean emailAnnouncement;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private String legalBasis;
+
   public String getName() {
     return name;
   }
@@ -97,6 +100,14 @@ public class ObjectType extends GloballyUniqueEntityBase {
     this.emailAnnouncement = emailAnnouncement;
   }
 
+  public String getLegalBasis() {
+    return legalBasis;
+  }
+
+  public void setLegalBasis(String legalBasis) {
+    this.legalBasis = legalBasis;
+  }
+
   /**
    * A singleton instance of the {@link ObjectTypeNameComparator} that compares {@code ObjectType}s
    * by {@code name}.
@@ -130,6 +141,7 @@ public class ObjectType extends GloballyUniqueEntityBase {
           .thenComparing(ObjectType::getComplaintInterval, nullsLast(naturalOrder()))
           .thenComparing(ObjectType::getStandardDuration, nullsLast(naturalOrder()))
           .thenComparing(ObjectType::getStandardBufferTime, nullsLast(naturalOrder()))
+          .thenComparing(ObjectType::getLegalBasis, nullsLast(naturalOrder()))
           .compare(o1, o2);
     }
   }

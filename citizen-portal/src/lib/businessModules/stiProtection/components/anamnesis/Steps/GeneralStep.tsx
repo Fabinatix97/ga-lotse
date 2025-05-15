@@ -5,6 +5,7 @@
 
 import { Box, FormControl, FormLabel, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useId } from "react";
 
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -30,6 +31,7 @@ import {
 } from "./options";
 
 export function GeneralStep() {
+  const mostRecentExamDateId = useId();
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const validateLength = useValidateLength();
   const validatePastOrTodayDate = useValidatePastOrTodayDate();
@@ -182,7 +184,7 @@ export function GeneralStep() {
                     }
                   >
                     <FormControl sx={{ gridColumn: 2 }}>
-                      <FormLabel>
+                      <FormLabel id={mostRecentExamDateId}>
                         {t("examinations.had_examination.mostRecentExamDate")}
                       </FormLabel>
                       <MonthAndYearFields
@@ -190,6 +192,7 @@ export function GeneralStep() {
                         date={examinationDate}
                         monthLabel={t("stiProtection/forms:common.month")}
                         yearLabel={t("stiProtection/forms:common.year")}
+                        aria-labelledby={mostRecentExamDateId}
                       />
                     </FormControl>
                   </YesOrNoWithFollowUp>

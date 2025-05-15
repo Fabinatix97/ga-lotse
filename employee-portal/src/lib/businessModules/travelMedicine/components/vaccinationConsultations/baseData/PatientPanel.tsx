@@ -14,6 +14,7 @@ import {
   InformationSheet,
   OverlayBoundary,
   SyncBarrier,
+  useSearchParam,
   useSyncBarrier,
 } from "@eshg/lib-employee-portal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
@@ -35,7 +36,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/personSidebarHelper";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface PatientPanelProps {
   procedureId: string;

@@ -6,7 +6,19 @@
 package de.eshg.dental.mapper;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.dental.api.*;
+import de.eshg.dental.api.AbsenceExaminationResultDto;
+import de.eshg.dental.api.ExaminationDto;
+import de.eshg.dental.api.ExaminationResultDto;
+import de.eshg.dental.api.FluoridationExaminationResultDto;
+import de.eshg.dental.api.MainResultDto;
+import de.eshg.dental.api.MihStatusDto;
+import de.eshg.dental.api.OralHygieneStatusDto;
+import de.eshg.dental.api.OrthodonticStatusDto;
+import de.eshg.dental.api.ReasonForAbsenceDto;
+import de.eshg.dental.api.ScreeningExaminationResultDto;
+import de.eshg.dental.api.SecondaryResultDto;
+import de.eshg.dental.api.ToothDiagnosisDto;
+import de.eshg.dental.api.ToothDto;
 import de.eshg.dental.domain.model.AbsenceExaminationResult;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
@@ -72,7 +84,14 @@ public final class ExaminationMapper {
               screeningExaminationResult.hasCalculus(),
               screeningExaminationResult.hasGingivitis(),
               screeningExaminationResult.hasParodontitis(),
-              mapToDto(screeningExaminationResult.getToothDiagnoses()));
+              mapToDto(screeningExaminationResult.getToothDiagnoses()),
+              screeningExaminationResult.isIndividualProphylaxis(),
+              screeningExaminationResult.isFissureSealing(),
+              screeningExaminationResult.isTartarRemoval(),
+              screeningExaminationResult.isGingivitisTreatment(),
+              screeningExaminationResult.isOrthodonticTreatment(),
+              screeningExaminationResult.isPlaqueTreatment(),
+              screeningExaminationResult.isInspectionAppointment());
       case AbsenceExaminationResult absenceExaminationResult ->
           new AbsenceExaminationResultDto(mapToDto(absenceExaminationResult.getReasonForAbsence()));
       default -> throw new IllegalArgumentException("Unexpected examination result: " + result);

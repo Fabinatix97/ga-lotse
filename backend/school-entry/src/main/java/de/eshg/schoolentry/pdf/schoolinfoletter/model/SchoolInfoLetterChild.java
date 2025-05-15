@@ -5,4 +5,6 @@
 
 package de.eshg.schoolentry.pdf.schoolinfoletter.model;
 
-public record SchoolInfoLetterChild(String name, String dateOfBirth) {}
+import jakarta.validation.constraints.NotBlank;
+
+public record SchoolInfoLetterChild(@NotBlank String name, @NotBlank String dateOfBirth) {}

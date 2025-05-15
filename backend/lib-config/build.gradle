@@ -6,11 +6,13 @@ dependencies {
     implementation project(':base-api')
     implementation project(':file-commons')
     implementation project(':business-module-persistence-commons')
+    api project(':lib-auditlog')
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     implementation 'commons-io:commons-io:latest.release'
 
     testImplementation project(':test-commons')
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-auditlog'))
     testImplementation 'org.instancio:instancio-core:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'

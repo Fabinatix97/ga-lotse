@@ -1,0 +1,23 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.medsabroad;
+
+import de.eshg.lib.common.BusinessModule;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class MedsAbroadApplication {
+  @Bean
+  BusinessModule businessModule() {
+    return BusinessModule.MEDS_ABROAD;
+  }
+
+  public static void main(String[] args) {
+    SpringApplication.run(MedsAbroadApplication.class, args);
+  }
+}

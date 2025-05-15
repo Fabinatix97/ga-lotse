@@ -51,7 +51,9 @@ public class BaseInternalSecurityConfig {
       auth.requestMatchers(POST, InventoryApi.BASE_URL + "/*" + InventoryApi.BOOKING + "/**")
           .hasRole(EmployeePermissionRole.BASE_INVENTORY_USE.name());
       auth.requestMatchers(POST, ContactApi.BASE_URL + BaseUrls.Base.BULK_GET_URL_END)
-          .hasRole(EmployeePermissionRole.BASE_CONTACTS_READ.name());
+          .hasAnyRole(
+              EmployeePermissionRole.BASE_CONTACTS_READ.name(),
+              EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
       auth.requestMatchers(PUT, LabelApi.BASE_URL + "/**")
           .hasRole(EmployeePermissionRole.BASE_LABELS_WRITE.name());
 
@@ -66,32 +68,6 @@ public class BaseInternalSecurityConfig {
       auth.requestMatchers(StreetApi.BASE_URL + "/**")
           .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE.name());
     };
-  }
-
-  private void gdpr(
-      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
-          auth) {
-    auth.requestMatchers(GET, GdprProcedureApi.BASE_URL + BY_ID)
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ.name(),
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name(),
-            CitizenPermissionRole.BUND_ID_USER.name(),
-            CitizenPermissionRole.MUK_USER.name());
-    auth.requestMatchers(GET, GdprProcedureApi.BASE_URL + DOWNLOADS)
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name(),
-            CitizenPermissionRole.BUND_ID_USER.name(),
-            CitizenPermissionRole.MUK_USER.name());
-    auth.requestMatchers(GET, GdprProcedureApi.BASE_URL + FILE_STATE_IDS)
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ.name(),
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
-
-    auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DOWNLOADS)
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
-
-    auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DELETE_DOWNLOADS)
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
   }
 
   private static void users(
@@ -184,6 +160,11 @@ public class BaseInternalSecurityConfig {
             CitizenPermissionRole.ACCESS_CODE_USER.name(),
             EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
 
+    auth.requestMatchers(GET, BaseUrls.Base.PERSON_API + PersonApi.FILE_STATES_URL + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_READ.name(),
+            EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
+
     auth.requestMatchers(POST, PersonApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.name());
     auth.requestMatchers(GET, PersonApi.BASE_URL + "/**")
@@ -197,5 +178,31 @@ public class BaseInternalSecurityConfig {
         .hasRole(EmployeePermissionRole.BASE_MAIL_SEND.name());
     auth.requestMatchers(POST, MailApi.BASE_URL + MailApi.NOTIFICATION_SUFFIX)
         .hasRole(EmployeePermissionRole.BASE_MAIL_SEND.name());
+  }
+
+  private static void gdpr(
+      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
+          auth) {
+    auth.requestMatchers(GET, GdprProcedureApi.BASE_URL + BY_ID)
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ.name(),
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name(),
+            CitizenPermissionRole.BUND_ID_USER.name(),
+            CitizenPermissionRole.MUK_USER.name());
+    auth.requestMatchers(GET, GdprProcedureApi.BASE_URL + DOWNLOADS)
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name(),
+            CitizenPermissionRole.BUND_ID_USER.name(),
+            CitizenPermissionRole.MUK_USER.name());
+    auth.requestMatchers(GET, GdprProcedureApi.BASE_URL + FILE_STATE_IDS)
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ.name(),
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
+
+    auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DOWNLOADS)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
+
+    auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DELETE_DOWNLOADS)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
   }
 }

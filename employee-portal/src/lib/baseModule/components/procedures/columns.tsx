@@ -12,13 +12,11 @@ import { ApiProcedure } from "@eshg/base-api";
 import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
+  PROCEDURE_TYPE_NAMES,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 
-import {
-  businessModuleNames,
-  procedureTypeNames,
-} from "@/lib/shared/components/procedures/constants";
+import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
 const columnHelper = createColumnHelper<ApiProcedure>();
 
@@ -52,7 +50,7 @@ export const proceduresColumns = [
   }),
   columnHelper.accessor("procedureType", {
     header: "Vorgangsart",
-    cell: (props) => procedureTypeNames[props.getValue()],
+    cell: (props) => PROCEDURE_TYPE_NAMES[props.getValue()],
     meta: {
       canNavigate: {
         parentRow: true,

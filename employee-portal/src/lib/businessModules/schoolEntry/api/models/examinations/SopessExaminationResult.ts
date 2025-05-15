@@ -8,9 +8,9 @@ import {
   ApiArticulation,
   ApiHandednessValue,
   ApiKnowledgeThinkingExamination,
-  ApiLanguage,
   ApiScoredEvaluationExamination,
   ApiSopessExaminationResult,
+  ApiSopessLanguage,
   ApiSpeechEvaluationExamination,
 } from "@eshg/school-entry-api";
 
@@ -19,7 +19,7 @@ export interface SopessExaminationResult extends Versioned {
   fineMotorSkills: ApiScoredEvaluationExamination;
   handedness?: ApiHandednessValue;
   visualPerceptionResult: ApiScoredEvaluationExamination;
-  language: ApiLanguage;
+  language: ApiSopessLanguage;
   articulation: ApiArticulation;
   speechResult: ApiSpeechEvaluationExamination;
   auditiveProcessingResult: ApiScoredEvaluationExamination;

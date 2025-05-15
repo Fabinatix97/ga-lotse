@@ -7,7 +7,8 @@
 
 import { use } from "react";
 
-import { ApiUserRole } from "@eshg/base-api";
+import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
+import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
@@ -17,14 +18,9 @@ import {
   useProcedureApi,
   useProgressEntryApi,
 } from "@/lib/businessModules/inspection/api/clients";
-import {
-  fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
-import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
 export default function InspectionProgressEntriesPage(
   props: DynamicPageProps<EditInspectionRouteParams>,
@@ -38,16 +34,15 @@ export default function InspectionProgressEntriesPage(
 
   return (
     <ProgressEntriesPage
+      businessModule={ApiBusinessModule.Inspection}
       procedureId={id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.InspectionLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
-      getInitOverrides={getHeadersForOfflineCaching}
-      progressEntryApiQueryKey={progressEntryApiQueryKey}
+      getHeadersForOfflineCaching={getHeadersForOfflineCaching}
       progressEntryApi={progressEntryApi}
       procedureApi={procedureApi}
-      fileApiQueryKey={fileApiQueryKey}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
     />

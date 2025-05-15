@@ -28,10 +28,12 @@ import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
 import de.eshg.schoolentry.business.model.PagedProcedures;
 import de.eshg.schoolentry.business.model.PagedWaitingRoomProcedures;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
+import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.pdf.medicalreport.MedicalReportGenerator;
+import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterExaminationMapper;
 import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterGenerator;
 import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterValidator;
 import de.eshg.schoolentry.util.ExceptionUtil;
@@ -75,6 +77,7 @@ public class SchoolEntryController {
   private final SchoolEntryProcedureDeletionService procedureDeletionService;
   private final MedicalReportGenerator medicalReportGenerator;
   private final SchoolInfoLetterGenerator schoolInfoLetterGenerator;
+  private final SchoolInfoLetterExaminationMapper schoolInfoLetterExaminationMapper;
   private final Validator validator;
   private final Clock clock;
   private final SchoolEntryFeatureToggle featureToggle;
@@ -90,6 +93,7 @@ public class SchoolEntryController {
       SchoolEntryProcedureDeletionService procedureDeletionService,
       MedicalReportGenerator medicalReportGenerator,
       SchoolInfoLetterGenerator schoolInfoLetterGenerator,
+      SchoolInfoLetterExaminationMapper schoolInfoLetterExaminationMapper,
       Validator validator,
       Clock clock,
       SchoolEntryFeatureToggle featureToggle,
@@ -103,6 +107,7 @@ public class SchoolEntryController {
     this.procedureDeletionService = procedureDeletionService;
     this.medicalReportGenerator = medicalReportGenerator;
     this.schoolInfoLetterGenerator = schoolInfoLetterGenerator;
+    this.schoolInfoLetterExaminationMapper = schoolInfoLetterExaminationMapper;
     this.validator = validator;
     this.clock = clock;
     this.featureToggle = featureToggle;
@@ -502,6 +507,22 @@ public class SchoolEntryController {
                 .toString())
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
         .body(new ByteArrayResource(pdf.getFileContent().getContent()));
+  }
+
+  @GetMapping("/{procedureId}/school-info-letter")
+  @Transactional(readOnly = true)
+  public GetSchoolInfoLetterResponse getSchoolInfoLetter(
+      @PathVariable("procedureId") UUID procedureId) {
+    if (!featureToggle.isNewFeatureEnabled(SchoolEntryFeature.EDITABLE_SCHOOL_INFO_LETTER)) {
+      throw new BadRequestException("Editable SchoolInfoLetter feature is not enabled");
+    }
+    SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
+    validateProcedureForSchoolInfoLetter(procedure);
+    ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
+    return new GetSchoolInfoLetterResponse(
+        schoolInfoLetterExaminationMapper.determineDefaultSchoolInfoLetterExamination(
+            procedure, procedureDetailsData),
+        schoolInfoLetterExaminationMapper.mapToData(procedure, procedureDetailsData));
   }
 
   @PostMapping("/{procedureId}/school-info-letter")

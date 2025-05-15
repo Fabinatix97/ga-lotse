@@ -8,10 +8,10 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
+import { PROCEDURE_TYPE_NAMES } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 
-import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";
 
 const columnHelper = createColumnHelper<ApiInboxProcedure>();
@@ -30,7 +30,7 @@ export const inboxProcedureColumns = [
     header: "Vorgangstyp",
     cell: (props) => {
       const value = props.getValue();
-      return isDefined(value) ? procedureTypeNames[value] : "";
+      return isDefined(value) ? PROCEDURE_TYPE_NAMES[value] : "";
     },
     meta: {
       canNavigate: { parentRow: true },

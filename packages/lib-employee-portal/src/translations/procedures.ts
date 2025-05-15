@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiProcedureStatus } from "@eshg/base-api";
+import { ApiProcedureStatus, ApiProcedureType } from "@eshg/base-api";
 
 export const PROCEDURE_STATUS_NAMES: Record<ApiProcedureStatus, string> = {
   [ApiProcedureStatus.Aborted]: "Abgebrochen",
@@ -12,3 +12,22 @@ export const PROCEDURE_STATUS_NAMES: Record<ApiProcedureStatus, string> = {
   [ApiProcedureStatus.InProgress]: "in Arbeit",
   [ApiProcedureStatus.Open]: "Offen",
 } satisfies Record<ApiProcedureStatus, string>;
+
+export const PROCEDURE_TYPE_NAMES = {
+  [ApiProcedureType.RegularExamination]: "Regelkind",
+  [ApiProcedureType.CanChild]: "Kann-Kind",
+  [ApiProcedureType.EntryLevel]: "Eingangsstufe",
+  [ApiProcedureType.Inspection]: "Begehung",
+  [ApiProcedureType.DraftCitizenOfficeImport]: "Entwurf Bürgeramtsliste",
+  [ApiProcedureType.DraftSchoolImport]: "Entwurf Schulliste",
+  [ApiProcedureType.TmVaccinationConsultation]: "Impfberatung",
+  [ApiProcedureType.MeaslesProtection]: "Masernschutzimpfung",
+  [ApiProcedureType.StiProtection]: "HIV-STI-Schutz",
+  [ApiProcedureType.MedicalRegistryEntry]: "Berufskartei-Eintrag",
+  [ApiProcedureType.MedicalRegistryEmployeeDraft]:
+    "Entwurf Berufskartei-Eintrag Mitarbeiter",
+  [ApiProcedureType.MedicalRegistryCitizenDraft]:
+    "Entwurf Berufskartei-Eintrag Bürger",
+  [ApiProcedureType.DentalChild]: "Kind",
+  [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
+} satisfies Record<ApiProcedureType, string>;

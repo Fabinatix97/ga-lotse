@@ -5,7 +5,7 @@
 
 package de.eshg.lib.document.generator.department;
 
-import de.eshg.base.department.DepartmentApi;
+import de.eshg.base.department.PublicDepartmentApi;
 import java.io.IOException;
 import java.util.Base64;
 import org.springframework.core.io.Resource;
@@ -19,11 +19,11 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class DepartmentClient {
 
-  private final DepartmentApi departmentApi;
+  private final PublicDepartmentApi publicDepartmentApi;
   private DepartmentLogo cachedDepartmentLogo;
 
-  public DepartmentClient(DepartmentApi departmentApi) {
-    this.departmentApi = departmentApi;
+  public DepartmentClient(PublicDepartmentApi publicDepartmentApi) {
+    this.publicDepartmentApi = publicDepartmentApi;
   }
 
   public DepartmentLogo getDepartmentLogo() {
@@ -34,7 +34,7 @@ public class DepartmentClient {
   }
 
   private DepartmentLogo fetchDepartmentLogo() {
-    ResponseEntity<Resource> departmentLogoResponse = departmentApi.getDepartmentLogo();
+    ResponseEntity<Resource> departmentLogoResponse = publicDepartmentApi.getDepartmentLogo();
     Assert.isTrue(
         departmentLogoResponse.getStatusCode().equals(HttpStatus.OK),
         () ->

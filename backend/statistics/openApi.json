@@ -1886,6 +1886,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -1909,6 +1910,7 @@
               "$ref" : "#/components/schemas/Frequency"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "reportingPeriod" : {
@@ -1946,6 +1948,7 @@
               "$ref" : "#/components/schemas/Calculation"
             },
             "colorScheme" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "geoShapeId" : {
@@ -1993,6 +1996,7 @@
             }
           },
           "title" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2013,6 +2017,7 @@
               "format" : "uuid"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -2032,6 +2037,7 @@
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "templateId" : {
@@ -2057,6 +2063,7 @@
               }
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -2082,6 +2089,7 @@
               }
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "timeRangeEnd" : {
@@ -2107,6 +2115,7 @@
               "type" : "boolean"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "templateId" : {
@@ -2155,6 +2164,7 @@
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2175,6 +2185,7 @@
               "format" : "uuid"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "timeRangeEnd" : {
@@ -2220,6 +2231,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "numberOfDiagrams" : {
@@ -2242,6 +2254,7 @@
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2280,6 +2293,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2292,9 +2306,11 @@
             "type" : "string"
           },
           "businessModuleAttributeCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "businessModuleName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataSourceId" : {
@@ -2308,9 +2324,11 @@
         "type" : "object",
         "properties" : {
           "dataSourceName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "displayName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "privacyCategory" : {
@@ -2339,6 +2357,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "sensitiveDataAllowed" : {
@@ -2399,6 +2418,7 @@
         "type" : "object",
         "properties" : {
           "key" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "keyToCounts" : {
@@ -2414,12 +2434,14 @@
         "type" : "object",
         "properties" : {
           "code" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataPrivacyCategory" : {
             "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "displayName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2429,15 +2451,18 @@
         "type" : "object",
         "properties" : {
           "code" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataPrivacyCategory" : {
             "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "displayName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2477,6 +2502,7 @@
               "type" : "string"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -2498,6 +2524,7 @@
               "type" : "string"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -2537,6 +2564,7 @@
             }
           },
           "code" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2552,12 +2580,14 @@
             }
           },
           "code" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataPrivacyCategory" : {
             "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2573,15 +2603,18 @@
             }
           },
           "category" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "code" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataPrivacyCategory" : {
             "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -2602,6 +2635,7 @@
               "$ref" : "#/components/schemas/Calculation"
             },
             "colorScheme" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "geoJson" : {
@@ -2638,6 +2672,7 @@
         "type" : "object",
         "properties" : {
           "clonedEvaluationName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "originalEvaluationId" : {
@@ -2667,18 +2702,23 @@
           "type" : "object",
           "properties" : {
             "baseAttributeCode" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "baseAttributeName" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "businessAttributeCode" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "businessAttributeName" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "businessModuleName" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "dataSourceId" : {
@@ -2712,9 +2752,11 @@
           "type" : "object",
           "properties" : {
             "businessModuleName" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "code" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "dataSourceId" : {
@@ -2725,6 +2767,7 @@
               "type" : "boolean"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "percentNull" : {
@@ -2765,6 +2808,7 @@
             }
           },
           "key" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "trendLine" : {
@@ -2801,6 +2845,7 @@
             }
           },
           "businessModuleName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "id" : {
@@ -2818,6 +2863,7 @@
         "type" : "object",
         "properties" : {
           "businessModuleName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataAttributes" : {
@@ -2829,6 +2875,7 @@
             }
           },
           "dataSourceName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "id" : {
@@ -2849,6 +2896,7 @@
               "type" : "string"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "valueOptions" : {
@@ -2908,6 +2956,7 @@
               "type" : "number"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "unit" : {
@@ -2940,6 +2989,7 @@
               "type" : "number"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "unit" : {
@@ -3072,6 +3122,7 @@
             "format" : "uuid"
           },
           "title" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -3135,6 +3186,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "state" : {
@@ -3198,6 +3250,7 @@
             "format" : "date-time"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "templateSensitivityInfo" : {
@@ -3234,6 +3287,7 @@
         "type" : "object",
         "properties" : {
           "dataSourceNames" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "repositoryMetaInfo" : {
@@ -3269,6 +3323,7 @@
             "format" : "date-time"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "templateSensitivityInfo" : {
@@ -3338,6 +3393,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -3351,6 +3407,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -3368,6 +3425,7 @@
             "format" : "date-time"
           },
           "geoJson" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "id" : {
@@ -3378,6 +3436,7 @@
             "$ref" : "#/components/schemas/GeoShapeStatus"
           },
           "title" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -3405,6 +3464,7 @@
           "type" : "object",
           "properties" : {
             "title" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -3426,6 +3486,7 @@
             "$ref" : "#/components/schemas/GeoShapeStatus"
           },
           "title" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -3827,6 +3888,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "numberOfReportsInSeries" : {
@@ -3886,6 +3948,7 @@
             "format" : "uuid"
           },
           "evaluationName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reportSeriesEntries" : {
@@ -4152,6 +4215,7 @@
               "format" : "int32"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "unit" : {
@@ -4186,6 +4250,7 @@
               "format" : "int32"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "unit" : {
@@ -4262,6 +4327,7 @@
             "format" : "int32"
           },
           "key" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -4271,6 +4337,7 @@
         "type" : "object",
         "properties" : {
           "key" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "value" : {
@@ -4346,6 +4413,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -4434,6 +4502,7 @@
               "type" : "string"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -4463,6 +4532,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "state" : {
@@ -4516,6 +4586,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reportInfos" : {
@@ -4575,6 +4646,7 @@
             "format" : "date-time"
           },
           "createdBy" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "description" : {
@@ -4585,6 +4657,7 @@
             "format" : "int64"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
@@ -4711,6 +4784,7 @@
             } ]
           },
           "businessModule" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dataPrivacyCategory" : {
@@ -4721,9 +4795,11 @@
             "format" : "uuid"
           },
           "dataSourceName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "displayName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -4825,6 +4901,7 @@
               "type" : "string"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "valueOptions" : {
@@ -4884,6 +4961,7 @@
         "type" : "object",
         "properties" : {
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "updateChartConfigurationDto" : {
@@ -4929,6 +5007,7 @@
           "type" : "object",
           "properties" : {
             "colorScheme" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -4942,6 +5021,7 @@
             "type" : "string"
           },
           "title" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -4955,6 +5035,7 @@
           "type" : "object",
           "properties" : {
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -4968,6 +5049,7 @@
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -5023,6 +5105,7 @@
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -5084,6 +5167,7 @@
             "example" : "UUID_1"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
@@ -5095,9 +5179,11 @@
         "type" : "object",
         "properties" : {
           "meaning" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "value" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -5137,6 +5223,7 @@
               "type" : "string"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string"
             },
             "valueOptions" : {

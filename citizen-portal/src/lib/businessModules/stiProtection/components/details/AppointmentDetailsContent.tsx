@@ -125,7 +125,7 @@ export function Information() {
   );
 }
 
-function YearOfBirthSection({ yearOfBirth }: { yearOfBirth: number }) {
+function YearOfBirthSection({ yearOfBirth }: { yearOfBirth: string }) {
   const { t } = useTranslation("stiProtection/appointmentInfo");
   return (
     <InfoSection icon={<CakeOutlined />}>

@@ -82,9 +82,10 @@ public class OpenDataController {
   @Transactional(readOnly = true)
   @Operation(
       summary = "Get specific version of an open document",
-      description = """
-      Gets one specific version of an open document by its id
-      """)
+      description =
+          """
+          Gets one specific version of an open document by its id
+          """)
   public VersionDto getVersion(@PathVariable("versionId") UUID versionId) {
     openDataValidations.validateOpenDataEnabled();
     return openDataService.getSpecificVersion(versionId);

@@ -5,16 +5,25 @@
 
 package de.eshg.opendata.config;
 
+import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.file.common.FileValidator;
 import de.eshg.opendata.api.GetOpenDataConfigResponse;
 import de.eshg.opendata.api.UpdateOpenDataConfigRequest;
+import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.i18n.Language;
 import de.eshg.rest.service.security.config.BaseUrls;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,8 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(OpenDataConfigController.BASE_URL)
 class OpenDataConfigController {
   static final String BASE_URL = BaseUrls.DepartmentInfoLibrary.CONFIGURATION_API + "/open-data";
-  static final String TERMS_OF_USE_PART = "termsOfUse";
+  static final String TERMS_OF_USE_DE_PART = "termsOfUseDe";
+  static final String TERMS_OF_USE_EN_PART = "termsOfUseEn";
   static final String UPDATE_OPEN_DATA_CONFIG_REQUEST_PART = "updateOpenDataConfigRequest";
+  static final String TERMS_OF_USE_PATH = "/terms-of-use/{lang}";
 
   private final OpenDataConfigService openDataConfigService;
 
@@ -42,15 +53,34 @@ class OpenDataConfigController {
         OpenDataConfigMapper.mapToDto(openDataConfigService.getConfig()));
   }
 
+  @GetMapping(TERMS_OF_USE_PATH)
+  @Transactional(readOnly = true)
+  @ApiResponse(
+      responseCode = "200",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+              schema = @Schema(format = "binary")))
+  public ResponseEntity<Resource> downloadTermsOfUse(@PathVariable("lang") Language language) {
+    OpenDataConfiguration config = openDataConfigService.getConfig();
+    if (!config.isInitialized()) {
+      throw new NotFoundException("Config is not initialized");
+    }
+    return MultiLangDocumentHelper.getAsPdfResourceByLanguageOrThrow(
+        config.getTermsOfUse(), OpenDataConfigService.TERMS_OF_USE_CONFIG_FILENAME, language);
+  }
+
   @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public void updateOpenDataConfig(
       @Valid @RequestPart(name = UPDATE_OPEN_DATA_CONFIG_REQUEST_PART)
           UpdateOpenDataConfigRequest updateOpenDataConfigRequest,
-      @RequestPart(name = TERMS_OF_USE_PART) MultipartFile termsOfUse)
+      @RequestPart(name = TERMS_OF_USE_DE_PART) MultipartFile termsOfUseDe,
+      @RequestPart(name = TERMS_OF_USE_EN_PART, required = false) MultipartFile termsOfUseEn)
       throws IOException {
-    FileValidator.validatePdfFile(termsOfUse);
+    FileValidator.validatePdfFile(termsOfUseDe);
+    FileValidator.validatePdfFile(termsOfUseEn);
     openDataConfigService.updateConfig(
-        OpenDataConfigMapper.mapToDomain(updateOpenDataConfigRequest, termsOfUse));
+        OpenDataConfigMapper.mapToDomain(updateOpenDataConfigRequest, termsOfUseDe, termsOfUseEn));
   }
 }

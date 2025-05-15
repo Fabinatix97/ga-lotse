@@ -31,5 +31,9 @@ export function getTabNamesByEndpointName(
         : "Angaben zur Fachabteilung";
     case "OPENING_HOURS":
       return "Öffnungszeiten";
+    case "SCHOOL_ENTRY":
+      return "Fachliche Einstellungen";
+    case "NOTIFICATION":
+      return "Kontaktmöglichkeit per E-Mail";
   }
 }

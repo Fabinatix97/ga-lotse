@@ -10,9 +10,10 @@ import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
+  useArchivingSideNavigationItems,
+  useGetPublicConfig,
 } from "@eshg/lib-employee-portal";
 
-import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useSideNavigationItemProps } from "@/lib/baseModule/components/layout/sideNavigation/useSideNavigationItemProps";
 import {
@@ -29,7 +30,6 @@ import { sideNavigationItems as statisticsSideNavigationItems } from "@/lib/busi
 import { resolveSideNavigationItems as resolveStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
 import { resolveConfiguratorSideNavigationItems } from "@/lib/configurator/shared/sideNavigationItem";
-import { useArchivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
 
 type ResolveSideNavigationItems = (
   params: SideNavigationItemsProps,
@@ -50,11 +50,12 @@ const businessItemResolvers: Record<
   [ApiBusinessModule.Dental]: resolveDentalSideNavigationItems,
   [ApiBusinessModule.OfficialMedicalService]:
     resolveOfficialMedicalServiceSideNavigationItems,
+  [ApiBusinessModule.MedsAbroad]: (_) => [],
 };
 
 function useBusinessItems(): SideNavigationItem[] {
-  const config = useServerConfig();
-  const activeModules = config.data.activeModules;
+  const { data: config } = useGetPublicConfig();
+  const activeModules = config.activeModules;
   const resolveParams = useSideNavigationItemProps();
 
   return entries(businessItemResolvers)

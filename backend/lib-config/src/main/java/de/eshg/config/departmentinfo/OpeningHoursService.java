@@ -5,6 +5,7 @@
 
 package de.eshg.config.departmentinfo;
 
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.domain.OpeningHours;
 import de.eshg.config.initialization.MandatoryInitialOpeningHours;
 import de.eshg.config.spring.ConditionalOnBusinessModule;
@@ -28,8 +29,10 @@ public class OpeningHoursService extends AbstractOpeningHoursService<OpeningHour
   public OpeningHoursService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
+      AuditLogWriter auditLogWriter,
       MandatoryInitialOpeningHours initialOpeningHours) {
-    super(entityManager, transactionHelper, initialOpeningHours, OpeningHours.class);
+    super(
+        entityManager, transactionHelper, initialOpeningHours, auditLogWriter, OpeningHours.class);
   }
 
   @Override

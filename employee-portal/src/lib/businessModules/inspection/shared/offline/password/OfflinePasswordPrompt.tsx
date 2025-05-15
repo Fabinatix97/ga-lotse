@@ -8,7 +8,6 @@
 import { useEffect, useState } from "react";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 
 import { useLockInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import {
@@ -19,7 +18,6 @@ import { OfflineExistingPasswordDialog } from "@/lib/businessModules/inspection/
 import { OfflineNewPasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflineNewPasswordDialog";
 import { hasQueuedRequests } from "@/lib/businessModules/inspection/shared/offline/password/hasQueuedRequests";
 import { isServiceWorkerRegistered } from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
-import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import {
   SALT,
   getInspectionOfflineDb,
@@ -36,18 +34,6 @@ import {
 import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 
 export function OfflinePasswordPrompt() {
-  const isOfflineEnabled = useIsOfflineFeatureEnabled();
-
-  if (!isOfflineEnabled) return false;
-
-  return (
-    <QueryBoundary>
-      <OfflinePasswordPromptInner />
-    </QueryBoundary>
-  );
-}
-
-function OfflinePasswordPromptInner() {
   const [passwordChannel, setPasswordChannel] = useState<BroadcastChannel>();
   const { openConfirmationDialog } = useConfirmationDialog();
   const lockInspection = useLockInspection();

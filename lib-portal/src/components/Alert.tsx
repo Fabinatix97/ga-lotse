@@ -58,6 +58,7 @@ function renderIcon(color: AlertPropsJoy["color"]): ReactNode {
     case "danger":
       return <ErrorOutlineOutlined fontSize="xl2" />;
     case "neutral":
+    case undefined:
       return <AccountCircleOutlined fontSize="xl2" />;
   }
 }

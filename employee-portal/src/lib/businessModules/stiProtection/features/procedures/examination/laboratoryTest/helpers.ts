@@ -10,6 +10,7 @@ import {
   mapBoolToYesOrNo,
   mapYesOrNoToBool,
 } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { mapOptionalString } from "@eshg/lib-portal/helpers/form";
 import {
   ApiLaboratoryTestExamination,
   ApiLaboratoryTestExaminationLabTestDataInner,
@@ -19,7 +20,6 @@ import {
   areAllValuesUndefined,
   getPropertyIf,
   guardValue,
-  mapOptionalString,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 
 interface LaboratoryTestData {

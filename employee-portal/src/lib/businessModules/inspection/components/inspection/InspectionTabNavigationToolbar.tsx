@@ -22,7 +22,7 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";

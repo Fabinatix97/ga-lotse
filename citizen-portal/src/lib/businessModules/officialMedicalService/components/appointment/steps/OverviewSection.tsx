@@ -55,9 +55,12 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
   return (
     <Stack gap={2} data-testid="overview">
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
-      <Stack gap={1} data-testid="appointment-overview-summary">
+      <Stack gap={1} data-testid="appointment-overview-summary" role="list">
         {currentStep > 1 && (
           <DetailsItem
+            slotProps={{
+              stack: { role: "listitem" },
+            }}
             label={t("overview.fields.concernAndDuration", {
               context: "label",
             })}
@@ -68,6 +71,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
         )}
         {isDefined(department) && (
           <DetailsItem
+            slotProps={{
+              stack: { role: "listitem" },
+            }}
             label={t("overview.fields.department", {
               context: "label",
             })}
@@ -80,6 +86,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
           <>
             {values.appointment && (
               <DetailsItem
+                slotProps={{
+                  stack: { role: "listitem" },
+                }}
                 label={t("overview.fields.date", {
                   context: "label",
                 })}
@@ -90,6 +99,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
             )}
             {values.appointment && (
               <DetailsItem
+                slotProps={{
+                  stack: { role: "listitem" },
+                }}
                 label={t("overview.fields.time", {
                   context: "label",
                 })}
@@ -108,6 +120,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
             {values.affectedPerson.firstName &&
               values.affectedPerson.lastName && (
                 <DetailsItem
+                  slotProps={{
+                    stack: { role: "listitem" },
+                  }}
                   label={t("overview.fields.fullName", {
                     context: "label",
                   })}
@@ -118,6 +133,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
               )}
             {values.affectedPerson.dateOfBirth && (
               <DetailsItem
+                slotProps={{
+                  stack: { role: "listitem" },
+                }}
                 label={t("overview.fields.dateOfBirth", {
                   context: "label",
                 })}
@@ -128,6 +146,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
             )}
             {values.affectedPerson.contactAddress && (
               <DetailsItem
+                slotProps={{
+                  stack: { role: "listitem" },
+                }}
                 label={t("overview.fields.contactAddress", {
                   context: "label",
                 })}
@@ -152,6 +173,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
             )}
             {values.affectedPerson.emailAddresses && (
               <DetailsItem
+                slotProps={{
+                  stack: { role: "listitem" },
+                }}
                 label={t("overview.fields.emailAddress", {
                   context: "label",
                 })}
@@ -162,6 +186,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
             )}
             {values.confirmOnlineServices && (
               <DetailsItem
+                slotProps={{
+                  stack: { role: "listitem" },
+                }}
                 label={t("overview.fields.confirmOnlineServices", {
                   context: "label",
                 })}

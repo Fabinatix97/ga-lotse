@@ -43,6 +43,8 @@ export function resolveProcedureDetailsRoute({
       return dentalRoutes.children.byId(procedureId).details;
     case "OFFICIAL_MEDICAL_SERVICE":
       return officialMedicalServiceRoutes.procedures.byId(procedureId).details;
+    case "MEDS_ABROAD":
+      return "";
   }
 }
 
@@ -69,5 +71,7 @@ export function resolveProcedureProgressEntriesRoute(
     case "OFFICIAL_MEDICAL_SERVICE":
       return officialMedicalServiceRoutes.procedures.byId(procedureId)
         .progressEntries;
+    case "MEDS_ABROAD":
+      return "";
   }
 }

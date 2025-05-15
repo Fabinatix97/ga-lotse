@@ -8,13 +8,13 @@
 import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
+  RestrictedPage,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 
 import { Teamview } from "@/lib/baseModule/components/task/Teamview";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
-import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 export default function InspectionTeamviewPage() {
   return (

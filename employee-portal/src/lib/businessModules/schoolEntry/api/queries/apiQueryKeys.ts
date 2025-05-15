@@ -31,18 +31,8 @@ export const inboxProcedureApiQueryKey = queryKeyFactory(
   apiQueryKey(["inboxProcedureApi"]),
 );
 
-export const progressEntryApiQueryKey = queryKeyFactory(
-  apiQueryKey(["progressEntryApi"]),
-);
-
 export const appointmentStaffApiQueryKey = queryKeyFactory(
   apiQueryKey(["appointtingStaffApi"]),
 );
 
-export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
-
 export const configApiQueryKey = queryKeyFactory(apiQueryKey(["configApi"]));
-
-export const archivingApiQueryKey = queryKeyFactory(
-  apiQueryKey(["archivingApi"]),
-);

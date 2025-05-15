@@ -14,6 +14,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -39,7 +40,6 @@ import { useFormWithSteps } from "@/lib/businessModules/stiProtection/shared/pro
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 const steps = [

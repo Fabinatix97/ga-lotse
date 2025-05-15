@@ -5,9 +5,11 @@
 
 package de.eshg.config.departmentinfo;
 
+import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
 import static de.eshg.config.i18n.MultiLangDocumentHelper.forwardInternationalizedResponse;
 
-import de.eshg.base.department.DepartmentApi;
+import de.eshg.base.department.PublicDepartmentApi;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.domain.PrivacyDocumentsConfig;
 import de.eshg.config.i18n.MultiLangDocumentHelper;
@@ -39,16 +41,17 @@ import org.springframework.transaction.annotation.Transactional;
     matchIfMissing = true)
 public class PrivacyDocumentService extends AbstractPrivacyDocumentService<PrivacyDocumentsConfig> {
 
-  private final DepartmentApi departmentApi;
+  private final PublicDepartmentApi publicDepartmentApi;
   private final OptionalInitialPrivacyDocuments optionalInitialPrivacyDocuments;
 
   protected PrivacyDocumentService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
-      DepartmentApi departmentApi,
+      PublicDepartmentApi publicDepartmentApi,
+      AuditLogWriter auditLogWriter,
       OptionalInitialPrivacyDocuments optionalInitialPrivacyDocuments) {
-    super(entityManager, transactionHelper, PrivacyDocumentsConfig.class);
-    this.departmentApi = departmentApi;
+    super(entityManager, transactionHelper, auditLogWriter, PrivacyDocumentsConfig.class);
+    this.publicDepartmentApi = publicDepartmentApi;
     this.optionalInitialPrivacyDocuments = optionalInitialPrivacyDocuments;
   }
 
@@ -65,7 +68,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
             privacyNotice ->
                 MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
                     privacyNotice, PRIVACY_NOTICE_FILE_NAME))
-        .orElseGet(() -> forwardInternationalizedResponse(departmentApi.getPrivacyNotice()));
+        .orElseGet(() -> forwardInternationalizedResponse(publicDepartmentApi.getPrivacyNotice()));
   }
 
   @Override
@@ -76,7 +79,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
             privacyPolicy ->
                 MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
                     privacyPolicy, PRIVACY_POLICY_FILE_NAME))
-        .orElseGet(() -> forwardInternationalizedResponse(departmentApi.getPrivacyPolicy()));
+        .orElseGet(() -> forwardInternationalizedResponse(publicDepartmentApi.getPrivacyPolicy()));
   }
 
   @Override
@@ -90,6 +93,10 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
   @Override
   protected MultiLangDocument updatePrivacyDocument(
       MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
+    auditLogWriter.writeChangeToAuditlog(
+        "privacyDocumentsConfig",
+        getRelevantFieldsForLogging(persistedDocument),
+        getRelevantFieldsForLogging(documentUpdate));
     if (documentUpdate == null || persistedDocument == null) {
       return documentUpdate;
     }
@@ -105,7 +112,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
     privacyDocuments.updateDe(
         contentFromInitialConfigOrBase(
             InitialPrivacyDocuments::privacyPolicy,
-            () -> getContentAsByteArray(departmentApi.getPrivacyPolicy().getBody())));
+            () -> getContentAsByteArray(publicDepartmentApi.getPrivacyPolicy().getBody())));
     return privacyDocuments;
   }
 
@@ -118,7 +125,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
     privacyDocuments.updateDe(
         contentFromInitialConfigOrBase(
             InitialPrivacyDocuments::privacyNotice,
-            () -> getContentAsByteArray(departmentApi.getPrivacyNotice().getBody())));
+            () -> getContentAsByteArray(publicDepartmentApi.getPrivacyNotice().getBody())));
     return privacyDocuments;
   }
 

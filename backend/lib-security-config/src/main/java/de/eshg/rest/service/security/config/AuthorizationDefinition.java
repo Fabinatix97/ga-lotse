@@ -10,4 +10,9 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 
 public sealed interface AuthorizationDefinition permits AnyRole, Authenticated, PermitAll {
   void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl);
+
+  default AuthorizationDefinition or(AuthorizationDefinition otherAuthorizationDefinition) {
+    throw new IllegalArgumentException(
+        "Not implemented for " + this + " and " + otherAuthorizationDefinition);
+  }
 }

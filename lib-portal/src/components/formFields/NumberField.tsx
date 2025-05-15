@@ -28,6 +28,7 @@ export interface NumberFieldProps
   readOnly?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  "aria-labelledby"?: string;
 }
 
 export function NumberField(props: NumberFieldProps) {
@@ -71,6 +72,7 @@ export function NumberField(props: NumberFieldProps) {
         readOnly={props.readOnly}
         endDecorator={props.endDecorator}
         placeholder={props.placeholder}
+        aria-labelledby={props["aria-labelledby"]}
         onChange={handleChange}
         onBlur={field.input.onBlur}
       />

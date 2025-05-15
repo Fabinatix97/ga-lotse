@@ -128,8 +128,6 @@ public class SynapseClient {
 
   public void deactivateUserAccount(String matrixUserId) {
     try {
-      DeactivateRequest requestBody = new DeactivateRequest().eraseGdpr(true);
-
       retryTemplate.execute(
           retryContext -> {
             if (retryContext.getRetryCount() > 0) {
@@ -143,7 +141,7 @@ public class SynapseClient {
                         .buildAndExpand(matrixUserId)
                         .toUriString()),
                 HttpMethod.POST,
-                authenticatedRequest(requestBody),
+                authenticatedRequest(),
                 Void.class);
           });
     } catch (Exception ex) {

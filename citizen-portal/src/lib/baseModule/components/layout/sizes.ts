@@ -11,6 +11,8 @@ export interface ContentMargin {
 export const appBarHeightMobile = "4.75rem"; // 76px
 export const appBarHeightDesktop = "9rem"; // 144px
 
+export const appBarHeightDesktopReduced = "4.5rem"; // 72px
+
 export const maxContentWidthDesktop = "1232px";
 export const contentMarginDesktop: ContentMargin = {
   topBottom: 3,

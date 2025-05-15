@@ -14,6 +14,7 @@ import {
   PROCEDURE_STATUS_NAMES,
   ToggleFilterButton,
   useFilterSettings,
+  useSearchParamStateProvider,
 } from "@eshg/lib-employee-portal";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
@@ -33,7 +34,6 @@ import {
   roleStatusNames,
   submissionResultLabels,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
-import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 
 type ProceduresFilterDefinition = FilterDefinition & {
   key: keyof ProcedureFilters;

@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { isNonNullish } from "remeda";
 
+import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
 import type {
   ApiAddFacilityFileStateRequestContactAddress,
   ApiDomesticAddress,
@@ -23,7 +24,6 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 
 import { useInspectionGeoApi } from "@/lib/businessModules/inspection/api/clients";
-import { useGetDepartment } from "@/lib/businessModules/inspection/api/queries/department";
 import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/geo";
 import { TravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
@@ -35,15 +35,17 @@ interface TravelTimeTileProps {
   readonly?: boolean;
   inspection: ApiInspection;
   facilityAddress?: ApiAddFacilityFileStateRequestContactAddress;
+  department: ApiGetDepartmentInfoResponse;
 }
 
 export function TravelTimeTile({
   readonly,
   inspection,
   facilityAddress,
+  department,
 }: Readonly<TravelTimeTileProps>) {
   const snackbar = useSnackbar();
-  const { data: department } = useGetDepartment();
+
   const isOffline = useIsOffline();
   const inspectionApi = useInspectionGeoApi();
   const queryClient = useQueryClient();

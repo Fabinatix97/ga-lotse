@@ -2665,9 +2665,8 @@
           "name" : "yearOfBirth",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "description" : "Indicates the year of birth of the person.",
-            "format" : "int32"
+            "type" : "string",
+            "description" : "Indicates the year of birth of the person."
           }
         }, {
           "in" : "query",
@@ -4382,8 +4381,7 @@
             "example" : "she/her"
           },
           "yearOfBirth" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         }
       },
@@ -4405,9 +4403,8 @@
             "format" : "uuid"
           },
           "yearOfBirth" : {
-            "type" : "integer",
-            "description" : "Indicates the year of birth of the person.",
-            "format" : "int32"
+            "type" : "string",
+            "description" : "Indicates the year of birth of the person."
           }
         }
       },
@@ -4474,6 +4471,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -4694,7 +4692,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -5028,6 +5026,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlockIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -5079,6 +5078,7 @@
         "type" : "object",
         "properties" : {
           "daysOfWeek" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DayOfWeek"
@@ -5103,6 +5103,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
@@ -5172,6 +5173,7 @@
         "type" : "object",
         "properties" : {
           "pin" : {
+            "minLength" : 1,
             "pattern" : "\\d{6}",
             "type" : "string",
             "description" : "The PIN for anonymous authorization.",
@@ -5281,10 +5283,9 @@
             "example" : "she/her"
           },
           "yearOfBirth" : {
-            "type" : "integer",
+            "type" : "string",
             "description" : "Indicates the year of birth of the person.",
-            "format" : "int32",
-            "example" : 1996
+            "example" : "1996"
           }
         }
       },
@@ -5293,6 +5294,7 @@
         "type" : "object",
         "properties" : {
           "pin" : {
+            "minLength" : 1,
             "pattern" : "\\d{6}",
             "type" : "string",
             "description" : "The PIN for anonymous authorization.",
@@ -5309,6 +5311,7 @@
         "type" : "object",
         "properties" : {
           "content" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Predefined text that will be inserted.",
             "example" : "Complete hepatitis A serology (acute vs. immunity)"
@@ -5317,6 +5320,7 @@
             "$ref" : "#/components/schemas/TextTemplateContext"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Display name of the text template.",
             "example" : "Hepatitis Panel"
@@ -5968,6 +5972,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
@@ -6060,6 +6065,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -6076,6 +6082,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -6096,6 +6103,7 @@
             "example" : "LTG"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the city where the department is located",
             "example" : "Berlin"
@@ -6104,16 +6112,19 @@
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The email address of the department",
             "example" : "mail@address.de"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The domain of the department's official homepage, excluding protocols",
             "example" : "department-homepage.de"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The house number at the department's address, including any extensions or suffixes",
             "example" : "1b"
@@ -6122,21 +6133,25 @@
             "$ref" : "#/components/schemas/Location"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the department",
             "example" : "Gesundheitsamt Landkreis Testgebiet"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The primary contact telephone number for the department",
             "example" : "+491234567890"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The postal code for the department’s address",
             "example" : "12345"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The street name for the department’s address, not including the house number",
             "example" : "Beispielweg"
@@ -7444,11 +7459,13 @@
         "type" : "object",
         "properties" : {
           "dose" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Prescribed dosage of the medication.",
             "example" : "300 mg once daily."
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Name of the prescribed medication.",
             "example" : "Tenofovir."
@@ -7545,12 +7562,14 @@
         "type" : "object",
         "properties" : {
           "de" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
             }
           },
           "en" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -7684,10 +7703,9 @@
             "example" : "xier / dier"
           },
           "yearOfBirth" : {
-            "type" : "integer",
+            "type" : "string",
             "description" : "The year of birth of the person.",
-            "format" : "int32",
-            "example" : 2000
+            "example" : "2000"
           }
         }
       },
@@ -8781,6 +8799,7 @@
         "type" : "object",
         "properties" : {
           "content" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Predefined text that will be inserted.",
             "example" : "Complete hepatitis A serology (acute vs. immunity)"
@@ -8795,6 +8814,7 @@
             "example" : "UUID_4"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Display name of the text template.",
             "example" : "Hepatitis Panel"
@@ -8919,10 +8939,9 @@
             "example" : "she/her"
           },
           "yearOfBirth" : {
-            "type" : "integer",
+            "type" : "string",
             "description" : "Indicates the year of birth of the person.",
-            "format" : "int32",
-            "example" : 1996
+            "example" : "1996"
           }
         }
       },
@@ -8985,6 +9004,7 @@
             "example" : "UUID_5"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
@@ -9021,6 +9041,7 @@
         "type" : "object",
         "properties" : {
           "pin" : {
+            "minLength" : 1,
             "pattern" : "\\d{6}",
             "type" : "string",
             "description" : "The PIN for verification",
@@ -9068,18 +9089,9 @@
             "$ref" : "#/components/schemas/WaitingRoom"
           },
           "yearOfBirth" : {
-            "type" : "object",
+            "type" : "string",
             "description" : "Indicates the year of birth of the person.",
-            "example" : 1996,
-            "properties" : {
-              "leap" : {
-                "type" : "boolean"
-              },
-              "value" : {
-                "type" : "integer",
-                "format" : "int32"
-              }
-            }
+            "example" : "1996"
           }
         }
       },

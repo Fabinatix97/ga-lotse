@@ -8,4 +8,5 @@ import { ConfiguratorEndpointName } from "@/lib/configurator/shared/types";
 export const travelMedicineConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "DEPARTMENT_INFO",
   "OPENING_HOURS",
+  "NOTIFICATION",
 ];

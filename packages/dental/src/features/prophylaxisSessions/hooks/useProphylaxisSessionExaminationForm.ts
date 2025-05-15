@@ -120,6 +120,13 @@ function mapToExaminationResult(
       gingivitis: formValues.gingivitis,
       parodontitis: formValues.parodontitis,
       toothDiagnoses: toothDiagnoses,
+      individualProphylaxis: formValues.individualProphylaxis,
+      fissureSealing: formValues.fissureSealing,
+      tartarRemoval: formValues.tartarRemoval,
+      gingivitisTreatment: formValues.gingivitisTreatment,
+      orthodonticTreatment: formValues.orthodonticTreatment,
+      plaqueTreatment: formValues.plaqueTreatment,
+      inspectionAppointment: formValues.inspectionAppointment,
     } as ScreeningExaminationResult;
   } else {
     // TODO: Remove when fluoridation only examination is handled without form

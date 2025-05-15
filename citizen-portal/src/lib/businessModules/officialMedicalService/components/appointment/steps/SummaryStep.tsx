@@ -5,7 +5,7 @@
 
 import { Grid } from "@mui/joy";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 
 import { InformationCard } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/InformationCard";
 import { OverviewSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/OverviewSection";

@@ -18,10 +18,7 @@ public record CreateProcedureRequest(
     @NotNull GenderDto gender,
     @NotNull
         @Past
-        @Schema(
-            type = "integer",
-            description = "Indicates the year of birth of the person.",
-            example = "1996")
+        @Schema(description = "Indicates the year of birth of the person.", example = "1996")
         Year yearOfBirth,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
     @Schema(description = "The start date and time of the appointment.") @NotNull

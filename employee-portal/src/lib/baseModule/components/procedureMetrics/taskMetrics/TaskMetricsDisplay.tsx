@@ -22,7 +22,11 @@ import {
   ApiProcedureType,
   ApiProcedureWithDuration,
 } from "@eshg/base-api";
-import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  PROCEDURE_TYPE_NAMES,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 
 import { useTaskMetricsQuery } from "@/lib/baseModule/api/queries/taskMetrics";
 import { TimeRangeSelect } from "@/lib/baseModule/components/procedureMetrics/TimeRangeSelect";
@@ -30,7 +34,6 @@ import { lastXMonthsInDate } from "@/lib/baseModule/components/procedureMetrics/
 import { resolveProcedureDefinitionDiagram } from "@/lib/baseModule/moduleRegister/procedureDefinitionDiagramsResolver";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
-import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 
 import { formatOptionalDuration } from "./formatOptionalDuration";
 import { slowestAndFastestTasksColumns } from "./slowestAndFastestColumns";
@@ -135,7 +138,7 @@ export function TaskMetricsDisplay(props: {
             >
               <Image
                 src={procedureDefinitionDiagram}
-                alt={`Prozessdefinition ${procedureTypeNames[props.procedureType]}`}
+                alt={`Prozessdefinition ${PROCEDURE_TYPE_NAMES[props.procedureType]}`}
               />
             </Box>
           </Sheet>

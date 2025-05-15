@@ -44,7 +44,9 @@ export function RadioSheetOption({
       aria-current={isSelected}
       sx={(theme) => ({
         background: isSelected ? theme.palette.primary.softBg : null,
-        borderColor: isSelected ? theme.palette.primary[300] : null,
+        borderColor: isSelected
+          ? theme.palette.a11y.primary
+          : theme.palette.a11y.neutral,
       })}
       onClick={() => {
         if (isSelected) {
@@ -55,6 +57,7 @@ export function RadioSheetOption({
     >
       <Row>
         <Radio
+          color={isSelected ? "primary" : "neutral"}
           id={radioId}
           sx={{ flexBasis: "max-content" }}
           name={name}

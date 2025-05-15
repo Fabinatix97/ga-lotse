@@ -48,9 +48,10 @@ export function SelectableCard({
         alignItems: "center",
         gap: 2,
         borderRadius: "8px",
+        borderColor: "a11y.neutral",
         [`:has(> .${radioClasses.checked})`]: {
           backgroundColor: changeBackgroundColor ? "primary.100" : "",
-          borderColor: "primary.300",
+          borderColor: "a11y.primary",
         },
         [`& .${radioClasses.checked}`]: {
           [`& .${radioClasses.radio}`]: {

@@ -5,12 +5,11 @@
 
 "use client";
 
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { useMutation, useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
 import { isEmpty } from "remeda";
 
 import { ApiProcedureStatus } from "@eshg/base-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   AnamnesisFormValues,
   defaultAnamnesisFormValues,
@@ -42,7 +41,7 @@ export default function OfficialMedicalServiceAnamnesisPage(
   });
 
   const patchAnamnesisOptions = usePatchAnamnesisOptions();
-  const patchAnamnesis = useHandledMutation(patchAnamnesisOptions);
+  const patchAnamnesis = useMutation(patchAnamnesisOptions);
 
   async function handleSubmit(values: AnamnesisFormValues) {
     const request: PatchAnamnesisRequest = mapToRequest(

@@ -20,6 +20,7 @@ import {
   Configuration as LibStatisticsConfiguration,
   StatisticsProcedureReferenceApi,
 } from "@eshg/lib-statistics-api";
+import { SchoolEntryLibConfigApi } from "@eshg/school-entry-api";
 import {
   SexWorkConfigStatusApi,
   SexWorkDepartmentInfoConfigApi,
@@ -28,8 +29,11 @@ import {
   StiConsultationDepartmentInfoConfigApi,
   StiConsultationOpeningHoursApi,
 } from "@eshg/sti-protection-api";
+import { NotificationConfigApi } from "@eshg/travel-medicine-api";
 
+import { useConfiguration as useSchoolEntryConfiguration } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useConfiguration as useStiProtectionConfiguration } from "@/lib/businessModules/stiProtection/api/clients";
+import { useConfiguration as useTravelMedicineConfiguration } from "@/lib/businessModules/travelMedicine/api/clients";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
@@ -48,6 +52,7 @@ const businessModuleBackendUrls = {
   [ApiBusinessModule.Dental]: "PUBLIC_DENTAL_BACKEND_URL",
   [ApiBusinessModule.OfficialMedicalService]:
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
+  [ApiBusinessModule.MedsAbroad]: "PUBLIC_MEDS_ABROAD_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
 function useConfigurationByBusinessModule<TConfiguration>(
@@ -151,4 +156,14 @@ export function useConfiguratorOpeningHoursApi(
     return new SexWorkOpeningHoursApi(stiConfiguration);
   }
   return new OpeningHoursApi(configuration);
+}
+
+export function useConfiguratorSchoolEntryApi() {
+  const configuration = useSchoolEntryConfiguration();
+  return new SchoolEntryLibConfigApi(configuration);
+}
+
+export function useNotificationConfigApi() {
+  const configuration = useTravelMedicineConfiguration();
+  return new NotificationConfigApi(configuration);
 }

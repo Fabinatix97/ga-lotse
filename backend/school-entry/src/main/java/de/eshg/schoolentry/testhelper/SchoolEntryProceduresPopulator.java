@@ -373,8 +373,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
             : null);
   }
 
-  private static LanguageDto randomLanguageDto(Faker faker) {
-    return new LanguageDto(
+  private static SopessLanguageDto randomLanguageDto(Faker faker) {
+    return new SopessLanguageDto(
         randomElement(faker, PrimaryLanguageValueDto.values()),
         randomElement(faker, LanguageKnowledgeValueDto.values()),
         randomElement(faker, FamilyLanguageValueDto.values()),

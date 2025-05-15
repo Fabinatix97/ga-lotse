@@ -47,7 +47,7 @@ export function ProfessionalRegistrationStepper(
     <MultiStepForm<MedicalRegistryCreateProcedureFormValues>
       steps={steps(changeType)}
     >
-      {({ Outlet, currentStep, totalSteps }) => (
+      {({ Outlet, currentStep, totalSteps, titleRef }) => (
         <>
           <ConfirmLeaveDirtyFormEffect
             description={t("leave_form.message")}
@@ -55,6 +55,7 @@ export function ProfessionalRegistrationStepper(
             confirmLabel={t("leave_form.confirm")}
           />
           <PageTitle
+            titleRef={titleRef}
             toolbar={
               <StepIndicator
                 currentStep={currentStep}

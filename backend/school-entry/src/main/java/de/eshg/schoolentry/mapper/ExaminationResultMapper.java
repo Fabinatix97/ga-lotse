@@ -241,7 +241,7 @@ public final class ExaminationResultMapper {
     result.setDoctorLetterVisualPerception(
         mapToDomain(visualPerceptionResult.evaluation().doctorLetterValue()));
 
-    LanguageDto language = dto.getLanguage();
+    SopessLanguageDto language = dto.getLanguage();
     result.setPrimaryLanguage(mapToDomain(language.primaryLanguage()));
     result.setGermanKnowledgePrimaryCarer(mapToDomain(language.germanKnowledgePrimaryCarer()));
     result.setFamilyLanguage(mapToDomain(language.familyLanguage()));
@@ -446,7 +446,7 @@ public final class ExaminationResultMapper {
                 mapToDto(sopessExaminationResult.getVisualPerceptionResult()),
                 mapToDto(sopessExaminationResult.getDoctorLetterVisualPerception()))));
     dto.setLanguage(
-        new LanguageDto(
+        new SopessLanguageDto(
             mapToDto(sopessExaminationResult.getPrimaryLanguage()),
             mapToDto(sopessExaminationResult.getGermanKnowledgePrimaryCarer()),
             mapToDto(sopessExaminationResult.getFamilyLanguage()),

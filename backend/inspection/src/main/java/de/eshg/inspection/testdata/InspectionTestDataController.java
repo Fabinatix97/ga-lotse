@@ -36,6 +36,8 @@ import org.springframework.web.service.annotation.PostExchange;
 public class InspectionTestDataController {
 
   public static final String BASE_URL = BaseUrls.Inspection.INSPECTION_TEST_DATA_CONTROLLER;
+  public static final String DOWNLOAD_OSM_TEST_DATA_BASE_URL =
+      InspectionTestDataController.BASE_URL + "/osm/test-data";
 
   private final InspectionTestDataService inspectionTestDataService;
   private final ChecklistDefinitionTestDataProvider cldTestDataProvider;
@@ -58,7 +60,7 @@ public class InspectionTestDataController {
    *
    * <p>See inspection/src/main/resources/de/eshg/inspection/facility/websearch/README.md
    */
-  @GetExchange(value = InspectionTestDataController.BASE_URL + "/osm/test-data/{filename}")
+  @GetExchange(value = DOWNLOAD_OSM_TEST_DATA_BASE_URL + "/{filename}")
   @Operation(
       summary = "Test method to download some OpenStreetMap *.osm.pbf files",
       responses =

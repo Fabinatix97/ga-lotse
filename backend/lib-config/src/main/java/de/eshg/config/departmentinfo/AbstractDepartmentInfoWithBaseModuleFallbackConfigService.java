@@ -5,8 +5,9 @@
 
 package de.eshg.config.departmentinfo;
 
-import de.eshg.base.department.DepartmentApi;
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.base.department.PublicDepartmentApi;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.domain.AbstractDepartmentInfoConfig;
 import de.eshg.config.domain.DepartmentInfo;
 import de.eshg.config.initialization.InitialDepartmentInfo;
@@ -28,7 +29,7 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
     extends AbstractDepartmentInfoConfigService<T> {
 
   private final OptionalInitialDepartmentInfo initialDepartmentInfo;
-  private final DepartmentApi departmentApi;
+  private final PublicDepartmentApi publicDepartmentApi;
 
   private static final Logger log =
       LoggerFactory.getLogger(AbstractDepartmentInfoWithBaseModuleFallbackConfigService.class);
@@ -36,12 +37,13 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
   protected AbstractDepartmentInfoWithBaseModuleFallbackConfigService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
-      DepartmentApi departmentApi,
+      PublicDepartmentApi publicDepartmentApi,
       OptionalInitialDepartmentInfo initialDepartmentInfo,
+      AuditLogWriter auditLogWriter,
       Class<T> configClass) {
-    super(entityManager, transactionHelper, configClass);
+    super(entityManager, transactionHelper, auditLogWriter, configClass);
     this.initialDepartmentInfo = initialDepartmentInfo;
-    this.departmentApi = departmentApi;
+    this.publicDepartmentApi = publicDepartmentApi;
   }
 
   @Override
@@ -49,7 +51,7 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
   public GetDepartmentInfoResponse getDepartmentInfo() {
     return Optional.ofNullable(getConfig().getDepartmentInfo())
         .map(DepartmentInfoMapper::mapToDepartmentInfoResponse)
-        .orElseGet(departmentApi::getDepartmentInfo);
+        .orElseGet(publicDepartmentApi::getDepartmentInfo);
   }
 
   @Override
@@ -65,7 +67,7 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
       return null;
     } else {
       log.info("Using custom department info.");
-      GetDepartmentInfoResponse baseDepartmentInfo = departmentApi.getDepartmentInfo();
+      GetDepartmentInfoResponse baseDepartmentInfo = publicDepartmentApi.getDepartmentInfo();
 
       DepartmentInfo departmentInfo = new DepartmentInfo();
       departmentInfo.setName(

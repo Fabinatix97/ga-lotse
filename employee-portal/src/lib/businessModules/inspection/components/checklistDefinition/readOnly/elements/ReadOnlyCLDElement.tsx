@@ -51,5 +51,7 @@ export function ReadOnlyCLDElement(
     case "IMAGE":
     case "AUDIO":
       return <ReadOnlyCLDElementFile {...props} />;
+    default:
+      return undefined;
   }
 }

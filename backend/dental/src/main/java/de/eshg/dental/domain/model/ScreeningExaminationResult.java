@@ -59,6 +59,20 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   private Boolean decayRisk;
 
+  private boolean individualProphylaxis;
+
+  private boolean fissureSealing;
+
+  private boolean tartarRemoval;
+
+  private boolean gingivitisTreatment;
+
+  private boolean orthodonticTreatment;
+
+  private boolean plaqueTreatment;
+
+  private boolean inspectionAppointment;
+
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private DecayStatus decayStatus;
 
@@ -171,5 +185,61 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setDecayStatus(DecayStatus decayStatus) {
     this.decayStatus = decayStatus;
+  }
+
+  public boolean isIndividualProphylaxis() {
+    return individualProphylaxis;
+  }
+
+  public void setIndividualProphylaxis(boolean individualProphylaxis) {
+    this.individualProphylaxis = individualProphylaxis;
+  }
+
+  public boolean isFissureSealing() {
+    return fissureSealing;
+  }
+
+  public void setFissureSealing(boolean fissureSealing) {
+    this.fissureSealing = fissureSealing;
+  }
+
+  public boolean isTartarRemoval() {
+    return tartarRemoval;
+  }
+
+  public void setTartarRemoval(boolean tartarRemoval) {
+    this.tartarRemoval = tartarRemoval;
+  }
+
+  public boolean isGingivitisTreatment() {
+    return gingivitisTreatment;
+  }
+
+  public void setGingivitisTreatment(boolean gingivitisTreatment) {
+    this.gingivitisTreatment = gingivitisTreatment;
+  }
+
+  public boolean isOrthodonticTreatment() {
+    return orthodonticTreatment;
+  }
+
+  public void setOrthodonticTreatment(boolean orthodonticTreatment) {
+    this.orthodonticTreatment = orthodonticTreatment;
+  }
+
+  public boolean isPlaqueTreatment() {
+    return plaqueTreatment;
+  }
+
+  public void setPlaqueTreatment(boolean plaqueTreatment) {
+    this.plaqueTreatment = plaqueTreatment;
+  }
+
+  public boolean isInspectionAppointment() {
+    return inspectionAppointment;
+  }
+
+  public void setInspectionAppointment(boolean inspectionAppointment) {
+    this.inspectionAppointment = inspectionAppointment;
   }
 }

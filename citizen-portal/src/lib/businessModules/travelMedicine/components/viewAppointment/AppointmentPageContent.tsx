@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 
 import { useGetProcedureStepAppointmentDetails } from "@/lib/businessModules/travelMedicine/api/queries/citizenAuthApi";
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";

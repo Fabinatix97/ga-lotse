@@ -9,7 +9,7 @@ import { Add } from "@mui/icons-material";
 import { Button, Grid, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem, useSearchParam } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -39,7 +39,6 @@ import {
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AccessRestrictionSidebar } from "./AccessRestrictionSidebar";
 import { AdditionalInfoSection } from "./AdditionalInfoSection";

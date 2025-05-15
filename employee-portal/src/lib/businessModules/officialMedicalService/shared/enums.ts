@@ -7,10 +7,6 @@ import { ApiProcedureStatus } from "@eshg/base-api";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 
-export const omsProcedureAssignedFilterNames = {
-  ["true"]: "Nur mir zugewiesene Fälle",
-} satisfies Record<string, string>;
-
 export const omsProcedureStatusFilterNames = {
   [ApiProcedureStatus.Draft]: procedureStatusNames[ApiProcedureStatus.Draft],
   [ApiProcedureStatus.Open]: procedureStatusNames[ApiProcedureStatus.Open],

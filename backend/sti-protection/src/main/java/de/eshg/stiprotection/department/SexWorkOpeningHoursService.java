@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.department;
 
+import de.eshg.config.AuditLogWriter;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.stiprotection.persistence.SexWorkOpeningHours;
 import de.eshg.stiprotection.persistence.config.DepartmentInfoConfig;
@@ -20,11 +21,13 @@ public class SexWorkOpeningHoursService
   public SexWorkOpeningHoursService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
-      DepartmentInfoConfig departmentInfoConfig) {
+      DepartmentInfoConfig departmentInfoConfig,
+      AuditLogWriter auditLogWriter) {
     super(
         entityManager,
         transactionHelper,
         departmentInfoConfig.getOpeningHours().get(Concern.SEX_WORK.name().toLowerCase()),
+        auditLogWriter,
         SexWorkOpeningHours.class);
   }
 

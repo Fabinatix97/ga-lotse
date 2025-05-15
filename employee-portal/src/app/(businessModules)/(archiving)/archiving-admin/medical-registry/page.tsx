@@ -5,25 +5,20 @@
 
 "use client";
 
+import { ArchiveAdminPage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import {
-  useBulkUpdateProceduresArchivingRelevance,
-  useExportRelevantProcedures,
-} from "@/lib/businessModules/medicalRegistry/api/mutations/archiving";
-import { useGetRelevantArchivableProcedures } from "@/lib/businessModules/medicalRegistry/api/queries/archiving";
-import { ArchiveAdminView } from "@/lib/shared/components/archiving/ArchiveAdminView";
+import { useArchivingApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchiveAdminPage() {
+export default function MedicalRegistryArchiveAdminPage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveAdminView
+    <ArchiveAdminPage
       title={businessModuleNames[ApiBusinessModule.MedicalRegistry]}
-      useGetRelevantArchivableProcedures={useGetRelevantArchivableProcedures}
-      useExportRelevantProcedures={useExportRelevantProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
+      businessModule={ApiBusinessModule.MedicalRegistry}
+      archivingApi={archivingApi}
     />
   );
 }

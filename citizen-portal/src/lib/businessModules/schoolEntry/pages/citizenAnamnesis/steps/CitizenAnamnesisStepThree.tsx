@@ -4,6 +4,8 @@
  */
 
 import { FormLabel, Grid, Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
+import { useId } from "react";
 
 import {
   InputArrayField,
@@ -22,6 +24,8 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 import { LocalBooleanRadioField } from "./components/LocalBooleanRadioField";
 
 export function CitizenAnamnesisStepThree() {
+  const id_birthWeight = useId();
+
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
 
   const developmentInfo = createFieldNameMapper("developmentInfo");
@@ -54,11 +58,13 @@ export function CitizenAnamnesisStepThree() {
         <NumberField
           name={developmentInfo("birthWeight")}
           label={
-            <FormLabel>
+            <FormLabel id={id_birthWeight}>
               <Typography level="body-sm">{t("health.birthWeight")}</Typography>
+              <Typography sx={visuallyHidden}>in Gramm</Typography>
             </FormLabel>
           }
-          endDecorator="g"
+          endDecorator={<Typography aria-hidden>g</Typography>}
+          aria-labelledby={`${id_birthWeight}`}
         />
       </QuarterWidthGrid>
       <LocalBooleanRadioField

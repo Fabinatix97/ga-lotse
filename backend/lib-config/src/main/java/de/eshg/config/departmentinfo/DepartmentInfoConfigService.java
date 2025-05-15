@@ -5,7 +5,8 @@
 
 package de.eshg.config.departmentinfo;
 
-import de.eshg.base.department.DepartmentApi;
+import de.eshg.base.department.PublicDepartmentApi;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.domain.DepartmentInfoConfig;
 import de.eshg.config.initialization.OptionalInitialDepartmentInfo;
 import de.eshg.config.spring.ConditionalOnBusinessModule;
@@ -25,13 +26,15 @@ public class DepartmentInfoConfigService
   public DepartmentInfoConfigService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
-      DepartmentApi departmentApi,
-      OptionalInitialDepartmentInfo optionalInitialDepartmentInfo) {
+      PublicDepartmentApi publicDepartmentApi,
+      OptionalInitialDepartmentInfo optionalInitialDepartmentInfo,
+      AuditLogWriter auditLogWriter) {
     super(
         entityManager,
         transactionHelper,
-        departmentApi,
+        publicDepartmentApi,
         optionalInitialDepartmentInfo,
+        auditLogWriter,
         DepartmentInfoConfig.class);
   }
 

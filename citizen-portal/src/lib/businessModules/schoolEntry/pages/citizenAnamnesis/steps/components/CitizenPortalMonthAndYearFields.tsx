@@ -35,7 +35,12 @@ export function CitizenPortalMonthAndYearFields(
   const { month, year } = useMonthAndYearValidationsRules(props.fieldName);
 
   return (
-    <Grid container spacing={2}>
+    <Grid
+      container
+      spacing={2}
+      role="group"
+      aria-labelledby={props["aria-labelledby"]}
+    >
       <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
         <SelectObjectField
           options={monthValues.map((_, i) => i)}

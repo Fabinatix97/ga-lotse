@@ -5,25 +5,20 @@
 
 "use client";
 
+import { ArchiveAdminPage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import {
-  useBulkUpdateProceduresArchivingRelevance,
-  useExportRelevantProcedures,
-} from "@/lib/businessModules/travelMedicine/api/mutations/archiving";
-import { useGetRelevantArchivableProcedures } from "@/lib/businessModules/travelMedicine/api/queries/archiving";
-import { ArchiveAdminView } from "@/lib/shared/components/archiving/ArchiveAdminView";
+import { useArchivingApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchiveAdminPage() {
+export default function TravelMedicineArchiveAdminPage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveAdminView
+    <ArchiveAdminPage
       title={businessModuleNames[ApiBusinessModule.TravelMedicine]}
-      useGetRelevantArchivableProcedures={useGetRelevantArchivableProcedures}
-      useExportRelevantProcedures={useExportRelevantProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
+      businessModule={ApiBusinessModule.TravelMedicine}
+      archivingApi={archivingApi}
     />
   );
 }

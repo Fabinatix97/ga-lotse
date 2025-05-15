@@ -7,7 +7,8 @@
 
 import { use } from "react";
 
-import { ApiUserRole } from "@eshg/base-api";
+import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
+import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import {
@@ -16,14 +17,9 @@ import {
   useProcedureApi,
   useProgressEntryApi,
 } from "@/lib/businessModules/measlesProtection/api/clients";
-import {
-  fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 import { MeaslesProtectionDetailsRouteParamsSchema } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesProtectionDetailsRouteParamsSchema";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
-import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
 export default function MeaslesProtectionProcedureDataProgressEntriesTab(
   props: DynamicPageProps<MeaslesProtectionDetailsRouteParamsSchema>,
@@ -37,15 +33,14 @@ export default function MeaslesProtectionProcedureDataProgressEntriesTab(
 
   return (
     <ProgressEntriesPage
+      businessModule={ApiBusinessModule.MeaslesProtection}
       procedureId={id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.MeaslesProtectionLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
-      progressEntryApiQueryKey={progressEntryApiQueryKey}
       progressEntryApi={progressEntryApi}
       procedureApi={procedureApi}
-      fileApiQueryKey={fileApiQueryKey}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
     />

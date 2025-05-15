@@ -4,7 +4,13 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { FilterValue } from "@eshg/lib-employee-portal";
+import {
+  FilterValue,
+  getFilterSelectedValue,
+  getFilterSelectedValues,
+  isInEnum,
+  useSearchParamFilterSettings,
+} from "@eshg/lib-employee-portal";
 import {
   ApiOpenDataFileType,
   GetOpenDocumentsRequest,
@@ -12,12 +18,6 @@ import {
 
 import { openDataFileTypes } from "@/lib/opendata/constants";
 import { buildOpenDataBusinessModuleOptions } from "@/lib/opendata/helper";
-import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
-import {
-  getFilterSelectedValue,
-  getFilterSelectedValues,
-  isInEnum,
-} from "@/lib/shared/helpers/filter";
 
 const FILTER_KEYS = {
   year: "year",

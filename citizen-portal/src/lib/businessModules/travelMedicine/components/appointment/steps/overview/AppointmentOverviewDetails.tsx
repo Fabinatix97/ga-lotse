@@ -47,9 +47,12 @@ export function AppointmentOverviewDetails() {
     );
 
   return (
-    <Stack gap={1} data-testid="appointment-overview-summary">
+    <Stack gap={1} data-testid="appointment-overview-summary" role="list">
       {currentStep > 1 && values.initialStepAppointmentType && (
         <DetailsItem
+          slotProps={{
+            stack: { role: "listitem" },
+          }}
           label={t("overview.fields.initialStepAppointmentType", {
             context: "label",
           })}
@@ -60,6 +63,9 @@ export function AppointmentOverviewDetails() {
       )}
       {isDefined(department) && (
         <DetailsItem
+          slotProps={{
+            stack: { role: "listitem" },
+          }}
           label={t("overview.fields.department", {
             context: "label",
           })}
@@ -72,6 +78,9 @@ export function AppointmentOverviewDetails() {
         <>
           {appointmentStart && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("overview.fields.date", {
                 context: "label",
               })}
@@ -82,6 +91,9 @@ export function AppointmentOverviewDetails() {
           )}
           {durationInMinutes && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("overview.fields.time", {
                 context: "label",
               })}
@@ -96,6 +108,9 @@ export function AppointmentOverviewDetails() {
         <>
           {values.patient.firstName && values.patient.lastName && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("overview.fields.fullName", {
                 context: "label",
               })}
@@ -106,6 +121,9 @@ export function AppointmentOverviewDetails() {
           )}
           {values.patient.dateOfBirth && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("overview.fields.dateOfBirth", {
                 context: "label",
               })}
@@ -123,6 +141,9 @@ export function AppointmentOverviewDetails() {
         <>
           {values.patient.emailAddresses && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("overview.fields.emailAddress", {
                 context: "label",
               })}
@@ -133,6 +154,9 @@ export function AppointmentOverviewDetails() {
           )}
           {values.confirmOnlineServices && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("overview.fields.confirmOnlineServices", {
                 context: "label",
               })}

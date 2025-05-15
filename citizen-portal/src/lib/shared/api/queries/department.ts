@@ -9,19 +9,22 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
-import { ApiCitizenPortalMarkdownName, DepartmentApi } from "@eshg/base-api";
+import {
+  ApiCitizenPortalMarkdownName,
+  PublicDepartmentApi,
+} from "@eshg/base-api";
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 
-import { useDepartmentApi } from "@/lib/shared/api/clients";
+import { usePublicDepartmentApi } from "@/lib/shared/api/clients";
 import { mapDepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import { departmentApiQueryKey } from "@/lib/shared/api/queries/apiQueryKeys";
 
 export function useGetDepartmentInfo() {
-  const departmentApi = useDepartmentApi();
+  const departmentApi = usePublicDepartmentApi();
   return useSuspenseQuery(getDepartmentInfoQuery(departmentApi));
 }
 
-export function getDepartmentInfoQuery(departmentApi: DepartmentApi) {
+export function getDepartmentInfoQuery(departmentApi: PublicDepartmentApi) {
   return queryOptions({
     ...SEMI_STATIC_QUERY_OPTIONS,
     queryKey: departmentApiQueryKey(["getDepartmentInfo"]),
@@ -31,7 +34,7 @@ export function getDepartmentInfoQuery(departmentApi: DepartmentApi) {
 }
 
 export function useGetDepartmentLogo() {
-  const departmentApi = useDepartmentApi();
+  const departmentApi = usePublicDepartmentApi();
   return useQuery({
     queryKey: departmentApiQueryKey(["getDepartmentLogo"]),
     queryFn: () => departmentApi.getDepartmentLogo().then(URL.createObjectURL),
@@ -42,12 +45,12 @@ export function useGetDepartmentLogo() {
 export function useGetCitizenPortalMarkdown(
   name: ApiCitizenPortalMarkdownName,
 ) {
-  const departmentApi = useDepartmentApi();
+  const departmentApi = usePublicDepartmentApi();
   return useSuspenseQuery(getCitizenPortalMarkdownQuery(departmentApi, name));
 }
 
 function getCitizenPortalMarkdownQuery(
-  departmentApi: DepartmentApi,
+  departmentApi: PublicDepartmentApi,
   name: ApiCitizenPortalMarkdownName,
 ) {
   return queryOptions({

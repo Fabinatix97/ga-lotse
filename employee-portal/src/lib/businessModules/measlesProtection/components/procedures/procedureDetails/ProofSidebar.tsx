@@ -17,6 +17,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
@@ -30,7 +31,6 @@ import { useAddProofMutation } from "@/lib/businessModules/measlesProtection/api
 import { submissionResultOptions } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface InitialProofSubmissionValues {
   submissionResult: string;

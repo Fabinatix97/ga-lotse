@@ -7,6 +7,7 @@ import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
 import assert from "assert";
 import { isDefined } from "remeda";
 
+import { useGetPublicConfig } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -20,10 +21,13 @@ import {
 
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
-import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 
-const businessModules = Object.freeze(Object.values(ApiBusinessModule));
+const businessModules = Object.freeze(
+  Object.values(ApiBusinessModule).filter(
+    (businessModule) => businessModule !== ApiBusinessModule.MedsAbroad,
+  ),
+);
 
 export function getGdprValidationTaskDetailsQuery(
   taskApi: GdprValidationTaskApiInterface,
@@ -111,7 +115,7 @@ export function useGetGdprDownloadPackagesInfo(
   gdprProcedureId: string,
   enabled: boolean,
 ) {
-  const { data: config } = useServerConfig();
+  const { data: config } = useGetPublicConfig();
   const queries = businessModules.map((module) => {
     // Using hooks in a loop is allowed here, since the businessModules array is constant.
     // eslint-disable-next-line react-hooks/rules-of-hooks

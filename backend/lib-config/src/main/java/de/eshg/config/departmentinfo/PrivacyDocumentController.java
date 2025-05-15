@@ -58,9 +58,9 @@ public class PrivacyDocumentController {
   @Transactional(readOnly = true)
   public GetPrivacyDocumentConfigResponse getPrivacyPolicyConfig() {
     return new GetPrivacyDocumentConfigResponse(
-        MultiLangDocumentMapper.mapToPrivacyDto(
+        MultiLangDocumentMapper.mapToDto(
             privacyDocumentService.getConfig().getPrivacyPolicy(),
-            AbstractPrivacyDocumentService.PRIVACY_POLICY_FILE_NAME));
+            AbstractPrivacyDocumentService.PRIVACY_POLICY_CONFIG_FILENAME));
   }
 
   @GetMapping(PRIVACY_POLICY_PATH + "/{lang}")
@@ -102,9 +102,9 @@ public class PrivacyDocumentController {
   @Transactional(readOnly = true)
   public GetPrivacyDocumentConfigResponse getPrivacyNoticeConfig() {
     return new GetPrivacyDocumentConfigResponse(
-        MultiLangDocumentMapper.mapToPrivacyDto(
+        MultiLangDocumentMapper.mapToDto(
             privacyDocumentService.getConfig().getPrivacyNotice(),
-            AbstractPrivacyDocumentService.PRIVACY_NOTICE_FILE_NAME));
+            AbstractPrivacyDocumentService.PRIVACY_NOTICE_CONFIG_FILENAME));
   }
 
   @GetMapping(PRIVACY_NOTICE_PATH + "/{lang}")

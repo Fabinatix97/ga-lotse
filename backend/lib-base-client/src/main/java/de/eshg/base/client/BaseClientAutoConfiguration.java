@@ -11,7 +11,7 @@ import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.contact.ContactApi;
-import de.eshg.base.department.DepartmentApi;
+import de.eshg.base.department.PublicDepartmentApi;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.gdpr.GdprProcedureApi;
 import de.eshg.base.icd10.Icd10CodeApi;
@@ -122,8 +122,8 @@ class BaseClientAutoConfiguration {
   }
 
   @Bean
-  DepartmentApi departmentApiClient() {
-    return createClient(DepartmentApi.class);
+  PublicDepartmentApi departmentApiClient() {
+    return createClient(PublicDepartmentApi.class);
   }
 
   @Bean

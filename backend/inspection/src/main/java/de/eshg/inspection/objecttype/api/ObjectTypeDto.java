@@ -19,4 +19,5 @@ public record ObjectTypeDto(
     @Min(1) @Max(9999) Integer complaintInterval,
     @Min(1) @Max(99) Integer standardDuration,
     @Min(0) @Max(9999) Integer standardBufferTime,
-    @NotNull boolean emailAnnouncement) {}
+    @NotNull boolean emailAnnouncement,
+    String legalBasis) {}

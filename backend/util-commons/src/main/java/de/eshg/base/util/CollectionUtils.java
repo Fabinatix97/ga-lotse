@@ -26,4 +26,8 @@ public final class CollectionUtils {
   public static <T> Set<T> difference(Set<T> set1, Set<T> set2) {
     return Sets.difference(set1, set2);
   }
+
+  public static <T> Set<T> union(Set<T> set1, Set<T> set2) {
+    return Sets.union(set1, set2);
+  }
 }

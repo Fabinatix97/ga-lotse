@@ -33,6 +33,7 @@ export function ServiceCard(props: ServiceCardProps) {
           gap: "32px",
           boxShadow: "md",
           minHeight: "400px",
+          backgroundColor: "background.body",
         }}
       >
         <Box

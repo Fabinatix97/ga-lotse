@@ -10,12 +10,12 @@ import {
   EnumFilterDefinition,
   FilterValue,
   UseFilterSettings,
+  buildOptionsFromUsers,
   getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
 
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
-import { buildOptionsFromUsers } from "@/lib/shared/components/procedures/helper";
 
 const FILTER_KEYS = {
   assigneeId: "assigneeId",

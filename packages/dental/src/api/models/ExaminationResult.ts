@@ -49,6 +49,13 @@ export interface ScreeningExaminationResult {
   readonly gingivitis: boolean;
   readonly parodontitis: boolean;
   readonly toothDiagnoses: ToothDiagnoses;
+  readonly individualProphylaxis: boolean;
+  readonly fissureSealing: boolean;
+  readonly tartarRemoval: boolean;
+  readonly gingivitisTreatment: boolean;
+  readonly orthodonticTreatment: boolean;
+  readonly plaqueTreatment: boolean;
+  readonly inspectionAppointment: boolean;
 }
 
 export type ToothDiagnoses = Partial<Record<ApiTooth, ToothDiagnosis>>;
@@ -102,6 +109,13 @@ function mapScreeningExaminationResult(
         mapToothDiagnosis(toothDiagnosisResponse),
       ],
     ),
+    individualProphylaxis: response.individualProphylaxis,
+    fissureSealing: response.fissureSealing,
+    tartarRemoval: response.tartarRemoval,
+    gingivitisTreatment: response.gingivitisTreatment,
+    orthodonticTreatment: response.orthodonticTreatment,
+    plaqueTreatment: response.plaqueTreatment,
+    inspectionAppointment: response.inspectionAppointment,
   };
 }
 

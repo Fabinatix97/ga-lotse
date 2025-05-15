@@ -8,6 +8,7 @@
 import { Box, useTheme } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
+import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
 import {
   ApiInspection,
   ApiInspectionAvailableCLDVersionsResponse,
@@ -16,8 +17,12 @@ import {
 import { useHeaderHeights, useIsOffline } from "@eshg/lib-employee-portal";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
 
-import { useUserApi } from "@/lib/baseModule/api/clients";
+import {
+  usePublicDepartmentApi,
+  useUserApi,
+} from "@/lib/baseModule/api/clients";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
+import { getDepartmentQuery } from "@/lib/businessModules/inspection/api/queries/department";
 import {
   getAvailableCLDVsQuery,
   getInspectionQuery,
@@ -41,15 +46,21 @@ export function InspectionTabPlanning({
 }: Readonly<InspectionTabPlanningProps>) {
   const inspectionApi = useInspectionApi();
   const userApi = useUserApi();
+  const departmentApi = usePublicDepartmentApi();
 
-  const [{ data: inspection }, { data: selfUser }, { data: availableCldvs }] =
-    useSuspenseQueries({
-      queries: [
-        getInspectionQuery(inspectionApi, inspectionId),
-        getSelfUserQuery(userApi),
-        getAvailableCLDVsQuery(inspectionApi, inspectionId),
-      ],
-    });
+  const [
+    { data: inspection },
+    { data: selfUser },
+    { data: availableCldvs },
+    { data: department },
+  ] = useSuspenseQueries({
+    queries: [
+      getInspectionQuery(inspectionApi, inspectionId),
+      getSelfUserQuery(userApi),
+      getAvailableCLDVsQuery(inspectionApi, inspectionId),
+      getDepartmentQuery(departmentApi),
+    ],
+  });
 
   const theme = useTheme();
   const { width } = useWindowDimensions();
@@ -151,6 +162,7 @@ export function InspectionTabPlanning({
             hasReachedExecuted={hasReachedExecuted}
             hasReachedClosed={hasReachedClosed}
             inspection={inspection}
+            department={department}
           />
         </Box>
       </Box>
@@ -179,6 +191,7 @@ export function InspectionTabPlanning({
           hasReachedExecuted={hasReachedExecuted}
           hasReachedClosed={hasReachedClosed}
           inspection={inspection}
+          department={department}
         />
         <LeftColumnBottomElements
           isOffline={isOffline}
@@ -264,6 +277,7 @@ function RightColumnElements({
   hasReachedExecuted,
   hasReachedClosed,
   inspection,
+  department,
 }: {
   isOffline: boolean;
   lockedByDifferentUser: boolean;
@@ -271,6 +285,7 @@ function RightColumnElements({
   hasReachedExecuted: boolean;
   hasReachedClosed: boolean;
   inspection: ApiInspection;
+  department: ApiGetDepartmentInfoResponse;
 }) {
   return (
     <>
@@ -283,6 +298,7 @@ function RightColumnElements({
         readonly={hasReachedClosed}
         inspection={inspection}
         facilityAddress={inspection.facility.baseFacility.contactAddress}
+        department={department}
       />
       <PacklistTile
         readonly={(lockedByDifferentUser && !isOffline) || hasReachedExecuted}

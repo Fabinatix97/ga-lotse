@@ -54,7 +54,9 @@ export function RadioSheetOption({
         display: "flex",
         borderRadius: "md",
         gap: 2,
-        borderColor: isSelected ? theme.palette.primary[300] : null,
+        borderColor: isSelected
+          ? theme.palette.a11y.primary
+          : theme.palette.a11y.neutral,
         [`:has(> .${radioClasses.disabled})`]: {
           backgroundColor: "whitesmoke",
           borderColor: theme.palette.neutral[100],

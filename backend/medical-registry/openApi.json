@@ -3100,6 +3100,7 @@
             "$ref" : "#/components/schemas/CountryCode"
           },
           "phoneNumbers" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "maxLength" : 23,
@@ -3306,7 +3307,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -4228,6 +4229,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -4244,6 +4246,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -4650,7 +4653,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -5491,6 +5494,7 @@
             "format" : "date"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "id" : {
@@ -5498,6 +5502,7 @@
             "format" : "uuid"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "professionalTitle" : {
@@ -5579,6 +5584,18 @@
         },
         "discriminator" : {
           "propertyName" : "@type"
+        }
+      },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
         }
       },
       "MultiValueMapStringObject" : {
@@ -5763,6 +5780,7 @@
             "type" : "string"
           },
           "phoneNumbers" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "maxLength" : 23,
@@ -5860,18 +5878,6 @@
           "version" : {
             "type" : "integer",
             "format" : "int64"
-          }
-        }
-      },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
           }
         }
       },
@@ -6566,6 +6572,7 @@
             "example" : "UUID_2"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"

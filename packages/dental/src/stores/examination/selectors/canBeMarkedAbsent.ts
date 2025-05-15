@@ -54,6 +54,13 @@ const examinationFormValuesEmptinessRules: EmptinessRules<ExaminationFormValues>
     gingivitis: (value) => !value,
     parodontitis: (value) => !value,
     note: () => true,
+    individualProphylaxis: (value) => !value,
+    fissureSealing: (value) => !value,
+    tartarRemoval: (value) => !value,
+    gingivitisTreatment: (value) => !value,
+    orthodonticTreatment: (value) => !value,
+    plaqueTreatment: (value) => !value,
+    inspectionAppointment: (value) => !value,
   };
 
 function additionalInfoFormValuesEmpty<T extends ExaminationFormValues>(

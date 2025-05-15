@@ -6,6 +6,7 @@
 package de.eshg.opendata;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.opendata.api.GetOpenDocumentsPaginationOptions;
 import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.GetOpenDocumentsResponse;
@@ -72,9 +73,10 @@ public class OpenDataPublicCitizenController {
   @Transactional(readOnly = true)
   @Operation(
       summary = "Get specific version of an open document",
-      description = """
-      Gets one specific version of an open document by its id
-      """)
+      description =
+          """
+          Gets one specific version of an open document by its id
+          """)
   public VersionDto getVersion(@PathVariable("versionId") UUID versionId) {
     openDataValidations.validateOpenDataEnabled();
     return openDataService.getSpecificVersion(versionId);
@@ -95,9 +97,17 @@ public class OpenDataPublicCitizenController {
   }
 
   @GetMapping("terms-of-use")
+  @ApiResponse(
+      responseCode = "200",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+              schema = @Schema(format = "binary")))
   @Operation(summary = "Returns the terms of use")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getTermsOfUse() {
-    return TermsOfUseHelper.termsOfUseResponse(openDataConfigService.getConfig().getTermsOfUse());
+    return MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
+        openDataConfigService.getConfig().getTermsOfUse(),
+        OpenDataConfigService.TERMS_OF_USE_USER_FILENAME);
   }
 }

@@ -6,7 +6,7 @@
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { FileField } from "@eshg/lib-employee-portal";
+import { FileField, useGetPublicConfig } from "@eshg/lib-employee-portal";
 import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
@@ -16,13 +16,12 @@ import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
-import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 export function EmployeeInformationForm(props: NestedFormProps) {
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
-  const { data: config } = useServerConfig();
+  const { data: config } = useGetPublicConfig();
 
   const fieldName = createFieldNameMapper<EmployeeInformationFormValues>(
     props.name,

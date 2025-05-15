@@ -27,6 +27,8 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { MouseEvent, useRef } from "react";
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+
 import { useTranslation } from "@/lib/i18n/client";
 import { DeutschFlag } from "@/lib/i18n/flags/DeutschFlag";
 import { UKFlag } from "@/lib/i18n/flags/UKFlag";
@@ -65,6 +67,70 @@ export function LanguagePicker() {
         variant="plain"
         sx={{
           display: byBreakpoint({ mobile: "none", desktop: "flex" }),
+          flexDirection: "row",
+          flexWrap: "wrap",
+          padding: 3,
+          gap: 3,
+          borderRadius: (theme) => theme.radius.lg,
+          width: "100%",
+          maxWidth: "788px",
+          backgroundColor: "common.white",
+        }}
+      >
+        <LanguagePickerListItems
+          t={t}
+          onClose={() => toggleButton.current?.click()}
+        />
+      </Menu>
+    </Dropdown>
+  );
+}
+
+interface LanguagePickerReducedProps {
+  slotProps?: { menuButton?: MenuButtonProps["slotProps"] };
+}
+
+export function LanguagePickerReduced(props: LanguagePickerReducedProps) {
+  const toggleButton = useRef<HTMLButtonElement>(null);
+  const { t } = useTranslation("languagePicker");
+  const currentLanguage = useCurrentLanguage();
+  const isMobile = useIsMobile();
+  return (
+    <Dropdown>
+      <MenuButton
+        ref={toggleButton}
+        title={t("select_language_label")}
+        slotProps={{ ...props?.slotProps?.menuButton }}
+        {...buttonStylingReduced}
+      >
+        {isMobile ? (
+          <Typography
+            fontWeight={(theme) => theme.fontWeight.lg}
+            component="span"
+            level="body-xs"
+            sx={{
+              color: (theme) => theme.palette.text.primary,
+            }}
+          >
+            {currentLanguage.shortCode.toUpperCase()}
+          </Typography>
+        ) : (
+          <Typography
+            fontWeight={(theme) => theme.fontWeight.lg}
+            component="span"
+            level="body-sm"
+            sx={{
+              color: (theme) => theme.palette.text.primary,
+            }}
+          >
+            {currentLanguage.name}
+          </Typography>
+        )}
+      </MenuButton>
+      <Menu
+        variant="plain"
+        sx={{
+          display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
           padding: 3,
@@ -204,6 +270,26 @@ function LanguageOption({ option }: { option: LanguageOptionType }) {
 const buttonStyling: MenuButtonProps & ButtonProps = {
   color: "primary",
   startDecorator: <LanguageOutlined />,
+  variant: "plain",
+  sx: {
+    color: (theme) => theme.palette.text.primary,
+    width: byBreakpoint({ mobile: "100%", desktop: "auto" }),
+    justifyContent: "flex-start",
+    height: "40px",
+  },
+};
+
+const buttonStylingReduced: MenuButtonProps & ButtonProps = {
+  color: "primary",
+  startDecorator: (
+    <LanguageOutlined
+      sx={{
+        ml: byBreakpoint({ mobile: 0, desktop: -0.5 }),
+        width: byBreakpoint({ mobile: "24px", desktop: "20px" }),
+        height: byBreakpoint({ mobile: "24px", desktop: "20px" }),
+      }}
+    />
+  ),
   variant: "plain",
   sx: {
     color: (theme) => theme.palette.text.primary,

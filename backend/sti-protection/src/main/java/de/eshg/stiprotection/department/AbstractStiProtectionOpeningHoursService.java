@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.department;
 
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.departmentinfo.AbstractOpeningHoursService;
 import de.eshg.config.domain.AbstractOpeningHours;
 import de.eshg.config.initialization.MandatoryInitialOpeningHours;
@@ -20,8 +21,9 @@ abstract class AbstractStiProtectionOpeningHoursService<O extends AbstractOpenin
       EntityManager entityManager,
       TransactionHelper transactionHelper,
       MandatoryInitialOpeningHours initialOpeningHours,
+      AuditLogWriter auditLogWriter,
       Class<O> configClass) {
-    super(entityManager, transactionHelper, initialOpeningHours, configClass);
+    super(entityManager, transactionHelper, initialOpeningHours, auditLogWriter, configClass);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)

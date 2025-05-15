@@ -7,6 +7,7 @@
 
 import { FormLabel, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useId } from "react";
 
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -63,6 +64,7 @@ const FIXED_STYLE: SxProps = {
 };
 
 export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
+  const inGermanySinceId = useId();
   const fieldName = createFieldNameMapper(props.name);
 
   function setHasMigrationBackground(value: boolean) {
@@ -181,13 +183,17 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
         ))}
       </Stack>
       <Stack direction="row" gap={2}>
-        <FormLabel sx={{ fontSize: "14px", fontWeight: "500" }}>
+        <FormLabel
+          id={inGermanySinceId}
+          sx={{ fontSize: "14px", fontWeight: "500" }}
+        >
           in Deutschland seit
         </FormLabel>
         <MonthAndYearFields
           testId="inGermanySince"
           fieldName={fieldName("inGermanySince")}
           date={props.values.inGermanySince}
+          aria-labelledby={inGermanySinceId}
         />
       </Stack>
     </Stack>

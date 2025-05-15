@@ -161,3 +161,18 @@ export function procedureHasOpenAppointments(procedure: {
     (appointment) => appointment.appointmentState === ApiAppointmentState.Open,
   );
 }
+
+/**
+ * Drags elements to the top of the array if they match the given predicate, keeping
+ * their order. Also keeps the order of the remaining elements.
+ * @param elements    the input (won't be changed)
+ * @param predicate   the condition to apply
+ */
+export function bringToTop<T>(
+  elements: T[],
+  predicate: (orig: T) => boolean,
+): T[] {
+  const matchingElements = elements.filter(predicate);
+  const nonMatchingElements = elements.filter((item) => !predicate(item));
+  return matchingElements.concat(nonMatchingElements);
+}

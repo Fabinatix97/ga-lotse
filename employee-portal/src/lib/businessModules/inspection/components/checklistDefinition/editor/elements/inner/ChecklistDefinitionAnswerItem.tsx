@@ -80,6 +80,8 @@ const MemoizedChecklistDefinitionAnswerItem = memo(
             return undefined;
           }
         }
+        default:
+          return undefined;
       }
     }
 

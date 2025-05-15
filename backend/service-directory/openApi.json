@@ -1325,6 +1325,7 @@
             "$ref" : "#/components/schemas/Certificate"
           },
           "readableName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -1807,6 +1808,7 @@
             "type" : "string"
           },
           "value" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }

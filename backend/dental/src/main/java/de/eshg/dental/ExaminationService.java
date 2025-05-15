@@ -203,6 +203,13 @@ public class ExaminationService {
                   ExaminationMapper.mapToDomain(newResult.toothDiagnoses())));
           existingResult.setToothDiagnoses(
               ExaminationMapper.mapToDomain(newResult.toothDiagnoses()));
+          existingResult.setIndividualProphylaxis(newResult.individualProphylaxis());
+          existingResult.setFissureSealing(newResult.fissureSealing());
+          existingResult.setTartarRemoval(newResult.tartarRemoval());
+          existingResult.setGingivitisTreatment(newResult.gingivitisTreatment());
+          existingResult.setOrthodonticTreatment(newResult.orthodonticTreatment());
+          existingResult.setPlaqueTreatment(newResult.plaqueTreatment());
+          existingResult.setInspectionAppointment(newResult.inspectionAppointment());
         });
   }
 

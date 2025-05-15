@@ -11,13 +11,13 @@ import {
   ActionsMenu,
   DetailsItem,
   useConfirmationDialog,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiAppointment } from "@eshg/measles-protection-api";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface AppointmentCardProps {
   appointment?: ApiAppointment;

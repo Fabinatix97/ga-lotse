@@ -28,7 +28,7 @@ public interface ChildRepository extends ProcedureRepository<Child> {
       @Param("newInstitutionId") UUID newInstitutionId);
 
   @Query(
-      "select distinct c.groupName from Child c where c.institutionId = :institutionId order by c.groupName")
+      "select distinct c.groupName from Child c where c.groupName is not null and c.institutionId = :institutionId order by c.groupName")
   List<String> findDistinctInstitutionGroups(@Param("institutionId") UUID institutionId);
 
   List<Child> findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(

@@ -489,6 +489,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -520,6 +521,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlockIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -539,6 +541,7 @@
         "type" : "object",
         "properties" : {
           "daysOfWeek" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DayOfWeek"
@@ -563,6 +566,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
@@ -659,6 +663,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"

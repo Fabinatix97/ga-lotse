@@ -5,6 +5,7 @@
 
 package de.eshg.config.spring;
 
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigStatusController;
 import de.eshg.config.ConfigStatusService;
 import de.eshg.config.testhelper.EshgConfigurationServiceResetAction;
@@ -16,5 +17,6 @@ import org.springframework.context.annotation.Import;
   EshgConfigurationServiceResetAction.class,
   ConfigStatusService.class,
   ConfigStatusController.class,
+  AuditLogWriter.class
 })
 public class ConfigAutoConfiguration {}

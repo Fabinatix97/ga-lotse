@@ -331,8 +331,7 @@ public class EmployeeOmsProcedureService {
 
       candidates = allProcedures.stream().flatMap(this::convertToProcedureViewStream).toList();
     } else {
-      UserDto selfUser = userClient.getSelfUser();
-      UUID physicianId = Boolean.TRUE.equals(filters.assigned()) ? selfUser.userId() : null;
+      Set<UUID> physicianIds = filters.assignedPhysicians();
 
       DateSpanHelper.LocalDateSpan appointmentDateSpan =
           DateSpanHelper.splitDateSpan(filters.appointmentDateSpan());
@@ -359,7 +358,7 @@ public class EmployeeOmsProcedureService {
 
       candidates =
           findOmsProcedures(
-                  physicianId,
+                  physicianIds,
                   status,
                   instantStart,
                   instantPastEnd,
@@ -414,7 +413,7 @@ public class EmployeeOmsProcedureService {
   }
 
   private List<OmsProcedureView> findOmsProcedures(
-      @Nullable UUID physicianId,
+      @Nullable Set<UUID> physicianIds,
       @Nullable Set<ProcedureStatusDto> status,
       @Nullable Instant appointmentDateStart,
       @Nullable Instant appointmentDatePastEnd,
@@ -440,9 +439,8 @@ public class EmployeeOmsProcedureService {
 
     List<Predicate> predicates = new ArrayList<>();
 
-    if (physicianId != null) {
-      predicates.add(
-          cb.equal(procedureRoot.get(OmsProcedure_.physicianId), cb.literal(physicianId)));
+    if (!isEmpty(physicianIds)) {
+      predicates.add(procedureRoot.get(OmsProcedure_.physicianId).in(physicianIds));
     }
     if (!isEmpty(procedureStatus)) {
       predicates.add(procedureRoot.get(OmsProcedure_.procedureStatus).in(procedureStatus));
@@ -980,7 +978,7 @@ public class EmployeeOmsProcedureService {
 
     procedure.setAnamnesis(anamnesis);
 
-    progressEntryService.createProgressEntryForAnamnesisChanged(procedure);
+    progressEntryService.createProgressEntryForAnamnesisChangedByEmployee(procedure);
   }
 
   @Transactional

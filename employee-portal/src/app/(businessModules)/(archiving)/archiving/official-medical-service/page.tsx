@@ -5,31 +5,26 @@
 
 "use client";
 
+import { ArchivePage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/officialMedicalService/api/mutations/archiving";
-import {
-  useGetArchivableProcedures,
-  useGetArchivingConfiguration,
-} from "@/lib/businessModules/officialMedicalService/api/queries/archiving";
+import { useArchivingApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { procedureTypes } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { ArchiveView } from "@/lib/shared/components/archiving/ArchiveView";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchivePage() {
+export default function OfficialMedicalServiceArchivePage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveView
+    <ArchivePage
       title={businessModuleNames[ApiBusinessModule.OfficialMedicalService]}
+      businessModule={ApiBusinessModule.OfficialMedicalService}
       procedureDetailsRoute={(procedureId) =>
         routes.procedures.byId(procedureId).details
       }
-      useGetArchivingConfiguration={useGetArchivingConfiguration}
-      useGetArchivableProcedures={useGetArchivableProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
-      additionalFilters={{ procedureTypes }}
+      archivingApi={archivingApi}
+      procedureTypes={procedureTypes}
     />
   );
 }

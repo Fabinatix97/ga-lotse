@@ -15,14 +15,6 @@ export const appointmentStaffApiQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["appointmentStaffApi"]),
 );
 
-export const fileApiQueryKey = queryKeyFactory(
-  stiProtectionApiQueryKey(["fileApi"]),
-);
-
-export const progressEntryApiQueryKey = queryKeyFactory(
-  stiProtectionApiQueryKey(["progressEntryApi"]),
-);
-
 export const proceduresQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["procedures"]),
 );
@@ -31,9 +23,6 @@ export const appointmentTypesApiQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["appointmentTypes"]),
 );
 
-export const archivingApiQueryKey = queryKeyFactory(
-  stiProtectionApiQueryKey(["archivingApi"]),
-);
 export const textTemplateApiQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["textTemplateApi"]),
 );

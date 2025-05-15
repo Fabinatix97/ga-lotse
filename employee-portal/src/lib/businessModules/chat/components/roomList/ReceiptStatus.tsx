@@ -30,6 +30,7 @@ export function ReceiptStatus({
     return (
       <Box
         component="span"
+        data-testId="unread-messages-counter"
         sx={{
           display: "grid",
           placeItems: "center",

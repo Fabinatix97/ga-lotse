@@ -1,0 +1,236 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1746183655252-1">
+    <addColumn tableName="school_entry_procedure">
+      <column name="school_info_letter_id" type="BIGINT"/>
+    </addColumn>
+
+    <ext:createPostgresEnumType name="schoolinfoletterexaminationtype" values="CAN_CHILD, ENTRY_LEVEL, REGULAR_EXAMINATION"/>
+    <ext:createPostgresEnumType name="schoolinfolettermeaslescontraindicationduration" values="PERMANENT, TEMPORARY"/>
+
+    <createTable tableName="school_info_letter_examination">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_examination"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="consultation_with_custodian_recommended" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="custom_recommendation" type="TEXT"/>
+      <column name="examination_type" type="SCHOOLINFOLETTEREXAMINATIONTYPE"/>
+      <column name="note" type="TEXT"/>
+      <column name="postponed" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_school_and_promotion_hints">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_school_and_promotion_hints"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="articulation" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="auditive_information_processing" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="behavior" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="colors_shapes_numbers_sets" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="fine_or_visuo_motor_skills" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="grammar_and_vocabulary" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="gross_motor_skills_or_physical_coordination" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="language" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="left_handedness" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="visual_perception" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_vaccination_info">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_vaccination_info"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measles_contra_indication" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measles_contra_indication_duration" type="SCHOOLINFOLETTERMEASLESCONTRAINDICATIONDURATION"/>
+      <column name="measles_contra_indication_until" type="DATE"/>
+      <column name="measles_protection_complete" type="BOOLEAN"/>
+      <column name="vaccination_pass_not_presented" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_eye_examination_info">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_eye_examination_info"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="clarification_arranged" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="color_sense_disorder" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="conspicuous" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="spectacle_wearer" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="under_treatment" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_hearing_examination_info">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_hearing_examination_info"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="clarification_arranged" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="conspicuous" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="under_treatment" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_therapy_and_promotion_info">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_therapy_and_promotion_info"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ergo_therapy" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="miscellaneous" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="physio_therapy" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="psycho_motor_skills" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="speech_therapy" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_physicians_recommendation">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_physicians_recommendation"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="concerns_can_child" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="further_measures" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="introduction_inbfz" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="meeting_recommended" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="promotion_outside_school" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="special_promotion" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="school_info_letter_parents_wish">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_info_letter_parents_wish"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="school_info_letter_examination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="note" type="TEXT"/>
+      <column name="referred_to_further_consultation_from_school" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_eye_examin_school_info_letter_examinatio_key" tableName="school_info_letter_eye_examination_info"/>
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_hearing_ex_school_info_letter_examinatio_key" tableName="school_info_letter_hearing_examination_info"/>
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_parents_wi_school_info_letter_examinatio_key" tableName="school_info_letter_parents_wish"/>
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_physicians_school_info_letter_examinatio_key" tableName="school_info_letter_physicians_recommendation"/>
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_school_and_school_info_letter_examinatio_key" tableName="school_info_letter_school_and_promotion_hints"/>
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_therapy_an_school_info_letter_examinatio_key" tableName="school_info_letter_therapy_and_promotion_info"/>
+    <addUniqueConstraint columnNames="school_info_letter_id" constraintName="school_entry_procedure_school_info_letter_id_key" tableName="school_entry_procedure"/>
+    <addUniqueConstraint columnNames="school_info_letter_examination_id" constraintName="school_info_letter_vaccinatio_school_info_letter_examinatio_key" tableName="school_info_letter_vaccination_info"/>
+
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_id" baseTableName="school_entry_procedure" constraintName="fk_school_entry_procedure_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_eye_examination_info" constraintName="fk_school_info_letter_eye_examination_info_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_hearing_examination_info" constraintName="fk_school_info_letter_hearing_examination_info_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_parents_wish" constraintName="fk_school_info_letter_parents_wish_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_physicians_recommendation" constraintName="fk_school_info_letter_physicians_recommendation_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_school_and_promotion_hints" constraintName="fk_school_info_letter_school_and_promotion_hints_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_therapy_and_promotion_info" constraintName="fk_school_info_letter_therapy_and_promotion_info_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="school_info_letter_examination_id" baseTableName="school_info_letter_vaccination_info" constraintName="fk_school_info_letter_vaccination_info_school_info_letter_examination" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school_info_letter_examination" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

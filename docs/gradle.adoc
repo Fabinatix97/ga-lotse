@@ -118,6 +118,7 @@ All common tasks are also available within the e2e project.
 | *Command*                                               | *Description*
 | `./gradlew e2e:test [-Pfilter=PATH] [-Pretries=NUMBER]` | Run all tests in headless mode. Use `-Pfilter` to run an individual test only. Use `-Pretries` to enable retries for verifying flaky tests.
 | `./gradlew e2e:testUi`                                  | Open Playwright in UI mode (enables running and debugging individual tests)
+| `./gradlew e2e:testBrowserSmokeTest`                    | Run only the playwright projects which contain the minimal smoke test for Chromium, Safari and Firefox
 | `./gradlew e2e:testFile -Pfile=FILE`                    | Run test for single file matching the specified name (can include paths)
 | `./gradlew e2e:testReport`                              | Open HTML test report
 | `./gradlew e2e:cleanValidationFilesOutput`              | Delete e2e/data/validation/output to have a clean folder for finding unused files
@@ -125,5 +126,8 @@ All common tasks are also available within the e2e project.
 |===
 
 *Notice:* `testUi` is recommended for local development, because tests can be run individually with a time travel experience. This simplifies the verification of the test runs and the analysis of errors.
+
+*Notice #2:* For a successful run of `testBrowserSmokeTest` the modules inspection, schoolentry, travelmedicine and statistics are currently needed.
+
 
 There is a separate section in the link:./e2e-tests.adoc[e2e-tests README] concerning smoke testing deployed environments using the e2e test setup.

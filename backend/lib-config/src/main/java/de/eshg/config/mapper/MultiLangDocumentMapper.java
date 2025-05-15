@@ -6,8 +6,9 @@
 package de.eshg.config.mapper;
 
 import de.eshg.base.department.LanguageDto;
+import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.api.DocumentDto;
-import de.eshg.config.api.PrivacyDocumentDto;
+import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangFileName;
 import de.eshg.rest.service.i18n.Language;
@@ -16,12 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class MultiLangDocumentMapper {
 
-  public static PrivacyDocumentDto mapToPrivacyDto(
+  public static MultiLangDocumentDto mapToDto(
       MultiLangDocument multiLangDocument, MultiLangFileName multiLangFileName) {
     if (multiLangDocument == null) {
       return null;
     }
-    return new PrivacyDocumentDto(
+    return new MultiLangDocumentDto(
         mapToDto(multiLangFileName.de(), multiLangDocument.getDeFileSizeBytes()),
         mapToDto(multiLangFileName.en(), multiLangDocument.getEnFileSizeBytes()));
   }
@@ -53,5 +54,13 @@ public class MultiLangDocumentMapper {
       multiLangDocument.updateEn(en.getBytes());
     }
     return multiLangDocument;
+  }
+
+  public static ConfigurationStatus mapToConfigurationStatus(MultiLangDocument multiLangDocument) {
+    if (multiLangDocument.getEn() == null) {
+      return ConfigurationStatus.PARTIALLY_COMPLETE;
+    } else {
+      return ConfigurationStatus.COMPLETE;
+    }
   }
 }

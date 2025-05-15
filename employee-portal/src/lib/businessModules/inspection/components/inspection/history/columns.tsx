@@ -26,7 +26,6 @@ import {
   translateInspectionType,
 } from "@/lib/businessModules/inspection/shared/enums";
 import { useInspectionPrecacheState } from "@/lib/businessModules/inspection/shared/offline/useInspectionPrecacheState";
-import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
 const columnHelper: ColumnHelper<ApiInspPendingFacility> =
@@ -263,10 +262,9 @@ function OfflineFork({
   online?: ReactNode | ReactNode[];
   procedureId: string;
 }>) {
-  const isOfflineEnabled = useIsOfflineFeatureEnabled();
   const isOffline = useIsOffline();
   const [state] = useInspectionPrecacheState(procedureId);
 
-  if (isOfflineEnabled && isOffline && state !== "success") return offline;
+  if (isOffline && state !== "success") return offline;
   return online;
 }

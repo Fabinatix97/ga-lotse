@@ -2,6 +2,16 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.10
+_14.05.2025_
+
+Elfter Release der Anwendung GA-Lotse.
+
+### Begehung:
+
+* Der Offline-Modus für Vorgänge steht zur Verfügung
+
+
 ## GA-Lotse 1.9
 _07.05.2025_
 

@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Loading from "@/app/[lang]/loading";
+import Loading from "@/app/[lang]/loadingPages";
 
 export default Loading;

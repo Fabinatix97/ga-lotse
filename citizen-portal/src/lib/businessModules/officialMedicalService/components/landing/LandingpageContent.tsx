@@ -13,11 +13,11 @@ import {
 } from "@eshg/official-medical-service-api";
 
 import {
+  useGetDepartmentInfoQuery,
   useGetLandingContent,
   useGetOpeningHoursQuery,
 } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";
-import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
 import { EmailSection } from "@/lib/shared/components/EmailSection";
 import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
@@ -29,17 +29,19 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 
-interface LandingpageContentProps {
-  departmentInfo: DepartmentInfo;
-}
-
-export function LandingpageContent(props: Readonly<LandingpageContentProps>) {
+export function LandingpageContent() {
   const { t, i18n } = useTranslation(["officialMedicalService/landing"]);
-  const [{ data: openingHours }, { data: landingContent }] = useSuspenseQueries(
-    {
-      queries: [useGetOpeningHoursQuery(), useGetLandingContent()],
-    },
-  );
+  const [
+    { data: departmentInfo },
+    { data: openingHours },
+    { data: landingContent },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetDepartmentInfoQuery(),
+      useGetOpeningHoursQuery(),
+      useGetLandingContent(),
+    ],
+  });
 
   return (
     <GridColumnStack>
@@ -80,11 +82,11 @@ export function LandingpageContent(props: Readonly<LandingpageContentProps>) {
         <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
         <InfoSectionGrid>
           <AddressSection
-            department={props.departmentInfo}
+            department={departmentInfo}
             localePath="officialMedicalService/landing"
           />
           <PhoneSection
-            department={props.departmentInfo}
+            department={departmentInfo}
             localePath="officialMedicalService/landing"
           />
           <OpeningHoursSection
@@ -92,7 +94,7 @@ export function LandingpageContent(props: Readonly<LandingpageContentProps>) {
             localePath="officialMedicalService/landing"
           />
           <EmailSection
-            department={props.departmentInfo}
+            department={departmentInfo}
             localePath="officialMedicalService/landing"
           />
         </InfoSectionGrid>

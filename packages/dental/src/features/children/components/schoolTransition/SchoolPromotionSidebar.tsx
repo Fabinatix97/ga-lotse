@@ -7,13 +7,13 @@ import { Formik } from "formik";
 
 import { ApiPromoteGroupsBulkRequest } from "@eshg/dental-api";
 import {
-  DrawerProps,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
-  UseSidebarResult,
-  useSidebar,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 
 import { calculateGroupNameForNextSchoolYear } from "../../../schoolYearTransition/calculateGroupNameForNextSchoolYear";
@@ -21,8 +21,8 @@ import { usePromoteGroupsInBulk } from "../../api/mutations/schoolYearTransition
 
 import { SchoolYearTransitionGroupList } from "./SchoolYearTransitionGroupList";
 
-export function useSchoolPromotionSidebar(): UseSidebarResult<SchoolPromotionSidebarProps> {
-  return useSidebar({
+export function useSchoolPromotionSidebar(): UseSidebarWithFormRefResult<SchoolPromotionSidebarProps> {
+  return useSidebarWithFormRef({
     component: SchoolPromotionSidebar,
   });
 }
@@ -36,7 +36,7 @@ interface SchoolPromotionFormValues {
   groupNames: OriginAndTargetGroupNames[];
 }
 
-interface SchoolPromotionSidebarProps extends DrawerProps {
+interface SchoolPromotionSidebarProps extends SidebarWithFormRefProps {
   institutionId: string;
   institutionName: string;
   groupNames: string[];
@@ -47,6 +47,7 @@ function SchoolPromotionSidebar({
   institutionId,
   institutionName,
   onClose,
+  formRef,
 }: SchoolPromotionSidebarProps) {
   const promoteGroupsInBulk = usePromoteGroupsInBulk();
   const INITIAL_VALUES: SchoolPromotionFormValues = {
@@ -58,14 +59,14 @@ function SchoolPromotionSidebar({
 
   async function handleSchoolPromotion(values: SchoolPromotionFormValues) {
     await promoteGroupsInBulk.mutateAsync(mapToRequest(institutionId, values), {
-      onSuccess: () => onClose(),
+      onSuccess: () => onClose(true),
     });
   }
 
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSchoolPromotion}>
       {({ isSubmitting, isValid }) => (
-        <SidebarForm>
+        <SidebarForm ref={formRef}>
           <SidebarContent title="Schuljahreswechsel">
             <SchoolYearTransitionGroupList
               institutionName={institutionName}

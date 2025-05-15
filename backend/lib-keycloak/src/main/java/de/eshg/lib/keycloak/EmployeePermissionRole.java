@@ -48,6 +48,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME,
       LEADER_DESCRIPTION.formatted("Amtsärztlicher Dienst"),
       Module.OFFICIAL_MEDICAL_SERVICE),
+  MEDS_ABROAD_LEADER(
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Reisen mit Betäubungsmitteln"),
+      Module.MEDS_ABROAD),
 
   BASE_PERSONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
@@ -377,7 +381,14 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_FACILITIES_READ,
       BASE_FACILITIES_WRITE,
       BASE_ACCESS_CODE_USER_ADMIN,
-      BASE_CALENDAR_BUSINESS_EVENTS_WRITE);
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
+
+  MEDS_ABROAD_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("Reisen mit Betäubungsmitteln"),
+      "Standardberechtigung für das Fachmodul",
+      Module.MEDS_ABROAD,
+      BASE_PERSONS_READ,
+      BASE_PERSONS_WRITE);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;
@@ -432,7 +443,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     DENTAL("Zahnärztlicher Dienst"),
     OPEN_DATA("Open Data"),
     OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst"),
-    CONFIGURATION("Konfigurator");
+    CONFIGURATION("Konfigurator"),
+    MEDS_ABROAD("Reisen mit Betäubungsmitteln");
 
     private final String displayName;
 

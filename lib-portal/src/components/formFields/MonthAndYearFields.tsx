@@ -48,6 +48,7 @@ export interface MonthAndYearFieldsProps {
   yearLabel?: ReactNode;
   monthValues?: string[];
   testId?: string;
+  "aria-labelledby": string;
 }
 
 export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
@@ -58,7 +59,13 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
   const { month, year } = useMonthAndYearValidationsRules(props.fieldName);
 
   return (
-    <Stack direction="row" gap={2} data-testid={props.testId}>
+    <Stack
+      direction="row"
+      gap={2}
+      data-testid={props.testId}
+      role="group"
+      aria-labelledby={props["aria-labelledby"]}
+    >
       <SelectObjectField
         name={`${props.fieldName}.month`}
         label={props.monthLabel ?? t("common.month")}

@@ -1,0 +1,23 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':business-module-commons')
+    implementation project(':business-module-persistence-commons')
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+
+    runtimeOnly 'org.postgresql:postgresql'
+}
+
+dockerCompose {
+    startedServices = [
+        'meds-abroad',
+        'meds-abroad-db'
+    ]
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-meds-abroad') ?: "unspecified"
+}

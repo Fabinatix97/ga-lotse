@@ -210,8 +210,8 @@ export const eslintNextConfigs = {
       files: [
         "**/next.config.ts",
         "src/middleware.ts",
-        "src/app/**/{layout,page,loading,not-found,error,global-error,route,template,default}.tsx",
-        "src/app/loading.template.tsx",
+        "src/app/**/{layout,page,loading,loadingPages,not-found,error,errorPages,global-error,route,template,default}.tsx",
+        "src/app/{loading,error}.template.tsx",
         "src/app/{robots,sitemap}.ts",
       ],
       rules: {

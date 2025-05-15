@@ -13,7 +13,7 @@ import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
 import de.eshg.base.config.DepartmentConfigurationService;
-import de.eshg.base.department.DepartmentController;
+import de.eshg.base.department.PublicDepartmentController;
 import de.eshg.base.gdpr.persistence.CentralFileIdWrapper;
 import de.eshg.base.gdpr.persistence.GdprFacility;
 import de.eshg.base.gdpr.persistence.GdprPerson;
@@ -43,7 +43,7 @@ public class GdprRightToObjectLetterGenerator {
 
   private final ClassPathResource templateFile;
   private final DocumentGenerator documentGenerator;
-  private final DepartmentController departmentController;
+  private final PublicDepartmentController departmentController;
   private final DepartmentConfigurationService departmentConfigurationService;
   private final FacilityRepository facilityRepository;
   private final PersonRepository personRepository;
@@ -51,7 +51,7 @@ public class GdprRightToObjectLetterGenerator {
   public GdprRightToObjectLetterGenerator(
       @Value(TEMPLATE_PATH) ClassPathResource templateFile,
       DocumentGenerator documentGenerator,
-      DepartmentController departmentController,
+      PublicDepartmentController departmentController,
       DepartmentConfigurationService departmentConfigurationService,
       FacilityRepository facilityRepository,
       PersonRepository personRepository) {

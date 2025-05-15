@@ -52,6 +52,12 @@ export function mapOptionalValue<T>(
   return value === "" ? undefined : value;
 }
 
+export function mapOptionalString(
+  value: string | undefined,
+): string | undefined {
+  return isNonEmptyString(value) ? value : undefined;
+}
+
 export function mapOptionalDate(
   value: OptionalFieldValue<string>,
 ): Date | undefined {

@@ -28,9 +28,18 @@ import {
   SelectObjectFieldProps,
 } from "../formFields/SelectObjectField";
 
-const SOFT_REQUIRED_INPUT_PROPS = {
-  color: "primary",
-} as const satisfies InputProps;
+function withOverridableSoftRequiredProps<
+  TProps extends Pick<InputProps, "color">,
+>(props: TProps) {
+  if (props.color !== undefined) {
+    return props;
+  }
+
+  return {
+    ...props,
+    color: "primary",
+  };
+}
 
 const SOFT_REQUIRED_STYLES = {
   borderWidth: 2,
@@ -59,8 +68,7 @@ export function SoftRequiredSelect<
 >(props: SelectProps<TValue, TMultiple>) {
   return (
     <StyledSelect<TValue, TMultiple>
-      {...SOFT_REQUIRED_INPUT_PROPS}
-      {...props}
+      {...withOverridableSoftRequiredProps(props)}
     />
   );
 }
@@ -68,7 +76,7 @@ export function SoftRequiredSelect<
 const StyledInput = styled(Input)(SOFT_REQUIRED_STYLES) as typeof Input;
 
 export function SoftRequiredInput(props: InputProps) {
-  return <StyledInput {...SOFT_REQUIRED_INPUT_PROPS} {...props} />;
+  return <StyledInput {...withOverridableSoftRequiredProps(props)} />;
 }
 
 export interface SoftRequiredSelectFieldProps<
@@ -155,8 +163,7 @@ function SoftRequiredSelectObject<
 >(props: AutocompleteProps<TValue, TMultiple, false, false>) {
   return (
     <StyledCustomAutocomplete<TValue, TMultiple, false, false>
-      {...SOFT_REQUIRED_INPUT_PROPS}
-      {...props}
+      {...withOverridableSoftRequiredProps(props)}
     />
   );
 }

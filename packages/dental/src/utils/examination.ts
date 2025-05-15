@@ -100,6 +100,13 @@ function mapExaminationResultFormValues(
       calculus: examinationResult.calculus,
       gingivitis: examinationResult.gingivitis,
       parodontitis: examinationResult.parodontitis,
+      individualProphylaxis: examinationResult.individualProphylaxis,
+      fissureSealing: examinationResult.fissureSealing,
+      tartarRemoval: examinationResult.tartarRemoval,
+      gingivitisTreatment: examinationResult.gingivitisTreatment,
+      orthodonticTreatment: examinationResult.orthodonticTreatment,
+      plaqueTreatment: examinationResult.plaqueTreatment,
+      inspectionAppointment: examinationResult.inspectionAppointment,
     };
   }
 
@@ -117,6 +124,13 @@ function mapExaminationResultFormValues(
       calculus: false,
       gingivitis: false,
       parodontitis: false,
+      individualProphylaxis: false,
+      fissureSealing: false,
+      tartarRemoval: false,
+      gingivitisTreatment: false,
+      orthodonticTreatment: false,
+      plaqueTreatment: false,
+      inspectionAppointment: false,
     };
   }
 
@@ -131,6 +145,13 @@ function mapExaminationResultFormValues(
     calculus: false,
     gingivitis: false,
     parodontitis: false,
+    individualProphylaxis: false,
+    fissureSealing: false,
+    tartarRemoval: false,
+    gingivitisTreatment: false,
+    orthodonticTreatment: false,
+    plaqueTreatment: false,
+    inspectionAppointment: false,
   };
 }
 

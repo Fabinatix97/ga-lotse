@@ -49,8 +49,11 @@ export function RebookAppointmentSidePanel({
   return (
     <ContentSheet>
       <ContentSheetTitle>{t("common.overview_title")}</ContentSheetTitle>
-      <Stack gap={1} data-testid="appointment-summary">
+      <Stack gap={1} data-testid="appointment-summary" role="list">
         <DetailsItem
+          slotProps={{
+            stack: { role: "listitem" },
+          }}
           label={t("appointment_overview.concern")}
           value={t(`common.${concernTitleTranslationKey}`)}
           icon={<MedicalServicesOutlined />}
@@ -59,6 +62,9 @@ export function RebookAppointmentSidePanel({
         <>
           {values.date && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("appointment_overview.date")}
               value={formatDate(values.date, "EEEE, d. MMMM y", { locale })}
               icon={<DateRange />}
@@ -67,6 +73,9 @@ export function RebookAppointmentSidePanel({
           )}
           {values.appointment?.start && (
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("appointment_overview.time")}
               value={
                 formatDate(values.appointment.start, "HH:mm", { locale }) +

@@ -50,13 +50,3 @@ export const inboxProcedureApiQueryKey = queryKeyFactory(
 export const procedureStepsApiQueryKey = queryKeyFactory(
   apiQueryKey(["procedureStepApi"]),
 );
-
-export const progressEntryApiQueryKey = queryKeyFactory(
-  apiQueryKey(["progressEntryApi"]),
-);
-
-export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
-
-export const archivingApiQueryKey = queryKeyFactory(
-  apiQueryKey(["archivingApi"]),
-);

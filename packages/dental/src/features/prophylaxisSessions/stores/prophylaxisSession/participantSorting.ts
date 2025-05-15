@@ -89,7 +89,6 @@ function compareBy(
         return compareStatus(a, b);
       case "groupName":
         return compareGroupName(a, b, sortDirection);
-      //TODO sbr: add compare groupName
       default:
         return a[sortKey].localeCompare(b[sortKey]);
     }

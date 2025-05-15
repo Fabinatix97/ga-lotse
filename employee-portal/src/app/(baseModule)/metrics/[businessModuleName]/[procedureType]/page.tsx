@@ -10,6 +10,7 @@ import { use } from "react";
 import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import {
   MainContentLayout,
+  PROCEDURE_TYPE_NAMES,
   StickyToolbarLayout,
   Toolbar,
   ToolbarBackButton,
@@ -18,7 +19,6 @@ import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 
 export default function TaskMetricsPage(
   props: DynamicPageProps<{
@@ -32,7 +32,7 @@ export default function TaskMetricsPage(
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          title={`Aufgabenkennzahlen: ${procedureTypeNames[procedureType]}`}
+          title={`Aufgabenkennzahlen: ${PROCEDURE_TYPE_NAMES[procedureType]}`}
           backButton={<ToolbarBackButton href={routes.metrics.index} />}
         />
       }

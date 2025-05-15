@@ -200,9 +200,10 @@ export function AppointmentForm() {
   return (
     <DepartmentContextProvider>
       <MultiStepForm<AppointmentFormValues> steps={STEPS}>
-        {({ Outlet, currentStep, totalSteps, setStep }) => (
+        {({ Outlet, currentStep, totalSteps, setStep, titleRef }) => (
           <>
             <MultiStepFormTitle
+              titleRef={titleRef}
               title={t("common.title")}
               stepperTitle={t("common.stepTitle", {
                 currentStepIndex: currentStep,

@@ -4,7 +4,7 @@
  */
 
 import { FormLabel, Grid, Typography } from "@mui/joy";
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
@@ -65,6 +65,8 @@ interface ContactFormProps {
 }
 
 function ContactForm(props: ContactFormProps) {
+  const inGermanySinceId = useId();
+
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
   const migrationBackground = createFieldNameMapper("migrationBackground");
   const options: SelectionOption[] = useMemo(
@@ -95,12 +97,16 @@ function ContactForm(props: ContactFormProps) {
       </Grid>
       {props.for === "child" && (
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
-          <FormLabel sx={{ fontSize: "16px", fontWeight: "700" }}>
+          <FormLabel
+            sx={{ fontSize: "16px", fontWeight: "700" }}
+            id={inGermanySinceId}
+          >
             {t("migration.inGermanySince")}
           </FormLabel>
           <CitizenPortalMonthAndYearFields
             fieldName={migrationBackground("child.inGermanySince")}
             date={props.values.migrationBackground.child.inGermanySince}
+            aria-labelledby={inGermanySinceId}
           />
         </Grid>
       )}

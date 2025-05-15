@@ -14,6 +14,7 @@ import {
   PROCEDURE_STATUS_NAMES,
   ToggleFilterButton,
   useFilterSettings,
+  useSearchParamStateProvider,
 } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
@@ -29,7 +30,6 @@ import {
   LAB_STATUS_VALUES,
   PROCEDURE_ORIGIN_VALUES,
 } from "@/lib/businessModules/stiProtection/shared/constants";
-import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 
 type ProceduresFilterDefinition = FilterDefinition &
   (
@@ -95,7 +95,7 @@ const initialValues: FilterValue[] = [];
 export interface ProcedureFilters {
   creationDateStart?: Date;
   creationDateEnd?: Date;
-  yearOfBirth?: number;
+  yearOfBirth?: string;
   appointmentDateStart?: Date;
   appointmentDateEnd?: Date;
   gender?: Set<ApiGender>;
@@ -159,7 +159,7 @@ export function useProceduresFilters(): ProcedureFilters {
         foundFilters.creationDate?.endDate,
         (v) => new Date(v),
       ),
-      yearOfBirth: ifDefined(foundFilters.yearOfBirth?.selectedValue, parseInt),
+      yearOfBirth: foundFilters.yearOfBirth?.selectedValue,
       appointmentDateStart: ifDefined(
         foundFilters.appointmentDate?.startDate,
         (v) => new Date(v),

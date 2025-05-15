@@ -8,6 +8,7 @@ import * as v from "valibot";
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
+  RestrictedPage,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
@@ -15,7 +16,6 @@ import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { FetchTaskForOverviewSearchParamsSchema } from "@/lib/baseModule/api/schemas/tasks";
 import { TasksTable } from "@/lib/baseModule/components/task/TasksTable";
-import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 export default async function TasksPage(props: PageProps) {
   const searchParams = v.parse(

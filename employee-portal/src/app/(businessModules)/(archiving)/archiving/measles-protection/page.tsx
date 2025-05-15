@@ -5,31 +5,26 @@
 
 "use client";
 
+import { ArchivePage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/measlesProtection/api/mutations/archiving";
-import {
-  useGetArchivableProcedures,
-  useGetArchivingConfiguration,
-} from "@/lib/businessModules/measlesProtection/api/queries/archiving";
+import { useArchivingApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { procedureTypes } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { ArchiveView } from "@/lib/shared/components/archiving/ArchiveView";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchivePage() {
+export default function MeaslesProtectionArchivePage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveView
+    <ArchivePage
       title={businessModuleNames[ApiBusinessModule.MeaslesProtection]}
       procedureDetailsRoute={(procedureId: string) =>
         routes.procedures.details(procedureId).index
       }
-      useGetArchivingConfiguration={useGetArchivingConfiguration}
-      useGetArchivableProcedures={useGetArchivableProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
-      additionalFilters={{ procedureTypes }}
+      businessModule={ApiBusinessModule.MeaslesProtection}
+      archivingApi={archivingApi}
+      procedureTypes={procedureTypes}
     />
   );
 }

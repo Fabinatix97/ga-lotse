@@ -10,7 +10,7 @@ import { Button, ButtonProps, IconButton, Stack, Typography } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 import { getLastPage } from "@eshg/lib-portal/helpers/paginationHelper";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";

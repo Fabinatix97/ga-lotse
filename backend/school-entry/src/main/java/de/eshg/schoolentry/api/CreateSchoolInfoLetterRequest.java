@@ -10,19 +10,22 @@ import jakarta.validation.constraints.NotNull;
 public record CreateSchoolInfoLetterRequest(
     @NotNull boolean prefilled,
     String note,
-    @NotNull Boolean consultationWithCustodianRecommended,
-    @NotNull Boolean meetingBetweenYouthHealthServicesAndSchoolManagementRecommended,
+    String customRecommendation,
+    @NotNull boolean consultationWithCustodianRecommended,
+    @NotNull boolean meetingBetweenYouthHealthServicesAndSchoolManagementRecommended,
     String parentsWishNote,
-    @NotNull Boolean referredToFurtherConsultationFromSchool) {
+    @NotNull boolean referredToFurtherConsultationFromSchool) {
   public CreateSchoolInfoLetterRequest(
       String note,
-      Boolean consultationWithCustodianRecommended,
-      Boolean meetingBetweenYouthHealthServicesAndSchoolManagementRecommended,
+      String customRecommendation,
+      boolean consultationWithCustodianRecommended,
+      boolean meetingBetweenYouthHealthServicesAndSchoolManagementRecommended,
       String parentsWishNote,
-      Boolean referredToFurtherConsultationFromSchool) {
+      boolean referredToFurtherConsultationFromSchool) {
     this(
         true,
         note,
+        customRecommendation,
         consultationWithCustodianRecommended,
         meetingBetweenYouthHealthServicesAndSchoolManagementRecommended,
         parentsWishNote,

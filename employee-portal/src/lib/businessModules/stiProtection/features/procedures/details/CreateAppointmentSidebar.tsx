@@ -13,6 +13,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -41,7 +42,6 @@ import {
   CreateAppointmentForm,
   initialValues,
 } from "@/lib/businessModules/stiProtection/shared/procedure/AppointmentForm";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 interface CreateAppointmentSidebarProps {

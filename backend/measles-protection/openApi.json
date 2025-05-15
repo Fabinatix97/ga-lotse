@@ -4366,6 +4366,7 @@
             }
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "First name of the affected person.",
             "example" : "Susanne"
@@ -4378,6 +4379,7 @@
             "format" : "uuid"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Last name of the affected person.",
             "example" : "Gerber"
@@ -4388,6 +4390,7 @@
           "phoneNumbers" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
@@ -4439,6 +4442,7 @@
             }
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "First name of the affected person.",
             "example" : "Susanne"
@@ -4447,6 +4451,7 @@
             "$ref" : "#/components/schemas/Gender"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Last name of the affected person.",
             "example" : "Gerber"
@@ -4457,6 +4462,7 @@
           "phoneNumbers" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
@@ -4529,6 +4535,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -4727,7 +4734,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -4865,6 +4872,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlockIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -4893,6 +4901,7 @@
         "type" : "object",
         "properties" : {
           "daysOfWeek" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DayOfWeek"
@@ -4917,6 +4926,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
@@ -5111,6 +5121,7 @@
             }
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "First name of the custodian.",
             "example" : "Mike"
@@ -5119,6 +5130,7 @@
             "$ref" : "#/components/schemas/Gender"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Last name of the custodian.",
             "example" : "Himmel"
@@ -5129,6 +5141,7 @@
           "phoneNumbers" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
@@ -5171,6 +5184,7 @@
             }
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "First name of the custodian.",
             "example" : "Mike"
@@ -5179,6 +5193,7 @@
             "$ref" : "#/components/schemas/Gender"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Last name of the custodian.",
             "example" : "Himmel"
@@ -5189,6 +5204,7 @@
           "phoneNumbers" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
@@ -5603,6 +5619,7 @@
             "type" : "string"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "phoneNumber" : {
@@ -5958,6 +5975,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
@@ -6050,6 +6068,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -6066,6 +6085,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -6496,7 +6516,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -7229,6 +7249,18 @@
           }
         }
       },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "OpenProcedureRequest" : {
         "required" : [ "reportData", "roleStatus" ],
         "type" : "object",
@@ -7406,18 +7438,6 @@
             }
           }
         } ]
-      },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
-          }
-        }
       },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
@@ -7722,9 +7742,11 @@
             "format" : "date"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -8265,6 +8287,7 @@
             "example" : "UUID_6"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"

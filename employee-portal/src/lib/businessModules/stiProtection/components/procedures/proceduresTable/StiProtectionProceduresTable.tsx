@@ -16,6 +16,7 @@ import {
   Pagination,
   TablePage,
   TableSheet,
+  useSearchParamLink,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
@@ -49,7 +50,6 @@ import {
   TableControlName,
   reduceActiveTableControl,
 } from "@/lib/shared/components/tableControls/ProceduresTableControls";
-import { useSearchParamLink } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import {
   StiProtectionProceduresTableFilterButton,

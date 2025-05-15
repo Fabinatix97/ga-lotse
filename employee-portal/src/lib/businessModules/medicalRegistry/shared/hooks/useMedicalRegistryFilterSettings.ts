@@ -7,6 +7,8 @@ import {
   FilterDefinition,
   FilterValue,
   UseFilterSettings,
+  getFilterSelectedValue,
+  getFilterSelectedValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
@@ -21,10 +23,6 @@ import {
   EntryStatus,
   entryStatusNames,
 } from "@/lib/businessModules/medicalRegistry/shared/constants";
-import {
-  getFilterSelectedValue,
-  getFilterSelectedValues,
-} from "@/lib/shared/helpers/filter";
 
 const FILTER_KEYS = {
   status: "status",

@@ -5,31 +5,26 @@
 
 "use client";
 
+import { ArchivePage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/medicalRegistry/api/mutations/archiving";
-import {
-  useGetArchivableProcedures,
-  useGetArchivingConfiguration,
-} from "@/lib/businessModules/medicalRegistry/api/queries/archiving";
+import { useArchivingApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 import { archivableProcedureTypes } from "@/lib/businessModules/medicalRegistry/shared/constants";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { ArchiveView } from "@/lib/shared/components/archiving/ArchiveView";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchivePage() {
+export default function MedicalRegistryArchivePage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveView
+    <ArchivePage
       title={businessModuleNames[ApiBusinessModule.MedicalRegistry]}
       procedureDetailsRoute={(procedureId: string) =>
         routes.procedures.byId(procedureId).details
       }
-      useGetArchivingConfiguration={useGetArchivingConfiguration}
-      useGetArchivableProcedures={useGetArchivableProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
-      additionalFilters={{ procedureTypes: archivableProcedureTypes }}
+      archivingApi={archivingApi}
+      businessModule={ApiBusinessModule.MedicalRegistry}
+      procedureTypes={archivableProcedureTypes}
     />
   );
 }

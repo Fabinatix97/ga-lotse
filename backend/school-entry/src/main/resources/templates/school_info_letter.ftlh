@@ -16,7 +16,7 @@
 <#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
 <#-- @ftlvariable name="school" type="de.eshg.schoolentry.pdf.Address" -->
-<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExamination" -->
+<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationDto" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
 
 <#macro additionalStyle>
@@ -41,7 +41,7 @@
 
     <@schoolinfoletter_title.content child=examination.child date=examination.date schoolYear=examination.schoolYear />
 
-    <@schoolinfoletter_type.content type=examination.type />
+    <@schoolinfoletter_type.content type=examination.type examination=examination />
 
     <h4>Schul- und förderrelevante Hinweise</h4>
     <@schoolinfoletter_schoolAndPromotionHints.content schoolAndPromotionHints=examination.schoolAndPromotionHints />
@@ -66,7 +66,7 @@
     <@schoolinfoletter_therapyAndPromotionInfo.content therapyAndPromotionInfo=examination.therapyAndPromotionInfo />
 
     <h4>Schulärztliche Empfehlung</h4>
-    <@schoolinfoletter_physiciansRecommendation.content physiciansRecommendation=examination.schoolInfoLetterPhysiciansRecommendation />
+    <@schoolinfoletter_physiciansRecommendation.content physiciansRecommendation=examination.physiciansRecommendation />
 
     <h4>Elternwunsch</h4>
     <p>${examination.parentsWish.note!"--keinen--"}</p>

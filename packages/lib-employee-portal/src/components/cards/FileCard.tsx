@@ -26,7 +26,7 @@ import { isDefined } from "remeda";
 
 import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiFileType } from "@eshg/lib-procedures-api";
+import { ApiAbstractFile, ApiFileType } from "@eshg/lib-procedures-api";
 
 import { ActionsMenu } from "../buttons/ActionsMenu";
 
@@ -157,4 +157,15 @@ function FileCardMenuButton({
       sx={{ "--IconButton-size": "1.5rem" }}
     />
   );
+}
+
+export function mapToFileCardProps(
+  apiFile: ApiAbstractFile,
+): Omit<FileCardProps, "onClick" | "actions"> {
+  return {
+    name: apiFile.fileName,
+    type: apiFile.fileType,
+    creationDate: apiFile.createdAt,
+    size: apiFile.fileSizeBytes,
+  };
 }

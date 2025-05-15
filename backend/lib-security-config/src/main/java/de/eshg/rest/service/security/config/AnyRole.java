@@ -8,12 +8,20 @@ package de.eshg.rest.service.security.config;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.keycloak.PermissionRole;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 
 public record AnyRole(Set<String> roleNames) implements AuthorizationDefinition {
+
+  public AnyRole(Set<String> roleNames) {
+    if (roleNames.isEmpty()) {
+      throw new IllegalArgumentException("roleNames is empty");
+    }
+    this.roleNames = roleNames;
+  }
 
   public AnyRole(PermissionRole... roles) {
     this(Arrays.stream(roles).map(PermissionRole::name).collect(StreamUtil.toLinkedHashSet()));
@@ -26,5 +34,17 @@ public record AnyRole(Set<String> roleNames) implements AuthorizationDefinition 
   @Override
   public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl) {
     authorizedUrl.hasAnyRole(roleNames().toArray(String[]::new));
+  }
+
+  @Override
+  public AuthorizationDefinition or(AuthorizationDefinition otherAuthorizationDefinition) {
+    if (!(otherAuthorizationDefinition instanceof AnyRole(Set<String> otherRoleNames))) {
+      throw new IllegalArgumentException(
+          "Cannot combined " + this + " with " + otherAuthorizationDefinition);
+    }
+
+    Set<String> combinedRoleNames = new LinkedHashSet<>(this.roleNames());
+    combinedRoleNames.addAll(otherRoleNames);
+    return new AnyRole(combinedRoleNames);
   }
 }

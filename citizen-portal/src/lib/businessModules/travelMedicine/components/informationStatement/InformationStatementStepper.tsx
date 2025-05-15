@@ -12,7 +12,7 @@ import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 import {
   ApiDocumentContent,
   ApiDocumentSection,
@@ -117,7 +117,7 @@ export function InformationStatementStepper() {
 
   return (
     <MultiStepForm<InformationStatementFormValues> steps={STEPS}>
-      {({ Outlet, currentStep, totalSteps }) => (
+      {({ Outlet, currentStep, totalSteps, titleRef }) => (
         <Formik
           initialValues={initialFormikValues}
           validate={validateForm}
@@ -126,6 +126,7 @@ export function InformationStatementStepper() {
           {(formikProps) => (
             <Stack gap={2}>
               <MultiStepFormTitle
+                titleRef={titleRef}
                 title={t("header.title")}
                 stepperTitle={t("header.stepText", {
                   currentStepIndex: currentStep,

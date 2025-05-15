@@ -770,6 +770,7 @@
           "name" : "searchString",
           "required" : true,
           "schema" : {
+            "minLength" : 1,
             "type" : "string"
           }
         } ],
@@ -3848,7 +3849,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -4032,6 +4033,7 @@
             "format" : "uuid"
           },
           "institutions" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AnnualInstitution"
@@ -4183,6 +4185,7 @@
         "type" : "object",
         "properties" : {
           "childIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -4196,6 +4199,7 @@
         "type" : "object",
         "properties" : {
           "groupNames" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -4446,6 +4450,7 @@
             "format" : "date-time"
           },
           "dentistIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -4472,6 +4477,7 @@
             "$ref" : "#/components/schemas/ProphylaxisType"
           },
           "zfaIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -4561,6 +4567,7 @@
             "description" : "Description of the label"
           },
           "hexColor" : {
+            "minLength" : 1,
             "pattern" : "^#[0-9a-zA-Z]{6}$",
             "type" : "string",
             "description" : "Background color of the box surrounding the label"
@@ -5133,6 +5140,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -5901,9 +5909,11 @@
         "type" : "object",
         "properties" : {
           "originGroupName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "targetGroupName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6878,6 +6888,7 @@
             "format" : "date-time"
           },
           "dentists" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "oneOf" : [ {
@@ -6923,6 +6934,7 @@
             "format" : "int64"
           },
           "zfas" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "oneOf" : [ {
@@ -6980,7 +6992,7 @@
         "enum" : [ "COMPLETE", "INCOMPLETE" ]
       },
       "ScreeningExaminationResult" : {
-        "required" : [ "calculus", "dentitionType", "gingivitis", "orthodonticFindings", "parodontitis", "plaque", "toothDiagnoses" ],
+        "required" : [ "calculus", "dentitionType", "fissureSealing", "gingivitis", "gingivitisTreatment", "individualProphylaxis", "inspectionAppointment", "orthodonticFindings", "orthodonticTreatment", "parodontitis", "plaque", "plaqueTreatment", "tartarRemoval", "toothDiagnoses" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/DentalExaminationResult"
@@ -6993,10 +7005,22 @@
             "dentitionType" : {
               "$ref" : "#/components/schemas/DentitionType"
             },
+            "fissureSealing" : {
+              "type" : "boolean"
+            },
             "fluorideVarnishApplied" : {
               "type" : "boolean"
             },
             "gingivitis" : {
+              "type" : "boolean"
+            },
+            "gingivitisTreatment" : {
+              "type" : "boolean"
+            },
+            "individualProphylaxis" : {
+              "type" : "boolean"
+            },
+            "inspectionAppointment" : {
               "type" : "boolean"
             },
             "mihStatus" : {
@@ -7014,10 +7038,19 @@
             "orthodonticStatus" : {
               "$ref" : "#/components/schemas/OrthodonticStatus"
             },
+            "orthodonticTreatment" : {
+              "type" : "boolean"
+            },
             "parodontitis" : {
               "type" : "boolean"
             },
             "plaque" : {
+              "type" : "boolean"
+            },
+            "plaqueTreatment" : {
+              "type" : "boolean"
+            },
+            "tartarRemoval" : {
               "type" : "boolean"
             },
             "toothDiagnoses" : {
@@ -7506,6 +7539,7 @@
         "type" : "object",
         "properties" : {
           "examinationUpdates" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/UpdateExaminationsInBulkRequest"
@@ -7539,6 +7573,7 @@
             "format" : "date-time"
           },
           "dentistIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -7569,6 +7604,7 @@
             "format" : "int64"
           },
           "zfaIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -7618,6 +7654,7 @@
             "example" : "UUID_2"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"

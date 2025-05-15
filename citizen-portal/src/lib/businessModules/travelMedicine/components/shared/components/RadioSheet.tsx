@@ -6,19 +6,16 @@
 "use client";
 
 import { Radio, RadioProps, Sheet, Stack, radioClasses } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode } from "react";
 
 export function RadioSheet({
   value,
   label,
   endDecorator,
-  sx,
   radioProps,
 }: PropsWithChildren<{
   value: unknown;
   label: string;
-  sx?: SxProps;
   radioProps?: RadioProps;
   endDecorator?: ReactNode;
 }>) {
@@ -26,17 +23,16 @@ export function RadioSheet({
     <Sheet
       component="label"
       variant="outlined"
-      sx={{
+      sx={(theme) => ({
         padding: endDecorator ? "11px 16px 11px 16px" : "17px 16px 17px 16px",
         alignItems: "center",
         borderRadius: "md",
-        [`:has(> .${radioClasses.checked})`]: {
-          backgroundColor: "primary.100",
-          borderColor: "primary.300",
+        borderColor: theme.palette.a11y.neutral,
+        [`:has(.${radioClasses.checked})`]: {
+          backgroundColor: theme.palette.background.level1,
         },
-        [`&:hover`]: { backgroundColor: "var(--background-level1, #F0F4F8)" },
-        ...sx,
-      }}
+        [`&:hover`]: { backgroundColor: theme.palette.background.level1 },
+      })}
     >
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Radio value={value} label={label} {...radioProps} />

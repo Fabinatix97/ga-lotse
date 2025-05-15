@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 
 import {

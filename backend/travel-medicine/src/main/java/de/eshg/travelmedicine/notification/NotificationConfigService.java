@@ -5,12 +5,13 @@
 
 package de.eshg.travelmedicine.notification;
 
+import static de.eshg.travelmedicine.notification.NotifcationConfigAuditLogMapper.getRelevantFieldsForLogging;
+
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
 import de.eshg.persistence.TransactionHelper;
-import de.eshg.travelmedicine.config.GetNotificationConfigResponse;
-import de.eshg.travelmedicine.config.NotificationConfigDto;
 import de.eshg.travelmedicine.notification.persistence.entity.NotificationConfig;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
@@ -20,30 +21,36 @@ import org.springframework.stereotype.Service;
 public class NotificationConfigService extends EshgConfigurationService<NotificationConfig> {
   private static final String CONFIGURATION_ENDPOINT = "NOTIFICATION";
   private final InitialNotificationConfig initialNotificationConfig;
+  private final AuditLogWriter auditLogWriter;
 
   protected NotificationConfigService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
+      AuditLogWriter auditLogWriter,
       InitialNotificationConfig initialNotificationConfig) {
     super(entityManager, transactionHelper, NotificationConfig.class);
     this.initialNotificationConfig = initialNotificationConfig;
+    this.auditLogWriter = auditLogWriter;
   }
 
-  public GetNotificationConfigResponse getNotificationConfig() {
+  public NotificationConfig getNotificationConfig() {
     NotificationConfig config = getConfig();
     if (config.isInitialized()) {
-      return new GetNotificationConfigResponse(
-          new NotificationConfigDto(config.getFromAddress(), config.getGreeting()));
+      return config;
     } else {
-      return new GetNotificationConfigResponse(null);
+      return null;
     }
   }
 
-  public void updateNotificationConfig(NotificationConfigDto notificationConfigDto) {
-    NotificationConfig config = getConfig();
-    config.setInitialized(true);
-    config.setGreeting(notificationConfigDto.greeting());
-    config.setFromAddress(notificationConfigDto.fromAddress());
+  public void updateNotificationConfig(NotificationConfig notificationConfigUpdate) {
+    NotificationConfig persistentConfig = getConfig();
+    persistentConfig.setInitialized(true);
+    auditLogWriter.writeChangeToAuditlog(
+        "notificationConfig",
+        getRelevantFieldsForLogging(persistentConfig),
+        getRelevantFieldsForLogging(notificationConfigUpdate));
+    persistentConfig.setGreeting(notificationConfigUpdate.getGreeting());
+    persistentConfig.setFromAddress(notificationConfigUpdate.getFromAddress());
   }
 
   @Override

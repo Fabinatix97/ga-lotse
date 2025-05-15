@@ -59,7 +59,11 @@ public enum ModuleMemberGroup implements KeycloakGroup {
   OFFICIAL_MEDICAL_SERVICE(
       "Amtsärztlicher Dienst",
       getStandardRoles(),
-      List.of(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN));
+      List.of(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN)),
+  MEDS_ABROAD(
+      "Reisen mit Betäubungsmitteln",
+      getStandardRoles(),
+      List.of(EmployeePermissionRole.MEDS_ABROAD_ADMIN));
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

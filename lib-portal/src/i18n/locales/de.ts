@@ -30,7 +30,8 @@ export const de = {
     file: {
       wrongType:
         "Bitte eine Datei vom Typ {{types, list(style: 'short'; type: 'disjunction';)}} auswählen.",
-      invalidName: "Bitte eine Datei mit gültigem Dateinamen auswählen.",
+      invalidName:
+        "Ungültiger Dateiname: Nur Buchstaben, Zahlen, Bindestriche '-' und Unterstriche '_' erlaubt.",
       nameTooLong: "Bitte eine Datei mit einem kürzeren Dateinamen auswählen.",
       invalidExtension:
         "Bitte eine Datei mit einer gültigen Dateiendung auswählen.",

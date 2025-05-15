@@ -7,7 +7,8 @@
 
 import { use } from "react";
 
-import { ApiUserRole } from "@eshg/base-api";
+import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
+import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import {
@@ -16,17 +17,12 @@ import {
   useProcedureApi,
   useProgressEntryApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
-import {
-  fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,
 } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/schoolEntry/shared/moduleUserGroup";
-import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
 export default function SchoolEntryProgressEntriesPage(
   props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
@@ -40,16 +36,15 @@ export default function SchoolEntryProgressEntriesPage(
 
   return (
     <ProgressEntriesPage
+      businessModule={ApiBusinessModule.SchoolEntry}
       procedureId={procedureId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.SchoolEntryLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}
-      progressEntryApiQueryKey={progressEntryApiQueryKey}
       progressEntryApi={progressEntryApi}
       procedureApi={procedureApi}
-      fileApiQueryKey={fileApiQueryKey}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
     />

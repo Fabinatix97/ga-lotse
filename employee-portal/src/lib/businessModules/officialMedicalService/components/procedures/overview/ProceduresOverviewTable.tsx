@@ -29,15 +29,21 @@ import {
   useFilterSettings,
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
+  useGetSelfUser,
   usePersonSearch,
+  useSearchParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
-import { GetAllEmployeeProceduresRequest } from "@eshg/official-medical-service-api";
+import {
+  ApiUser,
+  GetAllEmployeeProceduresRequest,
+} from "@eshg/official-medical-service-api";
 
 import { useGdprValidationTaskApi } from "@/lib/businessModules/officialMedicalService/api/clients";
+import { useGetAllPhysiciansQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStaffApi";
 import { useGetAllProceduresQuery } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import {
   LabCodeSearchForm,
@@ -47,12 +53,11 @@ import {
 } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/LabCodeSearchForm";
 import { procedureOverviewTableColumns } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/procedureOverviewColumns";
 import {
-  omsProcedureAssignedFilterNames,
   omsProcedureStatusFilterNames,
   omsProcedureUrgentFilterNames,
 } from "@/lib/businessModules/officialMedicalService/shared/enums";
+import { bringToTop } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 
 type PanelName = "filters" | "personSearch" | "labCodeSearch";
 
@@ -66,33 +71,48 @@ const initialSorting: ColumnSort = {
   desc: true,
 };
 
-const filterDefinitions = [
-  {
-    type: "Enum",
-    key: "assigned",
-    name: "Zugewiesen",
-    options: optionsFromRecord(omsProcedureAssignedFilterNames),
-  },
-  {
-    type: "Enum",
-    key: "status",
-    name: "Vorgang Status",
-    options: optionsFromRecord(omsProcedureStatusFilterNames),
-  },
-  {
-    type: "Enum",
-    key: "urgentCase",
-    name: "Dringender Fall",
-    options: optionsFromRecord(omsProcedureUrgentFilterNames),
-  },
-  {
-    type: "DateSpan",
-    key: "appointmentDateSpan",
-    name: "Termin",
-    doNotRequireStartAndEnd: true,
-    showTodayButton: true,
-  },
-] as const satisfies FilterDefinition[];
+function createFilterDefinitions(
+  allPhysicians: ApiUser[],
+  selfUser: ApiUser,
+): FilterDefinition[] {
+  const physicianOptions = allPhysicians.map((apiUser) => ({
+    label: apiUser.firstName + " " + apiUser.lastName,
+    value: apiUser.userId,
+  }));
+
+  const physicianOptionsSelfPrio = bringToTop(
+    physicianOptions,
+    (p) => p.value === selfUser.userId,
+  );
+
+  return [
+    {
+      type: "Enum",
+      key: "assignedPhysicians",
+      name: "Zugewiesen",
+      options: physicianOptionsSelfPrio,
+    },
+    {
+      type: "Enum",
+      key: "status",
+      name: "Vorgang Status",
+      options: optionsFromRecord(omsProcedureStatusFilterNames),
+    },
+    {
+      type: "Enum",
+      key: "urgentCase",
+      name: "Dringender Fall",
+      options: optionsFromRecord(omsProcedureUrgentFilterNames),
+    },
+    {
+      type: "DateSpan",
+      key: "appointmentDateSpan",
+      name: "Termin",
+      doNotRequireStartAndEnd: true,
+      showTodayButton: true,
+    },
+  ];
+}
 
 export function ProceduresOverviewTable(
   props: Readonly<ProceduresOverviewTableProps>,
@@ -123,14 +143,23 @@ export function ProceduresOverviewTable(
     gdprValidationTaskApi,
   );
 
-  const [procedures, gdprBanner] = useSuspenseQueries({
-    queries: [proceduresQuery, gdprBannerQuery],
+  const allPhysiciansQuery = useGetAllPhysiciansQuery();
+
+  const [procedures, gdprBanner, allPhysicians] = useSuspenseQueries({
+    queries: [proceduresQuery, gdprBannerQuery, allPhysiciansQuery],
   });
 
   useGdprValidationTasksAlert({
     banner: gdprBanner.data,
     businessModule: ApiBusinessModule.OfficialMedicalService,
   });
+
+  const { data: selfUser } = useGetSelfUser();
+
+  const filterDefinitions = createFilterDefinitions(
+    allPhysicians.data,
+    selfUser,
+  );
 
   const paramStateProvider = useSearchParamStateProvider(
     filterDefinitions,
@@ -316,6 +345,8 @@ function activeValuesToFilters(
         break;
       case "Enum":
         filters.set(value.key, value.selectedValues);
+        break;
+      default:
         break;
     }
   }

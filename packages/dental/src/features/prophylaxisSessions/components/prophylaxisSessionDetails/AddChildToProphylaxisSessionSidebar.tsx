@@ -21,15 +21,15 @@ import { ReactNode } from "react";
 import { useDebounce } from "use-debounce";
 
 import {
-  DrawerProps,
   FormButtonBar,
   NoSearchResults,
   SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
-  UseSidebarResult,
-  useSidebar,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -44,8 +44,8 @@ import { useSearchChildren } from "../../../children/api/queries/overview";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 import { useUpdateProphylaxisSessionParticipants } from "../../api/mutations/details";
 
-export function useAddChildToProphylaxisSessionSidebar(): UseSidebarResult<AddChildToProphylaxisSessionSidebarProps> {
-  return useSidebar({
+export function useAddChildToProphylaxisSessionSidebar(): UseSidebarWithFormRefResult<AddChildToProphylaxisSessionSidebarProps> {
+  return useSidebarWithFormRef({
     component: AddChildToProphylaxisSessionSidebar,
   });
 }
@@ -61,7 +61,8 @@ const INITIAL_VALUES: AddChildToProphylaxisSessionSidebarFormFields = {
   selected: "",
 };
 
-interface AddChildToProphylaxisSessionSidebarProps extends DrawerProps {
+interface AddChildToProphylaxisSessionSidebarProps
+  extends SidebarWithFormRefProps {
   prophylaxisSessionId: string;
   prophylaxisSessionVersion: number;
   institutionId: string;
@@ -96,7 +97,7 @@ function AddChildToProphylaxisSessionSidebar(
       },
       {
         onSuccess: () => {
-          onClose();
+          onClose(true);
           snackbar.confirmation("Kind erfolgreich hinzugefügt.");
         },
       },
@@ -106,7 +107,7 @@ function AddChildToProphylaxisSessionSidebar(
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {({ values, isSubmitting }) => (
-        <SidebarForm>
+        <SidebarForm ref={props.formRef}>
           <SidebarContent title="Kind hinzufügen">
             <Stack gap={2}>
               <InputField

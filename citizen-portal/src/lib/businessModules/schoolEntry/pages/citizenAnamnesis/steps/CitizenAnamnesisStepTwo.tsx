@@ -6,7 +6,7 @@
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { FormLabel, Grid, IconButton, Typography } from "@mui/joy";
 import { FieldArray } from "formik";
-import { Fragment } from "react";
+import { Fragment, useId } from "react";
 
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -27,6 +27,9 @@ export function CitizenAnamnesisStepTwo({
 }: {
   values: CitizenAnamnesisFormValues;
 }) {
+  const dayCareSinceId = useId();
+  const clubSportAndOtherId = useId();
+
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
   const promotionBeforeSchoolEntry = createFieldNameMapper(
     "promotionBeforeSchoolEntry",
@@ -115,12 +118,13 @@ export function CitizenAnamnesisStepTwo({
       >
         <Grid container sx={{ flexGrow: 1 }} spacing={2}>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
-            <Typography level="body-sm">
+            <Typography level="body-sm" id={dayCareSinceId}>
               {t("additionalInfo.dayCareSince")}
             </Typography>
             <CitizenPortalMonthAndYearFields
               fieldName={daycareAndSchoolInfo("inDaycareSince")}
               date={values.daycareAndSchoolInfo.inDaycareSince}
+              aria-labelledby={dayCareSinceId}
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
@@ -178,10 +182,16 @@ export function CitizenAnamnesisStepTwo({
         />
       </QuarterWidthGrid>
       <Typography level="h3">{t("additionalInfo.interests")}</Typography>
-      <Typography level="title-md">
+      <Typography level="title-md" id={clubSportAndOtherId}>
         {t("additionalInfo.clubSportAndOther")}
       </Typography>
-      <Grid container sx={{ flexGrow: 1 }} spacing={2}>
+      <Grid
+        container
+        sx={{ flexGrow: 1 }}
+        spacing={2}
+        role="group"
+        aria-labelledby={clubSportAndOtherId}
+      >
         <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <InputField
             name={interestsAndSportsInfo("clubSport")}

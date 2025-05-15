@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CircularProgress } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 
@@ -41,6 +42,7 @@ export function StreetListeningField(props: StreetListeningFieldProps) {
     <InputField
       name={props.name}
       label={props.label}
+      endDecorator={query.isFetching && <CircularProgress size="sm" />}
       required={props.required}
       validate={props.validate}
     />

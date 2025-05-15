@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { CheckPacklistElementRequest } from "@eshg/inspection-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { usePacklistApi } from "@/lib/businessModules/inspection/api/clients";
@@ -14,7 +15,7 @@ import { isServiceWorkerResponse } from "@/serviceWorker/common/common";
 export function useCheckPacklistElement() {
   const packlistApi = usePacklistApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return useMutation({
     mutationFn: async (req: CheckPacklistElementRequest) => {
       const response = await packlistApi.checkPacklistElementRaw(req);
       const serverResponse = await unwrapRawResponse(response);

@@ -17,11 +17,11 @@ import {
   TablePage,
   TableSheet,
   ToggleFilterButton,
+  useGetUsersByGroupQuery,
 } from "@eshg/lib-employee-portal";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 
-import { useGetUsersByGroupQueryOptions } from "@/lib/baseModule/api/queries/users";
 import { teamviewColumns } from "@/lib/baseModule/components/task/teamviewColumns";
 import { useTeamviewFilterSettings } from "@/lib/baseModule/components/task/useTeamviewFilterSettings";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
@@ -57,15 +57,12 @@ interface TeamviewPageProps {
 export function Teamview(props: Readonly<TeamviewPageProps>) {
   const [filters, setFilters] = useState<TeamviewFilters>({});
 
-  const [{ data: groupMemberResponse }, { data: taskResponse }] =
-    useSuspenseQueries({
-      queries: [
-        useGetUsersByGroupQueryOptions(props.groupName),
-        useFetchTasksForTeamViewOptions(filters),
-      ],
-    });
-
-  const groupMembers = groupMemberResponse.users;
+  const [{ data: groupMembers }, { data: taskResponse }] = useSuspenseQueries({
+    queries: [
+      useGetUsersByGroupQuery(props.groupName),
+      useFetchTasksForTeamViewOptions(filters),
+    ],
+  });
 
   function toTaskRows(groupMember: ApiUser): TaskRow {
     const tasks = taskResponse.tasksByUser[groupMember.userId] ?? [];

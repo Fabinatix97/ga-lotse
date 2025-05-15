@@ -10,6 +10,7 @@ import { useState } from "react";
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
+  RestrictedPage,
   StickyToolbarLayout,
   Toolbar,
   ToolbarBackButton,
@@ -18,7 +19,6 @@ import {
 import { MedicalRegistryCreateProcedureForm } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 import { MedicalRegistryCreateProcedureSuccessPage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureSuccessPage";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 export default function MedicalRegistryCreateProcedure() {
   const [showSuccessPage, setShowSuccessPage] = useState(false);

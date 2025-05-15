@@ -5,7 +5,10 @@
 
 package de.eshg.config.departmentinfo;
 
+import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
+
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
@@ -13,6 +16,7 @@ import de.eshg.config.domain.AbstractPrivacyDocumentsConfig;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.config.i18n.MultiLangFileName;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import java.util.SequencedMap;
@@ -33,9 +37,15 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
   public static final MultiLangFileName PRIVACY_POLICY_CONFIG_FILENAME =
       MultiLangFileName.fromFilenameWithLanguageTags(PRIVACY_POLICY_FILE_NAME.de());
 
+  protected final AuditLogWriter auditLogWriter;
+
   protected AbstractPrivacyDocumentService(
-      EntityManager entityManager, TransactionHelper transactionHelper, Class<T> configClass) {
+      EntityManager entityManager,
+      TransactionHelper transactionHelper,
+      AuditLogWriter auditLogWriter,
+      Class<T> configClass) {
     super(entityManager, transactionHelper, configClass);
+    this.auditLogWriter = auditLogWriter;
   }
 
   @Transactional(readOnly = true)
@@ -66,6 +76,10 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
 
   protected MultiLangDocument updatePrivacyDocument(
       MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
+    auditLogWriter.writeChangeToAuditlog(
+        "privacyDocumentsConfig",
+        getRelevantFieldsForLogging(persistedDocument),
+        getRelevantFieldsForLogging(documentUpdate));
     persistedDocument.updateDe(documentUpdate.getDe());
     persistedDocument.updateEn(documentUpdate.getEn());
     return persistedDocument;
@@ -79,16 +93,14 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
         ConfigurationEndpoint.PRIVACY_POLICY.name(),
         toConfigurationStatus(config.getPrivacyPolicy()),
         ConfigurationEndpoint.PRIVACY_NOTICE.name(),
-        toConfigurationStatus(config.getPrivacyPolicy()));
+        toConfigurationStatus(config.getPrivacyNotice()));
   }
 
-  protected ConfigurationStatus toConfigurationStatus(MultiLangDocument privacyPolicy) {
-    if (privacyPolicy == null) {
-      return ConfigurationStatus.COMPLETE;
-    } else if (privacyPolicy.getEn() != null) {
+  protected ConfigurationStatus toConfigurationStatus(MultiLangDocument multiLangDocument) {
+    if (multiLangDocument == null) {
       return ConfigurationStatus.COMPLETE;
     } else {
-      return ConfigurationStatus.PARTIALLY_COMPLETE;
+      return MultiLangDocumentMapper.mapToConfigurationStatus(multiLangDocument);
     }
   }
 }

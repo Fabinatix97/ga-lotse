@@ -291,9 +291,10 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
 
   return (
     <MultiStepForm<CitizenAnamnesisFormValues> steps={STEPS}>
-      {({ Outlet, currentStep, totalSteps }) => (
+      {({ Outlet, currentStep, totalSteps, titleRef }) => (
         <>
           <PageTitle
+            titleRef={titleRef}
             toolbar={
               <StepIndicator
                 currentStep={currentStep}

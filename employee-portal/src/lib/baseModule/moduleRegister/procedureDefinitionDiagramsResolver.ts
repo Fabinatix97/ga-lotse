@@ -10,6 +10,7 @@ import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import inspectionProcedureDefinitionDiagram from "@/lib/businessModules/inspection/shared/procedureDefinition.svg";
 import measlesProtectionProcedureDefinitionDiagram from "@/lib/businessModules/measlesProtection/shared/procedureDefinition.svg";
 import medicalRegistryProcedureDefinitionDiagram from "@/lib/businessModules/medicalRegistry/shared/procedureDefinition.svg";
+import officialMedicalServiceProcedureDefinitionDiagram from "@/lib/businessModules/officialMedicalService/shared/procedureDefinition.svg";
 import schoolEntryProcedureDefinitionDiagram from "@/lib/businessModules/schoolEntry/shared/procedureDefinition.svg";
 import travelMedicineProcedureDefinitionDiagram from "@/lib/businessModules/travelMedicine/shared/procedureDefinition.svg";
 
@@ -28,5 +29,11 @@ export function resolveProcedureDefinitionDiagram(
       return measlesProtectionProcedureDefinitionDiagram;
     case "MEDICAL_REGISTRY":
       return medicalRegistryProcedureDefinitionDiagram;
+    case "OFFICIAL_MEDICAL_SERVICE":
+      return officialMedicalServiceProcedureDefinitionDiagram;
+    case "STI_PROTECTION":
+    case "MEDS_ABROAD":
+    case "DENTAL":
+      return undefined;
   }
 }

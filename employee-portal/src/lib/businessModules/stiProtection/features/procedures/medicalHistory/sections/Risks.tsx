@@ -5,6 +5,7 @@
 
 import { FormControl, FormLabel, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useId } from "react";
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
@@ -21,6 +22,7 @@ import {
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
 
 export function Risks() {
+  const lastIncidentId = useId();
   const { values } = useFormikContext<MedicalHistoryFormData>();
 
   return (
@@ -38,10 +40,13 @@ export function Risks() {
               name={`standardRiskFactors.${riskName}.taken`}
             >
               <FormControl>
-                <FormLabel>Wenn ja, wann zuletzt?</FormLabel>
+                <FormLabel id={lastIncidentId}>
+                  Wenn ja, wann zuletzt?
+                </FormLabel>
                 <MonthAndYearFields
                   fieldName={`standardRiskFactors.${riskName}.lastIncident`}
                   date={lastIncident}
+                  aria-labelledby={lastIncidentId}
                 />
               </FormControl>
             </YesOrNoWithFollowUp>

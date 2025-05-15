@@ -12,5 +12,9 @@
   <include file="migrations/0002_config.xml"/>
   <include file="migrations/0003_rename_privacy_to_multi_lang_document.xml"/>
   <include file="migrations/0004_config_initialized.xml"/>
+  <include file="migrations/0005_add_auditlog_entry.xml"/>
+  <include file="migrations/0006_shedlock.xml"/>
+  <include file="migrations/0007_terms_of_use_i18n.xml"/>
+  <include file="migrations/0008_add_meds_abroad_module.xml"/>
 
 </databaseChangeLog>

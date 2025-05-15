@@ -5,31 +5,26 @@
 
 "use client";
 
+import { ArchivePage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/stiProtection/api/mutations/archiving";
-import {
-  useGetArchivableProcedures,
-  useGetArchivingConfiguration,
-} from "@/lib/businessModules/stiProtection/api/queries/archiving";
+import { useArchivingApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { procedureTypes } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { ArchiveView } from "@/lib/shared/components/archiving/ArchiveView";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchivePage() {
+export default function StiProtectionArchivePage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveView
+    <ArchivePage
       title={businessModuleNames[ApiBusinessModule.StiProtection]}
       procedureDetailsRoute={(procedureId: string) =>
         routes.procedures.byId(procedureId).details
       }
-      useGetArchivingConfiguration={useGetArchivingConfiguration}
-      useGetArchivableProcedures={useGetArchivableProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
-      additionalFilters={{ procedureTypes }}
+      businessModule={ApiBusinessModule.StiProtection}
+      archivingApi={archivingApi}
+      procedureTypes={procedureTypes}
     />
   );
 }

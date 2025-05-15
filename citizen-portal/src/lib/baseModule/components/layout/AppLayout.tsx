@@ -16,7 +16,6 @@ import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarP
 
 import { env } from "@/env/server";
 import { ConfirmNavigationProvider } from "@/lib/baseModule/components/ConfirmNavigationProvider";
-import { MainLayout } from "@/lib/baseModule/components/layout/MainLayout";
 import { ThemeProvider } from "@/lib/baseModule/theme/ThemeProvider";
 import { I18nProvider } from "@/lib/i18n/I18nProvider";
 import { API_CONFIGURATION } from "@/lib/shared/api/config";
@@ -58,9 +57,7 @@ export function AppLayout({
                     errorModal={CitizenPortalErrorModal}
                   >
                     <ConfirmNavigationProvider>
-                      <QueryBoundary>
-                        <MainLayout>{children}</MainLayout>
-                      </QueryBoundary>
+                      <QueryBoundary>{children}</QueryBoundary>
                     </ConfirmNavigationProvider>
                   </ConfirmationDialogProvider>
                 </ApiProvider>

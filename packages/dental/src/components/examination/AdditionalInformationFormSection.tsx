@@ -44,7 +44,7 @@ const ORTHODONTIC_STATUS_OPTIONS = buildEnumOptions<ApiOrthodonticStatus>(
   true,
 );
 
-const FIELD_BREAKPOINTS = { xxs: 2, xl: 1 } as const;
+const FIELD_BREAKPOINTS = { xxs: 2, xs: 1 } as const;
 
 interface AdditionalInformationFormSectionProps {
   isScreening: boolean;

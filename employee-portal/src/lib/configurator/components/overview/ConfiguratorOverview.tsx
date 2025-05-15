@@ -28,7 +28,7 @@ export function ConfiguratorOverview(props: {
     <ConfiguratorLayout module={props.module}>
       <Stack gap={2}>
         <AllModulesAlert data={data} />
-        <Typography level="h3">
+        <Typography level="h3" component="h2">
           Konfiguration des{" "}
           {props.module === "BASE"
             ? "Grundmoduls"
@@ -47,7 +47,9 @@ export function ConfiguratorOverview(props: {
             ))}
           </Grid>
           <Stack gap={2}>
-            <Typography level="h3">Konfiguration weiterer Module</Typography>
+            <Typography level="h3" component="h2">
+              Konfiguration weiterer Module
+            </Typography>
             <OtherModulesCard tabs={getAllOtherModules(props.module, data)} />
           </Stack>
         </Stack>

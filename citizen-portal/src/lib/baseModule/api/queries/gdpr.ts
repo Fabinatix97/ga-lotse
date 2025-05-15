@@ -22,7 +22,11 @@ import { gdprProcedureApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryK
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { useGetConfig } from "@/lib/shared/api/queries/publicConfig";
 
-const businessModules = Object.freeze(Object.values(ApiBusinessModule));
+const businessModules = Object.freeze(
+  Object.values(ApiBusinessModule).filter(
+    (businessModule) => businessModule !== ApiBusinessModule.MedsAbroad,
+  ),
+);
 
 export function useGetSelfGdprProceduresQuery() {
   const gdprApi = useGdprProcedureApi();

@@ -1783,73 +1783,6 @@
         "tags" : [ "Contact" ]
       }
     },
-    "/department/info" : {
-      "get" : {
-        "operationId" : "getDepartmentInfo",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetDepartmentInfoResponse"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get detailed information about the department running this application.",
-        "tags" : [ "Department" ]
-      }
-    },
-    "/department/logo" : {
-      "get" : {
-        "operationId" : "getDepartmentLogo",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get the logo of the department running this application.",
-        "tags" : [ "Department" ]
-      }
-    },
-    "/department/markdown/citizen/{name}" : {
-      "get" : {
-        "operationId" : "getCitizenPortalMarkdown",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "name",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CitizenPortalMarkdownName"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "byte"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get a markdown document for the citizen portal",
-        "tags" : [ "Department" ]
-      }
-    },
     "/department/markdown/employee/{name}" : {
       "get" : {
         "operationId" : "getEmployeePortalMarkdown",
@@ -1875,7 +1808,7 @@
           }
         },
         "summary" : "Get a markdown document for the employee portal",
-        "tags" : [ "Department" ]
+        "tags" : [ "EmployeeDepartment" ]
       }
     },
     "/department/markdown/release-notes" : {
@@ -1895,87 +1828,7 @@
           }
         },
         "summary" : "Get the release notes markdown",
-        "tags" : [ "Department" ]
-      }
-    },
-    "/department/privacy-notice" : {
-      "get" : {
-        "operationId" : "getPrivacyNotice",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get the privacy-notice document.",
-        "tags" : [ "Department" ]
-      }
-    },
-    "/department/privacy-policy" : {
-      "get" : {
-        "operationId" : "getPrivacyPolicy",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get the privacy-policy document.",
-        "tags" : [ "Department" ]
-      }
-    },
-    "/department/security-txt" : {
-      "get" : {
-        "operationId" : "getSecurityTxt",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "byte"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get the security.txt file of the department running this application.",
-        "tags" : [ "Department" ]
-      }
-    },
-    "/department/security-txt-public-key" : {
-      "get" : {
-        "operationId" : "getSecurityTxtPublicKey",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "byte"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get the security.txt public PGP key file of the department running this application.",
-        "tags" : [ "Department" ]
+        "tags" : [ "EmployeeDepartment" ]
       }
     },
     "/facilities" : {
@@ -1987,6 +1840,7 @@
           "name" : "name",
           "required" : true,
           "schema" : {
+            "minLength" : 1,
             "type" : "string"
           }
         } ],
@@ -4424,6 +4278,153 @@
         "tags" : [ "PublicConfig" ]
       }
     },
+    "/public/department/info" : {
+      "get" : {
+        "operationId" : "getDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get detailed information about the department running this application.",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
+    "/public/department/logo" : {
+      "get" : {
+        "operationId" : "getDepartmentLogo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the logo of the department running this application.",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
+    "/public/department/markdown/citizen/{name}" : {
+      "get" : {
+        "operationId" : "getCitizenPortalMarkdown",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "name",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CitizenPortalMarkdownName"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a markdown document for the citizen portal",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
+    "/public/department/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNotice",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-notice document.",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
+    "/public/department/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicy",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-policy document.",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
+    "/public/department/security-txt" : {
+      "get" : {
+        "operationId" : "getSecurityTxt",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the security.txt file of the department running this application.",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
+    "/public/department/security-txt-public-key" : {
+      "get" : {
+        "operationId" : "getSecurityTxtPublicKey",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the security.txt public PGP key file of the department running this application.",
+        "tags" : [ "PublicDepartment" ]
+      }
+    },
     "/recent-procedures" : {
       "get" : {
         "operationId" : "aggregateRecentProcedures",
@@ -6372,6 +6373,7 @@
         "type" : "object",
         "properties" : {
           "bpk2" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The bPK2 of the bundId user",
             "example" : "VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0"
@@ -6593,6 +6595,7 @@
         "type" : "object",
         "properties" : {
           "downloadIds" : {
+            "minItems" : 1,
             "uniqueItems" : true,
             "type" : "array",
             "items" : {
@@ -6639,6 +6642,7 @@
         "type" : "object",
         "properties" : {
           "globalCalendarName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6655,8 +6659,6 @@
               "$ref" : "#/components/schemas/ContactCategory"
             },
             "contactAddress" : {
-              "type" : "object",
-              "description" : "The contact address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -6664,8 +6666,6 @@
               } ]
             },
             "differentBillingAddress" : {
-              "type" : "object",
-              "description" : "An optional deviating billing address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -6737,6 +6737,7 @@
             "example" : 100
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the Inventory Item.",
             "example" : "Example Manufacturer's Vaccine"
@@ -6751,6 +6752,7 @@
         "type" : "object",
         "properties" : {
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of a label (e.g. the name of a business module to which certain Inventory Items or Resources may belong).",
             "example" : "Travel Medicine"
@@ -6762,6 +6764,7 @@
         "type" : "object",
         "properties" : {
           "dataTransmitterPseudonymId" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The 'DatenübermittlerPseudonymId' of the MUK user",
             "example" : "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872"
@@ -6784,8 +6787,6 @@
           "type" : "object",
           "properties" : {
             "contactAddress" : {
-              "type" : "object",
-              "description" : "The contact address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -6793,8 +6794,6 @@
               } ]
             },
             "differentBillingAddress" : {
-              "type" : "object",
-              "description" : "An optional deviating billing address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -7006,6 +7005,7 @@
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the Resource.",
             "example" : "White delivery truck"
@@ -7042,6 +7042,7 @@
             "description" : "A list of groups the user shall be part of",
             "example" : "['group1','group2','group3']",
             "items" : {
+              "minLength" : 1,
               "type" : "string",
               "description" : "A list of groups the user shall be part of",
               "example" : "['group1','group2','group3']"
@@ -7210,9 +7211,11 @@
             "$ref" : "#/components/schemas/DomesticAddress"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
@@ -7238,7 +7241,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "Calendar" : {
         "required" : [ "id", "type" ],
@@ -7273,6 +7276,7 @@
         "type" : "object",
         "properties" : {
           "internalNote" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
@@ -7385,6 +7389,7 @@
         "type" : "object",
         "properties" : {
           "internalNote" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
@@ -7524,9 +7529,11 @@
         "type" : "object",
         "properties" : {
           "emailAddress" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -7573,6 +7580,7 @@
         "type" : "object",
         "properties" : {
           "downloadIds" : {
+            "minItems" : 1,
             "uniqueItems" : true,
             "type" : "array",
             "items" : {
@@ -7919,6 +7927,7 @@
             "format" : "int32"
           },
           "encryptedPrivateKey" : {
+            "minItems" : 1,
             "type" : "array",
             "description" : "The encrypted private key",
             "items" : {
@@ -7928,10 +7937,12 @@
             }
           },
           "keyIdentifier" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Usually the sha256 hash of the corresponding public key.\nUsed to distinguish keys, i.e. to recognize if the currently active keys are the keys that have been used (in the past) to encrypt a given set of data\n"
           },
           "publicKey" : {
+            "minItems" : 1,
             "type" : "array",
             "description" : "The public key corresponding to the encrypted private key",
             "items" : {
@@ -8304,6 +8315,7 @@
         "type" : "object",
         "properties" : {
           "codes" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -8767,6 +8779,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -8847,6 +8860,7 @@
             "example" : "LTG"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the city where the department is located",
             "example" : "Berlin"
@@ -8855,16 +8869,19 @@
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The email address of the department",
             "example" : "mail@address.de"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The domain of the department's official homepage, excluding protocols",
             "example" : "department-homepage.de"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The house number at the department's address, including any extensions or suffixes",
             "example" : "1b"
@@ -8873,21 +8890,25 @@
             "$ref" : "#/components/schemas/Location"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the department",
             "example" : "Gesundheitsamt Landkreis Testgebiet"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The primary contact telephone number for the department",
             "example" : "+491234567890"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The postal code for the department’s address",
             "example" : "12345"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The street name for the department’s address, not including the house number",
             "example" : "Beispielweg"
@@ -9110,6 +9131,7 @@
         "type" : "object",
         "properties" : {
           "fileStateIds" : {
+            "minItems" : 1,
             "type" : "array",
             "description" : "A list of UUIDs to find associated file state ids for",
             "items" : {
@@ -9125,6 +9147,7 @@
         "type" : "object",
         "properties" : {
           "fileStateIds" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "type" : "array",
@@ -9413,6 +9436,7 @@
         "type" : "object",
         "properties" : {
           "searchAttributes" : {
+            "minItems" : 1,
             "uniqueItems" : true,
             "type" : "array",
             "items" : {
@@ -9624,7 +9648,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -10043,6 +10067,7 @@
             "format" : "uuid"
           },
           "globalCalendarName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -10353,8 +10378,6 @@
               "$ref" : "#/components/schemas/ContactCategory"
             },
             "contactAddress" : {
-              "type" : "object",
-              "description" : "The contact address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -10362,8 +10385,6 @@
               } ]
             },
             "differentBillingAddress" : {
-              "type" : "object",
-              "description" : "An optional deviating billing address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -10391,6 +10412,7 @@
               "example" : "UUID_2"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string",
               "description" : "The name of the Institution.",
               "example" : "123 Example Laboratory"
@@ -10515,6 +10537,7 @@
             "example" : 100
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the Inventory Item.",
             "example" : "Example Manufacturer's Vaccine"
@@ -10624,6 +10647,7 @@
             "example" : "UUID_7"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the label (e.g. the name of a business module to which certain Inventory Items or Resources may belong).",
             "example" : "Travel Medicine"
@@ -10712,10 +10736,23 @@
             "$ref" : "#/components/schemas/DomesticAddress"
           },
           "facilityName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
         "description" : "The MUK attributes of a user"
+      },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
       },
       "PersonContact" : {
         "required" : [ "emailAddresses", "id", "name", "phoneNumbers" ],
@@ -10726,8 +10763,6 @@
           "type" : "object",
           "properties" : {
             "contactAddress" : {
-              "type" : "object",
-              "description" : "The contact address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -10735,8 +10770,6 @@
               } ]
             },
             "differentBillingAddress" : {
-              "type" : "object",
-              "description" : "An optional deviating billing address of the Contact.",
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/DomesticAddress"
               }, {
@@ -10777,6 +10810,7 @@
               "example" : "UUID_2"
             },
             "name" : {
+              "minLength" : 1,
               "type" : "string",
               "description" : "The last name of the Person.",
               "example" : "Doe"
@@ -11047,9 +11081,11 @@
             "format" : "date"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -11161,18 +11197,6 @@
           }
         } ]
       },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
-          }
-        }
-      },
       "PrivateEmployeeUserKeyDto" : {
         "required" : [ "cryptoVersion", "encryptedPrivateKey", "keyIdentifier" ],
         "type" : "object",
@@ -11183,6 +11207,7 @@
             "format" : "int32"
           },
           "encryptedPrivateKey" : {
+            "minItems" : 1,
             "type" : "array",
             "description" : "The encrypted private key",
             "items" : {
@@ -11192,6 +11217,7 @@
             }
           },
           "keyIdentifier" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Usually the sha256 hash of the corresponding public key.\nUsed to distinguish keys, i.e. to recognize if the currently active keys are the keys that have been used (in the past) to encrypt a given set of data\n"
           }
@@ -11361,6 +11387,7 @@
             "description" : "Usually the sha256 hash of the corresponding public key.\nUsed to distinguish keys, i.e. to recognize if the currently active keys are the keys that have been used (in the past) to encrypt a given set of data\n"
           },
           "publicKey" : {
+            "minItems" : 1,
             "type" : "array",
             "description" : "The public key",
             "items" : {
@@ -11418,6 +11445,7 @@
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the Resource.",
             "example" : "White delivery truck"
@@ -11578,6 +11606,7 @@
         "type" : "object",
         "properties" : {
           "notificationMessage" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The notification text that is embedded in the notification email template.",
             "example" : "Löschanfrage"
@@ -11602,11 +11631,13 @@
             "example" : "sender@mail-address.de"
           },
           "subject" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The subject of the email",
             "example" : "Important test email"
           },
           "text" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The content of the email. If the type is HTML or HTML_AND_PLAIN_TEXT, this should be an HTML fragment; otherwise, it should be plain text. When building the HTML fragment from a template be sure to escape your template parameter's values to prevent HTML-injection attacks.",
             "example" : "PLAIN_TEXT: 'Dear John Doe,\nthis a test.\nBest regards,\nJane Doe' HTML|HTML_AND_PLAIN_TEXT: 'Dear John Doe,<br>this a test.<br>Best regards,<br>Jane Doe'"
@@ -11628,6 +11659,7 @@
         "type" : "object",
         "properties" : {
           "concern" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The matter of concern for the GDPR procedure."
           },
@@ -11914,11 +11946,13 @@
             "$ref" : "#/components/schemas/CredentialType"
           },
           "currentSecret" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The current secret value for verification",
             "example" : "654321"
           },
           "newSecret" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The new secret value for update",
             "example" : "654321"
@@ -12033,6 +12067,7 @@
             "example" : 100
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the Inventory Item.",
             "example" : "Example Manufacturer\"s Vaccine"
@@ -12343,6 +12378,7 @@
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the Resource.",
             "example" : "White delivery truck"
@@ -12432,6 +12468,7 @@
             "example" : "UUID_9"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
@@ -12519,6 +12556,7 @@
         "type" : "object",
         "properties" : {
           "groupName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "userCalendars" : {
@@ -12567,7 +12605,7 @@
       "UserRole" : {
         "type" : "string",
         "description" : "A filter for a role users can have",
-        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "CHAT_MANAGEMENT_WRITE", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS" ]
+        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "MEDS_ABROAD_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "MEDS_ABROAD_ADMIN", "CHAT_MANAGEMENT_WRITE", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP", "CONFIGURATION_ACCESS" ]
       },
       "VCardAddress" : {
         "required" : [ "addressAddition", "city", "country", "houseNumber", "postBox", "postalCode", "street" ],
@@ -12705,6 +12743,7 @@
             "$ref" : "#/components/schemas/CredentialType"
           },
           "rawSecret" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The raw secret value for verification",
             "example" : "654321"

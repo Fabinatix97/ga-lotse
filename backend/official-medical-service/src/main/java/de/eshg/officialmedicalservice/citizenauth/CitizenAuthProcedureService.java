@@ -19,6 +19,7 @@ import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.person.PersonClient;
 import de.eshg.officialmedicalservice.person.PersonMapper;
+import de.eshg.officialmedicalservice.procedure.ProgressEntryService;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
@@ -42,6 +43,7 @@ public class CitizenAuthProcedureService {
   private final OmsDocumentService omsDocumentService;
   private final ObjectMapper objectMapper;
   private final AnamnesisProperties anamnesisProperties;
+  private final ProgressEntryService progressEntryService;
 
   public CitizenAuthProcedureService(
       OmsProcedureRepository omsProcedureRepository,
@@ -50,7 +52,8 @@ public class CitizenAuthProcedureService {
       OmsAppointmentService omsAppointmentService,
       OmsDocumentService omsDocumentService,
       ObjectMapper objectMapper,
-      AnamnesisProperties anamnesisProperties) {
+      AnamnesisProperties anamnesisProperties,
+      ProgressEntryService progressEntryService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.personClient = personClient;
     this.citizenProcedureMapper = citizenProcedureMapper;
@@ -58,6 +61,7 @@ public class CitizenAuthProcedureService {
     this.omsDocumentService = omsDocumentService;
     this.objectMapper = objectMapper;
     this.anamnesisProperties = anamnesisProperties;
+    this.progressEntryService = progressEntryService;
   }
 
   @Transactional(readOnly = true)
@@ -145,6 +149,8 @@ public class CitizenAuthProcedureService {
               .getBytes(StandardCharsets.UTF_8));
 
       procedure.setAnamnesis(anamnesis);
+
+      progressEntryService.createProgressEntryForAnamnesisChangedByCitizen(procedure);
     } catch (JsonProcessingException e) {
       throw new BadRequestException("Anamnesis is malformed");
     }

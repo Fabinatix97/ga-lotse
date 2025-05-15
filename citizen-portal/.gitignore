@@ -5,4 +5,8 @@
 
 # Generated files
 src/app/\[lang\]/(privatpersonen)/**/loading.tsx
+src/app/\[lang\]/unternehmen/**/loading.tsx
 src/app/\[lang\]/(static)/**/loading.tsx
+src/app/\[lang\]/(privatpersonen)/**/error.tsx
+src/app/\[lang\]/unternehmen/**/error.tsx
+src/app/\[lang\]/(static)/**/error.tsx

@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.department;
 
+import de.eshg.config.AuditLogWriter;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.stiprotection.persistence.StiConsultationOpeningHours;
 import de.eshg.stiprotection.persistence.config.DepartmentInfoConfig;
@@ -20,13 +21,15 @@ public class StiConsultationOpeningHoursService
   public StiConsultationOpeningHoursService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
-      DepartmentInfoConfig departmentInfoConfig) {
+      DepartmentInfoConfig departmentInfoConfig,
+      AuditLogWriter auditLogWriter) {
     super(
         entityManager,
         transactionHelper,
         departmentInfoConfig
             .getOpeningHours()
             .get(Concern.HIV_STI_CONSULTATION.name().toLowerCase()),
+        auditLogWriter,
         StiConsultationOpeningHours.class);
   }
 

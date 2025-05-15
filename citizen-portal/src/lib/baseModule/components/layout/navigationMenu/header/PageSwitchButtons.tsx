@@ -4,6 +4,7 @@
  */
 
 import { Button, Stack, ToggleButtonGroup } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
@@ -69,14 +70,16 @@ export function PageSwitchButtonsMobile({ userType }: { userType: UserType }) {
   );
 }
 
-function PageSwitchButton({
+export function PageSwitchButton({
   name,
   href,
   isActive,
+  sx,
 }: {
   name: string;
   href: string;
   isActive: boolean;
+  sx?: SxProps;
 }) {
   return (
     <Button
@@ -87,6 +90,7 @@ function PageSwitchButton({
         fontSize: "1rem",
         color: (theme) =>
           isActive ? theme.palette.primary : theme.palette.text.primary,
+        ...sx,
       }}
       component={NavigationLink}
       href={href}

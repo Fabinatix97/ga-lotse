@@ -95,7 +95,7 @@
         "responses" : {
           "200" : {
             "content" : {
-              "*/*" : {
+              "application/octet-stream" : {
                 "schema" : {
                   "type" : "string",
                   "format" : "binary"
@@ -210,7 +210,11 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "termsOfUse" : {
+                  "termsOfUseDe" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "termsOfUseEn" : {
                     "type" : "string",
                     "format" : "binary"
                   },
@@ -218,13 +222,40 @@
                     "$ref" : "#/components/schemas/UpdateOpenDataConfigRequest"
                   }
                 },
-                "required" : [ "termsOfUse", "updateOpenDataConfigRequest" ]
+                "required" : [ "termsOfUseDe", "updateOpenDataConfigRequest" ]
               }
             }
           }
         },
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpenDataConfig" ]
+      }
+    },
+    "/configuration/open-data/terms-of-use/{lang}" : {
+      "get" : {
+        "operationId" : "downloadTermsOfUse",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -728,7 +759,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "ConfigurationStatus" : {
         "type" : "string",
@@ -763,6 +794,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -852,6 +884,22 @@
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
       },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
+      },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "OpenDataConfig" : {
         "required" : [ "author", "licenseUrl", "termsOfUse" ],
         "type" : "object",
@@ -863,7 +911,7 @@
             "type" : "string"
           },
           "termsOfUse" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -900,6 +948,7 @@
             "type" : "string"
           },
           "licence" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "resourceName" : {
@@ -924,6 +973,7 @@
             "format" : "date"
           },
           "versionName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -1037,6 +1087,7 @@
             "type" : "string"
           },
           "licence" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "sources" : {
@@ -1059,6 +1110,7 @@
             "format" : "int64"
           },
           "versionName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -1088,6 +1140,7 @@
             "$ref" : "#/components/schemas/OpenDataFileType"
           },
           "licence" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "major" : {
@@ -1123,6 +1176,7 @@
             "format" : "int64"
           },
           "versionName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }

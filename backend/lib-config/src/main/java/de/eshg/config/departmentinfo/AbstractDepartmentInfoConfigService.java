@@ -5,8 +5,11 @@
 
 package de.eshg.config.departmentinfo;
 
+import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
+
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
@@ -22,9 +25,15 @@ import org.springframework.util.Assert;
 public abstract class AbstractDepartmentInfoConfigService<T extends AbstractDepartmentInfoConfig>
     extends EshgConfigurationService<T> {
 
+  private final AuditLogWriter auditLogWriter;
+
   protected AbstractDepartmentInfoConfigService(
-      EntityManager entityManager, TransactionHelper transactionHelper, Class<T> configClass) {
+      EntityManager entityManager,
+      TransactionHelper transactionHelper,
+      AuditLogWriter auditLogWriter,
+      Class<T> configClass) {
     super(entityManager, transactionHelper, configClass);
+    this.auditLogWriter = auditLogWriter;
   }
 
   T getInternalConfig() {
@@ -58,6 +67,10 @@ public abstract class AbstractDepartmentInfoConfigService<T extends AbstractDepa
 
   private DepartmentInfo updateDepartmentInfo(
       DepartmentInfo persistedDepartmentInfo, DepartmentInfo departmentInfoUpdate) {
+    auditLogWriter.writeChangeToAuditlog(
+        "departmentInfo",
+        getRelevantFieldsForLogging(persistedDepartmentInfo),
+        getRelevantFieldsForLogging(departmentInfoUpdate));
     if (departmentInfoUpdate == null || persistedDepartmentInfo == null) {
       return departmentInfoUpdate;
     }

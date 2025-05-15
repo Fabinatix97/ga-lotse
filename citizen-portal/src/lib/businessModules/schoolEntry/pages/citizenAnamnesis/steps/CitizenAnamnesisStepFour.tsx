@@ -4,6 +4,7 @@
  */
 
 import { FormLabel, Grid, Typography } from "@mui/joy";
+import { useId } from "react";
 
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -16,6 +17,10 @@ import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function CitizenAnamnesisStepFour() {
+  const speechTherapyId = useId();
+  const ergoTherapyId = useId();
+  const physiotherapyId = useId();
+
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
 
   const promotionTherapyAndAidInfo = createFieldNameMapper(
@@ -111,8 +116,16 @@ export function CitizenAnamnesisStepFour() {
         name={promotionBeforeSchoolEntry("speechTherapy")}
         title={t("support.therapy.speechTherapy")}
       >
-        <Typography level="body-sm">{t("support.therapy.date")}</Typography>
-        <Grid container sx={{ flexGrow: 1 }} spacing={2}>
+        <Typography level="body-sm" id={speechTherapyId}>
+          {t("support.therapy.date")}
+        </Typography>
+        <Grid
+          container
+          sx={{ flexGrow: 1 }}
+          spacing={2}
+          role="group"
+          aria-labelledby={speechTherapyId}
+        >
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.from")}
@@ -133,8 +146,16 @@ export function CitizenAnamnesisStepFour() {
         name={promotionBeforeSchoolEntry("ergotherapy")}
         title={t("support.therapy.ergoTherapy")}
       >
-        <Typography level="body-sm">{t("support.therapy.date")}</Typography>
-        <Grid container sx={{ flexGrow: 1 }} spacing={2}>
+        <Typography level="body-sm" id={ergoTherapyId}>
+          {t("support.therapy.date")}
+        </Typography>
+        <Grid
+          container
+          sx={{ flexGrow: 1 }}
+          spacing={2}
+          role="group"
+          aria-labelledby={ergoTherapyId}
+        >
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.from")}
@@ -155,8 +176,16 @@ export function CitizenAnamnesisStepFour() {
         name={promotionBeforeSchoolEntry("physiotherapy")}
         title={t("support.therapy.physioTherapy")}
       >
-        <Typography level="body-sm">{t("support.therapy.date")}</Typography>
-        <Grid container sx={{ flexGrow: 1 }} spacing={2}>
+        <Typography level="body-sm" id={physiotherapyId}>
+          {t("support.therapy.date")}
+        </Typography>
+        <Grid
+          container
+          sx={{ flexGrow: 1 }}
+          spacing={2}
+          role="group"
+          aria-labelledby={physiotherapyId}
+        >
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.from")}

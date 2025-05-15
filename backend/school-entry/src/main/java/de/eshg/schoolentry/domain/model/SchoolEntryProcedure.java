@@ -14,7 +14,9 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
+import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.*;
+import de.eshg.schoolentry.domain.model.schoolinfoletter.SchoolInfoLetterExamination;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -128,6 +130,13 @@ public class SchoolEntryProcedure
 
   @DataSensitivity(PSEUDONYMIZED)
   private LocalDate examinationDate;
+
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @JoinColumn
+  private SchoolInfoLetterExamination schoolInfoLetter;
 
   public UUID getSchoolId() {
     return schoolId;
@@ -342,6 +351,14 @@ public class SchoolEntryProcedure
 
   public void setExaminationDate(LocalDate examinationDate) {
     this.examinationDate = examinationDate;
+  }
+
+  public SchoolInfoLetterExamination getSchoolInfoLetter() {
+    return schoolInfoLetter;
+  }
+
+  public void setSchoolInfoLetter(SchoolInfoLetterExamination schoolInfoLetter) {
+    this.schoolInfoLetter = schoolInfoLetter;
   }
 
   public boolean hasBeenClosed() {

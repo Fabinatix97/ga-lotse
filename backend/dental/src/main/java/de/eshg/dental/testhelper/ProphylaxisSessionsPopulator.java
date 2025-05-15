@@ -218,7 +218,14 @@ public class ProphylaxisSessionsPopulator
           faker.bool().bool(),
           faker.bool().bool(),
           faker.bool().bool(),
-          randomToothDiagnoses(faker));
+          randomToothDiagnoses(faker),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool());
     } else if (hasFluoridationVarnish) {
       return new FluoridationExaminationResultDto(
           optional(faker, isFluoridationConsentGiven && faker.bool().bool()));

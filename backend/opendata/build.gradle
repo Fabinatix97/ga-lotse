@@ -16,6 +16,7 @@ dependencies {
     testImplementation project(':test-commons')
     testImplementation testFixtures(project(':business-module-commons'))
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-auditlog'))
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'

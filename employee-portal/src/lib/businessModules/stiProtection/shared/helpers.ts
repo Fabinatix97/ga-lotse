@@ -7,7 +7,6 @@ import { FormikState } from "formik";
 import { isPlainObject } from "remeda";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentType,
   ApiConcern,
@@ -95,15 +94,6 @@ export function guardValue<T>(
   value: T,
 ): T | undefined {
   return guard ? value : undefined;
-}
-
-export function mapOptionalString(
-  input: string | undefined,
-): string | undefined {
-  if (input === undefined) {
-    return;
-  }
-  return isNonEmptyString(input) ? input : undefined;
 }
 
 export function areAllValuesUndefined(obj: unknown): boolean {

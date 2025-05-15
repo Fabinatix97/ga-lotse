@@ -11,7 +11,10 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
-import { ApiSopessExaminationResultValue } from "@eshg/school-entry-api";
+import {
+  ApiDoctorLetterValue,
+  ApiSopessExaminationResultValue,
+} from "@eshg/school-entry-api";
 
 import { StatusChip } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/StatusChip";
 import { FIXED_WIDTH_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
@@ -20,6 +23,7 @@ import { SopessExaminationFields } from "@/lib/businessModules/schoolEntry/featu
 import {
   MAX_9,
   MIN_0,
+  mapExaminationEvaluationToExaminationResultValue,
   validateValue,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
 import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
@@ -54,6 +58,22 @@ function validatePseudoword(value: OptionalFieldValue<number>) {
 export function PseudowordForm(props: PseudowordFormProps) {
   const fieldName = createFieldNameMapper("auditiveProcessing");
 
+  function handlePseudowordChange(value: OptionalFieldValue<number>) {
+    const examinationEvaluation = mapExaminationEvaluation(value);
+    void props.setFieldValue(
+      fieldName("result"),
+      mapExaminationEvaluationToExaminationResultValue(examinationEvaluation),
+    );
+    if (examinationEvaluation !== EVALUATION_EXAMINATION_TYPES.CONSPICUOUS) {
+      void props.setFieldValue(fieldName("doctorLetter"), "");
+    } else {
+      void props.setFieldValue(
+        fieldName("doctorLetter"),
+        ApiDoctorLetterValue.NoReply,
+      );
+    }
+  }
+
   return (
     <Stack gap={2} data-testid="pseudowordForm">
       <FormSectionTitle
@@ -70,6 +90,7 @@ export function PseudowordForm(props: PseudowordFormProps) {
             min={MIN_0}
             max={MAX_9}
             softRequired
+            onChange={handlePseudowordChange}
           />
           <StatusChip aria-label="Bewertung Pseudowörter" minWidth="sm">
             {mapExaminationEvaluation(props.points)}

@@ -3713,6 +3713,31 @@
       }
     },
     "/school-entries/{procedureId}/school-info-letter" : {
+      "get" : {
+        "operationId" : "getSchoolInfoLetter",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSchoolInfoLetterResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      },
       "post" : {
         "operationId" : "createSchoolInfoLetter",
         "parameters" : [ {
@@ -5041,6 +5066,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -5268,7 +5294,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -5357,6 +5383,7 @@
             "example" : "2024-02-01"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "First name of the person.",
             "example" : "Hermione"
@@ -5365,6 +5392,7 @@
             "$ref" : "#/components/schemas/Gender"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Last name of the person.",
             "example" : "Granger"
@@ -5440,9 +5468,11 @@
             "format" : "date"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
@@ -5542,6 +5572,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlockIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -5561,6 +5592,7 @@
         "type" : "object",
         "properties" : {
           "procedureIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -5604,6 +5636,7 @@
         "type" : "object",
         "properties" : {
           "daysOfWeek" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DayOfWeek"
@@ -5628,6 +5661,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
@@ -5850,6 +5884,9 @@
         "properties" : {
           "consultationWithCustodianRecommended" : {
             "type" : "boolean"
+          },
+          "customRecommendation" : {
+            "type" : "string"
           },
           "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended" : {
             "type" : "boolean"
@@ -6160,6 +6197,7 @@
         "type" : "object",
         "properties" : {
           "procedureIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -6664,6 +6702,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
@@ -6756,6 +6795,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -6830,6 +6870,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -6864,6 +6905,7 @@
             "example" : "LTG"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the city where the department is located",
             "example" : "Berlin"
@@ -6872,16 +6914,19 @@
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The email address of the department",
             "example" : "mail@address.de"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The domain of the department's official homepage, excluding protocols",
             "example" : "department-homepage.de"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The house number at the department's address, including any extensions or suffixes",
             "example" : "1b"
@@ -6890,21 +6935,25 @@
             "$ref" : "#/components/schemas/Location"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the department",
             "example" : "Gesundheitsamt Landkreis Testgebiet"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The primary contact telephone number for the department",
             "example" : "+491234567890"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The postal code for the department’s address",
             "example" : "12345"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The street name for the department’s address, not including the house number",
             "example" : "Beispielweg"
@@ -7340,7 +7389,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -7646,6 +7695,17 @@
           "totalNumberOfElements" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "GetSchoolInfoLetterResponse" : {
+        "type" : "object",
+        "properties" : {
+          "defaultValuesLetter" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterExamination"
+          },
+          "savedLetter" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterExamination"
           }
         }
       },
@@ -8108,21 +8168,8 @@
         }
       },
       "Language" : {
-        "type" : "object",
-        "properties" : {
-          "familyLanguage" : {
-            "$ref" : "#/components/schemas/FamilyLanguageValue"
-          },
-          "germanKnowledgeChild" : {
-            "$ref" : "#/components/schemas/GermanKnowledgeValue"
-          },
-          "germanKnowledgePrimaryCarer" : {
-            "$ref" : "#/components/schemas/LanguageKnowledgeValue"
-          },
-          "primaryLanguage" : {
-            "$ref" : "#/components/schemas/PrimaryLanguageValue"
-          }
-        }
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
       },
       "LanguageKnowledgeValue" : {
         "type" : "string",
@@ -8360,17 +8407,31 @@
           }
         }
       },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "OpeningHours" : {
         "required" : [ "de", "en" ],
         "type" : "object",
         "properties" : {
           "de" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
             }
           },
           "en" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -8700,18 +8761,6 @@
       "PrimaryLanguageValue" : {
         "type" : "string",
         "enum" : [ "GERMAN", "OTHER", "UNKNOWN" ]
-      },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
-          }
-        }
       },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
@@ -9196,7 +9245,7 @@
       },
       "SchoolEntryFeature" : {
         "type" : "string",
-        "enum" : [ "DUMMY" ]
+        "enum" : [ "DUMMY", "EDITABLE_SCHOOL_INFO_LETTER" ]
       },
       "SchoolEntryProcedure" : {
         "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],
@@ -9253,6 +9302,7 @@
             "description" : "Description of the label"
           },
           "hexColor" : {
+            "minLength" : 1,
             "pattern" : "^#[0-9a-zA-Z]{6}$",
             "type" : "string",
             "description" : "Background color of the box surrounding the label"
@@ -9314,6 +9364,232 @@
         "type" : "string",
         "description" : "Feedback from the school on the school entry examination.",
         "enum" : [ "POSITIVE", "NEGATIVE", "UNKNOWN" ]
+      },
+      "SchoolInfoLetterChild" : {
+        "required" : [ "dateOfBirth", "name" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "SchoolInfoLetterExamination" : {
+        "required" : [ "child", "consultationWithCustodianRecommended", "date", "postponed", "schoolYear" ],
+        "type" : "object",
+        "properties" : {
+          "child" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterChild"
+          },
+          "consultationWithCustodianRecommended" : {
+            "type" : "boolean"
+          },
+          "customRecommendation" : {
+            "type" : "string"
+          },
+          "date" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "eyeExaminationInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterEyeExaminationInfo"
+          },
+          "hearingExaminationInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterHearingExaminationInfo"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "parentsWish" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterParentsWish"
+          },
+          "physiciansRecommendation" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterPhysiciansRecommendation"
+          },
+          "postponed" : {
+            "type" : "boolean"
+          },
+          "schoolAndPromotionHints" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterSchoolAndPromotionHints"
+          },
+          "schoolYear" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "therapyAndPromotionInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterTherapyAndPromotionInfo"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterExaminationType"
+          },
+          "vaccinationInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterVaccinationInfo"
+          }
+        }
+      },
+      "SchoolInfoLetterExaminationType" : {
+        "type" : "string",
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL" ]
+      },
+      "SchoolInfoLetterEyeExaminationInfo" : {
+        "required" : [ "clarificationArranged", "colorSenseDisorder", "conspicuous", "spectacleWearer", "underTreatment" ],
+        "type" : "object",
+        "properties" : {
+          "clarificationArranged" : {
+            "type" : "boolean"
+          },
+          "colorSenseDisorder" : {
+            "type" : "boolean"
+          },
+          "conspicuous" : {
+            "type" : "boolean"
+          },
+          "spectacleWearer" : {
+            "type" : "boolean"
+          },
+          "underTreatment" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SchoolInfoLetterHearingExaminationInfo" : {
+        "required" : [ "clarificationArranged", "conspicuous", "underTreatment" ],
+        "type" : "object",
+        "properties" : {
+          "clarificationArranged" : {
+            "type" : "boolean"
+          },
+          "conspicuous" : {
+            "type" : "boolean"
+          },
+          "underTreatment" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SchoolInfoLetterMeaslesContraIndicationDuration" : {
+        "type" : "string",
+        "enum" : [ "PERMANENT", "TEMPORARY" ]
+      },
+      "SchoolInfoLetterParentsWish" : {
+        "required" : [ "referredToFurtherConsultationFromSchool" ],
+        "type" : "object",
+        "properties" : {
+          "note" : {
+            "type" : "string"
+          },
+          "referredToFurtherConsultationFromSchool" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SchoolInfoLetterPhysiciansRecommendation" : {
+        "required" : [ "concernsCanChild", "furtherMeasures", "introductionInBFZ", "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended", "promotionOutsideSchool", "specialPromotion" ],
+        "type" : "object",
+        "properties" : {
+          "concernsCanChild" : {
+            "type" : "boolean"
+          },
+          "furtherMeasures" : {
+            "type" : "boolean"
+          },
+          "introductionInBFZ" : {
+            "type" : "boolean"
+          },
+          "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended" : {
+            "type" : "boolean"
+          },
+          "promotionOutsideSchool" : {
+            "type" : "boolean"
+          },
+          "specialPromotion" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SchoolInfoLetterSchoolAndPromotionHints" : {
+        "required" : [ "articulation", "auditiveInformationProcessing", "behavior", "colorsShapesNumbersSets", "fineOrVisuoMotorSkills", "grammarAndVocabulary", "grossMotorSkillsOrPhysicalCoordination", "language", "leftHandedness", "visualPerception" ],
+        "type" : "object",
+        "properties" : {
+          "articulation" : {
+            "type" : "boolean"
+          },
+          "auditiveInformationProcessing" : {
+            "type" : "boolean"
+          },
+          "behavior" : {
+            "type" : "boolean"
+          },
+          "colorsShapesNumbersSets" : {
+            "type" : "boolean"
+          },
+          "fineOrVisuoMotorSkills" : {
+            "type" : "boolean"
+          },
+          "grammarAndVocabulary" : {
+            "type" : "boolean"
+          },
+          "grossMotorSkillsOrPhysicalCoordination" : {
+            "type" : "boolean"
+          },
+          "language" : {
+            "type" : "boolean"
+          },
+          "leftHandedness" : {
+            "type" : "boolean"
+          },
+          "visualPerception" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SchoolInfoLetterTherapyAndPromotionInfo" : {
+        "required" : [ "ergoTherapy", "miscellaneous", "physioTherapy", "psychoMotorSkills", "speechTherapy" ],
+        "type" : "object",
+        "properties" : {
+          "ergoTherapy" : {
+            "type" : "boolean"
+          },
+          "miscellaneous" : {
+            "type" : "boolean"
+          },
+          "physioTherapy" : {
+            "type" : "boolean"
+          },
+          "psychoMotorSkills" : {
+            "type" : "boolean"
+          },
+          "speechTherapy" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SchoolInfoLetterVaccinationInfo" : {
+        "required" : [ "measlesContraIndication", "vaccinationPassNotPresented" ],
+        "type" : "object",
+        "properties" : {
+          "measlesContraIndication" : {
+            "type" : "boolean"
+          },
+          "measlesContraIndicationDuration" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterMeaslesContraIndicationDuration"
+          },
+          "measlesContraIndicationUntil" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "measlesProtectionComplete" : {
+            "type" : "boolean"
+          },
+          "vaccinationPassNotPresented" : {
+            "type" : "boolean"
+          }
+        }
       },
       "SchoolRecommendation" : {
         "type" : "string",
@@ -9416,7 +9692,7 @@
             "$ref" : "#/components/schemas/KnowledgeThinkingExamination"
           },
           "language" : {
-            "$ref" : "#/components/schemas/Language"
+            "$ref" : "#/components/schemas/SopessLanguage"
           },
           "note" : {
             "type" : "string"
@@ -9439,6 +9715,23 @@
       "SopessExaminationResultValue" : {
         "type" : "string",
         "enum" : [ "OK", "KNOWN", "DOCTOR_LETTER", "BORDERLINE", "UNKNOWN" ]
+      },
+      "SopessLanguage" : {
+        "type" : "object",
+        "properties" : {
+          "familyLanguage" : {
+            "$ref" : "#/components/schemas/FamilyLanguageValue"
+          },
+          "germanKnowledgeChild" : {
+            "$ref" : "#/components/schemas/GermanKnowledgeValue"
+          },
+          "germanKnowledgePrimaryCarer" : {
+            "$ref" : "#/components/schemas/LanguageKnowledgeValue"
+          },
+          "primaryLanguage" : {
+            "$ref" : "#/components/schemas/PrimaryLanguageValue"
+          }
+        }
       },
       "SortDirection" : {
         "type" : "string",
@@ -9942,6 +10235,7 @@
             "example" : "UUID_3"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"

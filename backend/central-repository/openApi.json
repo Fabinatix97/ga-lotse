@@ -693,6 +693,7 @@
         "type" : "object",
         "properties" : {
           "category" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "changeLog" : {
@@ -705,6 +706,7 @@
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "tags" : {
@@ -721,6 +723,7 @@
         "type" : "object",
         "properties" : {
           "category" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "changeLog" : {
@@ -737,6 +740,7 @@
             "format" : "date-time"
           },
           "createdBy" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "deletedAt" : {
@@ -754,12 +758,15 @@
             "format" : "int64"
           },
           "moduleName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "objectName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "tags" : {

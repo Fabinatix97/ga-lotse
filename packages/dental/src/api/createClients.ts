@@ -5,6 +5,7 @@
 
 import {
   ApprovalRequestApi,
+  ArchivingApi,
   BaseAPI,
   ChildApi,
   Configuration,
@@ -34,5 +35,6 @@ export function createClients(baseUrl: string) {
     approvalRequestApi: new ApprovalRequestApi(configuration),
     procedureLabelApi: new ProcedureLabelApi(configuration),
     gdprValidationTaskApi: new GdprValidationTaskApi(configuration),
+    archivingApi: new ArchivingApi(configuration),
   } satisfies Record<string, BaseAPI>;
 }

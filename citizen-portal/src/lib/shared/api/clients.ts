@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Configuration, DepartmentApi, PublicConfigApi } from "@eshg/base-api";
+import {
+  Configuration,
+  PublicConfigApi,
+  PublicDepartmentApi,
+} from "@eshg/base-api";
 import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   ApiBusinessModule,
@@ -25,6 +29,7 @@ export const BUSINESS_MODULE_URLS = {
   [ApiBusinessModule.Dental]: "PUBLIC_DENTAL_BACKEND_URL",
   [ApiBusinessModule.OfficialMedicalService]:
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
+  [ApiBusinessModule.MedsAbroad]: "PUBLIC_MEDS_ABROAD_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
 function useConfiguration() {
@@ -34,9 +39,9 @@ function useConfiguration() {
   return new Configuration(configurationParameters);
 }
 
-export function useDepartmentApi() {
+export function usePublicDepartmentApi() {
   const configuration = useConfiguration();
-  return new DepartmentApi(configuration);
+  return new PublicDepartmentApi(configuration);
 }
 
 export function usePublicConfigApi() {

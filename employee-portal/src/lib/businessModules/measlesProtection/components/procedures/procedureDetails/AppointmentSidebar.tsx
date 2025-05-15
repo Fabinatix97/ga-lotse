@@ -15,6 +15,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { SelectObjectField } from "@eshg/lib-portal/components/formFields/SelectObjectField";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
@@ -24,7 +25,6 @@ import { ApiAppointment } from "@eshg/measles-protection-api";
 import { useBookAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
 import { useGetFreeAppointments } from "@/lib/businessModules/measlesProtection/api/queries/appointmentBookingApi";
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface InitialAppointmentValues {
   appointment: ApiAppointment | null;

@@ -23,6 +23,7 @@ export {
   isPostboxAddress,
 } from "./api/models/address";
 export { useGetUsersByGroupQuery } from "./api/queries/users";
+export { useGetPublicConfig } from "./api/queries/publicConfig";
 
 export {
   createEmptyAddress,
@@ -54,6 +55,7 @@ export {
 } from "./components/tabNavigationToolbar/TabNavigationHeader";
 export { PersonToolbarHeader } from "./components/tabNavigationToolbar/PersonToolbarHeader";
 export { PageGrid } from "./components/page/PageGrid";
+export { RestrictedPage } from "./components/page/RestrictedPage";
 export { ContentPanel } from "./components/contentPanel/ContentPanel";
 export { ContentPanelTitle } from "./components/contentPanel/ContentPanelTitle";
 export {
@@ -76,6 +78,7 @@ export { SelectableCard } from "./components/cards/SelectableCard";
 export {
   CustomFileType,
   FileCard,
+  mapToFileCardProps,
   type FileCardProps,
   type FileCardActionProps,
 } from "./components/cards/FileCard";
@@ -122,6 +125,7 @@ export {
 } from "./components/timeline/TimelineEntry";
 export { TimelineEntryIndicator } from "./components/timeline/TimelineEntryIndicator";
 
+export { publicConfigApiQueryKey } from "./config/apiQueryKeys";
 export { PROCEDURE_STATUS_COLORS } from "./config/procedures";
 
 export { EmployeePortalProvider } from "./contexts/employeePortal";
@@ -262,6 +266,8 @@ export {
   useFilterDictionary,
   type SetDictionaryFilterFn,
 } from "./features/filters/hooks/useFilterDictionary";
+export { useSearchParamStateProvider } from "./features/filters/hooks/useSearchParamStateProvider";
+export { useSearchParamFilterSettings } from "./features/filters/hooks/useSearchParamFilterSettings";
 export type { FilterDefinition } from "./features/filters/types/FilterDefinition";
 export type { FilterValue } from "./features/filters/types/FilterValue";
 export type { DateComparisonOperator } from "./features/filters/types/DateComparisonFilter";
@@ -287,6 +293,11 @@ export type {
 } from "./features/filters/types/TextFilter";
 export { getDefinitionByValue } from "./features/filters/utils/getDefinitionByValue";
 export { getSelectedEnumFilterValues } from "./features/filters/utils/getSelectedEnumFilterValues";
+export {
+  getFilterSelectedValue,
+  getFilterSelectedValues,
+  isInEnum,
+} from "./features/filters/utils/filterValues";
 
 export { gdprRoutes } from "./features/gdpr/config/gdprRoutes";
 export { useGetGdprValidationBannerQuery } from "./features/gdpr/api/queries";
@@ -359,6 +370,13 @@ export {
   normalizeListInputs,
 } from "./features/persons/utils/mappers";
 
+export { ProgressEntriesPage } from "./features/progressEntries/components/ProgressEntriesPage";
+export { manualProgressEntryTypeNames } from "./features/progressEntries/config/progressEntryTypes";
+
+export { ArchivePage } from "./features/archiving/components/archive/ArchivePage";
+export { ArchiveAdminPage } from "./features/archiving/components/archiveAdmin/ArchiveAdminPage";
+export { useArchivingSideNavigationItems } from "./features/archiving/config/sideNavigationItem";
+
 export { useHeaderHeights } from "./hooks/useHeaderHeights";
 export {
   useReplaceSearchParams,
@@ -367,6 +385,12 @@ export {
 export { useConfirmationDialog } from "./hooks/useConfirmationDialog";
 export { useResetAlertContextOnChange } from "./hooks/useResetAlertContextOnChange";
 export { useIsOffline } from "./hooks/useIsOffline";
+export {
+  setWindowSearchParams,
+  updateSearchParam,
+  useSearchParam,
+  useSearchParamLink,
+} from "./hooks/useSearchParam";
 
 export type { ModuleUserGroupConfig } from "./types/module";
 export type {
@@ -378,7 +402,10 @@ export type {
   SideNavigationParentItem,
 } from "./types/sideNavigation";
 
-export { PROCEDURE_STATUS_NAMES } from "./translations/procedures";
+export {
+  PROCEDURE_STATUS_NAMES,
+  PROCEDURE_TYPE_NAMES,
+} from "./translations/procedures";
 
 export {
   formatBoolean,
@@ -387,5 +414,9 @@ export {
   createCountFormatter,
   formatDurationFromNowUntil,
 } from "./utils/formatters";
-export { mapToSelectOption } from "./utils/mappers";
+export {
+  mapToSelectOption,
+  buildOptionFromUser,
+  buildOptionsFromUsers,
+} from "./utils/mappers";
 export { getDateFnsLocale } from "./utils/dateTime";

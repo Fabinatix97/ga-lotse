@@ -117,6 +117,13 @@ function mapExaminationResultRequest(
       gingivitis: formValues.gingivitis,
       parodontitis: formValues.parodontitis,
       toothDiagnoses: mapToothDiagnosesToRequest(toothDiagnoses),
+      individualProphylaxis: formValues.individualProphylaxis,
+      fissureSealing: formValues.fissureSealing,
+      tartarRemoval: formValues.tartarRemoval,
+      gingivitisTreatment: formValues.gingivitisTreatment,
+      orthodonticTreatment: formValues.orthodonticTreatment,
+      plaqueTreatment: formValues.plaqueTreatment,
+      inspectionAppointment: formValues.inspectionAppointment,
     };
   }
 

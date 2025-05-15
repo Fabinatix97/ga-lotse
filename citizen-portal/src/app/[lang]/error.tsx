@@ -10,15 +10,12 @@ import {
   NextErrorBoundaryProps,
 } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 
-import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout } from "@/lib/shared/components/layout/page";
+import { MainContentLayout } from "@/lib/baseModule/components/layout/MainContentLayout";
 
 export default function RootError(props: NextErrorBoundaryProps) {
   return (
-    <PageLayout>
-      <PageContent>
-        <NextErrorBoundary {...props} />
-      </PageContent>
-    </PageLayout>
+    <MainContentLayout>
+      <NextErrorBoundary {...props} />
+    </MainContentLayout>
   );
 }

@@ -5,6 +5,7 @@
 
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useId } from "react";
 
 import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
@@ -28,6 +29,7 @@ export function SexualOrientationAndContact({
 }: {
   isForSexWork: boolean;
 }) {
+  const startInSexWorkId = useId();
   const { values } = useFormikContext<MedicalHistoryFormData>();
   return (
     <>
@@ -62,10 +64,11 @@ export function SexualOrientationAndContact({
         {isForSexWork ? (
           <>
             <FieldSetControl>
-              <Legend>Seit wann in Sexarbeit?</Legend>
+              <Legend id={startInSexWorkId}>Seit wann in Sexarbeit?</Legend>
               <MonthAndYearFields
                 fieldName="sexualOrientationAndContact.startInSexWork"
                 date={values.sexualOrientationAndContact.startInSexWork}
+                aria-labelledby={startInSexWorkId}
               />
             </FieldSetControl>
             <CheckboxGroupField

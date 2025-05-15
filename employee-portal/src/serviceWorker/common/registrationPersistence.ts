@@ -18,12 +18,6 @@ export async function putServiceWorkerRegistration(scriptUrl?: string) {
   await db.put(REGISTRATION, { id: SERVICE_WORKER, registration: scriptUrl });
 }
 
-export async function deleteServiceWorkerRegistration() {
-  const db = await getInspectionOfflineDb();
-
-  await db.delete(REGISTRATION, SERVICE_WORKER);
-}
-
 export async function getServiceWorkerRegistration() {
   const db = await getInspectionOfflineDb();
 

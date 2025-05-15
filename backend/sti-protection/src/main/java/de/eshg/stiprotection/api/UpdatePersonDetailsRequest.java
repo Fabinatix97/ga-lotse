@@ -12,11 +12,7 @@ import java.time.Year;
 
 public record UpdatePersonDetailsRequest(
     @NotNull GenderDto gender,
-    @Schema(
-            type = "integer",
-            description = "Indicates the year of birth of the person.",
-            example = "1996")
-        @NotNull
+    @Schema(description = "Indicates the year of birth of the person.", example = "1996") @NotNull
         Year yearOfBirth,
     @Schema(description = "Indicates whether the patient has sufficient German language skills.")
         Boolean hasSufficientGermanLanguageSkills,

@@ -10,4 +10,5 @@ public record UpdateObjectTypeRequest(
     Integer complaintInterval,
     Integer standardDuration,
     Integer standardBufferTime,
-    Boolean emailAnnouncement) {}
+    Boolean emailAnnouncement,
+    String legalBasis) {}

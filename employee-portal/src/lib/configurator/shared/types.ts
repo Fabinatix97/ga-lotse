@@ -6,7 +6,8 @@
 import { ApiBusinessModule } from "@eshg/base-api";
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const { Inspection, Dental, ...ConfigApiBusinessModule } = ApiBusinessModule;
+const { Inspection, Dental, MedsAbroad, ...ConfigApiBusinessModule } =
+  ApiBusinessModule;
 export const ConfiguratorModuleName = {
   ...ConfigApiBusinessModule,
   base: "BASE",
@@ -17,4 +18,8 @@ export const ConfiguratorModuleName = {
 export type ConfiguratorModuleName =
   (typeof ConfiguratorModuleName)[keyof typeof ConfiguratorModuleName];
 
-export type ConfiguratorEndpointName = "DEPARTMENT_INFO" | "OPENING_HOURS";
+export type ConfiguratorEndpointName =
+  | "DEPARTMENT_INFO"
+  | "OPENING_HOURS"
+  | "SCHOOL_ENTRY"
+  | "NOTIFICATION";

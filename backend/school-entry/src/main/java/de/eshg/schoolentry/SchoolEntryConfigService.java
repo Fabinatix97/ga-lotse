@@ -6,9 +6,11 @@
 package de.eshg.schoolentry;
 
 import static de.eshg.config.ConfigurationEndpoint.SCHOOL_ENTRY;
+import static de.eshg.schoolentry.mapper.SchoolEntryConfigAuditLogMapper.getRelevantFieldsForLogging;
 
 import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
@@ -18,7 +20,6 @@ import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.configuration.SchoolEntryConfigDto;
-import de.eshg.schoolentry.api.configuration.UpdateSchoolEntryConfigRequest;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryConfig;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
@@ -35,18 +36,21 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
       AppointmentBlockProperties appointmentBlockProperties,
       SchoolEntryProperties schoolEntryProperties,
       ProcedureRepository<SchoolEntryProcedure> procedureRepository,
-      AppointmentBlockRepository appointmentBlockRepository) {
+      AppointmentBlockRepository appointmentBlockRepository,
+      AuditLogWriter auditLogWriter) {
     super(entityManager, transactionHelper, SchoolEntryConfig.class);
     this.appointmentBlockProperties = appointmentBlockProperties;
     this.schoolEntryProperties = schoolEntryProperties;
     this.procedureRepository = procedureRepository;
     this.appointmentBlockRepository = appointmentBlockRepository;
+    this.auditLogWriter = auditLogWriter;
   }
 
   private final AppointmentBlockProperties appointmentBlockProperties;
   private final SchoolEntryProperties schoolEntryProperties;
   private final ProcedureRepository<SchoolEntryProcedure> procedureRepository;
   private final AppointmentBlockRepository appointmentBlockRepository;
+  private final AuditLogWriter auditLogWriter;
 
   @Override
   protected SchoolEntryConfig getInitialConfiguration() {
@@ -91,12 +95,16 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
     return getConfig().getPdfDocumentAccentColor();
   }
 
-  public void update(UpdateSchoolEntryConfigRequest request) {
+  public void update(SchoolEntryConfig configUpdate) {
     SchoolEntryConfig persistentConfig = getConfig();
-    updateLocationSelectionMode(persistentConfig, request.locationSelectionMode());
+    auditLogWriter.writeChangeToAuditlog(
+        "schoolEntryConfig",
+        getRelevantFieldsForLogging(persistentConfig),
+        getRelevantFieldsForLogging(configUpdate));
+    updateLocationSelectionMode(persistentConfig, configUpdate.getLocationSelectionMode());
     updateDirectProcedureTypeAssignmentOnImport(
-        persistentConfig, request.directProcedureTypeAssignmentOnImport());
-    updatePdfDocumentAccentColor(persistentConfig, request.pdfDocumentAccentColor());
+        persistentConfig, configUpdate.isDirectProcedureTypeAssignmentOnImport());
+    updatePdfDocumentAccentColor(persistentConfig, configUpdate.getPdfDocumentAccentColor());
   }
 
   @VisibleForTesting

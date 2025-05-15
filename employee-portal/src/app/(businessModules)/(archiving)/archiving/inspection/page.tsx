@@ -5,29 +5,24 @@
 
 "use client";
 
+import { ArchivePage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/inspection/api/mutations/archiving";
-import {
-  useGetArchivableProcedures,
-  useGetArchivingConfiguration,
-} from "@/lib/businessModules/inspection/api/queries/archiving";
+import { useArchivingApi } from "@/lib/businessModules/inspection/api/clients";
 import { procedureTypes } from "@/lib/businessModules/inspection/shared/constants";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ArchiveView } from "@/lib/shared/components/archiving/ArchiveView";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchivePage() {
+export default function InspectionArchivePage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveView
+    <ArchivePage
       title={businessModuleNames[ApiBusinessModule.Inspection]}
       procedureDetailsRoute={routes.procedures.details}
-      useGetArchivingConfiguration={useGetArchivingConfiguration}
-      useGetArchivableProcedures={useGetArchivableProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
-      additionalFilters={{ procedureTypes }}
+      businessModule={ApiBusinessModule.Inspection}
+      archivingApi={archivingApi}
+      procedureTypes={procedureTypes}
     />
   );
 }

@@ -115,9 +115,10 @@ export function RadioAccordionItem({
         alignItems: "center",
         borderRadius: "8px",
         padding: 0,
+        borderColor: "a11y.neutral",
         [`:has([data-accordion-radio].${radioClasses.checked})`]: {
           backgroundColor: "primary.100",
-          borderColor: "primary.300",
+          borderColor: "a11y.primary",
         },
         [`:has([data-accordion-radio].${radioClasses.disabled})`]: {
           backgroundColor: "whitesmoke",

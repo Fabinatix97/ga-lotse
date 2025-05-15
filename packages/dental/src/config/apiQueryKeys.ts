@@ -14,7 +14,3 @@ export const procedureLabelApiQueryKey = queryKeyFactory(
 export const prophylaxisSessionApiQueryKey = queryKeyFactory(
   apiQueryKey(["prophylaxisSessionApi"]),
 );
-export const progressEntryApiQueryKey = queryKeyFactory(
-  apiQueryKey(["progressEntryApi"]),
-);
-export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));

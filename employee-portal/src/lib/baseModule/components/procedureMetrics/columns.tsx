@@ -7,8 +7,8 @@ import { SortingState, createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
 import { ApiProcedureMetric } from "@eshg/base-api";
+import { PROCEDURE_TYPE_NAMES } from "@eshg/lib-employee-portal";
 
-import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { formatDurationRounded } from "@/lib/shared/helpers/dateTime";
 
 export const columnName = {
@@ -34,7 +34,7 @@ const meta = {
 export const procedureMetricsColumns = [
   columnHelper.accessor("procedureType", {
     header: columnName.procedureType,
-    cell: (props) => procedureTypeNames[props.getValue()],
+    cell: (props) => PROCEDURE_TYPE_NAMES[props.getValue()],
     meta,
   }),
   columnHelper.accessor("totalCount", {

@@ -10,6 +10,7 @@ import static de.eshg.base.keycloak.EmployeeUserAttribute.AUDIT_LOG_ENCRYPTED_PR
 import static de.eshg.base.keycloak.EmployeeUserAttribute.AUDIT_LOG_KEY_IDENTIFIER;
 import static de.eshg.base.keycloak.EmployeeUserAttribute.AUDIT_LOG_PUBLIC_KEY;
 
+import de.eshg.base.keycloak.KeycloakProperties.Smtp;
 import de.eshg.base.user.model.EmployeeUserKeys;
 import de.eshg.base.user.model.PrivateEmployeeUserKey;
 import de.eshg.base.user.model.PublicEmployeeUserKey;
@@ -66,6 +67,7 @@ public class KeycloakMapper {
       case MEDICAL_REGISTRY -> ModuleMemberGroup.MEDICAL_REGISTRY;
       case DENTAL -> ModuleMemberGroup.DENTAL;
       case OFFICIAL_MEDICAL_SERVICE -> ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE;
+      case MEDS_ABROAD -> ModuleMemberGroup.MEDS_ABROAD;
     };
   }
 
@@ -141,7 +143,7 @@ public class KeycloakMapper {
     return Base64.getEncoder().encodeToString(ArrayUtils.toPrimitive(bytes.toArray(Byte[]::new)));
   }
 
-  public static Map<String, String> mapSmtpServer(KeycloakProperties.Smtp smtp) {
+  public static Map<String, String> mapSmtpServer(Smtp smtp) {
     return Map.of(
         "from",
         smtp.from(),

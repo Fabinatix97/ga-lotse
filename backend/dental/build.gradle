@@ -25,6 +25,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-xlsx-import'))
     testImplementation testFixtures(project(':lib-statistics'))
+    testImplementation 'net.javacrumbs.shedlock:shedlock-spring'
 }
 
 dockerCompose {

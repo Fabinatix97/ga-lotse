@@ -22,26 +22,6 @@ export function useGetUserProfile(id: string) {
   });
 }
 
-export function useGetUsersByGroupQuery(
-  groupName: string,
-  getInitOverrides?: (inspectionId?: string) => RequestInit,
-) {
-  return useSuspenseQuery(
-    useGetUsersByGroupQueryOptions(groupName, getInitOverrides),
-  );
-}
-
-export function useGetUsersByGroupQueryOptions(
-  groupName: string,
-  getInitOverrides?: (inspectionId?: string) => RequestInit,
-) {
-  const usersApi = useUserApi();
-  return queryOptions({
-    queryKey: userApiQueryKey(["getUsersByGroup", groupName]),
-    queryFn: () => usersApi.getUsersByGroup(groupName, getInitOverrides?.()),
-  });
-}
-
 export function useGetUserOverviewPageQuery() {
   const userApi = useUserApi();
   return useSuspenseQuery({

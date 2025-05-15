@@ -13,18 +13,13 @@ import {
   ApiUser,
 } from "@eshg/base-api";
 import {
-  ApiManualProgressEntryType,
-  ApiProgressEntryClass,
-} from "@eshg/lib-procedures-api";
-
-import {
-  manualProgressEntryTypeNames,
-  progressEntryClassTitles,
-} from "@/lib/shared/components/procedures/progress-entries/constants";
+  PROCEDURE_TYPE_NAMES,
+  buildOptionFromUser,
+  buildOptionsFromUsers,
+} from "@eshg/lib-employee-portal";
 
 import {
   businessModuleNames,
-  procedureTypeNames,
   taskStatusNames,
   taskTypeNames,
 } from "./constants";
@@ -40,7 +35,7 @@ export function buildOptionsFromBusinessModules(
 }
 
 function buildOptionFromProcedureType(procedureType: ApiProcedureType) {
-  return { value: procedureType, label: procedureTypeNames[procedureType] };
+  return { value: procedureType, label: PROCEDURE_TYPE_NAMES[procedureType] };
 }
 
 export function buildOptionsFromProcedureTypes(
@@ -75,47 +70,6 @@ export function buildAssignedByOptions(
   return isSelfUserIncluded
     ? optionsFromSelfLeaders
     : [...optionsFromSelfLeaders, buildOptionFromUser(selfUser)];
-}
-
-export function buildOptionsFromUsers(users: ApiUser[]) {
-  return users.map(buildOptionFromUser);
-}
-
-function buildOptionFromUser(user: ApiUser) {
-  return {
-    label: `${user.firstName} ${user.lastName}`,
-    value: user.userId,
-  };
-}
-
-function buildOptionFromManualProgressEntryType(
-  manualProgressEntryType: ApiManualProgressEntryType,
-) {
-  return {
-    value: manualProgressEntryType,
-    label: manualProgressEntryTypeNames[manualProgressEntryType],
-  };
-}
-
-export function buildOptionsFromManualProgressEntryTypes() {
-  return Object.values(ApiManualProgressEntryType).map(
-    buildOptionFromManualProgressEntryType,
-  );
-}
-
-function buildOptionFromProgressEntryClass(
-  progressEntryClass: ApiProgressEntryClass,
-) {
-  return {
-    value: progressEntryClass,
-    label: progressEntryClassTitles[progressEntryClass],
-  };
-}
-
-export function buildOptionsFromProgressEntryClasses() {
-  return Object.values(ApiProgressEntryClass).map(
-    buildOptionFromProgressEntryClass,
-  );
 }
 
 export function buildRouteWithParams(

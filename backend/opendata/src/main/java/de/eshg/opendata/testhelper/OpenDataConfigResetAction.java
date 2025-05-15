@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(40)
+@Order(60)
 public class OpenDataConfigResetAction implements TestHelperServiceResetAction {
 
   private final OpenDataConfigService openDataConfigService;

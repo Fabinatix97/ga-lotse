@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MatrixEvent, MatrixEventEvent, Room, RoomEvent } from "matrix-js-sdk";
+import {
+  MatrixEvent,
+  MatrixEventEvent,
+  NotificationCountType,
+  Room,
+  RoomEvent,
+} from "matrix-js-sdk";
 import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { isNullish, omit } from "remeda";
@@ -11,6 +17,8 @@ import { isNullish, omit } from "remeda";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import { getRoomCommunicationType } from "@/lib/businessModules/chat/shared/utils";
 
 interface NotificationContextType {
   unreadNotificationsPerRoom: Record<string, number>;
@@ -54,7 +62,6 @@ export function NotificationProvider({ children }: RequiresChildren) {
     function setUnreadNotification(event: MatrixEvent, room?: Room | Error) {
       let eventRoom = room instanceof Error ? undefined : room;
       let roomId = eventRoom?.roomId;
-
       if (!eventRoom || !roomId) {
         roomId = event?.getRoomId();
         if (!roomId) return;
@@ -62,8 +69,15 @@ export function NotificationProvider({ children }: RequiresChildren) {
       }
 
       if (!eventRoom) return;
-
-      const unreadMessages = eventRoom.getUnreadNotificationCount();
+      const communicationType = getRoomCommunicationType(
+        matrixClient,
+        eventRoom,
+      );
+      const unreadMessages = eventRoom.getUnreadNotificationCount(
+        communicationType === CommunicationType.DirectMessage
+          ? NotificationCountType.Total
+          : NotificationCountType.Highlight,
+      );
 
       setUnreadNotificationsPerRoom((prevState) => {
         let state = { ...prevState, [roomId]: unreadMessages };

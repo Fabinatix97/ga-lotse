@@ -5,7 +5,8 @@
 
 package de.eshg.stiprotection.department;
 
-import de.eshg.base.department.DepartmentApi;
+import de.eshg.base.department.PublicDepartmentApi;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.departmentinfo.AbstractDepartmentInfoWithBaseModuleFallbackConfigService;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.stiprotection.persistence.SexWorkDepartmentInfoConfig;
@@ -23,12 +24,14 @@ public class SexWorkDepartmentInfoConfigService
       EntityManager entityManager,
       TransactionHelper transactionHelper,
       DepartmentInfoConfig departmentInfoConfig,
-      DepartmentApi departmentApi) {
+      PublicDepartmentApi publicDepartmentApi,
+      AuditLogWriter auditLogWriter) {
     super(
         entityManager,
         transactionHelper,
-        departmentApi,
+        publicDepartmentApi,
         departmentInfoConfig.getDepartmentInfo().get(Concern.SEX_WORK.name().toLowerCase()),
+        auditLogWriter,
         SexWorkDepartmentInfoConfig.class);
   }
 

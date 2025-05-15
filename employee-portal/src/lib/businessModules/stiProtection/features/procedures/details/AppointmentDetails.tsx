@@ -14,6 +14,7 @@ import {
   DetailsSection,
   TablePage,
   useConfirmationDialog,
+  useSearchParam,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
@@ -34,7 +35,6 @@ import {
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";
 import {

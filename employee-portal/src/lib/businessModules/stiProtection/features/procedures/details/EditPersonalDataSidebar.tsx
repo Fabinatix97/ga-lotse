@@ -11,6 +11,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -25,7 +26,6 @@ import { useUpdatePersonDetails } from "@/lib/businessModules/stiProtection/api/
 import { AddNewProcedureForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AddNewProcedureSidebar";
 import { PersonalDataForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/PersonalDataForm";
 import { deleteUndefined } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 type EditPersonalDataForm = Pick<
@@ -107,7 +107,7 @@ function mapFormToApi(
       form.hasSufficientGermanLanguageSkills ?? undefined,
     otherKnownLanguages: mapOptionalValue(form.otherKnownLanguages),
 
-    yearOfBirth: parseInt(form.yearOfBirth, 10),
+    yearOfBirth: form.yearOfBirth.toString(),
   });
 }
 
@@ -120,6 +120,6 @@ function mapApiToForm(
     hasSufficientGermanLanguageSkills:
       procedure.person.hasSufficientGermanLanguageSkills ?? null,
     otherKnownLanguages: procedure.person.otherKnownLanguages ?? "",
-    yearOfBirth: procedure.person.yearOfBirth.toString() ?? "",
+    yearOfBirth: parseInt(procedure.person.yearOfBirth, 10),
   };
 }

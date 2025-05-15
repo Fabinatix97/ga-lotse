@@ -15,6 +15,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -29,7 +30,6 @@ import {
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { LetterRecipientField } from "./LetterRecipientField";
 

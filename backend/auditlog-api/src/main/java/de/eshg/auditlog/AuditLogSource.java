@@ -17,4 +17,5 @@ public enum AuditLogSource {
   AUDITLOG,
   STATISTICS,
   OFFICIAL_MEDICAL_SERVICE,
+  OPENDATA,
 }

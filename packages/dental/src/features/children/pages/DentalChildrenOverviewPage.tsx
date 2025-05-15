@@ -11,11 +11,12 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 
+import { DENTAL_MODULE_NAME } from "../../../translations/businessModule";
 import { ChildrenTable } from "../components/childrenOverview/ChildrenTable";
 
 export function DentalChildrenOverviewPage() {
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Zahnärztlicher Dienst" />}>
+    <StickyToolbarLayout toolbar={<Toolbar title={DENTAL_MODULE_NAME} />}>
       <MainContentLayout fullViewportHeight>
         <ChildrenTable />
       </MainContentLayout>

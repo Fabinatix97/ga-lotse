@@ -5,6 +5,9 @@
 
 package de.eshg.travelmedicine.config;
 
+import static de.eshg.travelmedicine.notification.NotificationConfigMapper.mapToDomain;
+import static de.eshg.travelmedicine.notification.NotificationConfigMapper.mapToDto;
+
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.notification.NotificationConfigService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,13 +35,14 @@ public class NotificationConfigController {
   @Transactional(readOnly = true)
   @GetMapping
   public GetNotificationConfigResponse getNotificationConfig() {
-    return notificationConfigService.getNotificationConfig();
+    return new GetNotificationConfigResponse(
+        mapToDto(notificationConfigService.getNotificationConfig()));
   }
 
   @Transactional
   @PutMapping
   public void updateNotificationConfig(
       @Valid @RequestBody NotificationConfigDto notificationConfigDto) {
-    notificationConfigService.updateNotificationConfig(notificationConfigDto);
+    notificationConfigService.updateNotificationConfig(mapToDomain(notificationConfigDto));
   }
 }

@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class InspectionInternalSecurityConfig {
   @Bean
   AuthorizationCustomizer authorizationCustomizer() {
-    return auth -> auth.requestMatchers(InspectionTestDataController.BASE_URL + "/**").permitAll();
+    return auth ->
+        auth.requestMatchers(InspectionTestDataController.DOWNLOAD_OSM_TEST_DATA_BASE_URL + "/*")
+            .permitAll();
   }
 }

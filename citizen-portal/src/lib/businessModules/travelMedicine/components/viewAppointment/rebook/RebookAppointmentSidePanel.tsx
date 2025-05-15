@@ -60,8 +60,11 @@ export function RebookAppointmentSidePanel() {
     <ContentSheet data-testid="rebook-appointment-side-panel">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
       {appointmentStart && (
-        <>
+        <Stack role="list" gap={1}>
           <DetailsItem
+            slotProps={{
+              stack: { role: "listitem" },
+            }}
             label={t("overview.fields.date", {
               context: "label",
             })}
@@ -70,6 +73,9 @@ export function RebookAppointmentSidePanel() {
             hiddenLabel
           />
           <DetailsItem
+            slotProps={{
+              stack: { role: "listitem" },
+            }}
             label={t("overview.fields.time", {
               context: "label",
             })}
@@ -77,7 +83,7 @@ export function RebookAppointmentSidePanel() {
             icon={<AccessTimeOutlined />}
             hiddenLabel
           />
-        </>
+        </Stack>
       )}
       <Stack gap={2}>
         <Button color="primary" variant="solid" onClick={() => handleSubmit()}>

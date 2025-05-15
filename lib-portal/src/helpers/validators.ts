@@ -230,3 +230,7 @@ export function validateEmail(message: string): Validator<string> {
     return message;
   };
 }
+
+export function validateHexColorCode(message: string): Validator<string> {
+  return validateRegex(/^#([A-Fa-f0-9]{6})$/, message);
+}

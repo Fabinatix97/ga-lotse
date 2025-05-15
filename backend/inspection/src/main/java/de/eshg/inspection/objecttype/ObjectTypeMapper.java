@@ -24,7 +24,8 @@ public class ObjectTypeMapper {
         objectType.getComplaintInterval(),
         objectType.getStandardDuration(),
         objectType.getStandardBufferTime(),
-        objectType.isEmailAnnouncement());
+        objectType.isEmailAnnouncement(),
+        objectType.getLegalBasis());
   }
 
   public static ObjectType mapUpdateRequest(
@@ -36,6 +37,7 @@ public class ObjectTypeMapper {
     objectType.setEmailAnnouncement(
         // sonar wrongly assumes that emailAnnouncement() can not be null, but it can
         request.emailAnnouncement() != null /*NOSONAR: S2589*/ && request.emailAnnouncement());
+    objectType.setLegalBasis(request.legalBasis());
 
     return objectType;
   }

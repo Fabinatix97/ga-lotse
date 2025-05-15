@@ -71,7 +71,7 @@ export function mapToAddPersonalDetails(
 
   return {
     gender,
-    yearOfBirth: birthYear,
+    yearOfBirth: birthYear.toString(),
     pronouns: mapOptionalValue(data.pronouns),
     hasSufficientGermanLanguageSkills: mapYesOrNoToBool(
       data.hasSufficientGermanLanguageSkills ?? null,

@@ -60,6 +60,13 @@ const screeningExaminationResultEmptinessRules: EmptinessRules<ScreeningExaminat
         (tooth) =>
           tooth.mainResult === undefined && tooth.secondaryResult === undefined,
       ),
+    individualProphylaxis: (value) => !value,
+    fissureSealing: (value) => !value,
+    tartarRemoval: (value) => !value,
+    gingivitisTreatment: (value) => !value,
+    orthodonticTreatment: (value) => !value,
+    plaqueTreatment: (value) => !value,
+    inspectionAppointment: (value) => !value,
   };
 
 function screeningExaminationResultEmpty<T extends ScreeningExaminationResult>(

@@ -127,9 +127,10 @@ export function AppointmentStepper() {
     <DepartmentContextProvider>
       <AppointmentStepperContext value={{ showSidepanel, setShowSidepanel }}>
         <MultiStepForm<InitialAppointmentFormValues> steps={STEPS}>
-          {({ Outlet, currentStep, totalSteps, setStep }) => (
+          {({ Outlet, currentStep, totalSteps, setStep, titleRef }) => (
             <>
               <MultiStepFormTitle
+                titleRef={titleRef}
                 title={t("common.title")}
                 stepperTitle={t("common.stepperTitle", {
                   currentStepIndex: currentStep,

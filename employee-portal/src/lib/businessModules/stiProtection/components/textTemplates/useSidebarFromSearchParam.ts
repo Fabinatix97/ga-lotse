@@ -9,10 +9,9 @@ import {
   DrawerOpenOptions,
   DrawerProps,
   UseSidebarResult,
+  useSearchParam,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface UseSidebarFromSearchParamOptionsBaseProps<
   TSidebarProps extends DrawerProps,

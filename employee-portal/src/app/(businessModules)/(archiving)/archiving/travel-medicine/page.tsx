@@ -5,29 +5,24 @@
 
 "use client";
 
+import { ArchivePage } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/travelMedicine/api/mutations/archiving";
-import {
-  useGetArchivableProcedures,
-  useGetArchivingConfiguration,
-} from "@/lib/businessModules/travelMedicine/api/queries/archiving";
+import { useArchivingApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { procedureTypes } from "@/lib/businessModules/travelMedicine/shared/constants";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { ArchiveView } from "@/lib/shared/components/archiving/ArchiveView";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export default function ArchivePage() {
+export default function TravelMedicineArchivePage() {
+  const archivingApi = useArchivingApi();
+
   return (
-    <ArchiveView
+    <ArchivePage
       title={businessModuleNames[ApiBusinessModule.TravelMedicine]}
       procedureDetailsRoute={routes.procedures.baseData}
-      useGetArchivingConfiguration={useGetArchivingConfiguration}
-      useGetArchivableProcedures={useGetArchivableProcedures}
-      useBulkUpdateProceduresArchivingRelevance={
-        useBulkUpdateProceduresArchivingRelevance
-      }
-      additionalFilters={{ procedureTypes }}
+      businessModule={ApiBusinessModule.TravelMedicine}
+      archivingApi={archivingApi}
+      procedureTypes={procedureTypes}
     />
   );
 }

@@ -26,7 +26,7 @@ public class SopessExaminationResultDto {
   private ScoredEvaluationExaminationDto visualPerceptionResult =
       new ScoredEvaluationExaminationDto();
 
-  @Valid @NotNull private LanguageDto language = new LanguageDto();
+  @Valid @NotNull private SopessLanguageDto language = new SopessLanguageDto();
   @Valid @NotNull private ArticulationDto articulation = new ArticulationDto();
 
   @Valid @NotNull
@@ -86,11 +86,11 @@ public class SopessExaminationResultDto {
     this.visualPerceptionResult = visualPerceptionResult;
   }
 
-  public LanguageDto getLanguage() {
+  public SopessLanguageDto getLanguage() {
     return language;
   }
 
-  public void setLanguage(LanguageDto language) {
+  public void setLanguage(SopessLanguageDto language) {
     this.language = language;
   }
 

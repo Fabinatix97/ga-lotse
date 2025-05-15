@@ -30,7 +30,7 @@ export function FacilityDuplicateTile({
         padding: 2,
         borderRadius: (theme) => theme.radius.lg,
         border: "1px solid",
-        borderColor: isImportedFacility ? "warning.300" : "divider",
+        borderColor: isImportedFacility ? "warning.300" : "a11y.neutral",
         backgroundColor: isImportedFacility ? "warning.100" : "transparent",
       }}
     >

@@ -18,6 +18,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
   validateIntegerAnd,
   validateRange,
@@ -33,6 +34,7 @@ export interface EditableObjectType {
   standardDuration: OptionalFieldValue<number>;
   standardBufferTime: OptionalFieldValue<number>;
   emailAnnouncement: boolean;
+  legalBasis: OptionalFieldValue<string>;
 }
 
 interface EditObjectTypeSidebarProps extends SidebarWithFormRefProps {
@@ -58,6 +60,7 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
     complaintInterval: objectType.complaintInterval ?? 365,
     standardDuration: objectType.standardDuration ?? 3,
     standardBufferTime: objectType.standardBufferTime ?? 120,
+    legalBasis: objectType.legalBasis ?? "",
   };
 
   const { mutateAsync: saveObjectType } = useUpdateObjectType({
@@ -132,6 +135,12 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
                 <CheckboxField
                   name="emailAnnouncement"
                   label="Begehungen für diesen Objekttyp müssen angekündigt werden"
+                />
+              </Grid>
+              <Grid xs={12}>
+                <TextareaField
+                  name="legalBasis"
+                  label="Standardtext Rechtsgrundlage"
                 />
               </Grid>
             </Grid>

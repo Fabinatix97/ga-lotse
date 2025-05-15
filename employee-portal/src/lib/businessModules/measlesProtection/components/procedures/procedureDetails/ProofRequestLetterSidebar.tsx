@@ -17,6 +17,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -32,7 +33,6 @@ import {
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { LetterRecipientField } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/LetterRecipientField";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface ProofRequestLetterValues {
   recipientId: string;

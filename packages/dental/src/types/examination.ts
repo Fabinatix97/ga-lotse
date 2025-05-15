@@ -27,6 +27,13 @@ export interface AdditionalInformationFormValues {
   calculus: boolean;
   gingivitis: boolean;
   parodontitis: boolean;
+  individualProphylaxis: boolean;
+  fissureSealing: boolean;
+  tartarRemoval: boolean;
+  gingivitisTreatment: boolean;
+  orthodonticTreatment: boolean;
+  plaqueTreatment: boolean;
+  inspectionAppointment: boolean;
 }
 
 interface NoteFormValues {

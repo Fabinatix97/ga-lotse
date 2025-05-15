@@ -20,6 +20,7 @@ plugins {
     id 'io.spring.dependency-management' version 'latest.release' apply false
     id 'com.avast.gradle.docker-compose' version 'latest.release' apply false
     // ⚠ Note ⚠ Pinned to 3.4.1 because of https://github.com/spring-projects/spring-framework/issues/34324
+    // Problem still present in 3.4.4
     id 'org.springframework.boot' version '3.4.1' apply false
     id 'org.cyclonedx.bom' version 'latest.release' apply false
     id 'com.trileuco.dependency-track-gradle' version 'latest.release' apply false

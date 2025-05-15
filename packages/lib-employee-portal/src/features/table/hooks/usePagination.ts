@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { startTransition, useState } from "react";
+import { startTransition, useCallback, useState } from "react";
 import { isNonNull } from "remeda";
 
 import { PaginationProps } from "../components/pagination/Pagination";
@@ -23,9 +23,7 @@ export function usePagination(): UsePagination {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [pageNumber, setPageNumber] = useState(0);
 
-  function resetPageNumber() {
-    setPageNumber(0);
-  }
+  const resetPageNumber = useCallback(() => setPageNumber(0), [setPageNumber]);
 
   return {
     resetPageNumber,

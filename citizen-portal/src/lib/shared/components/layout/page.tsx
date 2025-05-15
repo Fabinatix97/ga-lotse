@@ -6,7 +6,7 @@
 "use client";
 
 import { Sheet, Stack, Typography, styled } from "@mui/joy";
-import { ReactNode } from "react";
+import { ReactNode, RefObject } from "react";
 import { isDefined } from "remeda";
 
 import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
@@ -45,6 +45,7 @@ export function PageLayout(props: PageLayoutProps) {
 
 interface PageTitleProps extends RequiresChildren {
   toolbar?: ReactNode;
+  titleRef?: RefObject<HTMLDivElement | null>;
 }
 
 export function PageTitle(props: PageTitleProps) {
@@ -58,12 +59,15 @@ export function PageTitle(props: PageTitleProps) {
         [theme.breakpoints.down(MobileBreakpoint.Down)]: {
           borderRadius: 0,
         },
+        backgroundColor: theme.palette.background.body,
       }}
     >
       <Typography
+        ref={props.titleRef}
         level="h1"
         flexGrow={1}
         sx={{ hyphens: "auto", overflowWrap: "break-word" }}
+        tabIndex={isDefined(props.titleRef) ? -1 : undefined}
       >
         {props.children}
       </Typography>

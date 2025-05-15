@@ -6,7 +6,7 @@
 import { Add, EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Stack } from "@mui/joy";
 
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem, useSearchParam } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAccessRestriction,
@@ -20,7 +20,6 @@ import {
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { ProofTabEntry } from "./ProofTabEntry";
 import { ProofTabFileCard } from "./ProofTabFileCard";

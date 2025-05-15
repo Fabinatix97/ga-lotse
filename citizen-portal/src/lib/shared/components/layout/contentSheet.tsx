@@ -33,6 +33,7 @@ export function ContentSheet(props: ContentSheetProps) {
         [theme.breakpoints.down(MobileBreakpoint.Down)]: {
           borderRadius: 0,
         },
+        backgroundColor: theme.palette.background.body,
         ...props.sx,
       }}
       data-testid={props["data-testid"]}

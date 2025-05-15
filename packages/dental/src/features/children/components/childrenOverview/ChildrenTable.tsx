@@ -88,6 +88,12 @@ export function ChildrenTable() {
     sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
     sortDirection: getSortDirection(tableControl.tableSorting),
     ...filterValues,
+    groupNameFilter:
+      filterValues.groupFilter?.type === "groupName"
+        ? filterValues.groupFilter.groupName
+        : undefined,
+    noGroupFilter:
+      filterValues.groupFilter?.type === "noGroup" ? true : undefined,
     procedureLabelsFilter: filterValues.procedureLabelsFilter?.map(
       (label) => label.id,
     ),

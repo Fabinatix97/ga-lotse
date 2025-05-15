@@ -5,32 +5,22 @@
 
 "use client";
 
-export {
-  CuspidIcon,
-  IncisorIcon,
-  MolarIcon,
-  PremolarIcon,
-} from "./components/fullDentition/toothIcons";
+export { routes } from "./config/routes";
+export { resolveSideNavigationItems } from "./config/sideNavigationItem";
+export { moduleUserGroup } from "./config/userGroups";
+export { DentalProvider } from "./contexts/dental";
+export { DENTAL_MODULE_NAME } from "./translations/businessModule";
 
-export {
-  fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "./config/apiQueryKeys";
 export { DentalProphylaxisSessionExaminationPage } from "./features/prophylaxisSessions/pages/DentalProphylaxisSessionExaminationPage";
 export { DentalProphylaxisSessionDetailsPage } from "./features/prophylaxisSessions/pages/DentalProphylaxisSessionDetailsPage";
 export {
   DentalProphylaxisSessionLayout,
   DentalProphylaxisSessionError,
 } from "./features/prophylaxisSessions/layouts/DentalProphylaxisSessionLayout";
+
 export { DentalProphylaxisSessionsOverviewPage } from "./features/prophylaxisSessions/pages/DentalProphylaxisSessionsOverviewPage";
 
-export { routes } from "./config/routes";
-
-export { DentalProvider, useDentalApi } from "./contexts/dental";
-
 export { DentalChildLayout } from "./features/children/layouts/DentalChildLayout";
-export { useChildRouteParams } from "./features/children/hooks/useChildRouteParams";
-export { DentalChildRouteParams } from "./features/children/schemas/DentalChildRouteParams";
 export { DentalChildExaminationsOverviewPage } from "./features/children/pages/DentalChildExaminationsOverviewPage";
 export { DentalChildDetailsPage } from "./features/children/pages/DentalChildDetailsPage";
 export { DentalChildrenOverviewPage } from "./features/children/pages/DentalChildrenOverviewPage";
@@ -42,12 +32,9 @@ export { SchoolYearTransitionChildrenPage } from "./features/children/pages/Scho
 export { DentalChildExaminationPage } from "./features/children/pages/DentalChildExaminationPage";
 export { DentalSyncPersonPage } from "./features/children/pages/DentalSyncPersonPage";
 
+export { DentalChildProgressEntriesPage } from "./features/children/pages/DentalChildProgressEntriesPage";
+
 export { DentalProcedureLabelsOverviewPage } from "./features/procedureLabels/pages/DentalProcedureLabelsOverviewPage";
 
-export { moduleUserGroup } from "./config/userGroups";
-export {
-  keyDocumentTypes,
-  systemProgressEntryTypeTitles,
-} from "./config/progressEntries";
-export { resolveSideNavigationItems } from "./config/sideNavigationItem";
-export { childApiQueryKey } from "./config/apiQueryKeys";
+export { DentalArchivePage } from "./pages/DentalArchivePage";
+export { DentalArchiveAdminPage } from "./pages/DentalArchiveAdminPage";

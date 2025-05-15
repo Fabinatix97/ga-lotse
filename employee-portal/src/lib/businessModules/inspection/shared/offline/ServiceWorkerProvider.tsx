@@ -5,19 +5,11 @@
 
 "use client";
 
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react";
+import { ReactNode, createContext, useContext, useMemo } from "react";
 
 import { useIsOffline } from "@eshg/lib-employee-portal";
 import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 
-import { unregisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/unregisterServiceWorker";
-import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { useServiceWorkerSyncQueue } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerSyncQueue";
 
 interface ServiceWorker {
@@ -26,18 +18,6 @@ interface ServiceWorker {
 }
 
 const ServiceWorkerContext = createContext<ServiceWorker>(null!);
-
-export function ServiceWorkerProvider({
-  children,
-}: Readonly<{ children: ReactNode }>) {
-  const isOfflineEnabled = useIsOfflineFeatureEnabled();
-
-  if (isOfflineEnabled) {
-    return <ServiceWorkerProviderInner>{children}</ServiceWorkerProviderInner>;
-  } else {
-    return <ServiceWorkerProviderMock>{children}</ServiceWorkerProviderMock>;
-  }
-}
 
 export function useServiceWorker(): ServiceWorker {
   const context = useContext(ServiceWorkerContext);
@@ -49,7 +29,7 @@ export function useServiceWorker(): ServiceWorker {
   return context;
 }
 
-function ServiceWorkerProviderInner({
+export function ServiceWorkerProvider({
   children,
 }: Readonly<{ children: ReactNode }>) {
   const isOffline = useIsOffline();
@@ -71,28 +51,6 @@ function ServiceWorkerProviderInner({
     </ServiceWorkerContext>
   );
 }
-
-function ServiceWorkerProviderMock({
-  children,
-}: Readonly<{ children: ReactNode }>) {
-  // unregister real service worker
-  useEffect(() => {
-    unregisterServiceWorker();
-  }, []);
-
-  return (
-    <ServiceWorkerContext value={EMPTY_CONTEXT}>
-      {children}
-    </ServiceWorkerContext>
-  );
-}
-
-const EMPTY_CONTEXT: ServiceWorker = {
-  isOffline: false,
-  sendMessageToServiceWorker: async (_) => {
-    /* empty */
-  },
-};
 
 async function sendMessageToServiceWorker(message: object) {
   return (await window.workbox?.messageSW(message)) as unknown;

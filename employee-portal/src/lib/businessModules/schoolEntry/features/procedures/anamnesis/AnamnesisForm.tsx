@@ -7,6 +7,7 @@
 
 import { Divider, FormLabel, Stack } from "@mui/joy";
 import { Formik } from "formik";
+import { useId } from "react";
 
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
@@ -157,6 +158,7 @@ interface AnamnesisFormProps extends FormProps<AnamnesisFormValues> {
 }
 
 export function AnamnesisForm(props: AnamnesisFormProps) {
+  const inDaycareSinceId = useId();
   const daycareAndSchoolInfo = createFieldNameMapper("daycareAndSchoolInfo");
 
   return (
@@ -182,11 +184,12 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
               />
               {values.daycareAndSchoolInfo.wasInDaycare.valueOf() === true && (
                 <>
-                  <FormLabel>seit</FormLabel>
+                  <FormLabel id={inDaycareSinceId}>seit</FormLabel>
                   <MonthAndYearFields
                     testId="inDaycareSince"
                     fieldName={daycareAndSchoolInfo("inDaycareSince")}
                     date={values.daycareAndSchoolInfo.inDaycareSince}
+                    aria-labelledby={inDaycareSinceId}
                   />
                   <InputField
                     name={daycareAndSchoolInfo("daycareName")}

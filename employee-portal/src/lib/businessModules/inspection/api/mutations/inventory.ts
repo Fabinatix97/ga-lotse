@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { ApiErrorCode } from "@eshg/base-api";
 import { ModifyInventoryRequest } from "@eshg/inspection-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -17,7 +18,7 @@ export function useModifyInventory() {
   const inspectionApi = useInspectionApi();
   const alert = useAlert();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return useMutation({
     mutationFn: (req: ModifyInventoryRequest) =>
       inspectionApi.modifyInventoryRaw(req).then(unwrapRawResponse),
     onSuccess: () => {

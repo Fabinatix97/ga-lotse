@@ -10,11 +10,11 @@ import {
   ApiProgressEntryDeletionApprovalRequestNotification,
   ApiUser,
 } from "@eshg/base-api";
+import { manualProgressEntryTypeNames } from "@eshg/lib-employee-portal";
 import { formatUserName } from "@eshg/lib-portal/formatters/person";
 
 import { ProgressEntryInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProgressEntryInternalLink";
 import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";
-import { manualProgressEntryTypeNames } from "@/lib/shared/components/procedures/progress-entries/constants";
 
 export function mapProgressEntryDeletionApprovalRequestNotificationProps(
   notification: ApiProgressEntryDeletionApprovalRequestNotification,

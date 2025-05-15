@@ -157,7 +157,8 @@ type KnownSources =
   | "STI_PROTECTION"
   | "MEDICAL_REGISTRY"
   | "DENTAL"
-  | "OFFICIAL_MEDICAL_SERVICE";
+  | "OFFICIAL_MEDICAL_SERVICE"
+  | "MEDS_ABROAD";
 
 function OpenDataVersionInfo({ version }: { version: ApiVersion }) {
   const { t } = useTranslation(["opendata/details", "opendata/shared"]);

@@ -9,7 +9,7 @@ import { ReactElement, useState } from "react";
 import { isDefined } from "remeda";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -31,6 +31,7 @@ interface FormSheet {
 export interface FormSection {
   title?: string;
   description?: string | ReactElement;
+  alert?: Pick<AlertProps, "title" | "message" | "color">;
   content: ChooseSectionContent | TextSectionContent | FieldSectionContent;
 }
 
@@ -242,7 +243,9 @@ export function ConfiguratorForm<T extends FormikValues>({
                 <Sheet key={sheet.title}>
                   <Stack gap={4}>
                     <Stack gap={1}>
-                      <Typography level="h3">{sheet.title}</Typography>
+                      <Typography level="h3" component="h2">
+                        {sheet.title}
+                      </Typography>
                       {isDefined(sheet.description) ? (
                         typeof sheet.description === "string" ? (
                           <Typography level="body-md">
@@ -256,12 +259,16 @@ export function ConfiguratorForm<T extends FormikValues>({
                     {sheet.sections.map((section, index) => (
                       <Stack key={`sheet-${index}`} gap={3}>
                         {(isDefined(section.title) ||
+                          isDefined(section.alert) ||
                           isDefined(section.description)) && (
                           <Stack gap={1}>
                             {isDefined(section.title) && (
                               <Typography level="title-md">
                                 {section.title}
                               </Typography>
+                            )}
+                            {isDefined(section.alert) && (
+                              <Alert variant="soft" {...section.alert} />
                             )}
                             {isDefined(section.description) ? (
                               typeof section.description === "string" ? (
@@ -291,7 +298,9 @@ export function ConfiguratorForm<T extends FormikValues>({
             <Stack gap={3} minWidth="27rem" flex={0.33}>
               <Sheet>
                 <Stack gap={3}>
-                  <Typography level="h3">Hinweis</Typography>
+                  <Typography level="h3" component="h2">
+                    Hinweis
+                  </Typography>
                   {status === "COMPLETE" && (
                     <Alert
                       variant="soft"

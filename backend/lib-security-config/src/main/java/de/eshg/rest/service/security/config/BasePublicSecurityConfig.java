@@ -166,11 +166,12 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .hasRole(EmployeePermissionRole.BASE_CONTACTS_WRITE);
     requestMatchers(PUT, BaseUrls.Base.CONTACT_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_CONTACTS_WRITE);
+
     requestMatchers(GET, BaseUrls.Base.CONTACT_API + "/{id}")
         .hasAnyRole(
-            EmployeePermissionRole.BASE_CONTACTS_READ,
-            CitizenPermissionRole.ACCESS_CODE_USER,
-            EmployeePermissionRole.PROCEDURE_ARCHIVE);
+            EmployeePermissionRole.BASE_CONTACTS_READ, EmployeePermissionRole.PROCEDURE_ARCHIVE)
+        .orWhenAccessingInternallyHasAnyRole(CitizenPermissionRole.ACCESS_CODE_USER);
+
     requestMatchers(GET, BaseUrls.Base.CONTACT_API + "/**")
         .hasAnyRole(
             EmployeePermissionRole.BASE_CONTACTS_READ, EmployeePermissionRole.PROCEDURE_ARCHIVE);
@@ -307,24 +308,31 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void department() {
-    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_INFO)
+    requestMatchers(GET, BaseUrls.Base.PUBLIC_DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_INFO)
         .permitAll();
-    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_LOGO)
-        .permitAll();
-    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT)
+    requestMatchers(GET, BaseUrls.Base.PUBLIC_DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_LOGO)
         .permitAll();
     requestMatchers(
-            GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT_PGP_KEY)
+            GET, BaseUrls.Base.PUBLIC_DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT)
         .permitAll();
-    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_PRIVACY_POLICY)
+    requestMatchers(
+            GET,
+            BaseUrls.Base.PUBLIC_DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT_PGP_KEY)
         .permitAll();
-    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_PRIVACY_NOTICE)
+    requestMatchers(
+            GET, BaseUrls.Base.PUBLIC_DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_PRIVACY_POLICY)
         .permitAll();
-    requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_CITIZEN + "/*")
+    requestMatchers(
+            GET, BaseUrls.Base.PUBLIC_DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_PRIVACY_NOTICE)
         .permitAll();
-    requestMatchers(GET, Base.DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_EMPLOYEE + "/*")
+    requestMatchers(
+            GET, BaseUrls.Base.PUBLIC_DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_CITIZEN + "/*")
+        .permitAll();
+
+    requestMatchers(
+            GET, Base.EMPLOYEE_DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_EMPLOYEE + "/*")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
-    requestMatchers(GET, Base.DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_RELEASE_NOTES)
+    requestMatchers(GET, Base.EMPLOYEE_DEPARTMENT_API + Base.DEPARTMENT_API_MARKDOWN_RELEASE_NOTES)
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
   }
 

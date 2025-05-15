@@ -15,7 +15,7 @@ import java.time.Year;
 
 public record AddPersonalDetailsRequest(
     @NotNull GenderDto gender,
-    @NotNull @Past @Schema(type = "integer") Year yearOfBirth,
+    @NotNull @Past Year yearOfBirth,
     @Schema(description = "Optional appointment booking information for resubmission on failure")
         @Valid
         BookAppointmentRequest appointmentBooking,

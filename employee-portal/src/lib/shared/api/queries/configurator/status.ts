@@ -14,12 +14,12 @@ import { isDefined } from "remeda";
 
 import { ApiGetConfigurationStatusResponse } from "@eshg/base-api";
 import { ConfigStatusApi } from "@eshg/lib-config-api";
+import { useGetPublicConfig } from "@eshg/lib-employee-portal";
 import {
   SexWorkConfigStatusApi,
   StiConsultationConfigStatusApi,
 } from "@eshg/sti-protection-api";
 
-import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import {
   ConfiguratorStatusOverview,
   ConfiguratorStatusTab,
@@ -37,7 +37,7 @@ const configuratorModules = Object.freeze(
 );
 
 export function useGetAllModulesStatuses() {
-  const { data: config } = useServerConfig();
+  const { data: config } = useGetPublicConfig();
   const activeModules = [
     ...config.activeModules,
     "BASE",

@@ -47,7 +47,7 @@ export function TravelInformationOverviewDetails() {
   }
 
   return (
-    <Stack>
+    <Stack role="listitem">
       {currentStep > 3 && (
         <DetailsItem
           label={t("overview.fields.travelData", {

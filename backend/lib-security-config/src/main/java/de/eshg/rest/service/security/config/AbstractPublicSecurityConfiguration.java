@@ -21,9 +21,10 @@ import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.FourEyesLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary.Gdpr;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.http.HttpMethod;
@@ -36,7 +37,10 @@ public abstract class AbstractPublicSecurityConfiguration {
   public static final String BACKEND_BASE_PATH = "/api";
 
   private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-  private final List<PathAuthorizationDefinition> pathAuthorizationDefinitions = new ArrayList<>();
+  private final Map<HttpMethodAndUrlPattern, AuthorizationDefinition> pathAuthorizationDefinitions =
+      new LinkedHashMap<>();
+  private final Map<HttpMethodAndUrlPattern, AuthorizationDefinition>
+      additionalAuthorizationDefinitionsForInternalAccess = new LinkedHashMap<>();
   private final String path;
 
   protected AbstractPublicSecurityConfiguration(String path) {
@@ -48,7 +52,9 @@ public abstract class AbstractPublicSecurityConfiguration {
 
   @VisibleForTesting
   List<PathAuthorizationDefinition> getPathAuthorizationDefinitions() {
-    return pathAuthorizationDefinitions;
+    return pathAuthorizationDefinitions.entrySet().stream()
+        .map(entry -> new PathAuthorizationDefinition(entry.getKey(), entry.getValue()))
+        .toList();
   }
 
   public String getPath() {
@@ -60,10 +66,10 @@ public abstract class AbstractPublicSecurityConfiguration {
     if (!url.startsWith(getPath())) {
       return null;
     }
-    for (PathAuthorizationDefinition pathAuthorizationDefinition : pathAuthorizationDefinitions) {
-      if (pathAuthorizationDefinition.hasMethod(method)) {
-        if (antPathMatcher.match(getPath() + pathAuthorizationDefinition.urlPattern(), url)) {
-          return pathAuthorizationDefinition.authorizationDefinition();
+    for (HttpMethodAndUrlPattern httpMethodAndUrlPattern : pathAuthorizationDefinitions.keySet()) {
+      if (httpMethodAndUrlPattern.hasMethod(method)) {
+        if (antPathMatcher.match(getPath() + httpMethodAndUrlPattern.urlPattern(), url)) {
+          return pathAuthorizationDefinitions.get(httpMethodAndUrlPattern);
         }
       }
     }
@@ -73,11 +79,28 @@ public abstract class AbstractPublicSecurityConfiguration {
   public void customize(
       AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
           authRegistry) {
-    for (PathAuthorizationDefinition pathAuthorizationDefinition : pathAuthorizationDefinitions) {
+    for (PathAuthorizationDefinition pathAuthorizationDefinition :
+        getPathAuthorizationDefinitions()) {
+      AuthorizationDefinition authorizationDefinition =
+          getAuthorizationDefinition(pathAuthorizationDefinition);
       AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl =
           authRegistry.requestMatchers(
               pathAuthorizationDefinition.method(), pathAuthorizationDefinition.urlPattern());
-      pathAuthorizationDefinition.authorizationDefinition().customize(authorizedUrl);
+      authorizationDefinition.customize(authorizedUrl);
+    }
+  }
+
+  private AuthorizationDefinition getAuthorizationDefinition(
+      PathAuthorizationDefinition pathAuthorizationDefinition) {
+    AuthorizationDefinition authorizationDefinitionForInternalAccess =
+        additionalAuthorizationDefinitionsForInternalAccess.get(
+            pathAuthorizationDefinition.httpMethodAndUrlPattern());
+    AuthorizationDefinition publicAuthorizationDefinition =
+        pathAuthorizationDefinition.authorizationDefinition();
+    if (authorizationDefinitionForInternalAccess == null) {
+      return publicAuthorizationDefinition;
+    } else {
+      return publicAuthorizationDefinition.or(authorizationDefinitionForInternalAccess);
     }
   }
 
@@ -124,9 +147,6 @@ public abstract class AbstractPublicSecurityConfiguration {
 
     requestMatchers(PUT, ProcedureLibrary.TASKS_API + "/*/assignment")
         .hasRole(moduleLeaderRole.getEmployeePermissionRole());
-
-    requestMatchers(POST, ProcedureLibrary.PROGRESS_ENTRIES_API + "/**")
-        .hasRole(procedureAccessRole);
 
     requestMatchers(PUT, ProcedureLibrary.FILES_API + "/**").hasRole(procedureAccessRole);
 
@@ -239,12 +259,22 @@ public abstract class AbstractPublicSecurityConfiguration {
       this.urlPatterns = urlPatterns;
     }
 
-    protected void hasRole(PermissionRole permissionRole) {
-      hasAnyRole(permissionRole);
+    protected InternalAccessConfigurationBuilder hasRole(PermissionRole permissionRole) {
+      return hasAnyRole(permissionRole);
     }
 
-    public void hasAnyRole(PermissionRole... permissionRoles) {
+    public InternalAccessConfigurationBuilder hasAnyRole(PermissionRole... permissionRoles) {
       defineAuthorization(new AnyRole(permissionRoles));
+      return new InternalAccessConfigurationBuilder();
+    }
+
+    public class InternalAccessConfigurationBuilder {
+
+      public void orWhenAccessingInternallyHasAnyRole(PermissionRole... permissionRoles) {
+        AuthorizationDefinition authorizationDefinition = new AnyRole(permissionRoles);
+        defineAuthorizations(
+            additionalAuthorizationDefinitionsForInternalAccess, authorizationDefinition);
+      }
     }
 
     public void authenticated() {
@@ -256,9 +286,25 @@ public abstract class AbstractPublicSecurityConfiguration {
     }
 
     private void defineAuthorization(AuthorizationDefinition authorizationDefinition) {
-      for (String baseUrl : urlPatterns) {
-        pathAuthorizationDefinitions.add(
-            new PathAuthorizationDefinition(httpMethod, baseUrl, authorizationDefinition));
+      defineAuthorizations(pathAuthorizationDefinitions, authorizationDefinition);
+    }
+
+    private void defineAuthorizations(
+        Map<HttpMethodAndUrlPattern, AuthorizationDefinition> pathAuthorizationDefinitions,
+        AuthorizationDefinition authorizationDefinition) {
+      for (String urlPattern : urlPatterns) {
+        HttpMethodAndUrlPattern httpMethodAndUrlPattern =
+            new HttpMethodAndUrlPattern(httpMethod, urlPattern);
+        AuthorizationDefinition existing =
+            pathAuthorizationDefinitions.putIfAbsent(
+                httpMethodAndUrlPattern, authorizationDefinition);
+        if (existing != null) {
+          throw new IllegalArgumentException(
+              "Authorization definition for "
+                  + httpMethodAndUrlPattern
+                  + " already exists: "
+                  + existing);
+        }
       }
     }
   }

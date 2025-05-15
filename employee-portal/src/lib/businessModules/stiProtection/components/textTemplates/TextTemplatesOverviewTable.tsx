@@ -14,6 +14,7 @@ import {
   DataTable,
   TablePage,
   TableSheet,
+  useSearchParam,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -27,7 +28,6 @@ import {
   useUpdateTextTemplate,
 } from "@/lib/businessModules/stiProtection/api/mutations/textTemplates";
 import { useTextTemplates } from "@/lib/businessModules/stiProtection/api/queries/textTemplates";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { TextTemplateEditSidebar } from "./TextTemplateEditSidebar";
 import { textTemplateColumns } from "./TextTemplatesOverviewTableColumns";

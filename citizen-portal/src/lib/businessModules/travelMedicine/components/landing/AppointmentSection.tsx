@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Stack, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
+import { Stack, Typography } from "@mui/joy";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -16,40 +17,23 @@ import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function AppointmentSection() {
   const { t } = useTranslation(["travelMedicine/landing"]);
-  const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
-
-  function handleBookAppointment() {
-    router.push(citizenRoutes.appointment);
-  }
-
-  function handleAppointmentLogin() {
-    router.push(citizenRoutes.viewAppointment.index(accessCode));
-  }
 
   return (
     <ContentSheet>
       <ContentSheetTitle>{t("personalArea.title")}</ContentSheetTitle>
       <Typography>{t("personalArea.information")}</Typography>
       <Stack direction="column" gap={2}>
-        <Button
-          type="submit"
-          onClick={() => {
-            handleBookAppointment();
-          }}
-        >
+        <InternalLinkButton href={citizenRoutes.appointment}>
           {t("personalArea.bookAppointment")}
-        </Button>
-        <Button
-          type="submit"
+        </InternalLinkButton>
+        <InternalLinkButton
+          href={citizenRoutes.viewAppointment.index(accessCode)}
           variant="outlined"
-          onClick={() => {
-            handleAppointmentLogin();
-          }}
         >
           {t("personalArea.goToPersonalArea")}
-        </Button>
+        </InternalLinkButton>
       </Stack>
     </ContentSheet>
   );

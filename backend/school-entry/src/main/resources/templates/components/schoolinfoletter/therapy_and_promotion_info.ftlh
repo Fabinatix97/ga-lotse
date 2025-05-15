@@ -1,7 +1,7 @@
 <#import "../common/forms.ftlh" as forms />
 
 <#macro content therapyAndPromotionInfo="NUL" >
-<#-- @ftlvariable name="therapyAndPromotionInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterTherapyAndPromotionInfo" -->
+<#-- @ftlvariable name="therapyAndPromotionInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterTherapyAndPromotionInfoDto" -->
   <table style="width: 100%;">
     <colgroup>
       <col style="width: 20%" />

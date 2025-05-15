@@ -14,6 +14,7 @@ import {
   ActionsMenu,
   ButtonBar,
   DataTable,
+  PROCEDURE_TYPE_NAMES,
   TablePage,
   TableSheet,
   useConfirmationDialog,
@@ -36,7 +37,6 @@ import {
   useAddDownloadPackage,
   useDeleteBusinessProcedure,
 } from "@/lib/shared/api/mutations/gdpr";
-import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 
 interface ValidationTaskProceduresTableProps {
   gdprValidationTaskApi: GdprValidationTaskApiInterface;
@@ -237,7 +237,7 @@ function useColumns({
     columnHelper.accessor("businessProcedure.procedureType", {
       header: "Vorgangsart",
       enableSorting: false,
-      cell: (props) => procedureTypeNames[props.getValue()],
+      cell: (props) => PROCEDURE_TYPE_NAMES[props.getValue()],
       meta: {
         canNavigate: {
           parentRow: true,

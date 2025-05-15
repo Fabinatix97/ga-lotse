@@ -9,6 +9,7 @@ import { ReactNode } from "react";
 
 const LegendList = styled(List)(({ theme }) => ({
   flexGrow: 0,
+  flexWrap: "wrap",
   "--List-gap": theme.spacing(3),
   "--ListItem-paddingX": 0,
 }));

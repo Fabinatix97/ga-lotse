@@ -173,6 +173,7 @@ rootProject.tasks.named("composeUp").configure {
 
 dockerCompose {
     projectName = rootProject.name
+    retainContainersOnStartupFailure = true
     useComposeFiles = ["${rootDir}/docker-compose.yaml"]
 
     if (project.hasProperty("preview-features") || project.hasProperty("previewFeatures")) {

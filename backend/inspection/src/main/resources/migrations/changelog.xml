@@ -81,5 +81,6 @@
   <include file="migrations/0066_differentiate_between_previous_person_and_facility_file_state.xml"/>
   <include file="migrations/0067_department_info.xml"/>
   <include file="migrations/0068_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="migrations/0069_add_legal_base_to_object_type.xml"/>
 
 </databaseChangeLog>

@@ -6,6 +6,7 @@
 import { Delete, Download } from "@mui/icons-material";
 import { Radio, Stack } from "@mui/joy";
 import { FormikValues } from "formik";
+import { isDefined } from "remeda";
 
 import {
   FileCard,
@@ -13,10 +14,12 @@ import {
   FileField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
+import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { Validator } from "@eshg/lib-portal/types/form";
 
 import { OpeningHoursField } from "@/lib/configurator/components/shared/OpeningHoursField";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
@@ -62,6 +65,7 @@ interface TextFormField extends BaseFormField {
   readonly?: boolean;
   width?: Width;
   maxLength?: number;
+  validate?: Validator<string>;
 }
 
 interface NumberFormField extends BaseFormField {
@@ -86,6 +90,7 @@ interface CheckboxFormField extends BaseFormField {
 interface RadioFormField extends BaseFormField {
   type: "radio";
   readonly?: boolean;
+  alert?: Pick<AlertProps, "title" | "message" | "color">;
   options: {
     label: string;
     infoLabel?: string;
@@ -128,6 +133,7 @@ export function RenderField({
           readOnly={field.readonly}
           required={field.required}
           maxLength={field.maxLength}
+          validate={field.validate}
         />
       );
     case "number":
@@ -206,8 +212,12 @@ export function RenderField({
           label={field.label}
           name={field.name}
           required={field.required}
+          sx={{ flex: 1 }}
         >
           <Stack gap={2}>
+            {isDefined(field.alert) && (
+              <Alert variant="soft" {...field.alert} />
+            )}
             {field.options.map((option) => (
               <Stack key={option.value} direction="row" gap={1}>
                 <Radio
@@ -220,6 +230,8 @@ export function RenderField({
                   <InfoIconTooltipButton
                     infoText={option.infoLabel}
                     title="Hinweis"
+                    iconSize="sm"
+                    tooltipSx={{ "--IconButton-size": "auto" }}
                   />
                 )}
               </Stack>

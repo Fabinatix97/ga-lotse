@@ -7,7 +7,8 @@
 
 import { use } from "react";
 
-import { ApiUserRole } from "@eshg/base-api";
+import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
+import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { MedicalRegistryProcedureRouteParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
@@ -18,15 +19,10 @@ import {
   useProgressEntryApi,
 } from "@/lib/businessModules/medicalRegistry/api/clients";
 import {
-  fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "@/lib/businessModules/medicalRegistry/api/queries/apiQueryKeys";
-import {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,
 } from "@/lib/businessModules/medicalRegistry/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/medicalRegistry/shared/moduleUserGroup";
-import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
 export default function MedicalRegistryProgressEntriesPage(
   props: DynamicPageProps<MedicalRegistryProcedureRouteParams>,
@@ -40,16 +36,15 @@ export default function MedicalRegistryProgressEntriesPage(
 
   return (
     <ProgressEntriesPage
+      businessModule={ApiBusinessModule.MedicalRegistry}
       procedureId={id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.MedicalRegistryLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}
-      progressEntryApiQueryKey={progressEntryApiQueryKey}
       progressEntryApi={progressEntryApi}
       procedureApi={procedureApi}
-      fileApiQueryKey={fileApiQueryKey}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
     />

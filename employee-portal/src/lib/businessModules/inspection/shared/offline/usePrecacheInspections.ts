@@ -10,10 +10,11 @@ import { useCallback } from "react";
 import { isNonNullish } from "remeda";
 
 import {
+  ApiBusinessModule,
   ApiUserRole,
   BaseFeatureTogglesApi,
-  DepartmentApi,
   PublicConfigApi,
+  PublicDepartmentApi,
   UserApi,
 } from "@eshg/base-api";
 import {
@@ -28,19 +29,21 @@ import {
   ProcedureApi,
   ProgressEntryApi,
 } from "@eshg/inspection-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  publicConfigApiQueryKey,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 
 import {
   useBaseFeatureTogglesApi,
   useConfigApi,
-  useDepartmentApi,
+  usePublicDepartmentApi,
   useUserApi,
 } from "@/lib/baseModule/api/clients";
 import {
   baseFeatureTogglesApiQueryKey,
-  configApiQueryKey,
   userApiQueryKey,
 } from "@/lib/baseModule/api/queries/apiQueryKey";
 import {
@@ -95,7 +98,7 @@ export function usePrecacheInspections() {
   const queryClient = useQueryClient();
 
   const configApi = useConfigApi();
-  const departmentApi = useDepartmentApi();
+  const departmentApi = usePublicDepartmentApi();
   const userApi = useUserApi();
   const baseFeatureTogglesApi = useBaseFeatureTogglesApi();
   const inspectionFeatureTogglesApi = useInspectionFeatureTogglesApi();
@@ -182,7 +185,7 @@ async function prefetchAll({
   inspectionIds: string[];
   queryClient: QueryClient;
   configApi: PublicConfigApi;
-  departmentApi: DepartmentApi;
+  departmentApi: PublicDepartmentApi;
   userApi: UserApi;
   baseFeatureTogglesApi: BaseFeatureTogglesApi;
   inspectionFeatureTogglesApi: InspectionFeatureTogglesApi;
@@ -282,6 +285,7 @@ async function prefetchAll({
     const pgQueryKey = queryKeyFactory(
       progressEntryApiQueryKey([
         "fetchProgressEntries",
+        ApiBusinessModule.Inspection,
         inspectionId,
         "pre-fetch",
         `${fetchApprovalRequests}`,
@@ -311,6 +315,7 @@ async function prefetchAll({
         queryClient.fetchQuery({
           queryKey: progressEntryApiQueryKey([
             "fetchProgressEntryDetails",
+            ApiBusinessModule.Inspection,
             inspectionId,
             entryId,
             "true",
@@ -397,10 +402,10 @@ async function prefetchAll({
   const promises: PromiseSupplier[] = [];
 
   // 2. pre-fetch general api requests
-  // 2.1 pre-fetch useServerConfig()
+  // 2.1 pre-fetch useGetPublicConfig()
   promises.push(() =>
     queryClient.fetchQuery({
-      queryKey: configApiQueryKey(["getConfig"]),
+      queryKey: publicConfigApiQueryKey(["getConfig"]),
       queryFn: () => configApi.getConfig(getHeadersForOfflineCaching()),
     }),
   );
@@ -416,7 +421,11 @@ async function prefetchAll({
   // 2.3 pre-fetch useGetUsersByGroupQuery(moduleUserGroup.group)
   promises.push(() =>
     queryClient.fetchQuery({
-      queryKey: userApiQueryKey(["getUsersByGroup", moduleUserGroup.group]),
+      queryKey: userApiQueryKey([
+        "getUsersByGroup",
+        moduleUserGroup.group,
+        getHeadersForOfflineCaching(),
+      ]),
       queryFn: () =>
         userApi.getUsersByGroup(
           moduleUserGroup.group,

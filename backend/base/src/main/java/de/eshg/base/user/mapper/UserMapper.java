@@ -201,6 +201,8 @@ public class UserMapper {
       case MEDICAL_REGISTRY_ADMIN -> EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN;
       case DENTAL_LEADER -> EmployeePermissionRole.DENTAL_LEADER;
       case DENTAL_ADMIN -> EmployeePermissionRole.DENTAL_ADMIN;
+      case MEDS_ABROAD_LEADER -> EmployeePermissionRole.MEDS_ABROAD_LEADER;
+      case MEDS_ABROAD_ADMIN -> EmployeePermissionRole.MEDS_ABROAD_ADMIN;
       case OPEN_DATA_ADMIN -> EmployeePermissionRole.OPEN_DATA_ADMIN;
       case OPEN_DATA_LEADER -> EmployeePermissionRole.OPEN_DATA_LEADER;
       case MEDICAL_REGISTRY_IMPORT -> EmployeePermissionRole.MEDICAL_REGISTRY_IMPORT;
@@ -220,6 +222,8 @@ public class UserMapper {
       case TRAVEL_MEDICINE_LEADER -> UserRoleDto.TRAVEL_MEDICINE_LEADER;
       case MEASLES_PROTECTION_LEADER -> UserRoleDto.MEASLES_PROTECTION_LEADER;
       case STATISTICS_LEADER -> UserRoleDto.STATISTICS_LEADER;
+      case MEDS_ABROAD_ADMIN -> UserRoleDto.MEDS_ABROAD_ADMIN;
+      case MEDS_ABROAD_LEADER -> UserRoleDto.MEDS_ABROAD_LEADER;
       case BASE_PERSONS_READ -> UserRoleDto.BASE_PERSONS_READ;
       case BASE_PERSONS_WRITE -> UserRoleDto.BASE_PERSONS_WRITE;
       case BASE_PERSONS_DELETE -> UserRoleDto.BASE_PERSONS_DELETE;

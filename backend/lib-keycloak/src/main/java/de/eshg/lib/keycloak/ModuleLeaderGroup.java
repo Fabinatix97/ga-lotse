@@ -50,7 +50,11 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
   OFFICIAL_MEDICAL_SERVICE(
       "Amtsärztlicher Dienst",
       ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE,
-      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER);
+      EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER),
+  MEDS_ABROAD(
+      "Reisen mit Betäubungsmitteln",
+      ModuleMemberGroup.MEDS_ABROAD,
+      EmployeePermissionRole.MEDS_ABROAD_LEADER);
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;
@@ -89,6 +93,7 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       case DENTAL -> ModuleLeaderGroup.DENTAL;
       case OPEN_DATA -> ModuleLeaderGroup.OPEN_DATA;
       case OFFICIAL_MEDICAL_SERVICE -> ModuleLeaderGroup.OFFICIAL_MEDICAL_SERVICE;
+      case MEDS_ABROAD -> ModuleLeaderGroup.MEDS_ABROAD;
     };
   }
 

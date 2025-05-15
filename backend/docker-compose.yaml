@@ -66,6 +66,7 @@ services:
       - de.eshg.business-modules.clients[MEDICAL_REGISTRY].url=http://medical-registry:8080
       - de.eshg.business-modules.clients[DENTAL].url=http://dental:8080
       - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
+      - de.eshg.business-modules.clients[MEDS_ABROAD].url=http://meds-abroad:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
     depends_on:
       keycloak:
@@ -596,5 +597,32 @@ services:
       - 5449:5432
     environment:
       POSTGRES_DB: official_medical_service
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  meds-abroad:
+    image: ga-lotse/meds-abroad
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-service-base
+    environment:
+      - spring.datasource.url=jdbc:postgresql://meds-abroad-db/meds_abroad
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    depends_on:
+      meds-abroad-db:
+        condition: service_healthy
+    ports:
+      - 8100:8080
+
+  meds-abroad-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5450:5432
+    environment:
+      POSTGRES_DB: meds_abroad
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword

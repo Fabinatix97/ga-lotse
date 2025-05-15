@@ -79,7 +79,7 @@ export function mapProcedureFormToApi(
     hasSufficientGermanLanguageSkills:
       form.hasSufficientGermanLanguageSkills ?? undefined,
     otherKnownLanguages: mapOptionalValue(form.otherKnownLanguages),
-    yearOfBirth: parseInt(form.yearOfBirth, 10),
+    yearOfBirth: form.yearOfBirth.toString(),
   });
 }
 

@@ -9,6 +9,7 @@ import {
   ContactApi,
   FacilityApi,
   PersonApi,
+  PublicConfigApi,
   StreetApi,
   UserApi,
 } from "@eshg/base-api";
@@ -28,5 +29,6 @@ export function createClients(baseUrl: string) {
     facilityApi: new FacilityApi(configuration),
     contactApi: new ContactApi(configuration),
     streetApi: new StreetApi(configuration),
+    publicConfigApi: new PublicConfigApi(configuration),
   } satisfies Record<string, BaseAPI>;
 }

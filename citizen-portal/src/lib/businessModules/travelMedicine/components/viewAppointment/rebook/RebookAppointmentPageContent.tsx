@@ -15,7 +15,7 @@ import {
   getErrorDescription,
 } from "@eshg/lib-portal/errorHandling/errorMappers";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 import { ApiAppointment } from "@eshg/travel-medicine-api";
 
 import {

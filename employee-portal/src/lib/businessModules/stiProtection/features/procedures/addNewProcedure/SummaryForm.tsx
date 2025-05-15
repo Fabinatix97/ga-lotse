@@ -125,7 +125,10 @@ export function SummaryForm({
             label="Weitere Sprachen"
             value={values.otherKnownLanguages}
           />
-          <LabelValuePair label="Geburtsjahr" value={values.yearOfBirth} />
+          <LabelValuePair
+            label="Geburtsjahr"
+            value={values.yearOfBirth?.toString()}
+          />
         </>
       )}
     </Stack>

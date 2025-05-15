@@ -68,8 +68,7 @@ export function ContentElementProperties({
     case "EditorElementQA":
       return <ContentElementQAEditor element={element} onUpdate={onUpdate} />;
 
-    case "IMAGES":
-    case "EditorElementImages":
+    default:
       return null;
   }
 }

@@ -37,3 +37,10 @@ export function getEndpointNamesByModule(
       return travelMedicineConfigRouterEndpoints;
   }
 }
+
+export function isEndpointSupportedByModule(
+  module: ConfiguratorModuleName,
+  endpointName: ConfiguratorEndpointName,
+): boolean {
+  return getEndpointNamesByModule(module).includes(endpointName);
+}

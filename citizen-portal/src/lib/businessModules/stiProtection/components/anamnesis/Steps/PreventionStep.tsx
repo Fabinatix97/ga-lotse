@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -38,6 +38,7 @@ import {
 } from "./options";
 
 export function PreventionStep() {
+  const mostRecentIncidentId = useId();
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const { setFieldValue, initialValues, values } =
     useFormikContext<FormDataWithoutConcern>();
@@ -147,7 +148,7 @@ export function PreventionStep() {
                   }
                 >
                   <FormControl>
-                    <FormLabel>
+                    <FormLabel id={mostRecentIncidentId}>
                       {t("standard_risk_factor.most_recent_incident")}
                     </FormLabel>
                     <MonthAndYearFields
@@ -155,6 +156,7 @@ export function PreventionStep() {
                       date={lastIncident}
                       monthLabel={t("stiProtection/forms:common.month")}
                       yearLabel={t("stiProtection/forms:common.year")}
+                      aria-labelledby={mostRecentIncidentId}
                     />
                   </FormControl>
                 </YesOrNoWithFollowUp>

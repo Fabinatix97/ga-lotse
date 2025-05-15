@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -180,7 +182,7 @@ export function useUnassignStepToService() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
-  return useHandledMutation({
+  return useMutation({
     mutationFn: (request: UseUnassignStepToServiceRequest) =>
       vaccinationConsultationApi.unassignStepToService(
         request.procedureId,
@@ -203,7 +205,7 @@ export function usePostCertificate() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
-  return useHandledMutation({
+  return useMutation({
     mutationFn: (request: UsePostCertificateRequest) =>
       vaccinationConsultationApi.postCertificate(
         request.procedureId,
@@ -223,7 +225,7 @@ export function usePatchStatus() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
-  return useHandledMutation({
+  return useMutation({
     mutationFn: (request: UsePatchStatusRequest) =>
       vaccinationConsultationApi.patchStatus(
         request.procedureId,

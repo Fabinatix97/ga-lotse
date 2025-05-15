@@ -65,8 +65,6 @@ export const departmentApiQueryKey = queryKeyFactory(
   apiQueryKey(["departmentApi"]),
 );
 
-export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
-
 export const userApiQueryKey = queryKeyFactory(apiQueryKey(["userApi"]));
 
 export const inspectionGeoApiQueryKey = queryKeyFactory(
@@ -83,8 +81,4 @@ export const packlistDefinitionApiQueryKey = queryKeyFactory(
 
 export const inspectionFeatureTogglesApiQueryKey = queryKeyFactory(
   apiQueryKey(["featureTogglesApi"]),
-);
-
-export const archivingApiQueryKey = queryKeyFactory(
-  apiQueryKey(["archivingApi"]),
 );

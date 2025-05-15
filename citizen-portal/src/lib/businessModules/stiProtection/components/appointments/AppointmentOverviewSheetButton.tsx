@@ -18,7 +18,7 @@ import { Sheet } from "@mui/joy";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 import {
   ApiAppointmentStatus,
   ApiAppointmentType,

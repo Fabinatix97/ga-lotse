@@ -8,13 +8,13 @@
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
+  RestrictedPage,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/AuditLogAuthorizePage";
-import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 export default function AuditLogAuthorizeAccessPage(props: PageProps) {
   return (

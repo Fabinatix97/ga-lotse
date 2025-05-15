@@ -12,11 +12,6 @@ import {
   PAGES_CACHE_NAME,
   PAGES_RSC_CACHE_NAME,
 } from "@/serviceWorker/common/common";
-import { deleteServiceWorkerRegistration } from "@/serviceWorker/common/registrationPersistence";
-import {
-  UNREGISTER,
-  createUnregisterBroadCastChannelEndpoint,
-} from "@/serviceWorker/common/unregisterBroadCastChannel";
 import { CacheableResponsePlugin } from "@/serviceWorker/sw/CacheableResponsePlugin";
 import { CustomOfflineHandlerStrategy } from "@/serviceWorker/sw/CustomOfflineHandlerStrategy";
 import { EncryptPlugin } from "@/serviceWorker/sw/EncryptPlugin";
@@ -57,7 +52,6 @@ import {
   getApiPostHandler,
   getApiPutHandler,
 } from "@/serviceWorker/sw/requestHandlers";
-import { getGlobalSelf } from "@/serviceWorker/sw/util";
 
 registerRoute(
   ({ request, url: { pathname } }) =>
@@ -183,12 +177,3 @@ registerRoute(
   getApiPatchHandler(finalizeInspection),
   "POST",
 );
-
-const unregisterChannel = createUnregisterBroadCastChannelEndpoint();
-
-unregisterChannel.onmessage = async (event: MessageEvent) => {
-  if (event.data === UNREGISTER) {
-    await getGlobalSelf().registration.unregister();
-    await deleteServiceWorkerRegistration();
-  }
-};

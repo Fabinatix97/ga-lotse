@@ -9,7 +9,7 @@ import { FieldArray, useFormikContext } from "formik";
 import { Fragment } from "react";
 
 import { ApiCountryCode } from "@eshg/base-api";
-import { FileField } from "@eshg/lib-employee-portal";
+import { FileField, useGetPublicConfig } from "@eshg/lib-employee-portal";
 import {
   MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
@@ -19,7 +19,6 @@ import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
-import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 const MAX_OTHER_RELEVANT_DOCUMENTS = 3;
@@ -32,7 +31,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
-  const { data: config } = useServerConfig();
+  const { data: config } = useGetPublicConfig();
 
   const fieldName = createFieldNameMapper<RequiredDocumentsFormValues>(
     props.name,

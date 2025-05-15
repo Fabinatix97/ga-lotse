@@ -5,7 +5,10 @@
 
 package de.eshg.config.departmentinfo;
 
+import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
+
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
@@ -21,14 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours>
     extends EshgConfigurationService<O> {
   protected final MandatoryInitialOpeningHours initialOpeningHours;
+  private final AuditLogWriter auditLogWriter;
 
   protected AbstractOpeningHoursService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
       MandatoryInitialOpeningHours initialOpeningHours,
+      AuditLogWriter auditLogWriter,
       Class<O> configClass) {
     super(entityManager, transactionHelper, configClass);
     this.initialOpeningHours = initialOpeningHours;
+    this.auditLogWriter = auditLogWriter;
   }
 
   @Override
@@ -39,6 +45,10 @@ public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours
   @Transactional
   public void updateOpeningHours(List<String> de, List<String> en) {
     O config = getConfig();
+    auditLogWriter.writeChangeToAuditlog(
+        "openingHours",
+        getRelevantFieldsForLogging(config.getDe(), config.getEn()),
+        getRelevantFieldsForLogging(de, en));
     config.setInitialized(true);
     config.setDe(de);
     config.setEn(en);

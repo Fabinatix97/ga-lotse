@@ -21,14 +21,6 @@ export const appointmentStaffApiQueryKey = queryKeyFactory(
   officialMedicalServiceApiQueryKey(["appointtingStaffApi"]),
 );
 
-export const progressEntryApiQueryKey = queryKeyFactory(
-  officialMedicalServiceApiQueryKey(["progressEntryApi"]),
-);
-
-export const fileApiQueryKey = queryKeyFactory(
-  officialMedicalServiceApiQueryKey(["fileApi"]),
-);
-
 export const employeeOmsProcedureApiQueryKey = queryKeyFactory(
   officialMedicalServiceApiQueryKey(["employeeOmsProcedureApi"]),
 );
@@ -39,8 +31,4 @@ export const concernApiQueryKey = queryKeyFactory(
 
 export const waitingRoomApiQueryKey = queryKeyFactory(
   officialMedicalServiceApiQueryKey(["waitingRoomApi"]),
-);
-
-export const archivingApiQueryKey = queryKeyFactory(
-  officialMedicalServiceApiQueryKey(["archivingApi"]),
 );

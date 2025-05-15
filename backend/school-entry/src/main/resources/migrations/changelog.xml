@@ -96,5 +96,6 @@
   <include file="migrations/0086_rename_label_to_procedure_label.xml"/>
   <include file="migrations/0087_rename_privacy_to_multi_lang_document.xml"/>
   <include file="migrations/0088_add_school_entry_config.xml"/>
+  <include file="migrations/0089_add_schoolinfoletter.xml"/>
 
 </databaseChangeLog>

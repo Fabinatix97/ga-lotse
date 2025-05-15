@@ -5,7 +5,7 @@
 
 import { Box, styled } from "@mui/joy";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 import {
   ApiAppointmentBookingType,
   ApiGetAppointmentDetailsResponse,

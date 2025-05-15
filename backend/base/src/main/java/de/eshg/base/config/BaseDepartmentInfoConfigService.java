@@ -11,6 +11,7 @@ import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.config.BaseDepartmentInfoConfigService.MandatoryInitialDepartmentInfo;
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
 import de.eshg.base.util.MapUtils;
+import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationEndpoint;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.departmentinfo.AbstractDepartmentInfoConfigService;
@@ -40,8 +41,9 @@ public class BaseDepartmentInfoConfigService
   public BaseDepartmentInfoConfigService(
       MandatoryInitialDepartmentInfo initialDepartmentInfo,
       EntityManager entityManager,
-      TransactionHelper transactionHelper) {
-    super(entityManager, transactionHelper, BaseDepartmentInfoConfig.class);
+      TransactionHelper transactionHelper,
+      AuditLogWriter auditLogWriter) {
+    super(entityManager, transactionHelper, auditLogWriter, BaseDepartmentInfoConfig.class);
     this.initialDepartmentInfo = initialDepartmentInfo;
   }
 

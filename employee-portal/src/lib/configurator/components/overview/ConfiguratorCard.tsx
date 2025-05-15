@@ -34,6 +34,7 @@ export function ConfiguratorCard({
             </InternalLink>
             <InternalLinkIconButton
               href={link}
+              aria-label={title}
               variant="outlined"
               color="primary"
             >

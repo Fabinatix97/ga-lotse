@@ -3,12 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiBusinessModule,
-  ApiProcedureType,
-  ApiTaskStatus,
-  ApiTaskType,
-} from "@eshg/base-api";
+import { ApiBusinessModule, ApiTaskStatus, ApiTaskType } from "@eshg/base-api";
+import { DENTAL_MODULE_NAME } from "@eshg/dental";
 
 export const businessModuleNames = {
   [ApiBusinessModule.Inspection]: "Begehung",
@@ -18,28 +14,10 @@ export const businessModuleNames = {
   [ApiBusinessModule.MeaslesProtection]: "Masernschutzimpfung",
   [ApiBusinessModule.StiProtection]: "HIV-STI Schutz",
   [ApiBusinessModule.MedicalRegistry]: "Medizinalaufsicht",
-  [ApiBusinessModule.Dental]: "Zahnärztlicher Dienst",
+  [ApiBusinessModule.Dental]: DENTAL_MODULE_NAME,
   [ApiBusinessModule.OfficialMedicalService]: "Amtsärztlicher Dienst",
+  [ApiBusinessModule.MedsAbroad]: "Reisen mit BtM",
 } satisfies Record<ApiBusinessModule, string>;
-
-export const procedureTypeNames = {
-  [ApiProcedureType.RegularExamination]: "Regelkind",
-  [ApiProcedureType.CanChild]: "Kann-Kind",
-  [ApiProcedureType.EntryLevel]: "Eingangsstufe",
-  [ApiProcedureType.Inspection]: "Begehung",
-  [ApiProcedureType.DraftCitizenOfficeImport]: "Entwurf Bürgeramtsliste",
-  [ApiProcedureType.DraftSchoolImport]: "Entwurf Schulliste",
-  [ApiProcedureType.TmVaccinationConsultation]: "Impfberatung",
-  [ApiProcedureType.MeaslesProtection]: "Masernschutzimpfung",
-  [ApiProcedureType.StiProtection]: "HIV-STI-Schutz",
-  [ApiProcedureType.MedicalRegistryEntry]: "Berufskartei-Eintrag",
-  [ApiProcedureType.MedicalRegistryEmployeeDraft]:
-    "Entwurf Berufskartei-Eintrag Mitarbeiter",
-  [ApiProcedureType.MedicalRegistryCitizenDraft]:
-    "Entwurf Berufskartei-Eintrag Bürger",
-  [ApiProcedureType.DentalChild]: "Kind",
-  [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
-} satisfies Record<ApiProcedureType, string>;
 
 export const taskTypeNames = {
   [ApiTaskType.BookAppointment]: "Termin vereinbaren",

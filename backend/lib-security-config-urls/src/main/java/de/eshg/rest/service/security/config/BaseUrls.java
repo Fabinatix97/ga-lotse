@@ -57,7 +57,8 @@ public final class BaseUrls {
     public static final String INVENTORY_CORRECTION_URL = "/correction";
     public static final String RESOURCES_API = "/resources";
     public static final String CONTACT_API = "/contacts";
-    public static final String DEPARTMENT_API = "/department";
+    public static final String PUBLIC_DEPARTMENT_API = "/public/department";
+    public static final String EMPLOYEE_DEPARTMENT_API = "/department";
     public static final String DEPARTMENT_API_INFO = "/info";
     public static final String DEPARTMENT_API_LOGO = "/logo";
     public static final String DEPARTMENT_API_PRIVACY_POLICY = "/privacy-policy";

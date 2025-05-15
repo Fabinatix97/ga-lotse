@@ -5256,6 +5256,7 @@
             "format" : "uuid"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -5290,9 +5291,11 @@
             "format" : "date"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "procedureId" : {
@@ -5541,7 +5544,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -5572,6 +5575,7 @@
             }
           },
           "stepKey" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
@@ -5614,6 +5618,7 @@
         "type" : "object",
         "properties" : {
           "accessCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "dateOfBirth" : {
@@ -5677,6 +5682,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlockIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -5705,6 +5711,7 @@
         "type" : "object",
         "properties" : {
           "daysOfWeek" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DayOfWeek"
@@ -5729,6 +5736,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
@@ -6012,6 +6020,7 @@
             "type" : "boolean"
           },
           "confirmationTextField" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6098,6 +6107,7 @@
         "type" : "object",
         "properties" : {
           "textField" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6500,6 +6510,7 @@
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
@@ -6554,6 +6565,7 @@
             "format" : "date"
           },
           "firstName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "hasAccomplishedService" : {
@@ -6569,6 +6581,7 @@
             "type" : "boolean"
           },
           "lastName" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "medicalHistoryCitizenHasAnswered" : {
@@ -6642,6 +6655,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -6716,6 +6730,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -6736,6 +6751,7 @@
             "example" : "LTG"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the city where the department is located",
             "example" : "Berlin"
@@ -6744,16 +6760,19 @@
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The email address of the department",
             "example" : "mail@address.de"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The domain of the department's official homepage, excluding protocols",
             "example" : "department-homepage.de"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The house number at the department's address, including any extensions or suffixes",
             "example" : "1b"
@@ -6762,21 +6781,25 @@
             "$ref" : "#/components/schemas/Location"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The name of the department",
             "example" : "Gesundheitsamt Landkreis Testgebiet"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The primary contact telephone number for the department",
             "example" : "+491234567890"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The postal code for the department’s address",
             "example" : "12345"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The street name for the department’s address, not including the house number",
             "example" : "Beispielweg"
@@ -7285,7 +7308,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -7833,6 +7856,7 @@
             "type" : "boolean"
           },
           "key" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "templateId" : {
@@ -7937,6 +7961,7 @@
         "type" : "object",
         "properties" : {
           "initialStepKey" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "serviceKeys" : {
@@ -8247,6 +8272,18 @@
           "propertyName" : "@type"
         }
       },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "NotificationConfig" : {
         "required" : [ "fromAddress", "greeting" ],
         "type" : "object",
@@ -8264,12 +8301,14 @@
         "type" : "object",
         "properties" : {
           "de" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
             }
           },
           "en" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -8289,6 +8328,7 @@
             "$ref" : "#/components/schemas/PostOtherServiceRequest"
           },
           "serviceKey" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
@@ -8628,6 +8668,7 @@
             "type" : "string"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "street" : {
@@ -8911,6 +8952,7 @@
             "format" : "uuid"
           },
           "serviceIds" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -9135,18 +9177,6 @@
           }
         } ]
       },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
-          }
-        }
-      },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
         "type" : "object",
@@ -9243,10 +9273,12 @@
             "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
           "stepKey" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
@@ -9765,6 +9797,7 @@
         "type" : "object",
         "properties" : {
           "confirmationTextField" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -9843,6 +9876,7 @@
         "type" : "object",
         "properties" : {
           "textField" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -10022,6 +10056,7 @@
             "example" : "UUID_3"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
@@ -10066,6 +10101,7 @@
             "$ref" : "#/components/schemas/PostVaccinationRequest"
           },
           "serviceKey" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },

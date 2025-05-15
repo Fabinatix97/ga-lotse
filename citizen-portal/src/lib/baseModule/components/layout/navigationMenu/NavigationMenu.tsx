@@ -3,10 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
 import { usePathname } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  ComponentType,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 import {
+  NavigationProps,
   NavigationState,
   UserType,
 } from "@/lib/baseModule/components/layout/types";
@@ -21,7 +30,17 @@ import { SideNavigation } from "./sideNavigation/SideNavigation";
 
 const initialNavigationState: NavigationState = { type: "closed" };
 
-export function NavigationMenu() {
+export interface NavigationMenuProps<THeaderProps> {
+  slots?: {
+    header?: ComponentType<THeaderProps>;
+  };
+}
+
+export function NavigationMenu<THeaderProps extends NavigationProps>({
+  slots,
+}: NavigationMenuProps<THeaderProps>) {
+  const HeaderComponent = slots?.header ?? Header;
+
   const [navigationState, setNavigationState] = useState<NavigationState>(
     initialNavigationState,
   );
@@ -48,7 +67,7 @@ export function NavigationMenu() {
   return (
     <>
       <NavigationEvents setNavigationState={setNavigationState} />
-      <Header {...props} />
+      <HeaderComponent {...(props as THeaderProps)} />
       <SideNavigation {...props} />
     </>
   );

@@ -4,7 +4,7 @@
  */
 
 import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 
 import { AppointmentFormButtonBar } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentFormButtonBar";
 import { PrivacyPolicyConfirmationSection } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentReviewFormStep/PrivacyPolicyConfirmationSection";

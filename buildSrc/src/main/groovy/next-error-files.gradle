@@ -1,0 +1,59 @@
+/**
+ * adds error.tsx to each layout definition
+ */
+
+interface NextErrorFilesConfiguration {
+  ListProperty<String> getIncludeDirs()
+}
+
+def nextErrorFilesExtension = project.extensions.create('nextErrorFiles', NextErrorFilesConfiguration)
+
+def appDir = project.layout.projectDirectory.dir('src/app');
+
+def includeFilesByName = (String fileName) -> {
+  return fileTree(appDir) {
+    include nextErrorFilesExtension.includeDirs.get().collect { "${it}/**/${fileName}" }
+  }
+}
+
+def cleanErrorFiles = tasks.register('cleanErrorFiles', Delete) {
+  delete includeFilesByName('error.tsx')
+}
+
+def generateErrorFiles = tasks.register('generateErrorFiles') { task ->
+  def layoutFiles = includeFilesByName('layout.tsx')
+  def errorTemplate = file("${appDir}/error.template.tsx")
+  def errorFiles = layoutFiles.collect { file("${it.parent}/error.tsx") }
+
+  inputs.files layoutFiles
+  inputs.file errorTemplate
+  outputs.files errorFiles
+
+  doFirst {
+    delete includeFilesByName('error.tsx')
+    def text = errorTemplate.getText('UTF-8')
+    errorFiles.each { File errorFile ->
+      if (!errorFile.exists()) {
+        errorFile.createNewFile()
+      }
+
+      errorFile.setText(text, 'UTF-8')
+    }
+  }
+}
+
+tasks.named('prepareEnvironment') {
+  dependsOn generateErrorFiles
+}
+
+tasks.named("formatCheck") {
+  dependsOn generateErrorFiles
+}
+
+tasks.named("lint") {
+  dependsOn generateErrorFiles
+}
+
+tasks.named('clean') {
+  dependsOn cleanErrorFiles
+}

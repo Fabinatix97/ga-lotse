@@ -17,6 +17,7 @@
           "name" : "decryption-key",
           "required" : true,
           "schema" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }, {
@@ -572,7 +573,7 @@
       },
       "AuditLogSource" : {
         "type" : "string",
-        "enum" : [ "BASE", "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "AUDITLOG", "STATISTICS", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "BASE", "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "AUDITLOG", "STATISTICS", "OFFICIAL_MEDICAL_SERVICE", "OPENDATA" ]
       },
       "DefaultPopulationResponse" : {
         "type" : "object",
@@ -642,6 +643,7 @@
         "type" : "object",
         "properties" : {
           "encapsulatedKey" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -649,6 +651,7 @@
             }
           },
           "encryptedSymmetricKey" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -854,6 +857,7 @@
             "example" : "UUID_1"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"

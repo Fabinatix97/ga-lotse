@@ -5,6 +5,7 @@
 
 import { Box, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useId } from "react";
 
 import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
 import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
@@ -36,6 +37,7 @@ import {
 } from "./options";
 
 export function PreviousIllnessesStep() {
+  const startInSexWorkId = useId();
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const { setFieldValue, initialValues, values } =
     useFormikContext<FormDataWithoutConcern>();
@@ -166,7 +168,7 @@ export function PreviousIllnessesStep() {
               <Grid xxs={12}>
                 <FieldSetControl aria-label={t("sex_work.employment_duration")}>
                   <Legend>
-                    <Typography level="title-sm">
+                    <Typography level="title-sm" id={startInSexWorkId}>
                       {t("sex_work.employment_duration")}
                     </Typography>
                   </Legend>
@@ -175,6 +177,7 @@ export function PreviousIllnessesStep() {
                     date={values.sexualOrientationAndContact.startInSexWork}
                     monthLabel={t("stiProtection/forms:common.month")}
                     yearLabel={t("stiProtection/forms:common.year")}
+                    aria-labelledby={startInSexWorkId}
                   />
                 </FieldSetControl>
               </Grid>

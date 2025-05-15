@@ -8,8 +8,6 @@ package de.eshg.base.contact.api;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.eshg.base.address.AddressDto;
-import de.eshg.base.address.DomesticAddressDto;
-import de.eshg.base.address.PostboxAddressDto;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -41,15 +39,7 @@ public sealed interface AbstractAddContactRequest
               example = "['mail1@address.de','mail2@address.de','mail3@address.de']"))
   List<String> emailAddresses();
 
-  @Schema(
-      implementation = Object.class,
-      oneOf = {DomesticAddressDto.class, PostboxAddressDto.class},
-      description = "The contact address of the Contact.")
   AddressDto contactAddress();
 
-  @Schema(
-      implementation = Object.class,
-      oneOf = {DomesticAddressDto.class, PostboxAddressDto.class},
-      description = "An optional deviating billing address of the Contact.")
   AddressDto differentBillingAddress();
 }

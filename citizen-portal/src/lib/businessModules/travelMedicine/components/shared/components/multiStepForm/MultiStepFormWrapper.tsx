@@ -7,9 +7,10 @@
 
 import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
+import { RefObject } from "react";
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -48,6 +49,7 @@ interface StepCounterProps {
 interface MultiStepFormTitleProps extends StepCounterProps {
   title: string;
   withLogoutButton: boolean;
+  titleRef?: RefObject<HTMLDivElement | null>;
 }
 
 export function StepCounter(props: Readonly<StepCounterProps>) {
@@ -70,12 +72,14 @@ export function MultiStepFormTitle({
   title,
   stepperTitle,
   withLogoutButton,
+  titleRef,
 }: Readonly<MultiStepFormTitleProps>) {
   const isMobile = useIsMobile();
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
 
   return (
     <PageTitle
+      titleRef={titleRef}
       toolbar={
         <>
           {!isMobile && <StepCounter stepperTitle={stepperTitle} />}

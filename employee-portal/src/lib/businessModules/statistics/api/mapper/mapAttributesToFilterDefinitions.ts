@@ -56,6 +56,8 @@ export function mapAttributesToFilterDefinitions(
             name: attribute.name,
             inAccordion: true,
           } satisfies TextFilterDefinition;
+        default:
+          return null;
       }
     })
     .filter(isNonNullish);

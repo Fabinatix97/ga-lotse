@@ -8,7 +8,7 @@ import { Fragment, useState } from "react";
 
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DioalogButtonBarProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialogButtonBar";
-import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
 
 export function CitizenConfirmationButtonBar({
   onClose,

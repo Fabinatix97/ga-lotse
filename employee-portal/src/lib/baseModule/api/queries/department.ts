@@ -5,20 +5,23 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { ApiEmployeePortalMarkdownName, DepartmentApi } from "@eshg/base-api";
+import {
+  ApiEmployeePortalMarkdownName,
+  EmployeeDepartmentApi,
+} from "@eshg/base-api";
 
-import { useDepartmentApi } from "@/lib/baseModule/api/clients";
+import { useEmployeeDepartmentApi } from "@/lib/baseModule/api/clients";
 import { departmentApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
 
 export function useGetEmployeePortalMarkdown(
   name: ApiEmployeePortalMarkdownName,
 ) {
-  const departmentApi = useDepartmentApi();
+  const departmentApi = useEmployeeDepartmentApi();
   return useSuspenseQuery(getEmployeePortalMarkdownQuery(departmentApi, name));
 }
 
 function getEmployeePortalMarkdownQuery(
-  departmentApi: DepartmentApi,
+  departmentApi: EmployeeDepartmentApi,
   name: ApiEmployeePortalMarkdownName,
 ) {
   return queryOptions({
@@ -28,11 +31,11 @@ function getEmployeePortalMarkdownQuery(
 }
 
 export function useGetReleaseNotesMarkdown() {
-  const departmentApi = useDepartmentApi();
+  const departmentApi = useEmployeeDepartmentApi();
   return useSuspenseQuery(getReleaseNotesMarkdownQuery(departmentApi));
 }
 
-function getReleaseNotesMarkdownQuery(departmentApi: DepartmentApi) {
+function getReleaseNotesMarkdownQuery(departmentApi: EmployeeDepartmentApi) {
   return queryOptions({
     queryKey: departmentApiQueryKey(["getReleaseNotesMarkdown"]),
     queryFn: () => departmentApi.getReleaseNotesMarkdown(),

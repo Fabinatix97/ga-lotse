@@ -24,7 +24,6 @@ import {
   registerServiceWorker,
 } from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
 import { useInspectionPrecacheState } from "@/lib/businessModules/inspection/shared/offline/useInspectionPrecacheState";
-import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { usePrecacheInspections } from "@/lib/businessModules/inspection/shared/offline/usePrecacheInspections";
 import {
   GET_PASSWORD,
@@ -42,28 +41,10 @@ interface PrecacheOfflineSwitchProps {
   label?: string;
 }
 
-export function OfflineSwitch({
-  procedureId,
-  currentPhase,
-  label,
-}: Readonly<PrecacheOfflineSwitchProps>) {
-  const isOfflineEnabled = useIsOfflineFeatureEnabled();
-
-  if (!isOfflineEnabled) return false;
-
-  return (
-    <OfflineSwitchInner
-      procedureId={procedureId}
-      currentPhase={currentPhase}
-      label={label}
-    />
-  );
-}
-
 const passwordChannel = createOfflinePasswordBroadCastChannelEndpoint();
 let firstLoad = true;
 
-function OfflineSwitchInner({
+export function OfflineSwitch({
   procedureId,
   currentPhase,
   label,

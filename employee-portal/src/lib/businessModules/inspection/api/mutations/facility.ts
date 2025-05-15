@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
+
 import { ApiInspLinkBaseFacilityRequest } from "@eshg/inspection-api";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
@@ -101,7 +103,7 @@ export function useExportBannedFacilities() {
   const inspFacilityApi = useFacilityApi();
   const snackbar = useSnackbar();
 
-  return useHandledMutation({
+  return useMutation({
     mutationFn: async () => {
       return await inspFacilityApi.exportBannedFacilities();
     },

@@ -6,6 +6,7 @@
 package de.eshg.schoolentry;
 
 import static de.eshg.schoolentry.SchoolEntryLibConfigController.BASE_URL;
+import static de.eshg.schoolentry.mapper.SchoolEntryConfigMapper.mapToDomain;
 
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import de.eshg.schoolentry.api.configuration.GetSchoolEntryLibConfigResponse;
@@ -41,6 +42,6 @@ public class SchoolEntryLibConfigController {
   @PutMapping
   @Transactional
   public void updateSchoolEntryConfig(@Valid @RequestBody UpdateSchoolEntryConfigRequest request) {
-    service.update(request);
+    service.update(mapToDomain(request));
   }
 }

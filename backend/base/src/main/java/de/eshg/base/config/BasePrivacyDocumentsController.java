@@ -13,7 +13,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.config.persistence.entity.BasePrivacyDocumentsConfig;
 import de.eshg.config.api.GetPrivacyDocumentConfigResponse;
-import de.eshg.config.api.PrivacyDocumentDto;
+import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.departmentinfo.AbstractPrivacyDocumentService;
 import de.eshg.config.departmentinfo.PrivacyDocumentController;
 import de.eshg.config.domain.MultiLangDocument;
@@ -56,12 +56,12 @@ class BasePrivacyDocumentsController {
     return new GetPrivacyDocumentConfigResponse(mapToPrivacyNotice(config));
   }
 
-  private PrivacyDocumentDto mapToPrivacyNotice(BasePrivacyDocumentsConfig config) {
+  private MultiLangDocumentDto mapToPrivacyNotice(BasePrivacyDocumentsConfig config) {
     if (!config.isPrivacyNoticeInitialized()) {
       return null;
     }
     MultiLangDocument privacyNotice = basePrivacyDocumentService.getConfig().getPrivacyNotice();
-    return MultiLangDocumentMapper.mapToPrivacyDto(
+    return MultiLangDocumentMapper.mapToDto(
         privacyNotice, AbstractPrivacyDocumentService.PRIVACY_NOTICE_FILE_NAME);
   }
 
@@ -105,11 +105,11 @@ class BasePrivacyDocumentsController {
     return new GetPrivacyDocumentConfigResponse(mapToPrivacyPolicy(config));
   }
 
-  private PrivacyDocumentDto mapToPrivacyPolicy(BasePrivacyDocumentsConfig config) {
+  private MultiLangDocumentDto mapToPrivacyPolicy(BasePrivacyDocumentsConfig config) {
     if (!config.isPrivacyPolicyInitialized()) {
       return null;
     }
-    return MultiLangDocumentMapper.mapToPrivacyDto(
+    return MultiLangDocumentMapper.mapToDto(
         config.getPrivacyPolicy(), AbstractPrivacyDocumentService.PRIVACY_POLICY_FILE_NAME);
   }
 

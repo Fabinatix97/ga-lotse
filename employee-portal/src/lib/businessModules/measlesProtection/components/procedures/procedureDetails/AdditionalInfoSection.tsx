@@ -7,7 +7,11 @@ import { EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack } from "@mui/joy";
 import { useState } from "react";
 
-import { ConfirmationDialog, DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  ConfirmationDialog,
+  DetailsItem,
+  useSearchParam,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -23,7 +27,6 @@ import {
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AdditionalInfoUpdateSidebar } from "./AdditionalInfoUpdateSidebar";
 import { CLOSE_PROCEDURE_SUCCESS_MESSAGE } from "./helpers";

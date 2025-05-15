@@ -106,6 +106,13 @@ function mapScreeningResult(
     gingivitis: screeningResult.gingivitis,
     parodontitis: screeningResult.parodontitis,
     toothDiagnoses: mapToothDiagnosesToRequest(screeningResult.toothDiagnoses),
+    individualProphylaxis: screeningResult.individualProphylaxis,
+    fissureSealing: screeningResult.fissureSealing,
+    tartarRemoval: screeningResult.tartarRemoval,
+    gingivitisTreatment: screeningResult.gingivitisTreatment,
+    orthodonticTreatment: screeningResult.orthodonticTreatment,
+    plaqueTreatment: screeningResult.plaqueTreatment,
+    inspectionAppointment: screeningResult.inspectionAppointment,
   };
 }
 

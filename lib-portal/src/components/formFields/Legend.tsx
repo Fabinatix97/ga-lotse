@@ -11,9 +11,10 @@ import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledForm
 
 interface LegendProps extends PropsWithChildren {
   level?: keyof TypographySystem;
+  id?: string;
 }
 
-export function Legend({ children, level }: LegendProps) {
+export function Legend({ children, level, id }: LegendProps) {
   const theme = useTheme();
   const disabled = useIsFormDisabled();
 
@@ -37,6 +38,7 @@ export function Legend({ children, level }: LegendProps) {
           font: theme.typography[level],
         }),
       }}
+      id={id}
     >
       {children}
     </FormLabel>

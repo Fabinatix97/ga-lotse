@@ -22,13 +22,38 @@ public record ScreeningExaminationResultDto(
     @NotNull boolean calculus,
     @NotNull boolean gingivitis,
     @NotNull boolean parodontitis,
-    @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses)
+    @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses,
+    @NotNull boolean individualProphylaxis,
+    @NotNull boolean fissureSealing,
+    @NotNull boolean tartarRemoval,
+    @NotNull boolean gingivitisTreatment,
+    @NotNull boolean orthodonticTreatment,
+    @NotNull boolean plaqueTreatment,
+    @NotNull boolean inspectionAppointment)
     implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
   static final String SCHEMA_NAME = "ScreeningExaminationResult";
 
   public ScreeningExaminationResultDto(DentitionTypeDto dentitionType) {
-    this(null, null, null, List.of(), null, dentitionType, false, false, false, false, List.of());
+    this(
+        null,
+        null,
+        null,
+        List.of(),
+        null,
+        dentitionType,
+        false,
+        false,
+        false,
+        false,
+        List.of(),
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false);
   }
 
   public ScreeningExaminationResultDto(
@@ -81,7 +106,14 @@ public record ScreeningExaminationResultDto(
         calculus,
         gingivitis,
         parodontitis,
-        List.of());
+        List.of(),
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false);
   }
 
   @Override

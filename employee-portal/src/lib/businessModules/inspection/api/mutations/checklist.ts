@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMutation } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -11,7 +12,6 @@ import {
   UpdateChecklistRequest,
 } from "@eshg/inspection-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useChecklistApi } from "@/lib/businessModules/inspection/api/clients";
@@ -31,7 +31,7 @@ interface DeleteChecklistFileParameter extends ChecklistDeleteFileRequest {
 export function useUploadChecklistFile() {
   const checklistApi = useChecklistApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return useMutation({
     mutationFn: async (data: UploadChecklistFileParameter) => {
       // Clone file object to work-around weird Chromium service-worker-issue 🤷
       const file = new File([data.file], data.file.name, {
@@ -69,7 +69,7 @@ export function useUploadChecklistFile() {
 export function useDeleteChecklistFile() {
   const checklistApi = useChecklistApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return useMutation({
     mutationFn: async (data: DeleteChecklistFileParameter) => {
       const { fileName, ...req } = data;
       const response = await checklistApi.checklistDeleteFileRaw(req);
@@ -95,7 +95,7 @@ export function useDeleteChecklistFile() {
 export function useUpdateChecklist() {
   const checklistApi = useChecklistApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return useMutation({
     mutationFn: async (req: UpdateChecklistRequest) => {
       const response = await checklistApi.updateChecklistRaw(req);
       const serverResponse = await unwrapRawResponse(response);

@@ -22,3 +22,13 @@ export const streetApiQueryKey = queryKeyFactory(baseQueryKey(["streetApi"]));
 export const gdprValidationTaskApi = queryKeyFactory(
   baseQueryKey(["gdprValidationTaskApi"]),
 );
+
+export const progressEntryApiQueryKey = queryKeyFactory(
+  baseQueryKey(["progressEntryApi"]),
+);
+
+export const fileApiQueryKey = queryKeyFactory(baseQueryKey(["fileApi"]));
+
+export const publicConfigApiQueryKey = queryKeyFactory(
+  baseQueryKey(["publicConfigApi"]),
+);

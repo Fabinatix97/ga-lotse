@@ -25,6 +25,7 @@ import {
   useFilterSettings,
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
+  useSearchParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -51,9 +52,7 @@ import {
   inspectionPhaseNames,
   inspectionTypeNames,
 } from "@/lib/businessModules/inspection/shared/enums";
-import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
-import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
 
 import {
@@ -134,7 +133,6 @@ function createFilterDefinitions(
 export function PendingFacilitiesTable(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
-  const isOfflineFeatureEnabled = useIsOfflineFeatureEnabled();
   const { data: objectTypes } = useGetObjectTypes();
 
   const filterDefinitions = createFilterDefinitions(objectTypes);
@@ -201,7 +199,7 @@ export function PendingFacilitiesTable(
     handleViewIncidentsClick,
     openReviewFacilityDuplicateSidebar,
     openReviewInspectionDuplicateSidebar,
-    isOfflineFeatureEnabled,
+    true,
   );
 
   const [userActivity, setUserActivity] =
@@ -376,7 +374,7 @@ function activeValuesToFilters(
       case "Enum":
         filters.set(value.key, value.selectedValues);
         break;
-      case "Number":
+      default:
         break;
     }
   }

@@ -57,8 +57,11 @@ export function BookAppointmentSidePanel({
   return (
     <ContentSheet data-testid="overview">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
-      <Stack gap={1} data-testid="appointment-summary">
+      <Stack gap={1} data-testid="appointment-summary" role="list">
         <DetailsItem
+          slotProps={{
+            stack: { role: "listitem" },
+          }}
           label={t("sidePanel.concernAndDuration", {
             context: "label",
           })}
@@ -69,6 +72,9 @@ export function BookAppointmentSidePanel({
         {values.appointment && (
           <>
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("sidePanel.date", {
                 context: "label",
               })}
@@ -77,6 +83,9 @@ export function BookAppointmentSidePanel({
               hiddenLabel
             />
             <DetailsItem
+              slotProps={{
+                stack: { role: "listitem" },
+              }}
               label={t("sidePanel.time", {
                 context: "label",
               })}

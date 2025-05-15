@@ -5461,10 +5461,12 @@
           "elements" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
@@ -5643,7 +5645,7 @@
       },
       "BusinessModule" : {
         "type" : "string",
-        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "BusinessProcedureInclusionStatus" : {
         "type" : "string",
@@ -6383,9 +6385,11 @@
             "type" : "string"
           },
           "contact" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "description" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6478,6 +6482,7 @@
             "type" : "boolean"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "published" : {
@@ -6597,6 +6602,7 @@
         "type" : "object",
         "properties" : {
           "description" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "externalId" : {
@@ -6604,6 +6610,7 @@
             "format" : "uuid"
           },
           "title" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6640,6 +6647,7 @@
             "type" : "boolean"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "objectTypeId" : {
@@ -6667,10 +6675,12 @@
           "elements" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "objectTypeId" : {
@@ -7647,6 +7657,7 @@
         "type" : "object",
         "properties" : {
           "archivingDetails" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ArchivingDetails"
@@ -7704,6 +7715,7 @@
         "type" : "object",
         "properties" : {
           "endpointStates" : {
+            "minProperties" : 1,
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ConfigurationStatus"
@@ -8133,7 +8145,7 @@
         "type" : "object",
         "properties" : {
           "privacyDocument" : {
-            "$ref" : "#/components/schemas/PrivacyDocument"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -8895,6 +8907,7 @@
             "format" : "uuid"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "executedFrom" : {
@@ -8915,6 +8928,7 @@
             "$ref" : "#/components/schemas/InspPendingFacilityKind"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "objecttype" : {
@@ -8928,9 +8942,11 @@
             "type" : "boolean"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -9196,7 +9212,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "STATISTIC_ANONYMIZATION", "OFFLINE" ]
+        "enum" : [ "STATISTIC_ANONYMIZATION" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",
@@ -9601,6 +9617,18 @@
         "type" : "string",
         "enum" : [ "UP", "DOWN" ]
       },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "ObjectType" : {
         "required" : [ "emailAnnouncement", "id", "name" ],
         "type" : "object",
@@ -9617,6 +9645,9 @@
           "id" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "legalBasis" : {
+            "type" : "string"
           },
           "name" : {
             "type" : "string"
@@ -9920,18 +9951,6 @@
             }
           }
         } ]
-      },
-      "PrivacyDocument" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/Document"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/Document"
-          }
-        }
       },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
@@ -10493,9 +10512,11 @@
         "type" : "object",
         "properties" : {
           "content" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -10517,6 +10538,7 @@
         "type" : "object",
         "properties" : {
           "elements" : {
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "oneOf" : [ {
@@ -10734,6 +10756,7 @@
         "type" : "object",
         "properties" : {
           "description" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "title" : {
@@ -10860,6 +10883,9 @@
           "emailAnnouncement" : {
             "type" : "boolean"
           },
+          "legalBasis" : {
+            "type" : "string"
+          },
           "routineInterval" : {
             "type" : "integer",
             "format" : "int32"
@@ -10965,6 +10991,7 @@
             "example" : "UUID_3"
           },
           "username" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The username which is displayed in the application and can be used for the login.",
             "example" : "testuser"
@@ -11162,13 +11189,16 @@
         "type" : "object",
         "properties" : {
           "basicURL" : {
+            "minLength" : 1,
             "pattern" : "^https?://.*$",
             "type" : "string"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "searchCity" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }

@@ -24,15 +24,3 @@ export const appointmentTypeApiQueryKey = queryKeyFactory(
 export const inboxProcedureApiQueryKey = queryKeyFactory(
   measlesProtectionApiQueryKey(["inboxProcedureApi"]),
 );
-
-export const progressEntryApiQueryKey = queryKeyFactory(
-  measlesProtectionApiQueryKey(["progressEntryApi"]),
-);
-
-export const fileApiQueryKey = queryKeyFactory(
-  measlesProtectionApiQueryKey(["fileApi"]),
-);
-
-export const archivingApiQueryKey = queryKeyFactory(
-  measlesProtectionApiQueryKey(["archivingApi"]),
-);

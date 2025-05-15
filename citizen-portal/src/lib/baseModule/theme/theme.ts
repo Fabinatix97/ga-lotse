@@ -93,7 +93,6 @@ export const theme = extendTheme({
     light: {
       palette: {
         background: {
-          body: "var(--joy-palette-neutral-100)",
           backdrop: "rgba(18, 20, 22, 0.25)",
         },
         a11y: {
@@ -219,6 +218,7 @@ export const theme = extendTheme({
     JoyInput: {
       styleOverrides: {
         root: ({ ownerState, theme }) => ({
+          background: theme.palette.background.body,
           ...noBoxShadow,
           ...fixOutlinedHeight(ownerState.variant),
           ...a11yInputBorderOutline(theme, ownerState.color),
@@ -246,6 +246,7 @@ export const theme = extendTheme({
     JoyTextarea: {
       styleOverrides: {
         root: ({ ownerState, theme }) => ({
+          background: theme.palette.background.body,
           ...a11yInputBorderOutline(theme, ownerState.color),
         }),
       },
@@ -289,6 +290,7 @@ export const theme = extendTheme({
             ownerState.value === "" || isNullish(ownerState.value)
               ? theme.palette.text.secondary
               : theme.palette.text.primary,
+          background: theme.palette.background.body,
           ...a11yInputBorderOutline(theme, ownerState.color),
           "--Select-placeholderOpacity": 1,
           ...noBoxShadow,
@@ -333,6 +335,7 @@ export const theme = extendTheme({
     JoyAutocomplete: {
       styleOverrides: {
         root: ({ theme, ownerState }) => ({
+          background: theme.palette.background.body,
           ...noBoxShadow,
           ...fixOutlinedHeight(ownerState.variant),
           ...a11yInputBorderOutline(theme, ownerState.color),
