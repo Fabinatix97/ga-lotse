@@ -16,7 +16,7 @@ import {
   ApiUpdateChecklistElementsInner,
   ApiUpdateChecklistRequest,
 } from "@eshg/inspection-api";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import {

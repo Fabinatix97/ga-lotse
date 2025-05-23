@@ -7,7 +7,7 @@
 
 import { use } from "react";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { InspectionTabHistory } from "@/lib/businessModules/inspection/components/inspection/history/InspectionTabHistory";
 

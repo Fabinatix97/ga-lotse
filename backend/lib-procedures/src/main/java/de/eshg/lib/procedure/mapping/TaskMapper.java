@@ -10,6 +10,7 @@ import static de.eshg.lib.procedure.model.TaskTypeDto.INSPECTION_EXECUTION;
 import static de.eshg.lib.procedure.model.TaskTypeDto.INSPECTION_PLANNING;
 import static de.eshg.lib.procedure.model.TaskTypeDto.INSPECTION_REPORT;
 import static de.eshg.lib.procedure.model.TaskTypeDto.MEASLES_PROTECTION;
+import static de.eshg.lib.procedure.model.TaskTypeDto.MEDS_ABROAD;
 import static de.eshg.lib.procedure.model.TaskTypeDto.OFFICIAL_MEDICAL_SERVICE;
 import static de.eshg.lib.procedure.model.TaskTypeDto.PERFORM_SCHOOL_ENTRY_EXAMINATION;
 import static de.eshg.lib.procedure.model.TaskTypeDto.STI_PROTECTION;
@@ -64,6 +65,7 @@ public final class TaskMapper {
       case MEASLES_PROTECTION -> MEASLES_PROTECTION;
       case STI_PROTECTION -> STI_PROTECTION;
       case OFFICIAL_MEDICAL_SERVICE -> OFFICIAL_MEDICAL_SERVICE;
+      case MEDS_ABROAD -> MEDS_ABROAD;
     };
   }
 
@@ -78,6 +80,7 @@ public final class TaskMapper {
       case MEASLES_PROTECTION -> TaskType.MEASLES_PROTECTION;
       case STI_PROTECTION -> TaskType.STI_PROTECTION;
       case OFFICIAL_MEDICAL_SERVICE -> TaskType.OFFICIAL_MEDICAL_SERVICE;
+      case MEDS_ABROAD -> TaskType.MEDS_ABROAD;
     };
   }
 

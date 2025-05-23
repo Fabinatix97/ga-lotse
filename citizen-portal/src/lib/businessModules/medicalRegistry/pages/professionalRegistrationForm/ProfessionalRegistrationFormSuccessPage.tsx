@@ -3,9 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DoneOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
 
+import { InternalLinkButton } from "@eshg/lib-portal";
+
+import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
 interface ProfessionalRegistrationFormProps {
@@ -18,19 +24,37 @@ export function ProfessionalRegistrationFormSuccessPage(
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
   ]);
+  const citizenRoutes = useCitizenRoutes();
 
   return (
     <>
       <PageTitle>{t("navigation.pageTitle")}</PageTitle>
-      <Typography level="h4" alignSelf="center">
-        {t("successPage.content")}
-      </Typography>
-      <Button
-        sx={{ marginTop: 2 }}
-        onClick={() => props.setShowSuccessPage(false)}
-      >
-        {t("successPage.createNewEntry")}
-      </Button>
+      <TwoColumnGrid
+        content={
+          <ContentSheet>
+            <Typography level="h2">{t("successPage.content")}</Typography>
+            <DoneOutlined
+              sx={{ height: 80, width: 80, alignSelf: "center" }}
+              color="success"
+            />
+          </ContentSheet>
+        }
+        sidePanel={
+          <ContentSheet>
+            <Button onClick={() => props.setShowSuccessPage(false)}>
+              {t("successPage.registrationForm")}
+            </Button>
+
+            <InternalLinkButton
+              variant="soft"
+              color="neutral"
+              href={citizenRoutes.home}
+            >
+              {t("navigation.abort")}
+            </InternalLinkButton>
+          </ContentSheet>
+        }
+      />
     </>
   );
 }

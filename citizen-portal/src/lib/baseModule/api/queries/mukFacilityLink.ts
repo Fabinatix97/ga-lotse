@@ -6,7 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { ApiErrorCode } from "@eshg/base-api";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+import { resolveError } from "@eshg/lib-portal";
 
 import { useMukFacilityLinkApi } from "@/lib/baseModule/api/clients";
 import { mukFacilityLinkApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKeys";

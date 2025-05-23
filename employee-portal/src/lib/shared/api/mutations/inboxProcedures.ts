@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useHandledMutation } from "@eshg/lib-portal";
 import {
   ApiCreateInboxProcedureRequest,
   ApiInboxProcedure,

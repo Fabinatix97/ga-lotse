@@ -5,8 +5,7 @@
 
 import { useEffect } from "react";
 
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { usePrevious } from "@eshg/lib-portal/hooks/usePrevious";
+import { usePrevious, useResetAlertContext } from "@eshg/lib-portal";
 
 /**
  * Used by multiple step sidebars to reset the alert when the current step changes.

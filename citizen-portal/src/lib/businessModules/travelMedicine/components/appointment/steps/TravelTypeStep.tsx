@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
 import { FormikValues, useFormikContext } from "formik";
 
+import { RadioGroupField } from "@eshg/lib-portal";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
 
 import {
@@ -12,7 +14,6 @@ import {
   FormSheetTitle,
 } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { RadioSheet } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioSheet";
-import { RadioGroupField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/RadioGroupField";
 import { TRAVEL_TYPES } from "@/lib/businessModules/travelMedicine/helpers/translations";
 import { useTranslation } from "@/lib/i18n/client";
 
@@ -32,8 +33,6 @@ export function TravelTypeStep() {
       <RadioGroupField
         name="travelInformation.travelType"
         required={t("travelTypeFormContent.error")}
-        sx={{ gap: 2 }}
-        withErrorDecorator
         onChange={async (value) => {
           if (value === ApiTravelType.NoTravel) {
             await setFieldValue("travelInformation.travelDestinations", []);
@@ -43,19 +42,21 @@ export function TravelTypeStep() {
           }
         }}
       >
-        {travelTypes.map((val) => (
-          <RadioSheet
-            key={`travelInformation.travelType.${val}`}
-            label={`${TRAVEL_TYPES[val]}`}
-            value={val}
-            radioProps={{
-              sx: (theme) => ({
-                label: { ...theme.typography["title-md"] },
-                alignItems: "center",
-              }),
-            }}
-          />
-        ))}
+        <Stack gap={2}>
+          {travelTypes.map((val) => (
+            <RadioSheet
+              key={`travelInformation.travelType.${val}`}
+              label={`${TRAVEL_TYPES[val]}`}
+              value={val}
+              radioProps={{
+                sx: (theme) => ({
+                  label: { ...theme.typography["title-md"] },
+                  alignItems: "center",
+                }),
+              }}
+            />
+          ))}
+        </Stack>
       </RadioGroupField>
     </FormSheet>
   );

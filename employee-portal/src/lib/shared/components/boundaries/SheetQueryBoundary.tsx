@@ -10,9 +10,7 @@ import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { Suspense, useId } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ErrorAlert, QueryBoundary, RequiresChildren } from "@eshg/lib-portal";
 
 import { LoadingSheet } from "@/lib/shared/components/LoadingSheet";
 

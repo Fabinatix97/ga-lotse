@@ -21,7 +21,7 @@ import {
 import {
   parseOptionalEnum,
   parseReadonlyPageParams,
-} from "@eshg/lib-portal/helpers/searchParams";
+} from "@eshg/lib-portal/universal";
 
 import { GDPRTable } from "@/lib/baseModule/components/gdpr/overview/GDPRTable";
 

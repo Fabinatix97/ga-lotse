@@ -16,14 +16,14 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import {
+  CheckboxField,
+  InputField,
+  NumberField,
+  useValidateLength,
   validatePipe,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+} from "@eshg/lib-portal";
 
 import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/shared/helpers/validators";
 

@@ -8,7 +8,7 @@ import { Box, Stack } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { isStrictEqual } from "remeda";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLink } from "@eshg/lib-portal";
 
 import { MemberInfo } from "@/lib/businessModules/chat/components/MemberInfo";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

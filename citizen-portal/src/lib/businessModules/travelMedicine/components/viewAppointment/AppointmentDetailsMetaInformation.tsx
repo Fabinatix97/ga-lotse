@@ -14,8 +14,11 @@ import {
 import { Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  durationBetweenDatesInMinutes,
+  formatDate,
+  formatTime,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiGetAppointmentDetailsResponse,

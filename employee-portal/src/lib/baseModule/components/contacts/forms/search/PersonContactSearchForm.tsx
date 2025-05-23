@@ -13,9 +13,11 @@ import {
   SidebarForm,
   useSearchContactsQuery,
 } from "@eshg/lib-employee-portal";
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import {
+  InputField,
+  LoadingIndicator,
+  isNonEmptyString,
+} from "@eshg/lib-portal";
 
 import { PersonContactCard } from "@/lib/baseModule/components/contacts/forms/card/PersonContactCard";
 import { ContactSearchFormResults } from "@/lib/baseModule/components/contacts/forms/search/ContactSearchFormResults";

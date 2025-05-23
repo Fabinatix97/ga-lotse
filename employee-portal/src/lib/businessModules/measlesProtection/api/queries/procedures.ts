@@ -10,7 +10,7 @@ import { DeepKeys } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
 import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiGetMeaslesProtectionProceduresSortBy,
   ApiGetMeaslesProtectionProceduresSortOrder,

@@ -30,6 +30,7 @@ export const taskTypeNames = {
   [ApiTaskType.MeaslesProtection]: "Masernschutzimpfung",
   [ApiTaskType.StiProtection]: "HIV-STI-Schutz",
   [ApiTaskType.OfficialMedicalService]: "Amtsärztlicher Dienst",
+  [ApiTaskType.MedsAbroad]: "Reisen mit BtM",
 } satisfies Record<ApiTaskType, string>;
 
 export const taskStatusNames = {

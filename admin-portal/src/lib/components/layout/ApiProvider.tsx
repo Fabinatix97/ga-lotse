@@ -7,7 +7,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 const queryClient = new QueryClient({
   defaultOptions: {

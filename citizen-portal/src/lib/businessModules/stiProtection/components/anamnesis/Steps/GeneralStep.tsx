@@ -7,21 +7,22 @@ import { Box, FormControl, FormLabel, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useId } from "react";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
 import {
+  DateField,
+  InputField,
+  MonthAndYearFields,
+  NumberField,
+  SelectField,
+  TextareaField,
+  YesOrNoWithFollowUp,
   useValidateLength,
   useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
+  validatePositiveInteger,
+} from "@eshg/lib-portal";
 
+import { AnamnesisStepLayout } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisLayout";
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
 import { useTranslation } from "@/lib/i18n/client";
-import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 
 import { PrivacyNotice } from "./PrivacyNotice";
 import {
@@ -31,6 +32,13 @@ import {
 } from "./options";
 
 export function GeneralStep() {
+  return (
+    <AnamnesisStepLayout>
+      <GeneralStepContent />
+    </AnamnesisStepLayout>
+  );
+}
+function GeneralStepContent() {
   const mostRecentExamDateId = useId();
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const validateLength = useValidateLength();
@@ -45,7 +53,7 @@ export function GeneralStep() {
     <>
       <PrivacyNotice />
       <Typography level="h2">{t("general.title")}</Typography>
-      <Box component="section" aria-label={t("general.title")}>
+      <section aria-label={t("general.title")}>
         <Grid container rowSpacing={2} columnSpacing={3}>
           <Grid xxs={12}>
             <InputField
@@ -151,7 +159,7 @@ export function GeneralStep() {
           </Typography>
           <Typography level="body-md">{t("examinations.subtitle")}</Typography>
         </Box>
-        <Box component="section" aria-label={t("examinations.title")}>
+        <section aria-label={t("examinations.title")}>
           <Grid container rowSpacing={3} columnSpacing={3}>
             {Object.entries(values.examinations).map(
               ([diseaseType, { examinationDate }]) => (
@@ -200,8 +208,8 @@ export function GeneralStep() {
               ),
             )}
           </Grid>
-        </Box>
-      </Box>
+        </section>
+      </section>
     </>
   );
 }

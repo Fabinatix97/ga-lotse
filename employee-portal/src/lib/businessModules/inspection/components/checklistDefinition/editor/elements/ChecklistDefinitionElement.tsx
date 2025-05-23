@@ -17,9 +17,7 @@ import { Box, Divider, IconButton, Stack, Typography } from "@mui/joy";
 
 import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
 import { InformationSheet } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { CheckboxField, InputField, SelectField } from "@eshg/lib-portal";
 
 import { NoteAndHelpTextInput } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/NoteAndHelpTextInput";
 import { ChecklistDefinitionElementInner } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionElementInner";
@@ -36,6 +34,7 @@ interface ChecklistDefinitionElementProps {
   sectionIndex: number;
   elementIndex: number;
   dragHandleProps?: DraggableProvidedDragHandleProps | null;
+  ref?: (el: HTMLInputElement) => void;
 }
 
 export function ChecklistDefinitionElement({
@@ -46,6 +45,7 @@ export function ChecklistDefinitionElement({
   sectionIndex,
   elementIndex,
   dragHandleProps,
+  ref,
 }: Readonly<ChecklistDefinitionElementProps>) {
   const isImage = element.type === "IMAGE" || element.type === "CLImageContext";
   const isAudio = element.type === "AUDIO" || element.type === "CLAudioContext";
@@ -98,6 +98,7 @@ export function ChecklistDefinitionElement({
         input={
           <>
             <InputField
+              ref={ref}
               name={`context.sections.${sectionIndex}.elements.${elementIndex}.text`}
               label="Frage"
               sx={{ flex: 1 }}

@@ -10,10 +10,12 @@ import { useFormikContext } from "formik";
 import { useState } from "react";
 
 import { CountryField } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  InputField,
+  NestedFormProps,
+  createFieldNameMapper,
+  useValidateLength,
+} from "@eshg/lib-portal";
 import { ApiCountryCode } from "@eshg/measles-protection-api";
 
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { parseOptionalValue } from "@eshg/lib-portal";
 import { AnamnesisFormValues } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/formConfig";
 import { mapAnamnesis } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/helpers";
-import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiGetAnamnesisResponse,
   PatchAnamnesisRequest,
@@ -312,9 +312,9 @@ function mapMedicalHistoryInfoToForm(response: ApiGetAnamnesisResponse) {
       ),
       which: response.anamnesis?.medicalHistoryInfo?.thyroidInfo?.which ?? [],
     },
-    tuberculosis: {
+    tuberculosisInfo: {
       answer: parseOptionalValue(
-        response.anamnesis?.medicalHistoryInfo?.tuberculosis?.answer,
+        response.anamnesis?.medicalHistoryInfo?.tuberculosisInfo?.answer,
       ),
     },
   };

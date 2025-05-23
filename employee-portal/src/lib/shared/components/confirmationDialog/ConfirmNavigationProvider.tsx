@@ -9,8 +9,8 @@ import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   NavigationContextProvider,
   OnBeforeNavigateProps,
-} from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+  RequiresChildren,
+} from "@eshg/lib-portal";
 
 const LABELS = {
   cancel: "Abbrechen",

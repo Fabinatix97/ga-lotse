@@ -11,9 +11,10 @@ import { useEffect, useState } from "react";
 import { ApiGender } from "@eshg/base-api";
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { ProcedureLabel, useSidenav } from "@eshg/lib-employee-portal";
-import { useIsBreakpointDown } from "@eshg/lib-portal/hooks/theme";
+import { useIsBreakpointDown } from "@eshg/lib-portal";
 
 import { ExaminationResultWithDate } from "../../api/models/ExaminationResult";
+import { Institution } from "../../api/models/Institution";
 import { FullDentitionFormSection } from "../fullDentition/FullDentitionFormSection";
 
 import { AdditionalInformationFormSection } from "./AdditionalInformationFormSection";
@@ -23,7 +24,11 @@ import { InstructionValuesSection } from "./InstructionValuesSection";
 import { NoteFormSection } from "./NoteFormSection";
 
 interface ExaminedChild {
+  id: string;
+  version: number;
   gender?: ApiGender;
+  firstName: string;
+  lastName: string;
   dateOfBirth: Date;
   procedureLabels: ProcedureLabel[];
   allFluoridationConsents: ApiFluoridationConsent[];
@@ -34,11 +39,11 @@ interface ExaminationFormLayoutProps {
   isFluoridation: boolean;
   isFluoridationConsentGiven?: boolean;
   dateAndTime: Date;
-  institutionName?: string;
+  institution?: Institution;
   groupName?: string;
-  childId: string;
   child: ExaminedChild;
   previousExaminations: ExaminationResultWithDate[];
+  showChildDetails?: boolean;
 }
 
 export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
@@ -47,25 +52,28 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
     isFluoridation,
     isFluoridationConsentGiven,
     dateAndTime,
-    institutionName,
+    institution,
     groupName,
-    childId,
     child,
     previousExaminations,
+    showChildDetails = false,
   } = props;
 
-  const childDetails = (
+  const childDetails = showChildDetails ? (
     <ExaminationChildDetailsSection
-      childId={childId}
+      childId={child.id}
+      childVersion={child.version}
+      firstName={child.firstName}
+      lastName={child.lastName}
       gender={child.gender}
       dateOfBirth={child.dateOfBirth}
       dateOfExamination={dateAndTime}
       groupName={groupName}
-      institutionName={institutionName}
+      institution={institution}
       procedureLabels={child.procedureLabels}
       allFluoridationConsents={child.allFluoridationConsents}
     />
-  );
+  ) : undefined;
   const note = <NoteFormSection />;
 
   const isLowerResolution = useIsBreakpointDown("xl");
@@ -73,9 +81,8 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
 
   if (!(isScreening || isFluoridation)) {
     return (
-      <Grid container columns={2} spacing={3}>
+      <Grid container columns={1}>
         <Grid xxs={1}>{note}</Grid>
-        <Grid xxs={1}>{childDetails}</Grid>
       </Grid>
     );
   }
@@ -85,17 +92,18 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
       isScreening={isScreening}
       isFluoridation={isFluoridation}
       isFluoridationConsentGiven={isFluoridationConsentGiven}
+      columns={showChildDetails ? 2 : 3}
     />
   );
 
   if (isFluoridation && !isScreening) {
     return (
-      <Grid container columns={2} spacing={3}>
-        <Grid container xxs={1} columns={1}>
+      <Grid container columns={showChildDetails ? 2 : 1} spacing={3}>
+        <Grid container xxs={1} columns={showChildDetails ? 1 : 2}>
           <Grid xxs={1}>{additionalInformation}</Grid>
           <Grid xxs={1}>{note}</Grid>
         </Grid>
-        <Grid xxs={1}>{childDetails}</Grid>
+        {showChildDetails && <Grid xxs={1}>{childDetails}</Grid>}
       </Grid>
     );
   }
@@ -115,8 +123,8 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
         <Grid xxs={9}>
           <FullDentitionFormSection />
         </Grid>
-        <Grid xxs={5.5}>{additionalInformation}</Grid>
-        <Grid xxs={3.5}>{childDetails}</Grid>
+        <Grid xxs={showChildDetails ? 5.5 : 9}>{additionalInformation}</Grid>
+        {showChildDetails && <Grid xxs={3.5}>{childDetails}</Grid>}
         <Grid container xxs={4.5} columns={1}>
           <Grid xxs={1}>{automatedValues}</Grid>
           <Grid xxs={1}>{note}</Grid>
@@ -132,8 +140,8 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
         <FullDentitionFormSection />
       </Grid>
       <Grid container xxs={8} columns={8}>
-        <Grid xxs={5}>{additionalInformation}</Grid>
-        <Grid xxs={3}>{childDetails}</Grid>
+        <Grid xxs={showChildDetails ? 5 : 8}>{additionalInformation}</Grid>
+        {showChildDetails && <Grid xxs={3}>{childDetails}</Grid>}
         <Grid xxs={8}>{note}</Grid>
       </Grid>
       <Grid container xxs={3} columns={1}>

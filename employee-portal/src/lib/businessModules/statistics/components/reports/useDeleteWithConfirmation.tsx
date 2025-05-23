@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal";
 
 import { useDeleteReport } from "@/lib/businessModules/statistics/api/mutations/useDeleteReport";
 import { useDeleteReportSeries } from "@/lib/businessModules/statistics/api/mutations/useDeleteReportSeries";

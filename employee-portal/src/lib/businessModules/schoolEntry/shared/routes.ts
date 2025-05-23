@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
+import { defineRoutes } from "@eshg/lib-portal/universal";
 
 export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
   procedures: defineRoutes(
@@ -23,6 +23,7 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
               eye: examinationsPath("/eye"),
               sopess: examinationsPath("/sopess"),
               developmentScreening: examinationsPath("/development-screening"),
+              infoLetter: examinationsPath("/info-letter"),
             }),
           ),
           vaccination: procedurePath("/vaccination"),

@@ -276,7 +276,7 @@ importers:
         version: 11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0)
       '@eshg/lib-portal':
         specifier: workspace:*
-        version: link:../lib-portal
+        version: link:../packages/lib-portal
       '@eshg/service-directory-api':
         specifier: workspace:*
         version: link:../packages/service-directory-api
@@ -409,7 +409,7 @@ importers:
         version: link:../packages/base-api
       '@eshg/lib-portal':
         specifier: workspace:*
-        version: link:../lib-portal
+        version: link:../packages/lib-portal
       '@eshg/lib-procedures-api':
         specifier: workspace:*
         version: link:../packages/lib-procedures-api
@@ -609,6 +609,9 @@ importers:
       '@eshg/medical-registry-api':
         specifier: workspace:*
         version: link:../packages/medical-registry-api
+      '@eshg/meds-abroad-api':
+        specifier: workspace:*
+        version: link:../packages/meds-abroad-api
       '@eshg/official-medical-service-api':
         specifier: workspace:*
         version: link:../packages/official-medical-service-api
@@ -737,7 +740,7 @@ importers:
         version: link:../packages/lib-employee-portal
       '@eshg/lib-portal':
         specifier: workspace:*
-        version: link:../lib-portal
+        version: link:../packages/lib-portal
       '@eshg/lib-procedures-api':
         specifier: workspace:*
         version: link:../packages/lib-procedures-api
@@ -750,6 +753,12 @@ importers:
       '@eshg/medical-registry-api':
         specifier: workspace:*
         version: link:../packages/medical-registry-api
+      '@eshg/meds-abroad':
+        specifier: workspace:*
+        version: link:../packages/meds-abroad
+      '@eshg/meds-abroad-api':
+        specifier: workspace:*
+        version: link:../packages/meds-abroad-api
       '@eshg/official-medical-service-api':
         specifier: workspace:*
         version: link:../packages/official-medical-service-api
@@ -956,124 +965,6 @@ importers:
         specifier: catalog:vitest
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
 
-  lib-portal:
-    dependencies:
-      '@eshg/base-api':
-        specifier: workspace:*
-        version: link:../packages/base-api
-      '@eshg/medical-registry-api':
-        specifier: workspace:*
-        version: link:../packages/medical-registry-api
-      '@eshg/official-medical-service-api':
-        specifier: workspace:*
-        version: link:../packages/official-medical-service-api
-      '@mui/icons-material':
-        specifier: catalog:joy
-        version: 5.17.1(@mui/joy@5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.2)(react@19.1.0)
-      '@mui/joy':
-        specifier: catalog:joy
-        version: 5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@mui/material':
-        specifier: catalog:joy
-        version: '@mui/joy@5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
-      '@tanstack/react-query':
-        specifier: catalog:common
-        version: 5.74.7(react@19.1.0)
-      date-fns:
-        specifier: catalog:common
-        version: 4.1.0
-      formik:
-        specifier: catalog:common
-        version: 2.4.6(react@19.1.0)
-      i18next:
-        specifier: catalog:i18next
-        version: 25.0.1(typescript@5.8.3)
-      next:
-        specifier: catalog:next
-        version: 15.3.2(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react:
-        specifier: catalog:react
-        version: 19.1.0
-      react-dom:
-        specifier: catalog:react
-        version: 19.1.0(react@19.1.0)
-      react-i18next:
-        specifier: catalog:i18next
-        version: 15.5.1(i18next@25.0.1(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
-      react-markdown:
-        specifier: 10.1.0
-        version: 10.1.0(@types/react@19.1.2)(react@19.1.0)
-      remeda:
-        specifier: catalog:common
-        version: 2.21.3
-      uuid:
-        specifier: catalog:common
-        version: 11.1.0
-      valibot:
-        specifier: catalog:common
-        version: 1.0.0(typescript@5.8.3)
-    devDependencies:
-      '@eshg/lib-vitest':
-        specifier: workspace:*
-        version: link:../packages/lib-vitest
-      '@eslint/compat':
-        specifier: catalog:eslint
-        version: 1.2.8(eslint@9.25.1)
-      '@eslint/eslintrc':
-        specifier: catalog:eslint
-        version: 3.3.1
-      '@tanstack/eslint-plugin-query':
-        specifier: catalog:common
-        version: 5.74.7(eslint@9.25.1)(typescript@5.8.3)
-      '@trivago/prettier-plugin-sort-imports':
-        specifier: catalog:prettier
-        version: 5.2.2(prettier@3.5.3)
-      '@types/node':
-        specifier: catalog:common
-        version: 22.15.3
-      '@types/react':
-        specifier: catalog:react
-        version: 19.1.2
-      '@types/react-dom':
-        specifier: catalog:react
-        version: 19.1.2(@types/react@19.1.2)
-      '@vitejs/plugin-react':
-        specifier: catalog:vitest
-        version: 4.4.1(vite@6.2.3(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
-      '@vitest/coverage-istanbul':
-        specifier: catalog:vitest
-        version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
-      eslint:
-        specifier: catalog:eslint
-        version: 9.25.1
-      eslint-config-next:
-        specifier: catalog:next
-        version: 15.3.2(eslint@9.25.1)(typescript@5.8.3)
-      eslint-config-prettier:
-        specifier: catalog:eslint
-        version: 10.1.2(eslint@9.25.1)
-      eslint-plugin-import:
-        specifier: catalog:eslint
-        version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.9.1)(eslint@9.25.1)
-      eslint-plugin-promise:
-        specifier: catalog:eslint
-        version: 7.2.1(eslint@9.25.1)
-      eslint-plugin-unused-imports:
-        specifier: catalog:eslint
-        version: 4.1.4(@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
-      prettier:
-        specifier: catalog:prettier
-        version: 3.5.3
-      typescript:
-        specifier: catalog:common
-        version: 5.8.3
-      vite-tsconfig-paths:
-        specifier: catalog:vitest
-        version: 5.1.4(typescript@5.8.3)(vite@6.2.3(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
-      vitest:
-        specifier: catalog:vitest
-        version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
-
   packages/auditlog-api: {}
 
   packages/base-api: {}
@@ -1095,7 +986,7 @@ importers:
         version: link:../lib-employee-portal
       '@eshg/lib-portal':
         specifier: workspace:*
-        version: link:../../lib-portal
+        version: link:../lib-portal
       '@mui/icons-material':
         specifier: catalog:joy
         version: 5.17.1(@mui/material@5.16.14(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.2)(react@19.1.0)
@@ -1215,7 +1106,7 @@ importers:
         version: link:../base-api
       '@eshg/lib-portal':
         specifier: workspace:*
-        version: link:../../lib-portal
+        version: link:../lib-portal
       '@eshg/lib-procedures-api':
         specifier: workspace:*
         version: link:../lib-procedures-api
@@ -1323,6 +1214,124 @@ importers:
         specifier: catalog:vitest
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
 
+  packages/lib-portal:
+    dependencies:
+      '@eshg/base-api':
+        specifier: workspace:*
+        version: link:../base-api
+      '@eshg/medical-registry-api':
+        specifier: workspace:*
+        version: link:../medical-registry-api
+      '@eshg/official-medical-service-api':
+        specifier: workspace:*
+        version: link:../official-medical-service-api
+      '@mui/icons-material':
+        specifier: catalog:joy
+        version: 5.17.1(@mui/joy@5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.2)(react@19.1.0)
+      '@mui/joy':
+        specifier: catalog:joy
+        version: 5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@mui/material':
+        specifier: catalog:joy
+        version: '@mui/joy@5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+      '@tanstack/react-query':
+        specifier: catalog:common
+        version: 5.74.7(react@19.1.0)
+      date-fns:
+        specifier: catalog:common
+        version: 4.1.0
+      formik:
+        specifier: catalog:common
+        version: 2.4.6(react@19.1.0)
+      i18next:
+        specifier: catalog:i18next
+        version: 25.0.1(typescript@5.8.3)
+      next:
+        specifier: catalog:next
+        version: 15.3.2(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: catalog:react
+        version: 19.1.0
+      react-dom:
+        specifier: catalog:react
+        version: 19.1.0(react@19.1.0)
+      react-i18next:
+        specifier: catalog:i18next
+        version: 15.5.1(i18next@25.0.1(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+      react-markdown:
+        specifier: 10.1.0
+        version: 10.1.0(@types/react@19.1.2)(react@19.1.0)
+      remeda:
+        specifier: catalog:common
+        version: 2.21.3
+      uuid:
+        specifier: catalog:common
+        version: 11.1.0
+      valibot:
+        specifier: catalog:common
+        version: 1.0.0(typescript@5.8.3)
+    devDependencies:
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../lib-vitest
+      '@eslint/compat':
+        specifier: catalog:eslint
+        version: 1.2.8(eslint@9.25.1)
+      '@eslint/eslintrc':
+        specifier: catalog:eslint
+        version: 3.3.1
+      '@tanstack/eslint-plugin-query':
+        specifier: catalog:common
+        version: 5.74.7(eslint@9.25.1)(typescript@5.8.3)
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: catalog:prettier
+        version: 5.2.2(prettier@3.5.3)
+      '@types/node':
+        specifier: catalog:common
+        version: 22.15.3
+      '@types/react':
+        specifier: catalog:react
+        version: 19.1.2
+      '@types/react-dom':
+        specifier: catalog:react
+        version: 19.1.2(@types/react@19.1.2)
+      '@vitejs/plugin-react':
+        specifier: catalog:vitest
+        version: 4.4.1(vite@6.2.3(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      '@vitest/coverage-istanbul':
+        specifier: catalog:vitest
+        version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      eslint:
+        specifier: catalog:eslint
+        version: 9.25.1
+      eslint-config-next:
+        specifier: catalog:next
+        version: 15.3.2(eslint@9.25.1)(typescript@5.8.3)
+      eslint-config-prettier:
+        specifier: catalog:eslint
+        version: 10.1.2(eslint@9.25.1)
+      eslint-plugin-import:
+        specifier: catalog:eslint
+        version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.9.1)(eslint@9.25.1)
+      eslint-plugin-promise:
+        specifier: catalog:eslint
+        version: 7.2.1(eslint@9.25.1)
+      eslint-plugin-unused-imports:
+        specifier: catalog:eslint
+        version: 4.1.4(@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
+      prettier:
+        specifier: catalog:prettier
+        version: 3.5.3
+      typescript:
+        specifier: catalog:common
+        version: 5.8.3
+      vite-tsconfig-paths:
+        specifier: catalog:vitest
+        version: 5.1.4(typescript@5.8.3)(vite@6.2.3(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      vitest:
+        specifier: catalog:vitest
+        version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
+
   packages/lib-procedures-api: {}
 
   packages/lib-statistics-api: {}
@@ -1382,6 +1391,123 @@ importers:
   packages/measles-protection-api: {}
 
   packages/medical-registry-api: {}
+
+  packages/meds-abroad:
+    dependencies:
+      '@eshg/base-api':
+        specifier: workspace:*
+        version: link:../base-api
+      '@eshg/lib-employee-portal':
+        specifier: workspace:*
+        version: link:../lib-employee-portal
+      '@eshg/lib-portal':
+        specifier: workspace:*
+        version: link:../lib-portal
+      '@eshg/meds-abroad-api':
+        specifier: workspace:*
+        version: link:../meds-abroad-api
+      '@mui/icons-material':
+        specifier: catalog:joy
+        version: 5.17.1(@mui/material@5.16.14(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.2)(react@19.1.0)
+      '@mui/joy':
+        specifier: catalog:joy
+        version: 5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tanstack/react-query':
+        specifier: catalog:common
+        version: 5.74.7(react@19.1.0)
+      '@tanstack/react-table':
+        specifier: catalog:common
+        version: 8.21.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      date-fns:
+        specifier: catalog:common
+        version: 4.1.0
+      formik:
+        specifier: catalog:common
+        version: 2.4.6(react@19.1.0)
+      next:
+        specifier: catalog:next
+        version: 15.3.2(@babel/core@7.26.10)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: catalog:react
+        version: 19.1.0
+      remeda:
+        specifier: catalog:common
+        version: 2.21.3
+      valibot:
+        specifier: catalog:common
+        version: 1.0.0(typescript@5.8.3)
+    devDependencies:
+      '@cronn/vitest-file-snapshots':
+        specifier: catalog:common
+        version: 0.4.0(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../lib-vitest
+      '@eslint/compat':
+        specifier: catalog:eslint
+        version: 1.2.8(eslint@9.25.1)
+      '@eslint/eslintrc':
+        specifier: catalog:eslint
+        version: 3.3.1
+      '@tanstack/eslint-plugin-query':
+        specifier: catalog:common
+        version: 5.74.7(eslint@9.25.1)(typescript@5.8.3)
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: catalog:prettier
+        version: 5.2.2(prettier@3.5.3)
+      '@types/node':
+        specifier: catalog:common
+        version: 22.15.3
+      '@types/react':
+        specifier: catalog:react
+        version: 19.1.2
+      '@types/react-dom':
+        specifier: catalog:react
+        version: 19.1.2(@types/react@19.1.2)
+      '@vitejs/plugin-react':
+        specifier: catalog:vitest
+        version: 4.4.1(vite@6.2.3(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      '@vitest/coverage-istanbul':
+        specifier: catalog:vitest
+        version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      eslint:
+        specifier: catalog:eslint
+        version: 9.25.1
+      eslint-config-next:
+        specifier: catalog:next
+        version: 15.3.2(eslint@9.25.1)(typescript@5.8.3)
+      eslint-config-prettier:
+        specifier: catalog:eslint
+        version: 10.1.2(eslint@9.25.1)
+      eslint-plugin-import:
+        specifier: catalog:eslint
+        version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.9.1)(eslint@9.25.1)
+      eslint-plugin-promise:
+        specifier: catalog:eslint
+        version: 7.2.1(eslint@9.25.1)
+      eslint-plugin-unused-imports:
+        specifier: catalog:eslint
+        version: 4.1.4(@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)(typescript@5.8.3))(eslint@9.25.1)
+      prettier:
+        specifier: catalog:prettier
+        version: 3.5.3
+      tsup:
+        specifier: catalog:common
+        version: 8.4.0(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.1)
+      typescript:
+        specifier: catalog:common
+        version: 5.8.3
+      typescript-eslint:
+        specifier: catalog:eslint
+        version: 8.31.0(eslint@9.25.1)(typescript@5.8.3)
+      vite-tsconfig-paths:
+        specifier: catalog:vitest
+        version: 5.1.4(typescript@5.8.3)(vite@6.2.3(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      vitest:
+        specifier: catalog:vitest
+        version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1)
+
+  packages/meds-abroad-api: {}
 
   packages/official-medical-service-api: {}
 

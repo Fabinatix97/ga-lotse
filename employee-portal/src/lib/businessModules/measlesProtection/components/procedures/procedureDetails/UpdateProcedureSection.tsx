@@ -7,10 +7,12 @@ import { Sheet, Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { PropsWithChildren, useCallback } from "react";
 
-import { Alert as SharedAlert } from "@eshg/lib-portal/components/Alert";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import {
+  DateField,
+  FormPlus,
+  Alert as SharedAlert,
+  SubmitButton,
+} from "@eshg/lib-portal";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,

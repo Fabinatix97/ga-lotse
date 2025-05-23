@@ -407,7 +407,7 @@ export const anamnesis = {
           label: "Nicht mehr seit",
         },
       },
-      tuberculosis: {
+      tuberculosisInfo: {
         answer: {
           label: "Tuberkulose",
           required: "Pflichtfeld ausfüllen",

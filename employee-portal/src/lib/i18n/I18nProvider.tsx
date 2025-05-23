@@ -9,8 +9,8 @@ import i18next from "i18next";
 import { PropsWithChildren } from "react";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 
+import { i18nNamespace as i18nNamespaceLibPortal } from "@eshg/lib-portal";
 import { de as deLibPortal } from "@eshg/lib-portal/i18n/locales/de";
-import { i18nNamespace as i18nNamespaceLibPortal } from "@eshg/lib-portal/i18n/namespace";
 
 import { anamnesis as deOfficialMedicalServiceAnamnesis } from "@/lib/businessModules/officialMedicalService/locales/de/anamnesis";
 

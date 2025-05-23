@@ -14,7 +14,7 @@ import {
 } from "@mui/joy";
 import { useTransition } from "react";
 
-import { Row } from "@eshg/lib-portal/components/Row";
+import { Row } from "@eshg/lib-portal";
 
 import { AddTextTemplate } from "@/lib/shared/components/icons/AddTextTemplate";
 

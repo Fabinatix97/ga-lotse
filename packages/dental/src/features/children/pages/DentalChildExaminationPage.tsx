@@ -8,7 +8,7 @@
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { ExaminationResultWithDate } from "../../../api/models/ExaminationResult";
 import { ExaminationFormLayout } from "../../../components/examination/ExaminationFormLayout";
@@ -48,9 +48,8 @@ export function DentalChildExaminationPage(
           isFluoridation={examination.fluoridation}
           isFluoridationConsentGiven={examination.fluoridationConsentGiven}
           dateAndTime={examination.dateAndTime}
-          institutionName={institutionAtExaminationDate?.institution?.name}
+          institution={institutionAtExaminationDate?.institution}
           groupName={institutionAtExaminationDate?.groupName}
-          childId={child.id}
           child={child}
           previousExaminations={mapPreviousExaminations(child.examinations)}
         />

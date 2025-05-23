@@ -6,7 +6,7 @@
 import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
+import { useHasChanged } from "@eshg/lib-portal";
 
 import { useExaminationStore } from "../ExaminationStoreProvider";
 import { ElementContext } from "../types";

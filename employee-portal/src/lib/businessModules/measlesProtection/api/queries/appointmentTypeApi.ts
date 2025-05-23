@@ -6,7 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { mapToObj } from "remeda";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/measlesProtection/api/clients";
 

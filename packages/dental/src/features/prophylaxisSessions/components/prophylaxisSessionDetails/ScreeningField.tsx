@@ -6,8 +6,7 @@
 import { Stack } from "@mui/joy";
 import { useField } from "formik";
 
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { CheckboxField, SelectField } from "@eshg/lib-portal";
 
 import { DENTITION_TYPE_OPTIONS } from "../../../../config/prophylaxisSession";
 

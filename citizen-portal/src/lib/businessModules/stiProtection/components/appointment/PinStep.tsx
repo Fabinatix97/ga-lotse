@@ -5,8 +5,7 @@
 
 import assert from "assert";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { Alert, PortalErrorCode } from "@eshg/lib-portal";
 
 import { useCreateAnonymousUser } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";

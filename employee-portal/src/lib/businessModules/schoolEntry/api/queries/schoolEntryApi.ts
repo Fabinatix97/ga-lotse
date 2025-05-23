@@ -7,7 +7,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import {
   GetFreeAppointmentsForProcedureRequest,

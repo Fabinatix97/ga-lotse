@@ -11,10 +11,12 @@ import { useRouter } from "next/navigation";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { prop, sortBy } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import {
+  Alert,
+  FormPlus,
+  PortalErrorCode,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import { ApiAppointment } from "@eshg/sti-protection-api";
 
 import { useRebookAppointment } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";

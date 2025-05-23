@@ -14,7 +14,7 @@ import {
   PROCEDURE_STATUS_NAMES,
   PROCEDURE_TYPE_NAMES,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 

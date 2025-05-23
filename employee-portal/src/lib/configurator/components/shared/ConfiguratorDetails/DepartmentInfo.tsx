@@ -5,7 +5,7 @@
 
 import { FormikValues } from "formik";
 import { useMemo } from "react";
-import { isDeepEqual, isNullish } from "remeda";
+import { isNullish } from "remeda";
 
 import {
   ConfiguratorForm,
@@ -60,16 +60,6 @@ export function DepartmentInfo(props: { module: ConfiguratorModuleName }) {
   );
   const updateDepartmentInfo = useUpdateDepartmentInfo(props.module);
   const showChooser = props.module !== "BASE";
-
-  function onSubmit(model: DepartmentInfoFormModel) {
-    if (
-      !showChooser ||
-      model[FormNames.USE_INFO_OF_HEALTH_DEPARTMENT] === "CUSTOM"
-    ) {
-      return updateDepartmentInfo(model);
-    }
-    return updateDepartmentInfo(defaultValues);
-  }
 
   function title() {
     if (props.module === "BASE") {
@@ -301,12 +291,11 @@ export function DepartmentInfo(props: { module: ConfiguratorModuleName }) {
       return defaultValues;
     }
     if (
-      isDeepEqual(moduleValues, defaultValues) ||
       Object.values(moduleValues).every(
         (it) => `${it}` === "" || `${it}` === "DEFAULT",
       )
     ) {
-      return moduleValues;
+      return defaultValues;
     }
     return {
       ...moduleValues,
@@ -324,7 +313,7 @@ export function DepartmentInfo(props: { module: ConfiguratorModuleName }) {
       ]}
       initialValues={initialValues}
       status={currentTabStatus}
-      onSubmit={onSubmit}
+      onSubmit={updateDepartmentInfo}
     />
   );
 }

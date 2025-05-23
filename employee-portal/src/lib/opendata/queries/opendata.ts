@@ -5,7 +5,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import { GetOpenDocumentsRequest } from "@eshg/opendata-api";
 
 import { useOpenDataApi } from "@/lib/opendata/api/clients";

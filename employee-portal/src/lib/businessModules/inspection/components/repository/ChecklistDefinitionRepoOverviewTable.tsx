@@ -14,7 +14,7 @@ import {
   useConfirmationDialog,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import {
   useDeleteCentralRepoChecklistDefinition,

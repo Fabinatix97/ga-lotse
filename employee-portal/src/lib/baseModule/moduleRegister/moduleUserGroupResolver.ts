@@ -8,11 +8,13 @@ import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal";
 
 import { moduleUserGroup as inspectionModuleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { moduleUserGroup as measlesProtectionModuleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
+import { moduleUserGroup as medicalRegistryModuleUserGroup } from "@/lib/businessModules/medicalRegistry/shared/moduleUserGroup";
 import { moduleUserGroup as officialMedicalServiceModuleUserGroup } from "@/lib/businessModules/officialMedicalService/shared/moduleUserGroup";
 import { moduleUserGroup as schoolEntryModuleUserGroup } from "@/lib/businessModules/schoolEntry/shared/moduleUserGroup";
 import { moduleUserGroup as statisticsModuleUserGroup } from "@/lib/businessModules/statistics/shared/moduleUserGroup";
 import { moduleUserGroup as stiProtectionModuleUserGroup } from "@/lib/businessModules/stiProtection/shared/moduleUserGroup";
 import { moduleUserGroup as travelMedicineModuleUserGroup } from "@/lib/businessModules/travelMedicine/shared/moduleUserGroup";
+import { moduleUserGroup as openDataModuleUserGroup } from "@/lib/opendata/shared/moduleUserGroup";
 
 export const businessModuleUserGroups: ModuleUserGroupConfig[] = [
   inspectionModuleUserGroup,
@@ -23,6 +25,8 @@ export const businessModuleUserGroups: ModuleUserGroupConfig[] = [
   stiProtectionModuleUserGroup,
   dentalModuleUserGroup,
   officialMedicalServiceModuleUserGroup,
+  medicalRegistryModuleUserGroup,
+  openDataModuleUserGroup,
 ];
 
 export const businessModuleLeaderRoles = businessModuleUserGroups.map(

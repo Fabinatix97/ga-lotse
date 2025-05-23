@@ -15,8 +15,7 @@ import {
   ToggleFilterButton as GenericFilterButton,
   UseFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { FormPlus, InputField } from "@eshg/lib-portal";
 
 export type TableControlName = "filters" | "entrySearch";
 

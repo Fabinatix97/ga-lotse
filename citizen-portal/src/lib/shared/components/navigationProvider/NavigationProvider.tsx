@@ -5,8 +5,7 @@
 
 "use client";
 
-import { NavigationContextProvider } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { NavigationContextProvider, RequiresChildren } from "@eshg/lib-portal";
 
 export function NavigationProvider({ children }: Readonly<RequiresChildren>) {
   function onBeforeNavigate() {

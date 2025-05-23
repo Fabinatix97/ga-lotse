@@ -19,9 +19,7 @@ import {
   SidebarForm,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { DateField, FileType, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiSubmissionResult,
   CreateProofSubmissionRequest,

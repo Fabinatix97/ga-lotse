@@ -31,8 +31,7 @@ import {
   usePersonSearch,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
+import { formatDate, useToggleableState } from "@eshg/lib-portal";
 
 import { routes } from "../../../../config/routes";
 import { useDentalApi } from "../../../../contexts/dental";

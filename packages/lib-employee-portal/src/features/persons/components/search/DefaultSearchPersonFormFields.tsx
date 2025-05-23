@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  DateField,
+  InputField,
+  createFieldNameMapper,
+  useValidateLength,
+  validateDateOfBirth,
+} from "@eshg/lib-portal";
 
 import { SearchPersonFormValues } from "./SearchPersonSidebar";
 

@@ -13,8 +13,7 @@ import {
   SidebarContent,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { Alert, useSnackbar } from "@eshg/lib-portal";
 
 import { useResolveInspectionDuplicate } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { useGetInspectionDuplicates } from "@/lib/businessModules/inspection/api/queries/inspection";

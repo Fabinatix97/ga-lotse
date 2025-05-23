@@ -16,17 +16,20 @@ import {
 import { useFormikContext } from "formik";
 import { useId, useState } from "react";
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import {
+  CheckboxGroupField,
+  InputField,
+  MonthAndYearFields,
+  RadioButtonsField,
+  TextareaField,
+  YesOrNoWithFollowUp,
+} from "@eshg/lib-portal";
 
 import { multiLineEllipsis } from "@/lib/baseModule/theme/mixins";
+import { AnamnesisStepLayout } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisLayout";
 import { FormDataWithoutConcern } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper.config";
 import { InfoModal } from "@/lib/businessModules/travelMedicine/components/shared/components/InfoModal";
 import { useTranslation } from "@/lib/i18n/client";
-import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 
 import { PrivacyNotice } from "./PrivacyNotice";
 import {
@@ -38,6 +41,13 @@ import {
 } from "./options";
 
 export function PreventionStep() {
+  return (
+    <AnamnesisStepLayout>
+      <PreventionStepContent />
+    </AnamnesisStepLayout>
+  );
+}
+function PreventionStepContent() {
   const mostRecentIncidentId = useId();
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const { setFieldValue, initialValues, values } =

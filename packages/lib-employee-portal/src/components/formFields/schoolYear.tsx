@@ -8,11 +8,12 @@ import { isNullish } from "remeda";
 
 import {
   BaseField,
+  CustomAutocomplete,
+  FieldProps,
+  OptionalFieldValue,
+  isEmptyString,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { FieldProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { formatSchoolYear } from "../../utils/formatters";
 

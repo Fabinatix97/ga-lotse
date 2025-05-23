@@ -16,9 +16,7 @@ import {
 import { ChangeEvent } from "react";
 import { isDefined } from "remeda";
 
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap, SelectOptions, buildEnumOptions } from "@eshg/lib-portal";
 
 import {
   NumberFilterDefinition,

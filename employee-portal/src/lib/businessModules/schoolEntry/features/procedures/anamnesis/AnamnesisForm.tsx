@@ -10,17 +10,18 @@ import { Formik } from "formik";
 import { useId } from "react";
 
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
+  BooleanSelectField,
+  FormProps,
+  InputField,
   MonthAndYear,
   MonthAndYearFields,
-} from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+  MutationBundle,
+  OptionalFieldValue,
+  SoftRequiredBooleanSelectField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
+import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import {
   ApiBooleanWithUnknown,
   ApiSchoolEntryCountryCode,

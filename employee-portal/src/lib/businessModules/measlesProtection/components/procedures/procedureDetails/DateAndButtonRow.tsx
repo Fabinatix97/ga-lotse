@@ -6,9 +6,8 @@
 import { Button } from "@mui/joy";
 import { MouseEventHandler } from "react";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { DateField, FieldProps } from "@eshg/lib-portal";
 import { DecoratedInputField } from "@eshg/lib-portal/components/formFields/DecoratedInputField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 
 interface DateAndButtonRowProps extends FieldProps<string> {
   onButtonClick: MouseEventHandler;

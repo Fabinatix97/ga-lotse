@@ -6,5 +6,8 @@
 import { ConfiguratorEndpointName } from "@/lib/configurator/shared/types";
 
 export const baseConfigRouterEndpoints: ConfiguratorEndpointName[] = [
+  "ACKNOWLEDGEMENTS_MARKDOWNS_CONFIG",
   "DEPARTMENT_INFO",
+  "PRIVACY_NOTICE",
+  "IMPRINT_MARKDOWNS_CONFIG",
 ];

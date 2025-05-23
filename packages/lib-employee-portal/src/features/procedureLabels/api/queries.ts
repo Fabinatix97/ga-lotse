@@ -5,7 +5,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { QueryKeyFactory } from "@eshg/lib-portal";
 
 import { ProcedureLabelClient } from "../types/procedureLabelClient";
 

@@ -6,8 +6,7 @@
 import { Stack } from "@mui/joy";
 
 import { DeletableFileField } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileType, InputField } from "@eshg/lib-portal";
 
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 

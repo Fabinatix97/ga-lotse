@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 
 import { TabNavigationItem } from "@eshg/lib-employee-portal";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { MeaslesProtectionProcedureLayout } from "@/lib/businessModules/measlesProtection/layout/MeaslesProtectionProcedureLayout";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";

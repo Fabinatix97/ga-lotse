@@ -17,7 +17,7 @@ import {
   ApiInspectionCLDVersion,
 } from "@eshg/inspection-api";
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/queries/inspection";

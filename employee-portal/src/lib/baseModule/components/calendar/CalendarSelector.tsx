@@ -107,7 +107,8 @@ export function CalendarSelector(props: {
         <SearchableGroups
           groups={calendarGroups}
           label="Teams"
-          placeholder="Mitarbeiter Suchen"
+          searchLabel="Mitarbeiter:in"
+          labelComponent="h2"
           renderItem={(item) => {
             if (item.type === "ALL") {
               const everyItemSelected = item.calendarIds.every((it) =>

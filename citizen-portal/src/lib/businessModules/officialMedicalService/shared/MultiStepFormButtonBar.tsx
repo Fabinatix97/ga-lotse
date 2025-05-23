@@ -7,8 +7,7 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isEmpty } from "remeda";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton, useMultiStepForm } from "@eshg/lib-portal";
 
 interface MultiStepFormButtonBarProps<Values> {
   href: string;

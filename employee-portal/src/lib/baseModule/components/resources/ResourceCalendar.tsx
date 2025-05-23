@@ -12,7 +12,7 @@ import { useRef, useState } from "react";
 
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
 import { InformationSheet } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { CalendarViewTypes } from "@/lib/baseModule/components/calendar/calendarViews";
 

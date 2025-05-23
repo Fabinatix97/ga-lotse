@@ -15,7 +15,7 @@ import {
   SearchInstitutionFilter,
   SetDictionaryFilterFn,
 } from "@eshg/lib-employee-portal";
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOptions } from "@eshg/lib-portal";
 
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 import {

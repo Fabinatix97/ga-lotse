@@ -8,11 +8,13 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Button, Divider, Grid, IconButton, Typography } from "@mui/joy";
 import { FieldArray } from "formik";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateEmail } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  InputField,
+  SelectField,
+  createFieldNameMapper,
+  useValidateLength,
+  validateEmail,
+} from "@eshg/lib-portal";
 
 import { FormSectionLabel } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
 import {

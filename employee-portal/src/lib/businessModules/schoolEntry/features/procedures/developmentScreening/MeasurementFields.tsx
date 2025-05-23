@@ -10,15 +10,13 @@ import { SxProps } from "@mui/joy/styles/types/theme";
 import { FormikErrors } from "formik";
 import { isDefined } from "remeda";
 
-import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
-import {
-  createFieldNameMapper,
-  mapOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
   OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+  createFieldNameMapper,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
+import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { GetPercentilesRequest } from "@eshg/school-entry-api";
 
 import { Percentiles } from "@/lib/businessModules/schoolEntry/api/models/examinations/Percentiles";

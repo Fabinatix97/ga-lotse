@@ -31,7 +31,7 @@ import {
   usePagination,
   useTableSorting,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { translateDataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { EvaluationTemplateWithUserInfo } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";

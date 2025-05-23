@@ -13,7 +13,7 @@ import {
   SearchableGroupItem,
   SearchableGroups,
 } from "@eshg/lib-employee-portal";
-import { CheckboxFieldProps } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { CheckboxFieldProps } from "@eshg/lib-portal";
 import { ApiDataPrivacyCategory } from "@eshg/statistics-api";
 
 import { AnonymizedFieldValue } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";

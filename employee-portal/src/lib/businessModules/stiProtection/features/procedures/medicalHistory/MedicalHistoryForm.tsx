@@ -11,8 +11,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { FormPlus, TextareaField } from "@eshg/lib-portal";
 import {
   ApiConcern,
   ApiGetMedicalHistory200Response,

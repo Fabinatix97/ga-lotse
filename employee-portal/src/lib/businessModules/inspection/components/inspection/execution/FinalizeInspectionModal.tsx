@@ -6,8 +6,8 @@
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+  QueryBoundary,
+} from "@eshg/lib-portal";
 
 import { FinalizeInspectionModalContent } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModalContent";
 

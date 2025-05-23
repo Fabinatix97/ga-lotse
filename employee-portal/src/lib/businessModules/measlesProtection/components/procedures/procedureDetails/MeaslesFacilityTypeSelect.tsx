@@ -8,8 +8,7 @@
 import { useFormikContext } from "formik";
 import { useState } from "react";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { InputField, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiFacilityType } from "@eshg/measles-protection-api";
 
 import { MeaslesFacility } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

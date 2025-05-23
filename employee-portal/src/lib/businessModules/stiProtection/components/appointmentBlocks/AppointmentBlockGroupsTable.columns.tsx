@@ -9,7 +9,7 @@ import { Row, createColumnHelper } from "@tanstack/react-table";
 import { unique } from "remeda";
 
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/sti-protection-api";
 
 import {

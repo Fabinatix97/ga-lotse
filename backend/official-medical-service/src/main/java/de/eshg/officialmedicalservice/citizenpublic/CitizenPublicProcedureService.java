@@ -5,11 +5,9 @@
 
 package de.eshg.officialmedicalservice.citizenpublic;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
-import de.eshg.officialmedicalservice.citizenpublic.api.LandingContentDto;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.notification.NotificationService;
@@ -22,6 +20,8 @@ import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.rest.service.i18n.Language;
+import de.eshg.rest.service.i18n.LanguageContextHolder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -42,8 +42,11 @@ public class CitizenPublicProcedureService {
   private final NotificationService notificationService;
   private final ProgressEntryService progressEntryService;
 
-  @Value("${de.eshg.official-medical-service.landing.config}")
-  private Resource landingResource;
+  @Value("${de.eshg.official-medical-service.landing.config.de}")
+  private Resource landingResourceDe;
+
+  @Value("${de.eshg.official-medical-service.landing.config.en}")
+  private Resource landingResourceEn;
 
   public CitizenPublicProcedureService(
       OmsAppointmentService appointmentService,
@@ -93,17 +96,26 @@ public class CitizenPublicProcedureService {
     return procedure.getExternalId();
   }
 
-  public LandingContentDto getLandingContent() {
+  public byte[] getLandingContent() {
+    Language language = LanguageContextHolder.getLanguage();
+
+    Resource landingResource = getLandingResourceForLanguage(language);
     try {
       InputStream inputStream = landingResource.getInputStream();
 
-      ObjectMapper objectMapper = new ObjectMapper();
-
-      return objectMapper.readValue(inputStream, LandingContentDto.class);
+      return inputStream.readAllBytes();
     } catch (IOException e) {
       throw new BadRequestException(
           ErrorCode.UNEXPECTED_ERROR,
           "Cannot read landing config file: " + landingResource.getFilename());
+    }
+  }
+
+  private Resource getLandingResourceForLanguage(Language language) {
+    if (language == Language.ENGLISH) {
+      return landingResourceEn;
+    } else {
+      return landingResourceDe;
     }
   }
 }

@@ -13,7 +13,7 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { InformationStatementTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateEditor";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";

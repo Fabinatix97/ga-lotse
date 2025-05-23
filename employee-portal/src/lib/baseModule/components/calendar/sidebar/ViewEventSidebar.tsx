@@ -15,7 +15,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { EventView } from "@/lib/baseModule/components/calendar/EventView";
 import { CalendarInfo } from "@/lib/baseModule/components/calendar/calendarDisplay";

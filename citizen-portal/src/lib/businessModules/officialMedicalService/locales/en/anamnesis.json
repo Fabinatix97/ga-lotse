@@ -369,7 +369,7 @@
           "label": "[EN]Nicht mehr seit"
         }
       },
-      "tuberculosis": {
+      "tuberculosisInfo": {
         "answer": {
           "label": "[EN]Tuberkulose",
           "required": "[EN]Pflichtfeld ausfüllen"

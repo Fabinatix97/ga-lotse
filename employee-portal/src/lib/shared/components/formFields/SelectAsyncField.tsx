@@ -6,11 +6,7 @@
 import { CircularProgress, Option, Select } from "@mui/joy";
 import { useState } from "react";
 
-import {
-  BaseField,
-  useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import { BaseField, FieldProps, useBaseField } from "@eshg/lib-portal";
 
 export interface OptionValue {
   value: string;

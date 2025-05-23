@@ -23,3 +23,4 @@ ln -s data/test/validation/StatisticsOpenApiTest/openApiSpec.json statistics/ope
 ln -s data/test/validation/StiProtectionOpenApiTest/openApiSpec.json sti-protection/openApi.json
 ln -s data/test/validation/TravelMedicineOpenApiTest/openApiSpec.json travel-medicine/openApi.json
 ln -s data/test/validation/ConfigLibraryOpenApiTest/openApiSpec.json lib-config/openApi.json
+ln -s data/test/validation/MedsAbroadOpenApiTest/openApiSpec.json meds-abroad/openApi.json

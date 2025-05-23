@@ -8,12 +8,12 @@
 import { use } from "react";
 import * as v from "valibot";
 
-import { UuidSchema } from "@eshg/lib-portal/schemas/pageParams";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
+import { UuidSchema } from "@eshg/lib-portal/universal";
 
 import { ExaminationStoreProvider } from "../../../stores/examination/ExaminationStoreProvider";
 import { ProphylaxisSessionExaminationLayout } from "../components/prophylaxisSessionExamination/ProphylaxisSessionExaminationLayout";
-import { useFilteredParticipants } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { useProphylaxisSessionStore } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 const RouteParamsSchema = v.object({
   examinationId: UuidSchema,
@@ -24,7 +24,9 @@ export function DentalProphylaxisSessionExaminationPage(
 ) {
   const params = use(props.params);
   const { examinationId } = v.parse(RouteParamsSchema, params);
-  const participants = useFilteredParticipants();
+  const participants = useProphylaxisSessionStore(
+    (store) => store.participants,
+  );
   const participant = participants.find(
     (p) => p.examinationId === examinationId,
   );

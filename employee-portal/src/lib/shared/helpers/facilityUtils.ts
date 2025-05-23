@@ -16,7 +16,7 @@ import {
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "@eshg/lib-employee-portal";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue } from "@eshg/lib-portal";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";

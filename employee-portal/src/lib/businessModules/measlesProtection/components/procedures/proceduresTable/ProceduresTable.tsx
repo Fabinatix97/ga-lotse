@@ -24,8 +24,7 @@ import {
   useHasUserRoleCheck,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { Row, formatDate } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 

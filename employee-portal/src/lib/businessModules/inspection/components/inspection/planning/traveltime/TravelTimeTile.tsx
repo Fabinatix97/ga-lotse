@@ -20,8 +20,7 @@ import type {
   ApiInspectionTravelTime,
 } from "@eshg/inspection-api";
 import { DetailsItem, useIsOffline } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime, useSnackbar } from "@eshg/lib-portal";
 
 import { useInspectionGeoApi } from "@/lib/businessModules/inspection/api/clients";
 import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/geo";

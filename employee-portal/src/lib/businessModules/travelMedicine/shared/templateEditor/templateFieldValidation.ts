@@ -5,7 +5,7 @@
 
 import { isEmpty, isNullish } from "remeda";
 
-import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, Validator } from "@eshg/lib-portal";
 
 export function validateAnamnesisTemplateTitle() {
   return validateTemplateField("Der Anamnesename", true, 200);

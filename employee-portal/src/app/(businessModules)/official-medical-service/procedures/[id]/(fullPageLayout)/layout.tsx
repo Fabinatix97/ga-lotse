@@ -7,7 +7,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { ProcedureDetailsToolbar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProceduresDetailsToolbar";

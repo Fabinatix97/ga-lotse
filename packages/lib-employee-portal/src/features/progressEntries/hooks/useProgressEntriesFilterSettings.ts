@@ -6,7 +6,7 @@
 import { Dispatch, SetStateAction, startTransition } from "react";
 
 import { ApiUser } from "@eshg/base-api";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 import { ApiProgressEntryClassFromJSON } from "@eshg/lib-procedures-api";
 
 import { buildOptionsFromUsers } from "../../../utils/mappers";

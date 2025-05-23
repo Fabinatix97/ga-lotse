@@ -5,13 +5,15 @@
 
 import { useFormikContext } from "formik";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
-import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  DateField,
+  NumberField,
+  SelectField,
+  TextareaField,
+  YesOrNoWithFollowUp,
+  useValidatePastOrTodayDate,
+  validatePositiveInteger,
+} from "@eshg/lib-portal";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";

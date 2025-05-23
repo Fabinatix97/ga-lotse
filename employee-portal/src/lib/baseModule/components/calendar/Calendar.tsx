@@ -25,7 +25,7 @@ import {
 import { isDefined, isNonNullish } from "remeda";
 
 import { CalendarEventApi } from "@eshg/base-api";
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
+import { LoadingIndicator } from "@eshg/lib-portal";
 
 import { useCalendarEventApi } from "@/lib/baseModule/api/clients";
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -164,7 +164,7 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
           } satisfies SxProps;
 
           return (
-            <Stack>
+            <Stack tabIndex={0}>
               <Typography level="title-sm" sx={sx}>
                 {eventInfo.event.title}
               </Typography>

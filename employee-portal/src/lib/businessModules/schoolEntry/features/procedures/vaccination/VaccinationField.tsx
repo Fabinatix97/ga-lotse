@@ -5,12 +5,13 @@
 
 import { SxProps } from "@mui/joy/styles/types";
 
-import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import {
+  OptionalFieldValue,
+  Validator,
   validateIntegerAnd,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
+import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 
 export const VACCINATION_FIELD_STYLE: SxProps = { width: "160px" };
 

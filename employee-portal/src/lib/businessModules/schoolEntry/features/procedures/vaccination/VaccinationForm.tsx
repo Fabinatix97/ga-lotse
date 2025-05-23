@@ -8,28 +8,25 @@
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Divider, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { FieldArray, Formik, FormikHelpers } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import { isDefined } from "remeda";
 
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
-  SoftRequiredBooleanSelectField,
-  SoftRequiredSelectField,
-} from "@eshg/lib-portal/components/form/fieldVariants";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import {
-  validateIntegerAnd,
-  validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import {
+  DateField,
+  FieldArrayWithFocus as FieldArray,
   FormProps,
+  MutationBundle,
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+  SoftRequiredBooleanSelectField,
+  SoftRequiredSelectField,
+  isEmptyString,
+  useIsFormDisabled,
+  validateIntegerAnd,
+  validateRange,
+} from "@eshg/lib-portal";
+import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import {
   ApiBooleanWithUnknown,
   ApiVaccinationSchemeValue,
@@ -200,8 +197,11 @@ export function VaccinationForm(props: VaccinationFormProps) {
             </Stack>
           ))}
           <Stack direction="row" gap={3} flexWrap="wrap">
-            <FieldArray name="otherVaccinations">
-              {({ push, remove }) => (
+            <FieldArray
+              valueLength={values.otherVaccinations.length}
+              name="otherVaccinations"
+            >
+              {({ push, remove, setInputElementRef }) => (
                 <>
                   {values.otherVaccinations.map((values, index) => (
                     <Stack
@@ -211,6 +211,7 @@ export function VaccinationForm(props: VaccinationFormProps) {
                       data-testid="otherVaccinationForm"
                     >
                       <OtherVaccinationForm
+                        ref={(el) => setInputElementRef(el, index)}
                         name={`otherVaccinations.${index}`}
                         description={values.description}
                         count={values.count}

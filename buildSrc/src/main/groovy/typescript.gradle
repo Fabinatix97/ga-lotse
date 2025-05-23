@@ -1,6 +1,7 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
 import de.eshg.frontend.IncludesAndExcludes
 import de.eshg.frontend.TypescriptDefaults
+import de.eshg.frontend.PnpmTaskWithProjectDependencies
 
 def typescriptExtension = project.extensions.create('typescript', IncludesAndExcludes)
 def distDir = layout.buildDirectory.dir('dist')
@@ -12,9 +13,8 @@ def getTypescriptInputFiles = {
   }
 }
 
-tasks.register('compile', PnpmTask) {
+tasks.register('compile', PnpmTaskWithProjectDependencies) {
   group = 'package'
-  dependsOn 'prepareEnvironment'
 
   inputs.files "${rootDir}/config/tsconfig.base.json"
   inputs.files "${projectDir}/tsconfig.json"

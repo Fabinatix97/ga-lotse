@@ -16,7 +16,7 @@ import {
 } from "@mui/joy";
 import { isEmpty, isString, omit, pick } from "remeda";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import {
   fetchBackupInfo,

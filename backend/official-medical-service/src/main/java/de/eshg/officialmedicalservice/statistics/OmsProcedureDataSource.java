@@ -252,7 +252,7 @@ public class OmsProcedureDataSource
               .orElse(null);
       case MEDICAL_HISTORY_INFO_TUBERCULOSIS_INFO_ANSWER ->
           getOptionalMedicalHistoryInfo(procedure)
-              .map(MedicalHistoryDto::tuberculosis)
+              .map(MedicalHistoryDto::tuberculosisInfo)
               .map(SubInfoSegmentWithAnswerDto::answer)
               .map(Enum::toString)
               .orElse(null);

@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface MedicalHistorySectionElementProps {
   dataTestId: string;

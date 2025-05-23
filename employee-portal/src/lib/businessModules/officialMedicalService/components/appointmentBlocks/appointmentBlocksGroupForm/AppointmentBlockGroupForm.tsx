@@ -9,8 +9,7 @@ import { isDefined } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString, useSnackbar } from "@eshg/lib-portal";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";

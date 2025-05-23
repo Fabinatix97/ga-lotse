@@ -14,10 +14,7 @@ import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
 } from "@eshg/lib-employee-portal";
-import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatDateTime } from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentOverviewEntry,

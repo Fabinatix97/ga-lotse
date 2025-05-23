@@ -5,8 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { InputField, SelectOption } from "@eshg/lib-portal";
 import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
 import { ApiDisease } from "@eshg/travel-medicine-api";
 

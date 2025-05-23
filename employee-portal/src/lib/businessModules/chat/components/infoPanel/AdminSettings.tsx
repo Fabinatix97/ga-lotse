@@ -8,7 +8,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { Stack } from "@mui/joy";
 import { useState } from "react";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

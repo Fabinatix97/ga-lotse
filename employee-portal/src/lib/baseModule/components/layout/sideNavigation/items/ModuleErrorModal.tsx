@@ -5,7 +5,7 @@
 
 import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 interface ModuleErrorModalProps {
   open: boolean;

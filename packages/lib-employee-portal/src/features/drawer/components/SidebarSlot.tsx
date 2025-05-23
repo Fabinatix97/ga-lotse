@@ -7,10 +7,12 @@ import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
-import { LoadingOverlayHiddenBackdrop } from "@eshg/lib-portal/components/LoadingOverlayHiddenBackdrop";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import {
+  ErrorAlert,
+  LoadingOverlayHiddenBackdrop,
+  QueryBoundary,
+  RequiresChildren,
+} from "@eshg/lib-portal";
 
 import {
   DrawerFallbackOptions,

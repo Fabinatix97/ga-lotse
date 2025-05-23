@@ -7,8 +7,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useIsActiveRoute } from "@eshg/lib-portal/hooks/useIsActiveRoute";
+import { InternalLinkButton, useIsActiveRoute } from "@eshg/lib-portal";
 
 import { TabNavigationItem } from "./TabNavigation";
 

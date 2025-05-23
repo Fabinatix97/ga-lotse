@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
+import { useUuid } from "@eshg/lib-portal";
 
 import { isDrawer, useDrawerContext } from "../contexts/drawer";
 import { useSidebarScope } from "../contexts/sidebarScope";

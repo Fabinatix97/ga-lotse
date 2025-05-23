@@ -19,13 +19,13 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
+  ButtonLink,
+  FileType,
+  OptionalFieldValue,
   downloadFileAndOpen,
+  mapRequiredValue,
   useFileDownload,
-} from "@eshg/lib-portal/api/files/download";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 import { useDentalApi } from "../../../../contexts/dental";

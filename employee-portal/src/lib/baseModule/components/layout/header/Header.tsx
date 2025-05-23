@@ -12,7 +12,7 @@ import {
   useLayoutConfig,
   useSidenavDrawer,
 } from "@eshg/lib-employee-portal";
-import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
+import { EnvironmentIndicator } from "@eshg/lib-portal";
 
 import { HeaderButtons } from "@/lib/baseModule/components/layout/header/HeaderButtons";
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";

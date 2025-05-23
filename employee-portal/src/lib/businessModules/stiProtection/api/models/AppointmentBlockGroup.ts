@@ -6,7 +6,7 @@
 import { first, last, sumBy } from "remeda";
 
 import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
-import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
+import { assertNonEmptyArray } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiGetAppointmentBlock,

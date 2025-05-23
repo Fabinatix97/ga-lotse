@@ -15,7 +15,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 import { ApiUser } from "@eshg/travel-medicine-api";
 
 import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppliedByFields";

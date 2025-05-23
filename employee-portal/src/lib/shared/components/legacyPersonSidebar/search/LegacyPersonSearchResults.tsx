@@ -17,8 +17,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { AlertProps } from "@eshg/lib-portal/components/Alert";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { AlertProps, RadioGroupField } from "@eshg/lib-portal";
 
 interface LegacyPersonSearchResultsProps {
   persons: ApiGetReferencePersonResponse[];

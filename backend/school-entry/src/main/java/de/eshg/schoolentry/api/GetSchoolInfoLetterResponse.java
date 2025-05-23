@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.api;
 
-import de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationDto;
+import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto;
 import jakarta.validation.Valid;
 
 public record GetSchoolInfoLetterResponse(

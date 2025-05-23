@@ -6,8 +6,7 @@
 import { Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { SingleAutocompleteField, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiCalculation } from "@eshg/statistics-api";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";

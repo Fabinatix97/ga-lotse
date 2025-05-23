@@ -24,15 +24,15 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
+  DateField,
+  SelectField,
   formatDate,
   formatDateTime,
   formatTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+  optionsFromRecord,
+  toDateString,
+} from "@eshg/lib-portal";
 
 import { resourceTypeNames } from "@/lib/baseModule/components/resources/constants";
 import { useAddResource } from "@/lib/businessModules/inspection/api/mutations/resources";

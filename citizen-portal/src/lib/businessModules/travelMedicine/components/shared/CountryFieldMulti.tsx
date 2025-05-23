@@ -5,15 +5,16 @@
 
 import { Close } from "@mui/icons-material";
 import { AutocompleteProps, Chip } from "@mui/joy";
+import { useId } from "react";
 import { isString } from "remeda";
 
 import {
   BaseField,
+  CustomAutocomplete,
+  FieldProps,
+  SelectOption,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
 
@@ -38,6 +39,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
   const field = useBaseField(props);
   const { countryOptions } = useTranslateCountry();
   const countries = countryOptions();
+  const iconId = useId();
 
   function setValue(newValue: (string | SelectOption)[]) {
     const labelNames = newValue.map((v) => (isString(v) ? v : v.value));
@@ -79,10 +81,21 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
               variant="soft"
               color="primary"
               size="sm"
-              endDecorator={<Close fontSize="xl" />}
+              endDecorator={
+                <Close
+                  id={iconId}
+                  fontSize="xl"
+                  aria-label="Auswahl entfernen"
+                />
+              }
               sx={{ minWidth: 0, fontWeight: 500 }}
               {...getTagProps({ index })}
               key={index}
+              slotProps={{
+                action: {
+                  "aria-describedby": iconId,
+                },
+              }}
             >
               {countries.find((a) => a.value === item)!.label}
             </Chip>

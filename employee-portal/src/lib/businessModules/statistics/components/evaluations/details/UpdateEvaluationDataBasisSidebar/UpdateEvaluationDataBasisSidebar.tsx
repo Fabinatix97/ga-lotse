@@ -8,7 +8,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { useUpdateDataBasis } from "@/lib/businessModules/statistics/api/mutations/useUpdateDataBasis";
 import { validateUpdateEvaluationDataBasisStep } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateEvaluationDataBasisSidebar/validateUpdateEvaluationDataBasisStep";

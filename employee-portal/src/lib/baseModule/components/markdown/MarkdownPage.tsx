@@ -8,10 +8,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import {
-  Markdown,
-  defaultComponents,
-} from "@eshg/lib-portal/components/Markdown";
+import { Markdown, defaultComponents } from "@eshg/lib-portal";
 
 import { StaticTextDocumentPanel } from "@/lib/baseModule/components/StaticTextDocumentPanel";
 

@@ -5,8 +5,7 @@
 
 import { AutocompleteOption } from "@mui/joy";
 
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { CustomAutocomplete, QueryKeyFactory } from "@eshg/lib-portal";
 
 import { ProcedureLabel } from "../api/models/ProcedureLabel";
 import { useGetProcedureLabels } from "../api/queries";

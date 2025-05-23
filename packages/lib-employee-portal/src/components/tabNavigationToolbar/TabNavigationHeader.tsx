@@ -6,8 +6,7 @@
 import { Stack, Typography, TypographyProps } from "@mui/joy";
 import { Children } from "react";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren, useIsMobile } from "@eshg/lib-portal";
 
 interface TabNavigationHeaderProps extends RequiresChildren {
   titleAsH1?: boolean;

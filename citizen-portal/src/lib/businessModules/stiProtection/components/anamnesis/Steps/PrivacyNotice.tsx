@@ -6,7 +6,7 @@
 import { Box } from "@mui/joy";
 import { useTranslation } from "react-i18next";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 export function PrivacyNotice() {
   const { t } = useTranslation(["stiProtection/anamnesis"]);

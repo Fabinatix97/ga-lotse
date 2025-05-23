@@ -19,10 +19,12 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  DateField,
+  SelectField,
+  optionsFromRecord,
+  toDateString,
+} from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import {

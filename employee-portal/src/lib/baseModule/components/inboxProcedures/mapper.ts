@@ -5,9 +5,7 @@
 
 import { isEmpty } from "remeda";
 
-import { AcademicTitle } from "@eshg/lib-portal/components/formFields/constants";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { AcademicTitle, mapOptionalValue, toUtcDate } from "@eshg/lib-portal";
 import {
   ApiContactDetails,
   ApiContactType,

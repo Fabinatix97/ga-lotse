@@ -7,7 +7,7 @@ import { FormHelperText, FormLabel, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined, isNonNullish } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";

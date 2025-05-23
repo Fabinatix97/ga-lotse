@@ -16,9 +16,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
-import { FileLike } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileLike, FormPlus, formatFileSize } from "@eshg/lib-portal";
 
 import { compressImage } from "@/lib/shared/helpers/imageCompressor";
 

@@ -7,23 +7,23 @@ import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
+import {
+  DateField,
+  EmailField,
+  GENDER_OPTIONS,
+  InputField,
+  PhoneNumberField,
+  SelectField,
+  buildEnumOptions,
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal";
 import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   GeneralInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
   PersonalInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import {
-  useValidateLength,
-  useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";

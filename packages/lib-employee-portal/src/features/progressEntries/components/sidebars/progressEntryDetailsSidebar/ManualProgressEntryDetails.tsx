@@ -9,9 +9,7 @@ import { Formik } from "formik";
 import { ReactNode, useState } from "react";
 import { isDefined } from "remeda";
 
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { SubmitButton, TextareaField, formatUserName } from "@eshg/lib-portal";
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,

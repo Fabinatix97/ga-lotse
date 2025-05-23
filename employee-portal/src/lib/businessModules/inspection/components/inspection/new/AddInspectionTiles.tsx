@@ -14,6 +14,7 @@ import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/ap
 import { useEditFacilitySidebar } from "@/lib/businessModules/inspection/components/inspection/EditFacilitySidebar";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
 import { AdditionalInfoTile } from "@/lib/businessModules/inspection/components/inspection/new/AdditionalInfoTile";
+import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 
 export function AddInspectionTiles({
@@ -51,7 +52,11 @@ export function AddInspectionTiles({
   return (
     <Grid container spacing={3} direction={{ xs: "column", xl: "row" }}>
       <Grid xl={9}>
-        <FacilityTile facility={facility} onEdit={openEdit} />
+        <FacilityTile
+          inspection={inspection}
+          getSyncRoute={routes.procedures.newSyncFacility}
+          onEdit={openEdit}
+        />
       </Grid>
       <Grid xl={3} sx={{ flex: 1 }}>
         <AdditionalInfoTile

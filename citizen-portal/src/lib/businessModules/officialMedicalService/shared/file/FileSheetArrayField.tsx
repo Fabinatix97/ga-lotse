@@ -6,10 +6,12 @@
 import { FormControl } from "@mui/joy";
 import { isDefined, splice } from "remeda";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
-import { useValidateFileType } from "@eshg/lib-portal/hooks/useValidators";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import {
+  FieldProps,
+  isNonEmptyArray,
+  useBaseField,
+  useValidateFileType,
+} from "@eshg/lib-portal";
 
 import {
   FileSheetArray,

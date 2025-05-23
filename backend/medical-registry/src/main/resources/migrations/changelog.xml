@@ -23,5 +23,6 @@
   <include file="migrations/0013_privacy_documents_config.xml"/>
   <include file="migrations/0014_add_opening_hours_initialized.xml"/>
   <include file="migrations/0015_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="migrations/0016_add_meds_abroad_procedure_type.xml"/>
 
 </databaseChangeLog>

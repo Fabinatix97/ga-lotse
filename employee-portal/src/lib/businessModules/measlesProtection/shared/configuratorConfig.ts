@@ -6,4 +6,4 @@
 import { ConfiguratorEndpointName } from "@/lib/configurator/shared/types";
 
 export const measlesProtectionConfigRouterEndpoints: ConfiguratorEndpointName[] =
-  ["DEPARTMENT_INFO", "OPENING_HOURS"];
+  ["DEPARTMENT_INFO", "OPENING_HOURS", "PRIVACY_NOTICE"];

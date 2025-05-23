@@ -15,7 +15,7 @@ import {
   useSidebar,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { optionsFromRecord } from "@eshg/lib-portal";
 import { ApiProcedureType } from "@eshg/lib-procedures-api";
 
 import {

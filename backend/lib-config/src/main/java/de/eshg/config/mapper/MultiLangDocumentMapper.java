@@ -7,7 +7,7 @@ package de.eshg.config.mapper;
 
 import de.eshg.base.department.LanguageDto;
 import de.eshg.config.ConfigurationStatus;
-import de.eshg.config.api.DocumentDto;
+import de.eshg.config.api.DocumentDetailsDto;
 import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangFileName;
@@ -27,12 +27,12 @@ public class MultiLangDocumentMapper {
         mapToDto(multiLangFileName.en(), multiLangDocument.getEnFileSizeBytes()));
   }
 
-  private static DocumentDto mapToDto(String fileName, Integer fileSize) {
+  private static DocumentDetailsDto mapToDto(String fileName, Integer fileSize) {
     if (fileSize == null) {
       return null;
     }
 
-    return new DocumentDto(fileName, fileSize);
+    return new DocumentDetailsDto(fileName, fileSize);
   }
 
   public static Language mapToDomain(LanguageDto languageDto) {

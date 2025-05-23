@@ -19,13 +19,13 @@ import {
   useSearchParamLink,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import {
+  GENDER_VALUES,
+  NavigationLink,
+  Row,
   formatDate,
   formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/lib-portal";
 import { ApiStiProtectionProcedureOverview } from "@eshg/sti-protection-api";
 
 import { useGetStiProceduresTablePage } from "@/lib/businessModules/stiProtection/api/queries/procedures";

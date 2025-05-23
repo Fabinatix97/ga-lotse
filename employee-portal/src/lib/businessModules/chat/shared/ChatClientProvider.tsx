@@ -26,11 +26,14 @@ import {
 import { isNullish } from "remeda";
 
 import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { useGetDepartment } from "@/lib/businessModules/chat/api/queries/department";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import {
+  ChatTabTakeoverView,
+  ClientState,
+} from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatLifecycle } from "@/lib/businessModules/chat/shared/hooks/useChatLifecycle";
 import { useIdleTimerHook } from "@/lib/businessModules/chat/shared/hooks/useIdleTimerHook";
@@ -51,6 +54,8 @@ interface ChatClientContextType {
   setClientState: Dispatch<SetStateAction<ClientState>>;
   departmentInfo?: ApiGetDepartmentInfoResponse;
   isClientPrepared: boolean;
+  currentSessionView: ChatTabTakeoverView;
+  setCurrentSessionView: Dispatch<SetStateAction<ChatTabTakeoverView>>;
 }
 
 export const ChatClientContext = createContext<ChatClientContextType | null>(
@@ -67,12 +72,21 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
   const [clientState, setClientState] = useState<ClientState>(
     ClientState.CreateMatrixClient,
   );
+  const [currentSessionView, setCurrentSessionView] =
+    useState<ChatTabTakeoverView>(ChatTabTakeoverView.ActiveChatTab);
+
   const { data: departmentInfo } = useGetDepartment();
 
   const isClientPrepared = clientState === ClientState.Ready;
 
   useIdleTimerHook(matrixClient, setClientState);
-  useChatLifecycle(matrixClient, clientState, setClientState);
+  useChatLifecycle(
+    matrixClient,
+    clientState,
+    setClientState,
+    currentSessionView,
+    setCurrentSessionView,
+  );
 
   // Handle chat message teaser
   useEffect(() => {
@@ -186,8 +200,10 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       matrixClient: matrixClient.current,
       departmentInfo,
       isClientPrepared: isClientPrepared,
+      currentSessionView,
+      setCurrentSessionView,
     }),
-    [clientState, departmentInfo, isClientPrepared],
+    [clientState, currentSessionView, departmentInfo, isClientPrepared],
   );
 
   return (

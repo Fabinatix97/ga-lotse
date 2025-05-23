@@ -5,10 +5,12 @@
 
 import { Stack } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  InputField,
+  OptionalFieldValue,
+  TextareaField,
+  useValidateLength,
+} from "@eshg/lib-portal";
 
 export interface ProcedureLabelValues {
   name: string;

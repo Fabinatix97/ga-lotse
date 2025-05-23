@@ -9,7 +9,7 @@ import { Stack } from "@mui/joy";
 import { ReactNode, useId, useMemo, useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
 
-import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 import { DetailsSectionHeader } from "./DetailsSectionHeader";
 

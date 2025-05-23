@@ -15,10 +15,12 @@ import {
   type ApiGetReferencePersonResponse,
   ApiSalutation,
 } from "@eshg/base-api";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  FormAddMoreButton,
+  RadioGroupField,
+  formatDate,
+  formatPersonName,
+} from "@eshg/lib-portal";
 
 import { NoSearchResults } from "../../../../components/NoSearchResults";
 import { SelectableCard } from "../../../../components/cards/SelectableCard";

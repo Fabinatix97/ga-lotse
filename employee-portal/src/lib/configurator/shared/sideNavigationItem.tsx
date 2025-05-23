@@ -4,19 +4,23 @@
  */
 
 import { ErrorOutlineOutlined, SettingsOutlined } from "@mui/icons-material";
+import { isDefined } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  AccessCheck,
   SideNavigationItem,
   SideNavigationSuspenseItem,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
+import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
 import { useGetAllModulesStatuses } from "@/lib/shared/api/queries/configurator/status";
 
 import { resolveConfiguratorRoute } from "./routes";
+import { ConfiguratorEndpointName, ConfiguratorModuleName } from "./types";
 
 function getEndDecorator(status?: ConfiguratorStatus) {
   switch (status) {
@@ -24,9 +28,38 @@ function getEndDecorator(status?: ConfiguratorStatus) {
       return <ErrorOutlineOutlined color="warning" sx={{ fontSize: "1rem" }} />;
     case "PARTIALLY_COMPLETE":
       return <ErrorOutlineOutlined color="neutral" sx={{ fontSize: "1rem" }} />;
+    case "UNAVAILABLE":
+      return <ErrorOutlineOutlined color="danger" sx={{ fontSize: "1rem" }} />;
     default:
       return undefined;
   }
+}
+
+function subItem({
+  name,
+  module,
+  endpointName = "index",
+  data,
+  accessCheck,
+}: {
+  name: string;
+  module: ConfiguratorModuleName;
+  endpointName?: ConfiguratorEndpointName | "index";
+  data: ConfiguratorStatusOverview;
+  accessCheck: AccessCheck;
+}) {
+  if (data[module] == null || data[module].moduleState === "UNAVAILABLE") {
+    return;
+  }
+  return {
+    name,
+    href: resolveConfiguratorRoute({
+      module,
+      endpointName,
+    }),
+    accessCheck,
+    endDecorator: getEndDecorator(data[module].moduleState),
+  };
 }
 
 function ConfiguratorSideNavigationItem() {
@@ -39,92 +72,62 @@ function ConfiguratorSideNavigationItem() {
         name: sideNavigationItem.name,
         decorator: sideNavigationItem.decorator,
         subItems: [
-          {
+          subItem({
             name: "Grundmodul",
-            href: resolveConfiguratorRoute({
-              module: "BASE",
-              endpointName: "index",
-            }),
+            module: "BASE",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.BASE?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Einschulung",
-            href: resolveConfiguratorRoute({
-              module: "SCHOOL_ENTRY",
-              endpointName: "index",
-            }),
+            module: "SCHOOL_ENTRY",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.SCHOOL_ENTRY?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Impfberatung",
-            href: resolveConfiguratorRoute({
-              module: "TRAVEL_MEDICINE",
-              endpointName: "index",
-            }),
+            module: "TRAVEL_MEDICINE",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.TRAVEL_MEDICINE?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Masernschutz",
-            href: resolveConfiguratorRoute({
-              module: "MEASLES_PROTECTION",
-              endpointName: "index",
-            }),
+            module: "MEASLES_PROTECTION",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(
-              data?.MEASLES_PROTECTION?.moduleState,
-            ),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Open Data",
-            href: resolveConfiguratorRoute({
-              module: "OPEN_DATA",
-              endpointName: "index",
-            }),
+            module: "OPEN_DATA",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.OPEN_DATA?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Medizinalaufsicht",
-            href: resolveConfiguratorRoute({
-              module: "MEDICAL_REGISTRY",
-              endpointName: "index",
-            }),
+            module: "MEDICAL_REGISTRY",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.MEDICAL_REGISTRY?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "HIV-STI",
-            href: resolveConfiguratorRoute({
-              module: "STI_PROTECTION",
-              endpointName: "index",
-            }),
+            module: "STI_PROTECTION",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.STI_PROTECTION?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Sexarbeit",
-            href: resolveConfiguratorRoute({
-              module: "SEX_WORK",
-              endpointName: "index",
-            }),
+            module: "SEX_WORK",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(data?.SEX_WORK?.moduleState),
-          },
-          {
+            data,
+          }),
+          subItem({
             name: "Amtsärztliche Dienste",
-            href: resolveConfiguratorRoute({
-              module: "OFFICIAL_MEDICAL_SERVICE",
-              endpointName: "index",
-            }),
+            module: "OFFICIAL_MEDICAL_SERVICE",
+            endpointName: "index",
             accessCheck: sideNavigationItem.accessCheck,
-            endDecorator: getEndDecorator(
-              data?.OFFICIAL_MEDICAL_SERVICE?.moduleState,
-            ),
-          },
-        ],
+            data,
+          }),
+        ].filter(isDefined),
       }}
     />
   );

@@ -7,7 +7,7 @@
 
 import { createContext, useContext, useState } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 import { ApiProcedureStatus } from "@eshg/lib-procedures-api";
 
 import { useIsOffline } from "../../../hooks/useIsOffline";

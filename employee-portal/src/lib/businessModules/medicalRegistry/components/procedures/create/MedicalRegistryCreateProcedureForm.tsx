@@ -28,13 +28,7 @@ import { ProfessionalismInformationForm } from "./ProfessionalismInformationForm
 
 export const requiredFieldMessage = "Pflichtfeld!";
 
-interface MedicalRegistryCreateProcedureFormProps {
-  setShowSuccessPage: (showSuccessPage: boolean) => void;
-}
-
-export function MedicalRegistryCreateProcedureForm(
-  props: MedicalRegistryCreateProcedureFormProps,
-) {
+export function MedicalRegistryCreateProcedureForm() {
   const router = useRouter();
 
   function handleCancel() {
@@ -49,7 +43,8 @@ export function MedicalRegistryCreateProcedureForm(
       onSubmit={async (values) => {
         await createProcedure
           .mutateAsync(mapCreateProcedureRequest(values), {
-            onSuccess: () => props.setShowSuccessPage(true),
+            onSuccess: (procedureId) =>
+              router.push(routes.procedures.byId(procedureId).details),
           })
           .catch((error) => {
             logger.softError(

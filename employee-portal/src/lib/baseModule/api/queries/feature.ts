@@ -11,7 +11,7 @@ import {
   selectDisabledOldFeature,
   selectEnabledNewFeature,
   useGetFeatureToggle,
-} from "@eshg/lib-portal/api/featureToggles";
+} from "@eshg/lib-portal";
 
 import { useBaseFeatureTogglesApi } from "@/lib/baseModule/api/clients";
 import { baseFeatureTogglesApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

@@ -6,9 +6,11 @@
 import { Stack } from "@mui/joy";
 import { isDefined, isNonNullish } from "remeda";
 
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import {
+  NumberField,
+  SingleAutocompleteField,
+  buildEnumOptions,
+} from "@eshg/lib-portal";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import {

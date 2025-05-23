@@ -9,7 +9,7 @@ import {
   ApiBindKeycloakIdRequest,
   ApiDeactivateRequest,
 } from "@eshg/chat-management-api";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { useUserAccountApi } from "@/lib/businessModules/chat/api/clients";
 

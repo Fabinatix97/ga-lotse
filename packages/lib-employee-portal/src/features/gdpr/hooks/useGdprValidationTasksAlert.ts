@@ -7,7 +7,7 @@
 
 import { isPast } from "date-fns";
 
-import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useControlledAlert } from "@eshg/lib-portal";
 import {
   ApiBusinessModule,
   ApiGetGdprNotificationBannerResponse,

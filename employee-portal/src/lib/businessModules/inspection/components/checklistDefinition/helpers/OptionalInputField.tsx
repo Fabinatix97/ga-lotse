@@ -8,7 +8,7 @@ import { Button } from "@mui/joy";
 import { FormikErrors } from "formik";
 import { memo, useState } from "react";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { useBaseField } from "@eshg/lib-portal";
 
 import { FlexInputFieldProps } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";
 import { InputWithDeleteButton } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/InputWithDeleteButton";

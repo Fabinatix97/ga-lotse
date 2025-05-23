@@ -184,8 +184,7 @@ public final class ExaminationMapper {
       case I -> MainResultDto.I;
       case D -> MainResultDto.D;
       case F -> MainResultDto.F;
-      case E -> MainResultDto.E;
-      case Y -> MainResultDto.Y;
+      case M -> MainResultDto.M;
       case X -> MainResultDto.X;
       case Z -> MainResultDto.Z;
       case T -> MainResultDto.T;
@@ -193,24 +192,42 @@ public final class ExaminationMapper {
       case O -> MainResultDto.O;
       case V -> MainResultDto.V;
       case N -> MainResultDto.N;
-      case P -> MainResultDto.P;
-      case K -> MainResultDto.K;
       case U -> MainResultDto.U;
+      case K -> MainResultDto.K;
+      case E -> MainResultDto.E;
+      case W -> MainResultDto.W;
+      case P -> MainResultDto.P;
+      case A -> MainResultDto.A;
     };
   }
 
   private static SecondaryResultDto mapToDto(SecondaryResult secondaryResult) {
     return switch (secondaryResult) {
       case null -> null;
+      case S -> SecondaryResultDto.S;
+      case I -> SecondaryResultDto.I;
+      case D -> SecondaryResultDto.D;
+      case F -> SecondaryResultDto.F;
+      case M -> SecondaryResultDto.M;
+      case X -> SecondaryResultDto.X;
+      case Z -> SecondaryResultDto.Z;
+      case T -> SecondaryResultDto.T;
+      case H -> SecondaryResultDto.H;
+      case O -> SecondaryResultDto.O;
+      case V -> SecondaryResultDto.V;
+      case N -> SecondaryResultDto.N;
+      case U -> SecondaryResultDto.U;
+      case K -> SecondaryResultDto.K;
+      case E -> SecondaryResultDto.E;
+      case W -> SecondaryResultDto.W;
+      case P -> SecondaryResultDto.P;
+      case A -> SecondaryResultDto.A;
       case DA -> SecondaryResultDto.DA;
       case FA -> SecondaryResultDto.FA;
-      case FIS -> SecondaryResultDto.FIS;
       case ID -> SecondaryResultDto.ID;
       case INS -> SecondaryResultDto.INS;
       case LUE -> SecondaryResultDto.LUE;
       case RET -> SecondaryResultDto.RET;
-      case TR -> SecondaryResultDto.TR;
-      case WR -> SecondaryResultDto.WR;
       case ZA -> SecondaryResultDto.ZA;
     };
   }
@@ -222,8 +239,7 @@ public final class ExaminationMapper {
       case I -> MainResult.I;
       case D -> MainResult.D;
       case F -> MainResult.F;
-      case E -> MainResult.E;
-      case Y -> MainResult.Y;
+      case M -> MainResult.M;
       case X -> MainResult.X;
       case Z -> MainResult.Z;
       case T -> MainResult.T;
@@ -231,24 +247,42 @@ public final class ExaminationMapper {
       case O -> MainResult.O;
       case V -> MainResult.V;
       case N -> MainResult.N;
-      case P -> MainResult.P;
-      case K -> MainResult.K;
       case U -> MainResult.U;
+      case K -> MainResult.K;
+      case E -> MainResult.E;
+      case W -> MainResult.W;
+      case P -> MainResult.P;
+      case A -> MainResult.A;
     };
   }
 
   private static SecondaryResult mapToDomain(SecondaryResultDto dto) {
     return switch (dto) {
       case null -> null;
+      case S -> SecondaryResult.S;
+      case I -> SecondaryResult.I;
+      case D -> SecondaryResult.D;
+      case F -> SecondaryResult.F;
+      case M -> SecondaryResult.M;
+      case X -> SecondaryResult.X;
+      case Z -> SecondaryResult.Z;
+      case T -> SecondaryResult.T;
+      case H -> SecondaryResult.H;
+      case O -> SecondaryResult.O;
+      case V -> SecondaryResult.V;
+      case N -> SecondaryResult.N;
+      case U -> SecondaryResult.U;
+      case K -> SecondaryResult.K;
+      case E -> SecondaryResult.E;
+      case W -> SecondaryResult.W;
+      case P -> SecondaryResult.P;
+      case A -> SecondaryResult.A;
       case DA -> SecondaryResult.DA;
       case FA -> SecondaryResult.FA;
-      case FIS -> SecondaryResult.FIS;
       case ID -> SecondaryResult.ID;
       case INS -> SecondaryResult.INS;
       case LUE -> SecondaryResult.LUE;
       case RET -> SecondaryResult.RET;
-      case TR -> SecondaryResult.TR;
-      case WR -> SecondaryResult.WR;
       case ZA -> SecondaryResult.ZA;
     };
   }

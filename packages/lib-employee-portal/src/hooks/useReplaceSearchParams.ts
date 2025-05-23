@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { isNonNullish } from "remeda";
 
-import { ensureArray } from "@eshg/lib-portal/helpers/guards";
+import { ensureArray } from "@eshg/lib-portal";
 
 type SearchParamValue =
   | string

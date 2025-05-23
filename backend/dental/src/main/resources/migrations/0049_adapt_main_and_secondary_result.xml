@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1747386108275-1">
+    <update tableName="screening_examination_result_tooth_diagnoses">
+      <column name="main_result" value="S"/>
+      <where>main_result = 'Y'</where>
+    </update>
+    <update tableName="screening_examination_result_tooth_diagnoses">
+      <column name="secondary_result" value="DA"/>
+      <where>secondary_result = 'TR' OR secondary_result='FIS' OR
+        secondary_result='WR'
+      </where>
+    </update>
+    <ext:modifyPostgresEnumType name="mainresult"
+                                newValues="A, D, E, F, H, I, K, M, N, O, P, S, T, U, V, W, X, Z"/>
+    <ext:modifyPostgresEnumType name="secondaryresult"
+                                newValues="A, D, DA, E, F, FA, H, I, ID, INS, K, LUE, M, N, O, P, RET, S, T, U, V, W, X, Z, ZA"/>
+  </changeSet>
+</databaseChangeLog>

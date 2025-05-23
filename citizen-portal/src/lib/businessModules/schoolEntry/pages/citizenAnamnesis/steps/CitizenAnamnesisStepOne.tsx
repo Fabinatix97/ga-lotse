@@ -6,8 +6,7 @@
 import { FormLabel, Grid, Typography } from "@mui/joy";
 import { useId, useMemo } from "react";
 
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { SelectField, buildEnumOptions } from "@eshg/lib-portal";
 
 import { CitizenAnamnesisFormValues } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";

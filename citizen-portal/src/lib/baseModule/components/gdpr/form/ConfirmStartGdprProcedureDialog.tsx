@@ -9,8 +9,7 @@ import { useTransition } from "react";
 import { isDefined } from "remeda";
 
 import { ApiGdprProcedureType } from "@eshg/base-api";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { BaseModal, useResetAlertContext } from "@eshg/lib-portal";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { UserType } from "@/lib/baseModule/components/layout/types";

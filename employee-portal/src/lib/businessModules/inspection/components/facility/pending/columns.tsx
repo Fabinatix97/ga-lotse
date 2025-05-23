@@ -10,8 +10,7 @@ import {
   type ApiInspPendingFacility,
   ApiProcedureStatus,
 } from "@eshg/inspection-api";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ButtonLink, formatDateTime } from "@eshg/lib-portal";
 
 import { translateProcedureStatus } from "@/lib/baseModule/api/procedures/enums";
 import { DuplicateIcon } from "@/lib/businessModules/inspection/components/icons/DuplicateIcon";

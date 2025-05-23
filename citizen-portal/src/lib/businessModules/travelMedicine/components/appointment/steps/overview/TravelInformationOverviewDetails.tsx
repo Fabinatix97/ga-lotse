@@ -7,7 +7,7 @@ import { TravelExploreOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useMultiStepForm } from "@eshg/lib-portal";
 import { ApiTravelTimeUnit, ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";

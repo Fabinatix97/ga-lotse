@@ -18,18 +18,18 @@ import {
   ApiObjectType,
 } from "@eshg/inspection-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import {
+  Alert,
+  FormPlus,
+  InternalLinkButton,
+  SelectField,
+  SetFieldValueHelper,
+  SubmitButton,
+  TextareaField,
+  buildEnumOptions,
   formatPersonName,
   formatUserName,
-} from "@eshg/lib-portal/formatters/person";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";

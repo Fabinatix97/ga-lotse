@@ -11,14 +11,16 @@ import { Formik } from "formik";
 import { useState } from "react";
 
 import { ApiGdprProcedureType } from "@eshg/base-api";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  AlertSlot,
+  FormPlus,
+  SubmitButton,
+  TextareaField,
+  useValidateLength,
+} from "@eshg/lib-portal";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { useTranslation } from "@/lib/i18n/client";
-import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 import {
   ContentSheet,
   ContentSheetTitle,

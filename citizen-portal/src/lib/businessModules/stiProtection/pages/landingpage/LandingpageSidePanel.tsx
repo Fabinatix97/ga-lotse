@@ -7,7 +7,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";

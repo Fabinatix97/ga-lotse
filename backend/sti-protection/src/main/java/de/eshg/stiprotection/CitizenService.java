@@ -8,7 +8,6 @@ package de.eshg.stiprotection;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.CredentialTypeDto;
 import de.eshg.base.citizenuser.api.UpdateCredentialRequest;
-import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
@@ -23,15 +22,12 @@ public class CitizenService {
 
   private final StiProtectionProcedureRepository repository;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
-  private final ModuleClientAuthenticator moduleClientAuthenticator;
 
   public CitizenService(
       StiProtectionProcedureRepository repository,
-      CitizenAccessCodeUserApi citizenAccessCodeUserApi,
-      ModuleClientAuthenticator moduleClientAuthenticator) {
+      CitizenAccessCodeUserApi citizenAccessCodeUserApi) {
     this.repository = repository;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
-    this.moduleClientAuthenticator = moduleClientAuthenticator;
   }
 
   public StiProtectionProcedure getProcedure(Jwt principal) {

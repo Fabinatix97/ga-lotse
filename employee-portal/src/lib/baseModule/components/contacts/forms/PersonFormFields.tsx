@@ -6,15 +6,15 @@
 import { Divider, Grid } from "@mui/joy";
 
 import { ApiBaseFeature } from "@eshg/base-api";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   GENDER_OPTIONS,
+  InputField,
   SALUTATION_OPTIONS,
+  SelectField,
   TITLE_OPTIONS,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+  createFieldNameMapper,
+  useValidateLength,
+} from "@eshg/lib-portal";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { PersonContactFormValues } from "@/lib/baseModule/components/contacts/types";

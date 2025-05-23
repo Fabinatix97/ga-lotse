@@ -6,9 +6,11 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, IconButton } from "@mui/joy";
-import { FieldArray } from "formik";
 
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
+import {
+  EmailField,
+  FieldArrayWithFocus as FieldArray,
+} from "@eshg/lib-portal";
 
 // See InputArrayField with fieldComponent={EmailField}
 export function LegacyEmailAddressesForm(props: {
@@ -16,8 +18,8 @@ export function LegacyEmailAddressesForm(props: {
   isOptional: boolean;
 }) {
   return (
-    <FieldArray name="emailAddresses">
-      {({ push, remove }) => (
+    <FieldArray valueLength={props.emailAddresses.length} name="emailAddresses">
+      {({ push, remove, setInputElementRef }) => (
         <>
           {props.emailAddresses.map((_, index) => (
             <Grid
@@ -29,6 +31,7 @@ export function LegacyEmailAddressesForm(props: {
             >
               <Grid xs={index > 0 ? 11 : 12}>
                 <EmailField
+                  ref={(el) => setInputElementRef(el, index)}
                   name={`emailAddresses.${index}`}
                   label={`E-Mail-Adresse ${index + 1}`}
                   required={

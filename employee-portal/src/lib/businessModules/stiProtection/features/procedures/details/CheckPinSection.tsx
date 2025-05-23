@@ -14,10 +14,7 @@ import { Formik, useFormikContext } from "formik";
 import { useReducer, useState } from "react";
 
 import { DetailsSection } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { FormPlus, InputField, Row, SubmitButton } from "@eshg/lib-portal";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { usePinCheck } from "@/lib/businessModules/stiProtection/api/queries/identity";

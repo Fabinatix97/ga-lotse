@@ -6,9 +6,11 @@
 import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
-import { SelectFieldOption } from "@eshg/lib-portal/components/formFields/SelectField";
-import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import {
+  SelectFieldOption,
+  SetFieldValueHelper,
+  parseOptionalValue,
+} from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
   ApiExaminationResult,

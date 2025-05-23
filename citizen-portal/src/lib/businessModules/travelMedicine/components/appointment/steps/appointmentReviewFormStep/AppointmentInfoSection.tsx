@@ -6,7 +6,7 @@
 import { List, ListItem, Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import {
   FormSheet,

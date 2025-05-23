@@ -6,7 +6,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiGetTaskByUserResponse,
   ApiResponse,

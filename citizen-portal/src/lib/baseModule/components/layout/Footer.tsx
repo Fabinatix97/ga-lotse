@@ -5,8 +5,7 @@
 
 import { Box, Stack, Typography, styled } from "@mui/joy";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { InternalLink, RequiresChildren } from "@eshg/lib-portal";
 import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
 import { useRoutes } from "@/lib/baseModule/shared/routes";

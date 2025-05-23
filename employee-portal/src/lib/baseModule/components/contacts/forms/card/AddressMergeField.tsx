@@ -24,9 +24,7 @@ import {
   DetailsRow,
   formatList,
 } from "@eshg/lib-employee-portal";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import { FieldProps, translateCountry, useBaseField } from "@eshg/lib-portal";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 

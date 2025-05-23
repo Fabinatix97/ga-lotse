@@ -17,7 +17,7 @@ import {
   getSortKey,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 import { ApiWaitingRoomSortKey } from "@eshg/school-entry-api";
 
 import { WaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";

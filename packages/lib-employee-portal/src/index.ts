@@ -3,16 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export { type BaseEntity, mapBaseEntity, getId } from "./api/models/BaseEntity";
+export { type BaseEntity, getId, mapBaseEntity } from "./api/models/BaseEntity";
 export {
   type PaginatedList,
   mapPaginatedList,
 } from "./api/models/PaginatedList";
-export {
-  type ProcedureLabel,
-  mapProcedureLabels,
-} from "./features/procedureLabels/api/models/ProcedureLabel";
-export { mapOptional } from "./api/models/mapOptional";
 export { type Versioned, mapVersioned } from "./api/models/Versioned";
 export {
   type BaseAddress,
@@ -22,219 +17,193 @@ export {
   isDomesticAddress,
   isPostboxAddress,
 } from "./api/models/address";
-export { useGetUsersByGroupQuery } from "./api/queries/users";
+export { mapOptional } from "./api/models/mapOptional";
 export { useGetPublicConfig } from "./api/queries/publicConfig";
+export { useGetUsersByGroupQuery } from "./api/queries/users";
 
+export { NoEntriesMessage } from "./components/NoEntriesMessage";
+export { NoSearchResults } from "./components/NoSearchResults";
+export { ResponsiveDivider } from "./components/ResponsiveDivider";
+export { BaseAddressDetailsColumn } from "./components/address/BaseAddressDetailsColumn";
+export {
+  type BaseAddressFormInputs,
+  BillingAddressForm,
+  ContactAddressForm,
+  OptionalBillingAddressForm,
+  OptionalContactAddressForm,
+} from "./components/address/addressForms";
 export {
   createEmptyAddress,
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "./components/address/helpers";
-export { MultiFormButtonBar } from "./components/form/MultiFormButtonBar";
-export { CountryField } from "./components/formFields/CountryField";
+export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
+export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
 export {
-  type BaseAddressFormInputs,
-  ContactAddressForm,
-  BillingAddressForm,
-  OptionalBillingAddressForm,
-  OptionalContactAddressForm,
-} from "./components/address/addressForms";
-export { ResettableSingleSelect } from "./components/select/ResettableSingleSelect";
-export { MainContentLayout } from "./components/layout/MainContentLayout";
-export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
-export { InformationSheet } from "./components/content/InformationSheet";
-
-export { BottomToolbar } from "./components/toolbar/BottomToolbar";
-export { Toolbar, type ToolbarProps } from "./components/toolbar/Toolbar";
-export { ToolbarBackButton } from "./components/toolbar/ToolbarBackButton";
-export { type TabNavigationItem } from "./components/tabNavigationToolbar/TabNavigation";
-export { TabNavigationToolbar } from "./components/tabNavigationToolbar/TabNavigationToolbar";
-export {
-  TabNavigationHeader,
-  TabNavigationHeaderTypography,
-} from "./components/tabNavigationToolbar/TabNavigationHeader";
-export { PersonToolbarHeader } from "./components/tabNavigationToolbar/PersonToolbarHeader";
-export { PageGrid } from "./components/page/PageGrid";
-export { RestrictedPage } from "./components/page/RestrictedPage";
-export { ContentPanel } from "./components/contentPanel/ContentPanel";
-export { ContentPanelTitle } from "./components/contentPanel/ContentPanelTitle";
-export {
-  DetailsSection,
-  type SimplifiedModalProps,
-} from "./components/detailsSection/DetailsSection";
-export { DetailsColumn } from "./components/detailsSection/DetailsColumn";
-export { DetailsRow } from "./components/detailsSection/DetailsRow";
-export { DetailsItem } from "./components/detailsSection/items/DetailsItem";
-export { ExternalLinkDetailsItem } from "./components/detailsSection/items/ExternalLinkDetailsItem";
-export { DetailsSectionHeader } from "./components/detailsSection/DetailsSectionHeader";
-export { ResponsiveDivider } from "./components/ResponsiveDivider";
-export { BaseAddressDetailsColumn } from "./components/address/BaseAddressDetailsColumn";
-export { NoEntriesMessage } from "./components/NoEntriesMessage";
-export { IconButton } from "./components/buttons/IconButton";
-export { EditButton } from "./components/buttons/EditButton";
+  type ActionsItem,
+  ActionsMenu,
+} from "./components/buttons/ActionsMenu";
 export { ButtonBar } from "./components/buttons/ButtonBar";
+export { EditButton } from "./components/buttons/EditButton";
+export { IconButton } from "./components/buttons/IconButton";
 export { OpenModalButton } from "./components/buttons/OpenModalButton";
-export { SelectableCard } from "./components/cards/SelectableCard";
-export {
-  CustomFileType,
-  FileCard,
-  mapToFileCardProps,
-  type FileCardProps,
-  type FileCardActionProps,
-} from "./components/cards/FileCard";
-export { NoSearchResults } from "./components/NoSearchResults";
-export {
-  SchoolYearAutocomplete,
-  SchoolYearField,
-} from "./components/formFields/schoolYear";
-export {
-  FileField,
-  type FileFieldProps,
-} from "./components/formFields/file/FileField";
-export { DeletableFileField } from "./components/formFields/file/DeletableFileField";
-export { DateTimeField } from "./components/formFields/DateTimeField";
-export { UserField, type NamedUser } from "./components/formFields/UserField";
-export { ConfirmationDialog } from "./components/confirmationDialog/ConfirmationDialog";
-export { FormSheet } from "./components/form/FormSheet";
 export {
   ToggleExpandButton,
   type ToggleExpandButtonProps,
 } from "./components/buttons/ToggleExpandButton";
 export {
+  CustomFileType,
+  FileCard,
+  type FileCardActionProps,
+  type FileCardProps,
+  mapToFileCardProps,
+} from "./components/cards/FileCard";
+export { SelectableCard } from "./components/cards/SelectableCard";
+export { CentralFilePersonDetails } from "./components/centralFile/CentralFilePersonDetails";
+export { ChipWithTooltip } from "./components/chip/ChipWithTooltip";
+export { ConfirmationDialog } from "./components/confirmationDialog/ConfirmationDialog";
+export { InformationSheet } from "./components/content/InformationSheet";
+export { ContentPanel } from "./components/contentPanel/ContentPanel";
+export { ContentPanelTitle } from "./components/contentPanel/ContentPanelTitle";
+export { DetailsColumn } from "./components/detailsSection/DetailsColumn";
+export { DetailsRow } from "./components/detailsSection/DetailsRow";
+export {
+  DetailsSection,
+  type SimplifiedModalProps,
+} from "./components/detailsSection/DetailsSection";
+export { DetailsSectionHeader } from "./components/detailsSection/DetailsSectionHeader";
+export { DetailsItem } from "./components/detailsSection/items/DetailsItem";
+export { ExternalLinkDetailsItem } from "./components/detailsSection/items/ExternalLinkDetailsItem";
+export { FormButtonBar } from "./components/form/FormButtonBar";
+export { FormDialog } from "./components/form/FormDialog";
+export { FormFooter } from "./components/form/FormFooter";
+export { FormSheet } from "./components/form/FormSheet";
+export { FormStack } from "./components/form/FormStack";
+export { MultiFormButtonBar } from "./components/form/MultiFormButtonBar";
+export { CountryField } from "./components/formFields/CountryField";
+export { DateTimeField } from "./components/formFields/DateTimeField";
+export { type NamedUser, UserField } from "./components/formFields/UserField";
+export { DeletableFileField } from "./components/formFields/file/DeletableFileField";
+export {
+  FileField,
+  type FileFieldProps,
+} from "./components/formFields/file/FileField";
+export {
+  SchoolYearAutocomplete,
+  SchoolYearField,
+} from "./components/formFields/schoolYear";
+export { MainContentLayout } from "./components/layout/MainContentLayout";
+export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
+export { PageGrid } from "./components/page/PageGrid";
+export { RestrictedPage } from "./components/page/RestrictedPage";
+export {
   PersonSearchForm,
-  usePersonSearch,
   type PersonSearchFormValues,
   type PersonSearchParams,
+  usePersonSearch,
 } from "./components/personSearch/PersonSearchForm";
 export { TogglePersonSearchButton } from "./components/personSearch/TogglePersonSearchButton";
 export {
-  ActionsMenu,
-  type ActionsItem,
-} from "./components/buttons/ActionsMenu";
-export { FormDialog } from "./components/form/FormDialog";
-export { FormStack } from "./components/form/FormStack";
-export {
-  SearchableGroups,
   type SearchableGroup,
   type SearchableGroupItem,
+  SearchableGroups,
 } from "./components/searchableGroups/SearchableGroups";
+export { ResettableSingleSelect } from "./components/select/ResettableSingleSelect";
+export { PersonToolbarHeader } from "./components/tabNavigationToolbar/PersonToolbarHeader";
+export { type TabNavigationItem } from "./components/tabNavigationToolbar/TabNavigation";
+export {
+  TabNavigationHeader,
+  TabNavigationHeaderTypography,
+} from "./components/tabNavigationToolbar/TabNavigationHeader";
+export { TabNavigationToolbar } from "./components/tabNavigationToolbar/TabNavigationToolbar";
 export { Timeline } from "./components/timeline/Timeline";
 export {
   TimelineEntry,
   type TimelineEntryProps,
 } from "./components/timeline/TimelineEntry";
 export { TimelineEntryIndicator } from "./components/timeline/TimelineEntryIndicator";
+export { BottomToolbar } from "./components/toolbar/BottomToolbar";
+export { Toolbar, type ToolbarProps } from "./components/toolbar/Toolbar";
+export { ToolbarBackButton } from "./components/toolbar/ToolbarBackButton";
 
 export { publicConfigApiQueryKey } from "./config/apiQueryKeys";
 export { PROCEDURE_STATUS_COLORS } from "./config/procedures";
 
 export { EmployeePortalProvider } from "./contexts/employeePortal";
-export { useLayoutConfig, type LayoutConfig } from "./contexts/layoutConfig";
+export { type LayoutConfig, useLayoutConfig } from "./contexts/layoutConfig";
 export { useSidenav } from "./contexts/sidenav";
 
-export {
-  checkAccess,
-  hasAllUserRoles,
-  hasAnyUserRoles,
-  hasUserRole,
-  noCheck,
-  type AccessCheck,
-  type AccessCheckContext,
-  type PermitCheck,
-  type UserRoleCheck,
-} from "./features/auth/utils/accessChecks";
+export { ArchivePage } from "./features/archiving/components/archive/ArchivePage";
+export { ArchiveAdminPage } from "./features/archiving/components/archiveAdmin/ArchiveAdminPage";
+export { useArchivingSideNavigationItems } from "./features/archiving/config/sideNavigationItem";
+
 export { useGetSelfUser } from "./features/auth/api/queries";
 export {
   useAccessControl,
   useHasUserRoleCheck,
   useHasUserRolesCheck,
 } from "./features/auth/hooks/useAccessControl";
-export { CentralFilePersonDetails } from "./components/centralFile/CentralFilePersonDetails";
+export {
+  type AccessCheck,
+  type AccessCheckContext,
+  type PermitCheck,
+  type UserRoleCheck,
+  checkAccess,
+  hasAllUserRoles,
+  hasAnyUserRoles,
+  hasUserRole,
+  noCheck,
+} from "./features/auth/utils/accessChecks";
 
-export { ImportDataForm } from "./features/import/components/ImportDataForm";
 export {
-  parseImportResult,
-  type ImportDataResult,
-} from "./features/import/utils/parseImportResult";
+  type Contact,
+  isInstitutionContact,
+  isPersonContact,
+} from "./features/contacts/api/models/Contact";
 export {
-  formatDuplicatedRecordCount,
-  formatFaultyRecordCount,
-  formatTotalRecordCount,
-} from "./features/import/utils/formatters";
+  useGetContactQuery,
+  useSearchContactsQuery,
+} from "./features/contacts/api/queries";
+export { SearchContactField } from "./features/contacts/components/SearchContactField";
+export { SelectContactField } from "./features/contacts/components/SelectContactField";
+export { SelectMultipleContactsField } from "./features/contacts/components/SelectMultipleContactsField";
+export { CONTACT_CATEGORY_NAMES } from "./features/contacts/translations";
+export { formatInstitutionNameWithCategoryShort } from "./features/contacts/utils/formatters";
 
-export { TablePage } from "./features/table/components/TablePage";
-export { TableSheet } from "./features/table/components/TableSheet";
-export { DataTable } from "./features/table/components/DataTable";
-export {
-  Pagination,
-  type PaginationProps,
-} from "./features/table/components/pagination/Pagination";
-export {
-  RowSelectionTableToolbar,
-  RowSelectionTableToolbarButton,
-} from "./features/table/components/toolbars/rowSelectionToolbar";
-export { usePagination } from "./features/table/hooks/usePagination";
-export {
-  useRowSelection,
-  useSyncRowSelection,
-  mapRowSelectionToRowIds,
-} from "./features/table/hooks/useRowSelection";
-export {
-  useTableControl,
-  type UseTableControlResult,
-} from "./features/table/hooks/useTableControl";
-export { useTableSorting } from "./features/table/hooks/useTableSorting";
-export { getSortKey, getSortDirection } from "./features/table/utils/sorting";
-export type {
-  TableSortingProps,
-  ManualTableSortingProps,
-} from "./features/table/types/tableSorting";
-export { type SubRowColumns } from "./features/table/types/subRowColumns";
-export { OffsetPagination } from "./features/table/components/pagination/OffsetPagination";
-
-export { DrawerProvider } from "./features/drawer/contexts/drawer";
-export { SidebarScope } from "./features/drawer/contexts/sidebarScope";
-export { SIDEBAR_PADDING } from "./features/drawer/config/sidebar";
-export type {
-  DrawerProps,
-  DrawerOpenOptions,
-} from "./features/drawer/types/drawer";
-export type { SidebarFormHandle } from "./features/drawer/types/sidebar";
 export {
   Sidebar,
   type SidebarProps,
 } from "./features/drawer/components/Sidebar";
-export { SidebarContent } from "./features/drawer/components/SidebarContent";
 export { SidebarActions } from "./features/drawer/components/SidebarActions";
+export { SidebarContent } from "./features/drawer/components/SidebarContent";
 export {
   SidebarForm,
   useSidebarFormHandle,
 } from "./features/drawer/components/SidebarForm";
 export { SidebarSlot } from "./features/drawer/components/SidebarSlot";
+export { SIDEBAR_PADDING } from "./features/drawer/config/sidebar";
+export { DrawerProvider } from "./features/drawer/contexts/drawer";
+export { SidebarScope } from "./features/drawer/contexts/sidebarScope";
 export {
-  useSidebar,
   type UseSidebarResult,
+  useSidebar,
 } from "./features/drawer/hooks/useSidebar";
 export {
-  useSidebarWithFormRef,
   type SidebarWithFormRefProps,
   type UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
 } from "./features/drawer/hooks/useSidebarWithFormRef";
 export { useSidenavDrawer } from "./features/drawer/hooks/useSidenavDrawer";
+export type {
+  DrawerOpenOptions,
+  DrawerProps,
+} from "./features/drawer/types/drawer";
+export type { SidebarFormHandle } from "./features/drawer/types/sidebar";
 
-export {
-  ProcedureLabelFormFields,
-  type ProcedureLabelValues,
-} from "./features/procedureLabels/components/ProcedureLabelFormFields";
-export { ProcedureLabelsPage } from "./features/procedureLabels/components/ProcedureLabelsPage";
-export { ProcedureLabelAutocomplete } from "./features/procedureLabels/components/ProcedureLabelAutocomplete";
-export { ProcedureLabelSelection } from "./features/procedureLabels/components/ProcedureLabelSelection";
-export { ProcedureLabelChip } from "./features/procedureLabels/components/ProcedureLabelChip";
-
-export {
-  ToggleFilterButton,
-  type ToggleFilterButtonProps,
-} from "./features/filters/components/filterSettings/ToggleFilterButton";
+export { defaultDraftValueDateComparisonFilter } from "./features/filters/components/filterFields/DateComparisonFilter";
+export { EnumFilter } from "./features/filters/components/filterFields/EnumFilter";
+export { NumberFilter } from "./features/filters/components/filterFields/NumberFilter";
+export { SearchInstitutionFilter } from "./features/filters/components/filterFields/SearchInstitutionFilter";
 export {
   ActiveFilter,
   type ActiveFilterProps,
@@ -252,139 +221,167 @@ export type {
   FilterTemplate,
   FilterTemplatesProps,
 } from "./features/filters/components/filterSettings/FilterTemplates";
-export { defaultDraftValueDateComparisonFilter } from "./features/filters/components/filterFields/DateComparisonFilter";
-export { EnumFilter } from "./features/filters/components/filterFields/EnumFilter";
-export { NumberFilter } from "./features/filters/components/filterFields/NumberFilter";
-export { SearchInstitutionFilter } from "./features/filters/components/filterFields/SearchInstitutionFilter";
 export {
-  useFilterSettings,
+  ToggleFilterButton,
+  type ToggleFilterButtonProps,
+} from "./features/filters/components/filterSettings/ToggleFilterButton";
+export {
+  type SetDictionaryFilterFn,
+  useFilterDictionary,
+} from "./features/filters/hooks/useFilterDictionary";
+export {
+  type FilterSettingsStateProvider,
   type UseFilterSettings,
   type UseFilterSettingsParams,
-  type FilterSettingsStateProvider,
+  useFilterSettings,
 } from "./features/filters/hooks/useFilterSettings";
-export {
-  useFilterDictionary,
-  type SetDictionaryFilterFn,
-} from "./features/filters/hooks/useFilterDictionary";
-export { useSearchParamStateProvider } from "./features/filters/hooks/useSearchParamStateProvider";
 export { useSearchParamFilterSettings } from "./features/filters/hooks/useSearchParamFilterSettings";
-export type { FilterDefinition } from "./features/filters/types/FilterDefinition";
-export type { FilterValue } from "./features/filters/types/FilterValue";
+export { useSearchParamStateProvider } from "./features/filters/hooks/useSearchParamStateProvider";
 export type { DateComparisonOperator } from "./features/filters/types/DateComparisonFilter";
 export type { DateSpanFilterValue } from "./features/filters/types/DateSpanFilter";
 export type {
-  EnumFilterValue,
   EnumFilterDefinition,
   EnumFilterOption,
+  EnumFilterValue,
 } from "./features/filters/types/EnumFilter";
+export type { FilterDefinition } from "./features/filters/types/FilterDefinition";
+export type { FilterValue } from "./features/filters/types/FilterValue";
 export {
-  type NumberFilterDefinition,
-  type NumberFilterValue,
-  type NumberFilterValueComparison,
-  type NumberFilterOnlyNullComparison,
-  type NumberFilterRangeComparison,
   NumberFilterComparisonMode,
+  type NumberFilterDefinition,
   NumberFilterNullInclusion,
   NumberFilterNumericComparison,
+  type NumberFilterOnlyNullComparison,
+  type NumberFilterRangeComparison,
+  type NumberFilterValue,
+  type NumberFilterValueComparison,
 } from "./features/filters/types/NumberFilter";
 export type {
   TextFilterDefinition,
   TextFilterValue,
 } from "./features/filters/types/TextFilter";
-export { getDefinitionByValue } from "./features/filters/utils/getDefinitionByValue";
-export { getSelectedEnumFilterValues } from "./features/filters/utils/getSelectedEnumFilterValues";
 export {
   getFilterSelectedValue,
   getFilterSelectedValues,
   isInEnum,
 } from "./features/filters/utils/filterValues";
+export { getDefinitionByValue } from "./features/filters/utils/getDefinitionByValue";
+export { getSelectedEnumFilterValues } from "./features/filters/utils/getSelectedEnumFilterValues";
 
-export { gdprRoutes } from "./features/gdpr/config/gdprRoutes";
 export { useGetGdprValidationBannerQuery } from "./features/gdpr/api/queries";
+export { gdprRoutes } from "./features/gdpr/config/gdprRoutes";
 export { useGdprValidationTasksAlert } from "./features/gdpr/hooks/useGdprValidationTasksAlert";
 
-export { FormButtonBar } from "./components/form/FormButtonBar";
-export { FormFooter } from "./components/form/FormFooter";
-export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
-export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
-
-export { ChipWithTooltip } from "./components/chip/ChipWithTooltip";
-
-export { CONTACT_CATEGORY_NAMES } from "./features/contacts/translations";
+export { ImportDataForm } from "./features/import/components/ImportDataForm";
 export {
-  type Contact,
-  isPersonContact,
-  isInstitutionContact,
-} from "./features/contacts/api/models/Contact";
+  formatDuplicatedRecordCount,
+  formatFaultyRecordCount,
+  formatTotalRecordCount,
+} from "./features/import/utils/formatters";
 export {
-  useSearchContactsQuery,
-  useGetContactQuery,
-} from "./features/contacts/api/queries";
-export { SearchContactField } from "./features/contacts/components/SearchContactField";
-export { SelectContactField } from "./features/contacts/components/SelectContactField";
-export { SelectMultipleContactsField } from "./features/contacts/components/SelectMultipleContactsField";
-export { formatInstitutionNameWithCategoryShort } from "./features/contacts/utils/formatters";
+  type ImportDataResult,
+  parseImportResult,
+} from "./features/import/utils/parseImportResult";
 
-export type {
-  PersonFormValues,
-  PersonFormProps,
-} from "./features/persons/types/personForm";
+export {
+  useGetFacilityFileStateDiff,
+  useGetPersonFileStateDiff,
+  useSearchReferenceFacilitiesQuery,
+  useSearchReferencePersonsQuery,
+} from "./features/persons/api/queries";
 export { PersonCardContent } from "./features/persons/components/PersonCardContent";
 export {
-  type DefaultPersonFormValues,
   DefaultPersonForm,
+  type DefaultPersonFormValues,
   defaultPersonFormValues,
 } from "./features/persons/components/form/DefaultPersonForm";
 export { PersonSidebarForm } from "./features/persons/components/form/PersonSidebarForm";
+export { CentralFileSyncForm } from "./features/persons/components/personSync/CentralFileSyncForm";
+export { BaseFacilityDiffForm } from "./features/persons/components/personSync/sections/BaseFacilityDiffForm";
+export { BasePersonDiffForm } from "./features/persons/components/personSync/sections/BasePersonDiffForm";
 export {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,
 } from "./features/persons/components/search/DefaultSearchPersonForm";
 export { DefaultSearchPersonFormFields } from "./features/persons/components/search/DefaultSearchPersonFormFields";
+export { PersonSearchResults } from "./features/persons/components/search/PersonSearchResults";
 export {
   type SearchPersonFormProps,
   type SearchPersonFormValues,
 } from "./features/persons/components/search/SearchPersonSidebar";
-export { PersonSearchResults } from "./features/persons/components/search/PersonSearchResults";
+export { useEditReferencePersonSidebar } from "./features/persons/components/sidebar/EditReferencePersonSidebar";
+export { PersonDetailsSidebar } from "./features/persons/components/sidebar/PersonDetailsSidebar";
 export {
   PersonSidebar,
   type PersonSidebarProps,
 } from "./features/persons/components/sidebar/PersonSidebar";
-export { PersonDetailsSidebar } from "./features/persons/components/sidebar/PersonDetailsSidebar";
 export { SyncBarrier } from "./features/persons/components/syncBarrier/SyncBarrier";
 export { useSyncBarrier } from "./features/persons/hooks/useSyncBarrier";
-export { CentralFileSyncForm } from "./features/persons/components/personSync/CentralFileSyncForm";
-export { BasePersonDiffForm } from "./features/persons/components/personSync/sections/BasePersonDiffForm";
-export { BaseFacilityDiffForm } from "./features/persons/components/personSync/sections/BaseFacilityDiffForm";
-export { useEditReferencePersonSidebar } from "./features/persons/components/sidebar/EditReferencePersonSidebar";
-export {
-  useSearchReferencePersonsQuery,
-  useGetPersonFileStateDiff,
-  useSearchReferenceFacilitiesQuery,
-  useGetFacilityFileStateDiff,
-} from "./features/persons/api/queries";
+export type {
+  PersonFormProps,
+  PersonFormValues,
+} from "./features/persons/types/personForm";
 export {
   mapReferencePersonToForm,
-  mapToPersonUpdateRequest,
   mapToPersonAddRequest,
+  mapToPersonUpdateRequest,
   normalizeListInputs,
 } from "./features/persons/utils/mappers";
+
+export {
+  type ProcedureLabel,
+  mapProcedureLabels,
+} from "./features/procedureLabels/api/models/ProcedureLabel";
+export { ProcedureLabelAutocomplete } from "./features/procedureLabels/components/ProcedureLabelAutocomplete";
+export { ProcedureLabelChip } from "./features/procedureLabels/components/ProcedureLabelChip";
+export {
+  ProcedureLabelFormFields,
+  type ProcedureLabelValues,
+} from "./features/procedureLabels/components/ProcedureLabelFormFields";
+export { ProcedureLabelSelection } from "./features/procedureLabels/components/ProcedureLabelSelection";
+export { ProcedureLabelsPage } from "./features/procedureLabels/components/ProcedureLabelsPage";
 
 export { ProgressEntriesPage } from "./features/progressEntries/components/ProgressEntriesPage";
 export { manualProgressEntryTypeNames } from "./features/progressEntries/config/progressEntryTypes";
 
-export { ArchivePage } from "./features/archiving/components/archive/ArchivePage";
-export { ArchiveAdminPage } from "./features/archiving/components/archiveAdmin/ArchiveAdminPage";
-export { useArchivingSideNavigationItems } from "./features/archiving/config/sideNavigationItem";
-
-export { useHeaderHeights } from "./hooks/useHeaderHeights";
+export { DataTable } from "./features/table/components/DataTable";
+export { TablePage } from "./features/table/components/TablePage";
+export { TableSheet } from "./features/table/components/TableSheet";
+export { OffsetPagination } from "./features/table/components/pagination/OffsetPagination";
 export {
-  useReplaceSearchParams,
-  type SearchParamReplacement,
-} from "./hooks/useReplaceSearchParams";
+  Pagination,
+  type PaginationProps,
+} from "./features/table/components/pagination/Pagination";
+export {
+  RowSelectionTableToolbar,
+  RowSelectionTableToolbarButton,
+} from "./features/table/components/toolbars/rowSelectionToolbar";
+export { usePagination } from "./features/table/hooks/usePagination";
+export {
+  mapRowSelectionToRowIds,
+  useRowSelection,
+  useSyncRowSelection,
+} from "./features/table/hooks/useRowSelection";
+export {
+  type UseTableControlResult,
+  useTableControl,
+} from "./features/table/hooks/useTableControl";
+export { useTableSorting } from "./features/table/hooks/useTableSorting";
+export { type SubRowColumns } from "./features/table/types/subRowColumns";
+export type {
+  ManualTableSortingProps,
+  TableSortingProps,
+} from "./features/table/types/tableSorting";
+export { getSortDirection, getSortKey } from "./features/table/utils/sorting";
+
 export { useConfirmationDialog } from "./hooks/useConfirmationDialog";
-export { useResetAlertContextOnChange } from "./hooks/useResetAlertContextOnChange";
+export { useHeaderHeights } from "./hooks/useHeaderHeights";
 export { useIsOffline } from "./hooks/useIsOffline";
+export {
+  type SearchParamReplacement,
+  useReplaceSearchParams,
+} from "./hooks/useReplaceSearchParams";
+export { useResetAlertContextOnChange } from "./hooks/useResetAlertContextOnChange";
 export {
   setWindowSearchParams,
   updateSearchParam,
@@ -392,31 +389,31 @@ export {
   useSearchParamLink,
 } from "./hooks/useSearchParam";
 
-export type { ModuleUserGroupConfig } from "./types/module";
-export type {
-  SideNavigationItem,
-  SideNavigationItemsProps,
-  SideNavigationLinkItem,
-  SideNavigationSubItem,
-  SideNavigationSuspenseItem,
-  SideNavigationParentItem,
-} from "./types/sideNavigation";
-
 export {
   PROCEDURE_STATUS_NAMES,
   PROCEDURE_TYPE_NAMES,
 } from "./translations/procedures";
 
+export type { ModuleUserGroupConfig } from "./types/module";
+export type {
+  SideNavigationItem,
+  SideNavigationItemsProps,
+  SideNavigationLinkItem,
+  SideNavigationParentItem,
+  SideNavigationSubItem,
+  SideNavigationSuspenseItem,
+} from "./types/sideNavigation";
+
+export { getDateFnsLocale } from "./utils/dateTime";
 export {
+  createCountFormatter,
   formatBoolean,
+  formatDurationFromNowUntil,
   formatList,
   formatSchoolYear,
-  createCountFormatter,
-  formatDurationFromNowUntil,
 } from "./utils/formatters";
 export {
-  mapToSelectOption,
   buildOptionFromUser,
   buildOptionsFromUsers,
+  mapToSelectOption,
 } from "./utils/mappers";
-export { getDateFnsLocale } from "./utils/dateTime";

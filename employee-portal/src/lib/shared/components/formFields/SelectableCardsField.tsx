@@ -7,11 +7,11 @@ import { Stack } from "@mui/joy";
 import { ReactElement } from "react";
 
 import { SelectableCard } from "@eshg/lib-employee-portal";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
   RadioGroupField,
   RadioGroupFieldProps,
-} from "@eshg/lib-portal/components/formFields/RadioGroupField";
+  useBaseField,
+} from "@eshg/lib-portal";
 
 interface SelectableCardsFieldProps extends RadioGroupFieldProps {
   options: {

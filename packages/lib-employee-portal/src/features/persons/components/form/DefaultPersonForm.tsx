@@ -8,25 +8,23 @@ import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
-  InputArrayField,
-  getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
+  DateField,
+  EmailField,
+  FormAddMoreButton,
   GENDER_OPTIONS,
+  InputArrayField,
+  InputField,
+  OptionalFieldValue,
   PERSON_FIELD_NAME,
   SALUTATION_OPTIONS,
+  SelectField,
   TITLE_OPTIONS,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+  createFieldNameMapper,
+  getIndexLabel,
+  useValidateLength,
+  validateDateOfBirth,
+} from "@eshg/lib-portal";
 
 import {
   BaseAddressFormInputs,

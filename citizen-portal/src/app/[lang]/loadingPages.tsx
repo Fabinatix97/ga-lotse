@@ -5,7 +5,7 @@
 
 "use client";
 
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
+import { LoadingIndicator } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";

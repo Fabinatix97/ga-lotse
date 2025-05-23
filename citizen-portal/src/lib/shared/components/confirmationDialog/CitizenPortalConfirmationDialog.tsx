@@ -10,7 +10,7 @@ import { isDefined } from "remeda";
 import {
   BaseConfirmationDialog,
   ConfirmationDialogProps,
-} from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { CitizenConfirmationButtonBar } from "@/lib/shared/components/confirmationDialog/CitizenConfirmationButtonBar";

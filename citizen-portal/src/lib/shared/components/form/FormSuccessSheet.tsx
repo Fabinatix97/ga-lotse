@@ -15,8 +15,7 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { InternalLinkButton, NavigationLink } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";

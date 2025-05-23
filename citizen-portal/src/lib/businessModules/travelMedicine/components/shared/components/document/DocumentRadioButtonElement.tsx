@@ -5,7 +5,7 @@
 
 import { Typography, styled } from "@mui/joy";
 
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { SetFieldValueHelper } from "@eshg/lib-portal";
 import { ApiDocumentAnamnesisQuestion } from "@eshg/travel-medicine-api";
 
 import { RadioButtonsField } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioButtonsField";

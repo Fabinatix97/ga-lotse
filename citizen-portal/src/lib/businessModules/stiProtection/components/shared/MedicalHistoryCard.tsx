@@ -7,8 +7,7 @@ import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
 import { Stack, Typography, styled } from "@mui/joy";
 import { UrlObject } from "url";
 
-import { Row } from "@eshg/lib-portal/components/Row";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton, Row } from "@eshg/lib-portal";
 
 interface MedicalHistoryCardProps {
   title: string;

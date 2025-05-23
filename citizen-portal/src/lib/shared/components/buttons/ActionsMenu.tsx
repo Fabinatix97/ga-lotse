@@ -17,7 +17,7 @@ import {
 import { ColorPaletteProp, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 interface ActionsItem {
   label: string;

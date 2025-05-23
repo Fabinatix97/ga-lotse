@@ -5,7 +5,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface MedicalHistorySectionElementsProps {
   sectionTitle: string | undefined;

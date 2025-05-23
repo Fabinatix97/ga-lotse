@@ -5,7 +5,7 @@
 
 import { List, ListItem, ListItemContent, Stack, Typography } from "@mui/joy";
 
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
+import { formatCurrency } from "@eshg/lib-portal";
 
 import { useGetAllDiseasesCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import {

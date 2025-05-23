@@ -5,12 +5,12 @@
 
 import { Stack } from "@mui/joy";
 
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SoftRequiredBooleanSelectField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import {

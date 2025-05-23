@@ -5976,19 +5976,6 @@
           }
         }
       },
-      "Document" : {
-        "required" : [ "fileName", "fileSizeBytes" ],
-        "type" : "object",
-        "properties" : {
-          "fileName" : {
-            "type" : "string"
-          },
-          "fileSizeBytes" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
       "DocumentAnamnesisQuestion" : {
         "required" : [ "questionText", "subElementMultiSelect" ],
         "type" : "object",
@@ -6036,6 +6023,19 @@
             "items" : {
               "$ref" : "#/components/schemas/DocumentSection"
             }
+          }
+        }
+      },
+      "DocumentDetails" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -8277,10 +8277,10 @@
         "type" : "object",
         "properties" : {
           "de" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           },
           "en" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           }
         }
       },
@@ -9303,7 +9303,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -9770,7 +9770,7 @@
       },
       "TaskType" : {
         "type" : "string",
-        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "TemplateAnamnesisQuestion" : {
         "required" : [ "questionText", "subElementMultiSelect" ],

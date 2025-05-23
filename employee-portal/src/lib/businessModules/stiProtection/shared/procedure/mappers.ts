@@ -5,9 +5,11 @@
 
 import { differenceInMinutes } from "date-fns/differenceInMinutes";
 
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import {
+  GENDER_OPTIONS,
+  isNonEmptyString,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiCreateFollowUpProcedureRequest,

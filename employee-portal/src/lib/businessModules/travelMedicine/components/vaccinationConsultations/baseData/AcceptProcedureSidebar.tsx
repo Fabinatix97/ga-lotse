@@ -10,8 +10,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, toDateString } from "@eshg/lib-portal";
 import {
   ApiCountryCode,
   ApiGender,

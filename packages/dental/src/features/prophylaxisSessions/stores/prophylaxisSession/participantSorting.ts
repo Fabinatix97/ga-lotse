@@ -6,7 +6,7 @@
 import { isDefined } from "remeda";
 
 import { formatBoolean } from "@eshg/lib-employee-portal";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { GENDER_VALUES } from "@eshg/lib-portal";
 
 import { EXAMINATION_STATUS } from "../../../../translations/examination";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
@@ -16,18 +16,17 @@ export interface ParticipantSorting {
   sortDirection: ParticipantSortDirection;
 }
 
-type ParticipantSortAttributes = Omit<
+type ParticipantSortAttributes = Pick<
   ProphylaxisSessionExamination,
-  | "childId"
-  | "result"
-  | "note"
-  | "examinationId"
-  | "examinationVersion"
-  | "allFluoridationConsents"
-  | "prophylaxisDentitionType"
-  | "previousExaminations"
-  | "procedureLabels"
+  | "firstName"
+  | "lastName"
+  | "dateOfBirth"
+  | "groupName"
+  | "gender"
+  | "currentFluoridationConsent"
+  | "status"
 >;
+
 export type ParticipantSortKey = keyof ParticipantSortAttributes;
 type ParticipantSortDirection = "asc" | "desc";
 

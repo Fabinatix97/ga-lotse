@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+import { calculateAge, formatDate, formatPersonName } from "@eshg/lib-portal";
 
 import {
   TabNavigationHeader,

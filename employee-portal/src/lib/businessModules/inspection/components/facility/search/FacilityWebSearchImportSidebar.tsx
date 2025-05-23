@@ -16,7 +16,7 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
 import {

@@ -10,9 +10,7 @@ import { de } from "date-fns/locale";
 import { Formik } from "formik";
 import { User } from "matrix-js-sdk";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { FormPlus, InputField, isNonEmptyString } from "@eshg/lib-portal";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

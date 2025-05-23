@@ -5,16 +5,14 @@
 
 import { isEmpty } from "remeda";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
-  validateIntegerAnd,
-  validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import {
+  InputField,
   NestedFormProps,
   OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+  createFieldNameMapper,
+  validateIntegerAnd,
+  validateRange,
+} from "@eshg/lib-portal";
 
 import {
   VACCINATION_FIELD_STYLE,
@@ -24,6 +22,7 @@ import {
 interface OtherVaccinationFormProps extends NestedFormProps {
   description: string;
   count: OptionalFieldValue<number>;
+  ref?: (el: HTMLInputElement) => void;
 }
 export function OtherVaccinationForm(props: OtherVaccinationFormProps) {
   const fieldName = createFieldNameMapper(props.name);
@@ -43,6 +42,7 @@ export function OtherVaccinationForm(props: OtherVaccinationFormProps) {
   return (
     <>
       <InputField
+        ref={props.ref}
         name={fieldName("description")}
         label="Sonstige"
         type="text"

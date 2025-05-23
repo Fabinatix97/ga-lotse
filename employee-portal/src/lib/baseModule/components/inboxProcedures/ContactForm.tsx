@@ -7,24 +7,20 @@ import { Divider, Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { ApiSalutation } from "@eshg/base-api";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   AcademicTitle,
-  SALUTATION_OPTIONS,
-  TITLE_VALUES,
-} from "@eshg/lib-portal/components/formFields/constants";
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
-import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import {
+  DateField,
+  EnumMap,
+  InputField,
   NestedFormProps,
   OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+  SALUTATION_OPTIONS,
+  SelectField,
+  TITLE_VALUES,
+  buildEnumOptions,
+  createFieldNameMapper,
+  validateDateOfBirth,
+} from "@eshg/lib-portal";
 import { ApiContactType } from "@eshg/lib-procedures-api";
 
 import {

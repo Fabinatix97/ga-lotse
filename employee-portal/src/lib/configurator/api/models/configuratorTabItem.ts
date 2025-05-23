@@ -5,4 +5,4 @@
 
 import { ApiConfigurationStatus } from "@eshg/base-api";
 
-export type ConfiguratorStatus = ApiConfigurationStatus;
+export type ConfiguratorStatus = ApiConfigurationStatus | "UNAVAILABLE";

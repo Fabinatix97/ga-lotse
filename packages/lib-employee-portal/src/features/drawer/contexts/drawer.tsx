@@ -8,9 +8,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { isDefined } from "remeda";
 
-import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import { useNavigateEffect } from "@eshg/lib-portal/hooks/useNavigateEffect";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import {
+  RequiresChildren,
+  useHasChanged,
+  useNavigateEffect,
+} from "@eshg/lib-portal";
 
 import { DrawerOpenOptions } from "../types/drawer";
 

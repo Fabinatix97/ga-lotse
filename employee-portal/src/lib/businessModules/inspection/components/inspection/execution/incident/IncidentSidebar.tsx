@@ -21,8 +21,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { InputField, TextareaField } from "@eshg/lib-portal";
 
 import {
   useCreateIncident,

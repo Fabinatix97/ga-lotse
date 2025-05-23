@@ -4,7 +4,7 @@
  */
 
 import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
-import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
+import { assertNonEmptyArray } from "@eshg/lib-portal";
 
 import { ToothDiagnoses } from "../../../api/models/ExaminationResult";
 import { ExaminationState } from "../examinationStore";

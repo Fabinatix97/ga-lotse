@@ -9,4 +9,5 @@ export const travelMedicineConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "DEPARTMENT_INFO",
   "OPENING_HOURS",
   "NOTIFICATION",
+  "PRIVACY_NOTICE",
 ];

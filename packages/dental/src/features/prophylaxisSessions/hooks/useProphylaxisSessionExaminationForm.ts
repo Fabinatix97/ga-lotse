@@ -6,11 +6,7 @@
 import { useFormik } from "formik";
 
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import {
-  mapOptionalValue,
-  mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue, mapRequiredValue, useAlert } from "@eshg/lib-portal";
 
 import {
   ExaminationResult,

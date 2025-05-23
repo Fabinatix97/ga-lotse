@@ -6,11 +6,11 @@
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,

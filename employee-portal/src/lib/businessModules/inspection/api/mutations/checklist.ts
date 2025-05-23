@@ -11,8 +11,7 @@ import {
   ChecklistDeleteFileRequest,
   UpdateChecklistRequest,
 } from "@eshg/inspection-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { unwrapRawResponse, useSnackbar } from "@eshg/lib-portal";
 
 import { useChecklistApi } from "@/lib/businessModules/inspection/api/clients";
 import { isServiceWorkerResponse } from "@/serviceWorker/common/common";

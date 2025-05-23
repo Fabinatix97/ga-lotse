@@ -8,7 +8,7 @@
 import { useFormikContext } from "formik";
 
 import { BottomToolbar, FormButtonBar } from "@eshg/lib-employee-portal";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { useIsFormDisabled } from "@eshg/lib-portal";
 
 import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";

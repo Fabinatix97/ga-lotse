@@ -7,7 +7,7 @@ import { Sheet, SheetProps, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { EditButton } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export function SectionTile({
   id,

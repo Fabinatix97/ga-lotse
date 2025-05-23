@@ -7,12 +7,11 @@ import { MutationOptions, useQueryClient } from "@tanstack/react-query";
 
 import {
   ApiProphylaxisSessionDetails,
-  ApiUpdateExaminationsInBulkRequest,
+  ApiUpdateProphylaxisSessionExaminationsRequest,
   ApiUpdateProphylaxisSessionParticipantsRequest,
   ApiUpdateProphylaxisSessionRequest,
 } from "@eshg/dental-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
 import { useDentalApi } from "../../../../contexts/dental";
 import { ProphylaxisSessionExamination } from "../models/ProphylaxisSessionExamination";
@@ -57,7 +56,7 @@ export function useDeleteProphylaxisSessionParticipantOptions(
         {
           version: prophylaxisSessionVersion,
           participants: allParticipants
-            .map((childExamination) => childExamination.childId)
+            .map((childExamination) => childExamination.id)
             .filter((id) => id !== childExternalId),
         },
       ),
@@ -107,10 +106,10 @@ export function useUpdateProphylaxisSessionExaminations(
 
   return useHandledMutation({
     meta: { updatesQuery: queryKey },
-    mutationFn: (examinationUpdates: ApiUpdateExaminationsInBulkRequest[]) =>
+    mutationFn: (request: ApiUpdateProphylaxisSessionExaminationsRequest) =>
       prophylaxisSessionApi.updateProphylaxisSessionExaminations(
         prophylaxisSessionId,
-        { examinationUpdates },
+        request,
       ),
     onSuccess: (response) => {
       queryClient.setQueryData(queryKey, response);

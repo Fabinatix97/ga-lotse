@@ -6,9 +6,8 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { headers } from "next/headers";
 
-import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
-import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
-import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { LayoutProps, NonceProvider } from "@eshg/lib-portal";
+import { getNonceFromHeader } from "@eshg/lib-portal/universal";
 
 import { baseTranslations } from "@/lib/baseModule/locales";
 

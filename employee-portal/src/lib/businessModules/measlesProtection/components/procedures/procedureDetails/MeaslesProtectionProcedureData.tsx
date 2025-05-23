@@ -9,8 +9,7 @@ import { Grid, Stack } from "@mui/joy";
 import assert from "assert";
 import { useFormikContext } from "formik";
 
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { TextareaField, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiReportingReason } from "@eshg/measles-protection-api";
 
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";

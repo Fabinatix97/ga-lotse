@@ -21,6 +21,8 @@
     "@eshg/lib-statistics-api": "workspace:*",
     "@eshg/measles-protection-api": "workspace:*",
     "@eshg/medical-registry-api": "workspace:*",
+    "@eshg/meds-abroad": "workspace:*",
+    "@eshg/meds-abroad-api": "workspace:*",
     "@eshg/official-medical-service-api": "workspace:*",
     "@eshg/opendata-api": "workspace:*",
     "@eshg/school-entry-api": "workspace:*",

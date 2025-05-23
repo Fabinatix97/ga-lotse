@@ -8,13 +8,15 @@
 import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import {
+  DateField,
+  InputField,
+  SetFieldValueHelper,
+  SoftRequiredBooleanSelectField,
+  createFieldNameMapper,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 
 import {
   AnamnesisFormValues,

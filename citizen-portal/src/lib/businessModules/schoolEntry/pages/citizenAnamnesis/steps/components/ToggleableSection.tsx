@@ -7,8 +7,7 @@ import { Stack, Typography } from "@mui/joy";
 import { useField } from "formik";
 import { isDefined } from "remeda";
 
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { BooleanRadioField, RequiresChildren } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 

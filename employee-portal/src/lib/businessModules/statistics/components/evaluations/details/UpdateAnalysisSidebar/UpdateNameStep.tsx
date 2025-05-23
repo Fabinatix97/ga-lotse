@@ -6,7 +6,7 @@
 import { Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 

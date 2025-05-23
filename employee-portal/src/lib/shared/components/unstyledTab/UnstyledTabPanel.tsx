@@ -13,7 +13,7 @@ export function UnstyledTabPanel<T extends TabProps["value"]>({
   return (
     <TabPanel
       aria-labelledby={`${props.value}-Tab`}
-      sx={{ flex: 0 }}
+      sx={{ display: "contents" }}
       {...props}
     >
       {children}

@@ -15,10 +15,7 @@ import { useFormikContext } from "formik";
 import { PropsWithChildren, useId } from "react";
 import { isDefined } from "remeda";
 
-import {
-  RadioGroupField,
-  RadioGroupFieldProps,
-} from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { RadioGroupField, RadioGroupFieldProps } from "@eshg/lib-portal";
 
 export function RadioSheet({ children, ...props }: RadioGroupFieldProps) {
   return (

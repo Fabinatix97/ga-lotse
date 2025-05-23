@@ -6,7 +6,7 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import { isNullish } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 

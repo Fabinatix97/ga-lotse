@@ -13,7 +13,7 @@ import {
   normalizeListInputs,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { toDateString } from "@eshg/lib-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";

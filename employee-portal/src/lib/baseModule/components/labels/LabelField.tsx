@@ -6,15 +6,16 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import Close from "@mui/icons-material/Close";
 import { AutocompleteProps, Chip } from "@mui/joy";
+import { useId } from "react";
 import { isString } from "remeda";
 
 import {
   BaseField,
+  CustomAutocomplete,
+  FieldProps,
+  SelectOption,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 type JoyUiSelectValue = AutocompleteProps<
   string,
@@ -31,6 +32,7 @@ interface LabelFieldProps extends FieldProps<SelectFieldValue> {
 
 export function LabelField(props: LabelFieldProps) {
   const field = useBaseField(props);
+  const iconId = useId();
 
   function setValue(newValue: (string | SelectOption)[]) {
     const labelNames = newValue.map((v) => (isString(v) ? v : v.value));
@@ -80,10 +82,21 @@ export function LabelField(props: LabelFieldProps) {
               variant="soft"
               color="primary"
               size="sm"
-              endDecorator={<Close fontSize="sm" />}
+              endDecorator={
+                <Close
+                  id={iconId}
+                  fontSize="sm"
+                  aria-label="Auswahl entfernen"
+                />
+              }
               sx={{ minWidth: 0 }}
               {...getTagProps({ index })}
               key={String(item)}
+              slotProps={{
+                action: {
+                  "aria-describedby": iconId,
+                },
+              }}
             >
               {String(item)}
             </Chip>

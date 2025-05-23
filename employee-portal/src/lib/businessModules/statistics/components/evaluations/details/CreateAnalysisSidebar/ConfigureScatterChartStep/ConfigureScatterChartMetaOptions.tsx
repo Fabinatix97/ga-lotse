@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 
 import { ScatterChartMetaFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { axisRangeValueNames } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";

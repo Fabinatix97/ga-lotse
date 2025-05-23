@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { StoreApi, useStore } from "zustand";
 
 import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
+import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 import { type ProphylaxisSessionStore } from "./prophylaxisSessionStore";
 
@@ -14,19 +15,63 @@ export function useSyncIncomingProphylaxisSessionChanges(
   store: StoreApi<ProphylaxisSessionStore>,
   prophylaxisSession: ProphylaxisSessionDetails,
 ) {
-  const changedExaminationsById = useStore(
-    store,
-    (state) => state.changedExaminationsById,
-  );
+  const localVersion = useStore(store, (state) => state.version);
+  const participants = useStore(store, (state) => state.participants);
   const setProphylaxisSession = useStore(
     store,
     (state) => state.setProphylaxisSession,
   );
 
-  const canUpdate = changedExaminationsById.size === 0;
+  const versionChanged = prophylaxisSession.version !== localVersion;
+  const participantsChanged = hasChangedParticipants(
+    participants,
+    prophylaxisSession.participants,
+  );
+  const syncIncomingChanges = versionChanged || participantsChanged;
   useEffect(() => {
-    if (canUpdate) {
+    if (syncIncomingChanges) {
       setProphylaxisSession(prophylaxisSession);
     }
-  }, [prophylaxisSession, canUpdate, setProphylaxisSession]);
+  }, [prophylaxisSession, syncIncomingChanges, setProphylaxisSession]);
+}
+
+function hasChangedParticipants(
+  localParticipants: ProphylaxisSessionExamination[],
+  remoteParticipants: ProphylaxisSessionExamination[],
+): boolean {
+  if (localParticipants.length !== remoteParticipants.length) {
+    return true;
+  }
+
+  return (
+    getParticipantsHash(localParticipants) !==
+    getParticipantsHash(remoteParticipants)
+  );
+}
+
+// creates a unique hash for all participants to identify changes by string comparison
+function getParticipantsHash(
+  participants: ProphylaxisSessionExamination[],
+): string {
+  return JSON.stringify(
+    participants.toSorted(compareByExaminationId).map(getExaminationHash),
+  );
+}
+
+function compareByExaminationId(
+  a: ProphylaxisSessionExamination,
+  b: ProphylaxisSessionExamination,
+) {
+  return a.examinationId.localeCompare(b.examinationId);
+}
+
+function getExaminationHash(
+  participant: ProphylaxisSessionExamination,
+): (string | number)[] {
+  return [
+    participant.examinationId,
+    participant.examinationVersion,
+    participant.id,
+    participant.version,
+  ];
 }

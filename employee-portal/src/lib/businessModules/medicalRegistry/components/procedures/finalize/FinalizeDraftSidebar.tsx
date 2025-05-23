@@ -15,8 +15,7 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { SubmitButton, createFieldNameMapper } from "@eshg/lib-portal";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
 
 import {

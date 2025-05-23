@@ -6,7 +6,7 @@
 import { styled } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export const StyledTable = styled("table")(({ theme }) => ({
   th: {

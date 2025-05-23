@@ -18,5 +18,6 @@
   <include file="migrations/0008_add_auditlog_entry.xml"/>
   <include file="migrations/0009_add_schedlock.xml"/>
   <include file="migrations/0010_add_auditlogsource_opendata.xml"/>
+  <include file="migrations/0011_add_meds_abroad_as_audit_log_source.xml"/>
 
 </databaseChangeLog>

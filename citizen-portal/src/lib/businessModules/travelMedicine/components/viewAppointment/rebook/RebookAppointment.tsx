@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 import { ApiAppointment } from "@eshg/travel-medicine-api";
 
 import { FormSheetTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";

@@ -16,7 +16,7 @@ import {
   useFilterDictionary,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { useGetSearchVaccinationConsultationQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import {

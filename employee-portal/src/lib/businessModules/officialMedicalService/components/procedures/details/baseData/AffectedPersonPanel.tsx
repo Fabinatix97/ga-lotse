@@ -16,7 +16,7 @@ import {
   SyncBarrier,
   useSyncBarrier,
 } from "@eshg/lib-employee-portal";
-import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { SALUTATION_VALUES } from "@eshg/lib-portal";
 import {
   ApiDataOrigin,
   ApiDomesticAddress,

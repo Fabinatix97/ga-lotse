@@ -6,8 +6,7 @@
 import { Button, Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { Alert, formatDate } from "@eshg/lib-portal";
 
 import {
   ActiveSeriesInfo,

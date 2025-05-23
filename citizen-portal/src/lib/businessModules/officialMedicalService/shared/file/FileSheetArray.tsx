@@ -12,7 +12,6 @@ import {
 import {
   Box,
   Button,
-  FormHelperText,
   FormLabel,
   FormLabelProps,
   Sheet,
@@ -30,9 +29,12 @@ import {
 } from "react";
 import { isDefined } from "remeda";
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
-import { useValidateFileType } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  FileType,
+  FormHelperTextWithIcon,
+  isNonEmptyArray,
+  useValidateFileType,
+} from "@eshg/lib-portal";
 import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -197,10 +199,11 @@ export function FileSheetArray({
           )}
         </FileStack>
       </Sheet>
-      {isDefined(helperText) && (
-        <FormHelperText id={`${fileInputId}-helper-text`}>
-          {helperText}
-        </FormHelperText>
+      {isDefined(helperText) && helperText.length > 0 && (
+        <FormHelperTextWithIcon
+          id={`${fileInputId}-helper-text`}
+          helperText={helperText}
+        />
       )}
       {mode && files.length > 0 && showAddRemoveButtons && (
         <FooterGrid>

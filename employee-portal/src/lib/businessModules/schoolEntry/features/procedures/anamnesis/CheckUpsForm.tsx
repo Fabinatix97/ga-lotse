@@ -7,13 +7,13 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SoftRequiredSelectField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
 import { CheckUpsValues } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/AnamnesisForm";
 import { SetAllBooleanWithUnknownSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";

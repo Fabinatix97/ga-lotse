@@ -5,7 +5,7 @@
 
 import { Box, Table as JoyTable, Typography, useTheme } from "@mui/joy";
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 export interface DecayHistoryRow {
   value: string;

@@ -14,7 +14,7 @@ import { useState } from "react";
 import { isNonNullish, isObjectType } from "remeda";
 
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {

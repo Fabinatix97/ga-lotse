@@ -8,8 +8,7 @@ import { IconButton, Stack, Typography } from "@mui/joy";
 import { RoomMember } from "matrix-js-sdk";
 import { useState } from "react";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { BaseModal, ButtonLink } from "@eshg/lib-portal";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { getMemberAvatarUrl } from "@/lib/businessModules/chat/shared/utils";

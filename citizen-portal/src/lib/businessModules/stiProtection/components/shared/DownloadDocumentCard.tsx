@@ -11,7 +11,7 @@ import {
 import { Button, Typography, styled } from "@mui/joy";
 import { FieldInputProps } from "formik";
 
-import { Row } from "@eshg/lib-portal/components/Row";
+import { Row } from "@eshg/lib-portal";
 
 interface DownloadDocumentCardProps {
   documentTitle: string;

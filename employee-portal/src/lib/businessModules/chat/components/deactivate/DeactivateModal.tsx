@@ -5,10 +5,7 @@
 
 import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 
-import {
-  BaseModal,
-  BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 type DeactivateModalProps = Omit<
   BaseModalPropsRequiredClose,

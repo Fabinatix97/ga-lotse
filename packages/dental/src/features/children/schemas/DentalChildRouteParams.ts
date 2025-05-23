@@ -5,7 +5,7 @@
 
 import * as v from "valibot";
 
-import { UuidSchema } from "@eshg/lib-portal/schemas/pageParams";
+import { UuidSchema } from "@eshg/lib-portal/universal";
 
 export const DentalChildRouteParams = v.object({
   childId: UuidSchema,

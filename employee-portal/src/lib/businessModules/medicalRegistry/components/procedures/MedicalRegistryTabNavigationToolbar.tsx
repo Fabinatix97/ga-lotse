@@ -16,7 +16,7 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatPersonName } from "@eshg/lib-portal";
 
 import { useGetProcedure } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";

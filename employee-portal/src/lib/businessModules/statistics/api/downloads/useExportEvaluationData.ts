@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 
 import { useDataExportApi } from "@/lib/businessModules/statistics/api/clients";
 import { useDataExportWithSizeCheck } from "@/lib/businessModules/statistics/api/downloads/useDataExportWithSizeCheck";

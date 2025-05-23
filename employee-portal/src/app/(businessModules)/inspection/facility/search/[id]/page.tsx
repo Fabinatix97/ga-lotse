@@ -13,7 +13,7 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { useGetWebSearchById } from "@/lib/businessModules/inspection/api/queries/webSearch";
 import { FacilityWebSearchForm } from "@/lib/businessModules/inspection/components/facility/search/FacilityWebSearchForm";

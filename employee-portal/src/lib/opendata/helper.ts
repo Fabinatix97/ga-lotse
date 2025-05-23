@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal";
 import { ApiBusinessModule, ApiVersion } from "@eshg/opendata-api";
 
 import { buildOptionsFromBusinessModules } from "@/lib/shared/components/procedures/helper";

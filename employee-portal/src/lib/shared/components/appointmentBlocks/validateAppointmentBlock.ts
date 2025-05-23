@@ -7,8 +7,7 @@ import { differenceInCalendarDays, isBefore, isEqual, isPast } from "date-fns";
 import { FormikErrors } from "formik";
 import { isEmpty } from "remeda";
 
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, isEmptyString } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/school-entry-api";
 
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";

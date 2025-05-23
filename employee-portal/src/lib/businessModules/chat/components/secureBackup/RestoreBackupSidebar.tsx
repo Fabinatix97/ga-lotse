@@ -16,9 +16,11 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import {
+  ButtonLink,
+  createFieldNameMapper,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";

@@ -8,12 +8,14 @@ import { FormikErrors, useFormikContext } from "formik";
 import { useState } from "react";
 
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
-import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
+import {
+  CheckboxField,
+  NumberField,
+  SelectField,
+  SelectOption,
+  formatCurrency,
+  validatePositiveInteger,
+} from "@eshg/lib-portal";
 import { ApiVaccinationType } from "@eshg/travel-medicine-api";
 
 import { Disease } from "@/lib/businessModules/travelMedicine/api/models/Disease";

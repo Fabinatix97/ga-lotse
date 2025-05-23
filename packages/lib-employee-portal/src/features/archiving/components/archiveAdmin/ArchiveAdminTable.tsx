@@ -6,8 +6,7 @@
 import { DeleteOutlined, DownloadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
+import { formatFileSize, useFileDownload } from "@eshg/lib-portal";
 import {
   ApiArchivingRelevance,
   ApiGetRelevantArchivableProceduresSortBy,

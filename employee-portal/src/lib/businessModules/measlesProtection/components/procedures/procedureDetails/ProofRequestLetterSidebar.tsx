@@ -19,8 +19,7 @@ import {
   SidebarForm,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { AlertProps } from "@eshg/lib-portal/components/Alert";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { AlertProps, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,

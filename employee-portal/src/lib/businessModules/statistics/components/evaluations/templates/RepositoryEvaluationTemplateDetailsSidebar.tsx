@@ -14,8 +14,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { Alert, formatDate } from "@eshg/lib-portal";
 
 import { useDownloadEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDownloadRepositoryEvaluationTemplate";
 import { useGetEvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateFromRepository";

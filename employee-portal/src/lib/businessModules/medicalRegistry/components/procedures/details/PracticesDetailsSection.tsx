@@ -14,7 +14,7 @@ import {
   InformationSheet,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyString } from "@eshg/lib-portal";
 import {
   ApiGetProcedure200Response,
   ApiPractice,

@@ -7,9 +7,11 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ApiBaseFeature, ApiUser } from "@eshg/base-api";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import {
+  ExternalLink,
+  InternalLinkIconButton,
+  formatUserName,
+} from "@eshg/lib-portal";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";

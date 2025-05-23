@@ -7,10 +7,7 @@ import { CircularProgress } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 
-import {
-  InputField,
-  InputFieldProps,
-} from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField, InputFieldProps } from "@eshg/lib-portal";
 
 import { useGetPostCodeAndCityForStreet } from "../../api/queries/streets";
 

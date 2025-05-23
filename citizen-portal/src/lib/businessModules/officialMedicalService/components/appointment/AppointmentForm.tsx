@@ -7,19 +7,17 @@ import { EventAvailableOutlined } from "@mui/icons-material";
 import { useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
+  FormPlus,
   MultiStepForm,
+  OptionalFieldValue,
   StepFactory,
-} from "@eshg/lib-portal/components/form/MultiStepForm";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import {
   getCloseable,
   getErrorAction,
   getErrorDescription,
-} from "@eshg/lib-portal/errorHandling/errorMappers";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+  resolveError,
+  useAlert,
+} from "@eshg/lib-portal";
 import {
   ApiAppointment,
   ApiAppointmentType,

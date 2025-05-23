@@ -8,12 +8,12 @@ import { Button, styled } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { KeyboardEvent, useRef } from "react";
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { FieldSetColumn } from "@eshg/lib-portal/components/formFields/FieldSetControl";
 import {
+  FieldSetColumn,
   TextareaField,
   TextareaFieldProps,
-} from "@eshg/lib-portal/components/formFields/TextareaField";
+  useIsFormDisabled,
+} from "@eshg/lib-portal";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 
 import { AppendText, TextTemplatesSidebar } from "./TextTemplatesSidebar";

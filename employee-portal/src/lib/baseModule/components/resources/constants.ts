@@ -4,7 +4,7 @@
  */
 
 import { ApiResourceType } from "@eshg/base-api";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { optionsFromRecord } from "@eshg/lib-portal";
 
 export const resourceTypeNames = {
   [ApiResourceType.Bicycle]: "Fahrrad",

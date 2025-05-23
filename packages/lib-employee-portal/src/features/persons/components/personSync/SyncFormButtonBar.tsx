@@ -6,7 +6,7 @@
 import { Button, Stack } from "@mui/joy";
 import { isString } from "remeda";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { useConfirmationDialog } from "../../../../hooks/useConfirmationDialog";
 

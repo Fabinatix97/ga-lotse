@@ -4,7 +4,7 @@
  */
 
 import { ConfirmationDialog } from "@eshg/lib-employee-portal";
-import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
+import { ConfirmationDialogProps } from "@eshg/lib-portal";
 
 export function LeaveChatConfirmation(props: ConfirmationDialogProps) {
   return (

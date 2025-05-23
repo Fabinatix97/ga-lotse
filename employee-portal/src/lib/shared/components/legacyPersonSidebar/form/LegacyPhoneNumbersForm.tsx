@@ -6,9 +6,11 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, IconButton } from "@mui/joy";
-import { FieldArray } from "formik";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import {
+  FieldArrayWithFocus as FieldArray,
+  InputField,
+} from "@eshg/lib-portal";
 
 // See InputArrayField
 export function LegacyPhoneNumbersForm(props: {
@@ -16,8 +18,8 @@ export function LegacyPhoneNumbersForm(props: {
   isOptional: boolean;
 }) {
   return (
-    <FieldArray name="phoneNumbers">
-      {({ push, remove }) => (
+    <FieldArray valueLength={props.phoneNumbers.length} name="phoneNumbers">
+      {({ push, remove, setInputElementRef }) => (
         <>
           {props.phoneNumbers.map((_, index) => (
             <Grid
@@ -29,6 +31,7 @@ export function LegacyPhoneNumbersForm(props: {
             >
               <Grid xs={index > 0 ? 11 : 12}>
                 <InputField
+                  ref={(el) => setInputElementRef(el, index)}
                   name={`phoneNumbers.${index}`}
                   label={`Telefonnummer ${index + 1}`}
                   required={

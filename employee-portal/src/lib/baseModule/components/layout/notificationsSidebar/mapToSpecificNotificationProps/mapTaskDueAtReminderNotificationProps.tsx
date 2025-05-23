@@ -10,8 +10,7 @@ import {
   ApiTaskType,
   ApiUser,
 } from "@eshg/base-api";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatDateTime, formatUserName } from "@eshg/lib-portal";
 
 import { ProcedureInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProcedureInternalLink";
 import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";

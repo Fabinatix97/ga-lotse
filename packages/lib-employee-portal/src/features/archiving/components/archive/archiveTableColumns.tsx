@@ -5,7 +5,7 @@
 
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 import { ApiGetArchivableProceduresSortBy } from "@eshg/lib-procedures-api";
 
 import { PROCEDURE_TYPE_NAMES } from "../../../../translations/procedures";

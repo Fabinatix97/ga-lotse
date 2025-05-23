@@ -6,10 +6,12 @@
 import { Box } from "@mui/joy";
 import type { Metadata } from "next";
 
-import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
-import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
-import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
-import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
+import {
+  EnvironmentTypeProvider,
+  LayoutProps,
+  NonceProvider,
+} from "@eshg/lib-portal";
+import { getNonceFromHeader } from "@eshg/lib-portal/universal";
 
 import { env } from "@/env/server";
 import { ApiProvider } from "@/lib/components/layout/ApiProvider";

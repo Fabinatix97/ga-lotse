@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { formatPossibleDuplicates } from "@/lib/businessModules/inspection/components/processImport/formatters";
 

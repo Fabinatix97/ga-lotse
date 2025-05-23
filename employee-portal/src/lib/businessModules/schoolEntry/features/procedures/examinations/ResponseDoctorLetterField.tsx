@@ -4,10 +4,10 @@
  */
 
 import {
+  OptionalFieldValue,
   SoftRequiredSelectField,
   SoftRequiredSelectFieldProps,
-} from "@eshg/lib-portal/components/form/fieldVariants";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 import { ApiExaminationResultValue } from "@eshg/school-entry-api";
 
 import { RESPONSE_DOCTOR_LETTER_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";

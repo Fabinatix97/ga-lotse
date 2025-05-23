@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  BaseErrorModal,
-  ErrorModalProps,
-} from "@eshg/lib-portal/components/boundaries/BaseErrorModal";
+import { BaseErrorModal, ErrorModalProps } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 

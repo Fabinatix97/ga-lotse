@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { SaveAnalysisStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/saveAnalysisStepFormModel";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";

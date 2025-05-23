@@ -23,7 +23,7 @@ import {
   useConfirmationDialog,
   useResetAlertContextOnChange,
 } from "@eshg/lib-employee-portal";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { RadioGroupField } from "@eshg/lib-portal";
 
 import { mapAddCentralFileIdToGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddCentralFileIdToGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";

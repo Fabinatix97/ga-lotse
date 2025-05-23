@@ -8,8 +8,7 @@
 import { Button, Stack, Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { BaseModal, InternalLinkButton } from "@eshg/lib-portal";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";

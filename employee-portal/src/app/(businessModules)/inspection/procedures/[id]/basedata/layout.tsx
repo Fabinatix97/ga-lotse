@@ -4,7 +4,7 @@
  */
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export default function BaseDataLayout({
   children,

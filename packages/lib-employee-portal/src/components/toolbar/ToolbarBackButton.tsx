@@ -6,7 +6,7 @@
 import { ChevronLeft } from "@mui/icons-material";
 import { ButtonProps, IconButton, Theme, styled } from "@mui/joy";
 
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
+import { InternalLinkIconButton } from "@eshg/lib-portal";
 
 function backIconButtonStyles({ theme }: { theme: Theme }) {
   return {

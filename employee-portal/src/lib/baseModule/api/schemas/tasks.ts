@@ -5,7 +5,7 @@
 
 import * as v from "valibot";
 
-import { PositiveIntegerSchema } from "@eshg/lib-portal/schemas/pageParams";
+import { PositiveIntegerSchema } from "@eshg/lib-portal/universal";
 
 export const FetchTaskForOverviewSearchParamsSchema = v.partial(
   v.object({

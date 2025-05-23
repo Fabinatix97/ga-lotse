@@ -30,4 +30,5 @@ export const PROCEDURE_TYPE_NAMES = {
     "Entwurf Berufskartei-Eintrag Bürger",
   [ApiProcedureType.DentalChild]: "Kind",
   [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
+  [ApiProcedureType.MedsAbroad]: "Reisen mit Betäubungsmitteln",
 } satisfies Record<ApiProcedureType, string>;

@@ -7,7 +7,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { ProcedureToolbar } from "@/lib/businessModules/stiProtection/features/procedures/ProcedureToolbar";
 

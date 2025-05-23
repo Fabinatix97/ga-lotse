@@ -16,7 +16,7 @@ import {
   PROCEDURE_STATUS_COLORS,
   useIsOffline,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { translateProcedureStatus } from "@/lib/baseModule/api/procedures/enums";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";

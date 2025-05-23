@@ -14,8 +14,7 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps, formatUserName } from "@eshg/lib-portal";
 
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { UserAbsence } from "@/lib/baseModule/components/users/UserAbsence";

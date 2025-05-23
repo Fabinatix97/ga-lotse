@@ -7,8 +7,7 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Button, Stack, Typography, useTheme } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormPlus, useSnackbar } from "@eshg/lib-portal";
 
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { ChatInputField } from "@/lib/businessModules/chat/components/ChatInputField";

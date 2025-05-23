@@ -23,12 +23,12 @@ import {
   useGetGdprValidationBannerQuery,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
+  SelectOptions,
   isDateString,
   toDateString,
   toUtcDate,
-} from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 

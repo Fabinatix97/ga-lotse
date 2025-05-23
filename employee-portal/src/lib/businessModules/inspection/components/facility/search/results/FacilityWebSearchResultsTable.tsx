@@ -24,8 +24,7 @@ import {
   formatList,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { optionsFromRecord, useSnackbar } from "@eshg/lib-portal";
 
 import {
   useDeleteWebSearchQuery,

@@ -12,7 +12,7 @@ import {
   ToggleFilterButton,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { AppointmentBlockGroupsTable } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/AppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";

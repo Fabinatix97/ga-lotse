@@ -4,7 +4,7 @@
  */
 
 import { FormDialog } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { useEditEvaluationName } from "@/lib/businessModules/statistics/api/mutations/useEditEvaluationName";
 

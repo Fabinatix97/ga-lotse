@@ -23,7 +23,7 @@ import {
   SideNavigationParentItem,
   SideNavigationSuspenseItem,
 } from "@eshg/lib-employee-portal";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import {
   navItemIconColor,

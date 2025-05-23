@@ -6,9 +6,7 @@
 import { useFormikContext } from "formik";
 import { useTranslation } from "react-i18next";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { Alert, InternalLinkButton, SubmitButton } from "@eshg/lib-portal";
 
 import { PinField } from "@/lib/businessModules/stiProtection/components/appointment/PinField";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";

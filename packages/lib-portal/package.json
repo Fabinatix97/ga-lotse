@@ -1,0 +1,68 @@
+{
+  "name": "@eshg/lib-portal",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": [
+        "./build/types/src/index.d.ts"
+      ],
+      "default": "./build/lib/index.js"
+    },
+    "./universal": {
+      "types": [
+        "./build/types/src/universal.d.ts"
+      ],
+      "default": "./build/lib/universal.js"
+    },
+    "./*": {
+      "types": [
+        "./build/types/src/*.d.ts"
+      ],
+      "default": "./build/lib/*.js"
+    }
+  },
+  "dependencies": {
+    "@eshg/base-api": "workspace:*",
+    "@eshg/medical-registry-api": "workspace:*",
+    "@eshg/official-medical-service-api": "workspace:*",
+    "@mui/icons-material": "catalog:joy",
+    "@mui/joy": "catalog:joy",
+    "@mui/material": "catalog:joy",
+    "@tanstack/react-query": "catalog:common",
+    "date-fns": "catalog:common",
+    "formik": "catalog:common",
+    "i18next": "catalog:i18next",
+    "next": "catalog:next",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "react-i18next": "catalog:i18next",
+    "react-markdown": "10.1.0",
+    "remeda": "catalog:common",
+    "uuid": "catalog:common",
+    "valibot": "catalog:common"
+  },
+  "devDependencies": {
+    "@eshg/lib-vitest": "workspace:*",
+    "@eslint/compat": "catalog:eslint",
+    "@eslint/eslintrc": "catalog:eslint",
+    "@tanstack/eslint-plugin-query": "catalog:common",
+    "@trivago/prettier-plugin-sort-imports": "catalog:prettier",
+    "@types/node": "catalog:common",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react": "catalog:vitest",
+    "@vitest/coverage-istanbul": "catalog:vitest",
+    "eslint": "catalog:eslint",
+    "eslint-config-next": "catalog:next",
+    "eslint-config-prettier": "catalog:eslint",
+    "eslint-plugin-import": "catalog:eslint",
+    "eslint-plugin-promise": "catalog:eslint",
+    "eslint-plugin-unused-imports": "catalog:eslint",
+    "prettier": "catalog:prettier",
+    "typescript": "catalog:common",
+    "vite-tsconfig-paths": "catalog:vitest",
+    "vitest": "catalog:vitest"
+  }
+}

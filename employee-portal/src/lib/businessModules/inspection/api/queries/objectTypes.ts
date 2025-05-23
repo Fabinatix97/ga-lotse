@@ -6,7 +6,7 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { ObjectTypeApi } from "@eshg/inspection-api";
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
 import { useObjectTypeApi } from "@/lib/businessModules/inspection/api/clients";
 import { objectTypeApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

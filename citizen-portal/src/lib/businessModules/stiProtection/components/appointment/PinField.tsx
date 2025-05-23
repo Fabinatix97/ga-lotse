@@ -15,9 +15,7 @@ import { useFormikContext } from "formik";
 import { useMemo } from "react";
 import { isString } from "remeda";
 
-import { Row } from "@eshg/lib-portal/components/Row";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { getPropertyIf } from "@eshg/lib-portal/helpers/getProperty";
+import { Row, getPropertyIf, useBaseField } from "@eshg/lib-portal";
 
 import { usePinFieldEventHandlers } from "./usePinFieldEventHandlers";
 

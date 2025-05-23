@@ -7,8 +7,7 @@ import { Stack } from "@mui/joy";
 import { FormikProps } from "formik";
 import { PropsWithChildren } from "react";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import { InputField, useValidateLength } from "@eshg/lib-portal";
 
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 

@@ -12,7 +12,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { PageProps } from "@eshg/lib-portal";
 
 import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/AuditLogAuthorizePage";
 

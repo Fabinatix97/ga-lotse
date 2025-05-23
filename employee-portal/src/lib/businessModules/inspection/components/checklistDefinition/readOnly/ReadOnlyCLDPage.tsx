@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { CLDInfoCard } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
 import { ReadOnlyCLDContent } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDContent";

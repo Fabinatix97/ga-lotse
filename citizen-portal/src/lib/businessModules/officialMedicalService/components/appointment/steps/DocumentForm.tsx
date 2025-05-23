@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileType } from "@eshg/lib-portal";
 
 import { FileSheetArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArrayField";
 import { FormSheetTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";

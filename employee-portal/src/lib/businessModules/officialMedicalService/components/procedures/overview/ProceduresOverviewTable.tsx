@@ -34,8 +34,7 @@ import {
   useSearchParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
+import { optionsFromRecord, useToggleableState } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiUser,

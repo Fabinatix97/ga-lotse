@@ -17,8 +17,7 @@ import CountryOfBirthIcon from "@mui/icons-material/TravelExploreOutlined";
 import { isDefined } from "remeda";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ExternalLink, formatDate } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";

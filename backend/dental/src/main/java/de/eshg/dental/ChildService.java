@@ -295,17 +295,6 @@ public class ChildService {
     return Optional.ofNullable(result.get(personKeyAttributes));
   }
 
-  private Optional<ChildWithAugmentedData> findLatestChildWithSearchParameters(
-      ProcedureSearchParameters searchParameters) {
-
-    List<Child> children =
-        procedureSearchService.searchProceduresByPerson(
-            searchParameters, Person.PERSON_TYPE_USED_FOR_CHILDREN);
-
-    Optional<Child> latestChild = children.stream().max(Comparator.comparing(Child::getId));
-    return latestChild.map(this::augmentWithDetails);
-  }
-
   public Map<PersonKeyAttributes, Child> findOpenChildrenWithSamePersonKeyAttributes(
       Set<PersonKeyAttributes> personKeyAttributes) {
     if (personKeyAttributes.isEmpty()) {
@@ -433,20 +422,38 @@ public class ChildService {
       ChildPaginationAndSortParameters paginationAndSortParameters,
       ProcedureSearchParameters searchParameters) {
 
-    if (ProcedureValidator.hasNonNullValue(searchParameters)) {
-      List<ChildWithAugmentedData> child =
-          findLatestChildWithSearchParameters(searchParameters).stream().toList();
-      return new PagedChildren(child, child.size());
+    boolean hasSearchParameters = ProcedureValidator.hasNonNullValue(searchParameters);
+    if (hasSearchParameters) {
+      return performSearchWithSearchParameters(searchParameters, paginationAndSortParameters);
+    } else {
+      return performSearchWithoutSearchParameters(filterParameters, paginationAndSortParameters);
     }
+  }
 
+  private PagedChildren performSearchWithSearchParameters(
+      ProcedureSearchParameters searchParameters,
+      ChildPaginationAndSortParameters paginationAndSortParameters) {
+    List<Child> children =
+        procedureSearchService.searchProceduresByPerson(
+            searchParameters, Person.PERSON_TYPE_USED_FOR_CHILDREN);
+
+    if (containsClosedProcedure(children)) {
+      List<ChildWithAugmentedData> augmentedChildren = getAndAugmentLatestProcedure(children);
+      return new PagedChildren(augmentedChildren, augmentedChildren.size());
+    } else {
+      List<ChildWithAugmentedData> augmentedChildren =
+          performPartialSearch(paginationAndSortParameters, children);
+      return new PagedChildren(augmentedChildren, children.size());
+    }
+  }
+
+  private PagedChildren performSearchWithoutSearchParameters(
+      ChildFilterParameters filterParameters,
+      ChildPaginationAndSortParameters paginationAndSortParameters) {
     ChildSpecification childSpecification =
         new ChildSpecification(filterParameters, paginationAndSortParameters);
     ChildPageSpec pageSpec = ChildSpecification.toPageSpec(paginationAndSortParameters);
-    boolean sortKeyIsPersonAttribute =
-        Optional.ofNullable(paginationAndSortParameters.sortKey())
-            .map(ChildSortKey::isPersonAttribute)
-            .orElse(false);
-    if (sortKeyIsPersonAttribute) {
+    if (pageSpec.sortKey().isPersonAttribute()) {
       return getChildrenWithPersonAttributeSortKey(pageSpec, childSpecification);
     } else {
       Pageable pageable = PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize());
@@ -457,7 +464,80 @@ public class ChildService {
     }
   }
 
-  private List<ChildWithAugmentedData> augmentWithChildData(List<Child> children) {
+  private List<ChildWithAugmentedData> getAndAugmentLatestProcedure(List<Child> children) {
+    Optional<Child> latest = children.stream().max(Comparator.comparing(Child::getId));
+    return latest.map(this::augmentWithDetails).stream().toList();
+  }
+
+  private List<ChildWithAugmentedData> performPartialSearch(
+      ChildPaginationAndSortParameters paginationAndSortParameters, List<Child> children) {
+    ChildPageSpec pageSpec = ChildSpecification.toPageSpec(paginationAndSortParameters);
+    ChildSortKey sortKey = pageSpec.sortKey();
+    SortDirection sortDirection = pageSpec.direction();
+    int pageSize = pageSpec.pageSize();
+    int offset = pageSpec.pageNumber() * pageSize;
+
+    if (sortKey.isPersonAttribute()) {
+      return children.stream()
+          .map(this::augmentWithDetails)
+          .sorted(applySortDirection(personAttributeSortComparator(sortKey), sortDirection))
+          .skip(offset)
+          .limit(pageSize)
+          .toList();
+    } else {
+      return children.stream()
+          .sorted(
+              applySortDirection(
+                  nonPersonAttributeSortComparator(sortKey, sortDirection), sortDirection))
+          .skip(offset)
+          .limit(pageSize)
+          .map(this::augmentWithDetails)
+          .toList();
+    }
+  }
+
+  private static boolean containsClosedProcedure(List<Child> children) {
+    return children.stream()
+        .anyMatch(child -> child.getProcedureStatus() == ProcedureStatus.CLOSED);
+  }
+
+  private static Comparator<ChildWithAugmentedData> personAttributeSortComparator(
+      ChildSortKey sortKey) {
+    return switch (sortKey) {
+      case DATE_OF_BIRTH -> Comparator.comparing(child -> child.personData().dateOfBirth());
+      case FIRST_NAME -> Comparator.comparing(child -> child.personData().firstName());
+      case LAST_NAME -> Comparator.comparing(child -> child.personData().lastName());
+      default ->
+          throw new IllegalArgumentException("Invalid sort comparator for sort key" + sortKey);
+    };
+  }
+
+  private static Comparator<Child> nonPersonAttributeSortComparator(
+      ChildSortKey sortKey, SortDirection sortDirection) {
+    return switch (sortKey) {
+      case ID -> Comparator.comparing(Child::getId);
+      case YEAR -> Comparator.comparing(Child::getYear);
+      case GROUP_NAME ->
+          Comparator.comparing(
+              Child::getGroupName,
+              sortDirection == SortDirection.ASC
+                  ? Comparator.nullsLast(Comparator.naturalOrder())
+                  : Comparator.nullsFirst(Comparator.naturalOrder()));
+      default ->
+          throw new IllegalArgumentException("Invalid sort comparator for sort key" + sortKey);
+    };
+  }
+
+  private static <T> Comparator<T> applySortDirection(
+      Comparator<T> comparator, SortDirection sortDirection) {
+    if (SortDirection.DESC.equals(sortDirection)) {
+      comparator = comparator.reversed();
+    }
+
+    return comparator;
+  }
+
+  public List<ChildWithAugmentedData> augmentWithChildData(List<Child> children) {
     Map<UUID, GetPersonFileStateResponse> persons =
         personClient.fetchPersonDataInBulk(children).stream()
             .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
@@ -568,8 +648,12 @@ public class ChildService {
     return childRepository.findDistinctInstitutionGroups(institutionId);
   }
 
+  public void updateChildDataAndFlush(Child child, UpdateChildRequest request) {
+    updateChildData(child, request);
+    childRepository.flush();
+  }
+
   public void updateChildData(Child child, UpdateChildRequest request) {
-    ValidationUtil.validateVersion(request.version(), child);
     validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
     boolean updateGroup = !Objects.equals(request.groupName(), child.getGroupName());
     if (updateGroup) {
@@ -614,8 +698,6 @@ public class ChildService {
       log.debug("Updating group name: '{}' → '{}'", child.getGroupName(), request.groupName());
       child.setGroupName(request.groupName());
     }
-
-    childRepository.flush();
   }
 
   private void updateProcedureLabels(Child child, List<UUID> requestedLabelIds) {
@@ -782,18 +864,18 @@ public class ChildService {
         personFileState.dataOrigin());
   }
 
-  void updateChildPerson(Child child, UpdatePersonRequest request) {
-    ValidationUtil.validateVersion(request.version(), child);
+  void updateChildPersonAndFlush(Child child, UpdatePersonRequest request) {
+    updateChildPerson(child, ChildMapper.mapToPersonDetailsDto(request));
+    childRepository.flush();
+  }
 
+  void updateChildPerson(Child child, PersonDetailsDto dto) {
     UUID currentFileStateId = child.getChildIdFromCentralFile();
-    UUID updatedFileStateId =
-        personClient.updateChildInCentralFile(
-            currentFileStateId, ChildMapper.mapToPersonDetailsDto(request));
+    UUID updatedFileStateId = personClient.updateChildInCentralFile(currentFileStateId, dto);
 
     if (!currentFileStateId.equals(updatedFileStateId)) {
       child.getChild().setCentralFileStateId(updatedFileStateId);
       progressEntryUtil.addProgressEntryWithPreviousPersonFileStateId(child, currentFileStateId);
-      childRepository.flush();
     }
   }
 

@@ -15,7 +15,7 @@ import {
   ToolbarBackButton,
   gdprRoutes,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { ValidationTaskProceduresTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTaskProceduresTable";

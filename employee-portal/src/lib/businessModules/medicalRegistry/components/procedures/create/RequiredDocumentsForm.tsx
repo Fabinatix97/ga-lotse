@@ -11,12 +11,14 @@ import { Fragment } from "react";
 import { ApiCountryCode } from "@eshg/base-api";
 import { FileField, useGetPublicConfig } from "@eshg/lib-employee-portal";
 import {
+  FileType,
+  NestedFormProps,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
+import {
   MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";

@@ -5,12 +5,14 @@
 
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { FormLabel, Grid, IconButton, Typography } from "@mui/joy";
-import { FieldArray } from "formik";
 import { Fragment, useId } from "react";
 
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { YearField } from "@eshg/lib-portal/components/formFields/YearField";
+import {
+  FieldArrayWithFocus as FieldArray,
+  FormAddMoreButton,
+  InputField,
+  YearField,
+} from "@eshg/lib-portal";
 
 import { CitizenAnamnesisFormValues } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
 import { CitizenPortalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/CitizenPortalMonthAndYearFields";
@@ -55,8 +57,11 @@ export function CitizenAnamnesisStepTwo({
         title={t("additionalInfo.siblings")}
         name={additionalChildInfo("siblings.show")}
       >
-        <FieldArray name={additionalChildInfo("siblings.birthYears")}>
-          {({ push, remove }) => (
+        <FieldArray
+          valueLength={values.additionalChildInfo.siblings.birthYears.length}
+          name={additionalChildInfo("siblings.birthYears")}
+        >
+          {({ push, remove, setInputElementRef }) => (
             <Grid
               container
               sx={{ flexGrow: 1 }}
@@ -75,6 +80,7 @@ export function CitizenAnamnesisStepTwo({
                         })}
                       >
                         <YearField
+                          ref={(el) => setInputElementRef(el, index)}
                           min={1900}
                           max={new Date().getFullYear()}
                           name={additionalChildInfo(

@@ -11,7 +11,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { AppointmentBlockGroupsTable } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/AppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";

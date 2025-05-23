@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { SingleAutocompleteField } from "@eshg/lib-portal";
 
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 

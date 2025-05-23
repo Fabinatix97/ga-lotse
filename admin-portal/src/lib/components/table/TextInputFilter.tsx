@@ -5,7 +5,7 @@
 
 import { useSearchParams } from "next/navigation";
 
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { CustomAutocomplete } from "@eshg/lib-portal";
 
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
 

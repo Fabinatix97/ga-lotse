@@ -191,8 +191,8 @@
     }
   },
   "successPage": {
-    "createNewEntry": "Create new entry",
-    "content": "Entry created successfully!"
+    "content": "Entry created successfully",
+    "registrationForm": "To the registration form"
   },
   "snackbar": {
     "success": "The registration form has been successfully saved.",

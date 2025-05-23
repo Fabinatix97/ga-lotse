@@ -17,9 +17,12 @@ import { Box, Typography, styled } from "@mui/joy";
 import { formatDuration } from "date-fns";
 import { de } from "date-fns/locale";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  InternalLinkButton,
+  formatDate,
+  formatPersonName,
+  formatTime,
+} from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolEntryProcedure } from "@/lib/businessModules/schoolEntry/api/models/SchoolEntryProcedure";

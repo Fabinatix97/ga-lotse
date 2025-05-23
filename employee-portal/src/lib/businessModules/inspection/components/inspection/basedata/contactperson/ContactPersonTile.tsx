@@ -10,7 +10,7 @@ import { isNonNullish } from "remeda";
 
 import { ApiFacilityContactPerson } from "@eshg/base-api";
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { SALUTATION_VALUES } from "@eshg/lib-portal";
 
 import { EmailSection } from "@/lib/businessModules/inspection/components/inspection/common/EmailSection";
 import { PhoneNumberSection } from "@/lib/businessModules/inspection/components/inspection/common/PhoneNumberSection";

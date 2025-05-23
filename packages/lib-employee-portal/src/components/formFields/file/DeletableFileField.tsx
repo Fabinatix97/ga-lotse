@@ -8,7 +8,7 @@ import { IconButton, Input } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isNonNullish } from "remeda";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { FileField, FileFieldProps } from "./FileField";
 

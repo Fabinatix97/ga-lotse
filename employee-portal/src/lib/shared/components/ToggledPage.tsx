@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { Alert, RequiresChildren } from "@eshg/lib-portal";
 import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
 import { useIsNewFeatureEnabled } from "@/lib/opendata/queries/feature";

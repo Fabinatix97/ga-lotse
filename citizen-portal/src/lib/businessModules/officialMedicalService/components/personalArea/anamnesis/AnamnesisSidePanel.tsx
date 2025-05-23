@@ -7,7 +7,7 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { Dispatch, SetStateAction } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { ANAMNESIS_TOTAL_STEPS } from "@/lib/businessModules/officialMedicalService/components/personalArea/anamnesis/common";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";

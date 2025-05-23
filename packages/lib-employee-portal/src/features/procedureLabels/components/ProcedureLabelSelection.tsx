@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import {
-  BaseField,
-  useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
+import { BaseField, QueryKeyFactory, useBaseField } from "@eshg/lib-portal";
 
 import { ProcedureLabel } from "../api/models/ProcedureLabel";
 import { ProcedureLabelClient } from "../types/procedureLabelClient";

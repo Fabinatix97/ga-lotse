@@ -5,7 +5,7 @@
 
 import { isDefined, isEmpty } from "remeda";
 
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue } from "@eshg/lib-portal";
 import {
   ApiCreateManualProgressEntryRequest,
   ApiFileMetaData,

@@ -14,42 +14,48 @@ import java.util.Optional;
 
 public enum StiRapidTestsAttributes implements StiAttributes {
   RAPID_TESTS_HIV_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "HIV-Schnelltest angefordert",
           "RAPID_TESTS_HIV_TEST_REQUESTED",
           StiRapidTestsAttributes.RAPID_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   RAPID_TESTS_HIV_TEST_RESULT_REACTIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Reaktiver HIV-Schnelltest",
           "RAPID_TESTS_HIV_TEST_RESULT_REACTIVE",
           StiRapidTestsAttributes.RAPID_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
   RAPID_TESTS_SYPHILIS_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Syphilis-Schnelltest angefordert",
           "RAPID_TESTS_SYPHILIS_TEST_REQUESTED",
           StiRapidTestsAttributes.RAPID_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
   RAPID_TESTS_SYPHILIS_TEST_RESULT_REACTIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Reaktiver Syphilis-Schnelltest",
           "RAPID_TESTS_SYPHILIS_TEST_RESULT_REACTIVE",
           StiRapidTestsAttributes.RAPID_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
   RAPID_TESTS_PREGNANCY_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Schwangerschaftstest angefordert",
           "RAPID_TESTS_PREGNANCY_TEST_REQUESTED",
           StiRapidTestsAttributes.RAPID_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
   RAPID_TESTS_PREGNANCY_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Schwangerschaftstest",
           "RAPID_TESTS_PREGNANCY_TEST_RESULT_POSITIVE",
           StiRapidTestsAttributes.RAPID_TESTS_CATEGORY,
-          false));
+          false,
+          0.2));
 
   private static final String RAPID_TESTS_CATEGORY = "Schnelltests";
 

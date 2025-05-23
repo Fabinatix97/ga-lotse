@@ -9,7 +9,7 @@ import {
   Toolbar,
   ToolbarProps,
 } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 type MeaslesProtectionLayoutProps = RequiresChildren & ToolbarProps;
 export function MeaslesProtectionLayout({

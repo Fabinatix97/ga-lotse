@@ -11,9 +11,11 @@ import {
   UpdateChildRequest,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  unwrapRawResponse,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useDentalApi } from "../../../../contexts/dental";
 import { getChildDetailsQuery, getExaminationQuery } from "../queries/details";

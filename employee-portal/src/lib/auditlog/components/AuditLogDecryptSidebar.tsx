@@ -22,8 +22,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { createFieldNameMapper, formatDate } from "@eshg/lib-portal";
 import { encodeReservedHtmlCharacters } from "@eshg/lib-portal/helpers/htmlStringEncoder";
 
 import { useAuditlogApi } from "@/lib/auditlog/api/clients";

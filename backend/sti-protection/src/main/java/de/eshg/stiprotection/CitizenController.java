@@ -53,6 +53,7 @@ public class CitizenController {
   private final MedicalHistoryService medicalHistoryService;
   private final ProgressEntryUtil progressEntryUtil;
   private final AppointmentService appointmentService;
+  private final CitizenAppointmentService citizenAppointmentService;
   private final StiProtectionProcedureService stiProtectionProcedureService;
 
   public CitizenController(
@@ -60,11 +61,13 @@ public class CitizenController {
       MedicalHistoryService medicalHistoryService,
       ProgressEntryUtil progressEntryUtil,
       AppointmentService appointmentService,
+      CitizenAppointmentService citizenAppointmentService,
       StiProtectionProcedureService stiProtectionProcedureService) {
     this.citizenService = citizenService;
     this.medicalHistoryService = medicalHistoryService;
     this.progressEntryUtil = progressEntryUtil;
     this.appointmentService = appointmentService;
+    this.citizenAppointmentService = citizenAppointmentService;
     this.stiProtectionProcedureService = stiProtectionProcedureService;
   }
 
@@ -106,7 +109,7 @@ public class CitizenController {
   public void cancelBookedAppointment(@AuthenticationPrincipal Jwt principal) {
     StiProtectionProcedure procedure = citizenService.getProcedure(principal);
     Appointments.assertHasAppointment(procedure);
-    appointmentService.cancelAppointment(procedure);
+    citizenAppointmentService.cancelAppointment(procedure);
     progressEntryUtil.addProgressEntry(
         procedure, StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED, TriggerType.CITIZEN);
   }

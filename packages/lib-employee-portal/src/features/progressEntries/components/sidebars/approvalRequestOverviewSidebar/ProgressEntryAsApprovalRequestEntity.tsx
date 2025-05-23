@@ -6,8 +6,7 @@
 import { Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatDateTime, formatUserName } from "@eshg/lib-portal";
 import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 
 import { manualProgressEntryTitles } from "../../../config/progressEntryTypes";

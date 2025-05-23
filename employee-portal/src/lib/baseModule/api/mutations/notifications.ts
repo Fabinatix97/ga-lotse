@@ -4,7 +4,7 @@
  */
 
 import { ApiMarkNotificationsAsReadRequest } from "@eshg/base-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useHandledMutation } from "@eshg/lib-portal";
 
 import { useNotificationAggregationApi } from "@/lib/baseModule/api/clients";
 

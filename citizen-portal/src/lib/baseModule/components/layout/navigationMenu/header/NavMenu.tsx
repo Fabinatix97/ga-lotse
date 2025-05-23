@@ -16,7 +16,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import {
   isItemSelected,

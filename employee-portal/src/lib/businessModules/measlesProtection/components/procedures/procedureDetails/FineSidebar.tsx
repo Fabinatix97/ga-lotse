@@ -17,7 +17,7 @@ import {
   SidebarForm,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiCreateMonetaryFine } from "@eshg/measles-protection-api";
 
 import { useAddFineMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

@@ -18,17 +18,15 @@ import assert from "assert";
 import { useFormikContext } from "formik";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
-import { AppointmentListProps } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentListForDate";
 import {
   Appointment,
+  AppointmentListProps,
   AppointmentPickerField,
   AppointmentPickerFieldProps,
   AppointmentPickerLayoutProps,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import {
-  formatTime,
+  formatAppointmentTime,
   isSameAppointment,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
+} from "@eshg/lib-portal";
 
 import { Row } from "@/lib/businessModules/measlesProtection/shared/components/Row";
 import { TranslateFn } from "@/lib/i18n/client";
@@ -207,7 +205,7 @@ function TimeSlot<T extends Appointment>({
 }) {
   const theme = useTheme();
   const isSelected = isSameAppointment(value, appointment);
-  const label = formatTime(appointment.start, locale);
+  const label = formatAppointmentTime(appointment.start, locale);
   const radioButtonSlotProps = useRadioButtonSlotProps(theme, isSelected);
   const labelFontStyles = useLabelFontStyles(theme, isSelected);
   return (

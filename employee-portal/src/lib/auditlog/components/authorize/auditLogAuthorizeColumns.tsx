@@ -9,7 +9,7 @@ import { LockOpenOutlined } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { AuditLog } from "@/lib/auditlog/api/models/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";

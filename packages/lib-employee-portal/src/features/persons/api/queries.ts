@@ -9,7 +9,7 @@ import {
   SearchReferenceFacilitiesRequest,
   SearchReferencePersonsRequest,
 } from "@eshg/base-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import {
   facilityApiQueryKey,

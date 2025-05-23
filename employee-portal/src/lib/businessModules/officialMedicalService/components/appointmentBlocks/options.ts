@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";

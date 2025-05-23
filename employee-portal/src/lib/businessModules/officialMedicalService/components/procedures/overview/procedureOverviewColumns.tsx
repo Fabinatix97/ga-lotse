@@ -17,11 +17,7 @@ import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
 } from "@eshg/lib-employee-portal";
-import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { formatDate, formatDateTime, isNonEmptyString } from "@eshg/lib-portal";
 import {
   ApiEmployeeOmsProcedureOverview,
   ApiMedicalOpinionStatus,

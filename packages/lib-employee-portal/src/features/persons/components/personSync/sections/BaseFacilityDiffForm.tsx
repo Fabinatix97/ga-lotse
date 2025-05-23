@@ -16,7 +16,7 @@ import {
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
   getOptionalTitle,
-} from "@eshg/lib-portal/components/formFields/constants";
+} from "@eshg/lib-portal";
 
 import {
   AddressUnion,

@@ -13,8 +13,7 @@ import {
 } from "@mui/icons-material";
 import { SelectProps, Stack, Typography } from "@mui/joy";
 
-import { LiveAnnouncer } from "@eshg/lib-portal/components/liveAnnouncer/LiveAnnouncer";
-import { getLastPage } from "@eshg/lib-portal/helpers/paginationHelper";
+import { LiveAnnouncer, getLastPage } from "@eshg/lib-portal";
 
 import { IconButton } from "../../../../components/buttons/IconButton";
 import {

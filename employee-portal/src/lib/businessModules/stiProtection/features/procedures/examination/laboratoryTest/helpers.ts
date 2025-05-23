@@ -8,9 +8,9 @@ import { isBoolean, isString } from "remeda";
 import {
   YesOrNoFieldData,
   mapBoolToYesOrNo,
+  mapOptionalString,
   mapYesOrNoToBool,
-} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { mapOptionalString } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 import {
   ApiLaboratoryTestExamination,
   ApiLaboratoryTestExaminationLabTestDataInner,

@@ -12,7 +12,7 @@ import {
 import {
   BooleanSchema,
   PositiveIntegerSchema,
-} from "@eshg/lib-portal/schemas/pageParams";
+} from "@eshg/lib-portal/universal";
 
 export const FacilityWebSearchFiltersSchema = v.partial(
   v.object({

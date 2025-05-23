@@ -11,7 +11,7 @@ import {
   ApiSalutation,
 } from "@eshg/base-api";
 import { BaseAddressFormInputs } from "@eshg/lib-employee-portal";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal";
 
 import {
   OptionalMergeValue,

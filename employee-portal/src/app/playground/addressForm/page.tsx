@@ -24,7 +24,7 @@ import {
   Toolbar,
   createEmptyAddress,
 } from "@eshg/lib-employee-portal";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { createFieldNameMapper } from "@eshg/lib-portal";
 
 type SidebarState = "contact_only" | "billing_only" | "optional_billing";
 

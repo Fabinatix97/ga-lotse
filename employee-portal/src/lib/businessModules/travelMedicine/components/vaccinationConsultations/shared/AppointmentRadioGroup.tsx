@@ -8,12 +8,14 @@ import { useField } from "formik";
 import { ReactNode, useMemo, useState } from "react";
 
 import { DateTimeField } from "@eshg/lib-employee-portal";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { RadioGroupFieldProps } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { AppointmentPickerField } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import {
+  AppointmentPickerField,
+  NumberField,
+  RadioGroupFieldProps,
+  isDateCurrentDateOrGreater,
+  isNonEmptyArray,
+} from "@eshg/lib-portal";
 import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
-import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,

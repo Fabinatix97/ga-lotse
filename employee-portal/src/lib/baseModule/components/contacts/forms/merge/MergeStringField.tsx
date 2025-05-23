@@ -5,8 +5,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import { FieldProps, SelectField } from "@eshg/lib-portal";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 

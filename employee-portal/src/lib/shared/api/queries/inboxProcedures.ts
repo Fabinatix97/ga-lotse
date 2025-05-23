@@ -6,7 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
-import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { type QueryKeyFactory } from "@eshg/lib-portal";
 import { InboxProcedureApi } from "@eshg/lib-procedures-api";
 
 type UseFetchInboxProceduresResult = ReturnType<

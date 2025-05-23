@@ -7,7 +7,7 @@ import { DeleteOutlined } from "@mui/icons-material";
 import { Box, FormHelperText, IconButton, Sheet, Typography } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
+import { formatFileSize } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { FileDescriptor } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";

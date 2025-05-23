@@ -6,10 +6,7 @@
 import { FormikErrors } from "formik";
 import { isEmpty } from "remeda";
 
-import {
-  isEmptyString,
-  isNonEmptyString,
-} from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString, isNonEmptyString } from "@eshg/lib-portal";
 
 import { AddressValues } from "./AddressForm";
 import { ContactValues } from "./ContactForm";

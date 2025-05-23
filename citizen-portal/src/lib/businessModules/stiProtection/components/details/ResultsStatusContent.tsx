@@ -10,7 +10,7 @@ import { Typography } from "@mui/joy";
 import { TFunction } from "i18next";
 import { Trans } from "react-i18next";
 
-import { Row } from "@eshg/lib-portal/components/Row";
+import { Row } from "@eshg/lib-portal";
 
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { useTranslation } from "@/lib/i18n/client";

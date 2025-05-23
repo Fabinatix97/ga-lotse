@@ -8,7 +8,7 @@
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 
 import { FileCard } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { useOpenDataApi } from "@/lib/opendata/api/clients";

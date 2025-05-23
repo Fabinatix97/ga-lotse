@@ -19,15 +19,15 @@ import {
   SidebarFormHandle,
   createEmptyAddress,
 } from "@eshg/lib-employee-portal";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
+  EmailField,
   InputArrayField,
+  InputField,
+  PhoneNumberField,
+  createFieldNameMapper,
   getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+  useValidateLength,
+} from "@eshg/lib-portal";
 
 import {
   MeaslesFacilityTypeSelect,

@@ -5,7 +5,7 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";

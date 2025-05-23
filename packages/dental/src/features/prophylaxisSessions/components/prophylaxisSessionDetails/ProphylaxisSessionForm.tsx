@@ -20,17 +20,15 @@ import {
   UserField,
   formatInstitutionNameWithCategoryShort,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
-  mapOptionalValue,
-  mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
-import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import {
+  Alert,
   NullableFieldValue,
   OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+  SelectField,
+  mapOptionalValue,
+  mapRequiredValue,
+  useHasChanged,
+} from "@eshg/lib-portal";
 
 import { Institution } from "../../../../api/models/Institution";
 import { SearchGroupField } from "../../../../components/group/SearchGroupField";

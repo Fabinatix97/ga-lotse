@@ -7,13 +7,11 @@ import { Grid } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import {
-  createFieldNameMapper,
-  mapOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
-import {
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  createFieldNameMapper,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,

@@ -7,7 +7,7 @@ import {
   ApiTextBlockRequest,
   UpdateTextBlockRequest,
 } from "@eshg/inspection-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useHandledMutation } from "@eshg/lib-portal";
 
 import { useTextBlockApi } from "@/lib/businessModules/inspection/api/clients";
 

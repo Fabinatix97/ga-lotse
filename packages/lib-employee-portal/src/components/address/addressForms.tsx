@@ -12,14 +12,16 @@ import { useId } from "react";
 import { isNonNullish } from "remeda";
 
 import { ApiCountryCode } from "@eshg/base-api";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  FormAddMoreButton,
+  InputField,
+  NestedFormProps,
+  SelectField,
+  SelectOption,
+  createFieldNameMapper,
+  useValidateLength,
+  validatePipe,
+} from "@eshg/lib-portal";
 
 import { BaseAddressType } from "../../api/models/address";
 import { validateZipCode } from "../../utils/validators";

@@ -17,8 +17,7 @@ import {
   ApiTaskType,
   ApiUser,
 } from "@eshg/base-api";
-import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { queryKeyFactory, unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useTaskAggregationApi } from "@/lib/baseModule/api/clients";
 import { mapResponse } from "@/lib/baseModule/api/models/task";

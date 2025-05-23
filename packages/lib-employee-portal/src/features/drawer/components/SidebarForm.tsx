@@ -14,9 +14,11 @@ import {
   useImperativeHandle,
 } from "react";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import {
+  FormPlus,
+  RequiresChildren,
+  useResetAlertContext,
+} from "@eshg/lib-portal";
 
 import { SidebarFormHandle } from "../types/sidebar";
 

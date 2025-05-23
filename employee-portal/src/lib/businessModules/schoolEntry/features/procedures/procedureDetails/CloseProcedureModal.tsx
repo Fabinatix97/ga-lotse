@@ -11,8 +11,8 @@ import { isDefined } from "remeda";
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+  InternalLinkButton,
+} from "@eshg/lib-portal";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useCloseProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";

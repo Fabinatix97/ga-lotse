@@ -17,9 +17,11 @@ import {
   SidebarForm,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { SelectObjectField } from "@eshg/lib-portal/components/formFields/SelectObjectField";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import {
+  SelectObjectField,
+  formatDateTime,
+  mapRequiredValue,
+} from "@eshg/lib-portal";
 import { ApiAppointment } from "@eshg/measles-protection-api";
 
 import { useBookAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";

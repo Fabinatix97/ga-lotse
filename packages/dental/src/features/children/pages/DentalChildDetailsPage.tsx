@@ -7,8 +7,7 @@ import { Grid, Stack } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { ContentPanel, PageGrid } from "@eshg/lib-employee-portal";
-import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 
 import { useDentalApi } from "../../../contexts/dental";
 import { getChildDetailsQuery } from "../api/queries/details";

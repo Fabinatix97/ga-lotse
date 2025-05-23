@@ -16,10 +16,13 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.stiprotection.persistence.Appointments;
 import de.eshg.stiprotection.persistence.data.PersonData;
+import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
+import de.eshg.stiprotection.persistence.db.AppointmentStatus;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.ProcedureExpiration;
 import de.eshg.stiprotection.persistence.db.ProcedureExpirationRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -32,16 +35,19 @@ public class CitizenAppointmentService {
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final StiProtectionProcedureService stiProtectionService;
+  private final AppointmentCooldownService appointmentCooldownService;
 
   public CitizenAppointmentService(
       ProcedureExpirationRepository procedureExpirationRepository,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
       ModuleClientAuthenticator moduleClientAuthenticator,
-      StiProtectionProcedureService stiProtectionService) {
+      StiProtectionProcedureService stiProtectionService,
+      AppointmentCooldownService appointmentCooldownService) {
     this.procedureExpirationRepository = procedureExpirationRepository;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.stiProtectionService = stiProtectionService;
+    this.appointmentCooldownService = appointmentCooldownService;
   }
 
   public StiProtectionProcedure createProcedureWithExpiryDate(Concern concern) {
@@ -102,9 +108,29 @@ public class CitizenAppointmentService {
     Assert.isTrue(
         CITIZEN_PORTAL.equals(procedure.getStiProcedureOrigin()),
         "Required a procedure originated from Citizen Portal");
-    Appointments.removeAppointmentFromBlock(appointment);
+
+    appointmentCooldownService.removeAppointmentCooldown(appointment);
     stiProtectionService.deleteProcedure(procedure);
     procedureExpirationRepository.delete(expirationOptional.get());
+  }
+
+  public void cancelAppointment(StiProtectionProcedure procedure) {
+    Appointment appointment = procedure.getAppointment();
+    Appointments.removeAppointmentFromBlock(appointment);
+    appointmentCooldownService.setAppointmentOnCooldown(appointment);
+
+    procedure.setAppointment(null);
+    procedure.setCalendarEventId(null);
+    procedure.setUserDefinedAppointment(null);
+    cancelAppointmentHistoryEntry(procedure);
+  }
+
+  private void cancelAppointmentHistoryEntry(StiProtectionProcedure procedure) {
+    List<AppointmentHistoryEntry> appointmentHistory = procedure.getAppointmentHistory();
+    if (!appointmentHistory.isEmpty()) {
+      AppointmentHistoryEntry appointmentHistoryEntry = appointmentHistory.getLast();
+      appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.CANCELLED);
+    }
   }
 
   public StiProtectionProcedure findByExternalId(UUID procedureId) {

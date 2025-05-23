@@ -8,7 +8,7 @@ import assert from "assert";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { DownloadDocumentCardField } from "@/lib/businessModules/stiProtection/components/shared/DownloadDocumentCardField";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";

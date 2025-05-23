@@ -6,8 +6,7 @@
 import { FormikErrors, useFormikContext } from "formik";
 
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
+import { SelectField, formatCurrency } from "@eshg/lib-portal";
 
 import { OtherServicesTemplates } from "@/lib/businessModules/travelMedicine/api/models/OtherServicesTemplates";
 import {

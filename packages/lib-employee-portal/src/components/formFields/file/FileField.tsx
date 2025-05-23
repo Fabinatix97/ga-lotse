@@ -16,18 +16,16 @@ import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
+  FieldProps,
   FileLike,
   FileType,
-} from "@eshg/lib-portal/components/formFields/file/types";
-import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import {
+  useBaseField,
+  useDragAndDrop,
   useValidateFile,
   useValidateFileType,
-} from "@eshg/lib-portal/hooks/useValidators";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+  validatePipe,
+} from "@eshg/lib-portal";
 
 import { FileButton, FileInputButton } from "./buttonVariants";
 
@@ -106,7 +104,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const placeholder = props.placeholder ?? DEFAULT_PLACEHOLDER;
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0] ?? null;
+    const file = supplimentFileType(event.target.files?.[0] ?? null);
     await field.helpers.setValue(file);
     await field.helpers.setTouched(true);
     if (isFunction(props.onChange)) {
@@ -164,4 +162,30 @@ export function FileField(props: Readonly<FileFieldProps>) {
       </FormControl>
     </Box>
   );
+}
+
+// Windows doesn't always have the correct MIME-Type
+// This function corrects for that
+function supplimentFileType(file: File): File;
+function supplimentFileType(file: File | null): File | null;
+function supplimentFileType(file: File | null): File | null {
+  if (file == null) {
+    return null;
+  }
+  const extension = file.name.split(".").at(-1)?.toUpperCase();
+  switch (extension) {
+    case "MD":
+      return changeFileType(file, "text/markdown");
+    case "ZIP":
+      return changeFileType(file, "application/zip");
+    default:
+      return file;
+  }
+}
+
+function changeFileType(file: File, newType: string): File {
+  return new File([file], file.name, {
+    type: newType,
+    lastModified: file.lastModified,
+  });
 }

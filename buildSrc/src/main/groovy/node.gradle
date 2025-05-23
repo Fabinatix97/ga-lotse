@@ -2,21 +2,46 @@ plugins {
   id 'com.github.node-gradle.node'
 }
 
+def gradleDir = rootProject.layout.projectDirectory.dir('.gradle')
+def nodeSetupDir = gradleDir.dir('nodejs')
+def pnpmSetupDir = gradleDir.dir('pnpm')
+
 node {
-  version = '22.15.0'
-  pnpmVersion = '10.10.0'
+  version = '22.15.1'
+  pnpmVersion = '10.11.0'
   download = true
-  workDir = file("${rootProject.projectDir}/.gradle/nodejs")
-  pnpmWorkDir = file("${rootProject.projectDir}/.gradle/pnpm")
+  workDir = nodeSetupDir
+  pnpmWorkDir = pnpmSetupDir
 }
 
 ext {
-  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:ad1aedbcc1b0575074a91ac146d6956476c1f9985994810e4ee02efd932a68fd"
+  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:152270cd4bd094d216a84cbc3c5eb1791afb05af00b811e2f0f04bdc6c473602"
 }
 
-tasks.register('cleanDependencies', Delete) {
+def cleanDependenciesTask = tasks.register('cleanDependencies', Delete) {
   group = 'workspace'
   delete "${projectDir}/node_modules"
+}
+
+def cleanNodeSetupTask = tasks.register('cleanNodeSetup', Delete) {
+  delete nodeSetupDir
+  onlyIf('run only in root project') {
+    isRootProject()
+  }
+}
+
+def cleanPnpmSetupTask = tasks.register('cleanPnpmSetup', Delete) {
+  delete pnpmSetupDir
+  onlyIf('run only in root project') {
+    isRootProject()
+  }
+}
+
+tasks.register('clean', Delete) {
+  dependsOn cleanDependenciesTask
+  dependsOn cleanNodeSetupTask
+  dependsOn cleanPnpmSetupTask
+  delete project.layout.buildDirectory
 }
 
 def isRootProject() {

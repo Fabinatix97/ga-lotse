@@ -6,7 +6,7 @@
 import {
   SearchParamValue,
   parseOptionalBoundedInt,
-} from "@eshg/lib-portal/helpers/searchParams";
+} from "@eshg/lib-portal/universal";
 
 export const SEARCH_PARAMS = {
   pageNumber: "page",

@@ -19,8 +19,7 @@ import {
   DataTable,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap, formatDateTime } from "@eshg/lib-portal";
 import {
   ApiAppointmentState,
   ApiBookingState,

@@ -22,7 +22,7 @@ import {
 } from "react";
 
 import { SidebarActions, SidebarContent } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 
 import { useTextTemplates } from "@/lib/businessModules/stiProtection/api/queries/textTemplates";

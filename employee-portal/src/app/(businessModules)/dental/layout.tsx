@@ -5,7 +5,7 @@
 
 import { DentalProvider } from "@eshg/dental";
 import { SidebarScope } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { env } from "@/env/server";
 

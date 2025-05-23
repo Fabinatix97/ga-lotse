@@ -5,7 +5,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 import { SchoolEntryPublicCitizenApi } from "@eshg/school-entry-api";
 
 import { schoolEntryPublicCitizenApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";

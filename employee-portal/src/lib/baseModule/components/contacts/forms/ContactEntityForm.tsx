@@ -21,12 +21,12 @@ import {
   SidebarFormHandle,
   createEmptyAddress,
 } from "@eshg/lib-employee-portal";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
+  EmailField,
+  FormAddMoreButton,
   InputArrayField,
   getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
+} from "@eshg/lib-portal";
 
 import {
   mapAddContactRequest,

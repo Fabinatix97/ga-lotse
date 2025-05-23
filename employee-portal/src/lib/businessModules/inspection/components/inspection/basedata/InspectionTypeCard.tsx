@@ -26,10 +26,12 @@ import {
   SimplifiedModalProps,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import {
+  Alert,
+  CheckboxField,
+  SetFieldValueHelper,
+  formatPersonName,
+} from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";

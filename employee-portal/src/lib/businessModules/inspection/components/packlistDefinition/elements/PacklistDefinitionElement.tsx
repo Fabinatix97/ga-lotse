@@ -19,6 +19,7 @@ interface PacklistDefinitionElementProps {
   elementIndex: number;
   readOnlyMode?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps | null;
+  ref?: (el: HTMLInputElement) => void;
 }
 
 export function PacklistDefinitionElement({
@@ -28,6 +29,7 @@ export function PacklistDefinitionElement({
   elementIndex,
   readOnlyMode,
   dragHandleProps,
+  ref,
 }: Readonly<PacklistDefinitionElementProps>) {
   function updateElement(update: Partial<ApiPacklistDefinitionElement>) {
     setElement({ ...element, ...update });
@@ -71,6 +73,11 @@ export function PacklistDefinitionElement({
         />
       </Box>
       <Input
+        slotProps={{
+          input: {
+            ref: ref,
+          },
+        }}
         disabled={readOnlyMode}
         sx={{ flex: 1, height: "51px" }}
         defaultValue={element?.text ?? ""}

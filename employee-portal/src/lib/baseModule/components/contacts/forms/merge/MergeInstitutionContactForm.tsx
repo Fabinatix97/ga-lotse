@@ -21,9 +21,9 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   InputArrayField,
+  createFieldNameMapper,
   getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 
 import { mapImportMergeContactRequest } from "@/lib/baseModule/api/mapper/contacts";
 import { useUpdateContactMutation } from "@/lib/baseModule/api/mutations/contacts";

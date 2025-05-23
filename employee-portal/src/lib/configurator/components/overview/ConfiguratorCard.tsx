@@ -6,8 +6,7 @@
 import { ArrowForwardOutlined } from "@mui/icons-material";
 import { Card, CardContent, Chip, Stack, Typography } from "@mui/joy";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
+import { InternalLink, InternalLinkIconButton } from "@eshg/lib-portal";
 
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
 

@@ -14,7 +14,7 @@ import {
 } from "@mui/icons-material";
 import { ReactNode } from "react";
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileType } from "@eshg/lib-portal";
 import {
   ApiInboxProgressEntryType,
   ApiManualProgressEntryType,

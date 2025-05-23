@@ -6,8 +6,7 @@
 import { Box, Sheet, Stack, Theme, styled } from "@mui/joy";
 import { ReactElement, ReactNode } from "react";
 
-import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { LoadingOverlay, RequiresChildren } from "@eshg/lib-portal";
 
 const StyledSheet = styled(Sheet)(({ theme }) => ({
   flex: 1,

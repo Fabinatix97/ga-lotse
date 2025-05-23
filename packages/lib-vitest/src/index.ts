@@ -4,3 +4,4 @@
  */
 
 export { doWithFakeTimers } from "./helpers/doWithFakeTimers";
+export { createArtificialFile } from "./helpers/createArtificialFile";

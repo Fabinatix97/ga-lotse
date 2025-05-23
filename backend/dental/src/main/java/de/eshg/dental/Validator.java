@@ -51,6 +51,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class Validator {
 
+  private static final String PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE =
+      "ProphylaxisSession cannot be closed, because at least one existing examination has not yet been closed.";
+
   private final Clock clock;
   private final ContactClient contactClient;
   private final ChildRepository childRepository;
@@ -229,52 +232,47 @@ public class Validator {
   }
 
   public static void validateAllExaminationsAreClosed(ProphylaxisSession prophylaxisSession) {
-    String prophylaxisSessionNotCloseableMessage =
-        "ProphylaxisSession cannot be closed, because at least one existing examination has not yet been closed.";
     List<Examination> examinations = prophylaxisSession.getExaminations();
 
     for (Examination examination : examinations) {
       if (!examination.hasResult()) {
-        throw new BadRequestException(prophylaxisSessionNotCloseableMessage);
+        throw new BadRequestException(PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE);
       }
       ExaminationResult result = examination.getResult();
       FluoridationConsent currentFluoridationConsent =
           examination.getChild().getCurrentFluoridationConsent();
 
       if (result instanceof FluoridationExaminationResult fluoridationExaminationResult) {
-        validateFluoridationResult(
-            fluoridationExaminationResult,
-            currentFluoridationConsent,
-            prophylaxisSessionNotCloseableMessage);
+        validateFluoridationIsComplete(
+            fluoridationExaminationResult.isFluorideVarnishApplied(),
+            prophylaxisSession.hasFluoridationVarnish(),
+            currentFluoridationConsent);
       } else if (result instanceof ScreeningExaminationResult screeningExaminationResult) {
-        validateScreeningResult(
-            screeningExaminationResult,
-            currentFluoridationConsent,
-            prophylaxisSessionNotCloseableMessage);
+        validateFluoridationIsComplete(
+            screeningExaminationResult.isFluorideVarnishApplied(),
+            prophylaxisSession.hasFluoridationVarnish(),
+            currentFluoridationConsent);
+        validateScreeningIsComplete(screeningExaminationResult);
       }
     }
   }
 
-  private static void validateFluoridationResult(
-      FluoridationExaminationResult result,
-      FluoridationConsent currentFluoridationConsent,
-      String errorMessage) {
-    if (currentFluoridationConsent != null && result.isFluorideVarnishApplied() == null) {
-      throw new BadRequestException(errorMessage);
+  private static void validateFluoridationIsComplete(
+      Boolean isFluorideVarnishApplied,
+      boolean isExaminationWithFluoridation,
+      FluoridationConsent currentFluoridationConsent) {
+    if (isFluorideVarnishApplied == null
+        && isExaminationWithFluoridation
+        && currentFluoridationConsent != null
+        && currentFluoridationConsent.isConsented()) {
+      throw new BadRequestException(PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE);
     }
   }
 
-  private static void validateScreeningResult(
-      ScreeningExaminationResult result,
-      FluoridationConsent currentFluoridationConsent,
-      String errorMessage) {
-    if (currentFluoridationConsent != null && result.isFluorideVarnishApplied() == null) {
-      throw new BadRequestException(errorMessage);
-    }
-
+  private static void validateScreeningIsComplete(ScreeningExaminationResult result) {
     for (ToothDiagnosis diagnosis : result.getToothDiagnoses().values()) {
       if (!hasMainResult(diagnosis)) {
-        throw new BadRequestException(errorMessage);
+        throw new BadRequestException(PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE);
       }
     }
   }

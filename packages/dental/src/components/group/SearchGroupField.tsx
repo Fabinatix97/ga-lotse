@@ -3,12 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CircularProgress } from "@mui/joy";
-
 import { ApiContactCategory } from "@eshg/base-api";
 import { mapToSelectOption } from "@eshg/lib-employee-portal";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { NullableFieldValue } from "@eshg/lib-portal/types/form";
+import { NullableFieldValue, SingleAutocompleteField } from "@eshg/lib-portal";
 
 import { Institution } from "../../api/models/Institution";
 import { useSearchInstitutionGroupsQuery } from "../../api/queries/groups";
@@ -45,10 +42,8 @@ export function SearchGroupField(props: SearchGroupFieldProps) {
       }
       options={options}
       placeholder="Gruppe suchen"
-      loading={searchGroups.isFetching}
-      endDecorator={
-        searchGroups.isLoading ? <CircularProgress size="sm" /> : null
-      }
+      loading={searchGroups.isLoading}
+      fetching={searchGroups.isFetching}
       freeSolo={props.freeSolo}
       disabled={props.disabled}
     />

@@ -6,7 +6,7 @@
 import { Box, Button, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export interface FilterSettingsSheetProps {
   id?: string;

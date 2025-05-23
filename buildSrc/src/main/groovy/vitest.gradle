@@ -1,5 +1,6 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
 import de.eshg.frontend.FindUnusedValidationFiles
+import de.eshg.frontend.PnpmTaskWithProjectDependencies
 
 plugins {
   id 'workspace-package'
@@ -15,11 +16,10 @@ def testConfigFiles = [
 def testSrcDir = "${projectDir}/src"
 def validationFilesDir = project.layout.projectDirectory.dir('data/test')
 
-def test = tasks.register('test', PnpmTask) {
+def test = tasks.register('test', PnpmTaskWithProjectDependencies) {
   def coverageEnabled = project.hasProperty('coverage')
 
   group = 'verification'
-  dependsOn 'prepareEnvironment'
   environment = testEnvironment
   inputs.files testConfigFiles
   inputs.dir testSrcDir
@@ -36,9 +36,8 @@ def test = tasks.register('test', PnpmTask) {
     (coverageEnabled ? ['--coverage'] : [])
 }
 
-tasks.register('testWatch', PnpmTask) {
+tasks.register('testWatch', PnpmTaskWithProjectDependencies) {
   group = 'verification'
-  dependsOn 'prepareEnvironment'
   environment = testEnvironment
   args = ['vitest', 'watch']
 }

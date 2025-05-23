@@ -1,4 +1,5 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.PnpmTaskWithProjectDependencies
 
 plugins {
   id 'workspace-package'
@@ -16,9 +17,8 @@ def isBundlingActive() {
   return !skippedProjects.contains(project.name)
 }
 
-tasks.register('bundle', PnpmTask) {
+tasks.register('bundle', PnpmTaskWithProjectDependencies) {
   group = 'package'
-  dependsOn 'prepareEnvironment'
 
   inputs.file "${rootDir}/config/tsup.base.ts"
   inputs.file "${projectDir}/tsconfig.json"

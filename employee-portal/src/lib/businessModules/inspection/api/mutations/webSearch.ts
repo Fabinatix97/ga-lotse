@@ -10,8 +10,7 @@ import {
   UpdateWebSearchByIdRequest,
   UpdateWebSearchEntryRequest,
 } from "@eshg/inspection-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { unwrapRawResponse, useHandledMutation } from "@eshg/lib-portal";
 
 import { useWebSearchApi } from "@/lib/businessModules/inspection/api/clients";
 

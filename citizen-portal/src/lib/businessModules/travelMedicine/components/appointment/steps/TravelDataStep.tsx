@@ -6,13 +6,13 @@
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  DateField,
+  NumberField,
+  SelectField,
   validateIntegerAnd,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
+} from "@eshg/lib-portal";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";

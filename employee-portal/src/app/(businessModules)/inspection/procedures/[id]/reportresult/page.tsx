@@ -8,7 +8,7 @@
 import { use } from "react";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabDisabled } from "@/lib/businessModules/inspection/components/inspection/common/InspectionTabDisabled";

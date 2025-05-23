@@ -5,7 +5,7 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   EmployeeOmsProcedureApi,
   GetAllEmployeeProceduresRequest,

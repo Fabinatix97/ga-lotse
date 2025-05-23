@@ -6,7 +6,7 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { IconButton, Stack } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { TextareaField } from "@eshg/lib-portal";
 
 import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementBox";
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";

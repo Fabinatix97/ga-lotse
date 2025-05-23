@@ -6,7 +6,7 @@
 import { isEmpty } from "remeda";
 
 import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString } from "@eshg/lib-portal";
 
 import {
   DirtyState,
@@ -40,11 +40,7 @@ export function setMainResult(
   const { dentition, currentFocus, previousToothDiagnoses } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
 
-  if (
-    !tooth.isRemovable &&
-    ((newValue === "M" && tooth.toothType === "SECONDARY_TOOTH") ||
-      (newValue === "B" && tooth.toothType === "PRIMARY_TOOTH"))
-  ) {
+  if (!tooth.isRemovable && newValue === "B") {
     return {
       ...toggleToothType(toothContext, dentition, previousToothDiagnoses),
       hasResult: hasAnyResult(dentition),

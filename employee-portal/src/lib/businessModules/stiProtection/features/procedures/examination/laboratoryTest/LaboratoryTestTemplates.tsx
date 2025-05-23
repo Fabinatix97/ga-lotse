@@ -8,11 +8,13 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren, ReactNode } from "react";
 
-import { Row } from "@eshg/lib-portal/components/Row";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import {
+  CheckboxField,
+  InputField,
+  Row,
+  TextareaField,
+  YesOrNoWithFollowUp,
+} from "@eshg/lib-portal";
 
 import {
   SectionGrid,

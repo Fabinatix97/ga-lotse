@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap } from "@eshg/lib-portal";
 import { ApiInformationStatementTemplateState } from "@eshg/travel-medicine-api";
 
 export const INFORMATION_STATEMENT_TEMPLATE_STATES: EnumMap<ApiInformationStatementTemplateState> =

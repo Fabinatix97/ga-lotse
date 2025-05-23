@@ -6,7 +6,7 @@
 import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal";
 
 import { useHeaderHeights } from "../../../hooks/useHeaderHeights";
 import { SIDEBAR_PADDING } from "../config/sidebar";

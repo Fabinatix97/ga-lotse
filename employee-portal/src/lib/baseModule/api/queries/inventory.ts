@@ -14,7 +14,7 @@ import {
   InventoryApi,
   LabelApi,
 } from "@eshg/base-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useInventoryApi, useLabelApi } from "@/lib/baseModule/api/clients";
 import { inventoryApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

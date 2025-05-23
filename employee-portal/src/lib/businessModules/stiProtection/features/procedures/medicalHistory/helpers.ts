@@ -5,13 +5,11 @@
 
 import {
   MonthAndYear,
-  mapMonthAndYear,
-} from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import {
   mapBoolToYesOrNo,
+  mapMonthAndYear,
+  mapOptionalValue,
   mapYesOrNoToBool,
-} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 import {
   ApiCreateMedicalHistoryRequest,
   ApiExamination,

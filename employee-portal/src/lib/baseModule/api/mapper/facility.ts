@@ -5,7 +5,7 @@
 
 import { ApiUpdateReferenceFacilityRequest } from "@eshg/base-api";
 import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
-import { dropBlankStrings } from "@eshg/lib-portal/helpers/form";
+import { dropBlankStrings } from "@eshg/lib-portal";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { mapContactPersonToApi } from "@/lib/shared/helpers/facilityUtils";

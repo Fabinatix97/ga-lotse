@@ -16,10 +16,10 @@ import {
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import {
+  calculateAge,
   formatOptional,
   formatOptionalKey,
-} from "@eshg/lib-portal/formatters/optional";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/lib-portal";
 
 import {
   ExaminationResultWithDate,

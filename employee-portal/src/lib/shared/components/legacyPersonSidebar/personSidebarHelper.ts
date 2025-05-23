@@ -7,8 +7,7 @@ import {
   ApiDomesticAddress,
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { dropBlankStrings } from "@eshg/lib-portal/helpers/form";
+import { dropBlankStrings, toDateString } from "@eshg/lib-portal";
 import { ApiPatient } from "@eshg/travel-medicine-api";
 
 import {

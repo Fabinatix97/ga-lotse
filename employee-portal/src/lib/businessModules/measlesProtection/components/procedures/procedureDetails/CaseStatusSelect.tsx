@@ -10,8 +10,8 @@ import { FormControl, Select } from "@mui/joy";
 import {
   SelectOptions,
   optionsFromRecord,
-} from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   ApiCaseStatus,
   ApiGetProcedure200Response,

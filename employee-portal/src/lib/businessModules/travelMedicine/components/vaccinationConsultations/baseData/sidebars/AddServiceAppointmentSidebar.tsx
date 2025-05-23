@@ -11,7 +11,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { toUtcDate } from "@eshg/lib-portal";
 import {
   AddProcedureStepRequest,
   ApiAppointmentBookingType,

@@ -5,7 +5,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import { EvaluationApi, GetEvaluationRequest } from "@eshg/statistics-api";
 
 import { mapEvaluationToTableView } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableView";

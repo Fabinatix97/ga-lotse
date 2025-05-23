@@ -10,9 +10,7 @@ import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
 } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { InternalLinkIconButton, Row, formatDate } from "@eshg/lib-portal";
 import {
   ApiProcedureForPerson,
   ApiProcedureStatus,

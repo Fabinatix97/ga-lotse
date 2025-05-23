@@ -5,7 +5,7 @@
 
 import { isNonNull } from "remeda";
 
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString } from "@eshg/lib-portal";
 
 import {
   DateComparisonFilterDraftValue,

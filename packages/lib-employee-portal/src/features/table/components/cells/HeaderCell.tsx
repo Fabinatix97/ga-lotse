@@ -9,8 +9,7 @@ import { ArrowDropDown } from "@mui/icons-material";
 import { Typography, styled } from "@mui/joy";
 import { ColumnMeta, SortDirection } from "@tanstack/react-table";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ButtonLink, RequiresChildren } from "@eshg/lib-portal";
 
 import { StyledCellProps, getHeaderCellStyles } from "../../utils/cellStyles";
 

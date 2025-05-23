@@ -9,7 +9,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import {
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
-} from "@eshg/lib-portal/components/form/fieldVariants";
+} from "@eshg/lib-portal";
 
 import { getAbbreviation } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
 import {

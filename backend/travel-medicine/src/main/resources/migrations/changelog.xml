@@ -78,5 +78,7 @@
   <include file="migrations/0068_add_opening_hours_initialized.xml"/>
   <include file="migrations/0069_rename_privacy_to_multi_lang_document.xml"/>
   <include file="migrations/0070_add_initialization_status_flag.xml"/>
+  <include file="migrations/0071_add_meds_abroad_procedure_type.xml"/>
+  <include file="migrations/0072_multiple_appointment_types.xml"/>
 
 </databaseChangeLog>

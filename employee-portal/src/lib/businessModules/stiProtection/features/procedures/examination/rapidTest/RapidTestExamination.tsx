@@ -6,8 +6,7 @@
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { CheckboxField, FormPlus } from "@eshg/lib-portal";
 import {
   ApiRapidTestExamination,
   ApiTextTemplateContext,

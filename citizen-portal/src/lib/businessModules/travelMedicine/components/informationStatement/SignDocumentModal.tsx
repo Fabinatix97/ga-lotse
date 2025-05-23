@@ -6,8 +6,8 @@
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+  QueryBoundary,
+} from "@eshg/lib-portal";
 
 import { SignDocumentModalContent } from "@/lib/businessModules/travelMedicine/components/informationStatement/SignDocumentModalContent";
 import { useTranslation } from "@/lib/i18n/client";

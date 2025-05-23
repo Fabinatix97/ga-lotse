@@ -8,7 +8,7 @@ import {
   PublicConfigApi,
   PublicDepartmentApi,
 } from "@eshg/base-api";
-import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+import { ApiConfiguration } from "@eshg/lib-portal";
 import {
   ApiBusinessModule,
   Configuration as BusinessModuleConfiguration,

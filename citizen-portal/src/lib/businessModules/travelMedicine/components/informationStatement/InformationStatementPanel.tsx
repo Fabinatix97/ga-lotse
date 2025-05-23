@@ -5,7 +5,7 @@
 
 import { Button } from "@mui/joy";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useMultiStepForm } from "@eshg/lib-portal";
 import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 
 import { useTranslation } from "@/lib/i18n/client";

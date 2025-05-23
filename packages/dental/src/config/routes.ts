@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
+import { defineRoutes } from "@eshg/lib-portal/universal";
 
 export const routes = defineRoutes("/dental", (dentalPath) => ({
   index: dentalPath("/"),

@@ -8,7 +8,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { mapRequiredValue } from "@eshg/lib-portal";
 
 import { useRestockInventoryItem } from "@/lib/baseModule/api/mutations/inventory";
 import { InventoryRestockForm } from "@/lib/baseModule/components/inventory/forms/InventoryRestockForm";

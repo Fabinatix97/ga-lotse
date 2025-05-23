@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    ":base-api",
+    ":lib-employee-portal",
+    ":lib-portal",
+    ":lib-vitest",
+    ":meds-abroad-api"
+  ]
+}

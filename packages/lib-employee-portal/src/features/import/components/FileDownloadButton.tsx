@@ -6,7 +6,7 @@
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Button, ButtonProps } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface FileDownloadButtonProps
   extends Pick<ButtonProps, "color" | "variant">,

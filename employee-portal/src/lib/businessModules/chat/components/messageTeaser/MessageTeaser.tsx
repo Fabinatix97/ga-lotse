@@ -8,7 +8,7 @@ import { Box, Button, IconButton, Snackbar, Stack, Typography } from "@mui/joy";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { ChatSnackbarValues } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

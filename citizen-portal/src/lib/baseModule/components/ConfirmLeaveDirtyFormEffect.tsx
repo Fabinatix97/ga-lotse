@@ -6,8 +6,7 @@
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 
-import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+import { MutationBundle, useNavigation } from "@eshg/lib-portal";
 
 import {
   SettableConfirmationDialogOptions,

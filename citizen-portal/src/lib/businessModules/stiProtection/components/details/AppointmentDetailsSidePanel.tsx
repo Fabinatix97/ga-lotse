@@ -8,8 +8,7 @@
 import { Button, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { InternalLinkButton, useSnackbar } from "@eshg/lib-portal";
 import { ApiCitizenProcedure } from "@eshg/sti-protection-api";
 
 import { useCancelBookedAppointment } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";

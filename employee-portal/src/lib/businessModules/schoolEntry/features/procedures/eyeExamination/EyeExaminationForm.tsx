@@ -9,14 +9,14 @@ import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
+  CheckboxField,
   FormProps,
+  MutationBundle,
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+  TextareaField,
+} from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
   ApiEyeExaminationType,

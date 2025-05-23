@@ -1,7 +1,7 @@
 <#import "../common/forms.ftlh" as forms>
 <#macro content type="NUL" examination="NUL">
-<#-- @ftlvariable name="type" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationTypeDto" -->
-<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationDto" -->
+<#-- @ftlvariable name="type" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationTypeDto" -->
+<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto" -->
   <table style="width: 70%; margin: 1mm 0 1mm 0;">
     <colgroup>
       <col style="width: 25%"/>

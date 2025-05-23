@@ -7,7 +7,7 @@ import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 
 import { useHeaderHeights } from "@eshg/lib-employee-portal";
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
+import { InternalLinkIconButton } from "@eshg/lib-portal";
 
 export function SubPageHeader({
   routeBack,

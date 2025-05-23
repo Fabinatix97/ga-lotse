@@ -22,7 +22,7 @@ import {
 import { PropsWithChildren, ReactNode } from "react";
 import { isDefined } from "remeda";
 
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import {
   ApiGetFile200Response,
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,

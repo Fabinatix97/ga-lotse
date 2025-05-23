@@ -13,7 +13,8 @@ public enum ModuleLeaderRole {
   STI_PROTECTION_LEADER(EmployeePermissionRole.STI_PROTECTION_LEADER),
   MEDICAL_REGISTRY_LEADER(EmployeePermissionRole.MEDICAL_REGISTRY_LEADER),
   DENTAL_LEADER(EmployeePermissionRole.DENTAL_LEADER),
-  OFFICIAL_MEDICAL_SERVICE_LEADER(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER);
+  OFFICIAL_MEDICAL_SERVICE_LEADER(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_LEADER),
+  MEDS_ABROAD_LEADER(EmployeePermissionRole.MEDS_ABROAD_LEADER);
 
   private final EmployeePermissionRole employeePermissionRole;
 

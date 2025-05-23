@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateString } from "@eshg/lib-portal";
 
 import { FilterValue } from "../types/FilterValue";
 

@@ -8,7 +8,7 @@
 import { Check, Info, SvgIconComponent, Warning } from "@mui/icons-material";
 import { Snackbar, Theme, styled } from "@mui/joy";
 
-import { SnackbarComponentProps } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { SnackbarComponentProps } from "@eshg/lib-portal";
 
 import { useHeaderHeights } from "@/lib/components/layout/useHeaderHeights";
 

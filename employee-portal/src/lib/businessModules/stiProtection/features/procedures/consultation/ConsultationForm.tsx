@@ -8,7 +8,7 @@
 import { Sheet, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 import {
   ApiConsultation,
   ApiStiProtectionProcedure,

@@ -12,10 +12,10 @@ import {
   GENDER_VALUES,
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+  calculateAge,
+  formatDate,
+  translateCountry,
+} from "@eshg/lib-portal";
 
 import { BaseAddress } from "../../api/models/address";
 import { ResponsiveDivider } from "../ResponsiveDivider";

@@ -14,7 +14,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileType } from "@eshg/lib-portal";
 
 interface UploadForm {
   file: File | null;

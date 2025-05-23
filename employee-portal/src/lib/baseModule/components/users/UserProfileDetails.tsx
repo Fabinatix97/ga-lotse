@@ -21,8 +21,7 @@ import {
   EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton, SALUTATION_VALUES } from "@eshg/lib-portal";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";

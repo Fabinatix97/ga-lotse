@@ -13,8 +13,7 @@ import {
   DetailsRow,
   DetailsSection,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { formatDate, translateCountry } from "@eshg/lib-portal";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { CreateProcedureValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";

@@ -8,14 +8,14 @@ import { isAfter, isEqual } from "date-fns";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   getCloseable,
   getErrorAction,
   getErrorDescription,
-} from "@eshg/lib-portal/errorHandling/errorMappers";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+  resolveError,
+  useAlert,
+  useIsMobile,
+} from "@eshg/lib-portal";
 import { ApiAppointment } from "@eshg/travel-medicine-api";
 
 import {

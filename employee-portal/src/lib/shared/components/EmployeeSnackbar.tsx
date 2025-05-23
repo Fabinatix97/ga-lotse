@@ -8,7 +8,7 @@
 import { Snackbar, Theme, styled } from "@mui/joy";
 
 import { useHeaderHeights } from "@eshg/lib-employee-portal";
-import { SnackbarComponentProps } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { SnackbarComponentProps } from "@eshg/lib-portal";
 
 interface StyledSnackbarProps extends SnackbarComponentProps {
   headerHeightDesktop: string;

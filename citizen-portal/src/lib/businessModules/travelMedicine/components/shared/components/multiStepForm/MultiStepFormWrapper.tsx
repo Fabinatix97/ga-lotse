@@ -9,9 +9,7 @@ import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
 import { RefObject } from "react";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { FormPlus, RequiresChildren, useIsMobile } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useTranslation } from "@/lib/i18n/client";

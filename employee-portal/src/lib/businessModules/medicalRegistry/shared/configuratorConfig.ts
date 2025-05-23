@@ -6,4 +6,4 @@
 import { ConfiguratorEndpointName } from "@/lib/configurator/shared/types";
 
 export const medicalRegistryConfigRouterEndpoints: ConfiguratorEndpointName[] =
-  ["DEPARTMENT_INFO"];
+  ["DEPARTMENT_INFO", "PRIVACY_NOTICE"];

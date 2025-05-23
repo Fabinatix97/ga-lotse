@@ -15,12 +15,14 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  CheckboxField,
+  OptionalFieldValue,
+  SubmitButton,
+  TextareaField,
+  mapOptionalValue,
+  useFileDownload,
+} from "@eshg/lib-portal";
 import { ApiCreateSchoolInfoLetterRequest } from "@eshg/school-entry-api";
 
 import { useCreateSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";

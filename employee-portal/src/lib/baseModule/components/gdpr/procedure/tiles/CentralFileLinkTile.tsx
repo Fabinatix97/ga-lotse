@@ -6,7 +6,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Stack } from "@mui/joy";
 
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { FormAddMoreButton } from "@eshg/lib-portal";
 
 import {
   SectionTile,

@@ -12,10 +12,7 @@ import { ExaminationFormLayout } from "../../../../components/examination/Examin
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 import { useParticipantNavigation } from "../../hooks/useParticipantNavigation";
 import { useProphylaxisSessionExaminationForm } from "../../hooks/useProphylaxisSessionExaminationForm";
-import {
-  useFilteredPresentParticipants,
-  useProphylaxisSessionStore,
-} from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
+import { useProphylaxisSessionStore } from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 import { ProphylaxisSessionExaminationBottomBar } from "./ProphylaxisSessionExaminationBottomBar";
 import { ProphylaxisSessionExaminationForm } from "./ProphylaxisSessionExaminationForm";
@@ -50,16 +47,19 @@ export function ProphylaxisSessionExaminationLayout(
       setExamination(participant.examinationId, values.result, values.note),
   });
 
-  const presentFilteredParticipants = useFilteredPresentParticipants();
+  const participantsToBeExamined = useProphylaxisSessionStore(
+    (state) => state.participantsToBeExamined,
+  );
 
   const examinationNavigation = useParticipantNavigation({
-    participants: presentFilteredParticipants,
+    participants: participantsToBeExamined,
     examinationId: participant.examinationId,
     onNavigate: (nextRoute) => router.push(nextRoute),
     onSubmit: examinationForm.submitForm,
   });
 
-  const isPresent = participant.status !== "NOT_PRESENT";
+  const isToBeExamined =
+    participantsToBeExamined.find((p) => p.id === participant.id) !== undefined;
 
   return (
     <StickyToolbarLayout
@@ -76,12 +76,14 @@ export function ProphylaxisSessionExaminationLayout(
           examination={participant}
           examinationFormValues={examinationForm.values}
           onPreviousParticipantClicked={
-            isPresent
+            isToBeExamined
               ? examinationNavigation.gotoPreviousParticipant
               : undefined
           }
           onNextParticipantClicked={
-            isPresent ? examinationNavigation.gotoNextParticipant : undefined
+            isToBeExamined
+              ? examinationNavigation.gotoNextParticipant
+              : undefined
           }
           onOverviewClicked={examinationNavigation.gotoOverview}
         />
@@ -96,10 +98,10 @@ export function ProphylaxisSessionExaminationLayout(
           }
           dateAndTime={dateOfExamination}
           groupName={participant.groupName ?? ""}
-          institutionName={participant.institutionName}
-          childId={participant.childId}
+          institution={participant.institution}
           child={participant}
           previousExaminations={participant.previousExaminations}
+          showChildDetails
         />
       </ProphylaxisSessionExaminationForm>
     </StickyToolbarLayout>

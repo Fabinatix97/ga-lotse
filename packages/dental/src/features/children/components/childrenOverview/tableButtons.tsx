@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import { Button, Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import { routes } from "../../../../config/routes";
 import { useCreateChildSidebar } from "../createChild/CreateChildSidebar";

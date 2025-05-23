@@ -5,8 +5,7 @@
 
 import { Stack, styled } from "@mui/joy";
 
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { AlertSlot, LayoutProps } from "@eshg/lib-portal";
 
 const AlertContainer = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),

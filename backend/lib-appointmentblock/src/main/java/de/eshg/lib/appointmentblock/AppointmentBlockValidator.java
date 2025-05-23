@@ -88,7 +88,7 @@ public class AppointmentBlockValidator {
             "AppointmentBlockGroup end time of day must be after start time of day.");
       }
       Duration examinationDuration = typeConfig.getStandardDuration();
-      Duration appointmentBlockLength = Duration.between(start, end);
+      Duration appointmentBlockLength = Duration.between(startTime, endTime);
       if (!DurationUtil.isDivisible(appointmentBlockLength, examinationDuration)) {
         String errorMessage =
             "Appointment block length %s is not a multiple of examination duration %s."

@@ -11,7 +11,7 @@ import {
   useHeaderHeights,
   useLayoutConfig,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import {

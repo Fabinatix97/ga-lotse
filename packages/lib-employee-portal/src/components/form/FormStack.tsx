@@ -6,7 +6,7 @@
 import { Stack, StackProps } from "@mui/joy";
 import { FormEventHandler, ReactNode } from "react";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 
 interface FormStackProps extends Omit<StackProps<"form">, "component"> {
   dense?: boolean;

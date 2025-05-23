@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
+import { SoftRequiredSelectField } from "@eshg/lib-portal";
 
 import {
   FIXED_WIDTH_STYLE,

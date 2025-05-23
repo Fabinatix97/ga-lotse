@@ -5,7 +5,7 @@
 
 import { isDefined } from "remeda";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 
 import {
   DetailsCell,

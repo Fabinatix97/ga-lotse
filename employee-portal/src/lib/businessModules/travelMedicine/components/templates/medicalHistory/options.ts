@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 import { ApiMedicalHistoryTemplateState } from "@eshg/travel-medicine-api";
 
 import { MEDICAL_HISTORY_TEMPLATE_STATES } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/translations";

@@ -7,7 +7,7 @@ import {
   selectDisabledOldFeature,
   selectEnabledNewFeature,
   useGetFeatureToggle,
-} from "@eshg/lib-portal/api/featureToggles";
+} from "@eshg/lib-portal";
 import {
   ApiGetOpenDataFeatureTogglesResponse,
   ApiOpenDataFeature,

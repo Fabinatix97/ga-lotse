@@ -14,8 +14,7 @@ import {
   TableSheet,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps, formatDate } from "@eshg/lib-portal";
 
 import { ExaminationStatusChip } from "../../../components/examination/ExaminationStatusChip";
 import { routes } from "../../../config/routes";

@@ -7,11 +7,11 @@ import { Input } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useState } from "react";
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   BaseField,
   FieldComponentProps,
-} from "@eshg/lib-portal/components/formFields/BaseField";
+  useIsFormDisabled,
+} from "@eshg/lib-portal";
 
 interface SetAllNumberInput extends FieldComponentProps {
   label: string;

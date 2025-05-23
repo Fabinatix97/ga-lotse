@@ -7,10 +7,12 @@ import { CakeOutlined, PersonOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  InternalLinkButton,
+  formatDate,
+  formatPersonName,
+  useMultiStepForm,
+} from "@eshg/lib-portal";
 import { ApiCitizenChild } from "@eshg/school-entry-api";
 
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";

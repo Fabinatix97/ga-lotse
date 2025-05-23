@@ -22,7 +22,7 @@ import {
   parseOptionalEnum,
   parseOptionalString,
   parseReadonlyPageParams,
-} from "@eshg/lib-portal/helpers/searchParams";
+} from "@eshg/lib-portal/universal";
 
 import { InventoryTable } from "@/lib/baseModule/components/inventory/InventoryTable";
 

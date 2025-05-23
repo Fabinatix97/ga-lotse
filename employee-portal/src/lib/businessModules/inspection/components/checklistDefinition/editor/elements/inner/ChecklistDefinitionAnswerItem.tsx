@@ -12,7 +12,7 @@ import {
   ApiCLFieldOptionContext,
   ApiCLSectionContextElementsInner,
 } from "@eshg/inspection-api";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { FlexInputField } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";

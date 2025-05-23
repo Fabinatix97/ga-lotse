@@ -14,7 +14,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { SubmitButton } from "@eshg/lib-portal";
 import {
   ApiCreateTextTemplateRequest,
   ApiTextTemplate,

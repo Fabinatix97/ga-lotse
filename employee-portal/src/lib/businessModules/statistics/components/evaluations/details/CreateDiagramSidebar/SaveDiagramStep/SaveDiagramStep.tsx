@@ -5,8 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { InputField, TextareaField } from "@eshg/lib-portal";
 
 import { SaveDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SaveDiagramStep/saveDiagramStepFormModel";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";

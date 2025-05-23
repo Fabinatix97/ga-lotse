@@ -1,0 +1,58 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1746792634696-1">
+    <createTable tableName="appointment_type_holder">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_type_holder"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="appointment_block_group_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="APPOINTMENTTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="slot_duration" type="INTERVAL">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <sql>
+      ALTER TABLE appointment_type_holder
+      ALTER COLUMN slot_duration TYPE interval second(6)
+    </sql>
+
+    <addColumn tableName="appointment">
+      <column name="type" type="APPOINTMENTTYPE" />
+    </addColumn>
+
+    <sql>
+      INSERT INTO appointment_type_holder (type, slot_duration, appointment_block_group_id, version)
+      SELECT type, slot_duration, id, 0
+      FROM appointment_block_group;
+    </sql>
+
+    <update tableName="appointment">
+      <column name="type" valueComputed="(SELECT abg.type FROM appointment_block_group abg
+                                           JOIN appointment_block ab ON abg.id = ab.appointment_block_group_id
+                                           WHERE ab.id = appointment.appointment_block_id)" />
+    </update>
+
+
+    <dropColumn columnName="type" tableName="appointment_block_group"/>
+    <dropColumn columnName="slot_duration" tableName="appointment_block_group"/>
+
+    <createIndex indexName="idx_appointment_type_holder_appointment_block_group_id" tableName="appointment_type_holder">
+      <column name="appointment_block_group_id"/>
+    </createIndex>
+    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id" baseTableName="appointment_type_holder" constraintName="fk_appointment_type_holder_appointment_block_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment_block_group" validate="true"/>
+    <addNotNullConstraint columnDataType="appointmenttype" columnName="type" tableName="appointment" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

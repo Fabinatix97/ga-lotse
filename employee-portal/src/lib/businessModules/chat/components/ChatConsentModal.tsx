@@ -6,10 +6,7 @@
 import { Block, Done } from "@mui/icons-material";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 
-import {
-  BaseModal,
-  BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";

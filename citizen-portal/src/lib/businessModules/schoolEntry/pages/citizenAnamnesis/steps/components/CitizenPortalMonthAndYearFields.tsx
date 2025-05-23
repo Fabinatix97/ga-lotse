@@ -5,10 +5,12 @@
 
 import { Grid } from "@mui/joy";
 
-import { MonthAndYearFieldsProps } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectObjectField } from "@eshg/lib-portal/components/formFields/SelectObjectField";
-import { useMonthAndYearValidationsRules } from "@eshg/lib-portal/hooks/useMonthAndYearValidations";
+import {
+  MonthAndYearFieldsProps,
+  NumberField,
+  SelectObjectField,
+  useMonthAndYearValidationsRules,
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";

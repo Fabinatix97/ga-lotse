@@ -5,8 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink, useFileDownload } from "@eshg/lib-portal";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useTranslation } from "@/lib/i18n/client";

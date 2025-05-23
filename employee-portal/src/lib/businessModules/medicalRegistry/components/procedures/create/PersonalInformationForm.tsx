@@ -8,25 +8,23 @@ import { useFormikContext } from "formik";
 
 import { CountryField } from "@eshg/lib-employee-portal";
 import {
+  DateField,
+  EmailField,
+  GENDER_OPTIONS,
+  InputField,
+  NestedFormProps,
+  PhoneNumberField,
+  SelectField,
+  createFieldNameMapper,
+  useValidateLength,
+  useValidatePastOrTodayDate,
+  validateDateOfBirth,
+  validatePipe,
+} from "@eshg/lib-portal";
+import {
   MedicalRegistryCreateProcedureFormValues,
   PersonalInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  validateDateOfBirth,
-  validatePipe,
-} from "@eshg/lib-portal/helpers/validators";
-import {
-  useValidateLength,
-  useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";

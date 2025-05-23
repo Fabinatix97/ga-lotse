@@ -6,11 +6,13 @@
 import { styled } from "@mui/joy";
 import assert from "assert";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { RadioButtonsField } from "@eshg/lib-portal/components/formFields/RadioButtonsField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import {
+  InputField,
+  NumberField,
+  PortalErrorCode,
+  RadioButtonsField,
+  SelectField,
+} from "@eshg/lib-portal";
 
 import { useAddPersonalDetails } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useGenderOptions } from "@/lib/businessModules/stiProtection/components/shared/options";

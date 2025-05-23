@@ -17,8 +17,7 @@ import {
   useSearchParam,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { Row, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,

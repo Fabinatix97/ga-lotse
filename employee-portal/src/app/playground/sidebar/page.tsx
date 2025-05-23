@@ -24,7 +24,7 @@ import {
   useSidebar,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 export default function SidebarPlaygroundPage() {
   const sidebarWithoutParameters = useSidebar({

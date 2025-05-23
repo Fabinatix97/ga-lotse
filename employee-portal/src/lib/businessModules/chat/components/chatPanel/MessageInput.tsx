@@ -7,7 +7,7 @@ import { Box } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { RoomMember } from "matrix-js-sdk";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 
 import { TextareaComponent } from "@/lib/businessModules/chat/components/chatPanel/TextareaComponent";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";

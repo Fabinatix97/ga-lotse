@@ -33,6 +33,7 @@ import de.eshg.stiprotection.department.StiConsultationOpeningHoursService;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.PersonMapper;
+import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,7 +45,9 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -73,6 +76,7 @@ public class CitizenPublicController {
   private final AppointmentBlockService appointmentBlockService;
   private final AppointmentService appointmentService;
   private final CitizenAppointmentService citizenAppointmentService;
+  private final AppointmentCooldownService appointmentCooldownService;
   private final Clock clock;
   private final StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService;
   private final SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService;
@@ -83,6 +87,7 @@ public class CitizenPublicController {
       AppointmentBlockService appointmentBlockService,
       AppointmentService appointmentService,
       CitizenAppointmentService citizenAppointmentService,
+      AppointmentCooldownService appointmentCooldownService,
       Clock clock,
       StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService,
       SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService,
@@ -91,6 +96,7 @@ public class CitizenPublicController {
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentService = appointmentService;
     this.citizenAppointmentService = citizenAppointmentService;
+    this.appointmentCooldownService = appointmentCooldownService;
     this.clock = clock;
     this.stiConsultationDepartmentInfoService = stiConsultationDepartmentInfoService;
     this.sexWorkDepartmentInfoService = sexWorkDepartmentInfoService;
@@ -132,15 +138,24 @@ public class CitizenPublicController {
       earliestDate = Instant.now(clock);
     }
 
+    AppointmentType appType = MappingUtil.mapEnum(AppointmentType.class, appointmentType);
     List<AppointmentDto> appointments =
-        appointmentBlockService.getFreeAppointments(
-            earliestDate,
-            null,
-            MappingUtil.mapEnum(AppointmentType.class, appointmentType),
-            null,
-            null);
+        appointmentBlockService.getFreeAppointments(earliestDate, null, appType, null, null);
 
-    return new GetFreeAppointmentsResponse(appointments);
+    Set<AppointmentDto> appointmentsOnCooldown =
+        appointmentCooldownService.getAppointmentsOnCooldown().stream()
+            .filter(appointmentCooldown -> appointmentCooldown.getType().equals(appType))
+            .map(
+                appointmentCooldown ->
+                    new AppointmentDto(
+                        appointmentCooldown.getAppointmentStart(),
+                        appointmentCooldown.getAppointmentEnd()))
+            .collect(Collectors.toSet());
+
+    return new GetFreeAppointmentsResponse(
+        appointments.stream()
+            .filter(appointmentDto -> !appointmentsOnCooldown.contains(appointmentDto))
+            .toList());
   }
 
   @PostMapping("/appointments")
@@ -154,10 +169,16 @@ public class CitizenPublicController {
 
   private StiProtectionProcedure doBookAppointment(BookAppointmentRequest request) {
     Assert.notNull(request, "BookAppointmentRequest must not be null");
+    AppointmentData appointmentData = AppointmentMapper.toDataType(request);
+    if (appointmentCooldownService.isAppointmentSlotOnCooldown(appointmentData)) {
+      throw new BadRequestException(
+          "The requested time slot is on cooldown. Select another time slot or try again later.");
+    }
+
     StiProtectionProcedure procedure =
         citizenAppointmentService.createProcedureWithExpiryDate(
             ConcernMapper.toDatabaseType(request.concern()));
-    appointmentService.bookPublicAppointment(procedure, AppointmentMapper.toDataType(request));
+    appointmentService.bookPublicAppointment(procedure, appointmentData);
     return procedure;
   }
 

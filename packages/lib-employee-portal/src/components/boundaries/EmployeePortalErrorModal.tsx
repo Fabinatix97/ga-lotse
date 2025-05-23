@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  BaseErrorModal,
-  ErrorModalProps,
-} from "@eshg/lib-portal/components/boundaries/BaseErrorModal";
+import { BaseErrorModal, ErrorModalProps } from "@eshg/lib-portal";
 
 export function EmployeePortalErrorModal({
   title,

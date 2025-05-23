@@ -7,12 +7,14 @@
 import { Box } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
-import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
-import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { ConfirmationDialogProvider } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
-import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  ApiProvider,
+  ConfirmationDialogProvider,
+  EnvironmentTypeProvider,
+  HiddenDownloadContainer,
+  QueryBoundary,
+  SnackbarProvider,
+} from "@eshg/lib-portal";
 
 import { env } from "@/env/server";
 import { ConfirmNavigationProvider } from "@/lib/baseModule/components/ConfirmNavigationProvider";

@@ -5,6 +5,6 @@
 
 "use client";
 
-import { NextErrorBoundary } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import { NextErrorBoundary } from "@eshg/lib-portal";
 
 export default NextErrorBoundary;

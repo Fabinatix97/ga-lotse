@@ -7,7 +7,7 @@ import { Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export interface FilterSettingsContentProps extends RequiresChildren {
   showActiveFilters?: boolean;

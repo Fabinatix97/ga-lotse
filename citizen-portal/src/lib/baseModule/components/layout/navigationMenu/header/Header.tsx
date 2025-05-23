@@ -7,8 +7,7 @@
 
 import { Box, Stack, styled } from "@mui/joy";
 
-import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import { EnvironmentIndicator, useIsMobile } from "@eshg/lib-portal";
 
 import {
   MainMenu,

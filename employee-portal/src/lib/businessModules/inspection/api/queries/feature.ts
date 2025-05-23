@@ -15,7 +15,7 @@ import {
   selectEnabledNewFeature,
   useGetFeatureToggle,
   useGetFeatureToggleUnsuspended,
-} from "@eshg/lib-portal/api/featureToggles";
+} from "@eshg/lib-portal";
 
 import { useInspectionFeatureTogglesApi } from "@/lib/businessModules/inspection/api/clients";
 import { inspectionFeatureTogglesApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

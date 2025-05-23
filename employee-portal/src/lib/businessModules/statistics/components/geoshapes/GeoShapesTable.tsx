@@ -17,7 +17,7 @@ import {
   usePagination,
   useTableSorting,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import {
   GeoShapeInfo,

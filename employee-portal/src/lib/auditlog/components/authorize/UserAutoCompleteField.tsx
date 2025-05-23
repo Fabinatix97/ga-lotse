@@ -13,10 +13,10 @@ import {
   Typography,
 } from "@mui/joy";
 import { FormikErrors } from "formik";
+import { useId } from "react";
 
 import { ApiUser } from "@eshg/base-api";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { CustomAutocomplete, formatUserName } from "@eshg/lib-portal";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
 
@@ -34,6 +34,8 @@ export function UserAutoCompleteField({
   values,
   setFieldValue,
 }: UserInputProps) {
+  const iconId = useId();
+
   return (
     <CustomAutocomplete
       name="users"
@@ -50,9 +52,16 @@ export function UserAutoCompleteField({
           <Chip
             variant="soft"
             color="primary"
-            endDecorator={<Close fontSize="sm" />}
+            endDecorator={
+              <Close id={iconId} fontSize="sm" aria-label="Auswahl entfernen" />
+            }
             sx={{ minWidth: 0 }}
             {...getTagProps({ index })}
+            slotProps={{
+              action: {
+                "aria-describedby": iconId,
+              },
+            }}
           >
             {formatUserName(user)}
           </Chip>

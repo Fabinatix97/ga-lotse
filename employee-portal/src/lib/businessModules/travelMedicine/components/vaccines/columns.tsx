@@ -9,8 +9,7 @@ import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
 import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
+import { formatCurrency, formatDateTime } from "@eshg/lib-portal";
 import { ApiVaccine } from "@eshg/travel-medicine-api";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";

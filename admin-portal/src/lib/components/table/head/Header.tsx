@@ -10,7 +10,7 @@ import { styled } from "@mui/joy";
 import { SortDirection } from "@tanstack/react-table";
 import { PropsWithChildren } from "react";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 import { EDIT_BUTTON_ID } from "@/lib/components/table/addEditColumns";
 import { TOGGLE_EXPAND_ID } from "@/lib/helpers/addFeatureColumns";

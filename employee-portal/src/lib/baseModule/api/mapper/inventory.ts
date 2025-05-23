@@ -8,10 +8,7 @@ import {
   ApiInventoryItem,
   ApiUpdateInventoryItemRequest,
 } from "@eshg/base-api";
-import {
-  mapOptionalValue,
-  mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue, mapRequiredValue } from "@eshg/lib-portal";
 
 import { InventoryFormValues } from "@/lib/baseModule/components/inventory/forms/InventoryForm";
 

@@ -21,9 +21,8 @@ import {
   useGdprValidationTasksAlert,
   usePagination,
 } from "@eshg/lib-employee-portal";
+import { formatDate, translateCountry } from "@eshg/lib-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiApplicantAddress,

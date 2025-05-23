@@ -7,8 +7,7 @@
 
 import { ReactNode } from "react";
 
-import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
-import { ThemeRegistry } from "@eshg/lib-portal/components/themeRegistry/ThemeRegistry";
+import { ThemeRegistry, useNonce } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 

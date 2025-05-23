@@ -8,7 +8,7 @@
 import { Grid, Stack } from "@mui/joy";
 
 import { ApiCountryCode } from "@eshg/base-api";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 import {
   ApiCreatedByUserType,
   ApiGetVaccinationConsultationDetailsResponse,

@@ -13,7 +13,7 @@ import {
   ToggleExpandButton,
   ToggleExpandButtonProps,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 const SearchFormSheet = styled(FormSheet)(({ theme }) => ({
   padding: theme.spacing(3),

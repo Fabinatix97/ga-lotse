@@ -11,7 +11,7 @@ import {
   ApiUser,
 } from "@eshg/base-api";
 import { manualProgressEntryTypeNames } from "@eshg/lib-employee-portal";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatUserName } from "@eshg/lib-portal";
 
 import { ProgressEntryInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProgressEntryInternalLink";
 import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";

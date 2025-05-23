@@ -7,7 +7,7 @@ import { Typography } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 import {
   ApiImportRequest,
   ApiImportRequestFromJSON,

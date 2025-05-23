@@ -13,8 +13,7 @@ import {
   SidebarForm,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { SubmitButton, toDateString } from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { EntryDetailsSidebarProps } from "@/lib/opendata/components/EntryDetailsSidebar";

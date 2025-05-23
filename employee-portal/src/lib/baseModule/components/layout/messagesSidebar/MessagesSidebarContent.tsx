@@ -7,7 +7,7 @@ import { Divider, Stack, Typography } from "@mui/joy";
 import { useContext, useMemo } from "react";
 
 import { SidebarContent } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 import { MessageInformation } from "@/lib/baseModule/components/layout/messagesSidebar/MessageInformation";
 import { MessageNotification } from "@/lib/baseModule/components/layout/messagesSidebar/MessageNotification";

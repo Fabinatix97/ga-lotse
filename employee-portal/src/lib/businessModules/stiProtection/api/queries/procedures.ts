@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-query";
 
 import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import {
   ApiGetStiProtectionProceduresSortBy,
   ApiGetStiProtectionProceduresSortOrder,

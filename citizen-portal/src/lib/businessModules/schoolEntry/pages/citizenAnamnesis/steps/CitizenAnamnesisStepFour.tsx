@@ -6,8 +6,7 @@
 import { FormLabel, Grid, Typography } from "@mui/joy";
 import { useId } from "react";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { DateField, InputField } from "@eshg/lib-portal";
 
 import { LocalBooleanRadioField } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalBooleanRadioField";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";

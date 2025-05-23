@@ -7,7 +7,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { VaccinationConsultationTabNavigationToolbar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabNavigationToolbar";

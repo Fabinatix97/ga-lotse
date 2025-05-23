@@ -4,7 +4,7 @@
  */
 
 import { ApiCountryCode } from "@eshg/base-api";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString } from "@eshg/lib-portal";
 
 export function validateZipCode(country: ApiCountryCode) {
   switch (country) {

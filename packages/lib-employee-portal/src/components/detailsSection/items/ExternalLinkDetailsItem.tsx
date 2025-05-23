@@ -7,8 +7,7 @@ import { TypographyProps } from "@mui/joy";
 import { ComponentProps } from "react";
 import { isString } from "remeda";
 
-import { BaseDetailsItemProps } from "@eshg/lib-portal/components/details/BaseDetailsItem";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { BaseDetailsItemProps, ExternalLink } from "@eshg/lib-portal";
 
 import { DetailsItem, DetailsItemValueEmployee } from "./DetailsItem";
 

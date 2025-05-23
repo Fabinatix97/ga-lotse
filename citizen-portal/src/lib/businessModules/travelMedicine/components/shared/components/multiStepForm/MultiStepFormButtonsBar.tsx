@@ -5,7 +5,7 @@
 
 import { Button, Stack } from "@mui/joy";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useMultiStepForm } from "@eshg/lib-portal";
 
 interface MultiStepFormButtonBarProps {
   onNextStep?: { title: string; action: () => Promise<void> };

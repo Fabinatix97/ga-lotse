@@ -9,15 +9,13 @@ import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { memo } from "react";
 
+import { FormPlus, FormProps, MutationBundle } from "@eshg/lib-portal";
 import { AnamnesisFormValues } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/formConfig";
 import { AffectedPersonSection } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/sections/AffectedPersonSection";
 import { CurrentHealthConditionSection } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/sections/CurrentHealthConditionSection";
 import { HealthFitnessAndDisabilitySection } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/sections/HealthFitnessAndDisabilitySection";
 import { MedicalHistorySection } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/sections/MedicalHistorySection";
 import { RetirementSection } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/sections/RetirementSection";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { FormProps } from "@eshg/lib-portal/types/form";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { PatchAnamnesisRequest } from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";

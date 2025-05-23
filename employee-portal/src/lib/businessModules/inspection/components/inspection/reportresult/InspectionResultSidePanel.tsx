@@ -10,8 +10,7 @@ import { useState } from "react";
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
 import { DetailsItem, useIsOffline } from "@eshg/lib-employee-portal";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { InternalLink, formatDate } from "@eshg/lib-portal";
 
 import { InspectionResultSidebar } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidebar";
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";

@@ -8,13 +8,15 @@ import { useFormikContext } from "formik";
 
 import { FileField, useGetPublicConfig } from "@eshg/lib-employee-portal";
 import {
+  BooleanRadioField,
+  FileType,
+  NestedFormProps,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
+import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 

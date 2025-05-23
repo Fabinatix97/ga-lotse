@@ -17,8 +17,7 @@ import { startTransition } from "react";
 import { Trans } from "react-i18next";
 import { isDefined, isEmpty } from "remeda";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import { InternalLink, useIsMobile } from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";

@@ -6,10 +6,7 @@
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { Alert, CheckboxField, FormPlus, InputField } from "@eshg/lib-portal";
 import {
   ApiLabStatus,
   ApiLaboratoryTestExamination,

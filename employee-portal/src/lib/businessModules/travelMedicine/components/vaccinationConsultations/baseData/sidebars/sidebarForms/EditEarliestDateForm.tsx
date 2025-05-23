@@ -14,7 +14,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { DateField } from "@eshg/lib-portal";
 import { ApiProcedureStepService } from "@eshg/travel-medicine-api";
 
 export interface EditEarliestDateFormValues {

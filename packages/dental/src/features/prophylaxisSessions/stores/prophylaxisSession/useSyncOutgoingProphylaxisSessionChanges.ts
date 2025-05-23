@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 import {
   ApiExaminationResult,
+  ApiUpdateChildDetailsInBulkRequest,
   ApiUpdateExaminationsInBulkRequest,
 } from "@eshg/dental-api";
+import { getId } from "@eshg/lib-employee-portal";
 
 import {
   AbsenceExaminationResult,
@@ -23,7 +25,10 @@ import { useUpdateProphylaxisSessionExaminations } from "../../api/mutations/det
 import { useProphylaxisSessionStore } from "./ProphylaxisSessionStoreProvider";
 
 export function useSyncOutgoingProphylaxisSessionChanges() {
-  const lastSynchronizedChanges = useRef<Set<string> | null>(null);
+  const lastSynchronizedExaminationChanges = useRef<Set<string> | null>(null);
+  const lastSynchronizedParticipantDetailsChanges = useRef<Set<string> | null>(
+    null,
+  );
   const prophylaxisSessionId = useProphylaxisSessionStore((state) => state.id);
   const participants = useProphylaxisSessionStore(
     (state) => state.participants,
@@ -31,37 +36,76 @@ export function useSyncOutgoingProphylaxisSessionChanges() {
   const changedExaminationsById = useProphylaxisSessionStore(
     (state) => state.changedExaminationsById,
   );
-  const markAsSynchronized = useProphylaxisSessionStore(
-    (state) => state.markAsSynchronized,
+  const changedParticipantDetailsById = useProphylaxisSessionStore(
+    (state) => state.changedParticipantDetailsById,
   );
+
   const { mutate: updateProphylaxisSessionExaminations } =
-    useUpdateProphylaxisSessionExaminations(prophylaxisSessionId, {
-      /**
-       * pass success handler as hook option to ensure execution
-       * @see https://tkdodo.eu/blog/mastering-mutations-in-react-query#some-callbacks-might-not-fire
-       */
-      onSuccess: markAsSynchronized,
-    });
+    useUpdateProphylaxisSessionExaminations(prophylaxisSessionId);
 
   useEffect(() => {
     if (
-      changedExaminationsById.size > 0 &&
-      changedExaminationsById !== lastSynchronizedChanges.current
+      changedExaminationsById.size > 0 ||
+      changedParticipantDetailsById.size > 0
     ) {
-      lastSynchronizedChanges.current = changedExaminationsById;
-      const changedExaminations = participants.filter((participant) =>
-        changedExaminationsById.has(participant.examinationId),
-      );
-      updateProphylaxisSessionExaminations(
-        changedExaminations.map(mapExaminationToRequest),
-      );
+      const examinationUpdates = resolveChangedParticipants(
+        changedExaminationsById,
+        lastSynchronizedExaminationChanges,
+        participants,
+        (participant) => participant.examinationId,
+      ).map(mapExaminationToRequest);
+      const childUpdates = resolveChangedParticipants(
+        changedParticipantDetailsById,
+        lastSynchronizedParticipantDetailsChanges,
+        participants,
+        (participant) => participant.id,
+      ).map(mapParticipantDetailsToRequest);
+
+      if (examinationUpdates.length > 0 || childUpdates.length > 0) {
+        updateProphylaxisSessionExaminations({
+          examinationUpdates,
+          childUpdates,
+        });
+      }
     }
   }, [
     changedExaminationsById,
+    changedParticipantDetailsById,
     participants,
     updateProphylaxisSessionExaminations,
-    markAsSynchronized,
   ]);
+}
+
+function resolveChangedParticipants(
+  changedParticipantsById: Set<string>,
+  lastSynchronizedChanges: RefObject<Set<string> | null>,
+  participants: ProphylaxisSessionExamination[],
+  getReferenceId: (participant: ProphylaxisSessionExamination) => string,
+): ProphylaxisSessionExamination[] {
+  if (changedParticipantsById === lastSynchronizedChanges.current) {
+    return [];
+  }
+
+  lastSynchronizedChanges.current = changedParticipantsById;
+  return participants.filter((participant) =>
+    changedParticipantsById.has(getReferenceId(participant)),
+  );
+}
+
+function mapParticipantDetailsToRequest(
+  examination: ProphylaxisSessionExamination,
+): ApiUpdateChildDetailsInBulkRequest {
+  return {
+    childId: examination.id,
+    version: examination.version,
+    firstName: examination.firstName,
+    lastName: examination.lastName,
+    dateOfBirth: examination.dateOfBirth,
+    gender: examination.gender,
+    groupName: examination.groupName,
+    fluoridationConsent: examination.currentFluoridationConsent,
+    procedureLabels: examination.procedureLabels.map(getId),
+  };
 }
 
 function mapExaminationToRequest(

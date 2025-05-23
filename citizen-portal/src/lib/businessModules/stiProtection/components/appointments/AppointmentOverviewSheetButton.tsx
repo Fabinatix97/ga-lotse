@@ -15,10 +15,13 @@ import {
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import {
+  InternalLinkButton,
+  durationBetweenDatesInMinutes,
+  formatDate,
+  formatTime,
+  useIsMobile,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentStatus,
   ApiAppointmentType,

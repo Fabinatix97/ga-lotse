@@ -2,6 +2,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.github.gradle.node.pnpm.task.PnpmTask
 import com.github.gradle.node.task.NodeTask
+import de.eshg.frontend.PnpmTaskWithProjectDependencies
 
 plugins {
   id 'source-checks'
@@ -64,8 +65,7 @@ tasks.register('copyPublicBuildAssets', Copy) {
   into "${nextDir}/standalone/${project.name}/public"
 }
 
-tasks.register('assemble', PnpmTask) {
-  dependsOn 'prepareEnvironment'
+tasks.register('assemble', PnpmTaskWithProjectDependencies) {
   finalizedBy 'copyMarkdownSources'
   finalizedBy 'copyStaticBuildAssets'
   finalizedBy 'copyPublicBuildAssets'

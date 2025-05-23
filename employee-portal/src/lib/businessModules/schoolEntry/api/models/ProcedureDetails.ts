@@ -4,7 +4,7 @@
  */
 
 import { mapOptional, mapProcedureLabels } from "@eshg/lib-employee-portal";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue } from "@eshg/lib-portal";
 import { ApiProcedureDetails } from "@eshg/school-entry-api";
 
 import { Appointment, mapAppointment } from "./Appointment";

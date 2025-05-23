@@ -12,11 +12,13 @@ import {
   ApiOralHygieneStatus,
   ApiOrthodonticStatus,
 } from "@eshg/dental-api";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import {
+  Alert,
+  CheckboxField,
+  SelectField,
+  SoftRequiredBooleanSelectField,
+  buildEnumOptions,
+} from "@eshg/lib-portal";
 
 import { DENTITION_TYPE_OPTIONS } from "../../config/prophylaxisSession";
 import { useExaminationStore } from "../../stores/examination/ExaminationStoreProvider";
@@ -50,6 +52,7 @@ interface AdditionalInformationFormSectionProps {
   isScreening: boolean;
   isFluoridation: boolean;
   isFluoridationConsentGiven?: boolean;
+  columns: number;
 }
 
 export function AdditionalInformationFormSection(
@@ -79,7 +82,7 @@ export function AdditionalInformationFormSection(
 
   return (
     <ExaminationSection title="Zusatzinfos">
-      <Grid container columns={2} spacing={2}>
+      <Grid container columns={props.columns} spacing={2}>
         <Grid {...FIELD_BREAKPOINTS}>
           <SelectField
             name="dentitionType"
@@ -142,6 +145,7 @@ function FluoridationField(props: FluoridationFieldProps) {
       <Alert
         color="warning"
         message="Keine Einverständniserklärung für die Fluoridierung."
+        sx={{ overflowWrap: "break-word", hyphens: "auto" }}
       />
     );
   }

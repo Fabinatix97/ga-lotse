@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal";
 import {
   ApiAddiction,
   ApiCurrentMedicalCondition,
@@ -108,7 +108,7 @@ export interface MedicalHistoryInfoValues {
   overweightInfo: OverweightSegment;
   stomachAndIntestinesInfo: SubInfoSegmentWithAnswerYesNoDontKnowAnswer;
   thyroidInfo: SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerThyroidDisease;
-  tuberculosis: SubInfoSegmentWithAnswerYesNoDontKnowAnswer;
+  tuberculosisInfo: SubInfoSegmentWithAnswerYesNoDontKnowAnswer;
 }
 
 export interface AddictionsSegment {
@@ -295,7 +295,7 @@ export const INITIAL_VALUES: AnamnesisFormValues = {
       answer: "",
       which: [],
     },
-    tuberculosis: {
+    tuberculosisInfo: {
       answer: "",
     },
   },

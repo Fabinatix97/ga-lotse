@@ -5,15 +5,16 @@
 
 import { Grid } from "@mui/joy";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  CheckboxField,
+  DateField,
+  EmailField,
+  InputField,
+  PhoneNumberField,
+  SelectField,
   useValidateLength,
   useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
+} from "@eshg/lib-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import {
@@ -21,7 +22,6 @@ import {
   titleOptions,
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { FormSheetTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
-import { CheckboxField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/CheckboxField";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";

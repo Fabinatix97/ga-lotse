@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PERSON_FIELD_NAME } from "@eshg/lib-portal/components/formFields/constants";
+import { PERSON_FIELD_NAME } from "@eshg/lib-portal";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {

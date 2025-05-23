@@ -7,7 +7,7 @@ import { Button, Sheet } from "@mui/joy";
 import { useState } from "react";
 
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 

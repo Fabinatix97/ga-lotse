@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { YesOrNoFieldData } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import {
+  MonthAndYear,
+  SelectOption,
+  YesOrNoFieldData,
+  buildEnumOptions,
+} from "@eshg/lib-portal";
 import {
   ApiExamination,
   ApiGender,

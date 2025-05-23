@@ -18,10 +18,12 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  FormPlus,
+  InputField,
+  TextareaField,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import {
   useCreateTextBlock,

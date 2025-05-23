@@ -6,6 +6,7 @@
 package de.eshg.lib.appointmentblock.persistence.entity;
 
 import de.eshg.domain.model.BaseEntity;
+import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
@@ -16,6 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
@@ -31,6 +34,10 @@ public class Appointment extends BaseEntity {
 
   @Column(nullable = false)
   private Instant appointmentEnd;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private AppointmentType type;
 
   public AppointmentBlock getAppointmentBlock() {
     return appointmentBlock;
@@ -54,5 +61,13 @@ public class Appointment extends BaseEntity {
 
   public void setAppointmentEnd(Instant end) {
     this.appointmentEnd = end;
+  }
+
+  public AppointmentType getType() {
+    return type;
+  }
+
+  public void setType(AppointmentType type) {
+    this.type = type;
   }
 }

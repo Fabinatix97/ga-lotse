@@ -154,11 +154,6 @@ tasks.register('outdatedDependencies', PnpmTask) {
   args = ['outdated', '--recursive']
 }
 
-tasks.register('clean') {
-  dependsOn 'cleanDependencies'
-  delete layout.buildDirectory
-}
-
 tasks.register('generateSbom', PnpmTask) {
   dependsOn installDependencies
 

@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  CloseOutlined,
-  KeyboardArrowDown,
-  SearchOutlined,
-} from "@mui/icons-material";
+import { KeyboardArrowDown, SearchOutlined } from "@mui/icons-material";
 import {
   Box,
-  IconButton,
+  FormControl,
+  FormLabel,
   Input,
   List,
   ListItem,
@@ -18,9 +15,12 @@ import {
   ListItemContent,
   Stack,
   Typography,
+  TypographyProps,
 } from "@mui/joy";
 import { Fragment, ReactNode, useId, useState } from "react";
 import { isNonNullish } from "remeda";
+
+import { LiveAnnouncer } from "@eshg/lib-portal";
 
 import { NoSearchResults } from "../NoSearchResults";
 
@@ -42,6 +42,8 @@ export interface SearchableGroupsProps<
 > {
   groups: SearchableGroup<TItem>[];
   label?: string;
+  searchLabel?: string;
+  labelComponent?: TypographyProps["component"];
   placeholder?: string;
   hideSearch?: boolean;
   startExpanded?: boolean;
@@ -72,9 +74,11 @@ export function SearchableGroups<
     inAccordion: group.inAccordion,
   }));
 
-  const zeroSearchResults =
-    searchTerm !== "" &&
-    filteredGroups.every((group) => group.items.length === 0);
+  const amountSearchResults = filteredGroups.reduce(
+    (acc, group) => acc + group.items.length,
+    0,
+  );
+  const zeroSearchResults = searchTerm !== "" && amountSearchResults === 0;
 
   function toggleExpandedGroup(groupName: string) {
     setExpandedGroups((prevGroupNames) => {
@@ -93,28 +97,29 @@ export function SearchableGroups<
       {(showSearch || showLabel) && (
         <Stack spacing={1}>
           {showLabel && (
-            <Typography level="h4" component="p">
+            <Typography level="h4" component={props.labelComponent ?? "p"}>
               {props.label}
             </Typography>
           )}
           {showSearch && (
-            <Input
-              size="md"
-              placeholder={props.placeholder}
-              value={searchTerm}
-              startDecorator={<SearchOutlined />}
-              endDecorator={
-                searchTerm !== "" && (
-                  <IconButton
-                    aria-label="Suchen"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <CloseOutlined />
-                  </IconButton>
-                )
-              }
-              onChange={(event) => setSearchTerm(event.target.value)}
-            />
+            <FormControl>
+              {props.searchLabel && <FormLabel>{props.searchLabel}</FormLabel>}
+              <Input
+                size="md"
+                placeholder={props.placeholder}
+                value={searchTerm}
+                endDecorator={<SearchOutlined />}
+                onChange={(event) => setSearchTerm(event.target.value)}
+              />
+              <LiveAnnouncer
+                active={searchTerm !== ""}
+                message={
+                  amountSearchResults === 0
+                    ? "Keine Treffer"
+                    : `${amountSearchResults} Suchvorschläge. Navigation mit der Tabtaste.`
+                }
+              />
+            </FormControl>
           )}
         </Stack>
       )}

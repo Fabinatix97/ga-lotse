@@ -5,7 +5,7 @@
 
 import { SetStateAction } from "react";
 
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { CheckboxField } from "@eshg/lib-portal";
 import { ApiDocumentConfirmation } from "@eshg/travel-medicine-api";
 
 interface ConfirmationElementProps {

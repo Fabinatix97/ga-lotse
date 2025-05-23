@@ -7,7 +7,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { ChildToolbar } from "../components/ChildToolbar";
 import { useChildRouteParams } from "../hooks/useChildRouteParams";

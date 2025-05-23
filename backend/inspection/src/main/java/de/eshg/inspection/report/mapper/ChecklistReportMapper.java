@@ -46,6 +46,8 @@ public class ChecklistReportMapper {
   private static final String ERROR_MESSAGE_NO_SELECTION = "No selection for %s";
   private static final String ERROR_MESSAGE_MISSING_TEXT_INPUT = "Text input is missing for %s";
 
+  private static final String LEGAL_BASIS_ELEMENT_TITLE = "Rechtsgrundlage";
+
   private ChecklistReportMapper() {}
 
   public static void addChecklist(Report report, Checklist checklist) {
@@ -228,6 +230,17 @@ public class ChecklistReportMapper {
     textBlockElement.setTitle(title);
     textBlockElement.setText(text);
     report.getReportElements().add(textBlockElement);
+  }
+
+  public static void addLegalBasis(Report report, String text) {
+    ReportElementTextBlock legalBasisElement = new ReportElementTextBlock();
+    legalBasisElement.setTitle(LEGAL_BASIS_ELEMENT_TITLE);
+    legalBasisElement.setText(text);
+    legalBasisElement.setEditable(true);
+    legalBasisElement.setDeletable(true);
+    legalBasisElement.setMoveable(true);
+
+    report.getReportElements().add(legalBasisElement);
   }
 
   private static void addQuestionAndAnswers(

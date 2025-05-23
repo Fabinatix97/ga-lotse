@@ -25,7 +25,7 @@ public class StatisticsCalculationHelper {
         expectedToothType,
         toothDiagnoses,
         diagnosis ->
-            List.of(MainResult.D, MainResult.E, MainResult.F).contains(diagnosis.mainResult()));
+            List.of(MainResult.D, MainResult.M, MainResult.F).contains(diagnosis.mainResult()));
   }
 
   private static long calculateMainResultValue(
@@ -83,9 +83,9 @@ public class StatisticsCalculationHelper {
     Long secondaryDValue =
         getDecayValueForDentitionType(toothDiagnoses, DentitionType.SECONDARY, MainResult.D);
     Long primaryMValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.PRIMARY, MainResult.E);
+        getDecayValueForDentitionType(toothDiagnoses, DentitionType.PRIMARY, MainResult.M);
     Long secondaryMValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.SECONDARY, MainResult.E);
+        getDecayValueForDentitionType(toothDiagnoses, DentitionType.SECONDARY, MainResult.M);
     Long primaryFValue =
         getDecayValueForDentitionType(toothDiagnoses, DentitionType.PRIMARY, MainResult.F);
     Long secondaryFValue =

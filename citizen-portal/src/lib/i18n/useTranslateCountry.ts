@@ -6,10 +6,7 @@
 import { useMemo } from "react";
 
 import { ApiCountryCode } from "@eshg/base-api";
-import {
-  countryOptions,
-  translateCountry,
-} from "@eshg/lib-portal/helpers/countryOption";
+import { countryOptions, translateCountry } from "@eshg/lib-portal";
 
 import { useLocale } from "@/lib/i18n/useLocale";
 

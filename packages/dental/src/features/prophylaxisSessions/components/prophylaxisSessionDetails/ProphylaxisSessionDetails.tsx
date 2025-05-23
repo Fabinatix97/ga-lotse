@@ -14,8 +14,7 @@ import {
   DetailsSection,
   formatBoolean,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatDateTime, formatPersonName } from "@eshg/lib-portal";
 
 import {
   DENTITION_TYPES,

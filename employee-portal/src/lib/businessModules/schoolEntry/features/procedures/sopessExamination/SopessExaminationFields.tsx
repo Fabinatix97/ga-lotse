@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SoftRequiredSelectField,
+} from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
   ApiSopessExaminationResultValue,

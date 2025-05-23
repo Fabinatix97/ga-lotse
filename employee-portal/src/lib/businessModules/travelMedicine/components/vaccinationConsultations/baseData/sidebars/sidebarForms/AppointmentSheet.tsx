@@ -5,8 +5,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectField, SelectOption } from "@eshg/lib-portal";
 
 interface AppointmentSheetProps {
   name: string;

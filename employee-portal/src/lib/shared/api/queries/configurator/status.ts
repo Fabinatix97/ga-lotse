@@ -9,7 +9,6 @@ import {
   useSuspenseQueries,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useCallback } from "react";
 import { isDefined } from "remeda";
 
 import { ApiGetConfigurationStatusResponse } from "@eshg/base-api";
@@ -36,6 +35,21 @@ const configuratorModules = Object.freeze(
   Object.values(ConfiguratorModuleName),
 );
 
+function combineResults(
+  results: UseSuspenseQueryResult<
+    Record<
+      string,
+      ApiGetConfigurationStatusResponse | ConfigurationStatusUnavailableResponse
+    >,
+    Error
+  >[],
+) {
+  return {
+    data: mapApiToConfiguratorStatusOverview(
+      results.map((result) => result.data).filter(isDefined),
+    ),
+  };
+}
 export function useGetAllModulesStatuses() {
   const { data: config } = useGetPublicConfig();
   const activeModules = [
@@ -44,23 +58,6 @@ export function useGetAllModulesStatuses() {
     "OPEN_DATA",
     config.activeModules.includes("STI_PROTECTION") ? "SEX_WORK" : undefined,
   ];
-
-  const combineResults = useCallback(
-    (
-      results: UseSuspenseQueryResult<
-        Record<string, ApiGetConfigurationStatusResponse>,
-        Error
-      >[],
-    ) => {
-      const r = {
-        data: mapApiToConfiguratorStatusOverview(
-          results.map((result) => result.data).filter(isDefined),
-        ),
-      };
-      return r;
-    },
-    [],
-  );
 
   const queries = configuratorModules
     .filter((module) => activeModules.includes(module))
@@ -87,7 +84,9 @@ export function useGetSingleModuleStatus(
     select: (result) => {
       return {
         endpointName,
-        status: result.endpointStates[endpointName],
+        status: result.endpointStates
+          ? result.endpointStates[endpointName]
+          : ("UNAVAILABLE" as const),
       };
     },
   });
@@ -108,23 +107,41 @@ function getStatusQuery(
     ]),
     queryFn: () => {
       if (module === "SEX_WORK") {
-        return (configuratorApi as SexWorkConfigStatusApi).getConfiguration1();
+        return (configuratorApi as SexWorkConfigStatusApi)
+          .getConfiguration1()
+          .catch(unavailableModule);
       }
-      return (configuratorApi as ConfigStatusApi).getConfiguration();
+      return (configuratorApi as ConfigStatusApi)
+        .getConfiguration()
+        .catch(unavailableModule);
     },
-    select: (data: ApiGetConfigurationStatusResponse) => ({
+    select: (
+      data:
+        | ApiGetConfigurationStatusResponse
+        | ConfigurationStatusUnavailableResponse,
+    ) => ({
       [module]: data,
     }),
   });
 }
+export interface ConfigurationStatusUnavailableResponse {
+  endpointStates: undefined;
+  moduleState: "UNAVAILABLE";
+}
+function unavailableModule(): ConfigurationStatusUnavailableResponse {
+  return { endpointStates: undefined, moduleState: "UNAVAILABLE" };
+}
 
 function mapApiToConfiguratorStatusOverview(
-  data: Record<string, ApiGetConfigurationStatusResponse>[],
+  data: Record<
+    string,
+    ApiGetConfigurationStatusResponse | ConfigurationStatusUnavailableResponse
+  >[],
 ): ConfiguratorStatusOverview {
   return data.reduce((prev, curr) => {
     const moduleName = Object.keys(curr)[0]! as ConfiguratorModuleName;
     const value = curr[moduleName]!;
-    const endpointStates = value.endpointStates;
+    const endpointStates = value?.endpointStates;
     return {
       ...prev,
       [moduleName]: {
@@ -141,7 +158,9 @@ function mapApiToConfiguratorStatusOverview(
                 module: moduleName,
                 endpointName: configuredEndpoint,
               }),
-              status: endpointStates[configuredEndpoint],
+              status: endpointStates
+                ? endpointStates[configuredEndpoint]
+                : "UNAVAILABLE",
             }) satisfies ConfiguratorStatusTab,
         ),
       },

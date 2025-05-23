@@ -6,7 +6,7 @@
 import { Sheet } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface BottomToolbarProps extends RequiresChildren {
   sx?: SxProps;

@@ -12,10 +12,12 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { WithRequired } from "@eshg/lib-portal/types/utility";
+import {
+  InternalLinkButton,
+  WithRequired,
+  formatDate,
+  formatPersonName,
+} from "@eshg/lib-portal";
 import {
   ApiBookingState,
   ApiGetCitizenProcedureDetailsResponse,

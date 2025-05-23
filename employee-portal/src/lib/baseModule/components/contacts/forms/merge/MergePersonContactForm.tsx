@@ -18,15 +18,13 @@ import {
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import {
-  InputArrayField,
-  getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
-import {
   GENDER_VALUES,
+  InputArrayField,
   SALUTATION_VALUES,
   TITLE_VALUES,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+  createFieldNameMapper,
+  getIndexLabel,
+} from "@eshg/lib-portal";
 
 import { mapImportMergeContactRequest } from "@/lib/baseModule/api/mapper/contacts";
 import { useUpdateContactMutation } from "@/lib/baseModule/api/mutations/contacts";

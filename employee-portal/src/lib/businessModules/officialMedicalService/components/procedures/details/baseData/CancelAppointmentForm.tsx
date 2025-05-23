@@ -14,7 +14,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { TextareaField } from "@eshg/lib-portal";
 
 export interface CancelAppointmentFormValues {
   reasonForRejection: string;

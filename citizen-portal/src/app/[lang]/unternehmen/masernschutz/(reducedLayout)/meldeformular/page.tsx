@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useHandledMutation } from "@eshg/lib-portal";
 import { ApiReportCaseRequest } from "@eshg/measles-protection-api";
 
 import { useOrganisationPortalApi } from "@/lib/businessModules/measlesProtection/api/clients";

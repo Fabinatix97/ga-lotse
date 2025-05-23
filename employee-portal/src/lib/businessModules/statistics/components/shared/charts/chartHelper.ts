@@ -13,7 +13,7 @@ import {
   TravelExploreOutlined,
 } from "@mui/icons-material";
 
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap } from "@eshg/lib-portal";
 
 import {
   DiagramAxisRange,

@@ -9,7 +9,7 @@ import { Stack, useTheme } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
+import { LoadingIndicator } from "@eshg/lib-portal";
 
 import { TabLockClaim } from "@/lib/businessModules/chat/components/TabLockClaim";
 import { TabLockTakenByAnotherTab } from "@/lib/businessModules/chat/components/TabLockTakenByAnotherTab";
@@ -17,10 +17,7 @@ import { ChatPanel } from "@/lib/businessModules/chat/components/chatPanel/ChatP
 import { InfoPanel } from "@/lib/businessModules/chat/components/infoPanel/InfoPanel";
 import { RoomsPanel } from "@/lib/businessModules/chat/components/roomsPanel/RoomsPanel";
 import { BackupSetupView } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
-import {
-  checkIfTabLockIsFree,
-  claimTabLock,
-} from "@/lib/businessModules/chat/matrix/chatTabLock";
+import { claimTabLock } from "@/lib/businessModules/chat/matrix/chatTabLock";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
@@ -41,16 +38,19 @@ export function Chat() {
   const userIdForChatStart = searchParams.get("userId");
   const lastUserIdForChatStart = useRef("");
   const theme = useTheme();
-  const { clientState, matrixClient, isClientPrepared } =
-    useChatClientContext();
+  const {
+    clientState,
+    matrixClient,
+    isClientPrepared,
+    currentSessionView,
+    setCurrentSessionView,
+  } = useChatClientContext();
+  useChatClientContext();
   const { infoPanelState } = useInfoPanelContext();
   const { createNewChat } = useCreateNewChat();
   const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
     roomId ? ChatPanelView.ChatMessages : ChatPanelView.NoChatSelected,
   );
-  const [currentSessionView, setCurrentSessionView] =
-    useState<ChatTabTakeoverView>(ChatTabTakeoverView.ActiveChatTab);
-  const wasTabLockStarted = useRef(false);
 
   function changeChatPanelView(newView: ChatPanelView) {
     setChatPanelView(newView);
@@ -62,24 +62,12 @@ export function Chat() {
       resolve();
     });
     matrixClient.stopClient();
-  }, [matrixClient]);
+  }, [matrixClient, setCurrentSessionView]);
 
   const onConfirmClaimTabLock = useCallback(async () => {
     setCurrentSessionView(ChatTabTakeoverView.ActiveChatTab);
     await claimTabLock(() => onLockTakenByAnotherTab());
-  }, [onLockTakenByAnotherTab]);
-
-  useEffect(() => {
-    void (async () => {
-      if (wasTabLockStarted.current) return;
-      wasTabLockStarted.current = true;
-      if (!checkIfTabLockIsFree()) {
-        setCurrentSessionView(ChatTabTakeoverView.ClaimTabLock);
-      } else {
-        await claimTabLock(() => onLockTakenByAnotherTab());
-      }
-    })();
-  }, [onLockTakenByAnotherTab]);
+  }, [onLockTakenByAnotherTab, setCurrentSessionView]);
 
   // If userId is passed in the search params, it means that the application
   // should either create a new chat with the user identified by that ID,

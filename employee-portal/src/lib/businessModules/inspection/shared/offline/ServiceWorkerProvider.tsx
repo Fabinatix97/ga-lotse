@@ -8,7 +8,7 @@
 import { ReactNode, createContext, useContext, useMemo } from "react";
 
 import { useIsOffline } from "@eshg/lib-employee-portal";
-import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
+import { LoadingOverlay } from "@eshg/lib-portal";
 
 import { useServiceWorkerSyncQueue } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerSyncQueue";
 

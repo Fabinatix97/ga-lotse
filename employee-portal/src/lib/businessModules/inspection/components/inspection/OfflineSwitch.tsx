@@ -9,9 +9,11 @@ import { CircularProgress, Switch, Typography } from "@mui/joy";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { useIsOffline } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+import {
+  getErrorDescription,
+  resolveError,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useLockInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";

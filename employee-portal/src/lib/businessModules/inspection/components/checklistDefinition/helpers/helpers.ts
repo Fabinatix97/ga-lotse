@@ -18,7 +18,7 @@ import {
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
 import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
-import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
+import { ConfirmationDialogProps } from "@eshg/lib-portal";
 
 function getId(
   partial: Partial<ApiCLSectionContextElementsInner>,

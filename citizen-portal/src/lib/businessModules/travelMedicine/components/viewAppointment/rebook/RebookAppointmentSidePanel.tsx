@@ -8,11 +8,11 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 
-import { formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   durationBetweenDatesInMinutes,
   formatDateToFullReadableString,
-} from "@eshg/lib-portal/helpers/dateTime";
+  formatTime,
+} from "@eshg/lib-portal";
 import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
 
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";

@@ -9,6 +9,7 @@ import {
   ImageOutlined,
   ListAltOutlined,
   PictureAsPdfOutlined,
+  Web,
 } from "@mui/icons-material";
 import {
   AspectRatio,
@@ -24,8 +25,7 @@ import { useRouter } from "next/navigation";
 import { ReactNode, createElement } from "react";
 import { isDefined } from "remeda";
 
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatFileSize } from "@eshg/lib-portal";
 import { ApiAbstractFile, ApiFileType } from "@eshg/lib-procedures-api";
 
 import { ActionsMenu } from "../buttons/ActionsMenu";
@@ -41,13 +41,14 @@ export interface FileCardActionProps {
 export const CustomFileType = {
   Audio: "AUDIO",
   Csv: "CSV",
+  Md: "MD",
 } as const;
 type NonApiFileType = (typeof CustomFileType)[keyof typeof CustomFileType];
 
 export interface FileCardProps {
   name: string;
   type: ApiFileType | NonApiFileType;
-  creationDate: Date;
+  creationDate?: Date;
   size: number;
   actions: FileCardActionProps[];
   sx?: SxProps;
@@ -61,6 +62,7 @@ const iconByType = {
   EML: AlternateEmailOutlined,
   AUDIO: AudioFileOutlined,
   CSV: ListAltOutlined,
+  MD: Web,
 } as const;
 
 export function FileCard(props: FileCardProps) {
@@ -85,9 +87,11 @@ export function FileCard(props: FileCardProps) {
         </Typography>
         <Stack direction="row" justifyContent="space-between" gap={3}>
           <Stack direction="row" gap={3}>
-            <Typography level="body-sm" textColor="text.secondary">
-              {formatDate(props.creationDate)}
-            </Typography>
+            {isDefined(props.creationDate) && (
+              <Typography level="body-sm" textColor="text.secondary">
+                {formatDate(props.creationDate)}
+              </Typography>
+            )}
             <Typography level="body-sm" textColor="text.secondary">
               {formatFileSize(props.size)}
             </Typography>

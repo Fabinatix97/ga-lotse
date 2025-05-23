@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import { useIsMobile } from "@eshg/lib-portal";
 
 import { AppointmentSection } from "@/lib/businessModules/travelMedicine/components/landing/AppointmentSection";
 import { LandingpageContent } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageContent";

@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { doNothing } from "remeda";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import { DownloadInvitationsRequest } from "@eshg/school-entry-api";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";

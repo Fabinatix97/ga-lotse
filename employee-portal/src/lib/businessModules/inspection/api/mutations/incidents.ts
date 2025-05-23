@@ -8,9 +8,11 @@ import {
   DeleteIncidentRequest,
   UpdateIncidentRequest,
 } from "@eshg/inspection-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  unwrapRawResponse,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useIncidentApi } from "@/lib/businessModules/inspection/api/clients";
 import { isServiceWorkerResponse } from "@/serviceWorker/common/common";

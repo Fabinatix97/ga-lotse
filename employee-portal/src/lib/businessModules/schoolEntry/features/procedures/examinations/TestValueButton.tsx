@@ -5,7 +5,7 @@
 
 import { Button, styled } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 const StyledButton = styled(Button)<{ width: number }>(({ theme, width }) => ({
   padding: theme.spacing(0.5, 3.5),

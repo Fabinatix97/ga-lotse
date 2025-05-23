@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiWaitingStatus } from "@eshg/sti-protection-api";
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {

@@ -7,8 +7,7 @@ import { Divider, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { isEmpty } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { Alert, FileType } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,

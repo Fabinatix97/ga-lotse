@@ -15,7 +15,7 @@ import {
   BaseAddressFormInputs,
   SidebarWithFormRefProps,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { assertNever } from "@eshg/lib-portal/helpers/assertions";
 
 import {

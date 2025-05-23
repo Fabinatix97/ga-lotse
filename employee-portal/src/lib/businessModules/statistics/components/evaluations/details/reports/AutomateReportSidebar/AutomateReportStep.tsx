@@ -5,10 +5,12 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import {
+  InputField,
+  SelectField,
+  TextareaField,
+  buildEnumOptions,
+} from "@eshg/lib-portal";
 
 import {
   INTERVAL_TRANSLATION,

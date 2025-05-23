@@ -8,7 +8,7 @@
 import { useRouter } from "next/navigation";
 
 import { EmployeePortalErrorModal } from "@eshg/lib-employee-portal";
-import { NextErrorBoundaryProps } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import { NextErrorBoundaryProps } from "@eshg/lib-portal";
 
 export default function ModalSlotError(props: NextErrorBoundaryProps) {
   const router = useRouter();

@@ -7,7 +7,7 @@
 
 import { use } from "react";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { ConfiguratorOverview } from "@/lib/configurator/components/overview/ConfiguratorOverview";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";

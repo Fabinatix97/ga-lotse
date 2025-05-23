@@ -6,10 +6,7 @@
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import {
-  BaseModal,
-  BaseModalProps,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalProps } from "@eshg/lib-portal";
 import {
   AbortDraftVaccinationConsultationRequest,
   ApiGetVaccinationConsultationDetailsResponse,

@@ -26,8 +26,7 @@ import {
   SidebarActions,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren, downloadFileAndOpen } from "@eshg/lib-portal";
 import { ApiImportStatistics } from "@eshg/medical-registry-api";
 
 interface ImportDataSummarySidebarProps {

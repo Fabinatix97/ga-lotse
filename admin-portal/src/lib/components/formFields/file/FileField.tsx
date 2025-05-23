@@ -14,9 +14,7 @@ import {
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined } from "remeda";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import { FieldProps, useBaseField, validatePipe } from "@eshg/lib-portal";
 
 import { useValidateFileType } from "@/lib/helpers/validators";
 import { useDragAndDrop } from "@/lib/hooks/useDragAndDrop";

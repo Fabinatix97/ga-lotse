@@ -6,10 +6,7 @@
 import { endOfDay, isBefore, parseISO, startOfDay } from "date-fns";
 import { FormikErrors, FormikHelpers } from "formik";
 
-import {
-  toDateString,
-  toDateTimeString,
-} from "@eshg/lib-portal/helpers/dateTime";
+import { toDateString, toDateTimeString } from "@eshg/lib-portal";
 
 export function mapDateTimeToInput(date: Date, wholeDay: boolean) {
   return wholeDay ? toDateString(date) : toDateTimeString(date);

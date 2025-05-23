@@ -7,7 +7,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GetProphylaxisSessionsRequest } from "@eshg/dental-api";
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { prophylaxisSessionApiQueryKey } from "../../../../config/apiQueryKeys";
 import { useDentalApi } from "../../../../contexts/dental";

@@ -18,10 +18,12 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  CheckboxField,
+  NestedFormProps,
+  SelectOption,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 

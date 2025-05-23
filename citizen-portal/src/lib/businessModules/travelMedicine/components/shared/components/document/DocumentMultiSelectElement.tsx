@@ -6,10 +6,7 @@
 import { Checkbox, List, ListItem, Stack, Typography } from "@mui/joy";
 import { ChangeEvent } from "react";
 
-import {
-  BaseFieldProps,
-  useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
+import { BaseFieldProps, useBaseField } from "@eshg/lib-portal";
 import {
   ApiDocumentAnamnesisQuestion,
   ApiDocumentSubElementMultiSelect,

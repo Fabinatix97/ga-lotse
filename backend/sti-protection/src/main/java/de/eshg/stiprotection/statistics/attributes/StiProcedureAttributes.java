@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.statistics.attributes;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
@@ -20,14 +21,16 @@ public enum StiProcedureAttributes implements StiAttributes {
           "PROCEDURE_TYPE",
           StiProcedureAttributes.PROCEDURE_CATEGORY,
           false,
-          StiAttributeMapper.mapConcernToValueOptions())),
+          StiAttributeMapper.mapConcernToValueOptions(),
+          DataPrivacyCategory.INSENSITIVE)),
   PROCEDURE_ORIGIN(
       ValueWithOptionsAttribute.create(
           "Ursprung",
           "PROCEDURE_ORIGIN",
           StiProcedureAttributes.PROCEDURE_CATEGORY,
           false,
-          StiAttributeMapper.mapOriginToValueOptions()));
+          StiAttributeMapper.mapOriginToValueOptions(),
+          DataPrivacyCategory.INSENSITIVE));
 
   private static final String PROCEDURE_CATEGORY = "Vorgang";
 

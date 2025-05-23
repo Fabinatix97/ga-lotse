@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-import { contentSecurityPolicyHeaderMiddleware } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
+import { contentSecurityPolicyHeaderMiddleware } from "@eshg/lib-portal/universal";
 
 import { env } from "@/env/server";
 

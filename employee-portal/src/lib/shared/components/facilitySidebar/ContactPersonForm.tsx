@@ -6,16 +6,16 @@
 import { Divider, Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  EmailField,
+  InputField,
+  PhoneNumberField,
   SALUTATION_OPTIONS,
+  SelectField,
   TITLE_OPTIONS,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+  createFieldNameMapper,
+  useValidateLength,
+} from "@eshg/lib-portal";
 
 import { MainContactSwitchField } from "@/lib/shared/components/facilitySidebar/MainContactSwitchField";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";

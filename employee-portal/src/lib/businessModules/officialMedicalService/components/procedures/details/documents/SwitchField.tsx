@@ -9,9 +9,9 @@ import { SxProps } from "@mui/joy/styles/types";
 import {
   BaseField,
   FieldComponentProps,
+  FieldProps,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 // ToDo: @saschl replace old field or rename
 interface SwitchFieldProps extends FieldProps<boolean>, FieldComponentProps {

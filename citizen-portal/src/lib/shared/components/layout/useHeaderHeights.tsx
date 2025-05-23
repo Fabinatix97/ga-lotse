@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEnvironmentIndicatorHeight } from "@eshg/lib-portal/components/EnvironmentIndicator";
+import { useEnvironmentIndicatorHeight } from "@eshg/lib-portal";
 
 import {
   appBarHeightDesktop,

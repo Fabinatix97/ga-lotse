@@ -5,7 +5,7 @@
 
 import { styled } from "@mui/joy";
 
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { SelectField } from "@eshg/lib-portal";
 
 export const WrappedSelectField = styled(SelectField)(({ theme }) => ({
   ".MuiSelect-root": {

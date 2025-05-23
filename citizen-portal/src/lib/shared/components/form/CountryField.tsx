@@ -6,8 +6,8 @@
 import {
   SingleAutocompleteField,
   SingleAutocompleteFieldProps,
-} from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+  isEmptyString,
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";

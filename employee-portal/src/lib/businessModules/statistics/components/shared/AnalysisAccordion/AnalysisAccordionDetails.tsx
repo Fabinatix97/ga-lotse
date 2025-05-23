@@ -7,7 +7,7 @@ import { Add } from "@mui/icons-material";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {

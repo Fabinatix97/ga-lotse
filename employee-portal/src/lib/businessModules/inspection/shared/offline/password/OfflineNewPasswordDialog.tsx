@@ -8,7 +8,7 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { FormButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 
 import { OfflinePasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflinePasswordDialog";
 import { PasswordField } from "@/lib/shared/components/formFields/PasswordField";

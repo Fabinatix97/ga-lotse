@@ -6,11 +6,11 @@
 import { object, optional, parse, string } from "valibot";
 
 import {
-  deploymentTypeSchema,
-  environmentTypeSchema,
-  nodeEnvSchema,
-  urlSchema,
-} from "@eshg/lib-portal/schemas/environment";
+  DeploymentTypeSchema,
+  EnvironmentTypeSchema,
+  NodeEnvSchema,
+  UrlSchema,
+} from "@eshg/lib-portal/universal";
 
 /*
  * Environment Variables exposed to the Server (Node.js)
@@ -23,25 +23,25 @@ const schema = object({
    * Next.js automatically assigns `development` when running the next dev command,
    * or `production` for all other commands.
    */
-  NODE_ENV: nodeEnvSchema,
+  NODE_ENV: NodeEnvSchema,
 
-  PUBLIC_ENVIRONMENT_TYPE: environmentTypeSchema,
-  PUBLIC_DEPLOYMENT_TYPE: deploymentTypeSchema,
+  PUBLIC_ENVIRONMENT_TYPE: EnvironmentTypeSchema,
+  PUBLIC_DEPLOYMENT_TYPE: DeploymentTypeSchema,
 
   PORT: optional(string(), "3001"),
 
-  PUBLIC_FRONTEND_URL: urlSchema,
-  PUBLIC_BASE_BACKEND_URL: urlSchema,
-  PUBLIC_INSPECTION_BACKEND_URL: urlSchema,
-  PUBLIC_SCHOOL_ENTRY_BACKEND_URL: urlSchema,
-  PUBLIC_TRAVEL_MEDICINE_BACKEND_URL: urlSchema,
-  PUBLIC_MEASLES_PROTECTION_BACKEND_URL: urlSchema,
-  PUBLIC_OPEN_DATA_BACKEND_URL: urlSchema,
-  PUBLIC_STI_PROTECTION_BACKEND_URL: urlSchema,
-  PUBLIC_MEDICAL_REGISTRY_BACKEND_URL: urlSchema,
-  PUBLIC_DENTAL_BACKEND_URL: urlSchema,
-  PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: urlSchema,
-  PUBLIC_MEDS_ABROAD_BACKEND_URL: urlSchema,
+  PUBLIC_FRONTEND_URL: UrlSchema,
+  PUBLIC_BASE_BACKEND_URL: UrlSchema,
+  PUBLIC_INSPECTION_BACKEND_URL: UrlSchema,
+  PUBLIC_SCHOOL_ENTRY_BACKEND_URL: UrlSchema,
+  PUBLIC_TRAVEL_MEDICINE_BACKEND_URL: UrlSchema,
+  PUBLIC_MEASLES_PROTECTION_BACKEND_URL: UrlSchema,
+  PUBLIC_OPEN_DATA_BACKEND_URL: UrlSchema,
+  PUBLIC_STI_PROTECTION_BACKEND_URL: UrlSchema,
+  PUBLIC_MEDICAL_REGISTRY_BACKEND_URL: UrlSchema,
+  PUBLIC_DENTAL_BACKEND_URL: UrlSchema,
+  PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: UrlSchema,
+  PUBLIC_MEDS_ABROAD_BACKEND_URL: UrlSchema,
 
   MARKDOWN_PAGE_DIRECTORY: string(),
 });

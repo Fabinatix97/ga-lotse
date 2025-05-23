@@ -6,7 +6,7 @@
 import { Chip, ChipProps, Stack, Typography, styled } from "@mui/joy";
 import { useId } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface StyledChipProps {
   minWidth?: ChipMinWidth;

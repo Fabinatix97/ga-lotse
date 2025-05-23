@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { mapRequiredValue, useHandledMutation } from "@eshg/lib-portal";
 
 import { useGeoShapeApi } from "@/lib/businessModules/statistics/api/clients";
 import { AddGeoShapeValues } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeSidebar";

@@ -5,8 +5,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { InputField, YesOrNoWithFollowUp } from "@eshg/lib-portal";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { defaultPreviousIllnesses } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";

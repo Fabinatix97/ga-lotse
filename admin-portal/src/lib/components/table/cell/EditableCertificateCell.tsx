@@ -8,7 +8,7 @@ import { IconButton, styled } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ChangeEvent, ReactNode, useCallback, useRef } from "react";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiAdminCertificate } from "@eshg/service-directory-api";
 
 import { Actor } from "@/lib/components/view/actors/ActorTable";

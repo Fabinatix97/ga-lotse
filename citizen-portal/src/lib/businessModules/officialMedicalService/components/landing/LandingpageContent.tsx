@@ -3,15 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { List, ListItem, Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { isDefined } from "remeda";
 
-import {
-  ApiLandingElementHeaderConfig,
-  ApiLandingElementListConfig,
-} from "@eshg/official-medical-service-api";
-
+import { ClientMarkdownSheet } from "@/lib/baseModule/components/ClientMarkdownSheet";
 import {
   useGetDepartmentInfoQuery,
   useGetLandingContent,
@@ -30,7 +24,8 @@ import {
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 
 export function LandingpageContent() {
-  const { t, i18n } = useTranslation(["officialMedicalService/landing"]);
+  const { t } = useTranslation(["officialMedicalService/landing"]);
+
   const [
     { data: departmentInfo },
     { data: openingHours },
@@ -45,39 +40,10 @@ export function LandingpageContent() {
 
   return (
     <GridColumnStack>
-      <ContentSheet>
-        <ContentSheetTitle>{t("information.title")}</ContentSheetTitle>
-        {landingContent.elements.map((element) => (
-          <Stack key={element.elementHeader.de} gap={0.5}>
-            <Typography level="title-md" sx={{ whiteSpace: "pre-wrap" }}>
-              {
-                element.elementHeader[
-                  i18n.language as keyof ApiLandingElementHeaderConfig
-                ]
-              }
-            </Typography>
-            {isDefined(element.elementList) && (
-              <List
-                marker="disc"
-                component="ul"
-                sx={{
-                  "--List-gap:": "0.5px",
-                  "--ListItem-minHeight:": 0,
-                  "--ListItem-paddingY:": 0,
-                  "--ListDivider-gap:": 0,
-                  "--ListItem-paddingLeft:": 0,
-                }}
-              >
-                {element.elementList[
-                  i18n.language as keyof ApiLandingElementListConfig
-                ].map((item, index) => (
-                  <ListItem key={`${item}.${index}`}>{item}</ListItem>
-                ))}
-              </List>
-            )}
-          </Stack>
-        ))}
-      </ContentSheet>
+      <ClientMarkdownSheet
+        title={t("information.title")}
+        source={landingContent}
+      />
       <ContentSheet>
         <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
         <InfoSectionGrid>

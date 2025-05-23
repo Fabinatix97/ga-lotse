@@ -6,7 +6,7 @@
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export function NoAppointments(props: Readonly<RequiresChildren>) {
   return (

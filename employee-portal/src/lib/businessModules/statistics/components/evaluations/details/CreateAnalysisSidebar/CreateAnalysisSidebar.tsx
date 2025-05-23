@@ -8,7 +8,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { DiagramType } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";

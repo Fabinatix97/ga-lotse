@@ -10,7 +10,7 @@ import { Suspense } from "react";
 
 import { ApiUserRole } from "@eshg/base-api";
 import { PageGrid, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { DashboardProceduresTable } from "@/lib/baseModule/components/dashboard/DashboardProceduresTable";
 import { DashboardTaskList } from "@/lib/baseModule/components/dashboard/DashboardTaskList";

@@ -5,7 +5,7 @@
 
 import { isDefined } from "remeda";
 
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyArray } from "@eshg/lib-portal";
 import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
 
 import { AnamnesisCard } from "@/lib/businessModules/officialMedicalService/components/personalArea/cards/AnamnesisCard";

@@ -16,8 +16,7 @@ import {
   pipe,
 } from "remeda";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormPlus, useSnackbar } from "@eshg/lib-portal";
 
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";

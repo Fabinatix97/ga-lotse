@@ -13,7 +13,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyString } from "@eshg/lib-portal";
 import {
   ApiConcernCategoryConfig,
   ApiConcernConfig,

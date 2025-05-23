@@ -31,13 +31,13 @@ import {
   useConfirmationDialog,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import {
+  Alert,
+  ConfirmationDialogProps,
   Snackbar,
+  formatDateTime,
   useSnackbar,
-} from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/lib-portal";
 
 import {
   FormChecklistDefinitionVersion,

@@ -10,8 +10,7 @@ import { Button, Sheet, SheetProps, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 import { Trans } from "react-i18next";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { ExternalLink, InternalLink } from "@eshg/lib-portal";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";

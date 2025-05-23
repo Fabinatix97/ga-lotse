@@ -6,10 +6,7 @@
 import { Button, Stack, Typography } from "@mui/joy";
 
 import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import {
-  BaseModal,
-  BaseModalProps,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalProps } from "@eshg/lib-portal";
 
 export interface PartialDownloadDialogProps
   extends Omit<BaseModalProps, "children" | "modalTitle"> {

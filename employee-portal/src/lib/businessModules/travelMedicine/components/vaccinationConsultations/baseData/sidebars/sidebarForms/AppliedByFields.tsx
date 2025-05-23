@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { DateField, SingleAutocompleteField } from "@eshg/lib-portal";
 
 import { User } from "@/lib/businessModules/travelMedicine/api/models/User";
 import {

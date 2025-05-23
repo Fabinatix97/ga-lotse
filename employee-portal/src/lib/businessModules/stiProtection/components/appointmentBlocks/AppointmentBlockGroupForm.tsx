@@ -8,7 +8,7 @@ import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { FormButtonBar, FormSheet, NamedUser } from "@eshg/lib-employee-portal";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiAppointmentTypeConfig,

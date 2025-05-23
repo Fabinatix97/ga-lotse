@@ -13,6 +13,7 @@ import de.eshg.stiprotection.api.StiProtectionProcedurePopulationResponse;
 import de.eshg.stiprotection.api.TextTemplatePopulationRequest;
 import de.eshg.stiprotection.api.TextTemplatePopulationResponse;
 import de.eshg.stiprotection.api.texttemplate.TextTemplateDto;
+import de.eshg.stiprotection.scheduling.AppointmentCooldownRemover;
 import de.eshg.stiprotection.scheduling.OverdueProceduresNotifier;
 import de.eshg.stiprotection.scheduling.UnconfirmedAppointmentsRemover;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
@@ -40,6 +41,7 @@ public class StiProtectionTestHelperController extends TestHelperController
   private final TextTemplatePopulator textTemplatePopulator;
   private final OverdueProceduresNotifier overdueProceduresNotifier;
   private final UnconfirmedAppointmentsRemover unconfirmedAppointmentsRemover;
+  private final AppointmentCooldownRemover appointmentCooldownRemover;
   private final StiProtectionTestHelperService testHelperService;
 
   public StiProtectionTestHelperController(
@@ -50,14 +52,16 @@ public class StiProtectionTestHelperController extends TestHelperController
       EnvironmentConfig environmentConfig,
       OverdueProceduresNotifier overdueProceduresNotifier,
       UnconfirmedAppointmentsRemover unconfirmedAppointmentsRemover,
-      StiProtectionTestHelperService testHelperService1) {
+      AppointmentCooldownRemover appointmentCooldownRemover,
+      StiProtectionTestHelperService stiProtectionTestHelperService) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.populator = populator;
     this.textTemplatePopulator = textTemplatePopulator;
     this.overdueProceduresNotifier = overdueProceduresNotifier;
     this.unconfirmedAppointmentsRemover = unconfirmedAppointmentsRemover;
-    this.testHelperService = testHelperService1;
+    this.appointmentCooldownRemover = appointmentCooldownRemover;
+    this.testHelperService = stiProtectionTestHelperService;
   }
 
   @PostExchange("/population/procedures")
@@ -86,6 +90,12 @@ public class StiProtectionTestHelperController extends TestHelperController
   @PostExchange("/notify/expired-unconfirmed-appointments")
   public ResponseEntity<Void> notifyOfExpiredUnconfirmedAppointments() {
     this.unconfirmedAppointmentsRemover.runNow();
+    return ResponseEntity.ok().build();
+  }
+
+  @PostExchange("/notify/release-appointments-on-cooldown")
+  public ResponseEntity<Void> removeAppointmentCooldowns() {
+    this.appointmentCooldownRemover.runNow();
     return ResponseEntity.ok().build();
   }
 

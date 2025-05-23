@@ -34,7 +34,7 @@ public class StiProcedureDataSource
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.SENSITIVE,
-        null,
+        5,
         stiProcedureRepository,
         StiAttributes.allAttributes());
   }

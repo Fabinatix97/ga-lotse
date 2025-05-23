@@ -7,11 +7,7 @@ import { Radio, Sheet, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren, useId } from "react";
 
-import { Row } from "@eshg/lib-portal/components/Row";
-import {
-  RadioGroupField,
-  RadioGroupFieldProps,
-} from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { RadioGroupField, RadioGroupFieldProps, Row } from "@eshg/lib-portal";
 
 export function RadioSheets({ children, ...props }: RadioGroupFieldProps) {
   return (

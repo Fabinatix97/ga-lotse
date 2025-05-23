@@ -10,7 +10,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { toDateString } from "@eshg/lib-portal";
 import {
   ApiServicePlanEntry,
   ApiServiceStatus,

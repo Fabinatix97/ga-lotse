@@ -35,8 +35,7 @@ import {
   ToggleFilterButton,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { InternalLinkButton, formatDate } from "@eshg/lib-portal";
 import {
   ApiAvailableDataSource,
   ApiEvaluationInfo,

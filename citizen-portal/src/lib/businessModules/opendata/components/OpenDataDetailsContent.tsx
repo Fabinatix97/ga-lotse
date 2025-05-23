@@ -9,12 +9,14 @@ import { visuallyHidden } from "@mui/utils";
 import { useId } from "react";
 import { isEmpty, isNonNullish } from "remeda";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import {
+  ExternalLink,
+  InternalLink,
+  RequiresChildren,
+  formatDate,
+  formatFileSize,
+  useFileDownload,
+} from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";

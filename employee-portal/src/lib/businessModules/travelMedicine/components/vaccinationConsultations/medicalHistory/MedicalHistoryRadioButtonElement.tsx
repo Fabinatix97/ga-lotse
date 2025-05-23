@@ -5,7 +5,7 @@
 
 import { FormLabel, styled } from "@mui/joy";
 
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { SetFieldValueHelper } from "@eshg/lib-portal";
 import { ApiDocumentSectionElement } from "@eshg/travel-medicine-api";
 
 import { RadioButtonsField } from "@/lib/shared/components/formFields/RadioButtonsField";

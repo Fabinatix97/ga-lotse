@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Validator } from "@eshg/lib-portal/types/form";
+import { Validator } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { FileType } from "@/lib/types/FileType";

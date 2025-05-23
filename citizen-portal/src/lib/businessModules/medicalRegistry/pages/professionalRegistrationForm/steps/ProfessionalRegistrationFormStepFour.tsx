@@ -5,16 +5,16 @@
 
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
-import { FieldArray, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 import { Fragment } from "react";
 
+import { FieldArrayWithFocus as FieldArray, FileType } from "@eshg/lib-portal";
 import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { ApiCountryCode, ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
@@ -96,7 +96,10 @@ export function ProfessionalRegistrationFormStepFour() {
             </Sheet>
           )}
 
-        <FieldArray name={requiredDocumentsForm("otherRelevantDocuments")}>
+        <FieldArray
+          valueLength={otherRelevantDocuments.length}
+          name={requiredDocumentsForm("otherRelevantDocuments")}
+        >
           {({ push, remove }) => (
             <>
               {otherRelevantDocuments.map((values, index) => (

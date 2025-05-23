@@ -5,8 +5,6 @@
 
 "use client";
 
-import { useState } from "react";
-
 import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
@@ -17,12 +15,9 @@ import {
 } from "@eshg/lib-employee-portal";
 
 import { MedicalRegistryCreateProcedureForm } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { MedicalRegistryCreateProcedureSuccessPage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureSuccessPage";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 
 export default function MedicalRegistryCreateProcedure() {
-  const [showSuccessPage, setShowSuccessPage] = useState(false);
-
   return (
     <StickyToolbarLayout
       toolbar={
@@ -34,15 +29,7 @@ export default function MedicalRegistryCreateProcedure() {
     >
       <MainContentLayout fullViewportHeight>
         <RestrictedPage requiredUserRole={ApiUserRole.MedicalRegistryAdmin}>
-          {!showSuccessPage ? (
-            <MedicalRegistryCreateProcedureForm
-              setShowSuccessPage={setShowSuccessPage}
-            />
-          ) : (
-            <MedicalRegistryCreateProcedureSuccessPage
-              onButtonClick={() => setShowSuccessPage(false)}
-            />
-          )}
+          <MedicalRegistryCreateProcedureForm />
         </RestrictedPage>
       </MainContentLayout>
     </StickyToolbarLayout>

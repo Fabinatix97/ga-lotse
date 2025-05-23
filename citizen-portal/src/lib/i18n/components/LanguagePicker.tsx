@@ -27,7 +27,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { MouseEvent, useRef } from "react";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import { useIsMobile } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { DeutschFlag } from "@/lib/i18n/flags/DeutschFlag";

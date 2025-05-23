@@ -10,7 +10,7 @@ import { Chip, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ApiAccessibleAuditLog } from "@eshg/auditlog-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
 

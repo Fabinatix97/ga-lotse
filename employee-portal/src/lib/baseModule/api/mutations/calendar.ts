@@ -6,7 +6,7 @@
 import { isDefined } from "remeda";
 
 import { ApiBaseEventRequest, DeleteBaseEventRequest } from "@eshg/base-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useHandledMutation } from "@eshg/lib-portal";
 
 import { useCalendarEventApi } from "@/lib/baseModule/api/clients";
 

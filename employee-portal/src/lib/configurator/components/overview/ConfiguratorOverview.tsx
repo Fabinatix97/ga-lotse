@@ -16,7 +16,9 @@ import { ConfiguratorCard } from "./ConfiguratorCard";
 import { AllModulesAlert } from "./ConfiguratorState";
 import { OtherModulesCard } from "./OtherModulesCard";
 
-export function ConfiguratorOverview(props: {
+export function ConfiguratorOverview({
+  module,
+}: {
   module: ConfiguratorModuleName;
 }) {
   const { data } = useGetAllModulesStatuses();
@@ -25,23 +27,23 @@ export function ConfiguratorOverview(props: {
     throw new Error("undefined GA-Konfigurator status response");
   }
   return (
-    <ConfiguratorLayout module={props.module}>
+    <ConfiguratorLayout module={module}>
       <Stack gap={2}>
         <AllModulesAlert data={data} />
         <Typography level="h3" component="h2">
           Konfiguration des{" "}
-          {props.module === "BASE"
+          {module === "BASE"
             ? "Grundmoduls"
-            : `Fachmoduls ${configuratorNameMapping[props.module]}`}
+            : `Fachmoduls ${configuratorNameMapping[module]}`}
         </Typography>
         <Stack gap={5}>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-            {data[props.module]?.endpointStates.map((tab) => (
+            {data[module]?.endpointStates.map((tab) => (
               <Grid key={tab.tabButtonName} xxs={12} xs={6}>
                 <ConfiguratorCard
                   title={tab.tabButtonName}
                   link={tab.link}
-                  status={tab.status!} // raise error if status is undefined
+                  status={tab.status!} // TODO: raise error if status is undefined
                 />
               </Grid>
             ))}
@@ -50,7 +52,7 @@ export function ConfiguratorOverview(props: {
             <Typography level="h3" component="h2">
               Konfiguration weiterer Module
             </Typography>
-            <OtherModulesCard tabs={getAllOtherModules(props.module, data)} />
+            <OtherModulesCard tabs={getAllOtherModules(module, data)} />
           </Stack>
         </Stack>
       </Stack>

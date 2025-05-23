@@ -7,7 +7,7 @@ import { useState } from "react";
 import { identity } from "remeda";
 
 import { ApiContactCategory } from "@eshg/base-api";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { CustomAutocomplete } from "@eshg/lib-portal";
 
 import {
   useGetOptionalContactQuery,

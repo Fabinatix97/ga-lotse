@@ -8,8 +8,7 @@
 import { isNonNullish } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { InternalLink, formatUserName } from "@eshg/lib-portal";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 

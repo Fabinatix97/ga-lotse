@@ -5,7 +5,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiPostCitizenVaccinationConsultationRequest } from "@eshg/travel-medicine-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";

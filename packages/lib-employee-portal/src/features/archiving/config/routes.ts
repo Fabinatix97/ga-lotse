@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
+import { defineRoutes } from "@eshg/lib-portal/universal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 type BusinessModuleRoutes = Record<ApiBusinessModule, string>;

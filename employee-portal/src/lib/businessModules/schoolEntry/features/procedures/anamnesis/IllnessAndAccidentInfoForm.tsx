@@ -7,14 +7,14 @@
 
 import { FormLabel, Stack, Typography } from "@mui/joy";
 
-import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import {
+  BooleanSelectField,
   InputArrayField,
+  InputField,
+  createFieldNameMapper,
   getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
+import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";

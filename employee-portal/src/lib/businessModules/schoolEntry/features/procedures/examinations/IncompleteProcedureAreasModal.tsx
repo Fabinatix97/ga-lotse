@@ -5,10 +5,7 @@
 
 import { Typography } from "@mui/joy";
 
-import {
-  BaseModal,
-  BaseModalProps,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalProps } from "@eshg/lib-portal";
 import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
 
 import { REQUIRED_PROCEDURE_AREAS } from "@/lib/businessModules/schoolEntry/features/procedures/translations";

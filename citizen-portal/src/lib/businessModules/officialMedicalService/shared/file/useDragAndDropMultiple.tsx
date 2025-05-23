@@ -5,7 +5,7 @@
 
 import { DragEvent, useCallback, useState } from "react";
 
-import { FileLike } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileLike } from "@eshg/lib-portal";
 
 export function useDragAndDropMultiple({
   onChange,

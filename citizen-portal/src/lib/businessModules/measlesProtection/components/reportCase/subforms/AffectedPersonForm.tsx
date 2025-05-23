@@ -10,13 +10,16 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { useEffect, useMemo } from "react";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateEmail } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  Alert,
+  DateField,
+  InputField,
+  SelectField,
+  TextareaField,
+  createFieldNameMapper,
+  useValidateLength,
+  validateEmail,
+} from "@eshg/lib-portal";
 import { ApiReportingReason } from "@eshg/measles-protection-api";
 
 import Loading from "@/app/[lang]/loading";
@@ -41,7 +44,6 @@ import {
   titleOptions,
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { useTranslation } from "@/lib/i18n/client";
-import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
 import { AddressForm } from "./AddressForm";

@@ -8,7 +8,7 @@
 import { use } from "react";
 
 import { ToolbarBackButton } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { SchoolEntry } from "@/lib/configurator/components/shared/ConfiguratorDetails/SchoolEntry";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";

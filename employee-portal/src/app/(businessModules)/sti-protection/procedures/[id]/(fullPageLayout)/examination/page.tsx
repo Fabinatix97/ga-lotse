@@ -8,7 +8,7 @@
 import { redirect } from "next/navigation";
 import { use } from "react";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";

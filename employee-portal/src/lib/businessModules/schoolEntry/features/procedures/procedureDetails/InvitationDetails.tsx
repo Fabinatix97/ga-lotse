@@ -6,7 +6,7 @@
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Box, Grid, Typography } from "@mui/joy";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLink } from "@eshg/lib-portal";
 
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 

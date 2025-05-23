@@ -13,7 +13,7 @@ import {
   usePagination,
   useTableSorting,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 import { ApiSortDirection } from "@eshg/statistics-api";
 
 import {

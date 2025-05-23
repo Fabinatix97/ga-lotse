@@ -4,7 +4,7 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLink } from "@eshg/lib-portal";
 
 import { resolveProcedureProgressEntriesRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 

@@ -6,7 +6,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { PublicDepartmentApi } from "@eshg/base-api";
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
 import { departmentApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 

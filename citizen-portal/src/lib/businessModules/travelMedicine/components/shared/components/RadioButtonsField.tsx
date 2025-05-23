@@ -3,20 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  styled,
-} from "@mui/joy";
+import { FormControl, FormLabel, Radio, RadioGroup, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent, ChangeEventHandler, ReactNode } from "react";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { ValidationRules } from "@eshg/lib-portal/types/form";
+import {
+  SelectOption,
+  ValidationRules,
+  renderHelperText,
+  useBaseField,
+} from "@eshg/lib-portal";
 
 interface RadioButtonsFieldProps<T extends SelectOption>
   extends ValidationRules<T["value"]> {
@@ -62,7 +58,7 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>(
         {props.label && (
           <FormLabel htmlFor={field.input.name}>{props.label}</FormLabel>
         )}
-        {field.error && <FormHelperText>{props.required}</FormHelperText>}
+        {field.error && renderHelperText(props.required)}
         <StyledRadioGroup
           name={props.name}
           value={field.input.value ? String(field.input.value) : ""}

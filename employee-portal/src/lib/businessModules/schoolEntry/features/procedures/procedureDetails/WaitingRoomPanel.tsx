@@ -12,18 +12,16 @@ import {
   ContentPanelTitle,
   FormStack,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import {
-  mapOptionalValue,
-  parseOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
 import {
   OptionalFieldValue,
+  SelectField,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SubmitButton,
+  TextareaField,
+  mapOptionalValue,
+  parseOptionalValue,
+  useValidateLength,
+} from "@eshg/lib-portal";
 import { ApiWaitingRoom, ApiWaitingStatus } from "@eshg/school-entry-api";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";

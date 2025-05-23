@@ -6,13 +6,16 @@
 import { Button, Divider, Radio, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, FormikValues } from "formik";
 import { ReactElement, useState } from "react";
-import { isDefined } from "remeda";
+import { isDefined, isEmpty } from "remeda";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  Alert,
+  AlertProps,
+  FormPlus,
+  RadioGroupField,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
 import { ErrorListener } from "@/lib/configurator/components/shared/ErrorListener";
@@ -22,7 +25,7 @@ import {
 } from "@/lib/configurator/components/shared/RenderField";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
-interface FormSheet {
+export interface FormSheet {
   title: string;
   description?: string | ReactElement;
   sections: FormSection[];
@@ -59,6 +62,7 @@ interface TextSectionContent {
 
 interface FieldSectionContent {
   type: "field";
+  title?: string;
   rows: {
     fields: FormFields[];
     footer?: string | ReactElement;
@@ -68,13 +72,9 @@ interface FieldSectionContent {
 function ChooseSection({
   content,
   values,
-  deleteFile,
-  downloadFile,
 }: {
   content: ChooseSectionContent;
   values: FormikValues;
-  deleteFile: (fileName: string) => void;
-  downloadFile: (fileName: string) => void;
 }) {
   const selectedOption = content.options.find(
     (it) => it.sections.length > 0 && values[content.name] === it.value,
@@ -99,8 +99,6 @@ function ChooseSection({
               key={`radio-section-${selectedOption.value}-${index}`}
               content={it.content}
               values={values}
-              deleteFile={deleteFile}
-              downloadFile={downloadFile}
             />
           ))}
         </>
@@ -112,38 +110,24 @@ function ChooseSection({
 function SectionContent({
   content,
   values,
-  deleteFile,
-  downloadFile,
 }: {
   content: FormSection["content"];
   values: FormikValues;
-  deleteFile: (fileName: string) => void;
-  downloadFile: (fileName: string) => void;
 }) {
   switch (content.type) {
     case "choose":
-      return (
-        <ChooseSection
-          content={content}
-          values={values}
-          downloadFile={downloadFile}
-          deleteFile={deleteFile}
-        />
-      );
+      return <ChooseSection content={content} values={values} />;
     case "field":
       return (
         <Stack gap={3}>
+          {isDefined(content.title) && (
+            <Typography level="title-md">{content.title}</Typography>
+          )}
           {content.rows.map((row, index) => (
             <Stack key={`field-row-${index}`} gap={3}>
               <Stack direction="row" gap={3}>
                 {row.fields.map((field) => (
-                  <RenderField
-                    key={field.name}
-                    field={field}
-                    values={values}
-                    deleteFile={deleteFile}
-                    downloadFile={downloadFile}
-                  />
+                  <RenderField key={field.name} field={field} values={values} />
                 ))}
               </Stack>
               {row.footer}
@@ -175,15 +159,11 @@ export function ConfiguratorForm<T extends FormikValues>({
   initialValues,
   onSubmit,
   status,
-  deleteFile,
-  downloadFile,
 }: {
   sheets: FormSheet[];
   initialValues: T;
   onSubmit: (model: T) => Promise<void>;
   status?: ConfiguratorStatus;
-  deleteFile?: (fileName: string) => void;
-  downloadFile?: (fileName: string) => void;
 }) {
   const [showError, setShowError] = useState(false);
   const { openCancelDialog } = useConfirmationDialog();
@@ -195,9 +175,13 @@ export function ConfiguratorForm<T extends FormikValues>({
       validateOnChange={false}
       validateOnMount={false}
       enableReinitialize
-      onSubmit={(model) => {
+      onSubmit={async (model, helpers) => {
         setShowError(false);
-        return onSubmit(model);
+        const errors = await helpers.validateForm();
+        if (isEmpty(errors)) {
+          await onSubmit(model);
+          helpers.resetForm();
+        }
       }}
     >
       {({ values, handleReset, isSubmitting, handleSubmit, errors, dirty }) => (
@@ -285,8 +269,6 @@ export function ConfiguratorForm<T extends FormikValues>({
                           key={`section-${index}`}
                           content={section.content}
                           values={values}
-                          deleteFile={(fileName) => deleteFile?.(fileName)}
-                          downloadFile={(fileName) => downloadFile?.(fileName)}
                         />
                         {index + 1 !== sheet.sections.length && <Divider />}
                       </Stack>
@@ -295,7 +277,7 @@ export function ConfiguratorForm<T extends FormikValues>({
                 </Sheet>
               ))}
             </Stack>
-            <Stack gap={3} minWidth="27rem" flex={0.33}>
+            <Stack gap={3} minWidth={{ xxs: "100%", xs: "27rem" }} flex={0.33}>
               <Sheet>
                 <Stack gap={3}>
                   <Typography level="h3" component="h2">

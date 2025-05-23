@@ -7,7 +7,7 @@
 
 import { FileDownloadOutlined } from "@mui/icons-material";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 import { useDownloadImportTemplate } from "@/lib/businessModules/medicalRegistry/api/queries/import";
 

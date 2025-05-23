@@ -15,17 +15,17 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  EmailField,
+  InputField,
+  PhoneNumberField,
   SALUTATION_OPTIONS,
+  SelectField,
   TITLE_OPTIONS,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+  mapOptionalValue,
+  useValidateLength,
+  validatePipe,
+} from "@eshg/lib-portal";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
 import { usePhoneNumberValidator } from "@/lib/baseModule/components/users/validation";

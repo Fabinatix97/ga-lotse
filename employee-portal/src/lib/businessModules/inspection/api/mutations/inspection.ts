@@ -13,9 +13,11 @@ import {
   StartInspectionRequest,
   UpdateInspectionRequest,
 } from "@eshg/inspection-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  unwrapRawResponse,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 
@@ -93,5 +95,29 @@ export function useResolveInspectionDuplicate() {
   return useHandledMutation({
     mutationFn: (req: ResolveInspectionDuplicateRequest) =>
       inspectionApi.resolveInspectionDuplicateRaw(req).then(unwrapRawResponse),
+  });
+}
+
+export function useSyncFacility() {
+  const inspectionApi = useInspectionApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: ({
+      procedureId,
+      facilityVersion,
+    }: {
+      procedureId: string;
+      facilityVersion: number;
+    }) =>
+      inspectionApi.syncInspectionFacilityFileStateRaw({
+        id: procedureId,
+        apiInspectionSyncFileStateRequest: {
+          facilityVersion,
+        },
+      }),
+    onSuccess: () => {
+      snackbar.confirmation("Einrichtung erfolgreich synchronisiert.");
+    },
   });
 }

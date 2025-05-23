@@ -6,24 +6,55 @@
 package de.eshg.dental.domain.model;
 
 public enum SecondaryResult {
+  /** Naturgesund */
+  S,
+  /** Initialkaries */
+  I,
+  /** Kariös */
+  D,
+  /** Gefüllt */
+  F,
+  /** Extrahiert wegen Karies */
+  M,
+  /** Sonstige Extraktion */
+  X,
+  /** Zerstört */
+  Z,
+  /** Trauma */
+  T,
+  /** Hypoplasie */
+  H,
+  /** Fistel */
+  O,
+  /** Versiegelt */
+  V,
+  /** Keine Diganose */
+  N,
+  /** Fehlend */
+  U,
+  /** Überkront */
+  K,
+  /** Trepaniert */
+  E,
+  /** Wurzelrest */
+  W,
+  /** Nichtanlage */
+  A,
+  /** Platzhalter */
+  P,
+
   /** Doppelte Anlage */
   DA,
   /** Formanomalie */
   FA,
-  /** Fistel */
-  FIS,
   /** Im Durchbruch */
   ID,
-  /** Insuffizienz */
+  /** Insuffizient */
   INS,
   /** Lückenschluss */
   LUE,
   /** Retinierter Zahn */
   RET,
-  /** Trepaniert */
-  TR,
-  /** Wurzelrest */
-  WR,
   /** Zapfenzahn */
   ZA
 }

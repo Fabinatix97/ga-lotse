@@ -6,10 +6,7 @@
 import { ReactNode, useState } from "react";
 
 import { ApiAddContact200Response, ApiContactCategory } from "@eshg/base-api";
-import {
-  SelectObjectField,
-  SelectObjectFieldValue,
-} from "@eshg/lib-portal/components/formFields/SelectObjectField";
+import { SelectObjectField, SelectObjectFieldValue } from "@eshg/lib-portal";
 
 import { useSearchContacts } from "../api/queries";
 

@@ -8,9 +8,9 @@ import { Button, Stack, Typography } from "@mui/joy";
 import {
   BaseModal,
   BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+  formatDate,
+  formatPersonName,
+} from "@eshg/lib-portal";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useReopenProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";

@@ -17,9 +17,7 @@ import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 import { isDefined, isPlainObject } from "remeda";
 
 import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatCurrency, formatDate, formatPersonName } from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiServicePlanEntry,

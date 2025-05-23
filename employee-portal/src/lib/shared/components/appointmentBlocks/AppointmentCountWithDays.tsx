@@ -6,9 +6,12 @@
 import { Chip, Stack, Typography } from "@mui/joy";
 import { eachDayOfInterval, intervalToDuration } from "date-fns";
 
-import { isDateString, isTimeString } from "@eshg/lib-portal/helpers/dateTime";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  OptionalFieldValue,
+  isDateString,
+  isEmptyString,
+  isTimeString,
+} from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/measles-protection-api";
 
 import {

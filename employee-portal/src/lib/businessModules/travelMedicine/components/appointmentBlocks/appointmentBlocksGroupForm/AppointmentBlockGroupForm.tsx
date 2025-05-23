@@ -9,9 +9,11 @@ import { isDefined, isEmpty } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  OptionalFieldValue,
+  isEmptyString,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/options";

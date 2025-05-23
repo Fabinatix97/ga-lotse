@@ -27,6 +27,10 @@ import {
   useGetSelfUserChatAttributes,
 } from "@/lib/businessModules/chat/api/queries/selfUserApi";
 import {
+  checkIfTabLockIsFree,
+  claimTabLock,
+} from "@/lib/businessModules/chat/matrix/chatTabLock";
+import {
   createStorageKey,
   generateCryptoRandomUUID,
   isDeviceVerified,
@@ -51,7 +55,10 @@ import {
   saveUserDeviceToLocalStorage,
 } from "@/lib/businessModules/chat/matrix/tokens";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import {
+  ChatTabTakeoverView,
+  ClientState,
+} from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { UserDevice } from "@/lib/businessModules/chat/shared/types";
 import { waitUntilCryptoApiIsInitialized } from "@/lib/businessModules/chat/shared/utils";
@@ -60,6 +67,8 @@ export function useChatLifecycle(
   matrixClient: MutableRefObject<MatrixClient>,
   clientState: ClientState,
   setClientState: Dispatch<SetStateAction<ClientState>>,
+  currentSessionView: ChatTabTakeoverView,
+  setCurrentSessionView: Dispatch<SetStateAction<ChatTabTakeoverView>>,
 ) {
   const { data: selfUserChatAttributesData } = useGetSelfUserChatAttributes();
   const { configuration, userSettings } = useChat();
@@ -78,6 +87,27 @@ export function useChatLifecycle(
   const isInitEncryptionStarted = useRef(false);
   const userWasJustRegistered = useRef(false);
   const queryClient = useQueryClient();
+  const wasTabLockStarted = useRef(false);
+
+  const onLockTakenByAnotherTab = useCallback(async () => {
+    await new Promise<void>((resolve) => {
+      setCurrentSessionView(ChatTabTakeoverView.LockClaimedByAnotherTab);
+      resolve();
+    });
+    matrixClient.current.stopClient();
+  }, [matrixClient, setCurrentSessionView]);
+
+  useEffect(() => {
+    void (async () => {
+      if (wasTabLockStarted.current) return;
+      wasTabLockStarted.current = true;
+      if (!checkIfTabLockIsFree()) {
+        setCurrentSessionView(ChatTabTakeoverView.ClaimTabLock);
+      } else {
+        await claimTabLock(() => onLockTakenByAnotherTab());
+      }
+    })();
+  }, [onLockTakenByAnotherTab, setCurrentSessionView]);
 
   function resetClientStateFlags() {
     wasRegisterFlowStarted.current = false;

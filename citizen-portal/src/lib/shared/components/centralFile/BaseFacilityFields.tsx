@@ -16,7 +16,7 @@ import {
   ApiFacilityContactPerson,
   ApiGetReferenceFacilityResponse,
 } from "@eshg/base-api";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { AddressFields } from "@/lib/shared/components/centralFile/AddressFields";

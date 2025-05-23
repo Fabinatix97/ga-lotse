@@ -21,7 +21,7 @@ import {
   Toolbar,
   formatList,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 
 import { useInvalidateUserSessions } from "@/lib/baseModule/api/mutations/users";
 import { useGetSelfActiveSessions } from "@/lib/baseModule/api/queries/users";

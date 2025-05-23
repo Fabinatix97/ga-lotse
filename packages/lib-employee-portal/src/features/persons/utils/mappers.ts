@@ -10,11 +10,11 @@ import {
   ApiGetReferencePersonResponse,
   ApiPersonDetails,
 } from "@eshg/base-api";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   dropBlankStrings,
   mapOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
+  toDateString,
+} from "@eshg/lib-portal";
 
 import {
   mapApiAddressToForm,

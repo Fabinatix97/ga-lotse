@@ -6,7 +6,7 @@
 import { ChipProps } from "@mui/joy";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap } from "@eshg/lib-portal";
 import {
   ApiAppointmentStatus,
   ApiAppointmentType,

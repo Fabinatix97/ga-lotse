@@ -11,8 +11,7 @@ import {
   ApiToothDiagnosis,
 } from "@eshg/dental-api";
 import { formatBoolean } from "@eshg/lib-employee-portal";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
-import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { calculateAge, parseOptionalValue } from "@eshg/lib-portal";
 
 import {
   ExaminationResult,

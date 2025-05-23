@@ -15,7 +15,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
 
 import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 export function SlimInfoIconTooltipButton({
   infoText,

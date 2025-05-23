@@ -11,7 +11,7 @@ import {
   selectEnabledNewFeature,
   useGetFeatureToggle,
   useGetFeatureToggleUnsuspended,
-} from "@eshg/lib-portal/api/featureToggles";
+} from "@eshg/lib-portal";
 import {
   ApiGetSchoolEntryFeatureTogglesResponse,
   ApiSchoolEntryFeature,

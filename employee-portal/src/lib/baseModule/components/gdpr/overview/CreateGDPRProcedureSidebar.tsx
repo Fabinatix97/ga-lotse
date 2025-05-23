@@ -20,15 +20,17 @@ import {
   gdprRoutes,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SALUTATION_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  DateField,
+  EmailField,
+  InputField,
+  OptionalFieldValue,
+  SALUTATION_OPTIONS,
+  SelectField,
+  createFieldNameMapper,
+  useValidateLength,
+  validateDateOfBirth,
+} from "@eshg/lib-portal";
 
 import { mapAddGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";

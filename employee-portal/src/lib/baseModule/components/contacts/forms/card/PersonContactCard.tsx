@@ -7,7 +7,7 @@ import { Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { ApiPersonContact } from "@eshg/base-api";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatPersonName } from "@eshg/lib-portal";
 
 import { getContactAddressLine } from "@/lib/baseModule/components/contacts/helpers";
 

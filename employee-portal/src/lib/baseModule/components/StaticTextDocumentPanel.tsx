@@ -6,7 +6,7 @@
 import { Stack, StackProps } from "@mui/joy";
 
 import { ContentPanel } from "@eshg/lib-employee-portal";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 
 export function LinkInNewTab({
   href,

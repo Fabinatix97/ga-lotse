@@ -18,7 +18,7 @@ import {
   SidebarContent,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { useGetChecklistDefinitionVersions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 

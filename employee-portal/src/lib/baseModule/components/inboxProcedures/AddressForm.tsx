@@ -5,10 +5,12 @@
 
 import { Divider, Grid, Stack, Typography } from "@mui/joy";
 
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  EmailField,
+  InputField,
+  NestedFormProps,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
 import { validatePostboxNumber } from "./validate";
 

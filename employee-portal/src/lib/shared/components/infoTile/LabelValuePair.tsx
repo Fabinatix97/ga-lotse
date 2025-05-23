@@ -6,7 +6,7 @@
 import { Box, Stack, Typography } from "@mui/joy";
 import { ReactElement } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export function StyledValue(props: RequiresChildren) {
   return (

@@ -9,7 +9,7 @@ import { Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { PageGrid } from "@eshg/lib-employee-portal";
-import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useControlledAlert } from "@eshg/lib-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { ProcedureDetails as ProcedureDetailsType } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";

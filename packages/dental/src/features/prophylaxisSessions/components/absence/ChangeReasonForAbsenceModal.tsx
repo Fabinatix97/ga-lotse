@@ -7,12 +7,12 @@ import { isDefined } from "remeda";
 
 import { ApiReasonForAbsence } from "@eshg/dental-api";
 import { FormDialog } from "@eshg/lib-employee-portal";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  OptionalFieldValue,
+  SelectField,
   buildEnumOptions,
   mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 

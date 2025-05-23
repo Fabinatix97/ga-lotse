@@ -13,7 +13,7 @@ import {
   ResponsiveDivider,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { GENDER_VALUES } from "@eshg/lib-portal";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";

@@ -8,7 +8,7 @@
 import { createContext, useContext, useState } from "react";
 import { isNullish } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 
 type ReopenProcedureDetails = Pick<

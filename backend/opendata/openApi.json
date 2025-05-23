@@ -776,7 +776,7 @@
           }
         }
       },
-      "Document" : {
+      "DocumentDetails" : {
         "required" : [ "fileName", "fileSizeBytes" ],
         "type" : "object",
         "properties" : {
@@ -893,10 +893,10 @@
         "type" : "object",
         "properties" : {
           "de" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           },
           "en" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           }
         }
       },

@@ -10,10 +10,7 @@ import {
   ResettableSingleSelect,
   UseTableControlResult,
 } from "@eshg/lib-employee-portal";
-import {
-  SelectOption,
-  SelectOptions,
-} from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOption, SelectOptions } from "@eshg/lib-portal";
 
 export function SingleSelectFilter(props: {
   searchParamName: string;

@@ -5,10 +5,12 @@
 
 import { Typography } from "@mui/joy";
 
+import {
+  BooleanRadioField,
+  NestedFormProps,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import { WrittenConfirmationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 export function WrittenConfirmationForm(props: NestedFormProps) {
   const fieldName = createFieldNameMapper<WrittenConfirmationFormValues>(

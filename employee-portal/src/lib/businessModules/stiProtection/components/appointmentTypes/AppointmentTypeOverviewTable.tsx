@@ -14,7 +14,7 @@ import {
   TableSheet,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiAppointmentTypeConfig } from "@eshg/sti-protection-api";
 
 import { useUpdateAppointmentType } from "@/lib/businessModules/stiProtection/api/mutations/appointmentTypes";

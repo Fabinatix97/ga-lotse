@@ -23,7 +23,7 @@ import {
 import {
   parseOptionalString,
   parseReadonlyPageParams,
-} from "@eshg/lib-portal/helpers/searchParams";
+} from "@eshg/lib-portal/universal";
 import { ApiResource, ApiVersion } from "@eshg/opendata-api";
 
 import { useEntryDetailsSidebar } from "@/lib/opendata/components/EntryDetailsSidebar";

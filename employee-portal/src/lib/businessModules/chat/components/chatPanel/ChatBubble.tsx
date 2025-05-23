@@ -16,8 +16,7 @@ import {
 import { ReactNode, useState } from "react";
 import { isEmpty } from "remeda";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { BaseModal, ButtonLink } from "@eshg/lib-portal";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { DeletedMessage } from "@/lib/businessModules/chat/components/chatPanel/DeletedMessage";

@@ -9,7 +9,7 @@ import { Grid, Stack, StackProps, styled, useTheme } from "@mui/joy";
 import { Children, ReactNode } from "react";
 import { isFunction } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { allBreakpoints, byBreakpoint } from "@/lib/shared/breakpoints";
 

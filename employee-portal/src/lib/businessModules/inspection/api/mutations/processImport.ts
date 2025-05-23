@@ -9,7 +9,7 @@ import {
   ApiResponse,
   ImportProcessesRequest,
 } from "@eshg/inspection-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useHandledMutation } from "@eshg/lib-portal";
 
 import { useImportApi } from "@/lib/businessModules/inspection/api/clients";
 

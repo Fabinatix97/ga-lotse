@@ -5,7 +5,7 @@
 
 "use client";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { ApiProvider } from "./api";
 import { LayoutConfig, LayoutConfigProvider } from "./layoutConfig";

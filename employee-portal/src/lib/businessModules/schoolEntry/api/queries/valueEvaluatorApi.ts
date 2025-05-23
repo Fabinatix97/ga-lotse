@@ -6,7 +6,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import { GetPercentilesRequest } from "@eshg/school-entry-api";
 
 import { useValueEvaluatorApi } from "@/lib/businessModules/schoolEntry/api/clients";

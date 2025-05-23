@@ -6,8 +6,7 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormPlus, useSnackbar } from "@eshg/lib-portal";
 
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { DirectChatContent } from "@/lib/businessModules/chat/components/chatPanel/DirectChatContent";

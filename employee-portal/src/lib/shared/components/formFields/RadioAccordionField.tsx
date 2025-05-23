@@ -25,10 +25,7 @@ import {
   useState,
 } from "react";
 
-import {
-  RadioGroupField,
-  RadioGroupFieldProps,
-} from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { RadioGroupField, RadioGroupFieldProps } from "@eshg/lib-portal";
 
 const RadioAccordionContext = createContext<{
   groupName: string;

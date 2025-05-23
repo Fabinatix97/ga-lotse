@@ -59,6 +59,6 @@ function hasTreatmentRequiredResult(
     tooth.toothType === type &&
     (tooth.mainResult.value === ApiMainResult.D ||
       tooth.mainResult.value === ApiMainResult.Z ||
-      tooth.secondaryResult.value === ApiSecondaryResult.Wr)
+      tooth.secondaryResult.value === ApiSecondaryResult.W)
   );
 }

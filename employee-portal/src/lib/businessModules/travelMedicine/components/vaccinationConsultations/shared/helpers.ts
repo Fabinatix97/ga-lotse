@@ -5,13 +5,13 @@
 
 import { isEmpty, isNonNullish } from "remeda";
 
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
+  SelectOption,
+  durationBetweenDatesInMinutes,
   formatDate,
   formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+  formatUserName,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,

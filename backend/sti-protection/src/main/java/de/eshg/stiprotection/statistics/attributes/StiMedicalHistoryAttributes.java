@@ -8,6 +8,7 @@ package de.eshg.stiprotection.statistics.attributes;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.BooleanAttribute;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
+import de.eshg.lib.statistics.attributes.SensitiveParameters;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.medicalhistory.Examination;
@@ -21,129 +22,153 @@ import java.util.function.Function;
 
 public enum StiMedicalHistoryAttributes implements StiAttributes {
   MEDICAL_HISTORY_PREV_HEPA_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf Hepatitis A",
           "MEDICAL_HISTORY_PREV_HEPA_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_HEPB_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf Hepatitis B",
           "MEDICAL_HISTORY_PREV_HEPB_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_HEPC_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf Hepatitis C",
           "MEDICAL_HISTORY_PREV_HEPC_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_HIV_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf HIV",
           "MEDICAL_HISTORY_PREV_HIV_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_SYPHILIS_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf Syphilis",
           "MEDICAL_HISTORY_PREV_SYPHILIS_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_GONORRHEA_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf Gonorrhoe",
           "MEDICAL_HISTORY_PREV_GONORRHEA_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_CHLAMYDIA_EXAM(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Untersuchung auf Chlamydien",
           "MEDICAL_HISTORY_PREV_CHLAMYDIA_EXAM",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   MEDICAL_HISTORY_PREV_HEPA_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Hepatitis A Infektion",
           "MEDICAL_HISTORY_PREV_HEPA_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_HEPB_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Hepatitis B Infektion",
           "MEDICAL_HISTORY_PREV_HEPB_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_HEPC_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Hepatitis C Infektion",
           "MEDICAL_HISTORY_PREV_HEPC_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_HIV_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige HIV Infektion",
           "MEDICAL_HISTORY_PREV_HIV_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_SYPHILIS_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Syphilis Infektion",
           "MEDICAL_HISTORY_PREV_SYPHILIS_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_GONORRHEA_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Gonorrhoe Infektion",
           "MEDICAL_HISTORY_PREV_GONORRHEA_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_PREV_CHLAMYDIA_INFECTION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Vorherige Chlamydien Infektion",
           "MEDICAL_HISTORY_PREV_CHLAMYDIA_INFECTION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_SEXUAL_ORIENTATION_PATIENT(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Sexuelle Orientierung des Patienten",
           "MEDICAL_HISTORY_SEXUAL_ORIENTATION_PATIENT",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
           false,
-          StiAttributeMapper.mapSexualOrientationToValueOptions())),
+          StiAttributeMapper.mapSexualOrientationToValueOptions(),
+          new SensitiveParameters(2, null),
+          null)),
   MEDICAL_HISTORY_NUMBER_OF_SEXUAL_PARTNERS_LAST_12_MONTHS(
-      IntegerAttribute.create(
+      IntegerAttribute.createSensitive(
           "Anzahl Sexpartner/Sexpartnerinnen in den letzten 12 Monaten",
           "MEDICAL_HISTORY_NUMBER_OF_SEXUAL_PARTNERS_LAST_12_MONTHS",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          null,
+          null,
+          new SensitiveParameters(null, 0.2))),
   MEDICAL_HISTORY_HEPA_VACCINATION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Hepatitis A Impfung",
           "MEDICAL_HISTORY_HEPA_VACCINATION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_HEPB_VACCINATION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Hepatitis B Impfung",
           "MEDICAL_HISTORY_HEPB_VACCINATION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
   MEDICAL_HISTORY_HPV_VACCINATION(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "HPV Impfung",
           "MEDICAL_HISTORY_HPV_VACCINATION",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   MEDICAL_HISTORY_SAFER_SEX_PRACTICE(
-      ValueWithOptionsAttribute.create(
+      ValueWithOptionsAttribute.createSensitive(
           "Safer Sex",
           "MEDICAL_HISTORY_SAFER_SEX_PRACTICE",
           StiMedicalHistoryAttributes.MEDICAL_HISTORY_CATEGORY,
           false,
-          StiAttributeMapper.mapSaferSexPracticeToValueOptions()));
+          StiAttributeMapper.mapSaferSexPracticeToValueOptions(),
+          new SensitiveParameters(2, null),
+          null));
 
   private static final String MEDICAL_HISTORY_CATEGORY = "Anamnese";
 

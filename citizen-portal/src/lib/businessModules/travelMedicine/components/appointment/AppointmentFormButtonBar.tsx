@@ -7,7 +7,7 @@ import { FormikErrors, FormikTouched, useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 import { isEmpty } from "remeda";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useMultiStepForm } from "@eshg/lib-portal";
 import { ApiAppointmentType, ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { AppointmentFormStep } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentStepper";

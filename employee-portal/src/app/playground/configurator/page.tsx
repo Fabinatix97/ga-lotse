@@ -6,7 +6,7 @@
 "use client";
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { FileUploadValue } from "@/lib/configurator/components/shared/RenderField";
@@ -96,6 +96,10 @@ export default function ConfiguratorPage() {
                           type: "upload",
                           name: "upload_name",
                           label: "File upload",
+                          downloadFile: () => {
+                            // eslint-disable-next-line no-console
+                            console.log("Download");
+                          },
                         },
                       ],
                     },
@@ -105,6 +109,10 @@ export default function ConfiguratorPage() {
                           type: "upload",
                           name: "upload_name2",
                           label: "File upload 2",
+                          downloadFile: () => {
+                            // eslint-disable-next-line no-console
+                            console.log("Download");
+                          },
                         },
                       ],
                     },
@@ -201,7 +209,6 @@ export default function ConfiguratorPage() {
           upload_name2: {
             type: "CSV",
             name: "Some random file name",
-            creationDate: new Date(),
             size: 234423,
           } satisfies FileUploadValue,
           opening_hours: {
@@ -212,14 +219,6 @@ export default function ConfiguratorPage() {
           select_name: "VALUE_1",
           checkbox_name: true,
           radio_name: "VALUE_2",
-        }}
-        deleteFile={(fileName) => {
-          // eslint-disable-next-line no-console
-          console.log("Delete: ", fileName);
-        }}
-        downloadFile={(fileName) => {
-          // eslint-disable-next-line no-console
-          console.log("Download: ", fileName);
         }}
         status="COMPLETE"
         onSubmit={(model) => {

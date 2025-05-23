@@ -23,8 +23,7 @@ import {
   mapToPersonUpdateRequest,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { formatDate, toDateString } from "@eshg/lib-portal";
 import {
   ApiAffectedPerson,
   ApiEmployeeOmsProcedureDetails,

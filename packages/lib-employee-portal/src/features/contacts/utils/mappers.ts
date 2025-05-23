@@ -4,7 +4,7 @@
  */
 
 import { ApiAddContact200Response } from "@eshg/base-api";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOption } from "@eshg/lib-portal";
 
 export function mapContactToSelectOption(
   contact: ApiAddContact200Response,

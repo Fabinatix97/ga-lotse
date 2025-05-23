@@ -7,15 +7,17 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { ApiGdprProcedureType } from "@eshg/base-api";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import {
+  BaseModal,
+  FormPlus,
+  SubmitButton,
+  TextareaField,
+  useResetAlertContext,
+  useValidateLength,
+} from "@eshg/lib-portal";
 
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { useTranslation } from "@/lib/i18n/client";
-import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 
 export function GdprObjectionFormDialog(props: {
   open: boolean;

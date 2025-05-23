@@ -6,7 +6,7 @@
 import { Schedule, TodayOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 export function NoAppointmentBlocksAvailable({ href }: { href: string }) {
   return (

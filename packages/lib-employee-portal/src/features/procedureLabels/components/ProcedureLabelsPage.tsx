@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { QueryKeyFactory } from "@eshg/lib-portal";
 
 import { MainContentLayout } from "../../../components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "../../../components/layout/StickyToolbarLayout";

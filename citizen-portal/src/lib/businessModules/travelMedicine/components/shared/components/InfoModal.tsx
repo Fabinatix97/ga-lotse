@@ -8,7 +8,7 @@ import { DefaultColorPalette, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal";
 
 interface InfoModalProps {
   children: ReactNode;

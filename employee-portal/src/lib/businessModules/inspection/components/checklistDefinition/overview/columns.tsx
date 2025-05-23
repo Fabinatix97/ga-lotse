@@ -24,9 +24,11 @@ import {
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
 import { ActionsItem, ActionsMenu } from "@eshg/lib-employee-portal";
-import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
-import { Snackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  ConfirmationDialogProps,
+  Snackbar,
+  formatDateTime,
+} from "@eshg/lib-portal";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import {

@@ -4,7 +4,7 @@
  */
 
 import { ApiInventoryItemType } from "@eshg/base-api";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 
 export const inventoryItemTypeNames = {
   [ApiInventoryItemType.TestKit]: "TestKit",

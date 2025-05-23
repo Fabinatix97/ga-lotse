@@ -16,8 +16,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { BaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { BaseField, SingleAutocompleteField } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { translateAppointmentType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";

@@ -5,8 +5,7 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { Alert, InputField } from "@eshg/lib-portal";
 
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";

@@ -5,9 +5,11 @@
 
 import { MutationOptions } from "@tanstack/react-query";
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+import {
+  MutationPassThrough,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   ApiCreateAppointmentRequest,
   ApiCreateFollowUpProcedureRequest,

@@ -6,7 +6,7 @@
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";

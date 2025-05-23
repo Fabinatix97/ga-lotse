@@ -19,7 +19,7 @@ import {
   ToggleFilterButton,
   useGetUsersByGroupQuery,
 } from "@eshg/lib-employee-portal";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatUserName } from "@eshg/lib-portal";
 import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 
 import { teamviewColumns } from "@/lib/baseModule/components/task/teamviewColumns";

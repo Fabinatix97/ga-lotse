@@ -14,10 +14,10 @@ import {
 } from "@hello-pangea/dnd";
 import { CreateNewFolder } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/joy";
-import { FieldArray, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
 
-import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
+import { FieldArrayWithFocus as FieldArray, useNonce } from "@eshg/lib-portal";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { createChecklistElement } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
@@ -29,8 +29,11 @@ export function ChecklistDefinitionSectionsList() {
   const { values } = useFormikContext<FormChecklistDefinitionVersion>();
 
   return (
-    <FieldArray name="context.sections">
-      {({ push, remove, replace, move }) => (
+    <FieldArray
+      valueLength={values.context.sections.length}
+      name="context.sections"
+    >
+      {({ push, remove, replace, move, setInputElementRef }) => (
         <>
           <DragDropContext
             nonce={nonce}
@@ -65,6 +68,7 @@ export function ChecklistDefinitionSectionsList() {
                           )}
                         >
                           <ChecklistDefinitionSection
+                            ref={(el) => setInputElementRef(el, sectionIndex)}
                             dragHandleProps={provided.dragHandleProps}
                             section={section}
                             setSection={(section) =>

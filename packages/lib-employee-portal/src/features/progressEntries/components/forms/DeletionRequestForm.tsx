@@ -6,9 +6,7 @@
 import { Button, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { FormPlus, SubmitButton, TextareaField } from "@eshg/lib-portal";
 
 import { ButtonBar } from "../../../../components/buttons/ButtonBar";
 

@@ -15,7 +15,7 @@ import {
 } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatUserName } from "@eshg/lib-portal";
 import { ApiAbstractFile, ApiApprovalRequest } from "@eshg/lib-procedures-api";
 
 import { ButtonBar } from "../../../../../components/buttons/ButtonBar";

@@ -16,7 +16,7 @@ import {
 import { RowSelectionState } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { mapRowSelectionToRowIds } from "../../hooks/useRowSelection";
 

@@ -17,8 +17,7 @@ import {
   ApiObjectType,
 } from "@eshg/inspection-api";
 import { ButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { FormPlus, InternalLinkButton } from "@eshg/lib-portal";
 
 import {
   FormChecklistDefinitionVersion,

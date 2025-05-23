@@ -11,13 +11,13 @@ import { EventType } from "matrix-js-sdk";
 import { useState } from "react";
 
 import { FileField } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
+  ButtonLink,
   FileLike,
   FileType,
-} from "@eshg/lib-portal/components/formFields/file/types";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+  FormPlus,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

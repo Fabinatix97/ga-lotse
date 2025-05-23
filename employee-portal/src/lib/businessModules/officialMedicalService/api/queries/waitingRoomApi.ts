@@ -5,7 +5,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import { GetWaitingRoomProceduresRequest } from "@eshg/official-medical-service-api";
 
 import { useWaitingRoomApi } from "@/lib/businessModules/officialMedicalService/api/clients";

@@ -19,7 +19,7 @@ import {
   TableSheet,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import {
   ApiBusinessProcedureInclusionStatus,
   ApiBusinessProcedureWithInclusionStatus,

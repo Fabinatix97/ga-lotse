@@ -5,8 +5,7 @@
 
 "use client";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { Alert, LayoutProps } from "@eshg/lib-portal";
 import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
 import { MainLayout } from "@/lib/baseModule/components/layout/MainLayout";

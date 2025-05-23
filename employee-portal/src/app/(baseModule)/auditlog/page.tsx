@@ -12,8 +12,8 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { PortalErrorCode } from "@eshg/lib-portal";
 import { PortalError } from "@eshg/lib-portal/errorHandling/PortalError";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 
 import { AuditlogAccessibleTableView } from "@/lib/auditlog/components/AuditlogAccessibleTableView";
 import { AuditlogCreatePasswordView } from "@/lib/auditlog/components/AuditlogCreatePasswordView";

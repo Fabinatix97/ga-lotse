@@ -12,7 +12,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { useNavigation } from "@eshg/lib-portal";
 
 import { MessagesSidebarContent } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebarContent";
 import { routes } from "@/lib/baseModule/shared/routes";

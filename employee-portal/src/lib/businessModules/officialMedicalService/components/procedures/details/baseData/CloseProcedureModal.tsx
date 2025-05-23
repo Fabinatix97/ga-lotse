@@ -10,10 +10,10 @@ import { isDefined } from "remeda";
 import {
   BaseModal,
   BaseModalProps,
-} from "@eshg/lib-portal/components/BaseModal";
-import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
+  ConfirmationDialogProps,
+  isNonEmptyArray,
+} from "@eshg/lib-portal";
 import { BaseConfirmationDialogButtonBar } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialogButtonBar";
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentState,
   ApiDocument,

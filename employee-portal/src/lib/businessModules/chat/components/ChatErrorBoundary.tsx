@@ -6,7 +6,7 @@
 import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
 
-import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
+import { ErrorAlert } from "@eshg/lib-portal";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";

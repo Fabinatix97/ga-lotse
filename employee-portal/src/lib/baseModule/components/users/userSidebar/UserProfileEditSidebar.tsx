@@ -21,17 +21,15 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  InputField,
+  PhoneNumberField,
   SALUTATION_OPTIONS,
+  SelectField,
   TITLE_OPTIONS,
-} from "@eshg/lib-portal/components/formFields/constants";
-import {
   createFieldNameMapper,
   mapOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 
 import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";

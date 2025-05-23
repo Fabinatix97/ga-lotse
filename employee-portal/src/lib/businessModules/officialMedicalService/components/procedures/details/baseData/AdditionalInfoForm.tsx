@@ -16,11 +16,13 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import {
+  DateField,
+  SelectField,
+  SelectOption,
+  SingleAutocompleteField,
+  isNonEmptyString,
+} from "@eshg/lib-portal";
 import {
   ApiGetConcernsResponse,
   ApiProcedureStatus,

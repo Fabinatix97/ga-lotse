@@ -5,7 +5,7 @@
 
 import { isEmptyArray } from "formik";
 
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString } from "@eshg/lib-portal";
 
 import { ExaminationStatus } from "../../../api/models/ExaminationStatus";
 import {

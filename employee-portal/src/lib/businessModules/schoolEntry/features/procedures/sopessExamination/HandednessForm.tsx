@@ -5,7 +5,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
+import { SoftRequiredSelectField } from "@eshg/lib-portal";
 
 import {
   FIXED_WIDTH_STYLE,

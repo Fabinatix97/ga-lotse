@@ -97,5 +97,7 @@
   <include file="migrations/0087_rename_privacy_to_multi_lang_document.xml"/>
   <include file="migrations/0088_add_school_entry_config.xml"/>
   <include file="migrations/0089_add_schoolinfoletter.xml"/>
+  <include file="migrations/0090_add_meds_abroad_procedure_type.xml"/>
+  <include file="migrations/0091_multiple_appointment_types.xml"/>
 
 </databaseChangeLog>

@@ -10,7 +10,7 @@ import {
   ApiOrthodonticFinding,
   ApiOrthodonticStatus,
 } from "@eshg/dental-api";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal";
 
 export interface ExaminationFormValues
   extends AdditionalInformationFormValues,

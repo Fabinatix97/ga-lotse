@@ -13,7 +13,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { PageProps } from "@eshg/lib-portal";
 
 import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/textblocks";
 import { TextBlocksTable } from "@/lib/businessModules/inspection/components/textBlock/TextBlocksTable";

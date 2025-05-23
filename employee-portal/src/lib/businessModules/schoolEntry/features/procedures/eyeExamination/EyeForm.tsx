@@ -5,10 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions, createFieldNameMapper } from "@eshg/lib-portal";
 
 import { ExaminationFormProps } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationFormProps";
 import { SideIndicator } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SideIndicator";

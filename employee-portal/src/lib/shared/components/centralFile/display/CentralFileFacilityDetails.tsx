@@ -17,8 +17,7 @@ import {
   ExternalLinkDetailsItem,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
+import { formatPersonName, isNonEmptyArray } from "@eshg/lib-portal";
 
 interface CentralFileFacility {
   readonly name: string;

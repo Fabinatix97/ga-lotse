@@ -18,8 +18,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { toDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { DateField, toDateString, toUtcDate } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { translateInspectionAnnouncement } from "@/lib/businessModules/inspection/shared/enums";

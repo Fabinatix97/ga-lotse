@@ -7,6 +7,8 @@ package de.eshg.dental;
 
 import com.google.common.collect.Sets;
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
@@ -16,6 +18,8 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
 import de.eshg.dental.api.ProphylaxisSessionRequest;
+import de.eshg.dental.api.UpdateChildDetailsInBulkRequest;
+import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.api.UpdateExaminationsInBulkRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionExaminationsRequest;
@@ -36,6 +40,7 @@ import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.dental.mapper.DentitionTypeMapper;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
+import de.eshg.dental.util.ProgressEntryUtil;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
@@ -74,6 +79,7 @@ public class ProphylaxisSessionService {
   private final ExaminationService examinationService;
   private final ExaminationRepository examinationRepository;
   private final ChildService childService;
+  private final ProgressEntryUtil progressEntryUtil;
 
   public ProphylaxisSessionService(
       ProphylaxisSessionRepository prophylaxisSessionRepository,
@@ -85,7 +91,8 @@ public class ProphylaxisSessionService {
       UserApi userApi,
       ExaminationService examinationService,
       ExaminationRepository examinationRepository,
-      ChildService childService) {
+      ChildService childService,
+      ProgressEntryUtil progressEntryUtil) {
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.contactClient = contactClient;
     this.childRepository = childRepository;
@@ -96,6 +103,7 @@ public class ProphylaxisSessionService {
     this.examinationService = examinationService;
     this.examinationRepository = examinationRepository;
     this.childService = childService;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
@@ -381,7 +389,12 @@ public class ProphylaxisSessionService {
   public void closeProphylaxisSession(UUID prophylaxisSessionId, long version) {
     ProphylaxisSession prophylaxisSession =
         findProphylaxisSessionForUpdate(prophylaxisSessionId, version);
-    Validator.validateAllExaminationsAreClosed(prophylaxisSession);
+
+    boolean isExamination =
+        prophylaxisSession.isScreening() || prophylaxisSession.hasFluoridationVarnish();
+    if (isExamination) {
+      Validator.validateAllExaminationsAreClosed(prophylaxisSession);
+    }
 
     prophylaxisSession.setProphylaxisStatus(ProphylaxisStatus.CLOSED);
     prophylaxisSessionRepository.flush();
@@ -389,10 +402,73 @@ public class ProphylaxisSessionService {
 
   public ProphylaxisSessionWithAugmentedData updateProphylaxisSessionExaminations(
       UUID prophylaxisSessionId, UpdateProphylaxisSessionExaminationsRequest updateRequest) {
+    // must happen before examinationUpdates -> version conflict
+    if (updateRequest.childUpdates() != null) {
+      updateChildDetails(updateRequest.childUpdates());
+    }
+    if (updateRequest.examinationUpdates() != null) {
+      updateExaminations(updateRequest.examinationUpdates());
+    }
+    return getProphylaxisSessionWithDetails(prophylaxisSessionId);
+  }
+
+  private void updateChildDetails(List<UpdateChildDetailsInBulkRequest> childUpdates) {
+    List<UUID> childIds =
+        childUpdates.stream().map(UpdateChildDetailsInBulkRequest::childId).toList();
+
+    List<Child> children = childRepository.findAllByExternalIdsForUpdate(childIds);
+    Map<UUID, ChildWithAugmentedData> augmentedChildren =
+        childService.augmentWithChildData(children).stream()
+            .collect(StreamUtil.toLinkedHashMap((child) -> child.child().getExternalId()));
+    for (UpdateChildDetailsInBulkRequest childUpdate : childUpdates) {
+      ChildWithAugmentedData augmentedChild = augmentedChildren.get(childUpdate.childId());
+      Child child = augmentedChild.child();
+      ValidationUtil.validateVersion(childUpdate.version(), child);
+      if (hasChangedPersonAttribute(childUpdate, augmentedChild.personData())) {
+        childService.updateChildPerson(
+            child, mapToPersonDetailsDto(augmentedChild.personData(), childUpdate));
+      }
+      childService.updateChildData(
+          child,
+          new UpdateChildRequest(
+              childUpdate.version(),
+              childUpdate.groupName(),
+              child.getInstitutionId(),
+              childUpdate.fluoridationConsent(),
+              childUpdate.procedureLabels()));
+    }
+    childRepository.flush();
+  }
+
+  private PersonDetailsDto mapToPersonDetailsDto(
+      GetPersonFileStateResponse personData, UpdateChildDetailsInBulkRequest childUpdate) {
+    return new PersonDetailsDto(
+        personData.title(),
+        personData.salutation(),
+        childUpdate.gender(),
+        childUpdate.firstName(),
+        childUpdate.lastName(),
+        childUpdate.dateOfBirth(),
+        personData.nameAtBirth(),
+        personData.placeOfBirth(),
+        personData.countryOfBirth(),
+        personData.emailAddresses(),
+        personData.phoneNumbers(),
+        personData.contactAddress(),
+        personData.differentBillingAddress());
+  }
+
+  private boolean hasChangedPersonAttribute(
+      UpdateChildDetailsInBulkRequest childUpdate, GetPersonFileStateResponse personData) {
+    return !(Objects.equals(childUpdate.firstName(), personData.firstName())
+        && Objects.equals(childUpdate.lastName(), personData.lastName())
+        && Objects.equals(childUpdate.dateOfBirth(), personData.dateOfBirth())
+        && Objects.equals(childUpdate.gender(), personData.gender()));
+  }
+
+  private void updateExaminations(List<UpdateExaminationsInBulkRequest> examinationUpdates) {
     List<UUID> examinationIds =
-        updateRequest.examinationUpdates().stream()
-            .map(UpdateExaminationsInBulkRequest::id)
-            .toList();
+        examinationUpdates.stream().map(UpdateExaminationsInBulkRequest::id).toList();
 
     List<Long> ids = examinationRepository.findAllByExternalIdsForUpdate(examinationIds);
     Map<UUID, Examination> persistedExaminations =
@@ -400,7 +476,7 @@ public class ProphylaxisSessionService {
             .fetchByIds(ids)
             .collect(StreamUtil.toLinkedHashMap(Examination::getExternalId));
 
-    for (UpdateExaminationsInBulkRequest examinationUpdate : updateRequest.examinationUpdates()) {
+    for (UpdateExaminationsInBulkRequest examinationUpdate : examinationUpdates) {
       Examination persistedExamination = persistedExaminations.get(examinationUpdate.id());
       if (persistedExamination == null) {
         throw new NotFoundException(
@@ -412,7 +488,6 @@ public class ProphylaxisSessionService {
               examinationUpdate.version(), examinationUpdate.note(), examinationUpdate.result()));
     }
     examinationRepository.flush();
-    return getProphylaxisSessionWithDetails(prophylaxisSessionId);
   }
 
   private ProphylaxisSession mapProphylaxisSessionRequest(

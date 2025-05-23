@@ -10,8 +10,7 @@ import {
   mapOptional,
   normalizeListInputs,
 } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { parseOptionalValue, toDateString } from "@eshg/lib-portal";
 import {
   ApiCountryCode,
   ApiGender,

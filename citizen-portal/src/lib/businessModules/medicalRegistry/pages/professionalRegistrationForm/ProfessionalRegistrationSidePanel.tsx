@@ -3,25 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Typography } from "@mui/joy";
+import { Button, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isEmpty } from "remeda";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import {
+  BooleanRadioField,
+  ButtonLink,
+  CheckboxField,
+  InternalLinkButton,
+  useFileDownload,
+  useMultiStepForm,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   DataPrivacyFormValues,
   MedicalRegistryCreateProcedureFormValues,
   WrittenConfirmationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useMedicalRegistryPublicCitizenApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { CheckboxField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/CheckboxField";
 import { useTranslation } from "@/lib/i18n/client";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
@@ -87,34 +89,36 @@ export function ProfessionalRegistrationSidePanel() {
       )}
 
       <ContentSheet>
-        {currentStep < totalSteps && (
-          <Button onClick={() => handleFormWithSnackbar(goForward)}>
-            {t("navigation.continue")}
-          </Button>
-        )}
-        {currentStep === totalSteps && (
-          <>
-            <Typography level="h2">
-              {t("stepFour.sidePanel.completion")}
-            </Typography>
-            <PrivacyPolicyConfirmationForm />
-            <Button onClick={() => handleFormWithSnackbar(handleSubmit)}>
-              {t("navigation.submit")}
+        <Stack gap={2}>
+          {currentStep < totalSteps && (
+            <Button onClick={() => handleFormWithSnackbar(goForward)}>
+              {t("navigation.continue")}
             </Button>
-          </>
-        )}
-        {currentStep > 1 && (
-          <Button variant="outlined" onClick={goBack}>
-            {t("navigation.back")}
-          </Button>
-        )}
-        <InternalLinkButton
-          variant="soft"
-          color="neutral"
-          href={citizenRoutes.home}
-        >
-          {t("navigation.abort")}
-        </InternalLinkButton>
+          )}
+          {currentStep === totalSteps && (
+            <>
+              <Typography level="h2">
+                {t("stepFour.sidePanel.completion")}
+              </Typography>
+              <PrivacyPolicyConfirmationForm />
+              <Button onClick={() => handleFormWithSnackbar(handleSubmit)}>
+                {t("navigation.submit")}
+              </Button>
+            </>
+          )}
+          {currentStep > 1 && (
+            <Button variant="outlined" onClick={goBack}>
+              {t("navigation.back")}
+            </Button>
+          )}
+          <InternalLinkButton
+            variant="soft"
+            color="neutral"
+            href={citizenRoutes.home}
+          >
+            {t("navigation.abort")}
+          </InternalLinkButton>
+        </Stack>
       </ContentSheet>
     </>
   );

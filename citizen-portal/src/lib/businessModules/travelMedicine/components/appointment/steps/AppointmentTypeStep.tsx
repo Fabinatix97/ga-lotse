@@ -8,7 +8,7 @@ import { useFormikContext } from "formik";
 import { TOptions } from "i18next";
 import { ReactNode, useState } from "react";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert, RadioGroupField } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiAppointmentTypeConfig,
@@ -23,7 +23,6 @@ import {
 import { InfoIconButton } from "@/lib/businessModules/travelMedicine/components/shared/components/InfoIconButton";
 import { InfoModal } from "@/lib/businessModules/travelMedicine/components/shared/components/InfoModal";
 import { RadioSheet } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioSheet";
-import { RadioGroupField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/RadioGroupField";
 import { useDepartmentContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/DepartmentContext";
 import { useTranslation } from "@/lib/i18n/client";
 
@@ -87,6 +86,7 @@ function handleModalText(
     );
   }
 }
+
 export function AppointmentTypeStep() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -119,67 +119,67 @@ export function AppointmentTypeStep() {
         />
         <RadioGroupField
           name="initialStepAppointmentType"
-          sx={{ gap: 2 }}
           required={t("appointmentTypeFormContent.fields.error")}
-          withErrorDecorator
           onChange={() => {
             if (isAppointmentResetNeeded()) {
               resetAppointmentBlockDateValue();
             }
           }}
         >
-          <RadioSheet
-            label={t("appointmentTypeFormContent.fields.vaccination.label")}
-            value={ApiAppointmentType.Vaccination}
-            endDecorator={
-              <InfoIconButton
-                disabled={false}
-                label={t(
-                  "appointmentTypeFormContent.fields.vaccination.iconLabel",
-                )}
-                onClick={() => {
-                  setIsOpen((isOpen) => !isOpen);
-                  setModalTitle(
-                    t(
-                      "appointmentTypeFormContent.fields.vaccination.modalTitle",
-                    ),
-                  );
-                }}
-              />
-            }
-            radioProps={{
-              sx: (theme) => ({
-                label: { ...theme.typography["title-md"] },
-                alignItems: "center",
-              }),
-            }}
-          />
-          <RadioSheet
-            label={t("appointmentTypeFormContent.fields.consultation.label")}
-            value={ApiAppointmentType.Consultation}
-            endDecorator={
-              <InfoIconButton
-                disabled={false}
-                label={t(
-                  "appointmentTypeFormContent.fields.consultation.iconLabel",
-                )}
-                onClick={() => {
-                  setIsOpen((isOpen) => !isOpen);
-                  setModalTitle(
-                    t(
-                      "appointmentTypeFormContent.fields.consultation.modalTitle",
-                    ),
-                  );
-                }}
-              />
-            }
-            radioProps={{
-              sx: (theme) => ({
-                label: { ...theme.typography["title-md"] },
-                alignItems: "center",
-              }),
-            }}
-          />
+          <Stack gap={2}>
+            <RadioSheet
+              label={t("appointmentTypeFormContent.fields.vaccination.label")}
+              value={ApiAppointmentType.Vaccination}
+              endDecorator={
+                <InfoIconButton
+                  disabled={false}
+                  label={t(
+                    "appointmentTypeFormContent.fields.vaccination.iconLabel",
+                  )}
+                  onClick={() => {
+                    setIsOpen((isOpen) => !isOpen);
+                    setModalTitle(
+                      t(
+                        "appointmentTypeFormContent.fields.vaccination.modalTitle",
+                      ),
+                    );
+                  }}
+                />
+              }
+              radioProps={{
+                sx: (theme) => ({
+                  label: { ...theme.typography["title-md"] },
+                  alignItems: "center",
+                }),
+              }}
+            />
+            <RadioSheet
+              label={t("appointmentTypeFormContent.fields.consultation.label")}
+              value={ApiAppointmentType.Consultation}
+              endDecorator={
+                <InfoIconButton
+                  disabled={false}
+                  label={t(
+                    "appointmentTypeFormContent.fields.consultation.iconLabel",
+                  )}
+                  onClick={() => {
+                    setIsOpen((isOpen) => !isOpen);
+                    setModalTitle(
+                      t(
+                        "appointmentTypeFormContent.fields.consultation.modalTitle",
+                      ),
+                    );
+                  }}
+                />
+              }
+              radioProps={{
+                sx: (theme) => ({
+                  label: { ...theme.typography["title-md"] },
+                  alignItems: "center",
+                }),
+              }}
+            />
+          </Stack>
         </RadioGroupField>
 
         <Typography>

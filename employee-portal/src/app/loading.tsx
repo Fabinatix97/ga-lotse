@@ -4,7 +4,7 @@
  */
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
+import { LoadingIndicator } from "@eshg/lib-portal";
 
 export default function Loading() {
   return (

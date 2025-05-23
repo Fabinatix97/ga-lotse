@@ -7,8 +7,7 @@ import assert from "assert";
 import { isSameDay, startOfMonth } from "date-fns";
 import { prop, sortBy } from "remeda";
 
-import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { PortalErrorCode, isSameAppointment } from "@eshg/lib-portal";
 
 import {
   useBookAppointment,

@@ -16,14 +16,14 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
+  CheckboxField,
+  NumberField,
+  OptionalFieldValue,
+  TextareaField,
   validateIntegerAnd,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutations/objectTypes";
 

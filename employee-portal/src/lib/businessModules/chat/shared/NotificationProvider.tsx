@@ -14,7 +14,7 @@ import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { isNullish, omit } from "remeda";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";

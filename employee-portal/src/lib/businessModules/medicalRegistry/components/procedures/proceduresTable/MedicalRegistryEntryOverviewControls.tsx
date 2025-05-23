@@ -15,9 +15,7 @@ import {
   ToggleFilterButton,
   UseFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { FormPlus, InputField, NavigationLink } from "@eshg/lib-portal";
 
 import { MedicalRegistryImportButton } from "@/lib/businessModules/medicalRegistry/components/procedures/import/MedicalRegistryImportButton";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";

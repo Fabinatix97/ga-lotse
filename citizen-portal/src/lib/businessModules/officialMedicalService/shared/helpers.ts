@@ -5,8 +5,10 @@
 
 import { isDefined, isEmpty } from "remeda";
 
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  durationBetweenDatesInMinutes,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiConcern,

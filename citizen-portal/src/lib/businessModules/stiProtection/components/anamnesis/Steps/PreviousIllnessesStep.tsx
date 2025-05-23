@@ -7,17 +7,20 @@ import { Box, Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useId } from "react";
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
-import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Legend } from "@eshg/lib-portal/components/formFields/Legend";
-import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
+import {
+  CheckboxGroupField,
+  FieldSetControl,
+  InputField,
+  Legend,
+  MonthAndYearFields,
+  NumberField,
+  SelectField,
+  YesOrNoWithFollowUp,
+  validatePositiveInteger,
+} from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
+import { AnamnesisStepLayout } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisLayout";
 import {
   AnamnesisFormData,
   FormDataWithoutConcern,
@@ -37,6 +40,13 @@ import {
 } from "./options";
 
 export function PreviousIllnessesStep() {
+  return (
+    <AnamnesisStepLayout>
+      <PreviousIllnessesStepContent />
+    </AnamnesisStepLayout>
+  );
+}
+function PreviousIllnessesStepContent() {
   const startInSexWorkId = useId();
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const { setFieldValue, initialValues, values } =

@@ -13,7 +13,7 @@ import {
   ApiCitizenPortalMarkdownName,
   PublicDepartmentApi,
 } from "@eshg/base-api";
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
 import { usePublicDepartmentApi } from "@/lib/shared/api/clients";
 import { mapDepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";

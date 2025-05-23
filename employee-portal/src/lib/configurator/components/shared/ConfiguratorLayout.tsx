@@ -10,7 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { configuratorNameMapping } from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";

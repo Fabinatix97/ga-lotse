@@ -7,7 +7,7 @@
 
 import { List, ListItem } from "@mui/joy";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLink } from "@eshg/lib-portal";
 
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";

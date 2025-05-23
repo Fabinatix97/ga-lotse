@@ -5,7 +5,7 @@
 
 import { isDefined } from "remeda";
 
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatUserName } from "@eshg/lib-portal";
 import {
   ApiProcessedInboxProgressEntry,
   ApiUser,

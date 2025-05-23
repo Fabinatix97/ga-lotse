@@ -6,7 +6,7 @@
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOption } from "@eshg/lib-portal";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,

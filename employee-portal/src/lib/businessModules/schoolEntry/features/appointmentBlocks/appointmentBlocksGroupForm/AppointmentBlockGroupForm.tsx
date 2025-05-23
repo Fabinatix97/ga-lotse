@@ -9,7 +9,7 @@ import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import { FormButtonBar, FormSheet } from "@eshg/lib-employee-portal";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString } from "@eshg/lib-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";

@@ -25,172 +25,196 @@ import de.eshg.stiprotection.persistence.db.examination.labtests.SyphilisTest;
 
 public enum StiLaboratoryTestsAttributes implements StiAttributes {
   LABORATORY_TESTS_HIV_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "HIV Test angefordert",
           "LABORATORY_TESTS_HIV_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HIV_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver HIV Test",
           "LABORATORY_TESTS_HIV_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_SYPHILIS_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Syphilis Test angefordert",
           "LABORATORY_TESTS_SYPHILIS_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_SYPHILIS_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Syphilis Test",
           "LABORATORY_TESTS_SYPHILIS_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HEPATITIS_A_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Hepatitis A Test angefordert",
           "LABORATORY_TESTS_HEPATITIS_A_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HEPATITIS_A_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Hepatitis A Test",
           "LABORATORY_TESTS_HEPATITIS_A_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HEPATITIS_B_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Hepatitis B Test angefordert",
           "LABORATORY_TESTS_HEPATITIS_B_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HEPATITIS_B_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Hepatitis B Test",
           "LABORATORY_TESTS_HEPATITIS_B_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HEPATITIS_C_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Hepatitis C Test angefordert",
           "LABORATORY_TESTS_HEPATITIS_C_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HEPATITIS_C_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Hepatitis C Test",
           "LABORATORY_TESTS_HEPATITIS_C_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_CHLAMYDIA_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Chlamydien Test angefordert",
           "LABORATORY_TESTS_CHLAMYDIA_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_CHLAMYDIA_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Chlamydien Test",
           "LABORATORY_TESTS_CHLAMYDIA_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Gonorrhoe Test angefordert",
           "LABORATORY_TESTS_GONORRHEA_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Gonorrhoe Test",
           "LABORATORY_TESTS_GONORRHEA_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_MYCOPLASMA_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Mykoplasmen Test angefordert",
           "LABORATORY_TESTS_MYCOPLASMA_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_MYCOPLASMA_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Mykoplasmen Test",
           "LABORATORY_TESTS_MYCOPLASMA_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_CANCER_SCREENING_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Krebsvorsorge Test angefordert",
           "LABORATORY_TESTS_CANCER_SCREENING_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_CANCER_SCREENING_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Krebsvorsorge Test",
           "LABORATORY_TESTS_CANCER_SCREENING_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HPV_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "HPV-Abstrich Test angefordert",
           "LABORATORY_TESTS_HPV_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_HPV_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver HPV-Abstrich Test",
           "LABORATORY_TESTS_HPV_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_MPOX_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Mpox Test angefordert",
           "LABORATORY_TESTS_MPOX_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_MPOX_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver Mpox Test",
           "LABORATORY_TESTS_MPOX_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_OTHER_TEST_REQUESTED(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Sonstiger Test angefordert",
           "LABORATORY_TESTS_OTHER_TEST_REQUESTED",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   LABORATORY_TESTS_OTHER_TEST_RESULT_POSITIVE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Positiver sonstiger Test",
           "LABORATORY_TESTS_OTHER_TEST_RESULT_POSITIVE",
           StiLaboratoryTestsAttributes.LABORATORY_TESTS_CATEGORY,
-          false));
+          false,
+          0.2));
 
   private static final String LABORATORY_TESTS_CATEGORY = "Labortests";
 

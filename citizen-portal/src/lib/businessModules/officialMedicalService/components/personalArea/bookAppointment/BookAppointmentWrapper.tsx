@@ -6,7 +6,7 @@
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Suspense, useMemo } from "react";
 
-import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal";
 import {
   ApiAppointment,
   ApiGetCitizenProcedureDetailsResponse,

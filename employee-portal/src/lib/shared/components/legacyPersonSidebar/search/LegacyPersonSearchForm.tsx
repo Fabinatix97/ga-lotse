@@ -14,10 +14,12 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
+import {
+  DateField,
+  InputField,
+  SubmitButton,
+  validateDateOfBirth,
+} from "@eshg/lib-portal";
 
 import {
   LegacyMinimalPerson,

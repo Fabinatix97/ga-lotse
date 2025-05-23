@@ -5,7 +5,7 @@
 
 import { createContext, useContext } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export interface LayoutConfig {
   appBarHeightMobile: string;

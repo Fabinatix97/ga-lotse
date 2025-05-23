@@ -4,11 +4,11 @@
  */
 
 import { parseImportResult } from "@eshg/lib-employee-portal";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   mapOptionalValue,
   mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+  useHandledMutation,
+} from "@eshg/lib-portal";
 import {
   ApiImportStatistics,
   ImportCitizenListRequest,

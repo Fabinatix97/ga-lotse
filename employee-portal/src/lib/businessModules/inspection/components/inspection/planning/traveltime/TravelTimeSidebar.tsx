@@ -24,9 +24,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { NumberField, isEmptyString, toDateTimeString } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";

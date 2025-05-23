@@ -17,7 +17,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { createFieldNameMapper } from "@eshg/lib-portal";
 
 import { generateKeyPairs } from "@/lib/auditlog/components/crypto";
 import { useAddEmployeeSelfUserKeys } from "@/lib/baseModule/api/mutations/users";

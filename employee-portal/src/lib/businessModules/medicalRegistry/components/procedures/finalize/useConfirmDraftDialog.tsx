@@ -4,7 +4,7 @@
  */
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal";
 import {
   ApiGetProcedureDraftResponse,
   ApiPracticeReferenceFacility,

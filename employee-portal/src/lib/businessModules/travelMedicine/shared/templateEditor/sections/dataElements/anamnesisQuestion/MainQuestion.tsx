@@ -14,7 +14,7 @@ import {
   styled,
 } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { validateQuestionText } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 

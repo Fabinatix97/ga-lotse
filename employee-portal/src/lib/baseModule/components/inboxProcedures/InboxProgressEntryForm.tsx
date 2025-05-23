@@ -9,19 +9,17 @@ import { Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { FileField, FileFieldProps } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
-import {
+  EnumMap,
+  FileType,
+  InputField,
   NestedFormProps,
   OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+  SelectField,
+  TextareaField,
+  buildEnumOptions,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import { ApiInboxProgressEntryType } from "@eshg/lib-procedures-api";
 
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";

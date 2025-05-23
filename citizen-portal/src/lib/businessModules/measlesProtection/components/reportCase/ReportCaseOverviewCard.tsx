@@ -17,8 +17,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { ReactElement, ReactNode } from "react";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { ButtonLink, SubmitButton } from "@eshg/lib-portal";
 import {
   ApiReportingReason,
   ApiRoleStatus,

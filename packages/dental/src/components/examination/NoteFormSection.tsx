@@ -5,7 +5,7 @@
 
 import { FormLabel } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { TextareaField } from "@eshg/lib-portal";
 
 import {
   ExaminationSectionTitle,

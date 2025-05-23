@@ -10,8 +10,7 @@ import { Alert } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { DetailsItem, EditButton } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatDate, formatPersonName } from "@eshg/lib-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,

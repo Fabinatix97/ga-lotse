@@ -5,9 +5,9 @@
 
 import {
   durationBetweenDatesInMinutes,
+  mapOptionalValue,
   toDateString,
-} from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiPatchVaccinationConsultationPatientRequest,

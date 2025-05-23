@@ -9,7 +9,7 @@ import {
   ApiProphylaxisStatus,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 
 import {
   DENTITION_TYPES,

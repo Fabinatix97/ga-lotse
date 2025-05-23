@@ -14,10 +14,12 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import {
+  ButtonLink,
+  FileType,
+  SubmitButton,
+  useFileDownload,
+} from "@eshg/lib-portal";
 
 import { useImportApi } from "@/lib/businessModules/inspection/api/clients";
 

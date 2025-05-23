@@ -25,7 +25,7 @@ import {
   useState,
 } from "react";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { useAdminApi } from "@/lib/api/clients";
 import { getAdminName } from "@/lib/helpers/adminName";

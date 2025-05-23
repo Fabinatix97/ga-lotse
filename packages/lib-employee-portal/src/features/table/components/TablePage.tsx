@@ -9,7 +9,7 @@ import { Stack, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 const FULL_HEIGHT_STYLES = {
   // Let this component take all the available height.

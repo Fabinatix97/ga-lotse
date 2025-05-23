@@ -18,9 +18,11 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import {
+  FormAddMoreButton,
+  InputField,
+  RadioGroupField,
+} from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { FilesSection } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/FilesSection";

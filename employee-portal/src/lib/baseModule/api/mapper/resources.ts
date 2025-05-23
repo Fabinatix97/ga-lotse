@@ -7,10 +7,7 @@ import {
   ApiAddResourceRequest,
   ApiUpdateResourceRequest,
 } from "@eshg/base-api";
-import {
-  mapOptionalValue,
-  mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue, mapRequiredValue } from "@eshg/lib-portal";
 
 import { ResourceFormValues } from "@/lib/baseModule/components/resources/forms/ResourceForm";
 

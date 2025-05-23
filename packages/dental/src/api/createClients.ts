@@ -16,7 +16,7 @@ import {
   ProgressEntryApi,
   ProphylaxisSessionApi,
 } from "@eshg/dental-api";
-import { apiMiddlewares } from "@eshg/lib-portal/config/apiMiddlewares";
+import { apiMiddlewares } from "@eshg/lib-portal";
 
 export type DentalClients = ReturnType<typeof createClients>;
 

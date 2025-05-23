@@ -5,9 +5,9 @@
 
 import {
   mapBoolToYesOrNo,
+  mapOptionalValue,
   mapYesOrNoToBool,
-} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { ApiConsultation } from "@eshg/sti-protection-api";
 

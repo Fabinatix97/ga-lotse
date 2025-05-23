@@ -7,7 +7,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 import { useRequestFileDeletion } from "../../api/mutations/file";
 import { useProgressEntriesContext } from "../../contexts/progressEntries";

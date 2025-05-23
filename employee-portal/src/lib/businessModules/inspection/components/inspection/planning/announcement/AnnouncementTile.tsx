@@ -11,7 +11,7 @@ import { isNonNullish, isNullish } from "remeda";
 
 import { ApiInspectionAnnouncement } from "@eshg/inspection-api";
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { AnnouncementSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/announcement/AnnouncementSidebar";
 import { translateInspectionAnnouncement } from "@/lib/businessModules/inspection/shared/enums";

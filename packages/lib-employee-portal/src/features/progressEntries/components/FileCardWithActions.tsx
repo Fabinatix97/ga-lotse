@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 import { isDefined } from "remeda";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import { ApiAbstractFile } from "@eshg/lib-procedures-api";
 
 import {

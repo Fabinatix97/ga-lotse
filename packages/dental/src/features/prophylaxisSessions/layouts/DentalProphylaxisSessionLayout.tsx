@@ -10,10 +10,10 @@ import { use } from "react";
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import {
+  DynamicLayoutProps,
   NextErrorBoundary,
   NextErrorBoundaryProps,
-} from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
-import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+} from "@eshg/lib-portal";
 
 import { useDentalApi } from "../../../contexts/dental";
 import { getProphylaxisSessionQuery } from "../api/queries/details";

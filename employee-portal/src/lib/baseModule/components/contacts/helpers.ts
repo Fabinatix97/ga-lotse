@@ -9,7 +9,7 @@ import {
   formatList,
   isDomesticAddress,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatPersonName } from "@eshg/lib-portal";
 
 export function fullContactName(contact: Contact) {
   return contact.type === "PersonContact"

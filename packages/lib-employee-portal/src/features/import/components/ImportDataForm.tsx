@@ -7,7 +7,7 @@ import { CircularProgress, Stack, Typography, styled } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { Ref } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { FormButtonBar } from "../../../components/form/FormButtonBar";
 import { SidebarActions } from "../../drawer/components/SidebarActions";

@@ -9,7 +9,7 @@ import {
   dropBlankStrings,
   mapOptionalValue,
   mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-portal";
 
 import {
   mapOptionalMergeValue,

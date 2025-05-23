@@ -14,12 +14,9 @@ import {
   CentralFileSyncForm,
   useGetFacilityFileStateDiff,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal";
 import { formatFacilityName } from "@eshg/lib-portal/formatters/facility";
-import {
-  PositiveIntegerSchema,
-  UuidSchema,
-} from "@eshg/lib-portal/schemas/pageParams";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { PositiveIntegerSchema, UuidSchema } from "@eshg/lib-portal/universal";
 
 import { useSyncFacility } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";

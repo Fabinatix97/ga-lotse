@@ -18,11 +18,7 @@ import {
   SetDictionaryFilterFn,
   mapToSelectOption,
 } from "@eshg/lib-employee-portal";
-import {
-  SelectOption,
-  SelectOptions,
-} from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
+import { SelectOption, SelectOptions, useHasChanged } from "@eshg/lib-portal";
 
 import { useSearchInstitutionGroupsQuery } from "../../../../api/queries/groups";
 import { ProcedureLabelFilter } from "../../../../components/procedureLabels/ProcedureLabelFilter";

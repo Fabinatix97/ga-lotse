@@ -8,7 +8,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isNonNullish, isString } from "remeda";
 
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyString } from "@eshg/lib-portal";
 
 export interface DetailsCellProps {
   name?: string;

@@ -7,7 +7,7 @@ import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ApiDiffAddress } from "@eshg/base-api";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { translateCountry } from "@eshg/lib-portal";
 
 import {
   BaseAddress,

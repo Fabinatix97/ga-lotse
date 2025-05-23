@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { validateAnamnesisTemplateTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 

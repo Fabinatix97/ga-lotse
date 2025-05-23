@@ -14,7 +14,7 @@ import {
 } from "@mui/joy";
 import { ChangeEvent, ReactNode } from "react";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { useBaseField } from "@eshg/lib-portal";
 
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";

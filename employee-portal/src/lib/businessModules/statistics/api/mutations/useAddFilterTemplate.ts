@@ -4,8 +4,7 @@
  */
 
 import { FilterValue } from "@eshg/lib-employee-portal";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
 import { useFilterTemplateApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapFilterValuesToEvaluationFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToEvaluationFilters";

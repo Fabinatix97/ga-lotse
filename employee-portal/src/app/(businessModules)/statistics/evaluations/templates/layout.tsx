@@ -21,7 +21,7 @@ import {
   ToolbarBackButton,
   hasAnyUserRoles,
 } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 

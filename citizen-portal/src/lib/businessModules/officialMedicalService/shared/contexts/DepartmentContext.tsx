@@ -14,7 +14,7 @@ import {
 } from "react";
 
 import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 

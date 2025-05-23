@@ -9,8 +9,7 @@ import {
   InsertEditorElementRequest,
   UpdateEditorElementRequest,
 } from "@eshg/lib-editor-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { unwrapRawResponse, useHandledMutation } from "@eshg/lib-portal";
 
 export function useInsertEditorElement(editorApi: EditorApiInterface) {
   return useHandledMutation({

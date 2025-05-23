@@ -5,7 +5,7 @@
 
 import { Button, Typography } from "@mui/joy";
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

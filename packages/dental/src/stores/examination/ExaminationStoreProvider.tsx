@@ -9,7 +9,7 @@ import { createContext, useContext, useState } from "react";
 import { useStore } from "zustand";
 
 import { ApiDentitionType } from "@eshg/dental-api";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import {
   ExaminationResult,

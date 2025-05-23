@@ -28,7 +28,7 @@ import {
   useSearchParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { optionsFromRecord } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";

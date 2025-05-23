@@ -20,31 +20,28 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { toDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
+  BooleanSelectField,
+  DateField,
+  isEmptyString,
   mapOptionalValue,
-  parseOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+  useSnackbar,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal";
 
 import { Institution } from "../../../../api/models/Institution";
 import { SearchGroupField } from "../../../../components/group/SearchGroupField";
 import { childApiQueryKey } from "../../../../config/apiQueryKeys";
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 import { useDentalApi } from "../../../../contexts/dental";
+import {
+  FluoridationConsent,
+  mapFluoridationConsentToFormValues,
+  mapFluoridationConsentToRequest,
+} from "../../../../utils/childDetails/FluoridationConsent";
+import { validateAllergy } from "../../../../utils/childDetails/validateAllergy";
 import { ChildDetails } from "../../api/models/ChildDetails";
 import { useUpdateAnnualChild } from "../../api/mutations/details";
-
-interface FluoridationConsent {
-  consented: boolean;
-  dateOfConsent: OptionalFieldValue<string>;
-  hasAllergy: OptionalFieldValue<boolean>;
-}
 
 export function useUpdateAnnualChildSidebar(): UseSidebarWithFormRefResult<UpdateAnnualChildSidebarProps> {
   return useSidebarWithFormRef({
@@ -73,17 +70,9 @@ function useUpdateAnnualChildForm(
     initialValues: {
       institution: annualChild.institution,
       groupName: annualChild.groupName,
-      fluoridationConsent: annualChild.currentFluoridationConsent
-        ? {
-            consented: annualChild.currentFluoridationConsent.consented,
-            dateOfConsent: toDateString(
-              annualChild.currentFluoridationConsent.dateOfConsent,
-            ),
-            hasAllergy: parseOptionalValue(
-              annualChild.currentFluoridationConsent.hasAllergy,
-            ),
-          }
-        : undefined,
+      fluoridationConsent: mapFluoridationConsentToFormValues(
+        annualChild.currentFluoridationConsent,
+      ),
       procedureLabels: annualChild.procedureLabels,
     },
     onSubmit: (values) => {
@@ -107,20 +96,9 @@ function mapValues(
     apiUpdateChildRequest: {
       groupName: mapOptionalValue(values.groupName),
       institutionId: values.institution.id,
-      fluoridationConsent:
-        values.fluoridationConsent &&
-        !isEmptyString(values.fluoridationConsent.consented) &&
-        !isEmptyString(values.fluoridationConsent.dateOfConsent)
-          ? {
-              consented: values.fluoridationConsent.consented,
-              dateOfConsent: toUtcDate(
-                values.fluoridationConsent.dateOfConsent,
-              ),
-              hasAllergy: mapOptionalValue(
-                values.fluoridationConsent.hasAllergy,
-              ),
-            }
-          : undefined,
+      fluoridationConsent: mapFluoridationConsentToRequest(
+        values.fluoridationConsent,
+      ),
       procedureLabels: values.procedureLabels.map((label) => label.id),
       version: annualChild.version,
     },
@@ -133,14 +111,6 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
   const annualChild = props.child;
   const form = useUpdateAnnualChildForm(annualChild, () => props.onClose(true));
   const { isSubmitting, values } = form;
-
-  function validateAllergy(
-    value: OptionalFieldValue<boolean>,
-  ): string | undefined {
-    if (form.values.fluoridationConsent?.consented && value) {
-      return "Es darf keine Erlaubnis erteilt sein, wenn eine Allergie vorliegt.";
-    }
-  }
 
   return (
     <FormikProvider value={form}>
@@ -195,7 +165,9 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
                 label="Allergie"
                 allowDeselection
                 sx={{ width: "120px" }}
-                validate={(value) => validateAllergy(value)}
+                validate={(value) =>
+                  validateAllergy(value, form.values.fluoridationConsent)
+                }
               />
             </Stack>
           </Stack>
@@ -204,7 +176,7 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
           <FormButtonBar
             submitting={isSubmitting}
             submitLabel="Speichern"
-            onCancel={props.onClose}
+            onCancel={() => props.onClose()}
           />
         </SidebarActions>
       </SidebarForm>

@@ -15,7 +15,7 @@ import {
   useResetAlertContextOnChange,
   useSidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
+import { LoadingIndicator } from "@eshg/lib-portal";
 
 import {
   FacilityDetailsSidebar,

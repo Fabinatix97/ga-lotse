@@ -7,7 +7,7 @@ import { CreateNewFolder } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { FieldArray } from "formik";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiTemplateSection } from "@eshg/travel-medicine-api";
 
 import { SectionTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/SectionTitle";

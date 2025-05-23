@@ -6,7 +6,6 @@ include 'employee-portal'
 include 'citizen-portal'
 include 'admin-portal'
 include 'e2e'
-include 'lib-portal'
 include 'performance-test'
 include 'k8s'
 

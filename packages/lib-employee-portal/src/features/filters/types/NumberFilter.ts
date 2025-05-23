@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal";
 
 import { FilterDefinitionBase } from "./FilterDefinition";
 import { FilterValueBase } from "./FilterValue";

@@ -7,7 +7,7 @@ import { Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
 import { isDefined } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { TranslatedList } from "@/lib/businessModules/officialMedicalService/shared/components/TranslatedList";

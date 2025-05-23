@@ -5,7 +5,7 @@
 
 import { Stack, styled } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 const ButtonStack = styled(Stack)({
   marginTop: "27px",

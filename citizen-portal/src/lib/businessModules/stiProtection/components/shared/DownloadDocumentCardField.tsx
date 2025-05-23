@@ -7,7 +7,7 @@ import { FormControl, FormHelperText } from "@mui/joy";
 import assert from "assert";
 import { useId } from "react";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { useBaseField } from "@eshg/lib-portal";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 

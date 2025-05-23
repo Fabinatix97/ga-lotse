@@ -8,8 +8,7 @@ import { Chip } from "@mui/joy";
 import { useField } from "formik";
 
 import { ApiOrthodonticFinding } from "@eshg/dental-api";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { SelectField, buildEnumOptions } from "@eshg/lib-portal";
 
 import { ORTHODONTIC_FINDINGS } from "../../translations/examination";
 

@@ -5,9 +5,7 @@
 
 import { FormControl, FormLabel, Input, Select, Stack } from "@mui/joy";
 
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap, SelectOptions, buildEnumOptions } from "@eshg/lib-portal";
 
 import {
   DateComparisonFilterDefinition,

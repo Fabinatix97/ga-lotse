@@ -24,7 +24,7 @@ import {
   ApiCLSectionContextElementsInner,
 } from "@eshg/inspection-api";
 import { InformationSheet } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { ChecklistDefinitionElementsList } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/ChecklistDefinitionElementsList";
 import { CopyDeleteDropdown } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/CopyDeleteDropdown";
@@ -39,6 +39,7 @@ interface ChecklistDefinitionSectionElementProps {
   addSection?: (section: ApiCLSectionContext) => void;
   sectionIndex: number;
   dragHandleProps?: DraggableProvidedDragHandleProps | null;
+  ref?: (el: HTMLInputElement) => void;
 }
 
 export function ChecklistDefinitionSection({
@@ -48,6 +49,7 @@ export function ChecklistDefinitionSection({
   addSection = doNothing,
   sectionIndex,
   dragHandleProps,
+  ref,
 }: Readonly<ChecklistDefinitionSectionElementProps>) {
   function updateSection(update: Partial<ApiCLSectionContext>) {
     setSection({ ...section, ...update });
@@ -107,6 +109,7 @@ export function ChecklistDefinitionSection({
               }
               input={
                 <InputField
+                  ref={ref}
                   name={`context.sections.${sectionIndex}.title`}
                   label="Sektionstitel"
                   sx={{ flex: 1 }}

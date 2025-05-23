@@ -17,7 +17,7 @@ import {
   useSearchParam,
   useSyncBarrier,
 } from "@eshg/lib-employee-portal";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal";
 import {
   ApiPatient,
   ApiPersonSync,

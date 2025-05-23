@@ -6,7 +6,7 @@
 import { Stack, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 const ButtonStack = styled(Stack)(({ theme }) => ({
   marginTop: theme.spacing(3),

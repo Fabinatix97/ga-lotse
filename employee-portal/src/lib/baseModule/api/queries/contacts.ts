@@ -6,7 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GetContactHistoryRequest, GetContactsRequest } from "@eshg/base-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useContactApi } from "@/lib/baseModule/api/clients";
 import { contactApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

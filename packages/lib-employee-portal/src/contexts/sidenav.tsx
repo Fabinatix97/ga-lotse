@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface SidenavContextValue {
   isCollapsed: boolean;

@@ -18,7 +18,7 @@ import {
   SidebarFormHandle,
   formatList,
 } from "@eshg/lib-employee-portal";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { RadioGroupField } from "@eshg/lib-portal";
 
 interface ImportResponse<TMatch> {
   matches: TMatch[];

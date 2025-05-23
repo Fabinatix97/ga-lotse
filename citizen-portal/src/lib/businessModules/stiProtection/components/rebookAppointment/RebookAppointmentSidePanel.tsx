@@ -14,7 +14,7 @@ import { Button, Stack } from "@mui/joy";
 import { formatDate } from "date-fns";
 import { useFormikContext } from "formik";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";

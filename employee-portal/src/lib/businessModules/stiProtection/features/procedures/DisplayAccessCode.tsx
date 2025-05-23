@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row } from "@eshg/lib-portal/components/Row";
+import { Row } from "@eshg/lib-portal";
 
 export function DisplayAccessCode({
   code,

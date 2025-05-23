@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { Alert, InternalLinkButton } from "@eshg/lib-portal";
 
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

@@ -10,15 +10,31 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "SecondaryResult")
 public enum SecondaryResultDto {
+  S,
+  I,
+  D,
+  F,
+  M,
+  X,
+  Z,
+  T,
+  H,
+  O,
+  V,
+  N,
+  U,
+  K,
+  E,
+  W,
+  P,
+  A,
+
   DA,
   FA,
-  FIS,
   ID,
   INS,
   @JsonProperty("LÜ")
   LUE,
   RET,
-  TR,
-  WR,
   ZA
 }

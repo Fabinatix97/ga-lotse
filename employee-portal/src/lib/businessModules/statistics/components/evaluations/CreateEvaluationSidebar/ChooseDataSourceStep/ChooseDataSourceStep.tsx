@@ -6,7 +6,7 @@
 import { Stack, Typography } from "@mui/joy";
 
 import { SelectableCard } from "@eshg/lib-employee-portal";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { RadioGroupField } from "@eshg/lib-portal";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";

@@ -6,7 +6,7 @@
 import { Checkbox, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { CheckboxField } from "@eshg/lib-portal";
 
 import { ScreeningExaminationResult } from "../../api/models/ExaminationResult";
 import { calculateTreatmentRequiredValuesByDentitionType } from "../../features/prophylaxisSessions/utils/treatmentRequiredValues";

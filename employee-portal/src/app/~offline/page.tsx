@@ -9,7 +9,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 

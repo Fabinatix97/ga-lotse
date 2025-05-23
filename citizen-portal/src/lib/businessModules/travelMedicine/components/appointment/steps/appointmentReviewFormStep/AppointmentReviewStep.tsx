@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import { useIsMobile } from "@eshg/lib-portal";
 
 import { AppointmentInfoSection } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentReviewFormStep/AppointmentInfoSection";
 import { ConfirmationSection } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentReviewFormStep/ConfirmationSection";

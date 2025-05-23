@@ -5,9 +5,11 @@
 
 "use client";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useIsActiveRoute } from "@eshg/lib-portal/hooks/useIsActiveRoute";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import {
+  InternalLinkButton,
+  RequiresChildren,
+  useIsActiveRoute,
+} from "@eshg/lib-portal";
 
 import { getSidePanelNavItemStyles } from "@/lib/shared/components/sidePanel/SidePanelNav";
 

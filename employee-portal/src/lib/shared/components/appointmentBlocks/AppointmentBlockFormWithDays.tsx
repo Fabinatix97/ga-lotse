@@ -7,10 +7,12 @@ import { Delete } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import {
+  DateField,
+  EnumMap,
+  NestedFormProps,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import { ApiDayOfWeek } from "@eshg/measles-protection-api";
 
 import { WeekdayCheckboxGroup } from "@/lib/shared/components/appointmentBlocks/WeekdayCheckboxGroup";
@@ -76,6 +78,7 @@ export function emptyAppointmentBlockGroup(): AppointmentBlockGroupValuesWithDay
 interface AppointmentBlockFormWithDaysProps extends NestedFormProps {
   removeBlock: () => void;
   blockCount: number;
+  ref?: (el: HTMLInputElement) => void;
 }
 
 export function AppointmentBlockFormWithDays(
@@ -91,6 +94,7 @@ export function AppointmentBlockFormWithDays(
       <Grid container xs={12} direction="row" columnGap={0}>
         <Grid xs={2} sx={{ ...dateTimeFieldStyle, pl: 0 }}>
           <DateField
+            ref={props.ref}
             name={fieldName("startDate")}
             label="Startdatum"
             required="Bitte ein Startdatum angeben."

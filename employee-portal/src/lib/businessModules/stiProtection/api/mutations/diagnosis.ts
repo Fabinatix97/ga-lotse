@@ -5,8 +5,7 @@
 
 import { MutationOptions, useMutation } from "@tanstack/react-query";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+import { MutationPassThrough, useSnackbar } from "@eshg/lib-portal";
 import { ApiDiagnosis } from "@eshg/sti-protection-api";
 
 import { useDiagnosisApi } from "@/lib/businessModules/stiProtection/api/clients";

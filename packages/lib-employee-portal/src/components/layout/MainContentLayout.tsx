@@ -5,7 +5,7 @@
 
 import { Stack, StackProps, styled } from "@mui/joy";
 
-import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { AlertSlot } from "@eshg/lib-portal";
 
 interface MainContentLayoutProps extends StackProps {
   /**

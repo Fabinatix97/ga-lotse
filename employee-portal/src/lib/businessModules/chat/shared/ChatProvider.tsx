@@ -15,7 +15,7 @@ import {
   useHasUserRoleCheck,
   useIsOffline,
 } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";

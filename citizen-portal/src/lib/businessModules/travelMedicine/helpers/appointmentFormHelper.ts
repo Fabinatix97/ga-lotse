@@ -7,10 +7,10 @@ import { isDefined, isEmpty } from "remeda";
 
 import {
   durationBetweenDatesInMinutes,
+  isEmptyString,
+  mapOptionalValue,
   toUtcDate,
-} from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCountryCode,

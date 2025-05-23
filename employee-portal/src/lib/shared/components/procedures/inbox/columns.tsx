@@ -9,7 +9,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
 import { PROCEDURE_TYPE_NAMES } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";

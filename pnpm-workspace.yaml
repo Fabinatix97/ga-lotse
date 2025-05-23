@@ -6,7 +6,6 @@ packages:
   - "citizen-portal"
   - "admin-portal"
   - "e2e"
-  - "lib-portal"
   - "performance-test"
   - "packages/*"
 

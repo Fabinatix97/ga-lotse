@@ -35,8 +35,7 @@ import {
   useRowSelection,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions, useSnackbar } from "@eshg/lib-portal";
 
 import { ContactsTableTitle } from "@/lib/baseModule/components/contacts/ContactsTableTitle";
 import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergeInstitutionContactSidebar";

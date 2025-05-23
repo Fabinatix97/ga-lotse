@@ -14,9 +14,11 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  NumberField,
+  OptionalFieldValue,
+  validatePositiveInteger,
+} from "@eshg/lib-portal";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 

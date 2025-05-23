@@ -1,7 +1,7 @@
 <#import "../common/forms.ftlh" as forms />
 
 <#macro content vaccinationInfo="NUL" >
-<#-- @ftlvariable name="vaccinationInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterVaccinationInfoDto" -->
+<#-- @ftlvariable name="vaccinationInfo" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterVaccinationInfoDto" -->
   <table style="width: 100%;">
     <colgroup>
       <col style="width: 34%" />

@@ -15,7 +15,7 @@ import {
   SidebarContent,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiMeaslesProtectionProcedure } from "@eshg/measles-protection-api";
 
 import { useUpdateProcedureMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

@@ -7,9 +7,11 @@ import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
 import assert from "assert";
 import { isDefined } from "remeda";
 
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+import {
+  PortalErrorCode,
+  STATIC_QUERY_OPTIONS,
+  resolveError,
+} from "@eshg/lib-portal";
 import {
   ApiBusinessModule,
   ApiGdprDownloadPackageInfo,

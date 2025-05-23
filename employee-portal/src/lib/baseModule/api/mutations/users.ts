@@ -8,8 +8,7 @@ import {
   ApiEmployeeUserKeys,
   ApiUpdateSelfUserRequest,
 } from "@eshg/base-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 

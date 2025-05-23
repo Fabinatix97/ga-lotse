@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { SingleAutocompleteField, buildEnumOptions } from "@eshg/lib-portal";
 
 import { ChoroplethChartMetaFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { colorSchemeNames } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";

@@ -5,7 +5,7 @@
 
 import { endOfDay, isPast } from "date-fns";
 
-import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateString } from "@eshg/lib-portal";
 
 export function validateTodayOrFutureDate(value: string) {
   if (isDateString(value) && isPast(endOfDay(value))) {

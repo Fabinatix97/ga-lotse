@@ -4,7 +4,7 @@
  */
 
 import { ApiGdprProcedureStatus, ApiGdprProcedureType } from "@eshg/base-api";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal";
 
 export const statusTranslation = {
   DRAFT: "Entwurf",

@@ -7,19 +7,19 @@ import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import {
+  Alert,
+  BooleanRadioField,
+  EmailField,
+  InputField,
+  NestedFormProps,
+  createFieldNameMapper,
+  useValidateLength,
+  useValidateNumber,
+} from "@eshg/lib-portal";
+import {
   MedicalRegistryCreateProcedureFormValues,
   PracticeInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  useValidateLength,
-  useValidateNumber,
-} from "@eshg/lib-portal/hooks/useValidators";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 

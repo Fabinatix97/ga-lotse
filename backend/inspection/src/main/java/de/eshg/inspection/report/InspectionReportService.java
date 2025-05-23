@@ -77,6 +77,7 @@ public class InspectionReportService {
     ChecklistReportMapper.addTopLevelTitle(report);
     addInitialParticipants(report, inspection);
     addDateOfInspection(report, inspection, clock);
+    addLegalBasis(report, inspection);
 
     for (Checklist checklist : inspection.getChecklists()) {
       ChecklistReportMapper.addChecklist(report, checklist);
@@ -123,6 +124,14 @@ public class InspectionReportService {
     if (!participants.isEmpty()) {
       ChecklistReportMapper.addTextBlock(
           report, "Beteiligte Personen", participants.toString(), false, true);
+    }
+  }
+
+  private void addLegalBasis(Report report, Inspection inspection) {
+    String legalBasisText = inspection.getFacility().getObjectType().getLegalBasis();
+
+    if (legalBasisText != null) {
+      ChecklistReportMapper.addLegalBasis(report, legalBasisText);
     }
   }
 

@@ -7,7 +7,7 @@ import ForumIcon from "@mui/icons-material/Forum";
 import { Badge } from "@mui/joy";
 import { useContext } from "react";
 
-import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { useNavigation } from "@eshg/lib-portal";
 
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
 import { routes } from "@/lib/baseModule/shared/routes";

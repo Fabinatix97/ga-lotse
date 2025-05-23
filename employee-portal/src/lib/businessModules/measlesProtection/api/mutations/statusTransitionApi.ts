@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+import { MutationPassThrough, useHandledMutation } from "@eshg/lib-portal";
 
 import { useStatusTransitionApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";

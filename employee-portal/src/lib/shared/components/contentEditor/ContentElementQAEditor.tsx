@@ -14,8 +14,7 @@ import {
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
 import { FormButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { FormPlus, TextareaField } from "@eshg/lib-portal";
 
 interface ContentElementQAEditorProps {
   element: ApiEditorElementQA;

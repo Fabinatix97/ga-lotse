@@ -6,7 +6,7 @@
 import { useMutation } from "@tanstack/react-query";
 import assert from "assert";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import {
   ApiAddPersonalDetailsRequest,
   ApiBookAppointmentRequest,

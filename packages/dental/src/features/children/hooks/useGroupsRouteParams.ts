@@ -6,7 +6,7 @@
 import { use } from "react";
 import { parse } from "valibot";
 
-import { RouteParams } from "@eshg/lib-portal/types/pageParams";
+import { RouteParams } from "@eshg/lib-portal";
 
 import { DentalGroupsRouteParams } from "../schemas/DentalGroupsRouteParams";
 

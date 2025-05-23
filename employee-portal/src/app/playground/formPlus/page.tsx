@@ -13,9 +13,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormPlus, InputField, useSnackbar } from "@eshg/lib-portal";
 
 export default function PlaygroundFormPlusPage() {
   const snackbar = useSnackbar();

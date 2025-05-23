@@ -5,14 +5,14 @@
 
 import { Grid, Typography } from "@mui/joy";
 
-import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
-import { GeneralInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  NestedFormProps,
+  SelectField,
   buildEnumOptions,
   createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
+import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+import { GeneralInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 
 import { requiredFieldMessage } from "./MedicalRegistryCreateProcedureForm";
 

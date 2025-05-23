@@ -5,10 +5,7 @@
 
 import { useEffect } from "react";
 
-import {
-  OnBeforeNavigateProps,
-  useNavigation,
-} from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { OnBeforeNavigateProps, useNavigation } from "@eshg/lib-portal";
 
 export function useConfirmNavigationEffect(
   triggerLeaveConfirmation: boolean,

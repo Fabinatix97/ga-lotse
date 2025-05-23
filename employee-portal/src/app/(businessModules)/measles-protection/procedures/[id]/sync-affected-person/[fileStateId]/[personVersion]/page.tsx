@@ -8,11 +8,8 @@
 import { use } from "react";
 import * as v from "valibot";
 
-import {
-  PositiveIntegerSchema,
-  UuidSchema,
-} from "@eshg/lib-portal/schemas/pageParams";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
+import { PositiveIntegerSchema, UuidSchema } from "@eshg/lib-portal/universal";
 
 import { MeaslesProtectionDetailsRouteParamsSchema } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesProtectionDetailsRouteParamsSchema";
 import { PersonSyncForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/PersonSyncForm";

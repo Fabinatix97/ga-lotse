@@ -6,24 +6,22 @@
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
+import {
+  DateField,
+  InputField,
+  NestedFormProps,
+  SelectField,
+  buildEnumOptions,
+  createFieldNameMapper,
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   MedicalRegistryCreateProcedureFormValues,
   OccupationalInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { useValidateLifetimeDoctorNumber } from "@eshg/lib-portal/businessModules/medicalRegistry/useValidators";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
-import {
-  useValidateLength,
-  useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";

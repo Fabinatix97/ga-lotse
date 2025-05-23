@@ -8,8 +8,7 @@ import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray, useField } from "formik";
 import { ReactElement } from "react";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { InputField, TextareaField } from "@eshg/lib-portal";
 
 interface OpeningHoursFieldProps {
   name: string;

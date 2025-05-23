@@ -18,8 +18,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { createFieldNameMapper, useSnackbar } from "@eshg/lib-portal";
 
 import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";

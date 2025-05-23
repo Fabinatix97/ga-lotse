@@ -7,7 +7,7 @@ import { Add, Delete } from "@mui/icons-material";
 import { Option, Select, Stack } from "@mui/joy";
 import { useState } from "react";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { ActionsMenu } from "../../../../components/buttons/ActionsMenu";
 import { FormDialog } from "../../../../components/form/FormDialog";

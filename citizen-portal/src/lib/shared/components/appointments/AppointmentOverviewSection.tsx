@@ -7,8 +7,7 @@ import { Grid, GridProps, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode } from "react";
 
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren, useIsMobile } from "@eshg/lib-portal";
 
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 

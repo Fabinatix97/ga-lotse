@@ -16,7 +16,7 @@ import { Button, Stack } from "@mui/joy";
 import { isPlainObject } from "remeda";
 
 import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";

@@ -6,18 +6,23 @@
 package de.eshg.base.street.csv;
 
 import com.opencsv.bean.CsvBindByName;
+import de.eshg.base.street.csv.opencsv.CsvWritePosition;
 
 public class MunicipalityDirectoryCsvEntry {
   @CsvBindByName(column = "Gemeindeschlüssel")
+  @CsvWritePosition(0)
   private String municipalityKey;
 
   @CsvBindByName(column = "Gemeinde")
+  @CsvWritePosition(1)
   private String municipality;
 
   @CsvBindByName(column = "Postleitzahl (von)")
+  @CsvWritePosition(2)
   private String postalCodeFrom;
 
   @CsvBindByName(column = "Postleitzahl (bis)")
+  @CsvWritePosition(3)
   private String postalCodeTo;
 
   public String municipality() {

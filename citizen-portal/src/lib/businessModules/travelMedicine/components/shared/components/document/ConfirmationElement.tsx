@@ -5,7 +5,7 @@
 
 import { Checkbox } from "@mui/joy";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { useBaseField } from "@eshg/lib-portal";
 import { ApiDocumentConfirmation } from "@eshg/travel-medicine-api";
 
 interface ConfirmationElementProps {

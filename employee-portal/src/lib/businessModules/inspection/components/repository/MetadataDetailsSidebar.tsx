@@ -13,7 +13,7 @@ import {
   SidebarContent,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 
 interface CreateChecklistVersionsSidebarProps extends DrawerProps {
   metadata?: ApiChecklistDefinitionCentralRepoMetadata;

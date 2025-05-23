@@ -8,8 +8,7 @@ import { Formik, useFormikContext } from "formik";
 import { ReactNode } from "react";
 
 import { FormButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { CheckboxField, FormPlus } from "@eshg/lib-portal";
 
 import { DateOrDateTimeField } from "@/lib/shared/components/formFields/DateOrDateTimeField";
 import {

@@ -18,7 +18,7 @@ import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

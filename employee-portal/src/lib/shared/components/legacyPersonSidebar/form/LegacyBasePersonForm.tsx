@@ -7,18 +7,18 @@ import { Grid, Stack } from "@mui/joy";
 
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
 import { CountryField } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
+  DateField,
   GENDER_OPTIONS,
+  InputField,
+  OptionalFieldValue,
   SALUTATION_OPTIONS,
+  SelectField,
   TITLE_OPTIONS,
   TITLE_VALUES,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+  useValidateLength,
+  validateDateOfBirth,
+} from "@eshg/lib-portal";
 
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 

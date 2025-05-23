@@ -29,7 +29,7 @@ export function EventView(props: {
         <>
           <Divider />
           <Stack gap={2}>
-            <Typography level="title-md">
+            <Typography level="title-md" component="h2">
               Terminblock für {match[1]!}
             </Typography>
             <Stack gap={0.5} direction="row" justifyContent="space-between">

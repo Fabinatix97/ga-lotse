@@ -5,7 +5,7 @@
 
 import { redirect } from "next/navigation";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 

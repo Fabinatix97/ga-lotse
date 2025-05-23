@@ -7,7 +7,7 @@ import { styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ComponentType, ImgHTMLAttributes } from "react";
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import { useGetDepartmentLogo } from "@/lib/shared/api/queries/department";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";

@@ -30,6 +30,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentTypeRepository;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeHolder;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.rest.service.error.BadRequestException;
@@ -292,10 +293,13 @@ public class AppointmentBlockService {
       CreateDailyAppointmentBlockGroupRequest request,
       AppointmentType appointmentType,
       AppointmentTypeConfig appointmentTypeConfig) {
+    AppointmentTypeHolder holder = new AppointmentTypeHolder();
+    holder.setType(appointmentType);
+    holder.setSlotDuration(appointmentTypeConfig.getStandardDuration());
+
     AppointmentBlockGroup appointmentBlockGroup = new AppointmentBlockGroup();
-    appointmentBlockGroup.setType(appointmentType);
+    appointmentBlockGroup.setAppointmentTypeHolders(List.of(holder));
     appointmentBlockGroup.setParallelExaminations(request.parallelExaminations());
-    appointmentBlockGroup.setSlotDuration(appointmentTypeConfig.getStandardDuration());
     appointmentBlockGroup.setMfas(request.mfas());
     appointmentBlockGroup.setPhysicians(request.physicians());
     appointmentBlockGroup.setConsultants(request.consultants());

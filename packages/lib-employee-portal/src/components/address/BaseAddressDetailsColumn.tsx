@@ -6,7 +6,7 @@
 import { SxProps } from "@mui/joy/styles/types/theme";
 import { isNonNullish } from "remeda";
 
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { translateCountry } from "@eshg/lib-portal";
 
 import {
   BaseAddress,

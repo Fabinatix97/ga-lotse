@@ -13,11 +13,11 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal";
 import {
   parseOptionalEnum,
   parseReadonlyPageParams,
-} from "@eshg/lib-portal/helpers/searchParams";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+} from "@eshg/lib-portal/universal";
 import {
   ApiGdprValidationTaskSortKey,
   ApiSortDirection,

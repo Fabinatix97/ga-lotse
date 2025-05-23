@@ -9,7 +9,7 @@ import { useDebounce } from "use-debounce";
 import {
   SingleAutocompleteField,
   SingleAutocompleteFieldProps,
-} from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+} from "@eshg/lib-portal";
 
 import { useAutocompleteStreetQuery } from "../../api/queries/streets";
 
@@ -19,12 +19,9 @@ type StreetFieldProps = Omit<
 >;
 
 export function StreetField(props: StreetFieldProps) {
-  const { getFieldMeta, getFieldProps } = useFormikContext();
+  const { getFieldProps } = useFormikContext();
   const { value } = getFieldProps<string>(props.name);
-  const { touched } = getFieldMeta<string>(props.name);
   const [streetQuery] = useDebounce(value, 100);
-
-  const showLoading = touched || value.length > 0;
 
   const query = useAutocompleteStreetQuery(
     { street: streetQuery },
@@ -41,7 +38,8 @@ export function StreetField(props: StreetFieldProps) {
   return (
     <SingleAutocompleteField
       freeSolo
-      loading={query.isLoading && showLoading}
+      loading={query.isLoading}
+      fetching={query.isFetching}
       options={options}
       {...props}
     />

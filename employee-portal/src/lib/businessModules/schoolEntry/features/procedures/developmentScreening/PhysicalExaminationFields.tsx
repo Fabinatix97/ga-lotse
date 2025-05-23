@@ -5,12 +5,12 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  TextareaField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,

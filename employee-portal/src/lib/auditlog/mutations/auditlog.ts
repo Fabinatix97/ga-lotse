@@ -4,8 +4,7 @@
  */
 
 import { ApiGrantAuditLogAccessRequest } from "@eshg/auditlog-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
 import { useAuditlogApi } from "@/lib/auditlog/api/clients";
 

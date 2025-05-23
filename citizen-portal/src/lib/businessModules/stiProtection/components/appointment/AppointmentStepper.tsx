@@ -4,7 +4,7 @@
  */
 
 import { ApiGender } from "@eshg/base-api";
-import { YesOrNoFieldData } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { YesOrNoFieldData } from "@eshg/lib-portal";
 import { ApiAppointment, ApiConcern } from "@eshg/sti-protection-api";
 
 import { Stepper } from "@/lib/businessModules/stiProtection/components/shared/StepContext";

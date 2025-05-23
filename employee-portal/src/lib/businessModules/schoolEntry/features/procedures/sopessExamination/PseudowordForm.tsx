@@ -5,12 +5,12 @@
 
 import { Stack } from "@mui/joy";
 
-import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
+import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import {
   ApiDoctorLetterValue,
   ApiSopessExaminationResultValue,

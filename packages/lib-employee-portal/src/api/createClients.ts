@@ -13,7 +13,7 @@ import {
   StreetApi,
   UserApi,
 } from "@eshg/base-api";
-import { apiMiddlewares } from "@eshg/lib-portal/config/apiMiddlewares";
+import { apiMiddlewares } from "@eshg/lib-portal";
 
 export type EmployeePortalClients = ReturnType<typeof createClients>;
 

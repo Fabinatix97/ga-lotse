@@ -23,7 +23,7 @@ import { useId } from "react";
 
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import { NoSearchResults } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import {

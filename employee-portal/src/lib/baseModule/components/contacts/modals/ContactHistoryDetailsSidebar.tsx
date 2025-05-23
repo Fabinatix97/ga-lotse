@@ -13,7 +13,7 @@ import {
   SidebarActions,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 

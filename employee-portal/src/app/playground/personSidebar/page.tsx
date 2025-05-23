@@ -22,9 +22,7 @@ import {
   defaultSearchPersonValues,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, SelectField, useSnackbar } from "@eshg/lib-portal";
 import { ApiSchoolEntryProcedureType } from "@eshg/school-entry-api";
 
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";

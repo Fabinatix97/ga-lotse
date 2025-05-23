@@ -7,12 +7,12 @@ import { Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
+  FormPlus,
   MultiStepForm,
   StepFactory,
-} from "@eshg/lib-portal/components/form/MultiStepForm";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+  useIsMobile,
+} from "@eshg/lib-portal";
 import {
   ApiDocumentContent,
   ApiDocumentSection,

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { isNonNullish, isShallowEqual, isStrictEqual } from "remeda";
 
 import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
-import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
+import { Alert, AlertProps } from "@eshg/lib-portal";
 
 import { chatColumnHeaderHeight } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";

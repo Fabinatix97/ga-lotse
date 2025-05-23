@@ -5,7 +5,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { queryKeyFactory } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiGetProcedureIdsRequest,

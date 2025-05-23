@@ -13,7 +13,7 @@ import {
   useConfirmationDialog,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatTime } from "@eshg/lib-portal";
 import { ApiAppointment } from "@eshg/measles-protection-api";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";

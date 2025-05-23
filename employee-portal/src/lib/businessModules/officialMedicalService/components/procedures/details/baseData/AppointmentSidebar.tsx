@@ -19,19 +19,17 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { AppointmentPickerField } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
 import {
+  Alert,
+  AppointmentPickerField,
+  NumberField,
+  SelectField,
   isDateCurrentDateOrGreater,
   toDateTimeString,
-} from "@eshg/lib-portal/helpers/dateTime";
-import {
   validateIntegerAnd,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
+} from "@eshg/lib-portal";
+import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
 import {
   ApiAppointment,
   ApiAppointmentType,

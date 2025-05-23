@@ -6,7 +6,7 @@
 import { isNonNullish } from "remeda";
 
 import { ApiInspectionAppointment } from "@eshg/inspection-api";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatTime } from "@eshg/lib-portal";
 
 export function getFormattedAppointmentParts(
   appointment: ApiInspectionAppointment | undefined,

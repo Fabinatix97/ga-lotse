@@ -210,6 +210,13 @@ public enum EmployeeTestUser implements KeycloakUser {
       "Daniel",
       "Schultze",
       List.of(ModuleMemberGroup.OPEN_DATA)),
+  OPEN_DATA_MODULE_LEADER(
+      "open_data_module_leader",
+      "+49 555 456 321",
+      "password",
+      "Tom",
+      "Thomsen",
+      List.of(ModuleMemberGroup.OPEN_DATA, ModuleLeaderGroup.OPEN_DATA)),
   OMS_LEADER(
       "oms_leader",
       "+49 555 456 654",

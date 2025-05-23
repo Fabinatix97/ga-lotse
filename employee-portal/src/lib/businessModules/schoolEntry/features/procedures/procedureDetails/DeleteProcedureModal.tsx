@@ -6,10 +6,7 @@
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import {
-  BaseModal,
-  BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useDeleteProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";

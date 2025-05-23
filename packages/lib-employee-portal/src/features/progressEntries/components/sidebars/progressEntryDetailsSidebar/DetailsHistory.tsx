@@ -16,7 +16,7 @@ import {
 } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 
 import { OverlayBoundary } from "../../../../../components/boundaries/OverlayBoundary";

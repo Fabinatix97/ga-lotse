@@ -16,9 +16,12 @@ import {
 import { Button, Sheet } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import {
+  durationBetweenDatesInMinutes,
+  formatDate,
+  formatTime,
+  useIsMobile,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,

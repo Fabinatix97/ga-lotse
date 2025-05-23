@@ -7,7 +7,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
 

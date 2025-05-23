@@ -9,7 +9,7 @@ import { isDefined } from "remeda";
 import {
   ConfirmationDialogContext,
   ConfirmationDialogOptions,
-} from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 

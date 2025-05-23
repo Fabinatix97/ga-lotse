@@ -5,7 +5,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";

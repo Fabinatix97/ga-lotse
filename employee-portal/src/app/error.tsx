@@ -10,10 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import {
-  NextErrorBoundary,
-  NextErrorBoundaryProps,
-} from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import { NextErrorBoundary, NextErrorBoundaryProps } from "@eshg/lib-portal";
 
 export default function RootError(props: NextErrorBoundaryProps) {
   return (

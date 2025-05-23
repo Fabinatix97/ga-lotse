@@ -7,10 +7,12 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
+import {
+  BooleanSelectField,
+  InputField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";

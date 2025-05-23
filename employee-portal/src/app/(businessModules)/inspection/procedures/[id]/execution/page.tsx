@@ -9,7 +9,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";

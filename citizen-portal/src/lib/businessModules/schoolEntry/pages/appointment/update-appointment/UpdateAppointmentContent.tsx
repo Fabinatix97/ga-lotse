@@ -14,8 +14,7 @@ import {
 } from "@mui/joy";
 import { format } from "date-fns";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { Alert, SetFieldValueHelper } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";

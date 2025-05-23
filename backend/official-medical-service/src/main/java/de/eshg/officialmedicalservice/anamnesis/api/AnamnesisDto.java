@@ -118,7 +118,7 @@ public record AnamnesisDto(
               thyroidInfo,
       @Valid @NotNullIfAnswerIsYes @NullIfAnswerIsNotYes AddictionsSegmentDto addictionsInfo,
       @Valid @NotNullIfAnswerIsYes @NullIfAnswerIsNotYes
-          SubInfoSegmentWithAnswerDto<YesNoDontKnowAnswerDto> tuberculosis,
+          SubInfoSegmentWithAnswerDto<YesNoDontKnowAnswerDto> tuberculosisInfo,
       @Valid @NotNullIfAnswerIsYes @NullIfAnswerIsNotYes OverweightSegmentDto overweightInfo,
       @Valid @NotNullIfAnswerIsYes @NullIfAnswerIsNotYes
           BoneFractureBrainTraumaSegmentDto boneFractureBrainTraumaInfo,

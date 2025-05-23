@@ -9,7 +9,7 @@ import {
   useGetSelfUser,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatPersonName } from "@eshg/lib-portal";
 
 import { useUploadEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useUploadEvaluationTemplate";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";

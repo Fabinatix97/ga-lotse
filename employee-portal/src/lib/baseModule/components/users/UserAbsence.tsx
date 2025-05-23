@@ -12,7 +12,7 @@ import {
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
 } from "@eshg/base-api";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 import { formatDateOrDateTimeRange } from "@/lib/shared/helpers/dateTime";

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { countryOptions } from "@eshg/lib-portal";
 import {
   MultiAutocompleteField,
   MultiAutocompleteFieldProps,
 } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
-import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
 
 interface CountryFieldMultiProps
   extends Omit<MultiAutocompleteFieldProps, "options"> {

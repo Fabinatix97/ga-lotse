@@ -8,7 +8,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useId, useState } from "react";
 
 import { ApiGdprProcedureType } from "@eshg/base-api";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+import { QueryBoundary } from "@eshg/lib-portal";
 
 import { useGetSelfGdprProceduresQuery } from "@/lib/baseModule/api/queries/gdpr";
 import { GdprProcedureList } from "@/lib/baseModule/components/gdpr/GdprProcedureList";

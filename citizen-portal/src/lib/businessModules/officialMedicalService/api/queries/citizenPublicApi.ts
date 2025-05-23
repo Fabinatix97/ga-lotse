@@ -5,7 +5,7 @@
 
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   CitizenPublicApi,
@@ -14,6 +14,7 @@ import {
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import { mapToConcernApiList } from "@/lib/businessModules/officialMedicalService/shared/helpers";
+import { useLang } from "@/lib/i18n/useLang";
 
 export function useGetAllAppointmentTypesQuery() {
   const citizenPublicApi = useCitizenPublicApi();
@@ -70,9 +71,10 @@ export function useGetConcerns() {
 
 export function useGetLandingContent() {
   const citizenPublicApi = useCitizenPublicApi();
+  const lang = useLang();
 
   return queryOptions({
-    queryKey: citizenPublicApiQueryKey(["getLandingContent"]),
+    queryKey: citizenPublicApiQueryKey(["getLandingContent", lang]),
     queryFn: () => citizenPublicApi.getLandingContent(),
   });
 }

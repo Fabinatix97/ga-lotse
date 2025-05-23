@@ -14,7 +14,7 @@ import {
   useConfirmationDialog,
   useSearchReferencePersonsQuery,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiEmployeeOmsProcedureDetails,

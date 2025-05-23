@@ -13,9 +13,7 @@ import {
   SearchableGroup,
   SearchableGroups,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
+import { CheckboxField, FormPlus, SubmitButton } from "@eshg/lib-portal";
 
 export default function PlaygroundSearchableGroupsPage() {
   const groups = [

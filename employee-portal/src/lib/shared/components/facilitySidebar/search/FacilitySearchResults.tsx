@@ -19,9 +19,11 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { AlertProps } from "@eshg/lib-portal/components/Alert";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import {
+  AlertProps,
+  FormAddMoreButton,
+  RadioGroupField,
+} from "@eshg/lib-portal";
 
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";

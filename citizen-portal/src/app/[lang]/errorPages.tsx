@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  NextErrorBoundary,
-  NextErrorBoundaryProps,
-} from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import { NextErrorBoundary, NextErrorBoundaryProps } from "@eshg/lib-portal";
 
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { PageLayout } from "@/lib/shared/components/layout/page";

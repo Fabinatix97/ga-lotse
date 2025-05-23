@@ -6,10 +6,7 @@
 import { KeyboardArrowRightOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 
-import {
-  BaseModal,
-  BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 import { useCloseProphylaxisSession } from "../../api/mutations/details";
 import { useProphylaxisSessionStore } from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";

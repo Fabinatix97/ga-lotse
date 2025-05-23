@@ -6,9 +6,11 @@
 import { Button, Stack } from "@mui/joy";
 import { Fragment, useState } from "react";
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { DioalogButtonBarProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialogButtonBar";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import {
+  DialogButtonBarProps,
+  useHandledMutation,
+  useIsMobile,
+} from "@eshg/lib-portal";
 
 export function CitizenConfirmationButtonBar({
   onClose,
@@ -21,7 +23,7 @@ export function CitizenConfirmationButtonBar({
   cancelLabel,
   hideCancelButton = false,
   handleCancel,
-}: DioalogButtonBarProps) {
+}: DialogButtonBarProps) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isDenying, setIsDenying] = useState(false);
   const mutation = useHandledMutation(

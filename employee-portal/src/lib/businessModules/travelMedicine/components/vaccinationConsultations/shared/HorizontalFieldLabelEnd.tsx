@@ -9,7 +9,7 @@ import {
   BaseFieldProps,
   renderHelperText,
   renderLabel,
-} from "@eshg/lib-portal/components/formFields/BaseField";
+} from "@eshg/lib-portal";
 
 const StyledFormControl = styled(FormControl)({
   flexDirection: "column",

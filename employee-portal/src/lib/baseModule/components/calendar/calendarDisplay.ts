@@ -9,7 +9,7 @@ import {
   ApiGetRelevantCalendarsResponse,
   ApiUserGroupCalendarInfo,
 } from "@eshg/base-api";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatUserName } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { translateUserGroup } from "@/lib/shared/helpers/users";

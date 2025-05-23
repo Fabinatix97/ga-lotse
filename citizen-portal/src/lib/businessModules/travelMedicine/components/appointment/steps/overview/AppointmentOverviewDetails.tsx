@@ -17,13 +17,14 @@ import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isDefined } from "remeda";
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   durationBetweenDatesInMinutes,
+  formatDate,
   formatDateToFullReadableString,
-} from "@eshg/lib-portal/helpers/dateTime";
+  formatPersonName,
+  formatTime,
+  useMultiStepForm,
+} from "@eshg/lib-portal";
 
 import { TravelInformationOverviewDetails } from "@/lib/businessModules/travelMedicine/components/appointment/steps/overview/TravelInformationOverviewDetails";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";

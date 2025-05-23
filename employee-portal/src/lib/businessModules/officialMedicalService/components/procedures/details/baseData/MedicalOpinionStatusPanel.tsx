@@ -11,11 +11,13 @@ import {
   FormStack,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import {
+  SelectField,
+  SubmitButton,
+  TextareaField,
+  buildEnumOptions,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiMedicalOpinionResult,

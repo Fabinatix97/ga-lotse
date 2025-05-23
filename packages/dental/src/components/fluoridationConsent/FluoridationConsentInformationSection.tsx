@@ -9,8 +9,7 @@ import { isDefined } from "remeda";
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { DetailsItem, formatBoolean } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatOptional } from "@eshg/lib-portal/formatters/optional";
+import { formatDate, formatOptional } from "@eshg/lib-portal";
 
 import {
   ExaminationSectionHeader,

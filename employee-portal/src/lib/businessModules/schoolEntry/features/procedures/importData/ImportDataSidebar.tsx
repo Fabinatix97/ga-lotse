@@ -13,9 +13,8 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-import type { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { downloadFileAndOpen, mapRequiredValue } from "@eshg/lib-portal";
+import type { OptionalFieldValue } from "@eshg/lib-portal";
 
 import { useImportData } from "@/lib/businessModules/schoolEntry/api/mutations/importApi";
 import {

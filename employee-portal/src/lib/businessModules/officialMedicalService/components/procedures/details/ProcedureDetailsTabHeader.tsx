@@ -7,7 +7,7 @@ import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 import { ApiEmployeeOmsProcedureHeader } from "@eshg/official-medical-service-api";
 
 export function ProcedureDetailsTabHeader({

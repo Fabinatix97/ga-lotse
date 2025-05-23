@@ -16,8 +16,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { BaseModal, useNavigation } from "@eshg/lib-portal";
 
 import { ChatDeviceId } from "@/lib/baseModule/components/layout/sideNavigation/ChatDeviceId";
 import { routes } from "@/lib/baseModule/shared/routes";

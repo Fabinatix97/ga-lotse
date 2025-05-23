@@ -6,7 +6,7 @@
 import { Select, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOptions } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/official-medical-service-api";
 
 import {

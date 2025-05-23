@@ -7,7 +7,7 @@ import { FeedOutlined } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import {
   ApiCertificateType,
   ApiTMCertificate,

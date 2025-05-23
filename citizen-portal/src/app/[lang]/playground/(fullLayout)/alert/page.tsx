@@ -17,8 +17,7 @@ import {
 } from "@mui/joy";
 import { useState } from "react";
 
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyString, useAlert } from "@eshg/lib-portal";
 
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";

@@ -16,7 +16,7 @@ import {
   useFilterSettings,
   useSearchParamStateProvider,
 } from "@eshg/lib-employee-portal";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { GENDER_VALUES } from "@eshg/lib-portal";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiConcern,

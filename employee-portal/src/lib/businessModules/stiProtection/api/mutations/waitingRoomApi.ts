@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+import { MutationPassThrough, useHandledMutation } from "@eshg/lib-portal";
 import { UpdateWaitingRoomDetailsRequest } from "@eshg/sti-protection-api";
 
 import { useWaitingRoomApi } from "@/lib/businessModules/stiProtection/api/clients";

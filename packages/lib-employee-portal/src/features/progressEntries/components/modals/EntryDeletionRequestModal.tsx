@@ -7,7 +7,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 import { OverlayBoundary } from "../../../../components/boundaries/OverlayBoundary";
 import { useRequestProgressEntryDeletion } from "../../api/mutations/progressEntry";

@@ -15,7 +15,7 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";

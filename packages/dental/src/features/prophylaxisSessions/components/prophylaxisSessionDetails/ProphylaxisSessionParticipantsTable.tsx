@@ -30,9 +30,11 @@ import {
   useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  GENDER_VALUES,
+  InternalLinkButton,
+  formatDate,
+} from "@eshg/lib-portal";
 
 import { ExaminationStatusChip } from "../../../../components/examination/ExaminationStatusChip";
 import { routes } from "../../../../config/routes";
@@ -40,7 +42,6 @@ import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessi
 import { useDeleteProphylaxisSessionParticipantOptions } from "../../api/mutations/details";
 import {
   useFilteredParticipants,
-  useFilteredPresentParticipants,
   useProphylaxisSessionStore,
 } from "../../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 import {
@@ -88,6 +89,9 @@ export function ProphylaxisSessionParticipantsTable() {
     (state) => state.participants,
   );
   const filteredParticipants = useFilteredParticipants();
+  const participantsToBeExamined = useProphylaxisSessionStore(
+    (state) => state.participantsToBeExamined,
+  );
   const participantSorting = useProphylaxisSessionStore(
     (state) => state.participantSorting,
   );
@@ -170,9 +174,7 @@ export function ProphylaxisSessionParticipantsTable() {
     (participant) => participant.status !== "OPEN",
   ).length;
 
-  const presentParticipants = useFilteredPresentParticipants();
-  const firstParticipant = presentParticipants[0];
-
+  const firstParticipant = participantsToBeExamined[0];
   const allParticipantsCompleted =
     completedParticipants > 0 &&
     completedParticipants === allParticipants.length;
@@ -198,7 +200,7 @@ export function ProphylaxisSessionParticipantsTable() {
             status === ApiProphylaxisStatus.Open && (
               <>
                 <AddChildButton />
-                {allParticipantsCompleted ? (
+                {allParticipantsCompleted || !isExamination ? (
                   <CloseProphylaxisButton />
                 ) : isExamination && firstParticipant !== undefined ? (
                   <InternalLinkButton
@@ -358,7 +360,7 @@ function columnDefs(
         const deleteAction: ActionsItem = {
           label: "Entfernen",
           startDecorator: <DeleteOutlined />,
-          onClick: () => onRemoveParticipant(props.row.original.childId),
+          onClick: () => onRemoveParticipant(props.row.original.id),
           color: "danger",
         };
         const absentAction: ActionsItem = {

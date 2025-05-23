@@ -5,8 +5,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { queryKeyFactory, unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiBusinessModule,
   ArchivingApiInterface,

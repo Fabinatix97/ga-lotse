@@ -6,8 +6,7 @@
 import { Divider, Stack, Typography, TypographyProps, styled } from "@mui/joy";
 import { useId } from "react";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ButtonLink, RequiresChildren } from "@eshg/lib-portal";
 
 import { QuadrantNumber } from "../../stores/examination/types";
 import { QUADRANT_NAMES } from "../../translations/examination";

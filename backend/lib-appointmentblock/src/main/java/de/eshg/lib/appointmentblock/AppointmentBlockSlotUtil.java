@@ -103,6 +103,7 @@ public class AppointmentBlockSlotUtil {
     Appointment newAppointment = new Appointment();
     newAppointment.setAppointmentStart(appointmentStart);
     newAppointment.setAppointmentEnd(appointmentEnd);
+    newAppointment.setType(appointmentType);
 
     Appointment currentAppointment = entityWithAppointment.getAppointment();
     if (currentAppointment != null) {

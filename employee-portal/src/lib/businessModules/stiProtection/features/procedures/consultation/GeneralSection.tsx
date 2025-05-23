@@ -5,12 +5,12 @@
 
 import { Typography, useTheme } from "@mui/joy";
 
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
+  CheckboxField,
+  TextareaField,
   YesOrNoFieldData,
   YesOrNoWithFollowUp,
-} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+} from "@eshg/lib-portal";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";

@@ -5,7 +5,7 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";

@@ -6,7 +6,7 @@
 import { useFormikContext } from "formik";
 import { useContext, useEffect } from "react";
 
-import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";

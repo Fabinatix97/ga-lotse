@@ -15,13 +15,13 @@ import {
 } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 
-import { formatTime } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import {
+  ExternalLink,
+  InternalLink,
   durationBetweenDatesInMinutes,
+  formatAppointmentTime,
   formatDateToYear,
-} from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/lib-portal";
 import { ApiCitizenProcedure, ApiConcern } from "@eshg/sti-protection-api";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
@@ -182,7 +182,7 @@ function AppointmentTimeSection({
       </InfoSectionTitle>
       <Typography>
         {t("info.appointment_time_section.time", {
-          time: formatTime(time, locale),
+          time: formatAppointmentTime(time, locale),
         })}
       </Typography>
       <Typography>

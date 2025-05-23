@@ -5,7 +5,7 @@
 
 import { ButtonProps, Stack } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export function getSidePanelNavItemStyles(isActive: boolean) {
   return {

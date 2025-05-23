@@ -20,6 +20,10 @@ import org.springframework.data.repository.query.Param;
 
 public interface ChildRepository extends ProcedureRepository<Child> {
 
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("select c from Child c where c.externalId in :childIds order by c.id")
+  List<Child> findAllByExternalIdsForUpdate(List<UUID> childIds);
+
   @Modifying
   @Query(
       "update Child c set c.institutionId = :newInstitutionId where c.institutionId = :oldInstitutionId")

@@ -17,7 +17,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { useGetStaff } from "../../../../api/queries/staff";
 import { useCreateProphylaxisSession } from "../../api/mutations/overview";

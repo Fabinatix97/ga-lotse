@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+import { QueryBoundary } from "@eshg/lib-portal";
 
 export default QueryBoundary;

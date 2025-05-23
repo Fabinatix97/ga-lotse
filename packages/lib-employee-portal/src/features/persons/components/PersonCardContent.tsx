@@ -10,8 +10,7 @@ import type {
   ApiAddFacilityFileStateRequestContactAddress,
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatDate, formatPersonName } from "@eshg/lib-portal";
 
 import { formatList } from "../../../utils/formatters";
 

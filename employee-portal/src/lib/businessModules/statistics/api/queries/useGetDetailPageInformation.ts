@@ -5,7 +5,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatUserName } from "@eshg/lib-portal";
 import {
   ApiAnalysis,
   ApiAnalysisChartConfiguration,

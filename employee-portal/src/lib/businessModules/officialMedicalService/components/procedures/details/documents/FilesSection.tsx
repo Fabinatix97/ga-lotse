@@ -17,9 +17,7 @@ import {
   FileField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { FileType, FormAddMoreButton, useFileDownload } from "@eshg/lib-portal";
 import { ApiFileType } from "@eshg/lib-procedures-api";
 import { ApiOmsFile } from "@eshg/official-medical-service-api";
 

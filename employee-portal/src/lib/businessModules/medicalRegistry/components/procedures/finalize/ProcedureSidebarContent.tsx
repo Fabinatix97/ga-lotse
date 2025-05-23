@@ -10,14 +10,14 @@ import {
   PROCEDURE_STATUS_NAMES,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
+  Alert,
+  RadioGroupField,
   formatDate,
   formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+  formatPersonName,
+  isNonEmptyString,
+} from "@eshg/lib-portal";
 import { ApiMedicalRegistryEntrySearchResult } from "@eshg/medical-registry-api";
 
 import {

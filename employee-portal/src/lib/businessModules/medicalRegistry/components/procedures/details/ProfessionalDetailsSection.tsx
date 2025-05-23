@@ -14,16 +14,16 @@ import {
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import {
+  GENDER_VALUES,
+  PERSON_FIELD_NAME,
+  formatDate,
+  translateCountry,
+} from "@eshg/lib-portal";
+import {
   employmentStatusNames,
   employmentTypeNames,
   professionalTitleNames,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
-import {
-  GENDER_VALUES,
-  PERSON_FIELD_NAME,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiGetProcedure200Response } from "@eshg/medical-registry-api";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";

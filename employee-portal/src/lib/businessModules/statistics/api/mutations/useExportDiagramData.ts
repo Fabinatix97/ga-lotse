@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { downloadFileAndOpen, useHandledMutation } from "@eshg/lib-portal";
 
 import { useDataExportApi } from "@/lib/businessModules/statistics/api/clients";
 

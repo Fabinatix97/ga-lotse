@@ -9,9 +9,11 @@ import {
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "@eshg/lib-employee-portal";
-import { AlertProps as SharedAlertProps } from "@eshg/lib-portal/components/Alert";
-import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  AlertProps as SharedAlertProps,
+  isAdult,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
 import {
   ApiDraftMeaslesProcedure,
   ApiFacility,

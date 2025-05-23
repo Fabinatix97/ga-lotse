@@ -5,7 +5,7 @@
 
 import { MutationOptions, useMutation } from "@tanstack/react-query";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import {
   ApiCreateDailyAppointmentBlockGroupRequest,
   DeleteAppointmentBlockRequest,

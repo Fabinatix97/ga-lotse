@@ -5,7 +5,7 @@
 
 import { isDefined } from "remeda";
 
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { EnumMap } from "@eshg/lib-portal";
 import {
   ApiDataSourceSensitivity,
   ApiReportDataSensitivity,

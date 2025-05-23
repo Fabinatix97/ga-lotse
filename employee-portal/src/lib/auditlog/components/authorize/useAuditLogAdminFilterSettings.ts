@@ -17,8 +17,7 @@ import {
   getSelectedEnumFilterValues,
   useFilterSettings,
 } from "@eshg/lib-employee-portal";
-import { ensureArray } from "@eshg/lib-portal/helpers/guards";
-import { SearchParams } from "@eshg/lib-portal/types/pageParams";
+import { SearchParams, ensureArray } from "@eshg/lib-portal";
 
 import { SearchParamsKeys } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";

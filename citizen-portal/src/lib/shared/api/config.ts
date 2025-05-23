@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+import { ApiConfiguration } from "@eshg/lib-portal";
 
 import { env } from "@/env/server";
 
-declare module "@eshg/lib-portal/api/ApiProvider" {
+declare module "@eshg/lib-portal" {
   interface ApiConfiguration {
     PUBLIC_BASE_BACKEND_URL: string;
     PUBLIC_INSPECTION_BACKEND_URL: string;

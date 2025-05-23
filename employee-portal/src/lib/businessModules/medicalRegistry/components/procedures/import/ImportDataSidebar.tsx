@@ -13,8 +13,7 @@ import {
   useConfirmationDialog,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { downloadFileAndOpen, mapRequiredValue } from "@eshg/lib-portal";
 
 import { useImportData } from "@/lib/businessModules/medicalRegistry/api/mutations/import";
 import { ImportDataErrorSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataErrorSidebar";

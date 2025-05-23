@@ -12,7 +12,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { PageProps } from "@eshg/lib-portal";
 
 import { FetchTaskForOverviewSearchParamsSchema } from "@/lib/baseModule/api/schemas/tasks";
 import { TasksTable } from "@/lib/baseModule/components/task/TasksTable";

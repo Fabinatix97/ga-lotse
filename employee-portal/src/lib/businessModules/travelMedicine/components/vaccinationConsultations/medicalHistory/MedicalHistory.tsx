@@ -10,9 +10,7 @@ import { Formik } from "formik";
 import { useEffect } from "react";
 
 import { FormButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import { FormPlus, TextareaField, useValidateLength } from "@eshg/lib-portal";
 import { ApiMedicalHistory } from "@eshg/travel-medicine-api";
 
 import {

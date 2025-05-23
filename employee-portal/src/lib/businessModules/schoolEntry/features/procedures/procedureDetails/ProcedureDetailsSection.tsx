@@ -12,10 +12,7 @@ import {
   DetailsSection,
   formatSchoolYear,
 } from "@eshg/lib-employee-portal";
-import {
-  formatDate,
-  formatWeekdayDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatWeekdayDateTime } from "@eshg/lib-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";

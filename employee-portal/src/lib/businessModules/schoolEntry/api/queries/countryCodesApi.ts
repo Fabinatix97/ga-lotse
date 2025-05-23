@@ -5,7 +5,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 import { SchoolEntryCountryCodesApi } from "@eshg/school-entry-api";
 
 import { mapCountryCodes } from "@/lib/businessModules/schoolEntry/api/models/CountryCodes";

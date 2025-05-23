@@ -15,9 +15,8 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOption, SetFieldValueHelper } from "@eshg/lib-portal";
 import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import {
   ApiDisease,
   ApiInformationStatementTemplate,

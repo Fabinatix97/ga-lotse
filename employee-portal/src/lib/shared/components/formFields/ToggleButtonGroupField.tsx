@@ -8,10 +8,10 @@ import { SxProps } from "@mui/joy/styles/types";
 
 import {
   BaseField,
+  FieldProps,
+  SelectOption,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 export interface ToggleButtonGroupFieldProps extends FieldProps<string> {
   options: SelectOption[];

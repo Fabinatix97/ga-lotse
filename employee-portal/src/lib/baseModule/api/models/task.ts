@@ -13,7 +13,7 @@ import {
   type ApiTaskType,
   ApiUser,
 } from "@eshg/base-api";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatPersonName } from "@eshg/lib-portal";
 
 export interface Task {
   readonly assignedById?: string;

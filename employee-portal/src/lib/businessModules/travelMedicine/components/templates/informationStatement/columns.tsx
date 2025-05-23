@@ -8,7 +8,7 @@ import { Chip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import {
   ApiInformationStatementTemplate,
   ApiInformationStatementTemplateState,

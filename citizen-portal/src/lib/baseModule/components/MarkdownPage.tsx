@@ -11,7 +11,7 @@ import path from "path";
 import * as runtime from "react/jsx-runtime";
 import "server-only";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 
 import { env } from "@/env/server";
 import { TitleAndSheetContentLayout } from "@/lib/shared/components/layout/TitleAndSheetContentLayout";

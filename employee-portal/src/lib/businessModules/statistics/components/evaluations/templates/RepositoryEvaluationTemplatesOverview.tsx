@@ -18,7 +18,7 @@ import {
   TableSheet,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { EvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";
 import { useDeleteRepositoryEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteRepositoryEvaluationTemplate";

@@ -5,7 +5,7 @@
 
 import { Button, Stack, Typography } from "@mui/joy";
 
-import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
+import { ExpandNavigation } from "@eshg/lib-portal";
 
 import {
   navItemIconColor,

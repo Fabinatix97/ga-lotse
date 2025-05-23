@@ -15,7 +15,7 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { EditEntrySidebarContent } from "@/lib/opendata/components/EditEntrySidebarContent";

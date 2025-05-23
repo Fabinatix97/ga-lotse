@@ -5,7 +5,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import { PostCitizenProcedureRequest } from "@eshg/official-medical-service-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";

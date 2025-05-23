@@ -15,10 +15,12 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import {
+  InputField,
+  TextareaField,
+  createFieldNameMapper,
+  formatDate,
+} from "@eshg/lib-portal";
 
 import { useSetMatterOfConcern } from "@/lib/baseModule/api/mutations/gdpr";
 import { statusTranslation } from "@/lib/baseModule/components/gdpr/i18n";

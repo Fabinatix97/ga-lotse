@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+import { PortalErrorCode, resolveError } from "@eshg/lib-portal";
 
 export function returnConflict(e: unknown) {
   const resolved = resolveError(e);

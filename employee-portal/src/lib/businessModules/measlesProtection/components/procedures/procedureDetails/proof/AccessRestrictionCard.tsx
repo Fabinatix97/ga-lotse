@@ -7,7 +7,7 @@ import { Add, EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Stack } from "@mui/joy";
 
 import { DetailsItem, useSearchParam } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 import {
   ApiAccessRestriction,
   ApiMeaslesProtectionProcedure,

@@ -16,7 +16,7 @@ import {
   ToolbarBackButton,
   useGetContactQuery,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { useGetContactHistoryQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactDetails } from "@/lib/baseModule/components/contacts/ContactDetails";

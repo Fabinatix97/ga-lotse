@@ -6,7 +6,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ApiProcedureWithDuration } from "@eshg/base-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { formatOptionalDuration } from "./formatOptionalDuration";
 

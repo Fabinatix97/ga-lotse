@@ -4,8 +4,8 @@
  */
 
 import { Delete, Download } from "@mui/icons-material";
-import { Radio, Stack } from "@mui/joy";
-import { FormikValues } from "formik";
+import { IconButton, Radio, Stack } from "@mui/joy";
+import { FormikValues, useField } from "formik";
 import { isDefined } from "remeda";
 
 import {
@@ -14,12 +14,16 @@ import {
   FileField,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { Validator } from "@eshg/lib-portal/types/form";
+import {
+  Alert,
+  AlertProps,
+  CheckboxField,
+  FileType,
+  InputField,
+  NumberField,
+  RadioGroupField,
+  Validator,
+} from "@eshg/lib-portal";
 
 import { OpeningHoursField } from "@/lib/configurator/components/shared/OpeningHoursField";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
@@ -78,7 +82,9 @@ interface NumberFormField extends BaseFormField {
 }
 
 interface UploadFormField extends BaseFormField {
+  downloadFile: () => Promise<void> | void;
   type: "upload";
+  accept?: FileType | FileType[];
   width?: Width;
 }
 
@@ -104,23 +110,18 @@ interface OpeningHoursFormField {
   name: string;
 }
 
-export type FileUploadValue = Pick<
-  FileCardProps,
-  "name" | "size" | "type" | "creationDate"
->;
+export type FileUploadValue = Pick<FileCardProps, "name" | "size" | "type">;
+export type ConfigFile = File | null | FileUploadValue;
 
 export function RenderField({
   field,
   values,
-  deleteFile,
-  downloadFile,
 }: {
   field: FormFields;
   values: FormikValues;
-  deleteFile: (fileName: string) => void;
-  downloadFile: (fileName: string) => void;
 }) {
   const { openCancelDialog } = useConfirmationDialog();
+  const fieldHelper = useField(field.name)[2];
   switch (field.type) {
     case "text":
       return (
@@ -150,31 +151,57 @@ export function RenderField({
         />
       );
     case "upload":
-      const uploadValue = values[field.name] as FileUploadValue;
-      const isCard =
-        typeof uploadValue === "object" && !!uploadValue?.creationDate;
+      const uploadValue = values[field.name] as ConfigFile;
+      const isFileUpload = !uploadValue || uploadValue instanceof File;
+      const showDeleteButton = !isDefined(field.required) && uploadValue;
+      const isCard = !isFileUpload && uploadValue?.name;
       return (
         <>
-          {!isCard && (
-            <FileField
+          {isFileUpload && (
+            <Stack
+              direction="row"
+              gap={1}
+              alignItems="flex-start"
               sx={widthSx(field.width)}
-              label={field.label}
-              name={field.name}
-              required={field.required}
-            />
+            >
+              <FileField
+                accept={field.accept}
+                sx={{ width: "100%" }}
+                label={field.label}
+                name={field.name}
+                required={field.required}
+              />
+              {showDeleteButton && (
+                <IconButton
+                  aria-label="Löschen"
+                  component="button"
+                  variant="plain"
+                  color="danger"
+                  sx={{
+                    height: "36px",
+                    marginTop: "27px",
+                  }}
+                  onClick={async () => {
+                    await fieldHelper.setValue(null);
+                    fieldHelper.setError(undefined);
+                  }}
+                >
+                  <Delete />
+                </IconButton>
+              )}
+            </Stack>
           )}
           {isCard && (
             <FileCard
               sx={widthSx(field.width)}
               name={uploadValue.name}
               type={uploadValue.type}
-              creationDate={uploadValue.creationDate}
               size={uploadValue.size}
               actionMenuButtonColor="primary"
               actions={[
                 {
                   name: "Download",
-                  onClick: () => downloadFile(uploadValue.name),
+                  onClick: field.downloadFile,
                   indicator: <Download />,
                 },
                 {
@@ -187,7 +214,9 @@ export function RenderField({
                       description: "Möchten Sie die Datei wirklich löschen?",
                       cancelLabel: "Abbrechen",
                       confirmLabel: "Löschen",
-                      onConfirm: () => deleteFile(uploadValue.name),
+                      onConfirm: async () => {
+                        await fieldHelper.setValue(null);
+                      },
                     }),
                   indicator: <Delete />,
                 },

@@ -6,7 +6,7 @@
 import { Stack, Typography } from "@mui/joy";
 
 import { ApiUser } from "@eshg/inspection-api";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { SubmitButton } from "@eshg/lib-portal";
 
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

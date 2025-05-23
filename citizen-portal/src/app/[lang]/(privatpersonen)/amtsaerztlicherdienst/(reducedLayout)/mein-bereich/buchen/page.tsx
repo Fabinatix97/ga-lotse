@@ -9,13 +9,13 @@ import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   getCloseable,
   getErrorAction,
   getErrorDescription,
-} from "@eshg/lib-portal/errorHandling/errorMappers";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+  resolveError,
+  useAlert,
+} from "@eshg/lib-portal";
 import { ApiBookingState } from "@eshg/official-medical-service-api";
 
 import { usePutAppointmentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";

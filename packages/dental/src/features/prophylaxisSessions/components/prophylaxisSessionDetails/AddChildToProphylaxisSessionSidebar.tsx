@@ -31,13 +31,15 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  InputField,
+  OptionalFieldValue,
+  RadioGroupField,
+  formatDate,
+  formatPersonName,
+  mapRequiredValue,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { ChildSearchResult } from "../../../children/api/models/ChildSearchResult";
 import { useSearchChildren } from "../../../children/api/queries/overview";
@@ -84,7 +86,7 @@ function AddChildToProphylaxisSessionSidebar(
   const snackbar = useSnackbar();
 
   const participantsIds = allParticipants.map(
-    (childExamination) => childExamination.childId,
+    (childExamination) => childExamination.id,
   );
 
   async function handleSubmit(

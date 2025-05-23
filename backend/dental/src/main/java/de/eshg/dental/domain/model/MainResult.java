@@ -6,7 +6,7 @@
 package de.eshg.dental.domain.model;
 
 public enum MainResult {
-  /** Kariesfrei */
+  /** Naturgesund */
   S,
   /** Initialkaries */
   I,
@@ -14,11 +14,9 @@ public enum MainResult {
   D,
   /** Gefüllt */
   F,
-  /** Extrahiert */
-  E,
-  /** KFO-Extr. */
-  Y,
-  /** Nichtanlage */
+  /** Extrahiert wegen Karies */
+  M,
+  /** Sonstige Extraktion */
   X,
   /** Zerstört */
   Z,
@@ -26,16 +24,22 @@ public enum MainResult {
   T,
   /** Hypoplasie */
   H,
-  /** Trep/Fistel */
+  /** Fistel */
   O,
   /** Versiegelt */
   V,
-  /** Nicht beurteilbar */
+  /** Keine Diganose */
   N,
+  /** Fehlend */
+  U,
+  /** Überkront */
+  K,
+  /** Trepaniert */
+  E,
+  /** Wurzelrest */
+  W,
   /** Platzhalter */
   P,
-  /** Krone */
-  K,
-  /** Zahn fehlt */
-  U
+  /** Nichtanlage */
+  A
 }

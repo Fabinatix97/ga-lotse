@@ -4,7 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { SelectOption } from "@eshg/lib-portal";
 
 export function mapToSelectOption(option: string): SelectOption {
   return {

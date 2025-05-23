@@ -5,7 +5,7 @@
 
 import { Stack, Typography, styled } from "@mui/joy";
 
-import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
+import { EnvironmentIndicator } from "@eshg/lib-portal";
 
 import { LanguageSwitch } from "@/lib/components/layout/nav/LanguageSwitch";
 import {

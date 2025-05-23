@@ -5,7 +5,7 @@
 
 import { redirect } from "next/navigation";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";

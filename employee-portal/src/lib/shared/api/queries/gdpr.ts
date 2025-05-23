@@ -8,9 +8,11 @@ import assert from "assert";
 import { isDefined } from "remeda";
 
 import { useGetPublicConfig } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+import {
+  PortalErrorCode,
+  resolveError,
+  unwrapRawResponse,
+} from "@eshg/lib-portal";
 import {
   ApiBusinessModule,
   ApiGdprDownloadPackageInfo,

@@ -5,9 +5,8 @@
 
 import { Stack } from "@mui/joy";
 
+import { OptionalFieldValue, createFieldNameMapper } from "@eshg/lib-portal";
 import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import { StatusChip } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/StatusChip";
 import { FIXED_WIDTH_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";

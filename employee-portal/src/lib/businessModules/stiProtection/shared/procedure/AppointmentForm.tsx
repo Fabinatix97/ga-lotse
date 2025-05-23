@@ -10,12 +10,14 @@ import { useFormikContext } from "formik";
 import { useState } from "react";
 
 import { DateTimeField } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { AppointmentPickerField } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import {
+  AppointmentPickerField,
+  NumberField,
+  Row,
+  SingleAutocompleteField,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
 import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiAppointment,

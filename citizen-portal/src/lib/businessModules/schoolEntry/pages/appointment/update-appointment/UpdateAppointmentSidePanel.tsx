@@ -7,8 +7,7 @@ import { CakeOutlined, PersonOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
 
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";

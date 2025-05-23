@@ -10,7 +10,11 @@ import {
   ApiGender,
   ApiProphylaxisSessionChildExamination,
 } from "@eshg/dental-api";
-import { ProcedureLabel, mapOptional } from "@eshg/lib-employee-portal";
+import {
+  ProcedureLabel,
+  Versioned,
+  mapOptional,
+} from "@eshg/lib-employee-portal";
 
 import {
   ExaminationResult,
@@ -21,18 +25,26 @@ import {
   ExaminationStatus,
   mapToExaminationStatus,
 } from "../../../../api/models/ExaminationStatus";
+import {
+  Institution,
+  mapInstitution,
+} from "../../../../api/models/Institution";
 
-export interface ProphylaxisSessionExamination {
-  readonly childId: string;
+export interface ParticipantDetails extends Versioned {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+  gender?: ApiGender;
+  groupName?: string;
+  procedureLabels: ProcedureLabel[];
+  currentFluoridationConsent?: ApiFluoridationConsent;
+}
+
+export interface ProphylaxisSessionExamination extends ParticipantDetails {
   readonly examinationId: string;
   readonly examinationVersion: number;
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly dateOfBirth: Date;
-  readonly institutionName: string;
-  readonly groupName?: string;
-  readonly gender?: ApiGender;
-  readonly currentFluoridationConsent?: ApiFluoridationConsent;
+  readonly institution: Institution;
   readonly allFluoridationConsents: ApiFluoridationConsent[];
   readonly status: ExaminationStatus;
   readonly result?: ExaminationResult;
@@ -47,13 +59,14 @@ export function mapProphylaxisSessionExamination(
 ): ProphylaxisSessionExamination {
   const result = mapOptional(response.result, mapExaminationResult);
   return {
-    childId: response.childId,
+    id: response.childId,
+    version: response.childVersion,
     examinationId: response.examinationId,
     examinationVersion: response.examinationVersion,
     firstName: response.firstName,
     lastName: response.lastName,
     dateOfBirth: response.dateOfBirth,
-    institutionName: response.institutionName,
+    institution: mapInstitution(response.institution),
     groupName: response.groupName,
     gender: response.gender,
     currentFluoridationConsent: response.allFluoridationConsents[0],

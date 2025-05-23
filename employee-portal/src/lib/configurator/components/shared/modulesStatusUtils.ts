@@ -31,7 +31,7 @@ export function getAllWarningModules(data: ConfiguratorStatusOverview) {
   return getFilteredModules(
     data,
     (tabKey) =>
-      data[tabKey as ConfiguratorModuleName].moduleState ===
+      data[tabKey as ConfiguratorModuleName]?.moduleState ===
       "PARTIALLY_COMPLETE",
   );
 }
@@ -40,7 +40,7 @@ export function getAllErrorModules(data: ConfiguratorStatusOverview) {
   return getFilteredModules(
     data,
     (tabKey) =>
-      data[tabKey as ConfiguratorModuleName].moduleState === "INCOMPLETE",
+      data[tabKey as ConfiguratorModuleName]?.moduleState === "INCOMPLETE",
   );
 }
 

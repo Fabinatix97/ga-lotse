@@ -14,10 +14,12 @@ import {
   InformationSheet,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import {
+  CheckboxField,
+  InputField,
+  SelectField,
+  TextareaField,
+} from "@eshg/lib-portal";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 

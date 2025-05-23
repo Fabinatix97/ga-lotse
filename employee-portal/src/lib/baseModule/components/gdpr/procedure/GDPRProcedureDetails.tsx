@@ -24,7 +24,7 @@ import {
   useHasUserRoleCheck,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+import { QueryBoundary } from "@eshg/lib-portal";
 
 import {
   isGdprFacility,

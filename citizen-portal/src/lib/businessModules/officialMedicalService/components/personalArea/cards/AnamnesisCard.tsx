@@ -5,7 +5,7 @@
 
 import { Box, Sheet, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import {

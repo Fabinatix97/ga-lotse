@@ -22,9 +22,7 @@ import {
   SidebarFormHandle,
   useGetSelfUser,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { InputField, TextareaField, formatPersonName } from "@eshg/lib-portal";
 
 import {
   useAddChecklistDefinitionToCentralRepo,

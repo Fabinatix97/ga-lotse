@@ -32,10 +32,7 @@ import {
   SidebarForm,
   formatList,
 } from "@eshg/lib-employee-portal";
-import {
-  SALUTATION_VALUES,
-  getOptionalTitle,
-} from "@eshg/lib-portal/components/formFields/constants";
+import { SALUTATION_VALUES, getOptionalTitle } from "@eshg/lib-portal";
 
 import {
   MeaslesFacilityTypeSelect,

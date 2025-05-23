@@ -14,10 +14,12 @@ export interface ConfiguratorStatusTab {
   status?: ConfiguratorStatus;
 }
 
-export type ConfiguratorStatusOverview = Record<
-  ConfiguratorModuleName,
-  {
-    moduleState: ConfiguratorStatus;
-    endpointStates: ConfiguratorStatusTab[];
-  }
+export type ConfiguratorStatusOverview = Partial<
+  Record<
+    ConfiguratorModuleName,
+    {
+      moduleState: ConfiguratorStatus;
+      endpointStates: ConfiguratorStatusTab[];
+    }
+  >
 >;

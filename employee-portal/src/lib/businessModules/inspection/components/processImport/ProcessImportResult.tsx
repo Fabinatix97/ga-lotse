@@ -25,7 +25,7 @@ import {
   formatFaultyRecordCount,
   formatTotalRecordCount,
 } from "@eshg/lib-employee-portal";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
+import { downloadFileAndOpen } from "@eshg/lib-portal";
 
 import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutations/processImport";
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";

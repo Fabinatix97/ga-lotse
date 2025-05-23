@@ -6,14 +6,14 @@
 import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
   OptionalFieldValue,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SoftRequiredSelectField,
+  TextareaField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 import { ApiDisabilityType } from "@eshg/school-entry-api";
 
 import {

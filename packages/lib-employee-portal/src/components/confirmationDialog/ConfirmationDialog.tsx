@@ -7,9 +7,9 @@
 
 import {
   BaseConfirmationDialog,
+  BaseConfirmationDialogButtonBar,
   ConfirmationDialogProps,
-} from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
-import { BaseConfirmationDialogButtonBar } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialogButtonBar";
+} from "@eshg/lib-portal";
 
 export function ConfirmationDialog({
   title = "Änderung speichern?",

@@ -7,8 +7,7 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { Formik, FormikValues } from "formik";
 import { ReactNode } from "react";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { BaseModal, FormPlus } from "@eshg/lib-portal";
 
 interface FormDialogProps<T> {
   open: boolean;

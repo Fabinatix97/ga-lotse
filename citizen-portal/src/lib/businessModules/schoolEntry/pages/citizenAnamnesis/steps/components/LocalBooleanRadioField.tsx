@@ -6,7 +6,7 @@
 import {
   BooleanRadioField,
   BooleanRadioGroupFieldProps,
-} from "@eshg/lib-portal/components/formFields/BooleanRadioField";
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 

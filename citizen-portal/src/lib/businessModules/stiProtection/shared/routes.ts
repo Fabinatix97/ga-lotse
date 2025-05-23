@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
+import { defineRoutes } from "@eshg/lib-portal/universal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";

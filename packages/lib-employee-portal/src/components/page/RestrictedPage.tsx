@@ -6,8 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { Alert, RequiresChildren } from "@eshg/lib-portal";
 
 import { useHasUserRoleCheck } from "../../features/auth/hooks/useAccessControl";
 

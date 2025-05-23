@@ -7,7 +7,7 @@
 
 import { Formik } from "formik";
 
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue } from "@eshg/lib-portal";
 
 import { FormButtonBar } from "../../../components/form/FormButtonBar";
 import { SidebarActions } from "../../drawer/components/SidebarActions";

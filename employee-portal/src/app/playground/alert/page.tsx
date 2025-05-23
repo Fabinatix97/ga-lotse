@@ -23,8 +23,7 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyString, useAlert } from "@eshg/lib-portal";
 
 const DEFAULT_TYPE = "error";
 const TYPES = ["error", "warning", "notification"] as const;

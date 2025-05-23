@@ -5,7 +5,7 @@
 
 import { Input } from "@mui/joy";
 
-import { SoftRequiredInput } from "@eshg/lib-portal/components/form/fieldVariants";
+import { SoftRequiredInput } from "@eshg/lib-portal";
 
 import { SetToothResultAction } from "../../stores/examination/examinationStore";
 import { useElementFocus } from "../../stores/examination/hooks/useElementFocus";
@@ -35,10 +35,7 @@ export function ResultInputField(props: ResultInputFieldProps) {
   };
   const { elementRef, focusHandler, blurHandler } = useElementFocus(
     fieldContext,
-    (input: HTMLInputElement) => {
-      input.focus();
-      requestAnimationFrame(() => input.select()); // delay value selection to ensure focus is active
-    },
+    (input: HTMLInputElement) => input.select(),
   );
 
   const keyboardNavigationHandler = useKeyboardNavigationHandler();

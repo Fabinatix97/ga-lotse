@@ -4,10 +4,7 @@
  */
 
 import { ConfigurationParameters } from "@eshg/base-api";
-import {
-  ApiConfiguration,
-  useApiConfiguration,
-} from "@eshg/lib-portal/api/ApiProvider";
+import { ApiConfiguration, useApiConfiguration } from "@eshg/lib-portal";
 
 import { useLang } from "@/lib/i18n/useLang";
 

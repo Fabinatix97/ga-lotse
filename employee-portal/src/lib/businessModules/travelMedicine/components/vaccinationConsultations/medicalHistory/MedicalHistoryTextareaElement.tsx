@@ -5,8 +5,7 @@
 
 import { FormLabel, styled } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import { TextareaField, useValidateLength } from "@eshg/lib-portal";
 
 interface MedicalHistoryTextareaElementProps {
   label: string;

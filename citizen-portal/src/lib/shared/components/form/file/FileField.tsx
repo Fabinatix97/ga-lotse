@@ -6,7 +6,6 @@
 import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
 import {
   FormControl,
-  FormHelperText,
   FormLabel,
   FormLabelProps,
   Stack,
@@ -16,19 +15,18 @@ import {
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import {
+  FieldProps,
   FileLike,
   FileType,
-} from "@eshg/lib-portal/components/formFields/file/types";
-import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
-import { validatePipe } from "@eshg/lib-portal/helpers/validators";
-import {
+  FormHelperTextWithIcon,
+  formatFileSize,
+  useBaseField,
+  useDragAndDrop,
   useValidateFile,
   useValidateFileType,
-} from "@eshg/lib-portal/hooks/useValidators";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+  validatePipe,
+} from "@eshg/lib-portal";
 
 import { FileButton, StyledRemoveButton } from "./buttonVariants";
 
@@ -199,9 +197,10 @@ export function FileField(props: Readonly<FileFieldProps>) {
               onChange={handleChange}
             />
             {isDefined(field.helperText) && (
-              <FormHelperText id={`${fileLabelId}-helper-text`}>
-                {field.helperText}
-              </FormHelperText>
+              <FormHelperTextWithIcon
+                id={`${fileLabelId}-helper-text`}
+                helperText={field.helperText}
+              />
             )}
           </Stack>
         </Stack>

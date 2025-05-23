@@ -18,4 +18,5 @@ public enum AuditLogSource {
   STATISTICS,
   OFFICIAL_MEDICAL_SERVICE,
   OPENDATA,
+  MEDS_ABROAD,
 }

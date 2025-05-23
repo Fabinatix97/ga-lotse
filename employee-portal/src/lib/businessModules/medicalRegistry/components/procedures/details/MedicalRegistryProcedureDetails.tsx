@@ -15,7 +15,7 @@ import {
   useConfirmationDialog,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useControlledAlert } from "@eshg/lib-portal";
 import {
   ApiGetProcedure200Response,
   ApiGetProcedureDraftResponse,

@@ -12,7 +12,7 @@ import {
 } from "@mui/joy";
 import { createContext, useContext, useId } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";

@@ -6,7 +6,7 @@
 import { Chip, Tooltip, Typography, styled } from "@mui/joy";
 import { useState } from "react";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 import { OverlayBoundary } from "../boundaries/OverlayBoundary";
 

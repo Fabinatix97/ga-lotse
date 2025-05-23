@@ -24,8 +24,7 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatDate, formatUserName } from "@eshg/lib-portal";
 
 import { AuditLogSheet } from "@/lib/auditlog/components/AuditLogSheet";
 import {

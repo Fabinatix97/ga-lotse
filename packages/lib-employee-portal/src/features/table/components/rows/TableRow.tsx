@@ -8,7 +8,7 @@ import { Cell, Row, flexRender } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { doNothing, isDefined } from "remeda";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLink } from "@eshg/lib-portal";
 
 import { RowNavigation } from "../../types/rowNavigation";
 import { DataCell } from "../cells/DataCell";

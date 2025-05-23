@@ -12,19 +12,23 @@ import { ApiFluoridationConsent } from "@eshg/dental-api";
 import {
   DetailsItem,
   DetailsRow,
+  EditButton,
   ProcedureLabel,
   ProcedureLabelChip,
 } from "@eshg/lib-employee-portal";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
+  GENDER_VALUES,
+  InternalLinkButton,
   OPTIONAL_FALLBACK_VALUE,
+  calculateAge,
+  formatDate,
   formatOptionalKey,
-} from "@eshg/lib-portal/formatters/optional";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/lib-portal";
 
+import { Institution } from "../../api/models/Institution";
 import { routes } from "../../config/routes";
+import { ParticipantDetails } from "../../features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
+import { useProphylaxisSessionStore } from "../../features/prophylaxisSessions/stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 import { FluoridationConsentInformationSection } from "../fluoridationConsent/FluoridationConsentInformationSection";
 
 import {
@@ -33,13 +37,17 @@ import {
   ExaminationSectionTitle,
   ExaminationTitleProps,
 } from "./ExaminationSection";
+import { useUpdateParticipantDetailsSidebar } from "./UpdateParticipantDetailsSidebar";
 
 interface ExaminationChildDetailsSectionProps {
   childId: string;
+  childVersion: number;
+  firstName: string;
+  lastName: string;
   gender?: ApiGender;
   dateOfBirth: Date;
   dateOfExamination: Date;
-  institutionName?: string;
+  institution?: Institution;
   groupName?: string;
   procedureLabels: ProcedureLabel[];
   allFluoridationConsents: ApiFluoridationConsent[];
@@ -54,13 +62,26 @@ export function ExaminationChildDetailsSection(
     <ExaminationSection
       title="Details zum Kind"
       titleComponent={(titleProps) => (
-        <DetailsSectionHeader {...titleProps} childId={props.childId} />
+        <DetailsSectionHeader
+          {...titleProps}
+          participantDetails={{
+            id: props.childId,
+            version: props.childVersion,
+            firstName: props.firstName,
+            lastName: props.lastName,
+            gender: props.gender,
+            dateOfBirth: props.dateOfBirth,
+            groupName: props.groupName,
+            procedureLabels: props.procedureLabels,
+            currentFluoridationConsent: props.allFluoridationConsents[0],
+          }}
+        />
       )}
     >
       <DetailsRow>
         <DetailsItem
           label="Einrichtung"
-          value={props.institutionName ?? OPTIONAL_FALLBACK_VALUE}
+          value={props.institution?.name ?? OPTIONAL_FALLBACK_VALUE}
         />
         <DetailsItem
           label="Gruppe"
@@ -88,24 +109,41 @@ export function ExaminationChildDetailsSection(
 }
 
 interface DetailsSectionHeaderProps extends ExaminationTitleProps {
-  childId: string;
+  institution?: Institution;
+  participantDetails: ParticipantDetails;
 }
 
 function DetailsSectionHeader(props: DetailsSectionHeaderProps) {
+  const updateParticipantDetailsSidebar = useUpdateParticipantDetailsSidebar();
+  const setParticipantDetails = useProphylaxisSessionStore(
+    (store) => store.setParticipantDetails,
+  );
+
   return (
     <ExaminationSectionHeader>
       <ExaminationSectionTitle titleId={props.titleId}>
         {props.children}
       </ExaminationSectionTitle>
-      <InternalLinkButton
-        color="primary"
-        variant="outlined"
-        href={routes.children.byId(props.childId).details}
-        target="_blank"
-        endDecorator={<OpenInNewOutlined />}
-      >
-        Profil
-      </InternalLinkButton>
+      <Stack direction="row" gap={2}>
+        <InternalLinkButton
+          color="primary"
+          variant="outlined"
+          href={routes.children.byId(props.participantDetails.id).details}
+          target="_blank"
+          endDecorator={<OpenInNewOutlined />}
+        >
+          Profil
+        </InternalLinkButton>
+        <EditButton
+          onClick={() =>
+            updateParticipantDetailsSidebar.open({
+              institution: props.institution,
+              participantDetails: props.participantDetails,
+              setParticipantDetails,
+            })
+          }
+        />
+      </Stack>
     </ExaminationSectionHeader>
   );
 }

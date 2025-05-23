@@ -7,10 +7,7 @@ import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 import { useState } from "react";
 
 import { IconButton } from "@eshg/lib-employee-portal";
-import {
-  InputField,
-  InputFieldProps,
-} from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField, InputFieldProps } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 

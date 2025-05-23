@@ -10,7 +10,7 @@ import {
   BaseDetailsItemLabel,
   BaseDetailsItemProps,
   BaseDetailsItemValue,
-} from "@eshg/lib-portal/components/details/BaseDetailsItem";
+} from "@eshg/lib-portal";
 
 export function DetailsItem<
   TLabelProps extends TypographyProps,

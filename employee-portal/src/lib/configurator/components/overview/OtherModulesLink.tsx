@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
 
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLink } from "@eshg/lib-portal";
 
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
 import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";

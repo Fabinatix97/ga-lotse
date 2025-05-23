@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { toDateString } from "@eshg/lib-portal";
 
 import { useExportEvaluationData } from "@/lib/businessModules/statistics/api/downloads/useExportEvaluationData";
 import { EvaluationDetailsView } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";

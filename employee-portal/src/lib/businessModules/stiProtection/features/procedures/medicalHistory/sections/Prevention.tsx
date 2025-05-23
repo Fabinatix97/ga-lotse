@@ -5,8 +5,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
-import { YesOrNoWithFollowUp } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
+import { CheckboxGroupField, YesOrNoWithFollowUp } from "@eshg/lib-portal";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import {

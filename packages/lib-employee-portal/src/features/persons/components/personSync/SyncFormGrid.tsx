@@ -6,7 +6,7 @@
 import { ArrowForwardOutlined } from "@mui/icons-material";
 import { Chip, Sheet, styled } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 const gridLines = {
   before: "before",

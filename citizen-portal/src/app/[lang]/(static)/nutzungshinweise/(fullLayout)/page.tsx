@@ -7,7 +7,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 
 import { TitleAndSheetContentLayout } from "@/lib/shared/components/layout/TitleAndSheetContentLayout";
 

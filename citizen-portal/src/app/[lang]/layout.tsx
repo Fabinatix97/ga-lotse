@@ -6,10 +6,7 @@
 import { Metadata, ResolvingMetadata } from "next";
 import * as v from "valibot";
 
-import {
-  DynamicLayoutProps,
-  RouteParams,
-} from "@eshg/lib-portal/types/pageParams";
+import { DynamicLayoutProps, RouteParams } from "@eshg/lib-portal";
 
 import { AppLayout } from "@/lib/baseModule/components/layout/AppLayout";
 import { BaseTranslation, baseTranslations } from "@/lib/baseModule/locales";

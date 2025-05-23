@@ -9,7 +9,7 @@ import { isDefined } from "remeda";
 import {
   ConfirmationDialogContext,
   ConfirmationDialogOptions,
-} from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
+} from "@eshg/lib-portal";
 
 export function useConfirmationDialog() {
   const context = useContext(ConfirmationDialogContext);

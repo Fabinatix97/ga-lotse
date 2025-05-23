@@ -5,7 +5,7 @@
 
 import { addMonths, getMonth, startOfMonth, startOfToday } from "date-fns";
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import {
   Interval,

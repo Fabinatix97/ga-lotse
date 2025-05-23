@@ -7,19 +7,19 @@ import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import {
+  Alert,
+  BooleanRadioField,
+  EmailField,
+  InputField,
+  useValidateLength,
+  useValidateNumber,
+} from "@eshg/lib-portal";
+import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
   PracticeInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import {
-  useValidateLength,
-  useValidateNumber,
-} from "@eshg/lib-portal/hooks/useValidators";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { useTranslation } from "@/lib/i18n/client";

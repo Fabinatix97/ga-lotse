@@ -20,8 +20,7 @@ import {
   TimelineEntry,
   TimelineEntryProps,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { formatDateTime, formatUserName } from "@eshg/lib-portal";
 
 import { HistoryEntryIndicator } from "@/lib/baseModule/components/contacts/history/HistoryEntryIndicator";
 import { routes } from "@/lib/baseModule/shared/routes";

@@ -11,7 +11,7 @@ import {
   FileCardActionProps,
   mapToFileCardProps,
 } from "@eshg/lib-employee-portal";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 import { ApiAbstractFile } from "@eshg/measles-protection-api";
 
 import { useFileApi } from "@/lib/businessModules/measlesProtection/api/clients";

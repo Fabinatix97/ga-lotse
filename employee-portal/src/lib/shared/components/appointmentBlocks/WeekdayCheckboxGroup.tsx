@@ -7,7 +7,7 @@
 
 import { SxProps } from "@mui/joy/styles/types";
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
+import { CheckboxGroupField } from "@eshg/lib-portal";
 
 import {
   WEEKDAY_TYPES,

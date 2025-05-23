@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
-import { useIsMobile } from "@eshg/lib-portal/hooks/theme";
+import { useIsMobile, useMultiStepForm } from "@eshg/lib-portal";
 
 import { AppointmentFormButtonBar } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentFormButtonBar";
 import { PrivacyPolicyConfirmationSection } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentReviewFormStep/PrivacyPolicyConfirmationSection";

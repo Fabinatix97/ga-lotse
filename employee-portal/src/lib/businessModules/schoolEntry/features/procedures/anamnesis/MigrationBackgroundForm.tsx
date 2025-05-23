@@ -9,15 +9,15 @@ import { FormLabel, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useId } from "react";
 
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
+  MonthAndYearFields,
   NestedFormProps,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SoftRequiredBooleanSelectField,
+  createFieldNameMapper,
+  isEmptyString,
+} from "@eshg/lib-portal";
+import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { ApiSchoolEntryCountryCode } from "@eshg/school-entry-api";
 
 import { CountryCodes } from "@/lib/businessModules/schoolEntry/api/models/CountryCodes";

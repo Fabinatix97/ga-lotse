@@ -20,10 +20,10 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
+  OptionalFieldValue,
   mapOptionalValue,
   mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 import { routes } from "../../../../config/routes";
 import { useDentalApi } from "../../../../contexts/dental";

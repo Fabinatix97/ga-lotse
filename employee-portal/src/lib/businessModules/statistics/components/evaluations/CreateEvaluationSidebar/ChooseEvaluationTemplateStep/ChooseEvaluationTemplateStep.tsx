@@ -7,9 +7,11 @@ import { OpenInNewOutlined } from "@mui/icons-material";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 
 import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import {
+  Alert,
+  InternalLinkButton,
+  SingleAutocompleteField,
+} from "@eshg/lib-portal";
 
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import { ChooseEvaluationTemplateOrConfigureDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";

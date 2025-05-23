@@ -17,7 +17,7 @@ import {
   normalizeListInputs,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { toDateString } from "@eshg/lib-portal";
 import { ApiCustodian } from "@eshg/measles-protection-api";
 
 import { useEditCustodian } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

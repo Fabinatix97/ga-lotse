@@ -6,7 +6,6 @@
 import {
   Checkbox,
   FormControl,
-  FormHelperText,
   FormLabel,
   FormLabelProps,
   styled,
@@ -14,9 +13,12 @@ import {
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { useIsServer } from "@eshg/lib-portal/next/renderingHooks";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import {
+  FieldProps,
+  renderHelperText,
+  useBaseField,
+  useIsServer,
+} from "@eshg/lib-portal";
 
 const DescriptionText = styled("div")({
   marginLeft: "1.875rem", // checkbox width + gap between checkbox and label
@@ -58,7 +60,7 @@ export function ConfirmationCheckboxField(
       {isDefined(props.descriptionText) && (
         <DescriptionText>{props.descriptionText}</DescriptionText>
       )}
-      {isDefined(helperText) && <FormHelperText>{helperText}</FormHelperText>}
+      {isDefined(helperText) && renderHelperText(helperText)}
     </FormControl>
   );
 }

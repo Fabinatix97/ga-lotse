@@ -5,7 +5,7 @@
 
 import { Grid, GridProps } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface FormGroupGridProps
   extends Pick<GridProps, "columns" | "aria-labelledby" | "component">,

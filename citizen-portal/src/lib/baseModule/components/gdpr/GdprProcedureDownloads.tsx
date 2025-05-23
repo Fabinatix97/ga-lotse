@@ -19,7 +19,7 @@ import {
   ApiBusinessModule,
   ApiCitizenUsersGdprProcedure,
 } from "@eshg/base-api";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 
 import {
   useDownloadBaseModulePackage,

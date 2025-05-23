@@ -44,6 +44,7 @@ import org.springframework.util.CollectionUtils;
 public class AppointmentService {
   private final CalendarEventApi calendarEventApi;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final AppointmentCooldownService appointmentCooldownService;
   private final CalendarApi calendarApi;
   private final Clock clock;
 
@@ -51,10 +52,12 @@ public class AppointmentService {
       CalendarApi calendarApi,
       CalendarEventApi calendarEventApi,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      AppointmentCooldownService appointmentCooldownService,
       Clock clock) {
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.appointmentCooldownService = appointmentCooldownService;
     this.clock = clock;
   }
 
@@ -85,7 +88,10 @@ public class AppointmentService {
   }
 
   public void cancelAppointment(StiProtectionProcedure procedure) {
-    Appointments.removeAppointmentFromBlock(procedure.getAppointment());
+    Appointment appointment = procedure.getAppointment();
+    Appointments.removeAppointmentFromBlock(appointment);
+    appointmentCooldownService.removeAppointmentCooldown(appointment);
+
     procedure.setAppointment(null);
     procedure.setCalendarEventId(null);
     procedure.setUserDefinedAppointment(null);
@@ -114,6 +120,7 @@ public class AppointmentService {
 
   private void bookBlockAppointment(
       StiProtectionProcedure procedure, AppointmentType type, Instant start, Instant end) {
+    appointmentCooldownService.removeAppointmentCooldown(start, end, type);
     procedure.setUserDefinedAppointment(null);
     appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
     createAppointmentCalendarEvent(procedure, start, end);

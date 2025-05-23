@@ -17,12 +17,7 @@ import {
   FileField,
   useGetPublicConfig,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
-import {
-  FileLike,
-  FileType,
-} from "@eshg/lib-portal/components/formFields/file/types";
+import { FileLike, FileType, FormPlus, formatFileSize } from "@eshg/lib-portal";
 
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
 import { useDeleteChecklistFile } from "@/lib/businessModules/inspection/api/mutations/checklist";

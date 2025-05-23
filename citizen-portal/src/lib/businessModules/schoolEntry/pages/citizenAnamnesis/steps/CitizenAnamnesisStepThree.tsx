@@ -9,10 +9,10 @@ import { useId } from "react";
 
 import {
   InputArrayField,
+  InputField,
+  NumberField,
   getIndexLabel,
-} from "@eshg/lib-portal/components/formFields/InputArrayField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+} from "@eshg/lib-portal";
 
 import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/QuarterWidthGrid";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";

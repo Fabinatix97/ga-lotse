@@ -6,13 +6,15 @@
 import { Grid, Radio, Typography } from "@mui/joy";
 
 import {
+  NestedFormProps,
+  RadioGroupField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
+import {
   employmentStatusNames,
   employmentTypeNames,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { ProfessionalismInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,

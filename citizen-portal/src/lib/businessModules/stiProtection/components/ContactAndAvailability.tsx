@@ -6,7 +6,7 @@
 import { CallOutlined, MailOutlineOutlined } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import {

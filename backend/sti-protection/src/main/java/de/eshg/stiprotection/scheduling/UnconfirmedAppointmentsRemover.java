@@ -57,6 +57,7 @@ public class UnconfirmedAppointmentsRemover
     run();
   }
 
+  @Transactional
   public void runNow() {
     run();
   }

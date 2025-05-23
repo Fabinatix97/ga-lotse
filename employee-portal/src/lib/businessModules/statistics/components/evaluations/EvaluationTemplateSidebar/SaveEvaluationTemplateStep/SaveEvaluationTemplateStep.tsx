@@ -5,9 +5,7 @@
 
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { Alert, InputField, TextareaField } from "@eshg/lib-portal";
 
 import { EvaluationDetails } from "@/lib/businessModules/statistics/api/models/evaluationDetails";
 import { SaveEvaluationTemplateStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveEvaluationTemplateStep/saveEvaluationTemplateStepFormModel";

@@ -8,7 +8,7 @@
 import { use } from "react";
 
 import { ToolbarBackButton } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { OpeningHours } from "@/lib/configurator/components/shared/ConfiguratorDetails/OpeningHours";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";

@@ -8,7 +8,7 @@
 import { Button, ButtonProps } from "@mui/joy";
 import { ReactElement, useState } from "react";
 
-import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 type ModalProps = Pick<BaseModalPropsRequiredClose, "open" | "onClose">;
 

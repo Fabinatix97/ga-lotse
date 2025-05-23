@@ -7,17 +7,15 @@ import { Button } from "@mui/joy";
 import { Formik } from "formik";
 
 import { ButtonBar, FormStack } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import {
-  mapOptionalValue,
-  parseOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
 import {
   OptionalFieldValue,
+  SelectField,
   SetFieldValueHelper,
-} from "@eshg/lib-portal/types/form";
+  SubmitButton,
+  TextareaField,
+  mapOptionalValue,
+  parseOptionalValue,
+} from "@eshg/lib-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiWaitingStatus,

@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+import { TextareaField, useValidateLength } from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
-import { TextareaField } from "@/lib/shared/components/form/TextareaField";
 
 interface DocumentTextareaElementProps {
   label: string;

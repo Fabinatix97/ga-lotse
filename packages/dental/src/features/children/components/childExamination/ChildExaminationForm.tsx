@@ -12,12 +12,12 @@ import {
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
+  RequiresChildren,
   mapOptionalValue,
   mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+  useAlert,
+} from "@eshg/lib-portal";
 
 import { ToothDiagnoses } from "../../../../api/models/ExaminationResult";
 import { useExaminationStore } from "../../../../stores/examination/ExaminationStoreProvider";

@@ -50,7 +50,7 @@ function calculateDmftValuesForTeeth(teeth: Tooth[], type: ToothType) {
       ),
       missing: incrementIf(
         acc.missing,
-        hasResultOfType(ApiMainResult.E, curr, type),
+        hasResultOfType(ApiMainResult.M, curr, type),
       ),
       filled: incrementIf(
         acc.filled,

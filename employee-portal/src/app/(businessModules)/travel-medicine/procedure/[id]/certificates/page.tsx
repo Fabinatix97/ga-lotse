@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { CertificatesTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/CertificatesTable";
 

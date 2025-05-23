@@ -21,10 +21,7 @@ import {
   useState,
 } from "react";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { Alert, FormPlus, PortalErrorCode, Row } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import {

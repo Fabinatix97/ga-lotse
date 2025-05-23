@@ -5,10 +5,7 @@
 
 import { Typography } from "@mui/joy";
 
-import {
-  Markdown,
-  defaultComponents,
-} from "@eshg/lib-portal/components/Markdown";
+import { Markdown, defaultComponents } from "@eshg/lib-portal";
 
 import { TitleAndSheetContentLayout } from "@/lib/shared/components/layout/TitleAndSheetContentLayout";
 

@@ -5,7 +5,7 @@
 
 import { Divider } from "@mui/joy";
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { useIsFormDisabled } from "@eshg/lib-portal";
 
 import { FormButtonBar } from "./FormButtonBar";
 

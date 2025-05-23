@@ -7,13 +7,13 @@ import { Add } from "@mui/icons-material";
 import { Button, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
 import {
+  NumberField,
+  SelectField,
+  TextareaField,
   validatePipe,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
+} from "@eshg/lib-portal";
 import {
   ApiDisease,
   ApiOtherServiceTemplate,

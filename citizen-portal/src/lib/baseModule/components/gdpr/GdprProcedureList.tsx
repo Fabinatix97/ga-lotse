@@ -25,7 +25,7 @@ import {
   ApiGdprProcedureStatus,
   ApiGdprProcedureType,
 } from "@eshg/base-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { GdprProcedureDownloads } from "@/lib/baseModule/components/gdpr/GdprProcedureDownloads";
 import { GdprProcedureStatusChip } from "@/lib/baseModule/components/gdpr/GdprProcedureStatusChip";

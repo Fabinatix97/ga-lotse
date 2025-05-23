@@ -7,7 +7,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { GoToChangePinCard } from "@/lib/businessModules/stiProtection/components/pin/GoToChangePinCard";

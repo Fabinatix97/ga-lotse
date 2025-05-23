@@ -8,12 +8,12 @@
 import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { isEmpty } from "remeda";
 
-import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import {
+  ConfirmationDialogOptions,
   NavigationContextProvider,
   OnBeforeNavigateProps,
-} from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+  RequiresChildren,
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";

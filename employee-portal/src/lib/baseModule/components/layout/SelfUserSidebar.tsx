@@ -18,8 +18,7 @@ import {
   useGetSelfUser,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLink, InternalLinkButton } from "@eshg/lib-portal";
 
 import { ChatSettingsButton } from "@/lib/baseModule/components/layout/ChatSettingsSidebar";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";

@@ -15,7 +15,7 @@ import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { SubmitButton } from "@eshg/lib-portal";
 
 import {
   OpenDataForm,

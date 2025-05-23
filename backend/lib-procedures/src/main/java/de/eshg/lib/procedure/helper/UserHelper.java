@@ -126,6 +126,7 @@ public class UserHelper {
       case MEDICAL_REGISTRY_LEADER -> UserRoleDto.MEDICAL_REGISTRY_LEADER;
       case DENTAL_LEADER -> UserRoleDto.DENTAL_LEADER;
       case OFFICIAL_MEDICAL_SERVICE_LEADER -> UserRoleDto.OFFICIAL_MEDICAL_SERVICE_LEADER;
+      case MEDS_ABROAD_LEADER -> UserRoleDto.MEDS_ABROAD_LEADER;
     };
   }
 }

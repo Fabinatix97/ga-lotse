@@ -26,8 +26,7 @@ import {
   TableSheet,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { InternalLinkButton, formatDate } from "@eshg/lib-portal";
 import { ApiReportState } from "@eshg/statistics-api";
 
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";

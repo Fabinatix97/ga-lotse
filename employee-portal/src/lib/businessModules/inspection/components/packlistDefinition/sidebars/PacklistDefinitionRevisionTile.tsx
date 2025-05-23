@@ -11,7 +11,7 @@ import { Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 
 import { ApiUser } from "@eshg/base-api";
 import { ApiPacklistDefinitionRevision } from "@eshg/inspection-api";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

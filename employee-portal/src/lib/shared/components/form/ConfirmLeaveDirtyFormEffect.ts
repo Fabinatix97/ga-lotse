@@ -5,7 +5,7 @@
 
 import { useFormikContext } from "formik";
 
-import { OnBeforeNavigateProps } from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { OnBeforeNavigateProps } from "@eshg/lib-portal";
 
 import { useConfirmNavigationEffect } from "@/lib/shared/hooks/useConfirmNavigationEffect";
 import { useConfirmUnloadEffect } from "@/lib/shared/hooks/useConfirmUnloadEffect";

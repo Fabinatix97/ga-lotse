@@ -12,7 +12,7 @@ import {
   CentralFileSyncForm,
   useGetPersonFileStateDiff,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatPersonName } from "@eshg/lib-portal";
 
 import { useSyncCustodian } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 

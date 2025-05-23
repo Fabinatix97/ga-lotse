@@ -6,9 +6,11 @@
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  NestedFormProps,
+  SoftRequiredSelectField,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { StatusChip } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/StatusChip";

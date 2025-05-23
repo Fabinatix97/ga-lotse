@@ -6,11 +6,9 @@
 import {
   InputField,
   InputFieldProps,
-} from "@eshg/lib-portal/components/formFields/InputField";
-import {
   validatePipe,
   validateTime,
-} from "@eshg/lib-portal/helpers/validators";
+} from "@eshg/lib-portal";
 
 type TimeFieldProps = Omit<InputFieldProps, "type">;
 

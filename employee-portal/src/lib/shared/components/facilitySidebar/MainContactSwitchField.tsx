@@ -7,11 +7,7 @@ import { Switch } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 
-import {
-  BaseField,
-  useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+import { BaseField, FieldProps, useBaseField } from "@eshg/lib-portal";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 

@@ -6,7 +6,7 @@
 import { Stack } from "@mui/joy";
 import { FieldConfig, FieldInputProps } from "formik";
 
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { SetFieldValueHelper } from "@eshg/lib-portal";
 import { ApiDocumentAnamnesisQuestion } from "@eshg/travel-medicine-api";
 
 import { DocumentMultiSelectElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/DocumentMultiSelectElement";

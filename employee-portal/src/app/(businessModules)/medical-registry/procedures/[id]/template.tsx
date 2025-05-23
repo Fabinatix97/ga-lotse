@@ -4,8 +4,7 @@
  */
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { QueryBoundary, RequiresChildren } from "@eshg/lib-portal";
 
 export default function ProcedureTemplate(props: Readonly<RequiresChildren>) {
   return (

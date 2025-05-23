@@ -8,8 +8,7 @@ import { isDefined } from "remeda";
 
 import { ChildApi, GetChildrenRequest } from "@eshg/dental-api";
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { isBlankString } from "@eshg/lib-portal/helpers/guards";
+import { isBlankString, unwrapRawResponse } from "@eshg/lib-portal";
 
 import { childApiQueryKey } from "../../../../config/apiQueryKeys";
 import { useDentalApi } from "../../../../contexts/dental";

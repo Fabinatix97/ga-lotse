@@ -10,9 +10,7 @@ import { isDefined } from "remeda";
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { Alert, InternalLinkButton, formatDateTime } from "@eshg/lib-portal";
 
 import {
   getIsNewestVersion,

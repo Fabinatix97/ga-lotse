@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { createFieldNameMapper } from "@eshg/lib-portal";
 import { ApiDecibelValue, ApiHertzValue } from "@eshg/school-entry-api";
 
 import { ExaminationFormProps } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationFormProps";

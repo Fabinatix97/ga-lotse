@@ -7,6 +7,15 @@ import { Grid, Radio, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
+import {
+  DateField,
+  InputField,
+  RadioGroupField,
+  SelectField,
+  buildEnumOptions,
+  useValidateLength,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   MedicalRegistryCreateProcedureFormValues,
@@ -15,14 +24,6 @@ import {
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
 import { useValidateLifetimeDoctorNumber } from "@eshg/lib-portal/businessModules/medicalRegistry/useValidators";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import {
-  useValidateLength,
-  useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,
@@ -31,7 +32,6 @@ import {
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
-import { RadioGroupField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/RadioGroupField";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";

@@ -8,7 +8,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
 import { DetailsSection, InformationSheet } from "@eshg/lib-employee-portal";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface InfoTileProps extends RequiresChildren {
   name: string;

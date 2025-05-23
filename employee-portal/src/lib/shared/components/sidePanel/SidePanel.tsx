@@ -5,7 +5,7 @@
 
 import { Sheet, Stack } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 interface SidePanelProps extends RequiresChildren {
   "data-testid"?: string;

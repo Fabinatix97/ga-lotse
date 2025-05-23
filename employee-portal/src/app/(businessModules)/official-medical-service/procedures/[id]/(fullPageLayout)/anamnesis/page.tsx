@@ -10,13 +10,12 @@ import { use } from "react";
 import { isEmpty } from "remeda";
 
 import { ApiProcedureStatus } from "@eshg/base-api";
+import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 import {
   AnamnesisFormValues,
   defaultAnamnesisFormValues,
 } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/formConfig";
 import { cleanOptionalValues } from "@eshg/lib-portal/businessModules/officialMedicalService/anamnesis/helpers";
-import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { PatchAnamnesisRequest } from "@eshg/official-medical-service-api";
 
 import { usePatchAnamnesisOptions } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";

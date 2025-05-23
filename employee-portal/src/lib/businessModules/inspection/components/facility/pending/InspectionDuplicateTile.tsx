@@ -8,7 +8,7 @@
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { ApiInspectionForDuplicateReview } from "@eshg/inspection-api";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatTime } from "@eshg/lib-portal";
 
 import { DuplicateTileLine } from "@/lib/businessModules/inspection/components/facility/pending/DuplicateTileLine";
 import { formatIncidentCount } from "@/lib/businessModules/inspection/components/processImport/formatters";

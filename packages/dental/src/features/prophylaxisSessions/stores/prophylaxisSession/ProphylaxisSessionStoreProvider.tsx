@@ -9,13 +9,12 @@ import { createContext, useContext, useState } from "react";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
-import { filterParticipants } from "./participantFilters";
-import { sortParticipants } from "./participantSorting";
+import { getParticipantsToBeExamined } from "./actions";
 import {
   type ProphylaxisSessionStore,
   createProphylaxisSessionStore,
@@ -70,16 +69,12 @@ export function useProphylaxisSessionStore<T>(
 export function useFilteredParticipants(): ProphylaxisSessionExamination[] {
   return useProphylaxisSessionStore(
     useShallow((state) =>
-      sortParticipants(
+      getParticipantsToBeExamined(
+        state.participantFilters,
         state.participantSorting,
-        filterParticipants(state.participantFilters, state.participants),
+        state.participants,
+        false,
       ),
     ),
-  );
-}
-
-export function useFilteredPresentParticipants(): ProphylaxisSessionExamination[] {
-  return useFilteredParticipants().filter(
-    (participant) => participant.status !== "NOT_PRESENT",
   );
 }

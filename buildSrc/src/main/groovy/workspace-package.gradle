@@ -1,4 +1,5 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.ProjectReferences
 
 plugins {
   id 'typescript'
@@ -6,24 +7,14 @@ plugins {
 
 tasks.register('prepareEnvironment') {
   dependsOn rootProject.tasks.installDependencies
-
-  def gradleDependenciesJson = project.layout.projectDirectory.file("gradleDependencies.json").asFile
-  if (gradleDependenciesJson.exists()) {
-    def gradleDependencies = new groovy.json.JsonSlurper().parseText(gradleDependenciesJson.text)
-    dependsOn gradleDependencies.dependencies.collect {
-      project(it).tasks.named('assemble')
-    }
+  dependsOn ProjectReferences.getDependencies(project).collect { projectName ->
+    project(projectName).tasks.named('assemble')
   }
 }
 
 tasks.register('check') {
   group = 'verification'
   dependsOn 'compile'
-}
-
-tasks.register('clean', Delete) {
-  dependsOn 'cleanDependencies'
-  delete layout.buildDirectory
 }
 
 tasks.register('addWorkspaceDependency', PnpmTask) {

@@ -5,7 +5,7 @@
 
 import { Box, List, ListItem } from "@mui/joy";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Alert } from "@eshg/lib-portal";
 
 import { ConfiguratorStatusOverview } from "@/lib/configurator/api/models/configuratorStatusOverview";
 import {

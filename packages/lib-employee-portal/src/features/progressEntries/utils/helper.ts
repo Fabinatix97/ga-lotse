@@ -5,8 +5,7 @@
 
 import { isDefined, isEmpty } from "remeda";
 
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, formatUserName } from "@eshg/lib-portal";
 import {
   ApiManualProgressEntryType,
   ApiProgressEntry,

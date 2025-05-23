@@ -4,8 +4,7 @@
  */
 
 import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton, SubmitButton } from "@eshg/lib-portal";
 
 import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 

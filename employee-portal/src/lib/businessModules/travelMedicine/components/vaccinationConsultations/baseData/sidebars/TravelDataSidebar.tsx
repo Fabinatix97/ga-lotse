@@ -10,7 +10,7 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateString, toUtcDate } from "@eshg/lib-portal";
 import {
   ApiPatchVaccinationConsultationTravelDetailsRequest,
   ApiTravelType,

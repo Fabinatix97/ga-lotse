@@ -11,7 +11,7 @@ import { Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Trans } from "react-i18next";
 
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { ExternalLink } from "@eshg/lib-portal";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";

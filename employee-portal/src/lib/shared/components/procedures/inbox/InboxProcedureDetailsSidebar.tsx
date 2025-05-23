@@ -17,9 +17,11 @@ import {
   SidebarContent,
   formatList,
 } from "@eshg/lib-employee-portal";
-import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import {
+  SALUTATION_VALUES,
+  formatDate,
+  formatUserName,
+} from "@eshg/lib-portal";
 import {
   ApiGetInboxProcedureResponse,
   ApiInboxProcedureAddress,

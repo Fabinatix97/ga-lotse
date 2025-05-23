@@ -21,11 +21,7 @@ import {
 import { parse as parseDuration, toSeconds } from "iso8601-duration";
 
 import { getDateFnsLocale } from "@eshg/lib-employee-portal";
-import {
-  TIME_FORMAT,
-  isDateString,
-  isTimeString,
-} from "@eshg/lib-portal/helpers/dateTime";
+import { TIME_FORMAT, isDateString, isTimeString } from "@eshg/lib-portal";
 
 export function formatTimeInput(date: Date): string {
   return format(date, TIME_FORMAT);

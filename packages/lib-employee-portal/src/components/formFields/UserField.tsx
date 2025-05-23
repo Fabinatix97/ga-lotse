@@ -5,14 +5,15 @@
 
 import { Close } from "@mui/icons-material";
 import { Chip, ChipProps, Tooltip } from "@mui/joy";
+import { useId } from "react";
 
 import {
   BaseField,
+  CustomAutocomplete,
+  FieldProps,
+  formatUserName,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
-import { FieldProps } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-portal";
 
 export interface NamedUser {
   userId: string;
@@ -30,6 +31,7 @@ interface StaffUserFieldProps extends FieldProps<string[]> {
 
 export function UserField(props: Readonly<StaffUserFieldProps>) {
   const field = useBaseField(props);
+  const iconId = useId();
 
   function setValue(newUserIds: string[]) {
     void field.helpers.setValue(newUserIds);
@@ -100,10 +102,21 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
                 variant="soft"
                 color={getAvailability(item).color}
                 size="sm"
-                endDecorator={<Close fontSize="sm" />}
+                endDecorator={
+                  <Close
+                    id={iconId}
+                    fontSize="sm"
+                    aria-label="Auswahl entfernen"
+                  />
+                }
                 sx={{ minWidth: 0 }}
                 {...getTagProps({ index })}
                 key={item.userId}
+                slotProps={{
+                  action: {
+                    "aria-describedby": iconId,
+                  },
+                }}
               >
                 {formatUserName(item)}
               </Chip>

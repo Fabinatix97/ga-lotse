@@ -4,9 +4,11 @@
  */
 
 import { ApiUpdateObjectTypeRequest } from "@eshg/inspection-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  mapOptionalValue,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useObjectTypeApi } from "@/lib/businessModules/inspection/api/clients";
 import { EditableObjectType } from "@/lib/businessModules/inspection/components/objectType/EditObjectTypeSidebar";

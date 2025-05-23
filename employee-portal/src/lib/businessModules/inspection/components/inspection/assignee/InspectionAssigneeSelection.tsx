@@ -4,8 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { ButtonLink, formatUserName } from "@eshg/lib-portal";
 
 import { AssigneeAutocompleteField } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeAutocompleteField";
 import { AssigneeInfo } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeInfo";

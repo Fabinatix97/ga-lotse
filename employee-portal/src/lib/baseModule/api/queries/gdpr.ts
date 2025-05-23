@@ -6,7 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GetGdprProceduresRequest } from "@eshg/base-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 import { gdprProcedureApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";

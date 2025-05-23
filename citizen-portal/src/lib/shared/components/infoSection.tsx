@@ -7,7 +7,7 @@ import { Grid, Stack, StackProps, Typography, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode, createContext, useContext, useId } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 

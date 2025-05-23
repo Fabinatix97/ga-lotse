@@ -6,7 +6,7 @@
 import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 
-import { useValidateEmail } from "@eshg/lib-portal/hooks/useValidators";
+import { useValidateEmail } from "@eshg/lib-portal";
 
 import {
   ConfiguratorForm,

@@ -23,8 +23,7 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isNonEmptyString, useSnackbar } from "@eshg/lib-portal";
 
 const DEFAULT_TYPE = "confirmation";
 const TYPES = ["confirmation", "error", "notification"] as const;

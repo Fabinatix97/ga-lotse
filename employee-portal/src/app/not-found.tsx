@@ -6,7 +6,7 @@
 import WebAssetOffOutlinedIcon from "@mui/icons-material/WebAssetOffOutlined";
 import { Box, Stack, SvgIcon, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 export default function NotFound() {
   return (

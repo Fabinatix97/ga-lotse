@@ -7,8 +7,7 @@ import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useTranslation } from "react-i18next";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { Alert, SubmitButton } from "@eshg/lib-portal";
 
 import { parsePin } from "@/lib/businessModules/stiProtection/components/appointment/PinField";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";

@@ -5,7 +5,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
 import { publicConfigApiQueryKey } from "../../config/apiQueryKeys";
 import { useApi } from "../../contexts/api";

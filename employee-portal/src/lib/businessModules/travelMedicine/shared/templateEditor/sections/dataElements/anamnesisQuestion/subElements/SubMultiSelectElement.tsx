@@ -6,7 +6,7 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Box, IconButton, Stack } from "@mui/joy";
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 
 import { validateSubElementMultiselectOption } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 

@@ -14,7 +14,7 @@ import {
   ApiUpdateEditorRequest,
   EditorApiInterface,
 } from "@eshg/lib-editor-api";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import {
   useDeleteEditorElement,

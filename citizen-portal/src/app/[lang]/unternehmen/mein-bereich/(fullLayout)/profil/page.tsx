@@ -9,8 +9,7 @@ import { Grid } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { QueryBoundary, formatPersonName } from "@eshg/lib-portal";
 
 import { useGetLinkedReferenceFacility } from "@/lib/baseModule/api/queries/mukFacilityLink";
 import { GdprContactForm } from "@/lib/baseModule/components/gdpr/form/GdprContactForm";

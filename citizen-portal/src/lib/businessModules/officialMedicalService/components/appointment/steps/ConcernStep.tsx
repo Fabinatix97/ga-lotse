@@ -9,8 +9,7 @@ import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { isDefined, isEmpty } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { Alert, RadioGroupField, isNonEmptyString } from "@eshg/lib-portal";
 
 import {
   useGetAllAppointmentTypesQuery,
@@ -20,7 +19,6 @@ import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalServ
 import { ConcernFilters } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConcerFilters";
 import { useConcernFilterValues } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/useConcernFilterValues";
 import { RadioSheet } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioSheet";
-import { RadioGroupField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/RadioGroupField";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
@@ -79,33 +77,34 @@ export function ConcernStep() {
         <RadioGroupField
           name="concern.index"
           required={t("concern.fields.concern_required")}
-          sx={{ gap: 2 }}
         >
-          {data
-            .filter((item) =>
-              isNonEmptyString(filterValues.category)
-                ? item.categoryNameDe === filterValues.category
-                : item,
-            )
-            .map((concern, index) => {
-              return (
-                <RadioSheet
-                  key={`${concern.nameDe}.${index}`}
-                  label={
-                    i18n.language === "en" && isDefined(concern.nameEn)
-                      ? concern.nameEn
-                      : concern.nameDe
-                  }
-                  value={index}
-                  radioProps={{
-                    sx: (theme) => ({
-                      label: { ...theme.typography["title-md"] },
-                      alignItems: "center",
-                    }),
-                  }}
-                />
-              );
-            })}
+          <Stack gap={2}>
+            {data
+              .filter((item) =>
+                isNonEmptyString(filterValues.category)
+                  ? item.categoryNameDe === filterValues.category
+                  : item,
+              )
+              .map((concern, index) => {
+                return (
+                  <RadioSheet
+                    key={`${concern.nameDe}.${index}`}
+                    label={
+                      i18n.language === "en" && isDefined(concern.nameEn)
+                        ? concern.nameEn
+                        : concern.nameDe
+                    }
+                    value={index}
+                    radioProps={{
+                      sx: (theme) => ({
+                        label: { ...theme.typography["title-md"] },
+                        alignItems: "center",
+                      }),
+                    }}
+                  />
+                );
+              })}
+          </Stack>
         </RadioGroupField>
       </Stack>
     </ContentSheet>

@@ -14,8 +14,7 @@ import {
   ApiGetGdprProcedureResponse,
 } from "@eshg/base-api";
 import { formatDurationFromNowUntil } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { formatDateTime, formatPersonName } from "@eshg/lib-portal";
 
 import { gdprProcedureStatusColor } from "@/lib/baseModule/components/gdpr/constants";
 import {

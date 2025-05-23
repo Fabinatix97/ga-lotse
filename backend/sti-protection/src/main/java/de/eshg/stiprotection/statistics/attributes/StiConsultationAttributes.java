@@ -13,25 +13,28 @@ import de.eshg.stiprotection.persistence.db.consultation.GeneralSection;
 
 public enum StiConsultationAttributes implements StiAttributes {
   CONSULTATION_HEALTH_INSURANCE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Krankenversichert",
           "CONSULTATION_HEALTH_INSURANCE",
           StiConsultationAttributes.CONSULTATION_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   CONSULTATION_GERMAN_HEALTH_INSURANCE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "In Deutschland krankenversichert",
           "CONSULTATION_GERMAN_HEALTH_INSURANCE",
           StiConsultationAttributes.CONSULTATION_CATEGORY,
-          false)),
+          false,
+          0.2)),
 
   CONSULTATION_INSECURE_RESIDENCE(
-      BooleanAttribute.create(
+      BooleanAttribute.createSensitive(
           "Unsicherer Aufenthalt",
           "CONSULTATION_INSECURE_RESIDENCE",
           StiConsultationAttributes.CONSULTATION_CATEGORY,
-          false));
+          false,
+          0.2));
 
   private static final String CONSULTATION_CATEGORY = "Konsultation";
 

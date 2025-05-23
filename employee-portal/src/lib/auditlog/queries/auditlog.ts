@@ -11,7 +11,7 @@ import {
   GetAuditLogGranteesCandidatesRequest,
   GetAvailableLogsRequest,
 } from "@eshg/auditlog-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useAuditlogApi } from "@/lib/auditlog/api/clients";
 import { mapResponse } from "@/lib/auditlog/api/models/auditlog";

@@ -7,7 +7,7 @@
 
 import { use } from "react";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { ProcedureDetailsTab } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/ProcedureDetailsTab";

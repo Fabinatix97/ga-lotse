@@ -22,7 +22,7 @@ import {
   EditButton,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { InputField } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,

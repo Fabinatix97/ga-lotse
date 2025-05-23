@@ -9,7 +9,7 @@ import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { SidebarActions } from "../../../drawer/components/SidebarActions";
 import { SidebarContent } from "../../../drawer/components/SidebarContent";

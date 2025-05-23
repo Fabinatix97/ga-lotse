@@ -12,9 +12,7 @@ import { Chip, Stack, Typography } from "@mui/joy";
 import { ColorPaletteProp, DefaultColorPalette } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { Alert, EnumMap, formatDate, formatTime } from "@eshg/lib-portal";
 import {
   ApiBookingState,
   ApiOmsAppointment,

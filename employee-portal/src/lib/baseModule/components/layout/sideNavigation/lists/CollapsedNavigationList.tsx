@@ -6,7 +6,7 @@
 import { IconButton, Stack, Tooltip } from "@mui/joy";
 import { useState } from "react";
 
-import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
+import { ExpandNavigation } from "@eshg/lib-portal";
 
 import {
   navItemIconColor,

@@ -8,13 +8,7 @@
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
 
-import {
-  MainContentLayout,
-  StickyToolbarLayout,
-  Toolbar,
-  ToolbarBackButton,
-} from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
@@ -28,7 +22,6 @@ import {
   getSelfUserQuery,
 } from "@/lib/businessModules/inspection/api/queries/users";
 import { AddInspectionTiles } from "@/lib/businessModules/inspection/components/inspection/new/AddInspectionTiles";
-import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
 export default function NewInspectionProcedurePage(
   props: DynamicPageProps<{ procedureId: string }>,
@@ -52,25 +45,12 @@ export default function NewInspectionProcedurePage(
     ],
   });
 
-  const facility = inspection.facility;
-
   return (
-    <StickyToolbarLayout
-      toolbar={
-        <Toolbar
-          title={facility.baseFacility.name}
-          backButton={<ToolbarBackButton href={routes.procedures.index} />}
-        />
-      }
-    >
-      <MainContentLayout>
-        <AddInspectionTiles
-          inspection={inspection}
-          objectTypes={objectTypes}
-          selfUser={selfUser}
-          allAssignableUsers={allAssignableUsers}
-        />
-      </MainContentLayout>
-    </StickyToolbarLayout>
+    <AddInspectionTiles
+      inspection={inspection}
+      objectTypes={objectTypes}
+      selfUser={selfUser}
+      allAssignableUsers={allAssignableUsers}
+    />
   );
 }

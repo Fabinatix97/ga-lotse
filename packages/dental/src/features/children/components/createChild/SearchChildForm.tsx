@@ -12,10 +12,7 @@ import {
   SelectContactField,
   formatInstitutionNameWithCategoryShort,
 } from "@eshg/lib-employee-portal";
-import {
-  NullableFieldValue,
-  OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+import { NullableFieldValue, OptionalFieldValue } from "@eshg/lib-portal";
 
 import { Institution } from "../../../../api/models/Institution";
 import { SearchGroupField } from "../../../../components/group/SearchGroupField";

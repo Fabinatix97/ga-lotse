@@ -16,9 +16,11 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
-import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  parseOptionalValue,
+  toDateTimeString,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useGetStaff } from "../../../../api/queries/staff";
 import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";

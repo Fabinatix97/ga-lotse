@@ -5,7 +5,7 @@
 
 import { redirect } from "next/navigation";
 
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";

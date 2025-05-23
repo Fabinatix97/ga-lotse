@@ -13,7 +13,7 @@ import {
   Sidebar,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 import { useGetPacklistDefinitionRevisions } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
 import { PacklistDefinitionRevisionTile } from "@/lib/businessModules/inspection/components/packlistDefinition/sidebars/PacklistDefinitionRevisionTile";

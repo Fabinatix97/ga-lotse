@@ -192,8 +192,8 @@
     }
   },
   "successPage": {
-    "createNewEntry": "Neuen Eintrag anlegen",
-    "content": "Eintrag erfolgreich angelegt!"
+    "content": "Eintrag erfolgreich angelegt",
+    "registrationForm": "Zum Meldeformular"
   },
   "snackbar": {
     "success": "Das Meldeformular wurde erfolgreich gespeichert.",

@@ -8,7 +8,7 @@ import { CellContext } from "@tanstack/react-table";
 import { ReactNode, useCallback, useMemo } from "react";
 import { isEmpty, isNonNullish, unique } from "remeda";
 
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { CustomAutocomplete } from "@eshg/lib-portal";
 import {
   ApiAdminActorSelector,
   ApiAdminActorType,

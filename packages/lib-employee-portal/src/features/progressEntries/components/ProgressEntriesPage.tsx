@@ -11,7 +11,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { SearchParams } from "@eshg/lib-portal/types/pageParams";
+import { SearchParams } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import { useGetUsersByGroupQuery } from "../../../api/queries/users";

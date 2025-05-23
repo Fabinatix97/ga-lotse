@@ -16,8 +16,7 @@ import {
   createEmptyAddress,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, SelectField } from "@eshg/lib-portal";
 
 import {
   FacilitySidebar,

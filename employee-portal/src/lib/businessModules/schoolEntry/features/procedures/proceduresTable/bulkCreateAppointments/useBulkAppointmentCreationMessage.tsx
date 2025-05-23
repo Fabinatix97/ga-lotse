@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useAlert, useSnackbar } from "@eshg/lib-portal";
 import { ApiCreateAppointmentsBulkResponse } from "@eshg/school-entry-api";
 
 interface UseBulkAppointmentCreationMessageResult {

@@ -15,10 +15,12 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  InputField,
+  OptionalFieldValue,
+  SelectField,
+  TextareaField,
+} from "@eshg/lib-portal";
 
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
 import { resourceTypeOptions } from "@/lib/baseModule/components/resources/constants";

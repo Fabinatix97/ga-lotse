@@ -5,7 +5,7 @@
 
 import { Grid } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 

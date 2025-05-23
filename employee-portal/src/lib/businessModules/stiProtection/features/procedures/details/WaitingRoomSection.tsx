@@ -8,16 +8,16 @@ import { Formik, useFormikContext } from "formik";
 import { useTransition } from "react";
 
 import { DetailsSection } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   DisabledFormProvider,
+  FormPlus,
+  InputField,
+  Row,
+  SelectField,
+  SubmitButton,
   useIsFormDisabled,
-} from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   ApiStiProtectionProcedure,
   ApiWaitingRoom,

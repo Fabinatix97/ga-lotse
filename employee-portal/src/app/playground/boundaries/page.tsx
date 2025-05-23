@@ -16,12 +16,12 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   BaseModal,
   BaseModalProps,
-} from "@eshg/lib-portal/components/BaseModal";
-import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+  QueryBoundary,
+  useHandledMutation,
+} from "@eshg/lib-portal";
 
 export default function MutationErrorsPage() {
   return (

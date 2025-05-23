@@ -7,13 +7,15 @@ import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useId } from "react";
 
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
-import { FieldSetControl } from "@eshg/lib-portal/components/formFields/FieldSetControl";
-import { Legend } from "@eshg/lib-portal/components/formFields/Legend";
-import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { validatePositiveInteger } from "@eshg/lib-portal/helpers/validators";
+import {
+  CheckboxGroupField,
+  FieldSetControl,
+  Legend,
+  MonthAndYearFields,
+  NumberField,
+  SelectField,
+  validatePositiveInteger,
+} from "@eshg/lib-portal";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";

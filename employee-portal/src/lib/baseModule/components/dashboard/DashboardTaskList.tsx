@@ -9,7 +9,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { NoEntriesMessage } from "@eshg/lib-employee-portal";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { useFetchTasksForDashboardQuery } from "@/lib/baseModule/api/queries/tasks";
 import { TaskBox } from "@/lib/baseModule/components/task/TaskBox";

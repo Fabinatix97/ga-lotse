@@ -7,10 +7,7 @@
 
 import { Formik } from "formik";
 
-import {
-  MultiStepForm,
-  useMultiStepForm,
-} from "@eshg/lib-portal/components/form/MultiStepForm";
+import { MultiStepForm, useMultiStepForm } from "@eshg/lib-portal";
 
 const FORM_VALUES = {
   stepOne: {

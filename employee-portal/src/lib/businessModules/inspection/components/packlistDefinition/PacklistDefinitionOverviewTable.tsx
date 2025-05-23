@@ -21,7 +21,7 @@ import {
   TablePage,
   TableSheet,
 } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 import { useGetPacklistDefinitions } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
 import { CreatePacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreatePacklistDefinitionSidebar";

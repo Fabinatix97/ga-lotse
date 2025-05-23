@@ -10,8 +10,7 @@ import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_NAMES,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+import { calculateAge, formatDate } from "@eshg/lib-portal";
 import { ApiVaccinationConsultationSearch } from "@eshg/travel-medicine-api";
 
 import { translateCreatedByUserType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";

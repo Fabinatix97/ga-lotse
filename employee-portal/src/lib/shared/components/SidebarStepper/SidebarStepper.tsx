@@ -21,10 +21,12 @@ import {
   SidebarWithFormRefProps,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import {
+  ConfirmationDialogOptions,
+  SubmitButton,
+  createFieldNameMapper,
+  useAlert,
+} from "@eshg/lib-portal";
 
 import { SidebarStep, SidebarStepContentProps } from "./sidebarStep";
 

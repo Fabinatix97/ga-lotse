@@ -5,10 +5,7 @@
 
 import { Button, Stack } from "@mui/joy";
 
-import {
-  BaseModal,
-  BaseModalPropsRequiredClose,
-} from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
 export type DoubleConfirmModal = Omit<
   BaseModalPropsRequiredClose,

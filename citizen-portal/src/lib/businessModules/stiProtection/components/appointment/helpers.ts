@@ -8,10 +8,10 @@ import { differenceInMinutes } from "date-fns";
 
 import {
   YesOrNoFieldData,
+  mapOptionalValue,
   mapYesOrNoToBool,
-} from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { validateRange } from "@eshg/lib-portal/helpers/validators";
+  validateRange,
+} from "@eshg/lib-portal";
 import {
   ApiAddPersonalDetailsRequest,
   ApiAppointment,

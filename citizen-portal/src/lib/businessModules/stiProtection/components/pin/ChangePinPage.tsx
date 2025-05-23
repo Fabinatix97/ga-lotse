@@ -7,8 +7,7 @@ import { Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormPlus, useSnackbar } from "@eshg/lib-portal";
 import { ApiUpdatePinRequest } from "@eshg/sti-protection-api";
 
 import { useUpdatePin } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";

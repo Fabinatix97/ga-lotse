@@ -5,8 +5,9 @@
 
 import { Add } from "@mui/icons-material";
 import { Button, Divider, Grid } from "@mui/joy";
-import { FieldArray } from "formik";
 import { Fragment } from "react";
+
+import { FieldArrayWithFocus as FieldArray } from "@eshg/lib-portal";
 
 import {
   AppointmentBlockFormWithDays,
@@ -29,13 +30,14 @@ export function AppointmentBlockFieldArrayWithDays(
     props.appointmentBlocks.length >= APPOINTMENT_BLOCK_GROUP_MAX_LENGTH;
 
   return (
-    <FieldArray name={props.name}>
-      {({ remove, push }) => (
+    <FieldArray valueLength={props.appointmentBlocks.length} name={props.name}>
+      {({ remove, push, setInputElementRef }) => (
         <>
           {props.appointmentBlocks.map((_value, index) => (
             <Fragment key={index}>
               <FormGroupGrid data-testid="appointmentBlockForm">
                 <AppointmentBlockFormWithDays
+                  ref={(el) => setInputElementRef(el, index)}
                   name={`appointmentBlocks.${index}`}
                   removeBlock={() => remove(index)}
                   blockCount={props.appointmentBlocks.length}

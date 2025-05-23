@@ -6,9 +6,7 @@
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormPlus, InputField, useSnackbar } from "@eshg/lib-portal";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

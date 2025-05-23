@@ -6,7 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { GetTaskMetricsRequest } from "@eshg/base-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useTaskMetricsApi } from "@/lib/baseModule/api/clients";
 

@@ -22,9 +22,11 @@ import {
   mapToPersonAddRequest,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  OptionalFieldValue,
+  SelectField,
+  mapRequiredValue,
+} from "@eshg/lib-portal";
 import {
   ApiCreatePerson,
   ApiCreateProcedureRequest,

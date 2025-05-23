@@ -14,8 +14,10 @@ import {
 } from "@hello-pangea/dnd";
 import { Add } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/joy";
-import { FieldArray, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
+
+import { FieldArrayWithFocus as FieldArray } from "@eshg/lib-portal";
 
 import { FormPacklistDefinitionRevision } from "@/lib/businessModules/inspection/api/mutations/packlistDefinition";
 
@@ -44,8 +46,8 @@ export function PacklistDefinitionElementsList({
   return (
     <Stack spacing={2}>
       <Typography level="title-sm">Einträge</Typography>
-      <FieldArray name="elements">
-        {({ push, remove, replace, move }) => (
+      <FieldArray valueLength={values.elements.length} name="elements">
+        {({ push, remove, replace, move, setInputElementRef }) => (
           <>
             <DragDropContext
               onDragEnd={(result) => {
@@ -79,6 +81,7 @@ export function PacklistDefinitionElementsList({
                             )}
                           >
                             <PacklistDefinitionElement
+                              ref={(el) => setInputElementRef(el, elementIndex)}
                               dragHandleProps={provided.dragHandleProps}
                               element={element}
                               setElement={(element) =>

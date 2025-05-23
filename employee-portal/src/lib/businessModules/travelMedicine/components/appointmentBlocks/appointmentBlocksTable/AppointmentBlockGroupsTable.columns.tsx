@@ -10,7 +10,7 @@ import { Chip } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import {

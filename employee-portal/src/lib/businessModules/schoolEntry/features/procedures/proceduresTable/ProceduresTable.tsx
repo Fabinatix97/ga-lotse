@@ -39,10 +39,7 @@ import {
   useSyncRowSelection,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import {
-  formatDate,
-  formatWeekdayDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, formatWeekdayDateTime } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiSchoolEntryProcedureSortKey,

@@ -6,7 +6,7 @@
 import { Button, Stack, ToggleButtonGroup } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { NavigationLink } from "@eshg/lib-portal";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";

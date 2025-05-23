@@ -4,10 +4,10 @@
  */
 
 import {
+  useValidateLength,
   validatePipe,
   validateRegex,
-} from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+} from "@eshg/lib-portal";
 
 const phoneNumberRegex = new RegExp(/^(\+[1-9])?[-+0-9 ]+$/);
 

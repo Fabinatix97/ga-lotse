@@ -3,14 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ConfigurationParameters } from "@eshg/base-api";
+import {
+  Configuration as BaseConfiguration,
+  BasePrivacyDocumentsApi,
+  ConfigurationParameters,
+  MarkdownConfigurationApi,
+} from "@eshg/base-api";
 import {
   ConfigStatusApi,
   DepartmentInfoConfigApi,
   Configuration as LibConfigConfiguration,
   OpeningHoursApi,
+  PrivacyDocumentApi,
 } from "@eshg/lib-config-api";
-import { ApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+import { ApiConfiguration } from "@eshg/lib-portal";
 import {
   ApiBusinessModule,
   GdprValidationTaskApi,
@@ -31,6 +37,7 @@ import {
 } from "@eshg/sti-protection-api";
 import { NotificationConfigApi } from "@eshg/travel-medicine-api";
 
+import { useConfiguration } from "@/lib/baseModule/api/clients";
 import { useConfiguration as useSchoolEntryConfiguration } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useConfiguration as useStiProtectionConfiguration } from "@/lib/businessModules/stiProtection/api/clients";
 import { useConfiguration as useTravelMedicineConfiguration } from "@/lib/businessModules/travelMedicine/api/clients";
@@ -166,4 +173,27 @@ export function useConfiguratorSchoolEntryApi() {
 export function useNotificationConfigApi() {
   const configuration = useTravelMedicineConfiguration();
   return new NotificationConfigApi(configuration);
+}
+
+export function useConfiguratorPrivacyDocumentApi(
+  configuratorModule: ConfiguratorModuleName,
+) {
+  const moduleConfiguration = useConfiguratorConfigurationByModule(
+    configuratorModule,
+    LibConfigConfiguration,
+  );
+  const baseConfiguration = useConfiguratorConfigurationByModule(
+    "BASE",
+    BaseConfiguration,
+  );
+  return {
+    moduleApi: new PrivacyDocumentApi(moduleConfiguration),
+    baseApi: new BasePrivacyDocumentsApi(baseConfiguration),
+  };
+}
+
+export function useMarkdownConfigurationApi() {
+  const configuration = useConfiguration();
+
+  return new MarkdownConfigurationApi(configuration);
 }

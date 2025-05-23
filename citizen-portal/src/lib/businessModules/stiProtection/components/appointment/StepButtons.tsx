@@ -6,7 +6,7 @@
 import { Button, Stack } from "@mui/joy";
 import { MouseEvent } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";

@@ -7,9 +7,7 @@ import { Check, MailOutlined } from "@mui/icons-material";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined, isEmpty } from "remeda";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatUserName } from "@eshg/lib-portal/formatters/person";
+import { ButtonLink, formatDateTime, formatUserName } from "@eshg/lib-portal";
 import {
   ApiGetProgressEntriesResponseProgressEntriesInner,
   ApiManualProgressEntry,

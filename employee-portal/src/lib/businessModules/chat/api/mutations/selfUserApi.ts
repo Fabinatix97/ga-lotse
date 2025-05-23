@@ -6,7 +6,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { ApiUpdateSelfUserChatAttributesRequest } from "@eshg/base-api";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 
 import { useSelfUserApi } from "@/lib/businessModules/chat/api/clients";
 

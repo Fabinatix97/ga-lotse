@@ -6,7 +6,7 @@
 import { Chip, ChipDelete, List, ListItem, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { ButtonLink } from "@eshg/lib-portal";
 
 export interface ActiveFilter<TKey extends string = string> {
   key: TKey;

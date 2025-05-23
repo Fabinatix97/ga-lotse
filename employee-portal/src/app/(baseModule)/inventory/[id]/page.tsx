@@ -17,7 +17,7 @@ import {
   ToolbarBackButton,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { useGetInventoryItem } from "@/lib/baseModule/api/queries/inventory";
 import { InventoryBooking } from "@/lib/baseModule/components/inventory/InventoryBooking";

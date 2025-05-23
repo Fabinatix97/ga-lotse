@@ -54,7 +54,7 @@ You can find the current test user credentials in the link:../backend/README.md#
 == Project Organization
 === Lib Portal
 
-The Lib Portal serves as shared library for components that can be used in all subprojects. For further information refer to the link:../lib-portal/README.adoc[Lib Portal README]
+The Lib Portal serves as shared library for components that can be used in all subprojects. For further information refer to the link:../packages/lib-portal/README.adoc[Lib Portal README]
 
 === Api Clients
 

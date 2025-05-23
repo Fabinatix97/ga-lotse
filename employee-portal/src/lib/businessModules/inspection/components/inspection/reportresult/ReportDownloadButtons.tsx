@@ -9,7 +9,7 @@ import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 import RemoveRedEyeOutlined from "@mui/icons-material/RemoveRedEyeOutlined";
 import { Button } from "@mui/joy";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { isSafari } from "@/lib/businessModules/inspection/shared/isSafari";

@@ -7,8 +7,7 @@ import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 
-import { validateHexColorCode } from "@eshg/lib-portal/helpers/validators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue, validateHexColorCode } from "@eshg/lib-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import {

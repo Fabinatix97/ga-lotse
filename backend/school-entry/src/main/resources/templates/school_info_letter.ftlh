@@ -16,7 +16,7 @@
 <#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
 <#-- @ftlvariable name="school" type="de.eshg.schoolentry.pdf.Address" -->
-<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationDto" -->
+<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
 
 <#macro additionalStyle>

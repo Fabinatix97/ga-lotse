@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { SingleAutocompleteField } from "@eshg/lib-portal";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import {

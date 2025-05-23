@@ -78,6 +78,18 @@ export const routes = {
     history: (procedureId: string) =>
       `${proceduresPath}/${procedureId}/history`,
     new: (procedureId: string) => `${proceduresPath}/new/${procedureId}`,
+    newSyncFacility: (
+      procedureId: string,
+      fileStateId: string,
+      facilityVersion: number,
+    ) =>
+      `${proceduresPath}/new/${procedureId}/sync-facility/${fileStateId}/${facilityVersion}`,
+    syncFacility: (
+      procedureId: string,
+      fileStateId: string,
+      facilityVersion: number,
+    ) =>
+      `${proceduresPath}/${procedureId}/sync-facility/${fileStateId}/${facilityVersion}`,
   },
   textBlocks: {
     index: textBlocksPath,

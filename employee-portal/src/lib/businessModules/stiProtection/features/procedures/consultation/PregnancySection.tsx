@@ -6,15 +6,15 @@
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { Row } from "@eshg/lib-portal/components/Row";
 import {
   BaseField,
   BaseFieldProps,
-} from "@eshg/lib-portal/components/formFields/BaseField";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { useValidatePastOrTodayDate } from "@eshg/lib-portal/hooks/useValidators";
+  CheckboxField,
+  DateField,
+  NumberField,
+  Row,
+  useValidatePastOrTodayDate,
+} from "@eshg/lib-portal";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";

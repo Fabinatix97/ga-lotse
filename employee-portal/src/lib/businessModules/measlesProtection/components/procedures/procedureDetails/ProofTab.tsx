@@ -10,8 +10,7 @@ import { Button, Grid, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { DetailsItem, useSearchParam } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { Row, formatDate } from "@eshg/lib-portal";
 import {
   ApiMeaslesProtectionProcedure,
   ApiMonetaryFine,

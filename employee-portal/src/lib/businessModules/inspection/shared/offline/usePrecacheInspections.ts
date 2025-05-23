@@ -33,8 +33,7 @@ import {
   publicConfigApiQueryKey,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
-import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { SEMI_STATIC_QUERY_OPTIONS, queryKeyFactory } from "@eshg/lib-portal";
 
 import {
   useBaseFeatureTogglesApi,

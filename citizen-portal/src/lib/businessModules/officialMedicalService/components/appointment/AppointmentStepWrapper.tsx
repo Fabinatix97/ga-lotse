@@ -7,7 +7,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
-import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";

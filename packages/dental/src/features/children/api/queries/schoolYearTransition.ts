@@ -12,7 +12,7 @@ import {
   GetSchoolsForSchoolYearTransitionRequest,
 } from "@eshg/dental-api";
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { childApiQueryKey } from "../../../../config/apiQueryKeys";
 import { mapChildForTransitionResult } from "../models/SchoolYearTransitionChildResult";

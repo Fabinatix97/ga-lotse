@@ -13,7 +13,7 @@ import {
   Toolbar,
   useIsOffline,
 } from "@eshg/lib-employee-portal";
-import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { PageProps } from "@eshg/lib-portal";
 
 import { PendingFacilitiesOfflineTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesOfflineTable";
 import { PendingFacilitiesTableWrapper } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTableWrapper";

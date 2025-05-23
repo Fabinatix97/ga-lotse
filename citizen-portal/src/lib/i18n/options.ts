@@ -5,8 +5,10 @@
 
 import { InitOptions } from "i18next";
 
-import { loadLocale as loadLocaleLibPortal } from "@eshg/lib-portal/i18n/loadLocale";
-import { i18nNamespace as i18nNamespaceLibPortal } from "@eshg/lib-portal/i18n/namespace";
+import {
+  i18nNamespace as i18nNamespaceLibPortal,
+  loadLocale as loadLocaleLibPortal,
+} from "@eshg/lib-portal";
 
 export const defaultLang = "de";
 export const supportedLanguages = ["en", "de"] as const;

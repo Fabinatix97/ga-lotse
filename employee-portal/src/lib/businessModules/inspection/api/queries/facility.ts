@@ -6,7 +6,7 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { FacilityApi, GetPendingFacilitiesRequest } from "@eshg/inspection-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
 import { facilityApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

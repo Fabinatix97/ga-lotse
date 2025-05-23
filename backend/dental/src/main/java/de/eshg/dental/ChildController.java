@@ -53,6 +53,7 @@ import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -158,7 +159,8 @@ public class ChildController {
     Child child = childService.findByExternalIdForUpdate(childId);
     ChildDetailsDto childDetails = getChildDetails(child);
     ProcedureValidator.validateProcedureStatusNotClosed(child);
-    childService.updateChildPerson(child, request);
+    ValidationUtil.validateVersion(request.version(), child);
+    childService.updateChildPersonAndFlush(child, request);
     if (!childDetails.dateOfBirth().equals(request.dateOfBirth())) {
       childService.updateDecayRisk(request.dateOfBirth(), child.getExaminations());
     }
@@ -188,7 +190,8 @@ public class ChildController {
     ProcedureValidator.validateProcedureStatusNotClosed(child);
     validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
     validator.validateFluoridationConsent(request.fluoridationConsent());
-    childService.updateChildData(child, request);
+    ValidationUtil.validateVersion(request.version(), child);
+    childService.updateChildDataAndFlush(child, request);
     return getChildDetails(child);
   }
 

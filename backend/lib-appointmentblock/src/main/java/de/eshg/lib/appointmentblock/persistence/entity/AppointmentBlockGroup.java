@@ -17,26 +17,24 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public class AppointmentBlockGroup extends BaseEntityWithExternalId {
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  @Column(nullable = false)
-  private AppointmentType type;
+  @OneToMany(
+      mappedBy = AppointmentTypeHolder_.APPOINTMENT_BLOCK_GROUP,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
+  @OrderBy
+  private final List<AppointmentTypeHolder> appointmentTypeHolders = new ArrayList<>();
 
   private int parallelExaminations;
-
-  @Column(nullable = false)
-  private Duration slotDuration;
 
   @ElementCollection
   @Column(name = "physician_id", nullable = false)
@@ -63,12 +61,24 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
   @BatchSize(size = 100)
   private final Set<AppointmentBlock> appointmentBlocks = new LinkedHashSet<>();
 
-  public AppointmentType getType() {
-    return type;
+  public List<AppointmentTypeHolder> getAppointmentTypeHolders() {
+    return appointmentTypeHolders;
   }
 
-  public void setType(AppointmentType type) {
-    this.type = type;
+  public void setAppointmentTypeHolders(List<AppointmentTypeHolder> appointmentTypeHolders) {
+    appointmentTypeHolders.forEach(
+        appointmentTypeHolder -> appointmentTypeHolder.setAppointmentBlockGroup(this));
+
+    this.appointmentTypeHolders.clear();
+    this.appointmentTypeHolders.addAll(appointmentTypeHolders);
+  }
+
+  public AppointmentType getType() {
+    return appointmentTypeHolders.stream().findFirst().orElseThrow().getType();
+  }
+
+  public Duration getSlotDuration() {
+    return appointmentTypeHolders.stream().findFirst().orElseThrow().getSlotDuration();
   }
 
   public int getParallelExaminations() {
@@ -77,14 +87,6 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
 
   public void setParallelExaminations(int parallelExaminations) {
     this.parallelExaminations = parallelExaminations;
-  }
-
-  public Duration getSlotDuration() {
-    return slotDuration;
-  }
-
-  public void setSlotDuration(Duration slotDuration) {
-    this.slotDuration = slotDuration;
   }
 
   public List<UUID> getPhysicians() {

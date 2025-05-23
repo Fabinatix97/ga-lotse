@@ -8,10 +8,9 @@ import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 import { MouseEvent } from "react";
 
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
 
-import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/TravelMedicineStepContext";
+import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
@@ -30,7 +29,7 @@ export function StepButtons({ submitButton }: StepButtonsProps) {
   const { t } = useTranslation();
   const accessCode = useAccessCodeParam();
   const { isSubmitting } = useFormikContext<FormDataWithoutConcern>();
-  const { goBack, goForward, isFirstStep, isLastStep } = useStepContext();
+  const { goBack, isFirstStep, isLastStep } = useStepContext();
   const { openCancelDialog } = useConfirmationDialog();
   const router = useRouter();
   const routes = useCitizenRoutes();
@@ -57,18 +56,12 @@ export function StepButtons({ submitButton }: StepButtonsProps) {
 
   return (
     <Stack gap={2} marginTop={2}>
-      {!isLastStep ? (
-        <Button type="button" onClick={() => goForward()}>
-          {t("common.continue")}
-        </Button>
-      ) : (
-        <SubmitButton
-          submitting={isSubmitting}
-          disabled={submitDisabled || disabled}
-        >
-          {submitLabel}
-        </SubmitButton>
-      )}
+      <SubmitButton
+        submitting={isSubmitting}
+        disabled={submitDisabled || disabled}
+      >
+        {!isLastStep ? t("common.continue") : submitLabel}
+      </SubmitButton>
       {!isFirstStep && (
         <Button variant="outlined" onClick={() => goBack()}>
           {t("common.back")}

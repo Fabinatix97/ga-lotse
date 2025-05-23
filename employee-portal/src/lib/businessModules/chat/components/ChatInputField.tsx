@@ -13,14 +13,14 @@ import {
   ReactNode,
 } from "react";
 
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   BaseField,
   FieldComponentProps,
+  FieldProps,
   useBaseField,
-} from "@eshg/lib-portal/components/formFields/BaseField";
+  useIsFormDisabled,
+} from "@eshg/lib-portal";
 import { StyledInputProps } from "@eshg/lib-portal/components/formFields/types";
-import { FieldProps } from "@eshg/lib-portal/types/form";
 
 interface ChatInputFieldProps
   extends FieldProps<string>,

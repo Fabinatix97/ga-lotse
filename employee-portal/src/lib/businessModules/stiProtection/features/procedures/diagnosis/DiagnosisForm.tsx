@@ -7,22 +7,21 @@
 
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack, Typography } from "@mui/joy";
-import {
-  FieldArray,
-  FieldArrayRenderProps,
-  Formik,
-  useFormikContext,
-} from "formik";
+import { Formik, useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { CheckboxField } from "@eshg/lib-portal/components/formFields/CheckboxField";
-import { CheckboxGroupField } from "@eshg/lib-portal/components/formFields/CheckboxGroupField";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import {
+  Alert,
+  CheckboxField,
+  CheckboxGroupField,
+  DateField,
+  FieldArrayWithFocus as FieldArray,
+  FieldArrayRenderExtendedProps,
+  FormPlus,
+  InputField,
+  Row,
+  useIsFormDisabled,
+} from "@eshg/lib-portal";
 import {
   ApiDiagnosis,
   ApiStiProtectionProcedure,
@@ -102,7 +101,11 @@ export function DiagnosisForm({
                     context={ApiTextTemplateContext.DiagnosisResult}
                   />
                 </SectionGrid>
-                <FieldArray name="medications" render={MedicationsSection} />
+                <FieldArray
+                  valueLength={values.medications.length}
+                  name="medications"
+                  render={MedicationsSection}
+                />
                 <FindingsSection />
                 <TypesOfTestsSection />
               </Stack>
@@ -214,7 +217,12 @@ function AdditionalInfosSidecar() {
 }
 
 const initialMedication: MedicationFormData = { name: "", dose: "", date: "" };
-function MedicationsSection({ remove, push, form }: FieldArrayRenderProps) {
+function MedicationsSection({
+  remove,
+  push,
+  form,
+  setInputElementRef,
+}: FieldArrayRenderExtendedProps) {
   const values = form.values as DiagnosisFormData;
 
   return (
@@ -230,6 +238,7 @@ function MedicationsSection({ remove, push, form }: FieldArrayRenderProps) {
       {values.medications.map((_medication, index) => (
         <Row key={index} aria-label={`Medikament ${index + 1}`}>
           <InputField
+            ref={(el) => setInputElementRef(el, index)}
             name={`medications.${index}.name`}
             label={`Name von Medikament ${index + 1}`}
             required="Bitte den Namen des Medikaments angeben."

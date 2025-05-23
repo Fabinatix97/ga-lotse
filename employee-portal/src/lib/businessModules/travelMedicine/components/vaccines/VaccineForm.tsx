@@ -6,7 +6,7 @@
 import { DeleteOutlined } from "@mui/icons-material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Grid, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray, Formik } from "formik";
+import { Formik } from "formik";
 import { Ref } from "react";
 
 import {
@@ -16,17 +16,18 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import {
+  FieldArrayWithFocus as FieldArray,
+  FormAddMoreButton,
+  InputField,
+  InternalLinkButton,
+  NumberField,
+  SelectField,
+  useValidateLength,
   validatePipe,
   validatePositiveInteger,
   validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import { useValidateLength } from "@eshg/lib-portal/hooks/useValidators";
+} from "@eshg/lib-portal";
 import {
   ApiDisease,
   ApiInventoryVaccineWithoutRmbiVaccine,
@@ -200,8 +201,8 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
                 validate={validateBatchId}
               />
               <Stack gap={2} rowGap={2}>
-                <FieldArray name="offsets">
-                  {({ push, remove }) => (
+                <FieldArray valueLength={values.offsets.length} name="offsets">
+                  {({ push, remove, setInputElementRef }) => (
                     <>
                       {values.offsets.map((value, index) => (
                         <Stack key={index} gap={2} rowGap={2}>
@@ -213,6 +214,7 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
                             </Grid>
                             <Grid xs={11}>
                               <NumberField
+                                ref={(el) => setInputElementRef(el, index)}
                                 name={`offsets[${index}]`}
                                 min={1.0}
                                 label={`Abstand in Wochen zwischen der 1. und ${index + 2}. Impfung`}

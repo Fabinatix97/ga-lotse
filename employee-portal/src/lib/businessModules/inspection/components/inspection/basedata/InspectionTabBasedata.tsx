@@ -76,7 +76,7 @@ export function InspectionTabBasedata({
     >
       <Grid lg={9}>
         <FacilityTile
-          facility={inspection.facility}
+          inspection={inspection}
           readonly={readonly}
           onEdit={openEdit}
         />

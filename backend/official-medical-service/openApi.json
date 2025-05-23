@@ -801,9 +801,10 @@
         "responses" : {
           "200" : {
             "content" : {
-              "application/json" : {
+              "text/markdown" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/LandingContent"
+                  "type" : "string",
+                  "format" : "byte"
                 }
               }
             },
@@ -5420,6 +5421,19 @@
           }
         }
       },
+      "DocumentDetails" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "DocumentPopulation" : {
         "required" : [ "key", "request" ],
         "type" : "object",
@@ -7250,64 +7264,6 @@
           "propertyName" : "@type"
         }
       },
-      "LandingContent" : {
-        "required" : [ "elements" ],
-        "type" : "object",
-        "properties" : {
-          "elements" : {
-            "maxItems" : 2147483647,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/LandingElementConfig"
-            }
-          }
-        }
-      },
-      "LandingElementConfig" : {
-        "required" : [ "elementHeader" ],
-        "type" : "object",
-        "properties" : {
-          "elementHeader" : {
-            "$ref" : "#/components/schemas/LandingElementHeaderConfig"
-          },
-          "elementList" : {
-            "$ref" : "#/components/schemas/LandingElementListConfig"
-          }
-        }
-      },
-      "LandingElementHeaderConfig" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "en" : {
-            "minLength" : 1,
-            "type" : "string"
-          }
-        }
-      },
-      "LandingElementListConfig" : {
-        "required" : [ "de", "en" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "en" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "Language" : {
         "type" : "string",
         "enum" : [ "GERMAN", "ENGLISH" ]
@@ -7513,7 +7469,7 @@
           "thyroidInfo" : {
             "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerThyroidDisease"
           },
-          "tuberculosis" : {
+          "tuberculosisInfo" : {
             "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
           }
         }
@@ -7633,10 +7589,10 @@
         "type" : "object",
         "properties" : {
           "de" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           },
           "en" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           }
         }
       },
@@ -8340,7 +8296,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -8764,7 +8720,7 @@
       },
       "TaskType" : {
         "type" : "string",
-        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "TestHelperClockSetRequest" : {
         "required" : [ "newInstant" ],

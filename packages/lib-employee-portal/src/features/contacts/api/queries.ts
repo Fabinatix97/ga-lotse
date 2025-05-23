@@ -16,7 +16,7 @@ import {
   ApiSearchContactsResponse,
   GetContactsRequest,
 } from "@eshg/base-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { contactApiQueryKey } from "../../../config/apiQueryKeys";
 import { useApi } from "../../../contexts/api";

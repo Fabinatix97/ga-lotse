@@ -3739,6 +3739,36 @@
         "tags" : [ "SchoolEntry" ]
       },
       "post" : {
+        "operationId" : "saveSchoolInfoLetter",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SaveSchoolInfoLetterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
+    "/school-entries/{procedureId}/school-info-letter-pdf" : {
+      "post" : {
         "operationId" : "createSchoolInfoLetter",
         "parameters" : [ {
           "in" : "path",
@@ -3759,6 +3789,34 @@
           },
           "required" : true
         },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
+    "/school-entries/{procedureId}/school-info-letter-print" : {
+      "post" : {
+        "operationId" : "generateSchoolInfoLetterPdf",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -6122,7 +6180,7 @@
         "example" : "CONFIRMED",
         "enum" : [ "NO_REPLY", "CONFIRMED", "PARTIALLY_CONFIRMED", "NOT_CONFIRMED" ]
       },
-      "Document" : {
+      "DocumentDetails" : {
         "required" : [ "fileName", "fileSizeBytes" ],
         "type" : "object",
         "properties" : {
@@ -8412,10 +8470,10 @@
         "type" : "object",
         "properties" : {
           "de" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           },
           "en" : {
-            "$ref" : "#/components/schemas/Document"
+            "$ref" : "#/components/schemas/DocumentDetails"
           }
         }
       },
@@ -8939,7 +8997,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -9186,6 +9244,48 @@
         "type" : "string",
         "description" : "A list of categories for the salutation from which specific salutation phrases can be derived. The choice of salutation is free for every citizen and not dependent on gender.",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
+      },
+      "SaveSchoolInfoLetterRequest" : {
+        "required" : [ "consultationWithCustodianRecommended", "eyeExaminationInfo", "hearingExaminationInfo", "parentsWish", "physiciansRecommendation", "postponed", "schoolAndPromotionHints", "therapyAndPromotionInfo", "type", "vaccinationInfo" ],
+        "type" : "object",
+        "properties" : {
+          "consultationWithCustodianRecommended" : {
+            "type" : "boolean"
+          },
+          "customRecommendation" : {
+            "type" : "string"
+          },
+          "eyeExaminationInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterEyeExaminationInfo"
+          },
+          "hearingExaminationInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterHearingExaminationInfo"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "parentsWish" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterParentsWish"
+          },
+          "physiciansRecommendation" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterPhysiciansRecommendation"
+          },
+          "postponed" : {
+            "type" : "boolean"
+          },
+          "schoolAndPromotionHints" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterSchoolAndPromotionHints"
+          },
+          "therapyAndPromotionInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterTherapyAndPromotionInfo"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterExaminationType"
+          },
+          "vaccinationInfo" : {
+            "$ref" : "#/components/schemas/SchoolInfoLetterVaccinationInfo"
+          }
+        }
       },
       "School" : {
         "required" : [ "id", "name" ],
@@ -9922,7 +10022,7 @@
       },
       "TaskType" : {
         "type" : "string",
-        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "TestHelperClockSetRequest" : {
         "required" : [ "newInstant" ],

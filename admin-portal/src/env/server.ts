@@ -6,10 +6,10 @@
 import { object, parse } from "valibot";
 
 import {
-  environmentTypeSchema,
-  nodeEnvSchema,
-  urlSchema,
-} from "@eshg/lib-portal/schemas/environment";
+  EnvironmentTypeSchema,
+  NodeEnvSchema,
+  UrlSchema,
+} from "@eshg/lib-portal/universal";
 
 /*
  * Environment Variables exposed to the Server (Node.js)
@@ -20,11 +20,11 @@ export const schema = object({
    * Next.js automatically assigns `development` when running the next dev command,
    * or `production` for all other commands.
    */
-  NODE_ENV: nodeEnvSchema,
+  NODE_ENV: NodeEnvSchema,
 
-  PUBLIC_ENVIRONMENT_TYPE: environmentTypeSchema,
+  PUBLIC_ENVIRONMENT_TYPE: EnvironmentTypeSchema,
 
-  PUBLIC_FRONTEND_URL: urlSchema,
+  PUBLIC_FRONTEND_URL: UrlSchema,
 });
 
 // eslint-disable-next-line no-restricted-properties

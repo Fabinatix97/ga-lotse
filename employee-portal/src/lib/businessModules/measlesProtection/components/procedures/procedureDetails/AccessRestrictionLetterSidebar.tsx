@@ -17,8 +17,7 @@ import {
   SidebarForm,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FileType, useSnackbar } from "@eshg/lib-portal";
 import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 
 import { useAddAccessRestrictionLetterMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

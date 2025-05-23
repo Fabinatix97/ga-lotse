@@ -9,10 +9,12 @@ import { Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { isEmpty } from "remeda";
 
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  OptionalFieldValue,
+  SelectField,
+  TextareaField,
+  buildEnumOptions,
+} from "@eshg/lib-portal";
 import { ApiManualProgressEntryType } from "@eshg/lib-procedures-api";
 
 import { OverlayBoundary } from "../../../../components/boundaries/OverlayBoundary";

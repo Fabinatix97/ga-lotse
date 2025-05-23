@@ -13,8 +13,7 @@ public enum MainResultDto {
   I,
   D,
   F,
-  E,
-  Y,
+  M,
   X,
   Z,
   T,
@@ -22,7 +21,10 @@ public enum MainResultDto {
   O,
   V,
   N,
-  P,
+  U,
   K,
-  U
+  E,
+  W,
+  P,
+  A
 }

@@ -14,8 +14,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { TextareaField } from "@eshg/lib-portal/components/formFields/TextareaField";
+import { Alert, TextareaField } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiReviewResult,

@@ -189,6 +189,12 @@ public final class BaseUrls {
     private StiProtection() {}
   }
 
+  public static final class MedsAbroad {
+    public static final String PROCEDURE_CONTROLLER = "/meds-abroad-procedures";
+
+    private MedsAbroad() {}
+  }
+
   public static final class MedicalRegistry {
     public static final String MEDICAL_REGISTRY_CONTROLLER = "/medical-registry-entries";
     public static final String CITIZEN_PORTAL_ENDPOINT = "/public";

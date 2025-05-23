@@ -25,10 +25,12 @@ import {
   useSyncRowSelection,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import {
+  Alert,
+  DynamicPageProps,
+  GENDER_VALUES,
+  formatDate,
+} from "@eshg/lib-portal";
 
 import { routes } from "../../../config/routes";
 import { useDentalApi } from "../../../contexts/dental";

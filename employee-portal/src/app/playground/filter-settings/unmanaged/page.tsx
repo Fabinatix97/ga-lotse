@@ -26,7 +26,7 @@ import {
   TableSheet,
   ToggleFilterButton,
 } from "@eshg/lib-employee-portal";
-import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateString } from "@eshg/lib-portal";
 
 interface PlaygroundFilter {
   key: string;

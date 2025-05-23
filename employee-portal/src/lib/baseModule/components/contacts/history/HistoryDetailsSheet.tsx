@@ -5,7 +5,7 @@
 
 import { Sheet } from "@mui/joy";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export function HistoryDetailsSheet(props: RequiresChildren) {
   return (

@@ -17,16 +17,16 @@ import {
   Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { AppointmentListProps } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentListForDate";
 import {
+  AppointmentListProps,
   AppointmentPickerField,
   AppointmentPickerLayoutProps,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+  FormPlus,
+  Row,
+  SubmitButton,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import { FIELD_LABELS_DE } from "@eshg/lib-portal/components/formFields/appointmentPicker/labels";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 const now = new Date();
 interface Appointment {

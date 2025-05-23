@@ -4,16 +4,26 @@
  */
 
 import { ApiUpdateMandatoryInternalConfigDepartmentInfoRequest } from "@eshg/base-api";
-import { DepartmentInfoConfigApi } from "@eshg/lib-config-api";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  ApiUpdateInternalConfigDepartmentInfoRequest,
+  DepartmentInfoConfigApi,
+} from "@eshg/lib-config-api";
+import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 import { SexWorkDepartmentInfoConfigApi } from "@eshg/sti-protection-api";
 
 import { DepartmentInfoFormModel } from "@/lib/configurator/components/shared/ConfiguratorDetails/DepartmentInfo";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { useConfiguratorDepartmentInfoApi } from "@/lib/shared/api/clients";
 
-function mapToApi(
+function mapToModuleApi(
+  model: DepartmentInfoFormModel,
+): ApiUpdateInternalConfigDepartmentInfoRequest {
+  if (model.useInfoOfHealthDepartment === "DEFAULT") {
+    return {};
+  }
+  return mapValues(model);
+}
+function mapValues(
   model: DepartmentInfoFormModel,
 ): ApiUpdateMandatoryInternalConfigDepartmentInfoRequest {
   return {
@@ -40,14 +50,19 @@ export function useUpdateDepartmentInfo(module: ConfiguratorModuleName) {
 
   const mutation = useHandledMutation({
     mutationFn: (params: DepartmentInfoFormModel) => {
+      if (module === "BASE") {
+        return (
+          configuratorApi as DepartmentInfoConfigApi
+        ).updateInternalConfigDepartmentInfo(mapValues(params));
+      }
       if (module === "SEX_WORK") {
         return (
           configuratorApi as SexWorkDepartmentInfoConfigApi
-        ).updateInternalConfigDepartmentInfo1(mapToApi(params));
+        ).updateInternalConfigDepartmentInfo1(mapToModuleApi(params));
       }
       return (
         configuratorApi as DepartmentInfoConfigApi
-      ).updateInternalConfigDepartmentInfo(mapToApi(params));
+      ).updateInternalConfigDepartmentInfo(mapToModuleApi(params));
     },
     onSuccess: () =>
       snackbar.confirmation("Die Änderungen wurden gespeichert."),

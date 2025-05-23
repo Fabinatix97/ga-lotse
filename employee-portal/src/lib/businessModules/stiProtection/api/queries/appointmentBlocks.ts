@@ -6,7 +6,7 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlockGroupRequest,

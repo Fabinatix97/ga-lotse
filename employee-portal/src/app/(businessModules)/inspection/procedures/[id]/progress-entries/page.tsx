@@ -9,7 +9,7 @@ import { use } from "react";
 
 import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
 import { ProgressEntriesPage } from "@eshg/lib-employee-portal";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import {

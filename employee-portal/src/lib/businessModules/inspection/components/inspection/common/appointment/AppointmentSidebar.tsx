@@ -19,8 +19,7 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { DateField, toDateString } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { TimeField } from "@/lib/shared/components/formFields/TimeField";

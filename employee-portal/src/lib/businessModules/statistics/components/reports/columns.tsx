@@ -6,7 +6,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ActionsMenu } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import { translateDataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";

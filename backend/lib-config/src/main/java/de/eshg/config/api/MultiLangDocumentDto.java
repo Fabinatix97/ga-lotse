@@ -10,4 +10,5 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "MultiLangDocument")
-public record MultiLangDocumentDto(@Valid @NotNull DocumentDto de, @Valid DocumentDto en) {}
+public record MultiLangDocumentDto(
+    @Valid @NotNull DocumentDetailsDto de, @Valid DocumentDetailsDto en) {}

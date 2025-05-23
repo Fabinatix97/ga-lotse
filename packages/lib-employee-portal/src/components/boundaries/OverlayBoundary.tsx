@@ -8,7 +8,7 @@
 import {
   BaseOverlayBoundary,
   BaseOverlayBoundaryProps,
-} from "@eshg/lib-portal/components/boundaries/BaseOverlayBoundary";
+} from "@eshg/lib-portal";
 
 import { EmployeePortalErrorModal } from "./EmployeePortalErrorModal";
 

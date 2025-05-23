@@ -5,9 +5,11 @@
 
 import { useRouter } from "next/navigation";
 
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  unwrapRawResponse,
+  useHandledMutation,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   ConfirmProcedureRequest,
   CreateProcedureRequest,

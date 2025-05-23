@@ -9,7 +9,7 @@ import {
   GetProphylaxisSessionRequest,
   ProphylaxisSessionApi,
 } from "@eshg/dental-api";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { unwrapRawResponse } from "@eshg/lib-portal";
 
 import { prophylaxisSessionApiQueryKey } from "../../../../config/apiQueryKeys";
 import { mapProphylaxisSessionDetails } from "../models/ProphylaxisSessionDetails";

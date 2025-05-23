@@ -6,8 +6,7 @@
 import { Grid, Stack } from "@mui/joy";
 
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { Row, SALUTATION_VALUES } from "@eshg/lib-portal";
 import { ApiFacilityContactPerson } from "@eshg/measles-protection-api";
 
 import {

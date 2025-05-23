@@ -8,10 +8,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-  <include file="/migrations/0001_initial.xml"/>
-  <include file="/migrations/0002_rename_privacy_to_multi_lang_document.xml"/>
-  <include file="/migrations/0003_lab_tests.xml"/>
-  <include file="/migrations/0004_refactor_laboratory_test_examination.xml"/>
-  <include file="/migrations/0005_integrate_statistics.xml"/>
+  <include file="migrations/0001_initial.xml"/>
+  <include file="migrations/0002_rename_privacy_to_multi_lang_document.xml"/>
+  <include file="migrations/0003_lab_tests.xml"/>
+  <include file="migrations/0004_refactor_laboratory_test_examination.xml"/>
+  <include file="migrations/0005_integrate_statistics.xml"/>
+  <include file="migrations/0006_add_appointment_cooldown.xml"/>
+  <include file="migrations/0007_add_meds_abroad_procedure_type.xml"/>
+  <include file="migrations/0008_multiple_appointment_types.xml"/>
 
 </databaseChangeLog>

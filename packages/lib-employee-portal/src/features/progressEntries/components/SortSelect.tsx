@@ -6,8 +6,7 @@
 import { Select } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { SelectOptions, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiProgressEntrySortOrder } from "@eshg/lib-procedures-api";
 
 import { useReplaceSearchParams } from "../../../hooks/useReplaceSearchParams";

@@ -9,4 +9,5 @@ export const esuConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "DEPARTMENT_INFO",
   "OPENING_HOURS",
   "SCHOOL_ENTRY",
+  "PRIVACY_NOTICE",
 ];

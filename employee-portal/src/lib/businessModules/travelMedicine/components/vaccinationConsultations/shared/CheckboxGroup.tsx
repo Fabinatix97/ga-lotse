@@ -16,7 +16,7 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent } from "react";
 
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { useBaseField } from "@eshg/lib-portal";
 import {
   ApiAppliedService,
   ApiAssignableService,

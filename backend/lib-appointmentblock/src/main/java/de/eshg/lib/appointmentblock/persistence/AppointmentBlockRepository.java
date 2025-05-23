@@ -21,7 +21,11 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
   List<AppointmentBlock> findAllByOrderById();
 
   @Query(
-      "select a from AppointmentBlock a left join fetch a.appointments where a.appointmentBlockGroup.type = :appointmentType "
+      "select distinct a from AppointmentBlock a "
+          + "left join fetch a.appointments "
+          + "left join a.appointmentBlockGroup abg "
+          + "left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id "
+          + "where h.type = :appointmentType "
           + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
           + "and (:physicianId is null or :physicianId member of a.appointmentBlockGroup.physicians) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
@@ -33,7 +37,10 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(
-      "select a from AppointmentBlock a where a.appointmentBlockGroup.type = :appointmentType "
+      "select distinct a from AppointmentBlock a "
+          + "left join a.appointmentBlockGroup abg "
+          + "left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id "
+          + "where h.type = :appointmentType "
           + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
           + "and a.appointmentBlockStart <= :appointmentStart and a.appointmentBlockEnd >= :appointmentEnd order by a.id")
   List<AppointmentBlock> findBlockByAppointmentTypeAndLocationAndAppointmentInBlockWithLock(

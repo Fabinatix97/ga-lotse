@@ -5,7 +5,7 @@
 
 import { isValid, parse } from "date-fns";
 
-import { YearInput } from "@eshg/lib-portal/components/inputs/YearInput";
+import { YearInput } from "@eshg/lib-portal";
 
 import { YearFilterDefinition, YearFilterValue } from "../../types/YearFilter";
 

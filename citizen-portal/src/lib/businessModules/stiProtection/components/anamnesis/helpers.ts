@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { mapYesOrNoToBool } from "@eshg/lib-portal/components/formFields/YesOrNoWithFollowUp";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  mapMonthAndYear,
+  mapOptionalValue,
+  mapYesOrNoToBool,
+} from "@eshg/lib-portal";
 import {
   ApiConcern,
   ApiCreateMedicalHistoryRequest,

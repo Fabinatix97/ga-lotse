@@ -6,7 +6,7 @@
 import { Sheet, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode, useId } from "react";
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren } from "@eshg/lib-portal";
 
 export const ExaminationSheet = styled(Sheet)(({ theme }) => ({
   display: "flex",
@@ -14,6 +14,7 @@ export const ExaminationSheet = styled(Sheet)(({ theme }) => ({
   gap: theme.spacing(3),
   padding: theme.spacing(3),
   overflow: "hidden",
+  height: "100%",
 })) as typeof Sheet;
 
 export interface ExaminationTitleProps extends RequiresChildren {

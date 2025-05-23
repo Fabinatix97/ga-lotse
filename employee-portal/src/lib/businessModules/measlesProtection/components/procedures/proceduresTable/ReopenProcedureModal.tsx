@@ -9,9 +9,7 @@ import { Button, Stack } from "@mui/joy";
 import { useState } from "react";
 
 import { OverlayBoundary } from "@eshg/lib-employee-portal";
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { BaseModal, formatDate, useSnackbar } from "@eshg/lib-portal";
 
 import { useReopenProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/statusTransitionApi";
 import { REOPEN_PROCEDURE_SUCCESS_MESSAGE } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";

@@ -20,10 +20,12 @@ public class MunicipalityDirectory {
   private record DirectoryEntry(String key, String municipality, Range<String> range) {
 
     public static DirectoryEntry from(MunicipalityDirectoryCsvEntry csvEntry) {
+      String postalCodeTo =
+          "".equals(csvEntry.postalCodeTo()) ? csvEntry.postalCodeFrom() : csvEntry.postalCodeTo();
       return new DirectoryEntry(
           csvEntry.municipalityKey(),
           csvEntry.municipality(),
-          Range.of(csvEntry.postalCodeFrom(), csvEntry.postalCodeTo()));
+          Range.of(csvEntry.postalCodeFrom(), postalCodeTo));
     }
   }
 

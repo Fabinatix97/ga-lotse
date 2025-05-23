@@ -5,7 +5,7 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal";
 
 import { useCitizenApi } from "@/lib/businessModules/stiProtection/api/clients";
 

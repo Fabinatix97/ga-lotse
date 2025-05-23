@@ -9,12 +9,8 @@ import { use } from "react";
 import * as v from "valibot";
 
 import { ToolbarBackButton } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import {
-  PositiveIntegerSchema,
-  UuidSchema,
-} from "@eshg/lib-portal/schemas/pageParams";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps, formatDate } from "@eshg/lib-portal";
+import { PositiveIntegerSchema, UuidSchema } from "@eshg/lib-portal/universal";
 
 import { useGetHeaderInformation } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { FacilitySyncForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/FacilitySyncForm";

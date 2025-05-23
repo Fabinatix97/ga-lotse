@@ -20,8 +20,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { FormButtonBar } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { FormPlus, InputField } from "@eshg/lib-portal";
 
 import { useFinalizeInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { FinalizeInspectionModalProps } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModal";

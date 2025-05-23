@@ -17,9 +17,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { validateRange } from "@eshg/lib-portal/helpers/validators";
+import { NumberField, SelectField, validateRange } from "@eshg/lib-portal";
 
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";
 import { useGetInventoryItems } from "@/lib/businessModules/inspection/api/queries/inventory";

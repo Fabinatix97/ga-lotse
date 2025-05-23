@@ -15,13 +15,13 @@ import { Fragment, startTransition, useId, useState } from "react";
 import { isDefined } from "remeda";
 import { useDebouncedCallback } from "use-debounce";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import {
+  ButtonLink,
   SelectOptions,
+  YearInput,
+  isNonEmptyString,
   optionsFromRecord,
-} from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { YearInput } from "@eshg/lib-portal/components/inputs/YearInput";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+} from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/opendata-api";
 
 import {

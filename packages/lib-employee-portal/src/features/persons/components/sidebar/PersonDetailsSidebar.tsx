@@ -11,10 +11,10 @@ import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   GENDER_VALUES,
   SALUTATION_VALUES,
+  formatDate,
   getOptionalTitle,
-} from "@eshg/lib-portal/components/formFields/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+  translateCountry,
+} from "@eshg/lib-portal";
 
 import { BaseAddressDetailsColumn } from "../../../../components/address/BaseAddressDetailsColumn";
 import { DetailsRow } from "../../../../components/detailsSection/DetailsRow";

@@ -6,7 +6,7 @@
 import { useState } from "react";
 
 import { ApiContactCategory } from "@eshg/base-api";
-import { SelectObjectField } from "@eshg/lib-portal/components/formFields/SelectObjectField";
+import { SelectObjectField } from "@eshg/lib-portal";
 
 import { useSearchContacts } from "../api/queries";
 import { CONTACT_CATEGORY_NAMES_SHORT } from "../translations";

@@ -17,8 +17,7 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { Alert, NumberField } from "@eshg/lib-portal";
 
 import { useCorrectInventoryItemCount } from "@/lib/baseModule/api/mutations/inventory";
 

@@ -7,8 +7,7 @@
 
 import { createContext, useContext } from "react";
 
-import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { RequiresChildren, useUuid } from "@eshg/lib-portal";
 
 import { SidebarSlot } from "../components/SidebarSlot";
 

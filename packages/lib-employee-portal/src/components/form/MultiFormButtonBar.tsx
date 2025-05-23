@@ -6,7 +6,7 @@
 import { Button, ColorPaletteProp } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { SubmitButton } from "@eshg/lib-portal";
 
 import { ButtonBar } from "../buttons/ButtonBar";
 

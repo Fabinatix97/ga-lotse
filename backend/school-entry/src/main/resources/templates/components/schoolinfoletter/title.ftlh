@@ -19,7 +19,7 @@
 </#macro>
 
 <#macro content child date schoolYear>
-<#-- @ftlvariable name="child" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterChild" -->
+<#-- @ftlvariable name="child" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterChild" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
 <#-- @ftlvariable name="schoolYear" type="java.lang.String" -->
   <div class="subtitle">B. Schulinfobrief / Schulärztliches Gutachten</div>

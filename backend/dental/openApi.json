@@ -6265,7 +6265,7 @@
       },
       "MainResult" : {
         "type" : "string",
-        "enum" : [ "S", "I", "D", "F", "E", "Y", "X", "Z", "T", "H", "O", "V", "N", "P", "K", "U" ]
+        "enum" : [ "S", "I", "D", "F", "M", "X", "Z", "T", "H", "O", "V", "N", "U", "K", "E", "W", "P", "A" ]
       },
       "ManualProgressEntry" : {
         "required" : [ "createdAt", "createdBy", "locked", "manualProgressEntryType", "modifiedAt", "progressEntryId" ],
@@ -6613,7 +6613,7 @@
       },
       "ProcedureType" : {
         "type" : "string",
-        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "DRAFT_CITIZEN_OFFICE_IMPORT", "DRAFT_SCHOOL_IMPORT", "INSPECTION", "TM_VACCINATION_CONSULTATION", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY_ENTRY", "MEDICAL_REGISTRY_CITIZEN_DRAFT", "MEDICAL_REGISTRY_EMPLOYEE_DRAFT", "DENTAL_CHILD", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "ProcedureWithDuration" : {
         "required" : [ "createdAt", "id" ],
@@ -6804,7 +6804,7 @@
         }
       },
       "ProphylaxisSessionChildExamination" : {
-        "required" : [ "allFluoridationConsents", "childId", "dateOfBirth", "examinationId", "examinationVersion", "firstName", "institutionName", "lastName", "previousExaminationResults", "procedureLabels" ],
+        "required" : [ "allFluoridationConsents", "childId", "childVersion", "dateOfBirth", "examinationId", "examinationVersion", "firstName", "institution", "lastName", "previousExaminationResults", "procedureLabels" ],
         "type" : "object",
         "properties" : {
           "allFluoridationConsents" : {
@@ -6816,6 +6816,10 @@
           "childId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "childVersion" : {
+            "type" : "integer",
+            "format" : "int64"
           },
           "dateOfBirth" : {
             "type" : "string",
@@ -6838,8 +6842,8 @@
           "groupName" : {
             "type" : "string"
           },
-          "institutionName" : {
-            "type" : "string"
+          "institution" : {
+            "$ref" : "#/components/schemas/Institution"
           },
           "lastName" : {
             "type" : "string"
@@ -7076,7 +7080,7 @@
       },
       "SecondaryResult" : {
         "type" : "string",
-        "enum" : [ "DA", "FA", "FIS", "ID", "INS", "LÜ", "RET", "TR", "WR", "ZA" ]
+        "enum" : [ "S", "I", "D", "F", "M", "X", "Z", "T", "H", "O", "V", "N", "U", "K", "E", "W", "P", "A", "DA", "FA", "ID", "INS", "LÜ", "RET", "ZA" ]
       },
       "SelfAssignTaskRequest" : {
         "required" : [ "taskVersion" ],
@@ -7264,7 +7268,7 @@
       },
       "TaskType" : {
         "type" : "string",
-        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "BOOK_APPOINTMENT", "PERFORM_SCHOOL_ENTRY_EXAMINATION", "INSPECTION_PLANNING", "INSPECTION_EXECUTION", "INSPECTION_REPORT", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "OFFICIAL_MEDICAL_SERVICE", "MEDS_ABROAD" ]
       },
       "TestHelperClockSetRequest" : {
         "required" : [ "newInstant" ],
@@ -7362,6 +7366,50 @@
       "TriggerType" : {
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UpdateChildDetailsInBulkRequest" : {
+        "required" : [ "childId", "dateOfBirth", "firstName", "lastName", "procedureLabels", "version" ],
+        "type" : "object",
+        "properties" : {
+          "childId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "fluoridationConsent" : {
+            "$ref" : "#/components/schemas/FluoridationConsent"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "groupName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "procedureLabels" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "UpdateChildRequest" : {
         "required" : [ "institutionId", "procedureLabels", "version" ],
@@ -7535,11 +7583,16 @@
         }
       },
       "UpdateProphylaxisSessionExaminationsRequest" : {
-        "required" : [ "examinationUpdates" ],
+        "required" : [ "childUpdates", "examinationUpdates" ],
         "type" : "object",
         "properties" : {
+          "childUpdates" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UpdateChildDetailsInBulkRequest"
+            }
+          },
           "examinationUpdates" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/UpdateExaminationsInBulkRequest"

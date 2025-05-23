@@ -13,9 +13,11 @@ import {
   SidebarForm,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  GENDER_OPTIONS,
+  mapOptionalValue,
+  useSnackbar,
+} from "@eshg/lib-portal";
 import {
   ApiGender,
   ApiStiProtectionProcedure,

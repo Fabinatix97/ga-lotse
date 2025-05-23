@@ -13,7 +13,7 @@ import {
   TableSheet,
   formatBoolean,
 } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal";
 
 interface FluoridationConsentHistoryTableProps {
   fluoridationConsent: ApiFluoridationConsent[];

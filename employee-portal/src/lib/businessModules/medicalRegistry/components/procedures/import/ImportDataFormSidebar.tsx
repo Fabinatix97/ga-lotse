@@ -15,9 +15,7 @@ import {
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
+import { Alert, FileType, SubmitButton } from "@eshg/lib-portal";
 
 import { DownloadTemplateLink } from "@/lib/businessModules/medicalRegistry/components/procedures/import/DownloadTemplateLink";
 

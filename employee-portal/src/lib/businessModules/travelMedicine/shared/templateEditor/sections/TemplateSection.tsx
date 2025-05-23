@@ -7,7 +7,7 @@ import { Sheet, Stack } from "@mui/joy";
 import { FieldArray } from "formik";
 import { ReactNode } from "react";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiTemplateSectionElement } from "@eshg/travel-medicine-api";
 
 import { SectionButtonBar } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/SectionButtonBar";

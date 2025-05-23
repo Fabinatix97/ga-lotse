@@ -7,7 +7,7 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { AuthType, InteractiveAuth } from "matrix-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 
-import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModal } from "@eshg/lib-portal";
 
 import { SSOAuthModalValues } from "@/lib/businessModules/chat/components/secureBackup/CreateBackupSidebar";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

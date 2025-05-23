@@ -8,11 +8,11 @@ import {
   ApiAddGdprProcedureRequest,
 } from "@eshg/base-api";
 import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   mapOptionalValue,
   mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+  toUtcDate,
+} from "@eshg/lib-portal";
 
 import { GDPRProcedureFormInputs } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";
 

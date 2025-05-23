@@ -4,7 +4,7 @@
  */
 
 import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { mapOptionalValue } from "@eshg/lib-portal";
 import {
   ApiDisease,
   ApiInformationStatementTemplate,

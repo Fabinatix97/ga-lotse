@@ -20,8 +20,7 @@ import {
   useRowSelection,
   useSyncRowSelection,
 } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal/components/Alert";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { Alert, DynamicPageProps } from "@eshg/lib-portal";
 
 import { routes } from "../../../config/routes";
 import { useDentalApi } from "../../../contexts/dental";

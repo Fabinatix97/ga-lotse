@@ -11,7 +11,7 @@ import {
 } from "next/navigation";
 import { SetStateAction, useCallback, useState } from "react";
 
-import { mapOptionalString } from "@eshg/lib-portal/helpers/form";
+import { mapOptionalString } from "@eshg/lib-portal";
 
 import {
   setWindowSearchParams,

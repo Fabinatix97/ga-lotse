@@ -14,12 +14,8 @@ import {
   CentralFileSyncForm,
   useGetPersonFileStateDiff,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import {
-  PositiveIntegerSchema,
-  UuidSchema,
-} from "@eshg/lib-portal/schemas/pageParams";
-import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { DynamicPageProps, formatPersonName } from "@eshg/lib-portal";
+import { PositiveIntegerSchema, UuidSchema } from "@eshg/lib-portal/universal";
 
 import { useSyncPerson } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 

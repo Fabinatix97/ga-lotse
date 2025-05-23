@@ -15,7 +15,7 @@ import {
 import { useField } from "formik";
 import { HTMLAttributes } from "react";
 
-import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { CustomAutocomplete } from "@eshg/lib-portal";
 
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 

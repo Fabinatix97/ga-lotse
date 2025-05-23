@@ -13,8 +13,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { ReactNode, useEffect, useState } from "react";
 
 import { DetailsSection, InformationSheet } from "@eshg/lib-employee-portal";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate, useResetAlertContext } from "@eshg/lib-portal";
 import {
   ApiMedicalHistory,
   ApiProcedureStatus,

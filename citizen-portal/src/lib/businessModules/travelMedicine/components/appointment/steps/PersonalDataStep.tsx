@@ -5,19 +5,19 @@
 
 import { Stack } from "@mui/joy";
 
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
+  CheckboxField,
+  DateField,
+  EmailField,
+  InputField,
   useValidateLength,
   useValidatePastOrTodayDate,
-} from "@eshg/lib-portal/hooks/useValidators";
+} from "@eshg/lib-portal";
 
 import {
   FormSheet,
   FormSheetTitle,
 } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
-import { CheckboxField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/CheckboxField";
 import { useTranslation } from "@/lib/i18n/client";
 
 export function PersonalDataStep() {

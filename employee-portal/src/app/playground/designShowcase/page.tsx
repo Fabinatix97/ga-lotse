@@ -14,8 +14,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { FormPlus, InputField } from "@eshg/lib-portal";
 
 export default function DesignShowcasePage() {
   return (

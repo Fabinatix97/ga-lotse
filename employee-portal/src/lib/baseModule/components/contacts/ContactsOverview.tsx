@@ -15,7 +15,7 @@ import {
 import {
   PaginatedSearchParams,
   SortableSearchParams,
-} from "@eshg/lib-portal/helpers/searchParams";
+} from "@eshg/lib-portal/universal";
 
 import { useGetContactsOverviewPageQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactsTable } from "@/lib/baseModule/components/contacts/ContactsTable";
