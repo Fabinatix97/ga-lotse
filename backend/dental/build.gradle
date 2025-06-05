@@ -14,7 +14,7 @@ dependencies {
 
     implementation 'de.cronn:reflection-util:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
-    implementation 'com.google.guava:guava'
+    implementation 'com.google.guava:guava:latest.release'
     implementation 'org.apache.commons:commons-text:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 

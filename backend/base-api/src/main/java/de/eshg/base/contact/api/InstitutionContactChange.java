@@ -16,6 +16,7 @@ public record InstitutionContactChange(
     @NotNull @Valid HistoryChange<UUID> mergedFrom,
     @NotNull @Valid HistoryChange<String> name,
     @NotNull @Valid HistoryChange<InstitutionContactCategoryDto> category,
+    @NotNull @Valid HistoryChange<InstitutionContactSubCategoryDto> subCategory,
     @NotNull @Valid HistoryChange<List<String>> phoneNumbers,
     @NotNull @Valid HistoryChange<List<String>> emailAddresses)
     implements AbstractContactChange, ContactChange {

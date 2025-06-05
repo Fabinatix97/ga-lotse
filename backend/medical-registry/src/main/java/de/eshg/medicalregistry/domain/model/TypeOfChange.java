@@ -13,5 +13,6 @@ public enum TypeOfChange {
   CHANGE_OF_NAME,
   RELOCATION,
   DEREGISTRATION,
+  CHANGE_OF_EMPLOYEES,
   OTHER
 }

@@ -8,5 +8,6 @@ package de.eshg.lib.procedure.domain.model;
 public enum PersonType {
   PATIENT,
   PARENT,
-  PROFESSIONAL
+  PROFESSIONAL,
+  EMPLOYEE
 }

@@ -19,16 +19,14 @@ import {
 import { TimelineEntryProps } from "../../../components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "../../../components/timeline/TimelineEntryIndicator";
 import { EntryFile } from "../components/EntryFile";
+import { useProgressEntryDetailsSidebar } from "../components/sidebars/progressEntryDetailsSidebar/ProgressEntryDetailsSidebar";
 import {
   inboxProgressEntryTitles,
   manualProgressEntryIndicators,
   manualProgressEntryTitles,
   systemProgressEntryIndicators,
 } from "../config/progressEntryTypes";
-import {
-  useProgressEntriesConfig,
-  useProgressEntriesContext,
-} from "../contexts/progressEntries";
+import { useProgressEntriesConfig } from "../contexts/progressEntries";
 
 import { formatTriggeredBy } from "./helper";
 
@@ -210,15 +208,14 @@ function Title({
   title: string;
   progressEntryId: string;
 }) {
-  const progressEntriesContext = useProgressEntriesContext();
-  const { openEntryDetailsSidebar } = progressEntriesContext.action;
+  const progressEntryDetailsSidebar = useProgressEntryDetailsSidebar();
 
   return (
     <Stack direction="row" spacing={0.75}>
       <Typography>{title}</Typography>
       <ButtonLink
         level="body-sm"
-        onClick={() => openEntryDetailsSidebar(progressEntryId)}
+        onClick={() => progressEntryDetailsSidebar.open({ progressEntryId })}
       >
         Details
       </ButtonLink>

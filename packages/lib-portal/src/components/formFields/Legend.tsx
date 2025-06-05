@@ -6,6 +6,7 @@
 import { FormLabel, getFormLabelUtilityClass, useTheme } from "@mui/joy";
 import { TypographySystem } from "@mui/joy/styles/types";
 import { PropsWithChildren } from "react";
+import { isNullish } from "remeda";
 
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
@@ -18,7 +19,7 @@ export function Legend({ children, level, id }: LegendProps) {
   const theme = useTheme();
   const disabled = useIsFormDisabled();
 
-  if (children == null) {
+  if (isNullish(children)) {
     return null;
   }
   if (typeof children !== "string") {

@@ -14,7 +14,7 @@ import { useIsFormDisabled } from "../form/DisabledFormContext";
 
 import { renderHelperText, useBaseField } from "./BaseField";
 
-export interface CheckboxFieldProps extends FieldProps<boolean> {
+export interface CheckboxFieldProps extends FieldProps<ValueType> {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean;
   representingValue?: string;
@@ -29,9 +29,6 @@ export interface CheckboxFieldProps extends FieldProps<boolean> {
 type ValueType = boolean | number | string | readonly string[];
 
 function isChecked(value: ValueType, representingValue?: string): boolean {
-  if (value == null) {
-    return false;
-  }
   if (typeof value === "boolean") {
     return value;
   }
@@ -100,7 +97,7 @@ const MemoizedCheckboxField = memo(function InnerCheckboxField({
 
   // Often checkbox helper text is shown for a whole group,
   // only show for single checkbox if the checkbox is "required"
-  const showHelperText = hasValidationError && props.required != null;
+  const showHelperText = hasValidationError && props.required !== undefined;
 
   return (
     <FormControl error={hasValidationError} required={fieldRequired}>
@@ -120,7 +117,7 @@ const MemoizedCheckboxField = memo(function InnerCheckboxField({
         }}
         onChange={(event) => {
           fieldOnChange(event);
-          if (props.onChange != null) {
+          if (props.onChange !== undefined) {
             props.onChange(event);
           }
         }}

@@ -6,7 +6,7 @@
 import { List, ListItem, Typography } from "@mui/joy";
 import ReactMarkdown, { Components } from "react-markdown";
 
-import { ExternalLink } from "./navigation/ExternalLink";
+import { ExternalLink } from "./navigation/externalLinks";
 
 export const defaultComponents: Components = {
   h2: (props) => (
@@ -21,7 +21,7 @@ export const defaultComponents: Components = {
   ),
   p: (props) => <Typography component="p">{props.children}</Typography>,
   a: (props) => (
-    <ExternalLink href={props.href} target="_blank">
+    <ExternalLink href={props.href} openInNewTab>
       {props.children}
     </ExternalLink>
   ),

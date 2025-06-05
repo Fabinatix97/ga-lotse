@@ -88,7 +88,8 @@ public class Validator {
         EnumSet.of(InstitutionContactCategoryDto.SCHOOL, InstitutionContactCategoryDto.DAYCARE));
   }
 
-  public void validateInstitutionAndGroupName(UUID institutionId, String groupName) {
+  public InstitutionContactDto validateInstitutionAndGroupName(
+      UUID institutionId, String groupName) {
     InstitutionContactDto institutionContactDto =
         contactClient.validateContactIsInstitutionWithCategory(
             institutionId,
@@ -105,6 +106,8 @@ public class Validator {
         && (groupName != null && groupName.isBlank())) {
       throw new BadRequestException("Group name must not be blank.");
     }
+
+    return institutionContactDto;
   }
 
   public void validateGroupAtInstitutionExists(UUID institutionId, String groupName) {

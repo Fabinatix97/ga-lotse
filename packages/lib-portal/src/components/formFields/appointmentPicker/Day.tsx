@@ -69,7 +69,7 @@ export function Day({
     cellRef.current?.focus();
   }, [isFocused, cellRef]);
 
-  if (date == null) {
+  if (date === null) {
     return <div />;
   }
 
@@ -81,12 +81,14 @@ export function Day({
       ? theme.palette.text.secondary
       : theme.palette.text.primary,
   };
-  const isSelected = selectedDay != null && isSameDay(selectedDay, date);
+  const isSelected = selectedDay !== undefined && isSameDay(selectedDay, date);
   const selectedStyles = isSelected
     ? { borderRadius: "100%", color: theme.palette.common.white }
     : {};
   const tabIntoProps =
-    isSelected || (isFirst && selectedDay == null) ? {} : { tabIndex: -1 };
+    isSelected || (isFirst && selectedDay === undefined)
+      ? {}
+      : { tabIndex: -1 };
 
   const dayInterval = { start: startOfDay(date), end: endOfDay(date) };
 

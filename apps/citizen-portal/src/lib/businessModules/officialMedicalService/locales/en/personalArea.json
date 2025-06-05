@@ -1,0 +1,120 @@
+{
+  "common": {
+    "pageTitle": "My concern",
+    "requiredTitle": "*Required",
+    "logoutButton": "Leave My Area"
+  },
+  "appointment": {
+    "title": "Examination appointment",
+    "alert": {
+      "title_BOOKABLE": "Appointment booking required",
+      "message_BOOKABLE": "The appointment still needs to be booked via the calendar.",
+      "title_CANCELLED": "Cancelled"
+    },
+    "bookingState": {
+      "label": "Appointment status",
+      "value": {
+        "BOOKABLE": "Not yet booked",
+        "BOOKED": "Booked",
+        "CANCELLED": "Cancelled",
+        "WITHDRAWN": "Withdrawn"
+      }
+    },
+    "date_label": "Date",
+    "appointmentTime": {
+      "label": "Time",
+      "time": "{{ time }}",
+      "duration": "Duration: {{ duration }} minutes"
+    }
+  },
+  "anamnesis": {
+    "title": "Anamnesis",
+    "file": {
+      "title": "Medical history form",
+      "helperText_MISSING": "not yet submitted",
+      "helperText_SUMBITTED": "successfully submitted",
+      "placeholder": "Fill out"
+    }
+  },
+  "contact": {
+    "title": "Contacts",
+    "addressSection": {
+      "title": "Address",
+      "value": "{{ departmentName }} <br> {{ departmentStreetAndHouseNumber }} </br> <br> {{ departmentPostalCodeAndCity }} </br>"
+    },
+    "contactSection": {
+      "title": "Contact",
+      "phoneNumber": "Phone: {{ phoneNumber }}",
+      "eMail": "Email:"
+    }
+  },
+  "documents": {
+    "title": "Documents for the process",
+    "alert": {
+      "message_MISSING": "Upload the required document.",
+      "title_REJECTED": "This document was rejected.",
+      "title_SUBMITTED": "In review",
+      "message_SUBMITTED": "The document is currently being reviewed."
+    },
+    "files": {
+      "title": "Document",
+      "required": "Please upload document",
+      "helperText": "Permitted file formats: PDF/A, PNG or JPG",
+      "inputSummary_one": "{{count}} file selected",
+      "inputSummary_other": "{{count}} files selected",
+      "placeholder": "Select file",
+      "file": "File",
+      "size": "Size",
+      "format": "Format",
+      "delete": "Delete",
+      "deleteAll": "Delete all",
+      "error": "File could not be uploaded. Please try again.",
+      "saveDocumentsInfo": "Please save documents",
+      "save_MISSING": "Save documents",
+      "save_REJECTED": "Submit for review"
+    },
+    "snackbar": {
+      "success": "The documents have been successfully uploaded."
+    }
+  },
+  "overview": {
+    "title": "Overview",
+    "name": {
+      "title": "Name"
+    },
+    "birthdate": {
+      "title": "Birthdate"
+    },
+    "concern": {
+      "title": "Concern"
+    },
+    "medicalOpinion": {
+      "title": "Medical Opinion",
+      "value_IN_PROGRESS": "In Progress",
+      "value_ACCOMPLISHED": "Done"
+    },
+    "actions": {
+      "booked": {
+        "rescheduleAppointment": "Reschedule appointment",
+        "cancelAppointment": "Cancel appointment"
+      },
+      "cancelled": {
+        "rescheduleAppointment": "Book new appointment"
+      },
+      "bookable": {
+        "bookAppointment": "Book appointment"
+      }
+    }
+  },
+  "cancelAppointment": {
+    "cancelModal": {
+      "title": "Cancel your appointment?",
+      "description": "Are you sure you want to cancel your appointment? You can book another appointment at a later time.",
+      "confirmLabel": "Yes, cancel",
+      "cancelLabel": "Keep appointment"
+    },
+    "snackbar": {
+      "success": "The appointment was cancelled."
+    }
+  }
+}

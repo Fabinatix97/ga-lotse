@@ -7,7 +7,7 @@ export function ifDefined<T, K>(
   a: T,
   predicate: (t: NonNullable<T>) => K,
 ): K | undefined {
-  if (a == null) {
+  if (a === undefined || a === null) {
     return;
   }
   return predicate(a);

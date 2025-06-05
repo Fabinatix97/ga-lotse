@@ -13,7 +13,7 @@ import { CacheProvider as DefaultCacheProvider } from "@emotion/react";
 import { useServerInsertedHTML } from "next/navigation";
 import { Fragment, ReactElement, ReactNode, useState } from "react";
 
-export interface NextAppDirEmotionCacheProviderProps {
+interface NextAppDirEmotionCacheProviderProps {
   /** This is the options passed to createCache() from 'import createCache from "@emotion/cache"' */
   options: Omit<OptionsOfCreateCache, "insertionPoint">;
   /** By default <CacheProvider /> from 'import { CacheProvider } from "@emotion/react"' */

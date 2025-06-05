@@ -32,6 +32,8 @@ interface StaffUserFieldProps extends FieldProps<string[]> {
 export function UserField(props: Readonly<StaffUserFieldProps>) {
   const field = useBaseField(props);
   const iconId = useId();
+  const labelId = useId();
+  const tooltipId = useId();
 
   function setValue(newUserIds: string[]) {
     void field.helpers.setValue(newUserIds);
@@ -97,7 +99,11 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
         getOptionKey={(value) => value.userId}
         renderTags={(options, getTagProps) =>
           options.map((item, index) => (
-            <Tooltip key={index} title={getAvailability(item).title}>
+            <Tooltip
+              key={index}
+              id={tooltipId}
+              title={getAvailability(item).title}
+            >
               <Chip
                 variant="soft"
                 color={getAvailability(item).color}
@@ -113,8 +119,10 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
                 {...getTagProps({ index })}
                 key={item.userId}
                 slotProps={{
+                  label: { id: labelId },
                   action: {
-                    "aria-describedby": iconId,
+                    "aria-labelledby": `${labelId} ${iconId}`,
+                    "aria-describedby": tooltipId,
                   },
                 }}
               >

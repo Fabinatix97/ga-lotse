@@ -5,17 +5,17 @@
 
 package de.eshg.medicalregistry;
 
-import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.EMPLOYEE_LIST;
 import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.IDENTIFICATION_DOCUMENT;
 import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.PROFESSIONAL_LICENSE_CERTIFICATE;
 import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.WORK_PERMIT;
-import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapToDto;
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.PersonDetails;
 import de.eshg.base.user.UserApi;
 import de.eshg.file.common.FileType;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -27,7 +27,6 @@ import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.file.MultipartFileParser;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.medicalregistry.api.ConfirmProcedureRequest;
-import de.eshg.medicalregistry.api.CreateFullChangeRequest;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.DeleteProcedureRequest;
 import de.eshg.medicalregistry.api.GetMedicalRegistryEntries;
@@ -42,11 +41,12 @@ import de.eshg.medicalregistry.config.MedicalRegistryProperties;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
-import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeature;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeatureToggle;
+import de.eshg.medicalregistry.mapper.ConfirmInfoMapper;
 import de.eshg.medicalregistry.mapper.EntryMapper;
+import de.eshg.medicalregistry.mapper.ProcedureMapper;
 import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
@@ -93,7 +94,6 @@ public class MedicalRegistryController {
       "professionalLicenseCertificate";
   private static final String REQUEST_PARAM_NAME_IDENTIFICATION_DOCUMENT = "identificationDocument";
   private static final String REQUEST_PARAM_NAME_WORK_PERMIT = "workPermit";
-  private static final String REQUEST_PARAM_NAME_EMPLOYEE_LIST = "employeeList";
   private static final String REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS =
       "otherRelevantDocuments";
   protected static final EnumSet<ProcedureStatus> RELEVANT_STATUS =
@@ -109,6 +109,7 @@ public class MedicalRegistryController {
   private final UserApi userApi;
   private final ProcedureSearchService<MedicalRegistryProcedure> searchService;
   private final MedicalRegistryProperties medicalRegistryProperties;
+  private final PersonApi personApi;
 
   public MedicalRegistryController(
       MedicalRegistryService medicalRegistryService,
@@ -120,7 +121,8 @@ public class MedicalRegistryController {
       AuditLogger auditLogger,
       UserApi userApi,
       ProcedureSearchService<MedicalRegistryProcedure> searchService,
-      MedicalRegistryProperties medicalRegistryProperties) {
+      MedicalRegistryProperties medicalRegistryProperties,
+      PersonApi personApi) {
     this.medicalRegistryService = medicalRegistryService;
     this.personService = personService;
     this.facilityService = facilityService;
@@ -131,6 +133,7 @@ public class MedicalRegistryController {
     this.userApi = userApi;
     this.searchService = searchService;
     this.medicalRegistryProperties = medicalRegistryProperties;
+    this.personApi = personApi;
   }
 
   @PostMapping("/{procedureId}/confirm")
@@ -155,6 +158,9 @@ public class MedicalRegistryController {
     Validator.validateIsHasCompleteInformationForInitialConfirm(
         sourceMedicalRegistryChange, mergeTarget);
 
+    Validator.validateEmployeeChangesCorrespondToDraftChanges(
+        sourceMedicalRegistryChange, confirmProcedureRequest.employeeChanges());
+
     auditLogProcedureConfirmation(
         procedureId, confirmProcedureRequest, sourceMedicalRegistryChange.getTypeOfChange());
 
@@ -163,8 +169,24 @@ public class MedicalRegistryController {
             sourceMedicalRegistryChange,
             confirmProcedureRequest.professionalReferencePerson(),
             confirmProcedureRequest.practiceReferenceFacility(),
+            confirmProcedureRequest.employeeChanges(),
             mergeTarget)
         .getExternalId();
+  }
+
+  @GetMapping("/{procedureId}/confirm-info")
+  @Transactional(readOnly = true)
+  public GetConfirmInfoResponse getConfirmInfo(@PathVariable("procedureId") UUID procedureId) {
+    MedicalRegistryEntryChange change =
+        Validator.validateIsMedicalRegistryEntryChange(
+            medicalRegistryService
+                .findProcedureByExternalId(procedureId)
+                .orElseThrow(MedicalRegistryController::notFoundException));
+
+    Validator.validateIsDraft(change);
+
+    return ConfirmInfoMapper.mapToConfirmInfoResponse(
+        change.getVersion(), medicalRegistryService.getConfirmInfo(change));
   }
 
   private void auditLogProcedureConfirmation(
@@ -203,7 +225,9 @@ public class MedicalRegistryController {
             .orElseThrow(() -> new BadRequestException(makeProcedureNotFoundMessage()));
 
     validator.validateMergeTarget(
-        mergeTarget, confirmProcedureRequest.professionalReferencePerson());
+        mergeTarget,
+        confirmProcedureRequest.professionalReferencePerson(),
+        confirmProcedureRequest.employeeChanges());
 
     return mergeTarget;
   }
@@ -218,8 +242,6 @@ public class MedicalRegistryController {
           MultipartFile identificationDocument,
       @RequestPart(name = REQUEST_PARAM_NAME_WORK_PERMIT, required = false)
           MultipartFile workPermit,
-      @RequestPart(name = REQUEST_PARAM_NAME_EMPLOYEE_LIST, required = false)
-          MultipartFile employeeList,
       @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
           @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
           List<MultipartFile> otherRelevantDocuments) {
@@ -233,7 +255,6 @@ public class MedicalRegistryController {
         professionalLicenseCertificate,
         identificationDocument,
         workPermit,
-        employeeList,
         otherRelevantDocuments,
         TriggerType.CITIZEN,
         ProcedureType.MEDICAL_REGISTRY_CITIZEN_DRAFT);
@@ -249,8 +270,6 @@ public class MedicalRegistryController {
           MultipartFile identificationDocument,
       @RequestPart(name = REQUEST_PARAM_NAME_WORK_PERMIT, required = false)
           MultipartFile workPermit,
-      @RequestPart(name = REQUEST_PARAM_NAME_EMPLOYEE_LIST, required = false)
-          MultipartFile employeeList,
       @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
           @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
           List<MultipartFile> otherRelevantDocuments) {
@@ -260,7 +279,6 @@ public class MedicalRegistryController {
         professionalLicenseCertificate,
         identificationDocument,
         workPermit,
-        employeeList,
         otherRelevantDocuments,
         TriggerType.EMPLOYEE,
         ProcedureType.MEDICAL_REGISTRY_EMPLOYEE_DRAFT);
@@ -271,22 +289,15 @@ public class MedicalRegistryController {
       MultipartFile professionalLicenseCertificate,
       MultipartFile identificationDocument,
       MultipartFile workPermit,
-      MultipartFile employeeList,
       List<MultipartFile> otherRelevantDocuments,
       TriggerType triggerType,
       ProcedureType procedureType) {
-
-    if (request instanceof CreateFullChangeRequest createFullProcedureRequest) {
-      Validator.validateEmployeesEmployed(
-          createFullProcedureRequest.employeesEmployed(), employeeList);
-    }
 
     List<DocumentData> providedDocuments =
         getProvidedDocuments(
             professionalLicenseCertificate,
             identificationDocument,
             workPermit,
-            employeeList,
             otherRelevantDocuments);
 
     MedicalRegistryEntryChange procedure =
@@ -300,7 +311,6 @@ public class MedicalRegistryController {
       MultipartFile professionalLicenseCertificate,
       MultipartFile identificationDocument,
       MultipartFile workPermit,
-      MultipartFile employeeList,
       List<MultipartFile> otherRelevantDocuments) {
 
     List<DocumentData> providedDocuments = new ArrayList<>();
@@ -324,13 +334,6 @@ public class MedicalRegistryController {
         addJpgExtension("Arbeitserlaubnis"),
         "Upload Arbeitserlaubnis",
         WORK_PERMIT,
-        providedDocuments);
-
-    addIfProvided(
-        employeeList,
-        addJpgExtension("Mitarbeiter_Liste"),
-        "Upload Mitarbeiter-Liste",
-        EMPLOYEE_LIST,
         providedDocuments);
 
     if (otherRelevantDocuments != null) {
@@ -357,9 +360,9 @@ public class MedicalRegistryController {
             .findProcedureByExternalId(procedureId)
             .orElseThrow(MedicalRegistryController::notFoundException);
 
-    Professional professional = medicalRegistryProcedure.getProfessional();
-    GetPersonFileStateResponse professionalDetails =
-        personService.findProfessionalDetails(professional);
+    Map<UUID, PersonDetails> personDetails =
+        personService.findPersonDetails(medicalRegistryProcedure.getRelatedPersons()).stream()
+            .collect(Collectors.toMap(GetPersonFileStateResponse::id, Function.identity()));
 
     Map<UUID, FacilityDetails> practiceDetails =
         facilityService
@@ -369,7 +372,7 @@ public class MedicalRegistryController {
 
     auditLogProcedureDetailAccess(procedureId);
 
-    return mapToDto(medicalRegistryProcedure, professionalDetails, practiceDetails);
+    return ProcedureMapper.mapToDto(medicalRegistryProcedure, personDetails, practiceDetails);
   }
 
   private void auditLogProcedureDetailAccess(UUID procedureId) {

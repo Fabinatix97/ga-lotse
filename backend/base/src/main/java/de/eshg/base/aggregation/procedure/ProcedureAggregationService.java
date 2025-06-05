@@ -47,20 +47,6 @@ public class ProcedureAggregationService {
                 filteringProcedureTypes, filteringProcedureStatus, limit));
   }
 
-  GetAggregatedRecentProceduresResponse aggregateRecentProcedures(
-      UUID userId,
-      Set<BusinessModule> filteringBusinessModules,
-      Set<ProcedureTypeDto> filteringProcedureTypes,
-      Set<ProcedureStatusDto> filteringProcedureStatus,
-      Integer limit) {
-    return aggregateRecentProcedures(
-        filteringBusinessModules,
-        limit,
-        client ->
-            client.getRecentProcedures(
-                userId, filteringProcedureTypes, filteringProcedureStatus, limit));
-  }
-
   private GetAggregatedRecentProceduresResponse aggregateRecentProcedures(
       Set<BusinessModule> filteringBusinessModules,
       Integer limit,

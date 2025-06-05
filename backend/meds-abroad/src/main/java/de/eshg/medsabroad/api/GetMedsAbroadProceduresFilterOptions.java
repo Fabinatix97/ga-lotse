@@ -7,22 +7,20 @@ package de.eshg.medsabroad.api;
 
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.validation.constraints.PastOrPresent;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.Set;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetMedsAbroadProceduresFilterOptions(
-    @BindParam("creationDate")
-        @Parameter(
-            description =
-                """
-                         Filter logic:
-                         - If 'creationDate' is submitted, only procedures which were created at the provided date are returned.
-                         - If no 'creationDate' is submitted, no filtering takes place.
-                         """)
-        @PastOrPresent
-        LocalDate creationDate,
+    @Schema(description = "Start of the procedure creation date.")
+        @BindParam("creationDateStart")
+        @Parameter
+        LocalDate creationDateStart,
+    @Schema(description = "End of the procedure creation date.")
+        @BindParam("creationDateEnd")
+        @Parameter
+        LocalDate creationDateEnd,
     @BindParam("procedureStatus")
         @Parameter(
             description =

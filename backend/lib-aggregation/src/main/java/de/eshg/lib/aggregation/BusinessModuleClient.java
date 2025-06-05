@@ -156,15 +156,6 @@ public class BusinessModuleClient
   }
 
   @Override
-  public GetRecentProceduresResponse getRecentProcedures(
-      UUID userId,
-      Set<ProcedureTypeDto> procedureTypes,
-      Set<ProcedureStatusDto> procedureStatus,
-      Integer limit) {
-    return procedureApiDelegate.getRecentProcedures(userId, procedureTypes, procedureStatus, limit);
-  }
-
-  @Override
   public CheckFileStateUsageResponse checkFileStateUsage(CheckFileStateUsageRequest request) {
     return procedureApiDelegate.checkFileStateUsage(request);
   }

@@ -13,7 +13,7 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
+import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
@@ -22,10 +22,12 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -68,9 +70,28 @@ public class AppointmentBlockValidator {
     }
   }
 
+  public void validateAllowedCombinationOfTypes(Set<AppointmentType> requestedTypes) {
+    if (requestedTypes.size() > 1) {
+      Set<Set<AppointmentType>> allowedCombinations =
+          appointmentBlockConfig.getAllowedAppointmentTypeCombinations().stream()
+              .map(HashSet::new)
+              .collect(Collectors.toSet());
+      if (allowedCombinations.stream()
+          .noneMatch(
+              allowedCombination ->
+                  allowedCombination.size() == requestedTypes.size()
+                      && allowedCombination.containsAll(requestedTypes))) {
+        throw new BadRequestException(
+            "The following appointment types cannot be combined in an AppointmentBlockGroup: %s"
+                .formatted(
+                    String.join(", ", requestedTypes.stream().map(Enum::name).sorted().toList())));
+      }
+    }
+  }
+
   void validateStartAndEndTimes(
       List<CreateDailyAppointmentBlockDto> dailyAppointmentBlocks,
-      AppointmentTypeConfig typeConfig) {
+      Duration minimalDurationForBlock) {
     for (CreateDailyAppointmentBlockDto appointmentBlock : dailyAppointmentBlocks) {
       Instant start = appointmentBlock.start();
       Instant end = appointmentBlock.end();
@@ -87,13 +108,10 @@ public class AppointmentBlockValidator {
         throw new BadRequestException(
             "AppointmentBlockGroup end time of day must be after start time of day.");
       }
-      Duration examinationDuration = typeConfig.getStandardDuration();
       Duration appointmentBlockLength = Duration.between(startTime, endTime);
-      if (!DurationUtil.isDivisible(appointmentBlockLength, examinationDuration)) {
-        String errorMessage =
-            "Appointment block length %s is not a multiple of examination duration %s."
-                .formatted(appointmentBlockLength, examinationDuration);
-        throw new BadRequestException(errorMessage);
+      if (appointmentBlockLength.compareTo(minimalDurationForBlock) < 0) {
+        throw new BadRequestException(
+            "AppointmentBlockLength must be at least %s".formatted(minimalDurationForBlock));
       }
     }
   }

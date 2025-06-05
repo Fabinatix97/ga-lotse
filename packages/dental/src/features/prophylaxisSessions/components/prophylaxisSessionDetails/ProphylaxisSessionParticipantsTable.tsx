@@ -252,7 +252,7 @@ export function ProphylaxisSessionParticipantsTable() {
         }
         sorting={tableControl.tableSorting}
         enableSortingRemoval={false}
-        minWidth={1200}
+        minWidth={1400}
       />
       {isDefined(examinationForAbsence) && (
         <OverlayBoundary>
@@ -277,13 +277,28 @@ function columnDefs(
   isExamination: boolean,
 ) {
   return [
+    ...(isExamination
+      ? [
+          columnHelper.accessor("status", {
+            header: "Status",
+            cell: (props) => (
+              <ExaminationStatusChip status={props.getValue()} />
+            ),
+            enableSorting: true,
+            meta: {
+              canNavigate: { parentRow: true },
+              width: 160,
+            },
+          }),
+        ]
+      : []),
     columnHelper.accessor("firstName", {
       header: "Vorname",
       cell: (props) => props.getValue(),
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 120,
+        width: 250,
       },
     }),
     columnHelper.accessor("lastName", {
@@ -292,7 +307,7 @@ function columnDefs(
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 120,
+        width: 250,
       },
     }),
     columnHelper.accessor("dateOfBirth", {
@@ -301,7 +316,7 @@ function columnDefs(
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 120,
+        width: 160,
       },
     }),
     columnHelper.accessor("groupName", {
@@ -310,7 +325,7 @@ function columnDefs(
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 90,
+        width: 100,
       },
     }),
     columnHelper.accessor("gender", {
@@ -322,7 +337,7 @@ function columnDefs(
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 150,
+        width: 130,
       },
     }),
     ...(isFluoridation
@@ -333,22 +348,7 @@ function columnDefs(
             enableSorting: true,
             meta: {
               canNavigate: { parentRow: true },
-              width: 205,
-            },
-          }),
-        ]
-      : []),
-    ...(isExamination
-      ? [
-          columnHelper.accessor("status", {
-            header: "Status",
-            cell: (props) => (
-              <ExaminationStatusChip status={props.getValue()} />
-            ),
-            enableSorting: true,
-            meta: {
-              canNavigate: { parentRow: true },
-              width: 110,
+              width: 260,
             },
           }),
         ]
@@ -382,7 +382,6 @@ function columnDefs(
         ) : undefined;
       },
       meta: {
-        width: 80,
         cellStyle: "button",
         textAlign: "right",
       },

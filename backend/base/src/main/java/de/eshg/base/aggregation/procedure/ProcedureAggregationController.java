@@ -11,7 +11,6 @@ import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Instant;
 import java.util.Set;
-import java.util.UUID;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,18 +31,6 @@ public class ProcedureAggregationController implements ProcedureAggregationApi {
       Integer limit) {
     return procedureAggregationService.aggregateSelfRecentProcedures(
         filteringBusinessModules, filteringProcedureTypes, filteringProcedureStatus, limit);
-  }
-
-  @Override
-  public GetAggregatedRecentProceduresResponse aggregateRecentProcedures(
-      UUID userId,
-      Set<BusinessModule> filteringBusinessModules,
-      Set<ProcedureTypeDto> filteringProcedureTypes,
-      Set<ProcedureStatusDto> filteringProcedureStatus,
-      Integer limit) {
-
-    return procedureAggregationService.aggregateRecentProcedures(
-        userId, filteringBusinessModules, filteringProcedureTypes, filteringProcedureStatus, limit);
   }
 
   @Override

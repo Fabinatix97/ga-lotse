@@ -6,7 +6,6 @@
 package de.eshg.medicalregistry;
 
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
-import static de.eshg.lib.xlsximport.util.FileResponseUtil.getTemplateFileResponse;
 
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.xlsximport.XlsxImport;
@@ -66,7 +65,7 @@ public class MedicalRegistryImportController {
   @GetMapping(path = "/template", produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX import template.")
   public ResponseEntity<Resource> getImportTemplate() {
-    return getTemplateFileResponse(
+    return FileResponseUtil.getFileResponseEntity(
         new ClassPathResource(TEMPLATE_FILE_NAME_SERVER), TEMPLATE_FILE_NAME_DOWNLOAD);
   }
 

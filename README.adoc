@@ -60,9 +60,9 @@ We appreciate your help in improving the project!
 == Module documentation
 
 - link:backend/README.md[Backend]
-- link:./employee-portal/README.adoc[Employee Portal]
-- link:./citizen-portal/README.adoc[Citizen Portal]
-- link:./admin-portal/README.adoc[Admin Portal]
+- link:./apps/employee-portal/README.adoc[Employee Portal]
+- link:./apps/citizen-portal/README.adoc[Citizen Portal]
+- link:./apps/admin-portal/README.adoc[Admin Portal]
 
 
 == Further information

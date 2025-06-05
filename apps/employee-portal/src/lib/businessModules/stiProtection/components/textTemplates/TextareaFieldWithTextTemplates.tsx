@@ -1,0 +1,105 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Add } from "@mui/icons-material";
+import { Button, styled } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { KeyboardEvent, useRef } from "react";
+
+import {
+  FieldSetColumn,
+  TextareaField,
+  TextareaFieldProps,
+  useIsFormDisabled,
+} from "@eshg/lib-portal";
+import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
+
+import { AppendText, TextTemplatesSidebar } from "./TextTemplatesSidebar";
+import {
+  appendText,
+  nextInsertPoint,
+  selectFirstPoint,
+} from "./nextInsertPoint";
+import { useSidebarFromSearchParam } from "./useSidebarFromSearchParam";
+
+interface TextareaWithTextTemplatesProps extends TextareaFieldProps {
+  context: ApiTextTemplateContext;
+}
+
+export function TextareaFieldWithTextTemplates({
+  context,
+  ...props
+}: TextareaWithTextTemplatesProps) {
+  const { setFieldValue, getFieldMeta } = useFormikContext();
+  const { value } = getFieldMeta(props.name);
+  const disabled = useIsFormDisabled();
+
+  const ref = useRef<HTMLTextAreaElement | null>(null);
+  const appendTextRef = useRef<AppendText | null>(null);
+  appendTextRef.current = async (text) => {
+    await setFieldValue(props.name, appendText(text, value));
+  };
+
+  const { open } = useSidebarFromSearchParam({
+    component: TextTemplatesSidebar,
+    paramName: "text-template",
+    paramValue: props.name,
+    props: {
+      context,
+      appendTextRef,
+    },
+    afterClose() {
+      selectFirstPoint(ref.current);
+    },
+    fallbackTitle: "Textvorlage einfügen",
+  });
+
+  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (ref.current === null) {
+      return;
+    }
+    let insertionPoint;
+    if (e.code === "Space" && e.ctrlKey) {
+      insertionPoint = nextInsertPoint(value, ref.current.selectionEnd ?? 0);
+      if (insertionPoint === undefined) {
+        open();
+      }
+    } else if (e.code === "Enter" && e.ctrlKey) {
+      insertionPoint =
+        nextInsertPoint(value, ref.current.selectionEnd ?? 0) ??
+        nextInsertPoint(value, 0);
+    }
+
+    if (insertionPoint === undefined) {
+      return;
+    }
+    e.preventDefault();
+    ref.current.selectionStart = insertionPoint.start;
+    ref.current.selectionEnd = insertionPoint.end;
+  }
+  return (
+    <FieldSetColumn gap={1} alignItems="start">
+      <StyledTextarea
+        {...props}
+        slotProps={{ textarea: { ref, rows: 20, onKeyDownCapture: onKeyDown } }}
+      />
+      {!disabled && (
+        <Button
+          startDecorator={<Add />}
+          aria-keyshortcuts="Control+Space"
+          variant="plain"
+          title="Menü der Textvorlagen öffnen (Strg+Leertaste)"
+          onClick={open}
+        >
+          Textvorlage einfügen
+        </Button>
+      )}
+    </FieldSetColumn>
+  );
+}
+
+const StyledTextarea = styled(TextareaField)(() => ({
+  width: "100%",
+}));

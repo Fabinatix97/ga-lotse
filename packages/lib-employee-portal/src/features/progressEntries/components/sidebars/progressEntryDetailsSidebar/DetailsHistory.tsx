@@ -38,7 +38,7 @@ export function DetailsHistory({
   const fileId =
     isDefined(entry.fileReference) &&
     !entry.fileReference.deleted &&
-    entry.fileReference.type != "GenericFileReference"
+    entry.fileReference.type !== "GenericFileReference"
       ? entry.fileReference?.fileId
       : undefined;
 

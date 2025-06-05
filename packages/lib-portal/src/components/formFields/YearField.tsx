@@ -13,12 +13,12 @@ import { useIsFormDisabled } from "../form/DisabledFormContext";
 import { YearInput } from "../inputs/YearInput";
 
 import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
-import { StyledInputProps } from "./types";
+import { FieldVariantProps } from "./types";
 
 interface YearFieldProps
   extends Omit<FieldProps<number>, "label">,
     FieldComponentProps,
-    StyledInputProps {
+    FieldVariantProps {
   label?: string;
   min?: number;
   max?: number;

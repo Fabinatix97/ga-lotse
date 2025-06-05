@@ -25,6 +25,8 @@ dependencies {
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-statistics'))
     testImplementation testFixtures(project(':base-api'))
+    testImplementation testFixtures(project(':lib-auditlog'))
+    testImplementation testFixtures(project(':lib-appointmentblock'))
 }
 
 dockerCompose {

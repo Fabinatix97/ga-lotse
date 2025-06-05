@@ -1,0 +1,22 @@
+{
+  "contact": {
+    "contact_section": {
+      "title": "Kontakt und Erreichbarkeit"
+    },
+    "address_section": {
+      "title": "Adresse"
+    },
+    "opening_hours_section": {
+      "title": "Öffnungs- und Sprechzeiten",
+      "subtitle": "Termine nach Vereinbarung",
+      "information": "Informationen"
+    },
+    "phone_section": {
+      "title": "Telefon",
+      "number": "Telefon: {{ phoneNumber }}"
+    },
+    "email_section": {
+      "title": "E-Mail"
+    }
+  }
+}

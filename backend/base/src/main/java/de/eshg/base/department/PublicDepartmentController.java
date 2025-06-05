@@ -13,8 +13,8 @@ import de.eshg.base.config.BaseDepartmentInfoConfigService;
 import de.eshg.base.config.BasePrivacyDocumentService;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.config.SecurityTxtService;
+import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.file.common.CustomMediaTypes;
-import de.eshg.rest.service.i18n.LanguageContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,13 +65,12 @@ public class PublicDepartmentController implements PublicDepartmentApi {
   @ApiResponse(responseCode = "200")
   @GetExchange(DEPARTMENT_API_MARKDOWN_CITIZEN + "/{name}")
   @Transactional(readOnly = true)
-  public ResponseEntity<byte[]> getCitizenPortalMarkdown(
+  public ResponseEntity<Resource> getCitizenPortalMarkdown(
       @PathVariable("name") CitizenPortalMarkdownName name) {
-    return ResponseEntity.ok()
-        .contentType(MediaType.TEXT_MARKDOWN)
-        .body(
-            departmentConfigurationService.getMarkdownWithGermanFallback(
-                name, LanguageContextHolder.getLanguage()));
+    return MultiLangDocumentHelper.getAsResponseByCurrentLanguageWithFallback(
+        departmentConfigurationService.getMarkdown(name),
+        name.getFileName(),
+        MediaType.TEXT_MARKDOWN);
   }
 
   @Override

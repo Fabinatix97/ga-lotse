@@ -1,4 +1,0 @@
-= Admin Portal
-:sectnums:
-
-See link:../docs/frontend.adoc[here].

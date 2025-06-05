@@ -18,4 +18,7 @@
   <include file="migrations/0008_opening_hours_update_pt2.xml"/>
   <include file="migrations/0009_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0010_multiple_appointment_types.xml"/>
+  <include file="migrations/0011_add_employee_person_type.xml"/>
+  <include file="migrations/0012_add_meds_abroad_appointment_type.xml"/>
+  <include file="migrations/0013_refactor_oms_appointment_standard_duration.xml"/>
 </databaseChangeLog>

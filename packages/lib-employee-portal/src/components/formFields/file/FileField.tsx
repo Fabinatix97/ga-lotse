@@ -169,7 +169,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
 function supplimentFileType(file: File): File;
 function supplimentFileType(file: File | null): File | null;
 function supplimentFileType(file: File | null): File | null {
-  if (file == null) {
+  if (file === null) {
     return null;
   }
   const extension = file.name.split(".").at(-1)?.toUpperCase();

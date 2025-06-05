@@ -21,6 +21,9 @@ import {
 export const DENTITION_TYPE_OPTIONS =
   buildEnumOptions<ApiDentitionType>(DENTITION_TYPES);
 
+export const PROPHYLAXIS_TYPE_OPTIONS_WITH_DESELECTION =
+  buildEnumOptions<ApiProphylaxisType>(PROPHYLAXIS_TYPES, true);
+
 export const PROPHYLAXIS_TYPE_OPTIONS =
   buildEnumOptions<ApiProphylaxisType>(PROPHYLAXIS_TYPES);
 

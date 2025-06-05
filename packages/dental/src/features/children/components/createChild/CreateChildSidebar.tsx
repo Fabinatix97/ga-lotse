@@ -92,7 +92,7 @@ function CreateChildSidebar(props: SidebarWithFormRefProps) {
     submitLabel: "Kind anlegen",
     searchFormComponent: SearchChildForm,
     initialSearchState: INITIAL_SEARCH_VALUES,
-    addressRequired: true,
+    addressRequired: false,
     associatedProcedures: {
       getQuery: (personId) => getChildrenByPersonQuery(childApi, personId),
       cardComponent: ChildProcedureCard,

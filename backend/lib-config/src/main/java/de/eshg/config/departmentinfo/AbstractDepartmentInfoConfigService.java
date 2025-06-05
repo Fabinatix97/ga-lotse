@@ -41,7 +41,7 @@ public abstract class AbstractDepartmentInfoConfigService<T extends AbstractDepa
   }
 
   @Override
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(
         ConfigurationEndpoint.DEPARTMENT_INFO.name(), ConfigurationStatus.COMPLETE);
   }
@@ -67,7 +67,7 @@ public abstract class AbstractDepartmentInfoConfigService<T extends AbstractDepa
 
   private DepartmentInfo updateDepartmentInfo(
       DepartmentInfo persistedDepartmentInfo, DepartmentInfo departmentInfoUpdate) {
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "departmentInfo",
         getRelevantFieldsForLogging(persistedDepartmentInfo),
         getRelevantFieldsForLogging(departmentInfoUpdate));

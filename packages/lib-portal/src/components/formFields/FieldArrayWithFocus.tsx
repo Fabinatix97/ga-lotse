@@ -27,7 +27,7 @@ export type FieldArrayRenderExtendedProps = FieldArrayRenderProps & {
   setInputElementRef: (element: HTMLInputElement, index: number) => void;
 };
 
-export interface FieldArrayWithFocusProps
+interface FieldArrayWithFocusProps
   extends Omit<FieldArrayConfig, "children" | "render"> {
   valueLength: number;
   children?: (props: FieldArrayRenderExtendedProps) => ReactNode;

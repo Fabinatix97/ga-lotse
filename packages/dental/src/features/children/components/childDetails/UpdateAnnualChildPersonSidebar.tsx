@@ -57,7 +57,6 @@ function UpdateAnnualChildPersonSidebar(
       initialValues={mapChildDetailsToPersonFormValues(child)}
       component={DefaultPersonForm}
       sidebarFormRef={formRef}
-      addressRequired
       onCancel={() => onClose(false)}
       onSubmit={handleSubmit}
     />

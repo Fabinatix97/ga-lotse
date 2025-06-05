@@ -5,6 +5,8 @@
 
 package de.eshg.lib.appointmentblock.persistence;
 
+import static org.apache.commons.text.CaseUtils.toCamelCase;
+
 public enum AppointmentType {
   CONSULTATION,
   VACCINATION,
@@ -18,4 +20,9 @@ public enum AppointmentType {
   RESULTS_REVIEW,
   OFFICIAL_MEDICAL_SERVICE_SHORT,
   OFFICIAL_MEDICAL_SERVICE_LONG,
+  MEDS_ABROAD_CERTIFICATION;
+
+  public String toCamelCaseName() {
+    return toCamelCase(name(), false, '_');
+  }
 }

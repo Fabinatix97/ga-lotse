@@ -19,25 +19,33 @@ import de.eshg.base.centralfile.api.facility.FacilityDetailsDto;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
+import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.facility.SearchReferenceFacilitiesResponse;
 import de.eshg.base.centralfile.api.facility.UpdateReferenceFacilityRequest;
 import de.eshg.lib.procedure.MapperHelper;
+import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.medicalregistry.api.CreateApplicantDto;
 import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.PracticeReferenceFacilityDto;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import de.eshg.medicalregistry.mapper.AddressMapper;
 import de.eshg.medicalregistry.mapper.EnrichmentHelper;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -138,6 +146,18 @@ public class FacilityService {
     }
   }
 
+  public List<GetReferenceFacilityResponse> searchReferenceFacility(
+      MedicalRegistryEntryChange change) {
+    List<GetFacilityFileStateResponse> practiceDetails =
+        findPracticeDetails(change.getRelatedFacilities());
+    return practiceDetails.stream()
+        .map(GetFacilityFileStateResponse::name)
+        .map(facilityApi::searchReferenceFacilities)
+        .map(SearchReferenceFacilitiesResponse::facilities)
+        .flatMap(Collection::stream)
+        .toList();
+  }
+
   private UUID confirmFacility(GetFacilityFileStateResponse facilityFileState) {
     log.info("Confirming facility {} in central file", facilityFileState.id());
     return facilityApi
@@ -203,5 +223,16 @@ public class FacilityService {
         null,
         applicant.getGender(),
         null);
+  }
+
+  public Map<UUID, FacilityDetails> resolveFacilityDetailsById(
+      Iterable<MedicalRegistryProcedure> procedures) {
+    return findPracticeDetails(
+            StreamSupport.stream(procedures.spliterator(), false)
+                .map(Procedure::getRelatedFacilities)
+                .flatMap(Collection::stream)
+                .toList())
+        .stream()
+        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id, Function.identity()));
   }
 }

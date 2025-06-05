@@ -86,7 +86,7 @@ export function mapToUpdateMetaDataRequest(
 ): ApiUpdateFileMetaDataRequest | undefined {
   if (!isDefined(fileReference)) return undefined;
   if (fileReference.deleted) return undefined;
-  if (fileReference.type == "GenericFileReference") return undefined;
+  if (fileReference.type === "GenericFileReference") return undefined;
   if (
     !isDefined(fileReference.metaData?.description) &&
     isEmpty(values.documentDescription)

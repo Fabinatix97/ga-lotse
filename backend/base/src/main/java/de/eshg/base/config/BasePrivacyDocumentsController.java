@@ -62,7 +62,7 @@ class BasePrivacyDocumentsController {
     }
     MultiLangDocument privacyNotice = basePrivacyDocumentService.getConfig().getPrivacyNotice();
     return MultiLangDocumentMapper.mapToDto(
-        privacyNotice, AbstractPrivacyDocumentService.PRIVACY_NOTICE_FILE_NAME);
+        privacyNotice, AbstractPrivacyDocumentService.PRIVACY_NOTICE_CONFIG_FILENAME);
   }
 
   @GetMapping(PRIVACY_NOTICE_PATH + "/{lang}")
@@ -110,7 +110,7 @@ class BasePrivacyDocumentsController {
       return null;
     }
     return MultiLangDocumentMapper.mapToDto(
-        config.getPrivacyPolicy(), AbstractPrivacyDocumentService.PRIVACY_POLICY_FILE_NAME);
+        config.getPrivacyPolicy(), AbstractPrivacyDocumentService.PRIVACY_POLICY_CONFIG_FILENAME);
   }
 
   @GetMapping(PRIVACY_POLICY_PATH + "/{lang}")

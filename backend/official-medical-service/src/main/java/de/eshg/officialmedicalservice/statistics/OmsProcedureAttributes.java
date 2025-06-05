@@ -7,6 +7,7 @@ package de.eshg.officialmedicalservice.statistics;
 
 import static de.eshg.officialmedicalservice.statistics.AttributeUtil.ATTRIBUTE_CATEGORY_ANAMNESIS;
 import static de.eshg.officialmedicalservice.statistics.AttributeUtil.ATTRIBUTE_CATEGORY_PROCEDURE;
+import static de.eshg.officialmedicalservice.statistics.AttributeUtil.germanNameForProcedureStatus;
 import static de.eshg.officialmedicalservice.statistics.AttributeUtil.opticalAidAnswerValueOptions;
 import static de.eshg.officialmedicalservice.statistics.AttributeUtil.yesNoDontKnowAnswerValueOptions;
 
@@ -36,7 +37,10 @@ public enum OmsProcedureAttributes implements AttributeInfo {
           ATTRIBUTE_CATEGORY_PROCEDURE,
           false,
           Arrays.stream(ProcedureStatus.values())
-              .map(entry -> new ValueOptionInternal(entry.name(), entry.name(), false))
+              .map(
+                  entry ->
+                      new ValueOptionInternal(
+                          entry.name(), germanNameForProcedureStatus(entry), false))
               .toList())),
 
   CONCERN(TextAttribute.create("Anliegen", "CONCERN", ATTRIBUTE_CATEGORY_PROCEDURE, false)),
@@ -85,7 +89,9 @@ public enum OmsProcedureAttributes implements AttributeInfo {
               .map(
                   entry ->
                       new ValueOptionInternal(
-                          entry.name(), entry.name(), entry == MedicalOpinionResult.UNKNOWN))
+                          entry.name(),
+                          entry.getGermanName(),
+                          entry == MedicalOpinionResult.UNKNOWN))
               .toList())),
 
   AFFECTED_PERSON_INFO_FILLING_PERSON(
@@ -95,7 +101,7 @@ public enum OmsProcedureAttributes implements AttributeInfo {
           ATTRIBUTE_CATEGORY_ANAMNESIS,
           false,
           Arrays.stream(FillingPersonDto.values())
-              .map(entry -> new ValueOptionInternal(entry.name(), entry.name(), false))
+              .map(entry -> new ValueOptionInternal(entry.name(), entry.getGermanName(), false))
               .toList())),
 
   AFFECTED_PERSON_INFO_MARITAL_STATUS(
@@ -108,7 +114,9 @@ public enum OmsProcedureAttributes implements AttributeInfo {
               .map(
                   entry ->
                       new ValueOptionInternal(
-                          entry.name(), entry.name(), entry == MaritalStatusDto.NO_SELECTION))
+                          entry.name(),
+                          entry.getGermanName(),
+                          entry == MaritalStatusDto.NO_SELECTION))
               .toList())),
 
   AFFECTED_PERSON_INFO_NUMBER_OF_CHILDREN(

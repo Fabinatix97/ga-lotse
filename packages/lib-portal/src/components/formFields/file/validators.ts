@@ -93,7 +93,11 @@ export function fileHasAcceptedExtension(
   file: File,
   acceptedFileExtensions?: string[],
 ) {
-  if (acceptedFileExtensions === undefined) return true;
+  if (
+    acceptedFileExtensions === undefined ||
+    acceptedFileExtensions.length === 0
+  )
+    return true;
   return acceptedFileExtensions.includes(getExtensionFromFileName(file.name));
 }
 

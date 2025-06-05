@@ -6,6 +6,8 @@
 import { useCallback, useMemo } from "react";
 import { isDefined } from "remeda";
 
+import { ApiCountryCode } from "@eshg/base-api";
+
 import { formatFileSize } from "../components/formFields/file/helpers";
 import { FileType } from "../components/formFields/file/types";
 import {
@@ -14,9 +16,11 @@ import {
 } from "../components/formFields/file/validators";
 import {
   validateEmail,
+  validateGermanZipCode,
   validateLength,
   validateNumber,
   validatePastOrTodayDate,
+  validateZipCode,
 } from "../helpers/validators";
 import { useTranslation } from "../i18n/useTranslation";
 
@@ -90,6 +94,23 @@ export function useValidateFile() {
           }),
         },
       }),
+    [t],
+  );
+}
+
+export function useValidateZipCode() {
+  const { t } = useTranslation();
+  return useCallback(
+    (country: ApiCountryCode) =>
+      validateZipCode(country, t("validation.zipCode")),
+    [t],
+  );
+}
+
+export function useValidateGermanZipCode() {
+  const { t } = useTranslation();
+  return useCallback(
+    (value: string) => validateGermanZipCode(value, t("validation.zipCode")),
     [t],
   );
 }

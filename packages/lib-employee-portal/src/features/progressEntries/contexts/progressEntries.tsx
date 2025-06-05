@@ -5,7 +5,13 @@
 
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 import { RequiresChildren } from "@eshg/lib-portal";
 import { ApiProcedureStatus } from "@eshg/lib-procedures-api";
@@ -19,15 +25,12 @@ interface ProgressEntriesContextProps {
   state: {
     fileIdForDeletion: string | null;
     entryIdForDeletion: string | null;
-    entryIdForDetails: string | null;
   };
   action: {
     openFileDeletionModal: (fileId: string) => void;
     closeFileDeletionModal: () => void;
     openEntryDeletionModal: (entryId: string) => void;
     closeEntryDeletionModal: () => void;
-    openEntryDetailsSidebar: (entryId: string) => void;
-    closeEntryDetailsSidebar: () => void;
   };
 }
 
@@ -41,60 +44,64 @@ interface ProgressEntriesProviderProps extends RequiresChildren {
 export function ProgressEntriesProvider(
   props: Readonly<ProgressEntriesProviderProps>,
 ) {
+  const { progressEntriesConfig, children } = props;
   const [fileIdForDeletion, setFileIdForDeletion] = useState<string | null>(
     null,
   );
   const [entryIdForDeletion, setEntryIdForDeletion] = useState<string | null>(
     null,
   );
-  const [entryIdForDetails, setEntryIdForDetails] = useState<string | null>(
-    null,
+
+  const openFileDeletionModal = useCallback(
+    (fileId: string) => {
+      setFileIdForDeletion(fileId);
+    },
+    [setFileIdForDeletion],
   );
 
-  function openFileDeletionModal(fileId: string) {
-    setFileIdForDeletion(fileId);
-  }
-
-  function closeFileDeletionModal() {
+  const closeFileDeletionModal = useCallback(() => {
     setFileIdForDeletion(null);
-  }
+  }, [setFileIdForDeletion]);
 
-  function openEntryDeletionModal(entryId: string) {
-    setEntryIdForDeletion(entryId);
-  }
+  const openEntryDeletionModal = useCallback(
+    (entryId: string) => {
+      setEntryIdForDeletion(entryId);
+    },
+    [setEntryIdForDeletion],
+  );
 
-  function closeEntryDeletionModal() {
+  const closeEntryDeletionModal = useCallback(() => {
     setEntryIdForDeletion(null);
-  }
+  }, [setEntryIdForDeletion]);
 
-  function openEntryDetailsSidebar(entryId: string) {
-    setEntryIdForDetails(entryId);
-  }
-
-  function closeEntryDetailsSidebar() {
-    setEntryIdForDetails(null);
-  }
+  const contextValue = useMemo<ProgressEntriesContextProps>(
+    () => ({
+      config: progressEntriesConfig,
+      state: {
+        fileIdForDeletion,
+        entryIdForDeletion,
+      },
+      action: {
+        openFileDeletionModal,
+        closeFileDeletionModal,
+        openEntryDeletionModal,
+        closeEntryDeletionModal,
+      },
+    }),
+    [
+      progressEntriesConfig,
+      fileIdForDeletion,
+      entryIdForDeletion,
+      openFileDeletionModal,
+      closeFileDeletionModal,
+      openEntryDeletionModal,
+      closeEntryDeletionModal,
+    ],
+  );
 
   return (
-    <ProgressEntriesContext
-      value={{
-        config: props.progressEntriesConfig,
-        state: {
-          fileIdForDeletion,
-          entryIdForDeletion,
-          entryIdForDetails,
-        },
-        action: {
-          openFileDeletionModal,
-          closeFileDeletionModal,
-          openEntryDeletionModal,
-          closeEntryDeletionModal,
-          openEntryDetailsSidebar,
-          closeEntryDetailsSidebar,
-        },
-      }}
-    >
-      {props.children}
+    <ProgressEntriesContext value={contextValue}>
+      {children}
     </ProgressEntriesContext>
   );
 }

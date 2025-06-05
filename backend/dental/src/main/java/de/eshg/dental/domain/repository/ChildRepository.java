@@ -20,10 +20,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface ChildRepository extends ProcedureRepository<Child> {
 
-  @Lock(LockModeType.PESSIMISTIC_WRITE)
-  @Query("select c from Child c where c.externalId in :childIds order by c.id")
-  List<Child> findAllByExternalIdsForUpdate(List<UUID> childIds);
-
   @Modifying
   @Query(
       "update Child c set c.institutionId = :newInstitutionId where c.institutionId = :oldInstitutionId")
@@ -32,11 +28,22 @@ public interface ChildRepository extends ProcedureRepository<Child> {
       @Param("newInstitutionId") UUID newInstitutionId);
 
   @Query(
-      "select distinct c.groupName from Child c where c.groupName is not null and c.institutionId = :institutionId order by c.groupName")
-  List<String> findDistinctInstitutionGroups(@Param("institutionId") UUID institutionId);
+      value =
+          """
+          select distinct c.groupName from Child c
+          where c.groupName is not null
+          and c.institutionId = :institutionId
+          and (:openGroupsOnly is false or c.procedureStatus='OPEN')
+          order by c.groupName
+          """)
+  List<String> findDistinctInstitutionGroups(
+      @Param("institutionId") UUID institutionId, @Param("openGroupsOnly") boolean openGroupsOnly);
 
   List<Child> findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(
       UUID institutionId, String groupName, ProcedureStatus procedureStatus);
+
+  List<Child> findByInstitutionIdAndGroupNameAndProcedureStatusAndYearOrderById(
+      UUID institutionId, String groupName, ProcedureStatus procedureStatus, Year year);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(

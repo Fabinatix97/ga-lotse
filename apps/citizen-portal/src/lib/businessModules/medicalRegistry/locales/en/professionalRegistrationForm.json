@@ -1,0 +1,219 @@
+{
+  "navigation": {
+    "pageTitle": "Registration form for professional registry",
+    "step": "Step",
+    "stepsRemaining": "of",
+    "continue": "Continue",
+    "abort": "Cancel",
+    "submit": "Save permanently",
+    "back": "Back"
+  },
+  "options": {
+    "yes": "Yes",
+    "no": "No",
+    "gender": {
+      "NOT_SPECIFIED": "Not specified",
+      "DIVERSE": "Diverse",
+      "FEMALE": "Female",
+      "MALE": "Male"
+    },
+    "changeTypeNames": {
+      "NEW_REGISTRATION": "New registration",
+      "SECOND_PRACTICE": "Second practice",
+      "RE_REGISTRATION": "Repeated registration",
+      "CHANGE_OF_REGISTRATION": "Change of registration",
+      "CHANGE_OF_NAME": "Change of name",
+      "RELOCATION": "Relocation",
+      "DEREGISTRATION": "Deregistration",
+      "CHANGE_OF_EMPLOYEES": "Change of employees",
+      "OTHER": "Other"
+    },
+    "employeeChangeTypeNames": {
+      "ADD": "New hire",
+      "REMOVE": "Departure"
+    },
+    "professionalTitleNames": {
+      "DOCTOR": "Doctor",
+      "DENTIST": "Dentist",
+      "PSYCHOLOGICAL_PSYCHOTHERAPIST": "Psychological psychotherapist",
+      "NURSING_ASSISTANT": "Nursing assistant",
+      "GERIATRIC_NURSE": "Geriatric nurse",
+      "DIETICIAN": "Dietician",
+      "DISINFECTOR": "Disinfector",
+      "OCCUPATIONAL_THERAPIST": "Occupational therapist",
+      "HEALTH_SUPERVISOR": "Health supervisor",
+      "HEALTHCARE_AND_PEDIATRIC_NURSE": "Healthcare and pediatric nurse",
+      "HEALTHCARE_AND_NURSING_ASSISTANT": "Healthcare and nursing assistant",
+      "HEALTHCARE_AND_NURSING_ASSISTANTS_HELPER": "Healthcare and nursing assistants helper",
+      "MIDWIVE_MATERNITY_NURSE": "Midwive maternity nurse",
+      "ALTERNATIVE_PRACTITIONER": "Alternative practitioner",
+      "NON_MEDICAL_PRACTITIONER_FOR_CHIROPRACTIC": "Non medical practitioner for chiropractic",
+      "ALTERNATIVE_PRACTITIONER_FOR_SPEECH_THERAPY": "Alternative practitioner for speech therapy",
+      "NON_MEDICAL_PRACTITIONER_FOR_PHYSIOTHERAPY": "Non medical practitioner for physiotherapy",
+      "NON_MEDICAL_PRACTITIONER_FOR_PSYCHOTHERAPY": "Non medical practitioner for psychotherapy",
+      "CHILD_AND_YOUTH_PSYCHOTHERAPIST": "Child and youth psychotherapist",
+      "SPEECH_THERAPIST": "Speech therapist",
+      "MASSEUR_AND_MEDICAL_BATH_ATTENDANT": "Masseur and medical bath attendant",
+      "MEDICAL_DOCUMENTALIST": "Medical documentalist",
+      "MEDICAL_TECHNICAL_LABORATORY_ASSISTANT": "Medical technical laboratory assistant",
+      "MEDICAL_TECHNICAL_RADIOLOGY_ASSISTANT": "Medical technical radiology assistant",
+      "MEDICAL_TECHNICAL_ASSISTANT_FOR_FUNCTIONAL_DIAGNOSTICS": "Medical technical assistant for functional diagnostics",
+      "EMERGENCY_PARAMEDIC": "Emergency paramedic",
+      "ORTHOPTIST": "Orthoptist",
+      "CARE_ASSISTANT": "Care assistant",
+      "NURSING_SERVICE": "Nursing service",
+      "NURSING_SERVICE_MANAGER": "Nursing service manager",
+      "PHARMACEUTICAL_TECHNICAL_ASSISTANT": "Pharmaceutical technical assistant",
+      "PHYSIOTHERAPIST": "Physiotherapist",
+      "PODIATRIST": "Podiatrist",
+      "RADIOLOGY_ASSISTANT": "Radiology assistant",
+      "SPORTS_THERAPIST": "Sports therapist",
+      "PHARMACIST": "Pharmacist",
+      "VETERINARIAN": "Veterinarian"
+    },
+    "employmentType": {
+      "FULL_TIME": "Full time",
+      "PART_TIME": "Part time"
+    },
+    "employmentStatus": {
+      "SELF_EMPLOYED": "Self employed",
+      "FREELANCE": "Freelance",
+      "EMPLOYEE": "Employee"
+    }
+  },
+  "stepOne": {
+    "contentSheetOne": {
+      "pageTitle": "General information",
+      "label": {
+        "changeType": "Change type"
+      }
+    },
+    "contentSheetTwo": {
+      "pageTitle": "Applicant information",
+      "label": {
+        "title": "Title",
+        "gender": "Gender",
+        "firstName": "First name(s)",
+        "lastName": "Last name",
+        "birthName": "Birth name",
+        "birthDate": "Birth date",
+        "birthPlace": "Birth place",
+        "nationality": "Nationality",
+        "street": "Street",
+        "houseNumber": "House number",
+        "postalCode": "Postal code",
+        "city": "City",
+        "country": "Country",
+        "email": "E-Mail-Address",
+        "phoneNumber": "Phone number"
+      }
+    }
+  },
+  "stepTwo": {
+    "pageTitle": "Occupational information",
+    "subTitle": {
+      "professionalism": "Information about professionalism"
+    },
+    "label": {
+      "professionalTitle": "Professional title",
+      "fieldOfExpertise": "Field of expertise",
+      "specialistTitle": "Specialist title",
+      "furtherTraining": "Further Training",
+      "qualifications": "Qualifications",
+      "lifetimeDoctorNumber": "Lifetime doctor number (LAN)",
+      "approbationGrantedOn": "Approbation granted on",
+      "approbationIssuingAuthority": "Approbation issuing authority",
+      "employmentType": "Employment type",
+      "employmentStatus": "Employment status"
+    }
+  },
+  "stepThree": {
+    "pageTitle": "Practice / company information",
+    "subTitle": {
+      "proprietaryPractice": "Proprietary practice / establishment",
+      "practiceInformation": "Information about practice",
+      "healthInsuranceAuthorization": "Health insurance authorization"
+    },
+    "hint": "For the selected type of change, only a private practice / establishment is possible.",
+    "label": {
+      "practiceName": "Practice / establishment name",
+      "street": "Street",
+      "houseNumber": "House number",
+      "postalCode": "Postal code",
+      "city": "City",
+      "phoneNumber": "Phone number",
+      "email": "E-Mail-Address",
+      "website": "Website",
+      "openingHours": "Opening hours",
+      "institutionIdentifier": "Institution identifier (IK)",
+      "establishmentNumber": "Establishment number (BSNR)",
+      "healthInsuranceAuthorization": "Health insurance authorization",
+      "employeesEmployed": "Employees employed",
+      "employeesEmployedHint": "Once you have submitted this form, please open the form again and select the „{{changeType}}” option. Please enter the necessary information about your employees there and submit the form as well."
+    },
+    "employeeSheet": {
+      "title": "Information about employees",
+      "subTitle": "Employee",
+      "label": {
+        "firstName": "First name(s)",
+        "lastName": "Last name",
+        "birthDate": "Birth date",
+        "changeType": "Action",
+        "changeTypePlaceholder": "Please select",
+        "deleteEmployee": "Remove",
+        "addEmployee": "Add persons"
+      }
+    }
+  },
+  "stepFour": {
+    "pageTitle": "Required Documents",
+    "label": {
+      "identificationDocument": "Identification / passport",
+      "license": "Professional / medical license",
+      "workPermit": "Work permit",
+      "otherRelevantDocument": "Other document",
+      "anotherRelevantDocument": "Add another document",
+      "deleteDocument": "Delete document"
+    },
+    "sidePanel": {
+      "confirmation": "Confirmation",
+      "completion": "Complete form",
+      "label": {
+        "writtenConfirmation": "I would like to receive a written confirmation of registration by post.",
+        "confirmationFee": "I acknowledge that a fee of €15.00 will be charged for issuing the registration certificate.",
+        "confirmationByPost": "I acknowledge that the registration certificate can only be sent by post.",
+        "agreedDataPrivacyNotice": "I accept the privacy notice.",
+        "agreedDataPrivacyPolicy": "I accept the privacy policy."
+      },
+      "links": {
+        "dataPrivacyNotice": "To the data privacy notice",
+        "dataPrivacyPolicy": "To to the data privacy policy"
+      }
+    },
+    "fileField": {
+      "placeholder": "Select file",
+      "placeholderSelected": "Reselect file",
+      "file": "File",
+      "size": "Size",
+      "helperText": "Upload file as JPEG",
+      "removeFile": "Remove"
+    }
+  },
+  "successPage": {
+    "content": "Entry created successfully",
+    "registrationForm": "To the registration form"
+  },
+  "snackbar": {
+    "success": "The registration form has been successfully saved.",
+    "errors": "Please fill in all required fields. "
+  },
+  "validations": {
+    "requiredField": "Please fill out.",
+    "confirmation": "Please accept terms to continue."
+  },
+  "leave_form": {
+    "message": "If you leave the form, your unsaved changes will not be saved. Would you still like to discard them?",
+    "cancel": "Back to the form",
+    "confirm": "Yes, discard"
+  }
+}

@@ -5,13 +5,17 @@
 
 "use client";
 
-import { Formik } from "formik";
+import { FormikProvider, useFormik } from "formik";
 
 import {
   ApiExaminationResult,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
-import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
+import {
+  FormFooter,
+  FormStack,
+  useConfirmLeaveDirtyFormEffect,
+} from "@eshg/lib-employee-portal";
 import {
   RequiresChildren,
   mapOptionalValue,
@@ -37,8 +41,21 @@ interface ChildExaminationFormProps extends RequiresChildren {
 export function ChildExaminationForm(props: ChildExaminationFormProps) {
   const { examination } = props;
   const submitExamination = useExaminationStore((state) => state.submit);
+  const isExaminationDirty = useExaminationStore((state) => state.dirty);
   const updateExamination = useUpdateExamination(examination.id);
   const alert = useAlert();
+  const form = useFormik({
+    initialValues: mapToExaminationFormValues(
+      examination.result,
+      examination.note,
+      examination.prophylaxisDentitionType,
+    ),
+    enableReinitialize: true,
+    onSubmit: handleSubmit,
+  });
+
+  const isDirty = form.dirty || isExaminationDirty;
+  useConfirmLeaveDirtyFormEffect(isDirty);
 
   async function handleSubmit(values: ExaminationFormValues) {
     alert.close();
@@ -57,24 +74,12 @@ export function ChildExaminationForm(props: ChildExaminationFormProps) {
   }
 
   return (
-    <Formik
-      initialValues={mapToExaminationFormValues(
-        examination.result,
-        examination.note,
-        examination.prophylaxisDentitionType,
-      )}
-      enableReinitialize
-      onSubmit={handleSubmit}
-    >
-      {({ handleSubmit, isSubmitting }) => {
-        return (
-          <FormStack onSubmit={handleSubmit}>
-            {props.children}
-            <FormFooter isSubmitting={isSubmitting} />
-          </FormStack>
-        );
-      }}
-    </Formik>
+    <FormikProvider value={form}>
+      <FormStack onSubmit={form.handleSubmit}>
+        {props.children}
+        <FormFooter isSubmitting={form.isSubmitting} />
+      </FormStack>
+    </FormikProvider>
   );
 }
 

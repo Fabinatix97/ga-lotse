@@ -87,7 +87,7 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
                 )}
                 {props.externalPerson ? (
                   <Stack gap={2}>
-                    {props.persons.length == 1 ? (
+                    {props.persons.length === 1 ? (
                       <Typography>
                         Für die gemeldete Person{" "}
                         <Typography sx={{ fontWeight: "bold" }}>

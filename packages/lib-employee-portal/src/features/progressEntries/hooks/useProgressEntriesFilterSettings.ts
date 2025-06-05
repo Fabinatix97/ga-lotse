@@ -97,7 +97,7 @@ function getInitiatedByFilters(filters: FilterValue[]) {
     filters,
     FILTER_KEYS.initiatedBy,
   );
-  return selectedValues.length != 0 ? new Set(selectedValues) : undefined;
+  return selectedValues.length !== 0 ? new Set(selectedValues) : undefined;
 }
 
 function getProgressEntryTypeFilters(filters: FilterValue[]) {
@@ -107,7 +107,7 @@ function getProgressEntryTypeFilters(filters: FilterValue[]) {
     FILTER_KEYS.progressEntryTypeSystemProgressEntry,
     FILTER_KEYS.progressEntryTypeStandard,
   );
-  return selectedValues.length != 0 ? new Set(selectedValues) : undefined;
+  return selectedValues.length !== 0 ? new Set(selectedValues) : undefined;
 }
 
 function getProgressEntryClassFilters(filters: FilterValue[]) {
@@ -115,5 +115,5 @@ function getProgressEntryClassFilters(filters: FilterValue[]) {
     filters,
     FILTER_KEYS.progressEntryClass,
   ).map((v) => ApiProgressEntryClassFromJSON(v));
-  return selectedValues.length != 0 ? new Set(selectedValues) : undefined;
+  return selectedValues.length !== 0 ? new Set(selectedValues) : undefined;
 }

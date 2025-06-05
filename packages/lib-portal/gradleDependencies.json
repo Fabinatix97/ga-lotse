@@ -1,8 +1,3 @@
 {
-  "dependencies": [
-    ":base-api",
-    ":lib-vitest",
-    ":medical-registry-api",
-    ":official-medical-service-api"
-  ]
+  "dependencies": [":base-api", ":lib-vitest"]
 }

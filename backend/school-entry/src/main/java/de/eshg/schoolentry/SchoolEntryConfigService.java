@@ -65,7 +65,7 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
   }
 
   @Override
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(SCHOOL_ENTRY.name(), mapToConfigurationStatus(getConfig()));
   }
 
@@ -97,7 +97,7 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
 
   public void update(SchoolEntryConfig configUpdate) {
     SchoolEntryConfig persistentConfig = getConfig();
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "schoolEntryConfig",
         getRelevantFieldsForLogging(persistentConfig),
         getRelevantFieldsForLogging(configUpdate));

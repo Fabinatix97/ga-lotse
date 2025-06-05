@@ -5,8 +5,11 @@
 
 package de.eshg.dental.statistic;
 
+import static de.eshg.dental.domain.model.Examination_.prophylaxisSession;
+
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisSession_;
+import de.eshg.dental.domain.model.ProphylaxisType;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.EntityDataSource;
@@ -63,7 +66,7 @@ public class DentalProphylaxisSessionDataSource
       case EINRICHTUNG -> prophylaxisSession.getInstitutionId();
       case SCHULJAHR -> getSchoolYear(prophylaxisSession);
       case GRUPPE -> prophylaxisSession.getGroupName();
-      case TYP -> prophylaxisSession.getType().name();
+      case TYP -> getType(prophylaxisSession.getType());
       case ANZAHL_KINDER -> prophylaxisSession.getExaminations().size();
       case REIHENUNTERSUCHUNG -> prophylaxisSession.isScreening();
       case FLUORIDIERUNGSLACK -> prophylaxisSession.getFluoridationVarnish();
@@ -72,5 +75,12 @@ public class DentalProphylaxisSessionDataSource
 
   private int getSchoolYear(ProphylaxisSession prophylaxisSession) {
     return prophylaxisSession.getDateAndTime().atZone(clock.getZone()).getYear();
+  }
+
+  private String getType(ProphylaxisType type) {
+    if (type == null) {
+      return null;
+    }
+    return type.name();
   }
 }

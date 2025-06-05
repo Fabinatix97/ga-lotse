@@ -99,5 +99,8 @@
   <include file="migrations/0089_add_schoolinfoletter.xml"/>
   <include file="migrations/0090_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0091_multiple_appointment_types.xml"/>
+  <include file="migrations/0092_add_employee_person_type.xml"/>
+  <include file="migrations/0093_add_meds_abroad_appointment_type.xml"/>
+  <include file="migrations/0094_refactor_school_entry_appointment_standard_duration.xml"/>
 
 </databaseChangeLog>

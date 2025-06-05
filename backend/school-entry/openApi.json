@@ -762,6 +762,45 @@
         "tags" : [ "ConfigStatus" ]
       }
     },
+    "/configuration/appointment-standard-duration" : {
+      "get" : {
+        "operationId" : "getStandardDurations",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSchoolEntryAppointmentStandardDurationsResponse"
+                }
+              }
+            },
+            "description" : "A response containing the standard durations if initialized, or an empty response body otherwise."
+          }
+        },
+        "summary" : "Get the standard durations for school entry appointments",
+        "tags" : [ "SchoolEntryAppointmentStandardDuration" ]
+      },
+      "put" : {
+        "operationId" : "updateStandardDurations",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SchoolEntryAppointmentStandardDurations"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the standard durations for school entry appointments",
+        "tags" : [ "SchoolEntryAppointmentStandardDuration" ]
+      }
+    },
     "/configuration/department-info" : {
       "get" : {
         "operationId" : "getInternalConfigDepartmentInfo",
@@ -2156,67 +2195,6 @@
       }
     },
     "/procedures/recent" : {
-      "get" : {
-        "operationId" : "getRecentProcedures",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "userId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureType",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureType"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureStatus",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureStatus"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "required" : false,
-          "schema" : {
-            "maximum" : 200,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRecentProceduresResponse"
-                }
-              }
-            },
-            "description" : "the users recent procedures"
-          }
-        },
-        "summary" : "Get recent procedures for user",
-        "tags" : [ "Procedure" ]
-      }
-    },
-    "/procedures/recent/self" : {
       "get" : {
         "operationId" : "getSelfRecentProcedures",
         "parameters" : [ {
@@ -5032,6 +5010,18 @@
           "propertyName" : "@type"
         }
       },
+      "AllowedAppointmentTypeCombination" : {
+        "required" : [ "types" ],
+        "type" : "object",
+        "properties" : {
+          "types" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
       "Anamnesis" : {
         "required" : [ "additionalChildInfo", "checkUps", "daycareAndSchoolInfo", "developmentInfo", "familyHistoryInfo", "illnessAndAccidentInfo", "interestsAndSportsInfo", "migrationBackground", "promotionBeforeSchoolEntry", "promotionTherapyAndAidInfo", "version" ],
         "type" : "object",
@@ -5131,7 +5121,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION" ]
       },
       "AppointmentTypeConfig" : {
         "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
@@ -5715,7 +5705,7 @@
         }
       },
       "CreateDailyAppointmentBlockGroupRequest" : {
-        "required" : [ "appointmentBlocks", "parallelExaminations", "type" ],
+        "required" : [ "appointmentBlocks", "parallelExaminations", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -5756,8 +5746,13 @@
               "format" : "uuid"
             }
           },
-          "type" : {
-            "$ref" : "#/components/schemas/AppointmentType"
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
           }
         }
       },
@@ -6721,30 +6716,28 @@
         }
       },
       "GetAppointmentBlock" : {
-        "required" : [ "end", "id", "numberOfBookedAppointments", "numberOfFreeAppointments", "start" ],
+        "required" : [ "end", "id", "start" ],
         "type" : "object",
         "properties" : {
+          "bookedDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
           "end" : {
             "type" : "string",
             "description" : "Time at which the appointment block ends.",
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
           },
+          "freeDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
           "id" : {
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
             "format" : "uuid",
             "example" : "UUID_1"
-          },
-          "numberOfBookedAppointments" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "numberOfFreeAppointments" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int64"
           },
           "start" : {
             "type" : "string",
@@ -6756,7 +6749,7 @@
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
       },
       "GetAppointmentBlockGroup" : {
-        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "type" ],
+        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -6781,8 +6774,13 @@
             "type" : "integer",
             "format" : "int32"
           },
-          "type" : {
-            "$ref" : "#/components/schemas/AppointmentType"
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
           }
         }
       },
@@ -6803,9 +6801,15 @@
         }
       },
       "GetAppointmentTypesResponse" : {
-        "required" : [ "appointmentTypeConfigDtos" ],
+        "required" : [ "allowedAppointmentTypeCombinations", "appointmentTypeConfigDtos" ],
         "type" : "object",
         "properties" : {
+          "allowedAppointmentTypeCombinations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AllowedAppointmentTypeCombination"
+            }
+          },
           "appointmentTypeConfigDtos" : {
             "type" : "array",
             "items" : {
@@ -7687,6 +7691,14 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "GetSchoolEntryAppointmentStandardDurationsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "standardDurations" : {
+            "$ref" : "#/components/schemas/SchoolEntryAppointmentStandardDurations"
+          }
+        }
       },
       "GetSchoolEntryConfigResponse" : {
         "required" : [ "isDirectProcedureTypeAssignmentOnImport", "locationSelectionMode" ],
@@ -8709,7 +8721,7 @@
       },
       "PersonType" : {
         "type" : "string",
-        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL" ]
+        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
       },
       "PhysicalExamination" : {
         "required" : [ "abdomen", "earNoseThroat", "metabolism", "musculatureSkeleton", "neurology", "nutritionalCondition", "respiratoryCardiovascular", "skin" ],
@@ -9315,6 +9327,25 @@
             "format" : "int64"
           }
         }
+      },
+      "SchoolEntryAppointmentStandardDurations" : {
+        "required" : [ "canChild", "entryLevel", "regularExamination", "specialNeeds" ],
+        "type" : "object",
+        "properties" : {
+          "canChild" : {
+            "type" : "string"
+          },
+          "entryLevel" : {
+            "type" : "string"
+          },
+          "regularExamination" : {
+            "type" : "string"
+          },
+          "specialNeeds" : {
+            "type" : "string"
+          }
+        },
+        "description" : "A request containing the standard durations. All standard durations must be set."
       },
       "SchoolEntryConfig" : {
         "required" : [ "directProcedureTypeAssignmentOnImport", "directProcedureTypeAssignmentOnImportReadOnly", "locationSelectionMode", "locationSelectionModeReadOnly", "pdfDocumentAccentColor" ],

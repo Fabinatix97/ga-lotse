@@ -66,13 +66,9 @@ public class StreetService {
       newAdministrativeData(MunicipalityDirectory.AdministrativeData municipalityDirectoryData) {
     return data ->
         new AdministrativeData(
-            data.localDistrict(),
+            data.streetNumber(),
             data.districtName(),
             data.cityDistrict(),
-            data.cityDistrictPrefecture(),
-            data.arbitratorsDistrict(),
-            data.policeStation(),
-            data.postalCode(),
             municipalityDirectoryData.municipalityKey());
   }
 

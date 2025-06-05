@@ -14,7 +14,11 @@ import {
   DetailsSection,
   formatBoolean,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime, formatPersonName } from "@eshg/lib-portal";
+import {
+  formatDateTime,
+  formatOptionalKey,
+  formatPersonName,
+} from "@eshg/lib-portal";
 
 import {
   DENTITION_TYPES,
@@ -29,9 +33,6 @@ import { useUpdateProphylaxisSessionSidebar } from "./UpdateProphylaxisSessionSi
 export function ProphylaxisSessionDetails() {
   const prophylaxisSession = useProphylaxisSessionStore((state) => state);
   const updateProphylaxisSidebar = useUpdateProphylaxisSessionSidebar();
-  const detentionType = prophylaxisSession.dentitionType
-    ? DENTITION_TYPES[prophylaxisSession.dentitionType]
-    : "";
 
   return (
     <Stack gap={4}>
@@ -69,13 +70,24 @@ export function ProphylaxisSessionDetails() {
             <DetailsColumn>
               <DetailsItem
                 label="Typ"
-                value={PROPHYLAXIS_TYPES[prophylaxisSession.type]}
+                value={formatOptionalKey(
+                  prophylaxisSession.type,
+                  PROPHYLAXIS_TYPES,
+                  "",
+                )}
               />
               <DetailsItem
                 label="Reihenuntersuchung"
                 value={formatBoolean(prophylaxisSession.isScreening)}
               />
-              <DetailsItem label="Gebisstyp" value={detentionType} />
+              <DetailsItem
+                label="Gebisstyp"
+                value={formatOptionalKey(
+                  prophylaxisSession.dentitionType,
+                  DENTITION_TYPES,
+                  "",
+                )}
+              />
               <DetailsItem
                 label="Fluoridierung"
                 value={formatFluoridationVarnishDescription(
@@ -106,6 +118,9 @@ export function ProphylaxisSessionDetails() {
 }
 
 function PerformingPersons(props: { persons: ApiPerformingPerson[] }) {
+  if (props.persons.length === 0) {
+    return "-";
+  }
   return (
     <Stack component="span">
       {props.persons.map((person) =>

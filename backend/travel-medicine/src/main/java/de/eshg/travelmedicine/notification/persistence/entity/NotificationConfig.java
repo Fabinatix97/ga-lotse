@@ -5,6 +5,7 @@
 
 package de.eshg.travelmedicine.notification.persistence.entity;
 
+import de.eshg.config.domain.Initializable;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
@@ -13,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @DataSensitivity(SensitivityLevel.PUBLIC)
-public class NotificationConfig extends BaseEntity {
+public class NotificationConfig extends BaseEntity implements Initializable {
 
   @NotNull private String fromAddress;
   @NotNull private String greeting;
@@ -36,10 +37,12 @@ public class NotificationConfig extends BaseEntity {
     this.greeting = greeting;
   }
 
+  @Override
   public boolean isInitialized() {
     return initialized;
   }
 
+  @Override
   public void setInitialized(boolean initialized) {
     this.initialized = initialized;
   }

@@ -20,11 +20,23 @@ public class InstitutionContact extends Contact {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private InstitutionContactCategory category;
 
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private InstitutionContactSubCategory subCategory;
+
   public InstitutionContactCategory getCategory() {
     return category;
   }
 
   public void setCategory(InstitutionContactCategory category) {
     this.category = category;
+  }
+
+  public InstitutionContactSubCategory getSubCategory() {
+    return subCategory;
+  }
+
+  public void setSubCategory(InstitutionContactSubCategory subCategory) {
+    this.subCategory = subCategory;
   }
 }

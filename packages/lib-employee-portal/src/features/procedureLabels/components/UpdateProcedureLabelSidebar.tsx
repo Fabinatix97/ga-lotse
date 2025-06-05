@@ -13,8 +13,11 @@ import { FormButtonBar } from "../../../components/form/FormButtonBar";
 import { SidebarActions } from "../../drawer/components/SidebarActions";
 import { SidebarContent } from "../../drawer/components/SidebarContent";
 import { SidebarForm } from "../../drawer/components/SidebarForm";
-import { UseSidebarResult, useSidebar } from "../../drawer/hooks/useSidebar";
-import { DrawerProps } from "../../drawer/types/drawer";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "../../drawer/hooks/useSidebarWithFormRef";
 import { ProcedureLabel } from "../api/models/ProcedureLabel";
 import { useUpdateProcedureLabel } from "../api/mutations";
 import {
@@ -27,13 +30,13 @@ import {
   ProcedureLabelValues,
 } from "./ProcedureLabelFormFields";
 
-export function useUpdateProcedureLabelSidebar(): UseSidebarResult<UpdateProcedureLabelProps> {
-  return useSidebar({
+export function useUpdateProcedureLabelSidebar(): UseSidebarWithFormRefResult<UpdateProcedureLabelProps> {
+  return useSidebarWithFormRef({
     component: UpdateProcedureLabelSidebar,
   });
 }
 
-interface UpdateProcedureLabelProps extends DrawerProps {
+interface UpdateProcedureLabelProps extends SidebarWithFormRefProps {
   procedureLabel: ProcedureLabel;
   procedureLabelApi: ProcedureLabelClient;
 }
@@ -56,7 +59,7 @@ function UpdateProcedureLabelSidebar(props: UpdateProcedureLabelProps) {
     await updateProcedureLabel.mutateAsync(
       mapToRequest(labelId, procedureLabelFormValues, labelVersion),
       {
-        onSuccess: () => props.onClose(),
+        onSuccess: () => props.onClose(true),
       },
     );
   }
@@ -67,7 +70,7 @@ function UpdateProcedureLabelSidebar(props: UpdateProcedureLabelProps) {
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
-        <SidebarForm>
+        <SidebarForm ref={props.formRef}>
           <SidebarContent title="Kennung bearbeiten">
             <ProcedureLabelFormFields />
           </SidebarContent>
@@ -76,7 +79,7 @@ function UpdateProcedureLabelSidebar(props: UpdateProcedureLabelProps) {
             <FormButtonBar
               submitLabel="Speichern"
               submitting={isSubmitting}
-              onCancel={props.onClose}
+              onCancel={() => props.onClose()}
             />
           </SidebarActions>
         </SidebarForm>

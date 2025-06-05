@@ -26,10 +26,8 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupSpecification;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.appointmentblock.persistence.AppointmentTypeRepository;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeHolder;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
@@ -38,6 +36,7 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -52,6 +51,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +66,7 @@ public class AppointmentBlockService {
 
   private final AppointmentBlockGroupRepository appointmentBlockGroupRepository;
   private final AppointmentBlockRepository appointmentBlockRepository;
-  private final AppointmentTypeRepository appointmentTypeRepository;
+  private final AbstractAppointmentStandardDurationService<?> appointmentStandardDurationService;
   private final CalendarClient calendarClient;
   private final ContactClient contactClient;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
@@ -77,7 +77,7 @@ public class AppointmentBlockService {
   public AppointmentBlockService(
       AppointmentBlockGroupRepository appointmentBlockGroupRepository,
       AppointmentBlockRepository appointmentBlockRepository,
-      AppointmentTypeRepository appointmentTypeRepository,
+      AbstractAppointmentStandardDurationService<?> appointmentStandardDurationService,
       CalendarClient calendarClient,
       ContactClient contactClient,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
@@ -86,7 +86,7 @@ public class AppointmentBlockService {
       Clock clock) {
     this.appointmentBlockGroupRepository = appointmentBlockGroupRepository;
     this.appointmentBlockRepository = appointmentBlockRepository;
-    this.appointmentTypeRepository = appointmentTypeRepository;
+    this.appointmentStandardDurationService = appointmentStandardDurationService;
     this.calendarClient = calendarClient;
     this.contactClient = contactClient;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
@@ -196,7 +196,9 @@ public class AppointmentBlockService {
     return new AppointmentBlockGroupData(
         appointmentBlockGroup.getId(),
         appointmentBlockGroup.getExternalId(),
-        MappingUtil.mapEnum(AppointmentTypeDto.class, appointmentBlockGroup.getType()),
+        appointmentBlockGroup.getTypes().stream()
+            .map(type -> MappingUtil.mapEnum(AppointmentTypeDto.class, type))
+            .toList(),
         appointmentBlockGroup.getParallelExaminations(),
         location,
         mapAppointmentBlockToData(appointmentBlockGroup, appointmentBlockData));
@@ -218,17 +220,41 @@ public class AppointmentBlockService {
 
   public CreateAppointmentBlockGroupResponse createDailyAppointmentBlocksForGroup(
       CreateDailyAppointmentBlockGroupRequest request) {
-
-    AppointmentType appointmentType = MappingUtil.mapEnum(AppointmentType.class, request.type());
-    AppointmentTypeConfig appointmentTypeConfig =
-        appointmentTypeRepository
-            .findByAppointmentType(appointmentType)
-            .orElseThrow(
-                () -> new BadRequestException("Unknown AppointmentType " + appointmentType.name()));
-
     appointmentBlockValidator.validateNumberOfAppointmentBlocks(request);
+
+    Set<AppointmentType> requestedTypes =
+        request.types().stream()
+            .map(type -> MappingUtil.mapEnum(AppointmentType.class, type))
+            .collect(Collectors.toSet());
+    appointmentBlockValidator.validateAllowedCombinationOfTypes(requestedTypes);
+
+    List<AppointmentTypeHolder> appointmentTypeHolders =
+        requestedTypes.stream()
+            .map(
+                type -> {
+                  AppointmentTypeHolder holder = new AppointmentTypeHolder();
+                  holder.setType(type);
+                  holder.setSlotDuration(
+                      appointmentStandardDurationService.getStandardDuration(type));
+                  return holder;
+                })
+            .toList();
+
+    // ToDo ISSUE-8888: Allow types with different durations -> remove this check
+    Set<Duration> durations =
+        new HashSet<>(
+            appointmentTypeHolders.stream().map(AppointmentTypeHolder::getSlotDuration).toList());
+    if (durations.size() > 1) {
+      throw new BadRequestException("Different durations are not supported");
+    }
+
+    Duration shortestDuration =
+        appointmentTypeHolders.stream()
+            .map(AppointmentTypeHolder::getSlotDuration)
+            .reduce((d1, d2) -> d1.compareTo(d2) < 0 ? d1 : d2)
+            .orElseThrow();
     appointmentBlockValidator.validateStartAndEndTimes(
-        request.appointmentBlocks(), appointmentTypeConfig);
+        request.appointmentBlocks(), shortestDuration);
     appointmentBlockValidator.validateTechnicalGroups(
         request.physicians(), request.mfas(), request.consultants());
     appointmentBlockValidator.validateLocation(request.locationId());
@@ -244,7 +270,7 @@ public class AppointmentBlockService {
     checkForCalendarConflicts(usersForEvent, appointmentBlocks);
 
     AppointmentBlockGroup appointmentBlockGroup =
-        buildAppointmentBlockGroup(request, appointmentType, appointmentTypeConfig);
+        buildAppointmentBlockGroup(request, appointmentTypeHolders);
 
     for (CreateAppointmentBlockData createAppointmentBlockRequest : appointmentBlocks) {
       AppointmentBlock appointmentBlock = new AppointmentBlock();
@@ -291,14 +317,9 @@ public class AppointmentBlockService {
 
   private static AppointmentBlockGroup buildAppointmentBlockGroup(
       CreateDailyAppointmentBlockGroupRequest request,
-      AppointmentType appointmentType,
-      AppointmentTypeConfig appointmentTypeConfig) {
-    AppointmentTypeHolder holder = new AppointmentTypeHolder();
-    holder.setType(appointmentType);
-    holder.setSlotDuration(appointmentTypeConfig.getStandardDuration());
-
+      List<AppointmentTypeHolder> appointmentTypeHolders) {
     AppointmentBlockGroup appointmentBlockGroup = new AppointmentBlockGroup();
-    appointmentBlockGroup.setAppointmentTypeHolders(List.of(holder));
+    appointmentBlockGroup.setAppointmentTypeHolders(appointmentTypeHolders);
     appointmentBlockGroup.setParallelExaminations(request.parallelExaminations());
     appointmentBlockGroup.setMfas(request.mfas());
     appointmentBlockGroup.setPhysicians(request.physicians());

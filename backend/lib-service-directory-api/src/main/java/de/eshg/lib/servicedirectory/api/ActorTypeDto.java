@@ -14,6 +14,7 @@ public enum ActorTypeDto {
   FM("business module", "Fachmodul"),
   LSD("local service directory", "lokales Dienstverzeichnis"),
   MISC("Miscellaneous", "Sonstige"),
+  RESTRICTED("Miscellaneous with restricted access", "Sonstige mit begrenztem Zugriff"),
   WEB("webserver", "Webserver"),
   ZA("central application", "zentrale Anwendung"),
   ZR("central repository", "zentrale Ablage"),

@@ -94,6 +94,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case STI_PROTECTION_MFA -> "Emilia";
       case STI_PROTECTION_CONSULTANT -> "Gregor";
       case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Tina";
+      case MEDS_ABROAD_MFA -> "Louise";
     };
   }
 
@@ -109,6 +110,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case STI_PROTECTION_MFA -> "Galotti";
       case STI_PROTECTION_CONSULTANT -> "Samsa";
       case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Hoffmann";
+      case MEDS_ABROAD_MFA -> "Belcher";
     };
   }
 

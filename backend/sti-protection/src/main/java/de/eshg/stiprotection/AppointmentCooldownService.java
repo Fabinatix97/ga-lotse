@@ -7,17 +7,13 @@ package de.eshg.stiprotection;
 
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.db.AppointmentCooldown;
 import de.eshg.stiprotection.persistence.db.AppointmentCooldownRepository;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 @Service
 public class AppointmentCooldownService {
@@ -37,25 +33,13 @@ public class AppointmentCooldownService {
     }
     Instant appointmentStart = appointment.getAppointmentStart();
     Instant appointmentEnd = appointment.getAppointmentEnd();
-    AppointmentType type = getAppointmentType(appointment);
+    AppointmentType type = appointment.getType();
     if (cooldownRepository
         .findByAppointmentStartAndAppointmentEndAndType(appointmentStart, appointmentEnd, type)
         .isPresent()) {
       return;
     }
     cooldownRepository.save(new AppointmentCooldown(appointmentStart, appointmentEnd, type));
-  }
-
-  private static AppointmentType getAppointmentType(Appointment appointment) {
-    Assert.notNull(appointment, "Appointment must not be null");
-    return Optional.of(appointment)
-        .map(Appointment::getAppointmentBlock)
-        .map(AppointmentBlock::getAppointmentBlockGroup)
-        .map(AppointmentBlockGroup::getType)
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Appointment must be from a block of a group with an appointment type present"));
   }
 
   public boolean isAppointmentSlotOnCooldown(AppointmentData appointmentData) {
@@ -72,9 +56,7 @@ public class AppointmentCooldownService {
       return;
     }
     removeAppointmentCooldown(
-        appointment.getAppointmentStart(),
-        appointment.getAppointmentEnd(),
-        getAppointmentType(appointment));
+        appointment.getAppointmentStart(), appointment.getAppointmentEnd(), appointment.getType());
   }
 
   public void removeAppointmentCooldown(

@@ -6,6 +6,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import {
+  ApiCloseChildRequest,
   ApiSyncPersonRequest,
   UpdateChildPersonRequest,
   UpdateChildRequest,
@@ -80,6 +81,25 @@ export function useUpdateExamination(examinationId: string) {
     onSuccess: (response) => {
       queryClient.setQueryData(queryKey, response);
       snackbar.confirmation("Die Untersuchung wurde erfolgreich geändert.");
+    },
+  });
+}
+
+export function useCloseChild(childId: string) {
+  const { childApi } = useDentalApi();
+  const { queryKey } = getChildDetailsQuery(childApi, childId);
+  const queryClient = useQueryClient();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    meta: { updatesQuery: queryKey },
+    mutationFn: (request: ApiCloseChildRequest) =>
+      childApi
+        .closeChildRaw({ childId, apiCloseChildRequest: request })
+        .then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Vorgang für Kind erfolgreich abgeschlossen.");
     },
   });
 }

@@ -16,5 +16,8 @@
   <include file="migrations/0006_add_appointment_cooldown.xml"/>
   <include file="migrations/0007_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0008_multiple_appointment_types.xml"/>
+  <include file="migrations/0009_add_employee_person_type.xml"/>
+  <include file="migrations/0010_add_meds_abroad_appointment_type.xml"/>
+  <include file="migrations/0011_refactor_sti_protection_appointment_standard_duration.xml"/>
 
 </databaseChangeLog>

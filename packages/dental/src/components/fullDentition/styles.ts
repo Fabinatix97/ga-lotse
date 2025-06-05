@@ -5,7 +5,7 @@
 
 export const TOOTH_SIZE = {
   width: 60,
-  height: 66,
+  height: 48,
 };
 
 export const QUADRANT_SPACING = 3;

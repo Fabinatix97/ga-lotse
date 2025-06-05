@@ -17,7 +17,7 @@ public record ProphylaxisSessionDto(
     @NotNull Instant dateAndTime,
     @NotNull @Valid InstitutionDto institution,
     String groupName,
-    @NotNull ProphylaxisTypeDto type,
+    ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     FluoridationVarnishDto fluoridationVarnish,
     @NotNull ProphylaxisStatusDto status) {}

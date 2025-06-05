@@ -5,6 +5,11 @@ plugins {
 
 dependencies {
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // See https://github.com/spring-projects/spring-boot/issues/41203 and https://github.com/jakartaee/transactions/issues/214
+    // The `jakarta.transaction.TransactionScoped` annotation (transitive dependency of `spring-boot-starter-data-jpa`)
+    // is itself annotated with `jakarta.enterprise.context.NormalScope` which is not present trough transitive dependencies.
+    // Due to `-Werror` this leads to an compile error which would otherwise be a warning.
+    compileOnlyApi 'jakarta.enterprise:jakarta.enterprise.cdi-api:latest.release'
     api 'org.hibernate.orm:hibernate-envers'
     api 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate6'
 
@@ -23,7 +28,7 @@ dependencies {
     testFixturesImplementation project(':rest-service-commons')
     testFixturesImplementation 'org.springframework.boot:spring-boot-test'
     testFixturesImplementation 'de.cronn:postgres-snapshot-util:latest.release'
-    testFixturesImplementation 'com.google.guava:guava'
+    testFixturesImplementation 'com.google.guava:guava:latest.release'
     testFixturesApi 'de.cronn:liquibase-changelog-generator-postgresql:latest.release'
 }
 

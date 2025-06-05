@@ -5,6 +5,7 @@
 
 package de.eshg.opendata.config;
 
+import de.eshg.config.domain.Initializable;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
@@ -15,7 +16,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class OpenDataConfiguration extends BaseEntity {
+public class OpenDataConfiguration extends BaseEntity implements Initializable {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean initialized = false;
@@ -48,11 +49,13 @@ public class OpenDataConfiguration extends BaseEntity {
     this.fallbackLicenseUrl = fallbackLicenseUrl;
   }
 
-  boolean isInitialized() {
+  @Override
+  public boolean isInitialized() {
     return initialized;
   }
 
-  void setInitialized(boolean initialized) {
+  @Override
+  public void setInitialized(boolean initialized) {
     this.initialized = initialized;
   }
 

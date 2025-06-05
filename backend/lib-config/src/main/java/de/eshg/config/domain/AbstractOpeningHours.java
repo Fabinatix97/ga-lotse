@@ -15,7 +15,7 @@ import java.util.List;
 
 @MappedSuperclass
 @DataSensitivity(SensitivityLevel.PUBLIC)
-public class AbstractOpeningHours extends BaseEntity {
+public class AbstractOpeningHours extends BaseEntity implements Initializable {
 
   @Column(nullable = false)
   private List<String> de = new ArrayList<>();
@@ -42,10 +42,12 @@ public class AbstractOpeningHours extends BaseEntity {
     this.en = en;
   }
 
+  @Override
   public boolean isInitialized() {
     return initialized;
   }
 
+  @Override
   public void setInitialized(boolean initialized) {
     this.initialized = initialized;
   }

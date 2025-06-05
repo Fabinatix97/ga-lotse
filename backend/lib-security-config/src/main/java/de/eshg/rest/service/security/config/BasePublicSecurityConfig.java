@@ -60,10 +60,8 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void proceduresAndTasks() {
-    requestMatchers(BaseUrls.Base.RECENT_PROCEDURE_API + "/**")
+    requestMatchers(BaseUrls.Base.SELF_RECENT_PROCEDURES_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_PROCEDURES_READ);
-    requestMatchers(BaseUrls.Base.PROCEDURE_CONFIG_API + "/**")
-        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
     requestMatchers(BaseUrls.Base.TASK_API + "/**").hasRole(EmployeePermissionRole.BASE_TASKS_READ);
     requestMatchers(BaseUrls.Base.PROCEDURE_METRICS_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_PROCEDURE_METRICS_READ);

@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.domain.model;
 
+import de.eshg.config.domain.Initializable;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.common.DataSensitivity;
@@ -16,7 +17,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @DataSensitivity(SensitivityLevel.PUBLIC)
-public class SchoolEntryConfig extends BaseEntity {
+public class SchoolEntryConfig extends BaseEntity implements Initializable {
 
   @Column(nullable = false)
   private boolean initialized = true;
@@ -31,10 +32,12 @@ public class SchoolEntryConfig extends BaseEntity {
   @Column(nullable = false)
   private String pdfDocumentAccentColor;
 
+  @Override
   public boolean isInitialized() {
     return initialized;
   }
 
+  @Override
   public void setInitialized(boolean initialized) {
     this.initialized = initialized;
   }

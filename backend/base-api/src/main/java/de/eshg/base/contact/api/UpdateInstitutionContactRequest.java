@@ -26,6 +26,7 @@ public record UpdateInstitutionContactRequest(
         @Size(min = 1, max = 300)
         String name,
     InstitutionContactCategoryDto category,
+    InstitutionContactSubCategoryDto subCategory,
     @ArraySchema(
             arraySchema =
                 @Schema(
@@ -54,6 +55,7 @@ public record UpdateInstitutionContactRequest(
         null,
         name,
         category,
+        null,
         phoneNumbers,
         emailAddresses,
         contactAddress,

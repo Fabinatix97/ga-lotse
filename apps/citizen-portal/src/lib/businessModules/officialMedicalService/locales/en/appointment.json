@@ -1,0 +1,152 @@
+{
+  "common": {
+    "title": "Official Medical Service",
+    "requiredTitle": "*Required",
+    "stepTitle": "Step {{currentStepIndex}} of {{totalSteps}}",
+    "errors": {
+      "concurrentAppointment_errorMessage": "The appointment you've selected has just been reserved by another party. Please select another free appointment.",
+      "concurrentAppointment_action": "Change Appointment"
+    }
+  },
+  "concern": {
+    "title": "Select concern",
+    "description": "The appointment type will be included in the order letter sent to you.",
+    "infoText": {
+      "title": "School-related concern",
+      "description": "For exams, please arrive at the latest on the day of the exam (even without an appointment) or if you are submitting an academic paper, please make an appointment by telephone in advance"
+    },
+    "filter": {
+      "category": "Category",
+      "category_all": "All"
+    },
+    "fields": {
+      "concern_required": "Required"
+    }
+  },
+  "appointment": {
+    "title": "Available appointments",
+    "fields": {
+      "error": {
+        "title": "Error loading appointments",
+        "description": "Please reload the page.",
+        "reload": "Reload page"
+      }
+    },
+    "appointmentPicker": {
+      "noAppointmentForSelectedDate": "No appointments available for the selected date",
+      "noAppointmentSelected": "No appointment selected",
+      "noAppointmentsAvailable": "No appointments are currently available.",
+      "tryLater": "We will make more appointments available soon. Please try again later."
+    },
+    "backToOverview": "Back"
+  },
+  "appointment_calendar": {
+    "required_appointment": "Please select an appointment",
+    "required_day": "Please select a day",
+    "month_selection": "Appointment calendar month",
+    "next_month": "next month",
+    "prev_month": "previous month",
+    "list_label": "Available times *",
+    "calendar_label": "Date *",
+    "available": "available"
+  },
+  "documents": {
+    "title": "Required documents",
+    "fileField": {
+      "title": "Order letter",
+      "required": "Please upload your order letter",
+      "helperText": "Upload file as PDF, PNG or JPG",
+      "inputSummary_one": "{{count}} file uploaded",
+      "inputSummary_other": "{{count}} files uploaded",
+      "placeholder": "Select file",
+      "file": "File",
+      "size": "Size",
+      "format": "Format",
+      "delete": "Delete",
+      "deleteAll": "Delete all",
+      "error": "File could not be uploaded. Please try again."
+    }
+  },
+  "affectedPerson": {
+    "title": "Personal data",
+    "fields": {
+      "salutation": "Salutation",
+      "title": "Title",
+      "firstName": "First name",
+      "firstName_required": "Required",
+      "lastName": "Last name",
+      "lastName_required": "Required",
+      "nameAtBirth": "Name at birth",
+      "dateOfBirth": "Date of birth",
+      "dateOfBirth_required": "Required",
+      "contactAddress": {
+        "street": "Street",
+        "street_required": "Required",
+        "houseNumber": "House number",
+        "houseNumber_required": "Required",
+        "addressAddition": "Address addition",
+        "postalCode": "Postal Code",
+        "postalCode_required": "Required",
+        "city": "City",
+        "city_required": "Required"
+      },
+      "phoneNumbers": "Phone",
+      "emailAddresses": "E-Mail address",
+      "emailAddresses_required": "Required",
+      "confirmOnlineServices": "I confirm that I would like to use the online services and receive the necessary emails.",
+      "confirmOnlineServices_required": "Please confirm."
+    }
+  },
+  "overview": {
+    "title": "Overview",
+    "goForward": "Continue",
+    "goBack": "Back",
+    "cancel": "Cancel",
+    "fields": {
+      "confirmOnlineServices_label": "Online services",
+      "confirmOnlineServices_value": "Send confirmation email",
+      "concernAndDuration_label": "Concern, expected appointment duration",
+      "appointmentDuration": "(ca. {{ durationInMinutes }} minutes)",
+      "department_label": "Department",
+      "date_label": "Day, date",
+      "time_label": "Time",
+      "time_value": "{{ appointmentStart }}",
+      "fullName_label": "Name",
+      "dateOfBirth_label": "Date of birth",
+      "emailAddress_label": "E-Mail address",
+      "contactAddress_label": "Address",
+      "contactAddress_value": "{{ street }} <br> {{ city }} </br>"
+    }
+  },
+  "appointmentInformation": {
+    "title": "Appointment information",
+    "alertMessage": "Please come sober on the day of the examination to: <br> {{ department }} </br>",
+    "infoText": "We will review your request. After successful verification, you will receive an <t1> appointment confirmation </t1> by email. All information about the appointment can be found there. You also have the option to change or cancel the appointment.",
+    "closingGreeting": "Sincerely, <br> Your Health Department </br>",
+    "requiredDocuments_header": "The necessary documents that you should bring with you to the appointment are:",
+    "requiredDocuments_list": [
+      "ID / Passport",
+      "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
+      "Proof of the currently prescribed medication (if any)"
+    ]
+  },
+  "confirmation": {
+    "title": "Request an official medical report",
+    "submit": "Submit concern",
+    "goBack": "Back",
+    "cancel": "Cancel",
+    "fields": {
+      "confirmPrivacyNotice": "I accept the data protection notice.",
+      "privacyNotice": "To the data protection notice",
+      "confirmPrivacyNotice_required": "Please give consent to continue.",
+      "confirmPrivacyPolicy": "I accept the privacy policy.",
+      "privacyPolicy": "To the privacy policy",
+      "confirmPrivacyPolicy_required": "Please give consent to continue."
+    }
+  },
+  "success": {
+    "title": "Concern successfully sent",
+    "description": "You have successfully submitted your request. You will receive a confirmation email from us with the next steps.",
+    "buttonLabel": "Back to information page"
+  }
+}

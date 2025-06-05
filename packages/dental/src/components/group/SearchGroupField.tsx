@@ -14,6 +14,7 @@ interface SearchGroupFieldProps {
   name: string;
   label: string;
   institution: NullableFieldValue<Institution>;
+  openGroupsOnly?: boolean;
   freeSolo?: boolean;
   disabled?: boolean;
 }
@@ -29,6 +30,7 @@ function isSchool(institution: Institution | null): boolean {
 export function SearchGroupField(props: SearchGroupFieldProps) {
   const searchGroups = useSearchInstitutionGroupsQuery(
     props.institution?.id ?? "",
+    props.openGroupsOnly ?? false,
   );
   const groups = searchGroups.isSuccess ? searchGroups.data : [];
   const options = groups.map(mapToSelectOption);

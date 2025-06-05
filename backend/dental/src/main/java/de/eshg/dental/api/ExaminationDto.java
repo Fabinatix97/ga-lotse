@@ -16,7 +16,7 @@ public record ExaminationDto(
     @NotNull UUID id,
     @NotNull long version,
     @NotNull Instant dateAndTime,
-    @NotNull ProphylaxisTypeDto prophylaxisType,
+    ProphylaxisTypeDto prophylaxisType,
     @NotNull boolean isScreening,
     DentitionTypeDto prophylaxisDentitionType,
     @NotNull boolean isFluoridation,

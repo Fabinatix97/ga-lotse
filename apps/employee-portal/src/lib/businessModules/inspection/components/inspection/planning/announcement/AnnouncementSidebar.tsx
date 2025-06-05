@@ -1,0 +1,125 @@
+/**
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Grid } from "@mui/joy";
+import { Formik } from "formik";
+import { isNullish } from "remeda";
+
+import {
+  ApiInspectionAnnouncement,
+  ApiInspectionAnnouncementType,
+} from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
+import {
+  DateField,
+  RadioButtonsField,
+  toDateString,
+  toUtcDate,
+} from "@eshg/lib-portal";
+
+import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { translateInspectionAnnouncement } from "@/lib/businessModules/inspection/shared/enums";
+
+interface AnnouncementSidebarProps {
+  open: boolean;
+  onClose: () => void;
+  announcement?: ApiInspectionAnnouncement;
+  procedureId: string;
+}
+
+interface AnnouncementFormType {
+  type: ApiInspectionAnnouncementType;
+  date: string;
+}
+
+const ANNOUNCEMENT_TYPE_OPTIONS = Object.values(
+  ApiInspectionAnnouncementType,
+).map((value) => {
+  return { label: translateInspectionAnnouncement(value), value: value };
+});
+
+export function AnnouncementSidebar({
+  open,
+  onClose,
+  procedureId,
+  announcement,
+}: Readonly<AnnouncementSidebarProps>) {
+  function handleClose() {
+    onClose();
+  }
+
+  const { mutateAsync: updateInspection } = useUpdateInspection();
+
+  async function handleSubmit(values: AnnouncementFormType) {
+    await updateInspection(
+      {
+        id: procedureId,
+        apiUpdateInspectionRequest: {
+          announcementDto: {
+            date: toUtcDate(values.date),
+            type: values.type,
+          },
+        },
+      },
+      {
+        onSuccess: handleClose,
+      },
+    );
+  }
+
+  const initialValues: AnnouncementFormType = isNullish(announcement)
+    ? {
+        date: toDateString(new Date()),
+        type: ApiInspectionAnnouncementType.Email,
+      }
+    : {
+        date: toDateString(announcement.date),
+        type: announcement.type,
+      };
+
+  return (
+    <Sidebar open={open} onClose={handleClose}>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {({ isSubmitting, handleSubmit }) => (
+          <SidebarForm onSubmit={handleSubmit}>
+            <SidebarContent title="Ankündigung">
+              <Grid container columnSpacing={2} rowSpacing={3}>
+                <Grid xs={12}>
+                  <DateField
+                    name="date"
+                    label="Datum"
+                    required="Bitte ein Datum angeben."
+                  />
+                </Grid>
+                <Grid xs={12}>
+                  <RadioButtonsField
+                    label="Kommunikationsmittel"
+                    name="type"
+                    options={ANNOUNCEMENT_TYPE_OPTIONS}
+                    required="Bitte ein Kommunikationsmittel auswählen."
+                    orientation="vertical"
+                  />
+                </Grid>
+              </Grid>
+            </SidebarContent>
+            <SidebarActions>
+              <FormButtonBar
+                submitLabel="Speichern"
+                submitting={isSubmitting}
+                onCancel={handleClose}
+              />
+            </SidebarActions>
+          </SidebarForm>
+        )}
+      </Formik>
+    </Sidebar>
+  );
+}

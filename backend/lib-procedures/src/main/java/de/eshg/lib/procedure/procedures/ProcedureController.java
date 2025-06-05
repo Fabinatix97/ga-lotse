@@ -104,7 +104,6 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
-import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -138,7 +137,6 @@ public class ProcedureController<
     implements ProcedureApi {
   private static final Logger log = LoggerFactory.getLogger(ProcedureController.class);
 
-  private final Clock clock;
   private final BusinessModule businessModule;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final GenericApprovalRequestRepository approvalRequestRepository;
@@ -152,7 +150,6 @@ public class ProcedureController<
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   public ProcedureController(
-      Clock clock,
       BusinessModule businessModule,
       ProcedureRepository<ProcedureT> procedureRepository,
       GenericApprovalRequestRepository approvalRequestRepository,
@@ -164,7 +161,6 @@ public class ProcedureController<
       UserHelper userHelper,
       ProcedureSearchService<ProcedureT> procedureSearchService,
       BaseFeatureTogglesApi baseFeatureTogglesApi) {
-    this.clock = clock;
     this.businessModule = businessModule;
     this.procedureRepository = procedureRepository;
     this.approvalRequestRepository = approvalRequestRepository;
@@ -184,17 +180,7 @@ public class ProcedureController<
       Set<ProcedureTypeDto> procedureTypes,
       Set<ProcedureStatusDto> procedureStatus,
       Integer limit) {
-    return getRecentProcedures(
-        CurrentUserHelper.getCurrentUserId(), procedureTypes, procedureStatus, limit);
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public GetRecentProceduresResponse getRecentProcedures(
-      UUID userId,
-      Set<ProcedureTypeDto> procedureTypes,
-      Set<ProcedureStatusDto> procedureStatus,
-      Integer limit) {
+    UUID userId = CurrentUserHelper.getCurrentUserId();
 
     Set<ProcedureStatus> status = mapEnumSet(procedureStatus, ProcedureMapper::toDomainType);
     Set<ProcedureType> types = mapEnumSet(procedureTypes, ProcedureMapper::toDomainType);

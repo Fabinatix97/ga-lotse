@@ -9,11 +9,16 @@ import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.medicalregistry.api.CreateApplicantChangeRequest;
 import de.eshg.medicalregistry.api.CreateApplicantDto;
+import de.eshg.medicalregistry.api.CreateEmployeeChangeDto;
+import de.eshg.medicalregistry.api.CreateEmployeeChangeRequest;
 import de.eshg.medicalregistry.api.CreateFullChangeRequest;
 import de.eshg.medicalregistry.api.CreatePracticeChangeRequest;
 import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.CreateProfessionInformationDto;
+import de.eshg.medicalregistry.api.EmployeeChangeTypeDto;
+import de.eshg.medicalregistry.domain.model.EmployeeChange;
+import de.eshg.medicalregistry.domain.model.EmployeeChangeType;
 import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
@@ -21,22 +26,67 @@ import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import de.eshg.medicalregistry.domain.model.Professional;
+import de.eshg.medicalregistry.domain.model.TypeOfPartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.importer.MedicalRegistryRow;
+import java.util.List;
 import java.util.UUID;
+import org.springframework.data.util.StreamUtils;
 
 public final class CreationMapper {
 
   private CreationMapper() {}
 
   public static MedicalRegistryEntryChange mapToDomain(
-      CreateProcedureRequest request, TriggerType triggerType, UUID personId, UUID facilityId) {
+      CreateProcedureRequest request,
+      TriggerType triggerType,
+      UUID applicantPersonId,
+      List<UUID> employeeChangePersonIds,
+      UUID facilityId) {
     return switch (request) {
       case CreateFullChangeRequest createFullChangeRequest ->
-          mapToDomain(createFullChangeRequest, triggerType, personId, facilityId);
+          mapToDomain(createFullChangeRequest, triggerType, applicantPersonId, facilityId);
       case CreateApplicantChangeRequest createApplicantChangeRequest ->
-          mapToDomain(createApplicantChangeRequest, triggerType, personId);
+          mapToDomain(createApplicantChangeRequest, triggerType, applicantPersonId);
       case CreatePracticeChangeRequest createPracticeChangeRequest ->
-          mapToDomain(createPracticeChangeRequest, triggerType, personId, facilityId);
+          mapToDomain(createPracticeChangeRequest, triggerType, applicantPersonId, facilityId);
+      case CreateEmployeeChangeRequest createEmployeeChangeRequest ->
+          mapToDomain(
+              createEmployeeChangeRequest, triggerType, applicantPersonId, employeeChangePersonIds);
+    };
+  }
+
+  private static PartialMedicalRegistryEntryChange mapToDomain(
+      CreateEmployeeChangeRequest request,
+      TriggerType triggerType,
+      UUID applicantPersonId,
+      List<UUID> employeeChangePersonIds) {
+    PartialMedicalRegistryEntryChange medicalRegistryEntry =
+        new PartialMedicalRegistryEntryChange(triggerType);
+    medicalRegistryEntry.setTypeOfPartialChange(
+        TypeOfPartialMedicalRegistryEntryChange.CHANGE_OF_EMPLOYEES);
+
+    StreamUtils.zip(
+            request.employeeChanges().stream(),
+            employeeChangePersonIds.stream(),
+            CreationMapper::mapToDomain)
+        .forEach(medicalRegistryEntry::addRelatedPerson);
+
+    mapCommonFields(medicalRegistryEntry, request, applicantPersonId);
+    return medicalRegistryEntry;
+  }
+
+  private static EmployeeChange mapToDomain(
+      CreateEmployeeChangeDto employeeChange, UUID employeeChangePersonId) {
+    EmployeeChange employeeChangeEntity = new EmployeeChange();
+    employeeChangeEntity.setEmployeeChangeType(mapToDomain(employeeChange.changeType()));
+    employeeChangeEntity.setCentralFileStateId(employeeChangePersonId);
+    return employeeChangeEntity;
+  }
+
+  private static EmployeeChangeType mapToDomain(EmployeeChangeTypeDto changeType) {
+    return switch (changeType) {
+      case ADD -> EmployeeChangeType.ADD;
+      case REMOVE -> EmployeeChangeType.REMOVE;
     };
   }
 
@@ -61,7 +111,6 @@ public final class CreationMapper {
 
     medicalRegistryEntry.setTypeOfPartialChange(
         ProcedureMapper.mapToDomain(request.typeOfPracticeChange()));
-    medicalRegistryEntry.setEmployeesEmployed(request.employeesEmployed());
     medicalRegistryEntry.addRelatedFacility(buildPractice(request.practice(), facilityId));
     return medicalRegistryEntry;
   }
@@ -74,7 +123,6 @@ public final class CreationMapper {
 
     medicalRegistryEntry.setTypeOfFullChange(
         ProcedureMapper.mapToDomain(request.typeOfFullChange()));
-    medicalRegistryEntry.setEmployeesEmployed(request.employeesEmployed());
     ProfessionInformation professionInformation =
         buildProfessionInformation(request.professionInformation());
     medicalRegistryEntry.setProfessionInformation(professionInformation);
@@ -90,7 +138,6 @@ public final class CreationMapper {
     MedicalRegistryEntry medicalRegistryEntry =
         new MedicalRegistryEntry(TriggerType.SYSTEM_AUTOMATIC);
     medicalRegistryEntry.setConsentToPrivacyPolicy(true);
-    medicalRegistryEntry.setEmployeesEmployed(rowValue.getEmployeesEmployed());
     medicalRegistryEntry.setRequestForWrittenConfirmation(false);
     ProfessionInformation professionInformation =
         buildProfessionInformation(rowValue.getProfessionInformation());
@@ -117,7 +164,7 @@ public final class CreationMapper {
       CreateProfessionInformationDto professional) {
     ProfessionInformation professionInformation = new ProfessionInformation();
     professionInformation.setProfessionalTitle(
-        ProfessionalMapper.mapToDomain(professional.getProfessionalTitle()));
+        PersonMapper.mapToDomain(professional.getProfessionalTitle()));
     professionInformation.setFieldOfExpertise(professional.getFieldOfExpertise());
     professionInformation.setSpecialistTitle(professional.getSpecialistTitle());
     professionInformation.setFurtherTraining(professional.getFurtherTraining());
@@ -127,9 +174,9 @@ public final class CreationMapper {
     professionInformation.setApprobationIssuingAuthority(
         professional.getApprobationIssuingAuthority());
     professionInformation.setEmploymentType(
-        ProfessionalMapper.mapToDomain(professional.getEmploymentType()));
+        PersonMapper.mapToDomain(professional.getEmploymentType()));
     professionInformation.setEmploymentStatus(
-        ProfessionalMapper.mapToDomain(professional.getEmploymentStatus()));
+        PersonMapper.mapToDomain(professional.getEmploymentStatus()));
     return professionInformation;
   }
 

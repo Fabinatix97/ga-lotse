@@ -5,9 +5,6 @@
 
 package de.eshg.officialmedicalservice.eventmetadata;
 
-import static de.eshg.lib.appointmentblock.persistence.AppointmentType.OFFICIAL_MEDICAL_SERVICE_LONG;
-import static de.eshg.lib.appointmentblock.persistence.AppointmentType.OFFICIAL_MEDICAL_SERVICE_SHORT;
-
 import de.eshg.calendar.lib.EventMetadataService;
 import de.eshg.calendar.lib.api.EventWithMetaData;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
@@ -16,14 +13,13 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OfficialMedicalServiceEventMetadataService implements EventMetadataService {
-  private static final List<AppointmentType> supportedAppointmentTypes =
-      List.of(OFFICIAL_MEDICAL_SERVICE_SHORT, OFFICIAL_MEDICAL_SERVICE_LONG);
 
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
@@ -48,21 +44,13 @@ public class OfficialMedicalServiceEventMetadataService implements EventMetadata
 
   private EventWithMetaData mapAppointmentBlockToEventMetaData(
       AppointmentBlockData appointmentBlockData) {
-    AppointmentType type =
-        appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getType();
+    Set<AppointmentType> types =
+        appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getTypes();
 
-    if (!supportedAppointmentTypes.contains(type)) {
-      throw new IllegalArgumentException("Unexpected appointment block type: " + type);
-    }
-
-    String mappedType = "Amtsärztliches Gutachten";
     String subject = "Amtsärztliches Gutachten";
     String description =
-        "Terminblock für %s. Freie Termine: %s. Gebuchte Termine: %s."
-            .formatted(
-                mappedType,
-                appointmentBlockData.numberOfFreeAppointments(),
-                appointmentBlockData.numberOfBookedAppointments());
+        AppointmentBlockSlotUtil.getAppointmentBlockDescription(
+            AppointmentBlockSlotUtil.mapAppointmentTypesToNames(types), appointmentBlockData);
 
     return new EventWithMetaData(
         appointmentBlockData.appointmentBlock().getCalendarEventId(),

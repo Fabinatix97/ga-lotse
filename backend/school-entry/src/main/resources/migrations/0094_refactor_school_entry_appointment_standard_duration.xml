@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1746445562993-1">
+    <createTable tableName="school_entry_appointment_standard_duration">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_entry_appointment_standard_duration"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="can_child" type="INTERVAL">
+        <constraints nullable="false"/>
+      </column>
+      <column name="entry_level" type="INTERVAL">
+        <constraints nullable="false"/>
+      </column>
+      <column name="initialized" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="regular_examination" type="INTERVAL">
+        <constraints nullable="false"/>
+      </column>
+      <column name="special_needs" type="INTERVAL">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <dropUniqueConstraint constraintName="appointment_type_configs_appointment_type_key" tableName="appointment_type_config"/>
+    <dropTable tableName="appointment_type_config"/>
+  </changeSet>
+</databaseChangeLog>

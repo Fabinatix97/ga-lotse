@@ -42,7 +42,7 @@ export function ImportResultProceduresSummary(
           color="success"
         />
       )}
-      {props.result.created == 0 && props.result.merged == 0 && (
+      {props.result.created === 0 && props.result.merged === 0 && (
         <SummaryItem content={`0 ${createdOrMerged}`} color="primary" />
       )}
       {props.result.mergeFailed > 0 && (

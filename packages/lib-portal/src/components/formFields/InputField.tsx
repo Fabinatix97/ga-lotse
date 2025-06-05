@@ -19,12 +19,12 @@ import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
 import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
-import { StyledInputProps } from "./types";
+import { FieldVariantProps } from "./types";
 
 export interface InputFieldProps
   extends FieldProps<string>,
     FieldComponentProps,
-    StyledInputProps {
+    FieldVariantProps {
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
   readOnly?: boolean;

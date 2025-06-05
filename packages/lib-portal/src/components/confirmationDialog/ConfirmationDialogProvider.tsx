@@ -10,6 +10,7 @@ import {
   ReactNode,
   SetStateAction,
   createContext,
+  useMemo,
   useState,
 } from "react";
 
@@ -19,12 +20,15 @@ import { BaseOverlayBoundary } from "../boundaries/BaseOverlayBoundary";
 
 import { ConfirmationDialogProps } from "./BaseConfirmationDialog";
 
-export const ConfirmationDialogContext = createContext<{
+interface ConfirmationDialogContextValue {
   confirmationDialog: ConfirmationDialogProps | undefined;
   setConfirmationDialog: Dispatch<
     SetStateAction<ConfirmationDialogProps | undefined>
   >;
-}>(null!);
+}
+
+export const ConfirmationDialogContext =
+  createContext<ConfirmationDialogContextValue | null>(null);
 
 interface ConfirmationDialogProviderProps {
   component: (props: ConfirmationDialogProps) => ReactNode;
@@ -40,11 +44,13 @@ export function ConfirmationDialogProvider({
   const [confirmationDialog, setConfirmationDialog] =
     useState<ConfirmationDialogProps>();
   const DialogComponent = component;
+  const contextValue = useMemo<ConfirmationDialogContextValue>(
+    () => ({ confirmationDialog, setConfirmationDialog }),
+    [confirmationDialog, setConfirmationDialog],
+  );
 
   return (
-    <ConfirmationDialogContext
-      value={{ confirmationDialog, setConfirmationDialog }}
-    >
+    <ConfirmationDialogContext value={contextValue}>
       {confirmationDialog && (
         <BaseOverlayBoundary fallbackErrorModal={errorModal}>
           <DialogComponent {...confirmationDialog} />

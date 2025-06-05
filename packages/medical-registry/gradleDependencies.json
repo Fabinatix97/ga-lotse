@@ -1,0 +1,3 @@
+{
+  "dependencies": [":base-api", ":lib-portal", ":medical-registry-api"]
+}

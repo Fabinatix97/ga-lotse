@@ -71,6 +71,6 @@ public class ImporterController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX inspection import template")
   public ResponseEntity<Resource> getInspectionImportTemplate() {
-    return FileResponseUtil.getTemplateFileResponse(importTemplate);
+    return FileResponseUtil.getFileResponseEntity(importTemplate);
   }
 }

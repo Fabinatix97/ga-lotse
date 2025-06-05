@@ -22,6 +22,7 @@ public record InstitutionContactDto(
         @NotBlank
         String name,
     InstitutionContactCategoryDto category,
+    InstitutionContactSubCategoryDto subCategory,
     @NotNull List<String> phoneNumbers,
     @NotNull List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,

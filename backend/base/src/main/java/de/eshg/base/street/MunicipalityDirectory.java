@@ -9,6 +9,8 @@ import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.csv.CsvMapper;
 import de.eshg.base.street.csv.MunicipalityDirectoryCsvEntry;
 import de.eshg.persistence.TransactionHelper;
+import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.Range;
 import org.springframework.stereotype.Component;
@@ -29,17 +31,29 @@ public class MunicipalityDirectory {
     }
   }
 
-  private final List<DirectoryEntry> entries;
+  private final DepartmentConfigurationService departmentConfigurationService;
+  private final TransactionHelper transactionHelper;
+  private List<DirectoryEntry> entries = new ArrayList<>();
 
   public MunicipalityDirectory(
       DepartmentConfigurationService departmentConfigurationService,
       TransactionHelper transactionHelper) {
-    List<MunicipalityDirectoryCsvEntry> csvEntries =
-        CsvMapper.csvToBeans(
+    this.departmentConfigurationService = departmentConfigurationService;
+    this.transactionHelper = transactionHelper;
+  }
+
+  @PostConstruct
+  public void init() {
+    this.entries =
+        parse(
             transactionHelper.executeInTransaction(
-                departmentConfigurationService::getMunicipalityDirectory),
-            MunicipalityDirectoryCsvEntry.class);
-    this.entries = convertToDirectoryStructure(csvEntries);
+                departmentConfigurationService::getMunicipalityDirectory));
+  }
+
+  public List<DirectoryEntry> parse(byte[] bytes) {
+    List<MunicipalityDirectoryCsvEntry> csvEntries =
+        CsvMapper.csvToBeans(bytes, MunicipalityDirectoryCsvEntry.class);
+    return convertToDirectoryStructure(csvEntries);
   }
 
   private List<DirectoryEntry> convertToDirectoryStructure(
@@ -49,7 +63,6 @@ public class MunicipalityDirectory {
 
   public AdministrativeData getAdministrativeDataBy(String postalCode) {
     Assert.notNull(postalCode, "postalCode must not be null");
-
     return entries.stream()
         .filter(directoryEntry -> directoryEntry.range.contains(postalCode))
         .findFirst()

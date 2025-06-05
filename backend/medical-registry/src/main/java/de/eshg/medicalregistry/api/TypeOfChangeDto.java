@@ -16,5 +16,6 @@ public enum TypeOfChangeDto {
   CHANGE_OF_NAME,
   RELOCATION,
   DEREGISTRATION,
+  CHANGE_OF_EMPLOYEES,
   OTHER
 }

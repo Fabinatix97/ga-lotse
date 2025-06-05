@@ -20,7 +20,7 @@ public record GetProcedureDraftResponse(
     @NotNull @Valid ApplicantDto applicant,
     @Valid ProfessionInformationDto professionInformation,
     @NotNull @Valid List<PracticeDto> practices,
-    Boolean employeesEmployed,
+    @NotNull @Valid List<EmployeeChangeDto> employeeChanges,
     @NotNull boolean consentToPrivacyPolicy,
     @NotNull boolean requestForWrittenConfirmation)
     implements GetProcedureResponse {}

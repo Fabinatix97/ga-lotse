@@ -19,6 +19,7 @@ import de.eshg.inspection.checklist.persistence.Checklist;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
+import de.eshg.inspection.facility.FacilityFileNumberConfiguration;
 import de.eshg.inspection.facility.FacilityMapper;
 import de.eshg.inspection.facility.api.InspFacilityDto;
 import de.eshg.inspection.facility.persistence.Facility;
@@ -72,18 +73,21 @@ public class InspectionMapper {
   private final UserClient userClient;
   private final CalendarEventApi calendarEventApi;
   private final FacilityClient facilityClient;
+  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
 
   public InspectionMapper(
       InventoryApi inventoryApi,
       ResourceApi resourceApi,
       UserClient userClient,
       CalendarEventApi calendarEventApi,
-      FacilityClient facilityClient) {
+      FacilityClient facilityClient,
+      FacilityFileNumberConfiguration facilityFileNumberConfiguration) {
     this.inventoryApi = inventoryApi;
     this.resourceApi = resourceApi;
     this.userClient = userClient;
     this.calendarEventApi = calendarEventApi;
     this.facilityClient = facilityClient;
+    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
   }
 
   public static String mapToTaskSummary(String facilityName, TaskType taskType) {
@@ -332,7 +336,11 @@ public class InspectionMapper {
   public InspFacilityDto mapToDto(UUID centralFileStateId, Facility facility) {
     GetFacilityFileStateResponse baseFacility =
         facilityClient.getFacilityFileState(centralFileStateId);
-    return FacilityMapper.fromGetFacilityResponse(facility, baseFacility);
+    String fileNumber =
+        facilityClient
+            .getFacilityFileNumber(baseFacility.id(), facilityFileNumberConfiguration.getMethod())
+            .fileNumber();
+    return FacilityMapper.fromGetFacilityResponse(facility, baseFacility, fileNumber);
   }
 
   public static InspectionAnnouncementDto mapToDto(InspectionAnnouncement inspectionAnnouncement) {

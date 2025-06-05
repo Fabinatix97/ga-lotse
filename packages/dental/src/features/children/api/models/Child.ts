@@ -38,7 +38,7 @@ export function mapChild(response: ApiChild): Child {
     year: response.year,
     groupName: response.groupName,
     institution: mapInstitution(response.institution),
-    isClosed: response.status == ApiProcedureStatus.Closed,
+    isClosed: response.status === ApiProcedureStatus.Closed,
     procedureLabels: mapProcedureLabels(response.procedureLabels),
   };
 }

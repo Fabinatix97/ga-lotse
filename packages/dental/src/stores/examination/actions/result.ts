@@ -71,7 +71,7 @@ export function setSecondaryResult(
   toothContext: ToothContext,
   newValue: string,
   state: SetResultState,
-): SetResultState & DirtyState & HasResultState {
+): SetResultState & DirtyState & HasResultState & DmftValuesState {
   const { dentition } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
 
@@ -87,6 +87,7 @@ export function setSecondaryResult(
 
   return {
     dentition: newDentition,
+    dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
     hasResult: hasAnyResult(newDentition),
   };

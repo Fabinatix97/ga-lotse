@@ -27,7 +27,7 @@ import {
 
 export interface ChildExamination extends BaseEntity, Versioned {
   readonly dateAndTime: Date;
-  readonly prophylaxisType: ApiProphylaxisType;
+  readonly prophylaxisType?: ApiProphylaxisType;
   readonly screening: boolean;
   readonly prophylaxisDentitionType?: ApiDentitionType;
   readonly fluoridation: boolean;

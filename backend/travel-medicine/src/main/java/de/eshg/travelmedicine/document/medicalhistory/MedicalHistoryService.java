@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
@@ -55,7 +55,7 @@ public class MedicalHistoryService {
   private final PersonClient personClient;
   private final Clock clock;
   private final DepartmentInfoConfigService departmentInfoService;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final DocumentGenerator documentGenerator;
   private final ProgressEntryService progressEntryService;
 
@@ -65,13 +65,13 @@ public class MedicalHistoryService {
       PersonClient personClient,
       Clock clock,
       DepartmentInfoConfigService departmentInfoService,
-      DepartmentClient departmentClient,
+      DepartmentLogoClient departmentLogoClient,
       DocumentGenerator documentGenerator,
       ProgressEntryService progressEntryService) {
     this.personClient = personClient;
     this.clock = clock;
     this.departmentInfoService = departmentInfoService;
-    this.departmentClient = departmentClient;
+    this.departmentLogoClient = departmentLogoClient;
     this.documentGenerator = documentGenerator;
     this.progressEntryService = progressEntryService;
     Assert.isTrue(medicalHistoryResource.exists(), medicalHistoryResource + " does not exist");
@@ -200,7 +200,7 @@ public class MedicalHistoryService {
     MedicalHistoryPdfParameters pdfParameters =
         new MedicalHistoryPdfParameters(
             departmentInfoService.getDepartmentInfo(),
-            departmentClient.getDepartmentLogo(),
+            departmentLogoClient.getDepartmentLogo(),
             patient.firstName(),
             patient.lastName(),
             patient.address() != null && patient.address().street() != null

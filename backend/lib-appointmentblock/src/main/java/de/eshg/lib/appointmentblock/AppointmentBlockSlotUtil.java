@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,6 +90,12 @@ public class AppointmentBlockSlotUtil {
     return slots;
   }
 
+  private long getNumberOfSequentialAppointmentSlots(
+      Duration examinationDuration, Instant start, Instant end) {
+    Duration appointmentBlockDuration = Duration.between(start, end);
+    return appointmentBlockDuration.dividedBy(examinationDuration);
+  }
+
   public void updateAppointment(
       AppointmentType appointmentType,
       UUID locationId,
@@ -96,10 +103,6 @@ public class AppointmentBlockSlotUtil {
       EntityWithAppointment entityWithAppointment,
       Instant appointmentStart,
       Instant appointmentEnd) {
-    AppointmentBlock newAppointmentBlock =
-        findSuitableAppointmentBlock(
-            appointmentType, locationId, physicianId, appointmentStart, appointmentEnd);
-
     Appointment newAppointment = new Appointment();
     newAppointment.setAppointmentStart(appointmentStart);
     newAppointment.setAppointmentEnd(appointmentEnd);
@@ -107,15 +110,20 @@ public class AppointmentBlockSlotUtil {
 
     Appointment currentAppointment = entityWithAppointment.getAppointment();
     if (currentAppointment != null) {
-      if (currentAppointment == newAppointment) {
-        throw new IllegalArgumentException(
-            "New appointment is the same as the current appointment: " + currentAppointment);
+      if (currentAppointment.getAppointmentStart().equals(appointmentStart)
+          && currentAppointment.getAppointmentEnd().equals(appointmentEnd)
+          && currentAppointment.getType().equals(appointmentType)) {
+        return;
       }
 
       AppointmentBlock currentAppointmentBlock = currentAppointment.getAppointmentBlock();
       boolean removed = currentAppointmentBlock.getAppointments().remove(currentAppointment);
       Assert.isTrue(removed, "Failed to remove current appointment");
     }
+
+    AppointmentBlock newAppointmentBlock =
+        findSuitableAppointmentBlock(
+            appointmentType, locationId, physicianId, appointmentStart, appointmentEnd);
 
     boolean added = newAppointmentBlock.getAppointments().add(newAppointment);
     Assert.isTrue(added, "Failed to add new appointment");
@@ -186,35 +194,78 @@ public class AppointmentBlockSlotUtil {
   private AppointmentBlockData augmentAppointmentBlockWithEventDetails(
       AppointmentBlock appointmentBlock) {
 
-    long numberOfTotalAppointments = getNumberOfTotalAppointmentSlots(appointmentBlock);
-    long numberOfBookedAppointments = appointmentBlock.getAppointments().size();
-    long numberOfFreeAppointments = numberOfTotalAppointments - numberOfBookedAppointments;
+    Duration totalDuration =
+        Duration.between(
+                appointmentBlock.getAppointmentBlockStart(),
+                appointmentBlock.getAppointmentBlockEnd())
+            .multipliedBy(appointmentBlock.getAppointmentBlockGroup().getParallelExaminations());
+    Duration bookedDuration =
+        appointmentBlock.getAppointments().stream()
+            .map(
+                appointment ->
+                    Duration.between(
+                        appointment.getAppointmentStart(), appointment.getAppointmentEnd()))
+            .reduce(Duration::plus)
+            .orElse(Duration.ZERO);
 
     return new AppointmentBlockData(
         appointmentBlock,
         appointmentBlock.getAppointmentBlockStart(),
         appointmentBlock.getAppointmentBlockEnd(),
-        numberOfFreeAppointments,
-        numberOfBookedAppointments);
+        totalDuration.compareTo(bookedDuration) < 0 ? null : totalDuration.minus(bookedDuration),
+        bookedDuration);
   }
 
-  private long getNumberOfTotalAppointmentSlots(AppointmentBlock appointmentBlock) {
-    return getNumberOfTotalAppointmentSlots(
-        appointmentBlock.getAppointmentBlockGroup().getSlotDuration(),
-        appointmentBlock.getAppointmentBlockGroup().getParallelExaminations(),
-        appointmentBlock.getAppointmentBlockStart(),
-        appointmentBlock.getAppointmentBlockEnd());
+  public static String mapAppointmentTypesToNames(Set<AppointmentType> appointmentTypes) {
+    return String.join(
+        " & ",
+        appointmentTypes.stream().map(AppointmentBlockSlotUtil::mapAppointmentTypeToName).toList());
   }
 
-  private long getNumberOfTotalAppointmentSlots(
-      Duration slotDuration, int parallelExaminations, Instant start, Instant end) {
-    long numberOfSequentialSlots = getNumberOfSequentialAppointmentSlots(slotDuration, start, end);
-    return numberOfSequentialSlots * parallelExaminations;
+  public static String mapAppointmentTypeToName(AppointmentType type) {
+    return switch (type) {
+      case CONSULTATION -> "Beratung";
+      case VACCINATION -> "Impfung";
+      case REGULAR_EXAMINATION -> "Regelkinder";
+      case CAN_CHILD -> "Kann-Kinder";
+      case ENTRY_LEVEL -> "Eingangsstufenkinder";
+      case SPECIAL_NEEDS -> "Kinder mit besonderem Förderbedarf";
+      case PROOF_SUBMISSION -> "Nachweisvorlage";
+      case HIV_STI_CONSULTATION -> "Beratung";
+      case SEX_WORK -> "Sexarbeit";
+      case RESULTS_REVIEW -> "Ergebnisbesprechung";
+      case OFFICIAL_MEDICAL_SERVICE_SHORT -> "Amtsärztliches Gutachten";
+      case OFFICIAL_MEDICAL_SERVICE_LONG -> "Amtsärztliches Gutachten";
+      case MEDS_ABROAD_CERTIFICATION -> "Reisen mit BTM - Beglaubigung";
+    };
   }
 
-  private long getNumberOfSequentialAppointmentSlots(
-      Duration examinationDuration, Instant start, Instant end) {
-    Duration appointmentBlockDuration = Duration.between(start, end);
-    return appointmentBlockDuration.dividedBy(examinationDuration);
+  public static String getAppointmentBlockDescription(
+      String purpose, AppointmentBlockData appointmentBlockData) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("Terminblock für ").append(purpose).append(". ");
+    if (appointmentBlockData.freeDuration() != null) {
+      builder
+          .append("Freie Zeit: ")
+          .append(mapDurationToString(appointmentBlockData.freeDuration()))
+          .append(". ");
+    }
+    builder
+        .append("Gebuchte Zeit: ")
+        .append(mapDurationToString(appointmentBlockData.bookedDuration()))
+        .append(".");
+    return builder.toString();
+  }
+
+  private static String mapDurationToString(Duration duration) {
+    long minutes = duration.getSeconds() / 60;
+    long hours = minutes / 60;
+    StringBuilder builder = new StringBuilder();
+    if (hours > 0) {
+      builder.append("%sh ".formatted(hours));
+      minutes = minutes - hours * 60;
+    }
+    builder.append("%sm".formatted(minutes));
+    return builder.toString();
   }
 }

@@ -13,6 +13,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
@@ -43,25 +44,13 @@ public class SchoolEntryEventMetadataService implements EventMetadataService {
 
   private static EventWithMetaData mapAppointmentBlockToEventMetaData(
       AppointmentBlockData appointmentBlockData) {
-    AppointmentType type =
-        appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getType();
-    String mappedType =
-        switch (type) {
-          case REGULAR_EXAMINATION -> "Regelkinder";
-          case CAN_CHILD -> "Kann-Kinder";
-          case ENTRY_LEVEL -> "Eingangsstufenkinder";
-          case SPECIAL_NEEDS -> "Kinder mit besonderem Förderbedarf";
-          default ->
-              throw new IllegalArgumentException("Unexpected appointment block type: " + type);
-        };
+    Set<AppointmentType> types =
+        appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getTypes();
 
     String subject = "Einschulungsuntersuchung";
     String description =
-        "Terminblock für %s. Freie Termine: %s. Gebuchte Termine: %s."
-            .formatted(
-                mappedType,
-                appointmentBlockData.numberOfFreeAppointments(),
-                appointmentBlockData.numberOfBookedAppointments());
+        AppointmentBlockSlotUtil.getAppointmentBlockDescription(
+            AppointmentBlockSlotUtil.mapAppointmentTypesToNames(types), appointmentBlockData);
 
     return new EventWithMetaData(
         appointmentBlockData.appointmentBlock().getCalendarEventId(),

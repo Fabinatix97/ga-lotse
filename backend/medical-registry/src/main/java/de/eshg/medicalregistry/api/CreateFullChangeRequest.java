@@ -13,7 +13,6 @@ public record CreateFullChangeRequest(
     @NotNull @Valid CreateApplicantDto applicant,
     @NotNull @Valid CreateProfessionInformationDto professionInformation,
     @Valid CreatePracticeDto practice,
-    @NotNull boolean employeesEmployed,
     @NotNull boolean consentToPrivacyPolicy,
     @NotNull boolean requestForWrittenConfirmation)
     implements CreateProcedureRequest {}

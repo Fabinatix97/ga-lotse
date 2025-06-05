@@ -8,7 +8,7 @@ import { ReactNode, SyntheticEvent, useMemo } from "react";
 
 import { FieldProps } from "../../../types/form";
 import { BaseFieldProps, useBaseField } from "../BaseField";
-import { StyledInputProps } from "../types";
+import { FieldVariantProps } from "../types";
 
 import {
   AutocompleteSelectOption,
@@ -18,7 +18,7 @@ import {
 
 export interface CommonAutocompleteFieldProps<T>
   extends FieldProps<T>,
-    StyledInputProps {
+    FieldVariantProps {
   options: AutocompleteSelectOption[];
   placeholder?: string;
   loading?: boolean;

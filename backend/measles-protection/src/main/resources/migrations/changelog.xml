@@ -67,5 +67,8 @@
   <include file="migrations/0057_rename_privacy_to_multi_lang_document.xml"/>
   <include file="migrations/0058_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0059_multiple_appointment_types.xml"/>
+  <include file="migrations/0060_add_employee_person_type.xml"/>
+  <include file="migrations/0061_add_meds_abroad_appointment_type.xml"/>
+  <include file="migrations/0062_refactor_measles_protection_appointment_standard_duration.xml"/>
 
 </databaseChangeLog>

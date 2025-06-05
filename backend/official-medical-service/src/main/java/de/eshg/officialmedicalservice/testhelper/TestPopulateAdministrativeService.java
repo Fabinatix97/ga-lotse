@@ -90,7 +90,7 @@ public class TestPopulateAdministrativeService {
         appointmentBlockService
             .createDailyAppointmentBlocksForGroup(
                 new CreateDailyAppointmentBlockGroupRequest(
-                    AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT,
+                    List.of(AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT),
                     2,
                     List.of(
                         new CreateDailyAppointmentBlockDto(
@@ -109,7 +109,7 @@ public class TestPopulateAdministrativeService {
         appointmentBlockService
             .createDailyAppointmentBlocksForGroup(
                 new CreateDailyAppointmentBlockGroupRequest(
-                    AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_LONG,
+                    List.of(AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_LONG),
                     2,
                     List.of(
                         new CreateDailyAppointmentBlockDto(

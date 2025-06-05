@@ -9,16 +9,16 @@ import de.cronn.commons.lang.StreamUtil;
 import java.util.*;
 
 public class AbstractConfigStatusService {
-  protected final List<EshgConfigurationService<?>> configurationServices;
+  protected final List<ConfigurationStatusAware> configurationStatusAwares;
 
-  public AbstractConfigStatusService(List<EshgConfigurationService<?>> configurationServices) {
-    this.configurationServices = configurationServices;
+  public AbstractConfigStatusService(List<ConfigurationStatusAware> configurationStatusAwares) {
+    this.configurationStatusAwares = configurationStatusAwares;
   }
 
   ModuleConfigurationData getConfiguration() {
     Map<String, ConfigurationStatus> endpointStates =
-        configurationServices.stream()
-            .map(EshgConfigurationService::getConfigurationStatus)
+        configurationStatusAwares.stream()
+            .map(ConfigurationStatusAware::getConfigurationStatus)
             .map(Map::entrySet)
             .flatMap(Collection::stream)
             .collect(StreamUtil.toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue));

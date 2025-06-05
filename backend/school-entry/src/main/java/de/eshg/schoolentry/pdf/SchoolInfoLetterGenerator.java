@@ -5,11 +5,10 @@
 
 package de.eshg.schoolentry.pdf;
 
-import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
@@ -17,6 +16,7 @@ import de.eshg.schoolentry.SchoolInfoLetterService;
 import de.eshg.schoolentry.api.CreateSchoolInfoLetterRequest;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
+import de.eshg.schoolentry.client.DepartmentInfoClient;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.io.ByteArrayOutputStream;
 import java.time.Clock;
@@ -35,21 +35,21 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
   static final String SCHOOL_INFO_LETTER_TEMPLATE = "/templates/school_info_letter.ftlh";
 
   private final ClassPathResource schoolInfoLetterTemplate;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final SchoolInfoLetterService schoolInfoLetterService;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
 
   public SchoolInfoLetterGenerator(
       @Value(SCHOOL_INFO_LETTER_TEMPLATE) ClassPathResource schoolInfoLetterTemplate,
-      DepartmentInfoConfigService departmentInfoConfigService,
-      DepartmentClient departmentClient,
+      DepartmentLogoClient departmentLogoClient,
+      DepartmentInfoClient departmentInfoClient,
       ContactClient contactClient,
       DocumentGenerator documentGenerator,
       Clock clock,
       SchoolInfoLetterService schoolInfoLetterService) {
-    super(departmentInfoConfigService, contactClient);
-    this.departmentClient = departmentClient;
+    super(departmentInfoClient, contactClient);
+    this.departmentLogoClient = departmentLogoClient;
     this.schoolInfoLetterService = schoolInfoLetterService;
     Assert.isTrue(
         schoolInfoLetterTemplate.exists(), () -> schoolInfoLetterTemplate + " does not exist");
@@ -84,7 +84,7 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
       CreateSchoolInfoLetterRequest request) {
     Address departmentAddress = getDepartmentAddress();
     Address schoolAddress = getAddressOfInstitution(procedureDetailsData.school().id());
-    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
     return new SchoolInfoLetterData(
         LocalDate.now(clock).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
         departmentLogo,
@@ -114,7 +114,7 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
       SchoolEntryProcedure procedure, ProcedureDetailsData procedureDetailsData) {
     Address departmentAddress = getDepartmentAddress();
     Address schoolAddress = getAddressOfInstitution(procedureDetailsData.school().id());
-    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
     return new SchoolInfoLetterData(
         LocalDate.now(clock).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
         departmentLogo,

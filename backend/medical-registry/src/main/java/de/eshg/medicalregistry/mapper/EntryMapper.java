@@ -15,7 +15,6 @@ import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -31,31 +30,22 @@ public class EntryMapper {
 
   public static MedicalRegistryEntryDto mapToDto(
       MedicalRegistryProcedure entry, Map<UUID, GetPersonFileStateResponse> relatedPersons) {
-    GetPersonFileStateResponse relatedPerson = getRelatedPersonOrThrow(entry, relatedPersons);
-    Optional<ProfessionInformation> professionalInformation = getProfessionalInformation(entry);
+    GetPersonFileStateResponse applicantDetails =
+        relatedPersons.get(entry.getProfessional().getCentralFileStateId());
 
     return new MedicalRegistryEntryDto(
         entry.getExternalId(),
-        relatedPerson.lastName(),
-        relatedPerson.firstName(),
-        professionalInformation
-            .map(info -> ProfessionalMapper.mapToDto(info.getProfessionalTitle()))
+        applicantDetails.lastName(),
+        applicantDetails.firstName(),
+        getProfessionalInformation(entry)
+            .map(info -> PersonMapper.mapToDto(info.getProfessionalTitle()))
             .orElse(null),
-        relatedPerson.dateOfBirth(),
-        AddressMapper.mapToApplicantAddressDto(relatedPerson.contactAddress()),
+        applicantDetails.dateOfBirth(),
+        AddressMapper.mapToApplicantAddressDto(applicantDetails.contactAddress()),
         entry.isRequestForWrittenConfirmation(),
         ProcedureMapper.toInterfaceType(entry.getProcedureStatus()),
         ProcedureMapper.toInterfaceType(entry.getProcedureType()),
         entry.getCreatedAt());
-  }
-
-  private static GetPersonFileStateResponse getRelatedPersonOrThrow(
-      MedicalRegistryProcedure entry, Map<UUID, GetPersonFileStateResponse> personMap) {
-
-    UUID relatedPersonId = entry.getRelatedPersons().getFirst().getCentralFileStateId();
-
-    return Optional.ofNullable(personMap.get(relatedPersonId))
-        .orElseThrow(() -> new NoSuchElementException("No matching person found"));
   }
 
   private static Optional<ProfessionInformation> getProfessionalInformation(

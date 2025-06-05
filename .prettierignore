@@ -6,7 +6,7 @@ pnpm-lock.yaml
 .idea*/
 
 # next-pwa
-employee-portal/public/
+apps/employee-portal/public/
 
 # validation files
 **/data/test/

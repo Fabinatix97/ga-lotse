@@ -12,7 +12,10 @@ import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.FacilityFileNumberResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesFilteredRequest;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesFilteredResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
@@ -72,6 +75,11 @@ public class FacilityClient {
         () -> facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(fileStateIds)));
   }
 
+  public GetFacilityFileStatesFilteredResponse getFacilityFileStatesFiltered(
+      GetFacilityFileStatesFilteredRequest request) {
+    return doAndForwardErrorCodes(() -> facilityApi.getFacilityFileStatesFiltered(request));
+  }
+
   public AddFacilityFileStateResponse syncFacilityFileState(UUID id, long version) {
     return doAndForwardErrorCodes(
         () -> facilityApi.syncFacilityFileState(id, new SyncFileStateRequest(version)));
@@ -104,6 +112,10 @@ public class FacilityClient {
 
   public SearchReferenceFacilitiesResponse searchReferenceFacilities(String name) {
     return doAndForwardErrorCodes(() -> facilityApi.searchReferenceFacilities(name));
+  }
+
+  public FacilityFileNumberResponse getFacilityFileNumber(UUID fileStateId, String method) {
+    return doAndForwardErrorCodes(() -> facilityApi.getFacilityFileNumber(fileStateId, method));
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

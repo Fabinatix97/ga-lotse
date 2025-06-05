@@ -19,13 +19,14 @@ buildscript {
 plugins {
     id 'io.spring.dependency-management' version 'latest.release' apply false
     id 'com.avast.gradle.docker-compose' version 'latest.release' apply false
-    // ⚠ Note ⚠ Pinned to 3.4.1 because of https://github.com/spring-projects/spring-framework/issues/34324
-    // Problem still present in 3.4.4
-    id 'org.springframework.boot' version '3.4.1' apply false
+    id 'org.springframework.boot' version 'latest.release' apply false
     id 'org.cyclonedx.bom' version 'latest.release' apply false
     id 'com.trileuco.dependency-track-gradle' version 'latest.release' apply false
     id 'jacoco-report-aggregation'
-    id 'com.diffplug.spotless' version 'latest.release'
+    // spotless v7.x has several issues
+    // fixed: https://github.com/diffplug/spotless/issues/2331
+    // new / related to: https://github.com/diffplug/spotless/issues/2387#issuecomment-2576459901
+    id 'com.diffplug.spotless' version '6.25.0'
     id 'org.sonarqube' version 'latest.release'
     id 'rpost.grantt' version 'latest.release'
 }

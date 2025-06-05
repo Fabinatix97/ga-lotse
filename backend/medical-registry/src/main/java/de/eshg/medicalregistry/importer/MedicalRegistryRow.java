@@ -13,7 +13,6 @@ import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.CreateProfessionInformationDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 public class MedicalRegistryRow extends RowData<MedicalRegistryRow> {
@@ -23,8 +22,6 @@ public class MedicalRegistryRow extends RowData<MedicalRegistryRow> {
   @NotNull @Valid private CreateProfessionInformationDto professionInformation;
 
   @Valid private CreatePracticeDto practice;
-
-  @NotNull private Boolean employeesEmployed;
 
   public CreateApplicantDto getApplicant() {
     return applicant;
@@ -54,20 +51,11 @@ public class MedicalRegistryRow extends RowData<MedicalRegistryRow> {
     return practice != null;
   }
 
-  public Boolean getEmployeesEmployed() {
-    return employeesEmployed;
-  }
-
-  public void setEmployeesEmployed(Boolean employeesEmployed) {
-    this.employeesEmployed = employeesEmployed;
-  }
-
   @Override
   public boolean isDuplicateRow(MedicalRegistryRow other) {
     return reflectionEquals(applicant, other.applicant, CreateApplicantDto::getAddress)
         && EqualsBuilder.reflectionEquals(professionInformation, other.professionInformation)
-        && reflectionEquals(practice, other.practice, CreatePracticeDto::getAddress)
-        && (Objects.equals(employeesEmployed, other.employeesEmployed));
+        && reflectionEquals(practice, other.practice, CreatePracticeDto::getAddress);
   }
 
   private static <T> boolean reflectionEquals(

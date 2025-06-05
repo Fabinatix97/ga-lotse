@@ -57,5 +57,7 @@
   <include file="migrations/0047_add_screening_examination_instructions.xml"/>
   <include file="migrations/0048_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0049_adapt_main_and_secondary_result.xml"/>
+  <include file="migrations/0050_add_employee_person_type.xml"/>
+  <include file="migrations/0051_drop_not_null_constraint_on_prophylaxis_session_type.xml"/>
 
 </databaseChangeLog>

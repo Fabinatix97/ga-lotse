@@ -11,6 +11,9 @@ import {
   isWithinInterval,
   startOfMonth,
 } from "date-fns";
+import { isNullish } from "remeda";
+
+import { Nullable } from "../../../types/utility";
 
 import { Appointment } from "./AppointmentPickerField";
 
@@ -51,12 +54,12 @@ export function getDaysInAndAroundMonth(
       weekdayValues.includes(d.getDay()),
     ) ?? interval.start;
 
-  if (firstDayOfTheWeek == null) {
+  if (firstDayOfTheWeek === undefined) {
     throw Error("showWeekdays must include at least one day");
   }
 
   const startDiff = start.getDay() - firstDayOfTheWeek;
-  if (startDiff != 0) {
+  if (startDiff !== 0) {
     start = addDays(start, (startDiff > 0 ? 0 : -daysInWeek) - startDiff);
   }
   let days = eachDayOfInterval({ start, end: interval.end })
@@ -140,13 +143,13 @@ export function formatAppointmentTime(
 }
 
 export function isSameAppointment(
-  apt1: Appointment | null,
-  apt2: Appointment | null,
+  apt1: Nullable<Appointment>,
+  apt2: Nullable<Appointment>,
 ) {
   if (apt1 === apt2) {
     return true;
   }
-  if (apt1 == null || apt2 == null) {
+  if (isNullish(apt1) || isNullish(apt2)) {
     return false;
   }
   if (!isSameSecond(apt1.start, apt2.start)) {
@@ -155,7 +158,7 @@ export function isSameAppointment(
   if (apt1.end === apt2.end) {
     return true;
   }
-  if (apt1.end == null || apt2.end == null) {
+  if (apt1.end === undefined || apt2.end === undefined) {
     return false;
   }
   return isSameSecond(apt1.end, apt2.end);

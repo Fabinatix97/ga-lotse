@@ -66,4 +66,7 @@
   <include file="migrations/0056_human_readable_person_id.xml"/>
   <include file="migrations/0057_add_department_configuration_markdown_initialized.xml"/>
   <include file="migrations/0058_privacy_documents_initialized.xml"/>
+  <include file="migrations/0059_logo.xml"/>
+  <include file="migrations/0060_add_street_and_municipality_directories_initialized.xml"/>
+  <include file="migrations/0061_add_institution_sub_category.xml"/>
 </databaseChangeLog>

@@ -9,7 +9,6 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.PersonType;
-import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
@@ -19,7 +18,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(indexes = @Index(columnList = "procedure_id"))
-public class Professional extends RelatedPerson<MedicalRegistryProcedure> {
+public class Professional extends Person {
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)

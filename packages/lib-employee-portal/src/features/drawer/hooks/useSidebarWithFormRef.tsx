@@ -15,7 +15,7 @@ export interface SidebarWithFormRefProps extends DrawerProps {
   formRef: Ref<SidebarFormHandle>;
 }
 
-type UseSidebarWithFormRefOptions<
+export type UseSidebarWithFormRefOptions<
   TSidebarProps extends SidebarWithFormRefProps,
 > = Omit<DrawerOpenOptions<TSidebarProps>, "onBeforeClose">;
 

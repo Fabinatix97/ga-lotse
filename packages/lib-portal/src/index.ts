@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use client";
-
 export {
   type ApiConfiguration,
   ApiProvider,
@@ -18,13 +16,18 @@ export {
   useGetFeatureToggleUnsuspended,
 } from "./api/featureToggles";
 export { HiddenDownloadContainer } from "./api/files/HiddenDownloadContainer";
-export { downloadFileAndOpen, useFileDownload } from "./api/files/download";
+export {
+  downloadFileAndOpen,
+  getFilenameFromHeader,
+  useFileDownload,
+} from "./api/files/download";
 export { type QueryKeyFactory, queryKeyFactory } from "./api/queryKeyFactory";
 export {
   SEMI_STATIC_QUERY_OPTIONS,
   STATIC_QUERY_OPTIONS,
 } from "./api/queryOptions";
 export { unwrapRawResponse } from "./api/unwrapRawResponse";
+export { useHandledBackgroundQuery } from "./api/useHandledBackgroundQuery";
 export { useHandledMutation } from "./api/useHandledMutation";
 
 export { Alert, type AlertProps } from "./components/Alert";
@@ -83,16 +86,23 @@ export {
   useIsFormDisabled,
 } from "./components/form/DisabledFormContext";
 export { FormAddMoreButton } from "./components/form/FormAddMoreButton";
-export { FormPlus } from "./components/form/FormPlus";
+export { FormPlus, scrollToFirstFormError } from "./components/form/FormPlus";
 export {
   MultiStepForm,
   type StepFactory,
   useMultiStepForm,
 } from "./components/form/MultiStepForm";
 export {
+  MultiAutocompleteField,
+  type MultiAutocompleteFieldProps,
+} from "./components/formFields/autocomplete/MultiAutocompleteField";
+export {
+  type FieldOrientation,
   SoftRequiredBooleanSelectField,
   SoftRequiredInput,
+  SoftRequiredNumberField,
   SoftRequiredSelectField,
+  resolveFieldComponent,
   type SoftRequiredSelectFieldProps,
 } from "./components/form/fieldVariants";
 export {
@@ -115,6 +125,7 @@ export {
 } from "./components/formFields/CheckboxField";
 export { CheckboxGroupField } from "./components/formFields/CheckboxGroupField";
 export { DateField } from "./components/formFields/DateField";
+export { DecoratedInputField } from "./components/formFields/DecoratedInputField";
 export { EmailField } from "./components/formFields/EmailField";
 export {
   FieldArrayWithFocus,
@@ -124,6 +135,7 @@ export {
   FieldSetColumn,
   FieldSetControl,
 } from "./components/formFields/FieldSetControl";
+export { HorizontalField } from "./components/formFields/HorizontalField";
 export {
   InputArrayField,
   getIndexLabel,
@@ -141,7 +153,10 @@ export {
 } from "./components/formFields/MonthAndYearFields";
 export { NumberField } from "./components/formFields/NumberField";
 export { PhoneNumberField } from "./components/formFields/PhoneNumberField";
-export { RadioButtonsField } from "./components/formFields/RadioButtonsField";
+export {
+  RadioButtonsField,
+  type RadioButtonsFieldProps,
+} from "./components/formFields/RadioButtonsField";
 export {
   RadioGroupField,
   type RadioGroupFieldProps,
@@ -149,6 +164,8 @@ export {
 export {
   SelectField,
   type SelectFieldOption,
+  type SelectFieldProps,
+  type SelectFieldValue,
 } from "./components/formFields/SelectField";
 export {
   SelectObjectField,
@@ -163,6 +180,7 @@ export {
   TextareaField,
   type TextareaFieldProps,
 } from "./components/formFields/TextareaField";
+export type { FieldVariantProps } from "./components/formFields/types";
 export { YearField } from "./components/formFields/YearField";
 export {
   type YesOrNoFieldData,
@@ -181,6 +199,7 @@ export {
   formatAppointmentTime,
   isSameAppointment,
 } from "./components/formFields/appointmentPicker/helpers";
+export { APPOINTMENT_PICKER_FIELD_LABELS_DE } from "./components/formFields/appointmentPicker/labels";
 export {
   SingleAutocompleteField,
   type SingleAutocompleteFieldProps,
@@ -198,15 +217,22 @@ export {
 } from "./components/formFields/constants";
 export { formatFileSize } from "./components/formFields/file/helpers";
 export { type FileLike, FileType } from "./components/formFields/file/types";
+export { validateFileName } from "./components/formFields/file/validators";
 export { useDragAndDrop } from "./components/formFields/file/useDragAndDrop";
 export { ExpandNavigation } from "./components/icons/ExpandNavigation";
 export { CustomAutocomplete } from "./components/inputs/CustomAutocomplete";
 export { YearInput } from "./components/inputs/YearInput";
 export { LiveAnnouncer } from "./components/liveAnnouncer/LiveAnnouncer";
-export { ExternalLink } from "./components/navigation/ExternalLink";
-export { InternalLink } from "./components/navigation/InternalLink";
-export { InternalLinkButton } from "./components/navigation/InternalLinkButton";
-export { InternalLinkIconButton } from "./components/navigation/InternalLinkIconButton";
+export {
+  ExternalLink,
+  ExternalLinkButton,
+  ExternalLinkIconButton,
+} from "./components/navigation/externalLinks";
+export {
+  InternalLink,
+  InternalLinkButton,
+  InternalLinkIconButton,
+} from "./components/navigation/internalLinks";
 export {
   NavigationContextProvider,
   type OnBeforeNavigateProps,
@@ -230,6 +256,7 @@ export {
   useResetAlertContext,
 } from "./errorHandling/AlertContext";
 export { ErrorAlert } from "./errorHandling/ErrorAlert";
+export { PortalError } from "./errorHandling/PortalError";
 export { PortalErrorCode } from "./errorHandling/PortalErrorCode";
 export {
   getCloseable,
@@ -245,6 +272,7 @@ export {
   formatWeekdayDateTime,
   formatWeekdayDateTimeRange,
 } from "./formatters/dateTime";
+export { formatFacilityName } from "./formatters/facility";
 export { formatCurrency } from "./formatters/numbers";
 export {
   OPTIONAL_FALLBACK_VALUE,
@@ -253,7 +281,7 @@ export {
 } from "./formatters/optional";
 export { formatPersonName, formatUserName } from "./formatters/person";
 
-export { assertNonEmptyArray } from "./helpers/assertions";
+export { assertNever, assertNonEmptyArray } from "./helpers/assertions";
 export { countryOptions, translateCountry } from "./helpers/countryOption";
 export {
   TIME_FORMAT,
@@ -293,7 +321,10 @@ export {
   isNonEmptyArray,
   isNonEmptyString,
 } from "./helpers/guards";
+export { encodeReservedHtmlCharacters } from "./helpers/htmlStringEncoder";
+export { ifDefined } from "./helpers/ifDefined";
 export { getLastPage } from "./helpers/paginationHelper";
+export { isValidURL } from "./helpers/url";
 export {
   validateDateOfBirth,
   validateDateTime,
@@ -306,6 +337,8 @@ export {
   validateRange,
   validateRegex,
   validateTime,
+  validateZipCode,
+  validateGermanZipCode,
 } from "./helpers/validators";
 
 export { useIsBreakpointDown, useIsMobile } from "./hooks/theme";
@@ -323,10 +356,15 @@ export {
   useValidateLength,
   useValidateNumber,
   useValidatePastOrTodayDate,
+  useValidateZipCode,
+  useValidateGermanZipCode,
 } from "./hooks/useValidators";
+export { useWindowDimensions } from "./hooks/useWindowDimension";
 
+export { de } from "./i18n/locales/de";
 export { loadLocale } from "./i18n/loadLocale";
 export { i18nNamespace } from "./i18n/namespace";
+export { useTranslation } from "./i18n/useTranslation";
 
 export { useIsServer } from "./next/renderingHooks";
 

@@ -35,8 +35,8 @@ import de.eshg.inspection.report.persistence.element.ReportElementTextBlock;
 import de.eshg.inspection.report.persistence.element.ReportElementTopLevelTitle;
 import de.eshg.inspection.report.persistence.element.ReportElementType;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import java.io.OutputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,7 +61,7 @@ public class InspectionReportBuilder {
   private final ClassPathResource reportTemplate;
   private final DocumentGenerator documentGenerator;
   private final UserClient userClient;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final FacilityClient facilityClient;
   private final DepartmentInfoConfigService departmentInfoConfigService;
 
@@ -69,7 +69,7 @@ public class InspectionReportBuilder {
       @Value(REPORT_TEMPLATE) ClassPathResource reportTemplate,
       DocumentGenerator documentGenerator,
       UserClient userClient,
-      DepartmentClient departmentClient,
+      DepartmentLogoClient departmentLogoClient,
       DepartmentInfoConfigService departmentInfoConfigService,
       FacilityClient facilityClient) {
     this.departmentInfoConfigService = departmentInfoConfigService;
@@ -77,7 +77,7 @@ public class InspectionReportBuilder {
     this.reportTemplate = reportTemplate;
     this.documentGenerator = documentGenerator;
     this.userClient = userClient;
-    this.departmentClient = departmentClient;
+    this.departmentLogoClient = departmentLogoClient;
     this.facilityClient = facilityClient;
   }
 
@@ -107,7 +107,7 @@ public class InspectionReportBuilder {
   }
 
   public DepartmentLogo getDepartmentLogo() {
-    return departmentClient.getDepartmentLogo();
+    return departmentLogoClient.getDepartmentLogo();
   }
 
   public RepAddress getOfficeAddress() {

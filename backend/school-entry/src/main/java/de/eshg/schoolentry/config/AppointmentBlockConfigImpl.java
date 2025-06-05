@@ -11,6 +11,7 @@ import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.schoolentry.SchoolEntryConfigService;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -47,18 +48,6 @@ public class AppointmentBlockConfigImpl implements AppointmentBlockConfig {
   }
 
   @Override
-  public boolean isOverwriteAppointmentTypeConfigurationWithProperties() {
-    return appointmentBlockProperties.isOverwriteAppointmentTypeConfigurationWithProperties();
-  }
-
-  @Override
-  public void setOverwriteAppointmentTypeConfigurationWithProperties(
-      boolean overwriteAppointmentTypeConfigurationWithProperties) {
-    appointmentBlockProperties.setOverwriteAppointmentTypeConfigurationWithProperties(
-        overwriteAppointmentTypeConfigurationWithProperties);
-  }
-
-  @Override
   public boolean isAllowAppointmentBlocksWithCalendarEventConflicts() {
     return appointmentBlockProperties.isAllowAppointmentBlocksWithCalendarEventConflicts();
   }
@@ -90,5 +79,17 @@ public class AppointmentBlockConfigImpl implements AppointmentBlockConfig {
   @Override
   public void setLocationSelectionMode(LocationSelectionMode locationSelectionMode) {
     schoolEntryConfigService.updateLocationSelectionMode(locationSelectionMode);
+  }
+
+  @Override
+  public List<List<AppointmentType>> getAllowedAppointmentTypeCombinations() {
+    return appointmentBlockProperties.getAllowedAppointmentTypeCombinations();
+  }
+
+  @Override
+  public void setAllowedAppointmentTypeCombinations(
+      List<List<AppointmentType>> allowedAppointmentTypeCombinations) {
+    appointmentBlockProperties.setAllowedAppointmentTypeCombinations(
+        allowedAppointmentTypeCombinations);
   }
 }

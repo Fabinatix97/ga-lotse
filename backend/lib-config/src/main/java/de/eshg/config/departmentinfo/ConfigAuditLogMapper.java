@@ -8,6 +8,7 @@ package de.eshg.config.departmentinfo;
 import static de.eshg.config.HashUtil.hashOf;
 
 import de.eshg.config.domain.DepartmentInfo;
+import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +26,14 @@ public class ConfigAuditLogMapper {
       relevantFields.put(
           "en", document.getEn() == null ? null : hashOf(document.getEn().getContent()));
     }
+    return relevantFields;
+  }
+
+  public static SequencedMap<String, String> getRelevantFieldsForLogging(
+      Document streetDirectory, Document municipalityDirectory) {
+    LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
+    relevantFields.put("streetDirectory", hashOf(streetDirectory.getContent()));
+    relevantFields.put("municipalityDirectory", hashOf(municipalityDirectory.getContent()));
     return relevantFields;
   }
 

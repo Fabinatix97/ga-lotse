@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1747914734391-1">
+    <ext:createPostgresEnumType name="institutioncontactsubcategory"
+                                values="KOOPERATIVE_GESAMTSCHULE, HAUPT_REALSCHULE, HAUPTSCHULE, GYMNASIUM, INTEGRIERTE_GESAMTSCHULE, GRUND_HAUPT_REALSCHULE, GRUND_HAUPTSCHULE, GRUNDSCHULE, REALSCHULE, FOERDERSCHULE, BERUFSSCHULE"/>
+    <addColumn tableName="contact">
+      <column name="sub_category" type="INSTITUTIONCONTACTSUBCATEGORY"/>
+    </addColumn>
+    <addColumn tableName="contact_aud">
+      <column name="sub_category" type="INSTITUTIONCONTACTSUBCATEGORY"/>
+    </addColumn>
+    <addColumn tableName="contact_aud">
+      <column name="sub_category_mod" type="BOOLEAN"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

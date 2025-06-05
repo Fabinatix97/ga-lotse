@@ -51,28 +51,8 @@ public class StreetDirectoryCsvEntry implements StreetDirectory.EntryFields {
   @CsvWritePosition(9)
   private String cityDistrict;
 
-  @CsvBindByName(column = "Stadtbezirksvorst")
-  @CsvWritePosition(10)
-  private String cityDistrictPrefecture;
-
-  @CsvBindByName(column = "Schiedsamtsbezirk")
-  @CsvWritePosition(11)
-  private String arbitratorsDistrict;
-
-  @CsvBindByName(column = "Sozialrathausbezirk")
-  @CsvWritePosition(12)
-  private String socialTownHallDistrict;
-
-  @CsvBindByName(column = "Sozialbezirk")
-  @CsvWritePosition(13)
-  private String socialDistrict;
-
-  @CsvBindByName(column = "Polizeirevier")
-  @CsvWritePosition(14)
-  private String policeStation;
-
   @CsvBindByName(column = "Postleitzahl")
-  @CsvWritePosition(15)
+  @CsvWritePosition(10)
   private String postalCode;
 
   public String streetNumber() {
@@ -161,46 +141,6 @@ public class StreetDirectoryCsvEntry implements StreetDirectory.EntryFields {
 
   public void setCityDistrict(String cityDistrict) {
     this.cityDistrict = cityDistrict;
-  }
-
-  public String cityDistrictPrefecture() {
-    return cityDistrictPrefecture;
-  }
-
-  public void setCityDistrictPrefecture(String cityDistrictPrefecture) {
-    this.cityDistrictPrefecture = cityDistrictPrefecture;
-  }
-
-  public String arbitratorsDistrict() {
-    return arbitratorsDistrict;
-  }
-
-  public void setArbitratorsDistrict(String arbitratorsDistrict) {
-    this.arbitratorsDistrict = arbitratorsDistrict;
-  }
-
-  public String socialTownHallDistrict() {
-    return socialTownHallDistrict;
-  }
-
-  public void setSocialTownHallDistrict(String socialTownHallDistrict) {
-    this.socialTownHallDistrict = socialTownHallDistrict;
-  }
-
-  public String socialDistrict() {
-    return socialDistrict;
-  }
-
-  public void setSocialDistrict(String socialDistrict) {
-    this.socialDistrict = socialDistrict;
-  }
-
-  public String policeStation() {
-    return policeStation;
-  }
-
-  public void setPoliceStation(String policeStation) {
-    this.policeStation = policeStation;
   }
 
   public String postalCode() {

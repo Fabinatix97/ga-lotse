@@ -5,13 +5,11 @@
 
 package de.eshg.medicalregistry.mapper;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
-import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.PersonDetails;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
-import de.eshg.medicalregistry.api.ApplicantDto;
 import de.eshg.medicalregistry.api.GetProcedureConfirmedResponse;
 import de.eshg.medicalregistry.api.GetProcedureDraftResponse;
 import de.eshg.medicalregistry.api.GetProcedureResponse;
@@ -28,7 +26,6 @@ import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.MedicalRegistrySystemProgressEntryType;
 import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
-import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
 import de.eshg.medicalregistry.domain.model.TypeOfFullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.TypeOfPartialMedicalRegistryEntryChange;
@@ -41,33 +38,32 @@ public final class ProcedureMapper {
 
   public static GetProcedureResponse mapToDto(
       MedicalRegistryProcedure medicalRegistryProcedure,
-      GetPersonFileStateResponse professionalDetails,
+      Map<UUID, PersonDetails> personDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
     return switch (medicalRegistryProcedure) {
       case null -> null;
-      case MedicalRegistryEntryChange draft ->
-          mapToDraftDto(draft, professionalDetails, practiceDetails);
+      case MedicalRegistryEntryChange draft -> mapToDraftDto(draft, personDetails, practiceDetails);
       case MedicalRegistryEntry confirmed ->
-          mapToConfirmedDto(confirmed, professionalDetails, practiceDetails);
+          mapToConfirmedDto(confirmed, personDetails, practiceDetails);
       default -> throw new IllegalStateException("Only medical registry entry or change can exist");
     };
   }
 
   public static GetProcedureDraftResponse mapToDraftDto(
       MedicalRegistryEntryChange medicalRegistryEntry,
-      GetPersonFileStateResponse professionalDetails,
+      Map<UUID, PersonDetails> personDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
     return switch (medicalRegistryEntry) {
       case FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange ->
-          mapToDraftDto(fullMedicalRegistryEntryChange, professionalDetails, practiceDetails);
+          mapToDraftDto(fullMedicalRegistryEntryChange, personDetails, practiceDetails);
       case PartialMedicalRegistryEntryChange partialMedicalRegistryEntryChange ->
-          mapToDraftDto(partialMedicalRegistryEntryChange, professionalDetails, practiceDetails);
+          mapToDraftDto(partialMedicalRegistryEntryChange, personDetails, practiceDetails);
     };
   }
 
   public static GetProcedureDraftResponse mapToDraftDto(
       PartialMedicalRegistryEntryChange partialMedicalRegistryEntryChange,
-      GetPersonFileStateResponse professionalDetails,
+      Map<UUID, PersonDetails> personDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
     return new GetProcedureDraftResponse(
         partialMedicalRegistryEntryChange.getExternalId(),
@@ -75,17 +71,18 @@ public final class ProcedureMapper {
         mapStatusToDto(partialMedicalRegistryEntryChange.getProcedureStatus()),
         mapProcedureTypeToDto(partialMedicalRegistryEntryChange.getProcedureType()),
         mapTypeOfChangeToDto(partialMedicalRegistryEntryChange.getTypeOfChange()),
-        mapApplicant(partialMedicalRegistryEntryChange.getRelatedPersons(), professionalDetails),
+        PersonMapper.mapToDto(partialMedicalRegistryEntryChange.getProfessional(), personDetails),
         null,
         mapPractices(partialMedicalRegistryEntryChange.getRelatedFacilities(), practiceDetails),
-        partialMedicalRegistryEntryChange.getEmployeesEmployed(),
+        PersonMapper.mapEmployeeChangesToDto(
+            partialMedicalRegistryEntryChange.getEmployees(), personDetails),
         partialMedicalRegistryEntryChange.isConsentToPrivacyPolicy(),
         partialMedicalRegistryEntryChange.isRequestForWrittenConfirmation());
   }
 
   public static GetProcedureDraftResponse mapToDraftDto(
       FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange,
-      GetPersonFileStateResponse professionalDetails,
+      Map<UUID, PersonDetails> personDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
     return new GetProcedureDraftResponse(
         fullMedicalRegistryEntryChange.getExternalId(),
@@ -93,28 +90,27 @@ public final class ProcedureMapper {
         mapStatusToDto(fullMedicalRegistryEntryChange.getProcedureStatus()),
         mapProcedureTypeToDto(fullMedicalRegistryEntryChange.getProcedureType()),
         mapTypeOfChangeToDto(fullMedicalRegistryEntryChange.getTypeOfChange()),
-        mapApplicant(fullMedicalRegistryEntryChange.getRelatedPersons(), professionalDetails),
-        ProfessionalMapper.mapToDto(fullMedicalRegistryEntryChange.getProfessionInformation()),
+        PersonMapper.mapToDto(fullMedicalRegistryEntryChange.getProfessional(), personDetails),
+        PersonMapper.mapToDto(fullMedicalRegistryEntryChange.getProfessionInformation()),
         mapPractices(fullMedicalRegistryEntryChange.getRelatedFacilities(), practiceDetails),
-        fullMedicalRegistryEntryChange.isEmployeesEmployed(),
+        List.of(),
         fullMedicalRegistryEntryChange.isConsentToPrivacyPolicy(),
         fullMedicalRegistryEntryChange.isRequestForWrittenConfirmation());
   }
 
   public static GetProcedureConfirmedResponse mapToConfirmedDto(
       MedicalRegistryEntry medicalRegistryProcedure,
-      GetPersonFileStateResponse professionalDetails,
+      Map<UUID, PersonDetails> personDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
-
     return new GetProcedureConfirmedResponse(
         medicalRegistryProcedure.getExternalId(),
         medicalRegistryProcedure.getVersion(),
         mapStatusToDto(medicalRegistryProcedure.getProcedureStatus()),
         mapProcedureTypeToDto(medicalRegistryProcedure.getProcedureType()),
-        mapApplicant(medicalRegistryProcedure.getRelatedPersons(), professionalDetails),
-        ProfessionalMapper.mapToDto(medicalRegistryProcedure.getProfessionInformation()),
+        PersonMapper.mapToDto(medicalRegistryProcedure.getProfessional(), personDetails),
+        PersonMapper.mapToDto(medicalRegistryProcedure.getProfessionInformation()),
         mapPractices(medicalRegistryProcedure.getRelatedFacilities(), practiceDetails),
-        medicalRegistryProcedure.isEmployeesEmployed(),
+        PersonMapper.mapEmployeesToDto(medicalRegistryProcedure.getEmployees(), personDetails),
         medicalRegistryProcedure.isConsentToPrivacyPolicy(),
         medicalRegistryProcedure.isRequestForWrittenConfirmation());
   }
@@ -134,12 +130,6 @@ public final class ProcedureMapper {
       case CHANGE_OF_REGISTRATION -> TypeOfPartialMedicalRegistryEntryChange.CHANGE_OF_REGISTRATION;
       case SECOND_PRACTICE -> TypeOfPartialMedicalRegistryEntryChange.SECOND_PRACTICE;
     };
-  }
-
-  private static ApplicantDto mapApplicant(
-      List<Professional> persons, GetPersonFileStateResponse professionalDetails) {
-    Professional professional = persons.stream().collect(StreamUtil.toSingleElement());
-    return ProfessionalMapper.mapToDto(professional, professionalDetails);
   }
 
   private static List<PracticeDto> mapPractices(
@@ -171,6 +161,7 @@ public final class ProcedureMapper {
       case CHANGE_OF_NAME -> TypeOfChangeDto.CHANGE_OF_NAME;
       case RELOCATION -> TypeOfChangeDto.RELOCATION;
       case DEREGISTRATION -> TypeOfChangeDto.DEREGISTRATION;
+      case CHANGE_OF_EMPLOYEES -> TypeOfChangeDto.CHANGE_OF_EMPLOYEES;
       case OTHER -> TypeOfChangeDto.OTHER;
     };
   }
@@ -200,6 +191,7 @@ public final class ProcedureMapper {
       case CHANGE_OF_NAME -> MedicalRegistrySystemProgressEntryType.CHANGE_OF_NAME;
       case RELOCATION -> MedicalRegistrySystemProgressEntryType.RELOCATION;
       case DEREGISTRATION -> MedicalRegistrySystemProgressEntryType.DEREGISTRATION;
+      case CHANGE_OF_EMPLOYEES -> MedicalRegistrySystemProgressEntryType.CHANGE_OF_EMPLOYEES;
       case OTHER -> MedicalRegistrySystemProgressEntryType.OTHER;
     };
   }

@@ -93,7 +93,7 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService<Priva
   @Override
   protected MultiLangDocument updatePrivacyDocument(
       MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "privacyDocumentsConfig",
         getRelevantFieldsForLogging(persistedDocument),
         getRelevantFieldsForLogging(documentUpdate));

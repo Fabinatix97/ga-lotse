@@ -84,7 +84,7 @@ public class BasePrivacyDocumentService
   }
 
   @Override
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     BasePrivacyDocumentsConfig config = getConfig();
     return MapUtils.orderedMapOf(
         ConfigurationEndpoint.PRIVACY_POLICY.name(),

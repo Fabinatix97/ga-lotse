@@ -15,13 +15,13 @@ import { SearchParams } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import { useGetUsersByGroupQuery } from "../../../api/queries/users";
-import { OverlayBoundary } from "../../../components/boundaries/OverlayBoundary";
 import { ButtonBar } from "../../../components/buttons/ButtonBar";
 import { InformationSheet } from "../../../components/content/InformationSheet";
 import { PageGrid } from "../../../components/page/PageGrid";
 import { Timeline } from "../../../components/timeline/Timeline";
 import { TimelineEntry } from "../../../components/timeline/TimelineEntry";
 import { useIsOffline } from "../../../hooks/useIsOffline";
+import { SidebarScope } from "../../drawer/contexts/sidebarScope";
 import { FilterSettings } from "../../filters/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "../../filters/components/filterSettings/FilterSettingsSheet";
 import { ToggleFilterButton } from "../../filters/components/filterSettings/ToggleFilterButton";
@@ -43,10 +43,9 @@ import { useTimelineEntryProps } from "../utils/buildTimelineEntryProps";
 
 import { FileCardWithActions } from "./FileCardWithActions";
 import { SortSelect } from "./SortSelect";
-import { CreateProgressEntrySidebar } from "./sidebars/CreateProgressEntrySidebar";
-import { FilesSidebar } from "./sidebars/FilesSidebar";
-import { ApprovalRequestsOverviewSidebar } from "./sidebars/approvalRequestOverviewSidebar/ApprovalRequestsOverviewSidebar";
-import { ProgressEntryDetailsSidebar } from "./sidebars/progressEntryDetailsSidebar/ProgressEntryDetailsSidebar";
+import { useCreateProgressEntrySidebar } from "./sidebars/CreateProgressEntrySidebar";
+import { useFilesSidebar } from "./sidebars/FilesSidebar";
+import { useApprovalRequestsOverviewSidebar } from "./sidebars/approvalRequestOverviewSidebar/ApprovalRequestsOverviewSidebar";
 
 export interface ProgressEntriesPageProps extends ProgressEntryClients {
   businessModule: ApiBusinessModule;
@@ -121,7 +120,9 @@ export function ProgressEntriesPage({
         ...props,
       }}
     >
-      <ProgressEntriesPageComponent />
+      <SidebarScope>
+        <ProgressEntriesPageComponent />
+      </SidebarScope>
     </ProgressEntriesProvider>
   );
 }
@@ -129,42 +130,12 @@ export function ProgressEntriesPage({
 function ProgressEntriesPageComponent() {
   const progressEntriesContext = useProgressEntriesContext();
   const { filterSettings } = progressEntriesContext.config;
-  const { entryIdForDetails } = progressEntriesContext.state;
-  const [showCreateProgressEntrySidebar, setShowCreateProgressEntrySidebar] =
-    useState(false);
-  const [showFilesSidebar, setShowFilesSidebar] = useState(false);
-  const [showApprovalRequestsSidebar, setShowApprovalRequestsSidebar] =
-    useState(false);
-
-  function openCreateProgressEntrySidebar() {
-    setShowCreateProgressEntrySidebar(true);
-  }
-
-  function closeCreateProgressEntrySidebar() {
-    setShowCreateProgressEntrySidebar(false);
-  }
-
-  function openFilesSidebar() {
-    setShowFilesSidebar(true);
-  }
-
-  function closeFilesSidebar() {
-    setShowFilesSidebar(false);
-  }
-
-  function openApprovalRequestsSidebar() {
-    setShowApprovalRequestsSidebar(true);
-  }
-
-  function closeApprovalRequestsSidebar() {
-    setShowApprovalRequestsSidebar(false);
-  }
+  const createProgressEntrySidebar = useCreateProgressEntrySidebar();
 
   const isReadOnly = useIsReadOnly();
   const isOffline = useIsOffline();
   const deletionProps = useDeletionProps();
   const FileDeletionModal = deletionProps.FileModal;
-  const hasDeletionRights = useHasDeletionRights();
 
   return (
     <>
@@ -180,7 +151,7 @@ function ProgressEntriesPageComponent() {
             !isOffline && (
               <Button
                 startDecorator={<Add />}
-                onClick={openCreateProgressEntrySidebar}
+                onClick={createProgressEntrySidebar.open}
               >
                 Neuen Verlaufseintrag erstellen
               </Button>
@@ -198,12 +169,10 @@ function ProgressEntriesPageComponent() {
                   </FilterSettingsSheet>
                 </Grid>,
                 <Grid key="progressEntriesInformationSheet" xxs={12} lg={6}>
-                  <ProgressEntriesInformationSheet
-                    openApprovalRequestsSidebar={openApprovalRequestsSidebar}
-                  />
+                  <ProgressEntriesInformationSheet />
                 </Grid>,
                 <Grid key="filesSheet" xxs={12} lg={3}>
-                  <FilesSheet openFilesSidebar={openFilesSidebar} />
+                  <FilesSheet />
                 </Grid>,
               ]
             : [
@@ -214,46 +183,23 @@ function ProgressEntriesPageComponent() {
                   lg={8}
                   xl={9}
                 >
-                  <ProgressEntriesInformationSheet
-                    openApprovalRequestsSidebar={openApprovalRequestsSidebar}
-                  />
+                  <ProgressEntriesInformationSheet />
                 </Grid>,
                 <Grid key="filesSheet" xxs={12} md={6} lg={4} xl={3}>
-                  <FilesSheet openFilesSidebar={openFilesSidebar} />
+                  <FilesSheet />
                 </Grid>,
               ]}
         </PageGrid>
       </Stack>
-      <CreateProgressEntrySidebar
-        open={showCreateProgressEntrySidebar}
-        onClose={closeCreateProgressEntrySidebar}
-      />
-      <FilesSidebar open={showFilesSidebar} onClose={closeFilesSidebar} />
-      {hasDeletionRights && (
-        <ApprovalRequestsOverviewSidebar
-          open={showApprovalRequestsSidebar}
-          onClose={closeApprovalRequestsSidebar}
-        />
-      )}
-      {entryIdForDetails !== null ? (
-        <OverlayBoundary>
-          <ProgressEntryDetailsSidebar progressEntryId={entryIdForDetails} />
-        </OverlayBoundary>
-      ) : null}
       <FileDeletionModal />
     </>
   );
 }
 
-interface ProgressEntriesInformationSheetProps {
-  openApprovalRequestsSidebar: () => void;
-}
-
-function ProgressEntriesInformationSheet({
-  openApprovalRequestsSidebar,
-}: ProgressEntriesInformationSheetProps) {
+function ProgressEntriesInformationSheet() {
   const { searchParams, approvalRequestsResponse } = useProgressEntriesConfig();
   const timelineEntryProps = useTimelineEntryProps();
+  const approvalRequestsOverviewSidebar = useApprovalRequestsOverviewSidebar();
 
   const approvalRequests = approvalRequestsResponse?.approvalRequests;
   const hasDeletionRights = useHasDeletionRights();
@@ -283,7 +229,7 @@ function ProgressEntriesInformationSheet({
               variant="outlined"
               color="danger"
               size="sm"
-              onClick={openApprovalRequestsSidebar}
+              onClick={approvalRequestsOverviewSidebar.open}
             >
               {`Löschanfragen (${approvalRequests.length})`}
             </Button>
@@ -307,12 +253,9 @@ function ProgressEntriesInformationSheet({
   );
 }
 
-interface FilesSheetProps {
-  openFilesSidebar: () => void;
-}
-
-function FilesSheet({ openFilesSidebar }: FilesSheetProps) {
+function FilesSheet() {
   const { files } = useProgressEntriesConfig();
+  const filesSidebar = useFilesSidebar();
 
   return (
     <Sheet data-testid="files">
@@ -320,7 +263,7 @@ function FilesSheet({ openFilesSidebar }: FilesSheetProps) {
         <Typography level="title-md" marginTop={0.5}>
           {`Dateien (${files.length})`}
         </Typography>
-        <Button variant="plain" size="sm" onClick={openFilesSidebar}>
+        <Button variant="plain" size="sm" onClick={filesSidebar.open}>
           Alle anzeigen
         </Button>
       </Stack>

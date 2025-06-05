@@ -18,4 +18,5 @@
   <include file="migrations/0008_add_manual_cert_bool.xml"/>
   <include file="migrations/0009_correct_staged_entity_relation.xml"/>
   <include file="migrations/0010_remove_previous_certificate.xml"/>
+  <include file="migrations/0011_add_actory_type_restricted.xml"/>
 </databaseChangeLog>

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedsAbroadProcedureOverview } from "./tempApiTypes";
+import { ApiMedsAbroadProcedure } from "@eshg/meds-abroad-api";
 
-export function isProcedureOpen(procedure: ApiMedsAbroadProcedureOverview) {
-  return procedure.status !== "CLOSED";
+export function isProcedureOpen(procedure: ApiMedsAbroadProcedure) {
+  return procedure.procedureStatus !== "CLOSED";
 }

@@ -39,7 +39,7 @@ public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
           "Typ der Prophylaxe",
           "TYP",
           DentalProphylaxisSessionAttributes.CATEGORY,
-          true,
+          false,
           getTypeValueOptions())),
 
   ANZAHL_KINDER(

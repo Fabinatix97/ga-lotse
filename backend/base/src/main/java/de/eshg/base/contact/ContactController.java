@@ -61,6 +61,7 @@ public class ContactController implements ContactApi {
   @Override
   @Transactional
   public ContactDto addContact(AbstractAddContactRequest request) {
+    validateContactAddRequest(request);
     Contact contact = ContactMapper.mapContactToDm(request);
     ContactAddress contactAddress = ContactMapper.mapAddressIntoDm(request.contactAddress());
     ContactAddress differentBillingAddress =
@@ -151,6 +152,7 @@ public class ContactController implements ContactApi {
   @Override
   @Transactional
   public ContactDto updateContact(UUID id, AbstractUpdateContactRequest request) {
+    validateContactUpdateRequest(request);
     Contact requestedContact = findByIdOrThrow(id);
     UUID mergedIntoId =
         requestedContact.getMergedInto() != null ? requestedContact.getMergedInto().getId() : null;
@@ -279,6 +281,27 @@ public class ContactController implements ContactApi {
   @Transactional(readOnly = true)
   public GetMergedContactsResponse getMergedContacts(UUID id) {
     return new GetMergedContactsResponse(contactService.findAllMergeSources(id));
+  }
+
+  private void validateContactAddRequest(AbstractAddContactRequest request) {
+    if (request instanceof AddInstitutionContactRequest addRequest) {
+      validateSubCategory(addRequest.category(), addRequest.subCategory());
+    }
+  }
+
+  private void validateContactUpdateRequest(AbstractUpdateContactRequest request) {
+    if (request instanceof UpdateInstitutionContactRequest updateRequest) {
+      validateSubCategory(updateRequest.category(), updateRequest.subCategory());
+    }
+  }
+
+  private static void validateSubCategory(
+      InstitutionContactCategoryDto category, InstitutionContactSubCategoryDto subCategory) {
+    if (subCategory != null && category != subCategory.getParentCategory()) {
+      throw new BadRequestException(
+          String.format(
+              "The sub-category '%s' is invalid for the category '%s'", subCategory, category));
+    }
   }
 
   private static void validateVCardFile(MultipartFile file) {

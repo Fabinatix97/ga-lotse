@@ -1,0 +1,23 @@
+{
+  "extends": "../../config/tsconfig.next.json",
+  "compilerOptions": {
+    "outDir": "./build/dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["@eshg/lib-employee-portal/theme"],
+    "erasableSyntaxOnly": false
+  },
+  "include": [
+    "staticSvgImage.d.ts",
+    "next.config.ts",
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "vitest.config.ts",
+    "vitest-setup.ts",
+    "eslint.config.js",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "src/serviceWorker/sw"]
+}

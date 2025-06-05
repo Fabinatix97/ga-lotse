@@ -11,7 +11,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'net.logstash.logback:logstash-logback-encoder:latest.release'
-    implementation 'com.google.guava:guava'
+    implementation 'com.google.guava:guava:latest.release'
 
     runtimeOnly project(':rest-service-commons')
 

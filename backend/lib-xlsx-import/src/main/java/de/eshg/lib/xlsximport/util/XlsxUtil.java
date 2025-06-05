@@ -36,6 +36,13 @@ public final class XlsxUtil {
     return headerFont;
   }
 
+  public static XSSFCellStyle createDefaultCellStyle(XSSFSheet sheet) {
+    XSSFWorkbook workbook = sheet.getWorkbook();
+    XSSFCellStyle cellStyle = workbook.createCellStyle();
+    cellStyle.setFont(createDefaultFont(workbook));
+    return cellStyle;
+  }
+
   public static XSSFCellStyle createHeaderCellStyle(XSSFSheet sheet) {
     XSSFWorkbook workbook = sheet.getWorkbook();
     XSSFCellStyle cellStyle = workbook.createCellStyle();

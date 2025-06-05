@@ -8,7 +8,7 @@ package de.eshg.lib.document.generator.spring;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.PdfCreator;
 import de.eshg.lib.document.generator.XhtmlTemplateProcessor;
-import de.eshg.lib.document.generator.department.DepartmentClient;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -17,6 +17,6 @@ import org.springframework.context.annotation.Import;
   DocumentGenerator.class,
   XhtmlTemplateProcessor.class,
   PdfCreator.class,
-  DepartmentClient.class
+  DepartmentLogoClient.class
 })
 public class DocumentGeneratorAutoConfiguration {}

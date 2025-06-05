@@ -10,11 +10,13 @@ import {
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
+import { Chip } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { isDefined } from "remeda";
 
-import { ApiUserRole } from "@eshg/base-api";
+import { ApiProcedureStatus, ApiUserRole } from "@eshg/base-api";
 import {
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
   PersonToolbarHeader,
   TabNavigationItem,
   TabNavigationToolbar,
@@ -22,7 +24,6 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 
-import { ExaminationStatusChip } from "../../../components/examination/ExaminationStatusChip";
 import { routes } from "../../../config/routes";
 import { useDentalApi } from "../../../contexts/dental";
 import { getChildDetailsQuery } from "../api/queries/details";
@@ -39,8 +40,6 @@ export function ChildToolbar(props: ChildToolbarProps) {
     getChildDetailsQuery(childApi, childId),
   );
 
-  const latestExamination = child.examinations[0];
-
   return (
     <TabNavigationToolbar
       header={<PersonToolbarHeader person={child} />}
@@ -51,8 +50,10 @@ export function ChildToolbar(props: ChildToolbarProps) {
       }
       items={buildTabItems(childId)}
       afterTabs={
-        isDefined(latestExamination) ? (
-          <ExaminationStatusChip status={latestExamination.status} />
+        child.isClosed ? (
+          <Chip color={PROCEDURE_STATUS_COLORS[ApiProcedureStatus.Closed]}>
+            {PROCEDURE_STATUS_NAMES[ApiProcedureStatus.Closed]}
+          </Chip>
         ) : null
       }
     />

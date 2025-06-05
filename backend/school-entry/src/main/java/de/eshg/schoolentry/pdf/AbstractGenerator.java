@@ -10,24 +10,24 @@ import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.schoolentry.client.DepartmentInfoClient;
 import java.util.UUID;
 import org.springframework.util.Assert;
 
 public abstract class AbstractGenerator {
 
   private final ContactClient contactClient;
-  private final DepartmentInfoConfigService departmentInfoConfigService;
+  private final DepartmentInfoClient departmentInfoClient;
 
   protected AbstractGenerator(
-      DepartmentInfoConfigService departmentInfoConfigService, ContactClient contactClient) {
-    this.departmentInfoConfigService = departmentInfoConfigService;
+      DepartmentInfoClient departmentInfoClient, ContactClient contactClient) {
+    this.departmentInfoClient = departmentInfoClient;
     this.contactClient = contactClient;
   }
 
   protected Address getDepartmentAddress() {
-    GetDepartmentInfoResponse departmentInfo = departmentInfoConfigService.getDepartmentInfo();
+    GetDepartmentInfoResponse departmentInfo = departmentInfoClient.getDepartmentInfo();
     return new Address(
         departmentInfo.name(),
         departmentInfo.street() + " " + departmentInfo.houseNumber(),

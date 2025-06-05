@@ -7,7 +7,7 @@ import { createContext, useContext } from "react";
 
 import { RequiresChildren } from "../../types/react";
 
-export const DisabledFormContext = createContext(false);
+const DisabledFormContext = createContext(false);
 
 interface DisabledFormProviderProps extends RequiresChildren {
   disabled: boolean;

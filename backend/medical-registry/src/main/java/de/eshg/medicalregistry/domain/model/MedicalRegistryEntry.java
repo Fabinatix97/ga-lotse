@@ -9,17 +9,14 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class MedicalRegistryEntry extends MedicalRegistryProcedure {
-
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = false)
-  private boolean employeesEmployed;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(
@@ -35,12 +32,12 @@ public class MedicalRegistryEntry extends MedicalRegistryProcedure {
     super(triggerType);
   }
 
-  public boolean isEmployeesEmployed() {
-    return employeesEmployed;
-  }
-
-  public void setEmployeesEmployed(boolean employeesEmployed) {
-    this.employeesEmployed = employeesEmployed;
+  @Override
+  public List<Employee> getEmployees() {
+    return super.getEmployees().stream()
+        .filter(Employee.class::isInstance)
+        .map(Employee.class::cast)
+        .collect(Collectors.toList());
   }
 
   public ProfessionInformation getProfessionInformation() {

@@ -26,7 +26,7 @@ public final class AppointmentMapper {
     }
     return new GetAppointmentBlockGroupDto(
         appointmentBlockGroupData.externalId(),
-        appointmentBlockGroupData.type(),
+        appointmentBlockGroupData.types(),
         appointmentBlockGroupData.parallelExaminations(),
         appointmentBlockGroupData.location(),
         appointmentBlockGroupData.appointmentBlocks().stream()
@@ -42,8 +42,8 @@ public final class AppointmentMapper {
         details.appointmentBlock().getExternalId(),
         details.start(),
         details.end(),
-        details.numberOfFreeAppointments(),
-        details.numberOfBookedAppointments());
+        details.freeDuration() == null ? null : details.freeDuration().toString(),
+        details.bookedDuration().toString());
   }
 
   public static AppointmentDto mapAppointmentToDto(Appointment appointment) {

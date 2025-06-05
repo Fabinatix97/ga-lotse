@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @ConditionalOnMissingBean(AbstractConfigStatusService.class)
 public class ConfigStatusService extends AbstractConfigStatusService {
 
-  ConfigStatusService(List<EshgConfigurationService<?>> configurationServices) {
-    super(configurationServices);
+  ConfigStatusService(List<ConfigurationStatusAware> configurationStatusAwares) {
+    super(configurationStatusAwares);
   }
 }

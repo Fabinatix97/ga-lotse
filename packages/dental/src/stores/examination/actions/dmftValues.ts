@@ -8,7 +8,6 @@ import { ApiMainResult } from "@eshg/dental-api";
 import { QUADRANT_NUMBERS, WISDOM_TEETH } from "../constants";
 import { DmftValuesByDentitionType } from "../examinationStore";
 import {
-  AddableTooth,
   Dentition,
   DmftValues,
   Tooth,
@@ -31,6 +30,10 @@ const EMPTY_DMFT_VALUES: DmftValues = {
   filled: 0,
 };
 
+const D_VALUES: string[] = [ApiMainResult.D, ApiMainResult.E, ApiMainResult.W];
+const M_VALUES: string[] = [ApiMainResult.M];
+const F_VALUES: string[] = [ApiMainResult.F, ApiMainResult.K];
+
 export function calculateDmftValues(
   dentition: Dentition,
   type: ToothType,
@@ -42,41 +45,27 @@ export function calculateDmftValues(
 }
 
 function calculateDmftValuesForTeeth(teeth: Tooth[], type: ToothType) {
-  return teeth.reduce(
-    (acc: DmftValues, curr) => ({
-      decayed: incrementIf(
-        acc.decayed,
-        hasResultOfType(ApiMainResult.D, curr, type),
-      ),
-      missing: incrementIf(
-        acc.missing,
-        hasResultOfType(ApiMainResult.M, curr, type),
-      ),
-      filled: incrementIf(
-        acc.filled,
-        hasResultOfType(ApiMainResult.F, curr, type),
-      ),
-    }),
-    EMPTY_DMFT_VALUES,
-  );
+  return teeth.reduce((acc: DmftValues, curr) => {
+    if (
+      curr.type !== "ToothWithDiagnosis" ||
+      curr.toothType !== type ||
+      WISDOM_TEETH.has(curr.toothNumber)
+    ) {
+      return acc;
+    }
+    if (hasResultIn(M_VALUES, curr)) {
+      return { ...acc, missing: acc.missing + 1 };
+    } else if (hasResultIn(D_VALUES, curr)) {
+      return { ...acc, decayed: acc.decayed + 1 };
+    } else if (hasResultIn(F_VALUES, curr)) {
+      return { ...acc, filled: acc.filled + 1 };
+    } else return acc;
+  }, EMPTY_DMFT_VALUES);
 }
 
-function incrementIf(value: number, predicate: boolean) {
-  if (predicate) {
-    return value + 1;
-  }
-  return value;
-}
-
-function hasResultOfType(
-  result: ApiMainResult,
-  tooth: ToothWithDiagnosis | AddableTooth,
-  type: "PRIMARY_TOOTH" | "SECONDARY_TOOTH",
-) {
+function hasResultIn(result: string[], tooth: ToothWithDiagnosis) {
   return (
-    tooth.type === "ToothWithDiagnosis" &&
-    tooth.toothType === type &&
-    !WISDOM_TEETH.has(tooth.toothNumber) &&
-    tooth.mainResult.value === result
+    result.includes(tooth.mainResult.value) ||
+    result.includes(tooth.secondaryResult.value)
   );
 }

@@ -19,6 +19,7 @@ public record AddInstitutionContactRequest(
         @Size(min = 1, max = 300)
         String name,
     InstitutionContactCategoryDto category,
+    InstitutionContactSubCategoryDto subCategory,
     List<@Size(min = 1, max = 23) String> phoneNumbers,
     List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @Valid @NotNull AddressDto contactAddress,
@@ -26,12 +27,29 @@ public record AddInstitutionContactRequest(
     implements AbstractAddContactRequest {
   public static final String SCHEMA_NAME = "AddInstitutionContactRequest";
 
+  public AddInstitutionContactRequest(
+      String name,
+      InstitutionContactCategoryDto category,
+      List<String> phoneNumbers,
+      List<String> emailAddresses,
+      AddressDto contactAddress,
+      AddressDto differentBillingAddress) {
+    this(
+        name,
+        category,
+        null,
+        phoneNumbers,
+        emailAddresses,
+        contactAddress,
+        differentBillingAddress);
+  }
+
   public AddInstitutionContactRequest(String name, AddressDto contactAddress) {
-    this(name, null, null, null, contactAddress, null);
+    this(name, null, null, null, null, contactAddress, null);
   }
 
   public AddInstitutionContactRequest(
       String name, List<String> emailAddresses, AddressDto contactAddress) {
-    this(name, null, null, emailAddresses, contactAddress, null);
+    this(name, null, null, null, emailAddresses, contactAddress, null);
   }
 }

@@ -8,19 +8,19 @@ package de.eshg.schoolentry.pdf.invitation;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
-import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.document.generator.qrcode.QrCodeGenerator;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.SchoolEntryConfigService;
 import de.eshg.schoolentry.business.model.ChildData;
+import de.eshg.schoolentry.client.DepartmentInfoClient;
 import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
@@ -53,22 +53,22 @@ public class InvitationGenerator extends AbstractGenerator {
   private final String citizenPortalUrl;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final SchoolEntryConfigService schoolEntryConfigService;
   private final AppointmentBlockConfig appointmentBlockConfig;
 
   public InvitationGenerator(
       @Value(INVITATION_TEMPLATE) ClassPathResource invitationTemplate,
-      DepartmentInfoConfigService departmentInfoConfigService,
-      DepartmentClient departmentClient,
+      DepartmentInfoClient departmentInfoClient,
+      DepartmentLogoClient departmentLogoClient,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
       DocumentGenerator documentGenerator,
       Clock clock,
       AppointmentBlockConfig appointmentBlockConfig,
       ContactClient contactClient,
       SchoolEntryConfigService schoolEntryConfigService) {
-    super(departmentInfoConfigService, contactClient);
-    this.departmentClient = departmentClient;
+    super(departmentInfoClient, contactClient);
+    this.departmentLogoClient = departmentLogoClient;
     this.schoolEntryConfigService = schoolEntryConfigService;
     this.appointmentBlockConfig = appointmentBlockConfig;
     Assert.isTrue(invitationTemplate.exists(), () -> invitationTemplate + " does not exist");
@@ -94,7 +94,7 @@ public class InvitationGenerator extends AbstractGenerator {
             .encodeToString(QrCodeGenerator.createQrCode(url).getBytes(StandardCharsets.UTF_8));
 
     Address departmentAddress = getDepartmentAddress();
-    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
     Address examinationExecutionLocation;
     if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
         && locationId != null) {

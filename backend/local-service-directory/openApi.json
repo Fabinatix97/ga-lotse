@@ -76,7 +76,7 @@
     "schemas" : {
       "ActorType" : {
         "type" : "string",
-        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "WEB", "ZA", "ZR" ]
+        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "RESTRICTED", "WEB", "ZA", "ZR" ]
       },
       "AnnounceRequest" : {
         "required" : [ "certificate", "readableName", "type" ],

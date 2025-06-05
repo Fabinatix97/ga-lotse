@@ -21,7 +21,6 @@ export interface SortableSearchParams<TKey> {
 }
 
 export type SearchParamValue = string | string[] | undefined | null;
-export type SearchParams = Record<string, SearchParamValue>;
 
 export function parseOptionalEnum<E, T extends Record<string, E>>(
   enumRecord: T,
@@ -49,29 +48,16 @@ export function parseOptionalBoundedInt(
   return isDefined(num) && num >= min && num <= max ? num : undefined;
 }
 
-export function parseOptionalNonNegativeInt(
+function parseOptionalNonNegativeInt(
   value: SearchParamValue,
 ): number | undefined {
   return parseOptionalBoundedInt(value, 0);
-}
-
-export function parseOptionalPositiveInt(
-  value: SearchParamValue,
-): number | undefined {
-  return parseOptionalBoundedInt(value, 1);
 }
 
 export function parseOptionalString(
   value: SearchParamValue,
 ): string | undefined {
   return isString(value) && value.trim().length > 0 ? value.trim() : undefined;
-}
-
-export function parsePageParams(params: SearchParams) {
-  return {
-    pageNumber: parseOptionalNonNegativeInt(params.pageNumber),
-    pageSize: parseOptionalBoundedInt(params.pageSize, 1, 50),
-  };
 }
 
 export function parseReadonlyPageParams(params: ReadonlyURLSearchParams) {

@@ -34,12 +34,14 @@ export function renderLabel(label: string | ReactNode) {
 export function FormHelperTextWithIcon({
   helperText,
   id,
+  testId,
 }: {
   helperText: string;
   id?: string;
+  testId?: string;
 }) {
   const helperTextWithIcon = (
-    <Stack gap={0.5} direction="row" alignItems="center">
+    <Stack data-testid={testId} gap={0.5} direction="row" alignItems="center">
       <InfoOutlined fontSize="xl" />
       {helperText}
     </Stack>

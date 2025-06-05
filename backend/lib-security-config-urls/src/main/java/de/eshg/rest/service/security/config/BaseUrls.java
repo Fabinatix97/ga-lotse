@@ -15,6 +15,8 @@ public final class BaseUrls {
   public static final class LibAppointmentBlock {
     public static final String APPOINTMENT_BLOCK_API = "/appointment-blocks";
     public static final String APPOINTMENT_TYPE_API = "/appointment-types";
+    public static final String APPOINTMENT_STANDARD_DURATION_API =
+        DepartmentInfoLibrary.CONFIGURATION_API + "/appointment-standard-duration";
 
     private LibAppointmentBlock() {}
   }
@@ -78,6 +80,7 @@ public final class BaseUrls {
     public static final String CONTACT_MARKDOWN_CONFIG_API = "/contact";
     public static final String IMPRINT_MARKDOWN_CONFIG_API = "/imprint";
     public static final String PRIVACY_POLICY_MARKDOWN_CONFIG_API = "/privacy-policy";
+    public static final String LOGO_SVG_CONFIG_API = "/logo";
     public static final String CONFIGURATION_API_MARKDOWN_FILES_CITIZEN = "/markdown/citizen";
     public static final String CONFIGURATION_API_MARKDOWN_FILES_EMPLOYEE = "/markdown/employee";
     public static final String CONTACT_PARSE_VCARD_URL = "/parse-vcard";
@@ -109,11 +112,10 @@ public final class BaseUrls {
     public static final String MUK_SELF_USER_FACILITY = "/self/facility";
     public static final String STREET_AUTOCOMPLETE_URL = "/autocomplete";
     public static final String POST_CODE_AND_CITY_URL = "/postcode-and-city";
-    public static final String RECENT_PROCEDURE_API = "/recent-procedures";
+    public static final String SELF_RECENT_PROCEDURES_API = "/recent-procedures";
     public static final String PROCEDURE_METRICS_API = "/procedure-metrics";
     public static final String TASK_METRICS_API = "/task-metrics";
     public static final String TASK_API = "/tasks";
-    public static final String PROCEDURE_CONFIG_API = "/procedure-config";
     public static final String PUBLIC_CONFIG_API = "/public/config";
     public static final String ICD_10_CODES_API = "/icd10-codes";
 

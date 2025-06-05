@@ -13,7 +13,7 @@ import java.util.UUID;
 public record AppointmentBlockGroupData(
     Long internalId,
     UUID externalId,
-    AppointmentTypeDto type,
+    List<AppointmentTypeDto> types,
     int parallelExaminations,
     LocationDto location,
     List<AppointmentBlockData> appointmentBlocks) {}

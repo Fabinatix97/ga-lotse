@@ -1376,7 +1376,7 @@
       },
       "ActorType" : {
         "type" : "string",
-        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "WEB", "ZA", "ZR" ]
+        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "RESTRICTED", "WEB", "ZA", "ZR" ]
       },
       "AddBarrierTestHelperResponse" : {
         "required" : [ "barrierId" ],
@@ -1465,7 +1465,7 @@
       },
       "AdminActorType" : {
         "type" : "string",
-        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "WEB", "ZA", "ZR" ]
+        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "RESTRICTED", "WEB", "ZA", "ZR" ]
       },
       "AdminCertificate" : {
         "required" : [ "value" ],

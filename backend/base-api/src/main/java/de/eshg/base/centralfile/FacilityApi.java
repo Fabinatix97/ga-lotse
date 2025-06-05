@@ -29,6 +29,7 @@ public interface FacilityApi {
   String FILE_STATES_URL = BaseUrls.Base.FACILITY_FILE_STATE_URL;
   String REFERENCE_URL = "/reference";
   String REFERENCE_UPDATE_URL = REFERENCE_URL + "/{id}/update";
+  String FILE_NUMBER_URL = BaseUrls.Base.FACILITY_FILE_STATE_URL + "/{id}/file-number/{method}";
 
   @PostExchange(FILE_STATES_URL)
   @ApiResponse(responseCode = "200")
@@ -101,6 +102,12 @@ public interface FacilityApi {
   @Operation(summary = "Get multiple facilities")
   GetFacilityFileStatesResponse getFacilityFileStates(
       @Valid @RequestBody GetFacilityFileStatesRequest request);
+
+  @PostExchange(FILE_STATES_URL + "/bulk-get-filtered")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get multiple facilities")
+  GetFacilityFileStatesFilteredResponse getFacilityFileStatesFiltered(
+      @Valid @RequestBody GetFacilityFileStatesFilteredRequest request);
 
   @PostExchange(FILE_STATES_URL + "/bulk-add")
   @ApiResponse(responseCode = "200")
@@ -201,4 +208,14 @@ Returns a new file state with the resulting new state.
   AddFacilityFileStateResponse updateReferenceFacility(
       @PathVariable("id") UUID referenceDataId,
       @RequestBody @Valid UpdateReferenceFacilityRequest request);
+
+  @GetExchange(FILE_NUMBER_URL)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+Gets the file number for a facility file state, if it can be determined from its address.
+""")
+  FacilityFileNumberResponse getFacilityFileNumber(
+      @PathVariable("id") UUID fileStateId, @PathVariable("method") String method);
 }

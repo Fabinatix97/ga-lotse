@@ -23,7 +23,7 @@ export function EnumSingleFilter(props: EnumSingleFilterProps) {
     optionValue: string | null,
   ) {
     // I'm not certain why this handler sometimes fires with a null event
-    if (event == null) {
+    if (event === null) {
       return;
     }
     props.onChange(

@@ -39,5 +39,7 @@ export const en = {
     },
 
     lifetimeDoctorNumber: "Please enter a valid lifelong doctor's number.",
+
+    zipCode: "Please enter a valid zip code.",
   },
 } satisfies typeof de;

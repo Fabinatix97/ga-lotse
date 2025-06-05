@@ -1,0 +1,152 @@
+{
+  "common": {
+    "title": "Amtsärztlicher Dienst",
+    "requiredTitle": "*Pflichtfeld",
+    "stepTitle": "Schritt {{currentStepIndex}} von {{totalSteps}}",
+    "errors": {
+      "concurrentAppointment_errorMessage": "Der ausgewählte Termin wurde in der Zwischenzeit schon anderweitig reserviert. Bitte wählen Sie einen anderen freien Termin.",
+      "concurrentAppointment_action": "Termin ändern"
+    }
+  },
+  "concern": {
+    "title": "Anliegen auswählen",
+    "description": "Ihre Terminart finden Sie in dem zugesendeten Auftragsschreiben.",
+    "infoText": {
+      "title": "Schulbezogene Anliegen",
+      "description": "Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung"
+    },
+    "filter": {
+      "category": "Kategorie",
+      "category_all": "Alle"
+    },
+    "fields": {
+      "concern_required": "Pflichtfeld, bitte ausfüllen"
+    }
+  },
+  "appointment": {
+    "title": "Verfügbare Termine",
+    "fields": {
+      "error": {
+        "title": "Fehler beim Laden der Termine",
+        "description": "Bitte laden Sie die Seite neu.",
+        "reload": "Seite neu laden"
+      }
+    },
+    "appointmentPicker": {
+      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung.",
+      "noAppointmentSelected": "Es wurde kein Termin ausgewählt.",
+      "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar.",
+      "tryLater": "Wir schalten in Kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+    },
+    "backToOverview": "Zurück"
+  },
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar"
+  },
+  "documents": {
+    "title": "Erforderliche Unterlagen",
+    "fileField": {
+      "title": "Auftragsschreiben",
+      "required": "Bitte Auftragsschreiben hochladen",
+      "helperText": "Datei als PDF, PNG oder JPG hochladen",
+      "inputSummary_one": "{{count}} Datei ausgewählt",
+      "inputSummary_other": "{{count}} Dateien ausgewählt",
+      "placeholder": "Datei auswählen",
+      "file": "Datei",
+      "size": "Größe",
+      "format": "Format",
+      "delete": "Entfernen",
+      "deleteAll": "Alles entfernen",
+      "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut."
+    }
+  },
+  "affectedPerson": {
+    "title": "Persönliche Daten",
+    "fields": {
+      "salutation": "Anrede",
+      "title": "Titel",
+      "firstName": "Vorname",
+      "firstName_required": "Pflichtfeld, bitte ausfüllen",
+      "lastName": "Nachname",
+      "lastName_required": "Pflichtfeld, bitte ausfüllen",
+      "nameAtBirth": "Geburtsname",
+      "dateOfBirth": "Geburtsdatum",
+      "dateOfBirth_required": "Pflichtfeld, bitte ausfüllen",
+      "contactAddress": {
+        "street": "Straße",
+        "street_required": "Pflichtfeld, bitte ausfüllen",
+        "houseNumber": "Hausnummer",
+        "houseNumber_required": "Pflichtfeld, bitte ausfüllen",
+        "addressAddition": "Adresszusatz",
+        "postalCode": "Postleitzahl",
+        "postalCode_required": "Pflichtfeld, bitte ausfüllen",
+        "city": "Ort",
+        "city_required": "Pflichtfeld, bitte ausfüllen"
+      },
+      "phoneNumbers": "Telefon",
+      "emailAddresses": "E-Mail-Adresse",
+      "emailAddresses_required": "Pflichtfeld, bitte ausfüllen",
+      "confirmOnlineServices": "Ich bestätige, dass ich die Online-Dienste nutzen möchte und die hierzu notwendigen E-Mails erhalten möchte.",
+      "confirmOnlineServices_required": "Bitte bestätigen."
+    }
+  },
+  "overview": {
+    "title": "Übersicht",
+    "goForward": "Weiter",
+    "goBack": "Zurück",
+    "cancel": "Abbrechen",
+    "fields": {
+      "confirmOnlineServices_label": "Onlinedienstleistungen",
+      "confirmOnlineServices_value": "Bestätigungsmail senden",
+      "concernAndDuration_label": "Anliegen, voraussichtliche Termindauer",
+      "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)",
+      "department_label": "Gesundheitsamt",
+      "date_label": "Tag, Datum",
+      "time_label": "Uhrzeit",
+      "time_value": "{{ appointmentStart }} Uhr",
+      "fullName_label": "Name",
+      "dateOfBirth_label": "Geburtsdatum",
+      "emailAddress_label": "E-Mailadresse",
+      "contactAddress_label": "Adresse",
+      "contactAddress_value": "{{ street }} <br> {{ city }} </br>"
+    }
+  },
+  "appointmentInformation": {
+    "title": "Informationen zum Termin",
+    "alertMessage": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns: <br> {{ department }} </br>",
+    "infoText": "Wir prüfen Ihre Anfrage. Nach erfolgreicher Prüfung erhalten Sie eine <t1> Terminbestätigung </t1> per E-Mail. Dort sind alle Informationen zum Termin enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu stornieren.",
+    "closingGreeting": "Mit freundlichen Grüßen <br> Ihr Gesundheitsamt </br> ",
+    "requiredDocuments_header": "Die notwendigen Dokumente, die Sie bitte zum Termin mitbringen sollten, sind:",
+    "requiredDocuments_list": [
+      "Personalausweis / Reisepass",
+      "Ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
+      "Ein Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
+    ]
+  },
+  "confirmation": {
+    "title": "Anliegen amtsärztliches Gutachten",
+    "submit": "Anliegen senden",
+    "goBack": "Zurück",
+    "cancel": "Abbrechen",
+    "fields": {
+      "confirmPrivacyNotice": "Ich akzeptiere den Datenschutzhinweis.",
+      "privacyNotice": "Zum Datenschutzhinweis",
+      "confirmPrivacyNotice_required": "Bitte Zustimmung erteilen um fortzufahren.",
+      "confirmPrivacyPolicy": "Ich akzeptiere die Datenschutzerklärung.",
+      "privacyPolicy": "Zur Datenschutzerklärung",
+      "confirmPrivacyPolicy_required": "Bitte Zustimmung erteilen um fortzufahren."
+    }
+  },
+  "success": {
+    "title": "Anliegen erfolgreich gesendet",
+    "description": "Sie haben Ihr Anliegen erfolgreich übermittelt. Sie erhalten von uns eine Bestätigung per E-Mail mit den nächsten Schritten.",
+    "buttonLabel": "Zur Informations-Seite"
+  }
+}

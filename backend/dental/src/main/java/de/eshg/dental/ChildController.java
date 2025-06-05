@@ -8,6 +8,7 @@ package de.eshg.dental;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.ChildDto;
@@ -15,6 +16,7 @@ import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildForTransitionDto;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildrenForTransitionSortParameters;
+import de.eshg.dental.api.CloseChildRequest;
 import de.eshg.dental.api.CloseChildrenBulkRequest;
 import de.eshg.dental.api.CloseGroupsBulkRequest;
 import de.eshg.dental.api.CreateChildRequest;
@@ -37,6 +39,7 @@ import de.eshg.dental.api.SearchChildrenResponse;
 import de.eshg.dental.api.SyncPersonRequest;
 import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateExaminationRequest;
+import de.eshg.dental.api.UpdateFluoridationConsentBulkRequest;
 import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
@@ -52,6 +55,7 @@ import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,7 +68,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
@@ -195,6 +201,25 @@ public class ChildController {
     return getChildDetails(child);
   }
 
+  @PutMapping("/fluoridation-consent-bulk")
+  @Transactional
+  @Operation(summary = "Updates fluoridation consent in bulk")
+  public void updateFluoridationConsentInBulk(
+      @Valid @RequestBody UpdateFluoridationConsentBulkRequest request) {
+    childService.updateFluoridationConsentInBulk(request);
+  }
+
+  @PutMapping("/{childId}/close")
+  @Transactional
+  @Operation(summary = "Closes the child")
+  public ChildDetailsDto closeChild(
+      @PathVariable("childId") UUID childId, @Valid @RequestBody CloseChildRequest request) {
+    Child child = childService.findByExternalIdForUpdate(childId);
+    ValidationUtil.validateVersion(request.version(), child);
+    childService.closeChildAndFlush(child);
+    return getChildDetails(child);
+  }
+
   private ChildDetailsDto getChildDetails(Child child) {
     List<ChildWithAugmentedData> childAndAllPreviousChildren =
         childService.getChildAndAllPreviousChildren(child);
@@ -255,15 +280,17 @@ public class ChildController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX child list template.")
   public ResponseEntity<Resource> getChildListTemplate() {
-    return FileResponseUtil.getTemplateFileResponse(childListTemplate);
+    return FileResponseUtil.getFileResponseEntity(childListTemplate);
   }
 
   @GetMapping("/institutions/{institutionId}/groups")
   @Transactional(readOnly = true)
   @Operation(summary = "Returns all created groups of an institution")
   public GetInstitutionGroupsResponse getInstitutionGroups(
-      @PathVariable("institutionId") UUID institutionId) {
-    return new GetInstitutionGroupsResponse(childService.getInstitutionGroups(institutionId));
+      @PathVariable("institutionId") UUID institutionId,
+      @RequestParam("openGroupsOnly") boolean openGroupsOnly) {
+    return new GetInstitutionGroupsResponse(
+        childService.getInstitutionGroups(institutionId, openGroupsOnly));
   }
 
   @GetMapping("/institutions/{institutionId}/children")
@@ -356,5 +383,37 @@ public class ChildController {
     List<ChildForTransitionDto> children =
         childService.getChildrenForSchoolYearTransition(institutionId, sortParameters);
     return new GetChildrenForSchoolYearTransitionResponse(children);
+  }
+
+  @GetMapping("/export/{institutionId}")
+  @Transactional
+  @IntentionalWritingTransaction(reason = "Progress entry creation")
+  @Operation(summary = "Exports child data")
+  public ResponseEntity<Resource> exportChildData(
+      @PathVariable("institutionId") UUID institutionId,
+      @RequestParam(value = "groupName", required = false) String groupName,
+      @RequestParam(value = "schoolYear") int schoolYear) {
+    InstitutionContactDto institution =
+        validator.validateInstitutionAndGroupName(institutionId, groupName);
+    Resource resource = childService.createChildDataForExport(institutionId, groupName, schoolYear);
+    String filename = createFileName(institution, groupName);
+    return FileResponseUtil.getFileResponseEntity(resource, filename);
+  }
+
+  private String createFileName(InstitutionContactDto institution, String groupName) {
+    LocalDate currentDate = LocalDate.now(clock);
+    String formattedDate = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+    return switch (institution.category()) {
+      case DAYCARE -> {
+        String daycareName = institution.name().replace(" ", "-");
+        yield groupName == null
+            ? "%s_%s".formatted(formattedDate, daycareName)
+            : "%s_%s_%s".formatted(formattedDate, daycareName, groupName);
+      }
+      case SCHOOL -> "%s_Klasse_%s".formatted(formattedDate, groupName);
+      default ->
+          throw new IllegalStateException("Unexpected contact category: " + institution.category());
+    };
   }
 }

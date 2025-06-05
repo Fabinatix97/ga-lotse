@@ -155,7 +155,10 @@ export function paramValuesToActiveValue(
         const [minValueInclusive, maxValueInclusive] = range
           .split(":")
           .map((t) => parseFloat(t));
-        if (minValueInclusive == null || maxValueInclusive == null) {
+        if (
+          minValueInclusive === undefined ||
+          maxValueInclusive === undefined
+        ) {
           return;
         }
         return {
@@ -226,7 +229,7 @@ export function useSearchParamStateProvider(
   const activeValues = filterDefinitions
     .map((def) => [def, searchParams.getAll(def.key).filter((t) => t)] as const)
     .map(([def, values]) => paramValuesToActiveValue(def, values))
-    .filter((t) => t != null);
+    .filter((t) => t !== undefined);
 
   const setActiveValues = useCallback(
     (newActiveValues: FilterValue[]) => {

@@ -14,7 +14,7 @@ function dateFormatter(locale: string) {
   });
 }
 
-export const FIELD_LABELS_DE = {
+export const APPOINTMENT_PICKER_FIELD_LABELS_DE = {
   requiredAppointment: "Bitte einen Termin auswählen",
   requiredDay: "Bitte einen Tag auswählen",
   monthSelection: "Termin Kalendermonat",

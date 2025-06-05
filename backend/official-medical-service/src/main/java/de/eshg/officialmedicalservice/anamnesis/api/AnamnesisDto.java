@@ -39,20 +39,40 @@ public record AnamnesisDto(
 
     @Schema(name = "FillingPerson")
     public enum FillingPersonDto {
-      EMPLOYEE,
-      AFFECTED_PERSON,
-      LEGAL_GUARDIAN,
+      EMPLOYEE("Mitarbeiter:in"),
+      AFFECTED_PERSON("Person selbst"),
+      LEGAL_GUARDIAN("Erziehungsberechtigte:r"),
       ;
+
+      String germanName;
+
+      FillingPersonDto(String germanName) {
+        this.germanName = germanName;
+      }
+
+      public String getGermanName() {
+        return germanName;
+      }
     }
 
     @Schema(name = "MaritalStatus")
     public enum MaritalStatusDto {
-      UNMARRIED,
-      MARRIED,
-      WIDOWED,
-      DIVORCED,
-      NO_SELECTION,
+      UNMARRIED("Ledig"),
+      MARRIED("Verheiratet"),
+      WIDOWED("Verwitwet"),
+      DIVORCED("Geschieden"),
+      NO_SELECTION("Keine Auswahl"),
       ;
+
+      String germanName;
+
+      MaritalStatusDto(String germanName) {
+        this.germanName = germanName;
+      }
+
+      public String getGermanName() {
+        return germanName;
+      }
     }
   }
 
@@ -301,19 +321,39 @@ public record AnamnesisDto(
 
     @Schema(name = "OpticalAidAnswer")
     public enum OpticalAidAnswerDto {
-      YES_GLASSES,
-      YES_CONTACT_LENSES,
-      NO,
+      YES_GLASSES("Ja, Brille"),
+      YES_CONTACT_LENSES("Ja, Kontaktlinsen"),
+      NO("Nein"),
       ;
+
+      String germanName;
+
+      OpticalAidAnswerDto(String germanName) {
+        this.germanName = germanName;
+      }
+
+      public String getGermanName() {
+        return germanName;
+      }
     }
   }
 
   @Schema(name = "YesNoDontKnowAnswer")
   public enum YesNoDontKnowAnswerDto {
-    YES,
-    NO,
-    DONT_KNOW,
+    YES("Ja"),
+    NO("Nein"),
+    DONT_KNOW("Weiß ich nicht"),
     ;
+
+    String germanName;
+
+    YesNoDontKnowAnswerDto(String germanName) {
+      this.germanName = germanName;
+    }
+
+    public String getGermanName() {
+      return germanName;
+    }
   }
 
   @Schema(name = "SubInfoSegmentWithAnswer")

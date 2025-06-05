@@ -16,17 +16,15 @@
       ],
       "default": "./build/lib/universal.js"
     },
-    "./*": {
+    "./server": {
       "types": [
-        "./build/types/src/*.d.ts"
+        "./build/types/src/server.d.ts"
       ],
-      "default": "./build/lib/*.js"
+      "default": "./build/lib/server.js"
     }
   },
   "dependencies": {
     "@eshg/base-api": "workspace:*",
-    "@eshg/medical-registry-api": "workspace:*",
-    "@eshg/official-medical-service-api": "workspace:*",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",
     "@mui/material": "catalog:joy",

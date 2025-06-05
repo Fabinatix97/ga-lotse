@@ -10,7 +10,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.apache.commons:commons-lang3'
-    implementation 'com.google.guava:guava'
+    implementation 'com.google.guava:guava:latest.release'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:latest.release'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 

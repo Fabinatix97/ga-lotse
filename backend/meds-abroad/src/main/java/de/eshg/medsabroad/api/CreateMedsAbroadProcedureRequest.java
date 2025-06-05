@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.Instant;
 
 public record CreateMedsAbroadProcedureRequest(
-    @NotNull @Valid PersonDto person,
+    @NotNull @Valid CreatePersonDto person,
     @Schema(description = "The start date and time of the appointment.") Instant appointmentStart,
     @Schema(description = "Duration of the appointment in minutes.", example = "30") @Positive
         Integer durationInMinutes) {}

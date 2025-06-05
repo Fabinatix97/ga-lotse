@@ -6,6 +6,7 @@
 import {
   Add,
   ArrowDropDownOutlined,
+  FileDownloadOutlined,
   FileUploadOutlined,
 } from "@mui/icons-material";
 import { Button, Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
@@ -15,6 +16,8 @@ import { NavigationLink } from "@eshg/lib-portal";
 import { routes } from "../../../../config/routes";
 import { useCreateChildSidebar } from "../createChild/CreateChildSidebar";
 import { useImportChildrenSidebar } from "../import/ImportChildrenSidebar";
+
+import { useExportChildDataSidebar } from "./ExportChildDataSidebar";
 
 export function ImportChildrenButton() {
   const importChildrenSidebar = useImportChildrenSidebar();
@@ -27,6 +30,21 @@ export function ImportChildrenButton() {
       onClick={importChildrenSidebar.open}
     >
       Daten importieren
+    </Button>
+  );
+}
+
+export function ExportChildDataButton() {
+  const exportChildData = useExportChildDataSidebar();
+
+  return (
+    <Button
+      size="md"
+      variant="outlined"
+      startDecorator={<FileDownloadOutlined />}
+      onClick={exportChildData.open}
+    >
+      Daten exportieren
     </Button>
   );
 }

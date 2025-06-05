@@ -22,7 +22,7 @@ import { useIsFormDisabled } from "../form/DisabledFormContext";
 
 import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
 import { SelectOption, SelectOptions } from "./SelectOptions";
-import { StyledInputProps } from "./types";
+import { FieldVariantProps } from "./types";
 
 function toJoyUiSelectValue<TMultiple extends boolean>(
   value: string | string[],
@@ -45,7 +45,7 @@ export interface SelectFieldProps<
   TOptionLabel extends string | ReactNode = string,
 > extends FieldProps<SelectFieldValue<TMultiple>>,
     FieldComponentProps,
-    StyledInputProps {
+    FieldVariantProps {
   options: SelectOption<string, TOptionLabel>[];
   multiple?: TMultiple;
   placeholder?: string;

@@ -27,7 +27,7 @@ To properly configure the API clients for usage with TanStack Query, we define r
 [,ts]
 ----
 import { AppointmentBlockApi, Configuration, SchoolEntryApi } from "@eshg/school-entry-api";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+import { useApiConfiguration } from "@eshg/lib-portal";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration("PUBLIC_SCHOOL_ENTRY_BACKEND_URL");
@@ -61,7 +61,7 @@ To avoid duplicate query keys across business modules, each business module defi
 .$PATH_TO_MODULE/api/queries/apiQueryKeys.ts
 [,ts]
 ----
-import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { queryKeyFactory } from "@eshg/lib-portal";
 
 const apiQueryKey = queryKeyFactory(["schoolEntry"]);
 
@@ -161,7 +161,7 @@ An example is retrieving search results while typing in an autocomplete field.
 .$PATH_TO_MODULE/api/queries/procedureApi.ts
 [,ts]
 ----
-import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+import { useHandledBackgroundQuery } from "@eshg/lib-portal";
 
 export function useSearchPersonUnsuspended(
   request: SearchPersonRequest,
@@ -339,7 +339,7 @@ In addition, a `gcTime` and `staleTime` needs to be configured for the query. Al
 
 [,ts]
 ----
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
 
 function useGetConfig() {
   const configApi = useConfigApi();
@@ -566,7 +566,7 @@ export default function Loading() {
 ----
 "use client";
 
-import { NextErrorBoundary } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import { NextErrorBoundary } from "@eshg/lib-portal";
 
 export default NextErrorBoundary;
 ----

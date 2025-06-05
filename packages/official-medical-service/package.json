@@ -1,0 +1,47 @@
+{
+  "name": "@eshg/official-medical-service",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": [
+        "./build/types/src/index.d.ts"
+      ],
+      "import": "./build/lib/index.js"
+    }
+  },
+  "dependencies": {
+    "@eshg/base-api": "workspace:*",
+    "@eshg/lib-portal": "workspace:*",
+    "@eshg/official-medical-service-api": "workspace:*",
+    "@mui/icons-material": "catalog:joy",
+    "@mui/joy": "catalog:joy",
+    "formik": "catalog:common",
+    "react": "catalog:react",
+    "react-i18next": "catalog:i18next",
+    "remeda": "catalog:common"
+  },
+  "devDependencies": {
+    "@eslint/compat": "catalog:eslint",
+    "@eslint/eslintrc": "catalog:eslint",
+    "@trivago/prettier-plugin-sort-imports": "catalog:prettier",
+    "@types/node": "catalog:common",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react": "catalog:vitest",
+    "@vitest/coverage-istanbul": "catalog:vitest",
+    "eslint": "catalog:eslint",
+    "eslint-config-next": "catalog:next",
+    "eslint-config-prettier": "catalog:eslint",
+    "eslint-plugin-import": "catalog:eslint",
+    "eslint-plugin-promise": "catalog:eslint",
+    "eslint-plugin-unused-imports": "catalog:eslint",
+    "prettier": "catalog:prettier",
+    "tsup": "catalog:common",
+    "typescript": "catalog:common",
+    "typescript-eslint": "catalog:eslint",
+    "vite-tsconfig-paths": "catalog:vitest",
+    "vitest": "catalog:vitest"
+  }
+}

@@ -168,6 +168,11 @@ export { SearchContactField } from "./features/contacts/components/SearchContact
 export { SelectContactField } from "./features/contacts/components/SelectContactField";
 export { SelectMultipleContactsField } from "./features/contacts/components/SelectMultipleContactsField";
 export { CONTACT_CATEGORY_NAMES } from "./features/contacts/translations";
+export {
+  formatSubCategory,
+  getSubCategories,
+  hasSubCategories,
+} from "./features/contacts/utils/categories";
 export { formatInstitutionNameWithCategoryShort } from "./features/contacts/utils/formatters";
 
 export {
@@ -191,6 +196,7 @@ export {
 export {
   type SidebarWithFormRefProps,
   type UseSidebarWithFormRefResult,
+  type UseSidebarWithFormRefOptions,
   useSidebarWithFormRef,
 } from "./features/drawer/hooks/useSidebarWithFormRef";
 export { useSidenavDrawer } from "./features/drawer/hooks/useSidenavDrawer";
@@ -199,6 +205,8 @@ export type {
   DrawerProps,
 } from "./features/drawer/types/drawer";
 export type { SidebarFormHandle } from "./features/drawer/types/sidebar";
+
+export { type UseStepperArgs, useStepper } from "./hooks/useStepper";
 
 export { defaultDraftValueDateComparisonFilter } from "./features/filters/components/filterFields/DateComparisonFilter";
 export { EnumFilter } from "./features/filters/components/filterFields/EnumFilter";
@@ -375,6 +383,7 @@ export type {
 export { getSortDirection, getSortKey } from "./features/table/utils/sorting";
 
 export { useConfirmationDialog } from "./hooks/useConfirmationDialog";
+export { useConfirmLeaveDirtyFormEffect } from "./hooks/useConfirmLeaveDirtyFormEffect";
 export { useHeaderHeights } from "./hooks/useHeaderHeights";
 export { useIsOffline } from "./hooks/useIsOffline";
 export {
@@ -412,6 +421,34 @@ export {
   formatList,
   formatSchoolYear,
 } from "./utils/formatters";
+
+export {
+  ProceduresTableControls,
+  type TableControlName,
+  reduceActiveTableControl,
+} from "./components/tableControls/ProceduresTableControls";
+
+export { RadioSheets, RadioSheetOption } from "./components/RadioSheets";
+
+export {
+  validateTodayOrFutureDate,
+  validateURL,
+  validateNonNegativeInteger,
+  validatePositiveNumberWithAtMostTwoDecimalDigits,
+  validateNonNegativeNumberWithAtMostTwoDecimalDigits,
+  validateFieldArray,
+  validateMatches,
+  validateBatchId,
+  validateRequiredBatchId,
+  APPOINTMENT_DURATION_MIN_LENGTH,
+  APPOINTMENT_DURATION_MAX_LENGTH,
+  validateAppointmentDuration,
+} from "./helpers/validators";
+
+export { isBusinessModule, isInteger } from "./helpers/guards";
+
+export { CustomAppointmentQuickButtons } from "./components/CustomAppointmentQuickButtons";
+
 export {
   buildOptionFromUser,
   buildOptionsFromUsers,

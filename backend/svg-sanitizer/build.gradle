@@ -1,0 +1,123 @@
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerWaitContainer
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+plugins {
+    id "eshg.java-lib"
+    id "eshg.image-push-sign"
+    id "com.bmuschko.docker-remote-api"
+    id "docker-compose"
+    id "java-test-fixtures"
+    id "com.trileuco.dependency-track-gradle"
+}
+
+dependencies {
+    api 'org.springframework:spring-web'
+
+    testImplementation project(':test-commons')
+    testImplementation 'org.testcontainers:testcontainers'
+    testImplementation 'de.cronn:validation-file-assertions:latest.release'
+
+    testFixturesImplementation 'xom:xom:latest.release'
+    testFixturesImplementation 'de.cronn:validation-file-assertions:latest.release'
+}
+
+def dockerBuildContext = file(layout.buildDirectory.dir('docker'))
+
+tasks.register('copyResourcesToBuildContext', Copy) {
+    from layout.projectDirectory
+    include('Dockerfile')
+    include('resources/**')
+    into dockerBuildContext
+}
+
+tasks.register('buildDockerImage', DockerBuildImage) {
+    dependsOn 'copyResourcesToBuildContext'
+    inputDir.set(dockerBuildContext)
+    dockerFile.set(inputDir.file("Dockerfile"))
+
+    if (project.hasProperty("tagName")) {
+        images.add(getImageNameWithTag())
+    } else {
+        images.add(getImageNameWithLatestTag())
+    }
+}
+
+tasks.named('composeBuild') {
+    dependsOn 'buildDockerImage'
+}
+
+tasks.named("composeUp").configure {
+    dependsOn 'composeBuild'
+}
+
+test {
+    dependsOn 'composeBuild'
+}
+
+dockerCompose {
+    projectName = rootProject.name
+    startedServices = ['svg-sanitizer']
+}
+
+def syftImage = (System.getenv('CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX') ?: 'docker.io') + '/anchore/syft:v1.26.1@sha256:a29957b223c67ee0503018d9228e74495903b0c6290f9bc6d74d1501680fef85'
+
+tasks.register('pullSyftImage', DockerPullImage) {
+    image = syftImage
+}
+
+def reportsDir = layout.buildDirectory.dir("reports").get()
+
+tasks.register('createSyftContainer', DockerCreateContainer) {
+    dependsOn pullSyftImage
+    targetImageId pullSyftImage.image
+
+    if (!DefaultNativePlatform.currentOperatingSystem.windows) {
+        def uid = ["id", "-u"].execute().text.trim()
+        def gid = ["id", "-g"].execute().text.trim()
+        user = "${uid}:${gid}"
+    }
+
+    hostConfig.autoRemove = true
+    hostConfig.binds.put("${layout.projectDirectory.dir("resources").file("package-lock.json")}", "/package-lock.json")
+
+    hostConfig.binds.put("${reportsDir}", "/output")
+    cmd = [
+        "file:/package-lock.json",
+        "--output",
+        "cyclonedx=/output/bom.xml"
+    ]
+
+    doFirst {
+        reportsDir.asFile.mkdirs()
+    }
+}
+
+tasks.register('startSyftContainer', DockerStartContainer) {
+    dependsOn createSyftContainer
+    targetContainerId createSyftContainer.containerId
+}
+
+tasks.register('cyclonedxBom', DockerWaitContainer) {
+    dependsOn startSyftContainer
+    targetContainerId createSyftContainer.containerId
+}
+
+dependencyTrack {
+    host = "${project.findProperty('dependency-track-api-url')}"
+    apiKey = "${project.findProperty('dependency-track-api-key')}"
+    projectId = "${project.findProperty('dependency-track-project-id-svg-sanitizer')}"
+}
+
+tasks.named('dependencyTrack').configure {
+    dependsOn cyclonedxBom
+
+    doFirst {
+        assert project.hasProperty('dependency-track-api-url')
+        assert project.hasProperty('dependency-track-api-key')
+        assert project.hasProperty('dependency-track-project-id-svg-sanitizer')
+    }
+}

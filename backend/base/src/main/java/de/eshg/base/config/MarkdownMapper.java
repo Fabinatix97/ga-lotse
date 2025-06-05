@@ -5,97 +5,70 @@
 
 package de.eshg.base.config;
 
-import de.eshg.base.config.api.CitizenAndEmployeeMarkdownInfo;
-import de.eshg.base.config.api.InternationalMarkdownInfo;
-import de.eshg.base.config.api.MarkdownInfo;
+import de.eshg.base.config.api.CitizenAndEmployeeMarkdownInfoDto;
 import de.eshg.base.department.CitizenPortalMarkdownName;
 import de.eshg.base.department.EmployeePortalMarkdownName;
-import de.eshg.base.department.LanguageDto;
-import de.eshg.base.department.MarkdownName;
-import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.config.api.MultiLangDocumentDto;
+import de.eshg.config.mapper.MultiLangDocumentMapper;
 
 public class MarkdownMapper {
 
   private MarkdownMapper() {}
 
-  public static CitizenAndEmployeeMarkdownInfo mapToAccessibilityInfo(
+  public static CitizenAndEmployeeMarkdownInfoDto mapToAccessibilityInfo(
       DepartmentConfiguration config) {
     if (config.isAccessibilityStatementMarkdownsInitialized()) {
-      return new CitizenAndEmployeeMarkdownInfo(
-          mapToInternationalMarkdownInfo(
+      return new CitizenAndEmployeeMarkdownInfoDto(
+          MultiLangDocumentMapper.mapToDto(
               config.getCitizenPortalAccessibilityStatementMarkdown(),
-              CitizenPortalMarkdownName.ACCESSIBILITY),
-          mapToInternationalMarkdownInfo(
+              CitizenPortalMarkdownName.ACCESSIBILITY.getFileName()),
+          MultiLangDocumentMapper.mapToDto(
               config.getEmployeePortalAccessibilityStatementMarkdown(),
-              EmployeePortalMarkdownName.ACCESSIBILITY));
+              EmployeePortalMarkdownName.ACCESSIBILITY.getFileName()));
     } else {
       return null;
     }
   }
 
-  public static InternationalMarkdownInfo mapToAcknowledgementInfo(DepartmentConfiguration config) {
+  public static MultiLangDocumentDto mapToAcknowledgementInfo(DepartmentConfiguration config) {
     if (config.isAcknowledgementsMarkdownsInitialized()) {
-      return mapToInternationalMarkdownInfo(
-          config.getAcknowledgementsMarkdown(), CitizenPortalMarkdownName.ACKNOWLEDGEMENTS);
+      return MultiLangDocumentMapper.mapToDto(
+          config.getAcknowledgementsMarkdown(),
+          CitizenPortalMarkdownName.ACKNOWLEDGEMENTS.getFileName());
     } else {
       return null;
     }
   }
 
-  public static InternationalMarkdownInfo mapToContactInfo(DepartmentConfiguration config) {
+  public static MultiLangDocumentDto mapToContactInfo(DepartmentConfiguration config) {
     if (config.isContactMarkdownsInitialized()) {
-      return mapToInternationalMarkdownInfo(
-          config.getContactMarkdown(), EmployeePortalMarkdownName.CONTACT);
+      return MultiLangDocumentMapper.mapToDto(
+          config.getContactMarkdown(), EmployeePortalMarkdownName.CONTACT.getFileName());
     } else {
       return null;
     }
   }
 
-  public static InternationalMarkdownInfo mapToImprintInfo(DepartmentConfiguration config) {
+  public static MultiLangDocumentDto mapToImprintInfo(DepartmentConfiguration config) {
     if (config.isImprintMarkdownsInitialized()) {
-      return mapToInternationalMarkdownInfo(
-          config.getImprintMarkdown(), CitizenPortalMarkdownName.IMPRINT);
+      return MultiLangDocumentMapper.mapToDto(
+          config.getImprintMarkdown(), CitizenPortalMarkdownName.IMPRINT.getFileName());
     } else {
       return null;
     }
   }
 
-  public static CitizenAndEmployeeMarkdownInfo mapToPrivacyInfo(DepartmentConfiguration config) {
+  public static CitizenAndEmployeeMarkdownInfoDto mapToPrivacyInfo(DepartmentConfiguration config) {
     if (config.isPrivacyPolicyMarkdownsInitialized()) {
-      return new CitizenAndEmployeeMarkdownInfo(
-          mapToInternationalMarkdownInfo(
-              config.getCitizenPortalPrivacyPolicyMarkdown(), CitizenPortalMarkdownName.PRIVACY),
-          mapToInternationalMarkdownInfo(
-              config.getEmployeePortalPrivacyPolicyMarkdown(), EmployeePortalMarkdownName.PRIVACY));
+      return new CitizenAndEmployeeMarkdownInfoDto(
+          MultiLangDocumentMapper.mapToDto(
+              config.getCitizenPortalPrivacyPolicyMarkdown(),
+              CitizenPortalMarkdownName.PRIVACY.getFileName()),
+          MultiLangDocumentMapper.mapToDto(
+              config.getEmployeePortalPrivacyPolicyMarkdown(),
+              EmployeePortalMarkdownName.PRIVACY.getFileName()));
     } else {
       return null;
-    }
-  }
-
-  public static String mapToFileName(MarkdownName markdownName, LanguageDto language) {
-    return markdownName.fileNameRoot() + language.fileNameSuffix() + ".md";
-  }
-
-  private static InternationalMarkdownInfo mapToInternationalMarkdownInfo(
-      MultiLangDocument document, MarkdownName markdownName) {
-    return new InternationalMarkdownInfo(
-        mapToGermanMarkdownInfo(document, markdownName),
-        mapToEnglishMarkdownInfo(document, markdownName));
-  }
-
-  private static MarkdownInfo mapToGermanMarkdownInfo(
-      MultiLangDocument document, MarkdownName markdownName) {
-    return new MarkdownInfo(
-        mapToFileName(markdownName, LanguageDto.GERMAN), document.getDeFileSizeBytes());
-  }
-
-  private static MarkdownInfo mapToEnglishMarkdownInfo(
-      MultiLangDocument document, MarkdownName markdownName) {
-    if (document.getEnFileSizeBytes() == null) {
-      return null;
-    } else {
-      return new MarkdownInfo(
-          mapToFileName(markdownName, LanguageDto.ENGLISH), document.getEnFileSizeBytes());
     }
   }
 }

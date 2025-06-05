@@ -5,7 +5,6 @@
 
 package de.eshg.schoolentry.testhelper;
 
-import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.schoolentry.population.CreateLabelsTask;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
@@ -17,18 +16,14 @@ import org.springframework.stereotype.Component;
 @Order(50)
 public class SchoolEntryTestHelperResetAction implements TestHelperServiceResetAction {
 
-  private final CreateAppointmentTypeTask createAppointmentTypeTask;
   private final CreateLabelsTask createLabelsTask;
 
-  public SchoolEntryTestHelperResetAction(
-      CreateAppointmentTypeTask createAppointmentTypeTask, CreateLabelsTask createLabelsTask) {
-    this.createAppointmentTypeTask = createAppointmentTypeTask;
+  public SchoolEntryTestHelperResetAction(CreateLabelsTask createLabelsTask) {
     this.createLabelsTask = createLabelsTask;
   }
 
   @Override
   public void reset() {
-    createAppointmentTypeTask.createAppointmentTypes();
     createLabelsTask.createLabels();
   }
 }

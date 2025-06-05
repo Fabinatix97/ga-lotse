@@ -6,11 +6,4 @@
 package de.eshg.base.street;
 
 public record AdministrativeData(
-    String localDistrict,
-    String districtName,
-    String cityDistrict,
-    String cityDistrictPrefecture,
-    String arbitratorsDistrict,
-    String policeStation,
-    String postalCode,
-    String municipalityKey) {}
+    String streetNumber, String districtName, String cityDistrict, String municipalityKey) {}

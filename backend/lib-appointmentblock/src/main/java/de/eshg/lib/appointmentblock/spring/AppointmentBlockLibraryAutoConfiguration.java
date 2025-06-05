@@ -13,7 +13,6 @@ import de.eshg.lib.appointmentblock.AppointmentTypeController;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
 import de.eshg.lib.appointmentblock.contact.AppointmentBlockLibraryContactsMergedHandler;
-import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -37,7 +36,6 @@ import org.springframework.context.annotation.Import;
   AppointmentTypeController.class,
   AppointmentTypeService.class,
   CalendarClient.class,
-  CreateAppointmentTypeTask.class,
   AppointmentBlockGroupsPopulator.class,
   AppointmentBlockLibraryContactsMergedHandler.class
 })

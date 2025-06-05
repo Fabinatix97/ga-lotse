@@ -7,6 +7,7 @@ import {
   ApiCreateChildRequest,
   ApiImportStatistics,
   ImportXlsxRequest,
+  UpdateFluoridationConsentInBulkRequest,
 } from "@eshg/dental-api";
 import { parseImportResult } from "@eshg/lib-employee-portal";
 import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
@@ -32,5 +33,20 @@ export function useImportChildren() {
       childApi
         .importXlsxRaw(request)
         .then(parseImportResult<ApiImportStatistics>),
+  });
+}
+
+export function useUpdateFluoridationConsentInBulk() {
+  const { childApi } = useDentalApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: (request: UpdateFluoridationConsentInBulkRequest) =>
+      childApi.updateFluoridationConsentInBulkRaw(request),
+    onSuccess: () => {
+      snackbar.confirmation(
+        "Fluoridierungseinverständis erfolgreich gespeichert.",
+      );
+    },
   });
 }

@@ -3,13 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Grid, Stack } from "@mui/joy";
+import { Button, Grid, Stack } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { ContentPanel, PageGrid } from "@eshg/lib-employee-portal";
+import {
+  ContentPanel,
+  PageGrid,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { DisabledFormProvider, DynamicPageProps } from "@eshg/lib-portal";
 
 import { useDentalApi } from "../../../contexts/dental";
+import { useCloseChild } from "../api/mutations/details";
 import { getChildDetailsQuery } from "../api/queries/details";
 import { AdditionalInformationDetailsSection } from "../components/childDetails/AdditionalInformationDetailsSection";
 import { ChildDetailsSection } from "../components/childDetails/ChildDetailsSection";
@@ -27,6 +32,12 @@ export function DentalChildDetailsPage(
   const { data: child } = useSuspenseQuery(
     getChildDetailsQuery(childApi, childId),
   );
+  const { openConfirmationDialog } = useConfirmationDialog();
+  const closeChild = useCloseChild(childId);
+
+  async function handleCloseChild() {
+    await closeChild.mutateAsync({ version: child.version });
+  }
 
   return (
     <DisabledFormProvider disabled={child.isClosed}>
@@ -44,9 +55,29 @@ export function DentalChildDetailsPage(
           </Stack>
         </Grid>
         <Grid xs={4}>
-          <ContentPanel>
-            <AdditionalInformationDetailsSection child={child} />
-          </ContentPanel>
+          <Stack spacing={SPACING}>
+            <ContentPanel>
+              <AdditionalInformationDetailsSection child={child} />
+            </ContentPanel>
+            {!child.isClosed && (
+              <ContentPanel>
+                <Button
+                  onClick={() =>
+                    openConfirmationDialog({
+                      title: "Vorgang für Kind abschließen",
+                      description:
+                        "Für dieses Kind sollen keine weiteren Untersuchungen und Prophylaxen mehr dokumentiert werden." +
+                        "\nDiese Aktion kann nicht mehr rückgängig gemacht werden.",
+                      confirmLabel: "Abschließen",
+                      onConfirm: () => handleCloseChild(),
+                    })
+                  }
+                >
+                  Vorgang für Kind abschließen
+                </Button>
+              </ContentPanel>
+            )}
+          </Stack>
         </Grid>
       </PageGrid>
     </DisabledFormProvider>

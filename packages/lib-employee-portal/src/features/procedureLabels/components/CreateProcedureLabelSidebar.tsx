@@ -13,8 +13,11 @@ import { FormButtonBar } from "../../../components/form/FormButtonBar";
 import { SidebarActions } from "../../drawer/components/SidebarActions";
 import { SidebarContent } from "../../drawer/components/SidebarContent";
 import { SidebarForm } from "../../drawer/components/SidebarForm";
-import { UseSidebarResult, useSidebar } from "../../drawer/hooks/useSidebar";
-import { DrawerProps } from "../../drawer/types/drawer";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "../../drawer/hooks/useSidebarWithFormRef";
 import { useCreateProcedureLabel } from "../api/mutations";
 import {
   CreateProcedureLabelRequest,
@@ -26,8 +29,8 @@ import {
   ProcedureLabelValues,
 } from "./ProcedureLabelFormFields";
 
-export function useCreateProcedureLabelSidebar(): UseSidebarResult<CreateProcedureLabelSidebarProps> {
-  return useSidebar({
+export function useCreateProcedureLabelSidebar(): UseSidebarWithFormRefResult<CreateProcedureLabelSidebarProps> {
+  return useSidebarWithFormRef({
     component: CreateProcedureLabelSidebar,
   });
 }
@@ -37,7 +40,7 @@ const INITIAL_VALUES: ProcedureLabelValues = {
   description: "",
 };
 
-interface CreateProcedureLabelSidebarProps extends DrawerProps {
+interface CreateProcedureLabelSidebarProps extends SidebarWithFormRefProps {
   labelApi: ProcedureLabelClient;
 }
 
@@ -46,14 +49,14 @@ function CreateProcedureLabelSidebar(props: CreateProcedureLabelSidebarProps) {
 
   async function handleSubmit(data: ProcedureLabelValues) {
     await createProcedureLabel.mutateAsync(mapToRequest(data), {
-      onSuccess: () => props.onClose(),
+      onSuccess: () => props.onClose(true),
     });
   }
 
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {({ isSubmitting }) => (
-        <SidebarForm>
+        <SidebarForm ref={props.formRef}>
           <SidebarContent title="Kennung hinzufügen">
             <ProcedureLabelFormFields />
           </SidebarContent>
@@ -62,7 +65,7 @@ function CreateProcedureLabelSidebar(props: CreateProcedureLabelSidebarProps) {
             <FormButtonBar
               submitLabel="Hinzufügen"
               submitting={isSubmitting}
-              onCancel={props.onClose}
+              onCancel={() => props.onClose()}
             />
           </SidebarActions>
         </SidebarForm>

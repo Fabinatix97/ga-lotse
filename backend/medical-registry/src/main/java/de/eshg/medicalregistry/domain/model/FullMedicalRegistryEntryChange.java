@@ -9,7 +9,6 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
@@ -28,10 +27,6 @@ public non-sealed class FullMedicalRegistryEntryChange extends MedicalRegistryEn
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private ProfessionInformation professionInformation;
 
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = false)
-  private boolean employeesEmployed;
-
   @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
@@ -46,14 +41,6 @@ public non-sealed class FullMedicalRegistryEntryChange extends MedicalRegistryEn
   @Override
   public TypeOfChange getTypeOfChange() {
     return typeOfFullChange.getTypeOfChange();
-  }
-
-  public boolean isEmployeesEmployed() {
-    return employeesEmployed;
-  }
-
-  public void setEmployeesEmployed(boolean employeesEmployed) {
-    this.employeesEmployed = employeesEmployed;
   }
 
   public ProfessionInformation getProfessionInformation() {

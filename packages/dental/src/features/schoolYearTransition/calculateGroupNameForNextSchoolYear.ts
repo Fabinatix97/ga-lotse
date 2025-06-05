@@ -5,7 +5,7 @@
 
 export function calculateGroupNameForNextSchoolYear(groupName: string) {
   const digits = groupName.replace(/\D/g, "");
-  if (digits.length != 1) {
+  if (digits.length !== 1) {
     return "";
   }
 

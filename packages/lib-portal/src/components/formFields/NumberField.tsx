@@ -12,12 +12,12 @@ import { FieldProps, OptionalFieldValue } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
 import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
-import { StyledInputProps } from "./types";
+import { FieldVariantProps } from "./types";
 
 export interface NumberFieldProps
   extends FieldProps<OptionalFieldValue<number>>,
     FieldComponentProps,
-    StyledInputProps {
+    FieldVariantProps {
   input?: (props: InputProps) => ReactNode;
   sx?: SxProps;
   fieldSx?: SxProps;

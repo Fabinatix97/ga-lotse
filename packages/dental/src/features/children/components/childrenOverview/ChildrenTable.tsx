@@ -29,6 +29,8 @@ import {
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
   usePersonSearch,
+  useRowSelection,
+  useSyncRowSelection,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { formatDate, useToggleableState } from "@eshg/lib-portal";
@@ -42,8 +44,10 @@ import {
   ChildrenFilterSettings,
   ChildrenFilters,
 } from "./ChildrenFilterSettings";
+import { ChildrenTableTitle } from "./ChildrenTableTitle";
 import {
   CreateChildButton,
+  ExportChildDataButton,
   ImportChildrenButton,
   SchoolYearTransitionButton,
 } from "./tableButtons";
@@ -119,6 +123,16 @@ export function ChildrenTable() {
     clearFilterValues();
     personSearch.setValues(formValues);
   }
+  const { rowSelection, rowSelectionProps } = useRowSelection<Child>({
+    toggleSelectProps: {
+      ariaLabelSelectRow: "Kind auswählen",
+      ariaLabelDeselectRow: "Kind abwählen",
+      ariaLabelSelectAllRows: "Alle Kinder auswählen",
+      ariaLabelDeselectAllRows: "Alle Kinder abwählen",
+    },
+  });
+
+  useSyncRowSelection(rowSelectionProps, children.data.elements);
 
   return (
     <TablePage
@@ -142,6 +156,7 @@ export function ChildrenTable() {
           right={[
             <CreateChildButton key="createChild" />,
             <ImportChildrenButton key="importChildren" />,
+            <ExportChildDataButton key="exportChildData" />,
             <SchoolYearTransitionButton key="schoolYearTransition" />,
           ]}
           alignItems="flex-end"
@@ -172,6 +187,12 @@ export function ChildrenTable() {
       data-testid="childrenTable"
     >
       <TableSheet
+        title={
+          <ChildrenTableTitle
+            childrenData={children.data.elements}
+            rowSelection={rowSelection}
+          />
+        }
         loading={children.isFetching}
         footer={
           <Pagination
@@ -183,6 +204,7 @@ export function ChildrenTable() {
         <DataTable
           data={children.data.elements}
           columns={COLUMNS}
+          rowSelectionProps={rowSelectionProps}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           minWidth={1200}

@@ -308,9 +308,6 @@ public enum MedicalRegistryColumn implements XlsxColumn {
           MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getHealthInsuranceAuthorization)),
-  EMPLOYEES_EMPLOYED(
-      "Beschäftigung von Mitarbeitern",
-      Mapping.of(MedicalRegistryRow.class, MedicalRegistryRow::getEmployeesEmployed)),
   STATUS(STATUS_COLUMN_HEADER, Necessity.ADD_IF_MISSING, STATUS_COLUMN_HEADER_WIDTH),
   PROCEDURE_ID(PROCEDURE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH);
 

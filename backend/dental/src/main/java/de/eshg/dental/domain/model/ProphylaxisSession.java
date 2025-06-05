@@ -44,7 +44,6 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
 
   @DataSensitivity(PSEUDONYMIZED)
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  @Column(nullable = false)
   private ProphylaxisType type;
 
   @DataSensitivity(PSEUDONYMIZED)

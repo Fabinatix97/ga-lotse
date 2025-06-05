@@ -38,7 +38,7 @@ export function useDragAndDrop({
       ev.preventDefault();
       const firstItem = firstFile(ev.dataTransfer.items) ?? null;
       const error = validateType(firstItem);
-      if (firstItem == null || error != null) {
+      if (firstItem === null || error !== undefined) {
         setDropState("no-drop");
         ev.dataTransfer.dropEffect = "none";
         ev.dataTransfer.effectAllowed = "none";

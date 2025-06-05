@@ -17,6 +17,7 @@ public final class PersonTypeMapper {
       case PATIENT -> PersonTypeDto.PATIENT;
       case PARENT -> PersonTypeDto.PARENT;
       case PROFESSIONAL -> PersonTypeDto.PROFESSIONAL;
+      case EMPLOYEE -> PersonTypeDto.EMPLOYEE;
     };
   }
 }

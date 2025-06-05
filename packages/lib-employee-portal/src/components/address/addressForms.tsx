@@ -21,10 +21,10 @@ import {
   createFieldNameMapper,
   useValidateLength,
   validatePipe,
+  validateZipCode,
 } from "@eshg/lib-portal";
 
 import { BaseAddressType } from "../../api/models/address";
-import { validateZipCode } from "../../utils/validators";
 import { CountryField } from "../formFields/CountryField";
 
 import { StreetField } from "./StreetField";

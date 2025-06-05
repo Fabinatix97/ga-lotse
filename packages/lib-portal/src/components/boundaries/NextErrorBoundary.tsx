@@ -12,7 +12,7 @@ export interface NextErrorBoundaryProps {
   reset: () => void;
 }
 
-export interface NextError extends Error {
+interface NextError extends Error {
   digest?: string;
 }
 

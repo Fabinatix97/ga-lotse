@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public record GetAppointmentBlockGroupDto(
             description = "Id of the AppointmentBlockGroup.",
             example = "a765534d-760a-417d-8639-5e2fd59246e2")
         UUID id,
-    @NotNull AppointmentTypeDto type,
+    @NotNull @Size(min = 1) List<AppointmentTypeDto> types,
     @NotNull @Min(1) @Max(10) int parallelExaminations,
     @Valid LocationDto location,
     @Valid @NotNull @NotEmpty List<GetAppointmentBlockDto> appointmentBlocks) {}

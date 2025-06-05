@@ -1,0 +1,49 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { ApiUserRole } from "@eshg/base-api";
+import {
+  MainContentLayout,
+  RestrictedPage,
+  StickyToolbarLayout,
+  Toolbar,
+} from "@eshg/lib-employee-portal";
+import { PortalError, PortalErrorCode } from "@eshg/lib-portal";
+
+import { AuditlogAccessibleTableView } from "@/lib/auditlog/components/AuditlogAccessibleTableView";
+import { AuditlogCreatePasswordView } from "@/lib/auditlog/components/AuditlogCreatePasswordView";
+import { useGetEmployeePrivateUserKey } from "@/lib/baseModule/api/queries/users";
+
+export default function AuditlogPage() {
+  return (
+    <StickyToolbarLayout toolbar={<Toolbar title="Auditlog" />}>
+      <MainContentLayout fullViewportHeight>
+        <RestrictedPage requiredUserRole={ApiUserRole.AuditlogDecryptAndAccess}>
+          <AuditlogView />
+        </RestrictedPage>
+      </MainContentLayout>
+    </StickyToolbarLayout>
+  );
+}
+
+function AuditlogView() {
+  const { data: response } = useGetEmployeePrivateUserKey();
+  function isPortalErrorNotFound() {
+    return (
+      response instanceof PortalError &&
+      response.errorCode === PortalErrorCode.NotFound
+    );
+  }
+
+  if (isPortalErrorNotFound()) {
+    return <AuditlogCreatePasswordView />;
+  }
+
+  return (
+    <AuditlogAccessibleTableView encryptedPrivateKey={response as string[]} />
+  );
+}

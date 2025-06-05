@@ -45,7 +45,7 @@ public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours
   @Transactional
   public void updateOpeningHours(List<String> de, List<String> en) {
     O config = getConfig();
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "openingHours",
         getRelevantFieldsForLogging(config.getDe(), config.getEn()),
         getRelevantFieldsForLogging(de, en));
@@ -74,7 +74,7 @@ public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(
         ConfigurationEndpoint.OPENING_HOURS.name(), toConfigurationStatus(getConfig()));
   }

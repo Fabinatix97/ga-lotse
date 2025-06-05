@@ -21,6 +21,7 @@ dependencies {
     implementation project(':lib-aggregation')
     implementation project(':rest-oauth-client-commons')
     implementation project(':lib-scheduling')
+    implementation project(':svg-sanitizer')
 
     implementation 'com.bucket4j:bucket4j-core:latest.release'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -28,7 +29,7 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:latest.release'
     implementation libs.keycloak.client.admin.client
     implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'
-    implementation 'com.google.guava:guava'
+    implementation 'com.google.guava:guava:latest.release'
     implementation('org.mnode.ical4j:ical4j:latest.release') {
         exclude group: "com.github.erosb", module: "json-sKema"
         exclude group: "commons-codec", module: "commons-codec"
@@ -51,6 +52,7 @@ dependencies {
     testImplementation testFixtures(project(":base-api"))
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-auditlog'))
+    testImplementation testFixtures(project(':svg-sanitizer'))
 
     testImplementation 'org.apache.commons:commons-csv:latest.release'
     testImplementation 'com.tngtech.archunit:archunit-junit5:latest.release'
@@ -64,7 +66,10 @@ dependencies {
 }
 
 dockerCompose {
-    startedServices = ['base', 'base-db']
+    startedServices = [
+        'base',
+        'base-db'
+    ]
 }
 
 // base should only start when keycloak is up
@@ -72,6 +77,9 @@ tasks.named("composeUp") {
     def keycloakUp = project(":keycloak").tasks.named("composeUp")
     dependsOn keycloakUp
     mustRunAfter keycloakUp
+    def svgSanitizerUp = project(":svg-sanitizer").tasks.named("composeUp")
+    dependsOn svgSanitizerUp
+    mustRunAfter svgSanitizerUp
 }
 
 tasks.named('test').configure {
@@ -82,6 +90,7 @@ tasks.named('test').configure {
 
 test {
     dependsOn ':keycloak:composeBuild'
+    dependsOn ':svg-sanitizer:composeUp'
 }
 
 dependencyTrack {

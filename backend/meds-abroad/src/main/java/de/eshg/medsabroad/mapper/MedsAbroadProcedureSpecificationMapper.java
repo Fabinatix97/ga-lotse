@@ -16,6 +16,7 @@ import de.eshg.medsabroad.persistence.support.MedsAbroadProcedureSpecification;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -36,15 +37,9 @@ public class MedsAbroadProcedureSpecificationMapper {
   public static MedsAbroadProcedureSpecification toSpecification(
       GetMedsAbroadProceduresFilterOptions filterOptions) {
     return new MedsAbroadProcedureSpecification(
-        getCreationDateAsInstant(filterOptions.creationDate()),
+        atStartOfDay(filterOptions.creationDateStart()),
+        atEndOfDay(filterOptions.creationDateEnd()),
         mapEnumSet(filterOptions.procedureStatus(), ProcedureMapper::toDomainType));
-  }
-
-  private static Instant getCreationDateAsInstant(LocalDate creationDate) {
-    if (creationDate == null) {
-      return null;
-    }
-    return creationDate.atStartOfDay(clock.getZone()).toInstant();
   }
 
   public static String toSortProperty(GetMedsAbroadProceduresSortOptions sortOptions) {
@@ -76,5 +71,19 @@ public class MedsAbroadProcedureSpecificationMapper {
       case ASC -> comparator;
       case DESC -> comparator.reversed();
     };
+  }
+
+  private static Instant atStartOfDay(LocalDate date) {
+    if (date == null) {
+      return null;
+    }
+    return date.atStartOfDay(clock.getZone()).toInstant();
+  }
+
+  private static Instant atEndOfDay(LocalDate date) {
+    if (date == null) {
+      return null;
+    }
+    return date.atTime(LocalTime.MAX).atZone(clock.getZone()).toInstant();
   }
 }

@@ -39,5 +39,7 @@ export const de = {
     },
 
     lifetimeDoctorNumber: "Bitte eine gültige lebenslange Arztnummer angeben.",
+
+    zipCode: "Bitte eine gültige Postleitzahl angeben.",
   },
 };

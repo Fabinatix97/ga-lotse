@@ -6,6 +6,7 @@
 package de.eshg.rest.service.security.config;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PUT;
 
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
@@ -22,6 +23,8 @@ public final class MedsAbroadPublicSecurityConfig extends AbstractPublicSecurity
     grantAccessToConfiguration();
     grantAccessToStatistics(EmployeePermissionRole.MEDS_ABROAD_ADMIN);
 
+    requestMatchers(PUT, BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/{id}/reopen")
+        .hasRole(EmployeePermissionRole.MEDS_ABROAD_LEADER);
     requestMatchers(GET, BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/{id}/**")
         .hasAnyRole(
             EmployeePermissionRole.MEDS_ABROAD_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);

@@ -57,6 +57,9 @@ export function useHandledMutation<
 
   const mutation = useMutation({
     ...mutationOptions,
+    onMutate: runBefore(options.onMutate, () => {
+      alert.close();
+    }),
     onError: runBefore(options.onError, (error, variables) => {
       const { errorCode } = resolveError(error);
       const { title, message } = getErrorDescription(errorCode);
@@ -71,9 +74,6 @@ export function useHandledMutation<
         action: getErrorAction(errorCode, onReset),
         closeable: alertOptions?.closeable ?? getCloseable(errorCode),
       });
-    }),
-    onMutate: runBefore(options.onMutate, () => {
-      alert.close();
     }),
   });
 

@@ -8,7 +8,9 @@ package de.eshg.base.centralfile.persistence;
 import static de.eshg.base.centralfile.FacilityController.FACILITY_REFERENCE_NOT_FOUND;
 import static de.eshg.base.centralfile.persistence.entity.DataOrigin.EXTERNAL;
 import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
+import static java.util.Locale.ROOT;
 
+import com.google.common.collect.Streams;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.mapper.AddressMapper;
@@ -27,15 +29,20 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.DiffResult;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -48,18 +55,24 @@ public class FacilityService {
   private final MutexService mutexService;
   private final CentralFileAuditLogger auditLogger;
   private final Clock clock;
+  private final EntityManager entityManager;
+  private final FacilityFileNumberService facilityFileNumberService;
 
   public FacilityService(
       FacilityRepository facilityRepository,
       FuzzySearchHelper fuzzySearchHelper,
       MutexService mutexService,
       CentralFileAuditLogger auditLogger,
-      Clock clock) {
+      Clock clock,
+      EntityManager entityManager,
+      FacilityFileNumberService facilityFileNumberService) {
     this.facilityRepository = facilityRepository;
     this.mutexService = mutexService;
     this.auditLogger = auditLogger;
     this.fuzzySearchHelper = fuzzySearchHelper;
     this.clock = clock;
+    this.entityManager = entityManager;
+    this.facilityFileNumberService = facilityFileNumberService;
   }
 
   public List<Facility> searchReferenceFacilities(String name) {
@@ -453,6 +466,28 @@ public class FacilityService {
         () -> updateReferenceFacilityWhenLocked(referenceDataId, version, referenceFacilityUpdate));
   }
 
+  public String getFacilityFileNumber(UUID fileStateId, String method) {
+    Facility facility = facilityRepository.findFileStateByExternalId(fileStateId).orElseThrow();
+
+    switch (method) {
+      case "DEFAULT":
+        return facilityFileNumberService.calculateFacilityFileNumberDefault();
+      case "INSPECTION_FRANKFURT":
+        FacilityAddress address = facility.getContactAddress();
+
+        if (address instanceof DomesticFacilityAddress domesticFacilityAddress) {
+          return facilityFileNumberService.calculateFacilityFileNumberForInspectionFrankfurt(
+              domesticFacilityAddress.getStreet(),
+              domesticFacilityAddress.getHouseNumber(),
+              domesticFacilityAddress.getPostalCode());
+        } else {
+          return null;
+        }
+      default:
+        throw new IllegalArgumentException("Unknown file number calculation method: " + method);
+    }
+  }
+
   private Facility updateReferenceFacilityWhenLocked(
       UUID referenceDataId, long version, Facility referenceFacilityUpdate) {
 
@@ -525,5 +560,195 @@ public class FacilityService {
 
   private int deleteExpiredFileStatesAndReferencesWhenLocked(Instant expirationTime) {
     return facilityRepository.deleteByDeleteAtBefore(expirationTime);
+  }
+
+  public GetFacilityFileStatesFilteredResponse getFacilityFileStatesFiltered(
+      GetFacilityFileStatesFilteredRequest request) {
+
+    List<Sort.Order> orderList = mapSort(request.sort());
+
+    return findFacilitiesFiltered(
+        request.fileStateIds(),
+        request.name(),
+        request.postalCode(),
+        request.city(),
+        request.street(),
+        request.pageNumber(),
+        request.pageSize(),
+        orderList);
+  }
+
+  private List<Sort.Order> mapSort(List<String> sort) {
+    if (sort == null) {
+      return Collections.emptyList();
+    }
+    return sort.stream()
+        .map(
+            s -> {
+              String[] splitString = s.split("\\|", 2);
+              if (splitString.length < 2 || splitString[1].equals("asc")) {
+                return Sort.Order.asc(splitString[0]);
+              } else if (splitString[1].equals("desc")) {
+                return Sort.Order.desc(splitString[0]);
+              } else {
+                throw new BadRequestException(
+                    ErrorCode.BAD_REQUEST, "Bad sorting direction: " + splitString[1]);
+              }
+            })
+        .toList();
+  }
+
+  private List<Predicate> buildPredicates(
+      CriteriaBuilder cb,
+      RootAndJoins rootAndJoins,
+      @Nullable List<UUID> fileStateIds,
+      @Nullable String name,
+      @Nullable String postalCode,
+      @Nullable String city,
+      @Nullable String street) {
+    List<Predicate> predicates = new ArrayList<>();
+
+    if (fileStateIds != null && !fileStateIds.isEmpty()) {
+      predicates.add(rootAndJoins.facilityRoot.get(Facility_.externalId).in(fileStateIds));
+    }
+    if (name != null) {
+      predicates.add(
+          cb.like(
+              cb.lower(rootAndJoins.facilityRoot.get(Facility_.name)),
+              prepareStringForLike(name),
+              '\\'));
+    }
+    if (postalCode != null) {
+      predicates.add(
+          cb.like(
+              cb.lower(
+                  rootAndJoins.embeddableAddressJoin.get(EmbeddableDomesticAddress_.postalCode)),
+              prepareStringForLike(postalCode),
+              '\\'));
+    }
+    if (city != null) {
+      predicates.add(
+          cb.like(
+              cb.lower(rootAndJoins.embeddableAddressJoin.get(EmbeddableDomesticAddress_.city)),
+              prepareStringForLike(city),
+              '\\'));
+    }
+    if (street != null) {
+      predicates.add(
+          cb.like(
+              cb.lower(rootAndJoins.embeddableAddressJoin.get(EmbeddableDomesticAddress_.street)),
+              prepareStringForLike(street),
+              '\\'));
+    }
+    return predicates;
+  }
+
+  private static String prepareStringForLike(String s) {
+    return "%"
+        + s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_").toLowerCase(ROOT)
+        + "%";
+  }
+
+  private record RootAndJoins(
+      Root<Facility> facilityRoot,
+      Join<Facility, DomesticFacilityAddress> addressJoin,
+      Join<DomesticFacilityAddress, EmbeddableDomesticAddress> embeddableAddressJoin) {}
+
+  private RootAndJoins createRootAndJoins(CriteriaQuery<?> cq) {
+    Root<Facility> facilityRoot = cq.from(Facility.class);
+    Join<Facility, DomesticFacilityAddress> addressJoin =
+        facilityRoot.join(Facility_.CONTACT_ADDRESS, JoinType.LEFT);
+    Join<DomesticFacilityAddress, EmbeddableDomesticAddress> embeddableAddressJoin =
+        addressJoin.join(DomesticFacilityAddress_.EMBEDDED_DOMESTIC_ADDRESS, JoinType.LEFT);
+
+    return new RootAndJoins(facilityRoot, addressJoin, embeddableAddressJoin);
+  }
+
+  private GetFacilityFileStatesFilteredResponse findFacilitiesFiltered(
+      @Nullable List<UUID> fileStateIds,
+      @Nullable String name,
+      @Nullable String postalCode,
+      @Nullable String city,
+      @Nullable String street,
+      @Nullable Integer pageNumber,
+      @Nullable Integer pageSize,
+      @Nullable List<Sort.Order> orders) {
+
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+    // We have one query for fetching the facilities in the page and one for fetching the total
+    // number
+    CriteriaQuery<FacilityView> cq = cb.createQuery(FacilityView.class);
+    CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+
+    // We create the root and joins for both queries.
+    RootAndJoins rootAndJoins = createRootAndJoins(cq);
+    RootAndJoins rootAndJoinsForCount = createRootAndJoins(countQuery);
+
+    // We create the filter predicates for both queries.
+    List<Predicate> predicates =
+        buildPredicates(cb, rootAndJoins, fileStateIds, name, postalCode, city, street);
+    List<Predicate> predicatesForCount =
+        buildPredicates(cb, rootAndJoinsForCount, fileStateIds, name, postalCode, city, street);
+
+    cq.select(
+        cb.construct(
+            FacilityView.class,
+            rootAndJoins.facilityRoot,
+            rootAndJoins.addressJoin,
+            rootAndJoins.embeddableAddressJoin));
+    cq.where(cb.and(predicates.toArray(Predicate[]::new)));
+
+    if (orders != null && !orders.isEmpty()) {
+      cq.orderBy(
+          Streams.concat(
+                  orders.stream().map(order -> getOrderFromSortOrder(cb, order, rootAndJoins)),
+                  Stream.of(cb.asc(rootAndJoins.facilityRoot.get(Facility_.id))))
+              .toList());
+    } else {
+      cq.orderBy(cb.asc(rootAndJoins.facilityRoot.get(Facility_.id)));
+    }
+
+    countQuery.select(cb.count(rootAndJoinsForCount.facilityRoot));
+    countQuery.where(cb.and(predicatesForCount.toArray(Predicate[]::new)));
+
+    TypedQuery<FacilityView> query = entityManager.createQuery(cq);
+
+    long totalCount;
+    if (pageNumber != null && pageSize != null) {
+      query.setFirstResult(pageNumber * pageSize).setMaxResults(pageSize);
+
+      // We only need to actually call the count query if we paginate.
+      totalCount = entityManager.createQuery(countQuery).getSingleResult();
+    } else {
+      // If we don't paginate, the total number is just the number of rows we get.
+      totalCount = query.getResultList().size();
+    }
+
+    return new GetFacilityFileStatesFilteredResponse(
+        totalCount,
+        query.getResultList().stream()
+            .map(FacilityView::facility)
+            .map(
+                facility ->
+                    FacilityMapper.mapFacilityToGetFacilityFileStateResponse(facility, null))
+            .toList());
+  }
+
+  private Order getOrderFromSortOrder(
+      CriteriaBuilder cb, Sort.Order order, RootAndJoins rootAndJoins) {
+    return order.isAscending()
+        ? cb.asc(
+            getFromFromOrderProperty(order.getProperty(), rootAndJoins).get(order.getProperty()))
+        : cb.desc(
+            getFromFromOrderProperty(order.getProperty(), rootAndJoins).get(order.getProperty()));
+  }
+
+  private From<?, ?> getFromFromOrderProperty(String property, RootAndJoins rootAndJoins) {
+    if ("name".equals(property)) {
+      return rootAndJoins.facilityRoot;
+    } else {
+      return rootAndJoins.embeddableAddressJoin;
+    }
   }
 }

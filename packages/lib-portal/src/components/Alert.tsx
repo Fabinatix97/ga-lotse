@@ -26,7 +26,7 @@ import { ReactNode, Ref } from "react";
 import { isDefined } from "remeda";
 
 import { Row } from "./Row";
-import { InternalLinkButton } from "./navigation/InternalLinkButton";
+import { InternalLinkButton } from "./navigation/internalLinks";
 
 type AlertAction = ButtonActionProps | LinkActionProps | ActionRenderer;
 

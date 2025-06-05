@@ -10,11 +10,12 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
 public record CreateDailyAppointmentBlockGroupRequest(
-    @NotNull AppointmentTypeDto type,
+    @NotNull @Size(min = 1) List<AppointmentTypeDto> types,
     @NotNull @Min(1) @Max(10) int parallelExaminations,
     @Valid @NotNull @NotEmpty List<CreateDailyAppointmentBlockDto> appointmentBlocks,
     List<UUID> physicians,
@@ -23,12 +24,12 @@ public record CreateDailyAppointmentBlockGroupRequest(
     UUID locationId) {
 
   public CreateDailyAppointmentBlockGroupRequest(
-      AppointmentTypeDto type,
+      List<AppointmentTypeDto> types,
       int parallelExaminations,
       List<CreateDailyAppointmentBlockDto> appointmentBlocks,
       List<UUID> physicians,
       List<UUID> mfas,
       List<UUID> consultants) {
-    this(type, parallelExaminations, appointmentBlocks, physicians, mfas, consultants, null);
+    this(types, parallelExaminations, appointmentBlocks, physicians, mfas, consultants, null);
   }
 }

@@ -20,10 +20,11 @@ import { useBaseField } from "./BaseField";
 import { FieldSetControl } from "./FieldSetControl";
 import { SelectOption } from "./SelectOptions";
 
-export interface AccessibleSelectOption extends SelectOption {
+interface AccessibleSelectOption extends SelectOption {
   ariaLabel?: string;
 }
-export interface CheckboxGroupFieldProps<T extends SelectOption>
+
+interface CheckboxGroupFieldProps<T extends SelectOption>
   extends ValidationRules<T["value"][]> {
   options: T[];
   name: string;

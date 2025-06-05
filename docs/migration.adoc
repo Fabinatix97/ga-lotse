@@ -7,6 +7,12 @@ Versions that do not require any manual action are omitted for brevity.
 
 == Version History
 
+=== v1.10.2
+
+- Manual action is required **during the deployment** for all environments. The release introduces the svg-sanitizer module. It's actor must be
+enabled in the service directory, otherwise the base module will not be able to start. Further, after the deployment, a rule must be added to the
+service directory to allow communication from the base module to the svg-sanitizer module.
+
 === v1.6.9
 
 - Manual action is required **before the deployment** for all environments that already completed the bootstrapping process.

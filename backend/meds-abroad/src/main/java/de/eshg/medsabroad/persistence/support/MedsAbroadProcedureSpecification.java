@@ -14,7 +14,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,12 +24,16 @@ public class MedsAbroadProcedureSpecification implements Specification<MedsAbroa
 
   @Serial private static final long serialVersionUID = 1L;
 
-  private final Instant creationDateFilter;
+  private final Instant creationDateStart;
+  private final Instant creationDateEnd;
   private final transient Set<ProcedureStatus> procedureStatusFilter;
 
   public MedsAbroadProcedureSpecification(
-      Instant creationDateFilter, Set<ProcedureStatus> procedureStatusFilter) {
-    this.creationDateFilter = creationDateFilter;
+      Instant creationDateStart,
+      Instant creationDateEnd,
+      Set<ProcedureStatus> procedureStatusFilter) {
+    this.creationDateStart = creationDateStart;
+    this.creationDateEnd = creationDateEnd;
     this.procedureStatusFilter = procedureStatusFilter;
   }
 
@@ -41,12 +44,16 @@ public class MedsAbroadProcedureSpecification implements Specification<MedsAbroa
       @NonNull CriteriaBuilder criteriaBuilder) {
     List<Predicate> conjunctions = new ArrayList<>();
 
-    if (creationDateFilter != null) {
+    if (creationDateStart != null && creationDateEnd != null) {
       conjunctions.add(
           criteriaBuilder.between(
-              root.get(Procedure_.createdAt),
-              creationDateFilter,
-              creationDateFilter.plus(1, ChronoUnit.DAYS)));
+              root.get(Procedure_.createdAt), creationDateStart, creationDateEnd));
+    } else if (creationDateStart != null) {
+      conjunctions.add(
+          criteriaBuilder.greaterThanOrEqualTo(root.get(Procedure_.createdAt), creationDateStart));
+    } else if (creationDateEnd != null) {
+      conjunctions.add(
+          criteriaBuilder.lessThanOrEqualTo(root.get(Procedure_.createdAt), creationDateEnd));
     }
 
     if (procedureStatusFilter != null) {

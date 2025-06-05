@@ -11,15 +11,22 @@ import static java.util.function.Predicate.not;
 import static org.springframework.data.domain.PageRequest.ofSize;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.api.facility.FacilityDetails;
+import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
+import de.eshg.base.centralfile.api.person.PersonDetails;
+import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.BasicSystemProgressEntryType;
 import de.eshg.lib.procedure.domain.model.Image;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
+import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
@@ -33,7 +40,11 @@ import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresFilterOptions;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresPaginationOptions;
 import de.eshg.medicalregistry.api.PracticeReferenceFacilityDto;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
+import de.eshg.medicalregistry.api.ResolvedEmployeeChangeDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
+import de.eshg.medicalregistry.domain.model.Employee;
+import de.eshg.medicalregistry.domain.model.EmployeeChange;
+import de.eshg.medicalregistry.domain.model.EmployeeChangeType;
 import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
@@ -53,17 +64,21 @@ import de.eshg.medicalregistry.mapper.ProcedureMapper;
 import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.ListUtils;
@@ -125,13 +140,19 @@ public class MedicalRegistryService {
       List<DocumentData> documents,
       TriggerType triggerType,
       ProcedureType procedureType) {
-    UUID personId = personService.createPersonInCentralFile(createProcedureRequest.applicant());
+    PersonService.CreatedPersons createdPersons =
+        personService.createPersonsInCentralFileState(createProcedureRequest);
     UUID facilityId =
         facilityService.createFacilityInCentralFile(
             getPractice(createProcedureRequest), createProcedureRequest.applicant());
 
     MedicalRegistryEntryChange medicalRegistryEntry =
-        CreationMapper.mapToDomain(createProcedureRequest, triggerType, personId, facilityId);
+        CreationMapper.mapToDomain(
+            createProcedureRequest,
+            triggerType,
+            createdPersons.applicantPersonId(),
+            createdPersons.employeeChangePersonIds(),
+            facilityId);
 
     medicalRegistryEntry.setProcedureType(procedureType);
     medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.DRAFT, clock, auditLogger);
@@ -192,6 +213,7 @@ public class MedicalRegistryService {
       MedicalRegistryEntryChange draftMedicalRegistryEntry,
       ProfessionalReferencePersonDto professionalReferencePerson,
       PracticeReferenceFacilityDto practiceReferenceFacility,
+      List<ResolvedEmployeeChangeDto> employeeChanges,
       MedicalRegistryEntry mergeTarget) {
     log.info(
         "Confirming draft medical registry entry {}", draftMedicalRegistryEntry.getExternalId());
@@ -209,6 +231,8 @@ public class MedicalRegistryService {
 
     updateProfessionInformation(draftMedicalRegistryEntry, medicalRegistryEntry);
 
+    updateEmployees(draftMedicalRegistryEntry, medicalRegistryEntry, employeeChanges);
+
     if (DEREGISTRATION_TYPE_OF_CHANGES.contains(draftMedicalRegistryEntry.getTypeOfChange())) {
       medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
     }
@@ -223,6 +247,72 @@ public class MedicalRegistryService {
     procedureDeletionService.deleteAndWriteToCemetery(draftMedicalRegistryEntry);
 
     return medicalRegistryEntry;
+  }
+
+  private void updateEmployees(
+      MedicalRegistryEntryChange source,
+      MedicalRegistryEntry target,
+      List<ResolvedEmployeeChangeDto> employeeChanges) {
+    final Map<UUID, EmployeeChange> employeeChangesByIds =
+        source.getEmployees().stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    SequencedBaseEntityWithExternalId::getExternalId, Function.identity()));
+
+    final Map<EmployeeChangeType, List<ResolvedEmployeeChangeDto>> employeeChangesByChangeType =
+        employeeChanges.stream()
+            .collect(
+                StreamUtil.groupingBy(
+                    employeeChange ->
+                        employeeChangesByIds
+                            .get(employeeChange.employeeChangeId())
+                            .getEmployeeChangeType()));
+
+    applyRemoves(target, employeeChangesByChangeType);
+    applyCreations(target, employeeChangesByChangeType);
+  }
+
+  private void applyCreations(
+      MedicalRegistryEntry target,
+      Map<EmployeeChangeType, List<ResolvedEmployeeChangeDto>> employeeChangesByChangeType) {
+    final List<ResolvedEmployeeChangeDto> employeesToCreate =
+        Optional.ofNullable(employeeChangesByChangeType.get(EmployeeChangeType.ADD)).stream()
+            .flatMap(Collection::stream)
+            .filter(Predicate.not(this::employeeIsAttachedAtTargetProcedure))
+            .toList();
+
+    final List<UUID> employeesInCentralFile =
+        personService.createEmployeesInCentralFile(employeesToCreate);
+
+    final List<Employee> personsToAdd =
+        employeesInCentralFile.stream().map(this::mapToDomain).toList();
+
+    personsToAdd.forEach(target::addRelatedPerson);
+  }
+
+  private void applyRemoves(
+      MedicalRegistryEntry target,
+      Map<EmployeeChangeType, List<ResolvedEmployeeChangeDto>> employeeChangesByChangeType) {
+    final Set<UUID> employeesToRemove =
+        Optional.ofNullable(employeeChangesByChangeType.get(EmployeeChangeType.REMOVE)).stream()
+            .flatMap(Collection::stream)
+            .filter(this::employeeIsAttachedAtTargetProcedure)
+            .map(ResolvedEmployeeChangeDto::employeeId)
+            .collect(Collectors.toSet());
+
+    target
+        .getRelatedPersons()
+        .removeIf(employee -> employeesToRemove.contains(employee.getExternalId()));
+  }
+
+  private boolean employeeIsAttachedAtTargetProcedure(ResolvedEmployeeChangeDto change) {
+    return change.employeeId() != null;
+  }
+
+  private Employee mapToDomain(UUID fileStateId) {
+    final Employee employee = new Employee();
+    employee.setCentralFileStateId(fileStateId);
+    return employee;
   }
 
   private void updateProfessionInformation(
@@ -260,14 +350,6 @@ public class MedicalRegistryService {
         sourceProfessionInformation.getEmploymentStatus());
   }
 
-  private Optional<Boolean> getIsEmployeesEmployed(MedicalRegistryEntryChange source) {
-    return switch (source) {
-      case FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange ->
-          Optional.of(fullMedicalRegistryEntryChange.isEmployeesEmployed());
-      case PartialMedicalRegistryEntryChange ignored -> Optional.empty();
-    };
-  }
-
   private Optional<ProfessionInformation> getProfessionalInformation(
       MedicalRegistryEntryChange source) {
     return switch (source) {
@@ -281,16 +363,14 @@ public class MedicalRegistryService {
       MedicalRegistryEntryChange sourceEntry,
       MedicalRegistryProcedure targetEntry,
       ProfessionalReferencePersonDto professionalReferencePerson) {
-    Professional existingProfessional =
-        targetEntry.getRelatedPersons().stream()
-            .collect(StreamUtil.toSingleOptionalElement())
-            .orElse(null);
+    Optional<Professional> optionalProfessional = targetEntry.getOptionalProfessional();
 
-    if (existingProfessional == null) {
+    if (optionalProfessional.isEmpty()) {
       Professional professional = sourceEntry.getProfessional();
       targetEntry.addRelatedPerson(professional);
       updateOrConfirmProfessional(professional, professional, professionalReferencePerson);
     } else {
+      Professional existingProfessional = optionalProfessional.get();
       UUID previousPersonCentralFileState = existingProfessional.getCentralFileStateId();
 
       updateOrConfirmProfessional(
@@ -476,7 +556,6 @@ public class MedicalRegistryService {
   private void copyValuesFromDraft(MedicalRegistryEntryChange source, MedicalRegistryEntry target) {
     target.setConsentToPrivacyPolicy(source.isConsentToPrivacyPolicy());
     target.setRequestForWrittenConfirmation(source.isRequestForWrittenConfirmation());
-    getIsEmployeesEmployed(source).ifPresent(target::setEmployeesEmployed);
 
     replaceProgressEntries(target, merge(target.getProgressEntries(), source.getProgressEntries()));
   }
@@ -533,4 +612,241 @@ public class MedicalRegistryService {
         page.getTotalElements(),
         EntryMapper.mapToDto(page, resolvedRelatedPerson));
   }
+
+  ConfirmInfo getConfirmInfo(MedicalRegistryEntryChange medicalRegistryEntryChange) {
+    final Map<UUID, List<GetReferencePersonResponse>> matchingReferencePersonByCentralFileStateId =
+        personService.searchReferencePersons(medicalRegistryEntryChange);
+
+    final Map<GetReferencePersonResponse, List<UUID>> associatedFileStatesByReferencePerson =
+        personService.getPersonFileStateIdsAssociatedWithReferencePersons(
+            matchingReferencePersonByCentralFileStateId.values().stream()
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList());
+
+    final List<GetReferencePersonResponse> referencePersonsForApplicant =
+        matchingReferencePersonByCentralFileStateId.get(
+            medicalRegistryEntryChange.getProfessional().getCentralFileStateId());
+    final Map<GetReferencePersonResponse, List<MedicalRegistryEntry>> procedureByReferencePersonId =
+        getProceduresByReferencePersons(
+            referencePersonsForApplicant, associatedFileStatesByReferencePerson);
+
+    if (medicalRegistryEntryChange instanceof FullMedicalRegistryEntryChange) {
+      referencePersonsForApplicant.forEach(
+          referencePerson -> procedureByReferencePersonId.putIfAbsent(referencePerson, List.of()));
+    }
+
+    final List<MedicalRegistryEntry> targetProcedures =
+        procedureByReferencePersonId.values().stream()
+            .flatMap(Collection::stream)
+            .distinct()
+            .toList();
+
+    final List<MedicalRegistryProcedure> involvedProcedures =
+        Stream.concat(targetProcedures.stream(), Stream.of(medicalRegistryEntryChange)).toList();
+
+    final Map<UUID, GetPersonFileStateResponse> resolvedPersonDetails =
+        personService.resolvePersonDetailsById(involvedProcedures);
+    final Map<UUID, FacilityDetails> resolvedFacilityDetails =
+        facilityService.resolveFacilityDetailsById(involvedProcedures);
+
+    return new ConfirmInfo(
+        facilityService.searchReferenceFacility(medicalRegistryEntryChange),
+        procedureByReferencePersonId,
+        getEmployeeChoiceByProcedure(
+            medicalRegistryEntryChange,
+            targetProcedures,
+            matchingReferencePersonByCentralFileStateId,
+            associatedFileStatesByReferencePerson,
+            resolvedPersonDetails),
+        resolvedPersonDetails,
+        resolvedFacilityDetails);
+  }
+
+  private Map<MedicalRegistryProcedure, List<EmployeeChoice>> getEmployeeChoiceByProcedure(
+      MedicalRegistryEntryChange source,
+      List<MedicalRegistryEntry> targets,
+      Map<UUID, List<GetReferencePersonResponse>> matchingReferencePersonByCentralFileStateId,
+      Map<GetReferencePersonResponse, List<UUID>> associatedFileStatesByReferencePerson,
+      Map<UUID, GetPersonFileStateResponse> resolvedPersonDetails) {
+    return targets.stream()
+        .collect(
+            StreamUtil.toLinkedHashMap(
+                Function.identity(),
+                procedure ->
+                    getEmployeeChoices(
+                        source,
+                        procedure,
+                        matchingReferencePersonByCentralFileStateId,
+                        associatedFileStatesByReferencePerson,
+                        resolvedPersonDetails)));
+  }
+
+  private List<EmployeeChoice> getEmployeeChoices(
+      MedicalRegistryEntryChange source,
+      MedicalRegistryProcedure target,
+      Map<UUID, List<GetReferencePersonResponse>> matchingReferencePersonByCentralFileStateId,
+      Map<GetReferencePersonResponse, List<UUID>> associatedFileStatesByReferencePerson,
+      Map<UUID, GetPersonFileStateResponse> resolvedPersonDetailsById) {
+    final Map<UUID, UUID> existingEmployeeIdsByCentralFileStateId =
+        target.getEmployees().stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    RelatedPerson::getCentralFileStateId,
+                    SequencedBaseEntityWithExternalId::getExternalId));
+
+    return source.getEmployees().stream()
+        .map(
+            employeeChange ->
+                getEmployeeChoice(
+                    employeeChange,
+                    matchingReferencePersonByCentralFileStateId,
+                    associatedFileStatesByReferencePerson,
+                    existingEmployeeIdsByCentralFileStateId,
+                    resolvedPersonDetailsById))
+        .toList();
+  }
+
+  private EmployeeChoice getEmployeeChoice(
+      EmployeeChange employeeChange,
+      Map<UUID, List<GetReferencePersonResponse>> matchingReferencePersonByCentralFileStateId,
+      Map<GetReferencePersonResponse, List<UUID>> associatedFileStatesByReferencePerson,
+      Map<UUID, UUID> existingEmployeeIdsByCentralFileStateId,
+      Map<UUID, GetPersonFileStateResponse> resolvedPersonDetailsById) {
+    final GetPersonFileStateResponse employeeChangeDetails =
+        resolvedPersonDetailsById.get(employeeChange.getCentralFileStateId());
+    final List<GetReferencePersonResponse> matchingReferencePersons =
+        matchingReferencePersonByCentralFileStateId.get(employeeChange.getCentralFileStateId());
+
+    final List<PersonCandidate> personCandidates =
+        getPersonCandidatesFromExistingPersons(
+            employeeChange,
+            existingEmployeeIdsByCentralFileStateId,
+            matchingReferencePersons,
+            associatedFileStatesByReferencePerson);
+
+    final boolean executionWouldLeadToConflict =
+        employeeChange.getEmployeeChangeType() == EmployeeChangeType.ADD
+            && exactSamePersonExists(employeeChangeDetails, matchingReferencePersons);
+
+    if (!executionWouldLeadToConflict) {
+      personCandidates.add(
+          new PersonCandidate(
+              null,
+              null,
+              employeeChangeDetails.firstName(),
+              employeeChangeDetails.lastName(),
+              employeeChangeDetails.dateOfBirth()));
+    }
+    return new EmployeeChoice(employeeChange, personCandidates);
+  }
+
+  private boolean exactSamePersonExists(
+      PersonDetails person, List<? extends PersonDetails> existingPersons) {
+    return existingPersons.stream()
+        .anyMatch(existingPerson -> hasSameKeyAttributes(person, existingPerson));
+  }
+
+  private boolean hasSameKeyAttributes(PersonDetails personA, PersonDetails personB) {
+    return Objects.equals(personB.firstName(), personA.firstName())
+        && Objects.equals(personB.lastName(), personA.lastName())
+        && Objects.equals(personB.dateOfBirth(), personA.dateOfBirth());
+  }
+
+  private List<PersonCandidate> getPersonCandidatesFromExistingPersons(
+      EmployeeChange employeeChange,
+      Map<UUID, UUID> existingEmployeeIdsByCentralFileStateId,
+      List<GetReferencePersonResponse> matchingReferencePersons,
+      Map<GetReferencePersonResponse, List<UUID>> associatedFileStatesByReferencePerson) {
+    return matchingReferencePersons.stream()
+        .map(
+            matchingReferencePerson ->
+                toPersonCandidate(
+                    matchingReferencePerson,
+                    employeeChange.getEmployeeChangeType(),
+                    existingEmployeeIdsByCentralFileStateId,
+                    associatedFileStatesByReferencePerson))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  private PersonCandidate toPersonCandidate(
+      GetReferencePersonResponse matchingReferencePerson,
+      EmployeeChangeType employeeChangeType,
+      Map<UUID, UUID> existingEmployeeIdsByCentralFileStateId,
+      Map<GetReferencePersonResponse, List<UUID>> associatedFileStatesByReferencePerson) {
+    final UUID associatedCentralFileStateInProcedure =
+        associatedFileStatesByReferencePerson.get(matchingReferencePerson).stream()
+            .filter(existingEmployeeIdsByCentralFileStateId.keySet()::contains)
+            .findFirst()
+            .orElse(null);
+
+    final boolean isRemoveNonExistingPerson =
+        employeeChangeType == EmployeeChangeType.REMOVE
+            && associatedCentralFileStateInProcedure == null;
+    if (isRemoveNonExistingPerson) {
+      return null;
+    } else {
+      return new PersonCandidate(
+          matchingReferencePerson.id(),
+          existingEmployeeIdsByCentralFileStateId.get(associatedCentralFileStateInProcedure),
+          matchingReferencePerson.firstName(),
+          matchingReferencePerson.lastName(),
+          matchingReferencePerson.dateOfBirth());
+    }
+  }
+
+  private Map<GetReferencePersonResponse, List<MedicalRegistryEntry>>
+      getProceduresByReferencePersons(
+          List<GetReferencePersonResponse> referencePersons,
+          Map<GetReferencePersonResponse, List<UUID>> associatedFilesStatesByReferencePerson) {
+    final Map<UUID, GetReferencePersonResponse> referencePersonByPersonFileState =
+        invertOneToMany(associatedFilesStatesByReferencePerson);
+
+    final List<UUID> associatedFileStates =
+        referencePersons.stream()
+            .map(associatedFilesStatesByReferencePerson::get)
+            .flatMap(Collection::stream)
+            .toList();
+
+    return medicalRegistryProcedureRepository
+        .findByRelatedPersonsCentralFileStateIds(associatedFileStates, PersonType.PROFESSIONAL)
+        .stream()
+        .map(Hibernate::unproxy)
+        .filter(MedicalRegistryEntry.class::isInstance)
+        .map(MedicalRegistryEntry.class::cast)
+        .filter(entry -> entry.getProcedureStatus() == ProcedureStatus.OPEN)
+        .collect(
+            StreamUtil.groupingBy(
+                procedure ->
+                    referencePersonByPersonFileState.get(
+                        procedure.getProfessional().getCentralFileStateId())));
+  }
+
+  private static <One, Many> Map<Many, One> invertOneToMany(Map<One, List<Many>> oneToManyMap) {
+    return oneToManyMap.entrySet().stream()
+        .flatMap(
+            oneToManyEntry ->
+                oneToManyEntry.getValue().stream()
+                    .map(listValue -> Map.entry(oneToManyEntry.getKey(), listValue)))
+        .collect(StreamUtil.toLinkedHashMap(Map.Entry::getValue, Map.Entry::getKey));
+  }
+
+  public record ConfirmInfo(
+      List<GetReferenceFacilityResponse> matchingReferenceFacilities,
+      Map<GetReferencePersonResponse, List<MedicalRegistryEntry>>
+          proceduresByMatchingReferencePerson,
+      Map<MedicalRegistryProcedure, List<EmployeeChoice>> employeeChoiceByProcedure,
+      Map<UUID, GetPersonFileStateResponse> resolvedPersonDetails,
+      Map<UUID, FacilityDetails> resolvedFacilityDetails) {}
+
+  public record EmployeeChoice(
+      EmployeeChange employeeChange, List<PersonCandidate> personCandidates) {}
+
+  public record PersonCandidate(
+      UUID referencePersonId,
+      UUID employeeId,
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth) {}
 }

@@ -1,0 +1,17 @@
+{
+  "dependencies": [
+    ":base-api",
+    ":lib-portal",
+    ":lib-procedures-api",
+    ":lib-vitest",
+    ":measles-protection-api",
+    ":medical-registry",
+    ":medical-registry-api",
+    ":official-medical-service",
+    ":official-medical-service-api",
+    ":opendata-api",
+    ":school-entry-api",
+    ":sti-protection-api",
+    ":travel-medicine-api"
+  ]
+}

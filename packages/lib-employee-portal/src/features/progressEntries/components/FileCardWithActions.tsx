@@ -22,9 +22,12 @@ import {
 } from "../../../components/cards/FileCard";
 import {
   useIsReadOnly,
+  useProgressEntriesConfig,
   useProgressEntriesContext,
 } from "../contexts/progressEntries";
 import { useDeletionProps } from "../hooks/useDeletionProps";
+
+import { useProgressEntryDetailsSidebar } from "./sidebars/progressEntryDetailsSidebar/ProgressEntryDetailsSidebar";
 
 interface FileCardWithActionsProps {
   /** if set, includes an additional 'Details' link in actions menu */
@@ -59,9 +62,8 @@ function FileCardWithOptionalDetailsLinkAndDownload({
 }: FileCardWithActionsProps & {
   additionalAction?: FileCardActionProps;
 }) {
-  const progressEntriesContext = useProgressEntriesContext();
-  const { fileApi } = progressEntriesContext.config;
-  const { openEntryDetailsSidebar } = progressEntriesContext.action;
+  const { fileApi } = useProgressEntriesConfig();
+  const progressEntryDetailsSidebar = useProgressEntryDetailsSidebar();
   const { download } = useFileDownload((fileId: string) =>
     fileApi.downloadFileRaw({ fileId }),
   );
@@ -71,7 +73,10 @@ function FileCardWithOptionalDetailsLinkAndDownload({
   const hasDetailsAction = isDefined(detailsProgressEntryId);
   if (hasDetailsAction) {
     actions.push({
-      onClick: () => openEntryDetailsSidebar(detailsProgressEntryId),
+      onClick: () =>
+        progressEntryDetailsSidebar.open({
+          progressEntryId: detailsProgressEntryId,
+        }),
       indicator: <InfoOutlined />,
       name: "Details",
       color: "neutral",

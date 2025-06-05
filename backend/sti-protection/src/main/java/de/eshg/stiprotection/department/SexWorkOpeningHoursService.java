@@ -7,6 +7,7 @@ package de.eshg.stiprotection.department;
 
 import de.eshg.config.AuditLogWriter;
 import de.eshg.persistence.TransactionHelper;
+import de.eshg.stiprotection.config.SexWorkConfigurationStatusAware;
 import de.eshg.stiprotection.persistence.SexWorkOpeningHours;
 import de.eshg.stiprotection.persistence.config.DepartmentInfoConfig;
 import de.eshg.stiprotection.persistence.db.Concern;
@@ -14,9 +15,9 @@ import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
 @Service
-@ConfigConcernQualifier(concern = Concern.SEX_WORK)
 public class SexWorkOpeningHoursService
-    extends AbstractStiProtectionOpeningHoursService<SexWorkOpeningHours> {
+    extends AbstractStiProtectionOpeningHoursService<SexWorkOpeningHours>
+    implements SexWorkConfigurationStatusAware {
 
   public SexWorkOpeningHoursService(
       EntityManager entityManager,

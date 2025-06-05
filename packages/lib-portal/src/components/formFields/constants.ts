@@ -40,7 +40,7 @@ export const TITLE_OPTIONS: SelectOption<string, string>[] = Object.values(
   TITLE_VALUES,
 ).map((value) => ({ label: value, value }));
 
-export function getRequiredTitle(value: string): string {
+function getRequiredTitle(value: string): string {
   return TITLE_VALUES[value] ?? value;
 }
 

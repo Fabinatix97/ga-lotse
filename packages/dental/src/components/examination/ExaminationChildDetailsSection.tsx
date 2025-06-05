@@ -17,8 +17,8 @@ import {
   ProcedureLabelChip,
 } from "@eshg/lib-employee-portal";
 import {
+  ExternalLinkButton,
   GENDER_VALUES,
-  InternalLinkButton,
   OPTIONAL_FALLBACK_VALUE,
   calculateAge,
   formatDate,
@@ -125,15 +125,15 @@ function DetailsSectionHeader(props: DetailsSectionHeaderProps) {
         {props.children}
       </ExaminationSectionTitle>
       <Stack direction="row" gap={2}>
-        <InternalLinkButton
+        <ExternalLinkButton
           color="primary"
           variant="outlined"
           href={routes.children.byId(props.participantDetails.id).details}
-          target="_blank"
+          openInNewTab
           endDecorator={<OpenInNewOutlined />}
         >
           Profil
-        </InternalLinkButton>
+        </ExternalLinkButton>
         <EditButton
           onClick={() =>
             updateParticipantDetailsSidebar.open({

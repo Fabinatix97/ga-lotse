@@ -5,16 +5,16 @@
 
 package de.eshg.schoolentry.pdf.medicalreport;
 
-import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.api.CreateMedicalReportRequest;
 import de.eshg.schoolentry.business.model.PersonDetailsData;
+import de.eshg.schoolentry.client.DepartmentInfoClient;
 import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
@@ -35,17 +35,17 @@ public class MedicalReportGenerator extends AbstractGenerator {
   private final ClassPathResource medicalReportTemplate;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
 
   public MedicalReportGenerator(
       @Value(MEDICAL_REPORT_TEMPLATE) ClassPathResource medicalReportTemplate,
-      DepartmentClient departmentClient,
-      DepartmentInfoConfigService departmentInfoConfigService,
+      DepartmentLogoClient departmentLogoClient,
+      DepartmentInfoClient departmentInfoClient,
       DocumentGenerator documentGenerator,
       Clock clock,
       ContactClient contactClient) {
-    super(departmentInfoConfigService, contactClient);
-    this.departmentClient = departmentClient;
+    super(departmentInfoClient, contactClient);
+    this.departmentLogoClient = departmentLogoClient;
     Assert.isTrue(medicalReportTemplate.exists(), () -> medicalReportTemplate + " does not exist");
     this.medicalReportTemplate = medicalReportTemplate;
     this.documentGenerator = documentGenerator;
@@ -56,7 +56,7 @@ public class MedicalReportGenerator extends AbstractGenerator {
   MedicalReportData buildMedicalReportData(
       PersonDetailsData child, CreateMedicalReportRequest request) {
     Address departmentAddress = getDepartmentAddress();
-    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
 
     MedicalReportChild medicalReportChild =
         new MedicalReportChild(

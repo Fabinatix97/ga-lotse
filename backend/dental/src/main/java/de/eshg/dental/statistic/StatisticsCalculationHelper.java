@@ -6,8 +6,8 @@
 package de.eshg.dental.statistic;
 
 import de.eshg.dental.domain.model.DecayStatus;
-import de.eshg.dental.domain.model.DentitionType;
 import de.eshg.dental.domain.model.MainResult;
+import de.eshg.dental.domain.model.SecondaryResult;
 import de.eshg.dental.domain.model.Tooth;
 import de.eshg.dental.domain.model.ToothDiagnosis;
 import java.util.List;
@@ -15,39 +15,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class StatisticsCalculationHelper {
+  private static final List<SecondaryResult> D_DIAGNOSES =
+      List.of(SecondaryResult.D, SecondaryResult.E, SecondaryResult.W);
+  private static final List<SecondaryResult> M_DIAGNOSES = List.of(SecondaryResult.M);
+  private static final List<SecondaryResult> F_DIAGNOSES =
+      List.of(SecondaryResult.F, SecondaryResult.K);
+
   private StatisticsCalculationHelper() {}
 
   public static long calculateDmftValue(
       Predicate<Tooth> expectedToothType, Map<Tooth, ToothDiagnosis> toothDiagnoses) {
-    return calculateDiagnosisValue(
-        expectedToothType,
-        toothDiagnoses,
-        diagnosis ->
-            List.of(MainResult.D, MainResult.M, MainResult.F).contains(diagnosis.mainResult()));
-  }
-
-  private static long calculateMainResultValue(
-      Predicate<Tooth> expectedToothType,
-      Map<Tooth, ToothDiagnosis> toothDiagnoses,
-      MainResult mainResult) {
-    return calculateDiagnosisValue(
-        expectedToothType, toothDiagnoses, diagnosis -> diagnosis.mainResult() == mainResult);
-  }
-
-  private static long calculateDiagnosisValue(
-      Predicate<Tooth> expectedToothType,
-      Map<Tooth, ToothDiagnosis> toothDiagnoses,
-      Predicate<ToothDiagnosis> diagnosisPredicate) {
-
-    return toothDiagnoses.entrySet().stream()
-        .filter(entry -> expectedToothType.test(entry.getKey()))
-        .map(Map.Entry::getValue)
-        .filter(Objects::nonNull)
-        .filter(value -> value.mainResult() != null)
-        .filter(diagnosisPredicate)
-        .count();
+    return calculateDMFValues(toothDiagnoses, expectedToothType).getDmftValue();
   }
 
   public static Optional<Boolean> calculateDecayRisk(
@@ -55,10 +36,12 @@ public class StatisticsCalculationHelper {
     if (toothDiagnoses == null || ageOfChild > 9) {
       return Optional.empty();
     }
+    DMFValues primaryDmfValues = calculateDMFValues(toothDiagnoses, Tooth::isPrimaryTooth);
+    DMFValues secondaryDmfValues = calculateDMFValues(toothDiagnoses, Tooth::isSecondaryTooth);
 
-    long primaryDmftValue = calculateDmftValue(Tooth::isPrimaryTooth, toothDiagnoses);
-    long secondaryDmftValue = calculateDmftValue(Tooth::isSecondaryTooth, toothDiagnoses);
-    long secondaryDValue = calculateSecondaryTeethValueForMainResult(toothDiagnoses, MainResult.D);
+    long primaryDmftValue = primaryDmfValues.getDmftValue();
+    long secondaryDmftValue = secondaryDmfValues.getDmftValue();
+    long secondaryDValue = secondaryDmfValues.dValue;
 
     boolean decayRisk =
         switch (ageOfChild) {
@@ -77,19 +60,17 @@ public class StatisticsCalculationHelper {
     if (toothDiagnoses == null) {
       return null;
     }
+    DMFValues primaryDmfValues = calculateDMFValues(toothDiagnoses, Tooth::isPrimaryTooth);
+    DMFValues secondaryDmfValues = calculateDMFValues(toothDiagnoses, Tooth::isSecondaryTooth);
 
-    Long primaryDValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.PRIMARY, MainResult.D);
-    Long secondaryDValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.SECONDARY, MainResult.D);
-    Long primaryMValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.PRIMARY, MainResult.M);
-    Long secondaryMValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.SECONDARY, MainResult.M);
-    Long primaryFValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.PRIMARY, MainResult.F);
-    Long secondaryFValue =
-        getDecayValueForDentitionType(toothDiagnoses, DentitionType.SECONDARY, MainResult.F);
+    int primaryDValue = primaryDmfValues.dValue;
+    int secondaryDValue = secondaryDmfValues.dValue;
+
+    int primaryMValue = primaryDmfValues.mValue;
+    int secondaryMValue = secondaryDmfValues.mValue;
+
+    int primaryFValue = primaryDmfValues.fValue;
+    int secondaryFValue = secondaryDmfValues.fValue;
 
     if (primaryDValue + secondaryDValue > 0) {
       return DecayStatus.TREATMENT_REQUIRED;
@@ -101,32 +82,71 @@ public class StatisticsCalculationHelper {
     return DecayStatus.HEALTHY;
   }
 
-  private static Long getDecayValueForDentitionType(
-      Map<Tooth, ToothDiagnosis> toothDiagnoses,
-      DentitionType dentitionType,
-      MainResult mainResult) {
-    if (dentitionType == DentitionType.PRIMARY) {
-      return calculatePrimaryTeethValueForMainResult(toothDiagnoses, mainResult);
-    } else if (dentitionType == DentitionType.SECONDARY) {
-      return calculateSecondaryTeethValueForMainResult(toothDiagnoses, mainResult);
+  private static DMFValues calculateDMFValues(
+      Map<Tooth, ToothDiagnosis> toothDiagnoses, Predicate<Tooth> expectedToothType) {
+    List<List<SecondaryResult>> results =
+        toothDiagnoses.entrySet().stream()
+            .filter(entry -> expectedToothType.test(entry.getKey()))
+            .map(Map.Entry::getValue)
+            .filter(Objects::nonNull)
+            .map(
+                diagnoses ->
+                    Stream.of(
+                            toSecondaryResult(diagnoses.mainResult()), diagnoses.secondaryResult())
+                        .filter(Objects::nonNull)
+                        .toList())
+            .toList();
+
+    DMFValues dmfValues = new DMFValues();
+    for (List<SecondaryResult> result : results) {
+      if (result.stream().anyMatch(M_DIAGNOSES::contains)) {
+        dmfValues.mValue++;
+      } else if (result.stream().anyMatch(D_DIAGNOSES::contains)) {
+        dmfValues.dValue++;
+      } else if (result.stream().anyMatch(F_DIAGNOSES::contains)) {
+        dmfValues.fValue++;
+      }
     }
-    return 0L;
+    return dmfValues;
   }
 
-  private static long calculatePrimaryTeethValueForMainResult(
-      Map<Tooth, ToothDiagnosis> toothDiagnoses, MainResult mainResult) {
-    return calculateMainResultTeethValue(toothDiagnoses, Tooth::isPrimaryTooth, mainResult);
+  private static class DMFValues {
+    int dValue;
+    int mValue;
+    int fValue;
+
+    public DMFValues() {
+      this.dValue = 0;
+      this.mValue = 0;
+      this.fValue = 0;
+    }
+
+    int getDmftValue() {
+      return dValue + fValue + mValue;
+    }
   }
 
-  private static long calculateSecondaryTeethValueForMainResult(
-      Map<Tooth, ToothDiagnosis> toothDiagnoses, MainResult mainResult) {
-    return calculateMainResultTeethValue(toothDiagnoses, Tooth::isSecondaryTooth, mainResult);
-  }
-
-  private static long calculateMainResultTeethValue(
-      Map<Tooth, ToothDiagnosis> toothDiagnoses,
-      Predicate<Tooth> expectedToothType,
-      MainResult mainResult) {
-    return calculateMainResultValue(expectedToothType, toothDiagnoses, mainResult);
+  private static SecondaryResult toSecondaryResult(MainResult mainResult) {
+    return switch (mainResult) {
+      case null -> null;
+      case S -> SecondaryResult.S;
+      case I -> SecondaryResult.I;
+      case D -> SecondaryResult.D;
+      case F -> SecondaryResult.F;
+      case M -> SecondaryResult.M;
+      case X -> SecondaryResult.X;
+      case Z -> SecondaryResult.Z;
+      case T -> SecondaryResult.T;
+      case H -> SecondaryResult.H;
+      case O -> SecondaryResult.O;
+      case V -> SecondaryResult.V;
+      case N -> SecondaryResult.N;
+      case U -> SecondaryResult.U;
+      case K -> SecondaryResult.K;
+      case E -> SecondaryResult.E;
+      case W -> SecondaryResult.W;
+      case P -> SecondaryResult.P;
+      case A -> SecondaryResult.A;
+    };
   }
 }

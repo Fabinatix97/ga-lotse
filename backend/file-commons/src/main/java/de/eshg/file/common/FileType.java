@@ -19,10 +19,12 @@ public enum FileType {
       FileExtension.JFIF),
   PNG(MediaType.IMAGE_PNG, FileExtension.PNG),
   PDF(MediaType.APPLICATION_PDF, FileExtension.PDF),
-  EML(CustomMediaTypes.EML, FileExtension.EML),
-  CSV(CustomMediaTypes.CSV, FileExtension.CSV),
-  XLSX(CustomMediaTypes.APPLICATION_XLSX, FileExtension.XLSX),
-  MD(MediaType.TEXT_MARKDOWN, FileExtension.MD);
+  EML(de.eshg.file.common.CustomMediaTypes.EML, FileExtension.EML),
+  CSV(de.eshg.file.common.CustomMediaTypes.CSV, FileExtension.CSV),
+  XLSX(de.eshg.file.common.CustomMediaTypes.APPLICATION_XLSX, FileExtension.XLSX),
+  MD(MediaType.TEXT_MARKDOWN, FileExtension.MD),
+  SVG(CustomMediaTypes.IMAGE_SVG_XML, FileExtension.SVG),
+  ;
 
   private final MediaType mediaType;
   private final FileExtension defaultFileExtension;

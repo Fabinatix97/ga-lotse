@@ -121,7 +121,7 @@ export function AppointmentPickerField<T extends Appointment>({
   const start = getPropertyIf(value, "start", isDate);
   const [selectedDay, setSelectedDayRaw] = useState<Date | undefined>(start);
   const requiredWarning =
-    selectedDay == null ? requiredDayWarning : requiredAppointmentWarning;
+    selectedDay === undefined ? requiredDayWarning : requiredAppointmentWarning;
   const field = useBaseField<T | null>({
     ...props,
     required: active && required ? requiredWarning : undefined,
@@ -165,7 +165,11 @@ export function AppointmentPickerField<T extends Appointment>({
   // auto-select the first appointment in the list
   useEffect(() => {
     const appt = monthAppointments[0];
-    if (autoSelectFirst == null || selectedDay != null || appt == null) {
+    if (
+      autoSelectFirst === undefined ||
+      selectedDay !== undefined ||
+      appt === undefined
+    ) {
       return;
     }
     setSelectedDayRaw(appt.start);
@@ -185,7 +189,7 @@ export function AppointmentPickerField<T extends Appointment>({
   const Layout = layout ?? DefaultLayout;
   const AppointmentList = AppointmentListOverride ?? AppointmentListForDate;
   const calendarErrorId = useId();
-  const hasCalendarError = selectedDay == null && error;
+  const hasCalendarError = selectedDay === undefined && error;
   const calendarError = hasCalendarError ? (
     <FormHelperText
       component="p"
@@ -242,7 +246,7 @@ export function AppointmentPickerField<T extends Appointment>({
             locale={locale}
             onAppointmentSelected={onAppointmentSelected}
           />
-          {field.helperText != null &&
+          {field.helperText !== undefined &&
             (field.helperText !== error || !hasCalendarError) && (
               <FormHelperText component="p" sx={{ my: 1 }} aria-live="polite">
                 {field.helperText}
@@ -261,7 +265,7 @@ function DefaultLayout({
   calendarError,
   appointmentList,
 }: AppointmentPickerLayoutProps) {
-  const givenSx = sx == null ? [] : sx instanceof Array ? sx : [sx];
+  const givenSx = sx === undefined ? [] : sx instanceof Array ? sx : [sx];
   const sxProps = [{ margin: 0, padding: 0, border: 0 }, ...givenSx];
   return (
     <Stack

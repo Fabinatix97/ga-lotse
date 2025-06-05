@@ -14,7 +14,7 @@ import { OptionalHelperText } from "./OptionalHelperText";
 function UnstyledFieldSetRow(props: Omit<BoxProps, "component">) {
   return <Row {...props} component="fieldset" />;
 }
-export const FieldSetRow = styled(UnstyledFieldSetRow)(() => ({
+const FieldSetRow = styled(UnstyledFieldSetRow)(() => ({
   margin: 0,
   padding: 0,
   border: "none",
@@ -35,7 +35,7 @@ export function FieldSetControl({
   const rootClass = getFormControlUtilityClass("root");
   const errorClass = getFormControlUtilityClass("error");
   const className =
-    fieldSetProps.className != null
+    fieldSetProps.className !== undefined
       ? `${rootClass} ${fieldSetProps.className}`
       : rootClass;
 

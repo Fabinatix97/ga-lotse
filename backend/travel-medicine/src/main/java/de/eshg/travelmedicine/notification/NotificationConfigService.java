@@ -45,7 +45,7 @@ public class NotificationConfigService extends EshgConfigurationService<Notifica
   public void updateNotificationConfig(NotificationConfig notificationConfigUpdate) {
     NotificationConfig persistentConfig = getConfig();
     persistentConfig.setInitialized(true);
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "notificationConfig",
         getRelevantFieldsForLogging(persistentConfig),
         getRelevantFieldsForLogging(notificationConfigUpdate));
@@ -67,7 +67,7 @@ public class NotificationConfigService extends EshgConfigurationService<Notifica
   }
 
   @Override
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(
         CONFIGURATION_ENDPOINT,
         getConfig().isInitialized()

@@ -22,8 +22,8 @@ import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsReques
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -69,9 +69,9 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.metamodel.SingularAttribute;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Year;
 import java.util.Collection;
 import java.util.List;
@@ -95,7 +95,7 @@ public class StiProtectionProcedureService {
   private final Clock clock;
   private final AuditLogger auditLogger;
   private final AnonymousIdentificationDocumentService documentService;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService;
   private final SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
@@ -107,7 +107,7 @@ public class StiProtectionProcedureService {
       Clock clock,
       AuditLogger auditLogger,
       AnonymousIdentificationDocumentService documentService,
-      DepartmentClient departmentClient,
+      DepartmentLogoClient departmentLogoClient,
       StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService,
       SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
@@ -117,7 +117,7 @@ public class StiProtectionProcedureService {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.documentService = documentService;
-    this.departmentClient = departmentClient;
+    this.departmentLogoClient = departmentLogoClient;
     this.stiConsultationDepartmentInfoService = stiConsultationDepartmentInfoService;
     this.sexWorkDepartmentInfoService = sexWorkDepartmentInfoService;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
@@ -343,7 +343,7 @@ public class StiProtectionProcedureService {
     if (date == null) {
       return null;
     }
-    return atStartOfDay(date).plus(Duration.ofDays(1)).minusSeconds(1);
+    return date.atTime(LocalTime.MAX).atZone(clock.getZone()).toInstant();
   }
 
   private Specification<StiProtectionProcedure> orderBy(
@@ -415,7 +415,7 @@ public class StiProtectionProcedureService {
     TimeRange timeRange = toAppointmentTimeRange(procedure);
     Department department = getRelavantDepartmentInfo(procedure);
     String documentDate = toDocumentDate(clock.instant());
-    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
     String accessCode = getAccessCode(procedure);
     String qrCode = QrCodes.qrCode(citizenPortalUrl, procedure.getConcern(), accessCode);
     String appointmentUrl = AppointmentUrls.url(citizenPortalUrl, procedure.getConcern());

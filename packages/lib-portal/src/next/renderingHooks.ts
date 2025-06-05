@@ -11,7 +11,7 @@ import { doNothing } from "remeda";
 /**
  * Returns true only when running on the client without causing hydration mismatches
  */
-export function useIsClient() {
+function useIsClient() {
   return useSyncExternalStore(
     emptySubscribe,
     () => true, // client-side state

@@ -36,7 +36,7 @@ services:
       - 8093:8080
 
   auth-cache:
-    image: redis:7.2.4
+    image: redis:7.4.4-alpine3.21
     ports:
       - 6379:6379
     command: redis-server --requirepass redis_secret
@@ -68,8 +68,11 @@ services:
       - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
       - de.eshg.business-modules.clients[MEDS_ABROAD].url=http://meds-abroad:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
+      - de.eshg.base.svg-sanitizer-base-url=http://svg-sanitizer:8080
     depends_on:
       keycloak:
+        condition: service_healthy
+      svg-sanitizer:
         condition: service_healthy
       base-db:
         condition: service_healthy
@@ -226,19 +229,6 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
-      - de.eshg.department-info.use-department-info-from-base-module=false
-      - de.eshg.department-info.name=Travel Medicine Department
-      - de.eshg.department-info.abbreviation=TMD
-      - de.eshg.department-info.street=Wanderluststraße
-      - de.eshg.department-info.houseNumber=202
-      - de.eshg.department-info.postalCode=12345
-      - de.eshg.department-info.city=Wandern Stadt
-      - de.eshg.department-info.country=DE
-      - de.eshg.department-info.phoneNumber=+49 123 12345678
-      - de.eshg.department-info.homepage=www.travel-medicine.de
-      - de.eshg.department-info.email=travel@medicine.de
-      - de.eshg.travel-medicine.notification.fromAddress=info.reisemedizin@stadt-frankfurt.de
-      - de.eshg.travel-medicine.notification.greeting=Ihr Impfberatungsteam der Stadt Frankfurt
     depends_on:
       travel-medicine-db:
         condition: service_healthy
@@ -571,17 +561,6 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
-      - de.eshg.department-info.use-department-info-from-base-module=false
-      - de.eshg.department-info.name=Amtsärztlicher Dienst
-      - de.eshg.department-info.abbreviation=TMD
-      - de.eshg.department-info.street=Wanderluststraße
-      - de.eshg.department-info.houseNumber=202
-      - de.eshg.department-info.postalCode=12345
-      - de.eshg.department-info.city=Wandern Stadt
-      - de.eshg.department-info.country=DE
-      - de.eshg.department-info.phoneNumber=+49 123 12345678
-      - de.eshg.department-info.homepage=www.oms.de
-      - de.eshg.department-info.email=gutachten@oms.de
       - de.eshg.official-medical-service.concerns.config=classpath:$${de.eshg.official-medical-service.concerns.templates.path}/concerns.test.yaml
     depends_on:
       official-medical-service-db:
@@ -626,3 +605,8 @@ services:
       POSTGRES_DB: meds_abroad
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword
+
+  svg-sanitizer:
+    image: ga-lotse/svg-sanitizer
+    ports:
+      - 8101:8080

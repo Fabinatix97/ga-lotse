@@ -12,12 +12,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import java.util.List;
-import java.util.SequencedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-public abstract class EshgConfigurationService<T extends BaseEntity> {
+public abstract class EshgConfigurationService<T extends BaseEntity>
+    implements ConfigurationStatusAware {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -33,8 +33,6 @@ public abstract class EshgConfigurationService<T extends BaseEntity> {
   }
 
   protected abstract T getInitialConfiguration() throws Exception;
-
-  protected abstract SequencedMap<String, ConfigurationStatus> getConfigurationStatus();
 
   protected T getConfig() {
     return transactionHelper.executeInTransaction(

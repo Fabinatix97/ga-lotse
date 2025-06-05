@@ -21,7 +21,6 @@ import de.eshg.lib.appointmentblock.DayOfWeekDtoMapper;
 import de.eshg.lib.appointmentblock.api.*;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.keycloak.TechnicalGroup;
@@ -68,8 +67,6 @@ public class AppointmentBlockGroupsPopulator
       @Qualifier(TECHNICAL_GROUP_PHYSICIANS) Optional<TechnicalGroup> groupPhysicians,
       @Qualifier(TECHNICAL_GROUP_MFAS) Optional<TechnicalGroup> groupMfas,
       @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants,
-      @SuppressWarnings("unused") // Used as dependency
-          CreateAppointmentTypeTask createAppointmentTypeTask,
       UserApi userApi,
       ContactApi contactApi,
       BaseTestHelperApi baseTestHelperApi) {
@@ -136,7 +133,7 @@ public class AppointmentBlockGroupsPopulator
 
     CreateDailyAppointmentBlockGroupRequest request =
         new CreateDailyAppointmentBlockGroupRequest(
-            AppointmentTypeMapper.toInterfaceType(type),
+            List.of(AppointmentTypeMapper.toInterfaceType(type)),
             parallelExaminations,
             List.of(new CreateDailyAppointmentBlockDto(start, end, List.of(dayOfWeek))),
             physicianIds,

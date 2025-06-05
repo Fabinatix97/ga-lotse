@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@eshg/base-api": "workspace:*",
-    "@eshg/meds-abroad-api": "workspace:*",
     "@eshg/lib-employee-portal": "workspace:*",
     "@eshg/lib-portal": "workspace:*",
+    "@eshg/meds-abroad-api": "workspace:*",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",
     "@tanstack/react-query": "catalog:common",

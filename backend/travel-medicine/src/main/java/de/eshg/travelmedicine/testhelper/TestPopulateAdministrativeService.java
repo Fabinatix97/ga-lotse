@@ -330,7 +330,7 @@ public class TestPopulateAdministrativeService {
         appointmentBlockService
             .createDailyAppointmentBlocksForGroup(
                 new CreateDailyAppointmentBlockGroupRequest(
-                    AppointmentTypeDto.CONSULTATION,
+                    List.of(AppointmentTypeDto.CONSULTATION),
                     4,
                     List.of(
                         new CreateDailyAppointmentBlockDto(
@@ -352,7 +352,7 @@ public class TestPopulateAdministrativeService {
         appointmentBlockService
             .createDailyAppointmentBlocksForGroup(
                 new CreateDailyAppointmentBlockGroupRequest(
-                    AppointmentTypeDto.VACCINATION,
+                    List.of(AppointmentTypeDto.VACCINATION),
                     2,
                     List.of(
                         new CreateDailyAppointmentBlockDto(

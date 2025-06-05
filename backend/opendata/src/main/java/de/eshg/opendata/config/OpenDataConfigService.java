@@ -63,7 +63,7 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
   @Transactional(propagation = Propagation.REQUIRED)
   public void updateConfig(OpenDataConfiguration updateOpenDataConfiguration) {
     OpenDataConfiguration config = getConfig();
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "openDataConfiguration",
         getRelevantFieldsForLogging(config),
         getRelevantFieldsForLogging(updateOpenDataConfiguration));
@@ -78,7 +78,7 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, mapToConfigurationStatus(getConfig()));
   }
 

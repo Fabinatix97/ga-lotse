@@ -11,12 +11,19 @@ import { isBlankString } from "@eshg/lib-portal";
 import { childApiQueryKey } from "../../config/apiQueryKeys";
 import { useDentalApi } from "../../contexts/dental";
 
-export function useSearchInstitutionGroupsQuery(institutionId: string) {
+export function useSearchInstitutionGroupsQuery(
+  institutionId: string,
+  openGroupsOnly: boolean,
+) {
   const { childApi } = useDentalApi();
 
   return useQuery({
-    queryKey: childApiQueryKey(["getInstitutionGroups", institutionId]),
-    queryFn: () => childApi.getInstitutionGroups(institutionId),
+    queryKey: childApiQueryKey([
+      "getInstitutionGroups",
+      institutionId,
+      openGroupsOnly,
+    ]),
+    queryFn: () => childApi.getInstitutionGroups(institutionId, openGroupsOnly),
     select: getGroups,
     enabled: !isBlankString(institutionId),
   });

@@ -9,13 +9,12 @@ import { Box } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 // eslint-disable-next-line no-restricted-imports
 import NextLink from "next/link";
-import { ReactNode, Ref, forwardRef } from "react";
+import { ReactNode } from "react";
 
 import { useNavigation } from "./NavigationContext";
 
-function Navlink(
+export function NavigationLink(
   props: Omit<Parameters<typeof NextLink>[0], "style"> & { sx?: SxProps },
-  ref: Ref<HTMLAnchorElement>,
 ): ReactNode {
   const { tryNavigate } = useNavigation();
   return (
@@ -24,7 +23,6 @@ function Navlink(
       {...props}
       // Since we only use client-side requests, there is only a small performance advantage for the user when prefetching server components.
       // By deactivating this, we reduce the load on the Next.js backend and the reverse proxy.
-      ref={ref}
       prefetch={false}
       onClick={(e) => {
         e.preventDefault();
@@ -34,5 +32,3 @@ function Navlink(
     />
   );
 }
-
-export const NavigationLink = forwardRef(Navlink);

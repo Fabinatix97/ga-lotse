@@ -179,6 +179,17 @@ public abstract class BasePopulator<R> {
     return faker.random().nextDouble() < probabilityToBeNull ? null : valueProvider.apply(faker);
   }
 
+  protected static <E> List<E> optionalList(Faker faker, List<E> list, double probabilityToBeNull) {
+    return optionalList(faker, ignored -> list, probabilityToBeNull);
+  }
+
+  protected static <E> List<E> optionalList(
+      Faker faker, Function<Faker, List<E>> valueProvider, double probabilityToBeNull) {
+    return faker.random().nextDouble() < probabilityToBeNull
+        ? List.of()
+        : valueProvider.apply(faker);
+  }
+
   protected static Function<Faker, CountryCode> randomCountry() {
     return BasePopulator::randomCountry;
   }

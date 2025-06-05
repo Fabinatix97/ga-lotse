@@ -20,12 +20,6 @@ export {
 } from "./helpers/searchParams";
 
 export {
-  contentSecurityPolicyHeaderMiddleware,
-  getNonceFromHeader,
-} from "./next/contentSecurityPolicyHeaderMiddleware";
-export { redirectToPublicUrlMiddleware } from "./next/redirectToPublicUrlMiddleware";
-
-export {
   DeploymentTypeSchema,
   EnvironmentTypeSchema,
   NodeEnvSchema,

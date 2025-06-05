@@ -1403,10 +1403,6 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "employeeList" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
                   "identificationDocument" : {
                     "type" : "string",
                     "format" : "binary"
@@ -1421,6 +1417,8 @@
                   "procedure" : {
                     "oneOf" : [ {
                       "$ref" : "#/components/schemas/CreateApplicantChangeRequest"
+                    }, {
+                      "$ref" : "#/components/schemas/CreateEmployeeChangeRequest"
                     }, {
                       "$ref" : "#/components/schemas/CreateFullChangeRequest"
                     }, {
@@ -1466,10 +1464,6 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
-                  "employeeList" : {
-                    "type" : "string",
-                    "format" : "binary"
-                  },
                   "identificationDocument" : {
                     "type" : "string",
                     "format" : "binary"
@@ -1484,6 +1478,8 @@
                   "procedure" : {
                     "oneOf" : [ {
                       "$ref" : "#/components/schemas/CreateApplicantChangeRequest"
+                    }, {
+                      "$ref" : "#/components/schemas/CreateEmployeeChangeRequest"
                     }, {
                       "$ref" : "#/components/schemas/CreateFullChangeRequest"
                     }, {
@@ -1638,6 +1634,33 @@
                 "schema" : {
                   "type" : "string",
                   "format" : "uuid"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "MedicalRegistry" ]
+      }
+    },
+    "/medical-registry-entries/{procedureId}/confirm-info" : {
+      "get" : {
+        "operationId" : "getConfirmInfo",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfirmInfoResponse"
                 }
               }
             },
@@ -1807,67 +1830,6 @@
       }
     },
     "/procedures/recent" : {
-      "get" : {
-        "operationId" : "getRecentProcedures",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "userId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureType",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureType"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureStatus",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureStatus"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "required" : false,
-          "schema" : {
-            "maximum" : 200,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRecentProceduresResponse"
-                }
-              }
-            },
-            "description" : "the users recent procedures"
-          }
-        },
-        "summary" : "Get recent procedures for user",
-        "tags" : [ "Procedure" ]
-      }
-    },
-    "/procedures/recent/self" : {
       "get" : {
         "operationId" : "getSelfRecentProcedures",
         "parameters" : [ {
@@ -3358,9 +3320,15 @@
         "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "ConfirmProcedureRequest" : {
-        "required" : [ "version" ],
+        "required" : [ "employeeChanges", "version" ],
         "type" : "object",
         "properties" : {
+          "employeeChanges" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ResolvedEmployeeChange"
+            }
+          },
           "practiceReferenceFacility" : {
             "$ref" : "#/components/schemas/PracticeReferenceFacility"
           },
@@ -3497,17 +3465,54 @@
           }
         }
       },
-      "CreateFullChangeRequest" : {
-        "required" : [ "applicant", "consentToPrivacyPolicy", "employeesEmployed", "professionInformation", "requestForWrittenConfirmation", "typeOfFullChange" ],
+      "CreateEmployeeChange" : {
+        "required" : [ "changeType", "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "changeType" : {
+            "$ref" : "#/components/schemas/EmployeeChangeType"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "CreateEmployeeChangeRequest" : {
+        "required" : [ "applicant", "consentToPrivacyPolicy", "employeeChanges", "requestForWrittenConfirmation" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/CreateProcedureRequest"
         }, {
           "type" : "object",
           "properties" : {
-            "employeesEmployed" : {
-              "type" : "boolean"
-            },
+            "employeeChanges" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/CreateEmployeeChange"
+              }
+            }
+          }
+        } ]
+      },
+      "CreateFullChangeRequest" : {
+        "required" : [ "applicant", "consentToPrivacyPolicy", "professionInformation", "requestForWrittenConfirmation", "typeOfFullChange" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CreateProcedureRequest"
+        }, {
+          "type" : "object",
+          "properties" : {
             "practice" : {
               "$ref" : "#/components/schemas/CreatePractice"
             },
@@ -3607,16 +3612,13 @@
         }
       },
       "CreatePracticeChangeRequest" : {
-        "required" : [ "applicant", "consentToPrivacyPolicy", "employeesEmployed", "practice", "requestForWrittenConfirmation", "typeOfPracticeChange" ],
+        "required" : [ "applicant", "consentToPrivacyPolicy", "practice", "requestForWrittenConfirmation", "typeOfPracticeChange" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/CreateProcedureRequest"
         }, {
           "type" : "object",
           "properties" : {
-            "employeesEmployed" : {
-              "type" : "boolean"
-            },
             "practice" : {
               "$ref" : "#/components/schemas/CreatePractice"
             },
@@ -3880,6 +3882,73 @@
             }
           }
         } ]
+      },
+      "Employee" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "EmployeeChange" : {
+        "required" : [ "changeType", "dateOfBirth", "employeeChangeId", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "changeType" : {
+            "$ref" : "#/components/schemas/EmployeeChangeType"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "employeeChangeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "EmployeeChangeType" : {
+        "type" : "string",
+        "enum" : [ "ADD", "REMOVE" ]
+      },
+      "EmployeeChoice" : {
+        "required" : [ "employeeChange", "personCandidates" ],
+        "type" : "object",
+        "properties" : {
+          "employeeChange" : {
+            "$ref" : "#/components/schemas/EmployeeChange"
+          },
+          "personCandidates" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonCandidate"
+            }
+          }
+        }
       },
       "EmploymentStatus" : {
         "type" : "string",
@@ -4254,6 +4323,46 @@
           },
           "moduleState" : {
             "$ref" : "#/components/schemas/ConfigurationStatus"
+          }
+        }
+      },
+      "GetConfirmInfoResponse" : {
+        "required" : [ "employeeChoicesByProcedure", "matchingReferenceFacilities", "matchingReferencePersons", "proceduresByReferencePerson", "version" ],
+        "type" : "object",
+        "properties" : {
+          "employeeChoicesByProcedure" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/EmployeeChoice"
+              }
+            }
+          },
+          "matchingReferenceFacilities" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetReferenceFacilityResponse"
+            }
+          },
+          "matchingReferencePersons" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetReferencePersonResponse"
+            }
+          },
+          "proceduresByReferencePerson" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/MedicalRegistryEntrySearchResult"
+              }
+            }
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -4676,7 +4785,7 @@
         }
       },
       "GetProcedureConfirmedResponse" : {
-        "required" : [ "applicant", "consentToPrivacyPolicy", "employeesEmployed", "id", "practices", "procedureType", "professionInformation", "requestForWrittenConfirmation", "status", "version" ],
+        "required" : [ "applicant", "consentToPrivacyPolicy", "employees", "id", "practices", "procedureType", "professionInformation", "requestForWrittenConfirmation", "status", "version" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/GetProcedureResponse"
@@ -4689,8 +4798,11 @@
             "consentToPrivacyPolicy" : {
               "type" : "boolean"
             },
-            "employeesEmployed" : {
-              "type" : "boolean"
+            "employees" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/Employee"
+              }
             },
             "id" : {
               "type" : "string",
@@ -4722,7 +4834,7 @@
         } ]
       },
       "GetProcedureDraftResponse" : {
-        "required" : [ "applicant", "consentToPrivacyPolicy", "id", "practices", "procedureType", "requestForWrittenConfirmation", "status", "typeOfChange", "version" ],
+        "required" : [ "applicant", "consentToPrivacyPolicy", "employeeChanges", "id", "practices", "procedureType", "requestForWrittenConfirmation", "status", "typeOfChange", "version" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/GetProcedureResponse"
@@ -4735,8 +4847,11 @@
             "consentToPrivacyPolicy" : {
               "type" : "boolean"
             },
-            "employeesEmployed" : {
-              "type" : "boolean"
+            "employeeChanges" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/EmployeeChange"
+              }
             },
             "id" : {
               "type" : "string",
@@ -4920,6 +5035,72 @@
             "items" : {
               "$ref" : "#/components/schemas/Procedure"
             }
+          }
+        }
+      },
+      "GetReferenceFacilityResponse" : {
+        "required" : [ "contactPersons", "dataOrigin", "emailAddresses", "id", "name", "phoneNumbers", "version" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "contactPersons" : {
+            "type" : "array",
+            "description" : "A list of contact persons of the Facility.",
+            "items" : {
+              "$ref" : "#/components/schemas/FacilityContactPerson"
+            }
+          },
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "description" : "A list of email addresses of the Facility.",
+            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the Reference Facility. This Id MUST NOT be persisted in any other database.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "name" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The name of the Facility.",
+            "example" : "Example Facility"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "description" : "A list of telephone numbers of the Facility.",
+            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
           }
         }
       },
@@ -5683,9 +5864,37 @@
           }
         } ]
       },
+      "PersonCandidate" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "employeeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "referencePersonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "PersonType" : {
         "type" : "string",
-        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL" ]
+        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
       },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
@@ -6234,6 +6443,38 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "ResolvedEmployeeChange" : {
+        "required" : [ "dateOfBirth", "employeeChangeId", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "employeeChangeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "employeeId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "referencePersonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "Salutation" : {
         "type" : "string",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
@@ -6513,7 +6754,7 @@
       },
       "TypeOfChange" : {
         "type" : "string",
-        "enum" : [ "NEW_REGISTRATION", "SECOND_PRACTICE", "RE_REGISTRATION", "CHANGE_OF_REGISTRATION", "CHANGE_OF_NAME", "RELOCATION", "DEREGISTRATION", "OTHER" ]
+        "enum" : [ "NEW_REGISTRATION", "SECOND_PRACTICE", "RE_REGISTRATION", "CHANGE_OF_REGISTRATION", "CHANGE_OF_NAME", "RELOCATION", "DEREGISTRATION", "CHANGE_OF_EMPLOYEES", "OTHER" ]
       },
       "TypeOfFullChange" : {
         "type" : "string",

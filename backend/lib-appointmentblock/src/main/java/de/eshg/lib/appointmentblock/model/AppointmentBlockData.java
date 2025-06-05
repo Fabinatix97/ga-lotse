@@ -6,11 +6,12 @@
 package de.eshg.lib.appointmentblock.model;
 
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import java.time.Duration;
 import java.time.Instant;
 
 public record AppointmentBlockData(
     AppointmentBlock appointmentBlock,
     Instant start,
     Instant end,
-    long numberOfFreeAppointments,
-    long numberOfBookedAppointments) {}
+    Duration freeDuration,
+    Duration bookedDuration) {}

@@ -10,7 +10,7 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 import de.eshg.medsabroad.MedsAbroadController;
 import de.eshg.medsabroad.api.CreateMedsAbroadProcedureRequest;
 import de.eshg.medsabroad.api.CreateMedsAbroadProcedureResponse;
-import de.eshg.medsabroad.api.PersonDto;
+import de.eshg.medsabroad.api.CreatePersonDto;
 import de.eshg.medsabroad.persistence.database.MedsAbroadProcedure;
 import de.eshg.medsabroad.persistence.database.MedsAbroadProcedureRepository;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -21,7 +21,6 @@ import de.eshg.testhelper.population.PopulationProperties;
 import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import net.datafaker.Faker;
 
 @PopulatorComponent
@@ -67,17 +66,14 @@ public class MedsAbroadProcedurePopulator extends BasePopulator<CreateMedsAbroad
 
   private CreateMedsAbroadProcedureResponse createMedsAbroadProcedure(Faker faker) {
     CreateMedsAbroadProcedureRequest request =
-        new CreateMedsAbroadProcedureRequest(
-            createPerson(faker),
-            clock.instant().plus(faker.random().nextInt(60), ChronoUnit.HOURS),
-            30);
+        new CreateMedsAbroadProcedureRequest(createPerson(faker), null, null);
     return medsAbroadController.createMedsAbroadProcedure(request);
   }
 
-  private PersonDto createPerson(Faker faker) {
+  private CreatePersonDto createPerson(Faker faker) {
     int age = faker.random().nextInt(19, 67);
     LocalDate birthDate =
         LocalDate.now(clock).minusYears(age).minusDays(faker.random().nextInt(400));
-    return new PersonDto(faker.name().firstName(), faker.name().lastName(), birthDate);
+    return new CreatePersonDto(faker.name().firstName(), faker.name().lastName(), birthDate);
   }
 }

@@ -11,7 +11,7 @@ import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.file.common.FileValidator;
 import de.eshg.file.common.ImageRewriter;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
@@ -77,7 +77,7 @@ public class InformationStatementService {
   private final PersonClient personClient;
   private final Clock clock;
   private final DepartmentInfoConfigService departmentInfoService;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final DocumentGenerator documentGenerator;
   private final SignatureRepository signatureRepository;
   private final ProgressEntryService progressEntryService;
@@ -94,7 +94,7 @@ public class InformationStatementService {
       PersonClient personClient,
       Clock clock,
       DepartmentInfoConfigService departmentInfoService,
-      DepartmentClient departmentClient,
+      DepartmentLogoClient departmentLogoClient,
       DocumentGenerator documentGenerator,
       SignatureRepository signatureRepository,
       ProgressEntryService progressEntryService,
@@ -114,7 +114,7 @@ public class InformationStatementService {
     this.personClient = personClient;
     this.clock = clock;
     this.departmentInfoService = departmentInfoService;
-    this.departmentClient = departmentClient;
+    this.departmentLogoClient = departmentLogoClient;
     this.documentGenerator = documentGenerator;
     this.signatureRepository = signatureRepository;
   }
@@ -319,7 +319,7 @@ public class InformationStatementService {
     InformationStatementPdfParameters pdfParameters =
         new InformationStatementPdfParameters(
             departmentInfoService.getDepartmentInfo(),
-            departmentClient.getDepartmentLogo(),
+            departmentLogoClient.getDepartmentLogo(),
             patient.firstName(),
             patient.lastName(),
             patient.dateOfBirth().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),

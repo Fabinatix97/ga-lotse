@@ -10,11 +10,11 @@
       ],
       "import": "./build/lib/index.js"
     },
-    "./redirects": {
+    "./server": {
       "types": [
-        "./build/types/src/redirects.d.ts"
+        "./build/types/src/server.d.ts"
       ],
-      "node": "./build/lib/redirects.js"
+      "node": "./build/lib/server.js"
     }
   },
   "dependencies": {

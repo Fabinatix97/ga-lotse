@@ -5,16 +5,9 @@
 
 package de.eshg.base.config;
 
-import static de.eshg.base.config.MarkdownMapper.mapToAccessibilityInfo;
-import static de.eshg.base.config.MarkdownMapper.mapToAcknowledgementInfo;
-import static de.eshg.base.config.MarkdownMapper.mapToContactInfo;
-import static de.eshg.base.config.MarkdownMapper.mapToImprintInfo;
-import static de.eshg.base.config.MarkdownMapper.mapToPrivacyInfo;
 import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
 
 import com.google.common.annotations.VisibleForTesting;
-import de.eshg.base.config.api.CitizenAndEmployeeMarkdownInfo;
-import de.eshg.base.config.api.InternationalMarkdownInfo;
 import de.eshg.base.department.CitizenPortalMarkdownName;
 import de.eshg.base.department.EmployeePortalMarkdownName;
 import de.eshg.base.department.MarkdownName;
@@ -24,17 +17,20 @@ import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
 import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.persistence.TransactionHelper;
-import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.rest.service.i18n.Language;
+import de.eshg.rest.service.security.CurrentUserHelper;
+import de.eshg.svgsanitizer.SvgSanitizerApi;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 
 @Component
 public class DepartmentConfigurationService
@@ -51,15 +47,24 @@ public class DepartmentConfigurationService
 
   private final InitialDepartmentConfiguration initialDepartmentConfiguration;
   private final AuditLogWriter auditLogWriter;
+  private final AuditLogger auditLogger;
+  private final BaseConfigurationProperties baseConfigurationProperties;
+  private final SvgValidations svgValidations;
 
   public DepartmentConfigurationService(
       InitialDepartmentConfiguration initialDepartmentConfiguration,
       TransactionHelper transactionHelper,
       AuditLogWriter auditLogWriter,
-      EntityManager entityManager) {
+      EntityManager entityManager,
+      AuditLogger auditLogger,
+      BaseConfigurationProperties baseConfigurationProperties,
+      SvgValidations svgValidations) {
     super(entityManager, transactionHelper, DepartmentConfiguration.class);
     this.initialDepartmentConfiguration = initialDepartmentConfiguration;
     this.auditLogWriter = auditLogWriter;
+    this.auditLogger = auditLogger;
+    this.baseConfigurationProperties = baseConfigurationProperties;
+    this.svgValidations = svgValidations;
   }
 
   @Override
@@ -79,29 +84,19 @@ public class DepartmentConfigurationService
     return getConfig().getMunicipalityDirectory().getContent();
   }
 
-  public byte[] getMarkdownWithGermanFallback(MarkdownName markdownName, Language language) {
-    MultiLangDocument multiLangDocument = getMarkdown(markdownName);
-    if (language == Language.ENGLISH && multiLangDocument.getEn() != null) {
-      return multiLangDocument.getEn().getContent();
-    } else {
-      return multiLangDocument.getDe().getContent();
-    }
+  public void updateStreetAndMunicipalityDirectory(
+      Document streetDirectory, Document municipalityDirectory) {
+    DepartmentConfiguration config = getConfig();
+    auditLogWriter.writeChangeToAuditLog(
+        "departmentConfiguration",
+        getRelevantFieldsForLogging(config.getStreetDirectory(), config.getMunicipalityDirectory()),
+        getRelevantFieldsForLogging(streetDirectory, municipalityDirectory));
+    config.setStreetDirectory(streetDirectory);
+    config.setMunicipalityDirectory(municipalityDirectory);
+    config.setStreetAndMunicipalityDirectoriesInitialized(true);
   }
 
-  public byte[] getSpecificMarkdownOrThrow(MarkdownName markdownName, Language language) {
-    Document document =
-        switch (language) {
-          case Language.GERMAN -> getMarkdown(markdownName).getDe();
-          case Language.ENGLISH -> getMarkdown(markdownName).getEn();
-        };
-    if (document != null) {
-      return document.getContent();
-    } else {
-      throw new NotFoundException("Markdown %s (%s) not found".formatted(markdownName, language));
-    }
-  }
-
-  private MultiLangDocument getMarkdown(MarkdownName markdownName) {
+  public MultiLangDocument getMarkdown(MarkdownName markdownName) {
     return switch (markdownName) {
       case CitizenPortalMarkdownName citizenPortalMarkdownName ->
           switch (citizenPortalMarkdownName) {
@@ -120,24 +115,32 @@ public class DepartmentConfigurationService
     };
   }
 
-  public CitizenAndEmployeeMarkdownInfo getAccessibilityInfo() {
-    return mapToAccessibilityInfo(getConfig());
-  }
+  public void updateLogoSvg(Resource logoSvg) throws IOException {
+    String sanitizedSvg =
+        SvgSanitizerApi.createClient(baseConfigurationProperties.svgSanitizerBaseUrl())
+            .sanitize(new String(logoSvg.getContentAsByteArray(), StandardCharsets.UTF_8));
 
-  public InternationalMarkdownInfo getAcknowledgementsInfo() {
-    return mapToAcknowledgementInfo(getConfig());
-  }
+    byte[] sanitizedSvgBytes = sanitizedSvg.getBytes(StandardCharsets.UTF_8);
+    svgValidations.validateSvg(sanitizedSvgBytes);
+    svgValidations.validateThatPdfGenerationIsPossible(sanitizedSvgBytes);
 
-  public InternationalMarkdownInfo getContactInfo() {
-    return mapToContactInfo(getConfig());
-  }
+    DepartmentConfiguration departmentConfiguration = getConfig();
+    String oldLogoMd5 = DigestUtils.md5DigestAsHex(departmentConfiguration.getLogo().getContent());
+    departmentConfiguration.setLogo(mapToDocument(sanitizedSvgBytes));
+    departmentConfiguration.setLogoInitialized(true);
 
-  public InternationalMarkdownInfo getImprintInfo() {
-    return mapToImprintInfo(getConfig());
-  }
+    String newLogoMd5 = DigestUtils.md5DigestAsHex(sanitizedSvgBytes);
 
-  public CitizenAndEmployeeMarkdownInfo getPrivacyInfo() {
-    return mapToPrivacyInfo(getConfig());
+    auditLogger.log(
+        "Konfiguration",
+        "Änderung der Logo SVG Datei",
+        Map.of(
+            "User ID",
+            CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-"),
+            "MD5 alt",
+            oldLogoMd5,
+            "MD5 neu",
+            newLogoMd5));
   }
 
   public void updateAccessibility(
@@ -188,7 +191,7 @@ public class DepartmentConfigurationService
 
   private void update(
       MultiLangDocument persistedDocument, MultiLangDocument documentUpdate, String loggingPrefix) {
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "departmentConfiguration." + loggingPrefix,
         getRelevantFieldsForLogging(persistedDocument),
         getRelevantFieldsForLogging(documentUpdate));
@@ -224,7 +227,7 @@ public class DepartmentConfigurationService
   }
 
   @Override
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     DepartmentConfiguration config = getConfig();
     return MapUtils.orderedMapOfEntries(
         Map.entry(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE),
@@ -236,12 +239,14 @@ public class DepartmentConfigurationService
   }
 
   @VisibleForTesting
-  void setNotInitialized() {
+  public void setNotInitialized() {
     getConfig().setAccessibilityStatementMarkdownsInitialized(false);
     getConfig().setAcknowledgementsMarkdownsInitialized(false);
     getConfig().setContactMarkdownsInitialized(false);
     getConfig().setImprintMarkdownsInitialized(false);
     getConfig().setPrivacyPolicyMarkdownsInitialized(false);
+    getConfig().setLogoInitialized(false);
+    getConfig().setStreetAndMunicipalityDirectoriesInitialized(false);
   }
 
   private Map.Entry<String, ConfigurationStatus> getAccessibilityStatementConfigurationStatus(
@@ -303,8 +308,12 @@ public class DepartmentConfigurationService
   }
 
   private static Document mapToDocument(Resource resource) throws IOException {
+    return mapToDocument(resource.getContentAsByteArray());
+  }
+
+  private static Document mapToDocument(byte[] bytes) {
     Document document = new Document();
-    document.setContent(resource.getContentAsByteArray());
+    document.setContent(bytes);
     return document;
   }
 

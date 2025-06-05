@@ -10,3 +10,4 @@ export { resolveSideNavigationItems } from "./shared/sideNavigationItem";
 export { moduleUserGroup } from "./shared/moduleUserGroup";
 
 export { MedsAbroadOverviewPage } from "./pages/MedsAbroadOverviewPage";
+export { MedsAbroadApiClientProvider as MedsAbroadProvider } from "./contexts/MedsAbroadApi";

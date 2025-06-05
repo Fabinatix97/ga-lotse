@@ -8,6 +8,7 @@
 import { EditOutlined } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { useReducer } from "react";
 
 import {
   ActionsMenu,
@@ -18,21 +19,34 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Row, formatDate, formatDateTime } from "@eshg/lib-portal";
+import { ApiMedsAbroadProcedure } from "@eshg/meds-abroad-api";
 
+import { useGetMedsAbroadProceduresTablePage } from "../../../api/queries/procedures";
 import {
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_VALUES,
 } from "../../../shared/constants";
 import { isProcedureOpen } from "../../../shared/helpers";
 import { routes } from "../../../shared/routes";
-import { ApiMedsAbroadProcedureOverview } from "../../../shared/tempApiTypes";
+
+import {
+  MedsAbroadProceduresTableControls,
+  TableControlName,
+  reduceActiveTableControl,
+} from "./MedsAbroadProceduresTableControls";
+import {
+  MedsAbroadProceduresTableFilterButton,
+  MedsAbroadProceduresTableFilters,
+  useProceduresFilterState,
+  useProceduresFilters,
+} from "./MedsAbroadProceduresTableFilters";
 
 const initialSorting: ColumnSort = {
   id: "createdAt",
   desc: true,
 };
 
-const columnHelper = createColumnHelper<ApiMedsAbroadProcedureOverview>();
+const columnHelper = createColumnHelper<ApiMedsAbroadProcedure>();
 
 function getProceduresColumns() {
   return [
@@ -54,7 +68,7 @@ function getProceduresColumns() {
       enableSorting: true,
       meta: { width: 155, canNavigate: { parentRow: true } },
     }),
-    columnHelper.accessor("status", {
+    columnHelper.accessor("procedureStatus", {
       header: "Status",
       cell: ({ getValue }) => (
         <Chip color={PROCEDURE_STATUS_COLORS[getValue()]}>
@@ -67,10 +81,10 @@ function getProceduresColumns() {
     columnHelper.accessor("appointmentStart", {
       header: "Termin",
       cell: ({ getValue }) => formatDateTime(getValue()),
-      enableSorting: true,
+      enableSorting: false,
       meta: { width: 144, canNavigate: { parentRow: true } },
     }),
-    columnHelper.accessor("isPayed", {
+    columnHelper.accessor("certificatePaid", {
       header: "Bezahlt",
       cell: ({ getValue }) => (getValue() ? "Ja" : "Nein"),
       enableSorting: false,
@@ -89,9 +103,7 @@ function getProceduresColumns() {
         <Row justifyContent="flex-end">
           <ActionsMenu
             actionItems={
-              isProcedureOpen(procedure)
-                ? openActions(procedure.id)
-                : openActions(procedure.id) //TODO: Replace with closedActions
+              isProcedureOpen(procedure) ? openActions(procedure.id) : []
             }
           />
         </Row>
@@ -112,6 +124,14 @@ function openActions(procedureId: string) {
 }
 
 export function MedsAbroadProceduresTable() {
+  const { setFilterSettingsVisible } = useProceduresFilterState();
+  const filters = useProceduresFilters();
+
+  const [activeTableControl, toggleActiveTableControl] = useReducer(
+    reduceActiveTableControl,
+    undefined,
+  );
+
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
@@ -119,13 +139,37 @@ export function MedsAbroadProceduresTable() {
     sortDirectionName: "sortOrder",
   });
 
-  //TODO: Replace with getMedsAbroadProcedureTablePage Query
-  const stiProcedures = [] as ApiMedsAbroadProcedureOverview[];
-  const totalElements = 0;
-  const isLoading = false;
+  const {
+    medsAbroadProceduresData: {
+      procedures: medsAbroadProcedures,
+      totalElements,
+    },
+    isLoading,
+  } = useGetMedsAbroadProceduresTablePage({
+    filters,
+    page: tableControl.paginationProps,
+    sorting: tableControl.tableSorting,
+  });
+
+  function handleToggleActiveTableControl(tableControl: TableControlName) {
+    toggleActiveTableControl(tableControl);
+
+    if (tableControl === "personSearch") setFilterSettingsVisible(false);
+  }
 
   return (
-    <TablePage aria-label="Vorgänge" fullHeight>
+    <TablePage
+      aria-label="Vorgänge"
+      filterSettings={<MedsAbroadProceduresTableFilters />}
+      controls={
+        <MedsAbroadProceduresTableControls
+          activeTableControl={activeTableControl}
+          ToggleFilterButton={<MedsAbroadProceduresTableFilterButton />}
+          onToggleActiveTableControl={handleToggleActiveTableControl}
+        />
+      }
+      fullHeight
+    >
       <TableSheet
         loading={isLoading}
         footer={
@@ -136,7 +180,7 @@ export function MedsAbroadProceduresTable() {
         }
       >
         <DataTable
-          data={stiProcedures}
+          data={medsAbroadProcedures}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           columns={getProceduresColumns()}

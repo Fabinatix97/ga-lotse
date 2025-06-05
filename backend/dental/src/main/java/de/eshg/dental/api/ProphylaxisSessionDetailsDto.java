@@ -7,7 +7,6 @@ package de.eshg.dental.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
@@ -20,11 +19,11 @@ public record ProphylaxisSessionDetailsDto(
     @NotNull Instant dateAndTime,
     @NotNull @Valid InstitutionDto institution,
     String groupName,
-    @NotNull ProphylaxisTypeDto type,
+    ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     DentitionTypeDto dentitionType,
     FluoridationVarnishDto fluoridationVarnish,
     @NotNull ProphylaxisStatusDto status,
     @NotNull @Valid List<ProphylaxisSessionChildExaminationDto> participants,
-    @NotEmpty @Valid List<? extends PerformingPersonDto> dentists,
-    @NotEmpty @Valid List<? extends PerformingPersonDto> zfas) {}
+    @NotNull @Valid List<? extends PerformingPersonDto> dentists,
+    @NotNull @Valid List<? extends PerformingPersonDto> zfas) {}

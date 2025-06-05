@@ -17,4 +17,5 @@ public record InspFacilityDto(
     @NotNull UUID id,
     @NotNull @Valid GetFacilityFileStateResponse baseFacility,
     @NotNull boolean banned,
-    @Valid ObjectTypeDto objectType) {}
+    @Valid ObjectTypeDto objectType,
+    String fileNumber) {}

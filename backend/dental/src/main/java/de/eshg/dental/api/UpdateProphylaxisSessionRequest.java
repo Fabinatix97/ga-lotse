@@ -5,7 +5,6 @@
 
 package de.eshg.dental.api;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
@@ -16,12 +15,12 @@ public record UpdateProphylaxisSessionRequest(
     @NotNull UUID institutionId,
     @NotNull Instant dateAndTime,
     String groupName,
-    @NotNull ProphylaxisTypeDto type,
+    ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     DentitionTypeDto dentitionType,
     FluoridationVarnishDto fluoridationVarnish,
-    @NotEmpty List<UUID> dentistIds,
-    @NotEmpty List<UUID> zfaIds)
+    @NotNull List<UUID> dentistIds,
+    @NotNull List<UUID> zfaIds)
     implements ProphylaxisSessionRequest {
   public UpdateProphylaxisSessionRequest(
       Long version,

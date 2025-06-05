@@ -416,7 +416,7 @@ public class ProphylaxisSessionService {
     List<UUID> childIds =
         childUpdates.stream().map(UpdateChildDetailsInBulkRequest::childId).toList();
 
-    List<Child> children = childRepository.findAllByExternalIdsForUpdate(childIds);
+    List<Child> children = childRepository.findByExternalIdsForUpdate(childIds).toList();
     Map<UUID, ChildWithAugmentedData> augmentedChildren =
         childService.augmentWithChildData(children).stream()
             .collect(StreamUtil.toLinkedHashMap((child) -> child.child().getExternalId()));

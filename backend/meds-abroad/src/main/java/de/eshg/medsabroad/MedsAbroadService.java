@@ -16,6 +16,7 @@ import de.eshg.medsabroad.persistence.database.MedsAbroadProcedureRepository;
 import de.eshg.medsabroad.persistence.database.MedsAbroadTask;
 import de.eshg.medsabroad.persistence.database.Person;
 import de.eshg.medsabroad.persistence.support.MedsAbroadProcedureSpecification;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
@@ -43,6 +44,7 @@ public class MedsAbroadService {
 
   public MedsAbroadProcedure createProcedure() {
     MedsAbroadProcedure procedure = new MedsAbroadProcedure();
+    procedure.setCertificatePaid(false);
     procedure.setProcedureType(ProcedureType.MEDS_ABROAD);
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     procedure.addTask(createTask());
@@ -76,5 +78,38 @@ public class MedsAbroadService {
         CurrentUserHelper.getCurrentUserId(),
         Instant.now(clock));
     return task;
+  }
+
+  public void closeProcedure(MedsAbroadProcedure procedure) {
+    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+    if (procedureStatus.isOpen()) {
+      procedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+    } else {
+      throw unexpectedProcedureStatus(procedure.getExternalId(), procedureStatus);
+    }
+  }
+
+  public void cancelProcedure(MedsAbroadProcedure procedure) {
+    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+    if (procedureStatus.isOpen()) {
+      procedure.updateProcedureStatus(ProcedureStatus.ABORTED, clock, auditLogger);
+    } else {
+      throw unexpectedProcedureStatus(procedure.getExternalId(), procedureStatus);
+    }
+  }
+
+  public void reopenProcedure(MedsAbroadProcedure procedure) {
+    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+    if (!procedureStatus.isOpen()) {
+      procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    } else {
+      throw unexpectedProcedureStatus(procedure.getExternalId(), procedureStatus);
+    }
+  }
+
+  protected static BadRequestException unexpectedProcedureStatus(
+      UUID procedureId, ProcedureStatus procedureStatus) {
+    return new BadRequestException(
+        "%s: unexpected procedure status: %s".formatted(procedureId, procedureStatus));
   }
 }

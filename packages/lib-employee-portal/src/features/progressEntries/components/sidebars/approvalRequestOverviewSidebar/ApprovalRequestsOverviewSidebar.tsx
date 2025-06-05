@@ -8,26 +8,27 @@
 import { Button, Stack } from "@mui/joy";
 
 import { ButtonBar } from "../../../../../components/buttons/ButtonBar";
-import { Sidebar } from "../../../../drawer/components/Sidebar";
 import { SidebarActions } from "../../../../drawer/components/SidebarActions";
 import { SidebarContent } from "../../../../drawer/components/SidebarContent";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "../../../../drawer/hooks/useSidebar";
+import { DrawerProps } from "../../../../drawer/types/drawer";
 import { useGrantDeletionForAllRequests } from "../../../api/mutations/approvalRequest";
-import { useProgressEntriesContext } from "../../../contexts/progressEntries";
+import { useProgressEntriesConfig } from "../../../contexts/progressEntries";
 
 import { ApprovalRequestCard } from "./ApprovalRequestCard";
 
-interface ApprovalRequestOverviewProps {
-  open: boolean;
-  onClose: () => void;
+export function useApprovalRequestsOverviewSidebar(): UseSidebarResult {
+  return useSidebar({
+    component: ApprovalRequestsOverviewSidebar,
+  });
 }
 
-export function ApprovalRequestsOverviewSidebar({
-  open,
-  onClose,
-}: ApprovalRequestOverviewProps) {
-  const progressEntriesContext = useProgressEntriesContext();
+function ApprovalRequestsOverviewSidebar(props: DrawerProps) {
   const { approvalRequestApi, approvalRequestsResponse } =
-    progressEntriesContext.config;
+    useProgressEntriesConfig();
   const grantDeletionForAll =
     useGrantDeletionForAllRequests(approvalRequestApi);
   const { approvalRequests } = approvalRequestsResponse!;
@@ -37,7 +38,7 @@ export function ApprovalRequestsOverviewSidebar({
   }
 
   return (
-    <Sidebar open={open} onClose={onClose}>
+    <>
       <SidebarContent title={`Löschanfragen (${approvalRequests.length})`}>
         <Stack spacing={1}>
           {approvalRequests.map((approvalRequest) => (
@@ -52,7 +53,11 @@ export function ApprovalRequestsOverviewSidebar({
       <SidebarActions>
         <ButtonBar
           left={
-            <Button color="neutral" variant="soft" onClick={onClose}>
+            <Button
+              color="neutral"
+              variant="soft"
+              onClick={() => props.onClose()}
+            >
               Schließen
             </Button>
           }
@@ -63,6 +68,6 @@ export function ApprovalRequestsOverviewSidebar({
           }
         />
       </SidebarActions>
-    </Sidebar>
+    </>
   );
 }

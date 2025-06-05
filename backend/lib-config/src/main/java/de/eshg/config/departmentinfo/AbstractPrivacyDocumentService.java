@@ -76,7 +76,7 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
 
   protected MultiLangDocument updatePrivacyDocument(
       MultiLangDocument persistedDocument, MultiLangDocument documentUpdate) {
-    auditLogWriter.writeChangeToAuditlog(
+    auditLogWriter.writeChangeToAuditLog(
         "privacyDocumentsConfig",
         getRelevantFieldsForLogging(persistedDocument),
         getRelevantFieldsForLogging(documentUpdate));
@@ -87,7 +87,7 @@ public abstract class AbstractPrivacyDocumentService<T extends AbstractPrivacyDo
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     T config = getConfig();
     return MapUtils.orderedMapOf(
         ConfigurationEndpoint.PRIVACY_POLICY.name(),

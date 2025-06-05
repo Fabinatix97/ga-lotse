@@ -56,7 +56,7 @@ public class FacilityMapper {
   }
 
   public static InspFacilityDto fromAddFacilityResponse(
-      Facility facility, AddFacilityFileStateResponse baseFacility) {
+      Facility facility, AddFacilityFileStateResponse baseFacility, String fileNumber) {
     GetFacilityFileStateResponse baseFacilityFileStateResponse =
         new GetFacilityFileStateResponse(
             baseFacility.id(),
@@ -69,16 +69,17 @@ public class FacilityMapper {
             baseFacility.differentBillingAddress(),
             false,
             baseFacility.dataOrigin());
-    return fromGetFacilityResponse(facility, baseFacilityFileStateResponse);
+    return fromGetFacilityResponse(facility, baseFacilityFileStateResponse, fileNumber);
   }
 
   public static InspFacilityDto fromGetFacilityResponse(
-      Facility facility, GetFacilityFileStateResponse baseFacility) {
+      Facility facility, GetFacilityFileStateResponse baseFacility, String fileNumber) {
     return new InspFacilityDto(
         facility.getExternalId(),
         baseFacility,
         facility.isBanned(),
-        ObjectTypeMapper.toDto(facility.getObjectType()));
+        ObjectTypeMapper.toDto(facility.getObjectType()),
+        fileNumber);
   }
 
   static Facility facilityFrom(AddFacilityFileStateResponse baseFacility) {

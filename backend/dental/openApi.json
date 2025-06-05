@@ -654,6 +654,72 @@
         "tags" : [ "Child" ]
       }
     },
+    "/children/export/{institutionId}" : {
+      "get" : {
+        "operationId" : "exportChildData",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "institutionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "query",
+          "name" : "groupName",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "schoolYear",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Exports child data",
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/fluoridation-consent-bulk" : {
+      "put" : {
+        "operationId" : "updateFluoridationConsentInBulk",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateFluoridationConsentBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates fluoridation consent in bulk",
+        "tags" : [ "Child" ]
+      }
+    },
     "/children/groups-for-transition/{institutionId}" : {
       "get" : {
         "operationId" : "getGroupsForSchoolYearTransition",
@@ -800,6 +866,13 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }, {
+          "in" : "query",
+          "name" : "openGroupsOnly",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
           }
         } ],
         "responses" : {
@@ -1042,6 +1115,44 @@
           }
         },
         "summary" : "Updates the child related data",
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/{childId}/close" : {
+      "put" : {
+        "operationId" : "closeChild",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "childId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CloseChildRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ChildDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Closes the child",
         "tags" : [ "Child" ]
       }
     },
@@ -2113,67 +2224,6 @@
       }
     },
     "/procedures/recent" : {
-      "get" : {
-        "operationId" : "getRecentProcedures",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "userId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureType",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureType"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureStatus",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureStatus"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "required" : false,
-          "schema" : {
-            "maximum" : 200,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRecentProceduresResponse"
-                }
-              }
-            },
-            "description" : "the users recent procedures"
-          }
-        },
-        "summary" : "Get recent procedures for user",
-        "tags" : [ "Procedure" ]
-      }
-    },
-    "/procedures/recent/self" : {
       "get" : {
         "operationId" : "getSelfRecentProcedures",
         "parameters" : [ {
@@ -4180,6 +4230,16 @@
           }
         }
       },
+      "CloseChildRequest" : {
+        "required" : [ "version" ],
+        "type" : "object",
+        "properties" : {
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "CloseChildrenBulkRequest" : {
         "required" : [ "childIds" ],
         "type" : "object",
@@ -4442,7 +4502,7 @@
         }
       },
       "CreateProphylaxisSessionRequest" : {
-        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "type", "zfaIds" ],
+        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "zfaIds" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -4450,7 +4510,6 @@
             "format" : "date-time"
           },
           "dentistIds" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -4477,7 +4536,6 @@
             "$ref" : "#/components/schemas/ProphylaxisType"
           },
           "zfaIds" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -4706,7 +4764,7 @@
         } ]
       },
       "Examination" : {
-        "required" : [ "dateAndTime", "id", "isFluoridation", "isScreening", "prophylaxisType", "version" ],
+        "required" : [ "dateAndTime", "id", "isFluoridation", "isScreening", "version" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -6455,7 +6513,7 @@
       },
       "PersonType" : {
         "type" : "string",
-        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL" ]
+        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
       },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
@@ -6772,7 +6830,7 @@
         }
       },
       "ProphylaxisSession" : {
-        "required" : [ "dateAndTime", "id", "institution", "isScreening", "status", "type" ],
+        "required" : [ "dateAndTime", "id", "institution", "isScreening", "status" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -6884,7 +6942,7 @@
         }
       },
       "ProphylaxisSessionDetails" : {
-        "required" : [ "dateAndTime", "dentists", "id", "institution", "isScreening", "participants", "status", "type", "version", "zfas" ],
+        "required" : [ "dateAndTime", "dentists", "id", "institution", "isScreening", "participants", "status", "version", "zfas" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -6892,7 +6950,6 @@
             "format" : "date-time"
           },
           "dentists" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "oneOf" : [ {
@@ -6938,7 +6995,6 @@
             "format" : "int64"
           },
           "zfas" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "oneOf" : [ {
@@ -7486,6 +7542,27 @@
           }
         }
       },
+      "UpdateFluoridationConsentBulkRequest" : {
+        "required" : [ "childIds", "consented", "dateOfConsent" ],
+        "type" : "object",
+        "properties" : {
+          "childIds" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "consented" : {
+            "type" : "boolean"
+          },
+          "dateOfConsent" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
       "UpdatePersonRequest" : {
         "required" : [ "dateOfBirth", "firstName", "lastName", "version" ],
         "type" : "object",
@@ -7618,7 +7695,7 @@
         }
       },
       "UpdateProphylaxisSessionRequest" : {
-        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "type", "version", "zfaIds" ],
+        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "version", "zfaIds" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -7626,7 +7703,6 @@
             "format" : "date-time"
           },
           "dentistIds" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -7657,7 +7733,6 @@
             "format" : "int64"
           },
           "zfaIds" : {
-            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",

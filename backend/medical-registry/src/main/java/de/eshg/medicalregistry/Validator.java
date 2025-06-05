@@ -7,17 +7,23 @@ package de.eshg.medicalregistry;
 
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
+import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
+import de.eshg.medicalregistry.api.ResolvedEmployeeChangeDto;
 import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.rest.service.error.BadRequestException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class Validator {
@@ -27,10 +33,48 @@ public class Validator {
     this.personApi = personApi;
   }
 
+  public static void validateTargetEmployeeIdsExist(
+      MedicalRegistryEntry mergeTarget, List<ResolvedEmployeeChangeDto> employeeChanges) {
+    final Set<UUID> selectedEmployeeIds =
+        employeeChanges.stream()
+            .map(ResolvedEmployeeChangeDto::employeeId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    final Set<UUID> existingEmployeeIds =
+        mergeTarget.getEmployees().stream()
+            .map(SequencedBaseEntityWithExternalId::getExternalId)
+            .collect(Collectors.toSet());
+
+    if (!existingEmployeeIds.containsAll(selectedEmployeeIds)) {
+      throw new BadRequestException("Selected target employee ids do not exist");
+    }
+  }
+
+  public static void validateEmployeeChangesCorrespondToDraftChanges(
+      MedicalRegistryEntryChange source, List<ResolvedEmployeeChangeDto> employeeChanges) {
+    final Set<UUID> persistedEmployeeChangeIds =
+        source.getEmployees().stream()
+            .map(SequencedBaseEntityWithExternalId::getExternalId)
+            .collect(Collectors.toSet());
+    final Set<UUID> selectedEmployeeChangeIds =
+        employeeChanges.stream()
+            .map(ResolvedEmployeeChangeDto::employeeChangeId)
+            .collect(Collectors.toSet());
+
+    if (!persistedEmployeeChangeIds.equals(selectedEmployeeChangeIds)) {
+      throw new BadRequestException(
+          "Selected employeeChanges do not correspond to employeeChanges from draft.");
+    }
+  }
+
   public void validateMergeTarget(
-      MedicalRegistryProcedure mergeTarget, ProfessionalReferencePersonDto referencePerson) {
+      MedicalRegistryEntry mergeTarget,
+      ProfessionalReferencePersonDto referencePerson,
+      List<ResolvedEmployeeChangeDto> employeeChanges) {
     validateProfessionalReferenceIsGiven(referencePerson);
     validateProfessionalMatchesToProcedure(referencePerson, mergeTarget);
+    Validator.validateTargetEmployeeIdsExist(mergeTarget, employeeChanges);
   }
 
   private void validateProfessionalMatchesToProcedure(
@@ -51,13 +95,6 @@ public class Validator {
       throw new BadRequestException(
           "Procedure %s is not in draft status and therefore cannot be deleted."
               .formatted(procedure.getExternalId()));
-    }
-  }
-
-  public static void validateEmployeesEmployed(
-      boolean employeesEmployed, MultipartFile employeeList) {
-    if (employeesEmployed && employeeList == null) {
-      throw new BadRequestException("Employee list is mandatory if employees are employed.");
     }
   }
 

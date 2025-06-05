@@ -35,6 +35,7 @@ const IconSizedBox = styled(Box)({
   alignItems: "center",
   justifyContent: "center",
   display: "inline-flex",
+  position: "relative",
 });
 
 interface ToothIconButtonProps extends Omit<IconButtonProps, "children"> {

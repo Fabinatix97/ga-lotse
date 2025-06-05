@@ -9,7 +9,7 @@ import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.CERTIF
 
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
-import de.eshg.lib.document.generator.department.DepartmentClient;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.Pdf;
@@ -63,7 +63,7 @@ public class CertificateService {
   private final Clock clock;
   private final ProcedureAccessor procedureAccessor;
   private final DepartmentInfoConfigService departmentInfoService;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
 
   public CertificateService(
       CertificateRepository certificateRepository,
@@ -76,7 +76,7 @@ public class CertificateService {
       Clock clock,
       ProcedureAccessor procedureAccessor,
       DepartmentInfoConfigService departmentInfoService,
-      DepartmentClient departmentClient) {
+      DepartmentLogoClient departmentLogoClient) {
     Assert.isTrue(
         certificateTemplateResource.exists(), certificateTemplateResource + " does not exist");
     this.certificateRepository = certificateRepository;
@@ -89,7 +89,7 @@ public class CertificateService {
     this.clock = clock;
     this.procedureAccessor = procedureAccessor;
     this.departmentInfoService = departmentInfoService;
-    this.departmentClient = departmentClient;
+    this.departmentLogoClient = departmentLogoClient;
   }
 
   public static final String PDF_FILENAME = "bescheinigung_krankenkasse.pdf";
@@ -171,7 +171,7 @@ public class CertificateService {
 
     return new HealthInsuranceCertificatePdfParameters(
         departmentInfoService.getDepartmentInfo(),
-        departmentClient.getDepartmentLogo(),
+        departmentLogoClient.getDepartmentLogo(),
         (patientFromCentralFile.salutation() != null
             ? patientFromCentralFile.salutation().name()
             : ""),

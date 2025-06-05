@@ -24,7 +24,7 @@ import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation_;
 import de.eshg.medicalregistry.domain.model.ProfessionalTitle;
-import de.eshg.medicalregistry.mapper.ProfessionalMapper;
+import de.eshg.medicalregistry.mapper.PersonMapper;
 import de.eshg.rest.service.error.BadRequestException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -73,7 +73,7 @@ public class MedicalRegistryProcedureOverviewSpecification
     return new MedicalRegistryProcedureOverviewSpecification(
         mapEnumSet(filterOptions.procedureStatus(), ProcedureMapper::toDomainType),
         mapEnumSet(filterOptions.procedureType(), ProcedureMapper::toDomainType),
-        mapEnumSet(filterOptions.professionalTitle(), ProfessionalMapper::mapToDomain),
+        mapEnumSet(filterOptions.professionalTitle(), PersonMapper::mapToDomain),
         filterOptions.certificateRequested());
   }
 

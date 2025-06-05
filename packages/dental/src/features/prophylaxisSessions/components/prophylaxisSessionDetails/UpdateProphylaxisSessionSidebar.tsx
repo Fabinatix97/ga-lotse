@@ -58,7 +58,7 @@ function UpdateProphylaxisSessionSidebar(
     dateAndTime: toDateTimeString(prophylaxisSession.dateAndTime),
     institution: prophylaxisSession.institution,
     groupName: parseOptionalValue(prophylaxisSession.groupName),
-    type: prophylaxisSession.type,
+    type: parseOptionalValue(prophylaxisSession.type),
     isScreening: prophylaxisSession.isScreening,
     dentitionType: parseOptionalValue(prophylaxisSession.dentitionType),
     isFluoridation: !!prophylaxisSession.fluoridationVarnish,

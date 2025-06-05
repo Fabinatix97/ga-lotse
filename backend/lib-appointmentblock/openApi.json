@@ -266,6 +266,24 @@
         "tags" : [ "AppointmentType" ]
       }
     },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -461,6 +479,18 @@
           }
         }
       },
+      "AllowedAppointmentTypeCombination" : {
+        "required" : [ "types" ],
+        "type" : "object",
+        "properties" : {
+          "types" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
       "Appointment" : {
         "required" : [ "end", "start" ],
         "type" : "object",
@@ -496,7 +526,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION" ]
       },
       "AppointmentTypeConfig" : {
         "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
@@ -515,6 +545,10 @@
             "format" : "int64"
           }
         }
+      },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "CreateAppointmentBlockGroupResponse" : {
         "required" : [ "appointmentBlockIds", "id" ],
@@ -562,7 +596,7 @@
         }
       },
       "CreateDailyAppointmentBlockGroupRequest" : {
-        "required" : [ "appointmentBlocks", "parallelExaminations", "type" ],
+        "required" : [ "appointmentBlocks", "parallelExaminations", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -603,8 +637,13 @@
               "format" : "uuid"
             }
           },
-          "type" : {
-            "$ref" : "#/components/schemas/AppointmentType"
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
           }
         }
       },
@@ -624,30 +663,28 @@
         }
       },
       "GetAppointmentBlock" : {
-        "required" : [ "end", "id", "numberOfBookedAppointments", "numberOfFreeAppointments", "start" ],
+        "required" : [ "end", "id", "start" ],
         "type" : "object",
         "properties" : {
+          "bookedDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
           "end" : {
             "type" : "string",
             "description" : "Time at which the appointment block ends.",
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
           },
+          "freeDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
           "id" : {
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
             "format" : "uuid",
             "example" : "UUID_1"
-          },
-          "numberOfBookedAppointments" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "numberOfFreeAppointments" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int64"
           },
           "start" : {
             "type" : "string",
@@ -659,7 +696,7 @@
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
       },
       "GetAppointmentBlockGroup" : {
-        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "type" ],
+        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -684,8 +721,13 @@
             "type" : "integer",
             "format" : "int32"
           },
-          "type" : {
-            "$ref" : "#/components/schemas/AppointmentType"
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
           }
         }
       },
@@ -706,14 +748,36 @@
         }
       },
       "GetAppointmentTypesResponse" : {
-        "required" : [ "appointmentTypeConfigDtos" ],
+        "required" : [ "allowedAppointmentTypeCombinations", "appointmentTypeConfigDtos" ],
         "type" : "object",
         "properties" : {
+          "allowedAppointmentTypeCombinations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AllowedAppointmentTypeCombination"
+            }
+          },
           "appointmentTypeConfigDtos" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AppointmentTypeConfig"
             }
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },

@@ -53,7 +53,7 @@ export function useAppointmentList<T extends Appointment>({
       : undefined;
 
     const dayAppointments =
-      currentDayInterval != null
+      currentDayInterval !== undefined
         ? monthAppointments
             .filter((t) => isWithinInterval(t.start, currentDayInterval))
             .sort()

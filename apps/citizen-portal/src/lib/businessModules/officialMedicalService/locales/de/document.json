@@ -1,0 +1,13 @@
+{
+  "document": {
+    "validation": {
+      "invalidFileName": "Bitte nur Buchstaben, Zahlen, Bindestriche und Unterstriche im Dateinamen verwenden",
+      "nonConformPdf": "Die ausgewählte Datei ist nicht PDF/A konform.",
+      "unsupportedFileType": "Bitte eine Datei vom Typ JPEG, PNG oder PDF auswählen",
+      "fileNameTooLong": "Der Dateiname ist zu lang (maximal 128 Zeichen erlaubt)",
+      "imageTooWide": "Bitte nur Bilder mit einer Größe von maximal {{maximumSize}} Pixeln auswählen",
+      "mismatchedMediaType": "Der Dateityp stimmt nicht mit der Dateinamenserweiterung überein.",
+      "unknownError": "Unbekannter Fehler"
+    }
+  }
+}

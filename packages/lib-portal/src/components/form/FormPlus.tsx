@@ -15,7 +15,7 @@ import { usePrevious } from "../../hooks/usePrevious";
 const inputsSelector =
   'input, textarea, select, [role="input"], [role="checkbox"], [role="radio"], [role="textbox"]';
 
-export function useScrollToError({
+function useScrollToError({
   enabled = true,
   formRef,
 }: {

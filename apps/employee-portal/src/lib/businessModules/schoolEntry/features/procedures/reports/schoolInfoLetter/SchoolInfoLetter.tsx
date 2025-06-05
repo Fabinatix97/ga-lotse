@@ -1,0 +1,70 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Box } from "@mui/joy";
+import { Formik } from "formik";
+import { useRouter } from "next/navigation";
+
+import { FormPlus } from "@eshg/lib-portal";
+
+import { SchoolInfoLetter as SchoolInfoLetterType } from "@/lib/businessModules/schoolEntry/api/models/SchoolInfoLetter";
+import { useSaveSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useGetSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolInfoLetterContent } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterContent";
+import { SchoolInfoPageBottomBar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterPageBottomBar";
+import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
+
+import { LeaveDirtyConfirmationDialogProps } from "./LeaveDirtyConfirmationDialogProps";
+
+export function SchoolInfoLetter({ procedureId }: { procedureId: string }) {
+  const { data } = useGetSchoolInfoLetter(procedureId);
+
+  const router = useRouter();
+
+  function onNavigate() {
+    router.push(routes.procedures.byId(procedureId).examinations.index);
+  }
+
+  const saveSchoolInfoLetter = useSaveSchoolInfoLetter(procedureId);
+
+  async function handleSubmit(values: SchoolInfoLetterType) {
+    await saveSchoolInfoLetter(values);
+  }
+
+  if (data)
+    return (
+      <Formik
+        initialValues={data.savedLetter ?? data.defaultValuesLetter}
+        validateOnChange={false}
+        validateOnMount={false}
+        enableReinitialize
+        onSubmit={handleSubmit}
+      >
+        {(formikProps) => {
+          return (
+            <FormPlus data-testid="school-info-letter-form">
+              <ConfirmLeaveDirtyFormEffect
+                confirmationDialogProps={LeaveDirtyConfirmationDialogProps(
+                  formikProps.submitForm,
+                  onNavigate,
+                )}
+              />
+              <Box marginBottom={3}>
+                <SchoolInfoLetterContent
+                  formikProps={formikProps}
+                  data={data}
+                />
+              </Box>
+              <SchoolInfoPageBottomBar
+                procedureId={procedureId}
+                onNavigate={onNavigate}
+              />
+            </FormPlus>
+          );
+        }}
+      </Formik>
+    );
+}

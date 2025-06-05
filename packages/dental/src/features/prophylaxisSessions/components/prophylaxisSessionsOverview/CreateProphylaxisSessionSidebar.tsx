@@ -6,6 +6,7 @@
 "use client";
 
 import { Formik } from "formik";
+import { useRouter } from "next/navigation";
 
 import { ApiDentitionType } from "@eshg/dental-api";
 import {
@@ -20,6 +21,7 @@ import {
 import { useSnackbar } from "@eshg/lib-portal";
 
 import { useGetStaff } from "../../../../api/queries/staff";
+import { routes } from "../../../../config/routes";
 import { useCreateProphylaxisSession } from "../../api/mutations/overview";
 import {
   ProphylaxisSessionForm,
@@ -50,11 +52,15 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
   const createSession = useCreateProphylaxisSession();
   const { allDentists, allDentalAssistants } = useGetStaff();
   const snackbar = useSnackbar();
+  const router = useRouter();
 
   function onSubmit(values: ProphylaxisSessionFormValues) {
     createSession
       .mutateAsync(mapProphylaxisSessionFormValuesToRequest(values), {
-        onSuccess: () => props.onClose(true),
+        onSuccess: (response) => {
+          props.onClose(true);
+          router.push(routes.prophylaxisSessions.byId(response.id).details);
+        },
       })
       .catch(() =>
         snackbar.error("Die Daten konnten nicht gespeichert werden."),

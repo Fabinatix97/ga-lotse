@@ -8,21 +8,23 @@
 import { Button, Stack } from "@mui/joy";
 
 import { ButtonBar } from "../../../../components/buttons/ButtonBar";
-import { Sidebar } from "../../../drawer/components/Sidebar";
 import { SidebarActions } from "../../../drawer/components/SidebarActions";
 import { SidebarContent } from "../../../drawer/components/SidebarContent";
+import { UseSidebarResult, useSidebar } from "../../../drawer/hooks/useSidebar";
+import { DrawerProps } from "../../../drawer/types/drawer";
 import { useProgressEntriesConfig } from "../../contexts/progressEntries";
 import { FileCardWithActions } from "../FileCardWithActions";
 
-interface FilesSidebarProps {
-  open: boolean;
-  onClose: () => void;
+export function useFilesSidebar(): UseSidebarResult {
+  return useSidebar({
+    component: FilesSidebar,
+  });
 }
 
-export function FilesSidebar({ open, onClose }: FilesSidebarProps) {
+function FilesSidebar(props: DrawerProps) {
   const { files } = useProgressEntriesConfig();
   return (
-    <Sidebar open={open} onClose={onClose}>
+    <>
       <SidebarContent title={`Alle Dateien(${files.length})`}>
         <Stack spacing={1}>
           {files.map(({ file, progressEntryId }) => (
@@ -37,12 +39,16 @@ export function FilesSidebar({ open, onClose }: FilesSidebarProps) {
       <SidebarActions>
         <ButtonBar
           right={
-            <Button color="neutral" variant="soft" onClick={onClose}>
+            <Button
+              color="neutral"
+              variant="soft"
+              onClick={() => props.onClose()}
+            >
               Schließen
             </Button>
           }
         />
       </SidebarActions>
-    </Sidebar>
+    </>
   );
 }

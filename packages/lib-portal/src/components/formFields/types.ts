@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface StyledInputProps {
+export interface FieldVariantProps {
   primary?: boolean;
 }

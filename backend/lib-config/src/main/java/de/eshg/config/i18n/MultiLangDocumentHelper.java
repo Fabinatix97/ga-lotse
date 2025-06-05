@@ -70,12 +70,21 @@ public final class MultiLangDocumentHelper {
 
   public static ResponseEntity<Resource> getAsPdfResourceByLanguageOrThrow(
       MultiLangDocument multiLangDocument, MultiLangFileName multiLangFileName, Language language) {
+    return getAsResourceByLanguageOrThrow(
+        multiLangDocument, multiLangFileName, language, MediaType.APPLICATION_PDF);
+  }
+
+  public static ResponseEntity<Resource> getAsResourceByLanguageOrThrow(
+      MultiLangDocument multiLangDocument,
+      MultiLangFileName multiLangFileName,
+      Language language,
+      MediaType mediaType) {
     Document document = getDocument(multiLangDocument, language);
     if (document == null) {
       throw new NotFoundException("Document does not exist in %s".formatted(language));
     }
     return toResponseEntity(
-        document, getFilename(multiLangFileName, language), language, MediaType.APPLICATION_PDF);
+        document, getFilename(multiLangFileName, language), language, mediaType);
   }
 
   private static ResponseEntity<Resource> toResponseEntity(

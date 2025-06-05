@@ -5,6 +5,7 @@
 
 import { InfoOutlined } from "@mui/icons-material";
 import { Stack, Tooltip, Typography, TypographyProps } from "@mui/joy";
+import { useId } from "react";
 import { isDefined } from "remeda";
 
 interface ContentPanelTitleProps extends Omit<TypographyProps, "level"> {
@@ -12,11 +13,25 @@ interface ContentPanelTitleProps extends Omit<TypographyProps, "level"> {
 }
 
 export function ContentPanelTitle(props: ContentPanelTitleProps) {
+  const tooltipId = useId();
+  const { tooltip, ...typographyProps } = props;
+
   return (
     <Stack gap={1} direction="row">
-      <Typography component="h1" {...props} level="title-lg" />
-      {isDefined(props.tooltip) && (
-        <Tooltip title={props.tooltip} color="success" variant="outlined">
+      <Typography
+        component="h1"
+        {...typographyProps}
+        level="title-lg"
+        aria-describedby={tooltipId}
+      />
+      {isDefined(tooltip) && (
+        <Tooltip
+          id={tooltipId}
+          title={tooltip}
+          color="success"
+          variant="outlined"
+          keepMounted
+        >
           <InfoOutlined
             color="primary"
             size="sm"

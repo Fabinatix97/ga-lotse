@@ -8,8 +8,8 @@ package de.eshg.base.statistics;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
+import jakarta.annotation.Nullable;
 import java.util.List;
-import javax.annotation.Nullable;
 
 public enum AddressAttribute implements CommonAttribute {
   LAND("Land", "LAND", ValueType.TEXT, true),

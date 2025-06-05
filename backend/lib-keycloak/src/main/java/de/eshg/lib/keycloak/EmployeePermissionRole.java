@@ -388,7 +388,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Standardberechtigung für das Fachmodul",
       Module.MEDS_ABROAD,
       BASE_PERSONS_READ,
-      BASE_PERSONS_WRITE);
+      BASE_PERSONS_WRITE,
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;

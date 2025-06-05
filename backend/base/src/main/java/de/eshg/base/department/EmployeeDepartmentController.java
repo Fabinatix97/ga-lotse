@@ -9,11 +9,13 @@ import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_MARKDOWN_RELEASE_NOTES;
 
 import de.eshg.base.config.DepartmentConfigurationService;
+import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.rest.service.i18n.LanguageContextHolder;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,13 +44,12 @@ class EmployeeDepartmentController {
   @ApiResponse(responseCode = "200")
   @GetExchange(DEPARTMENT_API_MARKDOWN_EMPLOYEE + "/{name}")
   @Transactional(readOnly = true)
-  ResponseEntity<byte[]> getEmployeePortalMarkdown(
+  ResponseEntity<Resource> getEmployeePortalMarkdown(
       @PathVariable("name") EmployeePortalMarkdownName name) {
-    return ResponseEntity.ok()
-        .contentType(MediaType.TEXT_MARKDOWN)
-        .body(
-            departmentConfigurationService.getMarkdownWithGermanFallback(
-                name, LanguageContextHolder.getLanguage()));
+    return MultiLangDocumentHelper.getAsResponseByCurrentLanguageWithFallback(
+        departmentConfigurationService.getMarkdown(name),
+        name.getFileName(),
+        MediaType.TEXT_MARKDOWN);
   }
 
   @Operation(summary = "Get the release notes markdown")

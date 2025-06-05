@@ -5,13 +5,11 @@
 
 package de.eshg.config.mapper;
 
-import de.eshg.base.department.LanguageDto;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.api.DocumentDetailsDto;
 import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangFileName;
-import de.eshg.rest.service.i18n.Language;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,13 +31,6 @@ public class MultiLangDocumentMapper {
     }
 
     return new DocumentDetailsDto(fileName, fileSize);
-  }
-
-  public static Language mapToDomain(LanguageDto languageDto) {
-    return switch (languageDto) {
-      case GERMAN -> Language.GERMAN;
-      case ENGLISH -> Language.ENGLISH;
-    };
   }
 
   public static MultiLangDocument mapToDomain(MultipartFile de, MultipartFile en)

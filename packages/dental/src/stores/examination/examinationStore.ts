@@ -17,7 +17,6 @@ import { ToothDiagnosis } from "../../api/models/ToothDiagnosis";
 import { calculateDmftValuesByDentitionType } from "./actions/dmftValues";
 import { setFocus } from "./actions/focus";
 import { NavigateDirection, navigateFrom } from "./actions/navigateFrom";
-import { navigateTo } from "./actions/navigateTo";
 import {
   hasAnyResult,
   setMainResult,
@@ -40,7 +39,6 @@ export interface ExaminationState {
 interface ExaminationActions {
   setFocus: (focus: ElementContext | undefined) => void;
   navigateFrom: (direction: NavigateDirection) => void;
-  navigateTo: (toothContext: ToothContext) => void;
 
   addTooth: ToothAction;
   removeTooth: ToothAction;
@@ -135,8 +133,6 @@ export function createExaminationStore(initialState: ExaminationState) {
       set((state) => setSecondaryResult(toothContext, newValue, state)),
     submit: () => submit(get(), set),
     navigateFrom: (direction) => set((state) => navigateFrom(direction, state)),
-    navigateTo: (toothContext) =>
-      set((state) => navigateTo(toothContext, "auto", state)),
     toggleDentition: (dentitionType) =>
       set(() => ({
         dentition: createDentitionByType(dentitionType),

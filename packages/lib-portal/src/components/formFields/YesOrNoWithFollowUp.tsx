@@ -6,13 +6,14 @@
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
+import { isNullish } from "remeda";
 
 import { useTranslation } from "../../i18n/useTranslation";
 
 import { FieldSetControl } from "./FieldSetControl";
 import { RadioButtonsField, RadioButtonsFieldProps } from "./RadioButtonsField";
 
-export interface YesOrNoWithFollowUpProps
+interface YesOrNoWithFollowUpProps
   extends PropsWithChildren<
     Omit<RadioButtonsFieldProps, "options" | "additionalField">
   > {
@@ -95,7 +96,7 @@ export type YesOrNoFieldData = "yes" | "no" | null;
 export function mapYesOrNoToBool(
   b: YesOrNoFieldData | "",
 ): boolean | undefined {
-  if (b == null || b == "") {
+  if (b === null || b === "") {
     return;
   }
   return b === "yes";
@@ -104,7 +105,7 @@ export function mapYesOrNoToBool(
 export function mapBoolToYesOrNo(
   b: boolean | null | undefined,
 ): YesOrNoFieldData {
-  if (b == null) {
+  if (isNullish(b)) {
     return null;
   }
   return b ? "yes" : "no";

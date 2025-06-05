@@ -826,7 +826,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       },
       "put" : {
         "operationId" : "updateAccessibilityMarkdown",
@@ -863,7 +863,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       }
     },
     "/configuration/acknowledgements" : {
@@ -874,14 +874,14 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseInternationalMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseMultiLangDocument"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       },
       "put" : {
         "operationId" : "updateAcknowledgementsMarkdown",
@@ -910,7 +910,130 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
+      }
+    },
+    "/configuration/address-directory" : {
+      "get" : {
+        "operationId" : "getAddressRegistryConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAddressDirectoryConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "AddressDirectoryConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateAddressRegistryConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "municipality-directory" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "street-directory" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "municipality-directory", "street-directory" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "AddressDirectoryConfig" ]
+      }
+    },
+    "/configuration/address-directory/municipality-directory" : {
+      "get" : {
+        "operationId" : "getMunicipalityDirectoryFile",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "AddressDirectoryConfig" ]
+      }
+    },
+    "/configuration/address-directory/municipality-template" : {
+      "get" : {
+        "operationId" : "getMunicipalityDirectoryTemplate",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "AddressDirectoryConfig" ]
+      }
+    },
+    "/configuration/address-directory/street-directory" : {
+      "get" : {
+        "operationId" : "getStreetDirectoryFile",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "AddressDirectoryConfig" ]
+      }
+    },
+    "/configuration/address-directory/street-template" : {
+      "get" : {
+        "operationId" : "getStreetDirectoryTemplate",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "AddressDirectoryConfig" ]
       }
     },
     "/configuration/contact" : {
@@ -921,14 +1044,14 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseInternationalMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseMultiLangDocument"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       },
       "put" : {
         "operationId" : "updateContactMarkdown",
@@ -957,7 +1080,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       }
     },
     "/configuration/department-info" : {
@@ -1005,14 +1128,14 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseInternationalMarkdownInfo"
+                  "$ref" : "#/components/schemas/GetMarkdownInfoResponseMultiLangDocument"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       },
       "put" : {
         "operationId" : "updateImprintMarkdown",
@@ -1041,7 +1164,51 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
+      }
+    },
+    "/configuration/logo" : {
+      "get" : {
+        "operationId" : "getLogoSvgFileInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetLogoSvgFileInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentConfiguration" ]
+      },
+      "put" : {
+        "operationId" : "updateLogoSvg",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "svg" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "svg" ]
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentConfiguration" ]
       }
     },
     "/configuration/markdown/citizen/{name}/{lang}" : {
@@ -1075,7 +1242,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       }
     },
     "/configuration/markdown/employee/{name}/{lang}" : {
@@ -1109,7 +1276,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       }
     },
     "/configuration/privacy-documents/privacy-notice" : {
@@ -1275,7 +1442,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       },
       "put" : {
         "operationId" : "updatePrivacyMarkdown",
@@ -1312,7 +1479,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "MarkdownConfiguration" ]
+        "tags" : [ "DepartmentConfiguration" ]
       }
     },
     "/contacts" : {
@@ -1800,7 +1967,7 @@
               "*/*" : {
                 "schema" : {
                   "type" : "string",
-                  "format" : "byte"
+                  "format" : "binary"
                 }
               }
             },
@@ -1969,6 +2136,35 @@
         "tags" : [ "Facility" ]
       }
     },
+    "/facilities/centralfilestates/bulk-get-filtered" : {
+      "post" : {
+        "operationId" : "getFacilityFileStatesFiltered",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetFacilityFileStatesFilteredRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFacilityFileStatesFilteredResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get multiple facilities",
+        "tags" : [ "Facility" ]
+      }
+    },
     "/facilities/centralfilestates/external-source" : {
       "post" : {
         "operationId" : "addFacilityFromExternalSource",
@@ -2074,6 +2270,41 @@
           }
         },
         "summary" : "Get the difference between the requested file state and its associated reference facility.\n",
+        "tags" : [ "Facility" ]
+      }
+    },
+    "/facilities/centralfilestates/{id}/file-number/{method}" : {
+      "get" : {
+        "operationId" : "getFacilityFileNumber",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "method",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FacilityFileNumberResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets the file number for a facility file state, if it can be determined from its address.\n",
         "tags" : [ "Facility" ]
       }
     },
@@ -4204,25 +4435,6 @@
         "tags" : [ "Person" ]
       }
     },
-    "/procedure-config" : {
-      "get" : {
-        "operationId" : "getProcedureConfig",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetProcedureConfigResponse"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Get lib procedure configuration",
-        "tags" : [ "ProcedureConfig" ]
-      }
-    },
     "/procedure-metrics" : {
       "get" : {
         "operationId" : "aggregateProcedureMetrics",
@@ -4334,7 +4546,7 @@
               "*/*" : {
                 "schema" : {
                   "type" : "string",
-                  "format" : "byte"
+                  "format" : "binary"
                 }
               }
             },
@@ -4426,78 +4638,6 @@
       }
     },
     "/recent-procedures" : {
-      "get" : {
-        "operationId" : "aggregateRecentProcedures",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "userId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "query",
-          "name" : "businessModule",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/BusinessModule"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureType",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureType"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureStatus",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureStatus"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "required" : false,
-          "schema" : {
-            "maximum" : 200,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetAggregatedRecentProceduresResponse"
-                }
-              }
-            },
-            "description" : "the users recent procedures"
-          }
-        },
-        "summary" : "Get recent procedures for user",
-        "tags" : [ "ProcedureAggregation" ]
-      }
-    },
-    "/recent-procedures/self" : {
       "get" : {
         "operationId" : "aggregateSelfRecentProcedures",
         "parameters" : [ {
@@ -6696,6 +6836,9 @@
                 "minLength" : 1,
                 "type" : "string"
               }
+            },
+            "subCategory" : {
+              "$ref" : "#/components/schemas/ContactSubCategory"
             }
           }
         } ]
@@ -7309,10 +7452,10 @@
         "type" : "object",
         "properties" : {
           "citizen" : {
-            "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           },
           "employee" : {
-            "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -7490,6 +7633,11 @@
         "type" : "string",
         "description" : "The list of possible parameters by which Contacts can be sorted.",
         "enum" : [ "NAME", "TYPE", "RELEVANCE", "CATEGORY" ]
+      },
+      "ContactSubCategory" : {
+        "type" : "string",
+        "description" : "The list of possible sub-types under which an Institution in the Contact Management can be categorized.",
+        "enum" : [ "BERUFSSCHULE", "FOERDERSCHULE", "GRUNDSCHULE", "GRUND_HAUPTSCHULE", "GRUND_HAUPT_REALSCHULE", "GYMNASIUM", "HAUPTSCHULE", "HAUPT_REALSCHULE", "INTEGRIERTE_GESAMTSCHULE", "KOOPERATIVE_GESAMTSCHULE", "REALSCHULE" ]
       },
       "ContactType" : {
         "type" : "string",
@@ -8288,6 +8436,14 @@
         },
         "description" : "The data relating to a facility"
       },
+      "FacilityFileNumberResponse" : {
+        "type" : "object",
+        "properties" : {
+          "fileNumber" : {
+            "type" : "string"
+          }
+        }
+      },
       "FileDeletionApprovalRequestNotification" : {
         "required" : [ "createdAt", "createdBy", "fileName", "id", "procedureId" ],
         "type" : "object",
@@ -8486,6 +8642,17 @@
             "items" : {
               "$ref" : "#/components/schemas/ActiveUserSession"
             }
+          }
+        }
+      },
+      "GetAddressDirectoryConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "municipalityDirectory" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          },
+          "streetDirectory" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
           }
         }
       },
@@ -9085,6 +9252,71 @@
           }
         }
       },
+      "GetFacilityFileStatesFilteredRequest" : {
+        "required" : [ "fileStateIds" ],
+        "type" : "object",
+        "properties" : {
+          "city" : {
+            "type" : "string"
+          },
+          "fileStateIds" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "A list of Ids for requested Facility File States.",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "pageNumber" : {
+            "maximum" : 200,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          },
+          "pageSize" : {
+            "maximum" : 2000,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 25
+          },
+          "postalCode" : {
+            "type" : "string"
+          },
+          "sort" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "street" : {
+            "type" : "string"
+          }
+        }
+      },
+      "GetFacilityFileStatesFilteredResponse" : {
+        "required" : [ "facilityFileStates", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "facilityFileStates" : {
+            "type" : "array",
+            "description" : "A list of requested File States of Facilities.",
+            "items" : {
+              "$ref" : "#/components/schemas/GetFacilityFileStateResponse"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "GetFacilityFileStatesRequest" : {
         "required" : [ "fileStateIds" ],
         "type" : "object",
@@ -9379,6 +9611,14 @@
           }
         }
       },
+      "GetLogoSvgFileInfoResponse" : {
+        "type" : "object",
+        "properties" : {
+          "logoSvgInfo" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          }
+        }
+      },
       "GetMarkdownInfoResponseCitizenAndEmployeeMarkdownInfo" : {
         "type" : "object",
         "properties" : {
@@ -9387,11 +9627,11 @@
           }
         }
       },
-      "GetMarkdownInfoResponseInternationalMarkdownInfo" : {
+      "GetMarkdownInfoResponseMultiLangDocument" : {
         "type" : "object",
         "properties" : {
           "markdownInfo" : {
-            "$ref" : "#/components/schemas/InternationalMarkdownInfo"
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -9649,18 +9889,6 @@
         "properties" : {
           "privacyDocument" : {
             "$ref" : "#/components/schemas/MultiLangDocument"
-          }
-        }
-      },
-      "GetProcedureConfigResponse" : {
-        "type" : "object",
-        "properties" : {
-          "supportedManualProgressEntryTypes" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ManualProgressEntryType"
-            }
           }
         }
       },
@@ -10101,6 +10329,20 @@
           }
         }
       },
+      "HistoryChangeContactSubCategory" : {
+        "required" : [ "isChanged" ],
+        "type" : "object",
+        "properties" : {
+          "isChanged" : {
+            "type" : "boolean",
+            "description" : "Specifies if the value has been changed or not.",
+            "example" : true
+          },
+          "newValue" : {
+            "$ref" : "#/components/schemas/ContactSubCategory"
+          }
+        }
+      },
       "HistoryChangeCountryCode" : {
         "required" : [ "isChanged" ],
         "type" : "object",
@@ -10424,12 +10666,15 @@
               "items" : {
                 "type" : "string"
               }
+            },
+            "subCategory" : {
+              "$ref" : "#/components/schemas/ContactSubCategory"
             }
           }
         } ]
       },
       "InstitutionContactChange" : {
-        "required" : [ "category", "emailAddresses", "mergedFrom", "mergedInto", "name", "phoneNumbers" ],
+        "required" : [ "category", "emailAddresses", "mergedFrom", "mergedInto", "name", "phoneNumbers", "subCategory" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/AbstractContactChange"
@@ -10453,6 +10698,9 @@
             },
             "phoneNumbers" : {
               "$ref" : "#/components/schemas/HistoryChangeListString"
+            },
+            "subCategory" : {
+              "$ref" : "#/components/schemas/HistoryChangeContactSubCategory"
             }
           }
         } ]
@@ -10460,18 +10708,6 @@
       "InterceptionType" : {
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
-      },
-      "InternationalMarkdownInfo" : {
-        "required" : [ "de" ],
-        "type" : "object",
-        "properties" : {
-          "de" : {
-            "$ref" : "#/components/schemas/MarkdownInfo"
-          },
-          "en" : {
-            "$ref" : "#/components/schemas/MarkdownInfo"
-          }
-        }
       },
       "InvalidateSessionsRequest" : {
         "required" : [ "sessions" ],
@@ -10684,10 +10920,6 @@
         "example" : "PLAIN_TEXT",
         "enum" : [ "PLAIN_TEXT", "HTML", "HTML_AND_PLAIN_TEXT" ]
       },
-      "ManualProgressEntryType" : {
-        "type" : "string",
-        "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
-      },
       "MarkNotificationsAsReadRequest" : {
         "required" : [ "notificationIds" ],
         "type" : "object",
@@ -10712,19 +10944,6 @@
             "items" : {
               "$ref" : "#/components/schemas/ErrorResponseWithLocation"
             }
-          }
-        }
-      },
-      "MarkdownInfo" : {
-        "required" : [ "fileName", "fileSize" ],
-        "type" : "object",
-        "properties" : {
-          "fileName" : {
-            "type" : "string"
-          },
-          "fileSize" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       },
@@ -12014,6 +12233,9 @@
                 "minLength" : 1,
                 "type" : "string"
               }
+            },
+            "subCategory" : {
+              "$ref" : "#/components/schemas/ContactSubCategory"
             }
           }
         } ]

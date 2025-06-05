@@ -1,0 +1,13 @@
+{
+  "document": {
+    "validation": {
+      "invalidFileName": "Please use only letters, numbers, hyphens and underscores in the file name.",
+      "nonConformPdf": "The selected file is not PDF/A compliant.",
+      "unsupportedFileType": "Please select a file of type JPEG, PNG or PDF.",
+      "fileNameTooLong": "The file name is too long (maximum length: 128 characters)",
+      "imageTooWide": "Please only select images with a maximum size of {{maximumSize}} pixels.",
+      "mismatchedMediaType": "The media type does not match the type given by the file name extension.",
+      "unknownError": "Unknown error"
+    }
+  }
+}

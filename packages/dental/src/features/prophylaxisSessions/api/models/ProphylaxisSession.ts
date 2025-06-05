@@ -20,7 +20,7 @@ export interface ProphylaxisSession extends BaseEntity {
   dateAndTime: Date;
   institution: Institution;
   groupName?: string;
-  type: ApiProphylaxisType;
+  type?: ApiProphylaxisType;
   isScreening: boolean;
   fluoridationVarnish?: ApiFluoridationVarnish;
   status: ApiProphylaxisStatus;

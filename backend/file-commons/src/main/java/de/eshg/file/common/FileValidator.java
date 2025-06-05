@@ -59,6 +59,20 @@ public class FileValidator {
     PdfAConformanceValidator.validate(bytes);
   }
 
+  public static void validateCsvFile(MultipartFile csv) throws IOException {
+    if (csv == null) {
+      return;
+    }
+    MediaType detected = validate(csv);
+    if (!detected.isCompatibleWith(CustomMediaTypes.CSV)) {
+      throw new BadRequestException(
+          ErrorCode.INVALID_FILE, "Incompatible media type %s detected".formatted(detected));
+    }
+    byte[] bytes = csv.getBytes();
+
+    CsvValidator.validate(bytes);
+  }
+
   public static MediaType validateAudioFile(MultipartFile file) {
     MediaType detectedMediaType = validateContentTypeAudio(file);
     Matcher fileNameMatcher = FILE_REGEX_PATTERN.matcher(file.getOriginalFilename());

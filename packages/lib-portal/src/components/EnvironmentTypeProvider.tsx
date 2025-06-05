@@ -9,7 +9,7 @@ import { createContext, useContext } from "react";
 
 import { RequiresChildren } from "../types/react";
 
-export type EnvironmentType = "local" | "dev" | "production";
+type EnvironmentType = "local" | "dev" | "production";
 
 const EnvironmentTypeContext = createContext<EnvironmentType | undefined>(
   undefined,
@@ -27,7 +27,7 @@ export function EnvironmentTypeProvider(props: EnvironmentTypeProps) {
   );
 }
 
-export function useEnvironmentType() {
+function useEnvironmentType() {
   const environmentType = useContext(EnvironmentTypeContext);
 
   if (environmentType === undefined) {
@@ -41,7 +41,7 @@ export function useIsDevEnvironment() {
   return useIsEnvironment("dev");
 }
 
-export function useIsEnvironment(wantedEnvironmentType: EnvironmentType) {
+function useIsEnvironment(wantedEnvironmentType: EnvironmentType) {
   const environmentType = useEnvironmentType();
   return environmentType === wantedEnvironmentType;
 }

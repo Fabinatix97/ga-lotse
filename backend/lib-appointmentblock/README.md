@@ -45,6 +45,16 @@ de.eshg.lib.appointmentblock.defaultAppointmentTypeConfiguration[CONSULTATION]=3
 de.eshg.lib.appointmentblock.defaultAppointmentTypeConfiguration[VACCINATION]=15m
 ```
 
+## Configuration of appointment block groups with different appointment types
+
+Appointment block groups can combine appointments of different types if the combination is allowed.
+```
+de.eshg.lib.appointmentblock.allowedAppointmentTypeCombinations[0][0]=REGULAR_EXAMINATION
+de.eshg.lib.appointmentblock.allowedAppointmentTypeCombinations[0][1]=ENTRY_LEVEL
+de.eshg.lib.appointmentblock.allowedAppointmentTypeCombinations[1][0]=CAN_CHILD
+de.eshg.lib.appointmentblock.allowedAppointmentTypeCombinations[1][1]=SPECIAL_NEEDS
+```
+
 ## Configuration for current user calendar
 
 AppointmentBlockGroups are created as a calendar event for a group of physicians and MFAs. Additionally, the event can

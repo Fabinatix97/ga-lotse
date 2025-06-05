@@ -153,6 +153,13 @@ public class FacilityController implements FacilityApi {
   }
 
   @Override
+  @Transactional(readOnly = true)
+  public GetFacilityFileStatesFilteredResponse getFacilityFileStatesFiltered(
+      GetFacilityFileStatesFilteredRequest request) {
+    return facilityService.getFacilityFileStatesFiltered(request);
+  }
+
+  @Override
   @Transactional
   public AddFacilityFileStatesResponse addFacilityFileStates(AddFacilityFileStatesRequest request) {
     validateNoMoreThanOneMainContactPerson(request);
@@ -242,6 +249,12 @@ public class FacilityController implements FacilityApi {
             referenceDataId, request.version(), referenceFacilityUpdate);
 
     return FacilityMapper.mapFacilityFileStateToApi(updatedFacilityFileState);
+  }
+
+  @Override
+  public FacilityFileNumberResponse getFacilityFileNumber(UUID fileStateId, String method) {
+    return new FacilityFileNumberResponse(
+        facilityService.getFacilityFileNumber(fileStateId, method));
   }
 
   private Facility findReferenceFacility(UUID id) {

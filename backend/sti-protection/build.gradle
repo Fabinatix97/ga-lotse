@@ -15,7 +15,7 @@ dependencies {
     implementation project(':lib-scheduling')
     implementation project(':rest-oauth-client-commons')
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
-    implementation 'com.google.guava:guava'
+    implementation 'com.google.guava:guava:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -26,6 +26,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-statistics'))
     testImplementation testFixtures(project(':lib-auditlog'))
+    testImplementation testFixtures(project(':lib-appointmentblock'))
 }
 
 dockerCompose {

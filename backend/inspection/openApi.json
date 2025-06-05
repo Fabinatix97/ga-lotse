@@ -1461,7 +1461,7 @@
           }
         }, {
           "description" : "list of sort criteria",
-          "example" : "?sort=postalCode|asc&sort=status|desc",
+          "example" : "?sort=postalCode|asc&sort=inspection_status|desc",
           "in" : "query",
           "name" : "sort",
           "required" : false,
@@ -3960,67 +3960,6 @@
       }
     },
     "/procedures/recent" : {
-      "get" : {
-        "operationId" : "getRecentProcedures",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "userId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureType",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureType"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureStatus",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureStatus"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "required" : false,
-          "schema" : {
-            "maximum" : 200,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRecentProceduresResponse"
-                }
-              }
-            },
-            "description" : "the users recent procedures"
-          }
-        },
-        "summary" : "Get recent procedures for user",
-        "tags" : [ "Procedure" ]
-      }
-    },
-    "/procedures/recent/self" : {
       "get" : {
         "operationId" : "getSelfRecentProcedures",
         "parameters" : [ {
@@ -8829,6 +8768,9 @@
           "baseFacility" : {
             "$ref" : "#/components/schemas/GetFacilityFileStateResponse"
           },
+          "fileNumber" : {
+            "type" : "string"
+          },
           "id" : {
             "type" : "string",
             "format" : "uuid"
@@ -9890,7 +9832,7 @@
       },
       "PersonType" : {
         "type" : "string",
-        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL" ]
+        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
       },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],

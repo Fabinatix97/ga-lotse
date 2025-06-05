@@ -5,7 +5,6 @@
 
 package de.eshg.dental.api;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
@@ -15,12 +14,12 @@ public record CreateProphylaxisSessionRequest(
     @NotNull Instant dateAndTime,
     @NotNull UUID institutionId,
     String groupName,
-    @NotNull ProphylaxisTypeDto type,
+    ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     DentitionTypeDto dentitionType,
     FluoridationVarnishDto fluoridationVarnish,
-    @NotEmpty(message = "At least one dentist is required") List<UUID> dentistIds,
-    @NotEmpty(message = "At least one zfa is required") List<UUID> zfaIds)
+    @NotNull List<UUID> dentistIds,
+    @NotNull List<UUID> zfaIds)
     implements ProphylaxisSessionRequest {
   public CreateProphylaxisSessionRequest(
       Instant dateAndTime,

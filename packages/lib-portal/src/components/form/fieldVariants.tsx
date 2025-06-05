@@ -57,11 +57,9 @@ interface SoftRequiredFieldProps {
   softRequired?: boolean;
 }
 
-export const StyledSelect = styled(Select)(
-  SOFT_REQUIRED_STYLES,
-) as typeof Select;
+const StyledSelect = styled(Select)(SOFT_REQUIRED_STYLES) as typeof Select;
 
-export function SoftRequiredSelect<
+function SoftRequiredSelect<
   TValue extends NonNullable<unknown>,
   TMultiple extends boolean,
 >(props: SelectProps<TValue, TMultiple>) {
@@ -98,7 +96,7 @@ export function SoftRequiredSelectField<
   );
 }
 
-export interface SoftRequiredBooleanSelectFieldProps
+interface SoftRequiredBooleanSelectFieldProps
   extends SoftRequiredFieldProps,
     BooleanSelectFieldProps {}
 

@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1748349858436-1">
+        <sql>
+        WITH progress_entries_to_delete as (
+            DELETE
+                FROM system_progress_entry
+                    WHERE key_document_type = 'EMPLOYEE_LIST' RETURNING id)
+           , files_to_delete as (
+            DELETE
+                FROM progress_entry
+                    WHERE id in (SELECT * FROM progress_entries_to_delete) RETURNING file_id)
+           , file_content_to_delete as (
+            DELETE
+                FROM file
+                    WHERE file.id in (SELECT * FROM files_to_delete)
+                    RETURNING file_content_id)
+           , deleted_image_meta_data as (
+            DELETE
+                FROM image_meta_data
+                    WHERE image_id IN (SELECT * FROM files_to_delete) RETURNING image_id)
+           , image_to_delete as (
+            DELETE
+                FROM image
+                    WHERE id in (SELECT * FROM files_to_delete) RETURNING id)
+        DELETE
+        FROM file_content
+        WHERE id in (SELECT * FROM file_content_to_delete);
+        </sql>
+        <dropColumn columnName="employees_employed" tableName="full_medical_registry_entry_change"/>
+        <dropColumn columnName="employees_employed" tableName="medical_registry_entry"/>
+        <dropColumn columnName="employees_employed" tableName="partial_medical_registry_entry_change"/>
+    </changeSet>
+</databaseChangeLog>

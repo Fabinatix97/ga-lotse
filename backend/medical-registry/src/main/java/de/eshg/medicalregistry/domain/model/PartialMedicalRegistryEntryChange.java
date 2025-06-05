@@ -21,9 +21,6 @@ public non-sealed class PartialMedicalRegistryEntryChange extends MedicalRegistr
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private TypeOfPartialMedicalRegistryEntryChange typeOfPartialChange;
 
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private Boolean employeesEmployed;
-
   protected PartialMedicalRegistryEntryChange() {
     super();
   }
@@ -39,13 +36,5 @@ public non-sealed class PartialMedicalRegistryEntryChange extends MedicalRegistr
 
   public void setTypeOfPartialChange(TypeOfPartialMedicalRegistryEntryChange typeOfChange) {
     this.typeOfPartialChange = typeOfChange;
-  }
-
-  public Boolean getEmployeesEmployed() {
-    return employeesEmployed;
-  }
-
-  public void setEmployeesEmployed(Boolean employeesEmployed) {
-    this.employeesEmployed = employeesEmployed;
   }
 }

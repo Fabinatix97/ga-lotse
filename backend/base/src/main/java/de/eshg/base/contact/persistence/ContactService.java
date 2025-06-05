@@ -242,6 +242,8 @@ public class ContactService {
 
   public Contact update(InstitutionContact contact, UpdateInstitutionContactRequest request) {
     contact.setCategory(ContactMapper.mapInstitutionContactCategoryToDm(request.category()));
+    contact.setSubCategory(
+        ContactMapper.mapInstitutionContactSubCategoryToDm(request.subCategory()));
     return updateContact(contact, request);
   }
 

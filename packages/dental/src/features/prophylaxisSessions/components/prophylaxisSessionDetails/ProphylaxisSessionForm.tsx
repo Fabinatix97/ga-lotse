@@ -33,7 +33,7 @@ import {
 import { Institution } from "../../../../api/models/Institution";
 import { SearchGroupField } from "../../../../components/group/SearchGroupField";
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
-import { PROPHYLAXIS_TYPE_OPTIONS } from "../../../../config/prophylaxisSession";
+import { PROPHYLAXIS_TYPE_OPTIONS_WITH_DESELECTION } from "../../../../config/prophylaxisSession";
 
 import { FluoridationField } from "./FluoridationField";
 import { ScreeningField } from "./ScreeningField";
@@ -103,13 +103,13 @@ export function ProphylaxisSessionForm(props: ProphylaxisSessionFormProps) {
         name="groupName"
         label="Gruppe"
         institution={values.institution}
+        openGroupsOnly
         disabled={hasExaminationResults}
       />
       <SelectField
         name="type"
         label="Typ"
-        options={PROPHYLAXIS_TYPE_OPTIONS}
-        required="Bitte den Typ der Prophylaxe angeben."
+        options={PROPHYLAXIS_TYPE_OPTIONS_WITH_DESELECTION}
       />
       <ScreeningField screeningDisabled={hasExaminationResults} />
       <FluoridationField disabled={hasExaminationResults} />
@@ -122,7 +122,6 @@ export function ProphylaxisSessionForm(props: ProphylaxisSessionFormProps) {
         blockedStaff={[]}
         freeStaff={[]}
         label="Zahnarzt/-ärztin"
-        required="Bitte mindestens eine/n Zahnarzt/-ärztin angeben."
       />
       <UserField
         name="zfaIds"
@@ -130,7 +129,6 @@ export function ProphylaxisSessionForm(props: ProphylaxisSessionFormProps) {
         blockedStaff={[]}
         freeStaff={[]}
         label="ZFA"
-        required="Bitte mindestens eine/n ZFA angeben."
       />
     </Stack>
   );
@@ -143,7 +141,7 @@ export function mapProphylaxisSessionFormValuesToRequest(
     dateAndTime: new Date(values.dateAndTime),
     institutionId: mapRequiredValue(values.institution)?.id,
     groupName: mapOptionalValue(values.groupName) ?? undefined,
-    type: mapRequiredValue(values.type),
+    type: mapOptionalValue(values.type),
     isScreening: values.isScreening,
     dentitionType: values.isScreening
       ? mapRequiredValue(values.dentitionType)

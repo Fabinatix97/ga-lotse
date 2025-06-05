@@ -82,6 +82,7 @@ interface ChildrenFilterSettingsProps {
 export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
   const searchGroups = useSearchInstitutionGroupsQuery(
     props.filterFormValues.institutionIdFilter ?? "",
+    true,
   );
   const groups = searchGroups.isSuccess ? searchGroups.data : [];
 

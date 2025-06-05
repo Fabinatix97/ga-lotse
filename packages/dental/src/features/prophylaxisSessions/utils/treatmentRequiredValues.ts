@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
+import { ApiMainResult } from "@eshg/dental-api";
 
 import { QUADRANT_NUMBERS } from "../../../stores/examination/constants";
 import {
@@ -13,6 +13,12 @@ import {
   ToothType,
   ToothWithDiagnosis,
 } from "../../../stores/examination/types";
+
+const TREATMENT_REQUIRED_VALUES = [
+  ApiMainResult.D,
+  ApiMainResult.Z,
+  ApiMainResult.W,
+];
 
 export interface TreatmentRequiredValuesByDentitionType {
   primaryTeeth: boolean;
@@ -57,8 +63,13 @@ function hasTreatmentRequiredResult(
   return (
     tooth.type === "ToothWithDiagnosis" &&
     tooth.toothType === type &&
-    (tooth.mainResult.value === ApiMainResult.D ||
-      tooth.mainResult.value === ApiMainResult.Z ||
-      tooth.secondaryResult.value === ApiSecondaryResult.W)
+    hasResultIn(tooth, TREATMENT_REQUIRED_VALUES)
+  );
+}
+
+function hasResultIn(tooth: ToothWithDiagnosis, result: string[]) {
+  return (
+    result.includes(tooth.mainResult.value) ||
+    result.includes(tooth.secondaryResult.value)
   );
 }

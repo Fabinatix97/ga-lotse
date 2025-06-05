@@ -13,8 +13,9 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.medsabroad.api.CreatePersonDto;
 import de.eshg.medsabroad.api.GetMedsAbroadProceduresSortOptions;
-import de.eshg.medsabroad.api.PersonDto;
+import de.eshg.medsabroad.api.UpdatePersonRequest;
 import de.eshg.medsabroad.mapper.MedsAbroadProcedureSpecificationMapper;
 import de.eshg.medsabroad.mapper.PersonMapper;
 import de.eshg.medsabroad.persistence.database.MedsAbroadProcedure;
@@ -39,10 +40,19 @@ public class PersonClient {
     this.personApi = personApi;
   }
 
-  public UUID createPersonInCentralFile(PersonDto personDto) {
+  public UUID createPersonInCentralFile(CreatePersonDto personDto) {
     AddPersonFileStateResponse personFileState =
         personApi.addPersonFileState(PersonMapper.toApiType(personDto));
     return personFileState.id();
+  }
+
+  public void updatePersonInCentralFile(
+      UpdatePersonRequest personDto, MedsAbroadProcedure procedure) {
+    AddPersonFileStateResponse addPersonFileStateResponse =
+        personApi.updatePersonFileStateAndReference(
+            procedure.getCentralFilePersonId(), PersonMapper.toApiType(personDto));
+
+    procedure.setCentralFilePersonId(addPersonFileStateResponse.id());
   }
 
   public MedsAbroadProcedureDetails augmentProcedureWithPersonDetails(

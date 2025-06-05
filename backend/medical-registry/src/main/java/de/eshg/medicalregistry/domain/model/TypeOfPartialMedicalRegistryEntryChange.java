@@ -10,7 +10,8 @@ public enum TypeOfPartialMedicalRegistryEntryChange {
   RELOCATION(TypeOfChange.RELOCATION),
   CHANGE_OF_NAME(TypeOfChange.CHANGE_OF_NAME),
   CHANGE_OF_REGISTRATION(TypeOfChange.CHANGE_OF_REGISTRATION),
-  SECOND_PRACTICE(TypeOfChange.SECOND_PRACTICE);
+  SECOND_PRACTICE(TypeOfChange.SECOND_PRACTICE),
+  CHANGE_OF_EMPLOYEES(TypeOfChange.CHANGE_OF_EMPLOYEES);
 
   private final TypeOfChange typeOfChange;
 

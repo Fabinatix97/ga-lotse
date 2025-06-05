@@ -56,9 +56,7 @@ const MultiStepFormContext = createContext<MultiStepFormContextProps>({
 
 export type StepFactory<TValues> = (props: FormikProps<TValues>) => ReactNode;
 
-export interface MultiStepFormProps<
-  TValues extends FormikValues = FormikValues,
-> {
+interface MultiStepFormProps<TValues extends FormikValues = FormikValues> {
   steps: StepFactory<TValues>[];
   children: (
     values: {

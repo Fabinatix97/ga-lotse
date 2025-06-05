@@ -5,7 +5,6 @@
 
 package de.eshg.travelmedicine.testhelper;
 
-import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
 import de.eshg.travelmedicine.notification.NotificationConfigService;
@@ -17,23 +16,18 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(50)
 public class TravelMedicineTestHelperResetAction implements TestHelperServiceResetAction {
-
-  private final CreateAppointmentTypeTask createAppointmentTypeTask;
   private final CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask;
   private final NotificationConfigService notificationConfigService;
 
   public TravelMedicineTestHelperResetAction(
-      CreateAppointmentTypeTask createAppointmentTypeTask,
       CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask,
       NotificationConfigService notificationConfigService) {
-    this.createAppointmentTypeTask = createAppointmentTypeTask;
     this.createMedicalHistoryTemplateTask = createMedicalHistoryTemplateTask;
     this.notificationConfigService = notificationConfigService;
   }
 
   @Override
   public void reset() {
-    createAppointmentTypeTask.createAppointmentTypes();
     createMedicalHistoryTemplateTask.createMedicalHistoryTemplate();
     notificationConfigService.init();
   }

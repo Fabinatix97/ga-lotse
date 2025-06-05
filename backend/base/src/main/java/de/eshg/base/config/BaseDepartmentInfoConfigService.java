@@ -49,7 +49,7 @@ public class BaseDepartmentInfoConfigService
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
-  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+  public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(
         ConfigurationEndpoint.DEPARTMENT_INFO.name(), toConfigurationStatus(getConfig()));
   }

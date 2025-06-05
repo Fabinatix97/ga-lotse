@@ -11,11 +11,12 @@ function defineBaseOptions(watch: boolean, isLegacyPackage = false): Options {
     format: ["esm"],
     platform: "neutral",
     clean: !watch, // cleaning in watch mode breaks HMR
-    bundle: !watch && !isLegacyPackage,
-    splitting: !watch && !isLegacyPackage,
+    bundle: !watch,
+    splitting: !watch,
     minify: !watch,
     keepNames: true,
     metafile: true,
+    skipNodeModulesBundle: true,
   };
 }
 
@@ -36,17 +37,13 @@ interface LibConfigOptions {
    * Enabling this flag will result in all exported components being treated as client components.
    */
   isClientLib?: boolean;
-  /**
-   * Marks a package as legacy package to enable usage without a barrel file
-   */
-  isLegacyPackage?: boolean;
 }
 
 type ConfigFn = (options: Options) => Options;
 
 export function defineLibConfig(libOptions: LibConfigOptions): ConfigFn {
   return (options: Options) => ({
-    ...defineBaseOptions(isWatch(options), libOptions.isLegacyPackage ?? false),
+    ...defineBaseOptions(isWatch(options)),
     entry: [
       ...(isWatch(options) ? allSourcesEntry : libOptions.entry),
       excludeUnitTestsPattern,

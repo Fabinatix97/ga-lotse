@@ -7,10 +7,10 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         maven {
-            url 'https://mvn.topobyte.de'
+            url = 'https://mvn.topobyte.de'
         }
         maven {
-            url 'https://mvn.slimjars.com'
+            url = 'https://mvn.slimjars.com'
         }
     }
 
@@ -106,6 +106,7 @@ include 'service-directory'
 include 'spatz'
 include 'statistics'
 include 'sti-protection'
+include 'svg-sanitizer'
 include 'synapse'
 include 'test-commons'
 include 'test-helper-commons'

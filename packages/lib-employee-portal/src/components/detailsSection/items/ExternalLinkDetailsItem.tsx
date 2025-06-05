@@ -49,14 +49,17 @@ export function ExternalLinkDetailsItem<TLabelProps extends TypographyProps>(
 function DetailsValueExternalLink({
   children,
   href,
+  openInNewTab,
   ...props
 }: TypographyProps & {
   href: (value: string) => string;
+  openInNewTab?: boolean;
 }) {
   return (
     <DetailsItemValueEmployee {...props}>
       <ExternalLink
         href={isString(children) ? href(children) : undefined}
+        openInNewTab={openInNewTab}
         sx={{ wordBreak: "break-word", hyphens: "manual" }}
       >
         {children}

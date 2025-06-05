@@ -8,6 +8,7 @@ package de.eshg.base.contact;
 import static de.eshg.base.address.mapper.AddressMapper.mapDomesticAddressToApi;
 import static de.eshg.base.address.mapper.AddressMapper.mapPostboxAddressToApi;
 import static de.eshg.base.contact.persistence.entity.InstitutionContactCategory.*;
+import static de.eshg.base.contact.persistence.entity.InstitutionContactSubCategory.*;
 import static de.eshg.base.history.HistoryChange.newChange;
 import static de.eshg.base.util.MappingUtil.*;
 
@@ -50,6 +51,7 @@ public class ContactMapper {
     InstitutionContact contact = new InstitutionContact();
     setContactDmFields(request, contact);
     contact.setCategory(mapInstitutionContactCategoryToDm(request.category()));
+    contact.setSubCategory(mapInstitutionContactSubCategoryToDm(request.subCategory()));
     return contact;
   }
 
@@ -104,6 +106,24 @@ public class ContactMapper {
       case HEALTH_DEPARTMENT -> HEALTH_DEPARTMENT;
       case MISC -> MISC;
       case DAYCARE -> DAYCARE;
+    };
+  }
+
+  public static InstitutionContactSubCategory mapInstitutionContactSubCategoryToDm(
+      InstitutionContactSubCategoryDto category) {
+    return switch (category) {
+      case null -> null;
+      case BERUFSSCHULE -> BERUFSSCHULE;
+      case FOERDERSCHULE -> FOERDERSCHULE;
+      case GRUNDSCHULE -> GRUNDSCHULE;
+      case GRUND_HAUPTSCHULE -> GRUND_HAUPTSCHULE;
+      case GRUND_HAUPT_REALSCHULE -> GRUND_HAUPT_REALSCHULE;
+      case GYMNASIUM -> GYMNASIUM;
+      case HAUPTSCHULE -> HAUPTSCHULE;
+      case HAUPT_REALSCHULE -> HAUPT_REALSCHULE;
+      case INTEGRIERTE_GESAMTSCHULE -> INTEGRIERTE_GESAMTSCHULE;
+      case KOOPERATIVE_GESAMTSCHULE -> KOOPERATIVE_GESAMTSCHULE;
+      case REALSCHULE -> REALSCHULE;
     };
   }
 
@@ -189,6 +209,7 @@ public class ContactMapper {
         mergedIntoId,
         contact.getName(),
         mapInstitutionContactCategoryToApi(contact.getCategory()),
+        mapInstitutionContactSubCategoryToApi(contact.getSubCategory()),
         extractStrings(contact.getPhoneNumbers(), ContactPhoneNumber::getPhoneNumber),
         extractStrings(contact.getEmailAddresses(), ContactEmailAddress::getEmailAddress),
         mapAddressToApi(contact.getContactAddress()),
@@ -257,6 +278,9 @@ public class ContactMapper {
         newChange(
             fields.contains(InstitutionContact_.CATEGORY),
             mapInstitutionContactCategoryToApi(entity.getCategory())),
+        newChange(
+            fields.contains(InstitutionContact_.SUB_CATEGORY),
+            mapInstitutionContactSubCategoryToApi(entity.getSubCategory())),
         newChange(
             fields.contains(Contact_.PHONE_NUMBERS),
             extractStrings(entity.getPhoneNumbers(), ContactPhoneNumber::getPhoneNumber)),
@@ -423,6 +447,24 @@ public class ContactMapper {
       case HEALTH_DEPARTMENT -> InstitutionContactCategoryDto.HEALTH_DEPARTMENT;
       case MISC -> InstitutionContactCategoryDto.MISC;
       case DAYCARE -> InstitutionContactCategoryDto.DAYCARE;
+    };
+  }
+
+  private static InstitutionContactSubCategoryDto mapInstitutionContactSubCategoryToApi(
+      InstitutionContactSubCategory subCategory) {
+    return switch (subCategory) {
+      case null -> null;
+      case BERUFSSCHULE -> InstitutionContactSubCategoryDto.BERUFSSCHULE;
+      case FOERDERSCHULE -> InstitutionContactSubCategoryDto.FOERDERSCHULE;
+      case GRUNDSCHULE -> InstitutionContactSubCategoryDto.GRUNDSCHULE;
+      case GRUND_HAUPTSCHULE -> InstitutionContactSubCategoryDto.GRUND_HAUPTSCHULE;
+      case GRUND_HAUPT_REALSCHULE -> InstitutionContactSubCategoryDto.GRUND_HAUPT_REALSCHULE;
+      case GYMNASIUM -> InstitutionContactSubCategoryDto.GYMNASIUM;
+      case HAUPTSCHULE -> InstitutionContactSubCategoryDto.HAUPTSCHULE;
+      case HAUPT_REALSCHULE -> InstitutionContactSubCategoryDto.HAUPT_REALSCHULE;
+      case INTEGRIERTE_GESAMTSCHULE -> InstitutionContactSubCategoryDto.INTEGRIERTE_GESAMTSCHULE;
+      case KOOPERATIVE_GESAMTSCHULE -> InstitutionContactSubCategoryDto.KOOPERATIVE_GESAMTSCHULE;
+      case REALSCHULE -> InstitutionContactSubCategoryDto.REALSCHULE;
     };
   }
 

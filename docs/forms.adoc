@@ -10,7 +10,7 @@ Example usage:
 [,react]
 ----
 import { Formik } from "formik";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FormPlus } from "@eshg/lib-portal";
 
 <Formik
   initialValues={...}

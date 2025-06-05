@@ -16,12 +16,10 @@ public interface StreetDirectory {
   Set<String> getFullStreetNamesForPrefix(String streetName);
 
   record AdministrativeData(
+      String streetNumber,
       String localDistrict,
       String districtName,
       String cityDistrict,
-      String cityDistrictPrefecture,
-      String arbitratorsDistrict,
-      String policeStation,
       String postalCode) {}
 
   interface EntryFields {
@@ -45,12 +43,6 @@ public interface StreetDirectory {
     String districtName();
 
     String cityDistrict();
-
-    String cityDistrictPrefecture();
-
-    String arbitratorsDistrict();
-
-    String policeStation();
 
     String postalCode();
   }

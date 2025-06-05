@@ -19,7 +19,7 @@ export function createFieldNameMapper<T = Record<string, unknown>>(
 }
 
 export const NO_SELECTION_LABEL = "keine Auswahl";
-export const NO_SELECTION: SelectOption = {
+const NO_SELECTION: SelectOption = {
   label: NO_SELECTION_LABEL,
   value: "",
 };

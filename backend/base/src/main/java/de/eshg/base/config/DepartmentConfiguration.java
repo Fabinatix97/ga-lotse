@@ -25,12 +25,18 @@ public class DepartmentConfiguration extends BaseEntity {
   private Document logo;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  private boolean logoInitialized = true;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean streetAndMunicipalityDirectoriesInitialized = true;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private Document streetDirectory;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private Document municipalityDirectory;
 
@@ -38,12 +44,12 @@ public class DepartmentConfiguration extends BaseEntity {
   private boolean accessibilityStatementMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument citizenPortalAccessibilityStatementMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument employeePortalAccessibilityStatementMarkdown;
 
@@ -51,7 +57,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private boolean acknowledgementsMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument acknowledgementsMarkdown;
 
@@ -59,7 +65,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private boolean contactMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument contactMarkdown;
 
@@ -67,7 +73,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private boolean imprintMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument imprintMarkdown;
 
@@ -75,12 +81,12 @@ public class DepartmentConfiguration extends BaseEntity {
   private boolean privacyPolicyMarkdownsInitialized = true;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument citizenPortalPrivacyPolicyMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(nullable = false)
   private MultiLangDocument employeePortalPrivacyPolicyMarkdown;
 
@@ -90,6 +96,14 @@ public class DepartmentConfiguration extends BaseEntity {
 
   public void setLogo(Document logo) {
     this.logo = logo;
+  }
+
+  public boolean isLogoInitialized() {
+    return logoInitialized;
+  }
+
+  public void setLogoInitialized(boolean logoInitialized) {
+    this.logoInitialized = logoInitialized;
   }
 
   public Document getStreetDirectory() {
@@ -164,6 +178,15 @@ public class DepartmentConfiguration extends BaseEntity {
 
   public void setEmployeePortalPrivacyPolicyMarkdown(MultiLangDocument markdownEmployeePrivacy) {
     this.employeePortalPrivacyPolicyMarkdown = markdownEmployeePrivacy;
+  }
+
+  public boolean isStreetAndMunicipalityDirectoriesInitialized() {
+    return streetAndMunicipalityDirectoriesInitialized;
+  }
+
+  public void setStreetAndMunicipalityDirectoriesInitialized(
+      boolean streetAndMunicipalityDirectoriesInitialized) {
+    this.streetAndMunicipalityDirectoriesInitialized = streetAndMunicipalityDirectoriesInitialized;
   }
 
   public boolean isAccessibilityStatementMarkdownsInitialized() {

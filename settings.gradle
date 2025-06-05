@@ -2,15 +2,15 @@ rootProject.name = 'ga-lotse-code'
 
 includeBuild 'backend'
 
-include 'employee-portal'
-include 'citizen-portal'
-include 'admin-portal'
 include 'e2e'
 include 'performance-test'
 include 'k8s'
 
-// include all projects under '/packages' as project
-new File("$rootDir/packages").listFiles().each {
+// include all projects under '/apps' and '/packages' as project
+def apps = new File("$rootDir/apps").listFiles()
+def packages = new File("$rootDir/packages").listFiles()
+def allProjects = apps + packages
+allProjects.each {
   def packageName = it.name
   def packagePath = it.path
 

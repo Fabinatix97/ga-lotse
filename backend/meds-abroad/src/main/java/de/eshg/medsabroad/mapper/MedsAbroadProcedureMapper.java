@@ -5,11 +5,13 @@
 
 package de.eshg.medsabroad.mapper;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.medsabroad.api.GetMedsAbroadProcedureResponse;
 import de.eshg.medsabroad.api.MedsAbroadProcedureDto;
 import de.eshg.medsabroad.persistence.centralfile.MedsAbroadProcedureDetails;
 import de.eshg.medsabroad.persistence.database.MedsAbroadProcedure;
+import java.util.Optional;
 
 public class MedsAbroadProcedureMapper {
 
@@ -22,8 +24,10 @@ public class MedsAbroadProcedureMapper {
         procedure.getExternalId(),
         procedure.getCreatedAt(),
         PersonMapper.toInterfaceType(procedureDetails.personDetails()),
-        null,
-        false,
+        Optional.ofNullable(procedure.getAppointment())
+            .map(Appointment::getAppointmentStart)
+            .orElse(null),
+        procedure.isCertificatePaid(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()));
   }
 
@@ -34,10 +38,10 @@ public class MedsAbroadProcedureMapper {
         procedure.getExternalId(),
         procedure.getCreatedAt(),
         PersonMapper.toInterfaceType(procedureDetails.personDetails()),
-        // Todo: Set appointment data to something until it is fully implemented
-        //      otherwise the @NotNull in the dto will lead to an error
-        procedure.getCreatedAt(),
-        false,
+        Optional.ofNullable(procedure.getAppointment())
+            .map(Appointment::getAppointmentStart)
+            .orElse(null),
+        procedure.isCertificatePaid(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()));
   }
 }

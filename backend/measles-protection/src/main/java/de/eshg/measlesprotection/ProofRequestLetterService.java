@@ -20,8 +20,8 @@ import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSys
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.document.generator.department.DepartmentLogoClient;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
@@ -58,19 +58,19 @@ public class ProofRequestLetterService {
 
   private final CoverLetterService coverLetterService;
   private final MeaslesProtectionService measlesProtectionService;
-  private final DepartmentClient departmentClient;
+  private final DepartmentLogoClient departmentLogoClient;
   private final DepartmentInfoConfigService departmentInfoConfigService;
   private final Clock clock;
 
   public ProofRequestLetterService(
       CoverLetterService coverLetterService,
       MeaslesProtectionService measlesProtectionService,
-      DepartmentClient departmentClient,
+      DepartmentLogoClient departmentLogoClient,
       DepartmentInfoConfigService departmentInfoConfigService,
       Clock clock) {
     this.coverLetterService = coverLetterService;
     this.measlesProtectionService = measlesProtectionService;
-    this.departmentClient = departmentClient;
+    this.departmentLogoClient = departmentLogoClient;
     this.departmentInfoConfigService = departmentInfoConfigService;
     this.clock = clock;
   }
@@ -91,7 +91,7 @@ public class ProofRequestLetterService {
     CoverLetterPerson addressee = createAddressee(request, procedureDetails, person);
     CoverLetterPerson affectedPerson = createAffectedPerson(person);
     CoverLetterBody body = createLetterBody(request, previousLetterDate);
-    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
     DepartmentInfo departmentInfo =
         toDepartmentInfo(departmentInfoConfigService.getDepartmentInfo());
     CoverLetterData data =

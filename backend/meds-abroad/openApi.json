@@ -570,6 +570,283 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
+      }
+    },
+    "/configuration/appointment-standard-duration" : {
+      "get" : {
+        "operationId" : "getStandardDurations",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetMedsAbroadAppointmentStandardDurationsResponse"
+                }
+              }
+            },
+            "description" : "A response containing the standard duration if initialized, or an empty response body otherwise."
+          }
+        },
+        "summary" : "Get the standard duration for meds abroad certification appointments",
+        "tags" : [ "MedsAbroadAppointmentStandardDuration" ]
+      },
+      "put" : {
+        "operationId" : "updateStandardDurations",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MedsAbroadAppointmentStandardDurations"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the standard duration for meds abroad certification appointments",
+        "tags" : [ "MedsAbroadAppointmentStandardDuration" ]
+      }
+    },
+    "/configuration/department-info" : {
+      "get" : {
+        "operationId" : "getInternalConfigDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInternalConfigDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateInternalConfigDepartmentInfo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInternalConfigDepartmentInfoRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/opening-hours" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNoticeConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyNoticeConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-notice/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyNotice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicyConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyPolicyConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy/{lang}" : {
+      "get" : {
+        "operationId" : "downloadPrivacyPolicy",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
     "/files/{fileId}" : {
       "delete" : {
         "operationId" : "deleteFile",
@@ -1333,12 +1610,21 @@
             "$ref" : "#/components/schemas/GetMedsAbroadProceduresSortOrder"
           }
         }, {
-          "description" : "Filter logic:\n- If 'creationDate' is submitted, only procedures which were created at the provided date are returned.\n- If no 'creationDate' is submitted, no filtering takes place.\n",
           "in" : "query",
-          "name" : "creationDate",
+          "name" : "creationDateStart",
           "required" : false,
           "schema" : {
             "type" : "string",
+            "description" : "Start of the procedure creation date.",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "creationDateEnd",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "description" : "End of the procedure creation date.",
             "format" : "date"
           }
         }, {
@@ -1422,6 +1708,131 @@
           }
         },
         "summary" : "Get meds abroad procedure by id.",
+        "tags" : [ "MedsAbroad" ]
+      }
+    },
+    "/meds-abroad-procedures/{id}/cancel" : {
+      "put" : {
+        "operationId" : "cancelProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Cancel a meds abroad procedure.",
+        "tags" : [ "MedsAbroad" ]
+      }
+    },
+    "/meds-abroad-procedures/{id}/certificate-paid" : {
+      "put" : {
+        "operationId" : "updateCertificatePaid",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateCertificatePaidRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates certificate paid data of a meds abroad procedure.",
+        "tags" : [ "MedsAbroad" ]
+      }
+    },
+    "/meds-abroad-procedures/{id}/close" : {
+      "put" : {
+        "operationId" : "closeProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Close a meds abroad procedure.",
+        "tags" : [ "MedsAbroad" ]
+      }
+    },
+    "/meds-abroad-procedures/{id}/person" : {
+      "put" : {
+        "operationId" : "updatePerson",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdatePersonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates person of a meds abroad procedure.",
+        "tags" : [ "MedsAbroad" ]
+      }
+    },
+    "/meds-abroad-procedures/{id}/reopen" : {
+      "put" : {
+        "operationId" : "reopenProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Reopen a meds abroad procedure.",
         "tags" : [ "MedsAbroad" ]
       }
     },
@@ -1585,67 +1996,6 @@
       }
     },
     "/procedures/recent" : {
-      "get" : {
-        "operationId" : "getRecentProcedures",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "userId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureType",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureType"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "procedureStatus",
-          "required" : false,
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ProcedureStatus"
-            }
-          }
-        }, {
-          "in" : "query",
-          "name" : "limit",
-          "required" : false,
-          "schema" : {
-            "maximum" : 200,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRecentProceduresResponse"
-                }
-              }
-            },
-            "description" : "the users recent procedures"
-          }
-        },
-        "summary" : "Get recent procedures for user",
-        "tags" : [ "Procedure" ]
-      }
-    },
-    "/procedures/recent/self" : {
       "get" : {
         "operationId" : "getSelfRecentProcedures",
         "parameters" : [ {
@@ -2737,6 +3087,18 @@
           "propertyName" : "@type"
         }
       },
+      "AllowedAppointmentTypeCombination" : {
+        "required" : [ "types" ],
+        "type" : "object",
+        "properties" : {
+          "types" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
       "Appointment" : {
         "required" : [ "end", "start" ],
         "type" : "object",
@@ -2772,7 +3134,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION" ]
       },
       "AppointmentTypeConfig" : {
         "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
@@ -2996,6 +3358,10 @@
           }
         }
       },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
         "type" : "object",
@@ -3097,7 +3463,7 @@
         }
       },
       "CreateDailyAppointmentBlockGroupRequest" : {
-        "required" : [ "appointmentBlocks", "parallelExaminations", "type" ],
+        "required" : [ "appointmentBlocks", "parallelExaminations", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -3138,8 +3504,13 @@
               "format" : "uuid"
             }
           },
-          "type" : {
-            "$ref" : "#/components/schemas/AppointmentType"
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
           }
         }
       },
@@ -3204,7 +3575,7 @@
             "example" : 30
           },
           "person" : {
-            "$ref" : "#/components/schemas/Person"
+            "$ref" : "#/components/schemas/CreatePerson"
           }
         }
       },
@@ -3218,6 +3589,91 @@
             "format" : "uuid"
           }
         }
+      },
+      "CreatePerson" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "Date of birth of the applicant.",
+            "format" : "date",
+            "example" : "2018-07-26"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the applicant.",
+            "example" : "Susanne"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the applicant.",
+            "example" : "Gerber"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "referenceId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "description" : "A person who is applying for approval."
       },
       "DataOrigin" : {
         "type" : "string",
@@ -3253,6 +3709,50 @@
               "type" : "string",
               "format" : "uuid"
             }
+          }
+        }
+      },
+      "DepartmentInfo" : {
+        "required" : [ "abbreviation", "city", "country", "email", "homepage", "houseNumber", "latitude", "longitude", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string"
+          },
+          "city" : {
+            "type" : "string"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "homepage" : {
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "type" : "string"
+          },
+          "postalCode" : {
+            "type" : "string"
+          },
+          "street" : {
+            "type" : "string"
           }
         }
       },
@@ -3292,6 +3792,19 @@
           },
           "task" : {
             "$ref" : "#/components/schemas/Task"
+          }
+        }
+      },
+      "DocumentDetails" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -3654,30 +4167,28 @@
         }
       },
       "GetAppointmentBlock" : {
-        "required" : [ "end", "id", "numberOfBookedAppointments", "numberOfFreeAppointments", "start" ],
+        "required" : [ "end", "id", "start" ],
         "type" : "object",
         "properties" : {
+          "bookedDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
           "end" : {
             "type" : "string",
             "description" : "Time at which the appointment block ends.",
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
           },
+          "freeDuration" : {
+            "type" : "string",
+            "description" : "A duration in ISO 8601"
+          },
           "id" : {
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
             "format" : "uuid",
             "example" : "UUID_1"
-          },
-          "numberOfBookedAppointments" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "numberOfFreeAppointments" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int64"
           },
           "start" : {
             "type" : "string",
@@ -3689,7 +4200,7 @@
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
       },
       "GetAppointmentBlockGroup" : {
-        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "type" ],
+        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -3714,8 +4225,13 @@
             "type" : "integer",
             "format" : "int32"
           },
-          "type" : {
-            "$ref" : "#/components/schemas/AppointmentType"
+          "types" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
           }
         }
       },
@@ -3736,9 +4252,15 @@
         }
       },
       "GetAppointmentTypesResponse" : {
-        "required" : [ "appointmentTypeConfigDtos" ],
+        "required" : [ "allowedAppointmentTypeCombinations", "appointmentTypeConfigDtos" ],
         "type" : "object",
         "properties" : {
+          "allowedAppointmentTypeCombinations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AllowedAppointmentTypeCombination"
+            }
+          },
           "appointmentTypeConfigDtos" : {
             "type" : "array",
             "items" : {
@@ -3795,6 +4317,22 @@
           "gracePeriodMonths" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },
@@ -4009,6 +4547,14 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "GetInternalConfigDepartmentInfoResponse" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
       "GetManualProgressEntryHistoryResponse" : {
         "type" : "object",
         "properties" : {
@@ -4017,6 +4563,14 @@
             "items" : {
               "$ref" : "#/components/schemas/ManualProgressEntryHistory"
             }
+          }
+        }
+      },
+      "GetMedsAbroadAppointmentStandardDurationsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "standardDurations" : {
+            "$ref" : "#/components/schemas/MedsAbroadAppointmentStandardDurations"
           }
         }
       },
@@ -4066,6 +4620,14 @@
                 "$ref" : "#/components/schemas/PdfMetaDataHistory"
               } ]
             }
+          }
+        }
+      },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
           }
         }
       },
@@ -4179,6 +4741,14 @@
             "type" : "string",
             "description" : "The academic title of a Person.",
             "example" : "Prof. Dr."
+          }
+        }
+      },
+      "GetPrivacyDocumentConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "privacyDocument" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
           }
         }
       },
@@ -4629,6 +5199,10 @@
           "propertyName" : "@type"
         }
       },
+      "Language" : {
+        "type" : "string",
+        "enum" : [ "GERMAN", "ENGLISH" ]
+      },
       "Mail" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],
         "type" : "object",
@@ -4746,8 +5320,18 @@
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
       },
+      "MedsAbroadAppointmentStandardDurations" : {
+        "required" : [ "certification" ],
+        "type" : "object",
+        "properties" : {
+          "certification" : {
+            "type" : "string"
+          }
+        },
+        "description" : "A request containing the standard duration."
+      },
       "MedsAbroadProcedure" : {
-        "required" : [ "appointmentStart", "certificatePaid", "createdAt", "id", "person", "procedureStatus" ],
+        "required" : [ "certificatePaid", "createdAt", "id", "person", "procedureStatus" ],
         "type" : "object",
         "properties" : {
           "appointmentStart" : {
@@ -4831,6 +5415,38 @@
           "propertyName" : "@type"
         }
       },
+      "MultiLangDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          }
+        }
+      },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
       "Operation" : {
         "type" : "string",
         "enum" : [ "DELETE" ]
@@ -4896,14 +5512,46 @@
         } ]
       },
       "Person" : {
-        "required" : [ "dateOfBirth", "firstName", "lastName" ],
+        "required" : [ "dateOfBirth", "fileStateId", "fileStateOutdated", "firstName", "lastName", "version" ],
         "type" : "object",
         "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
           "dateOfBirth" : {
             "type" : "string",
             "description" : "Date of birth of the applicant.",
             "format" : "date",
             "example" : "2018-07-26"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fileStateOutdated" : {
+            "type" : "boolean"
           },
           "firstName" : {
             "minLength" : 1,
@@ -4911,18 +5559,51 @@
             "description" : "First name of the applicant.",
             "example" : "Susanne"
           },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
           "lastName" : {
             "minLength" : 1,
             "type" : "string",
             "description" : "Last name of the applicant.",
             "example" : "Gerber"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
         "description" : "A person who is applying for approval."
       },
       "PersonType" : {
         "type" : "string",
-        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL" ]
+        "enum" : [ "PATIENT", "PARENT", "PROFESSIONAL", "EMPLOYEE" ]
       },
       "Population" : {
         "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
@@ -5188,6 +5869,7 @@
       },
       "Salutation" : {
         "type" : "string",
+        "description" : "A list of categories for the salutation from which specific salutation phrases can be derived. The choice of salutation is free for every citizen and not dependent on gender.",
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
       },
       "SelfAssignTaskRequest" : {
@@ -5444,6 +6126,107 @@
         "properties" : {
           "standardDurationInMinutes" : {
             "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "UpdateCertificatePaidRequest" : {
+        "required" : [ "certificatePaid" ],
+        "type" : "object",
+        "properties" : {
+          "certificatePaid" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "UpdateInternalConfigDepartmentInfoRequest" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
+      "UpdatePersonRequest" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName", "version" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "Date of birth of the applicant.",
+            "format" : "date",
+            "example" : "2018-07-26"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "First name of the applicant.",
+            "example" : "Susanne"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Last name of the applicant.",
+            "example" : "Gerber"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
             "type" : "integer",
             "format" : "int64"
           }

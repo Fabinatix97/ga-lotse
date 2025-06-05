@@ -20,7 +20,8 @@ public enum TechnicalGroup implements KeycloakGroup {
   STI_PROTECTION_MFA("HIV-STI-MFA", EmployeePermissionRole.STI_PROTECTION_ADMIN),
   STI_PROTECTION_CONSULTANT("HIV-STI-Berater", EmployeePermissionRole.STI_PROTECTION_ADMIN),
   OFFICIAL_MEDICAL_SERVICE_PHYSICIANS(
-      "AÄD-Arzt", EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
+      "AÄD-Arzt", EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN),
+  MEDS_ABROAD_MFA("BTM-MFA", EmployeePermissionRole.MEDS_ABROAD_ADMIN);
 
   private final List<KeycloakRole> roles;
   private final String name;

@@ -19,7 +19,7 @@ dependencies {
     implementation 'org.apache.commons:commons-math3:latest.release'
     implementation 'de.cronn:reflection-util:latest.release'
 
-    implementation 'com.google.guava:guava'
+    implementation 'com.google.guava:guava:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -36,6 +36,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-xlsx-import'))
     testImplementation testFixtures(project(':lib-statistics'))
     testImplementation testFixtures(project(':lib-auditlog'))
+    testImplementation testFixtures(project(':lib-appointmentblock'))
 }
 
 dockerCompose {

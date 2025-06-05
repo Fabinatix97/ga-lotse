@@ -113,7 +113,7 @@ function FileCardButton({
   actions: FileCardActionProps[];
   color?: ColorPaletteProp;
 }) {
-  if (actions.length == 0) return null;
+  if (actions.length === 0) return null;
   if (actions.length > 1)
     return <FileCardMenuButton color={color} actions={actions} />;
   const onlyAction = actions[0];

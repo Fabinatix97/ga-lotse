@@ -42,16 +42,15 @@ public class FileResponseUtil {
     return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA).body(multipart);
   }
 
-  public static ResponseEntity<Resource> getTemplateFileResponse(Resource templateFile) {
-    return getTemplateFileResponse(templateFile, templateFile.getFilename());
+  public static ResponseEntity<Resource> getFileResponseEntity(Resource file) {
+    return getFileResponseEntity(file, file.getFilename());
   }
 
-  public static ResponseEntity<Resource> getTemplateFileResponse(
-      Resource templateFile, String filename) {
+  public static ResponseEntity<Resource> getFileResponseEntity(Resource file, String filename) {
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, fileAttachment(filename).toString())
         .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.APPLICATION_XLSX_VALUE)
-        .body(templateFile);
+        .body(file);
   }
 
   private static ContentDisposition fileFormData(String filename) {

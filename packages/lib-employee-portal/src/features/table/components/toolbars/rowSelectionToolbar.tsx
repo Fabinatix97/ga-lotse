@@ -72,7 +72,7 @@ export function RowSelectionTableToolbar(props: RowSelectionTableToolbarProps) {
 }
 
 interface ProcedureTableTitleButtonProps extends RequiresChildren {
-  decorator: ReactNode;
+  decorator?: ReactNode;
   isPending?: boolean;
   disabled?: boolean;
   onClick: () => Promise<void> | void;

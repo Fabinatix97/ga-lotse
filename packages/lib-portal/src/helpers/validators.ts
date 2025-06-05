@@ -17,14 +17,11 @@ import {
 } from "date-fns";
 import { isDefined, isEmpty, isNullish } from "remeda";
 
+import { ApiCountryCode } from "@eshg/base-api";
+
 import { OptionalFieldValue, Validator } from "../types/form";
 
-import {
-  isDateString,
-  isDateTimeString,
-  isMonthString,
-  isTimeString,
-} from "./dateTime";
+import { isDateString, isDateTimeString, isTimeString } from "./dateTime";
 import { isValidEmailString } from "./email";
 import { isDict, isEmptyString, isInteger, isStringOnlyDigits } from "./guards";
 
@@ -88,14 +85,6 @@ export function validateDateTime(value: OptionalFieldValue<string>) {
   }
 
   return undefined;
-}
-
-export function validateMonth(value: string) {
-  if (value === undefined || isEmptyString(value) || isMonthString(value)) {
-    return undefined;
-  }
-
-  return "Bitte einen gültigen Monat angeben.";
 }
 
 export function validateLength(
@@ -233,4 +222,28 @@ export function validateEmail(message: string): Validator<string> {
 
 export function validateHexColorCode(message: string): Validator<string> {
   return validateRegex(/^#([A-Fa-f0-9]{6})$/, message);
+}
+
+export function validateZipCode(country: ApiCountryCode, message?: string) {
+  switch (country) {
+    case ApiCountryCode.De:
+      return (value: string) => validateGermanZipCode(value, message);
+    default:
+      return () => undefined;
+  }
+}
+
+export function validateGermanZipCode(
+  value: string,
+  message = "Bitte eine gültige Postleitzahl angeben.",
+) {
+  if (value === undefined || isEmptyString(value)) {
+    return undefined;
+  }
+
+  if (!/^[0-9]{5}$/.test(value)) {
+    return message;
+  }
+
+  return undefined;
 }

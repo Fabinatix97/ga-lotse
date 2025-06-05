@@ -128,13 +128,19 @@ public class ProphylaxisSessionsPopulator
     UUID institutionId = randomSchoolOrDaycare(faker);
     String groupName = randomGroupAtInstitution(faker, institutionId);
     List<UUID> dentistIds =
-        userApi.getUsersByGroup(TechnicalGroup.DENTIST.getKeycloakName()).users().stream()
-            .map(UserDto::userId)
-            .toList();
+        optionalList(
+            faker,
+            userApi.getUsersByGroup(TechnicalGroup.DENTIST.getKeycloakName()).users().stream()
+                .map(UserDto::userId)
+                .toList(),
+            0.3);
     List<UUID> zfaIds =
-        userApi.getUsersByGroup(TechnicalGroup.ZFA.getKeycloakName()).users().stream()
-            .map(UserDto::userId)
-            .toList();
+        optionalList(
+            faker,
+            userApi.getUsersByGroup(TechnicalGroup.ZFA.getKeycloakName()).users().stream()
+                .map(UserDto::userId)
+                .toList(),
+            0.3);
 
     boolean isScreening = faker.random().nextBoolean();
     CreateProphylaxisSessionRequest createProphylaxisSessionRequest =
@@ -155,7 +161,8 @@ public class ProphylaxisSessionsPopulator
   }
 
   private String randomGroupAtInstitution(Faker faker, UUID institutionId) {
-    List<String> existingGroups = childController.getInstitutionGroups(institutionId).groups();
+    List<String> existingGroups =
+        childController.getInstitutionGroups(institutionId, true).groups();
     if (existingGroups.isEmpty()) {
       throw new EmptySchoolException(
           "Populated school %s does not contain any groups.".formatted(institutionId));
@@ -164,7 +171,7 @@ public class ProphylaxisSessionsPopulator
   }
 
   private static ProphylaxisTypeDto randomProphylaxisType(Faker faker) {
-    return randomElement(faker, ProphylaxisTypeDto.values());
+    return optional(faker, randomElement(faker, ProphylaxisTypeDto.values()), 0.2);
   }
 
   private static DentitionTypeDto randomDentitionType(Faker faker) {

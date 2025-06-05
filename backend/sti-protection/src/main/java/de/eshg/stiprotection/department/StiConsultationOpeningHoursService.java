@@ -7,6 +7,7 @@ package de.eshg.stiprotection.department;
 
 import de.eshg.config.AuditLogWriter;
 import de.eshg.persistence.TransactionHelper;
+import de.eshg.stiprotection.config.HivStiConsultationConfigurationStatusAware;
 import de.eshg.stiprotection.persistence.StiConsultationOpeningHours;
 import de.eshg.stiprotection.persistence.config.DepartmentInfoConfig;
 import de.eshg.stiprotection.persistence.db.Concern;
@@ -14,9 +15,9 @@ import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
 @Service
-@ConfigConcernQualifier(concern = Concern.HIV_STI_CONSULTATION)
 public class StiConsultationOpeningHoursService
-    extends AbstractStiProtectionOpeningHoursService<StiConsultationOpeningHours> {
+    extends AbstractStiProtectionOpeningHoursService<StiConsultationOpeningHours>
+    implements HivStiConsultationConfigurationStatusAware {
 
   public StiConsultationOpeningHoursService(
       EntityManager entityManager,

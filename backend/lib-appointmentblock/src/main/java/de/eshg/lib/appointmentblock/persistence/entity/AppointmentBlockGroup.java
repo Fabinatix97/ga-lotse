@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
@@ -73,10 +75,13 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
     this.appointmentTypeHolders.addAll(appointmentTypeHolders);
   }
 
-  public AppointmentType getType() {
-    return appointmentTypeHolders.stream().findFirst().orElseThrow().getType();
+  public Set<AppointmentType> getTypes() {
+    return appointmentTypeHolders.stream()
+        .map(AppointmentTypeHolder::getType)
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
+  // ToDo ISSUE-8888: Allow types with different durations -> remove this method
   public Duration getSlotDuration() {
     return appointmentTypeHolders.stream().findFirst().orElseThrow().getSlotDuration();
   }

@@ -14,7 +14,11 @@ import {
   TableSheet,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { DynamicPageProps, formatDate } from "@eshg/lib-portal";
+import {
+  DynamicPageProps,
+  formatDate,
+  formatOptionalKey,
+} from "@eshg/lib-portal";
 
 import { ExaminationStatusChip } from "../../../components/examination/ExaminationStatusChip";
 import { routes } from "../../../config/routes";
@@ -27,6 +31,15 @@ import { DentalChildRouteParams } from "../schemas/DentalChildRouteParams";
 
 const columnHelper = createColumnHelper<ChildExamination>();
 const COLUMNS = [
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (props) => <ExaminationStatusChip status={props.getValue()} />,
+    enableSorting: false,
+    meta: {
+      width: 160,
+      canNavigate: { parentRow: true },
+    },
+  }),
   columnHelper.accessor("dateAndTime", {
     header: "Datum",
     cell: (props) => formatDate(props.getValue()),
@@ -38,7 +51,7 @@ const COLUMNS = [
   }),
   columnHelper.accessor("prophylaxisType", {
     header: "Typ",
-    cell: (props) => PROPHYLAXIS_TYPES[props.getValue()],
+    cell: (props) => formatOptionalKey(props.getValue(), PROPHYLAXIS_TYPES, ""),
     enableSorting: false,
     meta: {
       width: 250,
@@ -48,14 +61,6 @@ const COLUMNS = [
   columnHelper.accessor("note", {
     header: "Bemerkung",
     cell: (props) => props.getValue(),
-    enableSorting: false,
-    meta: {
-      canNavigate: { parentRow: true },
-    },
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    cell: (props) => <ExaminationStatusChip status={props.getValue()} />,
     enableSorting: false,
     meta: {
       canNavigate: { parentRow: true },

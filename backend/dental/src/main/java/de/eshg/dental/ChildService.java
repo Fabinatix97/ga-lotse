@@ -5,6 +5,7 @@
 
 package de.eshg.dental;
 
+import static de.eshg.dental.util.ChildSystemProgressEntryType.DATA_EXPORTED;
 import static de.eshg.dental.util.ChildSystemProgressEntryType.LABELS_MODIFIED;
 
 import com.google.common.collect.Iterables;
@@ -46,6 +47,7 @@ import de.eshg.dental.api.SchoolYearTransitionSortKey;
 import de.eshg.dental.api.SchoolYearTransitionStatusDto;
 import de.eshg.dental.api.SyncPersonRequest;
 import de.eshg.dental.api.UpdateChildRequest;
+import de.eshg.dental.api.UpdateFluoridationConsentBulkRequest;
 import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
@@ -83,10 +85,13 @@ import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.XlsxImport;
 import de.eshg.lib.xlsximport.model.ImportResult;
+import de.eshg.lib.xlsximport.util.XlsxUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -107,8 +112,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.FuzzyScore;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -274,6 +286,11 @@ public class ChildService {
                           .formatted(existingOpenChild.getYear()));
               closeChild(existingOpenChild);
             });
+  }
+
+  protected void closeChildAndFlush(Child child) {
+    closeChild(child);
+    childRepository.flush();
   }
 
   protected void closeChild(Child child) {
@@ -644,8 +661,8 @@ public class ChildService {
         childSpecification, Child.class, Person.PERSON_TYPE_USED_FOR_CHILDREN);
   }
 
-  public List<String> getInstitutionGroups(UUID institutionId) {
-    return childRepository.findDistinctInstitutionGroups(institutionId);
+  public List<String> getInstitutionGroups(UUID institutionId, boolean openGroupsOnly) {
+    return childRepository.findDistinctInstitutionGroups(institutionId, openGroupsOnly);
   }
 
   public void updateChildDataAndFlush(Child child, UpdateChildRequest request) {
@@ -663,6 +680,7 @@ public class ChildService {
       } else {
         child.setGroupName(null);
       }
+      addSystemProgressEntry(child, ChildSystemProgressEntryType.GROUP_MODIFIED);
     }
 
     boolean updateInstitution = !Objects.equals(request.institutionId(), child.getInstitutionId());
@@ -670,16 +688,17 @@ public class ChildService {
       log.debug(
           "Updating institution: '{}' → '{}'", child.getInstitutionId(), request.institutionId());
       child.setInstitutionId(request.institutionId());
-    }
-
-    if (updateInstitution) {
       addSystemProgressEntry(child, ChildSystemProgressEntryType.INSTITUTION_MODIFIED);
-    } else if (updateGroup) {
-      addSystemProgressEntry(child, ChildSystemProgressEntryType.GROUP_MODIFIED);
     }
 
-    FluoridationConsent requestedFluoridationConsent =
-        ChildMapper.mapFluoridationToDomain(request.fluoridationConsent());
+    updateFluoridationConsent(
+        child, ChildMapper.mapFluoridationToDomain(request.fluoridationConsent()));
+
+    updateProcedureLabels(child, request.procedureLabels());
+  }
+
+  private void updateFluoridationConsent(
+      Child child, FluoridationConsent requestedFluoridationConsent) {
     FluoridationConsent persistedFluoridationConsent = child.getCurrentFluoridationConsent();
     boolean updateFluoridationConsent =
         requestedFluoridationConsent != null
@@ -690,13 +709,8 @@ public class ChildService {
     if (updateFluoridationConsent) {
       requestedFluoridationConsent.setModifiedAt(Instant.now(clock));
       child.addFluoridationConsent(requestedFluoridationConsent);
-    }
-
-    updateProcedureLabels(child, request.procedureLabels());
-
-    if (updateGroup) {
-      log.debug("Updating group name: '{}' → '{}'", child.getGroupName(), request.groupName());
-      child.setGroupName(request.groupName());
+      progressEntryUtil.addSystemProgressEntry(
+          child, ChildSystemProgressEntryType.FLUORIDATION_CONSENT_MODIFIED);
     }
   }
 
@@ -718,6 +732,19 @@ public class ChildService {
     return fluoridationConsent1.isConsented() == fluoridationConsent2.isConsented()
         && Objects.equals(fluoridationConsent1.hasAllergy(), fluoridationConsent2.hasAllergy())
         && fluoridationConsent1.getDateOfConsent().equals(fluoridationConsent2.getDateOfConsent());
+  }
+
+  protected void updateFluoridationConsentInBulk(UpdateFluoridationConsentBulkRequest request) {
+    List<Child> children = childRepository.findByExternalIdsForUpdate(request.childIds()).toList();
+
+    FluoridationConsent fluoridationConsent = new FluoridationConsent();
+    fluoridationConsent.setDateOfConsent(request.dateOfConsent());
+    fluoridationConsent.setConsented(request.consented());
+
+    for (Child child : children) {
+      updateFluoridationConsent(child, fluoridationConsent);
+    }
+    childRepository.flush();
   }
 
   private void addSystemProgressEntry(
@@ -1225,5 +1252,58 @@ public class ChildService {
     return completedGroups == allGroups
         ? SchoolYearTransitionStatusDto.COMPLETE
         : SchoolYearTransitionStatusDto.INCOMPLETE;
+  }
+
+  protected Resource createChildDataForExport(
+      UUID institutionId, String groupName, int schoolYear) {
+    List<Child> children =
+        childRepository.findByInstitutionIdAndGroupNameAndProcedureStatusAndYearOrderById(
+            institutionId, groupName, ProcedureStatus.OPEN, Year.of(schoolYear));
+    List<ChildWithAugmentedData> augmentedChildren =
+        augmentWithChildData(children).stream()
+            .sorted(
+                Comparator.comparing(
+                        (ChildWithAugmentedData childData) -> childData.personData().lastName())
+                    .thenComparing(childData -> childData.personData().firstName()))
+            .toList();
+
+    try (XSSFWorkbook workbook = new XSSFWorkbook();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+      XSSFSheet sheet = workbook.createSheet();
+      createHeader(sheet);
+
+      XSSFCellStyle cellStyle = XlsxUtil.createDefaultCellStyle(sheet);
+      for (int i = 0; i < augmentedChildren.size(); i++) {
+        ChildWithAugmentedData child = augmentedChildren.get(i);
+        Row row = sheet.createRow(i + 1);
+
+        Cell cell0 = row.createCell(0);
+        XlsxUtil.writeValue(cell0, child.personData().firstName(), cellStyle);
+        Cell cell1 = row.createCell(1);
+        XlsxUtil.writeValue(cell1, child.personData().lastName(), cellStyle);
+
+        progressEntryUtil.addSystemProgressEntry(child.child(), DATA_EXPORTED);
+      }
+      sheet.autoSizeColumn(0);
+      sheet.autoSizeColumn(1);
+
+      workbook.write(outputStream);
+      return new ByteArrayResource(outputStream.toByteArray());
+    } catch (IOException exception) {
+      throw new UncheckedIOException("Unable to create export", exception);
+    }
+  }
+
+  private static void createHeader(XSSFSheet sheet) {
+    XSSFCellStyle headerCellStyle = XlsxUtil.createHeaderCellStyle(sheet);
+
+    Row headerRow = sheet.createRow(0);
+
+    Cell headerCellFirstName = headerRow.createCell(0);
+    XlsxUtil.writeValue(headerCellFirstName, "Vorname", headerCellStyle);
+
+    Cell headerCellLastName = headerRow.createCell(1);
+    XlsxUtil.writeValue(headerCellLastName, "Nachname", headerCellStyle);
   }
 }

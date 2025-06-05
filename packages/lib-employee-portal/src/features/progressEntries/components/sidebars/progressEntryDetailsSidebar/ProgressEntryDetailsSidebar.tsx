@@ -7,36 +7,46 @@
 
 import { isDefined } from "remeda";
 
-import { Sidebar } from "../../../../drawer/components/Sidebar";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "../../../../drawer/hooks/useSidebar";
+import { DrawerProps } from "../../../../drawer/types/drawer";
 import { useFetchProgressEntryDetails } from "../../../api/queries/progressEntry";
-import { useProgressEntriesContext } from "../../../contexts/progressEntries";
+import { useProgressEntriesConfig } from "../../../contexts/progressEntries";
 
 import { InboxProgressEntryDetails } from "./InboxProgressEntryDetails";
 import { ManualProgressEntryDetails } from "./ManualProgressEntryDetails";
 import { SystemProgressEntryDetails } from "./SystemProgressEntryDetails";
 
-interface ProgressEntryDetailsSidebarProps {
+export function useProgressEntryDetailsSidebar(): UseSidebarResult<ProgressEntryDetailsSidebarProps> {
+  return useSidebar({
+    component: ProgressEntryDetailsSidebar,
+  });
+}
+
+interface ProgressEntryDetailsSidebarProps extends DrawerProps {
   progressEntryId: string;
 }
 
-export function ProgressEntryDetailsSidebar({
-  progressEntryId,
-}: ProgressEntryDetailsSidebarProps) {
-  const progressEntriesContext = useProgressEntriesContext();
-  const { procedureId, progressEntryApi, businessModule } =
-    progressEntriesContext.config;
-  const { closeEntryDetailsSidebar } = progressEntriesContext.action;
+function ProgressEntryDetailsSidebar(props: ProgressEntryDetailsSidebarProps) {
+  const {
+    procedureId,
+    progressEntryApi,
+    businessModule,
+    getHeadersForOfflineCaching,
+  } = useProgressEntriesConfig();
   const { progressEntry, relatedKeyDocumentProgressEntries, resolvedUsers } =
     useFetchProgressEntryDetails(
       progressEntryApi,
       businessModule,
       procedureId,
-      progressEntryId,
-      progressEntriesContext.config.getHeadersForOfflineCaching,
+      props.progressEntryId,
+      getHeadersForOfflineCaching,
     ).data;
 
   return (
-    <Sidebar open onClose={closeEntryDetailsSidebar}>
+    <>
       {isDefined(progressEntry) &&
         progressEntry.type === "ManualProgressEntry" && (
           <ManualProgressEntryDetails
@@ -45,7 +55,7 @@ export function ProgressEntryDetailsSidebar({
             relatedKeyDocumentProgressEntries={
               relatedKeyDocumentProgressEntries
             }
-            onClose={closeEntryDetailsSidebar}
+            onClose={() => props.onClose()}
           />
         )}
       {isDefined(progressEntry) &&
@@ -65,6 +75,6 @@ export function ProgressEntryDetailsSidebar({
             resolvedUsers={resolvedUsers}
           />
         )}
-    </Sidebar>
+    </>
   );
 }

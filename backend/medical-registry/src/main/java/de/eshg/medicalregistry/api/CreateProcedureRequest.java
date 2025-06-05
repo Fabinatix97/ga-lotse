@@ -14,10 +14,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
   @Type(CreateFullChangeRequest.class),
   @Type(CreateApplicantChangeRequest.class),
-  @Type(CreatePracticeChangeRequest.class)
+  @Type(CreatePracticeChangeRequest.class),
+  @Type(CreateEmployeeChangeRequest.class)
 })
 public sealed interface CreateProcedureRequest
-    permits CreateApplicantChangeRequest, CreateFullChangeRequest, CreatePracticeChangeRequest {
+    permits CreateApplicantChangeRequest,
+        CreateEmployeeChangeRequest,
+        CreateFullChangeRequest,
+        CreatePracticeChangeRequest {
 
   @JsonProperty
   CreateApplicantDto applicant();

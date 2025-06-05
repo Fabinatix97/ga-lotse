@@ -149,13 +149,13 @@ public class ImportController {
   @GetMapping(path = "/templates/citizen-list", produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX citizen list template.")
   public ResponseEntity<Resource> getCitizenListTemplate() {
-    return FileResponseUtil.getTemplateFileResponse(citizenListTemplate);
+    return FileResponseUtil.getFileResponseEntity(citizenListTemplate);
   }
 
   @GetMapping(path = "/templates/school-list", produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX school list template.")
   public ResponseEntity<Resource> getSchoolListTemplate() {
-    return FileResponseUtil.getTemplateFileResponse(schoolListTemplate);
+    return FileResponseUtil.getFileResponseEntity(schoolListTemplate);
   }
 
   @GetMapping(
@@ -163,6 +163,6 @@ public class ImportController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX past procedures list template.")
   public ResponseEntity<Resource> getPastProcedureListTemplate() {
-    return FileResponseUtil.getTemplateFileResponse(pastProcedureListTemplate);
+    return FileResponseUtil.getFileResponseEntity(pastProcedureListTemplate);
   }
 }

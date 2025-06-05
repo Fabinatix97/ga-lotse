@@ -23,8 +23,7 @@ type SupportInputFieldProps = Pick<
   "name" | "label" | "required" | "validate" | "fieldDecorator" | "sx"
 >;
 
-export interface InputArrayFieldProps
-  extends Omit<FieldProps<string[]>, "label"> {
+interface InputArrayFieldProps extends Omit<FieldProps<string[]>, "label"> {
   minCount?: number;
   addMoreLabel: string;
   fieldComponent?: ComponentType<SupportInputFieldProps>;

@@ -14,6 +14,7 @@ import de.eshg.base.contact.ContactController;
 import de.eshg.base.contact.api.AddInstitutionContactRequest;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.base.contact.api.InstitutionContactSubCategoryDto;
 import de.eshg.base.contact.persistence.entity.Contact;
 import de.eshg.base.contact.persistence.repository.ContactRepository;
 import de.eshg.lib.common.CountryCode;
@@ -48,6 +49,7 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
       Faker faker, Supplier<InstitutionContactCategoryDto> categorySupplier) {
     String name = faker.beer().brand();
     InstitutionContactCategoryDto category = categorySupplier.get();
+    InstitutionContactSubCategoryDto subCategory = randomSubCategory(faker, category);
     List<String> phoneNumbers = optional(faker, randomListOfPhoneNumbers(7));
     List<String> emailAddresses = optional(faker, randomListOfEmails(7));
     AddressDto contactAddress =
@@ -58,7 +60,13 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
     AddressDto differentBillingAddress = optional(faker, createAddress());
     return contactController.addContact(
         new AddInstitutionContactRequest(
-            name, category, phoneNumbers, emailAddresses, contactAddress, differentBillingAddress));
+            name,
+            category,
+            subCategory,
+            phoneNumbers,
+            emailAddresses,
+            contactAddress,
+            differentBillingAddress));
   }
 
   protected static Supplier<InstitutionContactCategoryDto> randomCategorySupplier(Faker faker) {
@@ -69,6 +77,16 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
             .filter(Predicate.not(InstitutionContactCategoryDto.DAYCARE::equals))
             .toList();
     return () -> optional(faker, randomElement(values));
+  }
+
+  private static InstitutionContactSubCategoryDto randomSubCategory(
+      Faker faker, InstitutionContactCategoryDto category) {
+    List<InstitutionContactSubCategoryDto> suitableSubCategories =
+        InstitutionContactSubCategoryDto.getSubCategoriesByParentCategory(category);
+    if (suitableSubCategories.isEmpty()) {
+      return null;
+    }
+    return optional(faker, randomElement(suitableSubCategories));
   }
 
   protected Function<Faker, AddressDto> createAddress() {

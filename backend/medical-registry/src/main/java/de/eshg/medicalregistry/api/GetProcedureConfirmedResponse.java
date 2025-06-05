@@ -19,7 +19,7 @@ public record GetProcedureConfirmedResponse(
     @NotNull @Valid ApplicantDto applicant,
     @NotNull @Valid ProfessionInformationDto professionInformation,
     @NotNull @Valid List<PracticeDto> practices,
-    @NotNull boolean employeesEmployed,
+    @NotNull @Valid List<EmployeeDto> employees,
     @NotNull boolean consentToPrivacyPolicy,
     @NotNull boolean requestForWrittenConfirmation)
     implements GetProcedureResponse {}
