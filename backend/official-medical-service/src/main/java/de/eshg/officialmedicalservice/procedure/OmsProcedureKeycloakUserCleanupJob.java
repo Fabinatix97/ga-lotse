@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice.procedure;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import de.eshg.officialmedicalservice.config.OmsConfigService;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.user.CitizenAccessCodeUserClient;
@@ -18,7 +19,6 @@ import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,24 +27,23 @@ public class OmsProcedureKeycloakUserCleanupJob {
   private static final Logger log =
       LoggerFactory.getLogger(OmsProcedureKeycloakUserCleanupJob.class);
 
-  private final Duration overdueDuration;
   private final OmsProcedureRepository omsProcedureRepository;
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final Clock clock;
+  private final OmsConfigService omsConfigService;
 
   public OmsProcedureKeycloakUserCleanupJob(
-      @Value("${de.eshg.official-medical-service.keycloak-user-cleanup-job.overdue-duration:30d}")
-          Duration overdueDuration,
       OmsProcedureRepository omsProcedureRepository,
       ModuleClientAuthenticator moduleClientAuthenticator,
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
-      Clock clock) {
-    this.overdueDuration = overdueDuration;
+      Clock clock,
+      OmsConfigService omsConfigService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.clock = clock;
+    this.omsConfigService = omsConfigService;
   }
 
   @Scheduled(cron = "0 0 2 * * ?")
@@ -57,6 +56,8 @@ public class OmsProcedureKeycloakUserCleanupJob {
   public void performOmsProcedureKeycloakUserCleanupJob() {
     log.info("Starting oms keycloak user cleanup job...");
     ZonedDateTime now = ZonedDateTime.now(clock);
+    Duration overdueDuration =
+        Duration.ofDays(omsConfigService.getConfig().getKeycloakUserCleanupJobOverdueDuration());
     Instant cutOffDate = now.minus(overdueDuration).toInstant();
 
     List<OmsProcedure> closedProcedures =

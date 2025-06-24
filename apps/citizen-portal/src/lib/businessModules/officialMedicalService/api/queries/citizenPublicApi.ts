@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { QueryClient, queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
 
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
+import {
+  SEMI_STATIC_QUERY_OPTIONS,
+  isDateCurrentDateOrGreater,
+} from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
-  CitizenPublicApi,
+  type ApiGetFreeAppointmentsResponse,
 } from "@eshg/official-medical-service-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
@@ -44,7 +47,7 @@ export function useGetOpeningHoursQuery() {
 }
 
 export function useGetFreeAppointmentsForCitizen(
-  appointmentType: ApiAppointmentType,
+  appointmentType: ApiAppointmentType | undefined,
 ) {
   const citizenPublicApi = useCitizenPublicApi();
 
@@ -53,8 +56,26 @@ export function useGetFreeAppointmentsForCitizen(
       "getFreeAppointmentsForCitizen",
       appointmentType,
     ]),
-    queryFn: () =>
-      citizenPublicApi.getFreeAppointmentsForCitizen(appointmentType),
+    queryFn: async (): Promise<ApiGetFreeAppointmentsResponse> => {
+      if (appointmentType === undefined) {
+        return {
+          appointments: [],
+        };
+      }
+      return citizenPublicApi.getFreeAppointmentsForCitizen(appointmentType);
+    },
+  });
+}
+
+export function useGetFreeAppointmentsForCitizenAfterCurrentDate(
+  appointmentType: ApiAppointmentType | undefined,
+) {
+  return queryOptions({
+    ...useGetFreeAppointmentsForCitizen(appointmentType),
+    select: (appointments) =>
+      appointments.appointments.filter((appointment) =>
+        isDateCurrentDateOrGreater(appointment.start),
+      ),
   });
 }
 
@@ -79,13 +100,17 @@ export function useGetLandingContent() {
   });
 }
 
-export function validateFiles(
-  citizenPublicApi: CitizenPublicApi,
-  queryClient: QueryClient,
-  files: Blob[],
-) {
-  return queryClient.fetchQuery({
-    queryKey: citizenPublicApiQueryKey(["validateFiles", files]),
-    queryFn: () => citizenPublicApi.validateFiles(files),
-  });
+export function useBackendFileValidation() {
+  const citizenPublicApi = useCitizenPublicApi();
+  const queryClient = useQueryClient();
+
+  return (files: Blob[]) => {
+    return queryClient.fetchQuery({
+      queryKey: citizenPublicApiQueryKey(["validateFiles", files]),
+      queryFn: () =>
+        citizenPublicApi.validateFiles(files) as Promise<{
+          errorMessages: (string | null)[];
+        }>,
+    });
+  };
 }

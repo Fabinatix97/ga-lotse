@@ -156,6 +156,7 @@ function FluoridationField(props: FluoridationFieldProps) {
       label="Fluoridierung"
       orientation="vertical"
       softRequired
+      allowDeselection
     />
   );
 }

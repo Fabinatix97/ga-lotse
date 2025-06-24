@@ -75,7 +75,7 @@ function PrivacyPolicyMarkdownConfiguratorForm(props: {
           title: "Allgemeine Datenschutzerklärung für das Online Portal",
           description: (
             <Typography level="body-md">
-              {"Laden Sie die Datenschutzerklärung hoch, die "}
+              {"Laden Sie die Datenschutzerklärung(Markdown) hoch, die "}
               <Typography level="title-md">
                 Bürger:innen im Online Portal
               </Typography>
@@ -132,7 +132,7 @@ function PrivacyPolicyMarkdownConfiguratorForm(props: {
           title: "Allgemeine Datenschutzerklärung für das Mitarbeitendenportal",
           description: (
             <Typography level="body-md">
-              {"Laden Sie die Datenschutzerklärung hoch, die im "}
+              {"Laden Sie die Datenschutzerklärung(Markdown) hoch, die im "}
               <Typography level="title-md">Mitarbeitendenportal</Typography>
               {" angezeigt wird."}
             </Typography>

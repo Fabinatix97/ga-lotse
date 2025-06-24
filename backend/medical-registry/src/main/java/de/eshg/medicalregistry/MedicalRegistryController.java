@@ -11,7 +11,6 @@ import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentT
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -109,7 +108,6 @@ public class MedicalRegistryController {
   private final UserApi userApi;
   private final ProcedureSearchService<MedicalRegistryProcedure> searchService;
   private final MedicalRegistryProperties medicalRegistryProperties;
-  private final PersonApi personApi;
 
   public MedicalRegistryController(
       MedicalRegistryService medicalRegistryService,
@@ -121,8 +119,7 @@ public class MedicalRegistryController {
       AuditLogger auditLogger,
       UserApi userApi,
       ProcedureSearchService<MedicalRegistryProcedure> searchService,
-      MedicalRegistryProperties medicalRegistryProperties,
-      PersonApi personApi) {
+      MedicalRegistryProperties medicalRegistryProperties) {
     this.medicalRegistryService = medicalRegistryService;
     this.personService = personService;
     this.facilityService = facilityService;
@@ -133,7 +130,6 @@ public class MedicalRegistryController {
     this.userApi = userApi;
     this.searchService = searchService;
     this.medicalRegistryProperties = medicalRegistryProperties;
-    this.personApi = personApi;
   }
 
   @PostMapping("/{procedureId}/confirm")

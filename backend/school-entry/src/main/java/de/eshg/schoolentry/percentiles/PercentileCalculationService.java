@@ -12,6 +12,8 @@ import de.eshg.schoolentry.api.PercentilesDto;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
@@ -30,7 +32,9 @@ public class PercentileCalculationService {
   }
 
   public PercentilesDto getPercentiles(
-      SchoolEntryProcedure procedure, Double height, Double weight) {
+      SchoolEntryProcedure procedure, Integer heightInCm, Double weight) {
+    Double height = centimetreToMetre(heightInCm);
+
     PercentilesDto response = new PercentilesDto();
 
     ChildData childData = personClient.fetchChildData(procedure);
@@ -63,6 +67,14 @@ public class PercentileCalculationService {
     }
 
     return response;
+  }
+
+  public static Double centimetreToMetre(Integer value) {
+    return value == null
+        ? null
+        : BigDecimal.valueOf(value)
+            .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
+            .doubleValue();
   }
 
   private Integer calculateAgeGroup(ChildData childData) {

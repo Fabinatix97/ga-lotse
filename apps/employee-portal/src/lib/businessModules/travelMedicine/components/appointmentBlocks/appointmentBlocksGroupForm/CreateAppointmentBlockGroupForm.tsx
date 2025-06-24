@@ -35,7 +35,7 @@ import {
 } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: AppointmentBlockGroupValues = {
-  type: "",
+  types: [],
   parallelExaminations: 1,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   allAppointmentTypes: {},
@@ -47,7 +47,7 @@ function mapFormValues(
   values: AppointmentBlockGroupValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
-    types: [mapRequiredValue(values.type)],
+    types: values.types,
     parallelExaminations: mapRequiredValue(values.parallelExaminations),
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
@@ -73,7 +73,12 @@ export function CreateAppointmentBlockGroupForm() {
   const [
     { data: allPhysicians },
     { data: allMedicalAssistants },
-    { data: allAppointmentTypes },
+    {
+      data: {
+        appointmentTypeConfigs: allAppointmentTypes,
+        allowedAppointmentTypeCombinations,
+      },
+    },
   ] = useSuspenseQueries({
     queries: [
       useGetAllPhysiciansQuery(),
@@ -141,6 +146,7 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={INITIAL_VALUES}
+      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       allPhysicians={allPhysicians}
       allMedicalAssistants={allMedicalAssistants}
       validateAvailability={validateAvailability}

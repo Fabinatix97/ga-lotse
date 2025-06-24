@@ -46,7 +46,12 @@ import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
-  type: "",
+  types: [
+    ApiAppointmentType.CanChild,
+    ApiAppointmentType.EntryLevel,
+    ApiAppointmentType.RegularExamination,
+    ApiAppointmentType.SpecialNeeds,
+  ],
   parallelExaminations: 1,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   allAppointmentTypes: [],
@@ -59,7 +64,7 @@ function mapFormValues(
   values: CreateAppointmentBlockGroupValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
-    types: [mapRequiredValue(values.type)],
+    types: values.types,
     parallelExaminations: mapRequiredValue(values.parallelExaminations),
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
@@ -79,7 +84,7 @@ function mapAppointmentBlock(
 }
 
 export interface CreateAppointmentBlockGroupValues {
-  type: OptionalFieldValue<ApiAppointmentType>;
+  types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   allAppointmentTypes: AppointmentTypeConfig[];
@@ -102,7 +107,12 @@ export function CreateAppointmentBlockGroupForm() {
   const userApi = useUserApi();
   const [
     { data: locationSelectionMode },
-    { data: allAppointmentTypes },
+    {
+      data: {
+        appointmentTypeConfigs: allAppointmentTypes,
+        allowedAppointmentTypeCombinations,
+      },
+    },
     { data: allPhysicians },
     { data: allMfas },
   ] = useSuspenseQueries({
@@ -153,6 +163,7 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
+      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       allAppointmentTypes={allAppointmentTypes}
       allPhysicians={allPhysicians}
       allMfas={allMfas}

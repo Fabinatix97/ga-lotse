@@ -9,29 +9,25 @@ import { isDefined } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
+  AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
-import { isEmptyString, useSnackbar } from "@eshg/lib-portal";
+import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import {
-  AppointmentCountWithDays,
-  calculateAppointmentCount,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
-import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-
-const DEFAULT_PARALLEL_EXAMINATIONS = 1;
+import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
   appointmentDurations: Record<string, number>,
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
 ) {
   const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
 
@@ -39,7 +35,7 @@ function validateForm(
     values.appointmentBlocks,
     (appointmentBlock) =>
       validateAppointmentBlock(
-        values.type,
+        values.types,
         appointmentBlock,
         appointmentDurations,
       ),
@@ -48,29 +44,21 @@ function validateForm(
     errors.appointmentBlocks = appointmentBlockErrors;
   }
 
-  return errors;
-}
+  if (
+    values.types.length > 1 &&
+    allowedAppointmentTypeCombinations.every(
+      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
+    )
+  ) {
+    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
+  }
 
-function hasAtLeastOneAppointmentInGroup(
-  values: CreateAppointmentBlockGroupValues,
-  appointmentDurations: Record<string, number>,
-) {
-  return (
-    calculateAppointmentCount({
-      ...values,
-      appointmentDurations: appointmentDurations,
-      parallelExaminations: isEmptyString(values.parallelExaminations)
-        ? DEFAULT_PARALLEL_EXAMINATIONS
-        : Math.max(values.parallelExaminations, DEFAULT_PARALLEL_EXAMINATIONS),
-      skipCalculatingOfBlocks:
-        validateForm(values, appointmentDurations).appointmentBlocks !==
-        undefined,
-    }) > 0
-  );
+  return errors;
 }
 
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
   allPhysicians: ApiUser[];
   allAppointmentTypes: AppointmentTypeConfig[];
@@ -82,18 +70,11 @@ interface AppointmentBlockGroupFormProps {
 export function AppointmentBlockGroupForm(
   props: Readonly<AppointmentBlockGroupFormProps>,
 ) {
-  const snackbar = useSnackbar();
   const physicianOptions = props.allPhysicians.map((option) => ({
     userId: option.userId,
     firstName: option.firstName,
     lastName: option.lastName,
   }));
-  const appointmentDurations = Object.fromEntries(
-    props.allAppointmentTypes.map((currentType) => [
-      currentType.appointmentTypeDto,
-      currentType.standardDurationInMinutes,
-    ]),
-  );
   const appointmentTypesRecord: Record<string, number> = {};
   props.allAppointmentTypes.forEach(
     (currentType) =>
@@ -103,16 +84,14 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) => validateForm(values, appointmentTypesRecord)}
-      onSubmit={async (values) => {
-        if (hasAtLeastOneAppointmentInGroup(values, appointmentTypesRecord)) {
-          await props.onSubmit(values);
-        } else {
-          snackbar.notification(
-            "Es muss mindestens ein Termin enthalten sein.",
-          );
-        }
-      }}
+      validate={(values) =>
+        validateForm(
+          values,
+          appointmentTypesRecord,
+          props.allowedAppointmentTypeCombinations,
+        )
+      }
+      onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
         <FormSheet gap={5} onSubmit={handleSubmit}>
@@ -134,20 +113,6 @@ export function AppointmentBlockGroupForm(
           </Stack>
           <Divider />
           <FormButtonBar
-            left={
-              <AppointmentCountWithDays
-                appointments={values}
-                appointmentDurations={appointmentDurations}
-                parallelExaminations={
-                  isEmptyString(values.parallelExaminations)
-                    ? DEFAULT_PARALLEL_EXAMINATIONS
-                    : Math.max(
-                        values.parallelExaminations,
-                        DEFAULT_PARALLEL_EXAMINATIONS,
-                      )
-                }
-              />
-            }
             submitLabel="Planen"
             submitting={isSubmitting}
             onCancel={routes.appointmentBlockGroups.index}

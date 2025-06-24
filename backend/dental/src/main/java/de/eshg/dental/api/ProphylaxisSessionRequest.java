@@ -10,11 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProphylaxisSessionRequest {
-  UUID institutionId();
-
   Instant dateAndTime();
-
-  String groupName();
 
   ProphylaxisTypeDto type();
 

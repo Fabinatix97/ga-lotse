@@ -1,0 +1,590 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+#file: noinspection JsonStandardCompliance
+{{- define "lib.sdImport" }}
+---
+
+{{- if .Values.actors.import.enabled }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: service-directory-import
+  namespace: {{ .Release.Namespace }}
+data:
+  import.json: |
+    {
+      "orgUnits": [
+        {{- if gt (len .Values.actors.import.orgUnits) 0 }}
+        {{- range $oIdx, $o := .Values.actors.import.orgUnits}}
+        {{- if (ne 0 $oIdx) }},{{ end }}
+        {
+          "readableName": "{{ $o.name }}",
+          "active": true,
+          "type": "{{ $o.type }}",
+          "federalState": "{{ $o.federalState }}",
+          "actors": [
+            {{- range $k, $v := $.Values.businessmodules }}
+            {{- if include "includeActor" (list $o $k) }}
+            {
+              "readableName": "{{ include "readableName" (list $k) }}",
+              "type": "{{ include "actorType" (list $k) }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "{{ $k }}{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- end }}
+            {{- if include "includeActor" (list $o "employee-portal-auth") }}
+            {
+              "readableName": "{{ include "readableName" (list "employeeportalauth") }}",
+              "type": "{{ include "actorType" (list "employeeportalauth") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "employee-portal-auth{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "employee-portal") }}
+            {
+              "readableName": "{{ include "readableName" (list "employeeportalnextjs") }}",
+              "type": "{{ include "actorType" (list "employeeportalnextjs") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "employee-portal{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "employee-portal-reverse-proxy") }}
+            {
+              "readableName": "{{ include "readableName" (list "employeeportal") }}",
+              "type": "{{ include "actorType" (list "employeeportal") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "{{ $o.employeePortal }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "citizen-portal-auth") }}
+            {
+              "readableName": "{{ include "readableName" (list "citizenportalauth") }}",
+              "type": "{{ include "actorType" (list "citizenportalauth") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "citizen-portal-auth{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "citizen-portal") }}
+            {
+              "readableName": "{{ include "readableName" (list "citizenportalnextjs") }}",
+              "type": "{{ include "actorType" (list "citizenportalnextjs") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "citizen-portal{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "citizen-portal-reverse-proxy") }}
+            {
+              "readableName": "{{ include "readableName" (list "citizenportal") }}",
+              "type": "{{ include "actorType" (list "citizenportal") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "{{ $o.citizenPortal }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "auditlog") }}
+            {
+            "readableName": "{{ include "readableName" (list "auditlog") }}",
+            "type": "{{ include "actorType" (list "auditlog") }}",
+            "active": true,
+            "manualCertificate": false,
+            "commonName": "auditlog{{ $o.clusterLocalSuffix }}",
+            "certificate": null,
+            "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "synapse") }}
+            {
+              "readableName": "{{ include "readableName" (list "synapse") }}",
+              "type": "{{ include "actorType" (list "synapse") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "synapse{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {{- if include "includeActor" (list $o "svgsanitizer") }}
+            {
+              "readableName": "{{ include "readableName" (list "svgsanitizer") }}",
+              "type": "{{ include "actorType" (list "svgsanitizer") }}",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "svgsanitizer{{ $o.clusterLocalSuffix }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            },
+            {{- end }}
+            {
+              "readableName": "{{ include "readableName" (list "lsd") }}",
+              "type": "{{ include "actorType" (list "lsd") }}",
+              "active": true,
+              "manualCertificate": true,
+              "commonName": "{{ $o.lsd }}",
+              "certificate": null,
+              "networkId": "{{ $o.name }}"
+            }
+          ]
+        }
+        {{- end }}
+        {{- end }}
+      ],
+      {{- $rulesArray := (list) }}
+      {{- if gt (len .Values.actors.import.orgUnits) 0 }}
+      {{- range $oIdx, $o := .Values.actors.import.orgUnits}}
+        {{- if include "includeActor" (list $o "citizen-portal-reverse-proxy") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → citizen-portal",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportal")) `",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportalnextjs")) `",
+            "actorName": "citizen-portal"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → citizen-portal-auth",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportal")) `",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportalauth")) `",
+            "actorName": "citizen-portal-auth"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → All FM",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportal")) `",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → base",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportal")) `",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → opendata",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "citizenportal")) `",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "opendata")) `",
+            "actorName": "opendata"
+          }
+        }`) }}
+        {{- end }}{{/* if citizen-portal-reverse-proxy */}}
+
+        {{- if include "includeActor" (list $o "employee-portal-reverse-proxy") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "employee-portal-reverse-proxy → employee-portal",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportal")) `",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportalnextjs")) `",
+            "actorName": "employee-portal"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "employee-portal-reverse-proxy → employee-portal-auth",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportal")) `",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportalauth")) `",
+            "actorName": "employee-portal-auth"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "employee-portal-reverse-proxy → ALL FM",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportal")) `",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "employee-portal-reverse-proxy → base",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportal")) `",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "employee-portal-reverse-proxy → MISC",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportal")) `",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "MISC"
+          }
+        }`) }}
+        {{- end }}{{/* if employee-portal-reverse-proxy */}}
+
+        {{- if include "includeActor" (list $o "auditlog") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "All FM → auditlog",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "auditlog")) `",
+            "actorName": "auditlog"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "base → auditlog",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "auditlog")) `",
+            "actorName": "auditlog"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "MISC → auditlog",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "MISC"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "auditlog")) `",
+            "actorName": "auditlog"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "auditlog → base",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "auditlog")) `",
+            "actorName": "auditlog"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          }
+        }`) }}
+        {{- end }}{{/* if auditlog */}}
+
+        {{- if include "includeActor" (list $o "synapse") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "chatmanagement → synapse",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "chatmanagement")) `",
+            "actorName": "chatmanagement"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "synapse")) `",
+            "actorName": "synapse"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "employee-portal-auth → synapse",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "employeeportalauth")) `",
+            "actorName": "employee-portal-auth"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "synapse")) `",
+            "actorName": "synapse"
+          }
+        }`) }}
+        {{- end }}{{/* if synapse */}}
+
+        {{- if include "includeActor" (list $o "base") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "base → All FM",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "base → svgsanitizer",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "svgsanitizer")) `",
+            "actorName": "svgsanitizer"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "ALL FM → base",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          }
+        }`) }}
+        {{- end }}{{/* if base */}}
+
+        {{- if include "includeActor" (list $o "statistics") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "statistics → All FM",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "statistics")) `",
+            "actorName": "statistics"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "FM"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "statistics → base",
+          "client": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "statistics")) `",
+            "actorName": "statistics"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "base")) `",
+            "actorName": "base"
+          }
+        }`) }}
+        {{- end }}{{/* if statistics */}}
+
+        {{- if include "includeActor" (list $o "centralrepository") }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "inspection → centralrepository",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "actorType": "` (include "actorType" (list "inspection")) `",
+            "actorName": "inspection"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "centralrepository")) `",
+            "actorName": "centralrepository"
+          }
+        }`) }}
+        {{- $rulesArray = append $rulesArray (print `{
+          "active": true,
+          "description": "statistics → centralrepository",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "actorType": "` (include "actorType" (list "statistics")) `",
+            "actorName": "statistics"
+          },
+          "server": {
+            "federalState": "` $o.federalState `",
+            "orgUnitType": "` $o.type `",
+            "orgUnitName": "` $o.name `",
+            "actorType": "` (include "actorType" (list "centralrepository")) `",
+            "actorName": "centralrepository"
+          }
+        }`) }}
+        {{- end }}{{/* if centralrepository */}}
+
+      {{- end }}{{/* range orgUnits */}}
+      {{- end }}{{/* if orgUnits */}}
+      "rules": [
+        {{ $rulesArray | join ",\n        " }}
+      ]
+    }
+{{ end -}}{{/* if import enabled */}}
+
+---
+{{- end }}

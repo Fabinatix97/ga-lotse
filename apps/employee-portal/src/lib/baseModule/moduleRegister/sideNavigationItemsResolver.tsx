@@ -13,7 +13,6 @@ import {
   useArchivingSideNavigationItems,
   useGetPublicConfig,
 } from "@eshg/lib-employee-portal";
-import { resolveSideNavigationItems as resolveMedsAbroadSideNavigationItems } from "@eshg/meds-abroad";
 
 import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useSideNavigationItemProps } from "@/lib/baseModule/components/layout/sideNavigation/useSideNavigationItemProps";
@@ -51,7 +50,7 @@ const businessItemResolvers: Record<
   [ApiBusinessModule.Dental]: resolveDentalSideNavigationItems,
   [ApiBusinessModule.OfficialMedicalService]:
     resolveOfficialMedicalServiceSideNavigationItems,
-  [ApiBusinessModule.MedsAbroad]: resolveMedsAbroadSideNavigationItems,
+  [ApiBusinessModule.MedsAbroad]: () => [],
 };
 
 function useBusinessItems(): SideNavigationItem[] {

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ApiContactCategory } from "@eshg/base-api";
 import { SelectObjectField } from "@eshg/lib-portal";
 
+import { getEntityId } from "../../../api/models/BaseEntity";
 import { useSearchContacts } from "../api/queries";
 import { CONTACT_CATEGORY_NAMES_SHORT } from "../translations";
 import { formatInstitutionNameWithCategoryShort } from "../utils/formatters";
@@ -32,6 +33,7 @@ export function SelectMultipleContactsField(props: SelectContactFieldProps) {
       name={props.name}
       label={props.label}
       getOptionLabel={formatInstitutionNameWithCategoryShort}
+      getOptionKey={getEntityId}
       required={`Bitte ein/e ${categories} angeben.`}
       options={contacts}
       placeholder={`${categories} suchen`}

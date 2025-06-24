@@ -33,6 +33,7 @@ export interface SelectObjectFieldProps<
 > extends FieldProps<SelectObjectFieldValue<TValue, TMultiple>> {
   options: TValue[];
   getOptionLabel: (option: TValue) => string;
+  getOptionKey?: (option: TValue) => string;
   disableFiltering?: boolean;
   multiple?: TMultiple;
   placeholder?: string;
@@ -74,7 +75,7 @@ export function SelectObjectField<
         value={field.input.value}
         options={props.options}
         getOptionLabel={props.getOptionLabel}
-        getOptionKey={props.getOptionLabel}
+        getOptionKey={props.getOptionKey ?? props.getOptionLabel}
         filterOptions={props.disableFiltering ? identity() : undefined}
         multiple={props.multiple}
         placeholder={props.placeholder}

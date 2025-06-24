@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.anonymization;
 
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class IntegerIntervalUtil {
             builder.addInterval(
                 interval.minInclusive(),
                 interval.maxExclusive(),
-                AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+                FilterParameterMapper.INTERVAL_FORMAT_STRING.formatted(
                     interval.minInclusive(), interval.maxExclusive() - MINIMAL_DIFFERENCE)));
     return builder;
   }
@@ -111,7 +112,7 @@ public class IntegerIntervalUtil {
     return intervals.stream()
         .map(
             interval ->
-                AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+                FilterParameterMapper.INTERVAL_FORMAT_STRING.formatted(
                     interval.minInclusive(), interval.maxExclusive() - MINIMAL_DIFFERENCE))
         .toList();
   }

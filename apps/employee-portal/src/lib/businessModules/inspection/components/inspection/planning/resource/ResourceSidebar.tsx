@@ -23,6 +23,7 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  TimeField,
   validateTodayOrFutureDate,
 } from "@eshg/lib-employee-portal";
 import {
@@ -39,7 +40,6 @@ import { resourceTypeNames } from "@/lib/baseModule/components/resources/constan
 import { useAddResource } from "@/lib/businessModules/inspection/api/mutations/resources";
 import { useGetResourcesWithEvents } from "@/lib/businessModules/inspection/api/queries/resources";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
-import { TimeField } from "@/lib/shared/components/formFields/TimeField";
 import {
   formatTimeInput,
   parseTime,

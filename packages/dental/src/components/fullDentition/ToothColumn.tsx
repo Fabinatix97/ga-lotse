@@ -4,6 +4,7 @@
  */
 
 import { Stack, styled } from "@mui/joy";
+import { useId } from "react";
 
 import {
   QuadrantNumber,
@@ -25,21 +26,27 @@ interface ToothColumnProps {
   quadrantNumber: QuadrantNumber;
   tooth: Tooth;
   index: number;
+  reverse?: boolean;
 }
 
 export function ToothColumn({
   tooth,
   index,
   quadrantNumber,
+  reverse,
 }: ToothColumnProps) {
+  const toothNumberId = useId();
+
   return (
     <ToothColumnStack
       key={tooth.toothNumber}
-      component="fieldset"
+      role="group"
+      direction={reverse ? "column-reverse" : "column"}
       gap={2}
       alignItems="center"
+      aria-labelledby={toothNumberId}
     >
-      <ToothNumber toothNumber={tooth.toothNumber} />
+      <ToothNumber id={toothNumberId} toothNumber={tooth.toothNumber} />
       {isToothWithDiagnosis(tooth) ? (
         <ToothForm
           quadrantNumber={quadrantNumber}

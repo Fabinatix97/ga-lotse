@@ -5,32 +5,55 @@
 
 "use client";
 
-import { Formik } from "formik";
+import { Stack, Typography } from "@mui/joy";
+import { FormikProvider, useFormik } from "formik";
 
 import {
+  ApiDentitionType,
+  ApiFluoridationVarnish,
+  ApiProphylaxisType,
+  ApiUpdateProphylaxisSessionRequest,
+} from "@eshg/dental-api";
+import {
+  DateTimeField,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
+  UserField,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
+  Alert,
+  OptionalFieldValue,
+  SelectField,
+  mapOptionalValue,
+  mapRequiredValue,
   parseOptionalValue,
   toDateTimeString,
   useSnackbar,
 } from "@eshg/lib-portal";
 
 import { useGetStaff } from "../../../../api/queries/staff";
+import { PROPHYLAXIS_TYPE_OPTIONS_WITH_DESELECTION } from "../../../../config/prophylaxisSession";
 import { ProphylaxisSessionDetails } from "../../api/models/ProphylaxisSessionDetails";
 import { useUpdateProphylaxisSession } from "../../api/mutations/details";
 
-import {
-  ProphylaxisSessionForm,
-  ProphylaxisSessionFormValues,
-  mapProphylaxisSessionFormValuesToRequest,
-} from "./ProphylaxisSessionForm";
+import { FluoridationField } from "./FluoridationField";
+import { ScreeningField } from "./ScreeningField";
+
+interface UpdateProphylaxisSessionFormValues {
+  dateAndTime: string;
+  type: OptionalFieldValue<ApiProphylaxisType>;
+  isScreening: boolean;
+  dentitionType: OptionalFieldValue<ApiDentitionType>;
+  isFluoridation: boolean;
+  fluoridationVarnish: OptionalFieldValue<ApiFluoridationVarnish>;
+  dentistIds: string[];
+  zfaIds: string[];
+}
 
 export function useUpdateProphylaxisSessionSidebar(): UseSidebarWithFormRefResult<UpdateProphylaxisSessionSidebarProps> {
   return useSidebarWithFormRef({
@@ -54,10 +77,8 @@ function UpdateProphylaxisSessionSidebar(
     (item) => !!item.result,
   );
 
-  const initialValues: ProphylaxisSessionFormValues = {
+  const INITIAL_VALUES: UpdateProphylaxisSessionFormValues = {
     dateAndTime: toDateTimeString(prophylaxisSession.dateAndTime),
-    institution: prophylaxisSession.institution,
-    groupName: parseOptionalValue(prophylaxisSession.groupName),
     type: parseOptionalValue(prophylaxisSession.type),
     isScreening: prophylaxisSession.isScreening,
     dentitionType: parseOptionalValue(prophylaxisSession.dentitionType),
@@ -69,13 +90,19 @@ function UpdateProphylaxisSessionSidebar(
     zfaIds: prophylaxisSession.zfas.map((zfa) => zfa.id),
   };
 
-  function onSubmit(values: ProphylaxisSessionFormValues) {
+  const form = useFormik({
+    initialValues: INITIAL_VALUES,
+    onSubmit: onSubmit,
+  });
+
+  function onSubmit(values: UpdateProphylaxisSessionFormValues) {
     updateSession
       .mutateAsync(
-        {
-          version: prophylaxisSession.version,
-          ...mapProphylaxisSessionFormValuesToRequest(values),
-        },
+        mapProphylaxisSessionFormValuesToRequest(
+          values,
+          prophylaxisSession.version,
+        ),
+
         {
           onSuccess: () => props.onClose(true),
         },
@@ -84,30 +111,75 @@ function UpdateProphylaxisSessionSidebar(
   }
 
   return (
-    <Formik<ProphylaxisSessionFormValues>
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-    >
-      {({ values, handleSubmit, isSubmitting, setFieldValue }) => (
-        <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
-          <SidebarContent title="Prophylaxe ändern">
-            <ProphylaxisSessionForm
-              values={values}
-              setFieldValue={setFieldValue}
-              dentistOptions={allDentists}
-              dentalAssistantOptions={allDentalAssistants}
-              hasExaminationResults={hasExaminationResults}
+    <FormikProvider value={form}>
+      <SidebarForm ref={props.formRef}>
+        <SidebarContent title="Prophylaxe ändern">
+          <Stack gap={3}>
+            {hasExaminationResults && (
+              <Alert
+                color="primary"
+                message="Da es bereits Untersuchungsergebnisse zu dieser Prophylaxe gibt, können einige Daten nicht mehr geändert werden."
+              />
+            )}
+            <DateTimeField
+              name="dateAndTime"
+              label="Datum und Uhrzeit"
+              required="Bitte ein Datum mit Uhrzeit angeben."
             />
-          </SidebarContent>
-          <SidebarActions>
-            <FormButtonBar
-              submitLabel="Ändern"
-              submitting={isSubmitting}
-              onCancel={() => props.onClose(false)}
+            <SelectField
+              name="type"
+              label="Typ"
+              options={PROPHYLAXIS_TYPE_OPTIONS_WITH_DESELECTION}
             />
-          </SidebarActions>
-        </SidebarForm>
-      )}
-    </Formik>
+            <ScreeningField screeningDisabled={hasExaminationResults} />
+            <FluoridationField disabled={hasExaminationResults} />
+            <Typography component="h3" level="title-sm">
+              Durchführende Personen
+            </Typography>
+            <UserField
+              name="dentistIds"
+              options={allDentists}
+              blockedStaff={[]}
+              freeStaff={[]}
+              label="Zahnarzt/-ärztin"
+            />
+            <UserField
+              name="zfaIds"
+              options={allDentalAssistants}
+              blockedStaff={[]}
+              freeStaff={[]}
+              label="ZFA"
+            />
+          </Stack>
+        </SidebarContent>
+        <SidebarActions>
+          <FormButtonBar
+            submitLabel="Ändern"
+            submitting={form.isSubmitting}
+            onCancel={() => props.onClose(false)}
+          />
+        </SidebarActions>
+      </SidebarForm>
+    </FormikProvider>
   );
+}
+
+function mapProphylaxisSessionFormValuesToRequest(
+  values: UpdateProphylaxisSessionFormValues,
+  version: number,
+): ApiUpdateProphylaxisSessionRequest {
+  return {
+    version,
+    dateAndTime: new Date(values.dateAndTime),
+    type: mapOptionalValue(values.type),
+    isScreening: values.isScreening,
+    dentitionType: values.isScreening
+      ? mapRequiredValue(values.dentitionType)
+      : undefined,
+    fluoridationVarnish: values.isFluoridation
+      ? mapRequiredValue(values.fluoridationVarnish)
+      : undefined,
+    dentistIds: values.dentistIds,
+    zfaIds: values.zfaIds,
+  };
 }

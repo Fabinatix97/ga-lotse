@@ -874,6 +874,14 @@
           "schema" : {
             "type" : "boolean"
           }
+        }, {
+          "in" : "query",
+          "name" : "year",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -888,6 +896,42 @@
           }
         },
         "summary" : "Returns all created groups of an institution",
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/institutions/{institutionId}/validate" : {
+      "get" : {
+        "operationId" : "validateOpenChildrenExistInInstitution",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "institutionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "query",
+          "name" : "year",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Validates open children exist in institution",
         "tags" : [ "Child" ]
       }
     },
@@ -4099,6 +4143,9 @@
             "minLength" : 1,
             "type" : "string"
           },
+          "note" : {
+            "type" : "string"
+          },
           "personVersion" : {
             "type" : "integer",
             "format" : "int64"
@@ -4502,7 +4549,7 @@
         }
       },
       "CreateProphylaxisSessionRequest" : {
-        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "zfaIds" ],
+        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "schoolYear", "zfaIds" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -4531,6 +4578,10 @@
           },
           "isScreening" : {
             "type" : "boolean"
+          },
+          "schoolYear" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "type" : {
             "$ref" : "#/components/schemas/ProphylaxisType"
@@ -7695,7 +7746,7 @@
         }
       },
       "UpdateProphylaxisSessionRequest" : {
-        "required" : [ "dateAndTime", "dentistIds", "institutionId", "isScreening", "version", "zfaIds" ],
+        "required" : [ "dateAndTime", "dentistIds", "isScreening", "version", "zfaIds" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -7714,13 +7765,6 @@
           },
           "fluoridationVarnish" : {
             "$ref" : "#/components/schemas/FluoridationVarnish"
-          },
-          "groupName" : {
-            "type" : "string"
-          },
-          "institutionId" : {
-            "type" : "string",
-            "format" : "uuid"
           },
           "isScreening" : {
             "type" : "boolean"

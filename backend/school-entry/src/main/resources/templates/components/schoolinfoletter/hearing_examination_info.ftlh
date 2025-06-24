@@ -2,7 +2,7 @@
 
 <#macro content hearingExaminationInfo="NUL" >
 <#-- @ftlvariable name="hearingExaminationInfo" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterHearingExaminationInfoDto" -->
-  <table style="width: 100%;">
+  <table style="width: 100%; line-height: 1rem;">
     <colgroup>
       <col style="width: 17%" />
       <col style="width: 17%" />

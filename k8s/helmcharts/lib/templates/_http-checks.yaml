@@ -1,0 +1,29 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "http-checks" }}
+
+{{- $host := .Values.domains.hosts.citizenportal }}
+---
+kind : Probe
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: http-checks
+  namespace: {{ .Release.Namespace }}
+spec:
+  module: http_200
+  prober:
+    url: {{ .Values.monitoring.httpChecks.blackboxExporterAddress | quote }}
+  targets:
+    staticConfig:
+      static:
+        {{ if .Values.businessmodules.base.enabled }}
+        - "https://{{ $host }}/api/base/public/department/info"
+        {{ end}}
+        {{ if .Values.businessmodules.schoolentry.enabled }}
+        - "https://{{ $host }}/api/school-entry/citizen/public/opening-hours"
+        {{ end}}
+        {{ if .Values.businessmodules.travelmedicine.enabled }}
+        - "https://{{ $host }}/api/travel-medicine/citizen/public/opening-hours"
+        {{ end}}
+{{- end }}

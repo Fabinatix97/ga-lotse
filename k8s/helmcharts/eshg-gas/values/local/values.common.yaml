@@ -1,0 +1,96 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+image:
+  registry: "k3d-ga-lotse-registry:5050"
+  repository: "ga-lotse"
+  pullPolicy: Always
+
+volumes:
+  customStorageClass: false
+
+keycloak:
+  enabled: true
+  database:
+    k8sDeployment: true
+
+lsd:
+  enabled: true
+
+maildev:
+  enabled: true
+
+employeeportal:
+  enabled: true
+
+employeeportalauth:
+  cache:
+    selfmanaged: true
+
+citizenportal:
+  enabled: true
+
+citizenportalauth:
+  cache:
+    selfmanaged: true
+
+synapse:
+  enabled: true
+  database:
+    k8sDeployment: true
+
+auditlog:
+  enabled: true
+  database:
+    k8sDeployment: true
+
+businessmoduleDefaults:
+  database:
+    k8sDeployment: true
+
+businessmodules:
+  base:
+    enabled: true
+    allowEmployeePasswords: true
+    provisionTestUsers: true
+    setupAdmin:
+      username: dummy_setup_admin
+      email: dummy_setup_admin@maildev.lotse
+  schoolentry:
+    enabled: true
+  inspection:
+    enabled: true
+  measlesprotection:
+    enabled: true
+  travelmedicine:
+    enabled: true
+  statistics:
+    enabled: true
+  stiprotection:
+    enabled: true
+  medicalregistry:
+    enabled: true
+  dental:
+    enabled: true
+  opendata:
+    enabled: true
+  chatmanagement:
+    enabled: true
+  officialmedicalservice:
+    enabled: true
+  medsabroad:
+    enabled: true
+
+initContainerSecurityContext:
+  seLinuxOptions:
+    type: "container_init_t"
+
+podSecurityContext:
+  seLinuxOptions:
+    type: "container_t"
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+
+development:
+  alwaysCreateDebugLogMount: false

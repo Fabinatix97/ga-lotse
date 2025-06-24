@@ -1,0 +1,62 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+monitoring:
+  serviceMonitor:
+    enabled: false
+
+domains:
+  clusterLocalSuffix: .frankfurt.svc.cluster.local
+  centralservices:
+    servicedirectory: service-directory.central.svc.cluster.local
+    relayserver: relay-server.central.svc.cluster.local
+    centralrepository: centralrepository.central.svc.cluster.local
+    pdfaconverterportal: pcp.central.svc.cluster.local
+  hosts:
+    lsd: lsd.frankfurt.svc.cluster.local
+    employeeportal: ep.frankfurt.svc.cluster.local
+    citizenportal: cp.frankfurt.svc.cluster.local
+    maildev: mail.frankfurt.svc.cluster.local
+    keycloak: keycloak.frankfurt.svc.cluster.local
+    keycloakInternal: keycloak.frankfurt.svc.cluster.local
+  clusterIssuer: local-ca
+  internalClusterIssuer: local-ca
+  lsdOrgUnit: frankfurt
+
+spring:
+  profiles:
+    active: "dev, preview-features, health-department-frankfurt"
+
+synapse:
+  enabled: false
+
+businessmodules:
+  base:
+    enabled: true
+  schoolentry:
+    enabled: true
+  inspection:
+    enabled: true
+  measlesprotection:
+    enabled: false
+  travelmedicine:
+    enabled: false
+  statistics:
+    enabled: false
+  stiprotection:
+    enabled: false
+  medicalregistry:
+    enabled: false
+  dental:
+    enabled: false
+  opendata:
+    enabled: false
+  chatmanagement:
+    enabled: false
+  officialmedicalservice:
+    enabled: false
+  medsabroad:
+    enabled: false
+
+development:
+  injectSelfSignedCA: true

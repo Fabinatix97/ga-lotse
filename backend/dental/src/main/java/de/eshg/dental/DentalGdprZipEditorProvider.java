@@ -6,7 +6,6 @@
 package de.eshg.dental;
 
 import de.eshg.dental.domain.model.Child_;
-import de.eshg.dental.domain.model.Examination_;
 import de.eshg.domain.model.serialization.ZipEditor;
 import de.eshg.lib.procedure.gdpr.AbstractGdprZipEditorProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +23,6 @@ public class DentalGdprZipEditorProvider extends AbstractGdprZipEditorProvider {
 
   @Override
   protected ZipEditor createSpecificFilter() {
-    return removeFieldFromArray(Examination_.NOTE, Child_.EXAMINATIONS);
+    return removeFieldFromArray(Child_.NOTE, Child_.EXAMINATIONS);
   }
 }

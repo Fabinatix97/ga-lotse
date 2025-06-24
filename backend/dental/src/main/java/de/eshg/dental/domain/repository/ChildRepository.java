@@ -30,17 +30,29 @@ public interface ChildRepository extends ProcedureRepository<Child> {
   @Query(
       value =
           """
-          select distinct c.groupName from Child c
-          where c.groupName is not null
-          and c.institutionId = :institutionId
-          and (:openGroupsOnly is false or c.procedureStatus='OPEN')
-          order by c.groupName
-          """)
+                  select distinct c.groupName from Child c
+                  where c.groupName is not null
+                  and c.institutionId = :institutionId
+                  and (:openGroupsOnly is false or c.procedureStatus='OPEN')
+                  order by c.groupName
+                  """)
   List<String> findDistinctInstitutionGroups(
       @Param("institutionId") UUID institutionId, @Param("openGroupsOnly") boolean openGroupsOnly);
 
-  List<Child> findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(
-      UUID institutionId, String groupName, ProcedureStatus procedureStatus);
+  @Query(
+      value =
+          """
+                  select distinct c.groupName from Child c
+                  where c.groupName is not null
+                  and c.institutionId = :institutionId
+                  and c.year =:year
+                  and (:openGroupsOnly is false or c.procedureStatus='OPEN')
+                  order by c.groupName
+                  """)
+  List<String> findDistinctInstitutionGroupsByYear(
+      @Param("institutionId") UUID institutionId,
+      @Param("openGroupsOnly") boolean openGroupsOnly,
+      @Param("year") Year year);
 
   List<Child> findByInstitutionIdAndGroupNameAndProcedureStatusAndYearOrderById(
       UUID institutionId, String groupName, ProcedureStatus procedureStatus, Year year);
@@ -56,6 +68,9 @@ public interface ChildRepository extends ProcedureRepository<Child> {
 
   List<Child> findByInstitutionIdAndProcedureStatusOrderById(
       UUID institutionId, ProcedureStatus status);
+
+  boolean existsByInstitutionIdAndYearAndProcedureStatus(
+      UUID institutionId, Year year, ProcedureStatus status);
 
   boolean existsByInstitutionIdAndGroupNameAndProcedureStatus(
       UUID institutionId, String groupName, ProcedureStatus status);

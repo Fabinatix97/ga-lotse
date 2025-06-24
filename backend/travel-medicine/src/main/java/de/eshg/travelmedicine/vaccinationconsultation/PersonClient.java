@@ -294,7 +294,8 @@ public class PersonClient {
             getPersonFileStateResponse.placeOfBirth(),
             getPersonFileStateResponse.title(),
             getPersonFileStateResponse.gender(),
-            mapAddressToPerson(getPersonFileStateResponse.contactAddress())),
+            mapAddressToPerson(getPersonFileStateResponse.contactAddress()),
+            mapAddressToPerson(getPersonFileStateResponse.differentBillingAddress())),
         new PersonSyncDto(
             getPersonFileStateResponse.id(),
             getPersonFileStateResponse.referenceVersion(),
@@ -314,7 +315,8 @@ public class PersonClient {
         getPersonFileStateResponse.placeOfBirth(),
         getPersonFileStateResponse.title(),
         getPersonFileStateResponse.gender(),
-        mapAddressToPerson(getPersonFileStateResponse.contactAddress()));
+        mapAddressToPerson(getPersonFileStateResponse.contactAddress()),
+        mapAddressToPerson(getPersonFileStateResponse.differentBillingAddress()));
   }
 
   private UpdatePersonRequest mapToUpdatePersonRequest(

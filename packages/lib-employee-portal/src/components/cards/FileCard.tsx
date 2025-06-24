@@ -42,6 +42,7 @@ export const CustomFileType = {
   Audio: "AUDIO",
   Csv: "CSV",
   Md: "MD",
+  Svg: "SVG",
 } as const;
 type NonApiFileType = (typeof CustomFileType)[keyof typeof CustomFileType];
 
@@ -63,6 +64,7 @@ const iconByType = {
   AUDIO: AudioFileOutlined,
   CSV: ListAltOutlined,
   MD: Web,
+  SVG: ImageOutlined,
 } as const;
 
 export function FileCard(props: FileCardProps) {

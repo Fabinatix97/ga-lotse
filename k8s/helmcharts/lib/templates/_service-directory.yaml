@@ -1,0 +1,294 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.serviceDirectory" }}
+
+{{- if .Values.servicedirectory.enabled }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+{{ include "lib.database" (list "servicedirectory" .Values.servicedirectory.database .) }}
+{{ include "lib.certificate" (list .Values.servicedirectory.certificate.secret .Values.domains.centralservices.servicedirectory .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: service-directory
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: service-directory-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+      name: spatz-incoming
+  type: ClusterIP
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: service-directory
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: service-directory
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: service-directory-app
+  template:
+    metadata:
+      name: service-directory
+      labels:
+        app: service-directory-app
+      annotations:
+        checksum/config: {{ include "lib.sdImport" . | sha256sum }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{- if .Values.servicedirectory.database.k8sDeployment }}
+      initContainers:
+      {{- include "waitForStatefulset" (list .Values "servicedirectory-db") | indent 8 }}
+      {{- else }}
+      automountServiceAccountToken: false
+      {{- end }}
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: service-directory-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: service-directory-spatz-debuglogs
+        {{- end }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.servicedirectory.certificate.secret }}"
+            defaultMode: 420
+        {{- if .Values.actors.import.enabled }}
+        - name: import-data
+          configMap:
+            name: service-directory-import
+            defaultMode: 420
+        {{- end }}
+        {{- if not .Values.servicedirectory.database.selfmanaged }}
+        - name: db-certs
+          secret:
+            secretName: servicedirectory-db
+            defaultMode: 420
+            items:
+            - key: ca.crt
+              path: ca.crt
+        {{- end }}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+      dnsPolicy: None
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/service-directory:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- if .Values.springBootLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.springBootReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+          {{- toYaml (default dict .Values.servicedirectory.resources) | nindent 12 }}
+          env:
+            - name: SERVER_ADDRESS
+              value: 127.0.0.1
+            {{- if not .Values.servicedirectory.database.selfmanaged }}
+            - name: spring.datasource.url
+              value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=verify-full&sslrootcert=/var/run/db-certs/ca.crt"
+            {{- else }}
+            - name: spring.datasource.url
+              value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+            {{- end }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: servicedirectory-db
+                  key: POSTGRESQL_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: servicedirectory-db
+                  key: POSTGRESQL_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: servicedirectory-db
+                  key: POSTGRESQL_DB
+            - name: spring.datasource.username
+              valueFrom:
+                secretKeyRef:
+                  name: servicedirectory-db
+                  key: POSTGRESQL_USER
+            - name: spring.datasource.password
+              valueFrom:
+                secretKeyRef:
+                  name: servicedirectory-db
+                  key: POSTGRESQL_PASSWORD
+            - name: eshg.sd.allowed-admin-client-commonnames
+              value: {{ .Values.domains.hosts.adminportal }}
+            {{- if or (.Values.adminportal.usercerts) (not .Values.adminportal.selfmanagedUserCerts) }}
+            - name: eshg.sd.admin-certs
+              valueFrom:
+                secretKeyRef:
+                  name: admin-portal-users-tls
+                  key: truststore.crt
+            {{- end }}
+            - name: spring.profiles.active
+              value: "{{ .Values.spring.profiles.active }}"
+            - name: eshg.sd.self.common-name
+              value: {{ .Values.domains.centralservices.servicedirectory }}
+            - name: eshg.sd.relay-server.common-name
+              value: {{ .Values.domains.centralservices.relayserver }}
+            - name: ESHG_SD_MAXCERTIFICATESPERACTOR
+              value: "{{ mul 2 .Values.replicas.maximum }}"
+            {{- if .Values.servicedirectory.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.servicedirectory.javaToolOptions }}"
+            {{- end }}
+            {{- if .Values.actors.import.enabled }}
+            - name: ESHG_SERVICEDIRECTORY_IMPORTFILE
+              value: /var/run/import-data/import.json
+            {{- end }}
+            - name: management.server.port
+              value: "8081"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or .Values.actors.import.enabled (not .Values.servicedirectory.database.selfmanaged) }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            {{- if .Values.actors.import.enabled }}
+            - name: import-data
+              mountPath: /var/run/import-data
+              readOnly: true
+            {{- end }}
+            {{- if not .Values.servicedirectory.database.selfmanaged }}
+            - mountPath: /var/run/db-certs
+              name: db-certs
+              readOnly: true
+            {{- end }}
+          {{- end }}
+        - name: spatz
+          resources:
+          {{- toYaml (default dict .Values.spatz.resources) | nindent 12 }}
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" (.Values.spring.profiles.active) }}"
+            - name: ESHG_SERVICEDIRECTORY_BASEURL
+              value: "http://{{ .Values.domains.centralservices.servicedirectory }}"
+            - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_RELAY_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+              value: /var/run/certs/tls.crt
+            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+              value: /var/run/certs/tls.key
+            - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+              value: "443"
+            - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+              value: "443"
+            - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+              value: "{{ .Values.dns.upstream }}"
+            - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+              value: "{{ .Values.domains.centralservices.servicedirectory }}"
+            {{- if .Values.spatz.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.spatz.javaToolOptions }}"
+            {{- end }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+              value: "{{ .Values.domains.hosts.keycloak }}"
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
+              valueFrom:
+                secretKeyRef:
+                  name: servicedirectory-db
+                  key: POSTGRESQL_HOST
+            {{- range $i, $allowListEntry := .Values.servicedirectory.dns.allowList }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_{{ add $i 2 }}
+              value: "{{ $allowListEntry }}"
+            {{- end }}
+            - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_0
+              value: "{{ .Values.domains.centralservices.servicedirectory }}"
+            - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_1
+              value: "{{ .Values.domains.hosts.adminportal }}"
+            - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_2
+              value: "{{ .Values.domains.centralservices.relayserver }}"
+            {{- range $oIdx, $orgUnit := .Values.actors.import.orgUnits }}
+            - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_{{ add $oIdx 3 }}
+              value: "{{ $orgUnit.lsd }}"
+            {{- end }}
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: spatz-incoming
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.containersLifecycle.enabled }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /wait-for-containerstart.sh
+            {{- omit .Values.containersLifecycle "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            {{- if eq "true" $createDebugLogMount }}
+            - name: spatzdebuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
+          image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}/spatz:{{ .Values.image.tag }}'
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- if .Values.spatzLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.spatzLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.spatzReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.spatzReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+---
+
+{{ include "ingress" (list "service-directory" .Values.ingress.type .Values.domains.centralservices.servicedirectory "spatz-incoming" "service-directory" .Release.Namespace)}}
+
+---
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "service-directory" .Values.servicedirectory.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list "service-directory-spatz" .Values.servicedirectory.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+
+{{- end }}

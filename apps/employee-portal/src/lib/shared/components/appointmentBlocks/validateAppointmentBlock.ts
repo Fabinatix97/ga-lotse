@@ -5,23 +5,22 @@
 
 import { differenceInCalendarDays, isBefore, isEqual, isPast } from "date-fns";
 import { FormikErrors } from "formik";
-import { isEmpty } from "remeda";
+import { isEmpty, unique } from "remeda";
 
-import { OptionalFieldValue, isEmptyString } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/school-entry-api";
 
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import {
   calculateAppointmentsPerBlock,
   getAppointmentDurationInMinutes,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+} from "@/lib/shared/components/appointmentBlocks/calculateAppointmentCount";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 const MAX_DAYS_IN_APPOINTMENT_BLOCK = 31;
 export type ExaminationDurations = Partial<Record<ApiAppointmentType, number>>;
 
 export function validateAppointmentBlock(
-  type: OptionalFieldValue<ApiAppointmentType>,
+  types: ApiAppointmentType[],
   appointmentBlock: AppointmentBlockGroupValuesWithDays,
   examinationDurations: ExaminationDurations,
 ) {
@@ -59,14 +58,23 @@ export function validateAppointmentBlock(
   ) {
     errors.endDate = `Der Datumsbereich für einen Terminblock ist auf ${MAX_DAYS_IN_APPOINTMENT_BLOCK} Tage begrenzt.`;
   } else if (
-    !isEmptyString(type) &&
-    calculateAppointmentsPerBlock(type, start, end, examinationDurations) === 0
+    types.every(
+      (type) =>
+        calculateAppointmentsPerBlock(
+          type,
+          start,
+          end,
+          examinationDurations,
+        ) === 0,
+    )
   ) {
-    const durationInMinutes = getAppointmentDurationInMinutes(
-      type,
-      examinationDurations,
-    );
-    errors.endTime = `Die Dauer ist nicht teilbar durch die Terminlänge von ${durationInMinutes} Minuten.`;
+    const appointmentDurationInMinutes =
+      unique(
+        types.map((type) =>
+          getAppointmentDurationInMinutes(type, examinationDurations),
+        ),
+      ).join(", ") + " Minuten";
+    errors.endTime = `Die Dauer ist nicht teilbar durch die Terminlängen: ${appointmentDurationInMinutes}.`;
   }
 
   return errors;

@@ -4,50 +4,45 @@
 <#-- @ftlvariable name="body" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterBody" -->
 <table class="header">
   <colgroup>
-    <col style="width: 60%;"/>
-    <col style="width: 40%;"/>
+    <col style="width: 74%;"/>
+    <col style="width: 26%;"/>
   </colgroup>
   <tr>
     <td valign="top"/>
     <td valign="top">
-      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" width="250px" alt="logo"/>
+      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" alt="logo" style="width: 12.67rem; height: 5.78rem" />
     </td>
   </tr>
   <tr class="letterhead">
     <td valign="top" class="receiver">
       <div class="officeAddress">
-      ${departmentInfo.street()} ${departmentInfo.houseNumber()}, ${departmentInfo.postalCode()} ${departmentInfo.city()}
+      ${departmentInfo.name()}, ${departmentInfo.street()} ${departmentInfo.houseNumber()}, ${departmentInfo.postalCode()} ${departmentInfo.city()}
       </div>
-      <#if addressee.custodianClause??>
+      <div class="addressee">
+        <#if addressee.custodianClause??>
         <div>${addressee.custodianClause}</div>
-      </#if>
-      <div>${addressee.firstName} ${addressee.lastName}</div>
-      <div>${addressee.street}</div>
-      <div>${addressee.postalCode} ${addressee.city}</div>
+        </#if>
+        <div>
+          <div>${addressee.firstName} ${addressee.lastName}</div>
+          <div>${addressee.street}</div>
+          <div>${addressee.postalCode} ${addressee.city}</div>
+        </div>
+      </div>
     </td>
     <td valign="top" class="sender">
-      <table>
-        <tr>
-          <td>
-            <div class="officeInfoContent">${departmentInfo.name()}</div>
-            <div class="officeInfoContent">${departmentInfo.street()} ${departmentInfo.houseNumber()}</div>
-            <div class="officeInfoContent">${departmentInfo.postalCode()} ${departmentInfo.city()}</div>
-            <br/>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="officeInfoHeader">E-Mail</div>
-            <div class="officeInfoContent">${departmentInfo.email()}</div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="officeInfoHeader">Datum</div>
-            <div class="officeInfoContent">${body.dateString}</div>
-          </td>
-        </tr>
-      </table>
+      <div class="sender-address">
+        <div>${departmentInfo.name()}</div>
+        <div>${departmentInfo.street()} ${departmentInfo.houseNumber()}</div>
+        <div>${departmentInfo.postalCode()} ${departmentInfo.city()}</div>
+      </div>
+      <div>
+        <div class="sender-label">Telefon</div>
+        <div class="sender-data">${departmentInfo.phoneNumber()}</div>
+        <div class="sender-label">E-Mail</div>
+        <div class="sender-data">${departmentInfo.email()}</div>
+        <div class="sender-label">Datum</div>
+        <div class="sender-data">${body.dateString()}</div>
+      </div>
     </td>
   </tr>
 </table>

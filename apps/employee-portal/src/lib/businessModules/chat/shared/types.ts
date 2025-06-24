@@ -40,6 +40,7 @@ export interface Message {
   removed: boolean;
   decrypted?: boolean;
   isRead?: boolean;
+  edited?: boolean;
 }
 
 export function isChatMessageType(data: unknown): data is Message {
@@ -72,7 +73,9 @@ interface MessageType {
   formatted_body: string;
   "m.mentions": { user_ids: string[] };
 }
-function isMessageType(messageContent: unknown): messageContent is MessageType {
+export function isMessageType(
+  messageContent: unknown,
+): messageContent is MessageType {
   return isObjectType(messageContent) && "body" in messageContent;
 }
 

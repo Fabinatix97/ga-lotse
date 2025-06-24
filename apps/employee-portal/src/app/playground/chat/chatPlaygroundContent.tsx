@@ -91,7 +91,7 @@ export function ChatPlaygroundContent() {
         );
       }
 
-      await accessSecretStorage(matrixClient, passphrase, true);
+      await accessSecretStorage(matrixClient, passphrase, undefined, true);
     } catch (error) {
       logger.softError("ResetBackup: failed", error);
       throw error;

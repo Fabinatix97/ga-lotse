@@ -1,0 +1,184 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.database" }}
+
+{{- $name := index . 0 }}
+{{- $settings := index . 1 }}
+{{- $ := index . 2 }}
+
+{{- if and (not $settings.selfmanaged) $settings.k8sDeployment }}
+  {{- fail "Unsupported configuration: database.k8sDeployment can only be enabled if database.selfmanaged is enabled as well" }}
+{{- end }}
+
+{{ if not $settings.selfmanaged }}
+
+---
+
+apiVersion: vshn.appcat.vshn.io/v1
+kind: VSHNPostgreSQL
+metadata:
+  name: {{ $name }}-db
+  namespace: {{ $.Release.Namespace }}
+spec:
+  parameters:
+    service:
+      majorVersion: "15"
+      pgSettings:
+        timezone: Europe/Berlin
+        archive_timeout: "300"
+      {{- if $settings.extensions }}
+      extensions:
+      {{- range $extension := $settings.extensions }}
+        - name: {{ $extension.name }}
+      {{- end }}
+      {{- end }}
+    size:
+      plan: standard-2
+    backup:
+      schedule: "30 23 * * *"
+      retention: 12
+    {{- if $.Values.databaseSecurity.enabled }}
+    security: {{- omit $.Values.databaseSecurity "enabled" | toYaml | nindent 6 }}
+    {{- end }}
+  writeConnectionSecretToRef:
+    name: {{ $name }}-db
+
+---
+{{- else if $settings.k8sDeployment }}
+
+{{ $dbName := printf "%s-db" $name}}
+
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ $dbName }}
+data:
+  POSTGRESQL_DB: {{ b64enc "postgres" }}
+  POSTGRESQL_USER: {{ b64enc "pguser" }}
+  POSTGRESQL_PASSWORD: {{ include "getOrCreateSecretValue" (list $ $dbName  "POSTGRESQL_PASSWORD") }}
+  POSTGRESQL_HOST: {{ printf "%s.%s.svc.cluster.local" $dbName $.Release.Namespace | b64enc }}
+  POSTGRESQL_PORT: {{ b64enc "5432" }}
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $dbName }}
+spec:
+  selector:
+    app: {{ $dbName }}-app
+  ports:
+    - port: 5432
+      targetPort: 5432
+  clusterIP: None
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ $dbName }}"
+spec:
+  accessModes: [ ReadWriteOnce ]
+  resources:
+    requests:
+      storage: "512Mi"
+---
+
+{{- $dbPodUser := coalesce $.Values.podSecurityContext.runAsUser "10001" }}
+{{- $dbPodGroup := coalesce $.Values.podSecurityContext.runAsGroup "10001" }}
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: {{ $dbName }}
+  labels:
+    app: {{ $dbName }}
+spec:
+  replicas: 1
+  serviceName: {{ $dbName }}
+  selector:
+    matchLabels:
+      app: {{ $dbName }}-app
+  template:
+    metadata:
+      name: {{ $dbName }}
+      labels:
+        app: {{ $dbName }}-app
+    spec:
+      automountServiceAccountToken: false
+      {{ if $.Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ $.Values.image.pullsecret }}"
+      {{- end }}
+      securityContext: {{- omit $.Values.podSecurityContext "sysctls" | toYaml | nindent 8 }}
+      initContainers:
+        - name: db-init
+          {{- include "getThirdPartyImage" $.Values.thirdPartyImages.postgres | indent 10 }}
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              chown -R {{ $dbPodUser}}:{{ $dbPodGroup}} /var/lib/postgresql/data
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      containers:
+        - name: {{ $dbName }}
+          {{- include "getThirdPartyImage" $.Values.thirdPartyImages.postgres | indent 10 }}
+          securityContext: {{- $.Values.containerSecurityContext | toYaml | nindent 12 }}
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $dbName }}
+                  key: POSTGRESQL_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $dbName }}
+                  key: POSTGRESQL_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $dbName }}
+                  key: POSTGRESQL_PASSWORD
+            {{- if $settings.initArgs }}
+            - name: POSTGRES_INITDB_ARGS
+              value: {{ $settings.initArgs }}
+            {{- end }}
+          resources:
+            {{- toYaml (default dict ($.Values.database).resources) | nindent 12 }}
+          livenessProbe:
+            failureThreshold: 5
+            exec:
+              command: [ "pg_isready", "-h127.0.0.1", "-U $POSTGRES_USER", "-d $POSTGRES_DB" ]
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+            initialDelaySeconds: 10
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: run
+              mountPath: /var/run
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ $dbName }}
+---
+
+{{- end }}
+{{- end }}

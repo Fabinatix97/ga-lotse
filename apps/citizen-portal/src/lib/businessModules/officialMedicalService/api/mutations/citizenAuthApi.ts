@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
   unwrapRawResponse,
@@ -18,6 +18,8 @@ import {
 } from "@eshg/official-medical-service-api";
 
 import { useCitizenAuthApi } from "@/lib/businessModules/officialMedicalService/api/clients";
+import { isConcurrentAppointmentError } from "@/lib/businessModules/officialMedicalService/api/helpers";
+import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import { useTranslation } from "@/lib/i18n/client";
 
 export function useCancelAppointmentByCitizen() {
@@ -40,6 +42,7 @@ export function useCancelAppointmentByCitizen() {
 export function usePutAppointmentCitizen(successMsg: string) {
   const citizenAuthApi = useCitizenAuthApi();
   const snackbar = useSnackbar();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (request: PutAppointmentCitizenRequest) => {
@@ -49,6 +52,13 @@ export function usePutAppointmentCitizen(successMsg: string) {
     },
     onSuccess: () => {
       snackbar.confirmation(successMsg);
+    },
+    onError: async (error) => {
+      if (isConcurrentAppointmentError(error)) {
+        await queryClient.invalidateQueries({
+          queryKey: citizenPublicApiQueryKey(["getFreeAppointmentsForCitizen"]),
+        });
+      }
     },
   });
 }

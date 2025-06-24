@@ -91,11 +91,20 @@ type SetExaminationState = Pick<
   "participants" | "participantsToBeExamined" | "changedExaminationsById"
 >;
 
+type SetExaminationInputState = Pick<
+  ProphylaxisSessionState,
+  | "participants"
+  | "participantsToBeExamined"
+  | "changedExaminationsById"
+  | "isScreening"
+  | "fluoridationVarnish"
+>;
+
 export function setExamination(
   examinationId: string,
   result: ExaminationResult | undefined,
   note: string | undefined,
-  state: SetExaminationState,
+  state: SetExaminationInputState,
 ): SetExaminationState {
   function updateParticipants(participants: ProphylaxisSessionExamination[]) {
     return participants.map((participant) => {
@@ -103,7 +112,12 @@ export function setExamination(
         return participant;
       }
 
-      const status = mapToExaminationStatus(result);
+      const status = mapToExaminationStatus(result, {
+        isScreening: state.isScreening,
+        isFluoridation: isDefined(state.fluoridationVarnish),
+        isFluoridationConsentGiven:
+          participant.currentFluoridationConsent?.consented,
+      });
 
       return {
         ...participant,

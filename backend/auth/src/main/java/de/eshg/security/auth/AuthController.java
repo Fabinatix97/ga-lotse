@@ -10,6 +10,7 @@ import de.eshg.rest.service.security.config.AbstractPublicSecurityConfiguration;
 import de.eshg.rest.service.security.config.AnyRole;
 import de.eshg.rest.service.security.config.Authenticated;
 import de.eshg.rest.service.security.config.AuthorizationDefinition;
+import de.eshg.rest.service.security.config.DenyAll;
 import de.eshg.rest.service.security.config.PermitAll;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.Arrays;
@@ -76,6 +77,9 @@ public class AuthController {
           if (!anyRole.intersects(keycloakRoleNames)) {
             throw new ForbiddenException("Found none of the granted roles");
           }
+        }
+        case DenyAll denyAll -> {
+          throw new ForbiddenException("Access not allowed");
         }
         case Authenticated ignored -> {
           log.trace("No additional checks necessary. User is authenticated");

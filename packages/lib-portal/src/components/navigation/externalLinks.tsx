@@ -25,7 +25,8 @@ interface ExternalLinkProps
     Omit<LinkProps<ExternalLinkComponent>, FixedExternalLinkProps> {}
 
 export function ExternalLink(props: ExternalLinkProps) {
-  return <Link {...externalLinkProps(props)} {...props} />;
+  const { openInNewTab, ...rest } = props;
+  return <Link {...externalLinkProps(openInNewTab)} {...rest} />;
 }
 
 interface ExternalLinkButtonProps
@@ -33,7 +34,8 @@ interface ExternalLinkButtonProps
     Omit<ButtonProps<ExternalLinkComponent>, FixedExternalLinkProps> {}
 
 export function ExternalLinkButton(props: ExternalLinkButtonProps) {
-  return <Button {...externalLinkProps(props)} {...props} />;
+  const { openInNewTab, ...rest } = props;
+  return <Button {...externalLinkProps(openInNewTab)} {...rest} />;
 }
 
 interface ExternalLinkIconButtonProps
@@ -41,13 +43,14 @@ interface ExternalLinkIconButtonProps
     Omit<IconButtonProps<ExternalLinkComponent>, FixedExternalLinkProps> {}
 
 export function ExternalLinkIconButton(props: ExternalLinkIconButtonProps) {
-  return <IconButton {...externalLinkProps(props)} {...props} />;
+  const { openInNewTab, ...rest } = props;
+  return <IconButton {...externalLinkProps(openInNewTab)} {...rest} />;
 }
 
-function externalLinkProps(props: BaseLinkProps) {
+function externalLinkProps(openInNewTab: boolean | undefined) {
   return {
     component: "a",
-    target: props.openInNewTab ? "_blank" : undefined,
+    target: openInNewTab ? "_blank" : undefined,
     rel: "noopener noreferrer",
   } satisfies Partial<LinkProps>;
 }

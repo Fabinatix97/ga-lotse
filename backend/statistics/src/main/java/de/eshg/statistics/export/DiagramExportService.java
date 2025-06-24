@@ -12,7 +12,10 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
 import de.eshg.statistics.aggregation.AnalysisService;
+import de.eshg.statistics.datatransfer.FilterInformationData;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
@@ -116,6 +119,7 @@ public class DiagramExportService {
         diagram.getDiagramData().getEvaluatedDataAmount());
     addAttributesInformation(
         detailsSheet, cellStyleHolder, rowCounter, chartConfiguration, aggregationResult);
+    addFilterInformation(detailsSheet, cellStyleHolder, rowCounter, diagram);
   }
 
   private void addAttributesInformation(
@@ -157,6 +161,28 @@ public class DiagramExportService {
     TableColumn tableColumn =
         AggregationResultUtil.getTableColumn(attributeSelection, aggregationResult);
     return DataExportUtil.getAttributeName(tableColumn, withUnit);
+  }
+
+  private void addFilterInformation(
+      Sheet sheet, CellStyleHolder cellStyleHolder, AtomicInteger rowCounter, Diagram diagram) {
+    List<TableColumn> tableColumns = diagram.getAnalysis().getAggregationResult().getTableColumns();
+    if (!diagram.getFilters().isEmpty()) {
+      DataExportUtil.createStringCell(
+          sheet.createRow(rowCounter.getAndIncrement()), cellStyleHolder, 2, "Filter:");
+    }
+    diagram
+        .getFilters()
+        .forEach(
+            filter -> {
+              FilterInformationData filterInformationData =
+                  FilterParameterMapper.mapToAttributeLabelWithFilterInformation(
+                      Hibernate.unproxy(filter, AbstractFilterParameter.class), tableColumns);
+              Row row = sheet.createRow(rowCounter.getAndIncrement());
+              DataExportUtil.createStringCell(
+                  row, cellStyleHolder, 2, filterInformationData.attributeLabel());
+              DataExportUtil.createStringCell(
+                  row, cellStyleHolder, 3, filterInformationData.filterInformation());
+            });
   }
 
   private void addDiagramData(

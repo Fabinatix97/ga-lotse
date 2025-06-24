@@ -42,8 +42,7 @@ const schema = object({
   PUBLIC_DENTAL_BACKEND_URL: UrlSchema,
   PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: UrlSchema,
   PUBLIC_MEDS_ABROAD_BACKEND_URL: UrlSchema,
-
-  MARKDOWN_PAGE_DIRECTORY: string(),
+  PUBLIC_PDF_CONVERTER_URL: UrlSchema,
 });
 
 // eslint-disable-next-line no-restricted-properties

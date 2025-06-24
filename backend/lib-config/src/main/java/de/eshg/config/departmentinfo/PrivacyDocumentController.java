@@ -78,8 +78,11 @@ public class PrivacyDocumentController {
       throw new NotFoundException("Privacy policy does not exist");
     }
 
-    return MultiLangDocumentHelper.getAsPdfResourceByLanguageOrThrow(
-        privacyPolicy, AbstractPrivacyDocumentService.PRIVACY_POLICY_CONFIG_FILENAME, lang);
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
+        privacyPolicy,
+        AbstractPrivacyDocumentService.PRIVACY_POLICY_CONFIG_FILENAME,
+        lang,
+        MediaType.APPLICATION_PDF);
   }
 
   @PutMapping(value = PRIVACY_POLICY_PATH, consumes = MULTIPART_FORM_DATA_VALUE)
@@ -122,8 +125,11 @@ public class PrivacyDocumentController {
       throw new NotFoundException("Privacy notice does not exist");
     }
 
-    return MultiLangDocumentHelper.getAsPdfResourceByLanguageOrThrow(
-        privacyNotice, AbstractPrivacyDocumentService.PRIVACY_NOTICE_CONFIG_FILENAME, lang);
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
+        privacyNotice,
+        AbstractPrivacyDocumentService.PRIVACY_NOTICE_CONFIG_FILENAME,
+        lang,
+        MediaType.APPLICATION_PDF);
   }
 
   @PutMapping(value = PRIVACY_NOTICE_PATH, consumes = MULTIPART_FORM_DATA_VALUE)

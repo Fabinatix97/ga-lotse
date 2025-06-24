@@ -17,7 +17,12 @@ import { CreateAppointmentBlockGroupForm } from "@/lib/businessModules/measlesPr
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
 export default function NewAppointmentBlockGroupsPage() {
-  const { data: appointmentDurationsMeasles } = useGetAppointmentDurations();
+  const {
+    data: {
+      appointmentTypeConfigs: appointmentDurationsMeasles,
+      allowedAppointmentTypeCombinations,
+    },
+  } = useGetAppointmentDurations();
 
   return (
     <StickyToolbarLayout
@@ -33,6 +38,9 @@ export default function NewAppointmentBlockGroupsPage() {
       <MainContentLayout>
         <CreateAppointmentBlockGroupForm
           appointmentDurationsMeasles={appointmentDurationsMeasles}
+          allowedAppointmentTypeCombinations={
+            allowedAppointmentTypeCombinations
+          }
         />
       </MainContentLayout>
     </StickyToolbarLayout>

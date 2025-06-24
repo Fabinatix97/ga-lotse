@@ -2428,6 +2428,35 @@
         "tags" : [ "MedicalRegistryPublicCitizen" ]
       }
     },
+    "/statistics/procedure-ids" : {
+      "post" : {
+        "operationId" : "getProcedureIds",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetProcedureIdsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProcedureIdsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get procedure ids for procedure references",
+        "tags" : [ "StatisticsProcedureReference" ]
+      }
+    },
     "/task-metrics" : {
       "get" : {
         "operationId" : "getTaskMetrics",
@@ -4898,6 +4927,34 @@
           "procedureId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "GetProcedureIdsRequest" : {
+        "required" : [ "procedureReferences" ],
+        "type" : "object",
+        "properties" : {
+          "procedureReferences" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "GetProcedureIdsResponse" : {
+        "required" : [ "referenceToId" ],
+        "type" : "object",
+        "properties" : {
+          "referenceToId" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           }
         }
       },

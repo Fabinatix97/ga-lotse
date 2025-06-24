@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack } from "@mui/joy";
-import { Formik, FormikProps } from "formik";
-import { isEmpty } from "remeda";
+import { InfoOutlined } from "@mui/icons-material";
+import { Divider, Stack, Typography } from "@mui/joy";
+import { Formik, FormikHelpers } from "formik";
+import { isDefined, isEmpty } from "remeda";
 
-import { Alert, FileType } from "@eshg/lib-portal";
-import type { ApiFileType } from "@eshg/official-medical-service-api";
+import { Alert, FileType, FormPlus, SubmitButton } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,
@@ -16,6 +16,7 @@ import {
 } from "@eshg/official-medical-service-api";
 
 import { usePostDocumentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
+import { FileSheetIndicator } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
 import { FileSheetArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArrayField";
 import {
   mapFileTypeForOmsFile,
@@ -97,14 +98,7 @@ export function DocumentsCard({
 }
 
 interface DocumentsCardFormValue {
-  files: {
-    type: string | string[];
-    creationDate: Date;
-    fileType: ApiFileType;
-    id: string;
-    name: string;
-    size: number;
-  }[];
+  files: File[];
 }
 
 function DocumentSheet({
@@ -117,55 +111,121 @@ function DocumentSheet({
   const errorMessageMapping = useMapToFrontendErrorMessage();
 
   const documentType = useManualTranslation({
-    de: isEmpty(document.helpTextDe)
-      ? document.documentTypeDe
-      : `${document.documentTypeDe} - ${document.helpTextDe}`,
-    en: isEmpty(document.helpTextEn)
-      ? document.documentTypeEn
-      : `${document.documentTypeEn} - ${document.helpTextEn}`,
+    de: document.documentTypeDe,
+    en: document.documentTypeEn,
   });
 
-  async function handleFileUpload(
-    files: File[],
-    helpers: FormikProps<DocumentsCardFormValue>,
+  const helpText = useManualTranslation({
+    de: document.helpTextDe,
+    en: document.helpTextEn,
+  });
+
+  async function handleSubmit(
+    values: DocumentsCardFormValue,
+    helpers: FormikHelpers<DocumentsCardFormValue>,
   ) {
     const request: PostDocumentCitizenRequest = {
       documentId: document.id,
-      files: files as Blob[],
+      files: values.files,
     };
     await postDocumentCitizen.mutateAsync(request, {
+      onSuccess: () => {
+        // reset from to get rid of inputed files that will now be present
+        //  in the initialFiles
+        helpers.resetForm();
+      },
       onError: (error) => {
         helpers.setFieldError("files", errorMessageMapping(error.message));
       },
     });
   }
 
+  const status = document.documentStatus;
+  const showAddRemoveButtons = getAddRemoveButtons(status);
+  const indicator = getIndicator(status);
+
   return (
     <Formik<DocumentsCardFormValue>
-      initialValues={{ files: document.files.map(mapFileTypeForOmsFile) }}
-      onSubmit={() => {
-        return undefined;
-      }}
+      initialValues={{ files: [] }}
+      onSubmit={handleSubmit}
     >
-      {(helpers) => (
-        <FileSheetArrayField
-          name="files"
-          labels={{
-            label: documentType,
-            placeholder: t("documents.files.placeholder"),
-            helperText: t("documents.files.helperText"),
-            inputSummary: (count: number) =>
-              t("documents.files.inputSummary", {
-                count,
-              }),
-            removeAllFiles: t("documents.files.deleteAll"),
-            removeFile: t("documents.files.delete"),
-          }}
-          accept={[FileType.Jpeg, FileType.Png, FileType.Pdf]}
-          mode={document.documentStatus}
-          handleFileUpload={(files: File[]) => handleFileUpload(files, helpers)}
-        />
-      )}
+      {({ isSubmitting, values }) => {
+        const showSubmit = values.files.length > 0 && showAddRemoveButtons;
+
+        return (
+          <FormPlus>
+            <FileSheetArrayField
+              name="files"
+              labels={{
+                label: isEmpty(helpText)
+                  ? documentType
+                  : `${documentType} - ${helpText}`,
+                placeholder: t("documents.files.placeholder"),
+                helperText: t("documents.files.helperText"),
+                inputSummary: (count: number) =>
+                  t("documents.files.inputSummary", {
+                    count,
+                  }),
+                removeAllFiles: t("documents.files.deleteAll"),
+                removeFile: (name: string) =>
+                  t("documents.files.delete", {
+                    name,
+                  }),
+              }}
+              accept={[FileType.Jpeg, FileType.Png, FileType.Pdf]}
+              indicator={indicator}
+              initialFiles={document.files.map(mapFileTypeForOmsFile)}
+              showUploadButton={showAddRemoveButtons}
+              showRemoveButtons={showAddRemoveButtons}
+              extraInfo={
+                showSubmit ? (
+                  <Typography
+                    startDecorator={<InfoOutlined />}
+                    textColor="danger.500"
+                  >
+                    {t("documents.files.saveDocumentsInfo")}
+                  </Typography>
+                ) : undefined
+              }
+              extraButton={
+                showSubmit ? (
+                  <SubmitButton variant="soft" submitting={isSubmitting}>
+                    {t("documents.files.save", {
+                      context: document.documentStatus,
+                    })}
+                  </SubmitButton>
+                ) : undefined
+              }
+            />
+          </FormPlus>
+        );
+      }}
     </Formik>
   );
+}
+
+function getAddRemoveButtons(status: ApiDocumentStatus) {
+  if (isDefined(status)) {
+    return (
+      status === ApiDocumentStatus.Missing ||
+      status === ApiDocumentStatus.Rejected
+    );
+  }
+  return true;
+}
+
+function getIndicator(status: ApiDocumentStatus) {
+  if (status === ApiDocumentStatus.Accepted) {
+    return FileSheetIndicator.Success;
+  }
+  if (
+    status === ApiDocumentStatus.Missing ||
+    status === ApiDocumentStatus.Rejected
+  ) {
+    return FileSheetIndicator.Error;
+  }
+  if (status === ApiDocumentStatus.Submitted) {
+    return FileSheetIndicator.Pending;
+  }
+  return undefined;
 }

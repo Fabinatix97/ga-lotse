@@ -20,6 +20,7 @@ import {
   SidebarForm,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
+  getEntityId,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
@@ -85,10 +86,6 @@ interface UpdateProcedureSidebarProps extends SidebarWithFormRefProps {
   locationSelectionMode: ApiLocationSelectionMode;
 }
 
-function getId(label: ProcedureLabel) {
-  return label.id;
-}
-
 function mapValues(
   values: UpdateProcedureValues,
   procedure: ProcedureDetails,
@@ -97,7 +94,7 @@ function mapValues(
     procedureId: procedure.id,
     apiUpdateProcedureRequest: {
       version: procedure.version,
-      procedureLabels: values.procedureLabels.map(getId),
+      procedureLabels: values.procedureLabels.map(getEntityId),
       procedureType:
         isDraft(procedure.type) && isEmptyString(values.procedureType)
           ? procedure.type
@@ -323,5 +320,5 @@ function resolveLabelIds(labels: ProcedureLabel[]): string[] | undefined {
     return undefined;
   }
 
-  return labels.map(getId);
+  return labels.map(getEntityId);
 }

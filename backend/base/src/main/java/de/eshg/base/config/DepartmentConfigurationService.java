@@ -36,13 +36,13 @@ import org.springframework.util.DigestUtils;
 public class DepartmentConfigurationService
     extends EshgConfigurationService<DepartmentConfiguration> {
 
-  private static final String CONFIGURATION_ENDPOINT = "DEPARTMENT_CONFIG";
   public static final String ACCESSIBILITY_STATEMENT_MARKDOWNS_ENDPOINT =
       "ACCESSIBILITY_STATEMENT_MARKDOWNS_CONFIG";
   public static final String ACKNOWLEDGEMENTS_MARKDOWNS_ENDPOINT =
       "ACKNOWLEDGEMENTS_MARKDOWNS_CONFIG";
   public static final String CONTACT_MARKDOWNS_ENDPOINT = "CONTACT_MARKDOWNS_CONFIG";
   public static final String IMPRINT_MARKDOWNS_ENDPOINT = "IMPRINT_MARKDOWNS_CONFIG";
+  public static final String LOGO_CONFIG_ENDPOINT = "LOGO_CONFIG";
   public static final String PRIVACY_POLICY_MARKDOWNS_ENDPOINT = "PRIVACY_POLICY_MARKDOWNS_CONFIG";
 
   private final InitialDepartmentConfiguration initialDepartmentConfiguration;
@@ -230,11 +230,11 @@ public class DepartmentConfigurationService
   public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     DepartmentConfiguration config = getConfig();
     return MapUtils.orderedMapOfEntries(
-        Map.entry(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE),
         getAccessibilityStatementConfigurationStatus(config),
         getAcknowledgementsConfigurationStatus(config),
         getContactConfigurationStatus(config),
         getImprintConfigurationStatus(config),
+        getLogoConfigurationStatus(config),
         getPrivacyPolicyConfigurationStatus(config));
   }
 
@@ -281,6 +281,13 @@ public class DepartmentConfigurationService
         IMPRINT_MARKDOWNS_ENDPOINT,
         getConfigurationStatusOf(
             config.isImprintMarkdownsInitialized(), config.getImprintMarkdown()));
+  }
+
+  private Map.Entry<String, ConfigurationStatus> getLogoConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        LOGO_CONFIG_ENDPOINT,
+        config.isLogoInitialized() ? ConfigurationStatus.COMPLETE : ConfigurationStatus.INCOMPLETE);
   }
 
   private Map.Entry<String, ConfigurationStatus> getPrivacyPolicyConfigurationStatus(

@@ -53,8 +53,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AnonymizationService {
-  public static final String INTERVAL_FORMAT_STRING = "[%s;%s]";
-
   private static final String ROW_ID_COLUMN = "id";
   private static final String NULL_NUMBER_VALUE_FOR_DATA = "NULL";
 

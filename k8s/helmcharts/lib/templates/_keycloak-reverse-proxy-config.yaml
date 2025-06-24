@@ -1,0 +1,20 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.keycloakReverseProxyConfig" }}
+---
+
+{{ if .Values.keycloak.enabled -}}
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: keycloak-reverse-proxy-config
+  namespace: {{ .Release.Namespace }}
+data:
+{{- $content := (.Files.Glob "data/keycloak-reverse-proxy/*").AsConfig }}
+{{- tpl $content . | nindent 2 }}
+{{- end }}
+
+---
+{{- end }}

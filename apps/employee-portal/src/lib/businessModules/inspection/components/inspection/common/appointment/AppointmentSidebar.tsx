@@ -18,11 +18,11 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
+  TimeField,
 } from "@eshg/lib-employee-portal";
 import { DateField, toDateString } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { TimeField } from "@/lib/shared/components/formFields/TimeField";
 import {
   formatTimeInput,
   isBeforeTime,

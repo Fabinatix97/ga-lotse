@@ -27,6 +27,7 @@ export interface ChildDetails extends Child, Versioned {
   readonly allFluoridationConsents: ApiFluoridationConsent[];
   readonly personDetails: PersonDetails;
   readonly procedureLabels: ProcedureLabel[];
+  readonly note?: string;
 }
 
 export function mapChildDetails(response: ApiChildDetails): ChildDetails {
@@ -46,6 +47,7 @@ export function mapChildDetails(response: ApiChildDetails): ChildDetails {
     ),
     allFluoridationConsents: response.fluoridationConsents,
     procedureLabels: response.procedureLabels,
+    note: response.note,
   };
 }
 

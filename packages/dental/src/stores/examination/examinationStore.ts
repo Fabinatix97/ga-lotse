@@ -5,14 +5,14 @@
 
 import { createStore } from "zustand";
 
-import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
+import { ApiDentitionType } from "@eshg/dental-api";
 
 import {
   ExaminationResult,
   ExaminationResultWithDate,
   ScreeningExaminationResult,
+  ToothDiagnoses,
 } from "../../api/models/ExaminationResult";
-import { ToothDiagnosis } from "../../api/models/ToothDiagnosis";
 
 import { calculateDmftValuesByDentitionType } from "./actions/dmftValues";
 import { setFocus } from "./actions/focus";
@@ -31,7 +31,7 @@ export interface ExaminationState {
   currentFocus: ElementContext | undefined;
   dentition: Dentition;
   dmftValues: DmftValuesByDentitionType;
-  previousToothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>;
+  previousToothDiagnoses: ToothDiagnoses;
   dirty: boolean;
   hasResult: boolean;
 }
@@ -40,9 +40,9 @@ interface ExaminationActions {
   setFocus: (focus: ElementContext | undefined) => void;
   navigateFrom: (direction: NavigateDirection) => void;
 
-  addTooth: ToothAction;
+  addTooth: ToothActionWithFocusChange;
   removeTooth: ToothAction;
-  toggleToothType: ToothAction;
+  toggleToothType: ToothActionWithFocusChange;
 
   setMainResult: SetToothResultAction;
   setSecondaryResult: SetToothResultAction;
@@ -51,7 +51,11 @@ interface ExaminationActions {
   toggleDentition: (dentitionType: ApiDentitionType) => void;
 }
 
-type ToothAction = (toothContext: ToothContext) => void;
+export type ToothAction = (toothContext: ToothContext) => void;
+export type ToothActionWithFocusChange = (
+  toothContext: ToothContext,
+  focusMainResult: boolean,
+) => void;
 export type SetToothResultAction = (
   toothContext: ToothContext,
   newValue: string,
@@ -109,16 +113,17 @@ export function initExaminationStore(
 export function createExaminationStore(initialState: ExaminationState) {
   return createStore<ExaminationStore>()((set, get) => ({
     ...initialState,
-    addTooth: (toothContext: ToothContext) => {
-      set((state) => addTooth(toothContext, state.dentition));
+    addTooth: (toothContext: ToothContext, focusMainResult: boolean) => {
+      set((state) => addTooth(toothContext, focusMainResult, state));
     },
     removeTooth: (toothContext: ToothContext) => {
       set((state) => removeTooth(toothContext, state.dentition));
     },
-    toggleToothType: (toothContext: ToothContext) => {
+    toggleToothType: (toothContext: ToothContext, focusMainResult: boolean) => {
       set((state) =>
         toggleToothType(
           toothContext,
+          focusMainResult,
           state.dentition,
           state.previousToothDiagnoses,
         ),
@@ -133,9 +138,13 @@ export function createExaminationStore(initialState: ExaminationState) {
       set((state) => setSecondaryResult(toothContext, newValue, state)),
     submit: () => submit(get(), set),
     navigateFrom: (direction) => set((state) => navigateFrom(direction, state)),
-    toggleDentition: (dentitionType) =>
-      set(() => ({
-        dentition: createDentitionByType(dentitionType),
+    toggleDentition: (dentitionType: ApiDentitionType) =>
+      set((state) => ({
+        dentition: createDentitionByType(
+          dentitionType,
+          {},
+          state.previousToothDiagnoses,
+        ),
       })),
   }));
 }

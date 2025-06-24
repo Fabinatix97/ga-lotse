@@ -95,10 +95,10 @@
         "responses" : {
           "200" : {
             "content" : {
-              "application/octet-stream" : {
+              "*/*" : {
                 "schema" : {
                   "type" : "string",
-                  "format" : "binary"
+                  "format" : "byte"
                 }
               }
             },
@@ -249,7 +249,7 @@
         "responses" : {
           "200" : {
             "content" : {
-              "application/octet-stream" : {
+              "*/*" : {
                 "schema" : {
                   "type" : "string",
                   "format" : "binary"

@@ -10,4 +10,6 @@ export const travelMedicineConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "OPENING_HOURS",
   "NOTIFICATION",
   "PRIVACY_NOTICE",
+  "PRIVACY_POLICY",
+  "APPOINTMENT_STANDARD_DURATION",
 ];

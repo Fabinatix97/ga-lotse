@@ -11,7 +11,7 @@ import {
   SidebarActions,
   SidebarContent,
   UseSidebarResult,
-  getId,
+  getEntityId,
   useSidebar,
 } from "@eshg/lib-employee-portal";
 
@@ -41,7 +41,7 @@ function DaycarePromotionSidebar({
   async function handlePromotionDaycare() {
     await promoteChildrenInBulk.mutateAsync(
       {
-        childIds: promotionChildren.map(getId),
+        childIds: promotionChildren.map(getEntityId),
       },
       {
         onSuccess: () => onClose(),

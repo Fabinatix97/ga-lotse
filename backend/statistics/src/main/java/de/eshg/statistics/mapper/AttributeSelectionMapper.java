@@ -27,13 +27,16 @@ public class AttributeSelectionMapper {
         attributeSelectionDto.businessModuleAttributeCode());
     attributeSelection.setBaseModuleAttributeCode(attributeSelectionDto.baseModuleAttributeCode());
 
-    attributeSelection.setSearchKey(
-        buildSearchKey(
-            attributeSelection.getBusinessModuleAttributeCode(),
-            attributeSelection.getDataSourceId(),
-            attributeSelection.getBusinessModuleName(),
-            attributeSelection.getBaseModuleAttributeCode()));
+    attributeSelection.setSearchKey(buildSearchKey(attributeSelection));
     return attributeSelection;
+  }
+
+  static String buildSearchKey(AttributeSelection attributeSelection) {
+    return buildSearchKey(
+        attributeSelection.getBusinessModuleAttributeCode(),
+        attributeSelection.getDataSourceId(),
+        attributeSelection.getBusinessModuleName(),
+        attributeSelection.getBaseModuleAttributeCode());
   }
 
   public static String buildSearchKey(

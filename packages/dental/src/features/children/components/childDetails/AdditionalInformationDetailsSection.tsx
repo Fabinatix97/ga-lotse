@@ -7,9 +7,11 @@ import { Divider, Stack } from "@mui/joy";
 
 import {
   ChipWithTooltip,
+  DetailsColumn,
   DetailsItem,
   DetailsSection,
 } from "@eshg/lib-employee-portal";
+import { DetailsList } from "@eshg/lib-portal";
 
 import { FluoridationConsentInformationSection } from "../../../../components/fluoridationConsent/FluoridationConsentInformationSection";
 import { ChildDetails } from "../../api/models/ChildDetails";
@@ -34,25 +36,29 @@ export function AdditionalInformationDetailsSection(
       onEdit={() => updateAnnualChildSidebar.open({ child })}
     >
       <Stack gap={1}>
-        <DetailsItem label="Einrichtung" value={child.institution.name} />
-        <DetailsItem label="Gruppe" value={child.groupName} />
-        {child.procedureLabels.length > 0 && (
-          <DetailsItem
-            label="Kennungen"
-            value={
-              <Stack direction="row" gap={1} flexWrap="wrap">
-                {child.procedureLabels.map((label) => (
-                  <ChipWithTooltip
-                    key={label.id}
-                    name={label.name}
-                    hexColor={label.hexColor}
-                    modalTitle="Kennung"
-                  />
-                ))}
-              </Stack>
-            }
-          />
-        )}
+        <DetailsList>
+          <DetailsColumn>
+            <DetailsItem label="Einrichtung" value={child.institution.name} />
+            <DetailsItem label="Gruppe" value={child.groupName} />
+            {child.procedureLabels.length > 0 && (
+              <DetailsItem
+                label="Kennungen"
+                value={
+                  <Stack direction="row" gap={1} flexWrap="wrap">
+                    {child.procedureLabels.map((label) => (
+                      <ChipWithTooltip
+                        key={label.id}
+                        name={label.name}
+                        hexColor={label.hexColor}
+                        modalTitle="Kennung"
+                      />
+                    ))}
+                  </Stack>
+                }
+              />
+            )}
+          </DetailsColumn>
+        </DetailsList>
         <Divider orientation="horizontal" />
         <FluoridationConsentInformationSection
           allFluoridationConsents={child.allFluoridationConsents}

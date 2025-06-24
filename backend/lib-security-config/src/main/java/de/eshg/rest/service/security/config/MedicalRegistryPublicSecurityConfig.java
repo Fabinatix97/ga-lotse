@@ -21,6 +21,7 @@ public final class MedicalRegistryPublicSecurityConfig extends AbstractPublicSec
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN, ModuleLeaderRole.MEDICAL_REGISTRY_LEADER);
     grantAccessToConfiguration();
+    grantAccessToStatistics(EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN);
 
     requestMatchers(
             HttpMethod.POST,

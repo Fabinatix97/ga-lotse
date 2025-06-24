@@ -23,6 +23,7 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
 import { useRoomTimeline } from "@/lib/businessModules/chat/shared/hooks/useRoomTimeline";
+import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import {
   MentionedMember,
@@ -47,6 +48,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
   const lastReadIndexes = messages.map(({ id }, index) =>
     lastReadMessageIds.includes(id) ? index : undefined,
   );
+  const { editMessage } = useSendMessage();
 
   const readUpTo = isDMRoom(room.communicationType)
     ? room.room.getEventReadUpTo(room.room.guessDMUserId())
@@ -84,6 +86,18 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
   async function removeMessage(messageId: string) {
     await matrixClient.redactEvent(room.room.roomId, messageId);
   }
+  async function editChatMessage(
+    messageId: string,
+    text: string,
+    mentionedUsers?: string[],
+  ) {
+    await editMessage({
+      eventId: messageId,
+      text,
+      roomId: room.room.roomId,
+      mentionedUsers,
+    });
+  }
 
   return (
     <Box sx={{ overflowY: "hidden", flex: 1 }}>
@@ -99,6 +113,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
       >
         {messages?.map((message, index: number) => {
           if (!message) return null;
+          if (isChatMessage(message) && !message.content) return null;
           const nextMessage = messages[index + 1];
           const shouldShowDivider =
             index !== messages.length - 1 &&
@@ -131,20 +146,23 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
             <ListItem
               key={message.id}
               sx={{
-                width: "100%",
-                display: "flex",
-                ...(isSystemMessage(message) && { justifyContent: "center" }),
-                flexDirection:
-                  message.sender instanceof User &&
-                  message.sender?.userId === loggedInUserId
-                    ? "row-reverse"
-                    : "row",
-                paddingX: 3,
-                paddingY: 0,
-                marginBottom: isChatMessage(message) ? 3 : 2,
+                display: "block",
               }}
             >
-              <Box sx={{}}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection:
+                    message.sender instanceof User &&
+                    message.sender?.userId === loggedInUserId
+                      ? "row-reverse"
+                      : "row",
+                  paddingX: 3,
+                  paddingY: 0,
+                  marginBottom: isChatMessage(message) ? 3 : 2,
+                }}
+              >
                 {isSystemMessage(message) ? (
                   <ChatSystemMessage key={message.id} message={message} />
                 ) : (
@@ -160,12 +178,19 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                     lastReadMessageIndexes={lastReadMessageIndexes}
                     index={index}
                     removeMessage={removeMessage}
+                    editMessage={(text, mentionedUsers) =>
+                      editChatMessage(message.id, text, mentionedUsers)
+                    }
+                    roomMembers={roomMembers}
+                    edited={message.edited}
+                    roomId={room.room.roomId}
                   />
                 )}
               </Box>
               {shouldShowDivider && message.timestamp && (
                 <Divider
                   sx={{
+                    width: "100%",
                     padding: 2,
                     paddingTop: 0,
                     "&::before, &::after": {

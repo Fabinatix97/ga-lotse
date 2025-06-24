@@ -6,6 +6,7 @@
 import { MatrixClient, UIAuthCallback } from "matrix-js-sdk";
 import {
   CryptoApi,
+  GeneratedSecretStorageKey,
   ImportRoomKeyProgressData,
   ImportRoomKeyStage,
 } from "matrix-js-sdk/lib/crypto-api";
@@ -87,9 +88,10 @@ export async function restoreKeyBackupFromSecretStorage(
 export async function loadKeyBackupPrivateKeyFromSecretStorage(
   matrixClient: MatrixClient,
   passphrase?: string,
+  recoveryKey?: string,
 ) {
   try {
-    await accessSecretStorage(matrixClient, passphrase);
+    await accessSecretStorage(matrixClient, passphrase, recoveryKey);
     const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
     await cryptoApi.loadSessionBackupPrivateKeyFromSecretStorage();
     await restoreKeyBackupFromSecretStorage(matrixClient);
@@ -115,20 +117,16 @@ export async function loadKeyBackupPrivateKeyFromSecretStorage(
 
 export async function bootstrapNewSecretStorage(
   matrixClient: MatrixClient,
-  passphrase: string,
+  secretStorageRecoveryKey: Promise<GeneratedSecretStorageKey>,
   authUploadDeviceSigningKeys: UIAuthCallback<void>,
 ): Promise<void> {
   try {
-    logger.info("bootstrapNewSecretStorage");
     const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
-    logger.info("createSecretStorageKey");
-    const secretStorageKey = createSecretStorageKey(cryptoApi, passphrase);
-
     logger.info(
       "bootstrapSecretStorage, setupNewKeyBackup: true, setupNewSecretStorage: true",
     );
     await cryptoApi.bootstrapSecretStorage({
-      createSecretStorageKey: () => secretStorageKey,
+      createSecretStorageKey: () => secretStorageRecoveryKey,
       setupNewKeyBackup: true,
       setupNewSecretStorage: true,
     });
@@ -185,24 +183,21 @@ export async function bootstrapNewSecretStorage(
   }
 }
 
-function createSecretStorageKey(cryptoApi: CryptoApi, passphrase: string) {
-  return cryptoApi.createRecoveryKeyFromPassphrase(passphrase);
-}
-
 export async function accessSecretStorage(
   matrixClient: MatrixClient,
   passphrase?: string,
+  recoveryKey?: string,
   disableCache = false,
 ): Promise<void> {
   try {
-    logger.info("accessSecretStorage");
     const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
-    logger.info("getSecretStorageKey from cache");
+
     matrixClient.cryptoCallbacks.getSecretStorageKey = (keys) =>
       getSecretStorageKeyFromCache(
         keys,
         matrixClient,
         passphrase,
+        recoveryKey,
         disableCache,
       );
 
@@ -263,9 +258,16 @@ export async function accessSecretStorage(
   }
 }
 
-export async function validateAccessSecretStorage(
+export async function validatePassphrase(
   matrixClient: MatrixClient,
   passphrase: string,
 ) {
-  await accessSecretStorage(matrixClient, passphrase, true);
+  await accessSecretStorage(matrixClient, passphrase, undefined, true);
+}
+
+export async function validateRecoveryKey(
+  matrixClient: MatrixClient,
+  recoveryKey: string,
+) {
+  await accessSecretStorage(matrixClient, undefined, recoveryKey, true);
 }

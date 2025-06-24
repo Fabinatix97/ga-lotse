@@ -2,7 +2,7 @@
 <#macro content type="NUL" examination="NUL">
 <#-- @ftlvariable name="type" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationTypeDto" -->
 <#-- @ftlvariable name="examination" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto" -->
-  <table style="width: 70%; margin: 1mm 0 1mm 0;">
+  <table style="width: 70%; margin: 1mm 0 1mm 0; font-size: 9pt">
     <colgroup>
       <col style="width: 25%"/>
       <col style="width: 25%"/>

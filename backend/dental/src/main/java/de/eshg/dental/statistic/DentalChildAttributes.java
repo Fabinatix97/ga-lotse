@@ -11,14 +11,7 @@ import de.eshg.dental.statistic.model.DecayStatus;
 import de.eshg.dental.statistic.model.Group;
 import de.eshg.dental.statistic.model.MihStatus;
 import de.eshg.dental.statistic.model.OralHygieneStatus;
-import de.eshg.lib.statistics.attributes.AttributeData;
-import de.eshg.lib.statistics.attributes.AttributeInfo;
-import de.eshg.lib.statistics.attributes.BooleanAttribute;
-import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
-import de.eshg.lib.statistics.attributes.ContactIdAttribute;
-import de.eshg.lib.statistics.attributes.IntegerAttribute;
-import de.eshg.lib.statistics.attributes.ProcedureAttribute;
-import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
+import de.eshg.lib.statistics.attributes.*;
 
 public enum DentalChildAttributes implements AttributeInfo {
   PROCEDURE_ID(
@@ -66,11 +59,11 @@ public enum DentalChildAttributes implements AttributeInfo {
 
   DMFT_MILCH(
       IntegerAttribute.create(
-          "dmft-t", "DMFT_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
+          "dmf-t Milch", "DMFT_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
 
   DMFT_BLEIBEND(
       IntegerAttribute.create(
-          "DMF-T", "DMFT_BLEIBEND", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
+          "DMF-T Bleibend", "DMFT_BLEIBEND", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
 
   KARIES_RISIKO(
       BooleanAttribute.create(
@@ -83,6 +76,76 @@ public enum DentalChildAttributes implements AttributeInfo {
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
           true,
           convertToValueOptions(DecayStatus.values()))),
+
+  SANIERUNGSGRAD_MILCH(
+      DecimalAttribute.create(
+          "Sanierungsgrad Milch",
+          "SANIERUNGSGRAD_MILCH",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  SANIERUNGSGRAD_BLEIBEND(
+      DecimalAttribute.create(
+          "Sanierungsgrad Bleibend",
+          "SANIERUNGSGRAD_BLEIBEND",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  HYPOPLASIE_MILCH(
+      IntegerAttribute.create(
+          "Hypoplasie Anzahl Milch",
+          "HYPOPLASIE_MILCH",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+  HYPOPLASIE_BLEIBEND(
+      IntegerAttribute.create(
+          "Hypoplasie Anzahl Bleibend",
+          "HYPOPLASIE_BLEIBEND",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  INITIALKARIES_MILCH(
+      IntegerAttribute.create(
+          "Initialkaries Anzahl Milch",
+          "INITIALKARIES_MILCH",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+  INITIALKARIES_BLEIBEND(
+      IntegerAttribute.create(
+          "Initialkaries Anzahl Bleibend",
+          "INITIALKARIES_BLEIBEND",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  D_WERTE_MILCH(
+      IntegerAttribute.create(
+          "D-Werte Milch", "D_WERTE_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
+  D_WERTE_BLEIBEND(
+      IntegerAttribute.create(
+          "D-Werte Bleibend",
+          "D_WERTE_BLEIBEND",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  M_WERTE_MILCH(
+      IntegerAttribute.create(
+          "M-Werte Milch", "M_WERTE_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
+  M_WERTE_BLEIBEND(
+      IntegerAttribute.create(
+          "M-Werte Bleibend",
+          "M_WERTE_BLEIBEND",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  F_WERTE_MILCH(
+      IntegerAttribute.create(
+          "F-Werte Milch", "F_WERTE_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
+  F_WERTE_BLEIBEND(
+      IntegerAttribute.create(
+          "F-Werte Bleibend",
+          "F_WERTE_BLEIBEND",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
   ;
 
   static final String CATEGORY_CHILD = "Kind";

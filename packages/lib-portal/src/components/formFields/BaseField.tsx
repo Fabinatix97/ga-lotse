@@ -101,7 +101,7 @@ export interface FieldComponentProps {
   fieldDecorator?: ReactNode;
 }
 
-interface UseBaseFieldProps<TValue> extends ValidationRules<TValue> {
+export interface UseBaseFieldProps<TValue> extends ValidationRules<TValue> {
   name: string;
   type?: string;
   hint?: string;

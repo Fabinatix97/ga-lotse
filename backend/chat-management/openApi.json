@@ -584,7 +584,7 @@
         }
       },
       "UserSettingsResponse" : {
-        "required" : [ "userId" ],
+        "required" : [ "accountDeactivated", "accountRegistered", "chatConsentAsked", "chatUsageEnabled", "sharePresence", "showReadConfirmation", "showTypingNotification", "userId" ],
         "type" : "object",
         "properties" : {
           "accountDeactivated" : {

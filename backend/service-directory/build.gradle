@@ -3,6 +3,9 @@ plugins {
 }
 
 dependencies {
+    compileOnly project(':rest-service-commons')
+    compileOnly 'org.zalando:logbook-api:latest.release'
+
     implementation project(':lib-service-directory-api')
     implementation project(':lib-service-directory-admin-api')
     implementation project(':business-module-persistence-commons')

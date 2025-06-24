@@ -9,28 +9,29 @@ import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
+  AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
-import { isEmptyString } from "@eshg/lib-portal";
-import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
+import {
+  ApiAppointmentType,
+  ApiLocationSelectionMode,
+} from "@eshg/school-entry-api";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentLocationSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentLocationSelection";
-import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-
-const DEFAULT_PARALLEL_EXAMINATIONS = 1;
+import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
   appointmentTypes: AppointmentTypeConfig[],
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
 ) {
   const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
   const examinationDurations = mapToObj(
@@ -44,7 +45,7 @@ function validateForm(
     values.appointmentBlocks,
     (appointmentBlock) =>
       validateAppointmentBlock(
-        values.type,
+        values.types,
         appointmentBlock,
         examinationDurations,
       ),
@@ -60,11 +61,21 @@ function validateForm(
     errors.mfas = msg;
   }
 
+  if (
+    values.types.length > 1 &&
+    allowedAppointmentTypeCombinations.every(
+      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
+    )
+  ) {
+    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
+  }
+
   return errors;
 }
 
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
   allAppointmentTypes: AppointmentTypeConfig[];
   allPhysicians: ApiUser[];
@@ -89,17 +100,17 @@ export function AppointmentBlockGroupForm(
     firstName: option.firstName,
     lastName: option.lastName,
   }));
-  const appointmentDurations = Object.fromEntries(
-    props.allAppointmentTypes.map((currentType) => [
-      currentType.appointmentTypeDto,
-      currentType.standardDurationInMinutes,
-    ]),
-  );
 
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) => validateForm(values, props.allAppointmentTypes)}
+      validate={(values) =>
+        validateForm(
+          values,
+          props.allAppointmentTypes,
+          props.allowedAppointmentTypeCombinations,
+        )
+      }
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
@@ -127,20 +138,6 @@ export function AppointmentBlockGroupForm(
           </Stack>
           <Divider />
           <FormButtonBar
-            left={
-              <AppointmentCountWithDays
-                appointments={values}
-                appointmentDurations={appointmentDurations}
-                parallelExaminations={
-                  isEmptyString(values.parallelExaminations)
-                    ? DEFAULT_PARALLEL_EXAMINATIONS
-                    : Math.max(
-                        values.parallelExaminations,
-                        DEFAULT_PARALLEL_EXAMINATIONS,
-                      )
-                }
-              />
-            }
             submitLabel="Planen"
             submitting={isSubmitting}
             onCancel={routes.appointmentBlockGroups.overview}

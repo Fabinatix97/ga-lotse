@@ -12,18 +12,18 @@ import { FormPlus } from "@eshg/lib-portal";
 import { TextareaComponent } from "@/lib/businessModules/chat/components/chatPanel/TextareaComponent";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
-interface MessageFormValues {
+export interface MessageFormValues {
   message: string;
   mentionedUsers?: string[];
 }
-function validateMessageForm(
+export function validateMessageForm(
   values: MessageFormValues,
 ): FormikErrors<MessageFormValues> {
   const errors: FormikErrors<MessageFormValues> = {};
-  if (values.message?.length > 0) {
-    return errors;
+  if (!values.message || values.message.trim().length === 0) {
+    errors.message = "Gib etwas ein, um das Gespräch zu beginnen!";
   }
-  errors.message = "Gib etwas ein, um das Gespräch zu beginnen!";
+
   return errors;
 }
 interface MessageInput {

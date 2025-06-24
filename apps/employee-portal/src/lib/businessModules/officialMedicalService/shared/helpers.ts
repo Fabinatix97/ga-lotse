@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNullish } from "remeda";
+
 import {
   ApiAddPersonFileStateRequest,
   ApiGetReferenceFacilityResponse,
@@ -78,6 +80,9 @@ export function mapToDefaultFacilityFormValues(
   return {
     name: facility.name,
     contactAddress: mapApiAddressToForm(facility.contactAddress!),
+    differentBillingAddress: isNullish(facility.differentBillingAddress)
+      ? undefined
+      : mapApiAddressToForm(facility.differentBillingAddress),
     contactPersons:
       facility.contactPersons?.map(mapApiContactPersonToForm) ?? [],
     emailAddresses: facility.emailAddresses,
@@ -91,6 +96,9 @@ export function mapApiFacilityToDefaultFacilityFormValues(
   return {
     name: facility.name,
     contactAddress: mapApiAddressToForm(facility.contactAddress!),
+    differentBillingAddress: isNullish(facility.differentBillingAddress)
+      ? undefined
+      : mapApiAddressToForm(facility.differentBillingAddress),
     contactPersons:
       facility.contactPersons?.map(mapApiContactPersonToForm) ?? [],
     emailAddresses: facility.emailAddresses ?? [],
@@ -107,6 +115,9 @@ export function mapToApiPatchFacilityRequest(
       version: version,
       name: facility.name,
       contactAddress: mapBaseAddressToApi(facility.contactAddress!),
+      differentBillingAddress: isNullish(facility.differentBillingAddress)
+        ? undefined
+        : mapApiAddressToForm(facility.differentBillingAddress),
       contactPersons: facility.contactPersons?.map(mapContactPersonToApi) ?? [],
       emailAddresses: facility.emailAddresses ?? [],
       phoneNumbers: facility.phoneNumbers ?? [],
@@ -130,7 +141,10 @@ export function mapPersonDetailsToForm(
     emailAddresses: normalizeListInputs(person.emailAddresses),
     phoneNumbers: normalizeListInputs(person.phoneNumbers),
     contactAddress: mapOptional(person.contactAddress, mapApiAddressToForm),
-    differentBillingAddress: undefined,
+    differentBillingAddress: mapOptional(
+      person.differentBillingAddress,
+      mapApiAddressToForm,
+    ),
   };
 }
 

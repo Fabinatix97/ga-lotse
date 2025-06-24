@@ -28,7 +28,7 @@ public class DevelopmentScreening extends GenericEntity<Long> implements Validat
   @OneToOne(optional = false)
   private SchoolEntryProcedure procedure;
 
-  private Double height;
+  private Integer height;
 
   private Double weight;
 
@@ -126,11 +126,11 @@ public class DevelopmentScreening extends GenericEntity<Long> implements Validat
     this.procedure = procedure;
   }
 
-  public Double getHeight() {
+  public Integer getHeight() {
     return height;
   }
 
-  public void setHeight(Double height) {
+  public void setHeight(Integer height) {
     this.height = height;
   }
 

@@ -16,7 +16,14 @@ import {
 } from "@mui/joy";
 import { useField, useFormikContext } from "formik";
 import { RoomMember } from "matrix-js-sdk";
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
@@ -36,6 +43,7 @@ interface TextareaComponent {
   selectedRoomId?: string;
   roomMembers: RoomMember[];
   disabled?: boolean;
+  ref?: RefObject<HTMLDivElement | null>;
 }
 
 export function TextareaComponent({
@@ -45,6 +53,7 @@ export function TextareaComponent({
   handleUserTyping,
   selectedRoomId,
   disabled,
+  ref,
 }: Readonly<TextareaComponent>) {
   const { matrixClient, departmentInfo, clientState } = useChatClientContext();
   const [filteredUsers, setFilteredUsers] = useState<RoomMember[]>([]);
@@ -55,12 +64,21 @@ export function TextareaComponent({
   const [selectField, _metaField, selectHelpers] = useField<
     string[] | undefined
   >(selectFieldName);
-  const { submitForm, resetForm } = useFormikContext<MessageFormValues>();
+  const { submitForm, resetForm, isSubmitting } =
+    useFormikContext<MessageFormValues>();
 
   const debouncedHandleUserTyping = useDebouncedCallback(
     (isTyping: boolean) => handleUserTyping?.(selectedRoomId ?? "", isTyping),
     250,
   );
+  useEffect(() => {
+    if (!isSubmitting && field.value === "") {
+      const innerTextareaElement = inputRef.current?.childNodes?.[0];
+      if (innerTextareaElement instanceof HTMLTextAreaElement) {
+        innerTextareaElement.focus();
+      }
+    }
+  }, [field.value, isSubmitting]);
   useEffect(() => {
     resetForm();
   }, [resetForm, selectedRoomId]);
@@ -97,7 +115,6 @@ export function TextareaComponent({
 
   async function handleKeydown(event: KeyboardEvent<HTMLTextAreaElement>) {
     const inputValue = field.value;
-    if (!inputValue) return;
     if (
       event.key === "@" &&
       (inputValue.length === 0 ||
@@ -117,7 +134,6 @@ export function TextareaComponent({
       try {
         event.preventDefault();
         await submitForm();
-        resetForm();
       } catch (error) {
         logger.warn("Sending message failed", error);
       }
@@ -156,8 +172,9 @@ export function TextareaComponent({
       inputNode.focus();
     }
   }
-  const inputDisabled = clientState === ClientState.Idle || disabled;
-  const buttonDisabled = inputDisabled ?? !!_meta.error;
+  const inputDisabled =
+    isSubmitting || clientState === ClientState.Idle || disabled;
+  const buttonDisabled = isSubmitting ?? inputDisabled ?? !!_meta.error;
 
   return (
     <Box sx={{ p: 2, pt: 0 }}>
@@ -206,7 +223,11 @@ export function TextareaComponent({
         </Menu>
       </ClickAwayListener>
       <Textarea
-        ref={inputRef}
+        ref={(el) => {
+          inputRef.current = el;
+          if (!ref) return;
+          ref.current = el;
+        }}
         minRows={1}
         maxRows={5}
         placeholder="Nachricht schreiben"
@@ -244,6 +265,7 @@ export function TextareaComponent({
             <SendOutlinedIcon />
           </IconButton>
         }
+        autoFocus
         onChange={handleTextareaChange}
         onKeyDown={handleKeydown}
       />

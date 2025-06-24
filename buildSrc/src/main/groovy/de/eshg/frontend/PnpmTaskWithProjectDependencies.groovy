@@ -17,8 +17,8 @@ abstract class PnpmTaskWithProjectDependencies extends PnpmTask {
       ProjectReferences.getDependencies(project).each { projectName ->
         task.inputs.file(project.project(projectName).file('package.json'))
         // use build meta files as input dependencies to reduce the number of tracked files
-        task.inputs.file(project.project(projectName).layout.buildDirectory.file('lib/metafile-esm.json'))
-        task.inputs.file(project.project(projectName).layout.buildDirectory.file('dist/tsconfig.tsbuildinfo'))
+        task.inputs.files(project.project(projectName).layout.buildDirectory.file('lib/metafile-esm.json')).optional()
+        task.inputs.files(project.project(projectName).layout.buildDirectory.file('dist/tsconfig.tsbuildinfo')).optional()
       }
 
       return task

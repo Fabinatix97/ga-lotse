@@ -81,7 +81,7 @@ public class SynapseAuthController {
 
   private static void validateRole(OAuth2AccessToken accessToken) {
     List<String> roles = RolesResolver.getRoles(accessToken);
-    if (!roles.contains(EmployeePermissionRole.CHAT_MANAGEMENT_WRITE.name())) {
+    if (!roles.contains(EmployeePermissionRole.CHAT_USER.name())) {
       throw new ForbiddenException("Required role is missing");
     }
   }

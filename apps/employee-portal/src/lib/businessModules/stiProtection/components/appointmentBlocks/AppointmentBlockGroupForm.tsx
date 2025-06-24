@@ -8,6 +8,7 @@ import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import {
+  AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
   NamedUser,
@@ -24,14 +25,13 @@ import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/m
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
-import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
+import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 export interface AppointmentBlockGroupValues {
-  type: OptionalFieldValue<ApiAppointmentType>;
+  types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   allAppointmentTypes: AppointmentTypeConfig[];
@@ -41,7 +41,7 @@ export interface AppointmentBlockGroupValues {
 }
 
 export interface StiProtectionAppointmentValues {
-  type: OptionalFieldValue<ApiAppointmentType>;
+  types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   allAppointmentTypes: ApiAppointmentTypeConfig[];
   physicians: string[];
@@ -54,6 +54,7 @@ export interface StiProtectionAppointmentValues {
 function validateForm(
   values: StiProtectionAppointmentValues,
   appointmentTypes: AppointmentTypeConfig[],
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
 ) {
   const errors: FormikErrors<StiProtectionAppointmentValues> = {};
   const appointmentDurations = mapToObj(
@@ -67,7 +68,7 @@ function validateForm(
     values.appointmentBlocks,
     (appointmentBlock) =>
       validateAppointmentBlock(
-        values.type,
+        values.types,
         appointmentBlock,
         appointmentDurations,
       ),
@@ -83,6 +84,15 @@ function validateForm(
     errors.consultants = msg;
   }
 
+  if (
+    values.types.length > 1 &&
+    allowedAppointmentTypeCombinations.every(
+      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
+    )
+  ) {
+    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
+  }
+
   return errors;
 }
 
@@ -96,6 +106,7 @@ function userToOption(user: ApiUser): NamedUser {
 
 interface AppointmentBlockGroupFormProps {
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   validateAvailability: (values: StiProtectionAppointmentValues) => void;
   appointmentTypes: AppointmentTypeConfig[];
   blockedStaff: string[];
@@ -107,6 +118,7 @@ interface AppointmentBlockGroupFormProps {
 
 export function AppointmentBlockGroupForm({
   onSubmit,
+  allowedAppointmentTypeCombinations,
   validateAvailability,
   appointmentTypes,
   blockedStaff,
@@ -117,17 +129,17 @@ export function AppointmentBlockGroupForm({
 }: Readonly<AppointmentBlockGroupFormProps>) {
   const physicianOptions = physicians.map(userToOption);
   const consultantOptions = consultants.map(userToOption);
-  const appointmentDurations = Object.fromEntries(
-    appointmentTypes.map((currentType) => [
-      currentType.appointmentTypeDto,
-      currentType.standardDurationInMinutes,
-    ]),
-  );
 
   return (
     <Formik
       initialValues={initialValues}
-      validate={(values) => validateForm(values, appointmentTypes)}
+      validate={(values) =>
+        validateForm(
+          values,
+          appointmentTypes,
+          allowedAppointmentTypeCombinations,
+        )
+      }
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
@@ -149,13 +161,6 @@ export function AppointmentBlockGroupForm({
           </Stack>
           <Divider />
           <FormButtonBar
-            left={
-              <AppointmentCountWithDays
-                appointments={values}
-                appointmentDurations={appointmentDurations}
-                parallelExaminations={1}
-              />
-            }
             submitLabel="Planen"
             submitting={isSubmitting}
             onCancel={routes.appointmentBlockGroups.index}

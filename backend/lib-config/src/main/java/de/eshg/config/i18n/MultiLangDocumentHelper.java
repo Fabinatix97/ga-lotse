@@ -49,14 +49,22 @@ public final class MultiLangDocumentHelper {
         multiLangDocument, filename, MediaType.APPLICATION_PDF);
   }
 
-  public static ResponseEntity<Resource> getAsResponseByCurrentLanguageWithFallback(
-      MultiLangDocument multiLangDocument, MultiLangFileName filename, MediaType contentType) {
-    Language language = LanguageContextHolder.getLanguage();
+  public static ResponseEntity<Resource> getAsResponseWithFallback(
+      MultiLangDocument multiLangDocument,
+      MultiLangFileName filename,
+      Language language,
+      MediaType contentType) {
     Document document = getDocument(multiLangDocument, language);
     if (document != null) {
       return toResponseEntity(document, getFilename(filename, language), language, contentType);
     }
     return getAsResourceByDefaultLanguage(multiLangDocument, filename, contentType);
+  }
+
+  public static ResponseEntity<Resource> getAsResponseByCurrentLanguageWithFallback(
+      MultiLangDocument multiLangDocument, MultiLangFileName filename, MediaType contentType) {
+    return getAsResponseWithFallback(
+        multiLangDocument, filename, LanguageContextHolder.getLanguage(), contentType);
   }
 
   private static ResponseEntity<Resource> getAsResourceByDefaultLanguage(
@@ -66,12 +74,6 @@ public final class MultiLangDocumentHelper {
         getFilename(filename, Language.DEFAULT),
         Language.DEFAULT,
         contentType);
-  }
-
-  public static ResponseEntity<Resource> getAsPdfResourceByLanguageOrThrow(
-      MultiLangDocument multiLangDocument, MultiLangFileName multiLangFileName, Language language) {
-    return getAsResourceByLanguageOrThrow(
-        multiLangDocument, multiLangFileName, language, MediaType.APPLICATION_PDF);
   }
 
   public static ResponseEntity<Resource> getAsResourceByLanguageOrThrow(

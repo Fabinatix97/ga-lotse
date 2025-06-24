@@ -27,6 +27,10 @@ public interface ServiceDirectoryApi {
 
   String ACTORS_PREFIX = "/actors";
 
+  String GET_TRUSTED_ACTORS_PATH = ACTORS_PREFIX + "/trustedActors/self";
+  String GET_TRUSTED_ACTORS_FULL_PATH =
+      ServiceDirectoryApi.API_PREFIX + ServiceDirectoryApi.GET_TRUSTED_ACTORS_PATH;
+
   /**
    * Retrieves the active actors from the service directory.
    *
@@ -104,7 +108,7 @@ public interface ServiceDirectoryApi {
    *     active actors, rather than invoking this method directly.
    */
   @Operation(summary = "Get the active actors from the service directory, the caller can trust")
-  @GetExchange(ACTORS_PREFIX + "/trustedActors/self")
+  @GetExchange(GET_TRUSTED_ACTORS_PATH)
   @ApiResponse(
       responseCode = "200",
       description =

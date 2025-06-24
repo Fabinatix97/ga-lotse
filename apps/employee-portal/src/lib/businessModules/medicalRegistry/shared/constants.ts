@@ -18,6 +18,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   OTHER: "Sonstige Änderungen beantragt",
   DOCUMENT_UPLOAD: "Dokument hochgeladen",
   REQUEST_FOR_WRITTEN_CONFIRMATION: "Meldebestätigung angefordert",
+  CHANGE_OF_EMPLOYEES: "Änderung Mitarbeiter:innen beantragt",
 };
 
 export const keyDocumentTypes: Record<string, string> = {

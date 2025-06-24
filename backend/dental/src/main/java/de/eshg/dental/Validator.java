@@ -60,11 +60,7 @@ public class Validator {
   private final UserApi userApi;
 
   private static final List<PropertyGetter<ProphylaxisSession>> UPDATABLE_WITHOUT_RESULT_ONLY =
-      List.of(
-          ProphylaxisSession::getInstitutionId,
-          ProphylaxisSession::getGroupName,
-          ProphylaxisSession::isScreening,
-          ProphylaxisSession::getFluoridationVarnish);
+      List.of(ProphylaxisSession::isScreening, ProphylaxisSession::getFluoridationVarnish);
 
   public Validator(
       Clock clock, ContactClient contactClient, ChildRepository childRepository, UserApi userApi) {
@@ -108,13 +104,6 @@ public class Validator {
     }
 
     return institutionContactDto;
-  }
-
-  public void validateGroupAtInstitutionExists(UUID institutionId, String groupName) {
-    if (!childRepository.existsByInstitutionIdAndGroupNameAndProcedureStatus(
-        institutionId, groupName, ProcedureStatus.OPEN)) {
-      throw new BadRequestException("Group does not exist: " + groupName);
-    }
   }
 
   static void validateOnlyOneOfSearchAndFilterParametersAreSet(
@@ -333,5 +322,10 @@ public class Validator {
           "Duplicate origin group names are not allowed: "
               + StringUtils.join(duplicatedGroups, ", "));
     }
+  }
+
+  public boolean validateInstitutionContainsOpenChildren(UUID institutionId, int schoolYear) {
+    return childRepository.existsByInstitutionIdAndYearAndProcedureStatus(
+        institutionId, Year.of(schoolYear), ProcedureStatus.OPEN);
   }
 }

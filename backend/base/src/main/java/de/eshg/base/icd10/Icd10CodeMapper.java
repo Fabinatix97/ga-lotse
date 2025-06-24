@@ -13,6 +13,10 @@ public final class Icd10CodeMapper {
   private Icd10CodeMapper() {}
 
   public static Icd10CodeDto mapToDto(Icd10SearchResult icd10Code) {
-    return new Icd10CodeDto(icd10Code.getCode(), icd10Code.getTitle(), icd10Code.isGroup());
+    return new Icd10CodeDto(
+        icd10Code.getCode(),
+        icd10Code.getOriginalCode(),
+        icd10Code.getTitle(),
+        icd10Code.isGroup());
   }
 }

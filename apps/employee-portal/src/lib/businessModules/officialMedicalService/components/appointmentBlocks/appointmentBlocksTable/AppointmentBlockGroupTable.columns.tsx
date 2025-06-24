@@ -55,7 +55,7 @@ export function useAppointmentBlockGroupsColumns({
         props
           .getValue()
           .map((type) => APPOINTMENT_TYPES[type])
-          .join(),
+          .join(", "),
       enableSorting: true,
     }),
     columnHelper.accessor("start", {

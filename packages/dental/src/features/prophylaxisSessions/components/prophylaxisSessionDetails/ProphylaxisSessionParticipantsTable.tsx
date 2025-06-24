@@ -4,10 +4,14 @@
  */
 
 import {
+  AccountCircleOutlined,
   Add,
   Cancel,
+  CancelOutlined,
   Check,
   CheckCircleOutline,
+  CheckCircleOutlined,
+  CircleOutlined,
   DeleteOutlined,
   Start,
 } from "@mui/icons-material";
@@ -36,8 +40,10 @@ import {
   formatDate,
 } from "@eshg/lib-portal";
 
+import { FluoridationExaminationResult } from "../../../../api/models/ExaminationResult";
 import { ExaminationStatusChip } from "../../../../components/examination/ExaminationStatusChip";
 import { routes } from "../../../../config/routes";
+import { FluoridationConsent } from "../../../../utils/childDetails/FluoridationConsent";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 import { useDeleteProphylaxisSessionParticipantOptions } from "../../api/mutations/details";
 import {
@@ -57,6 +63,7 @@ import { ChangeReasonForAbsenceModal } from "../absence/ChangeReasonForAbsenceMo
 
 import { useAddChildToProphylaxisSessionSidebar } from "./AddChildToProphylaxisSessionSidebar";
 import { CloseProphylaxisSessionModal } from "./CloseProphylaxisSessionModal";
+import { FluoridationConsentChip } from "./FluoridationConsentChip";
 import { ParticipantFilter, ParticipantFilterDef } from "./ParticipantFilter";
 
 const GENDER_FILTERS: ParticipantFilterDef<GenderFilter>[] = [
@@ -125,6 +132,19 @@ export function ProphylaxisSessionParticipantsTable() {
     });
   }
 
+  function handleUpdateFluoridationResult(
+    examination: ProphylaxisSessionExamination,
+    fluorideVarnishApplied: boolean | undefined,
+  ) {
+    setExamination(
+      examination.examinationId,
+      isDefined(fluorideVarnishApplied)
+        ? { type: "fluoridation", fluorideVarnishApplied }
+        : undefined,
+      examination.note,
+    );
+  }
+
   function handleAbsentParticipant(examination: ProphylaxisSessionExamination) {
     setExaminationForAbsence(examination);
   }
@@ -138,7 +158,7 @@ export function ProphylaxisSessionParticipantsTable() {
       setExamination(
         examination.examinationId,
         { type: "absence", reasonForAbsence },
-        undefined,
+        examination.note,
       );
       setExaminationForAbsence(undefined);
     };
@@ -202,7 +222,7 @@ export function ProphylaxisSessionParticipantsTable() {
                 <AddChildButton />
                 {allParticipantsCompleted || !isExamination ? (
                   <CloseProphylaxisButton />
-                ) : isExamination && firstParticipant !== undefined ? (
+                ) : isScreening && firstParticipant !== undefined ? (
                   <InternalLinkButton
                     href={routeToExamination(firstParticipant.examinationId)}
                     endDecorator={<Start />}
@@ -239,11 +259,12 @@ export function ProphylaxisSessionParticipantsTable() {
         columns={columnDefs(
           handleRemoveParticipant,
           handleAbsentParticipant,
+          handleUpdateFluoridationResult,
           isFluoridation,
-          isExamination,
+          isScreening,
         )}
         rowNavigation={
-          isExamination
+          isScreening
             ? {
                 focusColumnAccessorKey: "lastName",
                 route: (row) => routeToExamination(row.original.examinationId),
@@ -270,14 +291,24 @@ export function ProphylaxisSessionParticipantsTable() {
 
 const columnHelper = createColumnHelper<ProphylaxisSessionExamination>();
 
+interface FluoridationStatus {
+  result: FluoridationExaminationResult | undefined;
+  fluoridationConsent: FluoridationConsent | undefined;
+}
+
 function columnDefs(
   onRemoveParticipant: (participantId: string) => void,
   onAbsentParticipant: (examination: ProphylaxisSessionExamination) => void,
+  onUpdateFluoridationResult: (
+    examination: ProphylaxisSessionExamination,
+    fluorideVarnishApplied: boolean | undefined,
+  ) => void,
   isFluoridation: boolean,
-  isExamination: boolean,
+  isScreening: boolean,
 ) {
+  const isFluoridationOnly = isFluoridation && !isScreening;
   return [
-    ...(isExamination
+    ...(isScreening
       ? [
           columnHelper.accessor("status", {
             header: "Status",
@@ -290,6 +321,32 @@ function columnDefs(
               width: 160,
             },
           }),
+        ]
+      : []),
+    ...(isFluoridationOnly
+      ? [
+          columnHelper.accessor(
+            (row) => {
+              return {
+                result: row.result,
+                fluoridationConsent: row.currentFluoridationConsent,
+              } as FluoridationStatus;
+            },
+            {
+              header: "Fluoridierung",
+              cell: (props) => (
+                <FluoridationConsentChip
+                  result={props.getValue().result}
+                  fluoridationConsent={props.getValue().fluoridationConsent}
+                />
+              ),
+              enableSorting: true,
+              meta: {
+                canNavigate: { parentRow: true },
+                width: 180,
+              },
+            },
+          ),
         ]
       : []),
     columnHelper.accessor("firstName", {
@@ -357,25 +414,58 @@ function columnDefs(
       header: "Aktionen",
       id: "actions",
       cell: (props) => {
+        const row = props.row.original;
         const deleteAction: ActionsItem = {
           label: "Entfernen",
           startDecorator: <DeleteOutlined />,
-          onClick: () => onRemoveParticipant(props.row.original.id),
+          onClick: () => onRemoveParticipant(row.id),
           color: "danger",
         };
         const absentAction: ActionsItem = {
           label: "Nicht anwesend",
           startDecorator: <Cancel />,
-          onClick: () => onAbsentParticipant(props.row.original),
+          onClick: () => onAbsentParticipant(row),
+        };
+
+        const fluoridationDoneAction: ActionsItem = {
+          label: "Fluoridierung durchgeführt",
+          startDecorator: <CheckCircleOutlined />,
+          onClick: () => onUpdateFluoridationResult(row, true),
+        };
+        const fluoridationNotDoneAction: ActionsItem = {
+          label: "Fluoridierung nicht durchgeführt",
+          startDecorator: <CancelOutlined />,
+          onClick: () => onUpdateFluoridationResult(row, false),
+        };
+        const fluoridationOpenAction: ActionsItem = {
+          label: "Fluoridierung offen",
+          startDecorator: <CircleOutlined />,
+          onClick: () => onUpdateFluoridationResult(row, undefined),
+        };
+        const navigateToProfileAction: ActionsItem = {
+          label: "Zum Profil",
+          startDecorator: <AccountCircleOutlined />,
+          onClick: routes.children.byId(row.id).details,
+          openInNewTab: true,
         };
         const actions: ActionsItem[] = [
-          ...(canBeMarkedAbsent(
-            props.row.original.status,
-            props.row.original.result,
-          ) && isExamination
+          ...(isFluoridationOnly && canChangeToFluorideVarnishApplied(true, row)
+            ? [fluoridationDoneAction]
+            : []),
+          ...(isFluoridationOnly &&
+          canChangeToFluorideVarnishApplied(false, row)
+            ? [fluoridationNotDoneAction]
+            : []),
+          ...(isFluoridationOnly &&
+          canChangeToFluorideVarnishApplied(undefined, row)
+            ? [fluoridationOpenAction]
+            : []),
+          ...(isScreening || isFluoridation ? [navigateToProfileAction] : []),
+          ...(canBeMarkedAbsent(row.status, row.result) &&
+          (isScreening || isFluoridation)
             ? [absentAction]
             : []),
-          ...(childCanBeRemoved(props.row.original) ? [deleteAction] : []),
+          ...(childCanBeRemoved(row) ? [deleteAction] : []),
         ];
         return actions.length > 0 ? (
           <ActionsMenu actionItems={actions} />
@@ -387,6 +477,35 @@ function columnDefs(
       },
     }),
   ];
+}
+
+function canChangeToFluorideVarnishApplied(
+  targetFluorideVarnishApplied: boolean | undefined,
+  examination: ProphylaxisSessionExamination,
+) {
+  if (
+    examination.status === "NOT_PRESENT" &&
+    targetFluorideVarnishApplied === undefined
+  ) {
+    return true;
+  }
+
+  if (!examination.currentFluoridationConsent?.consented) {
+    return false;
+  }
+
+  if (examination.status === "NOT_PRESENT") {
+    return true;
+  }
+
+  if (examination.result === undefined) {
+    return targetFluorideVarnishApplied !== undefined;
+  }
+
+  return (
+    examination.result.type === "fluoridation" &&
+    examination.result.fluorideVarnishApplied !== targetFluorideVarnishApplied
+  );
 }
 
 function resolveTableSorting(

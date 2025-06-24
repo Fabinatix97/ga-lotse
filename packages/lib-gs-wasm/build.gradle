@@ -1,0 +1,171 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerExistingImage
+import com.github.dockerjava.api.async.ResultCallback
+import com.github.dockerjava.api.command.CreateContainerResponse
+import com.github.dockerjava.api.command.WaitContainerResultCallback
+import com.github.dockerjava.api.model.Bind
+import groovy.json.JsonSlurper
+import org.gradle.internal.hash.FileHasher
+
+plugins {
+  id 'com.bmuschko.docker-remote-api'
+}
+
+static def compareFiles(String file1, String file2) {
+  return new File(file1).bytes == new File(file2).bytes
+}
+
+String getModuleName() {
+  return getPackageJson().name
+}
+
+String getModuleVersion() {
+  return getPackageJson().version
+}
+
+def getPackageJson() {
+  return (new JsonSlurper().parse layout.projectDirectory.file('package.json').getAsFile())
+}
+
+def genBuildInfo() {
+  def hasher = gradle.services.get(FileHasher)
+  def dockerfileHash = hasher.hash(layout.projectDirectory.file('emscripten-autotools/Dockerfile').getAsFile())
+  def buildShHash = hasher.hash(layout.projectDirectory.file('build.sh').getAsFile())
+  mkdir(layout.buildDirectory.dir('dist'))
+  layout.buildDirectory.file('dist/build-info.txt').get().getAsFile().text = "emscripten-autotools/Dockerfile: ${dockerfileHash}\nbuild.sh: ${buildShHash}\n"
+}
+
+abstract class BuildInContainer extends DockerExistingImage {
+
+  @InputFile
+  File buildSh
+
+  @OutputDirectory
+  File outputDir
+
+  CreateContainerResponse createContainer() {
+    def containerCommand = dockerClient.createContainerCmd(imageId.get())
+    containerCommand.withName("emscripten-autotools-ghostpdl-${ProcessHandle.current().pid()}")
+    containerCommand.hostConfig
+      .withAutoRemove(true)
+      .withBinds(
+        Bind.parse('ghostpdl:/ghostpdl:rw'),
+        Bind.parse("${buildSh}:/build.sh:ro"),
+        Bind.parse("${outputDir}:/build/dist:rw")
+      )
+    containerCommand.withWorkingDir('/')
+    containerCommand.withCmd('./build.sh')
+    CreateContainerResponse container = containerCommand.exec()
+    getLogger().quiet("Created container with ID '${container.id}'.")
+    return container
+  }
+
+  void startContainer(container) {
+    getLogger().quiet("Starting container with ID '${container.id}'.")
+    dockerClient.startContainerCmd(container.id).exec()
+  }
+
+  void waitForContainer(container) {
+
+    dockerClient.logContainerCmd(container.id)
+      .withStdOut(true)
+      .withStdErr(true)
+      .withFollowStream(true)
+      .withTimestamps(false)
+      .exec(new ResultCallback.Adapter() {
+        @Override
+        void onNext(Object item) {
+          getLogger().quiet(new String(item.payload).replaceAll(/\n$/, ""))
+        }
+      })
+
+    def waitCallback = new WaitContainerResultCallback()
+    dockerClient.waitContainerCmd(container.id).exec(waitCallback)
+
+    def exitCode = waitCallback.awaitStatusCode()
+    if (exitCode != 0) {
+      throw new GradleException("Build failed with code: ${exitCode}")
+    }
+  }
+
+  @Override
+  void runRemoteCommand() throws Exception {
+    def container = createContainer()
+    startContainer container
+    waitForContainer container
+  }
+}
+
+tasks.register('buildDockerImage', DockerBuildImage) {
+  inputDir = layout.projectDirectory.file('emscripten-autotools').getAsFile()
+}
+
+tasks.register('buildInContainer', BuildInContainer) {
+  targetImageId buildDockerImage.imageId
+  buildSh = layout.projectDirectory.file('build.sh').getAsFile()
+  outputDir = layout.buildDirectory.dir('dist').get().getAsFile()
+
+  doFirst {
+    delete layout.buildDirectory.dir('dist')
+    genBuildInfo()
+  }
+}
+
+tasks.register('assemble') { it ->
+  if ("${System.env.LIB_GS_WASM_USE_CACHED_BUILD}" == "true") {
+    it.dependsOn installCached
+  } else {
+    it.dependsOn buildInContainer
+  }
+}
+
+tasks.register('build') {
+  dependsOn assemble
+}
+
+tasks.register('installCached', NpmTask) {
+  dependsOn rootProject.npmSetup
+  doFirst {
+    mkdir "${projectDir}/cached/node_modules"
+  }
+
+  def CI_PROJECT_ID = System.env.CI_PROJECT_ID
+  def CI_JOB_TOKEN = System.env.CI_JOB_TOKEN
+
+  args = ['install',
+          '--prefix', './cached',
+          "--registry=https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/",
+          "--//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}",
+          "${getModuleName()}@${getModuleVersion()}"]
+  doLast {
+    genBuildInfo()
+    if (!compareFiles("${layout.buildDirectory.file('dist/build-info.txt').get()}", "${projectDir}/cached/node_modules/${getModuleName()}/build/dist/build-info.txt")) {
+      throw new GradleException('build-info.txt mismatch. Please run publish-lib-gs-wasm!')
+    }
+    delete "${projectDir}/build-info.txt"
+    copy {
+      from "cached/node_modules/${getModuleName()}/build/dist/"
+      into layout.buildDirectory.dir('dist').get().getAsFile()
+    }
+  }
+}
+
+tasks.register('publish', NpmTask) {
+  dependsOn rootProject.npmSetup
+  dependsOn buildInContainer
+
+  def CI_PROJECT_ID = System.env.CI_PROJECT_ID
+  def CI_JOB_TOKEN = System.env.CI_JOB_TOKEN
+
+  args = ['publish',
+          "--registry=https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/",
+          "--//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}"]
+}
+
+clean.configure {
+  doLast {
+    delete "${layout.buildDirectory}"
+    delete "${projectDir}/node_modules"
+    delete "${projectDir}/cached"
+  }
+}

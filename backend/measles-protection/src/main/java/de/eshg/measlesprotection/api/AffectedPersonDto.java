@@ -40,5 +40,6 @@ public record AffectedPersonDto(
     String title,
     RoleStatusDto roleStatus,
     @NotNull @Valid AddressDto address,
+    @Valid AddressDto differentBillingAddress,
     @Valid AffectedPersonSyncDto affectedPersonSync)
     implements PersonBaseDto {}

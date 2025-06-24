@@ -15,7 +15,6 @@ import {
   useCitizenNavigationItems as useMedicalRegistryCitizenNavigationItems,
   useOrganizationNavigationItems as useMedicalRegistryOrganizationNavigationItems,
 } from "@/lib/businessModules/medicalRegistry/shared/navigationItems";
-import { useCitizenNavigationItems as useMedsAbroadCitizenNavigationItems } from "@/lib/businessModules/medsAbroad/shared/navigationItems";
 import { useCitizenNavigationItems as useOfficialMedicalServcieNavigationItems } from "@/lib/businessModules/officialMedicalService/shared/navigationItems";
 import {
   useCitizenNavigationItems as useSchoolEntryCitizenNavigationItems,
@@ -41,8 +40,6 @@ export function useResolveCitizenNavigationItems(): NavigationItem[] {
   const navigationItems = useBaseCitizenNavigationItems();
   const stiProtectionCitizenNavigationItems =
     useStiProtectionCitizenNavigationItems();
-  const medsAbroadCitizenNavigationItems =
-    useMedsAbroadCitizenNavigationItems();
 
   if (hasBusinessModule(ApiBusinessModule.SchoolEntry)) {
     navigationItems.push(...schoolEntryCitizenNavigationItems);
@@ -58,9 +55,6 @@ export function useResolveCitizenNavigationItems(): NavigationItem[] {
   }
   if (hasBusinessModule(ApiBusinessModule.StiProtection)) {
     navigationItems.push(...stiProtectionCitizenNavigationItems);
-  }
-  if (hasBusinessModule(ApiBusinessModule.MedsAbroad)) {
-    navigationItems.push(...medsAbroadCitizenNavigationItems);
   }
 
   return navigationItems;

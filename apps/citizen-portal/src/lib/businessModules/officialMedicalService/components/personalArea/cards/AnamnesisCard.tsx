@@ -9,6 +9,7 @@ import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import {
+  FileSheetIndicator,
   HeaderGrid,
   IndicatorIcon,
 } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
@@ -51,7 +52,11 @@ export function AnamnesisCard({
       >
         <HeaderGrid>
           <IndicatorIcon
-            type={isAnamnesisAnswered ? "check" : "close"}
+            type={
+              isAnamnesisAnswered
+                ? FileSheetIndicator.Success
+                : FileSheetIndicator.Error
+            }
             sx={{ gridArea: "indicatorIcon" }}
           />
           <Box sx={{ gridArea: "label" }}>

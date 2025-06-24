@@ -14,6 +14,7 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   TRAVEL_MEDICINE: "Impfberatung",
   MEASLES_PROTECTION: "Masernschutz",
   MEDICAL_REGISTRY: "Medizinalaufsicht",
+  MEDS_ABROAD: "Reisen mit BtM",
   STI_PROTECTION: "HIV-STI Beratung",
   SEX_WORK: "Sexarbeit",
   OFFICIAL_MEDICAL_SERVICE: "Amtsärztliche Dienste",
@@ -45,5 +46,15 @@ export function getTabNamesByEndpointName(
       return "Barrierefreiheitserklärung";
     case "PRIVACY_POLICY_MARKDOWNS_CONFIG":
       return "Datenschutzerklärung Markdown";
+    case "PRIVACY_POLICY":
+      return "Datenschutzerklärung PDF";
+    case "APPOINTMENT_STANDARD_DURATION":
+      return "Standard-Termindauer";
+    case "OPEN_DATA":
+      return "Nutzungsbedingungen, Lizensierung und Autor";
+    case "LOGO_CONFIG":
+      return "Logo des Gesundheitsamts";
+    case "MEDS_ABROAD":
+      return "Reisen mit BtM";
   }
 }

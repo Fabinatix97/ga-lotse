@@ -34,7 +34,7 @@ import {
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
-  type: "",
+  types: [],
   parallelExaminations: 1,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   physicians: [],
@@ -44,7 +44,7 @@ function mapFormValues(
   values: CreateAppointmentBlockGroupValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
-    types: [mapRequiredValue(values.type)],
+    types: values.types,
     parallelExaminations: mapRequiredValue(values.parallelExaminations),
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
@@ -65,7 +65,7 @@ function mapAppointmentBlock(
 }
 
 export interface CreateAppointmentBlockGroupValues {
-  type: OptionalFieldValue<ApiAppointmentType>;
+  types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   physicians: string[];
@@ -81,10 +81,17 @@ export function CreateAppointmentBlockGroupForm() {
   const validateDailyAppointmentBlocksForGroup =
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
 
-  const [{ data: allPhysicians }, { data: allAppointmentTypes }] =
-    useSuspenseQueries({
-      queries: [useGetAllPhysiciansQuery(), useGetAllAppointmentTypesQuery()],
-    });
+  const [
+    { data: allPhysicians },
+    {
+      data: {
+        appointmentTypeConfigs: allAppointmentTypes,
+        allowedAppointmentTypeCombinations,
+      },
+    },
+  ] = useSuspenseQueries({
+    queries: [useGetAllPhysiciansQuery(), useGetAllAppointmentTypesQuery()],
+  });
 
   const initialValues = { ...INITIAL_VALUES, allAppointmentTypes };
   const [freeStaff, setFreeStaff] = useState<string[]>([]);
@@ -128,6 +135,7 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
+      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       allPhysicians={allPhysicians}
       allAppointmentTypes={allAppointmentTypes}
       validateAvailability={validateAvailability}

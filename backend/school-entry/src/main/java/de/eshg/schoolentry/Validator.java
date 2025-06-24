@@ -361,8 +361,8 @@ public class Validator {
   }
 
   public void validateUpdateDevelopmentScreeningResult(DevelopmentScreeningResultDto request) {
-    validateWeightIsNonNegative(request.measurements().weight());
-    validateHeightIsNonNegative(request.measurements().height());
+    validateWeight(request.measurements().weight());
+    validateHeight(request.measurements().height());
 
     validateExaminationResultConsistency(request.physicalExamination());
     validateHandicapConsistency(request.handicap());
@@ -378,15 +378,15 @@ public class Validator {
         .toList();
   }
 
-  static void validateWeightIsNonNegative(Double weight) {
-    if (weight != null && weight <= 0) {
-      throw new BadRequestException("Weight must be larger than 0.");
+  static void validateWeight(Double weight) {
+    if (weight != null && (weight <= 0 || weight >= 1000)) {
+      throw new BadRequestException("Weight must be larger than 0 and smaller than 1000.");
     }
   }
 
-  static void validateHeightIsNonNegative(Double height) {
-    if (height != null && height <= 0) {
-      throw new BadRequestException("Height must be larger than 0.");
+  static void validateHeight(Integer height) {
+    if (height != null && (height <= 0 || height >= 1000)) {
+      throw new BadRequestException("Height must be larger than 0 and smaller than 1000.");
     }
   }
 
@@ -445,20 +445,23 @@ public class Validator {
         .map(propertyGetter -> propertyGetter.get(physicalExaminationDto))
         .filter(Objects::nonNull)
         .map(ExaminationWithDiagnosisDto::icd10Codes)
-        .flatMap(Collection::stream);
+        .flatMap(Collection::stream)
+        .map(Icd10CodeWithOriginalCodeDto::code);
   }
 
   private static Stream<String> collectIcd10Codes(HandicapDto handicap) {
     return Stream.concat(
-        streamNullable(handicap.chronicDisease().icd10Codes()),
-        streamNullable(handicap.disability().icd10Codes()));
+        streamNullable(handicap.chronicDisease().icd10Codes())
+            .map(Icd10CodeWithOriginalCodeDto::code),
+        streamNullable(handicap.disability().icd10Codes()).map(Icd10CodeWithOriginalCodeDto::code));
   }
 
-  private static Stream<String> streamNullable(List<String> strings) {
-    if (strings == null) {
+  private static Stream<Icd10CodeWithOriginalCodeDto> streamNullable(
+      List<Icd10CodeWithOriginalCodeDto> icd10Codes) {
+    if (icd10Codes == null) {
       return Stream.empty();
     }
-    return strings.stream();
+    return icd10Codes.stream();
   }
 
   private void validateIcd10CodesExist(Collection<String> icd10Codes) {

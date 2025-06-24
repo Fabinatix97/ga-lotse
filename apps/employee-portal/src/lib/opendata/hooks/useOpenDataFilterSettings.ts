@@ -9,7 +9,7 @@ import {
   getFilterSelectedValue,
   getFilterSelectedValues,
   isInEnum,
-  useSearchParamFilterSettings,
+  useQueryParamFilterSettings,
 } from "@eshg/lib-employee-portal";
 import {
   ApiOpenDataFileType,
@@ -26,7 +26,7 @@ const FILTER_KEYS = {
 };
 
 export function useOpenDataFilterSettings() {
-  return useSearchParamFilterSettings({
+  return useQueryParamFilterSettings({
     definitions: [
       {
         type: "Year",

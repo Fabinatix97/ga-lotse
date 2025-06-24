@@ -15,7 +15,6 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
@@ -54,6 +53,7 @@ import de.eshg.officialmedicalservice.appointment.persistence.entity.Appointment
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment_;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
+import de.eshg.officialmedicalservice.config.OmsConfigService;
 import de.eshg.officialmedicalservice.document.OmsDocumentMapper;
 import de.eshg.officialmedicalservice.document.api.GetDocumentsResponse;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
@@ -139,7 +139,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -166,12 +165,9 @@ public class EmployeeOmsProcedureService {
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final OmsDocumentRepository omsDocumentRepository;
-  private final ObjectMapper objectMapper;
   private final AnamnesisMapper anamnesisMapper;
   private final TransactionHelper transactionHelper;
-
-  @Value("${de.eshg.official-medical-service.cutOffDate.leadTime}")
-  private int cutOffDateLeadTime;
+  private final OmsConfigService omsConfigService;
 
   public EmployeeOmsProcedureService(
       OmsProcedureRepository omsProcedureRepository,
@@ -190,9 +186,9 @@ public class EmployeeOmsProcedureService {
       ModuleClientAuthenticator moduleClientAuthenticator,
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
       OmsDocumentRepository omsDocumentRepository,
-      ObjectMapper objectMapper,
       AnamnesisMapper anamnesisMapper,
-      TransactionHelper transactionHelper) {
+      TransactionHelper transactionHelper,
+      OmsConfigService omsConfigService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
     this.omsAppointmentMapper = omsAppointmentMapper;
@@ -209,13 +205,13 @@ public class EmployeeOmsProcedureService {
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.omsDocumentRepository = omsDocumentRepository;
-    this.objectMapper = objectMapper;
     this.anamnesisMapper = anamnesisMapper;
     this.transactionHelper = transactionHelper;
+    this.omsConfigService = omsConfigService;
   }
 
   public int getCutOffDateLeadTime() {
-    return cutOffDateLeadTime;
+    return omsConfigService.getConfig().getMedicalOpinionCutOffDateLeadTime();
   }
 
   @Transactional

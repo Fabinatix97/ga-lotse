@@ -5,10 +5,10 @@
 
 "use client";
 
-import { ClientMarkdownPage } from "@/lib/baseModule/components/ClientMarkdownPage";
+import { MarkdownPage } from "@/lib/baseModule/components/MarkdownPage";
 import { useGetCitizenPortalMarkdown } from "@/lib/shared/api/queries/department";
 
 export default function ImprintPage() {
   const source = useGetCitizenPortalMarkdown("IMPRINT");
-  return <ClientMarkdownPage title="Impressum" source={source.data} />;
+  return <MarkdownPage title="Impressum" source={source.data} />;
 }

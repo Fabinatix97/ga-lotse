@@ -62,7 +62,7 @@
       "file": "File",
       "size": "Size",
       "format": "Format",
-      "delete": "Delete",
+      "delete": "Delete {{name}}",
       "deleteAll": "Delete all",
       "error": "File could not be uploaded. Please try again."
     }

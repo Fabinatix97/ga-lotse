@@ -1,0 +1,22 @@
+{
+  "name": "@eshg/pdf-converter-portal",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@eshg/lib-gs-wasm": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/compat": "catalog:eslint",
+    "@eslint/eslintrc": "catalog:eslint",
+    "@trivago/prettier-plugin-sort-imports": "catalog:prettier",
+    "eslint": "catalog:eslint",
+    "eslint-config-prettier": "catalog:eslint",
+    "eslint-plugin-import": "catalog:eslint",
+    "eslint-plugin-promise": "catalog:eslint",
+    "eslint-plugin-unused-imports": "catalog:eslint",
+    "prettier": "catalog:prettier",
+    "typescript": "catalog:common",
+    "vite": "catalog:vite"
+  }
+}

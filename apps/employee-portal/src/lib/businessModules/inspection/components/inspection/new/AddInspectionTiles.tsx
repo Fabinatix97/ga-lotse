@@ -10,12 +10,10 @@ import { Grid } from "@mui/joy";
 import { ApiUser } from "@eshg/base-api";
 import { ApiInspection, ApiObjectType } from "@eshg/inspection-api";
 
-import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { useEditFacilitySidebar } from "@/lib/businessModules/inspection/components/inspection/EditFacilitySidebar";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
 import { AdditionalInfoTile } from "@/lib/businessModules/inspection/components/inspection/new/AdditionalInfoTile";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 
 export function AddInspectionTiles({
   inspection,
@@ -28,22 +26,12 @@ export function AddInspectionTiles({
   allAssignableUsers: ApiUser[];
   selfUser: ApiUser;
 }>) {
-  const { mutateAsync: updateFacility } = useUpdateInspectionFacility();
   const editFacilitySidebar = useEditFacilitySidebar();
   const facility = inspection.facility;
 
-  async function saveFacility(facility: DefaultFacilityFormValues) {
-    await updateFacility({
-      procedureId: inspection.externalId,
-      inspectionFacilityId: inspection.facility.id,
-      facility,
-    });
-  }
-
   function openEdit() {
     editFacilitySidebar.open({
-      facility: inspection.facility.baseFacility,
-      onSave: saveFacility,
+      inspectionId: inspection.externalId,
     });
   }
 

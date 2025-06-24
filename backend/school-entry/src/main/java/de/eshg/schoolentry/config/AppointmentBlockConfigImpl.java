@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.config;
 
+import static de.eshg.schoolentry.config.SchoolEntryFeature.ALL_APPOINTMENT_TYPE_COMBINATIONS;
+
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
@@ -22,12 +24,15 @@ public class AppointmentBlockConfigImpl implements AppointmentBlockConfig {
 
   private final AppointmentBlockProperties appointmentBlockProperties;
   private final SchoolEntryConfigService schoolEntryConfigService;
+  private final SchoolEntryFeatureToggle featureToggle;
 
   public AppointmentBlockConfigImpl(
       AppointmentBlockProperties appointmentBlockProperties,
-      SchoolEntryConfigService schoolEntryConfigService) {
+      SchoolEntryConfigService schoolEntryConfigService,
+      SchoolEntryFeatureToggle featureToggle) {
     this.appointmentBlockProperties = appointmentBlockProperties;
     this.schoolEntryConfigService = schoolEntryConfigService;
+    this.featureToggle = featureToggle;
   }
 
   @Override
@@ -83,6 +88,36 @@ public class AppointmentBlockConfigImpl implements AppointmentBlockConfig {
 
   @Override
   public List<List<AppointmentType>> getAllowedAppointmentTypeCombinations() {
+    if (featureToggle.isNewFeatureEnabled(ALL_APPOINTMENT_TYPE_COMBINATIONS)) {
+      return List.of(
+          List.of(AppointmentType.REGULAR_EXAMINATION, AppointmentType.ENTRY_LEVEL),
+          List.of(AppointmentType.REGULAR_EXAMINATION, AppointmentType.CAN_CHILD),
+          List.of(AppointmentType.REGULAR_EXAMINATION, AppointmentType.SPECIAL_NEEDS),
+          List.of(AppointmentType.ENTRY_LEVEL, AppointmentType.CAN_CHILD),
+          List.of(AppointmentType.ENTRY_LEVEL, AppointmentType.SPECIAL_NEEDS),
+          List.of(AppointmentType.CAN_CHILD, AppointmentType.SPECIAL_NEEDS),
+          List.of(
+              AppointmentType.REGULAR_EXAMINATION,
+              AppointmentType.ENTRY_LEVEL,
+              AppointmentType.CAN_CHILD),
+          List.of(
+              AppointmentType.REGULAR_EXAMINATION,
+              AppointmentType.ENTRY_LEVEL,
+              AppointmentType.SPECIAL_NEEDS),
+          List.of(
+              AppointmentType.REGULAR_EXAMINATION,
+              AppointmentType.CAN_CHILD,
+              AppointmentType.SPECIAL_NEEDS),
+          List.of(
+              AppointmentType.ENTRY_LEVEL,
+              AppointmentType.CAN_CHILD,
+              AppointmentType.SPECIAL_NEEDS),
+          List.of(
+              AppointmentType.REGULAR_EXAMINATION,
+              AppointmentType.ENTRY_LEVEL,
+              AppointmentType.CAN_CHILD,
+              AppointmentType.SPECIAL_NEEDS));
+    }
     return appointmentBlockProperties.getAllowedAppointmentTypeCombinations();
   }
 

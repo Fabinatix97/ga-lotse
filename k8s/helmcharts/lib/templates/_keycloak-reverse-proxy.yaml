@@ -1,0 +1,118 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.keycloakReverseProxy" }}
+---
+
+{{ if .Values.keycloak.enabled }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak-reverse-proxy
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: keycloak-reverse-proxy-app
+  ports:
+    - port: 443
+      name: proxy-incoming
+      targetPort: proxy-incoming
+
+---
+{{ include "lib.certificate" (list .Values.keycloak.certificate.publicSecret .Values.domains.hosts.keycloak .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "ingress" (list "keycloak" .Values.ingress.type .Values.domains.hosts.keycloak "proxy-incoming" "keycloak-reverse-proxy" .Release.Namespace)}}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: keycloak-reverse-proxy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: keycloak-reverse-proxy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: keycloak-reverse-proxy-app
+  template:
+    metadata:
+      name: keycloak-reverse-proxy
+      labels:
+        app: keycloak-reverse-proxy-app
+      annotations:
+        checksum/config: {{ include "lib.keycloakReverseProxyConfig" . | sha256sum }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "keycloak") | indent 8 }}
+      containers:
+        - name: application
+          {{- include "getThirdPartyImage" .Values.thirdPartyImages.nginx | indent 10 }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 443
+          resources:
+          {{- toYaml (default dict .Values.keycloak.reverseProxyResources) | nindent 12 }}
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: proxy-incoming
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d/default.conf
+              name: config
+              subPath: keycloak.conf
+              readOnly: true
+            - mountPath: /etc/nginx/forward_headers.conf
+              name: config
+              subPath: forward_headers.conf
+              readOnly: true
+            - mountPath: /etc/nginx/nginx.conf
+              name: config
+              subPath: nginx.conf
+              readOnly: true
+            - mountPath: /var/cache/nginx
+              subPath: cache
+              name: nginx-runtime-data
+            - mountPath: /var/run
+              subPath: var-run
+              name: nginx-runtime-data
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.crt
+              subPath: tls.crt
+              readOnly: true
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.key
+              subPath: tls.key
+              readOnly: true
+            - name: config
+              mountPath: /etc/nginx/ssl/dhparam
+              subPath: dhparam
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: keycloak-reverse-proxy-config
+        - name: certs
+          secret:
+            secretName: {{ .Values.keycloak.certificate.publicSecret }}
+            defaultMode: 420
+        - name: nginx-runtime-data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+
+{{- end }}
+
+---
+{{- end }}

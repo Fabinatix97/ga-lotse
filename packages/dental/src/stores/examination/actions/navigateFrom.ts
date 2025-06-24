@@ -16,6 +16,7 @@ import {
 import { DEFAULT_FOCUS_ELEMENT } from "./focus";
 import {
   firstToothWithDiagnosisIndex,
+  isInUpperJaw,
   lastToothWithDiagnosisIndex,
   resolveTooth,
 } from "./utils";
@@ -44,11 +45,17 @@ export function navigateFrom(
     return { currentFocus };
   }
 
+  const inUpperJaw = isInUpperJaw(currentFocus.toothContext.quadrantNumber);
+
   switch (direction) {
     case "UP":
-      return navigateUp(currentFocus);
+      return inUpperJaw
+        ? navigateAwayFromToothButton(currentFocus, dentition)
+        : navigateTowardsToothButton(currentFocus);
     case "DOWN":
-      return navigateDown(currentFocus, dentition);
+      return inUpperJaw
+        ? navigateTowardsToothButton(currentFocus)
+        : navigateAwayFromToothButton(currentFocus, dentition);
     case "LEFT":
       return navigateLeft(currentFocus, dentition);
     case "RIGHT":
@@ -56,7 +63,9 @@ export function navigateFrom(
   }
 }
 
-function navigateUp(currentFocus: ElementContext): NavigateFromOutputState {
+function navigateTowardsToothButton(
+  currentFocus: ElementContext,
+): NavigateFromOutputState {
   const { element, toothContext } = currentFocus;
 
   switch (element) {
@@ -75,7 +84,7 @@ function navigateUp(currentFocus: ElementContext): NavigateFromOutputState {
   }
 }
 
-function navigateDown(
+function navigateAwayFromToothButton(
   currentFocus: ElementContext,
   dentition: Dentition,
 ): NavigateFromOutputState {

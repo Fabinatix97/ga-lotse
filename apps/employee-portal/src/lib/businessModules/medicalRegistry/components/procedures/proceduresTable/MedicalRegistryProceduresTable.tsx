@@ -195,7 +195,10 @@ export function MedicalRegistryProceduresTable() {
       }
       filterSettings={
         activePanel === "filters" && (
-          <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
+          <FilterSettingsSheet
+            {...filterSettings.filterSettingsSheetProps}
+            filterSettingsVisible
+          >
             <FilterSettings {...filterSettings.filterSettingsProps} />
           </FilterSettingsSheet>
         )

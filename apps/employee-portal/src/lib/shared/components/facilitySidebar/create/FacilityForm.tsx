@@ -86,6 +86,7 @@ interface FacilityFormProps {
 
   allowMainContactPerson?: boolean;
   showMeaslesFacilityType?: boolean;
+  submitting?: boolean;
 }
 
 export function FacilityForm(props: FacilityFormProps) {
@@ -187,7 +188,11 @@ export function FacilityForm(props: FacilityFormProps) {
           <SidebarActions>
             <MultiFormButtonBar
               submitLabel={props.submitLabel ?? "Anlegen"}
-              submitting={isSubmitting}
+              submitting={
+                isDefined(props.submitting)
+                  ? isSubmitting && props.submitting
+                  : isSubmitting
+              }
               onBack={
                 isDefined(props.onBack)
                   ? () => props.onBack!(values)

@@ -12,10 +12,15 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.HEARIN
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.SOPESS_EXAMINATION_MODIFIED;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.VACCINATION_STATUS_MODIFIED;
 
+import de.eshg.base.icd10.Icd10CodeApi;
+import de.eshg.base.icd10.api.FindIcd10CodesRequest;
+import de.eshg.base.icd10.api.Icd10CodeDto;
 import de.eshg.schoolentry.api.PercentilesDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.DevelopmentScreening;
+import de.eshg.schoolentry.domain.model.ExaminationWithDiagnosis;
 import de.eshg.schoolentry.domain.model.EyeExaminationResult;
+import de.eshg.schoolentry.domain.model.HandicapWithDiagnosis;
 import de.eshg.schoolentry.domain.model.HearingTestResult;
 import de.eshg.schoolentry.domain.model.SopessExaminationResult;
 import de.eshg.schoolentry.domain.model.VaccinationStatus;
@@ -29,8 +34,15 @@ import de.eshg.schoolentry.percentiles.PercentileCalculationService;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.validation.ValidationUtil;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -44,6 +56,7 @@ public class ExaminationResultService {
   private final AnamnesisRepository anamnesisRepository;
   private final PercentileCalculationService percentileCalculationService;
   private final ProgressEntryUtil progressEntryUtil;
+  private final Icd10CodeApi icd10CodeClient;
 
   public ExaminationResultService(
       HearingTestResultRepository hearingTestResultRepository,
@@ -53,7 +66,8 @@ public class ExaminationResultService {
       VaccinationStatusRepository vaccinationStatusRepository,
       AnamnesisRepository anamnesisRepository,
       PercentileCalculationService percentileCalculationService,
-      ProgressEntryUtil progressEntryUtil) {
+      ProgressEntryUtil progressEntryUtil,
+      Icd10CodeApi icd10CodeClient) {
     this.hearingTestResultRepository = hearingTestResultRepository;
     this.eyeExaminationResultRepository = eyeExaminationResultRepository;
     this.sopessExaminationResultRepository = sopessExaminationResultRepository;
@@ -62,6 +76,7 @@ public class ExaminationResultService {
     this.anamnesisRepository = anamnesisRepository;
     this.percentileCalculationService = percentileCalculationService;
     this.progressEntryUtil = progressEntryUtil;
+    this.icd10CodeClient = icd10CodeClient;
   }
 
   public HearingTestResult findHearingTestResultForUpdate(UUID procedureId, long version) {
@@ -429,5 +444,67 @@ public class ExaminationResultService {
     toAnamnesis.setCanSwim(fromAnamnesis.getCanSwim());
     toAnamnesis.setHasSeahorseBadge(fromAnamnesis.getHasSeahorseBadge());
     toAnamnesis.setPersonalConspicuities(fromAnamnesis.getPersonalConspicuities());
+  }
+
+  public Map<String, String> resolveIcd10Codes(DevelopmentScreening developmentScreeningResult) {
+    if (developmentScreeningResult == null) {
+      return Map.of();
+    }
+    Set<String> codes = new HashSet<>();
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getNutritionalCondition(),
+            ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getNeurology(), ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getRespiratoryCardiovascular(),
+            ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getSkin(), ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getMusculatureSkeleton(),
+            ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getMetabolism(), ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getAbdomen(), ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getEarNoseThroat(),
+            ExaminationWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getChronicDisease(), HandicapWithDiagnosis::getIcd10Codes));
+    codes.addAll(
+        getIcd10Codes(
+            developmentScreeningResult.getDisability(), HandicapWithDiagnosis::getIcd10Codes));
+
+    if (codes.isEmpty()) {
+      return Map.of();
+    }
+
+    return icd10CodeClient
+        .findAllIcd10Codes(new FindIcd10CodesRequest(codes.stream().toList()))
+        .existingCodes()
+        .stream()
+        .collect(
+            Collectors.toMap(
+                Icd10CodeDto::code, Icd10CodeDto::originalCode, (code1, code2) -> code1));
+  }
+
+  private static <T> List<String> getIcd10Codes(
+      T entityWithCodes, Function<T, List<String>> icd10CodesGetter) {
+    if (entityWithCodes == null) {
+      return Collections.emptyList();
+    } else {
+      return icd10CodesGetter.apply(entityWithCodes);
+    }
   }
 }

@@ -15,11 +15,7 @@ interface MultiStepFormButtonBarProps<Values> {
   cancelLabel: string;
   forwardLabel: string;
   backLabel: string;
-  backendValidation?: (
-    currentStep: number,
-    values: Values,
-    setFieldError: (field: string, message: string | undefined) => void,
-  ) => Promise<boolean>;
+  backendValidation?: (values: Values) => Promise<boolean>;
 }
 
 export function MultiStepFormButtonBar<Values>({
@@ -28,28 +24,22 @@ export function MultiStepFormButtonBar<Values>({
   cancelLabel,
   forwardLabel,
   backLabel,
-  backendValidation,
+  backendValidation = () => Promise.resolve(true),
 }: Readonly<MultiStepFormButtonBarProps<Values>>) {
   const { currentStep, totalSteps, goForward, goBack } = useMultiStepForm();
 
-  const {
-    handleSubmit,
-    validateForm,
-    setTouched,
-    touched,
-    values,
-    setFieldError,
-  } = useFormikContext<Values>();
+  const { handleSubmit, validateForm, setTouched, touched, values } =
+    useFormikContext<Values>();
 
   async function handleValidation(handleFunction: () => void) {
     const errors = await validateForm();
     await setTouched({ ...touched, ...errors });
 
-    if (
-      isEmpty(errors) &&
-      (!backendValidation ||
-        (await backendValidation(currentStep, values, setFieldError)))
-    ) {
+    // run backend validation even if local validation failed
+    //  to make it a bit easier for the user
+    const backendValidationSuccess = await backendValidation(values);
+
+    if (isEmpty(errors) && backendValidationSuccess) {
       handleFunction();
     }
   }

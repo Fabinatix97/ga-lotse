@@ -154,12 +154,12 @@ function FindingsSection() {
         direction="column"
         rowGap={1}
       >
-        {findings?.map(({ code, title }) => (
+        {findings?.map(({ code, originalCode, title }) => (
           <Stack key={code} direction="row" aria-label="icd-10-code">
             <Typography
               aria-label="icd-10-code-id"
               mr={1}
-            >{`${code}: `}</Typography>
+            >{`${originalCode}: `}</Typography>
             <Typography aria-label="icd-10-code-title">{title}</Typography>
           </Stack>
         ))}

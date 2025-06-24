@@ -5,6 +5,7 @@
 
 import {
   InfiniteData,
+  queryOptions,
   useInfiniteQuery,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ import {
   ApiGetOpenDocumentsResponse,
   ApiVersion,
   GetOpenDocuments1Request,
+  OpenDataPublicCitizenApi,
 } from "@eshg/opendata-api";
 
 import { useOpenDataPublicCitizenApi } from "@/lib/businessModules/opendata/api/clients";
@@ -64,4 +66,16 @@ export function mapToOpenDataOverview(
     totalElements: data.pages[0]?.totalElements ?? 0,
     totalPages: data.pages[0]?.totalPages ?? 0,
   } satisfies GetOpenDataOverviewResponse;
+}
+
+export function useGetTermsOfUse() {
+  const openDataApi = useOpenDataPublicCitizenApi();
+  return useSuspenseQuery(getTermsOfUseQuery(openDataApi));
+}
+
+function getTermsOfUseQuery(openDataApi: OpenDataPublicCitizenApi) {
+  return queryOptions({
+    queryKey: publicCitizenApiQueryKey(["getTermsOfUse"]),
+    queryFn: () => openDataApi.getTermsOfUse(),
+  });
 }

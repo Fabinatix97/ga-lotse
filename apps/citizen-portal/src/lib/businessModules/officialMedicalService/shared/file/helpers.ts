@@ -13,12 +13,16 @@ export function toArray<T>(value: T | T[] | undefined): T[] {
   return value === undefined ? [] : Array.isArray(value) ? value : [value];
 }
 
-export function fileToFileDescriptor(file: File): FileDescriptor {
+export function fileToFileDescriptor(
+  file: File,
+  helperText?: string,
+): FileDescriptor {
   return {
     name: file.name,
     size: file.size,
     fileType: mimeTypeToTypeName(file.type),
     creationDate: new Date(file.lastModified),
+    helperText,
   };
 }
 

@@ -1,0 +1,252 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.employeePortalAuth" }}
+---
+
+{{ if .Values.employeeportal.enabled -}}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+{{- $selfManagedCacheHost := printf "employee-portal-auth-cache%s" .Values.domains.clusterLocalSuffix }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: employee-portal-auth
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: employee-portal-auth-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: employee-portal-auth
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: employee-portal-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: employee-portal-auth-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: employee-portal-auth
+      labels:
+        app: employee-portal-auth-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      dnsPolicy: None
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: redis-certs
+          secret:
+            secretName: employeeportalauth-redis
+            defaultMode: 400
+            items:
+              - key: ca.crt
+                path: ca.crt
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: employee-portal-auth-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: employee-portal-auth-spatz-debuglogs
+        {{- end }}
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
+      {{ if .Values.employeeportalauth.cache.selfmanaged -}}
+      {{- include "waitForDeployment" (list .Values "employee-portal-auth-cache") | indent 8 }}
+      {{- end }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/auth:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          resources:
+          {{- toYaml (default dict .Values.employeeportalauth.resources) | nindent 12 }}
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+            - name: spring.profiles.include
+              value: employee-portal
+            - name: server.servlet.session.cookie.name
+              value: __Host-SESSION
+            - name: eshg.keycloak.url
+              value: "https://{{ .Values.domains.hosts.keycloak}}"
+            - name: eshg.keycloak.internal.url
+              value: "https://{{ .Values.domains.hosts.keycloakInternal}}"
+            {{ if .Values.synapse.enabled -}}
+            - name: eshg.synapse.internal.url
+              value: "http://synapse{{ .Values.domains.clusterLocalSuffix }}"
+            {{- end }}
+            - name: eshg.reverse-proxy.url
+              value: https://{{ .Values.domains.hosts.employeeportal }}
+            - name: spring.data.redis.host
+              valueFrom:
+                secretKeyRef:
+                  name: employeeportalauth-redis
+                  key: REDIS_HOST
+            - name: spring.data.redis.password
+              valueFrom:
+                secretKeyRef:
+                  name: employeeportalauth-redis
+                  key: REDIS_PASSWORD
+            {{ if not .Values.employeeportalauth.cache.selfmanaged -}}
+            - name: spring.data.redis.ssl.enabled
+              value: "true"
+            - name: spring.data.redis.ssl.bundle
+              value: "redis"
+            - name: spring.ssl.bundle.pem.redis.truststore.certificate
+              value: /var/run/redis-certs/ca.crt
+            {{- end }}
+            - name: spring.security.oauth2.client.registration.keycloak.client-secret
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: employee-auth-client-secret
+            {{- if .Values.employeeportalauth.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.employeeportalauth.javaToolOptions }}"
+            {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /opt/java/openjdk/lib/security/cacerts
+              subPath: cacerts
+            {{- end }}
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            {{- if not .Values.employeeportalauth.cache.selfmanaged }}
+            - mountPath: /var/run/redis-certs
+              name: redis-certs
+              readOnly: true
+            {{- end }}
+
+    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.employeeportalauth "k" "employeeportalauth" "actorType" "WEB" "relay" false "createDebugLogMount" $createDebugLogMount) }}
+
+
+{{ if .Values.employeeportalauth.cache.selfmanaged -}}
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: employee-portal-auth-cache
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: employee-portal-auth-cache-app
+  ports:
+    - port: 6379
+      targetPort: 6379
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: employee-portal-auth-cache
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: employee-portal-auth-cache
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: employee-portal-auth-cache-app
+  template:
+    metadata:
+      name: employee-portal-auth-cache
+      labels:
+        app: employee-portal-auth-cache-app
+    spec:
+      automountServiceAccountToken: false
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      securityContext: {{- omit .Values.podSecurityContext "sysctls" | toYaml | nindent 8 }}
+      containers:
+        - name: employee-portal-auth-cache
+          {{- include "getThirdPartyImage" .Values.thirdPartyImages.redis | indent 10 }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          command: [ "redis-server" ]
+          args: [ "--requirepass", "$(REDIS_PASSWORD)", "--maxmemory-policy",  "allkeys-lru", "--maxmemory", "{{ default "5M" .Values.employeeportalauth.cache.maxmemory }}" ]
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: employeeportalauth-redis
+                  key: REDIS_PASSWORD
+          resources:
+            {{- toYaml (default dict .Values.employeeportalauth.cache.resources) | nindent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - /usr/bin/sh
+                - -c
+                - /usr/local/bin/redis-cli -a $REDIS_PASSWORD ping
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          emptyDir: {}
+
+---
+
+kind: Secret
+apiVersion: v1
+data:
+  REDIS_HOST: {{ $selfManagedCacheHost | b64enc }}
+  REDIS_PASSWORD: {{ include "getOrCreateSecretValue" (list $ "employeeportalauth-redis" "REDIS_PASSWORD") }}
+metadata:
+  name: employeeportalauth-redis
+type: Opaque
+
+{{- else }}
+  {{ include "lib.redis" (list "employeeportalauth" $) }}
+{{- end }}
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "employee-portal-auth" .Values.employeeportalauth.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list "employee-portal-auth-spatz" .Values.employeeportalauth.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+{{- end }}

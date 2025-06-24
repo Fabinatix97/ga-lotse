@@ -21,6 +21,7 @@ public final class TravelMedicinePublicSecurityConfig extends AbstractPublicSecu
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN, ModuleLeaderRole.TRAVEL_MEDICINE_LEADER);
     grantAccessToConfiguration();
+    grantAccessToStatistics(EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN);
 
     requestMatchers(
             BaseUrls.TravelMedicine.CITIZEN_PUBLIC_CONTROLLER + "/**",

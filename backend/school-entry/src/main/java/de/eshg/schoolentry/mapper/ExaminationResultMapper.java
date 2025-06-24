@@ -7,9 +7,11 @@ package de.eshg.schoolentry.mapper;
 
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.domain.model.*;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class ExaminationResultMapper {
 
@@ -653,8 +655,17 @@ public final class ExaminationResultMapper {
     ExaminationWithDiagnosis examinationWithDiagnosis = new ExaminationWithDiagnosis();
     examinationWithDiagnosis.setResult(
         mapToDomain(examinationWithDiagnosisDto.examinationResult()));
-    examinationWithDiagnosis.setIcd10Codes(examinationWithDiagnosisDto.icd10Codes());
+    examinationWithDiagnosis.setIcd10Codes(
+        mapIcd10CodesToDomain(examinationWithDiagnosisDto.icd10Codes()));
     return examinationWithDiagnosis;
+  }
+
+  private static List<String> mapIcd10CodesToDomain(
+      List<Icd10CodeWithOriginalCodeDto> icd10CodeWithOriginalCodeList) {
+    if (icd10CodeWithOriginalCodeList == null) {
+      return Collections.emptyList();
+    }
+    return icd10CodeWithOriginalCodeList.stream().map(Icd10CodeWithOriginalCodeDto::code).toList();
   }
 
   private static HandicapWithDiagnosis mapToDomain(HandicapWithDiagnosisDto dto) {
@@ -663,7 +674,7 @@ public final class ExaminationResultMapper {
     }
     HandicapWithDiagnosis handicapWithDiagnosis = new HandicapWithDiagnosis();
     handicapWithDiagnosis.setResult(dto.result());
-    handicapWithDiagnosis.setIcd10Codes(dto.icd10Codes());
+    handicapWithDiagnosis.setIcd10Codes(mapIcd10CodesToDomain(dto.icd10Codes()));
     return handicapWithDiagnosis;
   }
 
@@ -697,14 +708,21 @@ public final class ExaminationResultMapper {
     };
   }
 
-  private static List<String> mapIcd10CodeListToDto(List<String> codes) {
+  private static List<Icd10CodeWithOriginalCodeDto> mapIcd10CodeListToDto(
+      List<String> codes, Map<String, String> icd10CodeToOriginalCode) {
     if (codes == null || codes.isEmpty()) {
       return List.of();
     }
-    return codes;
+    return codes.stream()
+        .map(
+            code ->
+                new Icd10CodeWithOriginalCodeDto(
+                    code, icd10CodeToOriginalCode.getOrDefault(code, code)))
+        .collect(Collectors.toList());
   }
 
-  public static GetDevelopmentScreeningResultDto mapToDto(DevelopmentScreening examinationResult) {
+  public static GetDevelopmentScreeningResultDto mapToDto(
+      DevelopmentScreening examinationResult, Map<String, String> icd10CodeToOriginalCode) {
     if (examinationResult == null) {
       return null;
     }
@@ -721,18 +739,18 @@ public final class ExaminationResultMapper {
             examinationResult.getBmi(),
             examinationResult.getBmiPercentile()),
         new PhysicalExaminationDto(
-            mapToDto(examinationResult.getNutritionalCondition()),
-            mapToDto(examinationResult.getNeurology()),
-            mapToDto(examinationResult.getRespiratoryCardiovascular()),
-            mapToDto(examinationResult.getSkin()),
-            mapToDto(examinationResult.getMusculatureSkeleton()),
-            mapToDto(examinationResult.getMetabolism()),
-            mapToDto(examinationResult.getAbdomen()),
-            mapToDto(examinationResult.getEarNoseThroat()),
+            mapToDto(examinationResult.getNutritionalCondition(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getNeurology(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getRespiratoryCardiovascular(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getSkin(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getMusculatureSkeleton(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getMetabolism(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getAbdomen(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getEarNoseThroat(), icd10CodeToOriginalCode),
             examinationResult.getPhysicalExaminationNote()),
         new HandicapDto(
-            mapToDto(examinationResult.getChronicDisease()),
-            mapToDto(examinationResult.getDisability()),
+            mapToDto(examinationResult.getChronicDisease(), icd10CodeToOriginalCode),
+            mapToDto(examinationResult.getDisability(), icd10CodeToOriginalCode),
             mapToDto(examinationResult.getDisabilityType()),
             examinationResult.getHandicapNote()),
         new PsychoSocialRiskDto(
@@ -758,22 +776,24 @@ public final class ExaminationResultMapper {
   }
 
   private static ExaminationWithDiagnosisDto mapToDto(
-      ExaminationWithDiagnosis examinationWithDiagnosis) {
+      ExaminationWithDiagnosis examinationWithDiagnosis,
+      Map<String, String> icd10CodeToOriginalCode) {
     if (examinationWithDiagnosis == null) {
       return null;
     }
     return new ExaminationWithDiagnosisDto(
         mapToDto(examinationWithDiagnosis.getResult()),
-        mapIcd10CodeListToDto(examinationWithDiagnosis.getIcd10Codes()));
+        mapIcd10CodeListToDto(examinationWithDiagnosis.getIcd10Codes(), icd10CodeToOriginalCode));
   }
 
-  private static HandicapWithDiagnosisDto mapToDto(HandicapWithDiagnosis handicapWithDiagnosis) {
+  private static HandicapWithDiagnosisDto mapToDto(
+      HandicapWithDiagnosis handicapWithDiagnosis, Map<String, String> icd10CodeToOriginalCode) {
     if (handicapWithDiagnosis == null) {
       return null;
     }
     return new HandicapWithDiagnosisDto(
         handicapWithDiagnosis.getResult(),
-        mapIcd10CodeListToDto(handicapWithDiagnosis.getIcd10Codes()));
+        mapIcd10CodeListToDto(handicapWithDiagnosis.getIcd10Codes(), icd10CodeToOriginalCode));
   }
 
   private static DisabilityTypeDto mapToDto(DisabilityType disabilityType) {

@@ -8,9 +8,9 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 
 import { BaseModal, BaseModalPropsRequiredClose } from "@eshg/lib-portal";
 
+import { TermsOfUse } from "@/lib/businessModules/chat/components/TermsOfUse";
 import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
-import { termsOfUseText } from "@/lib/businessModules/chat/shared/termsOfUseText";
 
 type ChatConsentModalProps = Omit<
   BaseModalPropsRequiredClose,
@@ -50,21 +50,14 @@ export function ChatConsentModal(props: ChatConsentModalProps) {
   return (
     <BaseModal
       key="chat-consent-modal"
-      modalTitle="Hier koennten Ihre Nutzungsbedingungen stehen."
+      modalTitle="Nutzungsbedingungen Chatmodul"
       {...props}
       data-testid="chat-consent-modal"
       onClose={handleCloseClick}
     >
       <Stack direction="column" alignItems="center" spacing={2} marginTop={2}>
-        <Box>
-          <Typography
-            level="body-sm"
-            marginBottom={3}
-            overflow="auto"
-            maxHeight="50dvh"
-          >
-            {termsOfUseText}
-          </Typography>
+        <Box marginBottom={3} overflow="auto" maxHeight="50dvh">
+          <TermsOfUse />
         </Box>
         <Stack
           direction={{ xxs: "column", sm: "row" }}

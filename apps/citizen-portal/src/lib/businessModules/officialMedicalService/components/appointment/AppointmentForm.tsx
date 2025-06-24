@@ -4,19 +4,17 @@
  */
 
 import { EventAvailableOutlined } from "@mui/icons-material";
-import { useQueryClient } from "@tanstack/react-query";
-import { Formik } from "formik";
+import { Formik, FormikHelpers, FormikProps, useFormikContext } from "formik";
+import { FunctionComponent, PropsWithChildren } from "react";
+import { when } from "remeda";
 
 import {
   FormPlus,
   MultiStepForm,
   OptionalFieldValue,
   StepFactory,
-  getCloseable,
-  getErrorAction,
-  getErrorDescription,
-  resolveError,
-  useAlert,
+  isNonEmptyString,
+  useMultiStepForm,
 } from "@eshg/lib-portal";
 import {
   ApiAppointment,
@@ -24,12 +22,11 @@ import {
   ApiConcern,
   ApiSalutation,
   ApiTitle,
-  PostCitizenProcedureRequest,
 } from "@eshg/official-medical-service-api";
 
-import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
+import { useHandleConcurrentAppointment } from "@/lib/businessModules/officialMedicalService/api/helpers";
 import { usePostCitizenProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenPublicApi";
-import { validateFiles } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
+import { useBackendFileValidation } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { AppointmentFormSidePanel } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentFormSidePanel";
 import { AppointmentStepWrapper } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentStepWrapper";
 import { ConcernStep } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConcernStep";
@@ -77,12 +74,19 @@ export interface AppointmentFormValues {
   confirmPrivacyPolicy: boolean;
 }
 
-const STEPS: StepFactory<AppointmentFormValues>[] = [
+const AppointmentStepFactory: StepFactory<AppointmentFormValues>[] = [
   () => <ConcernStep />,
   AppointmentStepWrapper,
   DocumentAndPersonalDataStep,
   SummaryStep,
 ];
+
+const AppointmentStep = {
+  Concern: 1,
+  Appointment: 2,
+  DocumentAndPersonalData: 3,
+  Summary: 4,
+} as const;
 
 const INITIAL_VALUES: AppointmentFormValues = {
   concern: {
@@ -121,85 +125,11 @@ const INITIAL_VALUES: AppointmentFormValues = {
 
 export function AppointmentForm() {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
-  const citizenRoutes = useCitizenRoutes();
-  const postCitizenProcedure = usePostCitizenProcedure();
-  const citizenPublicApi = useCitizenPublicApi();
-  const queryClient = useQueryClient();
-  const alert = useAlert();
-  const errorMessageMapping = useMapToFrontendErrorMessage();
-
-  async function handleSubmit(
-    values: AppointmentFormValues,
-    setStep: (index: number) => void,
-  ) {
-    const request: PostCitizenProcedureRequest =
-      mapToPostCitizenProcedureRequest(values);
-
-    await postCitizenProcedure.mutateAsync(request, {
-      onError: (error) => {
-        if (
-          error instanceof Error &&
-          error.message.startsWith("The requested time slot does not")
-        ) {
-          alert.error({
-            message: t("common.errors.concurrentAppointment", {
-              context: "errorMessage",
-            }),
-            action: {
-              text: t("common.errors.concurrentAppointment", {
-                context: "action",
-              }),
-              onClick: () => setStep(STEPS.indexOf(AppointmentStepWrapper) + 1),
-            },
-          });
-        } else {
-          const { errorCode } = resolveError(error);
-          const { title, message } = getErrorDescription(errorCode);
-
-          alert.error({
-            title,
-            message,
-            action: getErrorAction(errorCode),
-            closeable: getCloseable(errorCode),
-          });
-        }
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      },
-    });
-  }
-
-  async function backendValidation(
-    currentStep: number,
-    values: AppointmentFormValues,
-    setFieldError: (field: string, message: string | undefined) => void,
-  ) {
-    if (currentStep === STEPS.indexOf(DocumentAndPersonalDataStep) + 1) {
-      const serverValidationResponse = await validateFiles(
-        citizenPublicApi,
-        queryClient,
-        values.files as Blob[],
-      );
-      if (serverValidationResponse.errorMessages.some((s) => s)) {
-        let fieldError = "\n";
-        for (const errorMessage of serverValidationResponse.errorMessages) {
-          if (errorMessage) {
-            fieldError += errorMessageMapping(errorMessage) + "\n";
-          } else {
-            fieldError += "\n";
-          }
-        }
-        setFieldError("files", fieldError);
-
-        return false;
-      }
-    }
-    return true;
-  }
 
   return (
     <DepartmentContextProvider>
-      <MultiStepForm<AppointmentFormValues> steps={STEPS}>
-        {({ Outlet, currentStep, totalSteps, setStep, titleRef }) => (
+      <MultiStepForm<AppointmentFormValues> steps={AppointmentStepFactory}>
+        {({ Outlet, titleRef, currentStep, totalSteps }) => (
           <>
             <MultiStepFormTitle
               titleRef={titleRef}
@@ -210,45 +140,117 @@ export function AppointmentForm() {
               })}
               withLogoutButton={false}
             />
-            {postCitizenProcedure.isSuccess ? (
-              <FormSuccessSheet
-                icon={EventAvailableOutlined}
-                title={t("success.title")}
-                description={t("success.description")}
-                buttonLabel={t("success.buttonLabel")}
-                buttonHref={citizenRoutes.overview}
-              />
-            ) : (
-              <Formik
-                initialValues={INITIAL_VALUES}
-                validate={() => {
-                  // validate gets triggered on blur, so we use it to clear our error alert
-                  alert.close();
-                }}
-                onSubmit={(values) => handleSubmit(values, setStep)}
-              >
-                {(formikProps) => (
-                  <FormPlus>
-                    {currentStep !==
-                    STEPS.indexOf(AppointmentStepWrapper) + 1 ? (
-                      <TwoColumnGrid
-                        content={<Outlet {...formikProps} />}
-                        sidePanel={
-                          <AppointmentFormSidePanel
-                            backendValidation={backendValidation}
-                          />
-                        }
-                      />
-                    ) : (
-                      <AppointmentStepWrapper />
-                    )}
-                  </FormPlus>
-                )}
-              </Formik>
-            )}
+            <StepperInner Outlet={Outlet} />
           </>
         )}
       </MultiStepForm>
     </DepartmentContextProvider>
+  );
+}
+
+function StepperInner({
+  Outlet,
+}: Readonly<{
+  Outlet: FunctionComponent<FormikProps<AppointmentFormValues>>;
+}>) {
+  const { t } = useTranslation(["officialMedicalService/appointment"]);
+  const { setStep } = useMultiStepForm();
+  const citizenRoutes = useCitizenRoutes();
+  const postCitizenProcedure = usePostCitizenProcedure();
+  const handleConcurrentAppointments = useHandleConcurrentAppointment();
+
+  async function handleSubmit(
+    values: AppointmentFormValues,
+    helpers: FormikHelpers<AppointmentFormValues>,
+  ) {
+    const request = mapToPostCitizenProcedureRequest(values);
+
+    await postCitizenProcedure.mutateAsync(request, {
+      onError: handleConcurrentAppointments({
+        message: t("common.errors.concurrentAppointment", {
+          context: "errorMessage",
+        }),
+        action: {
+          text: t("common.errors.concurrentAppointment", {
+            context: "action",
+          }),
+          onClick: () => {
+            setStep(AppointmentStep.Appointment);
+            void helpers.setFieldValue("appointment", undefined);
+          },
+        },
+      }),
+    });
+  }
+
+  if (postCitizenProcedure.isSuccess) {
+    return (
+      <FormSuccessSheet
+        icon={EventAvailableOutlined}
+        title={t("success.title")}
+        description={t("success.description")}
+        buttonLabel={t("success.buttonLabel")}
+        buttonHref={citizenRoutes.overview}
+      />
+    );
+  }
+
+  return (
+    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+      {(formikProps) => (
+        <FormPlus>
+          <FormInner>
+            <Outlet {...formikProps} />
+          </FormInner>
+        </FormPlus>
+      )}
+    </Formik>
+  );
+}
+
+function FormInner({ children }: Readonly<PropsWithChildren>) {
+  const { currentStep } = useMultiStepForm();
+  const { setFieldError } = useFormikContext<AppointmentFormValues>();
+  const validateFiles = useBackendFileValidation();
+  const mapErrorMessage = useMapToFrontendErrorMessage();
+
+  // The Appointment Step does its own TwoColumnGrid because it displays
+  //  a fullscreen warning when no appointments are available
+  if (currentStep === AppointmentStep.Appointment) {
+    return children;
+  }
+
+  async function backendValidation(values: AppointmentFormValues) {
+    if (currentStep !== AppointmentStep.DocumentAndPersonalData) {
+      return true;
+    }
+
+    const { errorMessages } = await validateFiles(values.files);
+
+    if (!errorMessages.some(isNonEmptyString)) {
+      return true;
+    }
+
+    errorMessages
+      .map(
+        when(isNonEmptyString, {
+          onTrue: mapErrorMessage,
+          onFalse: () => undefined,
+        }),
+      )
+      .forEach((message, index) => {
+        setFieldError(`files[${index}]`, message);
+      });
+
+    return false;
+  }
+
+  return (
+    <TwoColumnGrid
+      content={children}
+      sidePanel={
+        <AppointmentFormSidePanel backendValidation={backendValidation} />
+      }
+    />
   );
 }

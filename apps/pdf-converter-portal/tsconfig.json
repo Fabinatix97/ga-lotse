@@ -1,0 +1,16 @@
+{
+  "extends": "../../config/tsconfig.next.json",
+  "compilerOptions": {
+    "outDir": "./build/dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "vite.config.ts",
+    "eslint.config.js",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

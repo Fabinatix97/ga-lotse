@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
 import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
@@ -142,6 +143,15 @@ function PrivacyNoticeConfiguratorForm(props: {
       sheets={[
         {
           title: "Allgemeine Datenschutzhinweise",
+          description: (
+            <Typography level="body-md">
+              {"Laden Sie die Datenschutzhinweise(PDF) hoch, die "}
+              <Typography level="title-md">
+                Bürger:innen im Online Portal
+              </Typography>
+              {" herunterladen können."}
+            </Typography>
+          ),
           sections,
         },
       ]}

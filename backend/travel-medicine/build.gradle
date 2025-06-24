@@ -13,6 +13,7 @@ dependencies {
     implementation project(':lib-document-generator')
     implementation project(':rest-oauth-client-commons')
     implementation project(':file-commons')
+    implementation project(":lib-statistics")
 
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
 
@@ -26,6 +27,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-auditlog'))
     testImplementation testFixtures(project(':lib-appointmentblock'))
+    testImplementation testFixtures(project(':lib-statistics'))
 }
 
 dockerCompose {

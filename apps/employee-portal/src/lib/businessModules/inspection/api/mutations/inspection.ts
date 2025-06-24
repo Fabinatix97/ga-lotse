@@ -110,12 +110,14 @@ export function useSyncFacility() {
       procedureId: string;
       facilityVersion: number;
     }) =>
-      inspectionApi.syncInspectionFacilityFileStateRaw({
-        id: procedureId,
-        apiInspectionSyncFileStateRequest: {
-          facilityVersion,
-        },
-      }),
+      inspectionApi
+        .syncInspectionFacilityFileStateRaw({
+          id: procedureId,
+          apiInspectionSyncFileStateRequest: {
+            facilityVersion,
+          },
+        })
+        .then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Einrichtung erfolgreich synchronisiert.");
     },

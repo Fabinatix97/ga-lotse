@@ -25,6 +25,7 @@ export interface NumberFieldProps
   min?: number;
   max?: number;
   endDecorator?: ReactNode;
+  startDecorator?: ReactNode;
   readOnly?: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -72,6 +73,7 @@ export function NumberField(props: NumberFieldProps) {
         color={props.primary ? "primary" : undefined}
         disabled={disabled}
         readOnly={props.readOnly}
+        startDecorator={props.startDecorator}
         endDecorator={props.endDecorator}
         placeholder={props.placeholder}
         aria-labelledby={props["aria-labelledby"]}

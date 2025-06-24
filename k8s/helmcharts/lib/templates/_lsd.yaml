@@ -1,0 +1,278 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.lsd" }}
+---
+
+{{ if .Values.lsd.enabled }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: lsd
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: lsd-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+      name: spatz-incoming
+
+---
+
+{{- if .Values.lsd.import }}
+
+kind: Secret
+apiVersion: v1
+metadata:
+  name: lsd-import
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  import.json: {{ include "genLsdImport" . | b64enc }}
+
+{{- end }}
+
+---
+
+{{ include "ingress" (list "lsd" .Values.ingress.type .Values.domains.hosts.lsd "spatz-incoming" "lsd" .Release.Namespace)}}
+{{ include "lib.certificate" (list .Values.lsd.certificate.secret .Values.domains.hosts.lsd .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: lsd
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: lsd
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: lsd-app
+  template:
+    metadata:
+      name: lsd
+      labels:
+        app: lsd-app
+      annotations:
+        {{ if .Values.lsd.import }}
+        checksum/config: {{ include "genLsdImport" . | sha256sum }}
+        {{ end }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.lsd.certificate.secret }}"
+            defaultMode: 420
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: lsd-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: lsd-spatz-debuglogs
+        {{- end }}
+      {{- if .Values.lsd.import }}
+        - name: import-data
+          secret:
+            secretName: lsd-import
+            defaultMode: 420
+      {{- end }}
+      dnsPolicy: None
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "keycloak") | indent 8 }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/local-service-directory:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- if .Values.springBootLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.springBootReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+          {{- toYaml (default dict .Values.lsd.resources) | nindent 12 }}
+          env:
+            - name: SERVER_ADDRESS
+              value: 127.0.0.1
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+            - name: SPRING_SSL_BUNDLE_PEM_LSD_TRUSTSTORE_LOCATION
+              value: /var/run/certs/tls.crt
+            - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_CERTIFICATE
+              value: /var/run/certs/tls.crt
+            - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_PRIVATEKEY
+              value: /var/run/certs/tls.key
+            - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
+              value: "https://{{ .Values.domains.hosts.keycloak }}/realms/eshg-lsd"
+            - name: ESHG_LSD_MAXCERTIFICATESPERACTOR
+              value: "{{ mul 2 .Values.replicas.maximum }}"
+            - name: ESHG_KEYCLOAK_URL
+              value: "https://{{ .Values.domains.hosts.keycloak }}"
+            - name: ESHG_KEYCLOAK_INTERNAL_URL
+              value: "https://{{ .Values.domains.hosts.keycloakInternal }}"
+            - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINUSER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-admin
+                  key: password
+            - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINCLIENT_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-admin
+                  key: lsd-admin-client-secret
+            - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTID
+              value: eshg-actor
+            - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: lsd-client-secret
+            - name: ESHG_LSD_ORGUNIT_NAME
+              value: "{{ .Values.domains.lsdOrgUnit }}"
+            - name: ESHG_SERVICEDIRECTORY_BASEURL
+              value: "http://{{ .Values.domains.centralservices.servicedirectory }}"
+            {{- if .Values.lsd.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.lsd.javaToolOptions }}"
+            {{- end }}
+            {{- if .Values.lsd.import }}
+            - name: ESHG_LSD_KEYCLOAK_IMPORTFILE
+              value: /var/run/import-data/import.json
+            {{- end }}
+            - name: management.server.port
+              value: "8081"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /opt/java/openjdk/lib/security/cacerts
+              subPath: cacerts
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            {{- if .Values.lsd.import }}
+            - name: import-data
+              mountPath: /var/run/import-data
+              readOnly: true
+            {{- end }}
+        - name: spatz
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /wait-for-containerstart.sh
+          resources:
+          {{- toYaml (default dict .Values.spatz.resources) | nindent 12 }}
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" (.Values.spring.profiles.active) }}"
+            - name: spring.ssl.bundle.pem.certificatevalidation.truststore.certificate
+              value: /var/run/certs/tls.crt
+            - name: eshg.spatz.inbound.force-client-auth
+              value: 'false'
+            - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_RELAY_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+              value: /var/run/certs/tls.crt
+            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+              value: /var/run/certs/tls.key
+            - name: ESHG_SERVICEDIRECTORY_BASEURL
+              value: "http://{{ .Values.domains.centralservices.servicedirectory }}"
+            - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+              value: "443"
+            - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+              value: "443"
+            - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+              value: "{{ .Values.dns.upstream }}"
+            - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+              value: "{{ .Values.domains.centralservices.servicedirectory }}"
+            - name: ESHG_SPATZ_DNS_STATICHOSTS_1
+              value: "{{ .Values.domains.hosts.lsd }}"
+            {{- if .Values.spatz.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.spatz.javaToolOptions }}"
+            {{- end }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+              value: "{{ .Values.domains.hosts.keycloakInternal }}"
+            {{- range $i, $allowListEntry := .Values.lsd.dns.allowList }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_{{ add $i 1 }}
+              value: "{{ $allowListEntry }}"
+            {{- end }}
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: spatz-incoming
+          volumeMounts:
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /opt/java/openjdk/lib/security/cacerts
+              subPath: cacerts
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
+            {{- if eq "true" $createDebugLogMount }}
+            - name: spatzdebuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+          image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}/spatz:{{ .Values.image.tag }}'
+          {{- if .Values.spatzLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.spatzLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.spatzReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.spatzReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+
+---
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "lsd" .Values.lsd.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list "lsd-spatz" .Values.lsd.debuglog $) }}
+{{- end }}
+
+{{ end }}
+
+---
+
+{{- end }}

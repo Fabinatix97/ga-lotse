@@ -53,7 +53,7 @@ public final class ExaminationMapper {
         DentitionTypeMapper.mapToDto(prophylaxisSession.getDentitionType()),
         prophylaxisSession.hasFluoridationVarnish(),
         examination.getChild().isFluoridationConsentCurrentlyGivenOptionally(),
-        examination.getNote(),
+        examination.getChild().getNote(),
         mapToDto(examination.getResult()));
   }
 

@@ -26,6 +26,8 @@ export interface SingleAutocompleteFieldProps
 export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
   const { field, fieldProps, autocompleteProps } =
     useAutocompleteFieldContext(props);
+  const options = props.options.map((opt) => opt.value);
+
   const disabled = useIsFormDisabled();
 
   function handleChange(newValue: string | null) {
@@ -38,7 +40,7 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
     reason: string,
   ) {
     props.onInputChange?.(event, newValue, reason);
-    if (props.freeSolo || newValue === "") {
+    if (props.freeSolo || newValue === "" || options.includes(newValue)) {
       handleChange(newValue);
     }
   }
@@ -48,10 +50,10 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
       <CustomAutocomplete
         {...autocompleteProps}
         multiple={false}
-        freeSolo
+        freeSolo={props.freeSolo}
         forcePopupIcon={!props.freeSolo}
         value={field.input.value}
-        options={props.options.map((opt) => opt.value)}
+        options={options}
         filterOptions={props.disableFiltering ? identity() : undefined}
         disabled={disabled || props.disabled}
         popupIcon={props.popupIcon}

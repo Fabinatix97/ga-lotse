@@ -23,6 +23,12 @@ import {
   ConfiguratorStatusOverview,
   ConfiguratorStatusTab,
 } from "@/lib/configurator/api/models/configuratorStatusOverview";
+import { MEASLES_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/MeaslesProtectionAppointmentStandardDuration";
+import { OMS_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/OmsAppointmentStandardDuration";
+import { SCHOOL_ENTRY_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/SchoolEntryAppointmentStandardDuration";
+import { SEX_WORK_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/SexWorkAppointmentStandardDuration";
+import { STI_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/StiProtectionAppointmentStandardDuration";
+import { TRAVEL_MEDICINE_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME } from "@/lib/configurator/components/shared/ConfiguratorDetails/appointmentStandardDuration/TravelMedicineAppointmentStandardDuration";
 import { getTabNamesByEndpointName } from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { getEndpointNamesByModule } from "@/lib/configurator/shared/config";
 import { resolveConfiguratorRoute } from "@/lib/configurator/shared/routes";
@@ -46,7 +52,7 @@ function combineResults(
 ) {
   return {
     data: mapApiToConfiguratorStatusOverview(
-      results.map((result) => result.data).filter(isDefined),
+      (results ?? []).map((result) => result.data).filter(isDefined),
     ),
   };
 }
@@ -159,11 +165,36 @@ function mapApiToConfiguratorStatusOverview(
                 endpointName: configuredEndpoint,
               }),
               status: endpointStates
-                ? endpointStates[configuredEndpoint]
+                ? endpointStates[
+                    configuredEndpoint === "APPOINTMENT_STANDARD_DURATION"
+                      ? mapStandardAppointmentDurationEndpoint(moduleName)
+                      : configuredEndpoint
+                  ]
                 : "UNAVAILABLE",
             }) satisfies ConfiguratorStatusTab,
         ),
       },
     };
   }, {} as ConfiguratorStatusOverview);
+}
+
+function mapStandardAppointmentDurationEndpoint(
+  moduleName: ConfiguratorModuleName,
+) {
+  switch (moduleName) {
+    case ConfiguratorModuleName.SchoolEntry:
+      return SCHOOL_ENTRY_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    case ConfiguratorModuleName.TravelMedicine:
+      return TRAVEL_MEDICINE_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    case ConfiguratorModuleName.MeaslesProtection:
+      return MEASLES_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    case ConfiguratorModuleName.OfficialMedicalService:
+      return OMS_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    case ConfiguratorModuleName.StiProtection:
+      return STI_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    case ConfiguratorModuleName.sexWork:
+      return SEX_WORK_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME;
+    default:
+      return "APPOINTMENT_STANDARD_DURATION";
+  }
 }

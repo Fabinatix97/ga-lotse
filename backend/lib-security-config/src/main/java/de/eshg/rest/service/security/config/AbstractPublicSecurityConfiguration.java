@@ -23,8 +23,10 @@ import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary.Gdpr;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.http.HttpMethod;
@@ -100,7 +102,25 @@ public abstract class AbstractPublicSecurityConfiguration {
     if (authorizationDefinitionForInternalAccess == null) {
       return publicAuthorizationDefinition;
     } else {
-      return publicAuthorizationDefinition.or(authorizationDefinitionForInternalAccess);
+      return combine(publicAuthorizationDefinition, authorizationDefinitionForInternalAccess);
+    }
+  }
+
+  private static AuthorizationDefinition combine(
+      AuthorizationDefinition publicAccess, AuthorizationDefinition internalAccess) {
+    switch (publicAccess) {
+      case AnyRole(Set<String> rolesForPublicAccess) when internalAccess
+          instanceof AnyRole(Set<String> rolesForInternalAccess) -> {
+        Set<String> combinedRoleNames = new LinkedHashSet<>(rolesForPublicAccess);
+        combinedRoleNames.addAll(rolesForInternalAccess);
+        return new AnyRole(combinedRoleNames);
+      }
+      case DenyAll ignored when internalAccess instanceof AnyRole -> {
+        return internalAccess;
+      }
+      default ->
+          throw new IllegalArgumentException(
+              "Not implemented for " + publicAccess + " and " + internalAccess);
     }
   }
 
@@ -211,16 +231,20 @@ public abstract class AbstractPublicSecurityConfiguration {
             CitizenPermissionRole.MUK_USER);
 
     requestMatchers(POST, ProcedureLibrary.PROCEDURES_API + "/check-file-state-usage")
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+        .denyPublicAccess()
+        .orWhenAccessingInternallyHasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
     requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.NOTIFICATION_BANNER)
         .hasRole(procedureAccessRole);
     requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.BY_GDPR_ID)
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+        .denyPublicAccess()
+        .orWhenAccessingInternallyHasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
     requestMatchers(POST, ProcedureLibrary.GDPR_VALIDATION_TASK_API)
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+        .denyPublicAccess()
+        .orWhenAccessingInternallyHasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
 
     requestMatchers(DELETE, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.BY_GDPR_ID)
-        .hasRole(BASE_GDPR_VALIDATION_TASK_CLEANUP);
+        .denyPublicAccess()
+        .orWhenAccessingInternallyHasAnyRole(BASE_GDPR_VALIDATION_TASK_CLEANUP);
     requestMatchers(DELETE, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.BUSINESS_PROCEDURE)
         .hasRole(procedureAccessRole);
 
@@ -265,6 +289,11 @@ public abstract class AbstractPublicSecurityConfiguration {
 
     public InternalAccessConfigurationBuilder hasAnyRole(PermissionRole... permissionRoles) {
       defineAuthorization(new AnyRole(permissionRoles));
+      return new InternalAccessConfigurationBuilder();
+    }
+
+    public InternalAccessConfigurationBuilder denyPublicAccess() {
+      defineAuthorization(new DenyAll());
       return new InternalAccessConfigurationBuilder();
     }
 

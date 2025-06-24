@@ -14,7 +14,7 @@ import {
   SelectField,
   useValidateGermanZipCode,
   useValidateLength,
-  useValidatePastOrTodayDate,
+  validateDateOfBirth,
 } from "@eshg/lib-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
@@ -31,7 +31,6 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 export function AffectedPersonForm(props: { name: string }) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
   const validateLength = useValidateLength();
-  const validatePastOrTodayDate = useValidatePastOrTodayDate();
   const validateZipCode = useValidateGermanZipCode();
   const fieldName = createFieldNameMapper<ApiAffectedPerson>(props.name);
 
@@ -60,6 +59,7 @@ export function AffectedPersonForm(props: { name: string }) {
             name={fieldName("firstName")}
             label={t("affectedPerson.fields.firstName")}
             required={t("affectedPerson.fields.firstName_required")}
+            validate={validateLength(1, 80)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
@@ -67,12 +67,14 @@ export function AffectedPersonForm(props: { name: string }) {
             name={fieldName("lastName")}
             label={t("affectedPerson.fields.lastName")}
             required={t("affectedPerson.fields.lastName_required")}
+            validate={validateLength(1, 120)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
           <InputField
             name={fieldName("nameAtBirth")}
             label={t("affectedPerson.fields.nameAtBirth")}
+            validate={validateLength(1, 40)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
@@ -80,7 +82,7 @@ export function AffectedPersonForm(props: { name: string }) {
             name={fieldName("dateOfBirth")}
             label={t("affectedPerson.fields.dateOfBirth")}
             required={t("affectedPerson.fields.dateOfBirth_required")}
-            validate={validatePastOrTodayDate}
+            validate={validateDateOfBirth}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 10 })}>

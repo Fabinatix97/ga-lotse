@@ -1,12 +1,9 @@
 <#-- @ftlvariable name="departmentInfo" type="de.eshg.measlesprotection.pdf.coverletter.DepartmentInfo" -->
 <footer>
-  <div class="footerContent">
     <div>
-      Hausanschrift: ${departmentInfo.street()} ${departmentInfo.houseNumber()}, ${departmentInfo.postalCode()} ${departmentInfo.city()}
+    ${departmentInfo.name()} • ${departmentInfo.street()} ${departmentInfo.houseNumber()}, ${departmentInfo.postalCode()} ${departmentInfo.city()}
     </div>
     <div>
-      Hotline: ${departmentInfo.phoneNumber()}. Internet:
-      <a href="${departmentInfo.homepage()}">${departmentInfo.homepage()}</a>
+      Webseite: <a href="${departmentInfo.homepage()}">${departmentInfo.homepage()}</a> / E-Mail: <a href="${departmentInfo.email()}">${departmentInfo.email()}</a>
     </div>
-  </div>
 </footer>

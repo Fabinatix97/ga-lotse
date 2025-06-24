@@ -71,7 +71,9 @@
       "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
       "saveDocumentsInfo": "Bitte Dokumente speichern",
       "save_MISSING": "Dokumente speichern",
-      "save_REJECTED": "Zur Prüfung absenden"
+      "save_REJECTED": "Zur Prüfung absenden",
+      "pdfaConverterPortalLinkText": "Hier können Sie Ihre PDF-Dateien in PDF/A-Dateien umwandeln.",
+      "openInNewTab": "In neuem Tab öffnen"
     },
     "snackbar": {
       "success": "Die Dokumente wurden erfolgreich hochgeladen."

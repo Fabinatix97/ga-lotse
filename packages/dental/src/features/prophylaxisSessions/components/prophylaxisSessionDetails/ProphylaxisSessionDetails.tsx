@@ -15,6 +15,7 @@ import {
   formatBoolean,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsList,
   formatDateTime,
   formatOptionalKey,
   formatPersonName,
@@ -46,68 +47,72 @@ export function ProphylaxisSessionDetails() {
             })
           }
         >
-          <DetailsRow>
-            <DetailsColumn>
-              <DetailsItem
-                label="Datum"
-                value={`${formatDateTime(prophylaxisSession.dateAndTime)} Uhr`}
-              />
-              <DetailsItem
-                label="Einrichtung"
-                value={prophylaxisSession.institution.name}
-              />
-              <Stack direction="row" gap={3}>
+          <DetailsList>
+            <DetailsRow>
+              <DetailsColumn>
                 <DetailsItem
-                  label="Gruppe"
-                  value={prophylaxisSession.groupName}
+                  label="Datum"
+                  value={`${formatDateTime(prophylaxisSession.dateAndTime)} Uhr`}
                 />
                 <DetailsItem
-                  label="Teilnehmer"
-                  value={prophylaxisSession.participants.length}
+                  label="Einrichtung"
+                  value={prophylaxisSession.institution.name}
                 />
-              </Stack>
-            </DetailsColumn>
-            <DetailsColumn>
-              <DetailsItem
-                label="Typ"
-                value={formatOptionalKey(
-                  prophylaxisSession.type,
-                  PROPHYLAXIS_TYPES,
-                  "",
-                )}
-              />
-              <DetailsItem
-                label="Reihenuntersuchung"
-                value={formatBoolean(prophylaxisSession.isScreening)}
-              />
-              <DetailsItem
-                label="Gebisstyp"
-                value={formatOptionalKey(
-                  prophylaxisSession.dentitionType,
-                  DENTITION_TYPES,
-                  "",
-                )}
-              />
-              <DetailsItem
-                label="Fluoridierung"
-                value={formatFluoridationVarnishDescription(
-                  prophylaxisSession.fluoridationVarnish,
-                )}
-              />
-            </DetailsColumn>
-            <DetailsColumn>
-              <DetailsItem
-                label="Zahnarzt/-ärztin"
-                value={
-                  <PerformingPersons persons={prophylaxisSession.dentists} />
-                }
-              />
-              <DetailsItem
-                label="ZFA"
-                value={<PerformingPersons persons={prophylaxisSession.zfas} />}
-              />
-            </DetailsColumn>
-          </DetailsRow>
+                <Stack direction="row" gap={3}>
+                  <DetailsItem
+                    label="Gruppe"
+                    value={prophylaxisSession.groupName}
+                  />
+                  <DetailsItem
+                    label="Teilnehmer"
+                    value={prophylaxisSession.participants.length}
+                  />
+                </Stack>
+              </DetailsColumn>
+              <DetailsColumn>
+                <DetailsItem
+                  label="Typ"
+                  value={formatOptionalKey(
+                    prophylaxisSession.type,
+                    PROPHYLAXIS_TYPES,
+                    "",
+                  )}
+                />
+                <DetailsItem
+                  label="Reihenuntersuchung"
+                  value={formatBoolean(prophylaxisSession.isScreening)}
+                />
+                <DetailsItem
+                  label="Gebisstyp"
+                  value={formatOptionalKey(
+                    prophylaxisSession.dentitionType,
+                    DENTITION_TYPES,
+                    "",
+                  )}
+                />
+                <DetailsItem
+                  label="Fluoridierung"
+                  value={formatFluoridationVarnishDescription(
+                    prophylaxisSession.fluoridationVarnish,
+                  )}
+                />
+              </DetailsColumn>
+              <DetailsColumn>
+                <DetailsItem
+                  label="Zahnarzt/-ärztin"
+                  value={
+                    <PerformingPersons persons={prophylaxisSession.dentists} />
+                  }
+                />
+                <DetailsItem
+                  label="ZFA"
+                  value={
+                    <PerformingPersons persons={prophylaxisSession.zfas} />
+                  }
+                />
+              </DetailsColumn>
+            </DetailsRow>
+          </DetailsList>
         </DetailsSection>
       </ContentPanel>
       <ContentPanel>

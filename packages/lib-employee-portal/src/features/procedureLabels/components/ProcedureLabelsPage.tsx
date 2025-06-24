@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { QueryKeyFactory } from "@eshg/lib-portal";
 
 import { MainContentLayout } from "../../../components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "../../../components/layout/StickyToolbarLayout";
 import { Toolbar } from "../../../components/toolbar/Toolbar";
-import { useGetProcedureLabels } from "../api/queries";
+import { useGetProcedureLabelsQuery } from "../api/queries";
 import { ProcedureLabelClient } from "../types/procedureLabelClient";
 
 import { ProcedureLabelsTable } from "./ProcedureLabelsTable";
@@ -21,9 +23,11 @@ interface ProcedureLabelsPageProps {
 }
 
 export function ProcedureLabelsPage(props: ProcedureLabelsPageProps) {
-  const getProcedureLabels = useGetProcedureLabels(
-    props.procedureLabelApi,
-    props.procedureLabelApiQueryKey,
+  const getProcedureLabels = useSuspenseQuery(
+    useGetProcedureLabelsQuery(
+      props.procedureLabelApi,
+      props.procedureLabelApiQueryKey,
+    ),
   );
 
   return (

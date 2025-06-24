@@ -6,7 +6,7 @@
 "use client";
 
 import { Grid } from "@mui/joy";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { ApiGender } from "@eshg/base-api";
 import { ApiFluoridationConsent } from "@eshg/dental-api";
@@ -22,6 +22,13 @@ import { AutomatedValuesSection } from "./AutomatedValuesSection";
 import { ExaminationChildDetailsSection } from "./ExaminationChildDetailsSection";
 import { InstructionValuesSection } from "./InstructionValuesSection";
 import { NoteFormSection } from "./NoteFormSection";
+
+// memoize components without Formik fields to avoid rerendering on every form validation
+const MemoizedFullDentitionFormSection = memo(FullDentitionFormSection);
+const MemoizedExaminationChildDetailsSection = memo(
+  ExaminationChildDetailsSection,
+);
+const MemoizedAutomatedValuesSection = memo(AutomatedValuesSection);
 
 interface ExaminedChild {
   id: string;
@@ -60,7 +67,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
   } = props;
 
   const childDetails = showChildDetails ? (
-    <ExaminationChildDetailsSection
+    <MemoizedExaminationChildDetailsSection
       childId={child.id}
       childVersion={child.version}
       firstName={child.firstName}
@@ -109,7 +116,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
   }
 
   const automatedValues = (
-    <AutomatedValuesSection
+    <MemoizedAutomatedValuesSection
       dateOfExamination={dateAndTime}
       participantDateOfBirth={child.dateOfBirth}
       previousExaminations={previousExaminations}
@@ -121,7 +128,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
     return (
       <Grid container columns={9} spacing={3}>
         <Grid xxs={9}>
-          <FullDentitionFormSection />
+          <MemoizedFullDentitionFormSection />
         </Grid>
         <Grid xxs={showChildDetails ? 5.5 : 9}>{additionalInformation}</Grid>
         {showChildDetails && <Grid xxs={3.5}>{childDetails}</Grid>}
@@ -137,7 +144,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
   return (
     <Grid container columns={11} spacing={3}>
       <Grid xxs={11}>
-        <FullDentitionFormSection />
+        <MemoizedFullDentitionFormSection />
       </Grid>
       <Grid container xxs={8} columns={8}>
         <Grid xxs={showChildDetails ? 5 : 8}>{additionalInformation}</Grid>

@@ -2,7 +2,7 @@
 
 <#macro content vaccinationInfo="NUL" >
 <#-- @ftlvariable name="vaccinationInfo" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterVaccinationInfoDto" -->
-  <table style="width: 100%;">
+  <table style="width: 100%; line-height: 1rem;">
     <colgroup>
       <col style="width: 34%" />
       <col style="width: 15%" />

@@ -108,7 +108,10 @@ public class InspectionMapper {
 
   public InspectionDto mapToDto(Inspection inspection) {
     InspFacilityDto facilityDto =
-        mapToDto(inspection.getCentralFileStateId(), inspection.getFacility());
+        mapToDto(
+            inspection.getCentralFileStateId(),
+            inspection.getFacility(),
+            inspection.getFileNumberSuffix());
     return mapToDto(inspection, facilityDto);
   }
 
@@ -333,13 +336,17 @@ public class InspectionMapper {
         r.getRevision());
   }
 
-  public InspFacilityDto mapToDto(UUID centralFileStateId, Facility facility) {
+  public InspFacilityDto mapToDto(
+      UUID centralFileStateId, Facility facility, Integer fileNumberSuffix) {
     GetFacilityFileStateResponse baseFacility =
         facilityClient.getFacilityFileState(centralFileStateId);
     String fileNumber =
         facilityClient
             .getFacilityFileNumber(baseFacility.id(), facilityFileNumberConfiguration.getMethod())
             .fileNumber();
+    if (fileNumber != null && fileNumberSuffix != null) {
+      fileNumber += "-" + fileNumberSuffix;
+    }
     return FacilityMapper.fromGetFacilityResponse(facility, baseFacility, fileNumber);
   }
 

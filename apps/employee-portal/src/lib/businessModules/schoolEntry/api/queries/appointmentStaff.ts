@@ -19,7 +19,7 @@ export function getAllPhysiciansQuery(userApi: UserApi) {
 
 export function getAllMedicalAssistantsQuery(userApi: UserApi) {
   return queryOptions({
-    queryKey: appointmentStaffApiQueryKey(["getAllMedicalAssistents"]),
+    queryKey: appointmentStaffApiQueryKey(["getAllMedicalAssistants"]),
     queryFn: () => userApi.getUsersByGroup("[System] ESU-MFA"),
     select: mapUsers,
   });

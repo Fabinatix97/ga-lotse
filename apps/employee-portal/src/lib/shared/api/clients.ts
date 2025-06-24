@@ -26,7 +26,13 @@ import {
   Configuration as LibStatisticsConfiguration,
   StatisticsProcedureReferenceApi,
 } from "@eshg/lib-statistics-api";
-import { SchoolEntryLibConfigApi } from "@eshg/school-entry-api";
+import { MeaslesProtectionAppointmentStandardDurationApi } from "@eshg/measles-protection-api";
+import { OmsAppointmentStandardDurationApi } from "@eshg/official-medical-service-api";
+import { OpenDataConfigApi } from "@eshg/opendata-api";
+import {
+  SchoolEntryAppointmentStandardDurationApi,
+  SchoolEntryLibConfigApi,
+} from "@eshg/school-entry-api";
 import {
   SexWorkConfigStatusApi,
   SexWorkDepartmentInfoConfigApi,
@@ -34,14 +40,21 @@ import {
   StiConsultationConfigStatusApi,
   StiConsultationDepartmentInfoConfigApi,
   StiConsultationOpeningHoursApi,
+  StiProtectionAppointmentStandardDurationApi,
 } from "@eshg/sti-protection-api";
-import { NotificationConfigApi } from "@eshg/travel-medicine-api";
+import {
+  NotificationConfigApi,
+  TravelMedicineAppointmentStandardDurationApi,
+} from "@eshg/travel-medicine-api";
 
 import { useConfiguration } from "@/lib/baseModule/api/clients";
+import { useConfiguration as useMeaslesProtectionConfiguration } from "@/lib/businessModules/measlesProtection/api/clients";
+import { useConfiguration as useOmsConfiguration } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { useConfiguration as useSchoolEntryConfiguration } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useConfiguration as useStiProtectionConfiguration } from "@/lib/businessModules/stiProtection/api/clients";
 import { useConfiguration as useTravelMedicineConfiguration } from "@/lib/businessModules/travelMedicine/api/clients";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
+import { useConfiguration as useOpenDataConfiguration } from "@/lib/opendata/api/clients";
 import { useEmployeePortalApiConfiguration } from "@/lib/shared/api/useEmployeePortalApiConfiguration";
 
 type ConfigurationConstructor<TConfiguration> = new (
@@ -196,4 +209,34 @@ export function useDepartmentConfigurationApi() {
   const configuration = useConfiguration();
 
   return new DepartmentConfigurationApi(configuration);
+}
+
+export function useSchoolEntryAppointmentStandardDurationApi() {
+  const configuration = useSchoolEntryConfiguration();
+  return new SchoolEntryAppointmentStandardDurationApi(configuration);
+}
+
+export function useTravelMedicineAppointmentStandardDurationApi() {
+  const configuration = useTravelMedicineConfiguration();
+  return new TravelMedicineAppointmentStandardDurationApi(configuration);
+}
+
+export function useMeaslesProtectionAppointmentStandardDurationApi() {
+  const configuration = useMeaslesProtectionConfiguration();
+  return new MeaslesProtectionAppointmentStandardDurationApi(configuration);
+}
+
+export function useOmsAppointmentStandardDurationApi() {
+  const configuration = useOmsConfiguration();
+  return new OmsAppointmentStandardDurationApi(configuration);
+}
+
+export function useStiProtectionAppointmentStandardDurationApi() {
+  const configuration = useStiProtectionConfiguration();
+  return new StiProtectionAppointmentStandardDurationApi(configuration);
+}
+
+export function useOpenDataConfigApi() {
+  const configuration = useOpenDataConfiguration();
+  return new OpenDataConfigApi(configuration);
 }

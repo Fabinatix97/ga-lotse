@@ -6,6 +6,7 @@
 package de.eshg.schoolentry.statistics;
 
 import de.eshg.schoolentry.domain.model.*;
+import de.eshg.schoolentry.percentiles.PercentileCalculationService;
 import de.eshg.schoolentry.statistics.attributes.EsuAttributeUtil;
 import de.eshg.schoolentry.statistics.attributes.EsuDevelopmentScreeningAttribute;
 import de.eshg.schoolentry.statistics.options.Child;
@@ -24,9 +25,7 @@ class DevelopmentScreeningStatistics {
       SchoolEntryProcedure procedure, EsuDevelopmentScreeningAttribute attribute) {
     return switch (attribute) {
       case KIND -> getProcedureType(procedure);
-      case GROE ->
-          getDevelopmentScreeningAttributeOrUnknownInteger(
-              procedure, DevelopmentScreening::getHeight);
+      case GROE -> getHeight(procedure);
       case GROE_PERZ ->
           getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getHeightPercentile);
       case GEWI -> getWeight(procedure);
@@ -136,9 +135,18 @@ class DevelopmentScreeningStatistics {
     };
   }
 
-  private static Object getDevelopmentScreeningAttribute(
+  private static Object getHeight(SchoolEntryProcedure procedure) {
+    Integer height = getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getHeight);
+    if (height == null || height == 999) {
+      return EsuAttributeUtil.UNKNOWN_INTEGER_999;
+    } else {
+      return PercentileCalculationService.centimetreToMetre(height);
+    }
+  }
+
+  private static <T> T getDevelopmentScreeningAttribute(
       SchoolEntryProcedure procedure,
-      Function<DevelopmentScreening, Object> developmentScreeningGetter) {
+      Function<DevelopmentScreening, T> developmentScreeningGetter) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
     if (developmentScreeningResult == null) {
       return null;

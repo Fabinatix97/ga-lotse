@@ -1,0 +1,3458 @@
+# chartsnap: snapshot_version=v3
+---
+# Source: ga-lotse-ctr/templates/admin-portal.yaml
+kind: Secret
+apiVersion: v1
+data:
+  truststore.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZmVENDQTJXZ0F3SUJBZ0lVV21OU0crcVg5Z01ZTVVZOGt6L3cxYVArVHdjd0RRWUpLb1pJaHZjTkFRRUwKQlFBd1RqRUxNQWtHQTFVRUJoTUNSRVV4RWpBUUJnTlZCQWdNQ1VaeVlXNXJablZ5ZERFTE1Ba0dBMVVFQnd3QwpTRVV4SGpBY0JnTlZCQU1NRldGa2JXbHVNVUJ0ZVMxbllTMXNiM1J6WlM1a1pUQWVGdzB5TlRBMk1ESXhNVFEzCk1EaGFGdzB6TlRBMU16RXhNVFEzTURoYU1FNHhDekFKQmdOVkJBWVRBa1JGTVJJd0VBWURWUVFJREFsR2NtRnUKYTJaMWNuUXhDekFKQmdOVkJBY01Ba2hGTVI0d0hBWURWUVFEREJWaFpHMXBiakZBYlhrdFoyRXRiRzkwYzJVdQpaR1V3Z2dJaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQ0R3QXdnZ0lLQW9JQ0FRRHAwTjRCWHdvSWxHYU55WkVyCkdsNFBuLzJycnNkVUd1V01NTUwybW5ha0hZczNvWllob0RIcXQ5NC9qQ1NWQ1JYcSszSTZzZ0dQeHNQeXZCWmYKd29MZ1p1ZVFLTXVTNE9Rc08wRWlkV2dVa1hCMlZyNzFUM2VLb2NLaXFqN01YZHFOcDBOT1NNajRGeG1KRzB6NAp3emhaVkRxT0x6Q2NocXYrcWZhTW1vR0JwNDBoTlBQamd5WCs5T1kxblZTRCtPZ1dWMHJqRDEzN3JEWnRsN3AyCkpvQ21lLzNoeWc5aTFiQjNjOW5zWU8wcDVqeUNLdmh1Um5qL0dsOFFoSWxBbEc4T0VHbnNhVkJvVzg1cDlTS0YKMS9DVVNBSUVjbXFPVHVmOFpEK01xTGhNMkx4MTJ4Vm1kSndGTW1CaTlvTFJSNE5DQ3g2bTE5SFlDZkY2aVpNQQpDVm5tUG1iZHd6aGk0ZWhWOEE0NzZkOEo5QWtSRk10VTAvRVNLcCtjY0VPK0lnc0gza2dpaTlLUzJGejNjQlRzCmZOUWpVNGdpM1ZyM3A4a3EvOWRuY0IxdUd2YlNUdndZb1JqNkd2RWhmR0tVc1RkeElaVytSQnEweTU3WmpHZEUKdlBlREh2OS9JSHVLSFljdE1hSHR6SFNmZlRNWlgzMHl5eWt6cU1ISzRRdkx5VW9TZG9xejEvK0hCN0RscEtxKwpSR0lRMU54cndsWGZIWkgrWk05NmduNW8ydzFTeTlEaGdjaGlzSW0vQy9VbnhFMEJ0OTFCcnU3Y2oyd2VORXF1Cm8wSlVKeXJGN1d4cEFJemNib2Jackd1ZWRzd1MrZHVUck14WThyZmIyRTBKTjNHWXlya3hEOFJaT2N5aGFzQzUKelNPSTdhQnFZWGZybloyVVFEbVJGVUd3VVFJREFRQUJvMU13VVRBZEJnTlZIUTRFRmdRVWtRdHliRzdRYVZLNgpCZ21MbSs3c2RBdzBLeFF3SHdZRFZSMGpCQmd3Rm9BVWtRdHliRzdRYVZLNkJnbUxtKzdzZEF3MEt4UXdEd1lEClZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBZ0VBVERZeEMvUzJtWWVlQlNwcGRIRXkKTDFXMFFSRVNkRHdKaHBHWFpIOWZZa2piRHRTRlR3NzBTVzZtRDBGYVdVTDVGWTdSUnJPLzcvQUlyQWFhMnBaUApteGw5MEhYd040ZzNyMVVOWCtzanRBdFNFd285MFJoUWcwQUxnZStlSEpUeU1IUEZHei9xK0c5QmhnYlZPSnZsCnFzWGdMQnAvbGlSaHo5alErelFmaU55QzlmY2YrQk8xMldZNHBiR05ja3FyMFBhSXRBZU5JS0N5UGVJaytValMKa3pYWkpVK2hLM2x6cnlzWjZTaW1uSU5CeGd0Tmd6dHpDYTJnT0dVZ2l5aDBsMjVrQUFPejE5NW1RVkRQK1REUwpWLzkvcUE3Vjkwdi9qVkVBTDJXZGtPVi9xempTY3M3bXd2VWgrWUtkOWYvYzBPdnAwb1FBTGJlMHR4QzJWVFZsCldrWUFiUVpnbVg3MUFJUVRUNjMwMkt5dmlXVjZDQ3llUXZjOWdvaXp5bGdIZTNTYnh2VVgwUGJqb1VGcDJtZHgKVmlQK21mSnNrcTBmZkJ6bXUyN2Vuemx2SDRqeWYrZk5BTTBYRGk5bm8yYW5Wbm1lWkp4cE9uMUs2SmI5THFzUQo4WDFNVzhHc25zYmo1Zm1USGszYlFwbXhHemtsOHpHKzlaSnIrUW9zVlBhS2ZFYWhLdzB2ZG1qaXZCdE5mRE8rCmNZZGJlMnluT1Rtc3g5d0F1U0lZVmp1SVl4ZG43V05paTdPeHZVOWY5bGRzRVMyR3NHdEdHTEhaajd5UGJlb2kKQ1RyL3RtcnVMVTVXYkdhZmsyOGhRWFhkYTdvRG5sWGdUUmZwUVVkUjg2aS9MR293MXhpQU9aSlpDdGlHbEx1eQprcUVNWTZaSzhDUGhVaGhYQ3crb0JFaz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQotLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS0KTUlJRmZUQ0NBMldnQXdJQkFnSVVNMkpyTXdzK09ubTlYMkJBM25xN3BEVFFWNW93RFFZSktvWklodmNOQVFFTApCUUF3VGpFTE1Ba0dBMVVFQmhNQ1JFVXhFakFRQmdOVkJBZ01DVVp5WVc1clpuVnlkREVMTUFrR0ExVUVCd3dDClNFVXhIakFjQmdOVkJBTU1GV0ZrYldsdU1rQnRlUzFuWVMxc2IzUnpaUzVrWlRBZUZ3MHlOVEEyTURJeE1UUTMKTXpKYUZ3MHpOVEExTXpFeE1UUTNNekphTUU0eEN6QUpCZ05WQkFZVEFrUkZNUkl3RUFZRFZRUUlEQWxHY21GdQphMloxY25ReEN6QUpCZ05WQkFjTUFraEZNUjR3SEFZRFZRUUREQlZoWkcxcGJqSkFiWGt0WjJFdGJHOTBjMlV1ClpHVXdnZ0lpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElDRHdBd2dnSUtBb0lDQVFDOE9wSEF6RWtpRzlaMUM4WU4KL1A0bDJWMTJNRjdYMUVjcVVNekJ0aGo0ZkNoeURpbFRyeFBYNkZGR2hRRTBLSGR6c3l1bGw5OGEwdTVRSHBjNgp3bXpmYVZyZzhycXczRkwyM1ZJSmZLcGFGT1dSd0hGRjNGM3F3dHlmK3dZamMwN2ZxNkZ5WHd0OXo3TEZvV0p4CllRSVIzb1ZEa29SL2FzN3hFRk1scGxRZDlBcTBBb20zKys2QjV2emlqdTViMUlZSDN0V3hQU0pqaUZaOVd1b3gKODFrS1ZYOWRvS2QvVTJ4RVdTSEdVUGQ0Q2NVUHZCQUJXQkF3WW0xMW1JSGR3Ym1VVmZzOHc3ampIWHNSTWx3TQpNT3pUUW1DTWpIWDBRNHVzaFhnYWVMTThHQXd5aEZlZGJXYW5saUFvWGRzZWt5OGFWTEZWWTVmZVRhRjVkTjQ2CjRVMDFmeGxVdGh2S0x1aTZFSmdoTHNGVnJ3TFUxRGNHZktGbEZrTXJLTkRWODduVmI4OWRBem5MSVVUbTZIYVMKMll2UndqZEZVQURPNFZqb2VscmxCeHF4UlA1RXY1SVdjaFZhWXFzbDFvZ3EyaXozUk5sbmpqbUpKTkhpWDR3TwpuN0dXb01JUHZLejVFWmJUSEhvbHB2RzFFV1Jwakd2aGx6eWk3SmZ6cHN4NzRFRXlFQis2RnhrMDNaRXFVYWhsCmtSeElJdThMRDgvWkNUa0ZBMlloSVlCcWtyMFlZNGlzS3ZqTVVaMTlhRjMwdFlBN2h3VWxmUzY0cmw3bDJvRGkKZnN3Q2RtRzZCYlB1bXZwZWZrQVFZZVhycFlFbUJEWDhDOUhxZTQyc2t2USt0U0tsVEQyRnNMeGlOMkNvTzdsSQpSdEtVSGZOclFmN25oN2xkZXJwQUxHZWZaUUlEQVFBQm8xTXdVVEFkQmdOVkhRNEVGZ1FVdXRnZUxKa1JReGtoClduQ0hRUlFrUzVvY2lpOHdId1lEVlIwakJCZ3dGb0FVdXRnZUxKa1JReGtoV25DSFFSUWtTNW9jaWk4d0R3WUQKVlIwVEFRSC9CQVV3QXdFQi96QU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FnRUFnQXMxSUtyZnZkOVlOZlNkc0Y5dApRVWt1ZTl4U2lCS3lBNDV1TERLZnpLYUJORklkd3k1dXhrNWVGTEhIT3dCOVh5enVIQTR6ejMwVGxqSU9URHFlClhsdVFXNzlVUVVFWGh2cXhVZTJQaWdPenNSZU9WK1dINVlvZ3dDZ25GbHAxQ0xYLzZBVG9zTGh4NzY5TDZoS3MKTlE2OGhiNTFXdVBGNVo0ZE9maHhYMVpYd3k2VjBCalFCYnAzZmJaVWFwY3VaVmc2TWJobXFObkR1U1FQQjI5ZApKYk9EWkNORWN6MXZuNjZseG9mK25TemhRZFpyZzAyOGV5RWovbmVOU0k1M1NKd0NCNXBXcy9SWXJkUnpGMWRFCnNNTlV5cTRLNUV5T2VYSjBsaWw4QVVUTnBjbTRvVGpnSjJNVUVpT3RuUmhTaGhIdE9CYi9KNXpBSEdFcVI2NTAKUzFJeTNPdXRXSFZRNzFwd05MeU9OYnlQTEdEMlNUMllkcWdxdUx2bGU1Z1prdDNtS0R4WlNRQXRZSjdPMDlEcgpCV3pkQ21uL0RpUXJTTWZWbi9uc08zMlFOSDExMld5ZURlK0xDZ1FkUjlVSVN0cjlIZVVrZUlIYWNZemNNaE9CCkxaUVh0WkNVY2hqMXNJd1hucnVpT2dMRGZtbTJ5ZzdTNmRXaFVrZnVJYzhTSzhmcHFaT3Y4NFZ1K1VhZWtVOFYKNDYxMXlCR2NvZEpmV1p5aGFoUncrMXVmOVFDaXJVSENsRklESVpaUFdJTTFyUFB6ODZxRTlKMzFSRDlqVFJyYQp4bzJCTmM5dXNzN1pGL2xodTdlVFZPZUdOVndrRU1iTUhoSVhXRGI4UnVkTWJzUWkrMUNXNHhyV01QdXY2QUdnCkp3QWJOeHZleGgxVnJxVTFFdzRESG1nPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t
+metadata:
+  name: admin-portal-users-tls
+  namespace: snapshot-ns
+type: Opaque
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: keycloak-db
+data:
+  POSTGRESQL_DB: cG9zdGdyZXM=
+  POSTGRESQL_USER: cGd1c2Vy
+  POSTGRESQL_PASSWORD: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  POSTGRESQL_HOST: a2V5Y2xvYWstZGIuc25hcHNob3QtbnMuc3ZjLmNsdXN0ZXIubG9jYWw=
+  POSTGRESQL_PORT: NTQzMg==
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+apiVersion: v1
+data:
+  password: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  base-admin-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  lsd-admin-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+kind: Secret
+metadata:
+  name: keycloak-admin
+  namespace: snapshot-ns
+type: Opaque
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: Secret
+apiVersion: v1
+data:
+  test-users-secret-override: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+metadata:
+  name: keycloak-test-user-secrets
+  namespace: snapshot-ns
+type: Opaque
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: Secret
+apiVersion: v1
+data:
+  employee-auth-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  citizen-auth-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  auditlog-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  base-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  chat-management-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  citizen-auth-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  employee-auth-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  inspection-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  local-service-directory-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  measles-protection-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  school-entry-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  statistics-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  travel-medicine-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  lsd-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  sti-protection-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  medical-registry-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  dental-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  official-medical-service-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  opendata-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  meds-abroad-module-client-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  synapse-admin-password: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  synapse-registration-shared-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  synapse-macaroon-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  synapse-form-secret: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+metadata:
+  name: keycloak-client-secrets
+  namespace: snapshot-ns
+type: Opaque
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: Secret
+apiVersion: v1
+data:
+  centralrepository: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+metadata:
+  name: keycloak-actor-secrets
+  namespace: snapshot-ns
+type: Opaque
+---
+# Source: ga-lotse-ctr/templates/lsd.yaml
+kind: Secret
+apiVersion: v1
+metadata:
+  name: lsd-import
+  namespace: snapshot-ns
+type: Opaque
+data:
+  import.json: ClsKICB7ICJ1c2VybmFtZSI6ICJjZW50cmFscmVwb3NpdG9yeS5jZW50cmFsLnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAibHNkLmNlbnRyYWwuc3ZjLmNsdXN0ZXIubG9jYWwiLCAicGFzc3dvcmQiOiAiLSIgfQpd
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: centralrepository-db
+data:
+  POSTGRESQL_DB: cG9zdGdyZXM=
+  POSTGRESQL_USER: cGd1c2Vy
+  POSTGRESQL_PASSWORD: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  POSTGRESQL_HOST: Y2VudHJhbHJlcG9zaXRvcnktZGIuc25hcHNob3QtbnMuc3ZjLmNsdXN0ZXIubG9jYWw=
+  POSTGRESQL_PORT: NTQzMg==
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: metrics-basic-auth
+  namespace: snapshot-ns
+stringData:
+  user: "metrics"
+data:
+  password: "Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA=="
+type: Opaque
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: servicedirectory-db
+data:
+  POSTGRESQL_DB: cG9zdGdyZXM=
+  POSTGRESQL_USER: cGd1c2Vy
+  POSTGRESQL_PASSWORD: Zml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdA==
+  POSTGRESQL_HOST: c2VydmljZWRpcmVjdG9yeS1kYi5zbmFwc2hvdC1ucy5zdmMuY2x1c3Rlci5sb2NhbA==
+  POSTGRESQL_PORT: NTQzMg==
+---
+# Source: ga-lotse-ctr/templates/admin-portal-reverse-proxy-config.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: admin-portal-reverse-proxy-config
+  namespace: snapshot-ns
+data:
+  admin-portal.conf: |+
+    server {
+      resolver     127.0.0.1 valid=15s ipv6=off; # force resolving cache to localhost
+      listen       8443 ssl default_server;
+      http2        on;
+      server_name  ap.central.svc.cluster.local;
+
+      if ($host != "ap.central.svc.cluster.local") {
+        return 400;
+      }
+
+      # access_log  /proc/self/fd/2  main;
+
+      # path to the server certificates
+      ssl_certificate /etc/nginx/ssl/tls.crt;
+      ssl_certificate_key /etc/nginx/ssl/tls.key;
+
+      # path to the concatenated client certificates file
+      ssl_trusted_certificate /etc/nginx/ssl/truststore.crt;
+
+      # client certificate is mandatory for Admin-Portal!
+      ssl_verify_client on;
+
+      # optionally, set the depth of the certificate chain verification, default is 1
+      ssl_verify_depth 1;
+
+      ssl_session_cache   shared:SSL:1m;
+      ssl_session_timeout 5m;
+      ssl_session_tickets off;
+
+      ssl_prefer_server_ciphers off;
+      ssl_protocols TLSv1.3;
+      ssl_conf_command Ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384;
+
+      # set timeouts for reading client request header and body
+      client_header_timeout 60s;
+      client_body_timeout 60s;
+
+      # avoid buffer overflow
+      large_client_header_buffers 4 8k;
+      client_header_buffer_size 4k;
+
+      # no disclosure of server info
+      server_tokens off;
+
+      # website should not be displayed inside a <frame>, an <iframe> or an <object>
+      add_header X-Frame-Options DENY always;
+
+      # protect clients from HTTP interception with STS (cached for 63072000 seconds = 2 years)
+      add_header Strict-Transport-Security "max-age=63072000; includeSubdomains" always;
+
+      # avoid MIME type sniffing by saying that the MIME types are deliberately configured
+      add_header X-Content-Type-Options nosniff always;
+
+      # sent requests should not include any referrer information
+      add_header Referrer-Policy "no-referrer" always;
+
+      # isolates the browsing context exclusively to same-origin documents
+      add_header Cross-Origin-Opener-Policy "same-origin" always;
+
+      # disallow cross-origin no-cors requests
+      add_header Cross-Origin-Resource-Policy "same-origin" always;
+
+      # specify a custom error page for all common HTTP errors
+      error_page
+          400 401 402 403 404 405 406 408 409 410 411 412 413 414 415 416 421 429
+          500 501 502 503 504 505 507
+          @errors;
+
+      # location block for our custom error page
+      location @errors {
+        internal;
+        default_type "text/html; charset=utf-8";
+        return 200 '
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Error</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; }
+                        .error-container { margin-top: 50px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="error-container">
+                        <h1>Oh-weh! Da ging etwas schief.</h1>
+                        <p>Wir haben technische Schwierigkeiten. Bitte versuchen Sie es sp&auml;ter noch einmal.</p>
+                    </div>
+                    <div class="error-container">
+                        <h1>Oops! Something went wrong.</h1>
+                        <p>We\'re experiencing technical difficulties. Please try again later.</p>
+                    </div>
+                </body>
+                </html>
+            ';
+      }
+
+      # Deny access to hidden files.
+      location ~/\\.{
+        deny all;
+      }
+
+      location /adminapi/ {
+
+        # only allow valid sec-fetch-site headers
+        if ($sec_fetch_site_is_ok = 0) {
+          return 403;
+        }
+
+        # strict request limit, small burst capacity
+        limit_req zone=api_zone burst=5 nodelay;
+
+        client_max_body_size 1m;
+        client_body_buffer_size 32k;
+
+        limit_except GET HEAD POST PATCH DELETE PUT OPTIONS {
+          deny all;
+        }
+
+        # set client certificate header
+        proxy_set_header x-eshg-client-cert $ssl_client_cert;
+
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        set $targetHostName service-directory.central.svc.cluster.local;
+        proxy_pass http://$targetHostName;
+      }
+
+      location / {
+        client_max_body_size 1m;
+        client_body_buffer_size 32k;
+
+        limit_except GET OPTIONS {
+          deny all;
+        }
+
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_pass http://127.0.0.1:3000;
+      }
+    }
+
+  nginx.conf: |
+    worker_processes  auto;
+
+    error_log  /proc/self/fd/2 debug;
+    pid        /var/run/nginx.pid;
+
+    events {
+      worker_connections  1024;
+    }
+
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+      'status=$status '
+      'body_bytes_sent=$body_bytes_sent '
+      'http_referer=$http_referer '
+      '"$http_user_agent" '
+      'http_x_forwarded_for=$http_x_forwarded_for '
+      'upstream_addr=$upstream_addr '
+      'upstream_status=$upstream_status '
+      'request_time=$request_time '
+      'upstream_response_time=$upstream_response_time '
+      'upstream_connect_time=$upstream_connect_time '
+      'upstream_header_time=$upstream_header_time ';
+
+      access_log  /proc/self/fd/2  main;
+
+      sendfile        on;
+      #tcp_nopush     on;
+
+      proxy_buffer_size         16k;
+      proxy_buffers             64 4k;
+      proxy_busy_buffers_size   24k; # essentially, proxy_buffer_size + 2 small buffers of 4k
+
+      keepalive_timeout  10;
+      send_timeout       10;
+      server_tokens      off;
+
+      #gzip  on;
+
+      # define a zone for API requests with strict limits: 10 requests per second per IP
+      limit_req_zone $binary_remote_addr zone=api_zone:1m rate=10r/s;
+
+      # check sec-fetch-site
+      map $http_sec_fetch_site $sec_fetch_site_is_ok {
+       default 0;
+       "same-origin" 1;
+       "none" 1;
+      }
+
+      include /etc/nginx/conf.d/*.conf;
+    }
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: admin-portal-env
+  namespace: snapshot-ns
+data:
+  env: |
+    PUBLIC_BACKEND_SERVICE_DIRECTORY_URL=https://ap.central.svc.cluster.local
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: keycloak-bootstrap
+  namespace: snapshot-ns
+data:
+  bootstrapEnabled: "false"
+---
+# Source: ga-lotse-ctr/templates/pdf-converter-portal-config.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: pdf-converter-portal-config
+  namespace: snapshot-ns
+data:
+  nginx.conf: |
+    worker_processes  auto;
+
+    error_log  /proc/self/fd/2 debug;
+    pid        /var/run/nginx.pid;
+
+    events {
+      worker_connections  1024;
+    }
+
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+      'status=$status '
+      'body_bytes_sent=$body_bytes_sent '
+      'http_referer=$http_referer '
+      '"$http_user_agent" '
+      'http_x_forwarded_for=$http_x_forwarded_for '
+      'upstream_addr=$upstream_addr '
+      'upstream_status=$upstream_status '
+      'request_time=$request_time '
+      'upstream_response_time=$upstream_response_time '
+      'upstream_connect_time=$upstream_connect_time '
+      'upstream_header_time=$upstream_header_time ';
+
+      access_log  /proc/self/fd/2  main;
+
+      sendfile        on;
+      #tcp_nopush     on;
+
+      proxy_buffer_size         16k;
+      proxy_buffers             64 4k;
+      proxy_busy_buffers_size   24k; # essentially, proxy_buffer_size + 2 small buffers of 4k
+
+      keepalive_timeout  10;
+      send_timeout       10;
+      server_tokens      off;
+
+      #gzip  on;
+
+      # define a zone for API requests with strict limits: 10 requests per second per IP
+      limit_req_zone $binary_remote_addr zone=api_zone:1m rate=10r/s;
+
+      # We don't need to worry about sec-fetch-site since our backend is static
+
+      include /etc/nginx/conf.d/*.conf;
+    }
+  pdf-converter-portal.conf: |
+    server {
+      resolver     127.0.0.1 valid=15s ipv6=off; # force resolving cache to localhost
+      listen       443 ssl default_server;
+      root         /usr/share/nginx/html;
+      http2        on;
+      server_name  pcp.central.svc.cluster.local;
+
+      include /usr/share/nginx/html/.csp_config.conf;
+
+      add_header X-Robots-Tag "noindex" always;
+      add_header Content-Security-Policy "default-src 'self'; connect-src 'self'; script-src $csp_script_hashes 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests;" always;
+
+      if ($host != "pcp.central.svc.cluster.local") {
+        return 400;
+      }
+
+      # access_log  /proc/self/fd/2  main;
+
+      # path to the server certificates
+      ssl_certificate /etc/nginx/ssl/tls.crt;
+      ssl_certificate_key /etc/nginx/ssl/tls.key;
+
+      ssl_session_cache   shared:SSL:1m;
+      ssl_session_timeout 5m;
+      ssl_session_tickets off;
+
+      ssl_prefer_server_ciphers off;
+      ssl_protocols TLSv1.3;
+      ssl_conf_command Ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384;
+
+      # set timeouts for reading client request header and body
+      client_header_timeout 60s;
+      client_body_timeout 60s;
+
+      # avoid buffer overflow
+      large_client_header_buffers 4 8k;
+      client_header_buffer_size 4k;
+
+      # no disclosure of server info
+      server_tokens off;
+
+      # website should not be displayed inside a <frame>, an <iframe> or an <object>
+      add_header X-Frame-Options DENY always;
+
+      # protect clients from HTTP interception with STS (cached for 63072000 seconds = 2 years)
+      add_header Strict-Transport-Security "max-age=63072000; includeSubdomains" always;
+
+      # avoid MIME type sniffing by saying that the MIME types are deliberately configured
+      add_header X-Content-Type-Options nosniff always;
+
+      # sent requests should not include any referrer information
+      add_header Referrer-Policy "no-referrer" always;
+
+      # isolates the browsing context exclusively to same-origin documents
+      add_header Cross-Origin-Opener-Policy "same-origin" always;
+
+      # disallow cross-origin no-cors requests
+      add_header Cross-Origin-Resource-Policy "same-origin" always;
+
+      # specify a custom error page for all common HTTP errors
+      error_page
+          400 401 402 403 404 405 406 408 409 410 411 412 413 414 415 416 421 429
+          500 501 502 503 504 505 507
+          @errors;
+
+      # location block for our custom error page
+      location @errors {
+        internal;
+        default_type "text/html; charset=utf-8";
+        return 200 '
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Error</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; }
+                        .error-container { margin-top: 50px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="error-container">
+                        <h1>Oh-weh! Da ging etwas schief.</h1>
+                        <p>Wir haben technische Schwierigkeiten. Bitte versuchen Sie es sp&auml;ter noch einmal.</p>
+                    </div>
+                    <div class="error-container">
+                        <h1>Oops! Something went wrong.</h1>
+                        <p>We\'re experiencing technical difficulties. Please try again later.</p>
+                    </div>
+                </body>
+                </html>
+            ';
+      }
+
+      # Deny access to hidden files.
+      location ~/\\.{
+        deny all;
+      }
+
+      location /assets {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000";
+        try_files $uri $uri/ =404;
+      }
+
+      location / {
+        try_files $uri $uri/ /index.html;
+      }
+    }
+---
+# Source: ga-lotse-ctr/templates/sd-import.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: service-directory-import
+  namespace: snapshot-ns
+data:
+  import.json: |
+    {
+      "orgUnits": [
+        {
+          "readableName": "frankfurt",
+          "active": true,
+          "type": "GA",
+          "federalState": "HE",
+          "actors": [
+            {
+              "readableName": "base",
+              "type": "GM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "base.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "chatmanagement",
+              "type": "MISC",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "chatmanagement.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "dental",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "dental.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "inspection",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "inspection.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "measlesprotection",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "measlesprotection.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "medicalregistry",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "medicalregistry.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "officialmedicalservice",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "officialmedicalservice.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "opendata",
+              "type": "MISC",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "opendata.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "schoolentry",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "schoolentry.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "statistics",
+              "type": "MISC",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "statistics.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "stiprotection",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "stiprotection.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "travelmedicine",
+              "type": "FM",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "travelmedicine.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "employee-portal-auth",
+              "type": "WEB",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "employee-portal-auth.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "employee-portal",
+              "type": "WEB",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "employee-portal.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "employee-portal-reverse-proxy",
+              "type": "WEB",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "ep.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "citizen-portal-auth",
+              "type": "WEB",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "citizen-portal-auth.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "citizen-portal",
+              "type": "WEB",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "citizen-portal.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "citizen-portal-reverse-proxy",
+              "type": "WEB",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "cp.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+            "readableName": "auditlog",
+            "type": "MISC",
+            "active": true,
+            "manualCertificate": false,
+            "commonName": "auditlog.frankfurt.svc.cluster.local",
+            "certificate": null,
+            "networkId": "frankfurt"
+            },
+            {
+              "readableName": "synapse",
+              "type": "MISC",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "synapse.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "svgsanitizer",
+              "type": "RESTRICTED",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "svgsanitizer.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            },
+            {
+              "readableName": "lsd",
+              "type": "LSD",
+              "active": true,
+              "manualCertificate": true,
+              "commonName": "lsd.frankfurt.svc.cluster.local",
+              "certificate": null,
+              "networkId": "frankfurt"
+            }
+          ]
+        },
+        {
+          "readableName": "central",
+          "active": true,
+          "type": "ZD",
+          "federalState": "DE",
+          "actors": [
+            {
+              "readableName": "centralrepository",
+              "type": "ZR",
+              "active": true,
+              "manualCertificate": false,
+              "commonName": "centralrepository.central.svc.cluster.local",
+              "certificate": null,
+              "networkId": "central"
+            },
+            {
+              "readableName": "lsd",
+              "type": "LSD",
+              "active": true,
+              "manualCertificate": true,
+              "commonName": "lsd.central.svc.cluster.local",
+              "certificate": null,
+              "networkId": "central"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → citizen-portal",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal"
+          }
+        },
+        {
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → citizen-portal-auth",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal-auth"
+          }
+        },
+        {
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → All FM",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM"
+          }
+        },
+        {
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → base",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          }
+        },
+        {
+          "active": true,
+          "description": "citizen-portal-reverse-proxy → opendata",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "citizen-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "opendata"
+          }
+        },
+        {
+          "active": true,
+          "description": "employee-portal-reverse-proxy → employee-portal",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal"
+          }
+        },
+        {
+          "active": true,
+          "description": "employee-portal-reverse-proxy → employee-portal-auth",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-auth"
+          }
+        },
+        {
+          "active": true,
+          "description": "employee-portal-reverse-proxy → ALL FM",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM"
+          }
+        },
+        {
+          "active": true,
+          "description": "employee-portal-reverse-proxy → base",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          }
+        },
+        {
+          "active": true,
+          "description": "employee-portal-reverse-proxy → MISC",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-reverse-proxy"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC"
+          }
+        },
+        {
+          "active": true,
+          "description": "All FM → auditlog",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "auditlog"
+          }
+        },
+        {
+          "active": true,
+          "description": "base → auditlog",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "auditlog"
+          }
+        },
+        {
+          "active": true,
+          "description": "MISC → auditlog",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "auditlog"
+          }
+        },
+        {
+          "active": true,
+          "description": "auditlog → base",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "auditlog"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          }
+        },
+        {
+          "active": true,
+          "description": "chatmanagement → synapse",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "chatmanagement"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "synapse"
+          }
+        },
+        {
+          "active": true,
+          "description": "employee-portal-auth → synapse",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "WEB",
+            "actorName": "employee-portal-auth"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "synapse"
+          }
+        },
+        {
+          "active": true,
+          "description": "base → All FM",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM"
+          }
+        },
+        {
+          "active": true,
+          "description": "base → svgsanitizer",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "RESTRICTED",
+            "actorName": "svgsanitizer"
+          }
+        },
+        {
+          "active": true,
+          "description": "ALL FM → base",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          }
+        },
+        {
+          "active": true,
+          "description": "statistics → All FM",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "statistics"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "FM"
+          }
+        },
+        {
+          "active": true,
+          "description": "statistics → base",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "MISC",
+            "actorName": "statistics"
+          },
+          "server": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "orgUnitName": "frankfurt",
+            "actorType": "GM",
+            "actorName": "base"
+          }
+        },
+        {
+          "active": true,
+          "description": "inspection → centralrepository",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "actorType": "FM",
+            "actorName": "inspection"
+          },
+          "server": {
+            "federalState": "DE",
+            "orgUnitType": "ZD",
+            "orgUnitName": "central",
+            "actorType": "ZR",
+            "actorName": "centralrepository"
+          }
+        },
+        {
+          "active": true,
+          "description": "statistics → centralrepository",
+          "client": {
+            "federalState": "HE",
+            "orgUnitType": "GA",
+            "actorType": "MISC",
+            "actorName": "statistics"
+          },
+          "server": {
+            "federalState": "DE",
+            "orgUnitType": "ZD",
+            "orgUnitName": "central",
+            "actorType": "ZR",
+            "actorName": "centralrepository"
+          }
+        }
+      ]
+    }
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "keycloak-db"
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: "512Mi"
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "centralrepository-db"
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: "512Mi"
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "servicedirectory-db"
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: "512Mi"
+---
+# Source: ga-lotse-ctr/templates/rolebindings.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: deployment-reader-role
+  namespace: snapshot-ns
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["list"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets"]
+  verbs: ["list"]
+---
+# Source: ga-lotse-ctr/templates/rolebindings.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: default-list-deployments
+  namespace: snapshot-ns
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: snapshot-ns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: deployment-reader-role
+---
+# Source: ga-lotse-ctr/templates/admin-portal.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: adminportal
+  namespace: snapshot-ns
+spec:
+  selector:
+    app: adminportal-app
+  ports:
+  - port: 443
+    name: proxy-incoming
+    targetPort: proxy-incoming
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak-db
+spec:
+  selector:
+    app: keycloak-db-app
+  ports:
+  - port: 5432
+    targetPort: 5432
+  clusterIP: None
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak
+  namespace: snapshot-ns
+spec:
+  selector:
+    app: keycloak-app
+  ports:
+  - port: 443
+    targetPort: 8443
+    name: keycloak
+---
+# Source: ga-lotse-ctr/templates/lsd.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: lsd
+  namespace: snapshot-ns
+spec:
+  selector:
+    app: lsd-app
+  ports:
+  - port: 443
+    targetPort: spatz-incoming
+    name: spatz-incoming
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: centralrepository-db
+spec:
+  selector:
+    app: centralrepository-db-app
+  ports:
+  - port: 5432
+    targetPort: 5432
+  clusterIP: None
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: centralrepository
+  namespace: snapshot-ns
+  labels:
+    app.kubernetes.io/name: centralrepository
+spec:
+  selector:
+    app: centralrepository-app
+  ports:
+  - port: 443
+    name: spatz-incoming
+    targetPort: spatz-incoming
+  - port: 8081
+    name: app-mgmt-port
+    targetPort: app-mgmt-port
+---
+# Source: ga-lotse-ctr/templates/pdf-converter-portal.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: pdf-converter-portal
+  namespace: snapshot-ns
+spec:
+  selector:
+    app: pdf-converter-portal-app
+  ports:
+  - port: 443
+    name: incoming
+    targetPort: incoming
+---
+# Source: ga-lotse-ctr/templates/relay-server.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: relay-server
+  namespace: snapshot-ns
+spec:
+  selector:
+    app: relay-server-app
+  ports:
+  - port: 443
+    targetPort: spatz-incoming
+    name: spatz-incoming
+  type: ClusterIP
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicedirectory-db
+spec:
+  selector:
+    app: servicedirectory-db-app
+  ports:
+  - port: 5432
+    targetPort: 5432
+  clusterIP: None
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: service-directory
+  namespace: snapshot-ns
+spec:
+  selector:
+    app: service-directory-app
+  ports:
+  - port: 443
+    targetPort: spatz-incoming
+    name: spatz-incoming
+  type: ClusterIP
+---
+# Source: ga-lotse-ctr/templates/admin-portal.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: adminportal
+  namespace: snapshot-ns
+  labels:
+    app: adminportal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: adminportal-app
+  template:
+    metadata:
+      name: adminportal
+      labels:
+        app: adminportal-app
+      annotations:
+        checksum/config: '###DYNAMIC_FIELD###'
+        checksum/usercerts: '###DYNAMIC_FIELD###'
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      dnsConfig:
+        nameservers:
+        - 127.0.0.1
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      dnsPolicy: None
+      initContainers:
+      - name: waitfor-service-directory
+        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        command:
+        - "bash"
+        - "-c"
+        - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="service-directory")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for service-directory; sleep 1; done
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/admin-portal:latest"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: HOSTNAME
+          value: 127.0.0.1
+        - name: PORT
+          value: "3000"
+        - name: PUBLIC_ENVIRONMENT_TYPE
+          value: "dev"
+        - name: PUBLIC_FRONTEND_URL
+          value: "https://ap.central.svc.cluster.local"
+        - name: PUBLIC_BACKEND_SERVICE_DIRECTORY_URL
+          value: "https://ap.central.svc.cluster.local"
+        volumeMounts:
+        - mountPath: /app/admin-portal/.env
+          name: admin-portal-env
+          subPath: env
+          readOnly: true
+        resources:
+          limits:
+            memory: 192Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+      - name: proxy
+        image: "docker.io/nginx:1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: PORT
+          value: "8443"
+        livenessProbe:
+          tcpSocket:
+            port: 8443
+        resources:
+          limits:
+            memory: 256Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+          name: proxy-incoming
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d/default.conf
+          name: config
+          subPath: admin-portal.conf
+          readOnly: true
+        - mountPath: /etc/nginx/nginx.conf
+          name: config
+          subPath: nginx.conf
+          readOnly: true
+        - mountPath: /var/cache/nginx
+          subPath: cache
+          name: nginx-runtime-data
+        - mountPath: /var/run
+          subPath: var-run
+          name: nginx-runtime-data
+        - name: certs
+          mountPath: /etc/nginx/ssl/tls.crt
+          subPath: tls.crt
+          readOnly: true
+        - name: certs
+          mountPath: /etc/nginx/ssl/tls.key
+          subPath: tls.key
+          readOnly: true
+        - name: usercerts
+          mountPath: /etc/nginx/ssl/truststore.crt
+          subPath: truststore.crt
+          readOnly: true
+      - name: spatz
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /wait-for-containerstart.sh
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        env:
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_RELAY_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+          value: /var/run/certs/tls.crt
+        - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+          value: /var/run/certs/tls.key
+        - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+          value: "443"
+        - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+          value: "443"
+        - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+          value: "10.43.0.10"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+          value: "service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+          value: "keycloak.central.svc.cluster.local"
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+        - name: certs
+          mountPath: /var/run/certs
+          readOnly: true
+        image: 'k3d-ga-lotse-registry:5050/ga-lotse/spatz:latest'
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 443
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8079
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+      volumes:
+      - name: ca
+        configMap:
+          name: ca
+      - name: config
+        configMap:
+          name: admin-portal-reverse-proxy-config
+      - name: certs
+        secret:
+          secretName: admin-portal-public-tls
+          defaultMode: 420
+      - name: usercerts
+        secret:
+          secretName: admin-portal-users-tls
+          defaultMode: 420
+      - name: admin-portal-env
+        configMap:
+          name: admin-portal-env
+      - name: nginx-runtime-data
+        emptyDir:
+          medium: Memory
+          sizeLimit: 256Mi
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: keycloak
+  namespace: snapshot-ns
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: keycloak-app
+  template:
+    metadata:
+      name: keycloak
+      labels:
+        app: keycloak-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      initContainers:
+      - name: copy-keycloak-to-tmpfs
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/keycloak:latest"
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+        command: ["bash", "-c"]
+        args:
+        - rm -rf /ws/keycloak/ && mkdir -p /ws/keycloak/ && cp -R /opt/keycloak/* /ws/keycloak/
+        volumeMounts:
+        - name: workspace
+          mountPath: /ws
+      - name: waitfor-keycloak-db
+        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        command:
+        - "bash"
+        - "-c"
+        - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="keycloak-db")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for keycloak-db; sleep 1; done
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      volumes:
+      - name: workspace
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      - name: certs
+        secret:
+          secretName: "keycloak-private-tls"
+          defaultMode: 420
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/keycloak:latest"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9000
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9000
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+        resources:
+          limits:
+            memory: 1500Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+        env:
+        - name: KC_PROXY_HEADERS
+          value: xforwarded
+        - name: KC_HOSTNAME
+          value: "https://keycloak.central.svc.cluster.local"
+        - name: KC_DB_URL
+          value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_PORT
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_DB
+        - name: KC_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_USER
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_PASSWORD
+        - name: KC_HTTPS_CERTIFICATE_FILE
+          value: /var/run/certs/tls.crt
+        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+          value: /var/run/certs/tls.key
+        args:
+        - "start"
+        - "--optimized"
+        ports:
+        - containerPort: 443
+          protocol: TCP
+          name: keycloak
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: workspace
+          mountPath: /opt
+        - name: tmp
+          mountPath: /tmp
+        - name: certs
+          mountPath: /var/run/certs
+          readOnly: true
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: lsd
+  namespace: snapshot-ns
+  labels:
+    app: lsd
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: lsd-app
+  template:
+    metadata:
+      name: lsd
+      labels:
+        app: lsd-app
+      annotations:
+        checksum/config: '###DYNAMIC_FIELD###'
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      dnsConfig:
+        nameservers:
+        - 127.0.0.1
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: ca
+        configMap:
+          name: ca
+      - name: certs
+        secret:
+          secretName: "lsd-public-tls"
+          defaultMode: 420
+      - name: import-data
+        secret:
+          secretName: lsd-import
+          defaultMode: 420
+      dnsPolicy: None
+      initContainers:
+      - name: waitfor-keycloak
+        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        command:
+        - "bash"
+        - "-c"
+        - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="keycloak")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for keycloak; sleep 1; done
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/local-service-directory:latest"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 1024Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+        env:
+        - name: SERVER_ADDRESS
+          value: 127.0.0.1
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: SPRING_SSL_BUNDLE_PEM_LSD_TRUSTSTORE_LOCATION
+          value: /var/run/certs/tls.crt
+        - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_CERTIFICATE
+          value: /var/run/certs/tls.crt
+        - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_PRIVATEKEY
+          value: /var/run/certs/tls.key
+        - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
+          value: "https://keycloak.central.svc.cluster.local/realms/eshg-lsd"
+        - name: ESHG_LSD_MAXCERTIFICATESPERACTOR
+          value: "4"
+        - name: ESHG_KEYCLOAK_URL
+          value: "https://keycloak.central.svc.cluster.local"
+        - name: ESHG_KEYCLOAK_INTERNAL_URL
+          value: "https://keycloak.central.svc.cluster.local"
+        - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-admin
+              key: password
+        - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINCLIENT_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-admin
+              key: lsd-admin-client-secret
+        - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTID
+          value: eshg-actor
+        - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-client-secrets
+              key: lsd-client-secret
+        - name: ESHG_LSD_ORGUNIT_NAME
+          value: "central"
+        - name: ESHG_SERVICEDIRECTORY_BASEURL
+          value: "http://service-directory.central.svc.cluster.local"
+        - name: ESHG_LSD_KEYCLOAK_IMPORTFILE
+          value: /var/run/import-data/import.json
+        - name: management.server.port
+          value: "8081"
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: ca
+          mountPath: /opt/java/openjdk/lib/security/cacerts
+          subPath: cacerts
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+        - name: certs
+          mountPath: /var/run/certs
+          readOnly: true
+        - name: import-data
+          mountPath: /var/run/import-data
+          readOnly: true
+      - name: spatz
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /wait-for-containerstart.sh
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        env:
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: spring.ssl.bundle.pem.certificatevalidation.truststore.certificate
+          value: /var/run/certs/tls.crt
+        - name: eshg.spatz.inbound.force-client-auth
+          value: 'false'
+        - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_RELAY_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+          value: /var/run/certs/tls.crt
+        - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+          value: /var/run/certs/tls.key
+        - name: ESHG_SERVICEDIRECTORY_BASEURL
+          value: "http://service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+          value: "443"
+        - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+          value: "443"
+        - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+          value: "10.43.0.10"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+          value: "service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_1
+          value: "lsd.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+          value: "keycloak.central.svc.cluster.local"
+        ports:
+        - containerPort: 443
+          protocol: TCP
+          name: spatz-incoming
+        volumeMounts:
+        - name: ca
+          mountPath: /opt/java/openjdk/lib/security/cacerts
+          subPath: cacerts
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+        - name: certs
+          mountPath: /var/run/certs
+          readOnly: true
+        image: 'k3d-ga-lotse-registry:5050/ga-lotse/spatz:latest'
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 443
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8079
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: centralrepository
+  namespace: snapshot-ns
+  labels:
+    app: centralrepository
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: centralrepository-app
+  template:
+    metadata:
+      name: centralrepository
+      labels:
+        app: centralrepository-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      dnsConfig:
+        nameservers:
+        - 127.0.0.1
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      dnsPolicy: None
+      initContainers:
+      - name: waitfor-lsd
+        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        command:
+        - "bash"
+        - "-c"
+        - until ( AVAILABLE="$(kubectl -n ${POD_NAMESPACE} get deployments -o jsonpath='{.items[?(@.metadata.name=="lsd")].status.conditions[?(@.type=="Available")].status}')"; [ "$AVAILABLE" == "True" ] ); do echo waiting for lsd; sleep 1; done
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      - name: waitfor-centralrepository-db
+        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        command:
+        - "bash"
+        - "-c"
+        - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="centralrepository-db")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for centralrepository-db; sleep 1; done
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/central-repository:latest"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 1024Mi
+          requests:
+            cpu: 10m
+            memory: 128Mi
+        ports:
+        - containerPort: 8081
+          protocol: TCP
+          name: app-mgmt-port
+        env:
+        - name: SERVER_ADDRESS
+          value: 127.0.0.1
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: management.server.port
+          value: "8081"
+        - name: management.metrics.tags.application
+          value: "eshg-backend-centralrepository"
+        - name: spring.servlet.multipart.max-file-size
+          value: "26214400"
+        - name: spring.servlet.multipart.max-request-size
+          value: "26214400"
+        - name: spring.datasource.url
+          value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_PORT
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_DB
+        - name: spring.datasource.username
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_USER
+        - name: spring.datasource.password
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_PASSWORD
+        - name: eshg.servicedirectory.baseUrl
+          value: http://service-directory.central.svc.cluster.local
+        - name: eshg.keycloak.url
+          value: "https://keycloak.central.svc.cluster.local"
+        - name: eshg.keycloak.internal.url
+          value: "https://keycloak.central.svc.cluster.local"
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 10
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: ca
+          mountPath: /opt/java/openjdk/lib/security/cacerts
+          subPath: cacerts
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+      - name: spatz
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /wait-for-containerstart.sh
+        ports:
+        - containerPort: 443
+          protocol: TCP
+          name: spatz-incoming
+        imagePullPolicy: Always
+        image: 'k3d-ga-lotse-registry:5050/ga-lotse/spatz:latest'
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 443
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8079
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        env:
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+          value: 'true'
+        - name: ESHG_SPATZ_SELFSIGNED_SUBJECTLOCATION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ESHG_SPATZ_RELAY_ENABLED
+          value: 'true'
+        - name: ESHG_SPATZ_RELAY_URL
+          value: "ws://relay-server.central.svc.cluster.local/signalling"
+        - name: ESHG_SERVICEDIRECTORY_BASEURL
+          value: "http://service-directory.central.svc.cluster.local"
+        - name: ESHG_LSD_BASEURL
+          value: "http://lsd.central.svc.cluster.local"
+        - name: ESHG_LSDKEYCLOAK_CLIENT_URL
+          value: "https://keycloak.central.svc.cluster.local"
+        - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
+          value: "https://keycloak.central.svc.cluster.local/realms/eshg-lsd"
+        - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTID
+          value: eshg-actor
+        - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-client-secrets
+              key: lsd-client-secret
+        - name: ESHG_LSDKEYCLOAK_ACTOR_USER
+          value: "centralrepository.central.svc.cluster.local"
+        - name: ESHG_LSDKEYCLOAK_ACTOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-actor-secrets
+              key: centralrepository
+        - name: eshg.spatz.actor.host-name
+          value: "centralrepository.central.svc.cluster.local"
+        - name: eshg.spatz.actor.type
+          value: ZR
+        - name: eshg.spatz.actor.readable-name
+          value: "centralrepository"
+        - name: eshg.spatz.actor.natural-id
+          value: "centralrepository.central.svc.cluster.local"
+        - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+          value: "443"
+        - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+          value: "443"
+        - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+          value: "10.43.0.10"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+          value: "service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_1
+          value: "lsd.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_2
+          value: "relay-server.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+          value: "keycloak.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_HOST
+        volumeMounts:
+        - name: ca
+          mountPath: /opt/java/openjdk/lib/security/cacerts
+          subPath: cacerts
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: ca
+        configMap:
+          name: ca
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: pdf-converter-portal
+  namespace: snapshot-ns
+  labels:
+    app: pdf-converter-portal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pdf-converter-portal-app
+  template:
+    metadata:
+      name: pdf-converter-portal
+      labels:
+        app: pdf-converter-portal-app
+      annotations:
+        checksum/config: 7d3b1fd901c6b2fd5bbfbe0bb9f3a315b5143938d605536d79ab2e763fc77f92
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      volumes:
+      - name: config
+        configMap:
+          name: pdf-converter-portal-config
+      - name: certs
+        secret:
+          secretName: pdf-converter-portal-public-tls
+          defaultMode: 420
+      - name: nginx-runtime-data
+        emptyDir:
+          medium: Memory
+          sizeLimit: 256Mi
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/pdf-converter-portal:latest"
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          tcpSocket:
+            port: 443
+        resources:
+          limits:
+            memory: 256Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+        ports:
+        - containerPort: 443
+          protocol: TCP
+          name: incoming
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d/default.conf
+          name: config
+          subPath: pdf-converter-portal.conf
+          readOnly: true
+        - mountPath: /etc/nginx/nginx.conf
+          name: config
+          subPath: nginx.conf
+          readOnly: true
+        - mountPath: /var/cache/nginx
+          subPath: cache
+          name: nginx-runtime-data
+        - mountPath: /var/run
+          subPath: var-run
+          name: nginx-runtime-data
+        - name: certs
+          mountPath: /etc/nginx/ssl/tls.crt
+          subPath: tls.crt
+          readOnly: true
+        - name: certs
+          mountPath: /etc/nginx/ssl/tls.key
+          subPath: tls.key
+          readOnly: true
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: relay-server
+  namespace: snapshot-ns
+  labels:
+    app: relay-server
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: relay-server-app
+  template:
+    metadata:
+      name: relay-server
+      labels:
+        app: relay-server-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      dnsConfig:
+        nameservers:
+        - 127.0.0.1
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: ca
+        configMap:
+          name: ca
+      - name: certs
+        secret:
+          secretName: "relay-server-public-tls"
+          defaultMode: 420
+      dnsPolicy: None
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/relay-server:latest"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 1024Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+        env:
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: SERVER_ADDRESS
+          value: 127.0.0.1
+        - name: SERVER_PORT
+          value: "8080"
+        - name: management.server.port
+          value: "8081"
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      - name: spatz
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /wait-for-containerstart.sh
+        env:
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: ESHG_SERVICEDIRECTORY_BASEURL
+          value: "http://service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_RELAY_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+          value: /var/run/certs/tls.crt
+        - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+          value: /var/run/certs/tls.key
+        - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+          value: "443"
+        - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+          value: "443"
+        - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+          value: "10.43.0.10"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+          value: "service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+          value: "keycloak.central.svc.cluster.local"
+        ports:
+        - containerPort: 443
+          protocol: TCP
+          name: spatz-incoming
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+        - name: certs
+          mountPath: /var/run/certs
+          readOnly: true
+        image: 'k3d-ga-lotse-registry:5050/ga-lotse/spatz:latest'
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 443
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8079
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: service-directory
+  namespace: snapshot-ns
+  labels:
+    app: service-directory
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: service-directory-app
+  template:
+    metadata:
+      name: service-directory
+      labels:
+        app: service-directory-app
+      annotations:
+        checksum/config: '###DYNAMIC_FIELD###'
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      initContainers:
+      - name: waitfor-servicedirectory-db
+        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_init_t
+        command:
+        - "bash"
+        - "-c"
+        - until ( READY="$(kubectl -n ${POD_NAMESPACE} get statefulsets -o jsonpath='{.items[?(@.metadata.name=="servicedirectory-db")].status.readyReplicas}')"; [ "$READY" -ge "1" ] ); do echo waiting for servicedirectory-db; sleep 1; done
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      dnsConfig:
+        nameservers:
+        - 127.0.0.1
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "53"
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: certs
+        secret:
+          secretName: "service-directory-public-tls"
+          defaultMode: 420
+      - name: import-data
+        configMap:
+          name: service-directory-import
+          defaultMode: 420
+      - name: ca
+        configMap:
+          name: ca
+      dnsPolicy: None
+      containers:
+      - name: application
+        image: "k3d-ga-lotse-registry:5050/ga-lotse/service-directory:latest"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 1024Mi
+          requests:
+            cpu: 10m
+            memory: 256Mi
+        env:
+        - name: SERVER_ADDRESS
+          value: 127.0.0.1
+        - name: spring.datasource.url
+          value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_PORT
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_DB
+        - name: spring.datasource.username
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_USER
+        - name: spring.datasource.password
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_PASSWORD
+        - name: eshg.sd.allowed-admin-client-commonnames
+          value: ap.central.svc.cluster.local
+        - name: eshg.sd.admin-certs
+          valueFrom:
+            secretKeyRef:
+              name: admin-portal-users-tls
+              key: truststore.crt
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: eshg.sd.self.common-name
+          value: service-directory.central.svc.cluster.local
+        - name: eshg.sd.relay-server.common-name
+          value: relay-server.central.svc.cluster.local
+        - name: ESHG_SD_MAXCERTIFICATESPERACTOR
+          value: "4"
+        - name: ESHG_SERVICEDIRECTORY_IMPORTFILE
+          value: /var/run/import-data/import.json
+        - name: management.server.port
+          value: "8081"
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: import-data
+          mountPath: /var/run/import-data
+          readOnly: true
+      - name: spatz
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        env:
+        - name: spring.profiles.active
+          value: "dev, preview-features"
+        - name: ESHG_SERVICEDIRECTORY_BASEURL
+          value: "http://service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_RELAY_ENABLED
+          value: 'false'
+        - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+          value: /var/run/certs/tls.crt
+        - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+          value: /var/run/certs/tls.key
+        - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+          value: "443"
+        - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+          value: "443"
+        - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+          value: "10.43.0.10"
+        - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+          value: "service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+          value: "keycloak.central.svc.cluster.local"
+        - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_HOST
+        - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_0
+          value: "service-directory.central.svc.cluster.local"
+        - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_1
+          value: "ap.central.svc.cluster.local"
+        - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_2
+          value: "relay-server.central.svc.cluster.local"
+        - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_3
+          value: "lsd.frankfurt.svc.cluster.local"
+        - name: ESHG_SPATZ_INBOUND_CLIENTCNALLOWLIST_4
+          value: "lsd.central.svc.cluster.local"
+        ports:
+        - containerPort: 443
+          protocol: TCP
+          name: spatz-incoming
+        imagePullPolicy: Always
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /wait-for-containerstart.sh
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 10
+        volumeMounts:
+        - name: ca
+          mountPath: /etc/ssl/certs/localca.pem
+          subPath: ca.crt
+        - name: certs
+          mountPath: /var/run/certs
+          readOnly: true
+        image: 'k3d-ga-lotse-registry:5050/ga-lotse/spatz:latest'
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 443
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8079
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: keycloak-db
+  labels:
+    app: keycloak-db
+spec:
+  replicas: 1
+  serviceName: keycloak-db
+  selector:
+    matchLabels:
+      app: keycloak-db-app
+  template:
+    metadata:
+      name: keycloak-db
+      labels:
+        app: keycloak-db-app
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+      - name: db-init
+        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+          runAsGroup: 0
+        command:
+        - 'sh'
+        - '-c'
+        - |
+          chown -R 10001:10001 /var/lib/postgresql/data
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      containers:
+      - name: keycloak-db
+        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db
+              key: POSTGRESQL_PASSWORD
+        resources: {}
+        livenessProbe:
+          failureThreshold: 5
+          exec:
+            command: ["pg_isready", "-h127.0.0.1", "-U $POSTGRES_USER", "-d $POSTGRES_DB"]
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: run
+          mountPath: /var/run
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: run
+        emptyDir: {}
+      - name: data
+        persistentVolumeClaim:
+          claimName: keycloak-db
+---
+# Source: ga-lotse-ctr/templates/modules.yaml
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: centralrepository-db
+  labels:
+    app: centralrepository-db
+spec:
+  replicas: 1
+  serviceName: centralrepository-db
+  selector:
+    matchLabels:
+      app: centralrepository-db-app
+  template:
+    metadata:
+      name: centralrepository-db
+      labels:
+        app: centralrepository-db-app
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+      - name: db-init
+        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+          runAsGroup: 0
+        command:
+        - 'sh'
+        - '-c'
+        - |
+          chown -R 10001:10001 /var/lib/postgresql/data
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      containers:
+      - name: centralrepository-db
+        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: centralrepository-db
+              key: POSTGRESQL_PASSWORD
+        resources: {}
+        livenessProbe:
+          failureThreshold: 5
+          exec:
+            command: ["pg_isready", "-h127.0.0.1", "-U $POSTGRES_USER", "-d $POSTGRES_DB"]
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: run
+          mountPath: /var/run
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: run
+        emptyDir: {}
+      - name: data
+        persistentVolumeClaim:
+          claimName: centralrepository-db
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: servicedirectory-db
+  labels:
+    app: servicedirectory-db
+spec:
+  replicas: 1
+  serviceName: servicedirectory-db
+  selector:
+    matchLabels:
+      app: servicedirectory-db-app
+  template:
+    metadata:
+      name: servicedirectory-db
+      labels:
+        app: servicedirectory-db-app
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+      - name: "gitlab-registry-pull-secret"
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seLinuxOptions:
+          type: container_t
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+      - name: db-init
+        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+          runAsGroup: 0
+        command:
+        - 'sh'
+        - '-c'
+        - |
+          chown -R 10001:10001 /var/lib/postgresql/data
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      containers:
+      - name: servicedirectory-db
+        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: servicedirectory-db
+              key: POSTGRESQL_PASSWORD
+        resources: {}
+        livenessProbe:
+          failureThreshold: 5
+          exec:
+            command: ["pg_isready", "-h127.0.0.1", "-U $POSTGRES_USER", "-d $POSTGRES_DB"]
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: run
+          mountPath: /var/run
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: run
+        emptyDir: {}
+      - name: data
+        persistentVolumeClaim:
+          claimName: servicedirectory-db
+---
+# Source: ga-lotse-ctr/templates/admin-portal.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "admin-portal-public"
+  namespace: snapshot-ns
+spec:
+  commonName: "ap.central.svc.cluster.local"
+  dnsNames:
+  - "ap.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "local-ca"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "admin-portal-public-tls"
+  subject: {}
+  usages:
+  - server auth
+  - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "keycloak-private"
+  namespace: snapshot-ns
+spec:
+  commonName: "keycloak.central.svc.cluster.local"
+  dnsNames:
+  - "keycloak.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "local-ca"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "keycloak-private-tls"
+  subject: {}
+  usages:
+  - server auth
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/lsd.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "lsd-public"
+  namespace: snapshot-ns
+spec:
+  commonName: "lsd.central.svc.cluster.local"
+  dnsNames:
+  - "lsd.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "local-ca"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "lsd-public-tls"
+  subject: {}
+  usages:
+  - server auth
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/pdf-converter-portal.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "pdf-converter-portal-public"
+  namespace: snapshot-ns
+spec:
+  commonName: "pcp.central.svc.cluster.local"
+  dnsNames:
+  - "pcp.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "local-ca"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "pdf-converter-portal-public-tls"
+  subject: {}
+  usages:
+  - server auth
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/relay-server.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "relay-server-public"
+  namespace: snapshot-ns
+spec:
+  commonName: "relay-server.central.svc.cluster.local"
+  dnsNames:
+  - "relay-server.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "local-ca"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "relay-server-public-tls"
+  subject: {}
+  usages:
+  - server auth
+  - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "service-directory-public"
+  namespace: snapshot-ns
+spec:
+  commonName: "service-directory.central.svc.cluster.local"
+  dnsNames:
+  - "service-directory.central.svc.cluster.local"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "local-ca"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "service-directory-public-tls"
+  subject: {}
+  usages:
+  - server auth
+  - client auth
+---
+# Source: ga-lotse-ctr/templates/admin-portal.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: adminportal
+  namespace: snapshot-ns
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`ap.central.svc.cluster.local`)
+    services:
+    - name: adminportal
+      port: proxy-incoming
+  tls:
+    passthrough: true
+---
+# Source: ga-lotse-ctr/templates/keycloak.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: keycloak-internal
+  namespace: snapshot-ns
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`keycloak.central.svc.cluster.local`)
+    services:
+    - name: keycloak
+      port: keycloak
+  tls:
+    passthrough: true
+---
+# Source: ga-lotse-ctr/templates/lsd.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: lsd
+  namespace: snapshot-ns
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`lsd.central.svc.cluster.local`)
+    services:
+    - name: lsd
+      port: spatz-incoming
+  tls:
+    passthrough: true
+---
+# Source: ga-lotse-ctr/templates/pdf-converter-portal.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: pdfaconverterportal
+  namespace: snapshot-ns
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`pcp.central.svc.cluster.local`)
+    services:
+    - name: pdf-converter-portal
+      port: incoming
+  tls:
+    passthrough: true
+---
+# Source: ga-lotse-ctr/templates/relay-server.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: relay-server
+  namespace: snapshot-ns
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`relay-server.central.svc.cluster.local`)
+    services:
+    - name: relay-server
+      port: spatz-incoming
+  tls:
+    passthrough: true
+---
+# Source: ga-lotse-ctr/templates/service-directory.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: service-directory
+  namespace: snapshot-ns
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`service-directory.central.svc.cluster.local`)
+    services:
+    - name: service-directory
+      port: spatz-incoming
+  tls:
+    passthrough: true

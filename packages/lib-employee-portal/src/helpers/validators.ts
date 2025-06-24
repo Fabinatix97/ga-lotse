@@ -44,14 +44,11 @@ export function validateNonNegativeInteger(value: OptionalFieldValue<number>) {
   return "Bitte eine nicht-negative ganze Zahl angeben.";
 }
 
-export function validatePositiveNumberWithAtMostTwoDecimalDigits(
+export function validateNumberWithAtMostTwoDecimalDigits(
   value: OptionalFieldValue<number>,
 ) {
   if (isEmptyString(value)) {
     return undefined;
-  }
-  if (value <= 0) {
-    return "Bitte eine positive Zahl angeben.";
   }
   const stringRepresentation = value.toString();
   const positionOfSeparator = stringRepresentation.indexOf(".");

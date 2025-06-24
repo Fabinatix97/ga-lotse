@@ -27,11 +27,13 @@ public record UpdateInspectionRequest(
     FollowupType followupType,
     Instant followupDate,
     UUID assigneeId,
-    Boolean lock) {
+    Boolean lock,
+    Integer fileNumberSuffix) {
 
   public static UpdateInspectionRequest forCentralFileStateID(UUID centralFileStateID) {
     return new UpdateInspectionRequest(
         centralFileStateID,
+        null,
         null,
         null,
         null,
@@ -64,19 +66,22 @@ public record UpdateInspectionRequest(
         null,
         null,
         null,
+        null,
         null);
   }
 
   public static UpdateInspectionRequest forType(InspectionType type) {
     return new UpdateInspectionRequest(
-        null, null, type, null, null, null, null, null, null, null, null, null, null, null, null);
+        null, null, type, null, null, null, null, null, null, null, null, null, null, null, null,
+        null);
   }
 
   public static UpdateInspectionRequest forChecklistDefinitionVersionId(
       UUID checklistDefinitionVersionId) {
     List<UUID> list = List.of(checklistDefinitionVersionId);
     return new UpdateInspectionRequest(
-        null, null, null, null, list, null, null, null, null, null, null, null, null, null, null);
+        null, null, null, null, list, null, null, null, null, null, null, null, null, null, null,
+        null);
   }
 
   public static UpdateInspectionRequest forChecklistDefinitionVersionIds(
@@ -87,6 +92,7 @@ public record UpdateInspectionRequest(
         null,
         null,
         checklistDefinitionVersionIds,
+        null,
         null,
         null,
         null,
@@ -122,12 +128,14 @@ public record UpdateInspectionRequest(
         null,
         null,
         null,
+        null,
         null);
   }
 
   public static UpdateInspectionRequest forNotes(String notes) {
     return new UpdateInspectionRequest(
-        null, null, null, null, null, null, notes, null, null, null, null, null, null, null, null);
+        null, null, null, null, null, null, notes, null, null, null, null, null, null, null, null,
+        null);
   }
 
   public static UpdateInspectionRequest forPlannedAppointment(
@@ -141,6 +149,7 @@ public record UpdateInspectionRequest(
         null,
         null,
         plannedAppointment,
+        null,
         null,
         null,
         null,
@@ -167,6 +176,7 @@ public record UpdateInspectionRequest(
         null,
         null,
         null,
+        null,
         null);
   }
 
@@ -182,6 +192,7 @@ public record UpdateInspectionRequest(
         null,
         null,
         executedAppointment,
+        null,
         null,
         null,
         null,
@@ -206,6 +217,7 @@ public record UpdateInspectionRequest(
         null,
         null,
         null,
+        null,
         null);
   }
 
@@ -226,6 +238,7 @@ public record UpdateInspectionRequest(
         followupType,
         followupDate,
         null,
+        null,
         null);
   }
 
@@ -245,6 +258,7 @@ public record UpdateInspectionRequest(
         null,
         null,
         assigneeId,
+        null,
         null);
   }
 
@@ -264,12 +278,14 @@ public record UpdateInspectionRequest(
         null,
         null,
         null,
+        null,
         null);
   }
 
   public static UpdateInspectionRequest forLock(Boolean lock) {
     return new UpdateInspectionRequest(
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, lock);
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, lock,
+        null);
   }
 
   public static UpdateInspectionRequest forResult(
@@ -289,6 +305,27 @@ public record UpdateInspectionRequest(
         followupType,
         followupDate,
         null,
+        null,
         null);
+  }
+
+  public static UpdateInspectionRequest forFileNumberSuffix(Integer fileNumberSuffix) {
+    return new UpdateInspectionRequest(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        fileNumberSuffix);
   }
 }

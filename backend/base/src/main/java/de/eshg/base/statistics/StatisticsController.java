@@ -8,13 +8,12 @@ package de.eshg.base.statistics;
 import static java.util.Collections.emptyList;
 
 import de.eshg.base.address.persistence.embeddable.EmbeddableDomesticAddress;
+import de.eshg.base.address.persistence.entity.Address;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
 import de.eshg.base.contact.persistence.ContactService;
-import de.eshg.base.contact.persistence.entity.Contact;
-import de.eshg.base.contact.persistence.entity.InstitutionContact;
-import de.eshg.base.contact.persistence.entity.InstitutionContactCategory;
+import de.eshg.base.contact.persistence.entity.*;
 import de.eshg.base.statistics.api.BaseAttribute;
 import de.eshg.base.statistics.api.BaseAvailableDataSource;
 import de.eshg.base.statistics.api.BaseDataTableHeader;
@@ -77,7 +76,11 @@ public class StatisticsController implements BaseStatisticsApi {
             new BaseAvailableDataSource(
                 SubjectType.FACILITY, mapToAttributes(Arrays.stream(AddressAttribute.values()))),
             new BaseAvailableDataSource(
-                SubjectType.CONTACT, mapToAttributes(Arrays.stream(ContactAttributes.values())))));
+                SubjectType.CONTACT,
+                mapToAttributes(
+                    Stream.concat(
+                        Arrays.stream(ContactAttribute.values()),
+                        Arrays.stream(AddressAttribute.values()))))));
   }
 
   private List<BaseAttribute> mapToAttributes(Stream<CommonAttribute> commonAttributeStream) {
@@ -204,7 +207,7 @@ public class StatisticsController implements BaseStatisticsApi {
     values.add(person.getExternalId());
 
     PersonAddress address = person.getContactAddress();
-    BasicAddressInfo basicAddressInfo = getBasicAddressInfoPerson(address);
+    BasicAddressInfo basicAddressInfo = getBasicAddressInfo(address);
     DistrictDto districtDto = null;
     if (address instanceof DomesticPersonAddress domesticPersonAddress) {
       districtDto = getDistrictDto(domesticPersonAddress.getDelegate());
@@ -273,23 +276,27 @@ public class StatisticsController implements BaseStatisticsApi {
     };
   }
 
-  private BasicAddressInfo getBasicAddressInfoPerson(PersonAddress personAddress) {
-    if (personAddress == null) {
+  private <T extends Address> BasicAddressInfo getBasicAddressInfo(T address) {
+    if (address == null) {
       return null;
     } else {
-      return new BasicAddressInfo(
-          personAddress.getCountry(), personAddress.getCity(), personAddress.getPostalCode());
+      return new BasicAddressInfo(address.getCountry(), address.getCity(), address.getPostalCode());
     }
   }
 
   private DistrictDto getDistrictDto(EmbeddableDomesticAddress domesticAddress) {
+    return getDistrictDto(
+        domesticAddress.getStreet(),
+        domesticAddress.getHouseNumber(),
+        domesticAddress.getPostalCode(),
+        domesticAddress.getCountry());
+  }
+
+  private DistrictDto getDistrictDto(
+      String street, String houseNumber, String postalCode, CountryCode country) {
     try {
       SearchStreetResponse searchStreetResponse =
-          streetController.searchStreet(
-              domesticAddress.getStreet(),
-              domesticAddress.getHouseNumber(),
-              domesticAddress.getPostalCode(),
-              domesticAddress.getCountry());
+          streetController.searchStreet(street, houseNumber, postalCode, country);
       Set<DistrictDto> districts = searchStreetResponse.cityDistricts();
       if (districts.size() == 1) {
         return districts.iterator().next();
@@ -377,8 +384,7 @@ public class StatisticsController implements BaseStatisticsApi {
 
   private GetBaseStatisticsDataResponse getContactResponse(
       List<String> attributeCodes, List<UUID> contactIds) {
-    List<ContactAttributes> relevantContactAttributes =
-        getRelevantContactAttributes(attributeCodes);
+    List<CommonAttribute> relevantContactAttributes = getRelevantContactAttributes(attributeCodes);
     if (relevantContactAttributes.isEmpty()) {
       return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(emptyList()), null);
     }
@@ -394,36 +400,63 @@ public class StatisticsController implements BaseStatisticsApi {
     return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(attributes), dataRows);
   }
 
-  private List<ContactAttributes> getRelevantContactAttributes(List<String> attributeCodes) {
-    List<ContactAttributes> contactAttributes = new ArrayList<>();
+  private List<CommonAttribute> getRelevantContactAttributes(List<String> attributeCodes) {
+    List<CommonAttribute> commonAttributes = new ArrayList<>();
     for (String attributeCode : attributeCodes) {
-      Optional<ContactAttributes> contactAttributeOptional =
-          getAttribute(attributeCode, ContactAttributes.values());
-      contactAttributeOptional.ifPresent(contactAttributes::add);
+      Optional<ContactAttribute> contactAttributeOptional =
+          getAttribute(attributeCode, ContactAttribute.values());
+      if (contactAttributeOptional.isPresent()) {
+        commonAttributes.add(contactAttributeOptional.get());
+        continue;
+      }
+
+      Optional<AddressAttribute> addressAttributeOptional =
+          getAttribute(attributeCode, AddressAttribute.values());
+      addressAttributeOptional.ifPresent(commonAttributes::add);
     }
-    return contactAttributes;
+    return commonAttributes;
   }
 
-  private DataRow createDataRow(Contact contact, List<ContactAttributes> contactAttributes) {
+  private DataRow createDataRow(Contact contact, List<CommonAttribute> contactAttributes) {
     List<Object> values = new ArrayList<>();
     values.add(contact.getExternalId());
 
-    for (ContactAttributes contactAttribute : contactAttributes) {
-      Object value;
-      if (contact instanceof InstitutionContact institutionContact) {
-        value =
-            switch (contactAttribute) {
-              case NAME -> institutionContact.getName();
-              case OBJECT_TYPE -> mapContactObjectType(institutionContact.getCategory());
-            };
-      } else {
-        value = null;
-      }
+    ContactAddress address = contact.getContactAddress();
+    BasicAddressInfo basicAddressInfo = getBasicAddressInfo(address);
+    DistrictDto districtDto = null;
+    if (address instanceof DomesticContactAddress domesticContactAddress) {
+      districtDto =
+          getDistrictDto(
+              domesticContactAddress.getStreet(),
+              domesticContactAddress.getHouseNumber(),
+              domesticContactAddress.getPostalCode(),
+              domesticContactAddress.getCountry());
+    }
 
-      values.add(value);
+    for (CommonAttribute attribute : contactAttributes) {
+      if (contact instanceof InstitutionContact institutionContact) {
+        if (attribute instanceof ContactAttribute contactAttribute) {
+          values.add(getContactAttributeValues(contactAttribute, institutionContact));
+        }
+        if (attribute instanceof AddressAttribute addressAttribute && basicAddressInfo != null) {
+          values.add(getAddressAttributeValue(basicAddressInfo, districtDto, addressAttribute));
+        }
+      } else {
+        values.add(null);
+      }
     }
 
     return new DataRow(values);
+  }
+
+  private Object getContactAttributeValues(
+      ContactAttribute contactAttribute, InstitutionContact institutionContact) {
+    return switch (contactAttribute) {
+      case ContactAttribute.NAME -> institutionContact.getName();
+      case ContactAttribute.OBJECT_TYPE -> mapContactObjectType(institutionContact.getCategory());
+      case ContactAttribute.OBJECT_SUB_TYPE ->
+          mapContactObjectSubType(institutionContact.getSubCategory());
+    };
   }
 
   private String mapContactObjectType(InstitutionContactCategory category) {
@@ -434,6 +467,23 @@ public class StatisticsController implements BaseStatisticsApi {
       case HEALTH_DEPARTMENT -> "HEALTH_DEPARTMENT";
       case MISC -> "MISC";
       case DAYCARE -> "DAYCARE";
+    };
+  }
+
+  private String mapContactObjectSubType(InstitutionContactSubCategory subCategory) {
+    return switch (subCategory) {
+      case null -> null;
+      case BERUFSSCHULE -> "BERUFSSCHULE";
+      case FOERDERSCHULE -> "FOERDERSCHULE";
+      case GRUNDSCHULE -> "GRUNDSCHULE";
+      case GRUND_HAUPTSCHULE -> "GRUND_HAUPTSCHULE";
+      case GRUND_HAUPT_REALSCHULE -> "GRUND_HAUPT_REALSCHULE";
+      case GYMNASIUM -> "GYMNASIUM";
+      case HAUPTSCHULE -> "HAUPTSCHULE";
+      case HAUPT_REALSCHULE -> "HAUPT_REALSCHULE";
+      case INTEGRIERTE_GESAMTSCHULE -> "INTEGRIERTE_GESAMTSCHULE";
+      case KOOPERATIVE_GESAMTSCHULE -> "KOOPERATIVE_GESAMTSCHULE";
+      case REALSCHULE -> "REALSCHULE";
     };
   }
 

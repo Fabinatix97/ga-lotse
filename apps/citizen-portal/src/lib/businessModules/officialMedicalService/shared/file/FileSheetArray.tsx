@@ -6,12 +6,11 @@
 import {
   CheckOutlined,
   CloseOutlined,
-  InfoOutlined,
   WatchLaterOutlined,
 } from "@mui/icons-material";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   Box,
-  Button,
   FormLabel,
   FormLabelProps,
   Sheet,
@@ -23,6 +22,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import {
   ChangeEvent,
   PropsWithChildren,
+  ReactNode,
   RefObject,
   useId,
   useRef,
@@ -30,12 +30,14 @@ import {
 import { isDefined } from "remeda";
 
 import {
+  ExternalLink,
   FileType,
   FormHelperTextWithIcon,
   isNonEmptyArray,
+  isNonEmptyString,
+  useApiConfigurationUrl,
   useValidateFileType,
 } from "@eshg/lib-portal";
-import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { FileSheet } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheet";
@@ -54,7 +56,7 @@ interface FileSheetArrayLabels {
   helperText: string;
   inputSummary: (count: number) => string;
   removeAllFiles: string;
-  removeFile: string;
+  removeFile: (fileName: string) => string;
 }
 
 export interface FileDescriptor {
@@ -63,22 +65,31 @@ export interface FileDescriptor {
   fileType: string;
   size: number;
   creationDate?: Date;
+  helperText?: string;
 }
 
-export interface FileSheetArrayProps {
+export const FileSheetIndicator = {
+  Success: "success",
+  Error: "error",
+  Pending: "pending",
+} as const;
+export type FileSheetIndicator =
+  (typeof FileSheetIndicator)[keyof typeof FileSheetIndicator];
+
+export interface FileSheetArrayProps extends FooterGridProps {
   files: FileDescriptor[];
   onChange?: (files: File[]) => void;
   onRemove?: (index: number) => void;
   onRemoveAll?: () => void;
-  onFileUpload?: () => void;
+  showUploadButton?: boolean;
+  showRemoveButtons?: boolean;
   accept?: FileType | FileType[];
   name?: string;
   required?: boolean;
   error?: boolean;
   helperText?: string;
-  helperTexts?: string[];
   labels: FileSheetArrayLabels;
-  mode?: ApiDocumentStatus;
+  indicator?: FileSheetIndicator;
 }
 
 export function FileSheetArray({
@@ -86,37 +97,30 @@ export function FileSheetArray({
   onChange = () => undefined,
   onRemove,
   onRemoveAll,
-  onFileUpload,
+  showUploadButton = true,
+  showRemoveButtons = true,
   name,
   required,
   error,
   helperText,
-  helperTexts,
   labels,
-  mode,
+  indicator,
+  showPdfaConvertLink: showPdfaConvertLinkProp,
   ...props
 }: Readonly<FileSheetArrayProps>) {
-  const { t } = useTranslation(["officialMedicalService/personalArea"]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputId = useId();
 
   const accept = toArray(props.accept);
+  const showPdfaConvertLink =
+    showPdfaConvertLinkProp ??
+    (accept.includes(FileType.Pdf) && showUploadButton);
 
-  const showAddRemoveButtons = isDefined(mode)
-    ? mode === ApiDocumentStatus.Missing || mode === ApiDocumentStatus.Rejected
-    : true;
-
-  const iconType: IndicatorIconValues =
-    mode === ApiDocumentStatus.Accepted
-      ? "check"
-      : mode === ApiDocumentStatus.Missing ||
-          mode === ApiDocumentStatus.Rejected
-        ? "close"
-        : mode === ApiDocumentStatus.Submitted
-          ? "watch"
-          : isNonEmptyArray(files)
-            ? "check"
-            : "close";
+  const iconType = isDefined(indicator)
+    ? indicator
+    : isNonEmptyArray(files)
+      ? FileSheetIndicator.Success
+      : FileSheetIndicator.Error;
 
   return (
     <>
@@ -145,6 +149,8 @@ export function FileSheetArray({
           </Box>
           <Box
             sx={{
+              display: "flex",
+              alignItems: "center",
               gridArea: "uploadButton",
               justifySelf: "end",
               width: byBreakpoint({
@@ -153,7 +159,7 @@ export function FileSheetArray({
               }),
             }}
           >
-            {showAddRemoveButtons && (
+            {showUploadButton && (
               <FileInput
                 fileInputRef={fileInputRef}
                 fileInputId={fileInputId}
@@ -171,62 +177,31 @@ export function FileSheetArray({
         <FileStack
           files={files}
           labels={labels}
-          helperTexts={helperTexts}
-          onRemove={showAddRemoveButtons ? onRemove : undefined}
+          onRemove={showRemoveButtons ? onRemove : undefined}
         >
-          {isDefined(onRemoveAll) && showAddRemoveButtons && (
-            <Stack gap={0}>
-              {mode && (
-                <Typography
-                  startDecorator={<InfoOutlined />}
-                  textColor="danger.500"
-                >
-                  {t("documents.files.saveDocumentsInfo")}
-                </Typography>
-              )}
-              <StyledRemoveButton
-                sx={{
-                  alignSelf: "end",
-                  fontSize: theme.fontSize.md,
-                  fontWeight: theme.fontWeight.md,
-                  paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
-                }}
-                onClick={() => onRemoveAll()}
-              >
-                {labels.removeAllFiles}
-              </StyledRemoveButton>
-            </Stack>
+          {isDefined(onRemoveAll) && showRemoveButtons && (
+            <StyledRemoveButton
+              sx={{
+                alignSelf: "end",
+                fontSize: theme.fontSize.md,
+                fontWeight: theme.fontWeight.md,
+                paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
+              }}
+              onClick={() => onRemoveAll()}
+            >
+              {labels.removeAllFiles}
+            </StyledRemoveButton>
           )}
         </FileStack>
       </Sheet>
-      {isDefined(helperText) && helperText.length > 0 && (
+      {isNonEmptyString(helperText) && (
         <FormHelperTextWithIcon
           id={`${fileInputId}-helper-text`}
           testId="file-array-helper-text"
           helperText={helperText}
         />
       )}
-      {mode && files.length > 0 && showAddRemoveButtons && (
-        <FooterGrid>
-          <Button
-            variant="soft"
-            sx={{
-              gridArea: "uploadButton",
-              justifySelf: "end",
-              height: "40px",
-              width: byBreakpoint({
-                mobile: "100%",
-                desktop: "80%",
-              }),
-            }}
-            onClick={onFileUpload}
-          >
-            {t("documents.files.save", {
-              context: mode,
-            })}
-          </Button>
-        </FooterGrid>
-      )}
+      <FooterGrid showPdfaConvertLink={showPdfaConvertLink} {...props} />
     </>
   );
 }
@@ -253,44 +228,82 @@ export function HeaderGrid({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
-function FooterGrid({ children }: Readonly<PropsWithChildren>) {
+interface FooterGridProps {
+  showPdfaConvertLink?: boolean;
+  extraInfo?: ReactNode | undefined;
+  extraButton?: ReactNode | undefined;
+}
+
+function FooterGrid({
+  showPdfaConvertLink,
+  extraInfo,
+  extraButton,
+}: Readonly<FooterGridProps>) {
+  if (
+    !isDefined(extraInfo) &&
+    !isDefined(extraButton) &&
+    !showPdfaConvertLink
+  ) {
+    return;
+  }
+
   return (
     <Box
       sx={{
         pt: 3,
         display: "grid",
         gap: 2,
+        gridTemplateRows: "min-content 1fr",
         gridTemplateColumns: byBreakpoint({
           mobile: "1fr",
           desktop: "max-content 1fr 1fr",
         }),
         gridTemplateAreas: byBreakpoint({
-          mobile: '"uploadButton uploadButton"',
-          desktop: '"_ _ uploadButton"',
+          mobile: '"info info" "extraButton extraButton"',
+          desktop: '"info info info" "_ _ extraButton"',
         }),
         paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
       }}
     >
-      {children}
+      {(isDefined(extraInfo) || showPdfaConvertLink) && (
+        <Stack sx={{ gridArea: "info" }} gap={1}>
+          {showPdfaConvertLink && <PdfaConverterPortalLink />}
+          {extraInfo}
+        </Stack>
+      )}
+      {isDefined(extraButton) && (
+        <Box
+          sx={{
+            gridArea: "extraButton",
+            display: "grid",
+            justifySelf: "end",
+            height: "40px",
+            width: byBreakpoint({
+              mobile: "100%",
+              desktop: "80%",
+            }),
+          }}
+        >
+          {extraButton}
+        </Box>
+      )}
     </Box>
   );
 }
-
-type IndicatorIconValues = "check" | "close" | "watch";
 
 export function IndicatorIcon({
   type,
   sx,
 }: Readonly<{
-  type: IndicatorIconValues;
+  type: FileSheetIndicator;
   sx?: SxProps;
 }>) {
   switch (type) {
-    case "check":
+    case FileSheetIndicator.Success:
       return <CheckOutlined color="success" sx={sx} />;
-    case "close":
+    case FileSheetIndicator.Error:
       return <CloseOutlined color="danger" sx={sx} />;
-    case "watch":
+    case FileSheetIndicator.Pending:
       return <WatchLaterOutlined color="warning" sx={sx} />;
   }
 }
@@ -392,7 +405,6 @@ function FileInput({
 type FileStackProps = PropsWithChildren<
   Pick<FileSheetArrayProps, "files" | "onRemove"> & {
     labels: Pick<FileSheetArrayLabels, "removeFile">;
-    helperTexts?: string[];
   }
 >;
 
@@ -401,7 +413,6 @@ function FileStack({
   onRemove,
   labels,
   children,
-  helperTexts,
 }: Readonly<FileStackProps>) {
   if (files.length === 0) {
     return null;
@@ -418,12 +429,30 @@ function FileStack({
         <FileSheet
           key={`${file.name}.${index}`}
           file={file}
-          removeLabel={`${labels.removeFile} ${file.name}`}
-          helperText={helperTexts ? helperTexts[index] : undefined}
+          removeLabel={labels.removeFile(file.name)}
           onRemove={onRemove ? () => onRemove(index) : undefined}
         />
       ))}
       {children}
     </Stack>
+  );
+}
+
+function PdfaConverterPortalLink() {
+  const { t } = useTranslation(["officialMedicalService/personalArea"]);
+  const pdfaConverterPortalUrl = useApiConfigurationUrl(
+    "PUBLIC_PDF_CONVERTER_URL",
+  );
+
+  return (
+    <ExternalLink
+      href={pdfaConverterPortalUrl}
+      openInNewTab
+      startDecorator={
+        <OpenInNewIcon aria-label={t("documents.files.openInNewTab")} />
+      }
+    >
+      {t("documents.files.pdfaConverterPortalLinkText")}
+    </ExternalLink>
   );
 }

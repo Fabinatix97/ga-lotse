@@ -4823,14 +4823,14 @@
             "format" : "uuid"
           }
         }, {
-          "description" : "Measured height in m.",
+          "description" : "Measured height in cm.",
           "in" : "query",
           "name" : "height",
           "required" : false,
           "schema" : {
             "type" : "number",
-            "description" : "Measured height in m.",
-            "format" : "double"
+            "description" : "Measured height in cm.",
+            "format" : "integer"
           }
         }, {
           "description" : "Measured weight in kg.",
@@ -6305,11 +6305,8 @@
           "icd10Codes" : {
             "type" : "array",
             "description" : "List of ICD-10 codes to document the examination result.",
-            "example" : [ "A00", "C00" ],
             "items" : {
-              "type" : "string",
-              "description" : "List of ICD-10 codes to document the examination result.",
-              "example" : "[\"A00\",\"C00\"]"
+              "$ref" : "#/components/schemas/Icd10CodeWithOriginalCode"
             }
           }
         },
@@ -7888,11 +7885,8 @@
           "icd10Codes" : {
             "type" : "array",
             "description" : "List of ICD-10 codes to document the handicap.",
-            "example" : [ "J00", "K00" ],
             "items" : {
-              "type" : "string",
-              "description" : "List of ICD-10 codes to document the handicap.",
-              "example" : "[\"J00\",\"K00\"]"
+              "$ref" : "#/components/schemas/Icd10CodeWithOriginalCode"
             }
           },
           "result" : {
@@ -7961,6 +7955,23 @@
       "HttpMethod" : {
         "type" : "string",
         "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
+      },
+      "Icd10CodeWithOriginalCode" : {
+        "required" : [ "code", "originalCode" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description" : "ICD-10 code or ICD-10 group code",
+            "example" : "A00"
+          },
+          "originalCode" : {
+            "type" : "string",
+            "description" : "ICD-10 code with special characters or ICD-10 group code",
+            "example" : "A00.-"
+          }
+        },
+        "description" : "List of ICD-10 codes to document the handicap."
       },
       "IllnessAndAccidentInfo" : {
         "type" : "object",
@@ -8389,18 +8400,20 @@
         "type" : "object",
         "properties" : {
           "diastole" : {
-            "minimum" : 0,
+            "maximum" : 999,
+            "minimum" : 1,
             "type" : "integer",
             "description" : "Diastolic blood pressure of the child in mmHg.",
             "format" : "int32"
           },
           "height" : {
-            "type" : "number",
-            "description" : "Height of the child in m.",
-            "format" : "double"
+            "type" : "integer",
+            "description" : "Height of the child in cm.",
+            "format" : "int32"
           },
           "systole" : {
-            "minimum" : 0,
+            "maximum" : 999,
+            "minimum" : 1,
             "type" : "integer",
             "description" : "Systolic blood pressure of the child in mmHg.",
             "format" : "int32"
@@ -9376,7 +9389,7 @@
       },
       "SchoolEntryFeature" : {
         "type" : "string",
-        "enum" : [ "DUMMY", "EDITABLE_SCHOOL_INFO_LETTER" ]
+        "enum" : [ "DUMMY", "EDITABLE_SCHOOL_INFO_LETTER", "ALL_APPOINTMENT_TYPE_COMBINATIONS" ]
       },
       "SchoolEntryProcedure" : {
         "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],

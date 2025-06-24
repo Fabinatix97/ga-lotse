@@ -454,6 +454,8 @@ public class AnalysisMapper {
         diagram.getDescription(),
         diagram.getDiagramData().getEvaluatedDataAmount(),
         FilterParameterMapper.mapToApi(diagram.getFilters()),
+        FilterParameterMapper.mapToFilterLabels(
+            diagram.getAnalysis().getAggregationResult().getTableColumns(), diagram.getFilters()),
         diagramDataDto);
   }
 

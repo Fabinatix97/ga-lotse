@@ -74,7 +74,8 @@ public final class ChildMapper {
         ProcedureLabelMapper.toDto(augmentedChild.child().getProcedureLabels()),
         mapExaminationsToDto(examinations),
         institutions == null ? List.of() : institutions,
-        mapFluoridationToDto(fluoridationConsents));
+        mapFluoridationToDto(fluoridationConsents),
+        augmentedChild.child().getNote());
   }
 
   public static ChildDto mapChildToDto(ChildWithAugmentedData child) {

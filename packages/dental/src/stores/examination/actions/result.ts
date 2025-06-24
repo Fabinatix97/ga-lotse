@@ -42,7 +42,7 @@ export function setMainResult(
 
   if (!tooth.isRemovable && newValue === "B") {
     return {
-      ...toggleToothType(toothContext, dentition, previousToothDiagnoses),
+      ...toggleToothType(toothContext, true, dentition, previousToothDiagnoses),
       hasResult: hasAnyResult(dentition),
     };
   }
@@ -57,9 +57,12 @@ export function setMainResult(
   const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
     mainResult: createToothResult(newValue, isInvalid),
   });
+  const keepCurrentFocus = isInvalid || newValue === "";
 
   return {
-    ...(isInvalid ? { currentFocus } : navigateFrom(navigateDirection, state)),
+    ...(keepCurrentFocus
+      ? { currentFocus }
+      : navigateFrom(navigateDirection, state)),
     dentition: newDentition,
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,

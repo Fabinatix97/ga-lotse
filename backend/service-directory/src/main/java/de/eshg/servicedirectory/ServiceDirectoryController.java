@@ -13,9 +13,11 @@ import de.eshg.lib.servicedirectory.api.GetActiveActorsResponse;
 import de.eshg.lib.servicedirectory.api.GetTrustedActorsResponse;
 import de.eshg.lib.servicedirectory.api.OrgUnitTypeDto;
 import de.eshg.lib.servicedirectory.api.PostTopologyRequestDto;
+import de.eshg.rest.service.commons.filter.RequestLoggingAutoConfiguration.RequestLoggingPathFilter;
 import de.eshg.servicedirectory.ServiceDirectoryService.ActiveActorsWithRevision;
 import de.eshg.servicedirectory.actor.persistence.entity.AuditedActor;
 import de.eshg.servicedirectory.common.CallingClientHelper;
+import de.eshg.servicedirectory.logging.GetTrustedActorsStatistics;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,16 +47,22 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
   private static final Logger log = LoggerFactory.getLogger(ServiceDirectoryController.class);
 
   private final ServiceDirectoryService serviceDirectoryService;
+  private final GetTrustedActorsStatistics getTrustedActorsStatistics;
   private final String selfCommonName;
   private final String relayServerCommonName;
 
   public ServiceDirectoryController(
       ServiceDirectoryService serviceDirectoryService,
+      GetTrustedActorsStatistics getTrustedActorsStatistics,
+      RequestLoggingPathFilter requestLoggingPathFilter,
       @Value("${eshg.sd.self.common-name:}") String selfCommonName,
       @Value("${eshg.sd.relay-server.common-name:}") String relayServerCommonName) {
     this.serviceDirectoryService = serviceDirectoryService;
+    this.getTrustedActorsStatistics = getTrustedActorsStatistics;
     this.selfCommonName = selfCommonName;
     this.relayServerCommonName = relayServerCommonName;
+
+    requestLoggingPathFilter.add(GET_TRUSTED_ACTORS_FULL_PATH);
   }
 
   @Override
@@ -122,6 +130,7 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
   @Transactional(readOnly = true)
   @Override
   public ResponseEntity<GetTrustedActorsResponse> getTrustedActors(String ifNoneMatch) {
+    getTrustedActorsStatistics.increment();
     String clientCommonName =
         Optional.ofNullable(CallingClientHelper.getClientCommonName()).orElse("");
 
@@ -133,8 +142,10 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
     long currentRevisionId = serviceDirectoryService.getCurrentRevisionId();
     String eTag = formatETagForTrustedActors(clientCommonName, currentRevisionId);
 
-    if (checkNotModified(ifNoneMatch, eTag))
+    if (checkNotModified(ifNoneMatch, eTag)) {
       return ResponseEntity.status(HttpStatus.NOT_MODIFIED).header(HttpHeaders.ETAG, eTag).build();
+    }
+    log.info("Processing getTrustedActors request for client {}", clientCommonName);
 
     final GetTrustedActorsResponse result;
 
@@ -155,6 +166,7 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
       result = serviceDirectoryService.getTrustedActorsForActor(clientActor);
     }
 
+    log.info("Processed getTrustedActors: {}", result);
     return ResponseEntity.ok().header(HttpHeaders.ETAG, eTag).body(result);
   }
 

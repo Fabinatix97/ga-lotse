@@ -9,12 +9,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
-import de.eshg.officialmedicalservice.anamnesis.AnamnesisProperties;
 import de.eshg.officialmedicalservice.anamnesis.api.AnamnesisDto.AffectedPersonInfoDto.FillingPersonDto;
 import de.eshg.officialmedicalservice.anamnesis.api.PostAnamnesisRequest;
 import de.eshg.officialmedicalservice.anamnesis.persistence.entity.OmsAnamnesis;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.citizenauth.api.GetCitizenProcedureDetailsResponse;
+import de.eshg.officialmedicalservice.config.OmsConfigService;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.person.PersonClient;
@@ -42,8 +42,8 @@ public class CitizenAuthProcedureService {
   private final OmsAppointmentService omsAppointmentService;
   private final OmsDocumentService omsDocumentService;
   private final ObjectMapper objectMapper;
-  private final AnamnesisProperties anamnesisProperties;
   private final ProgressEntryService progressEntryService;
+  private final OmsConfigService omsConfigService;
 
   public CitizenAuthProcedureService(
       OmsProcedureRepository omsProcedureRepository,
@@ -52,16 +52,16 @@ public class CitizenAuthProcedureService {
       OmsAppointmentService omsAppointmentService,
       OmsDocumentService omsDocumentService,
       ObjectMapper objectMapper,
-      AnamnesisProperties anamnesisProperties,
-      ProgressEntryService progressEntryService) {
+      ProgressEntryService progressEntryService,
+      OmsConfigService omsConfigService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.personClient = personClient;
     this.citizenProcedureMapper = citizenProcedureMapper;
     this.omsAppointmentService = omsAppointmentService;
     this.omsDocumentService = omsDocumentService;
     this.objectMapper = objectMapper;
-    this.anamnesisProperties = anamnesisProperties;
     this.progressEntryService = progressEntryService;
+    this.omsConfigService = omsConfigService;
   }
 
   @Transactional(readOnly = true)
@@ -79,7 +79,7 @@ public class CitizenAuthProcedureService {
         procedure,
         affectedPersonDto,
         citizenPortalDocuments,
-        anamnesisProperties.isAnamnesisEnabled());
+        omsConfigService.getConfig().isCitizenPortalAnamnesisEnabled());
   }
 
   private OmsProcedure getProcedureByCitizenUserId(UUID citizenUserId) {
@@ -125,7 +125,7 @@ public class CitizenAuthProcedureService {
 
   @Transactional
   public void postAnamnesis(UUID citizenUserId, PostAnamnesisRequest request) {
-    if (!anamnesisProperties.isAnamnesisEnabled()) {
+    if (!omsConfigService.getConfig().isCitizenPortalAnamnesisEnabled()) {
       throw new BadRequestException("Anamnesis is not enabled for online-portal");
     }
 

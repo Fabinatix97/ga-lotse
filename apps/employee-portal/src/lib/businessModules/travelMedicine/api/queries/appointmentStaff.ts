@@ -20,7 +20,7 @@ export function useGetAllPhysiciansQuery() {
 export function useGetAllMedicalAssistantsQuery() {
   const userApi = useUserApi();
   return queryOptions({
-    queryKey: appointmentStaffApiQueryKey(["getAllMedicalAssistents"]),
+    queryKey: appointmentStaffApiQueryKey(["getAllMedicalAssistants"]),
     queryFn: () => userApi.getUsersByGroup("[System] RMBI-MFA"),
     select: (response) => response.users ?? [],
   });

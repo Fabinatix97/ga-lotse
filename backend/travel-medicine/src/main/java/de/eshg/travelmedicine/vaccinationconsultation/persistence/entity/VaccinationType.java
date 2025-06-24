@@ -6,6 +6,17 @@
 package de.eshg.travelmedicine.vaccinationconsultation.persistence.entity;
 
 public enum VaccinationType {
-  BASIC,
-  BOOSTER
+  BASIC("Grundimmunisierung"),
+  BOOSTER("Auffrischung"),
+  ;
+
+  private final String germanName;
+
+  VaccinationType(String germanName) {
+    this.germanName = germanName;
+  }
+
+  public String getGermanName() {
+    return germanName;
+  }
 }

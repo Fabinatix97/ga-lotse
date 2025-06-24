@@ -1,0 +1,126 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+image:
+  registry: "k3d-ga-lotse-registry:5050"
+  repository: "ga-lotse"
+  pullPolicy: Always
+  tag: "latest"
+
+thirdPartyImages:
+  kubectl:
+    name: bitnami/kubectl
+    tag: "1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+    registry: "mirror.gcr.io"
+    pullPolicy: IfNotPresent
+  nginx:
+    name: nginx
+    tag: "1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  redis:
+    name: redis
+    tag: "7.4.2@sha256:6aafb7f25fc93c4ff74e99cff8e85899f03901bc96e61ba12cd3c39e95503c73"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  postgres:
+    name: postgres
+    tag: "15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  maildev:
+    name: maildev/maildev
+    tag: "2.2.1@sha256:180ef51f65eefebb0e7122d8308813c1fd7bff164bc440ce5a3c2feee167a810"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+
+volumes:
+  customStorageClass: false
+
+backup:
+  enabled: false
+
+dns:
+  upstream: 10.43.0.10
+
+ingress:
+  type: "traefik"
+
+monitoring:
+  httpChecks:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+
+# Attention: The namespace / orgUnit / domains are forced to a
+# frankfurt like setup independently of the actual production config
+domains:
+  clusterLocalSuffix: .frankfurt.svc.cluster.local
+  centralservices:
+    servicedirectory: service-directory.central.svc.cluster.local
+    relayserver: relay-server.central.svc.cluster.local
+    centralrepository: centralrepository.central.svc.cluster.local
+    pdfaconverterportal: pcp.central.svc.cluster.local
+  hosts:
+    lsd: lsd.frankfurt.svc.cluster.local
+    employeeportal: ep.frankfurt.svc.cluster.local
+    citizenportal: cp.frankfurt.svc.cluster.local
+    maildev: mail.frankfurt.svc.cluster.local
+    keycloak: keycloak.frankfurt.svc.cluster.local
+    keycloakInternal: keycloak.frankfurt.svc.cluster.local
+  clusterIssuer: local-ca
+  internalClusterIssuer: local-ca
+  lsdOrgUnit: frankfurt
+
+keycloak:
+  database:
+    selfmanaged: true
+    k8sDeployment: true
+
+maildev:
+  enabled: true
+
+employeeportalauth:
+  cache:
+    selfmanaged: true
+
+citizenportalauth:
+  cache:
+    selfmanaged: true
+
+synapse:
+  database:
+    selfmanaged: true
+    k8sDeployment: true
+
+auditlog:
+  database:
+    selfmanaged: true
+    k8sDeployment: true
+
+businessmoduleDefaults:
+  database:
+    selfmanaged: true
+    k8sDeployment: true
+
+businessmodules:
+  base:
+    smtp:
+      ssl: false
+    setupAdmin:
+      username: dummy_setup_admin
+      email: dummy_setup_admin@maildev.lotse
+
+development:
+  injectSelfSignedCA: true
+
+initContainerSecurityContext:
+  seLinuxOptions:
+    type: "container_init_t"
+
+podSecurityContext:
+  seLinuxOptions:
+    type: "container_t"
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001

@@ -6,8 +6,8 @@
 import { Divider, Grid } from "@mui/joy";
 
 import {
+  MultiAutocompleteField,
   NumberField,
-  SelectField,
   SelectOption,
   validateInteger,
   validatePipe,
@@ -36,8 +36,8 @@ export function AppointmentBlockGroupFields(
     <>
       <FormGroupGrid>
         <Grid xs={3}>
-          <SelectField
-            name="type"
+          <MultiAutocompleteField
+            name="types"
             label="Art"
             placeholder="auswählen"
             options={props.options}

@@ -1,0 +1,15 @@
+{
+  "name": "@eshg/lib-gs-wasm",
+  "version": "0.0.4",
+  "description": "Ghostscript compiled to webassembly for webworkers",
+  "type": "module",
+  "files": [
+    "build/dist/"
+  ],
+  "exports": {
+    "./gs": {
+      "types": ["./build/dist/gs.d.ts"],
+      "import": "./build/dist/gs.js"
+    }
+  }
+}

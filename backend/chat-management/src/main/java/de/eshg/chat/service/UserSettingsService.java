@@ -54,13 +54,13 @@ public class UserSettingsService {
   public static UserSettingsResponse mapTo(UserSettings userSettings) {
     return new UserSettingsResponse(
         userSettings.getUserId(),
-        userSettings.getChatUsageEnabled(),
-        userSettings.getSharePresence(),
-        userSettings.getShowTypingNotification(),
-        userSettings.getChatConsentAsked(),
-        userSettings.getShowReadConfirmation(),
-        userSettings.getAccountDeactivated(),
-        userSettings.getAccountRegistered());
+        userSettings.isChatUsageEnabled(),
+        userSettings.isSharePresence(),
+        userSettings.isShowTypingNotification(),
+        userSettings.isChatConsentAsked(),
+        userSettings.isShowReadConfirmation(),
+        userSettings.isAccountDeactivated(),
+        userSettings.isAccountRegistered());
   }
 
   private UserSettings mapOnlyNonNullFields(

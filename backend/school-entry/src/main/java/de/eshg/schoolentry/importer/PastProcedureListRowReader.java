@@ -15,6 +15,8 @@ import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.AnamnesisMapper;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
@@ -321,7 +323,8 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     DevelopmentScreening developmentScreening = new DevelopmentScreening();
     developmentScreening.setSystole(readIntegerInRange(col, SYSTOLE, errorHandler, 50, 250, 999));
     developmentScreening.setDiastole(readIntegerInRange(col, DIASTOLE, errorHandler, 50, 250, 999));
-    developmentScreening.setHeight(readDoubleInRange(col, HEIGHT, errorHandler, 0.7, 1.6, 9.9));
+    developmentScreening.setHeight(
+        calculateHeight(readDoubleInRange(col, HEIGHT, errorHandler, 0.7, 1.6, 9.9)));
     developmentScreening.setWeight(readDoubleInRange(col, WEIGHT, errorHandler, 8.0, 80.0, 99.9));
     developmentScreening.setNutritionalCondition(
         readExaminationWithDiagnosis(col, NUTRITIONAL_CONDITION, errorHandler));
@@ -351,6 +354,19 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     developmentScreening.setExtraEffort(cellAsBoolean(col, EXTRA_EFFORT, errorHandler));
     developmentScreening.setSchoolRecommendation(readSchoolRecommendation(col, errorHandler));
     return developmentScreening;
+  }
+
+  private Integer calculateHeight(Double heightInMetre) {
+    if (heightInMetre == null) {
+      return null;
+    }
+    if (heightInMetre > 9) {
+      return 999;
+    }
+    return BigDecimal.valueOf(heightInMetre)
+        .multiply(BigDecimal.valueOf(100))
+        .setScale(0, RoundingMode.HALF_UP)
+        .intValue();
   }
 
   private ImportChildData readChildData(

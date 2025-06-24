@@ -17,7 +17,7 @@ import {
 import { ColorPaletteProp, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
+import { ExternalLinkButton, InternalLinkButton } from "@eshg/lib-portal";
 
 export interface ActionsItem {
   label: string;
@@ -25,6 +25,7 @@ export interface ActionsItem {
   startDecorator?: ReactNode;
   color?: ColorPaletteProp;
   disabled?: boolean;
+  openInNewTab?: boolean;
 }
 
 interface ActionsMenuProps extends MenuButtonProps {
@@ -70,9 +71,12 @@ function ActionLabel({
 
 function createActionsLinkOrButton(item: ActionsItem) {
   if (typeof item.onClick === "string") {
+    const LinkComponent = item.openInNewTab
+      ? ExternalLinkButton
+      : InternalLinkButton;
     return (
       <MenuItem key={item.label} sx={{ padding: 0 }} disabled={item.disabled}>
-        <InternalLinkButton
+        <LinkComponent
           key={item.label}
           variant="plain"
           color="neutral"
@@ -82,6 +86,7 @@ function createActionsLinkOrButton(item: ActionsItem) {
             "&:hover": { backgroundColor: "transparent" },
             ...(item.disabled && { opacity: 0.5 }),
           }}
+          openInNewTab={item.openInNewTab}
         >
           <ActionLabel
             color={item.color}
@@ -89,7 +94,7 @@ function createActionsLinkOrButton(item: ActionsItem) {
             startDecorator={item.startDecorator}
             sx={{ marginRight: "auto" }}
           />
-        </InternalLinkButton>
+        </LinkComponent>
       </MenuItem>
     );
   } else {

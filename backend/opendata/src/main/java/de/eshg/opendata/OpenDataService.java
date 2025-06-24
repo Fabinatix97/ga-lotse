@@ -5,6 +5,7 @@
 
 package de.eshg.opendata;
 
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.file.common.CsvValidator;
 import de.eshg.file.common.FileTypeDetector;
 import de.eshg.file.common.FileValidator;
@@ -22,6 +23,7 @@ import de.eshg.opendata.domain.repository.ResourceRepository;
 import de.eshg.opendata.domain.repository.VersionRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.i18n.Language;
 import de.eshg.validation.ValidationUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -246,5 +248,14 @@ public class OpenDataService {
             .orElseThrow(() -> new NotFoundException("Version not found"));
     ValidationUtil.validateVersion(entityVersion, version);
     return version;
+  }
+
+  public byte[] getMarkdownWithGermanFallback(
+      MultiLangDocument multiLangDocument, Language language) {
+    if (language == Language.ENGLISH && multiLangDocument.getEn() != null) {
+      return multiLangDocument.getEn().getContent();
+    } else {
+      return multiLangDocument.getDe().getContent();
+    }
   }
 }

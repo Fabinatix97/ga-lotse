@@ -30,4 +30,5 @@ public record PatientDto(
     @Size(min = 1, max = 50) String placeOfBirth,
     @Size(min = 1, max = 119) String title,
     GenderDto gender,
-    @Valid PersonAddressDto address) {}
+    @Valid PersonAddressDto address,
+    @Valid PersonAddressDto differentBillingAddress) {}

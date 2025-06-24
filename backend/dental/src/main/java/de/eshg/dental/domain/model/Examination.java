@@ -47,8 +47,6 @@ public class Examination extends BaseEntityWithExternalId {
   @JoinColumn(nullable = true)
   private ExaminationResult result;
 
-  private String note;
-
   public Child getChild() {
     return child;
   }
@@ -63,14 +61,6 @@ public class Examination extends BaseEntityWithExternalId {
 
   public void setProphylaxisSession(ProphylaxisSession prophylaxisSession) {
     this.prophylaxisSession = prophylaxisSession;
-  }
-
-  public String getNote() {
-    return note;
-  }
-
-  public void setNote(String note) {
-    this.note = note;
   }
 
   public ExaminationResult getResult() {

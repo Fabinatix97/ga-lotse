@@ -23,7 +23,8 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
-import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
+import de.eshg.base.centralfile.api.person.UpdateReferencePersonInBulkRequest;
+import de.eshg.base.centralfile.api.person.UpdateReferencePersonsRequest;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
@@ -177,12 +178,16 @@ public class ChildService {
     this.validator = validator;
   }
 
-  Child createChild(CreateChildRequest request) {
+  Child createChild(CreateChildRequest request, Child existingChild) {
     AddPersonFileStateRequest addPersonRequest =
         mapToAddPersonFileStateRequest(DataOriginDto.MANUAL, request);
     AddPersonFileStateResponse response = personApi.addPersonFileState(addPersonRequest);
 
     Child createdChild = createChild(request, response.id());
+    if (existingChild != null) {
+      createdChild.setProcedureLabels(new ArrayList<>(existingChild.getProcedureLabels()));
+      createdChild.setNote(existingChild.getNote());
+    }
     childRepository.save(createdChild);
     return createdChild;
   }
@@ -204,7 +209,7 @@ public class ChildService {
     return createdChild;
   }
 
-  public Map<CreateChildRequest, Child> createChildrenAndUpdateProcedureLabels(
+  public Map<CreateChildRequest, Child> createChildrenAndUpdateProcedureLabelsAndNote(
       List<CreateChildRequest> requests,
       Map<PersonKeyAttributes, Child> previouslyClosedChildren,
       DataOriginDto dataOrigin) {
@@ -226,6 +231,7 @@ public class ChildService {
         Child closedChild = previouslyClosedChildren.get(key);
         if (closedChild != null) {
           child.setProcedureLabels(new ArrayList<>(closedChild.getProcedureLabels()));
+          child.setNote(closedChild.getNote());
         }
       }
       childRepository.save(child);
@@ -235,57 +241,78 @@ public class ChildService {
   }
 
   public void updateReferencePersons(Map<CreateChildRequest, Child> createdChildren) {
+    Map<UUID, GetReferencePersonResponse> referencePersons =
+        personApi
+            .getReferencePersons(
+                createdChildren.values().stream().map(Child::getChildIdFromCentralFile).toList())
+            .personsWithReferencingFileStateId();
+
+    List<UpdateReferencePersonInBulkRequest> updateReferencePersonInBulkRequests =
+        new ArrayList<>();
+
     for (Map.Entry<CreateChildRequest, Child> entry : createdChildren.entrySet()) {
       CreateChildRequest request = entry.getKey();
       Child child = entry.getValue();
 
       GetReferencePersonResponse referencePerson =
-          personApi.getReferencePerson(child.getChildIdFromCentralFile());
-      AddPersonFileStateResponse addPersonFileStateResponse =
-          personApi.updateReferencePerson(
+          referencePersons.entrySet().stream()
+              .filter(
+                  getReferencePersonResponse ->
+                      getReferencePersonResponse.getKey().equals(child.getChildIdFromCentralFile()))
+              .map(Map.Entry::getValue)
+              .findFirst()
+              .orElseThrow(() -> new NotFoundException("ReferencePerson not found"));
+
+      UpdateReferencePersonInBulkRequest updatePersonRequest =
+          new UpdateReferencePersonInBulkRequest(
               referencePerson.id(),
-              new UpdateReferencePersonRequest(
-                  new de.eshg.base.centralfile.api.person.UpdatePersonRequest(
-                      request.title(),
-                      request.salutation(),
-                      request.gender(),
-                      request.firstName(),
-                      request.lastName(),
-                      request.dateOfBirth(),
-                      request.nameAtBirth(),
-                      request.placeOfBirth(),
-                      request.countryOfBirth(),
-                      request.emailAddresses(),
-                      request.phoneNumbers(),
-                      request.contactAddress(),
-                      request.differentBillingAddress()),
-                  referencePerson.version()));
-      child.getChild().setCentralFileStateId(addPersonFileStateResponse.id());
+              child.getExternalId(),
+              referencePerson.version(),
+              new de.eshg.base.centralfile.api.person.UpdatePersonRequest(
+                  request.title(),
+                  request.salutation(),
+                  request.gender(),
+                  request.firstName(),
+                  request.lastName(),
+                  request.dateOfBirth(),
+                  request.nameAtBirth(),
+                  request.placeOfBirth(),
+                  request.countryOfBirth(),
+                  request.emailAddresses(),
+                  request.phoneNumbers(),
+                  request.contactAddress(),
+                  request.differentBillingAddress()));
+      updateReferencePersonInBulkRequests.add(updatePersonRequest);
+    }
+
+    if (!updateReferencePersonInBulkRequests.isEmpty()) {
+      personApi.updateReferencePersons(
+          new UpdateReferencePersonsRequest(updateReferencePersonInBulkRequests));
     }
   }
 
-  public void validateNoDuplicateExistsAndClosePreviousChildren(CreateChildRequest request) {
+  public Child validateNoDuplicateExistsAndClosePreviousChildren(CreateChildRequest request) {
     Year requestedYear = Year.of(request.year());
 
-    findOpenChildWithSamePersonKeyAttributes(request)
-        .ifPresent(
-            existingOpenChild -> {
-              if (!existingOpenChild.getYear().isBefore(requestedYear)) {
-                throw new BadRequestException(
-                    "Child already exists in year " + existingOpenChild.getYear());
-              }
+    Optional<Child> openChild = findOpenChildWithSamePersonKeyAttributes(request);
+    openChild.ifPresent(
+        existingOpenChild -> {
+          if (!existingOpenChild.getYear().isBefore(requestedYear)) {
+            throw new BadRequestException(
+                "Child already exists in year " + existingOpenChild.getYear());
+          }
 
-              log.debug(
-                  "Auto-closing existing child {} from year {}",
-                  existingOpenChild.getExternalId(),
-                  existingOpenChild.getYear());
-              Assert.isTrue(
-                  existingOpenChild.getYear().isBefore(requestedYear),
-                  () ->
-                      "Unexpected year of existing child: %s"
-                          .formatted(existingOpenChild.getYear()));
-              closeChild(existingOpenChild);
-            });
+          log.debug(
+              "Auto-closing existing child {} from year {}",
+              existingOpenChild.getExternalId(),
+              existingOpenChild.getYear());
+          Assert.isTrue(
+              existingOpenChild.getYear().isBefore(requestedYear),
+              () -> "Unexpected year of existing child: %s".formatted(existingOpenChild.getYear()));
+          closeChild(existingOpenChild);
+        });
+
+    return openChild.orElse(null);
   }
 
   protected void closeChildAndFlush(Child child) {
@@ -665,6 +692,11 @@ public class ChildService {
     return childRepository.findDistinctInstitutionGroups(institutionId, openGroupsOnly);
   }
 
+  public List<String> getInstitutionGroups(UUID institutionId, boolean openGroupsOnly, int year) {
+    return childRepository.findDistinctInstitutionGroupsByYear(
+        institutionId, openGroupsOnly, Year.of(year));
+  }
+
   public void updateChildDataAndFlush(Child child, UpdateChildRequest request) {
     updateChildData(child, request);
     childRepository.flush();
@@ -853,6 +885,7 @@ public class ChildService {
       promotedChild.setGroupName(newGroupName);
       promotedChild.setInstitutionId(childToPromote.getInstitutionId());
       promotedChild.setProcedureLabels(new ArrayList<>(childToPromote.getProcedureLabels()));
+      promotedChild.setNote(childToPromote.getNote());
       childRepository.save(promotedChild);
 
       promotedChildren.add(promotedChild.getExternalId());
@@ -1274,6 +1307,8 @@ public class ChildService {
       createHeader(sheet);
 
       XSSFCellStyle cellStyle = XlsxUtil.createDefaultCellStyle(sheet);
+      cellStyle.setQuotePrefixed(true);
+
       for (int i = 0; i < augmentedChildren.size(); i++) {
         ChildWithAugmentedData child = augmentedChildren.get(i);
         Row row = sheet.createRow(i + 1);

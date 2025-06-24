@@ -23,10 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OpenDataConfigService extends EshgConfigurationService<OpenDataConfiguration> {
-  public static final MultiLangFileName TERMS_OF_USE_USER_FILENAME =
-      new MultiLangFileName("Nutzungsbedingungen.pdf", "terms-of-use.pdf");
   public static final MultiLangFileName TERMS_OF_USE_CONFIG_FILENAME =
-      MultiLangFileName.fromFilenameWithLanguageTags(TERMS_OF_USE_USER_FILENAME.de());
+      MultiLangFileName.fromFilenameWithLanguageTags("Nutzungsbedingungen.md");
 
   private static final String CONFIGURATION_ENDPOINT = "OPEN_DATA";
   private final InitialOpenDataConfiguration initialOpenDataConfiguration;

@@ -71,7 +71,9 @@
       "error": "File could not be uploaded. Please try again.",
       "saveDocumentsInfo": "Please save documents",
       "save_MISSING": "Save documents",
-      "save_REJECTED": "Submit for review"
+      "save_REJECTED": "Submit for review",
+      "pdfaConverterPortalLinkText": "Convert your PDF files to PDF/A files here",
+      "openInNewTab": "Open in new tab"
     },
     "snackbar": {
       "success": "The documents have been successfully uploaded."

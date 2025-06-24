@@ -18,94 +18,98 @@
 
   <body>
     <#include "footer.ftlx">
+    <#include "divider.ftlx">
     <#include "header-table.ftlx">
 
-    <p class="important">
-      Betreff: Immunitätsnachweis im Sinne des Masernschutzgesetzes
-      für ${affectedPerson.firstName} ${affectedPerson.lastName}<#if body.ourReference??>, Aktenzeichen: ${body.ourReference}</#if>
-    </p>
-    <p>
-    ${addressee.salutation},
-    </p>
-    <p>
-      in Deutschland gilt seit dem 01.03.2020 das Masernschutzgesetz (§20 Infektionsschutzgesetz (IfSG)).
-      Betroffen sind u.a. Kinder, die in einer der folgenden Einrichtungen betreut werden:
-    </p>
-    <p>
-      <ul>
-        <li>Kindertageseinrichtungen und Kinderhorte</li>
-        <li>die nach § 43 Absatz 1 des Achten Buches Sozialgesetzbuch erlaubnispflichtige Kindertagespflege</li>
-        <li>Schulen und sonstige Ausbildungseinrichtungen</li>
-      </ul>
-    </p>
-    <p>
-      Entsprechend dem Masernschutzgesetz musste für alle Kinder einer der folgenden Nachweise* der
-      Einrichtungsleitung vorgelegt werden:
-    </p>
-    <p>
-      <ol>
-        <li>
-          Einen Impfausweis mit der Dokumentation von <span class="important">zwei</span> Impfungen gegen Masern.
-          (<span class="important">Eine</span> Impfung bei Kindern zwischen dem ersten und zweiten Lebensjahr.)
-          Gleichwertig ist ein ärztliches Zeugnis über einen vollständigen Impfschutz in dem beschriebenen Umfang.
-        </li>
-        <li>
-          Ein ärztliches Zeugnis über eine Immunität gegen Masern (Antikörpertest).
-        </li>
-        <li>
-          Eine ärztliche Bescheinigung, dass die Person aufgrund einer medizinischen Kontraindikation nicht geimpft
-          werden kann.
-        </li>
-      </ol>
-    </p>
-    <p>
-      Die Einrichtungsleitung hat uns mitgeteilt, dass bisher keiner der oben genannten Nachweise geführt
-      wurde bzw. dass die Einrichtung den Nachweis nicht bewerten konnte, wie es bei einem
-      ausländischen Impfpass oder einem Attest über eine vorliegende Kontraindikation vorkommen kann.
-    <br/>
-      Möglicherweise wurde es auch einfach versäumt, einen der unter 1.- 3. genannten Nachweise
-      vorzulegen.
-    </p>
-    <p class="important">
-    Das ${departmentInfo.name()} fordert Sie gemäß § 20 Abs. 12 IfSG dazu auf, bis zum ${body.deadlineString} einen der oben
-      genannten Nachweise im Original unserer Behörde vorzulegen.
-    </p>
-    <p>
-      Falls eine der seltenen medizinischen Kontraindikationen vorliegt, muss diese durch ein Attest
-      ausführlich begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie mehr als
-      20 mg Prednisolonäquivalent, Rituximab oder MTX in hoher Dosierung).
-    </p>
-    <p>
-      Wird der erforderliche Nachweis nicht innerhalb der Frist erbracht, besteht gemäß § 73 Abs. 1a Nr. 7d
-      (IfSG) die Möglichkeit ein Bußgeldverfahren einzuleiten und, sofern weiterhin kein Nachweis erbracht
-      wird, nach § 20 Abs. 12 (IfSG), die Möglichkeit ein Betretungsverbot für die entsprechende Einrichtung
-      auszusprechen.
-    </p>
-    <p>Das ${departmentInfo.name()} berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
-      Masernschutzimpfung.
-    </p>
-    <div class="box">
-      * Bezüglich der Nachweise ist zu beachten:
-      <p>
-        Im Falle eines Attestes über eine medizinische Kontraindikation, muss diese unter Angabe der
-        Diagnose ausführlich begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie
-        mehr als 20 mg Prednisolonäquivalent, Rituximab oder MTX in hoher Dosierung bei zugrundeliegender
-        Grunderkrankung). Die medizinischen Angaben sind durch Befunde/ medizinische Unterlagen zu
-        belegen.
+    <div class="main">
+      <p class="important">
+        Betreff: Immunitätsnachweis im Sinne des Masernschutzgesetzes
+        für ${affectedPerson.firstName} ${affectedPerson.lastName}<#if body.ourReference??>, Aktenzeichen: ${body.ourReference}</#if>
       </p>
-      <p>
-        Im Falle eines ärztlichen Zeugnisses über eine Immunität gegen Masern ist diese durch einen
-        entsprechenden Laborbefund zu belegen.
-      </p>
-      <p>
-        Der Nachweis kann ausschließlich im Original vorgelegt werden. Bei einem postalischen Versand
-        können wir die Originale nicht zurücksenden. Der Versand eines Scans per Mail ist nicht zulässig.
-      </p>
-      <p>
-        Sollte Ihr Kind nicht mehr in der Einrichtung betreut sein, bitten wir um eine entsprechende Mitteilung
-        und Bestätigung durch die ehemalige Betreuungseinrichtung.
-      </p>
+        <p>
+        ${addressee.salutation},
+        </p>
+        <p>
+          in Deutschland gilt seit dem 01.03.2020 das Masernschutzgesetz (§20 Infektionsschutzgesetz (IfSG)).
+          Betroffen sind u.a. Kinder, die in einer der folgenden Einrichtungen betreut werden:
+        </p>
+        <div>
+          <ul>
+            <li>Kindertageseinrichtungen und Kinderhorte</li>
+            <li>die nach § 43 Absatz 1 des Achten Buches Sozialgesetzbuch erlaubnispflichtige Kindertagespflege</li>
+            <li>Schulen und sonstige Ausbildungseinrichtungen</li>
+          </ul>
+        </div>
+        <p>
+          Entsprechend dem Masernschutzgesetz musste für alle Kinder einer der folgenden Nachweise* der
+          Einrichtungsleitung vorgelegt werden:
+        </p>
+        <div>
+          <ol>
+            <li>
+              Einen Impfausweis mit der Dokumentation von <span class="important">zwei</span> Impfungen gegen Masern.
+              (<span class="important">Eine</span> Impfung bei Kindern zwischen dem ersten und zweiten Lebensjahr.)
+              Gleichwertig ist ein ärztliches Zeugnis über einen vollständigen Impfschutz in dem beschriebenen Umfang.
+            </li>
+            <li>
+              Ein ärztliches Zeugnis über eine Immunität gegen Masern (Antikörpertest).
+            </li>
+            <li>
+              Eine ärztliche Bescheinigung, dass die Person aufgrund einer medizinischen Kontraindikation nicht geimpft
+              werden kann.
+            </li>
+          </ol>
+        </div>
+        <p>
+          Die Einrichtungsleitung hat uns mitgeteilt, dass bisher keiner der oben genannten Nachweise geführt
+          wurde bzw. dass die Einrichtung den Nachweis nicht bewerten konnte, wie es bei einem
+          ausländischen Impfpass oder einem Attest über eine vorliegende Kontraindikation vorkommen kann.
+        <br/>
+          Möglicherweise wurde es auch einfach versäumt, einen der unter 1.- 3. genannten Nachweise
+          vorzulegen.
+        </p>
+        <p class="important">
+        Das ${departmentInfo.name()} fordert Sie gemäß § 20 Abs. 12 IfSG dazu auf, bis zum ${body.deadlineString} einen der oben
+          genannten Nachweise im Original unserer Behörde vorzulegen.
+        </p>
+        <p>
+          Falls eine der seltenen medizinischen Kontraindikationen vorliegt, muss diese durch ein Attest
+          ausführlich begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie mehr als
+          20 mg Prednisolonäquivalent, Rituximab oder MTX in hoher Dosierung).
+        </p>
+        <p class="important">
+          Wird der erforderliche Nachweis nicht innerhalb der Frist erbracht, besteht gemäß § 73 Abs. 1a Nr. 7d
+          (IfSG) die Möglichkeit ein Bußgeldverfahren einzuleiten und, sofern weiterhin kein Nachweis erbracht
+          wird, nach § 20 Abs. 12 (IfSG), die Möglichkeit ein Betretungsverbot für die entsprechende Einrichtung
+          auszusprechen.
+        </p>
+        <p>Das ${departmentInfo.name()} berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
+          Masernschutzimpfung.
+        </p>
+        <div class="box">
+          * Bezüglich der Nachweise ist zu beachten:
+          <p>
+            Im Falle eines Attestes über eine medizinische Kontraindikation, muss diese unter Angabe der
+            Diagnose ausführlich begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie
+            mehr als 20 mg Prednisolonäquivalent, Rituximab oder MTX in hoher Dosierung bei zugrundeliegender
+            Grunderkrankung). Die medizinischen Angaben sind durch Befunde/ medizinische Unterlagen zu
+            belegen.
+          </p>
+          <p>
+            Im Falle eines ärztlichen Zeugnisses über eine Immunität gegen Masern ist diese durch einen
+            entsprechenden Laborbefund zu belegen.
+          </p>
+          <p>
+            Der Nachweis kann ausschließlich im Original vorgelegt werden. Bei einem postalischen Versand
+            können wir die Originale nicht zurücksenden. Der Versand eines Scans per Mail ist nicht zulässig.
+          </p>
+          <p>
+            Sollte Ihr Kind nicht mehr in der Einrichtung betreut sein, bitten wir um eine entsprechende Mitteilung
+            und Bestätigung durch die ehemalige Betreuungseinrichtung.
+          </p>
+        </div>
+        <#include "end-of-letter.ftlx">
     </div>
-    <#include "end-of-letter.ftlx">
+
   </body>
 </html>

@@ -28,7 +28,8 @@ import { FactoryResetModal } from "@/lib/businessModules/chat/components/secureB
 import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import {
   loadKeyBackupPrivateKeyFromSecretStorage,
-  validateAccessSecretStorage,
+  validatePassphrase,
+  validateRecoveryKey,
 } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
@@ -37,6 +38,7 @@ import { PasswordField } from "@/lib/shared/components/formFields/PasswordField"
 
 const initialValues = {
   passphrase: "",
+  recoveryKey: "",
 };
 
 type InitialValues = typeof initialValues;
@@ -67,20 +69,29 @@ export function RestoreBackupSidebar({
   }
 
   async function validateSecretStoragePassphrase(values: InitialValues) {
-    try {
-      logger.info("Step 6/6 RestoreKeyBackupFromSecretStorage");
-      await validateAccessSecretStorage(matrixClient, values.passphrase);
-      return undefined;
-    } catch {
-      return {
-        passphrase:
-          "Fehler bei der Verifizierung des Geräts. Ist die Phrase korrekt?",
-      };
+    if (values.recoveryKey) {
+      try {
+        await validateRecoveryKey(matrixClient, values.recoveryKey);
+      } catch {
+        return {
+          recoveryKey: "Ungültiger Wiederherstellungsschlüssel.",
+        };
+      }
+    } else {
+      try {
+        await validatePassphrase(matrixClient, values.passphrase);
+      } catch {
+        return {
+          passphrase:
+            "Fehler bei der Verifizierung des Geräts. Ist die Phrase korrekt?",
+        };
+      }
     }
   }
 
   async function handleSubmit(values: InitialValues) {
     try {
+      logger.info("Step 6/6 RestoreKeyBackupFromSecretStorage");
       const { keyBackupInfo, hasKeyBackupKeyStored } =
         await fetchBackupInfo(matrixClient);
 
@@ -91,6 +102,7 @@ export function RestoreBackupSidebar({
       await loadKeyBackupPrivateKeyFromSecretStorage(
         matrixClient,
         values.passphrase,
+        values.recoveryKey,
       );
       setClientState(ClientState.Ready);
       logger.info("Step 6/6 RestoreKeyBackupFromSecretStorage - FINISHED");
@@ -131,6 +143,12 @@ export function RestoreBackupSidebar({
                     label="Sicherheitsphrase vergeben"
                     name={fieldName("passphrase")}
                     visibilityLabel="visiblePassphrase"
+                  />
+                  <PasswordField
+                    data-testid="recovery-key"
+                    label="Oder Wiederherstellungsschlüssel"
+                    name={fieldName("recoveryKey")}
+                    visibilityLabel="visibleRecoveryKey"
                   />
                   {featureToggleResetPassphraseEnabled && (
                     <Stack direction="row" spacing={0.5}>

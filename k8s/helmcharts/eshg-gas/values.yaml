@@ -1,0 +1,482 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+
+image:
+  registry: "registry.opencode.de"
+  repository: "ga-lotse/ga-lotse-code"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+  pullsecret: gitlab-registry-pull-secret
+
+thirdPartyImages:
+  kubectl:
+    name: bitnami/kubectl
+    tag: "1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+    registry: "mirror.gcr.io"
+    pullPolicy: IfNotPresent
+  nginx:
+    name: nginx
+    tag: "1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  redis:
+    name: redis
+    tag: "7.4.4-alpine3.21@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  postgres:
+    name: postgres
+    tag: "15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  maildev:
+    name: maildev/maildev
+    tag: "2.2.1@sha256:180ef51f65eefebb0e7122d8308813c1fd7bff164bc440ce5a3c2feee167a810"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+
+backup:
+  enabled: false
+
+dns:
+  upstream: 10.43.0.10
+
+monitoring:
+  serviceMonitor:
+    enabled: true
+  httpChecks:
+    enabled: false
+    blackboxExporterAddress: ""
+
+ingress:
+  type: "traefik"
+
+volumes:
+  customStorageClass: true
+
+databaseSecurity:
+  enabled: true
+  allowedGroups:
+    - restricted-access
+  allowedUsers:
+    - gitlab-ci-deployer
+
+deployerAdminRoleBinding:
+  enabled: false
+
+replicas:
+  maximum: 2
+
+domains:
+  clusterLocalSuffix: .frankfurt.svc.cluster.local
+  centralservices:
+    servicedirectory: service-directory.cs.my-ga-lotse.de
+    relayserver: relay-server.cs.my-ga-lotse.de
+    centralrepository: centralrepository.central.svc.cluster.local
+    pdfaconverterportal: pdf-converter-portal.sandbox.eshg.cronn.de
+  hosts:
+    lsd: lsd.frankfurt.my-ga-lotse.de
+    employeeportal: employee-portal.frankfurt.my-ga-lotse.de
+    citizenportal: citizen-portal.frankfurt.my-ga-lotse.de
+    maildev: mail.frankfurt.my-ga-lotse.de
+    keycloak: keycloak.frankfurt.my-ga-lotse.de
+    keycloakInternal: keycloak-internal.frankfurt.my-ga-lotse.de
+  clusterIssuer: letsencrypt-production
+  internalClusterIssuer: letsencrypt-production-internal
+  lsdOrgUnit: frankfurt
+
+keycloak:
+  enabled: false
+  certificate:
+    publicSecret: keycloak-public-tls
+    privateSecret: keycloak-private-tls
+  muk:
+    profile: "disabled"
+    signingCertificate: ""
+  bundId:
+    profile: "disabled"
+    signingCertificate: ""
+    onlineServiceId: ""
+    organizationDisplayName: ""
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+  reverseProxyResources:
+    requests:
+      memory: 64M
+      cpu: 10m
+    limits:
+      memory: 256Mi
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 1500Mi
+
+lsd:
+  enabled: false
+  import: true
+  certificate:
+    secret: lsd-public-tls
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 1024Mi
+  dns:
+    allowList: []
+
+maildev:
+  enabled: false
+  certificate:
+    secret: maildev-public-tls
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 256Mi
+  env:
+    - name: MAILDEV_WEB_USER
+      value: dummy
+    - name: MAILDEV_WEB_PASS
+      value: ePA2h7F5m4J3KtME
+  persistence:
+    enabled: false
+
+employeeportal:
+  enabled: false
+  certificate:
+    secret: employee-portal-public-tls
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 256Mi
+  dns:
+    allowList: []
+
+employeeportalauth:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 10m
+    limits:
+      memory: 1024Mi
+  javaToolOptions:
+  cache:
+    selfmanaged: false
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 128Mi
+  dns:
+    allowList: []
+
+employeeportalnextjs:
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 384Mi
+  dns:
+    allowList: []
+
+citizenportal:
+  enabled: false
+  certificate:
+    secret: citizen-portal-public-tls
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 256Mi
+  dns:
+    allowList: []
+
+citizenportalauth:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 10m
+    limits:
+      memory: 1024Mi
+  javaToolOptions:
+  cache:
+    selfmanaged: false
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 128Mi
+  dns:
+    allowList: []
+
+citizenportalnextjs:
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 192Mi
+  dns:
+    allowList: []
+
+synapse:
+  enabled: false
+  port: 8080
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+    initArgs: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 1280Mi
+  dns:
+    allowList: []
+
+auditlog:
+  enabled: false
+  pvcarchive: auditlog-archive
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 1024Mi
+  dns:
+    allowList: []
+
+svgsanitizer:
+  enabled: true
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 192Mi
+  dns:
+    allowList: []
+
+spatz:
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 512Mi
+
+businessmoduleDefaults:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi
+    limits:
+      memory: 1024Mi
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+
+businessmodules:
+  base:
+    enabled: false
+    allowEmployeePasswords: false
+    provisionTestUsers: false
+    database:
+      extensions:
+        - name: unaccent
+        - name: pg_trgm
+    waitFor:
+      - lsd
+      - svgsanitizer
+    noreplyMail: support@ga-lotse.de
+    smtp:
+      ssl: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 1500Mi
+  schoolentry:
+    enabled: false
+    database:
+      extensions:
+        - name: unaccent
+        - name: pg_trgm
+    waitFor:
+      - lsd
+      - base
+    imageName: school-entry
+  inspection:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    dns:
+      allowList:
+        - nominatim.openstreetmap.org
+        - download.geofabrik.de
+  measlesprotection:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: measles-protection
+  travelmedicine:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: travel-medicine
+  statistics:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+  stiprotection:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: sti-protection
+  medicalregistry:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: medical-registry
+  dental:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: dental
+  opendata:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+  chatmanagement:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+      - synapse
+    imageName: chat-management
+  officialmedicalservice:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: official-medical-service
+  medsabroad:
+    enabled: false
+    waitFor:
+      - lsd
+      - base
+    imageName: meds-abroad
+  centralrepository:
+    enabled: false
+
+springBootLivenessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8081
+    scheme: HTTP
+  initialDelaySeconds: 90
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 10
+
+springBootReadinessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8081
+    scheme: HTTP
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+
+spatzLivenessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8079
+    scheme: HTTP
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
+
+spatzReadinessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8079
+    scheme: HTTP
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+
+containersLifecycle:
+  enabled: true
+  preStop:
+    exec:
+      command: ["sh", "-c", "sleep 10"]
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: "RuntimeDefault"
+  sysctls:
+    - name: net.ipv4.ip_unprivileged_port_start
+      value: "53"
+
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+frontend:
+  playground:
+    enabled: false
+
+development:
+  injectSelfSignedCA: false
+  alwaysCreateDebugLogMount: true
+
+secrets:
+  resourcePolicy: false
+
+backend:
+  upload:
+    maxFileUploadSizeInBytes: "26214400" # 25MB
+
+limitReqZone:
+  organisationsReport:
+    limitRate: "5r/m"
+  tmCitizenProcedure:
+    limitRate: "1r/m"

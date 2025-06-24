@@ -22,4 +22,5 @@ public record FacilityDto(
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid List<FacilityContactPersonDto> contactPersons,
     @Valid AddressDto contactAddress,
+    @Valid AddressDto differentBillingAddress,
     @Valid FacilitySyncDto facilitySync) {}

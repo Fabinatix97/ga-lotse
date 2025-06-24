@@ -4,17 +4,28 @@
  */
 
 import { FormControl } from "@mui/joy";
-import { isDefined, splice } from "remeda";
+import {
+  ArrayHelpers,
+  FieldArray,
+  FieldConfig,
+  useField,
+  useFormikContext,
+} from "formik";
+import { isDefined } from "remeda";
 
 import {
   FieldProps,
+  Validator,
   isNonEmptyArray,
+  isNonEmptyString,
   useBaseField,
   useValidateFile,
   useValidateFileType,
+  validatePipe,
 } from "@eshg/lib-portal";
 
 import {
+  FileDescriptor,
   FileSheetArray,
   FileSheetArrayProps,
 } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
@@ -28,17 +39,45 @@ const MAX_FILE_SIZE = 10 * BYTES_PER_MB;
 
 interface FileSheetArrayFieldProps
   extends Omit<FieldProps<File[] | null>, "label" | "validate">,
-    Pick<FileSheetArrayProps, "accept" | "labels" | "mode"> {
-  handleFileUpload?: (files: File[]) => void;
+    Omit<
+      FileSheetArrayProps,
+      | "files"
+      | "onChange"
+      | "onRemove"
+      | "onRemoveAll"
+      | "name"
+      | "required"
+      | "error"
+      | "helperText"
+    > {
+  // include files that are already uploaded to the server.
+  //  these files will not be included in the field value but are visually shown above them.
+  initialFiles?: FileDescriptor[];
+  validate?: Validator<File>;
+  maxFileSize?: number;
 }
 
-export function FileSheetArrayField({
+export function FileSheetArrayField(props: Readonly<FileSheetArrayFieldProps>) {
+  return (
+    <FieldArray name={props.name}>
+      {(fieldArrayProps) => (
+        <FileSheetArrayFieldInner {...{ ...props, ...fieldArrayProps }} />
+      )}
+    </FieldArray>
+  );
+}
+
+function FileSheetArrayFieldInner({
   accept: acceptProp,
   labels,
+  initialFiles = [],
+  validate: validateProp,
+  maxFileSize = MAX_FILE_SIZE,
   ...props
-}: Readonly<FileSheetArrayFieldProps>) {
+}: Readonly<FileSheetArrayFieldProps & ArrayHelpers<File[]>>) {
   const accept = toArray(acceptProp);
 
+  const ctx = useFormikContext();
   const field = useBaseField<File[] | null>({
     ...props,
   });
@@ -47,61 +86,106 @@ export function FileSheetArrayField({
   const validateType = validateFileType(accept);
 
   const validateFile = useValidateFile();
-  const validateSize = validateFile({ maxFileSize: MAX_FILE_SIZE });
+  const validateSize = validateFile({ maxFileSize });
+
+  const validate = validatePipe(
+    // when removing an item formik tries to validate undefined?
+    (file) => (!!file ? undefined : ""),
+    validateType,
+    validateSize,
+    validateProp,
+  );
 
   async function handleChange(files: File[]) {
-    await field.helpers.setTouched(true);
-
-    for (const file of files) {
-      const error = validateType(file) ?? validateSize(file);
-
-      if (isDefined(error)) {
-        field.helpers.setError(error);
-        return;
-      }
+    if (!isNonEmptyArray(files)) {
+      return;
     }
 
-    if (isNonEmptyArray(files)) {
-      const newArray = [...(field.input.value ?? []), ...files];
-      await field.helpers.setValue(newArray);
-    }
+    await ctx.setFieldTouched(props.name);
+
+    // We are in a FieldArray, so normally we would use the push helper,
+    //  but for some reason, that doesn't work with File objects.
+    const initialLength = field.input.value?.length ?? 0;
+    await Promise.all(
+      files.map(async (file, index) => {
+        const fieldName = `${props.name}[${initialLength + index}]`;
+        await ctx.setFieldValue(fieldName, file);
+        await ctx.setFieldTouched(fieldName, true, true);
+      }),
+    );
   }
 
-  async function handleRemove(index: number) {
-    const newArray = field.input.value
-      ? splice(field.input.value, index, 1, [])
-      : null;
-    await field.helpers.setValue(newArray);
+  function handleRemove(index: number) {
+    // the index from the FileSheetArray's point of view includes the initialFiles
+    //  but field value doesn't include those, so subtract that length
+    const actualIndex = index - initialFiles?.length;
+    props.remove(actualIndex);
   }
 
   async function handleRemoveAll() {
     await field.helpers.setValue([]);
   }
 
-  const displayFiles = field.input.value?.map(fileToFileDescriptor) ?? [];
+  const fieldHelperText = (field.meta.error ?? props.hint) as
+    | string
+    | string[]
+    | undefined;
+  // helper text is a single string and will be displayed below the field
+  const helperText = isNonEmptyString(fieldHelperText) ? fieldHelperText : "";
+  // helper text is an array, errors will be displayed below each file sheet
+  const helperTexts =
+    typeof fieldHelperText !== "string" && isNonEmptyArray(fieldHelperText)
+      ? fieldHelperText
+      : [];
 
-  const splitHelperText = field.helperText?.split("\n");
-  const helperText = splitHelperText ? splitHelperText[0] : "";
-  const helperTexts = splitHelperText
-    ? splitHelperText.slice(1, splitHelperText.length)
-    : [];
+  const displayFiles = [
+    ...initialFiles,
+    ...(field.input.value?.map((file, index) =>
+      fileToFileDescriptor(file, helperTexts[index]),
+    ) ?? []),
+  ];
 
   return (
-    <FormControl error={field.error} required={field.required}>
+    <FormControl error={isDefined(field.meta.error)} required={field.required}>
       <FileSheetArray
         files={displayFiles}
         accept={accept}
         error={field.error}
         required={field.required}
         helperText={helperText}
-        helperTexts={helperTexts}
         labels={labels}
-        mode={props.mode}
+        indicator={props.indicator}
+        showUploadButton={props.showUploadButton}
+        showRemoveButtons={props.showRemoveButtons}
+        showPdfaConvertLink={props.showPdfaConvertLink}
+        extraInfo={props.extraInfo}
+        extraButton={props.extraButton}
         onChange={handleChange}
         onRemove={handleRemove}
         onRemoveAll={handleRemoveAll}
-        onFileUpload={() => props.handleFileUpload?.(field.input.value ?? [])}
       />
+      {field.input.value?.map((_, index) => (
+        <FakeField
+          key={index}
+          name={`${props.name}[${index}]`}
+          validate={validate}
+        />
+      ))}
     </FormControl>
   );
+}
+
+function FakeField(props: FieldConfig<File>) {
+  // Registers and unregisters the validation for the individual files.
+
+  // Using ctx.registerField doesn't disable the validation when the field isn't rendered,
+  //  making it impossible to continue after going back on a
+  //  multistep form page containing the field with an error.
+
+  // Keeping useField out of FileSheetArray lets it still be usable without
+  //  being wrapped in a form.
+
+  useField(props);
+
+  return null;
 }

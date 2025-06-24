@@ -114,7 +114,7 @@ public class CitizenPublicController {
   @Operation(summary = "Get landing content")
   @GetMapping(path = LANDING_URL, produces = MediaType.TEXT_MARKDOWN_VALUE)
   public ResponseEntity<byte[]> getLandingContent() {
-    byte[] markdownContent = citizenPublicProcedureService.getLandingContent();
+    byte[] markdownContent = citizenPublicProcedureService.getLandingPageContent();
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.TEXT_MARKDOWN);

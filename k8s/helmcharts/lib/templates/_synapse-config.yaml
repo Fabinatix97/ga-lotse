@@ -1,0 +1,136 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.synapseConfig" }}
+---
+
+{{ if .Values.synapse.enabled }}
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: synapse-config
+  namespace: {{ .Release.Namespace }}
+data:
+  homeserver.template: |
+    # For more information on how to configure Synapse, including a complete accounting of
+    # each option, go to docs/usage/configuration/config_documentation.md or
+    # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
+    server_name: "{{ .Values.domains.hosts.employeeportal }}"
+    public_baseurl: "https://{{ .Values.domains.hosts.employeeportal }}/api/synapse" # Synapse public base URL
+    delete_stale_devices_after: 90d
+
+    pid_file: /data/homeserver.pid
+    listeners:
+      - port: {{ .Values.synapse.port }}
+        tls: false
+        type: http
+        x_forwarded: true
+        resources:
+          - names: [ client, federation ]
+            compress: false
+
+    database:
+      name: psycopg2
+      args:
+        user: $DB_USER
+        password: $DB_PASSWORD
+        database: $DB_NAME
+        host: $DB_HOST
+        port: $DB_PORT
+        cp_min: 5
+        cp_max: 10
+
+    log_config: "/data/synapse.log.config"
+
+    report_stats: false
+    enable_registration: false
+    encryption_enabled_by_default_for_room_type: all
+
+    registration_shared_secret: $REGISTRATION_SHARED_SECRET
+    macaroon_secret_key: $MACAROON_SECRET_KEY
+    form_secret: $FORM_SECRET
+    signing_key_path: "/data/synapse.signing.key"
+    trusted_key_servers: []
+
+    user_directory:
+      enabled: true
+      search_all_users: true
+      prefer_local_users: true
+      show_locked_users: false
+
+    # keep those login numbers high: backend auth service is performing all the logins for all the users
+    rc_login:
+      address:
+        per_second: 1000
+        burst_count: 1000
+      account:
+        per_second: 10
+        burst_count: 10
+      failed_attempts:
+        per_second: 1000
+        burst_count: 1000
+
+    rc_message:
+      per_second: 5
+      burst_count: 15
+
+    rc_joins:
+      local:
+        per_second: 5
+        burst_count: 15
+      remote:
+        per_second: 5
+        burst_count: 15
+
+    rc_3pid_validation:
+      per_second: 1
+      burst_count: 5
+
+    enable_media_repo: false
+    max_upload_size: "0"
+
+    jwt_config:
+      enabled: true
+      algorithm: "RS256"
+      secret: "$KEYCLOAK_RS256_PEM"
+
+    session_lifetime: 600m
+    refresh_token_lifetime: 600m # No need to have RefreshToken lifetime longer than 10 hours, because employee-portal will always log out user after 10 hours of *Activity* and requires user to re-authenticate with Keycloak.
+    refreshable_access_token_lifetime: 15m
+    nonrefreshable_access_token_lifetime: 15m
+
+
+  synapse.log.config: |
+    version: 1
+
+    formatters:
+      precise:
+        format: '%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s'
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: precise
+
+    loggers:
+      # This is just here so we can leave `loggers` in the config regardless of whether
+      # we configure other loggers below (avoid empty yaml dict error).
+      _placeholder:
+          level: "INFO"
+
+      synapse.storage.SQL:
+          # beware: increasing this to DEBUG will make synapse log sensitive
+          # information such as access tokens.
+          level: INFO
+
+    root:
+      level: INFO
+      handlers: [console]
+
+    disable_existing_loggers: false
+
+  {{ end }}
+
+---
+{{- end }}

@@ -1,0 +1,32 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.redis" }}
+
+{{- $name := index . 0 }}
+{{- $ := index . 1 }}
+
+---
+
+apiVersion: vshn.appcat.vshn.io/v1
+kind: VSHNRedis
+metadata:
+  name: {{ $name }}-redis
+  namespace: {{ $.Release.Namespace }}
+spec:
+  parameters:
+    tls:
+      enabled: true
+      authClients: false
+    service:
+      version: "7.0"
+      redisSettings: |
+        activedefrag yes
+    size:
+      plan: standard-2
+  writeConnectionSecretToRef:
+    name: {{ $name }}-redis
+
+---
+
+{{- end }}

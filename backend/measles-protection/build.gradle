@@ -12,6 +12,7 @@ dependencies {
     implementation project(':lib-config')
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
+    implementation project(":lib-statistics")
 
     implementation 'org.apache.poi:poi:latest.release'
     implementation 'org.apache.poi:poi-ooxml:latest.release'
@@ -26,6 +27,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-auditlog'))
     testImplementation testFixtures(project(':lib-appointmentblock'))
+    testImplementation testFixtures(project(':lib-statistics'))
 }
 
 dockerCompose {

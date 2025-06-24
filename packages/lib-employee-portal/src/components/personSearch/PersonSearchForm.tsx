@@ -6,7 +6,14 @@
 import { Close, InsertLinkOutlined, SearchOutlined } from "@mui/icons-material";
 import { Button, List, ListItem, Stack, Typography, styled } from "@mui/joy";
 import { Formik, FormikState } from "formik";
-import { SetStateAction, useEffect, useId, useState } from "react";
+import {
+  AriaRole,
+  SetStateAction,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 
 import {
   Alert,
@@ -18,6 +25,7 @@ import {
   validateDateOfBirth,
 } from "@eshg/lib-portal";
 
+import { useManySearchParams } from "../../hooks/useSearchParam";
 import { FormSheet } from "../form/FormSheet";
 
 import { TogglePersonSearchButtonProps } from "./TogglePersonSearchButton";
@@ -67,6 +75,8 @@ interface PersonSearchFormProps {
   allowPartialSearch?: boolean;
   disablePartialSearchAlert?: boolean;
   allowPersonIdSearch?: boolean;
+  isHidden?: boolean;
+  role?: AriaRole;
 }
 
 interface ValidationResult {
@@ -105,10 +115,15 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
     <Formik
       enableReinitialize
       initialValues={props.initialValues}
+      aria-hidden={props.isHidden}
       onSubmit={(formValues) => handleChange(formValues)}
     >
       {({ resetForm }) => (
-        <>
+        <Stack
+          gap={2}
+          role={props.role}
+          sx={{ display: props.isHidden ? "none" : undefined }}
+        >
           {props.allowPersonIdSearch && (
             <Alert
               color="primary"
@@ -153,7 +168,7 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
           {isNonEmptyString(alertMessage) && (
             <Alert color="primary" message={alertMessage} />
           )}
-        </>
+        </Stack>
       )}
     </Formik>
   );
@@ -347,4 +362,72 @@ export function usePersonSearch() {
   } as const satisfies Partial<PersonSearchFormProps>;
 
   return { formValues, searchParams, buttonProps, formProps, setValues, reset };
+}
+
+export function usePersonSearchFromURL({
+  panelId = "person-search-panel",
+}: {
+  panelId?: string;
+} = {}) {
+  const [rawSearchParams, setSearchParams] = useManySearchParams([
+    "searchDateOfBirth",
+    "searchFirstName",
+    "searchLastName",
+    "searchHumanReadableId",
+  ]);
+  const searchParams = useMemo(
+    () => ({
+      searchDateOfBirth: rawSearchParams.searchDateOfBirth
+        ? new Date(rawSearchParams.searchDateOfBirth)
+        : undefined,
+      searchFirstName: rawSearchParams.searchFirstName ?? "",
+      searchLastName: rawSearchParams.searchLastName ?? "",
+      searchHumanReadableId: rawSearchParams.searchHumanReadableId ?? "",
+    }),
+    [rawSearchParams],
+  );
+  const formValues: PersonSearchFormValues = useMemo(
+    () => ({
+      dateOfBirth: rawSearchParams.searchDateOfBirth ?? "",
+      firstName: rawSearchParams.searchFirstName ?? "",
+      lastName: rawSearchParams.searchLastName ?? "",
+      humanReadableId: rawSearchParams.searchHumanReadableId ?? "",
+    }),
+    [rawSearchParams],
+  );
+
+  function setValues(newFormValues: PersonSearchFormValues): void {
+    setSearchParams({
+      searchFirstName: newFormValues.firstName,
+      searchLastName: newFormValues.lastName,
+      searchDateOfBirth: isDateString(newFormValues.dateOfBirth)
+        ? newFormValues.dateOfBirth
+        : undefined,
+      searchHumanReadableId: newFormValues.humanReadableId,
+    });
+  }
+
+  function reset(): void {
+    setSearchParams(undefined);
+  }
+
+  const buttonProps = {
+    searchParams,
+    "aria-controls": panelId,
+  } as const satisfies Partial<TogglePersonSearchButtonProps>;
+
+  const formProps = {
+    initialValues: formValues,
+    onReset: reset,
+    id: panelId,
+  } as const satisfies Partial<PersonSearchFormProps>;
+
+  return {
+    formValues,
+    searchParams,
+    buttonProps,
+    formProps,
+    setValues,
+    reset,
+  };
 }

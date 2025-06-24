@@ -1,0 +1,269 @@
+/**
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+:root {
+  --color: #171a1c;
+  --color-primary: #0b6bcb;
+  --color-secondary: #e3effb;
+  --color-background: #ffffff;
+  --color-background-secondary: #f0f4f8;
+  --color-dark: #ffffff;
+  --color-background-dark: #32383e;
+  --color-background-danger: #fce4e4;
+  --color-danger: #7d1212;
+  --color-success: #0a470a;
+  --color-background-success: #e3fbe3;
+  --border-radius: 8px;
+  --transition-duration: 0.2s;
+}
+
+* {
+  font-family: sans-serif;
+}
+
+.row {
+  flex-direction: row;
+  gap: 8px;
+}
+
+.invisible {
+  display: none;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-background-secondary);
+  margin: 0;
+  min-height: 100%;
+  gap: 8px;
+}
+
+main {
+  background-color: var(--color-background-secondary);
+  flex-grow: 1;
+  gap: 16px;
+}
+
+body, div, main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+header {
+  color: var(--color);
+  background-color: var(--color-background);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 32px;
+}
+
+.sheet {
+  position: relative;
+  border-radius: var(--border-radius);
+  background-color: var(--color-background);
+  max-width: 75%;
+  padding: 32px;
+}
+
+button {
+  border: 1px solid var(--color-primary);
+  background-color: var(--color-background);
+  box-shadow: none;
+  padding: 8px 32px;
+  font-size: 16px;
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-duration);
+
+  &:hover {
+    background-color: var(--color-secondary);
+  }
+}
+
+
+/* drop-area */
+
+#drop-area {
+  border: 2px dashed var(--color-primary);
+  margin: -32px;
+  min-height: 128px;
+  padding: 16px;
+  background-color: var(--color-background);
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-duration), opacity var(--transition-duration), visibility var(--transition-duration);
+
+  &.drag-copy {
+    color: var(--color-success);
+    background-color: var(--color-background-success);
+  }
+
+  &.drag-none {
+    color: var(--color-danger);
+    background-color: var(--color-background-danger);
+  }
+}
+
+#processing-indicator {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: var(--border-radius);
+  transition: opacity var(--transition-duration), visibility var(--transition-duration);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid var(--color-primary);
+    transition: all .5s;
+    animation: processing-indicator-animation 3s infinite linear;
+    border-radius: 8px;
+  }
+}
+
+@keyframes processing-indicator-animation {
+  0%,
+  100% {
+    clip-path: inset(0 0 95% 0);
+  }
+  20% {
+    clip-path: inset(0 95% 0 0);
+  }
+  50% {
+    clip-path: inset(95% 0 0 0);
+  }
+  70% {
+    clip-path: inset(0 0 0 95%);
+  }
+}
+
+#processing-error {
+  color: var(--color-danger);
+  background-color: var(--color-background-danger);
+  border: 2px solid var(--color-danger);
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: var(--border-radius);
+  transition: opacity var(--transition-duration), visibility var(--transition-duration);
+}
+
+
+/* footer */
+
+footer {
+  width: 100%;
+  height: 80em;
+  transition: height var(--transition-duration);
+
+  &.collapsed {
+    height: 1.5em;
+  }
+
+  & .row {
+    height: 1.5em;
+    color: var(--color-dark);
+    background-color: var(--color-background-dark);
+  }
+}
+
+.footer-link {
+  background: none !important;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+  color: var(--color-dark);
+}
+
+.footer-text {
+  color: var(--color);
+  background-color: var(--color-background);
+  align-items: flex-start;
+  padding: 0 32px;
+}
+
+
+/* language radio buttons style like switch */
+
+.language-switch {
+  flex-shrink: 0;
+  border: none;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  flex-direction: row;
+  background-color: var(--color-background-secondary);
+  border-radius: 20px;
+  padding: 8px;
+  width: 120px;
+  height: 36px;
+  transition: background-color var(--transition-duration);
+}
+
+.language-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.switch-label {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color);
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.3s ease;
+  border-radius: 16px;
+  user-select: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.language-switch input[type="radio"]:focus-visible + .switch-label {
+  box-shadow: 0 0 0 3px Highlight;
+}
+
+.switch-slider {
+  position: absolute;
+  left: 8px;
+  width: 56px;
+  height: 36px;
+  background-color: var(--color-background);
+  border-radius: 18px;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.language-switch input[value="de"]:checked ~ .switch-slider {
+  transform: translateX(64px);
+}
+

@@ -5,4 +5,6 @@
 
 import { ConfiguratorEndpointName } from "@/lib/configurator/shared/types";
 
-export const opendataConfigRouterEndpoints: ConfiguratorEndpointName[] = [];
+export const opendataConfigRouterEndpoints: ConfiguratorEndpointName[] = [
+  "OPEN_DATA",
+];

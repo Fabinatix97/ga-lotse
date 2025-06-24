@@ -16,7 +16,11 @@ export function useGetAllAppointmentTypesQuery() {
   return queryOptions({
     queryKey: appointmentTypesApiQueryKey(["getAppointmentTypes"]),
     queryFn: () => appointmentTypesApi.getAppointmentTypes(),
-    select: (response) => response.appointmentTypeConfigDtos ?? [],
+    select: (response) => ({
+      appointmentTypeConfigs: response.appointmentTypeConfigDtos ?? [],
+      allowedAppointmentTypeCombinations:
+        response.allowedAppointmentTypeCombinations.map((it) => it.types),
+    }),
   });
 }
 

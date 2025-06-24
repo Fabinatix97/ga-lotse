@@ -30,7 +30,13 @@ const EMPTY_DMFT_VALUES: DmftValues = {
   filled: 0,
 };
 
-const D_VALUES: string[] = [ApiMainResult.D, ApiMainResult.E, ApiMainResult.W];
+const D_VALUES: string[] = [
+  ApiMainResult.D,
+  ApiMainResult.E,
+  ApiMainResult.W,
+  ApiMainResult.Z,
+  ApiMainResult.O,
+];
 const M_VALUES: string[] = [ApiMainResult.M];
 const F_VALUES: string[] = [ApiMainResult.F, ApiMainResult.K];
 

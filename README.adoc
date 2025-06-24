@@ -45,6 +45,7 @@ Once the services are running, the portals will be accessible at the following l
 * Employee Portal: http://localhost:4000
 * Citizen Portal: http://localhost:4001
 * Admin Portal: http://localhost:4002
+* PDF Converter Portal: http://localhost:3004
 * Keycloak: http://localhost:9090
 * port mappings for all services see link:backend/README.md[backend readme].
 

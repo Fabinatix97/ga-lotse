@@ -43,6 +43,9 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   @DataSensitivity(PROTECTED)
   private String groupName;
 
+  @DataSensitivity(PROTECTED)
+  private String note;
+
   @ManyToMany
   @OrderBy
   @DataSensitivity(PSEUDONYMIZED)
@@ -150,5 +153,13 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
 
   public void addFluoridationConsent(FluoridationConsent fluoridationConsent) {
     this.fluoridationConsents.add(fluoridationConsent);
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 }

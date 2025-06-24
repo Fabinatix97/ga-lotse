@@ -8,7 +8,7 @@ package de.eshg.lib.keycloak;
 import static de.eshg.lib.keycloak.AdministrativeGroup.AUDIT_LOG_ADMIN;
 import static de.eshg.lib.keycloak.AdministrativeGroup.WORK_COUNCIL;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_CONTACTS_READ;
-import static de.eshg.lib.keycloak.EmployeePermissionRole.CHAT_MANAGEMENT_WRITE;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.CHAT_USER;
 
 import de.eshg.base.util.CollectionUtils;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public enum EmployeeTestUser implements KeycloakUser {
       "password",
       "Thomas",
       "Anderson",
-      List.of(BASE_CONTACTS_READ, CHAT_MANAGEMENT_WRITE),
+      List.of(BASE_CONTACTS_READ, CHAT_USER),
       List.of()),
   CHAT_USER_2(
       "chat_user2",
@@ -171,7 +171,7 @@ public enum EmployeeTestUser implements KeycloakUser {
       "password",
       "Lorenz",
       "Fischborn",
-      List.of(BASE_CONTACTS_READ, CHAT_MANAGEMENT_WRITE),
+      List.of(BASE_CONTACTS_READ, CHAT_USER),
       List.of()),
   CHAT_USER_3(
       "chat_user3",
@@ -179,7 +179,7 @@ public enum EmployeeTestUser implements KeycloakUser {
       "password",
       "Karin-Anne",
       "Moß",
-      List.of(BASE_CONTACTS_READ, CHAT_MANAGEMENT_WRITE),
+      List.of(BASE_CONTACTS_READ, CHAT_USER),
       List.of()),
   ALL_ROLES_NO_GROUPS(
       "all_roles_no_groups",

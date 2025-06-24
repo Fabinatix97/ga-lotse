@@ -3062,7 +3062,7 @@
         }
       },
       "Diagram" : {
-        "required" : [ "diagramData", "evaluatedDataAmount", "filters", "id", "title" ],
+        "required" : [ "diagramData", "evaluatedDataAmount", "filterLabels", "filters", "id", "title" ],
         "type" : "object",
         "properties" : {
           "description" : {
@@ -3092,6 +3092,12 @@
           "evaluatedDataAmount" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "filterLabels" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
           "filters" : {
             "type" : "array",

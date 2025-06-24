@@ -6,8 +6,13 @@
 import { ReactNode, useState } from "react";
 
 import { ApiAddContact200Response, ApiContactCategory } from "@eshg/base-api";
-import { SelectObjectField, SelectObjectFieldValue } from "@eshg/lib-portal";
+import {
+  SelectObjectField,
+  SelectObjectFieldValue,
+  Validator,
+} from "@eshg/lib-portal";
 
+import { getEntityId } from "../../../api/models/BaseEntity";
 import { useSearchContacts } from "../api/queries";
 
 interface SelectContactFieldProps {
@@ -22,6 +27,7 @@ interface SelectContactFieldProps {
   placeholder?: string;
   endDecorator?: ReactNode;
   disabled?: boolean;
+  validate?: Validator<SelectObjectFieldValue<object, false>>;
 }
 
 export function SelectContactField(props: SelectContactFieldProps) {
@@ -33,9 +39,11 @@ export function SelectContactField(props: SelectContactFieldProps) {
       name={props.name}
       label={props.label}
       getOptionLabel={props.getOptionLabel ?? ((contact) => contact.name)}
+      getOptionKey={getEntityId}
       options={contacts}
       loading={query.isLoading}
       disableFiltering
+      validate={props.validate}
       required={props.required}
       placeholder={props.placeholder}
       endDecorator={props.endDecorator}

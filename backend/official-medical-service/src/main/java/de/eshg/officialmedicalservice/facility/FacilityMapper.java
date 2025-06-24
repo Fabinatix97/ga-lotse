@@ -27,7 +27,7 @@ public class FacilityMapper {
         facility.phoneNumbers(),
         facility.contactPersons(),
         facility.contactAddress(),
-        null,
+        facility.differentBillingAddress(),
         DataOriginDto.MANUAL);
   }
 
@@ -42,7 +42,7 @@ public class FacilityMapper {
             facility.phoneNumbers(),
             facility.contactPersons(),
             facility.contactAddress(),
-            null));
+            facility.differentBillingAddress()));
   }
 
   public static FacilityDto mapToFacilityDto(
@@ -57,6 +57,7 @@ public class FacilityMapper {
         facilityFileState.phoneNumbers(),
         facilityFileState.contactPersons(),
         facilityFileState.contactAddress(),
+        facilityFileState.differentBillingAddress(),
         new FacilitySyncDto(
             facilityFileState.id(),
             facilityFileState.referenceVersion(),

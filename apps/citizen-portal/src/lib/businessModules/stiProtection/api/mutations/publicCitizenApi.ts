@@ -3,28 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import assert from "assert";
 
-import { useFileDownload } from "@eshg/lib-portal";
+import { PortalErrorCode, useFileDownload } from "@eshg/lib-portal";
 import {
   ApiAddPersonalDetailsRequest,
   ApiBookAppointmentRequest,
 } from "@eshg/sti-protection-api";
 
+import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import { useCitizenPublicApi } from "@/lib/businessModules/stiProtection/api/clients";
 
 import { returnConflict } from "./helper";
 
 export function useBookAppointment() {
   const api = useCitizenPublicApi();
+  const ifConflict = useInvalidateAvailableAppointmentsIfConflict();
+
   return useMutation({
     mutationFn: (appointment: ApiBookAppointmentRequest) =>
-      api.bookAppointment(appointment).catch(returnConflict),
+      api.bookAppointment(appointment).catch(returnConflict).then(ifConflict),
   });
 }
 export function useCreateAnonymousUser(procedureId: string) {
   const api = useCitizenPublicApi();
+  const ifConflict = useInvalidateAvailableAppointmentsIfConflict();
   return useMutation({
     mutationFn: ({
       pin,
@@ -35,14 +39,19 @@ export function useCreateAnonymousUser(procedureId: string) {
     }) =>
       api
         .createAnonymousUser(procedureId, { pin, personalDetails })
-        .catch(returnConflict),
+        .catch(returnConflict)
+        .then(ifConflict),
   });
 }
 export function useAddPersonalDetails(procedureId: string) {
   const api = useCitizenPublicApi();
+  const ifConflict = useInvalidateAvailableAppointmentsIfConflict();
   return useMutation({
     mutationFn: (details: ApiAddPersonalDetailsRequest) =>
-      api.addPersonalDetails(procedureId, details).catch(returnConflict),
+      api
+        .addPersonalDetails(procedureId, details)
+        .catch(returnConflict)
+        .then(ifConflict),
   });
 }
 
@@ -63,4 +72,16 @@ export function useAnonymousIdentificationDocumentQuery(procedureId: string) {
       id: procedureId,
     }),
   );
+}
+
+export function useInvalidateAvailableAppointmentsIfConflict() {
+  const client = useQueryClient();
+  return async <T>(returnValue: T): Promise<T> => {
+    if (returnValue === PortalErrorCode.Conflict) {
+      await client.invalidateQueries({
+        queryKey: citizenPublicApiQueryKey(["getFreeAppointmentsForCitizen"]),
+      });
+    }
+    return returnValue;
+  };
 }

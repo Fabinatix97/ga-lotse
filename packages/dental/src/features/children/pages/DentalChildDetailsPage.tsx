@@ -5,9 +5,11 @@
 
 import { Button, Grid, Stack } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
 
 import {
   ContentPanel,
+  DetailsSection,
   PageGrid,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
@@ -52,6 +54,11 @@ export function DentalChildDetailsPage(
                 institutions={child.institutions}
               />
             </ContentPanel>
+            {isDefined(child.note) && (
+              <ContentPanel>
+                <DetailsSection title="Bemerkung">{child.note}</DetailsSection>
+              </ContentPanel>
+            )}
           </Stack>
         </Grid>
         <Grid xs={4}>

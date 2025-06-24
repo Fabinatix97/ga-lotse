@@ -11,7 +11,7 @@ import {
   SidebarActions,
   SidebarContent,
   UseSidebarResult,
-  getId,
+  getEntityId,
   useSidebar,
 } from "@eshg/lib-employee-portal";
 
@@ -41,7 +41,7 @@ function DaycareLeavingSidebar({
   async function handleLeavingDaycare() {
     await closeChildrenInBulk.mutateAsync(
       {
-        childIds: leavingChildren.map(getId),
+        childIds: leavingChildren.map(getEntityId),
       },
       {
         onSuccess: () => onClose(),

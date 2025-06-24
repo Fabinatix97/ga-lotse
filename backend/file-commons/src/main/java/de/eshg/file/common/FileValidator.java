@@ -164,4 +164,15 @@ public class FileValidator {
       throw new BadRequestException("Invalid file extension");
     }
   }
+
+  public static void validateMarkdownFile(MultipartFile file) {
+    if (file == null) {
+      return;
+    }
+    MediaType detected = validate(file);
+    if (!detected.isCompatibleWith(MediaType.TEXT_MARKDOWN)) {
+      throw new BadRequestException(
+          ErrorCode.INVALID_FILE, "Incompatible media type %s detected".formatted(detected));
+    }
+  }
 }

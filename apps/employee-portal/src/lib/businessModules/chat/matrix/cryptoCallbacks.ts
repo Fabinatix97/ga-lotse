@@ -4,8 +4,11 @@
  */
 
 import { MatrixClient, SecretStorage } from "matrix-js-sdk";
-import { deriveRecoveryKeyFromPassphrase } from "matrix-js-sdk/lib/crypto-api";
-import { isEmpty, isString } from "remeda";
+import {
+  decodeRecoveryKey,
+  deriveRecoveryKeyFromPassphrase,
+} from "matrix-js-sdk/lib/crypto-api";
+import { isEmpty } from "remeda";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
@@ -23,6 +26,7 @@ export async function getSecretStorageKeyFromCache(
   },
   matrixClient: MatrixClient,
   passphrase?: string,
+  recoveryKey?: string,
   disableCache = false,
 ): Promise<[string, Uint8Array]> {
   let keyId = await matrixClient.secretStorage.getDefaultKeyId();
@@ -60,24 +64,27 @@ export async function getSecretStorageKeyFromCache(
     return [keyId, cachedKey];
   }
 
-  if (!isString(passphrase) || isEmpty(passphrase)) {
-    throw new Error("Invalid passphrase - unable to get secret storage key.");
+  let secretStorageKey = undefined;
+  if (!isEmpty(recoveryKey)) {
+    secretStorageKey = decodeRecoveryKey(recoveryKey);
+  } else if (!isEmpty(passphrase)) {
+    secretStorageKey = await deriveRecoveryKeyFromPassphrase(
+      passphrase,
+      keyInfo.passphrase.salt,
+      keyInfo.passphrase.iterations,
+    );
+  } else {
+    throw new Error(
+      "Invalid passphrase or recovery key - unable to get secret storage key.",
+    );
   }
-
-  const restoredKey = await deriveRecoveryKeyFromPassphrase(
-    passphrase,
-    keyInfo.passphrase.salt,
-    keyInfo.passphrase.iterations,
-  );
-
-  logger.debug({ restoredKey });
 
   // Save to cache to avoid future prompts in the current session
   if (!disableCache) {
-    saveSecretStorageKeyToCache(keyId, keyInfo, restoredKey);
+    saveSecretStorageKeyToCache(keyId, keyInfo, secretStorageKey);
   }
 
-  return [keyId, restoredKey];
+  return [keyId, secretStorageKey];
 }
 
 export function saveSecretStorageKeyToCache(
@@ -85,7 +92,6 @@ export function saveSecretStorageKeyToCache(
   keyInfo: SecretStorage.SecretStorageKeyDescription,
   key: Uint8Array,
 ): void {
-  logger.debug("Caching secretStorage key", { keyId, keyInfo, key });
   secretStorageKeys[keyId] = key;
   secretStorageKeyInfo[keyId] = keyInfo;
 }

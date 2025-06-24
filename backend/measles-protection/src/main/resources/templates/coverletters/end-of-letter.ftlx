@@ -8,8 +8,10 @@
     Das ${departmentInfo.name()} berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
     Masernschutzimpfung.
   </p>
-  <p>Mit freundlichen Grüßen</p>
-  <p>Im Auftrag</p>
-  <p>${departmentInfo.name()}</p>
-  <p>Dieser Bescheid wurde maschinell erstellt und ist ohne Unterschrift gültig.</p>
+  <div style="margin-top: 6.66rem">
+    <div>Mit freundlichen Grüßen</div>
+    <div>Im Auftrag</div>
+    <div>${departmentInfo.name()}</div>
+    <p>(Dieser Bescheid wurde maschinell erstellt und ist ohne Unterschrift gültig.)</p>
+  </div>
 </div>

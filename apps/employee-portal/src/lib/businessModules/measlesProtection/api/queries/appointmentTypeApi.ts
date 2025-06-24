@@ -19,10 +19,16 @@ export function useGetAppointmentDurations() {
     queryKey: appointmentTypeApiQueryKey(["getAppointmentTypes"]),
     queryFn: () =>
       appointmentTypeApi.getAppointmentTypesRaw().then(unwrapRawResponse),
-    select: (response) =>
-      mapToObj(response.appointmentTypeConfigDtos, (configDto) => [
-        configDto.appointmentTypeDto,
-        configDto.standardDurationInMinutes,
-      ]),
+    select: (response) => ({
+      appointmentTypeConfigs: mapToObj(
+        response.appointmentTypeConfigDtos,
+        (configDto) => [
+          configDto.appointmentTypeDto,
+          configDto.standardDurationInMinutes,
+        ],
+      ),
+      allowedAppointmentTypeCombinations:
+        response.allowedAppointmentTypeCombinations.map((it) => it.types),
+    }),
   });
 }

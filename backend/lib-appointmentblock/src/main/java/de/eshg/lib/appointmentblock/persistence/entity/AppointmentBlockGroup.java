@@ -16,7 +16,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -79,11 +78,6 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
     return appointmentTypeHolders.stream()
         .map(AppointmentTypeHolder::getType)
         .collect(Collectors.toCollection(TreeSet::new));
-  }
-
-  // ToDo ISSUE-8888: Allow types with different durations -> remove this method
-  public Duration getSlotDuration() {
-    return appointmentTypeHolders.stream().findFirst().orElseThrow().getSlotDuration();
   }
 
   public int getParallelExaminations() {

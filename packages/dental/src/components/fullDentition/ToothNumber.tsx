@@ -15,19 +15,16 @@ const ToothNumberTypography = styled(Typography)(({ theme }) => ({
   width: 36,
   height: 24,
   textAlign: "center",
-  marginBottom: theme.spacing(2),
-  //marginLeft and -Right needs to be set for firefox
-  marginRight: "auto",
-  marginLeft: "auto",
 })) as typeof Typography;
 
 interface ToothNumberProps {
+  id: string;
   toothNumber: ApiTooth;
 }
 
 export function ToothNumber(props: ToothNumberProps) {
   return (
-    <ToothNumberTypography component="legend">
+    <ToothNumberTypography id={props.id}>
       {getToothNumber(props.toothNumber)}
     </ToothNumberTypography>
   );

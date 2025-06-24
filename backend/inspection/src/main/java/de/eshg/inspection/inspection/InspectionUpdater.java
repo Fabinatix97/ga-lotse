@@ -201,6 +201,9 @@ public class InspectionUpdater {
     if (request.assigneeId() != null) {
       updateAssignee(inspection, request.assigneeId());
     }
+    if (request.fileNumberSuffix() != null) {
+      updateFileNumberSuffix(inspection, request.fileNumberSuffix());
+    }
 
     advanceToReadyForExecutionIfPossible(inspection);
     updateModified(inspection);
@@ -719,6 +722,10 @@ public class InspectionUpdater {
       inspection.setCalendarEventId(
           calendarClient.updateEventInUserCalendar(inspection.getCalendarEventId(), assigneeId));
     }
+  }
+
+  private void updateFileNumberSuffix(Inspection inspection, Integer fileNumberSuffix) {
+    inspection.setFileNumberSuffix(fileNumberSuffix);
   }
 
   Inspection lockInspection(Inspection inspection, boolean lock) {

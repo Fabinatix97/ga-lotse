@@ -43,31 +43,31 @@ export function InstructionValuesSection() {
       <Stack gap={2}>
         <Checkbox
           name="treatmentPrimaryDentition"
-          label="zur Behandlung im Milchgebiss"
+          label="Zur Behandlung im Milchgebiss"
           checked={treatmentPrimaryDentition}
           disabled
         />
         <Checkbox
           name="treatmentSecondaryDentition"
-          label="zur Beh., kar. Zähne im Bleib. Gebiss"
+          label="Zur Beh. kariöser Zähne im bleibenden Gebiss"
           checked={treatmentSecondaryDentition}
           disabled
         />
         <CheckboxField
           name="individualProphylaxis"
-          label="zur Individualprophylaxe"
+          label="Zur Individualprophylaxe"
         />
-        <CheckboxField name="fissureSealing" label="zur Fissurenversiegelung" />
+        <CheckboxField name="fissureSealing" label="Zur Fissurenversiegelung" />
+        <CheckboxField
+          name="orthodonticTreatment"
+          label="Zur kieferorthopädischen Beratung"
+        />
+        <CheckboxField name="plaqueTreatment" label="Plaque" />
         <CheckboxField name="tartarRemoval" label="Zahnsteinentfernung" />
         <CheckboxField
           name="gingivitisTreatment"
           label="Zahnfleischentzündung"
         />
-        <CheckboxField
-          name="orthodonticTreatment"
-          label="zur kieferorthopädischen Beratung"
-        />
-        <CheckboxField name="plaqueTreatment" label="Plaque" />
         <CheckboxField name="inspectionAppointment" label="Kontrolltermin" />
       </Stack>
     </ExaminationSection>

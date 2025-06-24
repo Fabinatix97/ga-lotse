@@ -161,7 +161,7 @@ public final class ProphylaxisSessionMapper {
         childData.child().getGroupName(),
         personData.gender(),
         ProcedureLabelMapper.toDto(childData.child().getProcedureLabels()),
-        examination.getNote(),
+        examination.getChild().getNote(),
         DentitionTypeMapper.mapToDto(examination.getProphylaxisSession().getDentitionType()),
         ChildMapper.mapFluoridationToDto(
             allFluoridationConsents.stream()

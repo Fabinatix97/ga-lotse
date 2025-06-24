@@ -16,11 +16,7 @@ import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 export function AppointmentFormSidePanel({
   backendValidation,
 }: {
-  backendValidation?: (
-    currentStep: number,
-    values: AppointmentFormValues,
-    setFieldError: (field: string, message: string | undefined) => void,
-  ) => Promise<boolean>;
+  backendValidation?: (values: AppointmentFormValues) => Promise<boolean>;
 }) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
   const citizenRoutes = useCitizenRoutes();

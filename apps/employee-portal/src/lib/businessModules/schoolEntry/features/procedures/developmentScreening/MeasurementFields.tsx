@@ -10,16 +10,16 @@ import { SxProps } from "@mui/joy/styles/types/theme";
 import { FormikErrors } from "formik";
 import { isDefined } from "remeda";
 
-import {
-  validateNonNegativeInteger,
-  validatePositiveNumberWithAtMostTwoDecimalDigits,
-} from "@eshg/lib-employee-portal";
+import { validateNumberWithAtMostTwoDecimalDigits } from "@eshg/lib-employee-portal";
 import {
   NestedFormProps,
   OptionalFieldValue,
   SoftRequiredNumberField,
   createFieldNameMapper,
   mapOptionalValue,
+  validateInteger,
+  validatePipe,
+  validateRange,
 } from "@eshg/lib-portal";
 import { GetPercentilesRequest } from "@eshg/school-entry-api";
 
@@ -42,11 +42,22 @@ function formatDecimal(value: number) {
   });
 }
 
-const MIN_0 = 0;
 const MIN_1 = 1;
-const MAX_10000 = 10000;
+const MAX_999 = 999;
+const MIN_0_01 = 0.01;
+const MAX_999_99 = 999.99;
 
 const FIXED_WIDTH_STYLE: SxProps = { width: "95px" };
+
+const validateIntegerInMinMax = validatePipe(
+  validateRange(MIN_1, MAX_999),
+  validateInteger,
+);
+
+const validateWeight = validatePipe(
+  validateRange(MIN_0_01, MAX_999_99),
+  validateNumberWithAtMostTwoDecimalDigits,
+);
 
 export interface MeasurementFieldsValues {
   height: OptionalFieldValue<number>;
@@ -82,11 +93,11 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
           <Stack direction="row" gap={2} alignItems="center">
             <SoftRequiredNumberField
               name={fieldName("height")}
-              label="Größe (m)"
-              validate={validatePositiveNumberWithAtMostTwoDecimalDigits}
+              label="Größe (cm)"
+              validate={validateIntegerInMinMax}
               sx={FIXED_WIDTH_STYLE}
               min={MIN_1}
-              max={MAX_10000}
+              max={MAX_999}
               softRequired
             />
             <StatusChip label="Perz.">
@@ -97,10 +108,10 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
             <SoftRequiredNumberField
               name={fieldName("weight")}
               label="Gewicht (kg)"
-              validate={validatePositiveNumberWithAtMostTwoDecimalDigits}
+              validate={validateWeight}
               sx={FIXED_WIDTH_STYLE}
-              min={MIN_1}
-              max={MAX_10000}
+              min={MIN_0_01}
+              max={MAX_999_99}
               softRequired
             />
             <StatusChip label="Perz.">
@@ -120,19 +131,19 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
           <SoftRequiredNumberField
             name={fieldName("systole")}
             label="RRsys (mmHg)"
-            validate={validateNonNegativeInteger}
+            validate={validateIntegerInMinMax}
             sx={FIXED_WIDTH_STYLE}
-            min={MIN_0}
-            max={MAX_10000}
+            min={MIN_1}
+            max={MAX_999}
             softRequired
           />
           <SoftRequiredNumberField
             name={fieldName("diastole")}
             label="RRdiast (mmHg)"
-            validate={validateNonNegativeInteger}
+            validate={validateIntegerInMinMax}
             sx={FIXED_WIDTH_STYLE}
-            min={MIN_0}
-            max={MAX_10000}
+            min={MIN_1}
+            max={MAX_999}
             softRequired
           />
         </Stack>
@@ -147,14 +158,10 @@ function mapToGetPercentilesRequest(
 ): GetPercentilesRequest {
   return {
     procedureId,
-    height: !isDefined(
-      validatePositiveNumberWithAtMostTwoDecimalDigits(fieldValues.height),
-    )
+    height: !isDefined(validateIntegerInMinMax(fieldValues.height))
       ? mapOptionalValue(fieldValues.height)
       : undefined,
-    weight: !isDefined(
-      validatePositiveNumberWithAtMostTwoDecimalDigits(fieldValues.weight),
-    )
+    weight: !isDefined(validateWeight(fieldValues.weight))
       ? mapOptionalValue(fieldValues.weight)
       : undefined,
   };

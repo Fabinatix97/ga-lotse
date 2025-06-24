@@ -5,12 +5,10 @@
 
 "use client";
 
-import { ClientMarkdownPage } from "@/lib/baseModule/components/ClientMarkdownPage";
+import { MarkdownPage } from "@/lib/baseModule/components/MarkdownPage";
 import { useGetCitizenPortalMarkdown } from "@/lib/shared/api/queries/department";
 
 export default function PrivacyPolicyPage() {
   const source = useGetCitizenPortalMarkdown("PRIVACY");
-  return (
-    <ClientMarkdownPage title="Datenschutzerklärung" source={source.data} />
-  );
+  return <MarkdownPage title="Datenschutzerklärung" source={source.data} />;
 }

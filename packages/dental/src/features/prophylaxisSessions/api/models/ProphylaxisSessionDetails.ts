@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDefined } from "remeda";
+
 import {
   ApiDentitionType,
   ApiPerformingPerson,
@@ -29,11 +31,18 @@ export interface ProphylaxisSessionDetails extends ProphylaxisSession {
 export function mapProphylaxisSessionDetails(
   response: ApiProphylaxisSessionDetails,
 ): ProphylaxisSessionDetails {
+  const isFluoridation = isDefined(response.fluoridationVarnish);
   return {
     ...response,
     ...mapProphylaxisSession(response),
     dentitionType: response.dentitionType,
-    participants: response.participants.map(mapProphylaxisSessionExamination),
+    participants: response.participants.map((participant) =>
+      mapProphylaxisSessionExamination(
+        participant,
+        response.isScreening,
+        isFluoridation,
+      ),
+    ),
     version: response.version,
   };
 }

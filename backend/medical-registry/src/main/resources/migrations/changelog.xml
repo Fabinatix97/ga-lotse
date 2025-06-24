@@ -26,5 +26,6 @@
   <include file="migrations/0016_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0017_employee_list.xml"/>
   <include file="migrations/0018_remove_employees_employed.xml"/>
+  <include file="migrations/0019_collect_statistics.xml"/>
 
 </databaseChangeLog>

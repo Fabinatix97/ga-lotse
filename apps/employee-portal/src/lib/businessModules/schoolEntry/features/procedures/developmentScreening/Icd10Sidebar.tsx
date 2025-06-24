@@ -32,6 +32,7 @@ import {
   useConfirmationDialog,
   useSidebar,
 } from "@eshg/lib-employee-portal";
+import { ApiIcd10CodeWithOriginalCode } from "@eshg/school-entry-api";
 
 import { useSearchIcd10Codes } from "@/lib/baseModule/api/queries/icd10Codes";
 
@@ -72,8 +73,8 @@ export function useIcd10Sidebar(): UseSidebarResult<
 
 interface Icd10SidebarProps extends DrawerProps {
   onChangeSelectedCodes: () => void;
-  onSubmit: (selectedCodes: string[]) => void;
-  initiallySelectedCodes: string[];
+  onSubmit: (selectedCodes: ApiIcd10CodeWithOriginalCode[]) => void;
+  initiallySelectedCodes: ApiIcd10CodeWithOriginalCode[];
 }
 
 const StyledTable = styled(Table)({
@@ -99,11 +100,11 @@ function StyledTd({
 }
 
 function Icd10Sidebar(props: Icd10SidebarProps) {
-  const [selectedCodes, setSelectedCodes] = useState<string[]>(
-    props.initiallySelectedCodes,
-  );
+  const [selectedCodes, setSelectedCodes] = useState<
+    ApiIcd10CodeWithOriginalCode[]
+  >(props.initiallySelectedCodes);
   const selectionResult = useSearchIcd10Codes({
-    codes: selectedCodes,
+    codes: selectedCodes.map(({ code }) => code),
   });
   const [searchString, setSearchString] = useState<string>("");
   const [debouncedSearchString] = useDebounce(searchString, 250, {
@@ -121,13 +122,19 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
         ? selectionResult.data.codes
         : [];
 
+  function isSelected(otherCode: ApiIcd10Code): boolean {
+    return selectedCodes.some(({ code }) => code === otherCode.code);
+  }
+
   function addToSelection(addCode: ApiIcd10Code) {
-    setSelectedCodes([...selectedCodes, addCode.code]);
+    setSelectedCodes([...selectedCodes, addCode]);
     props.onChangeSelectedCodes();
   }
 
   function removeFromSelection(removeCode: ApiIcd10Code) {
-    setSelectedCodes(selectedCodes.filter((code) => code !== removeCode.code));
+    setSelectedCodes(
+      selectedCodes.filter(({ code }) => code !== removeCode.code),
+    );
     props.onChangeSelectedCodes();
   }
 
@@ -172,7 +179,7 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                 <tr
                   key={currentRowCode.code}
                   onClick={() => {
-                    if (selectedCodes.includes(currentRowCode.code)) {
+                    if (isSelected(currentRowCode)) {
                       removeFromSelection(currentRowCode);
                     } else {
                       addToSelection(currentRowCode);
@@ -181,12 +188,12 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                 >
                   <StyledTd sx={{ width: "40px", paddingLeft: 0 }}>
                     <Checkbox
-                      checked={selectedCodes.includes(currentRowCode.code)}
+                      checked={isSelected(currentRowCode)}
                       size="sm"
                       variant="outlined"
                       slotProps={{
                         input: {
-                          "aria-label": currentRowCode.code,
+                          "aria-label": currentRowCode.originalCode,
                           "aria-describedby": `${currentRowCode.code}-title`,
                         },
                       }}
@@ -200,7 +207,7 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    {currentRowCode.code}
+                    {currentRowCode.originalCode}
                   </StyledTd>
                   <StyledTd
                     id={`${currentRowCode.code}-title`}

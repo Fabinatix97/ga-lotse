@@ -6,7 +6,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { isNonNullish } from "remeda";
 
+import { ApiProcedureStatus } from "@eshg/base-api";
 import {
   BaseFacilityDiffForm,
   CentralFileSyncForm,
@@ -15,26 +17,47 @@ import { formatFacilityName } from "@eshg/lib-portal";
 
 import { useGetFacilityFileStateDiff } from "@/lib/baseModule/api/queries/facility";
 import { useSyncFacility } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { useEditFileNumberSidebar } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberSidebar";
 
 export function FacilitySyncContent({
   procedureId,
   fileStateId,
+  fileNumber,
+  procedureStatus,
 }: Readonly<{
   procedureId: string;
   fileStateId: string;
+  fileNumber?: string;
+  procedureStatus: ApiProcedureStatus;
 }>) {
   const router = useRouter();
   const { data } = useGetFacilityFileStateDiff(fileStateId);
-  const { mutateAsync: syncFacility } = useSyncFacility();
+  const syncFacility = useSyncFacility();
+  const editFileNumberSidebar = useEditFileNumberSidebar(() => {
+    router.back();
+  });
 
   async function handleSync() {
-    await syncFacility(
+    await syncFacility.mutateAsync(
       {
         procedureId,
         facilityVersion: data.referenceVersion,
       },
       {
-        onSuccess: router.back,
+        onSuccess: (data) => {
+          if (
+            isNonNullish(data.facility.fileNumber) &&
+            fileNumber !== data.facility.fileNumber &&
+            procedureStatus !== ApiProcedureStatus.Draft
+          ) {
+            editFileNumberSidebar.open({
+              inspectionId: procedureId,
+              fileNumber: data.facility.fileNumber,
+            });
+          } else {
+            router.back();
+          }
+        },
       },
     );
   }

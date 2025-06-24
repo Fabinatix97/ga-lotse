@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTooth } from "@eshg/dental-api";
-
-import { ToothDiagnosis } from "../../../api/models/ToothDiagnosis";
+import { ToothDiagnoses } from "../../../api/models/ExaminationResult";
 import { RELATED_TEETH } from "../../../config/teeth";
 import { ExaminationState } from "../examinationStore";
 import {
@@ -23,15 +21,22 @@ import {
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
 import { hasAnyResult } from "./result";
 
-type AddToothState = Pick<
+type AddToothInputState = Pick<
+  ExaminationState,
+  "dentition" | "previousToothDiagnoses"
+>;
+
+type AddToothOutputState = Pick<
   ExaminationState,
   "dentition" | "dirty" | "currentFocus"
 >;
 
 export function addTooth(
   toothContext: ToothContext,
-  dentition: Dentition,
-): AddToothState {
+  focusMainResult: boolean,
+  state: AddToothInputState,
+): AddToothOutputState {
+  const { dentition, previousToothDiagnoses } = state;
   const { quadrantNumber, toothIndex } = toothContext;
   const targetQuadrant = dentition[quadrantNumber];
   const tooth = targetQuadrant.teeth[toothIndex];
@@ -46,10 +51,17 @@ export function addTooth(
     throw new Error("Tooth must be of type AddableTooth");
   }
 
-  const newTooth = createToothWithDiagnosis(tooth.toothNumber);
+  const newTooth = createToothWithDiagnosis(
+    tooth.toothNumber,
+    {},
+    previousToothDiagnoses,
+  );
 
   return {
-    currentFocus: { toothContext: toothContext, element: "mainResultField" },
+    currentFocus: {
+      toothContext: toothContext,
+      element: focusMainResult ? "mainResultField" : "toothButton",
+    },
     dentition: {
       ...dentition,
       [quadrantNumber]: {
@@ -111,8 +123,9 @@ export function removeTooth(
 
 export function toggleToothType(
   toothContext: ToothContext,
+  focusMainResult: boolean,
   dentition: Dentition,
-  previousToothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
+  previousToothDiagnoses: ToothDiagnoses,
 ): Pick<
   ExaminationState,
   "dentition" | "dirty" | "dmftValues" | "currentFocus"
@@ -156,7 +169,10 @@ export function toggleToothType(
     },
   };
   return {
-    currentFocus: { toothContext: toothContext, element: "mainResultField" },
+    currentFocus: {
+      toothContext: toothContext,
+      element: focusMainResult ? "mainResultField" : "toothButton",
+    },
     dentition: newDentition,
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,

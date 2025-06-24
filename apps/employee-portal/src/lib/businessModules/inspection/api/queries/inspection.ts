@@ -5,7 +5,11 @@
 
 "use client";
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { InspectionApi } from "@eshg/inspection-api";
 
@@ -49,6 +53,13 @@ function getInspectionDuplicatesQueryKey(inspectionId: string) {
   return inspectionApiQueryKey([
     inspectionGettersQueryKey(inspectionId),
     "getInspectionDuplicates",
+  ]);
+}
+
+function getFileNumberCollisionsQueryKey(inspectionId: string) {
+  return inspectionApiQueryKey([
+    inspectionGettersQueryKey(inspectionId),
+    "getFileNumberCollisions",
   ]);
 }
 
@@ -115,5 +126,29 @@ export function useGetInspectionDuplicates(procedureId: string) {
   return useSuspenseQuery({
     queryKey: getInspectionDuplicatesQueryKey(procedureId),
     queryFn: () => inspectionApi.getInspectionDuplicates(procedureId),
+  });
+}
+
+export function getFileNumberCollisionsQuery(
+  inspectionApi: InspectionApi,
+  procedureId: string,
+) {
+  return queryOptions({
+    queryKey: getFileNumberCollisionsQueryKey(procedureId),
+    queryFn: () => inspectionApi.getFileNumberCollisions(procedureId),
+    select: (response) => response,
+  });
+}
+
+export function useGetFileNumberCollisionsQuery(
+  procedureId: string,
+  enabled: boolean,
+) {
+  const inspectionApi = useInspectionApi();
+  return useQuery({
+    queryKey: getFileNumberCollisionsQueryKey(procedureId),
+    queryFn: () => inspectionApi.getFileNumberCollisions(procedureId),
+    select: (response) => response,
+    enabled: enabled,
   });
 }

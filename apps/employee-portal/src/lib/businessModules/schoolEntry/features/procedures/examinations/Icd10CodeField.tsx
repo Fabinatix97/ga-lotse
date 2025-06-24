@@ -6,6 +6,7 @@
 import { Search } from "@mui/icons-material";
 import { Input, InputProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useField } from "formik";
 
 import {
   FieldProps,
@@ -15,20 +16,22 @@ import {
   SoftRequiredInput,
   useIsFormDisabled,
 } from "@eshg/lib-portal";
+import { ApiIcd10CodeWithOriginalCode } from "@eshg/school-entry-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 
 export type ClickIcd10CodeHandler = (
-  currentCodes: string[],
-  setFieldValue: (newCodes: string[]) => void,
+  currentCodes: ApiIcd10CodeWithOriginalCode[],
+  setFieldValue: (newCodes: ApiIcd10CodeWithOriginalCode[]) => void,
 ) => void;
 
 const FIXED_WIDTH_STYLE: SxProps = {
   ".MuiInput-root": { width: "140px" },
 };
 
-interface Icd10CodeFieldProps extends Omit<FieldProps<string[]>, "label"> {
-  values: string[];
+interface Icd10CodeFieldProps
+  extends Omit<FieldProps<ApiIcd10CodeWithOriginalCode[]>, "label"> {
+  values: ApiIcd10CodeWithOriginalCode[];
   disabled?: boolean;
   setFieldValue: SetFieldValueHelper;
   onClickIcd10Code: ClickIcd10CodeHandler;
@@ -40,17 +43,12 @@ export function Icd10CodeField(props: Icd10CodeFieldProps) {
 
   function Icd10CodeInput(inputProps: InputProps) {
     const InputComponent = props.softRequired ? SoftRequiredInput : Input;
+    const { value } = useField<ApiIcd10CodeWithOriginalCode[]>(props.name)[1];
+    const selectedCodes = value
+      .map(({ originalCode }) => originalCode)
+      .join(", ");
 
-    return (
-      <InputComponent
-        {...inputProps}
-        value={
-          Array.isArray(inputProps.value)
-            ? inputProps.value.join(", ")
-            : inputProps.value
-        }
-      />
-    );
+    return <InputComponent {...inputProps} value={selectedCodes} />;
   }
 
   function handleClickIcd10Codes() {

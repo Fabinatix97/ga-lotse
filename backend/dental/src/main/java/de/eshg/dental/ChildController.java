@@ -9,38 +9,7 @@ import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.contact.api.InstitutionContactDto;
-import de.eshg.dental.api.AnnualInstitutionDto;
-import de.eshg.dental.api.ChildDetailsDto;
-import de.eshg.dental.api.ChildDto;
-import de.eshg.dental.api.ChildFilterParameters;
-import de.eshg.dental.api.ChildForTransitionDto;
-import de.eshg.dental.api.ChildPaginationAndSortParameters;
-import de.eshg.dental.api.ChildrenForTransitionSortParameters;
-import de.eshg.dental.api.CloseChildRequest;
-import de.eshg.dental.api.CloseChildrenBulkRequest;
-import de.eshg.dental.api.CloseGroupsBulkRequest;
-import de.eshg.dental.api.CreateChildRequest;
-import de.eshg.dental.api.CreateChildResponse;
-import de.eshg.dental.api.ExaminationDto;
-import de.eshg.dental.api.GetChildrenForSchoolYearTransitionResponse;
-import de.eshg.dental.api.GetChildrenResponse;
-import de.eshg.dental.api.GetChildrenWithDetailsResponse;
-import de.eshg.dental.api.GetGroupsForSchoolYearTransitionResponse;
-import de.eshg.dental.api.GetInstitutionGroupsResponse;
-import de.eshg.dental.api.GetSchoolYearTransitionResponse;
-import de.eshg.dental.api.GroupForTransitionDto;
-import de.eshg.dental.api.PromoteBulkResponse;
-import de.eshg.dental.api.PromoteChildrenBulkRequest;
-import de.eshg.dental.api.PromoteGroupsBulkRequest;
-import de.eshg.dental.api.SchoolYearTransitionFilterParameters;
-import de.eshg.dental.api.SchoolYearTransitionPaginationAndSortParameters;
-import de.eshg.dental.api.SchoolYearTransitionSearchParameters;
-import de.eshg.dental.api.SearchChildrenResponse;
-import de.eshg.dental.api.SyncPersonRequest;
-import de.eshg.dental.api.UpdateChildRequest;
-import de.eshg.dental.api.UpdateExaminationRequest;
-import de.eshg.dental.api.UpdateFluoridationConsentBulkRequest;
-import de.eshg.dental.api.UpdatePersonRequest;
+import de.eshg.dental.api.*;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.business.model.PagedInstitutionsForTransition;
@@ -115,8 +84,8 @@ public class ChildController {
   public CreateChildResponse createChild(@Valid @RequestBody CreateChildRequest request) {
     validator.validateInstitutionAndGroupName(request.institutionId(), request.groupName());
 
-    childService.validateNoDuplicateExistsAndClosePreviousChildren(request);
-    Child child = childService.createChild(request);
+    Child existingChild = childService.validateNoDuplicateExistsAndClosePreviousChildren(request);
+    Child child = childService.createChild(request, existingChild);
 
     return new CreateChildResponse(child.getExternalId());
   }
@@ -288,9 +257,23 @@ public class ChildController {
   @Operation(summary = "Returns all created groups of an institution")
   public GetInstitutionGroupsResponse getInstitutionGroups(
       @PathVariable("institutionId") UUID institutionId,
-      @RequestParam("openGroupsOnly") boolean openGroupsOnly) {
+      @RequestParam("openGroupsOnly") boolean openGroupsOnly,
+      @RequestParam(value = "year", required = false) Integer year) {
+    if (year == null) {
+      return new GetInstitutionGroupsResponse(
+          childService.getInstitutionGroups(institutionId, openGroupsOnly));
+    }
     return new GetInstitutionGroupsResponse(
-        childService.getInstitutionGroups(institutionId, openGroupsOnly));
+        childService.getInstitutionGroups(institutionId, openGroupsOnly, year));
+  }
+
+  @GetMapping("/institutions/{institutionId}/validate")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Validates open children exist in institution")
+  public boolean validateOpenChildrenExistInInstitution(
+      @PathVariable("institutionId") UUID institutionId,
+      @RequestParam(value = "year") Integer year) {
+    return validator.validateInstitutionContainsOpenChildren(institutionId, year);
   }
 
   @GetMapping("/institutions/{institutionId}/children")

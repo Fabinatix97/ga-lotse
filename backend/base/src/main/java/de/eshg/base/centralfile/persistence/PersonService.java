@@ -521,6 +521,73 @@ public class PersonService {
     return addPersonFileState(fileState, referencePerson);
   }
 
+  public UpdatePersonsResponse updateReferencePersonsInBulk(
+      List<ReferencePersonsUpdate> referencePersonsUpdate) {
+    return mutexService.doWithLockedMutex(
+        MUTEX_PERSON_WRITE, () -> updateReferencePersonsInBulkWhenLocked(referencePersonsUpdate));
+  }
+
+  private UpdatePersonsResponse updateReferencePersonsInBulkWhenLocked(
+      List<ReferencePersonsUpdate> referencePersonsUpdate) {
+
+    List<UpdatePersonInBulkResult> updatedPersons = new ArrayList<>();
+    Map<UUID, UUID> referencePersonIdsWithLatestFileStateIds = new HashMap<>();
+    List<UUID> failedUpdates = new ArrayList<>();
+
+    List<UUID> personIdsToUpdate =
+        referencePersonsUpdate.stream().map(ReferencePersonsUpdate::referencePersonId).toList();
+
+    Map<UUID, Person> referencePersonsForUpdate =
+        personRepository
+            .findAllByExternalIdInAndReferencePersonIsNullOrderById(personIdsToUpdate)
+            .stream()
+            .collect(StreamUtil.toLinkedHashMap(Person::getExternalId));
+    List<Person> referencePersons = new ArrayList<>();
+
+    for (ReferencePersonsUpdate personUpdate : referencePersonsUpdate) {
+      Person referencePerson = referencePersonsForUpdate.get(personUpdate.referencePersonId());
+      if (referencePerson.getVersion() != personUpdate.version()) {
+        failedUpdates.add(personUpdate.referencePersonId());
+        log.debug("Version miss match, person not updated");
+        continue;
+      }
+
+      boolean requiresUpdate =
+          referencePerson.getDataOrigin() == DataOrigin.EXTERNAL
+              || !PersonDiffer.isPersonMatch(referencePerson, personUpdate.person());
+
+      if (requiresUpdate) {
+        applyPersonUpdate(personUpdate.person(), referencePerson);
+        logger.logEditReferenceData(referencePerson);
+      } else {
+        log.debug("Recognized no-op update. Returning a new file state");
+      }
+
+      referencePersonIdsWithLatestFileStateIds.put(
+          personUpdate.referencePersonId(), personUpdate.latestFileStateId());
+      referencePersons.add(referencePerson);
+    }
+
+    personRepository.flush();
+
+    List<Person> updatedFileStates = new ArrayList<>();
+    referencePersons.forEach(
+        referencePerson -> {
+          Person fileState = referencePerson.cloneFromReferencePerson();
+          prepareFileStateToAddToDb(fileState, referencePerson);
+
+          updatedFileStates.add(fileState);
+          updatedPersons.add(
+              new UpdatePersonInBulkResult(
+                  referencePersonIdsWithLatestFileStateIds.get(referencePerson.getExternalId()),
+                  fileState.getExternalId()));
+        });
+
+    personRepository.saveAll(updatedFileStates);
+
+    return new UpdatePersonsResponse(updatedPersons, failedUpdates);
+  }
+
   public int deleteExpiredFileStatesAndReferences(Instant expirationTime) {
     return mutexService.doWithLockedMutex(
         MUTEX_PERSON_WRITE, () -> deleteExpiredFileStatesAndReferencesWhenLocked(expirationTime));

@@ -479,6 +479,7 @@ public class MeaslesProtectionService {
         baseResponse.salutation(),
         baseResponse.title(),
         baseResponse.contactAddress(),
+        baseResponse.differentBillingAddress(),
         request.affectedPersonDetails().custodians());
   }
 

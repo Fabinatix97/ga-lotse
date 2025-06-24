@@ -14,6 +14,7 @@ import { useDentalApi } from "../../contexts/dental";
 export function useSearchInstitutionGroupsQuery(
   institutionId: string,
   openGroupsOnly: boolean,
+  schoolYear?: number,
 ) {
   const { childApi } = useDentalApi();
 
@@ -22,8 +23,10 @@ export function useSearchInstitutionGroupsQuery(
       "getInstitutionGroups",
       institutionId,
       openGroupsOnly,
+      schoolYear,
     ]),
-    queryFn: () => childApi.getInstitutionGroups(institutionId, openGroupsOnly),
+    queryFn: () =>
+      childApi.getInstitutionGroups(institutionId, openGroupsOnly, schoolYear),
     select: getGroups,
     enabled: !isBlankString(institutionId),
   });

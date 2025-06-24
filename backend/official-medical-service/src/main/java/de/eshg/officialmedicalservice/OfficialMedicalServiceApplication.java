@@ -6,7 +6,8 @@
 package de.eshg.officialmedicalservice;
 
 import de.eshg.lib.common.BusinessModule;
-import de.eshg.officialmedicalservice.anamnesis.AnamnesisProperties;
+import de.eshg.officialmedicalservice.config.InitialOmsConfiguration;
+import de.eshg.officialmedicalservice.config.OmsConfigurationProperties;
 import de.eshg.rest.service.security.config.OfficialMedicalServicePublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(OfficialMedicalServicePublicSecurityConfig.class)
-@EnableConfigurationProperties(AnamnesisProperties.class)
+@EnableConfigurationProperties({InitialOmsConfiguration.class, OmsConfigurationProperties.class})
 public class OfficialMedicalServiceApplication {
 
   @Bean

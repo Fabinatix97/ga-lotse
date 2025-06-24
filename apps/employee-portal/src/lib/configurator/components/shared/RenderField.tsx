@@ -10,6 +10,7 @@ import { isDefined } from "remeda";
 
 import {
   FileCard,
+  FileCardActionProps,
   FileCardProps,
   FileField,
   useConfirmationDialog,
@@ -21,6 +22,7 @@ import {
   FileType,
   InputField,
   NumberField,
+  OptionalFieldValue,
   RadioGroupField,
   Validator,
 } from "@eshg/lib-portal";
@@ -79,10 +81,12 @@ interface NumberFormField extends BaseFormField {
   min?: number;
   max?: number;
   placeholder?: string;
+  alert?: ConfiguratorAlertProps;
+  validate?: Validator<OptionalFieldValue<number>>;
 }
 
 interface UploadFormField extends BaseFormField {
-  downloadFile: () => Promise<void> | void;
+  downloadFile?: () => Promise<void> | void;
   type: "upload";
   accept?: FileType | FileType[];
   width?: Width;
@@ -96,7 +100,7 @@ interface CheckboxFormField extends BaseFormField {
 interface RadioFormField extends BaseFormField {
   type: "radio";
   readonly?: boolean;
-  alert?: Pick<AlertProps, "title" | "message" | "color">;
+  alert?: ConfiguratorAlertProps;
   options: {
     label: string;
     infoLabel?: string;
@@ -112,6 +116,10 @@ interface OpeningHoursFormField {
 
 export type FileUploadValue = Pick<FileCardProps, "name" | "size" | "type">;
 export type ConfigFile = File | null | FileUploadValue;
+export type ConfiguratorAlertProps = Pick<
+  AlertProps,
+  "title" | "message" | "color"
+>;
 
 export function RenderField({
   field,
@@ -120,8 +128,8 @@ export function RenderField({
   field: FormFields;
   values: FormikValues;
 }) {
-  const { openCancelDialog } = useConfirmationDialog();
   const fieldHelper = useField(field.name)[2];
+  const fileCardActions = useFileCardActions(field);
   switch (field.type) {
     case "text":
       return (
@@ -139,16 +147,20 @@ export function RenderField({
       );
     case "number":
       return (
-        <NumberField
-          fieldSx={widthSx(field.width)}
-          name={field.name}
-          label={field.label}
-          readOnly={field.readonly}
-          required={field.required}
-          min={field.min}
-          max={field.max}
-          placeholder={field.placeholder}
-        />
+        <Stack gap={3} sx={widthSx(field.width)}>
+          <NumberField
+            fieldSx={{ width: "100%" }}
+            name={field.name}
+            label={field.label}
+            readOnly={field.readonly}
+            required={field.required}
+            min={field.min}
+            max={field.max}
+            placeholder={field.placeholder}
+            validate={field.validate}
+          />
+          {isDefined(field.alert) && <ConfiguratorAlert {...field.alert} />}
+        </Stack>
       );
     case "upload":
       const uploadValue = values[field.name] as ConfigFile;
@@ -198,29 +210,7 @@ export function RenderField({
               type={uploadValue.type}
               size={uploadValue.size}
               actionMenuButtonColor="primary"
-              actions={[
-                {
-                  name: "Download",
-                  onClick: field.downloadFile,
-                  indicator: <Download />,
-                },
-                {
-                  name: "Löschen",
-                  color: "danger",
-                  onClick: () =>
-                    openCancelDialog({
-                      color: "danger",
-                      title: "Datei löschen?",
-                      description: "Möchten Sie die Datei wirklich löschen?",
-                      cancelLabel: "Abbrechen",
-                      confirmLabel: "Löschen",
-                      onConfirm: async () => {
-                        await fieldHelper.setValue(null);
-                      },
-                    }),
-                  indicator: <Delete />,
-                },
-              ]}
+              actions={fileCardActions}
             />
           )}
         </>
@@ -244,9 +234,7 @@ export function RenderField({
           sx={{ flex: 1 }}
         >
           <Stack gap={2}>
-            {isDefined(field.alert) && (
-              <Alert variant="soft" {...field.alert} />
-            )}
+            {isDefined(field.alert) && <ConfiguratorAlert {...field.alert} />}
             {field.options.map((option) => (
               <Stack key={option.value} direction="row" gap={1}>
                 <Radio
@@ -271,4 +259,42 @@ export function RenderField({
     case "openinghours":
       return <OpeningHoursField name={field.name} english={field.english} />;
   }
+}
+
+function ConfiguratorAlert(props: ConfiguratorAlertProps) {
+  return <Alert variant="soft" {...props} />;
+}
+
+function useFileCardActions(field: FormFields) {
+  const { openCancelDialog } = useConfirmationDialog();
+  const fieldHelper = useField(field.name)[2];
+  if (field.type !== "upload") {
+    return [];
+  }
+  const actions: FileCardActionProps[] = [
+    {
+      name: "Löschen",
+      color: "danger",
+      onClick: () =>
+        openCancelDialog({
+          color: "danger",
+          title: "Datei löschen?",
+          description: "Möchten Sie die Datei wirklich löschen?",
+          cancelLabel: "Abbrechen",
+          confirmLabel: "Löschen",
+          onConfirm: async () => {
+            await fieldHelper.setValue(null);
+          },
+        }),
+      indicator: <Delete />,
+    },
+  ];
+  if (isDefined(field.downloadFile)) {
+    actions.unshift({
+      name: "Download",
+      onClick: field.downloadFile,
+      indicator: <Download />,
+    });
+  }
+  return actions;
 }

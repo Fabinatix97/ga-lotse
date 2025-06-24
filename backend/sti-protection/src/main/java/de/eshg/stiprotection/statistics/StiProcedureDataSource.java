@@ -10,7 +10,6 @@ import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
-import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.statistics.attributes.StiAttributes;
 import de.eshg.stiprotection.statistics.attributes.StiConsultationAttributes;
 import de.eshg.stiprotection.statistics.attributes.StiLaboratoryTestsAttributes;
@@ -19,7 +18,6 @@ import de.eshg.stiprotection.statistics.attributes.StiPersonAttributes;
 import de.eshg.stiprotection.statistics.attributes.StiProcedureAttributes;
 import de.eshg.stiprotection.statistics.attributes.StiRapidTestsAttributes;
 import java.util.UUID;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -56,11 +54,5 @@ public class StiProcedureDataSource
       case StiLaboratoryTestsAttributes stiLaboratoryTestsAttributes ->
           StiLaboratoryTestsAttributes.mapAttribute(procedure, stiLaboratoryTestsAttributes);
     };
-  }
-
-  @Override
-  protected Specification<StiProtectionProcedure> getProcedureSpecification(TimeRange timeRange) {
-    return (root, query, criteriaBuilder) ->
-        isInTimeRange(criteriaBuilder, root.get(StiProtectionProcedure_.createdAt), timeRange);
   }
 }

@@ -1,0 +1,113 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.pdfaConverterPortal" }}
+---
+
+{{ if .Values.pdfaconverterportal.enabled -}}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: pdf-converter-portal
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: pdf-converter-portal-app
+  ports:
+    - port: 443
+      name: incoming
+      targetPort: incoming
+
+---
+
+  {{ include "ingress" (list "pdfaconverterportal" .Values.ingress.type .Values.domains.centralservices.pdfaconverterportal "incoming" "pdf-converter-portal" .Release.Namespace)}}
+  {{ include "lib.certificate" (list .Values.pdfaconverterportal.certificate.secret .Values.domains.centralservices.pdfaconverterportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: pdf-converter-portal
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: pdf-converter-portal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pdf-converter-portal-app
+  template:
+    metadata:
+      name: pdf-converter-portal
+      labels:
+        app: pdf-converter-portal-app
+      annotations:
+        checksum/config: {{ include "lib.pdfaConverterPortalConfig" . | sha256sum }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      volumes:
+        - name: config
+          configMap:
+            name: pdf-converter-portal-config
+        - name: certs
+          secret:
+            secretName: {{ .Values.pdfaconverterportal.certificate.secret }}
+            defaultMode: 420
+        - name: nginx-runtime-data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/pdf-converter-portal:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 443
+          resources:
+          {{- toYaml (default dict .Values.pdfaconverterportal.resources) | nindent 12 }}
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: incoming
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d/default.conf
+              name: config
+              subPath: pdf-converter-portal.conf
+              readOnly: true
+            - mountPath: /etc/nginx/nginx.conf
+              name: config
+              subPath: nginx.conf
+              readOnly: true
+            - mountPath: /var/cache/nginx
+              subPath: cache
+              name: nginx-runtime-data
+            - mountPath: /var/run
+              subPath: var-run
+              name: nginx-runtime-data
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.crt
+              subPath: tls.crt
+              readOnly: true
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.key
+              subPath: tls.key
+              readOnly: true
+
+---
+
+{{- end }}
+
+---
+
+{{- end }}

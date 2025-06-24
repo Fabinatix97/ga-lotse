@@ -171,7 +171,7 @@ public class AppointmentBlockService {
                 appointmentType, locationId, physicianId, start);
 
     return appointmentBlockSlotUtil
-        .calculateFreeAppointmentBlockSlots(appointmentBlocks)
+        .calculateFreeAppointmentBlockSlotsForType(appointmentBlocks, appointmentType)
         .values()
         .stream()
         .flatMap(Collection::stream)
@@ -239,14 +239,6 @@ public class AppointmentBlockService {
                   return holder;
                 })
             .toList();
-
-    // ToDo ISSUE-8888: Allow types with different durations -> remove this check
-    Set<Duration> durations =
-        new HashSet<>(
-            appointmentTypeHolders.stream().map(AppointmentTypeHolder::getSlotDuration).toList());
-    if (durations.size() > 1) {
-      throw new BadRequestException("Different durations are not supported");
-    }
 
     Duration shortestDuration =
         appointmentTypeHolders.stream()

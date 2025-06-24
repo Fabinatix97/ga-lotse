@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { ChildApi } from "@eshg/dental-api";
 
 import { childApiQueryKey } from "../../../../config/apiQueryKeys";
+import { useDentalApi } from "../../../../contexts/dental";
 import { mapChildDetails } from "../models/ChildDetails";
 import { mapChildExamination } from "../models/ChildExamination";
 
@@ -24,5 +25,26 @@ export function getExaminationQuery(childApi: ChildApi, examinationId: string) {
     queryKey: childApiQueryKey(["getExamination", examinationId]),
     queryFn: () => childApi.getExamination(examinationId),
     select: mapChildExamination,
+  });
+}
+
+export function useValidateOpenChildrenExistInInstitution(
+  institutionId: string,
+  schoolYear: number,
+) {
+  const { childApi } = useDentalApi();
+
+  return useQuery({
+    queryKey: childApiQueryKey([
+      "validateOpenChildrenExistInInstitution",
+      institutionId,
+      schoolYear,
+    ]),
+    queryFn: () =>
+      childApi.validateOpenChildrenExistInInstitution(
+        institutionId,
+        schoolYear,
+      ),
+    enabled: institutionId !== "",
   });
 }

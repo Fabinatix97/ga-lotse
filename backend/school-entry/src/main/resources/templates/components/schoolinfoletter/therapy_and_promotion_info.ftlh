@@ -2,13 +2,13 @@
 
 <#macro content therapyAndPromotionInfo="NUL" >
 <#-- @ftlvariable name="therapyAndPromotionInfo" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterTherapyAndPromotionInfoDto" -->
-  <table style="width: 100%;">
+  <table style="width: 100%; line-height: 1rem;">
     <colgroup>
+      <col style="width: 19%" />
       <col style="width: 20%" />
+      <col style="width: 22%" />
       <col style="width: 20%" />
-      <col style="width: 20%" />
-      <col style="width: 20%" />
-      <col style="width: 20%" />
+      <col style="width: 19%" />
     </colgroup>
     <tr>
       <td>

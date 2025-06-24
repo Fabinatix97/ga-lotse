@@ -304,6 +304,10 @@ services:
       - de.eshg.business-modules.clients[DENTAL].url=http://dental:8080
       - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
       - de.eshg.business-modules.clients[STI_PROTECTION].url=http://sti-protection:8080
+      - de.eshg.business-modules.clients[TRAVEL_MEDICINE].url=http://travel-medicine:8080
+      - de.eshg.business-modules.clients[MEASLES_PROTECTION].url=http://measles-protection:8080
+      - de.eshg.business-modules.clients[MEDS_ABROAD].url=http://meds-abroad:8080
+      - de.eshg.business-modules.clients[MEDICAL_REGISTRY].url=http://medical-registry:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
       - de.eshg.centralrepository.service-url=http://central-repository:8080
       - de.eshg.centralrepository.mock-cert-subject-cn=statistics.frankfurt.ga-lotse
@@ -561,7 +565,6 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
-      - de.eshg.official-medical-service.concerns.config=classpath:$${de.eshg.official-medical-service.concerns.templates.path}/concerns.test.yaml
     depends_on:
       official-medical-service-db:
         condition: service_healthy

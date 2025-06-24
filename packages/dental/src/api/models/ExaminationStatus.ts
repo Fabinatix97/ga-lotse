@@ -13,34 +13,59 @@ import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
+  ToothDiagnoses,
 } from "./ExaminationResult";
-import { ToothDiagnosis } from "./ToothDiagnosis";
 
 export type ExaminationStatus = "OPEN" | "CLOSED" | "NOT_PRESENT";
 
+interface ExaminationProperties {
+  isScreening: boolean;
+  isFluoridation: boolean;
+  isFluoridationConsentGiven?: boolean;
+}
+
 export function mapToExaminationStatus(
   examinationResult: ExaminationResult | undefined,
+  {
+    isScreening,
+    isFluoridation,
+    isFluoridationConsentGiven,
+  }: ExaminationProperties,
 ): ExaminationStatus {
+  const isNeitherScreeningNorFluoridation = !isScreening && !isFluoridation;
+  const isUnfeasibleFluoridationOnly =
+    !isScreening && isFluoridation && !isFluoridationConsentGiven;
+  const isUnfeasibleExamination =
+    isNeitherScreeningNorFluoridation || isUnfeasibleFluoridationOnly;
+
   if (examinationResult === undefined) {
-    return "OPEN";
+    return isUnfeasibleExamination ? "CLOSED" : "OPEN";
   }
   if (examinationResult.type === "absence") {
     return "NOT_PRESENT";
   }
-  return requiredFieldsDefined(examinationResult) ? "CLOSED" : "OPEN";
+  return requiredFieldsDefined(examinationResult, isUnfeasibleFluoridationOnly)
+    ? "CLOSED"
+    : "OPEN";
 }
 
 function requiredFieldsDefined(
   examinationResult: ScreeningExaminationResult | FluoridationExaminationResult,
+  isUnfeasibleFluoridation: boolean,
 ) {
+  const isFluoridationApplied = isDefined(
+    examinationResult.fluorideVarnishApplied,
+  );
+  const isFluoridationComplete =
+    isUnfeasibleFluoridation || isFluoridationApplied;
+
   switch (examinationResult.type) {
     case "screening":
       return (
-        isDefined(examinationResult.fluorideVarnishApplied) &&
-        allRequiredDiagnosesSet(examinationResult)
+        isFluoridationComplete && allRequiredDiagnosesSet(examinationResult)
       );
     case "fluoridation":
-      return isDefined(examinationResult.fluorideVarnishApplied);
+      return isFluoridationComplete;
     default:
       return false;
   }
@@ -61,7 +86,7 @@ function allRequiredDiagnosesSet(result: ScreeningExaminationResult) {
 }
 
 function mainResultDefined(
-  diagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
+  diagnoses: ToothDiagnoses,
   tooth: ApiTooth | undefined,
 ) {
   return isDefined(tooth) && isDefined(diagnoses[tooth]?.mainResult);

@@ -21,6 +21,11 @@
 
 <#macro additionalStyle>
   h4 {
+    font-size: 10pt;
+    margin-bottom: 0;
+  }
+  h5 {
+    font-size: 9pt;
     margin-bottom: 0;
   }
 </#macro>
@@ -46,27 +51,31 @@
     <h4>Schul- und förderrelevante Hinweise</h4>
     <@schoolinfoletter_schoolAndPromotionHints.content schoolAndPromotionHints=examination.schoolAndPromotionHints />
 
-    <h4>Bemerkung</h4>
+    <h5>Bemerkung</h5>
     <p>${examination.note!"--keine--"}</p>
 
     <@schoolinfoletter_vaccinationInfo.content vaccinationInfo=examination.vaccinationInfo />
 
     <h4>Sehscreening auffällig</h4>
-
     <@schoolinfoletter_eyeExaminationInfo.content eyeExaminationInfo=examination.eyeExaminationInfo/>
 
+    <div style="page-break-after: always"></div>
     <h4>Hörscreening auffällig</h4>
     <@schoolinfoletter_hearingExaminationInfo.content hearingExaminationInfo=examination.hearingExaminationInfo />
 
-    <div style="page-break-after: always"></div>
     <h4>Gesundheitliche Einschränkung</h4>
     <@forms.checkbox checked=examination.consultationWithCustodianRecommended title="Rücksprache mit den Personensorgeberechtigten empfohlen"/>
 
-    <h4>Lfd. Therapien / Fördermaßnahmen</h4>
+    <h4>Laufende Therapien / Fördermaßnahmen</h4>
     <@schoolinfoletter_therapyAndPromotionInfo.content therapyAndPromotionInfo=examination.therapyAndPromotionInfo />
 
     <h4>Schulärztliche Empfehlung</h4>
     <@schoolinfoletter_physiciansRecommendation.content physiciansRecommendation=examination.physiciansRecommendation />
+
+    <#if (examination.customRecommendation!"")?has_content>
+      <h5>Kommentar</h5>
+      <p>${examination.customRecommendation}</p>
+    </#if>
 
     <h4>Elternwunsch</h4>
     <p>${examination.parentsWish.note!"--keinen--"}</p>

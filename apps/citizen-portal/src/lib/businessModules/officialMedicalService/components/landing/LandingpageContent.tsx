@@ -5,7 +5,7 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { ClientMarkdownSheet } from "@/lib/baseModule/components/ClientMarkdownSheet";
+import { MarkdownSheet } from "@/lib/baseModule/components/MarkdownSheet";
 import {
   useGetDepartmentInfoQuery,
   useGetLandingContent,
@@ -40,10 +40,7 @@ export function LandingpageContent() {
 
   return (
     <GridColumnStack>
-      <ClientMarkdownSheet
-        title={t("information.title")}
-        source={landingContent}
-      />
+      <MarkdownSheet title={t("information.title")} source={landingContent} />
       <ContentSheet>
         <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
         <InfoSectionGrid>

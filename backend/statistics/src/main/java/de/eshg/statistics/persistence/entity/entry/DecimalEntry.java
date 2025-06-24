@@ -8,15 +8,13 @@ package de.eshg.statistics.persistence.entity.entry;
 import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 
 import de.eshg.lib.common.DataSensitivity;
-import de.eshg.statistics.anonymization.AnonymizationService;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 @DataSensitivity(SENSITIVE)
 @Entity
@@ -63,15 +61,9 @@ public class DecimalEntry extends CellEntry {
     if (getTableColumn().getValueType().equals(TableColumnValueType.DECIMAL)) {
       return getBigDecimalValue().doubleValue();
     } else {
-      return AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
-          getAsString(getDecimalLowerBound()), getAsString(getDecimalUpperBound()));
+      return FilterParameterMapper.INTERVAL_FORMAT_STRING.formatted(
+          FilterParameterMapper.getBigDecimalAsString(getDecimalLowerBound()),
+          FilterParameterMapper.getBigDecimalAsString(getDecimalUpperBound()));
     }
-  }
-
-  private static String getAsString(BigDecimal decimal) {
-    NumberFormat numberFormat = NumberFormat.getInstance(Locale.GERMAN);
-    numberFormat.setGroupingUsed(false);
-    numberFormat.setMaximumFractionDigits(4);
-    return numberFormat.format(decimal.doubleValue());
   }
 }

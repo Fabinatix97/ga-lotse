@@ -5,7 +5,7 @@
 
 import { OpenInNew } from "@mui/icons-material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/joy";
+import { Button, Divider, Stack, Switch, Typography } from "@mui/joy";
 import { useCallback, useContext, useMemo, useState } from "react";
 
 import {
@@ -23,6 +23,7 @@ import { routes } from "@/lib/baseModule/shared/routes";
 import { useUpdateSelfUserChatAttributes } from "@/lib/businessModules/chat/api/mutations/selfUserApi";
 import { useDeactivateUserAccount } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
+import { TermsOfUse } from "@/lib/businessModules/chat/components/TermsOfUse";
 import { DeactivateModal } from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
 import { DoubleConfirmModal } from "@/lib/businessModules/chat/components/deactivate/DoubleConfirmModal";
 import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
@@ -31,7 +32,6 @@ import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useBackupInfo } from "@/lib/businessModules/chat/shared/hooks/useBackupInfo";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
-import { termsOfUseText } from "@/lib/businessModules/chat/shared/termsOfUseText";
 import {
   setPresenceOffline,
   setPresenceOnline,
@@ -144,21 +144,17 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
 
   return (
     <>
-      <SidebarContent
-        title="Chat Einstellungen"
-        header={
-          <Stack spacing={2} sx={{ paddingRight: SIDEBAR_PADDING }}>
-            <ChatUserId userId={chatUserId} />
-            {deviceId && typeof deviceId === "string" && (
-              <ChatDeviceId
-                device={deviceId}
-                isEncryptionReady={!!isEncryptionReady}
-              />
-            )}
-            <Divider orientation="horizontal" sx={{ mt: 2 }} />
-          </Stack>
-        }
-      >
+      <SidebarContent title="Chat Einstellungen">
+        <Stack spacing={2} sx={{ paddingRight: SIDEBAR_PADDING }}>
+          <ChatUserId userId={chatUserId} />
+          {deviceId && typeof deviceId === "string" && (
+            <ChatDeviceId
+              device={deviceId}
+              isEncryptionReady={!!isEncryptionReady}
+            />
+          )}
+          <Divider orientation="horizontal" sx={{ mt: 2 }} />
+        </Stack>
         <Stack gap={2} height="100%" sx={{ mt: 1 }}>
           <Typography
             component="label"
@@ -243,11 +239,11 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
         onCancel={() => setDoubleConfirmationModalOpen(false)}
       />
       <BaseModal
-        modalTitle="Nutzungsbedingungen"
+        modalTitle="Nutzungsbedingungen Chatmodul"
         open={termsOfUseModal}
         onClose={() => setTermsOfUseModal(false)}
       >
-        <Box sx={{ paddingY: 3 }}>{termsOfUseText}</Box>
+        <TermsOfUse />
       </BaseModal>
     </>
   );

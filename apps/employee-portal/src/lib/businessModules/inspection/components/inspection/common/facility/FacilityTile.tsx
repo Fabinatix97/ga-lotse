@@ -69,10 +69,6 @@ export function FacilityTile({
           label="Objekttyp"
           value={inspection.facility.objectType?.name}
         />
-        <DetailsItem
-          label="Aktenzeichen"
-          value={inspection.facility.fileNumber}
-        />
       </CentralFileFacilityDetails>
     </InfoTile>
   );

@@ -40,9 +40,10 @@ export function AppointmentTypeOverviewTable() {
   });
 
   const allAppointmentTypes = useGetAllAppointmentTypes();
-  const currentTypeConfig = allAppointmentTypes.data.find(
-    (t) => t.id === sidebarOpenId,
-  );
+  const currentTypeConfig =
+    allAppointmentTypes.data.appointmentTypeConfigs.find(
+      (t) => t.id === sidebarOpenId,
+    );
 
   const initialValues: EditableAppointmentType | undefined =
     currentTypeConfig !== undefined
@@ -76,7 +77,7 @@ export function AppointmentTypeOverviewTable() {
     <>
       <TableSheet>
         <DataTable
-          data={allAppointmentTypes.data}
+          data={allAppointmentTypes.data.appointmentTypeConfigs}
           columns={appointmentTypesColumns(editEntry)}
         />
       </TableSheet>

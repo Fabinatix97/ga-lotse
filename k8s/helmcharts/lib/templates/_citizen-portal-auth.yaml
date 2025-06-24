@@ -1,0 +1,247 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.citizenPortalAuth" }}
+---
+
+{{ if .Values.citizenportal.enabled -}}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+{{- $selfManagedCacheHost := printf "citizen-portal-auth-cache%s" .Values.domains.clusterLocalSuffix }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: citizen-portal-auth
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: citizen-portal-auth-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: citizen-portal-auth
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: citizen-portal-auth
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: citizen-portal-auth-app
+  template:
+    metadata:
+      name: citizen-portal-auth
+      labels:
+        app: citizen-portal-auth-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      dnsPolicy: None
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: redis-certs
+          secret:
+            secretName: citizenportalauth-redis
+            defaultMode: 400
+            items:
+              - key: ca.crt
+                path: ca.crt
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: citizen-portal-auth-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: citizen-portal-auth-spatz-debuglogs
+        {{- end }}
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
+      {{ if .Values.citizenportalauth.cache.selfmanaged -}}
+      {{- include "waitForDeployment" (list .Values "citizen-portal-auth-cache") | indent 8 }}
+      {{- end }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/auth:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          resources:
+          {{- toYaml (default dict .Values.citizenportalauth.resources) | nindent 12 }}
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+            - name: spring.profiles.include
+              value: citizen-portal
+            - name: server.servlet.session.cookie.name
+              value: __Host-SESSION
+            - name: eshg.keycloak.url
+              value: "https://{{ .Values.domains.hosts.keycloak}}"
+            - name: eshg.keycloak.internal.url
+              value: "https://{{ .Values.domains.hosts.keycloakInternal}}"
+            - name: eshg.reverse-proxy.url
+              value: https://{{ .Values.domains.hosts.citizenportal }}
+            - name: spring.data.redis.host
+              valueFrom:
+                secretKeyRef:
+                  name: citizenportalauth-redis
+                  key: REDIS_HOST
+            - name: spring.data.redis.password
+              valueFrom:
+                secretKeyRef:
+                  name: citizenportalauth-redis
+                  key: REDIS_PASSWORD
+            {{ if not .Values.citizenportalauth.cache.selfmanaged -}}
+            - name: spring.data.redis.ssl.enabled
+              value: "true"
+            - name: spring.data.redis.ssl.bundle
+              value: "redis"
+            - name: spring.ssl.bundle.pem.redis.truststore.certificate
+              value: /var/run/redis-certs/ca.crt
+            {{- end }}
+            - name: spring.security.oauth2.client.registration.keycloak.client-secret
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: citizen-auth-client-secret
+            {{- if .Values.citizenportalauth.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.citizenportalauth.javaToolOptions }}"
+            {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /opt/java/openjdk/lib/security/cacerts
+              subPath: cacerts
+            {{- end }}
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            {{- if not .Values.citizenportalauth.cache.selfmanaged }}
+            - mountPath: /var/run/redis-certs
+              name: redis-certs
+              readOnly: true
+          {{- end }}
+    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.citizenportalauth "k" "citizenportalauth" "actorType" "WEB" "relay" false "createDebugLogMount" $createDebugLogMount) }}
+
+
+{{ if .Values.citizenportalauth.cache.selfmanaged -}}
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: citizen-portal-auth-cache
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: citizen-portal-auth-cache-app
+  ports:
+    - port: 6379
+      targetPort: 6379
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: citizen-portal-auth-cache
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: citizen-portal-auth-cache
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: citizen-portal-auth-cache-app
+  template:
+    metadata:
+      name: citizen-portal-auth-cache
+      labels:
+        app: citizen-portal-auth-cache-app
+    spec:
+      automountServiceAccountToken: false
+      {{ if .Values.image.pullsecret -}}
+      securityContext: {{- omit .Values.podSecurityContext "sysctls" | toYaml | nindent 8 }}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      containers:
+        - name: citizen-portal-auth-cache
+          {{- include "getThirdPartyImage" .Values.thirdPartyImages.redis | indent 10 }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          command: [ "redis-server" ]
+          args: [ "--requirepass", "$(REDIS_PASSWORD)", "--maxmemory-policy",  "allkeys-lru", "--maxmemory", "{{ default "5M" .Values.citizenportalauth.cache.maxmemory }}" ]
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: citizenportalauth-redis
+                  key: REDIS_PASSWORD
+          resources:
+            {{- toYaml (default dict .Values.citizenportalauth.cache.resources) | nindent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - /usr/bin/sh
+                - -c
+                - /usr/local/bin/redis-cli -a $REDIS_PASSWORD ping
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+
+kind: Secret
+apiVersion: v1
+data:
+  REDIS_HOST: {{ $selfManagedCacheHost | b64enc }}
+  REDIS_PASSWORD: {{ include "getOrCreateSecretValue" (list $ "citizenportalauth-redis" "REDIS_PASSWORD") }}
+metadata:
+  name: citizenportalauth-redis
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+
+{{- else }}
+  {{ include "lib.redis" (list "citizenportalauth" $) }}
+{{- end }}
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "citizen-portal-auth" .Values.citizenportalauth.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list "citizen-portal-auth-spatz" .Values.citizenportalauth.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+{{- end }}

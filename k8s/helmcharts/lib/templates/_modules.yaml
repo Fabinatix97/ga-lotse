@@ -1,0 +1,220 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.modules" }}
+---
+
+{{- range $index, $module := .Values.businessmodules }}
+{{ if $module.enabled -}}
+
+{{- $createDebugLogMount := include "createDebugLogMount" $.Values }}
+
+{{ $databaseSettings := merge (deepCopy (default dict $module.database)) (deepCopy (default dict $.Values.businessmoduleDefaults.database)) }}
+
+{{ include "lib.database" (list $index $databaseSettings $) }}
+
+{{/* set auditLogEnabled to true of key is not defined at all, otherwise take the specified value */}}
+{{/* the kindIs check is necessary because ternary by itself would overwrite explicitly specified false values */}}
+{{- $auditLogEnabled := (kindIs "invalid" ($module.auditlog).enabled | ternary true ($module.auditlog).enabled) }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $index }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $index }}
+spec:
+  selector:
+    app: {{ $index }}-app
+  ports:
+    - port: 443
+      name: spatz-incoming
+      targetPort: spatz-incoming
+    - port: 8081
+      name: app-mgmt-port
+      targetPort: app-mgmt-port
+---
+
+{{ if $.Values.monitoring.serviceMonitor.enabled -}}
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: {{ $index }}-service-monitor
+  namespace: {{ $.Release.Namespace }}
+spec:
+  endpoints:
+    - port: app-mgmt-port
+      interval: 30s
+      scheme: http
+      path: /actuator/prometheus
+      basicAuth:
+        username:
+          key: user
+          name: metrics-basic-auth
+        password:
+          key: password
+          name: metrics-basic-auth
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $index }}
+---
+{{- end }}
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ $index }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $index }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ $index }}-app
+  template:
+    metadata:
+      name: {{ $index }}
+      labels:
+        app: {{ $index }}-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if $.Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ $.Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- $.Values.podSecurityContext | toYaml | nindent 8 }}
+      dnsPolicy: None
+      initContainers:
+      {{- if gt (len $module.waitFor) 0 }}
+      {{- range $module.waitFor }}
+      {{- include "waitForDeployment" (list $.Values .) | indent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if $databaseSettings.k8sDeployment }}
+      {{- include "waitForStatefulset" (list $.Values (printf "%s-db" $index)) | indent 8 }}
+      {{- end }}
+      containers:
+        - name: application
+          image: "{{ $.Values.image.registry }}/{{ $.Values.image.repository }}/{{ coalesce $module.imageName $index }}:{{ $.Values.image.tag }}"
+          securityContext: {{- $.Values.containerSecurityContext | toYaml | nindent 12 }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          resources:
+            {{- toYaml (merge (deepCopy (default dict $module.resources)) (deepCopy (default dict $.Values.businessmoduleDefaults.resources))) | nindent 12 }}
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+              name: app-mgmt-port
+          env:
+            - name: SERVER_ADDRESS
+              value: 127.0.0.1
+            {{- if any $module.javaToolOptions $.Values.businessmoduleDefaults.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ coalesce $module.javaToolOptions $.Values.businessmoduleDefaults.javaToolOptions }}"
+            {{- end }}
+            - name: spring.profiles.active
+              {{- if $module.activeSpringProfiles }}
+              value: "{{ $module.activeSpringProfiles }}"
+              {{- else }}
+              value: "{{ $.Values.spring.profiles.active }}"
+              {{- end }}
+            {{ if $auditLogEnabled }}
+            - name: de.eshg.auditlog.service-url
+              value: "http://auditlog{{ $.Values.domains.clusterLocalSuffix }}"
+            {{ end }}
+            - name: management.server.port
+              value: "8081"
+            - name: management.metrics.tags.application
+              value: "eshg-backend-{{ $index }}"
+            - name: spring.servlet.multipart.max-file-size
+              value: "{{ $.Values.backend.upload.maxFileUploadSizeInBytes }}"
+            - name: spring.servlet.multipart.max-request-size
+              value: "{{ $.Values.backend.upload.maxFileUploadSizeInBytes }}"
+            {{- $containerTemplate := printf "module.%s.container" $index -}}
+            {{- include $containerTemplate (dict "Values" $.Values "v" $module "Release" $.Release) | indent 12 }}
+          {{- if $.Values.springBootLivenessProbe.enabled }}
+          livenessProbe: {{- omit $.Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.springBootReadinessProbe.enabled }}
+          readinessProbe: {{- omit $.Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.containersLifecycle.enabled }}
+          lifecycle: {{- omit $.Values.containersLifecycle "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if $.Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /opt/java/openjdk/lib/security/cacerts
+              subPath: cacerts
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            {{- if not $.Values.businessmoduleDefaults.database.selfmanaged }}
+            - mountPath: /var/run/db-certs
+              name: db-certs
+              readOnly: true
+            {{- end }}
+        {{- include "module.spatz" (dict "Values" $.Values "v" $module "k" $index "hasDb" true "createDebugLogMount" $createDebugLogMount) }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if $.Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: {{ $index }}-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: {{ $index }}-spatz-debuglogs
+        {{- end }}
+      {{- if not $.Values.businessmoduleDefaults.database.selfmanaged }}
+        - name: db-certs
+          secret:
+            secretName: {{ $index }}-db
+            defaultMode: 420
+            items:
+            - key: ca.crt
+              path: ca.crt
+      {{- end }}
+---
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list $index $module.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list (printf "%s-spatz" $index) $module.debuglog $) }}
+{{- end }}
+
+{{- end }}
+{{- end }}
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: metrics-basic-auth
+  namespace: {{ $.Release.Namespace }}
+stringData:
+  user: "metrics"
+data:
+  password: "{{ include "getOrCreateSecretValue" (list $ "metrics-basic-auth" "password") }}"
+type: Opaque
+
+---
+{{- end }}

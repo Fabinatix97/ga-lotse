@@ -87,7 +87,7 @@ public class AppointmentService {
         filterCurrentUserBlocks(appointmentBlocks, currentUserEvents);
 
     return appointmentBlockSlotUtil
-        .calculateFreeAppointmentBlockSlots(currentUserBlocks)
+        .calculateFreeAppointmentBlockSlotsForType(currentUserBlocks, PROOF_SUBMISSION)
         .values()
         .stream()
         .flatMap(Collection::stream)

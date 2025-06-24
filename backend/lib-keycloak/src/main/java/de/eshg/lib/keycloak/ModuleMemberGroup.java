@@ -21,7 +21,7 @@ public enum ModuleMemberGroup implements KeycloakGroup {
   INSPECTION_LANDESAMT(
       "Begehung Mitarbeiter Landesamt",
       EmployeePermissionRole.BASE_CONTACTS_WRITE,
-      EmployeePermissionRole.CHAT_MANAGEMENT_WRITE,
+      EmployeePermissionRole.CHAT_USER,
       EmployeePermissionRole.INSPECTION_NOTIFICATIONS_READ,
       EmployeePermissionRole.INSPECTION_CHECKLISTDEFINITIONS_WRITE,
       EmployeePermissionRole.INSPECTION_CORECHECKLISTDEFINITIONS_EDIT,
@@ -88,7 +88,7 @@ public enum ModuleMemberGroup implements KeycloakGroup {
     return List.of(
         EmployeePermissionRole.BASE_TASKS_READ,
         EmployeePermissionRole.BASE_PROCEDURES_READ,
-        EmployeePermissionRole.CHAT_MANAGEMENT_WRITE,
+        EmployeePermissionRole.CHAT_USER,
         EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
   }
 

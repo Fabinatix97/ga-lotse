@@ -6,8 +6,16 @@
 import { Delete } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { addDays, eachDayOfInterval, getDay, max, min } from "date-fns";
+import { useFormikContext } from "formik";
+import { useEffect } from "react";
+import { isDefined, isEmpty, unique } from "remeda";
 
-import { validateTodayOrFutureDate } from "@eshg/lib-employee-portal";
+import {
+  TimeField,
+  WeekdayCheckboxGroup,
+  validateTodayOrFutureDate,
+} from "@eshg/lib-employee-portal";
 import {
   DateField,
   EnumMap,
@@ -16,8 +24,9 @@ import {
 } from "@eshg/lib-portal";
 import { ApiDayOfWeek } from "@eshg/measles-protection-api";
 
-import { WeekdayCheckboxGroup } from "@/lib/shared/components/appointmentBlocks/WeekdayCheckboxGroup";
-import { TimeField } from "@/lib/shared/components/formFields/TimeField";
+export interface AppointmentBlockGroupValues {
+  appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
+}
 
 export interface AppointmentBlockGroupValuesWithDays {
   daysOfWeek: ApiDayOfWeek[];
@@ -77,6 +86,7 @@ export function emptyAppointmentBlockGroup(): AppointmentBlockGroupValuesWithDay
 
 interface AppointmentBlockFormWithDaysProps extends NestedFormProps {
   removeBlock: () => void;
+  index: number;
   blockCount: number;
   ref?: (el: HTMLInputElement) => void;
 }
@@ -85,9 +95,34 @@ export function AppointmentBlockFormWithDays(
   props: Readonly<AppointmentBlockFormWithDaysProps>,
 ) {
   const fieldName = createFieldNameMapper(props.name);
+  const daysOfWeekFieldName = fieldName("daysOfWeek");
   const daysOfWeekOptions = WEEKDAY_CHECKBOX_OPTIONS.filter(
     ({ disabled }) => !disabled,
   );
+
+  const {
+    setFieldValue,
+    values: { appointmentBlocks },
+  } = useFormikContext<AppointmentBlockGroupValues>();
+  const appointmentBlock = appointmentBlocks[props.index];
+
+  useEffect(() => {
+    const startDate = appointmentBlock?.startDate;
+    const endDate = appointmentBlock?.endDate;
+    if (isEmpty(startDate) || isEmpty(endDate)) {
+      return;
+    }
+
+    void setFieldValue(
+      daysOfWeekFieldName,
+      getDaysOfWeekInInterval(new Date(startDate), new Date(endDate)),
+    );
+  }, [
+    daysOfWeekFieldName,
+    setFieldValue,
+    appointmentBlock?.startDate,
+    appointmentBlock?.endDate,
+  ]);
 
   return (
     <Grid direction="column" xs={10} paddingTop={0}>
@@ -127,7 +162,7 @@ export function AppointmentBlockFormWithDays(
       <Grid container xs={12} direction="row" paddingLeft={0}>
         <Grid direction="column">
           <WeekdayCheckboxGroup
-            name={fieldName("daysOfWeek")}
+            name={daysOfWeekFieldName}
             options={daysOfWeekOptions}
             label="Wochentage"
             required
@@ -152,4 +187,24 @@ export function AppointmentBlockFormWithDays(
       )}
     </Grid>
   );
+}
+
+const DAYS_IN_WEEK = 7;
+export function getDaysOfWeekInInterval(
+  dateA: Date,
+  dateB: Date,
+): ApiDayOfWeek[] {
+  const dates = [dateA, dateB];
+  const startDate = min(dates);
+  const endDate = max(dates);
+  const clampedEndDate = min([endDate, addDays(startDate, DAYS_IN_WEEK)]);
+
+  return unique(
+    eachDayOfInterval({ start: startDate, end: clampedEndDate }).map(
+      (date) => WEEKDAY_CHECKBOX_OPTIONS[getDay(date)],
+    ),
+  )
+    .filter(isDefined)
+    .filter(({ disabled }) => !disabled)
+    .map(({ id }) => id);
 }

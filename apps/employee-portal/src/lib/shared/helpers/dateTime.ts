@@ -22,6 +22,7 @@ import {
   parse,
   secondsToHours,
   secondsToMilliseconds,
+  secondsToMinutes,
 } from "date-fns";
 import { parse as parseDuration, toSeconds } from "iso8601-duration";
 
@@ -104,6 +105,10 @@ export function secondToISODuration(second: number) {
   return formatISODuration(
     intervalToDuration({ start: baseline, end: addSeconds(baseline, second) }),
   );
+}
+
+export function durationToMinutes(isoDuration: string) {
+  return secondsToMinutes(durationToSecond(isoDuration));
 }
 
 export function formatDateRangeNumeric(start: Date, end: Date) {

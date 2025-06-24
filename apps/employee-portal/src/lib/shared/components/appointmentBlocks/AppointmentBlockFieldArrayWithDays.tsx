@@ -7,11 +7,14 @@ import { Add } from "@mui/icons-material";
 import { Button, Divider, Grid } from "@mui/joy";
 import { Fragment } from "react";
 
-import { FieldArrayWithFocus as FieldArray } from "@eshg/lib-portal";
+import {
+  FieldArrayWithFocus as FieldArray,
+  createFieldNameMapper,
+} from "@eshg/lib-portal";
 
 import {
   AppointmentBlockFormWithDays,
-  AppointmentBlockGroupValuesWithDays,
+  AppointmentBlockGroupValues,
   emptyAppointmentBlockGroup,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
@@ -20,12 +23,13 @@ const APPOINTMENT_BLOCK_GROUP_MAX_LENGTH = 5;
 
 interface AppointmentBlockFieldArrayWithDaysProps {
   name: string;
-  appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
+  appointmentBlocks: AppointmentBlockGroupValues["appointmentBlocks"];
 }
 
 export function AppointmentBlockFieldArrayWithDays(
   props: Readonly<AppointmentBlockFieldArrayWithDaysProps>,
 ) {
+  const fieldName = createFieldNameMapper<AppointmentBlockGroupValues>();
   const hasReachedAppointmentBlockLimit =
     props.appointmentBlocks.length >= APPOINTMENT_BLOCK_GROUP_MAX_LENGTH;
 
@@ -38,8 +42,9 @@ export function AppointmentBlockFieldArrayWithDays(
               <FormGroupGrid data-testid="appointmentBlockForm">
                 <AppointmentBlockFormWithDays
                   ref={(el) => setInputElementRef(el, index)}
-                  name={`appointmentBlocks.${index}`}
+                  name={`${fieldName("appointmentBlocks")}.${index}`}
                   removeBlock={() => remove(index)}
+                  index={index}
                   blockCount={props.appointmentBlocks.length}
                 />
               </FormGroupGrid>

@@ -5,21 +5,14 @@
 
 "use client";
 
-import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
-import {
-  getCloseable,
-  getErrorAction,
-  getErrorDescription,
-  resolveError,
-  useAlert,
-} from "@eshg/lib-portal";
 import { ApiBookingState } from "@eshg/official-medical-service-api";
 
+import { useHandleConcurrentAppointment } from "@/lib/businessModules/officialMedicalService/api/helpers";
 import { usePutAppointmentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
-import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/citizenAuthApi";
 import {
   BookAppointmentFormValues,
@@ -44,9 +37,7 @@ export default function CitizenOmsEntryPage() {
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
-  const alert = useAlert();
-  const queryClient = useQueryClient();
-
+  const handleConcurrentAppointments = useHandleConcurrentAppointment();
   const bookAppointment = usePutAppointmentCitizen(
     procedure.appointment?.bookingState === ApiBookingState.Booked
       ? t("snackbar.rebook_success")
@@ -54,7 +45,10 @@ export default function CitizenOmsEntryPage() {
   );
 
   async function handleSubmit(values: BookAppointmentFormValues) {
-    if (!values.appointment) return;
+    if (!values.appointment) {
+      return;
+    }
+
     await bookAppointment.mutateAsync(
       {
         appointmentId: procedure.appointment?.appointmentId ?? "",
@@ -66,34 +60,11 @@ export default function CitizenOmsEntryPage() {
       {
         onSuccess: () =>
           router.push(citizenRoutes.personalArea.index(accessCode)),
-        onError: (error) => {
-          if (
-            error instanceof Error &&
-            error.message.startsWith("The requested time slot does not")
-          ) {
-            alert.error({
-              message: t("common.errors.concurrentAppointment", {
-                context: "errorMessage",
-              }),
-            });
-            void (async () =>
-              await queryClient.invalidateQueries({
-                queryKey: citizenPublicApiQueryKey([
-                  "getFreeAppointmentsForCitizen",
-                ]),
-              }));
-          } else {
-            const { errorCode } = resolveError(error);
-            const { title, message } = getErrorDescription(errorCode);
-
-            alert.error({
-              title,
-              message,
-              action: getErrorAction(errorCode),
-              closeable: getCloseable(errorCode),
-            });
-          }
-        },
+        onError: handleConcurrentAppointments({
+          message: t("common.errors.concurrentAppointment", {
+            context: "errorMessage",
+          }),
+        }),
       },
     );
   }

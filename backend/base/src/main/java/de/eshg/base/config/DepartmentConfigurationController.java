@@ -222,7 +222,7 @@ public class DepartmentConfigurationController {
     if (input.getSize() > baseConfigurationProperties.maxMarkdownFileSizeBytes()) {
       throw new BadRequestException("File is too large");
     }
-    FileValidator.validate(input);
+    FileValidator.validateMarkdownFile(input);
     return input;
   }
 }

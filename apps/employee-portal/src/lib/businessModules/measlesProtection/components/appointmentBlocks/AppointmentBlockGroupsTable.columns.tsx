@@ -10,7 +10,12 @@ import { Chip } from "@mui/joy";
 import { Row, createColumnHelper } from "@tanstack/react-table";
 import { unique } from "remeda";
 
-import { ActionsMenu, useConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  ActionsMenu,
+  WeekdayCheckboxOption,
+  getWeekdayFromDate,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/measles-protection-api";
 
@@ -19,10 +24,6 @@ import {
   AppointmentBlockMeasles,
 } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/measlesProtection/shared/constants";
-import {
-  type WeekdayCheckboxOption,
-  getWeekdayFromDate,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import {
   durationToSecond,
   formatCalendarWeek,
@@ -128,7 +129,7 @@ export function useAppointmentBlockGroupsColumns({
           <div onClick={() => toggleRowExpanded(row)}>
             {getValue()
               .map((type) => APPOINTMENT_TYPES[type])
-              .join()}
+              .join(", ")}
           </div>
         ) : undefined,
       enableSorting: false,

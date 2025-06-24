@@ -2997,6 +2997,34 @@
         "tags" : [ "Inspection" ]
       }
     },
+    "/inspections/{id}/file-number-collisions" : {
+      "get" : {
+        "operationId" : "getFileNumberCollisions",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFileNumberCollisionsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get file number collisions for the facility central file state of an inspection",
+        "tags" : [ "Inspection" ]
+      }
+    },
     "/inspections/{id}/finalize" : {
       "post" : {
         "operationId" : "finalizeInspection",
@@ -7329,6 +7357,26 @@
           }
         }
       },
+      "FileNumberCollisionInspectionDto" : {
+        "required" : [ "facilityName", "inspectionId", "inspectionStatus" ],
+        "type" : "object",
+        "properties" : {
+          "dayOfInspection" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "facilityName" : {
+            "type" : "string"
+          },
+          "inspectionId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "inspectionStatus" : {
+            "$ref" : "#/components/schemas/ProcedureStatus"
+          }
+        }
+      },
       "FileType" : {
         "type" : "string",
         "enum" : [ "JPEG", "PNG", "PDF", "EML" ]
@@ -7761,6 +7809,21 @@
             "description" : "The version of referenceData that was present when the FileState was created. Can be increased if a newer version is irrelevant for the Procedure and the outdated flag shall be suppressed.",
             "format" : "int64",
             "example" : 1
+          }
+        }
+      },
+      "GetFileNumberCollisionsResponse" : {
+        "required" : [ "collisions" ],
+        "type" : "object",
+        "properties" : {
+          "collisions" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/FileNumberCollisionInspectionDto"
+              }
+            }
           }
         }
       },
@@ -10751,6 +10814,10 @@
           },
           "executedAppointment" : {
             "$ref" : "#/components/schemas/UpdateInspectionAppointment"
+          },
+          "fileNumberSuffix" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "followupDate" : {
             "type" : "string",

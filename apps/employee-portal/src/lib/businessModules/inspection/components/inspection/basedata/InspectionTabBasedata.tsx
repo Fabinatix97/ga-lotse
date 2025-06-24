@@ -13,16 +13,14 @@ import { useIsOffline } from "@eshg/lib-employee-portal";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
-import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { getInspectionQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
 import { useEditFacilitySidebar } from "@/lib/businessModules/inspection/components/inspection/EditFacilitySidebar";
-import { InspectionTypeCard } from "@/lib/businessModules/inspection/components/inspection/basedata/InspectionTypeCard";
+import { AdditionalInfoCard } from "@/lib/businessModules/inspection/components/inspection/basedata/AdditionalInfoCard";
 import { BillingAddressTile } from "@/lib/businessModules/inspection/components/inspection/basedata/billingaddress/BillingAddressTile";
 import { ContactPersonTile } from "@/lib/businessModules/inspection/components/inspection/basedata/contactperson/ContactPersonTile";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 
 interface InspectionTabBasedataProps {
   inspectionId: string;
@@ -41,7 +39,6 @@ export function InspectionTabBasedata({
     ],
   });
 
-  const { mutateAsync: updateFacility } = useUpdateInspectionFacility();
   const editFacilitySidebar = useEditFacilitySidebar();
   const isOffline = useIsOffline();
   const lockedByDifferentUser =
@@ -53,18 +50,9 @@ export function InspectionTabBasedata({
     lockedByDifferentUser ||
     !inspectionIsBeforePhase(inspection.phase, ApiInspectionPhase.Executed);
 
-  async function saveFacility(facility: DefaultFacilityFormValues) {
-    await updateFacility({
-      procedureId: inspectionId,
-      inspectionFacilityId: inspection.facility.id,
-      facility,
-    });
-  }
-
   function openEdit() {
     editFacilitySidebar.open({
-      facility: inspection.facility.baseFacility,
-      onSave: saveFacility,
+      inspectionId: inspection.externalId,
     });
   }
 
@@ -113,7 +101,7 @@ export function InspectionTabBasedata({
         </Grid>
       </Grid>
       <Grid lg={3}>
-        <InspectionTypeCard inspection={inspection} readonly={readonly} />
+        <AdditionalInfoCard inspection={inspection} readonly={readonly} />
       </Grid>
     </Grid>
   );

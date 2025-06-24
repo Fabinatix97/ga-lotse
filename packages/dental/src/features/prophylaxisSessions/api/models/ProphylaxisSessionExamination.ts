@@ -56,8 +56,12 @@ export interface ProphylaxisSessionExamination extends ParticipantDetails {
 
 export function mapProphylaxisSessionExamination(
   response: ApiProphylaxisSessionChildExamination,
+  isScreening: boolean,
+  isFluoridation: boolean,
 ): ProphylaxisSessionExamination {
   const result = mapOptional(response.result, mapExaminationResult);
+  const currentFluoridationConsent = response.allFluoridationConsents[0];
+  const isFluoridationConsentGiven = currentFluoridationConsent?.consented;
   return {
     id: response.childId,
     version: response.childVersion,
@@ -69,10 +73,14 @@ export function mapProphylaxisSessionExamination(
     institution: mapInstitution(response.institution),
     groupName: response.groupName,
     gender: response.gender,
-    currentFluoridationConsent: response.allFluoridationConsents[0],
+    currentFluoridationConsent: currentFluoridationConsent,
     allFluoridationConsents: response.allFluoridationConsents,
     result: result,
-    status: mapToExaminationStatus(result),
+    status: mapToExaminationStatus(result, {
+      isScreening,
+      isFluoridation,
+      isFluoridationConsentGiven,
+    }),
     note: response.note,
     prophylaxisDentitionType: response.prophylaxisDentitionType,
     previousExaminations: mapPreviousExaminations(

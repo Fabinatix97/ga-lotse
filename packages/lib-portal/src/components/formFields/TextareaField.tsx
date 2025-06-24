@@ -7,12 +7,17 @@ import { Textarea, TextareaProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FocusEvent, ReactNode } from "react";
 
+import {
+  FieldControl,
+  useDebouncedFieldControl,
+  useFieldControl,
+} from "../../hooks/fieldControl";
 import { ValidationRules } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
 
-import { BaseField, useBaseField } from "./BaseField";
+import { BaseField } from "./BaseField";
 
-export interface TextareaFieldProps extends ValidationRules<string> {
+interface CommonTextareaFieldProps {
   name: string;
   label?: string | ReactNode;
   placeholder?: string;
@@ -29,28 +34,46 @@ export interface TextareaFieldProps extends ValidationRules<string> {
   className?: string;
 }
 
+export interface TextareaFieldProps
+  extends CommonTextareaFieldProps,
+    ValidationRules<string> {}
+
 export function TextareaField(props: TextareaFieldProps) {
-  const field = useBaseField<string>(props);
+  const control = useFieldControl<string>(props);
+  return <TextareaControl {...props} control={control} />;
+}
+
+export function DebouncedTextareaField(props: TextareaFieldProps) {
+  const control = useDebouncedFieldControl<string>(props);
+  return <TextareaControl {...props} control={control} />;
+}
+
+export interface TextareaControlProps extends CommonTextareaFieldProps {
+  control: FieldControl<string>;
+}
+
+function TextareaControl(props: TextareaControlProps) {
+  const { control } = props;
   const disabled = useIsFormDisabled() || props.disabled;
 
   async function handleBlur(event: FocusEvent<HTMLTextAreaElement>) {
     if (!props.untrimmedInput) {
-      const value = field.input.value;
+      const value = control.value;
       const trimmedValue = value.trim();
       if (value !== trimmedValue) {
-        await field.helpers.setValue(trimmedValue);
+        await control.setValue(trimmedValue);
         event.target.value = trimmedValue;
       }
     }
-    field.input.onBlur?.(event);
+    await control.setTouched(true);
   }
 
   return (
     <BaseField
       label={props.label}
-      helperText={field.helperText}
-      required={field.required}
-      error={field.error}
+      helperText={control.helperText}
+      required={control.required}
+      error={control.error}
       sx={props.sx}
       disabled={disabled}
       className={props.className}
@@ -59,7 +82,7 @@ export function TextareaField(props: TextareaFieldProps) {
         aria-labelledby={props["label-id"]}
         sx={props.sxTextarea}
         name={props.name}
-        value={field.input.value}
+        value={control.value}
         minRows={props.minRows ?? 2}
         placeholder={props.placeholder}
         readOnly={props.readOnly}
@@ -70,7 +93,7 @@ export function TextareaField(props: TextareaFieldProps) {
         }}
         data-testid={props["data-testid"]}
         aria-label={props["aria-label"]}
-        onChange={field.input.onChange}
+        onChange={(event) => control.setValue(event.target.value)}
         onBlur={handleBlur}
       />
     </BaseField>

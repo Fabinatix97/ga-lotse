@@ -187,6 +187,10 @@ public class Inspection
       inverseJoinColumns = {@JoinColumn(name = "duplicate_id")})
   private final List<Inspection> possibleDuplicates = new ArrayList<>();
 
+  @Column
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private Integer fileNumberSuffix;
+
   public InspectionType getType() {
     return type;
   }
@@ -498,5 +502,13 @@ public class Inspection
 
   public void setPrecedingInspection(Inspection precedingInspection) {
     this.precedingInspection = precedingInspection;
+  }
+
+  public Integer getFileNumberSuffix() {
+    return fileNumberSuffix;
+  }
+
+  public void setFileNumberSuffix(Integer fileNumberSuffix) {
+    this.fileNumberSuffix = fileNumberSuffix;
   }
 }

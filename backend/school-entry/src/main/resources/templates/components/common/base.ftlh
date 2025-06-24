@@ -27,7 +27,7 @@
             }
 
             html {
-                font-size: 8pt;
+                font-size: 10pt;
             }
 
             body {

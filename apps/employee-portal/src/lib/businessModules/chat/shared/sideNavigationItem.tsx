@@ -18,7 +18,7 @@ const sideNavigationItem: SideNavigationItem = {
   name: "Chat",
   href: routes.index,
   decorator: <ChatOutlined />,
-  accessCheck: hasUserRole(ApiUserRole.ChatManagementWrite),
+  accessCheck: hasUserRole(ApiUserRole.ChatUser),
   chip: <ChatMessageCounter />,
 };
 

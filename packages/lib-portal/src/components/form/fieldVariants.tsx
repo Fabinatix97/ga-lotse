@@ -3,14 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  AutocompleteProps,
-  Input,
-  InputProps,
-  Select,
-  SelectProps,
-  styled,
-} from "@mui/joy";
+import { Input, InputProps, Select, SelectProps, styled } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { BaseField } from "../formFields/BaseField";
@@ -21,11 +14,6 @@ import {
 import { HorizontalField } from "../formFields/HorizontalField";
 import { NumberField, NumberFieldProps } from "../formFields/NumberField";
 import { SelectField, SelectFieldProps } from "../formFields/SelectField";
-import {
-  SelectObjectField,
-  SelectObjectFieldProps,
-} from "../formFields/SelectObjectField";
-import { CustomAutocomplete } from "../inputs/CustomAutocomplete";
 
 function withOverridableSoftRequiredProps<
   TProps extends Pick<InputProps, "color">,
@@ -124,43 +112,6 @@ export function SoftRequiredNumberField(props: SoftRequiredNumberFieldProps) {
       {...fieldProps}
       component={resolveFieldComponent(orientation)}
       input={softRequired ? SoftRequiredInput : undefined}
-    />
-  );
-}
-
-interface SoftRequiredSelectObjectFieldProps<
-  TValue extends object | number,
-  TMultiple extends boolean,
-> extends SoftRequiredFieldProps,
-    SelectObjectFieldProps<TValue, TMultiple> {}
-
-export function SoftRequiredSelectObjectField<
-  TValue extends object | number,
-  TMultiple extends boolean = false,
->(props: SoftRequiredSelectObjectFieldProps<TValue, TMultiple>) {
-  const { orientation, softRequired, ...fieldProps } = props;
-  return (
-    <SelectObjectField
-      {...fieldProps}
-      component={resolveFieldComponent(orientation)}
-      autocomplete={
-        softRequired ? SoftRequiredSelectObject<TValue, TMultiple> : undefined
-      }
-    />
-  );
-}
-
-const StyledCustomAutocomplete = styled(CustomAutocomplete)(
-  SOFT_REQUIRED_STYLES,
-) as typeof CustomAutocomplete;
-
-function SoftRequiredSelectObject<
-  TValue extends NonNullable<unknown>,
-  TMultiple extends boolean,
->(props: AutocompleteProps<TValue, TMultiple, false, false>) {
-  return (
-    <StyledCustomAutocomplete<TValue, TMultiple, false, false>
-      {...withOverridableSoftRequiredProps(props)}
     />
   );
 }

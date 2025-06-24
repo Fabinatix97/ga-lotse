@@ -31,7 +31,7 @@ import {
   useGetGdprValidationBannerQuery,
   useGetSelfUser,
   usePersonSearch,
-  useSearchParamStateProvider,
+  useQueryParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord, useToggleableState } from "@eshg/lib-portal";
@@ -160,10 +160,9 @@ export function ProceduresOverviewTable(
     selfUser,
   );
 
-  const paramStateProvider = useSearchParamStateProvider(
-    filterDefinitions,
-    true,
-  );
+  const paramStateProvider = useQueryParamStateProvider(filterDefinitions, {
+    useRouterReplace: true,
+  });
 
   const { stateProvider, resetFilters } = useOmsProceduresFilterState({
     stateProvider: paramStateProvider,
@@ -258,7 +257,10 @@ export function ProceduresOverviewTable(
       }
       filterSettings={
         activePanel === "filters" && (
-          <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
+          <FilterSettingsSheet
+            {...filterSettings.filterSettingsSheetProps}
+            filterSettingsVisible
+          >
             <FilterSettings {...filterSettings.filterSettingsProps} />
           </FilterSettingsSheet>
         )

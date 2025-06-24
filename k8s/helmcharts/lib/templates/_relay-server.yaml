@@ -1,0 +1,193 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.relayServer" }}
+---
+
+{{ if .Values.relayserver.enabled }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: relay-server
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: relay-server-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+      name: spatz-incoming
+  type: ClusterIP
+
+---
+
+{{ include "ingress" (list "relay-server" .Values.ingress.type .Values.domains.centralservices.relayserver "spatz-incoming" "relay-server" .Release.Namespace) }}
+{{ include "lib.certificate" (list .Values.relayserver.certificate.secret .Values.domains.centralservices.relayserver .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: relay-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: relay-server
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: relay-server-app
+  template:
+    metadata:
+      name: relay-server
+      labels:
+        app: relay-server-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      automountServiceAccountToken: false
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.relayserver.certificate.secret }}"
+            defaultMode: 420
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: relay-server-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: relay-server-spatz-debuglogs
+        {{- end }}
+      dnsPolicy: None
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/relay-server:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.springBootLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.springBootReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+          {{- toYaml (default dict .Values.relayserver.resources) | nindent 12 }}
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" (.Values.spring.profiles.active) }}"
+            - name: SERVER_ADDRESS
+              value: 127.0.0.1
+            - name: SERVER_PORT
+              value: "8080"
+            {{- if .Values.relayserver.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.relayserver.javaToolOptions }}"
+            {{- end }}
+            - name: management.server.port
+              value: "8081"
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+        - name: spatz
+          resources:
+          {{- toYaml (default dict .Values.spatz.resources) | nindent 12 }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /wait-for-containerstart.sh
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" ($.Values.spring.profiles.active) }}"
+            - name: ESHG_SERVICEDIRECTORY_BASEURL
+              value: "http://{{ .Values.domains.centralservices.servicedirectory }}"
+            - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_RELAY_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+              value: /var/run/certs/tls.crt
+            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+              value: /var/run/certs/tls.key
+            - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+              value: "443"
+            - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+              value: "443"
+            - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+              value: "{{ .Values.dns.upstream }}"
+            - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+              value: "{{ .Values.domains.centralservices.servicedirectory }}"
+            {{- if .Values.spatz.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.spatz.javaToolOptions }}"
+            {{- end }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+              value: "{{ .Values.domains.hosts.keycloak }}"
+            {{- range $i, $allowListEntry := .Values.relayserver.dns.allowList }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_{{ add $i 1 }}
+              value: "{{ $allowListEntry }}"
+            {{- end }}
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: spatz-incoming
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
+            {{- if eq "true" $createDebugLogMount }}
+            - name: spatzdebuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+          image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}/spatz:{{ .Values.image.tag }}'
+          {{- if .Values.spatzLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.spatzLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.spatzReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.spatzReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+
+---
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "relay-server" .Values.relayserver.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list "relay-server-spatz" .Values.relayserver.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+
+{{- end }}

@@ -12,10 +12,18 @@ import {
   useTheme,
 } from "@mui/joy";
 import { ReactNode } from "react";
+import { isDefined } from "remeda";
 
 import { useExaminationStore } from "../../stores/examination/ExaminationStoreProvider";
+import {
+  ToothAction,
+  ToothActionWithFocusChange,
+} from "../../stores/examination/examinationStore";
 import { useElementFocus } from "../../stores/examination/hooks/useElementFocus";
-import { useKeyboardNavigationHandler } from "../../stores/examination/hooks/useKeyboardNavigationHandler";
+import {
+  isKeyboardNavigationEvent,
+  useKeyboardNavigationHandler,
+} from "../../stores/examination/hooks/useKeyboardNavigationHandler";
 import {
   QuadrantNumber,
   Tooth,
@@ -25,10 +33,34 @@ import {
 import { TOOTH_SIZE } from "./styles";
 import { ToothIcon } from "./toothIcons";
 
-const SizedIconButton = styled(IconButton)({
+interface SizedIconButtonProps {
+  isFocused: boolean;
+}
+
+const SizedIconButton = styled(IconButton, {
+  shouldForwardProp: (propName) => propName !== "isFocused",
+})<SizedIconButtonProps>(({ theme, color, isFocused }) => ({
   padding: 0,
+  "--Button-focused": isFocused ? "1" : "0",
+  ".hover-icon": {
+    display: "none",
+  },
+  "&:is(:hover, :focus-visible):has(.hover-icon)": {
+    ".default-icon": {
+      display: "none",
+    },
+    ".hover-icon": {
+      display: "inline-flex",
+    },
+  },
+  "&:focus-visible": {
+    "--Icon-color": "currentColor",
+    backgroundColor: isDefined(color)
+      ? theme.palette[color].plainHoverBg
+      : undefined,
+  },
   ...TOOTH_SIZE,
-});
+}));
 
 const IconSizedBox = styled(Box)({
   ...TOOTH_SIZE,
@@ -42,10 +74,11 @@ interface ToothIconButtonProps extends Omit<IconButtonProps, "children"> {
   icon: ReactNode;
   hoverIcon?: ReactNode;
   toothContext: ToothContext;
+  toothAction: ToothAction | ToothActionWithFocusChange;
 }
 
 function ToothIconButton(props: ToothIconButtonProps) {
-  const { hoverIcon, icon, toothContext, ...buttonProps } = props;
+  const { hoverIcon, icon, toothContext, toothAction, ...buttonProps } = props;
 
   const { elementRef, isFocused, focusHandler, blurHandler } =
     useElementFocus<HTMLButtonElement>({
@@ -59,25 +92,20 @@ function ToothIconButton(props: ToothIconButtonProps) {
       {...buttonProps}
       ref={elementRef}
       variant="plain"
-      sx={{
-        "--Button-focused": isFocused ? "1" : "0",
-        ".hover-icon": {
-          display: "none",
-        },
-        ...(hoverIcon && {
-          "&:hover, &:focus-visible": {
-            ".default-icon": {
-              display: "none",
-            },
-            ".hover-icon": {
-              display: "inline-flex",
-            },
-          },
-        }),
-      }}
+      isFocused={isFocused}
       onFocus={focusHandler}
       onBlur={blurHandler}
-      onKeyDown={keyboardNavigationHandler}
+      onClick={() => toothAction(toothContext, true)}
+      onKeyDown={(event) => {
+        if (isKeyboardNavigationEvent(event.code)) {
+          keyboardNavigationHandler(event);
+          return;
+        }
+        if (event.code === "Space") {
+          toothAction(toothContext, false);
+          return;
+        }
+      }}
     >
       <IconSizedBox className="default-icon">{icon}</IconSizedBox>
       {hoverIcon && (
@@ -107,9 +135,7 @@ export function AddToothButton(props: AddToothButtonProps) {
       aria-label="Zahn hinzufügen"
       toothContext={toothContext}
       icon={<RoundedAddIcon />}
-      onClick={() => {
-        addTooth(toothContext);
-      }}
+      toothAction={addTooth}
     />
   );
 }
@@ -128,7 +154,7 @@ export function RemoveToothButton(props: RemoveToothButtonProps) {
       toothContext={props.toothContext}
       icon={<ToothIcon tooth={props.tooth} toothContext={props.toothContext} />}
       hoverIcon={<RoundedDeleteIcon />}
-      onClick={() => removeTooth(props.toothContext)}
+      toothAction={removeTooth}
     />
   );
 }
@@ -147,7 +173,7 @@ export function ToggleToothTypeButton(props: ToggleToothTypeButtonProps) {
       toothContext={props.toothContext}
       icon={<ToothIcon tooth={props.tooth} toothContext={props.toothContext} />}
       hoverIcon={<RoundedChangeIcon />}
-      onClick={() => toggleToothType(props.toothContext)}
+      toothAction={toggleToothType}
     />
   );
 }

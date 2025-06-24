@@ -19,6 +19,7 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
           """
 
                  select c.code_without_dot as code,
+                        c.code             as originalCode,
                         c.title            as title,
                         false              as "group"
                  from icd10code c
@@ -27,6 +28,7 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
                  union all
 
                  select (g.group_start || '-' || g.group_end) as code,
+                        (g.group_start || '-' || g.group_end) as originalCode,
                          g.title                              as title,
                          true                                 as "group"
                  from icd10group g
@@ -38,12 +40,12 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
       nativeQuery = true,
       value =
           """
-                select code, "group", title from (
-                    select c.code_without_dot as code, false as "group", c.title as title
+                select code, originalCode, "group", title from (
+                    select c.code_without_dot as code, c.code as originalCode, false as "group", c.title as title
                     from icd10code c
                     where c.code_without_dot in :codesWithoutDot
                     union
-                    select g.group_start || '-' || g.group_end as code, true as "group", g.title as title
+                    select g.group_start || '-' || g.group_end as code, g.group_start || '-' || g.group_end as originalCode, true as "group", g.title as title
                     from icd10group g
                     where (g.group_start || '-' || g.group_end) in :codesWithoutDot
                 ) as codes
@@ -56,8 +58,9 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
       value =
           """
 
-                  select code, "group", title from (select *
+                  select code, originalCode, "group", title from (select *
                                                from (select group_start || '-' || group_end as code,
+                                                            group_start || '-' || group_end as originalCode,
                                                             title                           as title,
                                                             true                            as "group",
                                                             greatest(
@@ -89,6 +92,7 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
                                                    union all
 
                                                    select code_without_dot as code,
+                                                          code             as originalCode,
                                                           title            as title,
                                                           false            as "group",
                                                           greatest(
@@ -126,6 +130,8 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
   interface Icd10SearchResult {
 
     String getCode();
+
+    String getOriginalCode();
 
     String getTitle();
 

@@ -135,7 +135,7 @@ export function useApiConfiguration(
   acceptLanguage: string,
 ): ConfigurationParameters {
   return {
-    basePath: useConfigurationValue(basePathName),
+    basePath: useApiConfigurationUrl(basePathName),
     middleware: [
       clientOnlyMiddleware,
       errorInterceptionMiddleware,
@@ -144,7 +144,7 @@ export function useApiConfiguration(
   };
 }
 
-function useConfigurationValue(key: keyof ApiConfiguration): string {
+export function useApiConfigurationUrl(key: keyof ApiConfiguration): string {
   const apiConfiguration = useContext(ApiConfigurationContext);
   const value = apiConfiguration[key];
 

@@ -1,0 +1,6 @@
+dependencies:
+- name: eshg-lib
+  repository: file://../lib
+  version: 1.0.0
+digest: sha256:6813ef0cfa34cbbc684ba359f31aa1fd2752df0c4a8bc6700837937a3e138b53
+generated: "2024-11-06T08:23:29.874758566+01:00"

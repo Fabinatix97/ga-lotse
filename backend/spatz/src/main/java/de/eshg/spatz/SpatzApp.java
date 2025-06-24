@@ -55,6 +55,13 @@ public class SpatzApp {
   }
 
   public static void main(String[] args) {
+
+    // Disable certificate_authorities server extension to prevent CertificateRequest messages
+    // inflation with lots of actors in service-mesh.
+    System.setProperty("jdk.tls.client.protocols", "TLSv1.3");
+    System.setProperty("jdk.tls.server.protocols", "TLSv1.3");
+    System.setProperty("jdk.tls.server.disableExtensions", "certificate_authorities");
+
     SpringApplication.run(SpatzApp.class, args);
   }
 }

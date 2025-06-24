@@ -1,0 +1,154 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.citizenPortalReverseProxy" }}
+---
+
+{{ if .Values.citizenportal.enabled -}}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: citizen-portal-reverse-proxy
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: citizen-portal-reverse-proxy-app
+  ports:
+    - port: 443
+      name: proxy-incoming
+      targetPort: proxy-incoming
+
+---
+
+{{ include "lib.certificate" (list .Values.citizenportal.certificate.secret .Values.domains.hosts.citizenportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ include "ingress" (list "citizen-portal" .Values.ingress.type .Values.domains.hosts.citizenportal "proxy-incoming" "citizen-portal-reverse-proxy" .Release.Namespace)}}
+
+{{- if .Values.monitoring.httpChecks.enabled -}}
+{{ include "http-checks" . }}
+{{- end }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: citizen-portal-reverse-proxy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: citizen-portal-reverse-proxy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: citizen-portal-reverse-proxy-app
+  template:
+    metadata:
+      name: citizen-portal-reverse-proxy
+      labels:
+        app: citizen-portal-reverse-proxy-app
+      annotations:
+        checksum/config: {{ include "lib.citizenPortalReverseProxyConfig" . | sha256sum }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      dnsPolicy: None
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "citizen-portal-auth") | indent 8 }}
+      containers:
+        - name: application
+          {{- include "getThirdPartyImage" .Values.thirdPartyImages.nginx | indent 10 }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 443
+          resources:
+          {{- toYaml (default dict .Values.citizenportal.resources) | nindent 12 }}
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: proxy-incoming
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d/default.conf
+              name: config
+              subPath: citizen-portal.conf
+              readOnly: true
+            - mountPath: /etc/nginx/auth_request.conf
+              name: config
+              subPath: auth_request.conf
+              readOnly: true
+            - mountPath: /etc/nginx/auth_api_request.conf
+              name: config
+              subPath: auth_api_request.conf
+              readOnly: true
+            - mountPath: /etc/nginx/nginx.conf
+              name: config
+              subPath: nginx.conf
+              readOnly: true
+            - mountPath: /etc/nginx/forward_headers.conf
+              name: config
+              subPath: forward_headers.conf
+              readOnly: true
+            - mountPath: /var/cache/nginx
+              subPath: cache
+              name: nginx-runtime-data
+            - mountPath: /var/run
+              subPath: var-run
+              name: nginx-runtime-data
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.crt
+              subPath: tls.crt
+              readOnly: true
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.key
+              subPath: tls.key
+              readOnly: true
+            - mountPath: /etc/nginx/ssl/dhparam
+              name: config
+              subPath: dhparam
+              readOnly: true
+    {{- $cpHost := printf "citizen-portal%s" .Values.domains.clusterLocalSuffix }}
+    {{- $cpAuthHost := printf "citizen-portal-auth%s" .Values.domains.clusterLocalSuffix }}
+    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.citizenportal "k" "citizenportal" "actorType" "WEB" "additionalDnsHosts" (list $cpHost $cpAuthHost) "inbound" false "relay" false "createDebugLogMount" $createDebugLogMount) }}
+      volumes:
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: config
+          configMap:
+            name: citizen-portal-reverse-proxy-config
+        - name: certs
+          secret:
+            secretName: {{ .Values.citizenportal.certificate.secret }}
+            defaultMode: 420
+        - name: nginx-runtime-data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+        {{- if eq "true" $createDebugLogMount }}
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: citizen-portal-reverse-proxy-spatz-debuglogs
+        {{- end }}
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "citizen-portal-reverse-proxy-spatz" .Values.citizenportal.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+{{- end }}

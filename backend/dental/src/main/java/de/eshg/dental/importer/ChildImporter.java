@@ -135,7 +135,7 @@ public class ChildImporter extends Importer<ChildRow, ChildColumn> {
             .collect(StreamUtil.toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<CreateChildRequest, Child> result =
-        childService.createChildrenAndUpdateProcedureLabels(
+        childService.createChildrenAndUpdateProcedureLabelsAndNote(
             new ArrayList<>(requestsPerRow.values()),
             previouslyClosedChildren,
             DataOriginDto.IMPORT);

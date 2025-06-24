@@ -13,18 +13,18 @@ public enum AdministrativeGroup implements KeycloakGroup {
   USER_ADMINISTRATOR(
       "Benutzeradministrator",
       EmployeePermissionRole.BASE_CONTACTS_WRITE,
-      EmployeePermissionRole.CHAT_MANAGEMENT_WRITE),
+      EmployeePermissionRole.CHAT_USER),
   RESOURCE_ADMIN(
       "Verwalter Ressourcen",
       EmployeePermissionRole.BASE_CONTACTS_WRITE,
-      EmployeePermissionRole.CHAT_MANAGEMENT_WRITE,
+      EmployeePermissionRole.CHAT_USER,
       EmployeePermissionRole.BASE_RESOURCES_READ,
       EmployeePermissionRole.BASE_RESOURCES_WRITE,
       EmployeePermissionRole.BASE_LABELS_WRITE),
   INVENTORY_ADMIN(
       "Verwalter Inventar",
       EmployeePermissionRole.BASE_CONTACTS_WRITE,
-      EmployeePermissionRole.CHAT_MANAGEMENT_WRITE,
+      EmployeePermissionRole.CHAT_USER,
       EmployeePermissionRole.BASE_INVENTORY_READ,
       EmployeePermissionRole.BASE_INVENTORY_ADMINISTRATE,
       EmployeePermissionRole.BASE_LABELS_WRITE),

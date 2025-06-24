@@ -1,0 +1,61 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1748620307705-1">
+    <createTable tableName="oms_configuration">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_oms_configuration"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="initialized" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="concerns_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="landing_content_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="keycloak_user_cleanup_job_overdue_duration" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="medical_opinion_cut_off_date_lead_time" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="citizen_portal_anamnesis_enabled" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="concerns_id"
+                         constraintName="oms_configuration_concerns_id_key"
+                         tableName="oms_configuration"/>
+    <addUniqueConstraint columnNames="landing_content_id"
+                         constraintName="oms_configuration_landing_content_id_key"
+                         tableName="oms_configuration"/>
+    <addForeignKeyConstraint baseColumnNames="concerns_id"
+                             baseTableName="oms_configuration"
+                             constraintName="fk_oms_configuration_document"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION"
+                             onUpdate="NO ACTION" referencedColumnNames="id"
+                             referencedTableName="document"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="landing_content_id"
+                             baseTableName="oms_configuration"
+                             constraintName="fk_oms_configuration_landing_content"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION"
+                             onUpdate="NO ACTION" referencedColumnNames="id"
+                             referencedTableName="multi_lang_document"
+                             validate="true"/>
+  </changeSet>
+</databaseChangeLog>

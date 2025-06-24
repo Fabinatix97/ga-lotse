@@ -5,20 +5,18 @@
 
 import { useFormik } from "formik";
 
-import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
+import { ApiDentitionType } from "@eshg/dental-api";
 import { mapOptionalValue, mapRequiredValue, useAlert } from "@eshg/lib-portal";
 
 import {
   ExaminationResult,
-  FluoridationExaminationResult,
   ScreeningExaminationResult,
+  ToothDiagnoses,
 } from "../../../api/models/ExaminationResult";
-import { ToothDiagnosis } from "../../../api/models/ToothDiagnosis";
 import { useExaminationStore } from "../../../stores/examination/ExaminationStoreProvider";
 import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "../../../translations/examination";
 import { ExaminationFormValues } from "../../../types/examination";
 import { mapToExaminationFormValues } from "../../../utils/examination";
-import { useProphylaxisSessionStore } from "../stores/prophylaxisSession/ProphylaxisSessionStoreProvider";
 
 interface ExaminationInputValues {
   result?: ExaminationResult;
@@ -41,7 +39,6 @@ export function useProphylaxisSessionExaminationForm(
 ) {
   const { initialValues, onSubmit } = params;
 
-  const isScreening = useProphylaxisSessionStore((state) => state.isScreening);
   const isDentalExaminationDirty = useExaminationStore((state) => state.dirty);
   const submitDentalExamination = useExaminationStore((state) => state.submit);
   const alert = useAlert();
@@ -63,8 +60,7 @@ export function useProphylaxisSessionExaminationForm(
 
       if (dentalExaminationResult.isValid) {
         onSubmit(
-          mapToExaminationValues(
-            isScreening,
+          mapToScreeningExaminationValues(
             formValues,
             dentalExaminationResult.toothDiagnoses,
           ),
@@ -84,53 +80,39 @@ export function useProphylaxisSessionExaminationForm(
   return form;
 }
 
-function mapToExaminationValues(
-  screening: boolean,
+function mapToScreeningExaminationValues(
   formValues: ExaminationFormValues,
-  toothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
+  toothDiagnoses: ToothDiagnoses,
 ): ExaminationOutputValues {
   return {
-    result: mapToExaminationResult(screening, formValues, toothDiagnoses),
+    result: mapToScreeningExaminationResult(formValues, toothDiagnoses),
     note: mapOptionalValue(formValues.note),
   };
 }
 
-function mapToExaminationResult(
-  screening: boolean,
+function mapToScreeningExaminationResult(
   formValues: ExaminationFormValues,
-  toothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
-): ExaminationResult | undefined {
-  if (screening) {
-    return {
-      type: "screening",
-      dentitionType: mapRequiredValue(formValues.dentitionType),
-      oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
-      mihStatus: mapOptionalValue(formValues.mihStatus),
-      orthodonticFindings: formValues.orthodonticFindings ?? [],
-      orthodonticStatus: mapOptionalValue(formValues.orthodonticStatus),
-      fluorideVarnishApplied: mapOptionalValue(
-        formValues.fluorideVarnishApplied,
-      ),
-      plaque: formValues.plaque,
-      calculus: formValues.calculus,
-      gingivitis: formValues.gingivitis,
-      parodontitis: formValues.parodontitis,
-      toothDiagnoses: toothDiagnoses,
-      individualProphylaxis: formValues.individualProphylaxis,
-      fissureSealing: formValues.fissureSealing,
-      tartarRemoval: formValues.tartarRemoval,
-      gingivitisTreatment: formValues.gingivitisTreatment,
-      orthodonticTreatment: formValues.orthodonticTreatment,
-      plaqueTreatment: formValues.plaqueTreatment,
-      inspectionAppointment: formValues.inspectionAppointment,
-    } as ScreeningExaminationResult;
-  } else {
-    // TODO: Remove when fluoridation only examination is handled without form
-    return {
-      type: "fluoridation",
-      fluorideVarnishApplied: mapOptionalValue(
-        formValues.fluorideVarnishApplied,
-      ),
-    } as FluoridationExaminationResult;
-  }
+  toothDiagnoses: ToothDiagnoses,
+): ScreeningExaminationResult {
+  return {
+    type: "screening",
+    dentitionType: mapRequiredValue(formValues.dentitionType),
+    oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
+    mihStatus: mapOptionalValue(formValues.mihStatus),
+    orthodonticFindings: formValues.orthodonticFindings ?? [],
+    orthodonticStatus: mapOptionalValue(formValues.orthodonticStatus),
+    fluorideVarnishApplied: mapOptionalValue(formValues.fluorideVarnishApplied),
+    plaque: formValues.plaque,
+    calculus: formValues.calculus,
+    gingivitis: formValues.gingivitis,
+    parodontitis: formValues.parodontitis,
+    toothDiagnoses: toothDiagnoses,
+    individualProphylaxis: formValues.individualProphylaxis,
+    fissureSealing: formValues.fissureSealing,
+    tartarRemoval: formValues.tartarRemoval,
+    gingivitisTreatment: formValues.gingivitisTreatment,
+    orthodonticTreatment: formValues.orthodonticTreatment,
+    plaqueTreatment: formValues.plaqueTreatment,
+    inspectionAppointment: formValues.inspectionAppointment,
+  };
 }

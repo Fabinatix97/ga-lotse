@@ -8,8 +8,12 @@ import { useId } from "react";
 import { isDefined } from "remeda";
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
-import { DetailsItem, formatBoolean } from "@eshg/lib-employee-portal";
-import { formatDate, formatOptional } from "@eshg/lib-portal";
+import {
+  DetailsItem,
+  DetailsRow,
+  formatBoolean,
+} from "@eshg/lib-employee-portal";
+import { DetailsList, formatDate, formatOptional } from "@eshg/lib-portal";
 
 import {
   ExaminationSectionHeader,
@@ -32,10 +36,12 @@ export function FluoridationConsentInformationSection(
 
   if (!isDefined(fluoridationConsent)) {
     return (
-      <DetailsItem
-        label="Einverständnis zur Fluoridierung"
-        value="Liegt nicht vor"
-      />
+      <DetailsList>
+        <DetailsItem
+          label="Einverständnis zur Fluoridierung"
+          value="Liegt nicht vor"
+        />
+      </DetailsList>
     );
   }
   return (
@@ -57,20 +63,25 @@ export function FluoridationConsentInformationSection(
           }
         />
       </ExaminationSectionHeader>
-      <Stack direction="row" gap={3} flexWrap="wrap">
-        <DetailsItem
-          label="Einverständnis"
-          value={formatBoolean(fluoridationConsent.consented)}
-        />
-        <DetailsItem
-          label="Datum"
-          value={formatDate(fluoridationConsent.dateOfConsent)}
-        />
-        <DetailsItem
-          label="Allergie"
-          value={formatOptional(fluoridationConsent.hasAllergy, formatBoolean)}
-        />
-      </Stack>
+      <DetailsList>
+        <DetailsRow>
+          <DetailsItem
+            label="Einverständnis"
+            value={formatBoolean(fluoridationConsent.consented)}
+          />
+          <DetailsItem
+            label="Datum"
+            value={formatDate(fluoridationConsent.dateOfConsent)}
+          />
+          <DetailsItem
+            label="Allergie"
+            value={formatOptional(
+              fluoridationConsent.hasAllergy,
+              formatBoolean,
+            )}
+          />
+        </DetailsRow>
+      </DetailsList>
     </Stack>
   );
 }

@@ -51,11 +51,6 @@ tasks.named('test').configure {
   inputs.file "${rootDir}/config/tsconfig.next.json"
 }
 
-tasks.register('copyMarkdownSources', Copy) {
-  from("${projectDir}/markdown")
-  into "${nextDir}/standalone/${projectPath}/markdown"
-}
-
 tasks.register('copyStaticBuildAssets', Copy) {
   from("${nextDir}/static")
   into "${nextDir}/standalone/${projectPath}/.next/static"
@@ -67,7 +62,6 @@ tasks.register('copyPublicBuildAssets', Copy) {
 }
 
 tasks.register('assemble', PnpmTaskWithProjectDependencies) {
-  finalizedBy 'copyMarkdownSources'
   finalizedBy 'copyStaticBuildAssets'
   finalizedBy 'copyPublicBuildAssets'
   def bundlerArgs = project.hasProperty('turbo') ? ['--turbo'] : []
@@ -134,7 +128,6 @@ tasks.register('createDockerfile', Dockerfile) {
 
 tasks.register('copyAssetsToDockerBuildDir', Copy) {
   dependsOn 'assemble'
-  mustRunAfter 'copyMarkdownSources'
   mustRunAfter 'copyStaticBuildAssets'
   mustRunAfter 'copyPublicBuildAssets'
 

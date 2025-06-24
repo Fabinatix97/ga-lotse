@@ -1,0 +1,41 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+dynamicFields:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: citizen-portal-reverse-proxy
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: employee-portal-reverse-proxy
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: keycloak-reverse-proxy
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: synapse
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: service-directory
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: lsd
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: adminportal
+    jsonPath:
+      - /spec/template/metadata/annotations/checksum~1config
+      - /spec/template/metadata/annotations/checksum~1usercerts
+

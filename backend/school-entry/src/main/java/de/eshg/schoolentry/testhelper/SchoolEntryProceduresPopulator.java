@@ -429,7 +429,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
 
   private static MeasurementsDto randomMeasurementsDto(Faker faker) {
     return new MeasurementsDto(
-        faker.random().nextInt(1050, 1200) / 1000.0,
+        faker.random().nextInt(105, 120),
         faker.number().randomDouble(3, 20, 40),
         faker.random().nextInt(90, 140),
         faker.random().nextInt(50, 90));
@@ -472,7 +472,9 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
                 || examinationResult.examinationResultValue() == ExaminationResultValueDto.UNKNOWN)
             ? List.of()
             : randomSubset(faker, icd10Codes);
-    return new ExaminationWithDiagnosisDto(examinationResult, codes);
+    return new ExaminationWithDiagnosisDto(
+        examinationResult,
+        codes.stream().map(code -> new Icd10CodeWithOriginalCodeDto(code, code)).toList());
   }
 
   private static List<String> randomSubset(Faker faker, List<String> icd10Codes) {

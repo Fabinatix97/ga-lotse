@@ -35,6 +35,7 @@ import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ProphylaxisSession;
+import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.lib.keycloak.TechnicalGroup;
@@ -67,6 +68,7 @@ public class ProphylaxisSessionsPopulator
   private final ChildController childController;
   private final UserApi userApi;
   private final TransactionHelper transactionHelper;
+  private final ChildRepository childRepository;
 
   public ProphylaxisSessionsPopulator(
       PopulationProperties properties,
@@ -82,7 +84,8 @@ public class ProphylaxisSessionsPopulator
       ExaminationRepository examinationRepository,
       ChildController childController,
       UserApi userApi,
-      TransactionHelper transactionHelper) {
+      TransactionHelper transactionHelper,
+      ChildRepository childRepository) {
     super(
         properties,
         clock,
@@ -98,6 +101,7 @@ public class ProphylaxisSessionsPopulator
     this.childController = childController;
     this.userApi = userApi;
     this.transactionHelper = transactionHelper;
+    this.childRepository = childRepository;
   }
 
   @Override
@@ -124,9 +128,12 @@ public class ProphylaxisSessionsPopulator
     Duration duration =
         Duration.ofDays(faker.random().nextInt(10)).plusHours(faker.random().nextInt(24));
     Instant date = isPastSession ? clock.instant().minus(duration) : clock.instant().plus(duration);
-
     UUID institutionId = randomSchoolOrDaycare(faker);
-    String groupName = randomGroupAtInstitution(faker, institutionId);
+
+    Child randomChild = randomChild(faker, institutionId);
+    String groupName = randomChild.getGroupName();
+    int year = randomChild.getYear().getValue();
+
     List<UUID> dentistIds =
         optionalList(
             faker,
@@ -146,6 +153,7 @@ public class ProphylaxisSessionsPopulator
     CreateProphylaxisSessionRequest createProphylaxisSessionRequest =
         new CreateProphylaxisSessionRequest(
             date,
+            year,
             institutionId,
             groupName,
             randomProphylaxisType(faker),
@@ -160,14 +168,15 @@ public class ProphylaxisSessionsPopulator
     return createProphylaxisSessionRequest;
   }
 
-  private String randomGroupAtInstitution(Faker faker, UUID institutionId) {
-    List<String> existingGroups =
-        childController.getInstitutionGroups(institutionId, true).groups();
-    if (existingGroups.isEmpty()) {
+  private Child randomChild(Faker faker, UUID institutionId) {
+    List<Child> children =
+        childRepository.findByInstitutionIdAndProcedureStatusOrderById(
+            institutionId, ProcedureStatus.OPEN);
+    if (children.isEmpty()) {
       throw new EmptySchoolException(
-          "Populated school %s does not contain any groups.".formatted(institutionId));
+          "Populated school %s does not contain any children.".formatted(institutionId));
     }
-    return randomElement(faker, existingGroups);
+    return randomElement(faker, children);
   }
 
   private static ProphylaxisTypeDto randomProphylaxisType(Faker faker) {

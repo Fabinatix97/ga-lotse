@@ -9,11 +9,12 @@ import { identity } from "remeda";
 import { ApiContactCategory } from "@eshg/base-api";
 import { CustomAutocomplete } from "@eshg/lib-portal";
 
+import { getEntityId, isSameEntity } from "../../../../api/models/BaseEntity";
+import { Contact } from "../../../contacts/api/models/Contact";
 import {
   useGetOptionalContactQuery,
   useSearchContacts,
 } from "../../../contacts/api/queries";
-import { mapContactToSelectOption } from "../../../contacts/utils/mappers";
 
 interface SearchInstitutionFilterProps {
   institutionId: string | undefined;
@@ -24,36 +25,39 @@ interface SearchInstitutionFilterProps {
 
 export function SearchInstitutionFilter(props: SearchInstitutionFilterProps) {
   const [institutionName, setInstitutionName] = useState("");
-  const searchInstitutions = useSearchContacts(
+  const { data: institutionSearchResult, isFetching } = useSearchContacts(
     institutionName,
     props.categories,
   );
-  const institutions = searchInstitutions.isSuccess
-    ? searchInstitutions.data.elements
-    : [];
-  const { data } = useGetOptionalContactQuery(props.institutionId);
-  const selectedInstitution =
-    data !== undefined ? mapContactToSelectOption(data) : undefined;
-  const institutionOptions = institutions.map(mapContactToSelectOption);
+  const matchedInstitutions = institutionSearchResult?.elements ?? [];
+  const { data: selectedInstitution } = useGetOptionalContactQuery(
+    props.institutionId,
+  );
   const selectedOption =
     selectedInstitution ??
-    institutionOptions.find(
-      (institutionOption) => institutionOption.value === props.institutionId,
+    matchedInstitutions.find(
+      (institution) => institution.id === props.institutionId,
     );
 
   return (
     <CustomAutocomplete
       value={selectedOption ?? null}
       inputValue={institutionName}
-      options={institutionOptions}
+      options={matchedInstitutions}
       filterOptions={identity()}
       placeholder={props.placeholder}
-      loading={searchInstitutions.isFetching}
+      loading={isFetching}
+      getOptionKey={getEntityId}
+      getOptionLabel={getInstitutionName}
+      isOptionEqualToValue={isSameEntity}
       onInputChange={(_, newInputValue) => setInstitutionName(newInputValue)}
-      onChange={(_event, value) => {
-        props.onChange(value?.value ?? undefined);
-        setInstitutionName("");
-      }}
+      onChange={(_event, value) =>
+        props.onChange(value !== null ? getEntityId(value) : undefined)
+      }
     />
   );
+}
+
+function getInstitutionName(institution: Contact): string {
+  return institution.name;
 }

@@ -6,12 +6,12 @@
 package de.eshg.opendata;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.opendata.api.GetOpenDocumentsPaginationOptions;
 import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.GetOpenDocumentsResponse;
 import de.eshg.opendata.api.VersionDto;
 import de.eshg.opendata.config.OpenDataConfigService;
+import de.eshg.rest.service.i18n.LanguageContextHolder;
 import de.eshg.rest.service.security.config.BaseUrls.OpenData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,18 +96,17 @@ public class OpenDataPublicCitizenController {
     return openDataService.downloadDocument(versionId);
   }
 
-  @GetMapping("terms-of-use")
-  @ApiResponse(
-      responseCode = "200",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-              schema = @Schema(format = "binary")))
   @Operation(summary = "Returns the terms of use")
+  @ApiResponse(responseCode = "200")
+  @GetMapping("terms-of-use")
   @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getTermsOfUse() {
-    return MultiLangDocumentHelper.getAsPdfResponseByCurrentLanguageWithFallback(
-        openDataConfigService.getConfig().getTermsOfUse(),
-        OpenDataConfigService.TERMS_OF_USE_USER_FILENAME);
+  public ResponseEntity<byte[]> getTermsOfUse() {
+    return ResponseEntity.ok()
+        .contentType(MediaType.TEXT_MARKDOWN)
+        .varyBy(HttpHeaders.ACCEPT_LANGUAGE)
+        .body(
+            openDataService.getMarkdownWithGermanFallback(
+                openDataConfigService.getConfig().getTermsOfUse(),
+                LanguageContextHolder.getLanguage()));
   }
 }

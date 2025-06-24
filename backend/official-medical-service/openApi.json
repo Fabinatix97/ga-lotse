@@ -1048,6 +1048,110 @@
         "tags" : [ "DepartmentInfoConfig" ]
       }
     },
+    "/configuration/oms-properties" : {
+      "get" : {
+        "operationId" : "getOmsConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOmsConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the Official Medical Service configuration, excluding file contents (metadata only)",
+        "tags" : [ "OmsConfig" ]
+      },
+      "put" : {
+        "operationId" : "putOmsConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "concerns" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "config_request" : {
+                    "$ref" : "#/components/schemas/PutOmsConfigRequest"
+                  },
+                  "landingContent_de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "landingContent_en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "config_request" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the Official Medical Service configuration, including file contents",
+        "tags" : [ "OmsConfig" ]
+      }
+    },
+    "/configuration/oms-properties/concerns" : {
+      "get" : {
+        "operationId" : "downloadConcerns",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download the current definition of concerns (yaml file, all languages)",
+        "tags" : [ "OmsConfig" ]
+      }
+    },
+    "/configuration/oms-properties/landing-page/{lang}" : {
+      "get" : {
+        "operationId" : "downloadLandingPage",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "lang",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Language"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download the current content of the citizen portal landing page (markdown file, one language)",
+        "tags" : [ "OmsConfig" ]
+      }
+    },
     "/configuration/opening-hours" : {
       "get" : {
         "operationId" : "getConfigOpeningHours",
@@ -4419,6 +4523,13 @@
             "type" : "string",
             "format" : "date"
           },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
           "emailAddresses" : {
             "type" : "array",
             "items" : {
@@ -5680,6 +5791,13 @@
               "$ref" : "#/components/schemas/FacilityContactPerson"
             }
           },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
           "emailAddresses" : {
             "type" : "array",
             "items" : {
@@ -6598,6 +6716,29 @@
         "properties" : {
           "standardDurations" : {
             "$ref" : "#/components/schemas/OmsAppointmentStandardDurations"
+          }
+        }
+      },
+      "GetOmsConfigResponse" : {
+        "required" : [ "citizenPortalAnamnesisEnabled", "concerns", "keycloakUserCleanupJobOverdueDuration", "landingPageContent", "medicalOpinionCutOffDateLeadTime" ],
+        "type" : "object",
+        "properties" : {
+          "citizenPortalAnamnesisEnabled" : {
+            "type" : "boolean"
+          },
+          "concerns" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          },
+          "keycloakUserCleanupJobOverdueDuration" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "landingPageContent" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
+          },
+          "medicalOpinionCutOffDateLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -8436,6 +8577,26 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "PutOmsConfigRequest" : {
+        "required" : [ "citizenPortalAnamnesisEnabled", "keycloakUserCleanupJobOverdueDuration", "medicalOpinionCutOffDateLeadTime" ],
+        "type" : "object",
+        "properties" : {
+          "citizenPortalAnamnesisEnabled" : {
+            "type" : "boolean"
+          },
+          "deleteLandingPageEn" : {
+            "type" : "boolean"
+          },
+          "keycloakUserCleanupJobOverdueDuration" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "medicalOpinionCutOffDateLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "RetirementInfo" : {
         "required" : [ "appliedForRetirement" ],

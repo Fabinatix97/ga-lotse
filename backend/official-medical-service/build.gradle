@@ -14,6 +14,7 @@ dependencies {
     implementation project(':lib-appointmentblock')
     implementation project(":lib-statistics")
     implementation project(':lib-scheduling')
+    implementation project(':file-commons')
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 

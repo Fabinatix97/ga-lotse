@@ -6,5 +6,5 @@
 import { registerValidationFileMatcher } from "@cronn/vitest-file-snapshots/matcher";
 
 registerValidationFileMatcher({
-  baseDir: "src",
+  testDir: "src",
 });

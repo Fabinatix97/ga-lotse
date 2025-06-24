@@ -47,13 +47,13 @@ public class ValueEvaluatorController {
   public PercentilesDto getPercentiles(
       @PathVariable("procedureId") UUID procedureId,
       @RequestParam(name = "height", required = false)
-          @Schema(description = "Measured height in m.", type = "number", format = "double")
-          Double height,
+          @Schema(description = "Measured height in cm.", type = "number", format = "integer")
+          Integer height,
       @RequestParam(name = "weight", required = false)
           @Schema(description = "Measured weight in kg.", type = "number", format = "double")
           Double weight) {
-    Validator.validateWeightIsNonNegative(weight);
-    Validator.validateHeightIsNonNegative(height);
+    Validator.validateWeight(weight);
+    Validator.validateHeight(height);
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     return percentileCalculationService.getPercentiles(procedure, height, weight);
   }

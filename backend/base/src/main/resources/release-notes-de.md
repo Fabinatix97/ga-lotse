@@ -2,6 +2,27 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.11
+_18.06.2025_
+
+Zwölfter Release der Anwendung GA-Lotse
+
+### Begehung
+
+* Aktenzeichen nach Straßenverzeichnis können verwendet werden.
+* Rechtsgrundlagen für Objekttypen ergänzt.
+
+### Statistikmodul
+
+* Drei neue Datenquellen für die Statistik hinzugefügt:
+  * Reisemedizinische Beratung und Impfungen - Impfungen
+  * Reisemedizinische Beratung und Impfungen - Vorgänge
+  * Masernschutzimpfung
+
+### PDF zu PDF/A Konvertierung
+
+* Ein neues Portal zur Konvertierung von PDF Dateien nach PDF/A steht zur Verfügung.
+
 ## GA-Lotse 1.10
 _14.05.2025_
 
@@ -10,7 +31,6 @@ Elfter Release der Anwendung GA-Lotse.
 ### Begehung:
 
 * Der Offline-Modus für Vorgänge steht zur Verfügung
-
 
 ## GA-Lotse 1.9
 _07.05.2025_

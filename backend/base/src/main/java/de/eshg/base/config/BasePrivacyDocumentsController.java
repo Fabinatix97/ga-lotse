@@ -80,10 +80,12 @@ class BasePrivacyDocumentsController {
       throw new NotFoundException("Privacy notice is not initialized");
     }
 
-    return MultiLangDocumentHelper.getAsPdfResourceByLanguageOrThrow(
-        config.getPrivacyNotice(),
+    MultiLangDocument multiLangDocument = config.getPrivacyNotice();
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
+        multiLangDocument,
         AbstractPrivacyDocumentService.PRIVACY_NOTICE_CONFIG_FILENAME,
-        lang);
+        lang,
+        MediaType.APPLICATION_PDF);
   }
 
   @PutMapping(value = PRIVACY_NOTICE_PATH, consumes = MULTIPART_FORM_DATA_VALUE)
@@ -128,10 +130,12 @@ class BasePrivacyDocumentsController {
       throw new NotFoundException("Privacy policy is not initialized");
     }
 
-    return MultiLangDocumentHelper.getAsPdfResourceByLanguageOrThrow(
-        config.getPrivacyPolicy(),
+    MultiLangDocument multiLangDocument = config.getPrivacyPolicy();
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
+        multiLangDocument,
         AbstractPrivacyDocumentService.PRIVACY_POLICY_CONFIG_FILENAME,
-        lang);
+        lang,
+        MediaType.APPLICATION_PDF);
   }
 
   @PutMapping(value = PRIVACY_POLICY_PATH, consumes = MULTIPART_FORM_DATA_VALUE)

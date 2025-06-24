@@ -15,6 +15,10 @@ export function mapBaseEntity(response: BaseEntityProps): BaseEntity {
   return { id: response.id };
 }
 
-export function getId(entity: BaseEntity): string {
+export function getEntityId(entity: BaseEntity): string {
   return entity.id;
+}
+
+export function isSameEntity(a: BaseEntity, b: BaseEntity): boolean {
+  return a.id === b.id;
 }

@@ -1,0 +1,46 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.backup" }}
+{{ if .Values.backup.enabled }}
+---
+apiVersion: appcat.vshn.io/v1
+kind: ObjectBucket
+metadata:
+  name: backups
+spec:
+  parameters:
+    bucketName: backups-{{ .Release.Namespace }}
+    region: de-muc-1
+  writeConnectionSecretToRef:
+    name: backups-bucket-credentials
+---
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: schedule
+spec:
+  backend:
+    s3:
+      endpoint: 'https://sos-de-muc-1.exo.io'
+      bucket: backups-{{ .Release.Namespace }}
+      accessKeyIDSecretRef:
+        name: backups-bucket-credentials
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKeySecretRef:
+        name: backups-bucket-credentials
+        key: AWS_SECRET_ACCESS_KEY
+  backup:
+    schedule: '0 2 * * *'
+    failedJobsHistoryLimit: 2
+    successfulJobsHistoryLimit: 2
+  check:
+    schedule: '0 3 * * 1'
+  prune:
+    schedule: '0 4 * * 0'
+    retention:
+      keepLast: 720
+      keepDaily: 365
+---
+{{- end }}
+{{- end }}

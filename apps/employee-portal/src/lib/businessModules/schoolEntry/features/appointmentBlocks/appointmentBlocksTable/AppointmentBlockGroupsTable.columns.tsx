@@ -58,7 +58,7 @@ export function useAppointmentBlockColumns({
         depth === 0
           ? getValue()
               .map((type) => APPOINTMENT_TYPES[type])
-              .join()
+              .join(", ")
           : undefined,
       enableSorting: false,
       meta: {

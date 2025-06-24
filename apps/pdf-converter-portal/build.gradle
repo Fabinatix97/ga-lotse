@@ -1,0 +1,103 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.github.gradle.node.pnpm.task.PnpmTask
+import org.apache.commons.codec.digest.DigestUtils
+
+plugins {
+  id 'node'
+  id 'source-checks'
+  id 'com.bmuschko.docker-remote-api'
+  id "eshg.image-push-sign"
+}
+
+def dockerBuildDir = layout.buildDirectory.dir('docker')
+
+// Prepare config for CSP (hashes and paths)
+void writeCspConfig() {
+  def indexJs = (fileTree(layout.buildDirectory.dir('dist/assets')).matching {
+    include '**/index*.js'
+  }.files as List).first
+
+  def hasher = new DigestUtils(DigestUtils.getSha256Digest())
+  def hash = hasher.digest(indexJs).encodeBase64().toString()
+  hash = "sha256-${hash}"
+
+  def nginxConfig = """# Auto-generated hashe of JS file for script-src CSP
+
+set \$csp_script_hashes "'${hash}'";
+"""
+  new File(layout.buildDirectory.dir('dist').get().asFile, '.csp_config.conf').text = nginxConfig
+
+  // add integrity header
+  def indexHtml = layout.buildDirectory.file('dist/index.html').get().asFile
+  indexHtml.text = indexHtml.text.replaceAll("src=\"/assets/${indexJs.name}\"", "integrity=\"${hash}\" src=\"/assets/${indexJs.name}\"")
+}
+
+tasks.register('runDev', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  args = ['vite']
+}
+
+tasks.register('tsc', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  args = ['tsc']
+}
+
+tasks.register('assemble', PnpmTask) {
+  dependsOn tsc
+  args = ['vite', 'build']
+  doLast {
+    writeCspConfig()
+  }
+}
+
+tasks.register('run', PnpmTask) {
+  dependsOn 'assemble'
+  args = ['vite', 'preview']
+}
+
+tasks.register('build') {
+  dependsOn assemble
+}
+
+
+
+tasks.register('createDockerfile', Dockerfile) {
+  def nginxDockerImage = "nginx:1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+
+  from("${System.getenv('CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX') ?: 'docker.io'}/${nginxDockerImage}")
+
+  exposePort(3004)
+
+  runCommand('rm -fr /usr/share/nginx/html/*')
+  copyFile('dist', '/usr/share/nginx/html')
+
+  copyFile('nginx.conf', '/etc/nginx/conf.d/default.conf')
+
+  defaultCommand(
+    'nginx', '-g', 'daemon off;'
+  )
+}
+
+tasks.register('copyAssetsToDockerBuildDir', Copy) {
+  dependsOn 'assemble'
+
+  into dockerBuildDir
+
+  from file('nginx.conf')
+
+  from(file('build')) {
+    include 'dist/**'
+  }
+}
+
+def buildDockerImage = tasks.register('buildDockerImage', DockerBuildImage) {
+  dependsOn 'createDockerfile'
+  inputs.files(tasks.named('copyAssetsToDockerBuildDir'))
+
+  if (getTagName() != null) {
+    images.add(getImageNameWithTag())
+  } else {
+    images.add(getImageNameWithLatestTag())
+  }
+}

@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 import { ApiGender } from "@eshg/base-api";
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import {
+  DetailsColumn,
   DetailsItem,
   DetailsRow,
   EditButton,
@@ -17,6 +18,7 @@ import {
   ProcedureLabelChip,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsList,
   ExternalLinkButton,
   GENDER_VALUES,
   OPTIONAL_FALLBACK_VALUE,
@@ -78,28 +80,38 @@ export function ExaminationChildDetailsSection(
         />
       )}
     >
-      <DetailsRow>
-        <DetailsItem
-          label="Einrichtung"
-          value={props.institution?.name ?? OPTIONAL_FALLBACK_VALUE}
-        />
-        <DetailsItem
-          label="Gruppe"
-          value={props.groupName ?? OPTIONAL_FALLBACK_VALUE}
-        />
-      </DetailsRow>
-      <DetailsRow>
-        <DetailsItem
-          label="Geschlecht"
-          value={formatOptionalKey(props.gender, GENDER_VALUES)}
-        />
-        <DetailsItem label="Geburtstag" value={formatDate(props.dateOfBirth)} />
-        <DetailsItem label="Alter bei Untersuchung" value={`${age} Jahre`} />
-      </DetailsRow>
-      <DetailsItem
-        label="Kennungen"
-        value={renderProcedureLabels(props.procedureLabels)}
-      />
+      <DetailsList>
+        <DetailsColumn gap={2}>
+          <DetailsRow>
+            <DetailsItem
+              label="Einrichtung"
+              value={props.institution?.name ?? OPTIONAL_FALLBACK_VALUE}
+            />
+            <DetailsItem
+              label="Gruppe"
+              value={props.groupName ?? OPTIONAL_FALLBACK_VALUE}
+            />
+          </DetailsRow>
+          <DetailsRow>
+            <DetailsItem
+              label="Geschlecht"
+              value={formatOptionalKey(props.gender, GENDER_VALUES)}
+            />
+            <DetailsItem
+              label="Geburtstag"
+              value={formatDate(props.dateOfBirth)}
+            />
+            <DetailsItem
+              label="Alter bei Untersuchung"
+              value={`${age} Jahre`}
+            />
+          </DetailsRow>
+          <DetailsItem
+            label="Kennungen"
+            value={renderProcedureLabels(props.procedureLabels)}
+          />
+        </DetailsColumn>
+      </DetailsList>
       <Divider />
       <FluoridationConsentInformationSection
         allFluoridationConsents={props.allFluoridationConsents}

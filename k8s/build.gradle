@@ -1,0 +1,141 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+plugins {
+  id 'com.bmuschko.docker-remote-api'
+}
+
+def helmVersion = '3.17.1'
+def chartsnapVersion = '0.4.3'
+def chartsnapImage = "helm-chartsnap:${helmVersion}-${chartsnapVersion}"
+
+def opencodeDir = layout.buildDirectory.dir("opencode")
+def validationDir = layout.projectDirectory.dir('data/test/validation')
+def outputDir = layout.projectDirectory.dir('data/test/output')
+
+def createDockerfile = tasks.register('createDockerfile', Dockerfile) {
+  from("alpine/helm:${helmVersion}")
+  environmentVariable("HELM_DATA_HOME", "/usr/local/share/helm")
+  environmentVariable("HELM_CACHE_HOME", "/tmp/cache")
+  runCommand("mkdir -m 777 /tmp/cache")
+  runCommand("helm plugin install --version ${chartsnapVersion} https://github.com/jlandowner/helm-chartsnap")
+}
+
+def buildDockerImage = tasks.register('buildDockerImage', DockerBuildImage) {
+  dependsOn createDockerfile
+  images.add(chartsnapImage)
+}
+
+def getHelmChartsnapCommandLine(def image, boolean upgradeSnapshots = false) {
+  def userArg = []
+  if (!DefaultNativePlatform.currentOperatingSystem.windows) {
+    def uid = ["id", "-u"].execute().text.trim()
+    def gid = ["id", "-g"].execute().text.trim()
+    userArg = ["--user=${uid}:${gid}"]
+  }
+
+  def commandLine = [
+    "docker", "run", "--rm",
+  ] + userArg + [
+    "--name=helm-chartsnap",
+    "--workdir=/k8s",
+    "--volume=${projectDir}:/k8s:rw,z",
+    "--entrypoint=/bin/bash",
+    image,
+    "./helm-chartsnap.sh"
+  ]
+
+  if (upgradeSnapshots) {
+    commandLine += ["--update-snapshot"]
+  }
+
+  return commandLine
+}
+
+tasks.register("verifySnapshots", Exec) {
+  dependsOn buildDockerImage
+  commandLine = getHelmChartsnapCommandLine(chartsnapImage)
+}
+
+tasks.register("updateSnapshots", Exec) {
+  dependsOn buildDockerImage
+  commandLine = getHelmChartsnapCommandLine(chartsnapImage, true)
+}
+
+def createOpencodeRelease = tasks.register('createOpencodeRelease', Copy) {
+  doFirst {
+    delete opencodeDir
+    opencodeDir.get().asFile.mkdirs()
+  }
+
+  from projectDir
+  into opencodeDir
+
+  exclude([
+    'hetzner-setup.sh',
+    'deployment-check.sh',
+    'k3d',
+    'build',
+    'data',
+    'node_modules',
+    'helmcharts/*/charts',
+    'helmcharts/*/values/cronn-dev',
+    'helmcharts/*/values/cronn-test1',
+    'helmcharts/*/values/prod1'
+  ])
+
+  doLast {
+    // remove comments from default values files as they are quite specific
+    def sourceFiles = fileTree(dir: opencodeDir,
+      includes: ['helmcharts/*/values.yaml'])
+
+    sourceFiles.each { file ->
+      def filteredLines = file.readLines().findAll { line ->
+        !line.trim().startsWith('#')
+      }
+      file.text = filteredLines.join('\n')
+    }
+  }
+}
+
+tasks.register('validateOpencodeRelease') {
+  dependsOn createOpencodeRelease
+
+  doLast {
+    def filename = 'opencode-release.txt'
+
+    validationDir.asFile.mkdirs()
+    outputDir.asFile.mkdirs()
+
+    def validationFile = validationDir.file(filename).asFile
+    def outputFile = outputDir.file(filename).asFile
+
+
+    def files = fileTree(opencodeDir)
+    def resolvedOpencodeDir = opencodeDir.get().asFile
+    def actual = files
+      .collect { resolvedOpencodeDir.relativePath(it) }
+      .sort()
+    outputFile.text = actual.join('\n')
+
+    if (!validationFile.exists()) {
+      validationFile.text = '===== missing file =====\n' + actual.join('\n')
+    }
+
+    def expected = validationFile.readLines()
+
+    if (actual != expected) {
+      try {
+        logger.lifecycle(['diff', '-u', outputFile.absolutePath, validationFile.absolutePath].execute().text)
+      } catch (ignored) {
+        logger.lifecycle("'diff' not found. Contents of {}:\n{}", outputFile.absolutePath, actual.join('\n'))
+      }
+      throw new GradleException('Opencode release files do not match validation file!')
+    }
+  }
+}
+
+clean {
+  delete outputDir
+}

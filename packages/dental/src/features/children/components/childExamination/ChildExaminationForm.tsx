@@ -115,8 +115,9 @@ function mapExaminationResultRequest(
       mihStatus: mapOptionalValue(formValues.mihStatus),
       orthodonticFindings: formValues.orthodonticFindings ?? [],
       orthodonticStatus: mapOptionalValue(formValues.orthodonticStatus),
-      fluorideVarnishApplied:
-        mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
+      fluorideVarnishApplied: mapOptionalValue(
+        formValues.fluorideVarnishApplied,
+      ),
       plaque: formValues.plaque,
       calculus: formValues.calculus,
       gingivitis: formValues.gingivitis,
@@ -135,7 +136,7 @@ function mapExaminationResultRequest(
   if (examination.fluoridation) {
     return {
       type: "FluoridationExaminationResult",
-      fluorideVarnishApplied: mapRequiredValue(
+      fluorideVarnishApplied: mapOptionalValue(
         formValues.fluorideVarnishApplied,
       ),
     };

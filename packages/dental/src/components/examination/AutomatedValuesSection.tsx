@@ -4,7 +4,7 @@
  */
 
 import { WarningAmberOutlined } from "@mui/icons-material";
-import { Stack, TypographyProps, styled } from "@mui/joy";
+import { TypographyProps, styled } from "@mui/joy";
 import { compareDesc } from "date-fns";
 import { isDefined } from "remeda";
 import { useShallow } from "zustand/react/shallow";
@@ -12,10 +12,12 @@ import { useShallow } from "zustand/react/shallow";
 import { ApiDecayStatus } from "@eshg/dental-api";
 import {
   DetailsItem,
+  DetailsRow,
   formatBoolean,
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsList,
   calculateAge,
   formatOptional,
   formatOptionalKey,
@@ -86,26 +88,28 @@ export function AutomatedValuesSection(props: AutomatedValuesSectionProps) {
         />
       )}
     >
-      <Stack direction="row" gap={3} flexWrap="wrap">
-        <DetailsItem
-          label="Kariesrisiko"
-          value={formatOptional(hasDecayRisk, formatBoolean)}
-          slotProps={{
-            value: markAsWarningIf(hasDecayRisk === true),
-          }}
-        />
-        <DetailsItem
-          label="Kariesstatus"
-          value={formatOptionalKey(decayStatus, DECAY_STATUS)}
-          slotProps={{
-            value: markAsWarningIf(requiresTreatment),
-          }}
-        />
-        <DetailsItem
-          label="dmf-t/DMF-T"
-          value={`${dmftValues.primaryTeeth}/${dmftValues.secondaryTeeth}`}
-        />
-      </Stack>
+      <DetailsList>
+        <DetailsRow>
+          <DetailsItem
+            label="Kariesrisiko"
+            value={formatOptional(hasDecayRisk, formatBoolean)}
+            slotProps={{
+              value: markAsWarningIf(hasDecayRisk === true),
+            }}
+          />
+          <DetailsItem
+            label="Kariesstatus"
+            value={formatOptionalKey(decayStatus, DECAY_STATUS)}
+            slotProps={{
+              value: markAsWarningIf(requiresTreatment),
+            }}
+          />
+          <DetailsItem
+            label="dmf-t/DMF-T"
+            value={`${dmftValues.primaryTeeth}/${dmftValues.secondaryTeeth}`}
+          />
+        </DetailsRow>
+      </DetailsList>
     </ExaminationSection>
   );
 }

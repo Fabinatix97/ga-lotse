@@ -14,10 +14,7 @@ import {
 } from "@eshg/statistics-api";
 
 import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
-import { getActiveFilterLabels } from "@/lib/businessModules/statistics/api/mapper/getActiveFilterLabels";
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
-import { mapAttributesToFilterDefinitions } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToFilterDefinitions";
-import { mapEvaluationFilterToFilterValue } from "@/lib/businessModules/statistics/api/mapper/mapEvaluationFilterToFilterValue";
 import { AnalysisDiagram } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { analysisApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
@@ -213,18 +210,16 @@ export function mapToAnalysisDiagram(
   result: ApiAnalysisWithDiagrams,
   attributes: FlatAttribute[],
 ) {
-  const filterDefinitions = mapAttributesToFilterDefinitions(attributes);
-
   return result.diagrams.map((it) => {
-    const filterValues = it.filters?.map((flt) =>
-      mapEvaluationFilterToFilterValue(flt),
-    );
     return {
       diagramId: it.id,
       title: it.title,
       description: it.description,
       evaluatedDataAmount: it.evaluatedDataAmount,
-      filterLabels: getActiveFilterLabels(filterValues, filterDefinitions),
+      filterLabels:
+        it.filterLabels.length === 0
+          ? ["keine Filter ausgewählt"]
+          : it.filterLabels,
       geoJson:
         result.chartConfiguration.type === "ChoroplethMapConfiguration"
           ? result.chartConfiguration.geoJson!

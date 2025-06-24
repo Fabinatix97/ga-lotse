@@ -4,6 +4,7 @@
  */
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Button,
@@ -13,18 +14,26 @@ import {
   Tooltip,
   Typography,
 } from "@mui/joy";
-import { ReactNode, useState } from "react";
+import { Formik } from "formik";
+import { RoomMember } from "matrix-js-sdk";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { isEmpty } from "remeda";
 
-import { BaseModal, ButtonLink } from "@eshg/lib-portal";
+import { BaseModal, ButtonLink, FormPlus } from "@eshg/lib-portal";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { DeletedMessage } from "@/lib/businessModules/chat/components/chatPanel/DeletedMessage";
+import {
+  MessageFormValues,
+  validateMessageForm,
+} from "@/lib/businessModules/chat/components/chatPanel/MessageInput";
 import { ReadingReceipt } from "@/lib/businessModules/chat/components/chatPanel/ReadingReceipt";
+import { TextareaComponent } from "@/lib/businessModules/chat/components/chatPanel/TextareaComponent";
 import { UndecipheredMessage } from "@/lib/businessModules/chat/components/chatPanel/UndecipheredMessage";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import {
   MentionedMember,
   Message,
@@ -42,6 +51,10 @@ interface ChatBubbleProps {
   index: number;
   mentions: MentionedMember[];
   removeMessage: (messageId: string) => Promise<void>;
+  editMessage: (text: string, mentionedUsers?: string[]) => Promise<void>;
+  roomMembers: RoomMember[];
+  roomId: string;
+  edited?: boolean;
 }
 
 export function ChatBubble({
@@ -52,12 +65,18 @@ export function ChatBubble({
   index,
   mentions,
   removeMessage,
+  editMessage,
+  roomMembers,
+  roomId,
+  edited,
 }: Readonly<ChatBubbleProps>) {
   const { userSettings } = useChat();
   const { setInfoPanelView } = useInfoPanelContext();
   const isSent = variant === "sent";
   const hasNoReceipts = isEmpty(lastReadMessageIndexes);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const editFieldRef = useRef<HTMLDivElement | null>(null);
 
   // Messages are sorted from newest to oldest.
   // Here, we compare the index to check if it is greater than the last read index.
@@ -70,29 +89,53 @@ export function ChatBubble({
     setInfoPanelView(InfoPanelView.UserInfo, userId);
   }
 
+  useEffect(() => {
+    if (!isEditing) return;
+    const length = message.content.length;
+    const innerTextareaElement = editFieldRef.current?.firstChild;
+    if (innerTextareaElement instanceof HTMLTextAreaElement) {
+      innerTextareaElement.setSelectionRange(length, length);
+    }
+  }, [isEditing, message.content.length]);
+
   let content = (
     <Tooltip
       disableHoverListener={!isSent}
       placement="top-end"
       disablePortal
-      leaveDelay={500}
-      modifiers={[{ name: "offset", options: { offset: [0, 5] } }]}
+      leaveDelay={200}
+      modifiers={[{ name: "offset", options: { offset: [0, 0] } }]}
       sx={{
         backgroundColor: "white",
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+        borderRadius: (theme) => theme.radius.sm,
         "&.MuiTooltip-root": {
-          padding: 0,
+          padding: 0.25,
         },
+        display: "flex",
+        gap: 0.5,
       }}
       title={
-        <IconButton
-          size="sm"
-          variant="outlined"
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          <DeleteOutlineIcon sx={{ color: "neutral.500" }} />
-        </IconButton>
+        <>
+          <IconButton
+            size="sm"
+            variant="plain"
+            aria-label="Bearbeiten"
+            onClick={() => setIsEditing(true)}
+          >
+            <EditIcon sx={{ color: "neutral.500" }} />
+          </IconButton>
+          <IconButton
+            size="sm"
+            variant="plain"
+            aria-label="Löschen"
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            <DeleteOutlineIcon sx={{ color: "neutral.500" }} />
+          </IconButton>
+        </>
       }
     >
       <Sheet
@@ -154,7 +197,7 @@ export function ChatBubble({
               ? ""
               : message.sender?.displayName}
           </Typography>
-          {message.timestamp && (
+          {!isEditing && message.timestamp && (
             <Typography
               textColor="text.secondary"
               sx={{ fontSize: "0.875rem" }}
@@ -163,24 +206,92 @@ export function ChatBubble({
               {formatChatDate(message.timestamp)}
             </Typography>
           )}
-        </Stack>
-        <Box sx={{ width: "100%", display: "flex", alignItems: "flex-end" }}>
-          {!isSent && (
-            <ChatAvatar
-              name={message.sender?.displayName}
-              userId={message.sender?.userId}
-              avatarUrl={message.sender?.avatarUrl ?? null}
-            />
+          {edited && !isEditing && (
+            <Typography
+              textColor="text.secondary"
+              sx={{ fontSize: "0.875rem" }}
+            >
+              (bearbeitet)
+            </Typography>
           )}
-
-          {content}
-
-          {isSent && (
-            <ReadingReceipt
-              isReadReceiptEnabled={userSettings.showReadConfirmation}
-              isRead={hasNoReceipts ? false : isMessageRead}
-              isSent={message.sent}
-            />
+        </Stack>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: isSent ? "flex-end" : "flex-start",
+            alignItems: "flex-end",
+          }}
+        >
+          {isEditing ? (
+            <Box sx={{ backgroundColor: "white" }}>
+              <Formik<MessageFormValues>
+                initialValues={{
+                  message: message.content,
+                  mentionedUsers: mentions.map((user) => user.userId),
+                }}
+                validate={validateMessageForm}
+                onSubmit={async (values, helpers) => {
+                  try {
+                    await editMessage(values.message, values.mentionedUsers);
+                    helpers.resetForm();
+                    setIsEditing(false);
+                  } catch (error) {
+                    logger.warn("Sending message failed", error);
+                  }
+                }}
+              >
+                <FormPlus>
+                  <TextareaComponent
+                    ref={editFieldRef}
+                    name="message"
+                    selectFieldName="mentionedUsers"
+                    roomMembers={roomMembers}
+                    selectedRoomId={roomId}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      px: 2,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      size="sm"
+                      sx={{ mr: 1 }}
+                      type="cancel"
+                      onClick={() => {
+                        setIsEditing(false);
+                      }}
+                    >
+                      Abbrechen
+                    </Button>
+                    <Button size="sm" type="submit">
+                      Bearbeiten
+                    </Button>
+                  </Box>
+                </FormPlus>
+              </Formik>
+            </Box>
+          ) : (
+            <>
+              {!isSent && (
+                <ChatAvatar
+                  name={message.sender?.displayName}
+                  userId={message.sender?.userId}
+                  avatarUrl={message.sender?.avatarUrl ?? null}
+                />
+              )}
+              {content}
+              {isSent && (
+                <ReadingReceipt
+                  isReadReceiptEnabled={userSettings.showReadConfirmation}
+                  isRead={hasNoReceipts ? false : isMessageRead}
+                  isSent={message.sent}
+                />
+              )}
+            </>
           )}
         </Box>
       </Stack>

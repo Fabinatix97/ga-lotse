@@ -8,6 +8,7 @@ package de.eshg.inspection.inspection;
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.inspection.facility.FacilityService;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -51,16 +52,19 @@ public class InspectionController {
 
   private final InspectionFeatureToggle inspectionFeatureToggle;
   private final AuditLogger auditLogger;
+  private final FacilityService facilityService;
 
   public InspectionController(
       InspectionService inspectionService,
       ReviewService reviewService,
       InspectionFeatureToggle inspectionFeatureToggle,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      FacilityService facilityService) {
     this.inspectionService = inspectionService;
     this.reviewService = reviewService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.auditLogger = auditLogger;
+    this.facilityService = facilityService;
   }
 
   @PostMapping(path = "/{id}")
@@ -246,6 +250,15 @@ associated reference facility
   @Transactional(readOnly = true)
   public FacilityDuplicateReviewDto getFacilityDuplicates(@PathVariable("id") UUID externalId) {
     return reviewService.reviewFacilityDuplicates(externalId);
+  }
+
+  @GetMapping(path = "/{id}/file-number-collisions")
+  @Operation(
+      summary = "Get file number collisions for the facility central file state of an inspection")
+  @Transactional(readOnly = true)
+  public GetFileNumberCollisionsResponse getFileNumberCollisions(
+      @PathVariable("id") UUID externalId) {
+    return facilityService.getFileNumberCollisionsForInspection(externalId);
   }
 
   private static void validateAssignmentRole(UUID assigneeId) {

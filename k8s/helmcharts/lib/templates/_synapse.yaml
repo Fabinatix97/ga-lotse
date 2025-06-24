@@ -1,0 +1,189 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.synapse" }}
+---
+
+{{ if .Values.synapse.enabled }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+{{ include "lib.database" (list "synapse" .Values.synapse.database .) }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: synapse
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: synapse-app
+  ports:
+    - port: {{ .Values.synapse.port }}
+      targetPort: {{ .Values.synapse.port }}
+      name: synapse
+    - port: 443
+      targetPort: spatz-incoming
+      name: spatz-incoming
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: synapse
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: synapse
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: synapse-app
+  template:
+    metadata:
+      name: synapse
+      labels:
+        app: synapse-app
+      annotations:
+        checksum/config: {{ include "lib.synapseConfig" . | sha256sum }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      dnsPolicy: None
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "keycloak") | indent 8 }}
+      {{- include "waitForDeployment" (list .Values "base") | indent 8 }}
+      {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
+      {{- if .Values.synapse.database.k8sDeployment }}
+      {{- include "waitForStatefulset" (list .Values "synapse-db") | indent 8 }}
+      {{- end }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/synapse:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          resources:
+          {{- toYaml (default dict .Values.synapse.resources) | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.synapse.port }}
+            periodSeconds: 10
+            initialDelaySeconds: 90
+            failureThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /_matrix/client/versions
+              port: {{ .Values.synapse.port }}
+            periodSeconds: 10
+            initialDelaySeconds: 90
+            failureThreshold: 1
+            timeoutSeconds: 10
+          env:
+            - name: KEYCLOAK_JWKS_URL
+              value: https://{{ .Values.domains.hosts.keycloak }}/realms/eshg/protocol/openid-connect/certs
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: synapse-db
+                  key: POSTGRESQL_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: synapse-db
+                  key: POSTGRESQL_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: synapse-db
+                  key: POSTGRESQL_DB
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: synapse-db
+                  key: POSTGRESQL_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: synapse-db
+                  key: POSTGRESQL_PASSWORD
+            - name: SYNAPSE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: synapse-admin-password
+            - name: REGISTRATION_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: synapse-registration-shared-secret
+            - name: MACAROON_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: synapse-macaroon-secret
+            - name: FORM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: synapse-form-secret
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/localca.pem
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/localca.pem
+            {{- end }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            - mountPath: /data/homeserver.template
+              name: synapse-config-volume
+              subPath: homeserver.template
+            - mountPath: /data/synapse.log.config
+              name: synapse-config-volume
+              subPath: synapse.log.config
+            - mountPath: /data
+              name: data
+      {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.synapse "hasDb" true "k" "synapse" "actorType" "MISC" "createDebugLogMount" $createDebugLogMount) }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: synapse-config-volume
+          configMap:
+            name: synapse-config
+            defaultMode: 0777
+        - name: data
+          emptyDir: {}
+        {{- if eq "true" $createDebugLogMount }}
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: synapse-spatz-debuglogs
+        {{- end }}
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "synapse-spatz" .Values.synapse.debuglog $) }}
+{{- end }}
+{{ end }}
+
+---
+{{- end }}

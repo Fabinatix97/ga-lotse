@@ -8,7 +8,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 type BooleanNumberStringNames = "boolean" | "number" | "string";
 type BooleanNumberStringType<K> = K extends "boolean"
@@ -93,13 +93,14 @@ function useSearchParamArray<K extends BooleanNumberStringNames>(
 
   const setParam = useCallback(
     (values: BooleanNumberStringType<K>[]) => {
+      const searchParams = windowSearchParams();
       const actualValues = values
         .filter((t) => t !== false && t !== null)
         .map((t) => `${t}`);
       const newSearch = updateSearchParam(param, actualValues, searchParams);
       setWindowSearchParams(pathname, newSearch, pushState);
     },
-    [param, pathname, pushState, searchParams],
+    [param, pathname, pushState],
   );
 
   const rawValues = searchParams.getAll(param);
@@ -122,4 +123,36 @@ function useSearchParamArray<K extends BooleanNumberStringNames>(
     ];
   }
   return [rawValues as NonNullable<BooleanNumberStringType<K>>[], setParam];
+}
+
+export function useManySearchParams<T extends string>(paramNames: T[]) {
+  const path = usePathname();
+  const setFunction = useCallback(
+    (givenNewValues: Record<T, string | undefined> | undefined) => {
+      const params = windowSearchParams();
+      const newValues =
+        givenNewValues ?? ({} as Partial<Record<T, string | undefined>>);
+      const newParams = paramNames.reduce((newParams, paramName) => {
+        const value: string | undefined = newValues[paramName];
+        return updateSearchParam(paramName, value ? [value] : [], newParams);
+      }, params);
+      setWindowSearchParams(path, newParams, false);
+    },
+    [paramNames, path],
+  );
+  const searchParams = useMemo(() => {
+    const params = windowSearchParams();
+    return paramNames.reduce((current, name) => {
+      const newValue = params.get(name);
+      if (newValue === null) {
+        return current;
+      }
+      return { ...current, [name]: newValue };
+    }, {}) as Partial<Record<T, string>>;
+  }, [paramNames]);
+  return [searchParams, setFunction] as const;
+}
+
+export function windowSearchParams(): URLSearchParams {
+  return new URLSearchParams(window.location.search);
 }

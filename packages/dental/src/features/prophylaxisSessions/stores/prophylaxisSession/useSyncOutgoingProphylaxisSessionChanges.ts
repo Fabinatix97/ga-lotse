@@ -10,7 +10,7 @@ import {
   ApiUpdateChildDetailsInBulkRequest,
   ApiUpdateExaminationsInBulkRequest,
 } from "@eshg/dental-api";
-import { getId } from "@eshg/lib-employee-portal";
+import { getEntityId } from "@eshg/lib-employee-portal";
 
 import {
   AbsenceExaminationResult,
@@ -104,7 +104,7 @@ function mapParticipantDetailsToRequest(
     gender: examination.gender,
     groupName: examination.groupName,
     fluoridationConsent: examination.currentFluoridationConsent,
-    procedureLabels: examination.procedureLabels.map(getId),
+    procedureLabels: examination.procedureLabels.map(getEntityId),
   };
 }
 

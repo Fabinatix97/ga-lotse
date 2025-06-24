@@ -10,8 +10,6 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.contact.api.ContactDto;
-import de.eshg.base.contact.api.InstitutionContactCategoryDto;
-import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.UserDto;
@@ -40,7 +38,6 @@ import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.dental.mapper.DentitionTypeMapper;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
-import de.eshg.dental.util.ProgressEntryUtil;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
@@ -48,6 +45,7 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -79,7 +77,6 @@ public class ProphylaxisSessionService {
   private final ExaminationService examinationService;
   private final ExaminationRepository examinationRepository;
   private final ChildService childService;
-  private final ProgressEntryUtil progressEntryUtil;
 
   public ProphylaxisSessionService(
       ProphylaxisSessionRepository prophylaxisSessionRepository,
@@ -91,8 +88,7 @@ public class ProphylaxisSessionService {
       UserApi userApi,
       ExaminationService examinationService,
       ExaminationRepository examinationRepository,
-      ChildService childService,
-      ProgressEntryUtil progressEntryUtil) {
+      ChildService childService) {
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.contactClient = contactClient;
     this.childRepository = childRepository;
@@ -103,7 +99,6 @@ public class ProphylaxisSessionService {
     this.examinationService = examinationService;
     this.examinationRepository = examinationRepository;
     this.childService = childService;
-    this.progressEntryUtil = progressEntryUtil;
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
@@ -122,17 +117,27 @@ public class ProphylaxisSessionService {
   private void addExaminationsForChildren(
       CreateProphylaxisSessionRequest request, ProphylaxisSession session) {
     List<Child> children =
-        childRepository.findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(
-            request.institutionId(), request.groupName(), ProcedureStatus.OPEN);
+        getChildrenForProphylaxisSession(
+            request.institutionId(), request.groupName(), Year.of(request.schoolYear()));
 
     if (children.isEmpty()) {
-      throw new BadRequestException("The requested group does not contain any children.");
+      throw new BadRequestException("The requested group and year does not contain any children.");
     }
     for (Child child : children) {
       Examination examination = new Examination();
       child.addExamination(examination);
       session.addExamination(examination);
     }
+  }
+
+  private List<Child> getChildrenForProphylaxisSession(
+      UUID institutionId, String groupName, Year year) {
+    if (groupName == null) {
+      return childRepository.findByInstitutionIdAndYearAndProcedureStatus(
+          institutionId, year, ProcedureStatus.OPEN);
+    }
+    return childRepository.findByInstitutionIdAndGroupNameAndProcedureStatusAndYearOrderById(
+        institutionId, groupName, ProcedureStatus.OPEN, year);
   }
 
   public Page<ProphylaxisSessionWithAugmentedInstitution> getProphylaxisSessions(
@@ -367,10 +372,6 @@ public class ProphylaxisSessionService {
         persistedProphylaxisSession,
         mapProphylaxisSessionRequest(new ProphylaxisSession(), updateRequest));
 
-    if (isSchool(persistedProphylaxisSession.getInstitutionId())) {
-      validator.validateGroupAtInstitutionExists(
-          persistedProphylaxisSession.getInstitutionId(), updateRequest.groupName());
-    }
     validator.validateDentitionType(updateRequest.dentitionType(), updateRequest.isScreening());
 
     mapProphylaxisSessionRequest(persistedProphylaxisSession, updateRequest);
@@ -378,12 +379,6 @@ public class ProphylaxisSessionService {
     prophylaxisSessionRepository.flush();
 
     return getProphylaxisSessionWithDetails(persistedProphylaxisSession.getExternalId());
-  }
-
-  private boolean isSchool(UUID institutionId) {
-    ContactDto contact = contactClient.getContact(institutionId);
-    return contact instanceof InstitutionContactDto institutionContactDto
-        && institutionContactDto.category().equals(InstitutionContactCategoryDto.SCHOOL);
   }
 
   public void closeProphylaxisSession(UUID prophylaxisSessionId, long version) {
@@ -403,10 +398,10 @@ public class ProphylaxisSessionService {
   public ProphylaxisSessionWithAugmentedData updateProphylaxisSessionExaminations(
       UUID prophylaxisSessionId, UpdateProphylaxisSessionExaminationsRequest updateRequest) {
     // must happen before examinationUpdates -> version conflict
-    if (updateRequest.childUpdates() != null) {
+    if (!updateRequest.childUpdates().isEmpty()) {
       updateChildDetails(updateRequest.childUpdates());
     }
-    if (updateRequest.examinationUpdates() != null) {
+    if (!updateRequest.examinationUpdates().isEmpty()) {
       updateExaminations(updateRequest.examinationUpdates());
     }
     return getProphylaxisSessionWithDetails(prophylaxisSessionId);
@@ -492,9 +487,11 @@ public class ProphylaxisSessionService {
 
   private ProphylaxisSession mapProphylaxisSessionRequest(
       ProphylaxisSession session, ProphylaxisSessionRequest request) {
-    session.setInstitutionId(request.institutionId());
+    if (request instanceof CreateProphylaxisSessionRequest createProphylaxisSessionRequest) {
+      session.setInstitutionId(createProphylaxisSessionRequest.institutionId());
+      session.setGroupName(createProphylaxisSessionRequest.groupName());
+    }
     session.setDateAndTime(request.dateAndTime());
-    session.setGroupName(request.groupName());
     session.setType(ProphylaxisSessionMapper.mapToDomain(request.type()));
     session.setDentitionType(DentitionTypeMapper.mapToDomain(request.dentitionType()));
     session.setIsScreening(request.isScreening());

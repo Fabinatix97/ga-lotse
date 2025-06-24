@@ -1,0 +1,122 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.citizenPortal" }}
+---
+
+{{ if .Values.citizenportal.enabled -}}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: citizen-portal
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: citizen-portal-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: citizen-portal
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: citizen-portal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: citizen-portal-app
+  template:
+    metadata:
+      name: citizen-portal
+      labels:
+        app: citizen-portal-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      dnsPolicy: None
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "citizen-portal-auth") | indent 8 }}
+      volumes:
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        {{- if eq "true" $createDebugLogMount }}
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: citizen-portal-spatz-debuglogs
+        {{- end }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/citizen-portal:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          resources:
+          {{- toYaml (default dict .Values.citizenportalnextjs.resources) | nindent 12 }}
+          env:
+            - name: HOSTNAME
+              value: 0.0.0.0
+            - name: PORT
+              value: "8080"
+            - name: PUBLIC_ENVIRONMENT_TYPE
+              value: "{{ include "deriveEnvironmentType" (.Values.spring.profiles.active) }}"
+            - name: PUBLIC_DEPLOYMENT_TYPE
+              value: {{ .Values.deploymenttype | default "test" | quote }}
+            - name: PUBLIC_FRONTEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}"
+            - name: PUBLIC_BASE_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/base"
+            - name: PUBLIC_MEASLES_PROTECTION_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/measles-protection"
+            - name: PUBLIC_SCHOOL_ENTRY_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/school-entry"
+            - name: PUBLIC_INSPECTION_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/inspection"
+            - name: PUBLIC_TRAVEL_MEDICINE_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/travel-medicine"
+            - name: PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/official-medical-service"
+            - name: PUBLIC_STI_PROTECTION_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/sti-protection"
+            - name: PUBLIC_MEDICAL_REGISTRY_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/medical-registry"
+            - name: PUBLIC_MEDS_ABROAD_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/meds-abroad"
+            - name: PUBLIC_DENTAL_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/dental"
+            - name: PUBLIC_OPEN_DATA_BACKEND_URL
+              value: "https://{{ .Values.domains.hosts.citizenportal }}/api/opendata"
+            - name: PUBLIC_PDF_CONVERTER_URL
+              value: https://{{ .Values.domains.centralservices.pdfaconverterportal }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+      {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.citizenportalnextjs "k" "citizenportalnextjs" "relay" false "createDebugLogMount" $createDebugLogMount) }}
+
+---
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "citizen-portal-spatz" .Values.citizenportal.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+
+{{- end }}

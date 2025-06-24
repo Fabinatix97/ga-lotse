@@ -1,0 +1,363 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.keycloak" }}
+---
+
+{{ if .Values.keycloak.enabled }}
+
+{{- $bootstrapEnabled := (include "getBootstrapEnabled" .) }}
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: keycloak-bootstrap
+  namespace: {{ .Release.Namespace }}
+data:
+  bootstrapEnabled: "{{ $bootstrapEnabled }}"
+
+---
+
+{{ include "lib.database" (list "keycloak" .Values.keycloak.database .) }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: keycloak-app
+  ports:
+    - port: 443
+      targetPort: 8443
+      name: keycloak
+
+---
+{{ include "lib.certificate" (list .Values.keycloak.certificate.privateSecret .Values.domains.hosts.keycloakInternal .Values.domains.internalClusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+{{ if eq .Values.ingress.type "openshift" }}
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  labels:
+    ingress.syn.tools/controller: internal
+  annotations:
+    route.openshift.io/termination: passthrough
+  name: keycloak-internal
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+    - host: {{ .Values.domains.hosts.keycloakInternal }}
+      http:
+        paths:
+          - path: ''
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: keycloak
+                port:
+                  name: keycloak
+
+---
+{{ end }}
+
+{{ if eq .Values.ingress.type "traefik" }}
+{{ include "ingress" (list "keycloak-internal" "traefik" .Values.domains.hosts.keycloakInternal "keycloak" "keycloak" .Release.Namespace) }}
+
+---
+{{ end }}
+
+{{ $initContainerSecurityContext := merge (deepCopy (default dict .Values.initContainerSecurityContext )) (deepCopy (default dict .Values.containerSecurityContext )) }}
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: keycloak
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: keycloak-app
+  template:
+    metadata:
+      name: keycloak
+      labels:
+        app: keycloak-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      initContainers:
+        - name: copy-keycloak-to-tmpfs
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/keycloak:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext: {{- $initContainerSecurityContext | toYaml | nindent 12 }}
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              cpu: 50m
+              memory: 50Mi
+          command: ["bash", "-c"]
+          args:
+            - rm -rf /ws/keycloak/ && mkdir -p /ws/keycloak/ && cp -R /opt/keycloak/* /ws/keycloak/
+          volumeMounts:
+            - name: workspace
+              mountPath: /ws
+      {{- if .Values.keycloak.database.k8sDeployment }}
+      {{- include "waitForStatefulset" (list .Values "keycloak-db") | indent 8 }}
+      {{- else }}
+      automountServiceAccountToken: false
+      {{- end }}
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      volumes:
+        - name: workspace
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.keycloak.certificate.privateSecret }}"
+            defaultMode: 420
+        {{- if not .Values.keycloak.database.selfmanaged }}
+        - name: db-certs
+          secret:
+            secretName: keycloak-db
+            defaultMode: 420
+            items:
+            - key: ca.crt
+              path: ca.crt
+        {{- end }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/keycloak:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9000
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9000
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+          resources:
+          {{- toYaml (default dict .Values.keycloak.resources) | nindent 12 }}
+          env:
+            {{- if eq $bootstrapEnabled "true" }}
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: admin
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: keycloak-admin
+            {{- end }}
+            - name: KC_PROXY_HEADERS
+              value: xforwarded
+            - name: KC_HOSTNAME
+              value: "https://{{ .Values.domains.hosts.keycloak}}"
+            {{- if not .Values.keycloak.database.selfmanaged }}
+            - name: KC_DB_URL
+              value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=verify-full&sslrootcert=/var/run/db-certs/ca.crt"
+            {{- else }}
+            - name: KC_DB_URL
+              value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+            {{- end }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db
+                  key: POSTGRESQL_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db
+                  key: POSTGRESQL_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db
+                  key: POSTGRESQL_DB
+            - name: KC_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db
+                  key: POSTGRESQL_USER
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db
+                  key: POSTGRESQL_PASSWORD
+            - name: KC_HTTPS_CERTIFICATE_FILE
+              value: /var/run/certs/tls.crt
+            - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+              value: /var/run/certs/tls.key
+            {{- if not (eq .Values.keycloak.bundId.profile "disabled") }}
+            - name: KC_SPI_SAML_AUTHENTICATION_PREPROCESSOR_BUNDID_PROTOCOL_ACTIVE_FOR_IDP
+              value: bund-id
+            - name: KC_SPI_SAML_AUTHENTICATION_PREPROCESSOR_BUNDID_PROTOCOL_ONLINE_SERVICE_ID
+              value: {{ required "Missing keycloak.bundId.onlineServiceId" .Values.keycloak.bundId.onlineServiceId }}
+            - name: KC_SPI_SAML_AUTHENTICATION_PREPROCESSOR_BUNDID_PROTOCOL_ORGANIZATION_DISPLAY_NAME
+              value: {{ required "Missing keycloak.bundId.organizationDisplayName" .Values.keycloak.bundId.organizationDisplayName }}
+            {{- end }}
+          args:
+            - "start"
+            - "--optimized"
+          ports:
+            - containerPort: 443
+              protocol: TCP
+              name: keycloak
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: workspace
+              mountPath: /opt
+            - name: tmp
+              mountPath: /tmp
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
+            {{- if not .Values.keycloak.database.selfmanaged }}
+            - mountPath: /var/run/db-certs
+              name: db-certs
+              readOnly: true
+            {{- end }}
+
+---
+
+apiVersion: v1
+data:
+  {{ if .Values.keycloak.adminPassword -}}
+  password: "{{ .Values.keycloak.adminPassword | b64enc }}"
+  {{- else }}
+  password: {{ include "getOrCreateSecretValue" (list $ "keycloak-admin" "password") }}
+  {{- end }}
+  base-admin-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-admin" "base-admin-client-secret") }}
+  lsd-admin-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-admin" "lsd-admin-client-secret") }}
+kind: Secret
+metadata:
+  name: keycloak-admin
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.secrets.resourcePolicy }}
+  annotations:
+    "helm.sh/resource-policy": {{ .Values.secrets.resourcePolicy | quote }}
+  {{- end }}
+type: Opaque
+
+---
+
+kind: Secret
+apiVersion: v1
+data:
+  test-users-secret-override: {{ include "getOrCreateSecretValue" (list $ "keycloak-test-user-secrets" "test-users-secret-override") }}
+metadata:
+  name: keycloak-test-user-secrets
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.secrets.resourcePolicy }}
+  annotations:
+    "helm.sh/resource-policy": {{ .Values.secrets.resourcePolicy | quote }}
+  {{- end }}
+type: Opaque
+
+---
+
+kind: Secret
+apiVersion: v1
+data:
+  employee-auth-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "employee-auth-client-secret") }}
+  citizen-auth-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "citizen-auth-client-secret") }}
+  auditlog-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "auditlog-module-client-secret") }}
+  base-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "base-module-client-secret") }}
+  chat-management-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "chat-management-module-client-secret") }}
+  citizen-auth-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "citizen-auth-module-client-secret") }}
+  employee-auth-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "employee-auth-module-client-secret") }}
+  inspection-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "inspection-module-client-secret") }}
+  local-service-directory-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "local-service-directory-module-client-secret") }}
+  measles-protection-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "measles-protection-module-client-secret") }}
+  school-entry-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "school-entry-module-client-secret") }}
+  statistics-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "statistics-module-client-secret") }}
+  travel-medicine-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "travel-medicine-module-client-secret") }}
+  lsd-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "lsd-client-secret") }}
+  sti-protection-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "sti-protection-module-client-secret") }}
+  medical-registry-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "medical-registry-module-client-secret") }}
+  dental-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "dental-module-client-secret") }}
+  official-medical-service-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "official-medical-service-module-client-secret") }}
+  opendata-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "opendata-module-client-secret") }}
+  meds-abroad-module-client-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "meds-abroad-module-client-secret") }}
+
+  synapse-admin-password: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "synapse-admin-password") }}
+  synapse-registration-shared-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "synapse-registration-shared-secret") }}
+  synapse-macaroon-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "synapse-macaroon-secret") }}
+  synapse-form-secret: {{ include "getOrCreateSecretValue" (list $ "keycloak-client-secrets" "synapse-form-secret") }}
+metadata:
+  name: keycloak-client-secrets
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.secrets.resourcePolicy }}
+  annotations:
+    "helm.sh/resource-policy": {{ .Values.secrets.resourcePolicy | quote }}
+  {{- end }}
+type: Opaque
+
+---
+
+kind: Secret
+apiVersion: v1
+data:
+  {{- range $k, $v := .Values.businessmodules }}
+  {{- if $v.enabled }}
+  {{ $k }}: {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" $k 64) }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.employeeportal.enabled }}
+  employeeportalauth:   {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "employeeportalauth" 64) }}
+  employeeportalnextjs: {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "employeeportalnextjs" 64) }}
+  employeeportal:       {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "employeeportal" 64) }}
+  {{- end }}
+  {{- if .Values.citizenportal.enabled }}
+  citizenportalauth:    {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "citizenportalauth" 64) }}
+  citizenportalnextjs:  {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "citizenportalnextjs" 64) }}
+  citizenportal:        {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "citizenportal" 64) }}
+  {{- end }}
+  {{- if .Values.auditlog.enabled }}
+  auditlog:             {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "auditlog" 64) }}
+  {{- end }}
+  {{- if .Values.synapse.enabled }}
+  synapse:              {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "synapse" 64) }}
+  {{- end }}
+  {{- if .Values.svgsanitizer.enabled }}
+  svgsanitizer:         {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "svgsanitizer" 64) }}
+  {{- end }}
+metadata:
+  name: keycloak-actor-secrets
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.secrets.resourcePolicy }}
+  annotations:
+    "helm.sh/resource-policy": {{ .Values.secrets.resourcePolicy | quote }}
+  {{- end }}
+type: Opaque
+
+  {{ end }}
+
+---
+{{- end }}

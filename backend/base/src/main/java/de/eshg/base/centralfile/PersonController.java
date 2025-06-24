@@ -18,6 +18,7 @@ import de.eshg.base.centralfile.api.person.*;
 import de.eshg.base.centralfile.mapper.PersonMapper;
 import de.eshg.base.centralfile.persistence.AssociatedFileStateIds;
 import de.eshg.base.centralfile.persistence.PersonService;
+import de.eshg.base.centralfile.persistence.ReferencePersonsUpdate;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails_;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.entity.Person_;
@@ -142,6 +143,19 @@ public class PersonController implements PersonApi {
   public GetReferencePersonResponse getReferencePerson(UUID id) {
     Person referencePerson = findReferencePerson(id);
     return PersonMapper.mapReferencePersonToApi(referencePerson);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetReferencePersonsResponse getReferencePersons(List<UUID> personIds) {
+    List<Person> personsWithReferencePerson = fetchPersonsWithReferencePerson(personIds);
+    Map<UUID, GetReferencePersonResponse> responses =
+        personsWithReferencePerson.stream()
+            .collect(
+                Collectors.toMap(
+                    person -> person.getExternalId(),
+                    person -> PersonMapper.mapReferencePersonToApi(person.getReferencePerson())));
+    return new GetReferencePersonsResponse(responses);
   }
 
   @Override
@@ -398,6 +412,24 @@ public class PersonController implements PersonApi {
     return PersonMapper.mapPersonFileStateToApi(updatedPersonFileState);
   }
 
+  @Override
+  @Transactional
+  public UpdatePersonsResponse updateReferencePersons(UpdateReferencePersonsRequest request) {
+    List<ReferencePersonsUpdate> personsUpdateList =
+        request.updateRequests().stream()
+            .map(
+                person -> {
+                  Person referencePersonUpdate = PersonMapper.mapPersonToDm(person.personDetails());
+                  return new ReferencePersonsUpdate(
+                      person.referencePersonId(),
+                      person.latestFileStateId(),
+                      person.version(),
+                      referencePersonUpdate);
+                })
+            .toList();
+    return personService.updateReferencePersonsInBulk(personsUpdateList);
+  }
+
   private Person findReferencePerson(UUID id) {
     return personRepository
         .findReferencePersonByFileStateId(id)
@@ -405,6 +437,10 @@ public class PersonController implements PersonApi {
             () ->
                 new NotFoundException(
                     "Person File State with given ID (or associated Reference Person) not found"));
+  }
+
+  private List<Person> fetchPersonsWithReferencePerson(List<UUID> ids) {
+    return personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(ids);
   }
 
   public static GetPersonFileStateResponse mapPersonToGetPersonFileStateResponse(

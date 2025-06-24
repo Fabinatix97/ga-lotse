@@ -9,10 +9,10 @@ import jakarta.validation.constraints.NotNull;
 
 public record UserSettingsResponse(
     @NotNull String userId,
-    Boolean chatUsageEnabled,
-    Boolean sharePresence,
-    Boolean showTypingNotification,
-    Boolean chatConsentAsked,
-    Boolean showReadConfirmation,
-    Boolean accountDeactivated,
-    Boolean accountRegistered) {}
+    @NotNull boolean chatUsageEnabled,
+    @NotNull boolean sharePresence,
+    @NotNull boolean showTypingNotification,
+    @NotNull boolean chatConsentAsked,
+    @NotNull boolean showReadConfirmation,
+    @NotNull boolean accountDeactivated,
+    @NotNull boolean accountRegistered) {}

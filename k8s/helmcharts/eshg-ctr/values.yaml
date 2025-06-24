@@ -1,0 +1,345 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+image:
+  registry: "registry.opencode.de"
+  repository: "ga-lotse/ga-lotse-code"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+  pullsecret: gitlab-registry-pull-secret
+
+
+
+thirdPartyImages:
+  kubectl:
+    name: bitnami/kubectl
+    tag: "1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+    registry: "mirror.gcr.io"
+    pullPolicy: IfNotPresent
+  nginx:
+    name: nginx
+    tag: "1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  redis:
+    name: redis
+    tag: "7.4.4-alpine3.21@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  postgres:
+    name: postgres
+    tag: "15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+  maildev:
+    name: maildev/maildev
+    tag: "2.2.1@sha256:180ef51f65eefebb0e7122d8308813c1fd7bff164bc440ce5a3c2feee167a810"
+    registry: "docker.io"
+    pullPolicy: IfNotPresent
+
+dns:
+  upstream: 10.43.0.10
+
+monitoring:
+  serviceMonitor:
+    enabled: true
+  httpChecks:
+    enabled: false
+    blackboxExporterAddress: ""
+
+volumes:
+  customStorageClass: true
+
+ingress:
+  type: "traefik"
+
+domains:
+  clusterLocalSuffix: .central.svc.cluster.local
+  centralservices:
+    servicedirectory: service-directory.cs.my-ga-lotse.de
+    relayserver: relay-server.cs.my-ga-lotse.de
+    pdfaconverterportal: pdf-converter-portal.cs.my-ga-lotse.de
+  hosts:
+    lsd: lsd.cs.my-ga-lotse.de
+    adminportal: admin-portal.cs.my-ga-lotse.de
+    keycloak: keycloak-central-internal.cs.my-ga-lotse.de
+    keycloakInternal: keycloak-central-internal.cs.my-ga-lotse.de
+  clusterIssuer: letsencrypt-production
+  internalClusterIssuer: letsencrypt-production-internal
+  lsdOrgUnit: central
+
+databaseSecurity:
+  enabled: true
+  allowedGroups:
+    - restricted-access
+  allowedUsers:
+    - gitlab-ci-deployer
+
+deployerAdminRoleBinding:
+  enabled: false
+
+replicas:
+  maximum: 2
+
+actors:
+  import:
+    enabled: false
+    orgUnits: []
+
+
+servicedirectory:
+  enabled: false
+  certificate:
+    secret: service-directory-public-tls
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      memory: 1024Mi
+  dns:
+    allowList: []
+
+adminportal:
+  enabled: false
+  certificate:
+    secret: admin-portal-public-tls
+  selfmanagedUserCerts: true
+  usercerts: ''
+  nginxResources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 256Mi
+  bffResources:
+    requests:
+      memory: 64Mi
+      cpu: 10m
+    limits:
+      memory: 192Mi
+  dns:
+    allowList: []
+
+pdfaconverterportal:
+  enabled: false
+  certificate:
+    secret: pdf-converter-portal-public-tls
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 256Mi
+
+relayserver:
+  enabled: false
+  certificate:
+    secret: relay-server-public-tls
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 1024Mi
+  dns:
+    allowList: []
+
+keycloak:
+  enabled: false
+  certificate:
+    privateSecret: keycloak-private-tls
+  muk:
+    profile: "disabled"
+    signingCertificate: ""
+  bundId:
+    profile: "disabled"
+    signingCertificate: ""
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      memory: 1500Mi
+
+lsd:
+  enabled: false
+  import: true
+  certificate:
+    secret: lsd-public-tls
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      memory: 1024Mi
+  dns:
+    allowList: []
+
+employeeportal:
+  enabled: false
+
+citizenportal:
+  enabled: false
+
+synapse:
+  enabled: false
+
+svgsanitizer:
+  enabled: false
+
+auditlog:
+  enabled: false
+
+maildev:
+  enabled: false
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 10m
+    limits:
+      memory: 256Mi
+  env:
+    - name: MAILDEV_WEB_USER
+      value: maildev-web-user
+    - name: MAILDEV_WEB_PASS
+      value: ''
+
+spatz:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 512Mi
+
+businessmoduleDefaults:
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 10m
+    limits:
+      memory: 1024Mi
+  database:
+    selfmanaged: true
+    k8sDeployment: false
+
+businessmodules:
+  centralrepository:
+    enabled: true
+    auditlog:
+      enabled: false
+    waitFor:
+      - lsd
+    imageName: central-repository
+  base:
+    enabled: false
+  schoolentry:
+    enabled: false
+  inspection:
+    enabled: false
+  measlesprotection:
+    enabled: false
+  travelmedicine:
+    enabled: false
+  statistics:
+    enabled: false
+  chatmanagement:
+    enabled: false
+  stiprotection:
+    enabled: false
+  medicalregistry:
+    enabled: false
+  dental:
+    enabled: false
+  opendata:
+    enabled: false
+  officialmedicalservice:
+    enabled: false
+
+springBootLivenessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8081
+    scheme: HTTP
+  initialDelaySeconds: 90
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 10
+
+springBootReadinessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8081
+    scheme: HTTP
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+
+spatzLivenessProbe:
+  enabled: true
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+  tcpSocket:
+    port: 443
+  timeoutSeconds: 1
+
+spatzReadinessProbe:
+  enabled: true
+  failureThreshold: 3
+  httpGet:
+    path: /actuator/health
+    port: 8079
+    scheme: HTTP
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+
+containersLifecycle:
+  enabled: true
+  preStop:
+    exec:
+      command: ["sh", "-c", "sleep 10"]
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: "RuntimeDefault"
+  sysctls:
+    - name: net.ipv4.ip_unprivileged_port_start
+      value: "53"
+
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+frontend:
+  playground:
+    enabled: false
+
+development:
+  injectSelfSignedCA: false
+  alwaysCreateDebugLogMount: true
+
+secrets:
+  resourcePolicy: false
+
+backend:
+  upload:
+    maxFileUploadSizeInBytes: "26214400" # 25MB

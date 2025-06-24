@@ -34,7 +34,6 @@ export function resolveProcedureDefinitionDiagram(
       return officialMedicalServiceProcedureDefinitionDiagram;
     case "STI_PROTECTION":
       return stiProtectionProcedureDefinitionDiagram;
-    case "MEDS_ABROAD":
     case "DENTAL":
       return undefined;
   }

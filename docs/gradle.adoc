@@ -42,7 +42,8 @@ These are necessary for the e2e tests and for developing performance tests again
 | `./gradlew startLocalEmployeePortal` | Start all backend containers and serve the employee portal locally in "production mode"
 | `./gradlew startLocalCitizenPortal`  | Start all backend containers and serve the citizen portal locally in "production mode"
 | `./gradlew startLocalAdminPortal`    | Start **only** a service-directory container and serve the admin portal locally in "production mode"
-| `./gradlew startLocalDocker`         | Start all backend containers and dockerized employee, citizen and admin portals
+| `./gradlew startLocalPdfaConverterPortal` | Start **only** the pdf-converter portal locally in "production mode"
+| `./gradlew startLocalDocker`         | Start all backend containers and dockerized employee, citizen, admin and pdf-converter portals
 |===
 
 == Tasks for the subprojects

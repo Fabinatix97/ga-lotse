@@ -3,7 +3,7 @@
   /* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
   footer {
     position: running(--var-footerRunning);
-    font-size: 0.75rem;
+    font-size: 7pt;
     font-weight: 400;
     line-height: 1.5em;
   }

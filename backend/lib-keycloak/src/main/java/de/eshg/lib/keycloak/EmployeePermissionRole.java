@@ -367,7 +367,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Kann Ressource (-> Dateien + Metadaten) im Open Data Portal einstellen / bearbeiten / löschen.",
       Module.OPEN_DATA),
 
-  CHAT_MANAGEMENT_WRITE(
+  CHAT_USER(
       READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"),
       "Kann Funktionen des Matrix Chats nutzen",
       Module.CHAT_MANAGEMENT),

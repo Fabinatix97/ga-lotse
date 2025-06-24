@@ -529,6 +529,8 @@ export function findLatestMessage(room: Room) {
   const events = timelineSet.getEvents();
   if (events.length <= 0) return;
   return events.findLast((event) => {
+    const associatedId = event.getAssociatedId();
+    if (associatedId) return false;
     const eventType = event.getType();
     return eventType === "m.room.message" || eventType === "m.room.encrypted";
   });

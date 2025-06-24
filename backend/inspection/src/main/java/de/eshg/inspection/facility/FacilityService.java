@@ -40,12 +40,15 @@ import de.eshg.inspection.incident.persistence.InspectionIncident;
 import de.eshg.inspection.incident.persistence.InspectionIncident_;
 import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
+import de.eshg.inspection.inspection.api.FileNumberCollisionInspectionDto;
+import de.eshg.inspection.inspection.api.GetFileNumberCollisionsResponse;
 import de.eshg.inspection.inspection.api.InspectionPhase;
 import de.eshg.inspection.inspection.api.InspectionType;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment_;
 import de.eshg.inspection.inspection.persistence.InspectionRelatedFacility;
+import de.eshg.inspection.inspection.persistence.InspectionRelatedFacilityRepository;
 import de.eshg.inspection.inspection.persistence.InspectionRelatedFacility_;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
 import de.eshg.inspection.inspection.persistence.Inspection_;
@@ -88,6 +91,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -115,6 +120,7 @@ public class FacilityService {
   private final InspectionRepository inspectionRepository;
   private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
   private final InspectionFeatureToggle inspectionFeatureToggle;
+  private final InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -126,7 +132,8 @@ public class FacilityService {
       InspectionFinalizer inspectionFinalizer,
       InspectionRepository inspectionRepository,
       FacilityFileNumberConfiguration facilityFileNumberConfiguration,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      InspectionFeatureToggle inspectionFeatureToggle,
+      InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -137,6 +144,7 @@ public class FacilityService {
     this.inspectionRepository = inspectionRepository;
     this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
+    this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -363,6 +371,7 @@ public class FacilityService {
                 params.postalCode(),
                 params.city(),
                 params.street(),
+                null,
                 paginationMode.canPaginateInBaseDatabase ? pagination.pageNumber() : null,
                 paginationMode.canPaginateInBaseDatabase ? pagination.pageSize() : null,
                 paginationMode.canPaginateInBaseDatabase
@@ -1541,7 +1550,7 @@ public class FacilityService {
 
   private CentralFileData fetchCentralFileDataFiltered(
       GetFacilityFileStatesFilteredRequest request) {
-    if (request.fileStateIds().isEmpty()) {
+    if (request.fileStateIds() != null && request.fileStateIds().isEmpty()) {
       return new CentralFileData(0L, Map.of(), Map.of());
     }
 
@@ -1838,5 +1847,104 @@ public class FacilityService {
         candidates.stream().map(e -> createInspPendingFacilityDto(e, centralFileData)).toList();
 
     return new InspPendingFacilitiesOverviewResponse(1, result.size(), result, 0);
+  }
+
+  public GetFileNumberCollisionsResponse getFileNumberCollisionsForInspection(UUID externalId) {
+    Inspection inspection = inspectionService.loadInspection(externalId);
+    return getPossibleFileNumberCollisionsForFileState(inspection.getCentralFileStateId());
+  }
+
+  public GetFileNumberCollisionsResponse getPossibleFileNumberCollisionsForFileState(
+      UUID centralFileStateId) {
+    GetFacilityFileStateResponse fileState =
+        facilityClient.getFacilityFileState(centralFileStateId);
+
+    if (fileState.contactAddress() instanceof DomesticAddressDto domesticAddress) {
+      return getPossibleFileNumberCollisionsForFileState(
+          centralFileStateId,
+          domesticAddress.postalCode(),
+          domesticAddress.street(),
+          domesticAddress.houseNumber());
+    } else {
+      return new GetFileNumberCollisionsResponse(Collections.emptyMap());
+    }
+  }
+
+  public GetFileNumberCollisionsResponse getPossibleFileNumberCollisionsForFileState(
+      UUID centralFileStateId, String postalCode, String street, String houseNumber) {
+    facilityClient.getFacilityFileStatesFiltered(
+        new GetFacilityFileStatesFilteredRequest(
+            null,
+            null,
+            postalCode,
+            null,
+            street,
+            houseNumber,
+            null,
+            null,
+            Collections.emptyList()));
+
+    CentralFileData centralFileData =
+        fetchCentralFileDataFiltered(
+            new GetFacilityFileStatesFilteredRequest(
+                null,
+                null,
+                postalCode,
+                null,
+                street,
+                houseNumber,
+                null,
+                null,
+                Collections.emptyList()));
+
+    List<InspectionRelatedFacility> inspectionRelatedFacilities =
+        inspectionRelatedFacilityRepository.findAllByCentralFileStateIdIn(
+            centralFileData.facilityFileStateMap.keySet().stream()
+                .filter(id -> !centralFileStateId.equals(id))
+                .toList());
+
+    Map<Integer, List<InspectionRelatedFacility>> suffixMap =
+        inspectionRelatedFacilities.stream()
+            .collect(
+                Collectors.groupingBy(
+                    irf ->
+                        Optional.ofNullable(irf.getProcedure().getFileNumberSuffix()).orElse(0)));
+
+    SortedMap<Integer, List<FileNumberCollisionInspectionDto>> collisionInspections =
+        new TreeMap<>();
+    for (Map.Entry<Integer, List<InspectionRelatedFacility>> entry : suffixMap.entrySet()) {
+      collisionInspections.put(
+          entry.getKey(),
+          entry.getValue().stream()
+              .map(
+                  inspectionRelatedFacility ->
+                      new FileNumberCollisionInspectionDto(
+                          inspectionRelatedFacility.getProcedure().getExternalId(),
+                          centralFileData
+                              .facilityFileStateMap
+                              .get(inspectionRelatedFacility.getCentralFileStateId())
+                              .name(),
+                          inspectionRelatedFacility.getProcedure().getProcedureStatus(),
+                          getDateOfInspection(inspectionRelatedFacility.getProcedure())))
+              .sorted(
+                  Comparator.comparing(FileNumberCollisionInspectionDto::facilityName)
+                      .thenComparing(FileNumberCollisionInspectionDto::dayOfInspection)
+                      .thenComparing(FileNumberCollisionInspectionDto::inspectionStatus)
+                      .thenComparing(FileNumberCollisionInspectionDto::inspectionId))
+              .toList());
+    }
+
+    return new GetFileNumberCollisionsResponse(collisionInspections);
+  }
+
+  private LocalDate getDateOfInspection(Inspection inspection) {
+    InspectionAppointment appointment =
+        inspection.getExecutionAppointment() != null
+            ? inspection.getExecutionAppointment()
+            : inspection.getPlannedAppointment();
+    if (appointment == null) {
+      return null;
+    }
+    return LocalDate.ofInstant(appointment.getAppointmentStart(), clock.getZone());
   }
 }

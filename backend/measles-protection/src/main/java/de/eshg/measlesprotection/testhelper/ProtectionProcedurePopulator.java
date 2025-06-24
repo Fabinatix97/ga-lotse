@@ -107,6 +107,7 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
             SalutationDto.NOT_SPECIFIED,
             null,
             domesticAddress(address),
+            null,
             null);
     CreatePersonRequest createPersonRequest = new CreatePersonRequest(affectedPerson);
     return draftProtectionProcedureController.createPerson(createPersonRequest);

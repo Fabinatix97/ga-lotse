@@ -6,19 +6,11 @@
 import { Stack } from "@mui/joy";
 
 import { useExaminationStore } from "../../stores/examination/ExaminationStoreProvider";
+import { isInUpperJaw } from "../../stores/examination/actions/utils";
 import { QuadrantNumber } from "../../stores/examination/types";
 
 import { ToothColumn } from "./ToothColumn";
 import { QUADRANT_SPACING } from "./styles";
-
-const VERTICAL_ALIGN: Record<QuadrantNumber, VerticalAlignment> = {
-  Q1: "top",
-  Q2: "top",
-  Q3: "bottom",
-  Q4: "bottom",
-};
-
-type VerticalAlignment = "top" | "bottom";
 
 interface QuadrantFormProps {
   titleId: string;
@@ -27,15 +19,16 @@ interface QuadrantFormProps {
 
 export function QuadrantForm(props: QuadrantFormProps) {
   const dentition = useExaminationStore((state) => state.dentition);
-  const verticalAlign = VERTICAL_ALIGN[props.quadrantNumber];
+  const inUpperJaw = isInUpperJaw(props.quadrantNumber);
 
   return (
     <Stack
       component="section"
       direction="row"
       gap={2}
-      marginTop={verticalAlign === "top" ? 0 : QUADRANT_SPACING}
-      marginBottom={verticalAlign === "bottom" ? 0 : QUADRANT_SPACING}
+      alignSelf={inUpperJaw ? "flex-end" : "flex-start"}
+      marginTop={inUpperJaw ? 0 : QUADRANT_SPACING}
+      marginBottom={inUpperJaw ? QUADRANT_SPACING : 0}
       aria-labelledby={props.titleId}
     >
       {dentition[props.quadrantNumber].teeth.map((tooth, index) => (
@@ -44,6 +37,7 @@ export function QuadrantForm(props: QuadrantFormProps) {
           tooth={tooth}
           index={index}
           quadrantNumber={props.quadrantNumber}
+          reverse={inUpperJaw}
         />
       ))}
     </Stack>

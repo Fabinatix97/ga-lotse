@@ -34,6 +34,7 @@ public record AffectedPersonDto(
     @Size(min = 1, max = 119) String title,
     GenderDto gender,
     @NotNull @Valid AddressDto contactAddress,
+    @Valid AddressDto differentBillingAddress,
     @Valid AffectedPersonSyncDto affectedPersonSync,
     DataOriginDto dataOrigin,
     String humanReadableId) {}

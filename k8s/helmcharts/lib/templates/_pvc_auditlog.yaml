@@ -1,0 +1,28 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.auditlogPvc" }}
+{{- $name := index . 0 }}
+{{- $settings := index . 1 }}
+{{- $ := index . 2 }}
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ $name }}"
+  namespace: {{ $.Release.Namespace }}
+spec:
+  accessModes: [ ReadWriteOnce ]
+  {{- if $.Values.volumes.customStorageClass }}
+  storageClassName: {{ $settings.class | default "rbd-storagepool-cluster-small-files" }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ coalesce $settings.size "256Mi" }}
+
+---
+
+---
+{{- end }}

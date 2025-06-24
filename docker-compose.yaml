@@ -69,3 +69,11 @@ services:
       - 3002:3002
     depends_on:
       - admin-portal-reverse-proxy
+
+  pdf-converter-portal:
+    image: ga-lotse/pdf-converter-portal:${PDF_CONVERTER_PORTAL_TAG:-latest}
+    environment:
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    ports:
+      - 3004:3004

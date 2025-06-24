@@ -1,0 +1,51 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+monitoring:
+  serviceMonitor:
+    enabled: false
+
+domains:
+  clusterLocalSuffix: .central.svc.cluster.local
+  centralservices:
+    servicedirectory: service-directory.central.svc.cluster.local
+    relayserver: relay-server.central.svc.cluster.local
+    pdfaconverterportal: pcp.central.svc.cluster.local
+  hosts:
+    lsd: lsd.central.svc.cluster.local
+    adminportal: ap.central.svc.cluster.local
+    keycloak: keycloak.central.svc.cluster.local
+    keycloakInternal: keycloak.central.svc.cluster.local
+  lsdOrgUnit: central
+  clusterIssuer: local-ca
+  internalClusterIssuer: local-ca
+
+actors:
+  import:
+    enabled: true
+    orgUnits:
+      - name: frankfurt
+        clusterLocalSuffix: .frankfurt.svc.cluster.local
+        employeePortal: ep.frankfurt.svc.cluster.local
+        citizenPortal: cp.frankfurt.svc.cluster.local
+        lsd: lsd.frankfurt.svc.cluster.local
+        federalState: HE
+        type: GA
+        actors: []
+        skipActors:
+          - centralrepository
+      - name: central
+        clusterLocalSuffix: .central.svc.cluster.local
+        lsd: lsd.central.svc.cluster.local
+        federalState: DE
+        type: ZD
+        actors:
+          - centralrepository
+        skipActors: []
+
+spring:
+  profiles:
+    active: "dev, preview-features"
+
+development:
+  injectSelfSignedCA: true

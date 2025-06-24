@@ -1,0 +1,255 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.adminPortal" }}
+---
+
+{{ if .Values.adminportal.enabled }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: adminportal
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: adminportal-app
+  ports:
+    - port: 443
+      name: proxy-incoming
+      targetPort: proxy-incoming
+
+---
+{{- if .Values.adminportal.selfmanagedUserCerts -}}
+
+kind: Secret
+apiVersion: v1
+data:
+  truststore.crt: {{ .Values.adminportal.usercerts | b64enc}}
+metadata:
+  name: admin-portal-users-tls
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+
+---
+
+{{- end -}}
+
+{{ include "ingress" (list "adminportal" .Values.ingress.type .Values.domains.hosts.adminportal "proxy-incoming" "adminportal" .Release.Namespace)}}
+{{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+
+---
+
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: admin-portal-env
+  namespace: {{ .Release.Namespace }}
+data:
+  env: |
+    PUBLIC_BACKEND_SERVICE_DIRECTORY_URL=https://{{ .Values.domains.hosts.adminportal }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: adminportal
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: adminportal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: adminportal-app
+  template:
+    metadata:
+      name: adminportal
+      labels:
+        app: adminportal-app
+      annotations:
+        checksum/config: {{ include "lib.adminPortalReverseProxyConfig" . | sha256sum }}
+        checksum/usercerts: {{ .Values.adminportal.usercerts | sha256sum }}
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      dnsPolicy: None
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "service-directory") | indent 8 }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/admin-portal:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          env:
+            - name: HOSTNAME
+              value: 127.0.0.1
+            - name: PORT
+              value: "3000"
+            - name: PUBLIC_ENVIRONMENT_TYPE
+              value: "{{ include "deriveEnvironmentType" (.Values.spring.profiles.active) }}"
+            - name: PUBLIC_FRONTEND_URL
+              value: "https://{{ .Values.domains.hosts.adminportal }}"
+            - name: PUBLIC_BACKEND_SERVICE_DIRECTORY_URL
+              value: "https://{{ .Values.domains.hosts.adminportal }}"
+          volumeMounts:
+            - mountPath: /app/admin-portal/.env
+              name: admin-portal-env
+              subPath: env
+              readOnly: true
+          resources:
+            {{- toYaml (default dict .Values.adminportal.bffResources) | nindent 12 }}
+        - name: proxy
+          {{- include "getThirdPartyImage" .Values.thirdPartyImages.nginx | indent 10 }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          env:
+            - name: PORT
+              value: "8443"
+          livenessProbe:
+            tcpSocket:
+              port: 8443
+          resources:
+            {{- toYaml (default dict .Values.adminportal.nginxResources) | nindent 12 }}
+          ports:
+            - containerPort: 8443
+              protocol: TCP
+              name: proxy-incoming
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d/default.conf
+              name: config
+              subPath: admin-portal.conf
+              readOnly: true
+            - mountPath: /etc/nginx/nginx.conf
+              name: config
+              subPath: nginx.conf
+              readOnly: true
+            - mountPath: /var/cache/nginx
+              subPath: cache
+              name: nginx-runtime-data
+            - mountPath: /var/run
+              subPath: var-run
+              name: nginx-runtime-data
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.crt
+              subPath: tls.crt
+              readOnly: true
+            - name: certs
+              mountPath: /etc/nginx/ssl/tls.key
+              subPath: tls.key
+              readOnly: true
+            - name: usercerts
+              mountPath: /etc/nginx/ssl/truststore.crt
+              subPath: truststore.crt
+              readOnly: true
+        - name: spatz
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /wait-for-containerstart.sh
+          resources:
+          {{- toYaml (default dict .Values.spatz.resources) | nindent 12 }}
+          env:
+            - name: spring.profiles.active
+              value: "{{ include "removeTestHelper" (.Values.spring.profiles.active) }}"
+            - name: ESHG_SPATZ_SELFSIGNED_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_RELAY_ENABLED
+              value: 'false'
+            - name: ESHG_SPATZ_SSL_KEYSTORE_CERTIFICATE
+              value: /var/run/certs/tls.crt
+            - name: ESHG_SPATZ_SSL_KEYSTORE_PRIVATEKEY
+              value: /var/run/certs/tls.key
+            - name: ESHG_SPATZ_INBOUND_HANDLERPORT
+              value: "443"
+            - name: ESHG_SPATZ_OUTBOUND_TARGETPORT
+              value: "443"
+            - name: ESHG_SPATZ_DNS_UPSTREAMHOST
+              value: "{{ .Values.dns.upstream }}"
+            - name: ESHG_SPATZ_DNS_STATICHOSTS_0
+              value: "{{ .Values.domains.centralservices.servicedirectory }}"
+              {{- if .Values.spatz.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.spatz.javaToolOptions }}"
+              {{- end }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
+              value: "{{ .Values.domains.hosts.keycloakInternal }}"
+            {{- range $i, $allowListEntry := .Values.adminportal.dns.allowList }}
+            - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_{{ add $i 1 }}
+              value: "{{ $allowListEntry }}"
+            {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+            {{- end }}
+            - name: certs
+              mountPath: /var/run/certs
+              readOnly: true
+            {{- if eq "true" $createDebugLogMount }}
+            - name: spatzdebuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+          image: '{{ .Values.image.registry }}/{{ .Values.image.repository }}/spatz:{{ .Values.image.tag }}'
+          {{- if .Values.spatzLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.spatzLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.spatzReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.spatzReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        - name: config
+          configMap:
+            name: admin-portal-reverse-proxy-config
+        - name: certs
+          secret:
+            secretName: {{ .Values.adminportal.certificate.secret }}
+            defaultMode: 420
+        - name: usercerts
+          secret:
+            secretName: admin-portal-users-tls
+            defaultMode: 420
+        - name: admin-portal-env
+          configMap:
+            name: admin-portal-env
+        - name: nginx-runtime-data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+        {{- if eq "true" $createDebugLogMount }}
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: admin-portal-spatz-debuglogs
+        {{- end }}
+
+---
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "admin-portal-spatz" .Values.adminportal.debuglog $) }}
+{{- end }}
+
+{{ end }}
+
+---
+
+{{ end }}

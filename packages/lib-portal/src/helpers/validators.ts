@@ -9,6 +9,7 @@ import {
   isAfter,
   isBefore,
   isFuture,
+  isPast,
   isThisMonth,
   isToday,
   parseISO,
@@ -110,6 +111,16 @@ export function validateLength(
 export function validatePastOrTodayDate(message: string): Validator<string> {
   return (value: string) => {
     if (isDateString(value) && !isToday(value) && isFuture(endOfDay(value))) {
+      return message;
+    }
+
+    return undefined;
+  };
+}
+
+export function validateTodayOrFutureDate(message: string): Validator<string> {
+  return (value: string) => {
+    if (isDateString(value) && isPast(endOfDay(value))) {
       return message;
     }
 

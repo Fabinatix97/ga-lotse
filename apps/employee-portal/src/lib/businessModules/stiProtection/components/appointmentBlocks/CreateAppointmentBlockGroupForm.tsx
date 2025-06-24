@@ -9,7 +9,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { mapRequiredValue, useSnackbar } from "@eshg/lib-portal";
+import { useSnackbar } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
@@ -40,7 +40,7 @@ import {
 } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: StiProtectionAppointmentValues = {
-  type: ApiAppointmentType.HivStiConsultation,
+  types: [ApiAppointmentType.HivStiConsultation],
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   allAppointmentTypes: [],
   physicians: [],
@@ -63,7 +63,7 @@ export function mapFormValues(
   values: StiProtectionAppointmentValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
-    types: [mapRequiredValue(values.type)],
+    types: values.types,
     parallelExaminations: 1,
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
@@ -87,7 +87,12 @@ export function CreateAppointmentBlockGroupForm() {
   const validateAppointmentBlockGroup =
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const [
-    { data: allAppointmentTypesData },
+    {
+      data: {
+        appointmentTypeConfigs: allAppointmentTypesData,
+        allowedAppointmentTypeCombinations,
+      },
+    },
     { data: allPhysicians },
     { data: allConsultants },
   ] = useSuspenseQueries({
@@ -148,6 +153,7 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
+      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       appointmentTypes={allAppointmentTypes}
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}

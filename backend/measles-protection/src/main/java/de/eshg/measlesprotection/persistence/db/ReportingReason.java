@@ -6,9 +6,20 @@
 package de.eshg.measlesprotection.persistence.db;
 
 public enum ReportingReason {
-  NO_PROOF,
-  FIRST_VACCINE,
-  MEDICAL_CONTRAINDICATION,
-  UNASSESSABLE_PROOF,
-  OTHER
+  NO_PROOF("ohne Nachweis"),
+  FIRST_VACCINE("nur 1. Impfung"),
+  MEDICAL_CONTRAINDICATION("med. Kontraindikation / Attest"),
+  UNASSESSABLE_PROOF("Nachweis nicht beurteilbar (z.B. unleserlich, Fremdsprache)"),
+  OTHER("anderer Grund"),
+  ;
+
+  String germanName;
+
+  ReportingReason(String germanName) {
+    this.germanName = germanName;
+  }
+
+  public String getGermanName() {
+    return germanName;
+  }
 }

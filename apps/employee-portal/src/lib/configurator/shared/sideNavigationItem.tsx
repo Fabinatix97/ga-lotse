@@ -130,6 +130,12 @@ function ConfiguratorSideNavigationItem() {
             accessCheck: sideNavigationItem.accessCheck,
             data,
           }),
+          subItem({
+            name: "Reisen mit BtM",
+            module: "MEDS_ABROAD",
+            accessCheck: sideNavigationItem.accessCheck,
+            data,
+          }),
         ].filter(isDefined),
       }}
     />

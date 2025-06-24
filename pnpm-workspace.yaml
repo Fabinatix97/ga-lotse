@@ -57,6 +57,9 @@ catalogs:
     "prettier": "3.5.3"
     "@trivago/prettier-plugin-sort-imports": "5.2.2"
 
+  vite:
+    "vite": "6.3.5"
+
   vitest:
     "vitest": "3.1.4"
     "@vitest/coverage-istanbul": "3.1.4"
@@ -73,7 +76,6 @@ catalogs:
     "formik": "2.4.6"
     "react-error-boundary": "6.0.0"
     "remeda": "2.22.3"
-    "server-only": "0.0.1"
     "valibot": "1.1.0"
     "use-debounce": "10.0.4"
     "uuid": "11.1.0"
@@ -81,7 +83,7 @@ catalogs:
     "tsup": "8.5.0"
     "zustand": "5.0.5"
     "@keycloak/keycloak-admin-client": "26.2.4"
-    "@cronn/vitest-file-snapshots": "0.4.1"
+    "@cronn/vitest-file-snapshots": "0.6.0"
     "tsx": "4.19.4"
 
 # add new dependencies with exact version instead of semver ranges

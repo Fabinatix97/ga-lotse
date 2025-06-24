@@ -416,8 +416,10 @@ public class SchoolEntryController {
       @PathVariable("procedureId") UUID procedureId) {
     DevelopmentScreening developmentScreeningResult =
         examinationResultService.findDevelopmentScreeningResult(procedureId);
+    Map<String, String> icd10CodeToOriginalCode =
+        examinationResultService.resolveIcd10Codes(developmentScreeningResult);
 
-    return ExaminationResultMapper.mapToDto(developmentScreeningResult);
+    return ExaminationResultMapper.mapToDto(developmentScreeningResult, icd10CodeToOriginalCode);
   }
 
   @PutMapping("/{procedureId}/development-screening-result")
@@ -435,7 +437,9 @@ public class SchoolEntryController {
     examinationResultService.updateDevelopmentScreeningResult(
         developmentScreeningResult, ExaminationResultMapper.mapToDomain(request));
 
-    return ExaminationResultMapper.mapToDto(developmentScreeningResult);
+    Map<String, String> icd10CodeToOriginalCode =
+        examinationResultService.resolveIcd10Codes(developmentScreeningResult);
+    return ExaminationResultMapper.mapToDto(developmentScreeningResult, icd10CodeToOriginalCode);
   }
 
   @GetMapping("/{procedureId}/vaccination-status")

@@ -1,0 +1,116 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.svgSanitizer" }}
+---
+
+{{ if .Values.svgsanitizer.enabled }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: svgsanitizer
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: svgsanitizer-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+      name: spatz-incoming
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: svgsanitizer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: svgsanitizer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: svgsanitizer-app
+  template:
+    metadata:
+      name: svgsanitizer
+      labels:
+        app: svgsanitizer-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      dnsPolicy: None
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/svg-sanitizer:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          resources:
+          {{- toYaml (default dict .Values.svgsanitizer.resources) | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            initialDelaySeconds: 20
+            failureThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            initialDelaySeconds: 20
+            failureThreshold: 1
+            timeoutSeconds: 10
+          env:
+            {{- if .Values.development.injectSelfSignedCA }}
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/localca.pem
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/localca.pem
+            {{- end }}
+            - name: PORT
+              value: "8080"
+          {{- if .Values.development.injectSelfSignedCA }}
+          volumeMounts:
+            - name: ca
+              mountPath: /etc/ssl/certs/localca.pem
+              subPath: ca.crt
+          {{- end }}
+      {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.svgsanitizer "hasDb" false "k" "svgsanitizer" "actorType" "RESTRICTED" "createDebugLogMount" $createDebugLogMount) }}
+      volumes:
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        {{- if eq "true" $createDebugLogMount }}
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: svgsanitizer-spatz-debuglogs
+        {{- end }}
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "svgsanitizer-spatz" .Values.svgsanitizer.debuglog $) }}
+{{- end }}
+
+{{ end }}
+
+---
+{{- end }}

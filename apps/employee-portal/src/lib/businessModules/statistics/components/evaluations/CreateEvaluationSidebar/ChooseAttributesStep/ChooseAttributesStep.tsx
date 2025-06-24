@@ -279,14 +279,18 @@ function mapDataPrivacyCategoryToLabel(
 }
 
 function sortByAttributeNumbering(left: string, right: string) {
-  const pattern = /^(\d+)_(.+)/;
-  const leftAmount = Number(pattern.exec(left)![1]!);
-  const rightAmount = Number(pattern.exec(right)![1]!);
-  return leftAmount - rightAmount;
+  function extractWeight(name: string) {
+    const pattern = /^(\d+)_(\d+)_(.+)/;
+    return (
+      Number(pattern.exec(name)![1]!) * 1000 + Number(pattern.exec(name)![2]!)
+    );
+  }
+
+  return extractWeight(left) - extractWeight(right);
 }
 
 export function extractAttributeKey(attributeKeyWithPrefix: string) {
-  return /^\d+_(.+)$/.exec(attributeKeyWithPrefix)![1]!;
+  return /^\d+_\d+_(.+)$/.exec(attributeKeyWithPrefix)![1]!;
 }
 
 function calculateAmountSelectedQuasiIdentifyingAttributes(
@@ -328,7 +332,7 @@ function mapToSearchableCheckboxGroups(
             selectedAttributeKeysFieldName,
             amountSelectedQuasiIdentifyingAttributes >=
               MAX_AMOUNT_QUASI_IDENTIFYING,
-            `${categoryIndex}${attributeIndex}`,
+            `${categoryIndex}_${attributeIndex}`,
           ),
         ),
     }),

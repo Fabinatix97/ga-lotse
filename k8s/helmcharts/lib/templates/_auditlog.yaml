@@ -1,0 +1,199 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.auditlog" }}
+---
+
+{{- if .Values.auditlog.enabled }}
+
+{{ include "lib.database" (list "auditlog" .Values.auditlog.database .) }}
+
+{{- $createDebugLogMount := include "createDebugLogMount" .Values }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: auditlog
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: auditlog-app
+  ports:
+    - port: 443
+      targetPort: spatz-incoming
+      name: spatz-incoming
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: auditlog
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: auditlog
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: auditlog-app
+  template:
+    metadata:
+      name: auditlog
+      labels:
+        app: auditlog-app
+      annotations:
+        kubectl.kubernetes.io/default-container: application
+    spec:
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      dnsConfig:
+        nameservers:
+          - 127.0.0.1
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.development.injectSelfSignedCA }}
+        - name: ca
+          configMap:
+            name: ca
+        {{- end }}
+        {{- if eq "true" $createDebugLogMount }}
+        - name: debuglog
+          persistentVolumeClaim:
+            claimName: auditlog-debuglogs
+        - name: spatzdebuglog
+          persistentVolumeClaim:
+            claimName: auditlog-spatz-debuglogs
+        {{- end }}
+        - name: archive
+          persistentVolumeClaim:
+            claimName: "{{ coalesce .Values.auditlog.pvcarchive "auditlog-archive" }}"
+        - name: certs
+          secret:
+            secretName: "{{ .Values.lsd.certificate.secret }}"
+            defaultMode: 420
+      {{- if not .Values.auditlog.database.selfmanaged }}
+        - name: db-certs
+          secret:
+            secretName: auditlog-db
+            defaultMode: 420
+            items:
+            - key: ca.crt
+              path: ca.crt
+      {{- end }}
+      securityContext: {{- .Values.podSecurityContext | toYaml | nindent 8 }}
+      dnsPolicy: None
+      initContainers:
+      {{- include "waitForDeployment" (list .Values "lsd") | indent 8 }}
+      {{- if .Values.auditlog.database.k8sDeployment }}
+      {{- include "waitForStatefulset" (list .Values "auditlog-db") | indent 8 }}
+      {{- end }}
+      containers:
+        - name: application
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}/auditlog:{{ .Values.image.tag }}"
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- if .Values.springBootLivenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.springBootLivenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.springBootReadinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.springBootReadinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+          {{- toYaml (default dict .Values.auditlog.resources) | nindent 12 }}
+          env:
+            {{- if not .Values.auditlog.database.selfmanaged }}
+            - name: spring.datasource.url
+              value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=verify-full&sslrootcert=/var/run/db-certs/ca.crt"
+            {{- else }}
+            - name: spring.datasource.url
+              value: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+            {{- end }}
+            - name: spring.profiles.active
+              value: "{{ .Values.spring.profiles.active }}"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: auditlog-db
+                  key: POSTGRESQL_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: auditlog-db
+                  key: POSTGRESQL_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: auditlog-db
+                  key: POSTGRESQL_DB
+            - name: spring.datasource.username
+              valueFrom:
+                secretKeyRef:
+                  name: auditlog-db
+                  key: POSTGRESQL_USER
+            - name: spring.datasource.password
+              valueFrom:
+                secretKeyRef:
+                  name: auditlog-db
+                  key: POSTGRESQL_PASSWORD
+            - name: eshg.keycloak.url
+              value: "https://{{ .Values.domains.hosts.keycloak }}"
+            - name: eshg.keycloak.internal.url
+              value: "https://{{ .Values.domains.hosts.keycloakInternal }}"
+            - name: de.eshg.base.service-url
+              value: "http://base{{ .Values.domains.clusterLocalSuffix }}"
+            - name: de.eshg.auditlog.service-url
+              value: "http://localhost:8080"
+            - name: spring.security.oauth2.client.registration.module-client.client-id
+              value: system-auditlog
+            - name: spring.security.oauth2.client.registration.module-client.client-secret
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secrets
+                  key: auditlog-module-client-secret
+            - name: de.eshg.auditlog.log-storage-dir
+              value: /data/audit-log-archive
+            {{- if .Values.auditlog.javaToolOptions }}
+            - name: JAVA_TOOL_OPTIONS
+              value: "{{ .Values.auditlog.javaToolOptions }}"
+            {{- end }}
+            - name: management.server.port
+              value: "8081"
+          {{- if .Values.containersLifecycle.enabled }}
+          lifecycle: {{- omit .Values.containersLifecycle "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if eq "true" $createDebugLogMount }}
+            - name: debuglog
+              mountPath: /var/log/eshg-debug
+            {{- end }}
+            - name: archive
+              mountPath: /data/audit-log-archive
+            {{- if not .Values.auditlog.database.selfmanaged }}
+            - mountPath: /var/run/db-certs
+              name: db-certs
+              readOnly: true
+            {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+    {{- include "module.spatz" (dict "Values" $.Values "v" $.Values.auditlog "hasDb" true "k" "auditlog" "relay" false "createDebugLogMount" $createDebugLogMount) }}
+
+---
+
+{{- include "lib.auditlogPvc" (list "auditlog-archive" (.Values.auditlog.auditlog).archive $) }}
+
+{{- if eq "true" $createDebugLogMount }}
+  {{- include "lib.debuglogPvc" (list "auditlog" .Values.auditlog.debuglog $) }}
+  {{- include "lib.debuglogPvc" (list "auditlog-spatz" .Values.auditlog.debuglog $) }}
+{{- end }}
+
+{{- end }}
+
+---
+
+{{- end }}

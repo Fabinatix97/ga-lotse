@@ -93,6 +93,7 @@ export function useFilterDictionary<
     id: filtersId,
     onApply: handleApply,
     isDirty: state.isDirty,
+    filterSettingsVisible: true,
   };
 
   function getActiveFilters(filters: TFilters) {

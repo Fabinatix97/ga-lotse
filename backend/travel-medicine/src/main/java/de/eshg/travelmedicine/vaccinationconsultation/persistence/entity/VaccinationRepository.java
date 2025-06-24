@@ -7,5 +7,7 @@ package de.eshg.travelmedicine.vaccinationconsultation.persistence.entity;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface VaccinationRepository extends JpaRepository<Vaccination, UUID> {}
+public interface VaccinationRepository
+    extends JpaRepository<Vaccination, UUID>, JpaSpecificationExecutor<Vaccination> {}

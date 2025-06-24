@@ -61,8 +61,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
 
   const { data: selfUser } = useGetSelfUser();
   const canAccessChat =
-    useHasUserRoleCheck(ApiUserRole.ChatManagementWrite) &&
-    !!featureToggleChatEnabled;
+    useHasUserRoleCheck(ApiUserRole.ChatUser) && !!featureToggleChatEnabled;
   const { data: userSettingsData, isLoading } = useGetUserSettings(
     selfUser.userId,
     canAccessChat,

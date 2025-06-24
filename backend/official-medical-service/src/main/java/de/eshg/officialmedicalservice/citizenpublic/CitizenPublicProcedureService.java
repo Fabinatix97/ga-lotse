@@ -6,9 +6,12 @@
 package de.eshg.officialmedicalservice.citizenpublic;
 
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.config.domain.Document;
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
+import de.eshg.officialmedicalservice.config.OmsConfigService;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.notification.NotificationService;
 import de.eshg.officialmedicalservice.person.PersonClient;
@@ -18,16 +21,10 @@ import de.eshg.officialmedicalservice.procedure.ProgressEntryService;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
-import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.i18n.Language;
 import de.eshg.rest.service.i18n.LanguageContextHolder;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,12 +38,7 @@ public class CitizenPublicProcedureService {
   private final OmsDocumentService omsDocumentService;
   private final NotificationService notificationService;
   private final ProgressEntryService progressEntryService;
-
-  @Value("${de.eshg.official-medical-service.landing.config.de}")
-  private Resource landingResourceDe;
-
-  @Value("${de.eshg.official-medical-service.landing.config.en}")
-  private Resource landingResourceEn;
+  private final OmsConfigService omsConfigService;
 
   public CitizenPublicProcedureService(
       OmsAppointmentService appointmentService,
@@ -55,7 +47,8 @@ public class CitizenPublicProcedureService {
       OmsProcedureRepository omsProcedureRepository,
       OmsDocumentService omsDocumentService,
       NotificationService notificationService,
-      ProgressEntryService progressEntryService) {
+      ProgressEntryService progressEntryService,
+      OmsConfigService omsConfigService) {
     this.omsAppointmentService = appointmentService;
     this.personClient = personClient;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
@@ -63,6 +56,7 @@ public class CitizenPublicProcedureService {
     this.omsDocumentService = omsDocumentService;
     this.notificationService = notificationService;
     this.progressEntryService = progressEntryService;
+    this.omsConfigService = omsConfigService;
   }
 
   @Transactional
@@ -96,26 +90,15 @@ public class CitizenPublicProcedureService {
     return procedure.getExternalId();
   }
 
-  public byte[] getLandingContent() {
+  @Transactional
+  public byte[] getLandingPageContent() {
+    MultiLangDocument landingContent = omsConfigService.getConfig().getLandingContent();
     Language language = LanguageContextHolder.getLanguage();
-
-    Resource landingResource = getLandingResourceForLanguage(language);
-    try {
-      InputStream inputStream = landingResource.getInputStream();
-
-      return inputStream.readAllBytes();
-    } catch (IOException e) {
-      throw new BadRequestException(
-          ErrorCode.UNEXPECTED_ERROR,
-          "Cannot read landing config file: " + landingResource.getFilename());
-    }
-  }
-
-  private Resource getLandingResourceForLanguage(Language language) {
-    if (language == Language.ENGLISH) {
-      return landingResourceEn;
-    } else {
-      return landingResourceDe;
-    }
+    Document landingDocument =
+        switch (language) {
+          case ENGLISH -> landingContent.getEn();
+          case GERMAN -> landingContent.getDe();
+        };
+    return landingDocument.getContent();
   }
 }

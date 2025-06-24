@@ -52,6 +52,6 @@ export function mapChildExamination(
     fluoridationConsentGiven: response.fluoridationConsentGiven,
     note: response.note,
     result: result,
-    status: mapToExaminationStatus(result),
+    status: mapToExaminationStatus(result, response),
   };
 }

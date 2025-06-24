@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export { type BaseEntity, getId, mapBaseEntity } from "./api/models/BaseEntity";
+export {
+  type BaseEntity,
+  getEntityId,
+  mapBaseEntity,
+} from "./api/models/BaseEntity";
 export {
   type PaginatedList,
   mapPaginatedList,
@@ -20,6 +24,7 @@ export {
 export { mapOptional } from "./api/models/mapOptional";
 export { useGetPublicConfig } from "./api/queries/publicConfig";
 export { useGetUsersByGroupQuery } from "./api/queries/users";
+export type { ApiConfiguration } from "./api/config";
 
 export { NoEntriesMessage } from "./components/NoEntriesMessage";
 export { NoSearchResults } from "./components/NoSearchResults";
@@ -37,6 +42,26 @@ export {
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "./components/address/helpers";
+export { AppointmentBlockFieldArrayWithDays } from "./components/appointmentBlocks/AppointmentBlockFieldArrayWithDays";
+export {
+  AppointmentBlockFormWithDays,
+  type AppointmentBlockGroupValuesWithDays,
+  WEEKDAY_TYPES,
+  type WeekdayCheckboxOption,
+  emptyAppointmentBlockGroup,
+  getWeekdayFromDate,
+} from "./components/appointmentBlocks/AppointmentBlockFormWithDays";
+export { AppointmentBlockGroupFields } from "./components/appointmentBlocks/AppointmentBlockGroupFields";
+export { calculateAppointmentsPerBlock } from "./components/appointmentBlocks/calculateAppointmentCount";
+export { AppointmentLocationSelection } from "./components/appointmentBlocks/AppointmentLocationSelection";
+export { AppointmentStaffSelection } from "./components/appointmentBlocks/AppointmentStaffSelection";
+export { NoAppointmentBlocksAvailable } from "./components/appointmentBlocks/NoAppointmentBlocksAvailable";
+export { WeekdayCheckboxGroup } from "./components/appointmentBlocks/WeekdayCheckboxGroup";
+export {
+  ApiAppointmentType,
+  ApiDayOfWeek,
+} from "./components/appointmentBlocks/types";
+export { validateAppointmentBlock } from "./components/appointmentBlocks/validateAppointmentBlock";
 export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
 export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
 export {
@@ -82,6 +107,7 @@ export { FormStack } from "./components/form/FormStack";
 export { MultiFormButtonBar } from "./components/form/MultiFormButtonBar";
 export { CountryField } from "./components/formFields/CountryField";
 export { DateTimeField } from "./components/formFields/DateTimeField";
+export { TimeField } from "./components/formFields/TimeField";
 export { type NamedUser, UserField } from "./components/formFields/UserField";
 export { DeletableFileField } from "./components/formFields/file/DeletableFileField";
 export {
@@ -101,6 +127,7 @@ export {
   type PersonSearchFormValues,
   type PersonSearchParams,
   usePersonSearch,
+  usePersonSearchFromURL,
 } from "./components/personSearch/PersonSearchForm";
 export { TogglePersonSearchButton } from "./components/personSearch/TogglePersonSearchButton";
 export {
@@ -243,8 +270,8 @@ export {
   type UseFilterSettingsParams,
   useFilterSettings,
 } from "./features/filters/hooks/useFilterSettings";
-export { useSearchParamFilterSettings } from "./features/filters/hooks/useSearchParamFilterSettings";
-export { useSearchParamStateProvider } from "./features/filters/hooks/useSearchParamStateProvider";
+export { useQueryParamFilterSettings } from "./features/filters/hooks/useQueryParamFilterSettings";
+export { useQueryParamStateProvider } from "./features/filters/hooks/useQueryParamStateProvider";
 export type { DateComparisonOperator } from "./features/filters/types/DateComparisonFilter";
 export type { DateSpanFilterValue } from "./features/filters/types/DateSpanFilter";
 export type {
@@ -413,7 +440,12 @@ export type {
   SideNavigationSuspenseItem,
 } from "./types/sideNavigation";
 
-export { getDateFnsLocale } from "./utils/dateTime";
+export {
+  getDateFnsLocale,
+  formatCalendarWeek,
+  formatCalendarWeekRange,
+  toLocalDateTime,
+} from "./utils/dateTime";
 export {
   createCountFormatter,
   formatBoolean,
@@ -434,7 +466,7 @@ export {
   validateTodayOrFutureDate,
   validateURL,
   validateNonNegativeInteger,
-  validatePositiveNumberWithAtMostTwoDecimalDigits,
+  validateNumberWithAtMostTwoDecimalDigits,
   validateNonNegativeNumberWithAtMostTwoDecimalDigits,
   validateFieldArray,
   validateMatches,

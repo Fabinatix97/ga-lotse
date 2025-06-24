@@ -23,6 +23,7 @@ public final class MeaslesProtectionPublicSecurityConfig
         EmployeePermissionRole.MEASLES_PROTECTION_ADMIN,
         ModuleLeaderRole.MEASLES_PROTECTION_LEADER);
     grantAccessToConfiguration();
+    grantAccessToStatistics(EmployeePermissionRole.MEASLES_PROTECTION_ADMIN);
 
     requestMatchers(BaseUrls.MeaslesProtection.FEATURE_TOGGLES_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);

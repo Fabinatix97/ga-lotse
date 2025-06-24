@@ -105,10 +105,19 @@ export function useRoomTimeline(roomId: string) {
         await matrixClient.decryptEventIfNeeded(event);
       }
       const eventType = event.getType();
-      const eventContent = event.getContent();
       const sender = event.getSender();
       const roomId = room?.roomId;
       const timestamp = event.getDate();
+      const associatedId = event.getAssociatedId();
+      const replacingEvent = event.replacingEvent();
+      if (replacingEvent?.isEncrypted()) {
+        await matrixClient.decryptEventIfNeeded(replacingEvent);
+      }
+      const replacingEventContent = replacingEvent?.getContent();
+
+      const currentEventContent = event.getContent();
+      const eventContent = replacingEventContent ?? currentEventContent;
+
       if (!roomId) return;
 
       const newMessage = {
@@ -195,7 +204,9 @@ export function useRoomTimeline(roomId: string) {
               sent: event.getSender() !== loggedInUserId,
               removed: !!event.isRedacted(),
               decrypted: isDecrypted,
+              edited: !!replacingEvent,
             },
+            associatedId,
           };
         }
         case "m.room.redaction": {
@@ -308,6 +319,21 @@ export function useRoomTimeline(roomId: string) {
           );
         });
       }
+      if (newTimelineData?.associatedId) {
+        setMessages((prevState) => {
+          return prevState.map((currMessage) =>
+            currMessage.id === newTimelineData.associatedId
+              ? {
+                  ...currMessage,
+                  content: newTimelineData.message.content,
+                  mentions: newTimelineData.message.mentions,
+                  edited: true,
+                }
+              : currMessage,
+          );
+        });
+        return;
+      }
       const updatedMessage = newTimelineData?.message;
       if (updatedMessage) {
         setMessages((prevState) => {
@@ -354,9 +380,15 @@ export function useRoomTimeline(roomId: string) {
             room.current.room,
             loggedInUserId,
           );
+
           const timelineData = await onTimelineEvent(event, room.current.room);
           if (timelineData?.removed) {
             removedMessages.push(timelineData.removed);
+          }
+
+          const associatedId = event.getAssociatedId();
+          if (associatedId) {
+            return;
           }
 
           if (!timelineData?.message) return;
@@ -409,7 +441,13 @@ export function useRoomTimeline(roomId: string) {
       const events = timelineWindow.current.getEvents();
       const newMessages = await Promise.all(
         events.map(async (event: MatrixEvent) => {
-          const timelineData = await onTimelineEvent(event, room.current?.room);
+          const replacingEvent = event.replacingEvent();
+          const associatedId = event.getAssociatedId();
+          if (associatedId) return;
+          const timelineData = await onTimelineEvent(
+            event || replacingEvent,
+            room.current?.room,
+          );
           if (timelineData?.removed) {
             removedMessages.push(timelineData.removed);
             return;

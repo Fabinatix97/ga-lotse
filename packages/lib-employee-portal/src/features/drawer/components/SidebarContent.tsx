@@ -17,7 +17,7 @@ const AlertContainer = styled(Stack)(({ theme }) => ({
 }));
 
 interface SidebarContentProps {
-  title?: string;
+  title?: string | ReactNode;
   subtitle?: string;
   children?: ReactNode;
   alert?: AlertProps;
@@ -49,9 +49,7 @@ export function SidebarContent({
     >
       {title && (
         <Stack gap={1} sx={{ paddingLeft: SIDEBAR_PADDING }}>
-          <DialogTitle level="h3" component="h1">
-            {title}
-          </DialogTitle>
+          {renderHeader(title)}
           {subtitle && (
             <Typography
               level="title-sm"
@@ -93,5 +91,17 @@ export function SidebarContent({
         <Stack sx={{ paddingLeft: SIDEBAR_PADDING }}>{footer}</Stack>
       )}
     </Stack>
+  );
+}
+
+export function renderHeader(title: string | ReactNode) {
+  if (typeof title !== "string") {
+    return title;
+  }
+
+  return (
+    <DialogTitle level="h3" component="h1">
+      {title}
+    </DialogTitle>
   );
 }

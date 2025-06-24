@@ -13,6 +13,7 @@ import {
   RoomMemberEvent,
 } from "matrix-js-sdk";
 import { useCallback, useEffect, useState } from "react";
+import { uniqueBy } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
@@ -119,7 +120,12 @@ export function useChatRoomList() {
           }
         }),
       );
-      setRoomList(roomWithTypeFiltered);
+      setRoomList((prevState) => {
+        return uniqueBy(
+          [...prevState, ...roomWithTypeFiltered],
+          (room) => room.room.roomId,
+        );
+      });
     })();
   }, [clientState, getLatestMessage, matrixClient]);
 
@@ -186,6 +192,7 @@ export function useChatRoomList() {
 
   const onRoomMessage = useCallback(
     async ({ event, room, isSent }: RoomEventDetails) => {
+      const associatedId = event.getAssociatedId();
       const newMessage = await onMessage({ event, room });
       const isRead = getReadReceipts(event, room, matrixClient.getUserId());
 
@@ -193,6 +200,20 @@ export function useChatRoomList() {
         return prevState.map((roomItem) => {
           if (roomItem.room.roomId !== room.roomId) {
             return roomItem;
+          }
+          if (associatedId && roomItem.latestMessage) {
+            const latestMessageEdited =
+              roomItem.latestMessage?.id === associatedId;
+            return latestMessageEdited
+              ? {
+                  ...roomItem,
+                  latestMessage: {
+                    ...roomItem.latestMessage,
+                    content: newMessage.content,
+                    mentionedUsers: newMessage.mentions,
+                  },
+                }
+              : roomItem;
           }
           if (
             (roomItem.latestMessage?.timestamp?.getTime() ?? 0) >

@@ -1,0 +1,56 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.officialmedicalservice.config;
+
+import static de.eshg.config.HashUtil.hashOf;
+
+import de.eshg.config.domain.Document;
+import de.eshg.config.domain.MultiLangDocument;
+import de.eshg.officialmedicalservice.config.persistence.entity.OmsConfiguration;
+import java.util.LinkedHashMap;
+import java.util.SequencedMap;
+
+public class OmsConfigAuditLogMapper {
+
+  private OmsConfigAuditLogMapper() {}
+
+  public static LinkedHashMap<String, String> getRelevantFieldsForLogging(OmsConfiguration config) {
+    LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
+
+    addRelevantFieldsOfDocument(relevantFields, "concerns", config.getConcerns());
+
+    addRelevantFieldsOfMultiLangDoc(relevantFields, "landingContent", config.getLandingContent());
+
+    relevantFields.put(
+        "keycloakUserCleanupJobOverdueDuration",
+        Integer.toString(config.getKeycloakUserCleanupJobOverdueDuration()));
+    relevantFields.put(
+        "medicalOpinionCutOffDateLeadTime",
+        Integer.toString(config.getMedicalOpinionCutOffDateLeadTime()));
+    relevantFields.put(
+        "citizenPortalAnamnesisEnabled",
+        Boolean.toString(config.isCitizenPortalAnamnesisEnabled()));
+
+    return relevantFields;
+  }
+
+  public static void addRelevantFieldsOfDocument(
+      SequencedMap<String, String> relevantFields, String fieldKey, Document document) {
+    if (document != null) {
+      relevantFields.put(fieldKey, hashOf(document.getContent()));
+    }
+  }
+
+  public static void addRelevantFieldsOfMultiLangDoc(
+      SequencedMap<String, String> relevantFields,
+      String fieldKey,
+      MultiLangDocument multiLangDocument) {
+    if (multiLangDocument != null) {
+      addRelevantFieldsOfDocument(relevantFields, fieldKey + ".de", multiLangDocument.getDe());
+      addRelevantFieldsOfDocument(relevantFields, fieldKey + ".en", multiLangDocument.getEn());
+    }
+  }
+}

@@ -5,7 +5,7 @@
 
 import { FormLabel } from "@mui/joy";
 
-import { TextareaField } from "@eshg/lib-portal";
+import { DebouncedTextareaField } from "@eshg/lib-portal";
 
 import {
   ExaminationSectionTitle,
@@ -15,12 +15,12 @@ import {
 export function NoteFormSection() {
   return (
     <ExaminationSheet component="section">
-      <TextareaField
+      <DebouncedTextareaField
         name="note"
         label={
           <FormLabel>
             <ExaminationSectionTitle marginBottom={3}>
-              Kommentar
+              Bemerkung am Kind
             </ExaminationSectionTitle>
           </FormLabel>
         }

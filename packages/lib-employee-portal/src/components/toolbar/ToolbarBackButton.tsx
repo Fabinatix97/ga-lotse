@@ -13,6 +13,7 @@ function backIconButtonStyles({ theme }: { theme: Theme }) {
     width: "3.25rem",
     backgroundColor: theme.palette.background.surface,
     borderRadius: 0,
+    "&:focus-visible": { outlineOffset: -2 },
     "& .MuiSvgIcon-root": {
       fontSize: "2.25rem",
     },

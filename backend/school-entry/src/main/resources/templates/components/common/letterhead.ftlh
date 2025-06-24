@@ -1,7 +1,5 @@
 <#macro style>
   .header {
-    padding-top: 13mm;
-    margin-bottom: 40px;
     width: 100%;
   }
 
@@ -10,12 +8,12 @@
   }
 
   .header .receiver .officeAddress {
-    font-size: 0.75rem;
+    font-size: 8pt;
     margin-bottom: 2mm;
   }
 
   .header .receiver .addressee {
-    font-size: 0.875rem;
+    font-size: 9pt;
     font-weight: 600;
   }
 
@@ -24,17 +22,19 @@
   }
 
   .sender .sender-label {
-    font-size: 0.75rem;
+    font-size: 8pt;
     font-weight: 400;
     line-height: 1.5em;
   }
 
   .sender .sender-address {
-    margin-bottom: 5mm;
+    font-size: 9pt;
+    margin-bottom: 2mm;
   }
 
   .sender .sender-data {
-    margin-bottom: 2mm;
+    font-size: 9pt;
+    font-weight: 600;
   }
 </#macro>
 
@@ -44,8 +44,8 @@
 <#-- @ftlvariable name="date" type="java.lang.String" -->
   <table class="header">
     <colgroup>
-      <col style="width: 70%;" />
-      <col style="width: 30%;" />
+      <col style="width: 65%;" />
+      <col style="width: 35%;" />
     </colgroup>
     <tr>
       <td>
@@ -56,7 +56,7 @@
       </td>
     </tr>
     <tr class="letterhead">
-      <td class="receiver">
+      <td class="receiver" style="padding-top: 12mm">
         <div class="officeAddress">${sender.name}, ${sender.street}, ${sender.zipCode} ${sender.city}</div>
         <div class="addressee">
           <#nested />
@@ -66,7 +66,7 @@
         <div class="sender-address">
           <div>${sender.name}</div>
           <div>${sender.street}</div>
-          <div class="sender-data">${sender.zipCode} ${sender.city}</div>
+          <div>${sender.zipCode} ${sender.city}</div>
         </div>
         <div class="sender-label">Telefon</div>
         <div class="sender-data">${sender.phoneNumber}</div>
@@ -78,7 +78,7 @@
         <div class="sender-data">${date}</div>
         <div class="sender-label">Aktenzeichen</div>
         <div>-</div>
-        <div style="font-size: 0.75rem; font-weight: 400; line-height: 1.5em;">(bitte bei Antwort angeben)</div>
+        <div class="sender-label">(bitte bei Antwort angeben)</div>
       </td>
     </tr>
   </table>

@@ -5,15 +5,15 @@
 
 package de.eshg.opendata.config;
 
+import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.config.i18n.MultiLangDocumentHelper;
 import de.eshg.file.common.FileValidator;
 import de.eshg.opendata.api.GetOpenDataConfigResponse;
 import de.eshg.opendata.api.UpdateOpenDataConfigRequest;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.i18n.Language;
 import de.eshg.rest.service.security.config.BaseUrls;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -41,9 +41,13 @@ class OpenDataConfigController {
   static final String TERMS_OF_USE_PATH = "/terms-of-use/{lang}";
 
   private final OpenDataConfigService openDataConfigService;
+  private final OpenDataConfigurationProperties configProperties;
 
-  OpenDataConfigController(OpenDataConfigService openDataConfigService) {
+  OpenDataConfigController(
+      OpenDataConfigService openDataConfigService,
+      OpenDataConfigurationProperties configProperties) {
     this.openDataConfigService = openDataConfigService;
+    this.configProperties = configProperties;
   }
 
   @GetMapping
@@ -55,19 +59,18 @@ class OpenDataConfigController {
 
   @GetMapping(TERMS_OF_USE_PATH)
   @Transactional(readOnly = true)
-  @ApiResponse(
-      responseCode = "200",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-              schema = @Schema(format = "binary")))
+  @ApiResponse(responseCode = "200")
   public ResponseEntity<Resource> downloadTermsOfUse(@PathVariable("lang") Language language) {
     OpenDataConfiguration config = openDataConfigService.getConfig();
     if (!config.isInitialized()) {
       throw new NotFoundException("Config is not initialized");
     }
-    return MultiLangDocumentHelper.getAsPdfResourceByLanguageOrThrow(
-        config.getTermsOfUse(), OpenDataConfigService.TERMS_OF_USE_CONFIG_FILENAME, language);
+    MultiLangDocument multiLangDocument = config.getTermsOfUse();
+    return MultiLangDocumentHelper.getAsResourceByLanguageOrThrow(
+        multiLangDocument,
+        OpenDataConfigService.TERMS_OF_USE_CONFIG_FILENAME,
+        language,
+        MediaType.TEXT_MARKDOWN);
   }
 
   @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -78,9 +81,19 @@ class OpenDataConfigController {
       @RequestPart(name = TERMS_OF_USE_DE_PART) MultipartFile termsOfUseDe,
       @RequestPart(name = TERMS_OF_USE_EN_PART, required = false) MultipartFile termsOfUseEn)
       throws IOException {
-    FileValidator.validatePdfFile(termsOfUseDe);
-    FileValidator.validatePdfFile(termsOfUseEn);
+    validate(termsOfUseDe);
+    validate(termsOfUseEn);
     openDataConfigService.updateConfig(
         OpenDataConfigMapper.mapToDomain(updateOpenDataConfigRequest, termsOfUseDe, termsOfUseEn));
+  }
+
+  private void validate(MultipartFile input) {
+    if (input == null) {
+      return;
+    }
+    if (input.getSize() > configProperties.maxMarkdownFileSizeBytes()) {
+      throw new BadRequestException("File is too large");
+    }
+    FileValidator.validateMarkdownFile(input);
   }
 }

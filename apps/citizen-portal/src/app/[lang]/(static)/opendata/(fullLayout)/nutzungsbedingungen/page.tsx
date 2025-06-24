@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
 import { MarkdownPage } from "@/lib/baseModule/components/MarkdownPage";
+import { useGetTermsOfUse } from "@/lib/businessModules/opendata/api/queries/citizenPublicApi";
 
 export default function OpenDataTermsOfUsePage() {
-  return <MarkdownPage pageType="opendata" title="Nutzungsbedingung" />;
+  const source = useGetTermsOfUse();
+  return <MarkdownPage title="Nutzungsbedingungen" source={source.data} />;
 }

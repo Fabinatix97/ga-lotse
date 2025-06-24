@@ -219,6 +219,7 @@ export function useFilterSettings({
     scalingWidth,
     id: filterSettingsId,
     errorMessages,
+    filterSettingsVisible,
   };
 
   return {

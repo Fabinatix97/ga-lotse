@@ -11,6 +11,7 @@ import {
   SoftRequiredBooleanSelectField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
+import { ApiIcd10CodeWithOriginalCode } from "@eshg/school-entry-api";
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import {
@@ -30,7 +31,7 @@ interface HandicapWithDiagnosisFieldsProps {
 
 export interface HandicapWithDiagnosisFieldValues {
   result: OptionalFieldValue<boolean>;
-  icd10Codes: string[];
+  icd10Codes: ApiIcd10CodeWithOriginalCode[];
 }
 
 export function HandicapWithDiagnosisFields(

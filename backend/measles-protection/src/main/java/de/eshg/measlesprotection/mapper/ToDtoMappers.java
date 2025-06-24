@@ -46,6 +46,7 @@ public final class ToDtoMappers {
         person.title(),
         RoleStatusMapper.toInterfaceType(procedureDetailsData.roleStatus()),
         person.contactAddress(),
+        person.differentBillingAddress(),
         new AffectedPersonSyncDto(
             person.id(),
             person.referenceVersion(),

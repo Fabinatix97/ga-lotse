@@ -7,6 +7,8 @@ import { Stack, StackProps, Typography, TypographyProps } from "@mui/joy";
 import { ComponentType, useId } from "react";
 import { isString } from "remeda";
 
+import { useInDetailsList } from "./DetailsList";
+
 export interface BaseDetailsItemProps<TLabelProps, TValueProps> {
   label: TypographyProps["children"];
   value: TypographyProps["children"] | undefined;
@@ -42,6 +44,7 @@ export function BaseDetailsItem<
     (isString(props.value) && props.value.trim() === "");
 
   const id = useId();
+  const inDetailsList = useInDetailsList();
 
   if (isValueEmpty) {
     return null;
@@ -49,10 +52,18 @@ export function BaseDetailsItem<
 
   return (
     <Stack gap={0.25} {...props.slotProps?.stack}>
-      <LabelComponent {...(labelProps as TLabelProps)} id={id}>
+      <LabelComponent
+        {...(labelProps as TLabelProps)}
+        id={!inDetailsList ? id : undefined}
+        component={inDetailsList ? "dt" : undefined}
+      >
         {props.label}
       </LabelComponent>
-      <ValueComponent {...(valueProps as TValueProps)} aria-labelledby={id}>
+      <ValueComponent
+        {...(valueProps as TValueProps)}
+        aria-labelledby={!inDetailsList ? id : undefined}
+        component={inDetailsList ? "dd" : undefined}
+      >
         {props.value}
       </ValueComponent>
     </Stack>

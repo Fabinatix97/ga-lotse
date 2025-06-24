@@ -61,7 +61,7 @@ export function ProphylaxisSessionExaminationBottomBar(
     setExamination(
       examination.examinationId,
       { type: "absence", reasonForAbsence },
-      undefined,
+      examination.note,
     );
     setDialogOpen(false);
     if (isDefined(onNextParticipantClicked)) {

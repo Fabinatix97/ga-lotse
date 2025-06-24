@@ -6,8 +6,7 @@
 import { ApiBusinessModule } from "@eshg/base-api";
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const { Inspection, Dental, MedsAbroad, ...ConfigApiBusinessModule } =
-  ApiBusinessModule;
+const { Inspection, Dental, ...ConfigApiBusinessModule } = ApiBusinessModule;
 
 export const ConfiguratorModuleName = {
   ...ConfigApiBusinessModule,
@@ -27,5 +26,10 @@ export type ConfiguratorEndpointName =
   | "SCHOOL_ENTRY"
   | "NOTIFICATION"
   | "PRIVACY_NOTICE"
+  | "MEDS_ABROAD"
   | "ACCESSIBILITY_STATEMENT_MARKDOWNS_CONFIG"
-  | "PRIVACY_POLICY_MARKDOWNS_CONFIG";
+  | "PRIVACY_POLICY_MARKDOWNS_CONFIG"
+  | "PRIVACY_POLICY"
+  | "APPOINTMENT_STANDARD_DURATION"
+  | "OPEN_DATA"
+  | "LOGO_CONFIG";

@@ -1,0 +1,42 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.certificate" }}
+
+{{- $name := index . 0 }}
+{{- $dnsName := index . 1 }}
+{{- $clusterIssuer := index . 2 }}
+{{- $namespace := index . 3 }}
+{{- $selfSigned := index . 4 }}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ trimSuffix "-tls" $name }}"
+  namespace: {{ $namespace }}
+spec:
+  {{- if $selfSigned }}
+  {{/* spatz infrastructure needs CN to work */}}
+  {{/* Let's encrypt certificates set the CN automatically */}}
+  {{/* for self-signed certificates we need to set it explicitly */}}
+  commonName: "{{ $dnsName }}"
+  {{- end }}
+  dnsNames:
+    - "{{ $dnsName }}"
+  issuerRef:
+    kind: ClusterIssuer
+    name: "{{ $clusterIssuer }}"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: "{{ $name }}"
+  subject: {}
+  usages:
+    - server auth
+    - client auth
+
+---
+
+{{- end }}

@@ -15,6 +15,7 @@ import {
   OptionalFieldValue,
 } from "@eshg/lib-portal";
 import {
+  ApiIcd10CodeWithOriginalCode,
   ApiSchoolFeedback,
   ApiSchoolRecommendation,
   UpdateDevelopmentScreeningResultRequest,
@@ -69,8 +70,8 @@ export function DevelopmentScreeningForm(props: DevelopmentScreeningFormProps) {
   const icd10Sidebar = useIcd10Sidebar();
 
   function handleClickIcd10Code(
-    currentCodes: string[],
-    setFieldValue: (newCodes: string[]) => void,
+    currentCodes: ApiIcd10CodeWithOriginalCode[],
+    setFieldValue: (newCodes: ApiIcd10CodeWithOriginalCode[]) => void,
   ) {
     icd10Sidebar.open({
       initiallySelectedCodes: currentCodes,

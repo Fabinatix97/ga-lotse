@@ -16,8 +16,6 @@
     ":measles-protection-api",
     ":medical-registry",
     ":medical-registry-api",
-    ":meds-abroad",
-    ":meds-abroad-api",
     ":official-medical-service",
     ":official-medical-service-api",
     ":opendata-api",

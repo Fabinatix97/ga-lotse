@@ -4,83 +4,83 @@
  */
 
 import { DeleteOutlined } from "@mui/icons-material";
-import { Box, FormHelperText, IconButton, Sheet, Typography } from "@mui/joy";
+import { Box, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import { PropsWithChildren } from "react";
+import { isDefined } from "remeda";
 
-import { formatFileSize } from "@eshg/lib-portal";
+import { FormHelperTextWithIcon, formatFileSize } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { FileDescriptor } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 
-export interface FileSheet {
+export interface FileSheetProps {
   file: FileDescriptor;
   removeLabel?: string;
   onRemove?: () => void;
-  helperText?: string;
 }
 
 export function FileSheet({
   file,
   onRemove,
   removeLabel,
-  helperText,
-}: Readonly<FileSheet>) {
+}: Readonly<FileSheetProps>) {
   return (
-    <Sheet
-      key={`${file.name}+${file.size}`}
-      sx={{
-        borderRadius: byBreakpoint({
-          mobile: theme.radius.xs,
-          desktop: theme.radius.md,
-        }),
-        padding: 2,
-      }}
-    >
-      <ResponsiveGrid>
-        <Typography sx={{ gridArea: "fileName", wordBreak: "break-all" }}>
-          {file.name}
-        </Typography>
-        <Typography sx={{ gridArea: "fileFormat", justifySelf: "end" }}>
-          {file.fileType}
-        </Typography>
-        <Typography
-          sx={{
-            gridArea: "fileSize",
-            justifySelf: byBreakpoint({
-              mobile: "start",
-              desktop: "end",
-            }),
-          }}
-        >
-          {formatFileSize(file.size)}
-        </Typography>
-        {onRemove && (
-          <IconButton
-            aria-label={removeLabel}
-            color="danger"
+    <Stack>
+      <Sheet
+        key={`${file.name}+${file.size}`}
+        sx={{
+          borderRadius: byBreakpoint({
+            mobile: theme.radius.xs,
+            desktop: theme.radius.md,
+          }),
+          padding: 2,
+        }}
+      >
+        <ResponsiveGrid>
+          <Typography sx={{ gridArea: "fileName", wordBreak: "break-all" }}>
+            {file.name}
+          </Typography>
+          <Typography sx={{ gridArea: "fileFormat", justifySelf: "end" }}>
+            {file.fileType}
+          </Typography>
+          <Typography
             sx={{
-              minHeight: "24px",
-              minWidth: "24px",
-              paddingX: 0,
-              gridArea: "deleteButton",
-              alignSelf: "start",
+              gridArea: "fileSize",
+              justifySelf: byBreakpoint({
+                mobile: "start",
+                desktop: "end",
+              }),
             }}
-            onClick={() => onRemove()}
           >
-            <DeleteOutlined />
-          </IconButton>
-        )}
-        <FormHelperText
+            {formatFileSize(file.size)}
+          </Typography>
+          {onRemove && (
+            <IconButton
+              aria-label={removeLabel}
+              color="danger"
+              sx={{
+                minHeight: "24px",
+                minWidth: "24px",
+                paddingX: 0,
+                gridArea: "deleteButton",
+                alignSelf: "start",
+              }}
+              onClick={() => onRemove()}
+            >
+              <DeleteOutlined />
+            </IconButton>
+          )}
+        </ResponsiveGrid>
+      </Sheet>
+      {isDefined(file.helperText) && (
+        <FormHelperTextWithIcon
+          test-id="file-helper-text"
           id={`${file.name}+${file.size}-helper-text`}
-          sx={{
-            color: theme.palette.danger[500],
-          }}
-        >
-          {helperText}
-        </FormHelperText>
-      </ResponsiveGrid>
-    </Sheet>
+          helperText={file.helperText}
+        />
+      )}
+    </Stack>
   );
 }
 

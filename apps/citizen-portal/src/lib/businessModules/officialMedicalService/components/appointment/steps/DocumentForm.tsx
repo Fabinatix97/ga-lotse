@@ -33,10 +33,13 @@ export function DocumentForm() {
           helperText: t("documents.fileField.helperText"),
           inputSummary: (count: number) =>
             t("documents.fileField.inputSummary", {
-              count: count,
+              count,
             }),
           removeAllFiles: t("documents.fileField.deleteAll"),
-          removeFile: t("documents.fileField.delete"),
+          removeFile: (name: string) =>
+            t("documents.fileField.delete", {
+              name,
+            }),
         }}
         accept={[FileType.Jpeg, FileType.Png, FileType.Pdf]}
         required={t("documents.fileField.required")}

@@ -7116,7 +7116,7 @@
         "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
       },
       "Icd10Code" : {
-        "required" : [ "code", "isGroup", "title" ],
+        "required" : [ "code", "isGroup", "originalCode", "title" ],
         "type" : "object",
         "properties" : {
           "code" : {
@@ -7127,6 +7127,11 @@
           "isGroup" : {
             "type" : "boolean",
             "description" : "If true, the returned code specifies an ICD-10 code group."
+          },
+          "originalCode" : {
+            "type" : "string",
+            "description" : "ICD-10 code with special characters or ICD-10 group code",
+            "example" : "A00.-"
           },
           "title" : {
             "type" : "string",

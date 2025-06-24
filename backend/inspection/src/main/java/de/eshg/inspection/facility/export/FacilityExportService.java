@@ -74,6 +74,7 @@ public class FacilityExportService {
       cellStyle.setAlignment(HorizontalAlignment.LEFT);
       cellStyle.setDataFormat(
           workbook.getCreationHelper().createDataFormat().getFormat(("dd.MM.yyyy")));
+      cellStyle.setQuotePrefixed(true);
 
       XSSFFont headerFont = workbook.createFont();
       headerFont.setBold(true);

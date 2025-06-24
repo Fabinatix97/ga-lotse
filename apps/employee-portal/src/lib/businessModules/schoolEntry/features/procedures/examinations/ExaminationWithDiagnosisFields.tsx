@@ -14,6 +14,7 @@ import {
 import {
   ApiDoctorLetterValue,
   ApiExaminationResultValue,
+  ApiIcd10CodeWithOriginalCode,
 } from "@eshg/school-entry-api";
 
 import { ExaminationResultValueField } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultValueField";
@@ -42,7 +43,7 @@ export interface ExaminationWithDiagnosisFieldValues {
     examinationResultValue: OptionalFieldValue<ApiExaminationResultValue>;
     doctorLetterValue: OptionalFieldValue<ApiDoctorLetterValue>;
   };
-  icd10Codes: string[];
+  icd10Codes: ApiIcd10CodeWithOriginalCode[];
 }
 
 export function isExaminationResultWithoutDiagnosis(

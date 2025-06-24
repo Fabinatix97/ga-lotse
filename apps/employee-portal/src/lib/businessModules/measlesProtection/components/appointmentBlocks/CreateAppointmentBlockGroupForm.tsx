@@ -20,13 +20,13 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { AppointmentBlockGroupValues } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import { AppointmentBlockGroupValues } from "@/lib/shared/components/appointmentBlocks/calculateAppointmentCount";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: AppointmentBlockGroupValues = {
-  type: ApiAppointmentType.ProofSubmission,
+  types: [ApiAppointmentType.ProofSubmission],
   appointmentBlocks: [emptyAppointmentBlockGroup()],
 };
 
@@ -54,10 +54,12 @@ function mapFormValues(
 
 interface CreateAppointmentBlockGroupFormProps {
   appointmentDurationsMeasles: AppointmentDurationsMeasles;
+  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
 }
 
 export function CreateAppointmentBlockGroupForm({
   appointmentDurationsMeasles,
+  allowedAppointmentTypeCombinations,
 }: Readonly<CreateAppointmentBlockGroupFormProps>) {
   const router = useRouter();
   const createDailyAppointmentBlocksForGroup =
@@ -78,6 +80,7 @@ export function CreateAppointmentBlockGroupForm({
   return (
     <AppointmentBlockGroupForm
       appointmentDurationsMeasles={appointmentDurationsMeasles}
+      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       initialValues={INITIAL_VALUES}
       onSubmit={async (values) => {
         await handleSubmit(values);

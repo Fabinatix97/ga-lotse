@@ -25,7 +25,7 @@ import {
   useFilterSettings,
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
-  useSearchParamStateProvider,
+  useQueryParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal";
@@ -136,10 +136,9 @@ export function PendingFacilitiesTable(
   const { data: objectTypes } = useGetObjectTypes();
 
   const filterDefinitions = createFilterDefinitions(objectTypes);
-  const paramStateProvider = useSearchParamStateProvider(
-    filterDefinitions,
-    true,
-  );
+  const paramStateProvider = useQueryParamStateProvider(filterDefinitions, {
+    useRouterReplace: true,
+  });
   const { stateProvider, filter } = usePendingFacilitiesFilterState({
     stateProvider: paramStateProvider,
     defaults: [

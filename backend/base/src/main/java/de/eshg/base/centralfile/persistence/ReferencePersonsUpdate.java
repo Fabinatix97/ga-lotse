@@ -1,0 +1,17 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.base.centralfile.persistence;
+
+import de.eshg.base.centralfile.persistence.entity.Person;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
+
+public record ReferencePersonsUpdate(
+    @NotNull UUID referencePersonId,
+    @NotNull UUID latestFileStateId,
+    @NotNull long version,
+    @NotNull @Valid Person person) {}

@@ -79,9 +79,9 @@ public class ExaminationService {
 
   void updateExamination(Examination examination, UpdateExaminationRequest request) {
     ValidationUtil.validateVersion(request.version(), examination);
-    examination.setNote(request.note());
     updateResult(examination, request.result());
     Child child = examination.getChild();
+    child.setNote(request.note());
 
     addModifiedSystemProgressEntry(child);
   }

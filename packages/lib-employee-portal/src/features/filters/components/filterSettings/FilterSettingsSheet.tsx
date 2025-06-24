@@ -15,6 +15,7 @@ export interface FilterSettingsSheetProps {
   scalingWidth?: boolean;
   filterConditionsMet?: boolean;
   errorMessages?: string[];
+  filterSettingsVisible?: boolean;
 }
 
 export function FilterSettingsSheet({
@@ -25,6 +26,7 @@ export function FilterSettingsSheet({
   scalingWidth,
   filterConditionsMet = true,
   errorMessages,
+  filterSettingsVisible = true,
 }: FilterSettingsSheetProps & RequiresChildren) {
   return (
     <Sheet
@@ -33,9 +35,10 @@ export function FilterSettingsSheet({
         width: scalingWidth ? "100%" : 250,
         minHeight: "15rem",
         padding: 0,
-        display: "flex",
+        display: filterSettingsVisible ? "flex" : "none",
         flexDirection: "column",
       }}
+      aria-hidden={!filterSettingsVisible}
       data-testid="filterSheet"
     >
       <Stack sx={{ flex: 1, minHeight: 0 }}>

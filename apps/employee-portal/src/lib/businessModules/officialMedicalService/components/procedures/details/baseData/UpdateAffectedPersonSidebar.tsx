@@ -8,16 +8,15 @@ import {
   DefaultPersonFormValues,
   PersonSidebarForm,
   SidebarWithFormRefProps,
-  mapApiAddressToForm,
-  mapOptional,
-  normalizeListInputs,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { toDateString } from "@eshg/lib-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
-import { mapToPatchAffectedPersonRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
+import {
+  mapPersonDetailsToForm,
+  mapToPatchAffectedPersonRequest,
+} from "@/lib/businessModules/officialMedicalService/shared/helpers";
 
 export function useUpdateAffectedPersonSidebar() {
   return useSidebarWithFormRef({
@@ -67,24 +66,4 @@ function UpdateAffectedPersonSidebar({
       onSubmit={handleSubmit}
     />
   );
-}
-
-function mapPersonDetailsToForm(
-  person: ApiAffectedPerson,
-): DefaultPersonFormValues {
-  return {
-    salutation: person.salutation ?? "",
-    title: person.title ?? "",
-    firstName: person.firstName,
-    lastName: person.lastName,
-    dateOfBirth: toDateString(person.dateOfBirth),
-    gender: person.gender ?? "",
-    countryOfBirth: person.countryOfBirth ?? "",
-    nameAtBirth: person.nameAtBirth ?? "",
-    placeOfBirth: person.placeOfBirth ?? "",
-    emailAddresses: normalizeListInputs(person.emailAddresses),
-    phoneNumbers: normalizeListInputs(person.phoneNumbers),
-    contactAddress: mapOptional(person.contactAddress, mapApiAddressToForm),
-    differentBillingAddress: undefined,
-  };
 }

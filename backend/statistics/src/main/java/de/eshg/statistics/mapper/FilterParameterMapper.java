@@ -17,7 +17,10 @@ import de.eshg.statistics.api.filter.NumericComparisonDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
+import de.eshg.statistics.datatransfer.FilterInformationData;
 import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
+import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import de.eshg.statistics.persistence.entity.filter.BooleanFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DateFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalRangeFilterParameter;
@@ -28,10 +31,18 @@ import de.eshg.statistics.persistence.entity.filter.NullFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.NumericComparison;
 import de.eshg.statistics.persistence.entity.filter.TextFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.ValueOptionFilterParameter;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
+import org.hibernate.Hibernate;
 
 public class FilterParameterMapper {
+  public static final String INTERVAL_FORMAT_STRING = "[%s;%s]";
+  private static final String SEARCH_FOR_NULL_DESCRIPTION = "leere Felder";
+
   private FilterParameterMapper() {}
 
   public static AbstractFilterParameter mapToPersistence(TableColumnFilterParameter filter) {
@@ -174,5 +185,140 @@ public class FilterParameterMapper {
   private static NumericComparisonDto mapToNumericComparisonDto(
       NumericComparison numericComparison) {
     return NumericComparisonDto.valueOf(numericComparison.name());
+  }
+
+  public static List<String> mapToFilterLabels(
+      List<TableColumn> tableColumns, List<AbstractFilterParameter> filters) {
+    return filters.stream()
+        .map(
+            filter -> {
+              FilterInformationData filterInformationData =
+                  mapToAttributeLabelWithFilterInformation(
+                      Hibernate.unproxy(filter, AbstractFilterParameter.class), tableColumns);
+              return "%s: %s"
+                  .formatted(
+                      filterInformationData.attributeLabel(),
+                      filterInformationData.filterInformation());
+            })
+        .toList();
+  }
+
+  public static FilterInformationData mapToAttributeLabelWithFilterInformation(
+      AbstractFilterParameter filter, List<TableColumn> tableColumns) {
+    String searchKey = AttributeSelectionMapper.buildSearchKey(filter.getAttributeSelection());
+    TableColumn tableColumn =
+        tableColumns.stream()
+            .filter(column -> column.getSearchKey().equals(searchKey))
+            .findFirst()
+            .orElseThrow(
+                () -> new IllegalStateException("No tableColumn %s found".formatted(searchKey)));
+
+    String filterInfo =
+        switch (filter) {
+          case BooleanFilterParameter filterParameter -> mapToFilterInformation(filterParameter);
+          case DateFilterParameter filterParameter -> filterParameter.getValue();
+          case DecimalRangeFilterParameter filterParameter ->
+              mapToIntervalFilterInformation(
+                  getBigDecimalAsString(filterParameter.getMinValueInclusive()),
+                  getBigDecimalAsString(filterParameter.getMaxValueInclusive()),
+                  filterParameter.isWithNullValues());
+          case DecimalValueFilterParameter filterParameter ->
+              mapToNumberValueFilterInformation(
+                  getBigDecimalAsString(filterParameter.getValue()),
+                  filterParameter.getNumericComparison(),
+                  filterParameter.isWithNullValues());
+          case IntegerRangeFilterParameter filterParameter ->
+              mapToIntervalFilterInformation(
+                  "%s".formatted(filterParameter.getMinValueInclusive()),
+                  "%s".formatted(filterParameter.getMaxValueInclusive()),
+                  filterParameter.isWithNullValues());
+          case IntegerValueFilterParameter filterParameter ->
+              mapToNumberValueFilterInformation(
+                  "%s".formatted(filterParameter.getValue()),
+                  filterParameter.getNumericComparison(),
+                  filterParameter.isWithNullValues());
+          case NullFilterParameter ignored -> SEARCH_FOR_NULL_DESCRIPTION;
+          case TextFilterParameter filterParameter -> filterParameter.getValue();
+          case ValueOptionFilterParameter filterParameter ->
+              mapToFilterInformation(filterParameter, tableColumn);
+          default -> throw new IllegalStateException("Unexpected value: " + filter.getClass());
+        };
+    return new FilterInformationData(
+        EvaluationMapper.getAttributeDisplayName(tableColumn, true), filterInfo);
+  }
+
+  private static String mapToFilterInformation(BooleanFilterParameter filterParameter) {
+    List<String> searchValues = new ArrayList<>();
+    if (filterParameter.isSearchForTrue()) {
+      searchValues.add("Ja");
+    }
+    if (filterParameter.isSearchForFalse()) {
+      searchValues.add("Nein");
+    }
+    if (filterParameter.isSearchForNull()) {
+      searchValues.add(SEARCH_FOR_NULL_DESCRIPTION);
+    }
+    return concatFilterValues(searchValues);
+  }
+
+  public static String getBigDecimalAsString(BigDecimal decimal) {
+    NumberFormat numberFormat = NumberFormat.getInstance(Locale.GERMAN);
+    numberFormat.setGroupingUsed(false);
+    numberFormat.setMaximumFractionDigits(4);
+    return numberFormat.format(decimal.doubleValue());
+  }
+
+  private static String mapToIntervalFilterInformation(
+      String minInclusive, String maxInclusive, boolean withNullValues) {
+    String filterInformation = INTERVAL_FORMAT_STRING.formatted(minInclusive, maxInclusive);
+    if (withNullValues) {
+      return concatFilterValues(List.of(filterInformation, SEARCH_FOR_NULL_DESCRIPTION));
+    } else {
+      return filterInformation;
+    }
+  }
+
+  private static String mapToNumberValueFilterInformation(
+      String value, NumericComparison numericComparison, boolean withNullValues) {
+    String filterInformation =
+        "%s %s"
+            .formatted(
+                switch (numericComparison) {
+                  case EQUAL -> "=";
+                  case GREATER_EQUAL -> ">=";
+                  case GREATER_THAN -> ">";
+                  case LESS_EQUAL -> "<=";
+                  case LESS_THAN -> "<";
+                },
+                value);
+
+    if (withNullValues) {
+      return concatFilterValues(List.of(filterInformation, SEARCH_FOR_NULL_DESCRIPTION));
+    } else {
+      return filterInformation;
+    }
+  }
+
+  private static String mapToFilterInformation(
+      ValueOptionFilterParameter filterParameter, TableColumn tableColumn) {
+    Stream<String> meaningStream =
+        filterParameter.getSearchValues().stream()
+            .map(value -> mapToMeaning(value, tableColumn.getValueToMeanings()));
+    if (filterParameter.isSearchForNull()) {
+      meaningStream = Stream.concat(meaningStream, Stream.of(SEARCH_FOR_NULL_DESCRIPTION));
+    }
+    return concatFilterValues(meaningStream.toList());
+  }
+
+  private static String mapToMeaning(String value, List<ValueToMeaning> valueToMeanings) {
+    return valueToMeanings.stream()
+        .filter(v -> v.getValue().equals(value))
+        .map(ValueToMeaning::getMeaning)
+        .findFirst()
+        .orElse(value);
+  }
+
+  private static String concatFilterValues(List<String> filterValues) {
+    return String.join(", ", filterValues);
   }
 }

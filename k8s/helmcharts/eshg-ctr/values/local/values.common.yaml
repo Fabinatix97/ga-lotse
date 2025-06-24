@@ -1,0 +1,119 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+image:
+  registry: "k3d-ga-lotse-registry:5050"
+  repository: "ga-lotse"
+  pullPolicy: Always
+
+volumes:
+  customStorageClass: false
+
+servicedirectory:
+  enabled: true
+  database:
+    k8sDeployment: true
+
+adminportal:
+  enabled: true
+  usercerts: |-
+    -----BEGIN CERTIFICATE-----
+    MIIFfTCCA2WgAwIBAgIUWmNSG+qX9gMYMUY8kz/w1aP+TwcwDQYJKoZIhvcNAQEL
+    BQAwTjELMAkGA1UEBhMCREUxEjAQBgNVBAgMCUZyYW5rZnVydDELMAkGA1UEBwwC
+    SEUxHjAcBgNVBAMMFWFkbWluMUBteS1nYS1sb3RzZS5kZTAeFw0yNTA2MDIxMTQ3
+    MDhaFw0zNTA1MzExMTQ3MDhaME4xCzAJBgNVBAYTAkRFMRIwEAYDVQQIDAlGcmFu
+    a2Z1cnQxCzAJBgNVBAcMAkhFMR4wHAYDVQQDDBVhZG1pbjFAbXktZ2EtbG90c2Uu
+    ZGUwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDp0N4BXwoIlGaNyZEr
+    Gl4Pn/2rrsdUGuWMMML2mnakHYs3oZYhoDHqt94/jCSVCRXq+3I6sgGPxsPyvBZf
+    woLgZueQKMuS4OQsO0EidWgUkXB2Vr71T3eKocKiqj7MXdqNp0NOSMj4FxmJG0z4
+    wzhZVDqOLzCchqv+qfaMmoGBp40hNPPjgyX+9OY1nVSD+OgWV0rjD137rDZtl7p2
+    JoCme/3hyg9i1bB3c9nsYO0p5jyCKvhuRnj/Gl8QhIlAlG8OEGnsaVBoW85p9SKF
+    1/CUSAIEcmqOTuf8ZD+MqLhM2Lx12xVmdJwFMmBi9oLRR4NCCx6m19HYCfF6iZMA
+    CVnmPmbdwzhi4ehV8A476d8J9AkRFMtU0/ESKp+ccEO+IgsH3kgii9KS2Fz3cBTs
+    fNQjU4gi3Vr3p8kq/9dncB1uGvbSTvwYoRj6GvEhfGKUsTdxIZW+RBq0y57ZjGdE
+    vPeDHv9/IHuKHYctMaHtzHSffTMZX30yyykzqMHK4QvLyUoSdoqz1/+HB7DlpKq+
+    RGIQ1NxrwlXfHZH+ZM96gn5o2w1Sy9DhgchisIm/C/UnxE0Bt91Bru7cj2weNEqu
+    o0JUJyrF7WxpAIzcbobZrGuedswS+duTrMxY8rfb2E0JN3GYyrkxD8RZOcyhasC5
+    zSOI7aBqYXfrnZ2UQDmRFUGwUQIDAQABo1MwUTAdBgNVHQ4EFgQUkQtybG7QaVK6
+    BgmLm+7sdAw0KxQwHwYDVR0jBBgwFoAUkQtybG7QaVK6BgmLm+7sdAw0KxQwDwYD
+    VR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEATDYxC/S2mYeeBSppdHEy
+    L1W0QRESdDwJhpGXZH9fYkjbDtSFTw70SW6mD0FaWUL5FY7RRrO/7/AIrAaa2pZP
+    mxl90HXwN4g3r1UNX+sjtAtSEwo90RhQg0ALge+eHJTyMHPFGz/q+G9BhgbVOJvl
+    qsXgLBp/liRhz9jQ+zQfiNyC9fcf+BO12WY4pbGNckqr0PaItAeNIKCyPeIk+UjS
+    kzXZJU+hK3lzrysZ6SimnINBxgtNgztzCa2gOGUgiyh0l25kAAOz195mQVDP+TDS
+    V/9/qA7V90v/jVEAL2WdkOV/qzjScs7mwvUh+YKd9f/c0Ovp0oQALbe0txC2VTVl
+    WkYAbQZgmX71AIQTT6302KyviWV6CCyeQvc9goizylgHe3SbxvUX0PbjoUFp2mdx
+    ViP+mfJskq0ffBzmu27enzlvH4jyf+fNAM0XDi9no2anVnmeZJxpOn1K6Jb9LqsQ
+    8X1MW8Gsnsbj5fmTHk3bQpmxGzkl8zG+9ZJr+QosVPaKfEahKw0vdmjivBtNfDO+
+    cYdbe2ynOTmsx9wAuSIYVjuIYxdn7WNii7OxvU9f9ldsES2GsGtGGLHZj7yPbeoi
+    CTr/tmruLU5WbGafk28hQXXda7oDnlXgTRfpQUdR86i/LGow1xiAOZJZCtiGlLuy
+    kqEMY6ZK8CPhUhhXCw+oBEk=
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    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
+    JwAbNxvexh1VrqU1Ew4DHmg=
+    -----END CERTIFICATE-----
+
+relayserver:
+  enabled: true
+
+keycloak:
+  enabled: true
+  database:
+    k8sDeployment: true
+
+lsd:
+  enabled: true
+
+pdfaconverterportal:
+  enabled: true
+
+businessmoduleDefaults:
+  database:
+    k8sDeployment: true
+
+businessmodules:
+  centralrepository:
+    enabled: true
+
+initContainerSecurityContext:
+  seLinuxOptions:
+    type: "container_init_t"
+
+podSecurityContext:
+  seLinuxOptions:
+    type: "container_t"
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+
+development:
+  alwaysCreateDebugLogMount: false

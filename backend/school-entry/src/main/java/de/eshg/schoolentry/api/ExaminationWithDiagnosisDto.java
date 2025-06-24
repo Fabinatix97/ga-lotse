@@ -13,10 +13,8 @@ import java.util.List;
 @Schema(name = "ExaminationWithDiagnosis")
 public record ExaminationWithDiagnosisDto(
     @Valid @NotNull ExaminationResultDto examinationResult,
-    @Schema(
-            description = "List of ICD-10 codes to document the examination result.",
-            example = "[\"A00\", \"C00\"]")
-        List<String> icd10Codes) {
+    @Schema(description = "List of ICD-10 codes to document the examination result.") @Valid
+        List<Icd10CodeWithOriginalCodeDto> icd10Codes) {
   public ExaminationWithDiagnosisDto() {
     this(new ExaminationResultDto(), List.of());
   }

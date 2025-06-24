@@ -1,0 +1,142 @@
+# Copyright 2025 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+{{- define "lib.maildev" }}
+---
+
+{{ if .Values.maildev.enabled -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: maildev
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: maildev-app
+  ports:
+    - port: 1080
+      targetPort: 1080
+      name: web
+    - port: 1025
+      targetPort: 1025
+      name: smtp
+
+---
+
+{{ include "lib.certificate" (list .Values.maildev.certificate.secret .Values.domains.hosts.maildev .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}
+
+---
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: maildev
+  namespace: {{ .Release.Namespace }}
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.domains.hosts.maildev }}
+      secretName: "{{ .Values.maildev.certificate.secret }}"
+  rules:
+    - host: {{ .Values.domains.hosts.maildev }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maildev
+                port:
+                  name: web
+
+{{- if .Values.maildev.persistence.enabled }}
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: maildev-data
+  namespace: {{ .Release.Namespace }}
+spec:
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maildev
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: maildev
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: maildev-app
+  template:
+    metadata:
+      name: maildev
+      labels:
+        app: maildev-app
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {{- omit .Values.podSecurityContext "sysctls" | toYaml | nindent 8 }}
+      {{ if .Values.image.pullsecret -}}
+      imagePullSecrets:
+        - name: "{{ .Values.image.pullsecret }}"
+      {{- end }}
+      containers:
+        - name: maildev
+          {{- include "getThirdPartyImage" .Values.thirdPartyImages.maildev | indent 10 }}
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
+          resources:
+          {{- toYaml (default dict .Values.maildev.resources) | nindent 12 }}
+          env:
+          {{- toYaml (default dict .Values.maildev.env) | nindent 12 }}
+          {{- if .Values.maildev.persistence.enabled }}
+            - name: MAILDEV_MAIL_DIRECTORY
+              value: /data
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          {{- if .Values.maildev.persistence.enabled }}
+            - name: data
+              mountPath: /data
+          {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.maildev.persistence.enabled }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: maildev-data
+        {{- end }}
+
+---
+
+kind: Secret
+apiVersion: v1
+data:
+  smtp-username: {{ b64enc "maildev-smtp-username" }}
+  smtp-password: {{ include "getOrCreateSecretValue" (list $ "smtp-secrets" "smtp-password") }}
+  smtp-host: {{ b64enc (printf "maildev%s" .Values.domains.clusterLocalSuffix) }}
+  smtp-port: {{ b64enc "1025" }}
+metadata:
+  name: smtp-secrets
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+
+{{- end }}
+
+---
+{{- end }}

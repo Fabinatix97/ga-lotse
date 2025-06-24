@@ -59,7 +59,7 @@ function AddServiceAppointmentSidebar(
   });
 
   const vaccinationStandardDuration = allAppointmentTypes
-    ? allAppointmentTypes.find(
+    ? allAppointmentTypes.appointmentTypeConfigs.find(
         (type) => type.appointmentTypeDto === ApiAppointmentType.Vaccination,
       )!.standardDurationInMinutes
     : "";

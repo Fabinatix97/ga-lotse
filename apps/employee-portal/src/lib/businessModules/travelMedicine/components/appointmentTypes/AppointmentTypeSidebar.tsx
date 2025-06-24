@@ -34,7 +34,7 @@ function AppointmentTypeSidebar(props: Readonly<AppointmentTypeSidebarProps>) {
     queries: [useGetAllAppointmentTypesQuery()],
   });
 
-  const initialConfig = getAllAppointmentTypes[0];
+  const initialConfig = getAllAppointmentTypes.appointmentTypeConfigs[0];
 
   const updateAppointmentType = useUpdateAppointmentType();
 

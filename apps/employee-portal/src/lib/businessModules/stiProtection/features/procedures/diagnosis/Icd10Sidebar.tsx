@@ -181,7 +181,7 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                       variant="outlined"
                       slotProps={{
                         input: {
-                          "aria-label": currentRowCode.code,
+                          "aria-label": currentRowCode.originalCode,
                           "aria-describedby": `${currentRowCode.code}-title`,
                         },
                       }}
@@ -195,7 +195,7 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    {currentRowCode.code}
+                    {currentRowCode.originalCode}
                   </StyledTd>
                   <StyledTd
                     id={`${currentRowCode.code}-title`}

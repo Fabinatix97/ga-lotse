@@ -21,7 +21,7 @@ export interface UpdateProcedureLabelRequest {
   };
 }
 
-interface GetProcedureLabelsResponse {
+export interface GetProcedureLabelsResponse {
   labels: ProcedureLabelResponse[];
 }
 

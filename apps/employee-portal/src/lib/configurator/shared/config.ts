@@ -12,6 +12,7 @@ import { stiConfigRouterEndpoints } from "@/lib/businessModules/stiProtection/sh
 import { travelMedicineConfigRouterEndpoints } from "@/lib/businessModules/travelMedicine/shared/configuratorConfig";
 import { opendataConfigRouterEndpoints } from "@/lib/opendata/configuratorConfig";
 
+import { medsAbroadConfigRouterEndpoints } from "./medsAbroadConfigRouterEndpoints";
 import { ConfiguratorEndpointName, ConfiguratorModuleName } from "./types";
 
 export function getEndpointNamesByModule(
@@ -35,6 +36,8 @@ export function getEndpointNamesByModule(
       return stiConfigRouterEndpoints;
     case "TRAVEL_MEDICINE":
       return travelMedicineConfigRouterEndpoints;
+    case "MEDS_ABROAD":
+      return medsAbroadConfigRouterEndpoints;
   }
 }
 

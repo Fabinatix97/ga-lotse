@@ -14,7 +14,7 @@ import {
   PROCEDURE_STATUS_NAMES,
   ToggleFilterButton,
   useFilterSettings,
-  useSearchParamStateProvider,
+  useQueryParamStateProvider,
 } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES, ifDefined } from "@eshg/lib-portal";
 import {
@@ -109,7 +109,7 @@ function toLabelValue([key, label]: [key: string, label: string]) {
 }
 
 export function useProceduresFilterState() {
-  return useSearchParamStateProvider(filterDefinitions);
+  return useQueryParamStateProvider(filterDefinitions);
 }
 
 function toSet<T extends string>(
@@ -133,7 +133,7 @@ type ActualProcedureFilterDefinition = (typeof filterDefinitions)[number];
 type SpecificFilterValue<Key> = FilterValue &
   Pick<ActualProcedureFilterDefinition & { key: Key }, "type" | "key">;
 export function useProceduresFilters(): ProcedureFilters {
-  const { activeValues } = useSearchParamStateProvider(filterDefinitions);
+  const { activeValues } = useQueryParamStateProvider(filterDefinitions);
   return useMemo(() => {
     const foundFilters = filterDefinitions.reduce(
       (filtersMap, def) => ({

@@ -10,6 +10,7 @@ import de.eshg.dental.domain.model.MainResult;
 import de.eshg.dental.domain.model.SecondaryResult;
 import de.eshg.dental.domain.model.Tooth;
 import de.eshg.dental.domain.model.ToothDiagnosis;
+import de.eshg.dental.statistic.model.DMFValues;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +20,12 @@ import java.util.stream.Stream;
 
 public class StatisticsCalculationHelper {
   private static final List<SecondaryResult> D_DIAGNOSES =
-      List.of(SecondaryResult.D, SecondaryResult.E, SecondaryResult.W);
+      List.of(
+          SecondaryResult.D,
+          SecondaryResult.E,
+          SecondaryResult.W,
+          SecondaryResult.O,
+          SecondaryResult.Z);
   private static final List<SecondaryResult> M_DIAGNOSES = List.of(SecondaryResult.M);
   private static final List<SecondaryResult> F_DIAGNOSES =
       List.of(SecondaryResult.F, SecondaryResult.K);
@@ -41,7 +47,7 @@ public class StatisticsCalculationHelper {
 
     long primaryDmftValue = primaryDmfValues.getDmftValue();
     long secondaryDmftValue = secondaryDmfValues.getDmftValue();
-    long secondaryDValue = secondaryDmfValues.dValue;
+    long secondaryDValue = secondaryDmfValues.getDValue();
 
     boolean decayRisk =
         switch (ageOfChild) {
@@ -63,14 +69,14 @@ public class StatisticsCalculationHelper {
     DMFValues primaryDmfValues = calculateDMFValues(toothDiagnoses, Tooth::isPrimaryTooth);
     DMFValues secondaryDmfValues = calculateDMFValues(toothDiagnoses, Tooth::isSecondaryTooth);
 
-    int primaryDValue = primaryDmfValues.dValue;
-    int secondaryDValue = secondaryDmfValues.dValue;
+    int primaryDValue = primaryDmfValues.getDValue();
+    int secondaryDValue = secondaryDmfValues.getDValue();
 
-    int primaryMValue = primaryDmfValues.mValue;
-    int secondaryMValue = secondaryDmfValues.mValue;
+    int primaryMValue = primaryDmfValues.getMValue();
+    int secondaryMValue = secondaryDmfValues.getMValue();
 
-    int primaryFValue = primaryDmfValues.fValue;
-    int secondaryFValue = secondaryDmfValues.fValue;
+    int primaryFValue = primaryDmfValues.getFValue();
+    int secondaryFValue = secondaryDmfValues.getFValue();
 
     if (primaryDValue + secondaryDValue > 0) {
       return DecayStatus.TREATMENT_REQUIRED;
@@ -82,7 +88,7 @@ public class StatisticsCalculationHelper {
     return DecayStatus.HEALTHY;
   }
 
-  private static DMFValues calculateDMFValues(
+  public static DMFValues calculateDMFValues(
       Map<Tooth, ToothDiagnosis> toothDiagnoses, Predicate<Tooth> expectedToothType) {
     List<List<SecondaryResult>> results =
         toothDiagnoses.entrySet().stream()
@@ -100,30 +106,14 @@ public class StatisticsCalculationHelper {
     DMFValues dmfValues = new DMFValues();
     for (List<SecondaryResult> result : results) {
       if (result.stream().anyMatch(M_DIAGNOSES::contains)) {
-        dmfValues.mValue++;
+        dmfValues.increaseMValue();
       } else if (result.stream().anyMatch(D_DIAGNOSES::contains)) {
-        dmfValues.dValue++;
+        dmfValues.increaseDValue();
       } else if (result.stream().anyMatch(F_DIAGNOSES::contains)) {
-        dmfValues.fValue++;
+        dmfValues.increaseFValue();
       }
     }
     return dmfValues;
-  }
-
-  private static class DMFValues {
-    int dValue;
-    int mValue;
-    int fValue;
-
-    public DMFValues() {
-      this.dValue = 0;
-      this.mValue = 0;
-      this.fValue = 0;
-    }
-
-    int getDmftValue() {
-      return dValue + fValue + mValue;
-    }
   }
 
   private static SecondaryResult toSecondaryResult(MainResult mainResult) {

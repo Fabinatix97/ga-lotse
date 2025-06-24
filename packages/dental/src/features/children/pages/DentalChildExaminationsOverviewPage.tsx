@@ -54,15 +54,6 @@ const COLUMNS = [
     cell: (props) => formatOptionalKey(props.getValue(), PROPHYLAXIS_TYPES, ""),
     enableSorting: false,
     meta: {
-      width: 250,
-      canNavigate: { parentRow: true },
-    },
-  }),
-  columnHelper.accessor("note", {
-    header: "Bemerkung",
-    cell: (props) => props.getValue(),
-    enableSorting: false,
-    meta: {
       canNavigate: { parentRow: true },
     },
   }),

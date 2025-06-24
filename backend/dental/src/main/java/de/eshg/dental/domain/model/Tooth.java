@@ -83,4 +83,8 @@ public enum Tooth {
   public boolean isSecondaryTooth() {
     return this.type == SECONDARY;
   }
+
+  public boolean isWisdomTooth() {
+    return this.type == WISDOM;
+  }
 }

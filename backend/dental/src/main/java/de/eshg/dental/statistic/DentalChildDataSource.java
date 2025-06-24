@@ -7,25 +7,21 @@ package de.eshg.dental.statistic;
 
 import static de.eshg.dental.statistic.StatisticsCalculationHelper.calculateDmftValue;
 
-import de.eshg.dental.domain.model.Child;
-import de.eshg.dental.domain.model.Examination;
-import de.eshg.dental.domain.model.ScreeningExaminationResult;
-import de.eshg.dental.domain.model.Tooth;
+import de.eshg.dental.domain.model.*;
 import de.eshg.dental.domain.repository.ChildRepository;
+import de.eshg.dental.statistic.model.*;
 import de.eshg.dental.statistic.model.DecayStatus;
-import de.eshg.dental.statistic.model.Group;
 import de.eshg.dental.statistic.model.MihStatus;
 import de.eshg.dental.statistic.model.OralHygieneStatus;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
-import java.time.LocalDate;
-import java.time.Year;
-import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -48,89 +44,148 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
   @Override
   protected Object mapSpecificValue(
       Child child, DentalChildAttributes attribute, TimeRange timeRange) {
+    Optional<ScreeningExaminationResult> latestScreeningExamination =
+        getLatestScreeningExaminationResult(child.getExaminations());
+
     return switch (attribute) {
       case PROCEDURE_ID -> child.getExternalId();
       case CHILD_CENTRAL_FILE_ID -> child.getChildIdFromCentralFile();
       case EINRICHTUNG -> child.getInstitutionId();
       case GRUPPE -> getGroup(child.getGroupName());
       case ANZAHL_PROPHYLAXEN -> child.getExaminations().size();
-      case MUNDHYGIENE_STATUS -> getOralHygieneStatus(child.getExaminations(), child.getYear());
-      case MIH_STATUS -> getMihStatus(child.getExaminations(), child.getYear());
-      case DMFT_MILCH -> calculateDmftPrimaryTeethValue(child.getExaminations(), child.getYear());
+      case MUNDHYGIENE_STATUS ->
+          latestScreeningExamination.map(this::getOralHygieneStatus).orElse(null);
+      case MIH_STATUS -> latestScreeningExamination.map(this::getMihStatus).orElse(null);
+      case DMFT_MILCH ->
+          latestScreeningExamination.map(this::calculateDmftPrimaryTeethValue).orElse(null);
       case DMFT_BLEIBEND ->
-          calculateDmftSecondaryTeethValue(child.getExaminations(), child.getYear());
-      case KARIES_RISIKO -> getDecayRisk(child.getExaminations(), child.getYear());
-      case KARIES_STATUS -> getDecayStatus(child.getExaminations(), child.getYear());
+          latestScreeningExamination.map(this::calculateDmftSecondaryTeethValue).orElse(null);
+      case KARIES_RISIKO -> latestScreeningExamination.map(this::getDecayRisk).orElse(null);
+      case KARIES_STATUS -> latestScreeningExamination.map(this::getDecayStatus).orElse(null);
+      case SANIERUNGSGRAD_MILCH ->
+          getDegreeOfRestoration(latestScreeningExamination, Tooth::isPrimaryTooth);
+      case SANIERUNGSGRAD_BLEIBEND ->
+          getDegreeOfRestoration(latestScreeningExamination, Tooth::isSecondaryTooth);
+      case HYPOPLASIE_MILCH -> getHSum(latestScreeningExamination, Tooth::isPrimaryTooth);
+      case HYPOPLASIE_BLEIBEND -> getHSum(latestScreeningExamination, Tooth::isSecondaryTooth);
+      case INITIALKARIES_MILCH -> getISum(latestScreeningExamination, Tooth::isPrimaryTooth);
+      case INITIALKARIES_BLEIBEND -> getISum(latestScreeningExamination, Tooth::isSecondaryTooth);
+      case D_WERTE_MILCH ->
+          getDValues(latestScreeningExamination, Tooth::isPrimaryTooth, DMFValues::getDValue);
+      case D_WERTE_BLEIBEND ->
+          getDValues(latestScreeningExamination, Tooth::isSecondaryTooth, DMFValues::getDValue);
+      case M_WERTE_MILCH ->
+          getDValues(latestScreeningExamination, Tooth::isPrimaryTooth, DMFValues::getMValue);
+      case M_WERTE_BLEIBEND ->
+          getDValues(latestScreeningExamination, Tooth::isSecondaryTooth, DMFValues::getMValue);
+      case F_WERTE_MILCH ->
+          getDValues(latestScreeningExamination, Tooth::isPrimaryTooth, DMFValues::getFValue);
+      case F_WERTE_BLEIBEND ->
+          getDValues(latestScreeningExamination, Tooth::isSecondaryTooth, DMFValues::getFValue);
     };
   }
 
-  private Object getMihStatus(List<Examination> examinations, Year year) {
-    ScreeningExaminationResult latestScreeningExamination =
-        getLatestScreeningExaminationResultOrNull(examinations, year);
-    if (latestScreeningExamination == null) {
-      return null;
-    }
+  private Integer getDValues(
+      Optional<ScreeningExaminationResult> latestScreeningExamination,
+      Predicate<Tooth> expectedToothType,
+      ToIntFunction<DMFValues> getter) {
+    return latestScreeningExamination
+        .map(
+            result ->
+                getter.applyAsInt(
+                    StatisticsCalculationHelper.calculateDMFValues(
+                        result.getToothDiagnoses(), expectedToothType)))
+        .orElse(null);
+  }
+
+  private Long getHSum(
+      Optional<ScreeningExaminationResult> latestScreeningExamination,
+      Predicate<Tooth> expectedToothType) {
+
+    return latestScreeningExamination
+        .map(
+            result ->
+                result.getToothDiagnoses().entrySet().stream()
+                    .filter(
+                        toothDiagnosis ->
+                            (expectedToothType.test(toothDiagnosis.getKey())
+                                    || toothDiagnosis.getKey().isWisdomTooth())
+                                && (toothDiagnosis.getValue().mainResult() == MainResult.H
+                                    || toothDiagnosis.getValue().secondaryResult()
+                                        == SecondaryResult.H))
+                    .count())
+        .orElse(null);
+  }
+
+  private Long getISum(
+      Optional<ScreeningExaminationResult> latestScreeningExamination,
+      Predicate<Tooth> expectedToothType) {
+
+    return latestScreeningExamination
+        .map(
+            result ->
+                result.getToothDiagnoses().entrySet().stream()
+                    .filter(
+                        toothDiagnosis ->
+                            (expectedToothType.test(toothDiagnosis.getKey())
+                                    || toothDiagnosis.getKey().isWisdomTooth())
+                                && (toothDiagnosis.getValue().mainResult() == MainResult.I
+                                    || toothDiagnosis.getValue().secondaryResult()
+                                        == SecondaryResult.I))
+                    .count())
+        .orElse(null);
+  }
+
+  private Double getDegreeOfRestoration(
+      Optional<ScreeningExaminationResult> latestScreeningExamination,
+      Predicate<Tooth> expectedToothType) {
+    return latestScreeningExamination
+        .map(
+            result ->
+                StatisticsCalculationHelper.calculateDMFValues(
+                        result.getToothDiagnoses(), expectedToothType)
+                    .getDegreeOfRestoration())
+        .orElse(null);
+  }
+
+  private Object getMihStatus(ScreeningExaminationResult latestScreeningExamination) {
     return MihStatus.convertMihStatusToValue(latestScreeningExamination.getMihStatus());
   }
 
-  private String getOralHygieneStatus(List<Examination> examinations, Year year) {
-    ScreeningExaminationResult latestScreeningExamination =
-        getLatestScreeningExaminationResultOrNull(examinations, year);
-    if (latestScreeningExamination == null) {
-      return null;
-    }
+  private String getOralHygieneStatus(ScreeningExaminationResult latestScreeningExamination) {
     return OralHygieneStatus.convertOralHygieneStatusToValue(
         latestScreeningExamination.getOralHygieneStatus());
   }
 
-  private ScreeningExaminationResult getLatestScreeningExaminationResultOrNull(
-      List<Examination> examinations, Year year) {
+  private Optional<ScreeningExaminationResult> getLatestScreeningExaminationResult(
+      List<Examination> examinations) {
     return examinations.stream()
-        .filter(
-            examination ->
-                LocalDate.ofInstant(examination.getDateAndTime(), ZoneOffset.UTC).getYear()
-                    == year.getValue())
         .filter(examination -> examination.getResult() instanceof ScreeningExaminationResult)
         .max(Comparator.comparing(Examination::getDateAndTime))
         .map(Examination::getResult)
-        .map(ScreeningExaminationResult.class::cast)
-        .orElse(null);
+        .map(ScreeningExaminationResult.class::cast);
   }
 
-  private Long calculateDmftPrimaryTeethValue(List<Examination> examinations, Year year) {
-    return calculateDmftTeethValue(examinations, year, Tooth::isPrimaryTooth);
+  private Long calculateDmftPrimaryTeethValue(
+      ScreeningExaminationResult latestScreeningExamination) {
+    return calculateDmftTeethValue(latestScreeningExamination, Tooth::isPrimaryTooth);
   }
 
-  private Long calculateDmftSecondaryTeethValue(List<Examination> examinations, Year year) {
-    return calculateDmftTeethValue(examinations, year, Tooth::isSecondaryTooth);
+  private Long calculateDmftSecondaryTeethValue(
+      ScreeningExaminationResult latestScreeningExamination) {
+    return calculateDmftTeethValue(latestScreeningExamination, Tooth::isSecondaryTooth);
   }
 
   private Long calculateDmftTeethValue(
-      List<Examination> examinations, Year year, Predicate<Tooth> expectedToothType) {
-    ScreeningExaminationResult latestScreeningExamination =
-        getLatestScreeningExaminationResultOrNull(examinations, year);
-    if (latestScreeningExamination == null) {
-      return null;
-    }
-
+      ScreeningExaminationResult latestScreeningExamination, Predicate<Tooth> expectedToothType) {
     return calculateDmftValue(expectedToothType, latestScreeningExamination.getToothDiagnoses());
   }
 
-  private Boolean getDecayRisk(List<Examination> examinations, Year year) {
-    ScreeningExaminationResult latestScreeningExamination =
-        getLatestScreeningExaminationResultOrNull(examinations, year);
-    if (latestScreeningExamination == null) {
-      return null;
-    }
+  private Boolean getDecayRisk(ScreeningExaminationResult latestScreeningExamination) {
     return latestScreeningExamination.getDecayRisk();
   }
 
-  private String getDecayStatus(List<Examination> examinations, Year year) {
-    ScreeningExaminationResult latestScreeningExamination =
-        getLatestScreeningExaminationResultOrNull(examinations, year);
-    if (latestScreeningExamination == null) {
-      return null;
-    }
+  private String getDecayStatus(ScreeningExaminationResult latestScreeningExamination) {
     return DecayStatus.convertDecayStatusToValue(latestScreeningExamination.getDecayStatus());
   }
 

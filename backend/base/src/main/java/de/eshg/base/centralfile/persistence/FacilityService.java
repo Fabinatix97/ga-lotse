@@ -573,6 +573,7 @@ public class FacilityService {
         request.postalCode(),
         request.city(),
         request.street(),
+        request.houseNumber(),
         request.pageNumber(),
         request.pageSize(),
         orderList);
@@ -605,8 +606,11 @@ public class FacilityService {
       @Nullable String name,
       @Nullable String postalCode,
       @Nullable String city,
-      @Nullable String street) {
+      @Nullable String street,
+      @Nullable String houseNumber) {
     List<Predicate> predicates = new ArrayList<>();
+
+    predicates.add(rootAndJoins.facilityRoot.get(Facility_.referenceFacility).isNotNull());
 
     if (fileStateIds != null && !fileStateIds.isEmpty()) {
       predicates.add(rootAndJoins.facilityRoot.get(Facility_.externalId).in(fileStateIds));
@@ -640,6 +644,14 @@ public class FacilityService {
               prepareStringForLike(street),
               '\\'));
     }
+    if (houseNumber != null) {
+      predicates.add(
+          cb.like(
+              cb.lower(
+                  rootAndJoins.embeddableAddressJoin.get(EmbeddableDomesticAddress_.houseNumber)),
+              prepareStringForLike(houseNumber),
+              '\\'));
+    }
     return predicates;
   }
 
@@ -670,6 +682,7 @@ public class FacilityService {
       @Nullable String postalCode,
       @Nullable String city,
       @Nullable String street,
+      @Nullable String houseNumber,
       @Nullable Integer pageNumber,
       @Nullable Integer pageSize,
       @Nullable List<Sort.Order> orders) {
@@ -687,9 +700,11 @@ public class FacilityService {
 
     // We create the filter predicates for both queries.
     List<Predicate> predicates =
-        buildPredicates(cb, rootAndJoins, fileStateIds, name, postalCode, city, street);
+        buildPredicates(
+            cb, rootAndJoins, fileStateIds, name, postalCode, city, street, houseNumber);
     List<Predicate> predicatesForCount =
-        buildPredicates(cb, rootAndJoinsForCount, fileStateIds, name, postalCode, city, street);
+        buildPredicates(
+            cb, rootAndJoinsForCount, fileStateIds, name, postalCode, city, street, houseNumber);
 
     cq.select(
         cb.construct(

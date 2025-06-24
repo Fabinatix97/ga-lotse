@@ -102,5 +102,7 @@
   <include file="migrations/0092_add_employee_person_type.xml"/>
   <include file="migrations/0093_add_meds_abroad_appointment_type.xml"/>
   <include file="migrations/0094_refactor_school_entry_appointment_standard_duration.xml"/>
+  <include file="migrations/0095_height_in_cm.xml"/>
+  <include file="migrations/0096_delete_invalid_values_in_systole_diastole.xml"/>
 
 </databaseChangeLog>

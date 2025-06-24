@@ -5,40 +5,33 @@
 
 package de.eshg.officialmedicalservice.concern;
 
+import de.eshg.officialmedicalservice.config.OmsConfigService;
 import de.eshg.officialmedicalservice.procedure.api.ConcernCategoryConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.GetConcernsResponse;
-import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.error.ErrorCode;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
 @Service
 public class ConcernService {
 
-  @Value("${de.eshg.official-medical-service.concerns.config}")
-  private Resource concernsResource;
+  private final OmsConfigService omsConfigService;
+
+  public ConcernService(OmsConfigService omsConfigService) {
+    this.omsConfigService = omsConfigService;
+  }
 
   public GetConcernsResponse getConcerns() {
-    try {
-      InputStream inputStream = concernsResource.getInputStream();
+    InputStream inputStream =
+        new ByteArrayInputStream(omsConfigService.getConfig().getConcerns().getContent());
 
-      Yaml yaml = new Yaml();
+    List<Map<String, Object>> list = new Yaml().load(inputStream);
 
-      List<Map<String, Object>> list = yaml.load(inputStream);
-
-      return new GetConcernsResponse(ConcernMapper.mapToDto(list));
-    } catch (IOException e) {
-      throw new BadRequestException(
-          ErrorCode.UNEXPECTED_ERROR,
-          "Cannot read concerns config file: " + concernsResource.getFilename());
-    }
+    return new GetConcernsResponse(ConcernMapper.mapToDto(list));
   }
 
   public GetConcernsResponse getConcernsVisibleInOnlinePortal() {

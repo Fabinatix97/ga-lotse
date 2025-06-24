@@ -39,6 +39,7 @@ public class PersonMapper {
         personFileState.title(),
         personFileState.gender(),
         personFileState.contactAddress(),
+        personFileState.differentBillingAddress(),
         new AffectedPersonSyncDto(
             personFileState.id(), personFileState.referenceVersion(), personFileState.outdated()),
         personFileState.dataOrigin(),
@@ -89,7 +90,7 @@ public class PersonMapper {
         affectedPersonDto.emailAddresses(),
         affectedPersonDto.phoneNumbers(),
         affectedPersonDto.contactAddress(),
-        null);
+        affectedPersonDto.differentBillingAddress());
   }
 
   public static AddPersonFileStateRequest mapToAddPersonRequest(

@@ -47,7 +47,7 @@ export const eslintBaseConfig = defineConfig(
       "no-console": ["warn"],
       "no-debugger": ["warn"],
       "func-style": ["error", "declaration"],
-      "eqeqeq": ["error", "always", {"null": "ignore"}],
+      eqeqeq: ["error", "always"],
 
       "no-restricted-imports": [
         "warn",

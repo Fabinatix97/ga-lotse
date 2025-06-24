@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.anonymization;
 
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -112,7 +113,7 @@ public class DecimalIntervalUtil {
             builder.addInterval(
                 interval.minInclusive().doubleValue(),
                 interval.maxExclusive().doubleValue(),
-                AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+                FilterParameterMapper.INTERVAL_FORMAT_STRING.formatted(
                     interval.minInclusive().stripTrailingZeros().toPlainString(),
                     round(interval.maxExclusive().subtract(MINIMAL_DIFFERENCE))
                         .stripTrailingZeros()

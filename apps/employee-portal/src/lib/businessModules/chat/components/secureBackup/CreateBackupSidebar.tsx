@@ -7,6 +7,10 @@ import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
+import {
+  CryptoApi,
+  GeneratedSecretStorageKey,
+} from "matrix-js-sdk/lib/crypto-api";
 import { useCallback, useRef, useState } from "react";
 import { isObjectType } from "remeda";
 
@@ -22,7 +26,9 @@ import { createFieldNameMapper, useSnackbar } from "@eshg/lib-portal";
 
 import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
+import { RecoveryKeyModal } from "@/lib/businessModules/chat/components/secureBackup/RecoveryKeyModal";
 import { SSOAuthModal } from "@/lib/businessModules/chat/components/secureBackup/SSOAuthModal";
+import { getCryptoApi } from "@/lib/businessModules/chat/matrix/crypto";
 import {
   bootstrapNewSecretStorage,
   hasKeyBackupInSecretStorage,
@@ -68,7 +74,8 @@ export function CreateBackupSidebar({
   const { matrixClient, setClientState } = useChatClientContext();
   const snackbar = useSnackbar();
   const { mutateAsync: bindKeycloakId } = useBindKeycloakId();
-
+  const [recoveryKeyModalOpen, setRecoveryKeyModalOpen] = useState(false);
+  const recoveryKeyValue = useRef<string>(undefined);
   const [modalValues, setModalValues] = useState<SSOAuthModalValues>();
 
   const showSSOModal = useCallback(
@@ -133,8 +140,17 @@ export function CreateBackupSidebar({
     [showSSOModal, bindKeycloakId, matrixClient],
   );
 
+  const handleDoneShowingRecoveryKeyModal = useCallback(() => {
+    setRecoveryKeyModalOpen(false);
+    snackbar.confirmation("Sicherheitsbackup erfolgreich eingerichtet", {
+      manualClose: true,
+    });
+    setClientState(ClientState.Ready);
+  }, [setClientState, snackbar]);
+
   async function handleSubmit(values: InitialValues) {
     try {
+      logger.info("Step 6/6 CreateKeyBackupInSecretStorage");
       const hasBackupInSecretStorage: boolean =
         await hasKeyBackupInSecretStorage(matrixClient);
       if (hasBackupInSecretStorage) {
@@ -145,19 +161,23 @@ export function CreateBackupSidebar({
         setClientState(ClientState.HardReset);
         return;
       }
+      const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
 
-      logger.info("Step 6/6 CreateKeyBackupInSecretStorage");
+      const secretStorageRecoveryKeyPromise: Promise<GeneratedSecretStorageKey> =
+        cryptoApi.createRecoveryKeyFromPassphrase(values.passphrase);
       await bootstrapNewSecretStorage(
         matrixClient,
-        values.passphrase,
+        secretStorageRecoveryKeyPromise,
         authUploadDeviceSigningKeys,
       );
-      //TODO: check if device is verified and backup ready
+      const secretStorageRecoveryKey = await secretStorageRecoveryKeyPromise;
+
+      recoveryKeyValue.current = secretStorageRecoveryKey.encodedPrivateKey;
+      if (!recoveryKeyValue.current) {
+        throw new Error("Invalid recovery key");
+      }
+      setRecoveryKeyModalOpen(true);
       logger.info("Step 6/6 CreateKeyBackupInSecretStorage - FINISHED");
-      setClientState(ClientState.Ready);
-      snackbar.confirmation("Sicherheitsbackup erfolgreich eingerichtet", {
-        manualClose: true,
-      });
     } catch (e) {
       handleClose();
       snackbar.error("Einrichten des Sicherheitsbackups fehlgeschlagen");
@@ -168,6 +188,13 @@ export function CreateBackupSidebar({
   return (
     <>
       <Sidebar open={open} onClose={handleClose}>
+        {recoveryKeyValue.current && (
+          <RecoveryKeyModal
+            open={recoveryKeyModalOpen}
+            recoveryKey={recoveryKeyValue.current}
+            handleDoneClick={handleDoneShowingRecoveryKeyModal}
+          />
+        )}
         <Formik
           initialValues={initialValues}
           validate={(values) => {

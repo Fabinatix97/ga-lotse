@@ -6,6 +6,7 @@
 package de.eshg.rest.service.commons.filter;
 
 import de.eshg.logging.LoggingConstants;
+import de.eshg.rest.service.commons.filter.RequestLoggingAutoConfiguration.RequestLoggingPathFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -43,18 +43,17 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
 
-  private final String actuatorBasePath;
+  private final RequestLoggingPathFilter requestLoggingPathFilter;
 
-  public RequestLoggingFilter(WebEndpointProperties webEndpointProperties) {
-    this.actuatorBasePath = webEndpointProperties.getBasePath();
+  public RequestLoggingFilter(RequestLoggingPathFilter requestLoggingPathFilter) {
+    this.requestLoggingPathFilter = requestLoggingPathFilter;
   }
 
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    if (request.getRequestURI().startsWith(actuatorBasePath + "/")) {
-      // Do not log calls to the actuator endpoint
+    if (requestLoggingPathFilter.matches(request.getRequestURI())) {
       filterChain.doFilter(request, response);
       return;
     }

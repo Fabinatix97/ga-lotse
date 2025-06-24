@@ -13,7 +13,6 @@ import { isNonNullish, isNullish } from "remeda";
 import { ApiUser, ApiUserRole } from "@eshg/base-api";
 import {
   ApiInspFacility,
-  ApiInspection,
   ApiInspectionType,
   ApiObjectType,
 } from "@eshg/inspection-api";
@@ -33,6 +32,7 @@ import {
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
+import { useEditFileNumberSidebar } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberSidebar";
 import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
@@ -60,9 +60,13 @@ export function AdditionalInfoTile({
   selfUser,
   allAssignableUsers,
 }: Readonly<AdditionalInfoTileProps>) {
+  const { mutateAsync: startInspection } = useStartInspection();
+
+  const editFileNumberSidebar = useEditFileNumberSidebar(() => handleSuccess());
   const onlySelfAssignable = !useHasUserRoleCheck(
     ApiUserRole.InspectionProcedureAssign,
   );
+
   const router = useRouter();
 
   const TYPE_OPTIONS = buildEnumOptions(inspectionTypeNames);
@@ -80,10 +84,8 @@ export function AdditionalInfoTile({
     label: o.name,
   }));
 
-  const { mutateAsync: startInspection } = useStartInspection();
-
-  function handleSuccess(response: ApiInspection) {
-    router.push(routes.procedures.basedata(response.externalId));
+  function handleSuccess() {
+    router.push(routes.procedures.basedata(procedureId));
   }
 
   async function handleSubmit(data: FormData) {
@@ -100,7 +102,16 @@ export function AdditionalInfoTile({
         },
       },
       {
-        onSuccess: handleSuccess,
+        onSuccess: (data) => {
+          if (isNonNullish(data.facility.fileNumber)) {
+            editFileNumberSidebar.open({
+              inspectionId: procedureId,
+              fileNumber: data.facility.fileNumber,
+            });
+          } else {
+            handleSuccess();
+          }
+        },
       },
     );
   }

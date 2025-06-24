@@ -4,11 +4,13 @@
  */
 
 import { AutocompleteOption } from "@mui/joy";
+import { useQuery } from "@tanstack/react-query";
 
 import { CustomAutocomplete, QueryKeyFactory } from "@eshg/lib-portal";
 
+import { getEntityId, isSameEntity } from "../../../api/models/BaseEntity";
 import { ProcedureLabel } from "../api/models/ProcedureLabel";
-import { useGetProcedureLabels } from "../api/queries";
+import { useGetProcedureLabelsQuery } from "../api/queries";
 import { ProcedureLabelClient } from "../types/procedureLabelClient";
 
 import { ProcedureLabelChip } from "./ProcedureLabelChip";
@@ -24,9 +26,11 @@ interface ProcedureLabelAutocompleteProps {
 export function ProcedureLabelAutocomplete(
   props: ProcedureLabelAutocompleteProps,
 ) {
-  const labelsQuery = useGetProcedureLabels(
-    props.procedureLabelApi,
-    props.procedureLabelApiQueryKey,
+  const { data: procedureLabels, isFetching } = useQuery(
+    useGetProcedureLabelsQuery(
+      props.procedureLabelApi,
+      props.procedureLabelApiQueryKey,
+    ),
   );
 
   return (
@@ -34,10 +38,12 @@ export function ProcedureLabelAutocomplete(
       name={props.name}
       multiple
       placeholder="Kennung"
-      options={labelsQuery.data}
-      getOptionLabel={(option) => option.name}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
+      getOptionKey={getEntityId}
+      getOptionLabel={getProcedureLabelName}
+      isOptionEqualToValue={isSameEntity}
+      options={procedureLabels ?? []}
       value={props.value}
+      loading={isFetching}
       renderOption={(props, label) => (
         <AutocompleteOption {...props} key={label.id}>
           <ProcedureLabelChip value={label} />
@@ -57,4 +63,8 @@ export function ProcedureLabelAutocomplete(
       }}
     />
   );
+}
+
+function getProcedureLabelName(procedureLabel: ProcedureLabel): string {
+  return procedureLabel.name;
 }

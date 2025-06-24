@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { OpenInNew } from "@mui/icons-material";
 import {
   Box,
   FormControl,
@@ -17,9 +18,11 @@ import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
 import {
+  ExternalLink,
   FieldProps,
   FileLike,
   FileType,
+  useApiConfigurationUrl,
   useBaseField,
   useDragAndDrop,
   useValidateFile,
@@ -75,6 +78,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const UploadButton =
     props.variant === "button" ? FileButton : FileInputButton;
 
+  const acceptsPdf = [props.accept].flat().includes(FileType.Pdf);
   const validateFileType = useValidateFileType();
   const validateFile = useValidateFile();
   const acceptedFileTypes = resolveAcceptedFileTypes(props.accept);
@@ -158,9 +162,25 @@ export function FileField(props: Readonly<FileFieldProps>) {
               {field.helperText}
             </FormHelperText>
           )}
+          {acceptsPdf && <PdfaConverterPortalLink />}
         </Stack>
       </FormControl>
     </Box>
+  );
+}
+
+function PdfaConverterPortalLink() {
+  const pdfaConverterPortalUrl = useApiConfigurationUrl(
+    "PUBLIC_PDF_CONVERTER_URL",
+  );
+  return (
+    <ExternalLink
+      href={pdfaConverterPortalUrl}
+      openInNewTab
+      startDecorator={<OpenInNew aria-label="In neuem Tab öffnen" />}
+    >
+      Hier können Sie Ihre PDF-Dateien in PDF/A-Dateien umwandeln.
+    </ExternalLink>
   );
 }
 

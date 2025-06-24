@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +64,18 @@ public interface PersonApi {
   GetReferencePersonResponse getReferencePerson(
       @Parameter(description = "The Id of the File State of the Person.") @PathVariable(name = "id")
           UUID id);
+
+  @GetExchange(FILE_STATES_URL + "/reference-persons")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+      Get the data of the reference persons associated with given person file states
+      Caution: The returned ids of the reference persons must not be stored.
+      """)
+  GetReferencePersonsResponse getReferencePersons(
+      @Parameter(description = "The Ids of the File State of the Persons.") @Valid @RequestBody
+          List<UUID> id);
 
   @GetExchange
   @ApiResponse(responseCode = "200")
@@ -282,4 +295,15 @@ used immediately.
   AddPersonFileStateResponse updateReferencePerson(
       @PathVariable("id") UUID referenceDataId,
       @RequestBody @Valid UpdateReferencePersonRequest request);
+
+  @PostExchange(REFERENCE_URL + "/bulk-update")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+      Updates reference persons data identified by given ids. Sets dataOrigin to DataOrigin.EDIT.
+      Returns new file states with the resulting new states.
+      """)
+  UpdatePersonsResponse updateReferencePersons(
+      @RequestBody @Valid UpdateReferencePersonsRequest request);
 }

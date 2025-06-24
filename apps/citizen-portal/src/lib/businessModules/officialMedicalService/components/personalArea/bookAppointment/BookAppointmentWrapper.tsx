@@ -4,15 +4,14 @@
  */
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 
-import { isDateCurrentDateOrGreater } from "@eshg/lib-portal";
 import {
   ApiAppointment,
   ApiGetCitizenProcedureDetailsResponse,
 } from "@eshg/official-medical-service-api";
 
-import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
+import { useGetFreeAppointmentsForCitizenAfterCurrentDate } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";
 import { BookAppointment } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointment";
 import { BookAppointmentSidePanel } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentSidePanel";
@@ -44,21 +43,15 @@ function InnerBookAppointmentWrapper({
 
   const [{ data: freeAppointments }] = useSuspenseQueries({
     queries: [
-      useGetFreeAppointmentsForCitizen(procedure.appointment!.appointmentType),
+      useGetFreeAppointmentsForCitizenAfterCurrentDate(
+        procedure.appointment?.appointmentType,
+      ),
     ],
   });
 
-  const filteredAppointments = useMemo(
-    () =>
-      freeAppointments.appointments.filter((appointment) =>
-        isDateCurrentDateOrGreater(appointment.start),
-      ),
-    [freeAppointments],
-  );
-
-  return filteredAppointments.length > 0 ? (
+  return freeAppointments.length > 0 ? (
     <TwoColumnGrid
-      content={<BookAppointment appointments={filteredAppointments} />}
+      content={<BookAppointment appointments={freeAppointments} />}
       sidePanel={<BookAppointmentSidePanel procedure={procedure} />}
     />
   ) : (

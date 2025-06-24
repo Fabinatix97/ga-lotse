@@ -1,9 +1,0 @@
-plugins {
-  id 'api-package'
-}
-
-def backendDir = rootProject.layout.projectDirectory.dir('backend')
-
-apiPackage {
-  inputSpec = backendDir.file('meds-abroad/openApi.json')
-}

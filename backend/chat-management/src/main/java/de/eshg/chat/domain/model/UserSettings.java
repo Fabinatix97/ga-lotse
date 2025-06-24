@@ -16,13 +16,13 @@ public class UserSettings {
 
   @Id private String userId;
 
-  private Boolean chatConsentAsked = false;
-  private Boolean accountRegistered = false;
-  private Boolean chatUsageEnabled = false;
-  private Boolean sharePresence = false;
-  private Boolean showTypingNotification = false;
-  private Boolean showReadConfirmation = false;
-  private Boolean accountDeactivated = false;
+  private boolean chatConsentAsked;
+  private boolean accountRegistered;
+  private boolean chatUsageEnabled;
+  private boolean sharePresence;
+  private boolean showTypingNotification;
+  private boolean showReadConfirmation;
+  private boolean accountDeactivated;
 
   public String getUserId() {
     return userId;
@@ -33,66 +33,66 @@ public class UserSettings {
     return this;
   }
 
-  public Boolean getChatUsageEnabled() {
-    return chatUsageEnabled;
-  }
-
-  public UserSettings chatUsageEnabled(Boolean chatUsageEnabled) {
+  public UserSettings chatUsageEnabled(boolean chatUsageEnabled) {
     this.chatUsageEnabled = chatUsageEnabled;
     return this;
   }
 
-  public Boolean getSharePresence() {
-    return sharePresence;
-  }
-
-  public UserSettings sharePresence(Boolean sharePresence) {
+  public UserSettings sharePresence(boolean sharePresence) {
     this.sharePresence = sharePresence;
     return this;
   }
 
-  public Boolean getShowTypingNotification() {
-    return showTypingNotification;
-  }
-
-  public UserSettings showTypingNotification(Boolean showTypingNotification) {
+  public UserSettings showTypingNotification(boolean showTypingNotification) {
     this.showTypingNotification = showTypingNotification;
     return this;
   }
 
-  public Boolean getChatConsentAsked() {
-    return chatConsentAsked;
-  }
-
-  public UserSettings chatConsentAsked(Boolean chatConsentAsked) {
+  public UserSettings chatConsentAsked(boolean chatConsentAsked) {
     this.chatConsentAsked = chatConsentAsked;
     return this;
   }
 
-  public Boolean getShowReadConfirmation() {
-    return showReadConfirmation;
-  }
-
-  public UserSettings showReadConfirmation(Boolean showReadConfirmation) {
+  public UserSettings showReadConfirmation(boolean showReadConfirmation) {
     this.showReadConfirmation = showReadConfirmation;
     return this;
   }
 
-  public Boolean getAccountDeactivated() {
-    return accountDeactivated;
-  }
-
-  public UserSettings accountDeactivated(Boolean accountDeactivated) {
+  public UserSettings accountDeactivated(boolean accountDeactivated) {
     this.accountDeactivated = accountDeactivated;
     return this;
-  }
-
-  public Boolean getAccountRegistered() {
-    return accountRegistered;
   }
 
   public UserSettings accountRegistered(Boolean accountRegistered) {
     this.accountRegistered = accountRegistered;
     return this;
+  }
+
+  public boolean isChatConsentAsked() {
+    return chatConsentAsked;
+  }
+
+  public boolean isAccountRegistered() {
+    return accountRegistered;
+  }
+
+  public boolean isChatUsageEnabled() {
+    return chatUsageEnabled;
+  }
+
+  public boolean isSharePresence() {
+    return sharePresence;
+  }
+
+  public boolean isShowTypingNotification() {
+    return showTypingNotification;
+  }
+
+  public boolean isShowReadConfirmation() {
+    return showReadConfirmation;
+  }
+
+  public boolean isAccountDeactivated() {
+    return accountDeactivated;
   }
 }

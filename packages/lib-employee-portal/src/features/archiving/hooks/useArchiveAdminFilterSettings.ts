@@ -6,7 +6,7 @@
 import { GetRelevantArchivableProceduresRequest } from "@eshg/lib-procedures-api";
 
 import { UseFilterSettings } from "../../filters/hooks/useFilterSettings";
-import { useSearchParamFilterSettings } from "../../filters/hooks/useSearchParamFilterSettings";
+import { useQueryParamFilterSettings } from "../../filters/hooks/useQueryParamFilterSettings";
 import { FilterDefinition } from "../../filters/types/FilterDefinition";
 import { FilterValue } from "../../filters/types/FilterValue";
 import { getFilterDate } from "../../filters/utils/filterValues";
@@ -41,7 +41,7 @@ export function useArchiveAdminFilterSettings(): UseFilterSettings {
     },
   ];
 
-  return useSearchParamFilterSettings({
+  return useQueryParamFilterSettings({
     definitions: filterDefinitions,
     onValuesSubmit: () => {
       // active values are synced via SearchParamStateProvider

@@ -7,5 +7,6 @@ package de.eshg.schoolentry.config;
 
 public enum SchoolEntryFeature {
   DUMMY,
-  EDITABLE_SCHOOL_INFO_LETTER
+  EDITABLE_SCHOOL_INFO_LETTER,
+  ALL_APPOINTMENT_TYPE_COMBINATIONS
 }

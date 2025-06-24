@@ -23,7 +23,6 @@
     "@fullcalendar/daygrid": "catalog:fullcalendar",
     "@fullcalendar/interaction": "catalog:fullcalendar",
     "@fullcalendar/react": "catalog:fullcalendar",
-    "@mdx-js/mdx": "3.1.0",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",
     "@mui/material": "catalog:joy",
@@ -39,7 +38,6 @@
     "react-dom": "catalog:react",
     "react-i18next": "catalog:i18next",
     "remeda": "catalog:common",
-    "server-only": "catalog:common",
     "use-debounce": "catalog:common",
     "valibot": "catalog:common"
   },
@@ -50,7 +48,6 @@
     "@next/bundle-analyzer": "catalog:next",
     "@tanstack/eslint-plugin-query": "catalog:common",
     "@trivago/prettier-plugin-sort-imports": "catalog:prettier",
-    "@types/mdx": "2.0.13",
     "@types/negotiator": "0.6.3",
     "@types/node": "catalog:common",
     "@types/react": "catalog:react",

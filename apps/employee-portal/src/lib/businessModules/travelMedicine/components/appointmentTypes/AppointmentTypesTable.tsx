@@ -24,7 +24,7 @@ export function AppointmentTypesTable() {
     <TablePage data-testid="appointment-types" fullHeight>
       <TableSheet>
         <DataTable
-          data={getAllAppointmentTypes}
+          data={getAllAppointmentTypes.appointmentTypeConfigs}
           columns={columns({
             editEntry: (appointmentTypeConfig) =>
               appointmentTypeSidebar.open({ appointmentTypeConfig }),
