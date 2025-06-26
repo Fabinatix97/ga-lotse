@@ -5,7 +5,11 @@
 
 package de.eshg.measlesprotection.persistence.db;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
+import java.util.List;
 
 public interface MeaslesProtectionProcedureRepository
-    extends ProcedureRepository<MeaslesProtectionProcedure> {}
+    extends ProcedureRepository<MeaslesProtectionProcedure> {
+  List<MeaslesProtectionProcedure> findByAppointmentIn(List<Appointment> appointments);
+}

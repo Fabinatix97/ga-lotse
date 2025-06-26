@@ -121,7 +121,9 @@ function createActionsLinkOrButton(item: ActionsItem) {
 
 export function ActionsMenu(props: ActionsMenuProps) {
   const { actionItems, actionDescription, rowHeight, ...rest } = props;
-
+  if (actionItems.length === 0) {
+    return;
+  }
   return (
     <Dropdown>
       <Stack

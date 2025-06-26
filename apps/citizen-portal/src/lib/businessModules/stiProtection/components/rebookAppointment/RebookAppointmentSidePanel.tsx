@@ -14,7 +14,6 @@ import { Button, Stack } from "@mui/joy";
 import { formatDate } from "date-fns";
 import { useFormikContext } from "formik";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -25,6 +24,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 import { RebookAppointmentFormValues } from "./RebookAppointmentPage";
@@ -91,12 +91,12 @@ export function RebookAppointmentSidePanel({
         <Button color="primary" variant="solid" onClick={() => handleSubmit()}>
           {t("appointment_overview.rebook_appointment_button")}
         </Button>
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           href={citizenRoutes.personalArea.index(accessCode)}
           variant="outlined"
         >
           {t("appointment_overview.cancel_button")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </Stack>
     </ContentSheet>
   );

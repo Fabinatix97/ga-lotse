@@ -5,9 +5,9 @@
 
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
-import { useRouter } from "next/navigation";
 
 import { useTranslation } from "@/lib/i18n/client";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 export function NoAppointmentsContent({
   backButtonLocation,
@@ -15,7 +15,7 @@ export function NoAppointmentsContent({
   backButtonLocation: string;
 }>) {
   const { t } = useTranslation(["travelMedicine/forms"]);
-  const router = useRouter();
+  const router = useScopedRouter();
 
   return (
     <>

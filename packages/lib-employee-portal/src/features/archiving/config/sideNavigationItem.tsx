@@ -60,7 +60,11 @@ const subItemsArchiveMap: SubItemMap = {
     href: archivingRoutes.module[ApiBusinessModule.Dental],
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
   },
-  // TODO: add sidenav item for meds-abroad
+  [ApiBusinessModule.MedsAbroad]: {
+    name: "Reisen mit BtM",
+    href: archivingRoutes.module[ApiBusinessModule.MedsAbroad],
+    accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+  },
 };
 
 const subItemsArchiveAdminMap: SubItemMap = {
@@ -104,7 +108,11 @@ const subItemsArchiveAdminMap: SubItemMap = {
     href: archivingAdminRoutes.module[ApiBusinessModule.Dental],
     accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
   },
-  // TODO: add sidenav item for meds-abroad
+  [ApiBusinessModule.MedsAbroad]: {
+    name: "Reisen mit BtM",
+    href: archivingAdminRoutes.module[ApiBusinessModule.MedsAbroad],
+    accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+  },
 };
 
 export function useArchivingSideNavigationItems(): SideNavigationItem[] {

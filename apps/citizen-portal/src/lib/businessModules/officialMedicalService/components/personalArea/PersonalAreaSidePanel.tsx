@@ -12,12 +12,7 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import {
-  InternalLinkButton,
-  WithRequired,
-  formatDate,
-  formatPersonName,
-} from "@eshg/lib-portal";
+import { WithRequired, formatDate, formatPersonName } from "@eshg/lib-portal";
 import {
   ApiBookingState,
   ApiGetCitizenProcedureDetailsResponse,
@@ -31,6 +26,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
@@ -130,12 +126,12 @@ function BookedContent({ procedure }: PersonalAreaSidePanelProps) {
   return (
     <>
       {hasBookingsRemaining(procedure) && (
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           variant="solid"
           href={citizenRoutes.personalArea.rebook(accessCode)}
         >
           {t("overview.actions.booked.reschedule_appointment")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       )}
       <Button
         variant="outlined"
@@ -159,13 +155,13 @@ function CancelledContent({ procedure }: PersonalAreaSidePanelProps) {
   }
 
   return (
-    <InternalLinkButton
+    <ScopedInternalLinkButton
       variant="solid"
       href={citizenRoutes.personalArea.rebook(accessCode)}
       sx={{ height: "40px" }}
     >
       {t("overview.actions.cancelled.reschedule_appointment")}
-    </InternalLinkButton>
+    </ScopedInternalLinkButton>
   );
 }
 
@@ -179,13 +175,13 @@ function BookableContent({ procedure }: PersonalAreaSidePanelProps) {
   }
 
   return (
-    <InternalLinkButton
+    <ScopedInternalLinkButton
       variant="solid"
       href={citizenRoutes.personalArea.rebook(accessCode)}
       sx={{ height: "40px" }}
     >
       {t("overview.actions.bookable.book_appointment")}
-    </InternalLinkButton>
+    </ScopedInternalLinkButton>
   );
 }
 

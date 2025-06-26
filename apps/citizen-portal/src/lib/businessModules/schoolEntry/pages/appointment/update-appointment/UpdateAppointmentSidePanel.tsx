@@ -5,7 +5,6 @@
 
 import { CakeOutlined, PersonOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
 
@@ -20,6 +19,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 interface UpdateAppointmentSidePanelProps {
   childName: string;
@@ -32,7 +32,7 @@ export function UpdateAppointmentSidePanel(
   props: UpdateAppointmentSidePanelProps,
 ) {
   const { t } = useTranslation(["schoolEntry/updateAppointment"]);
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const disabled = useIsFormDisabled();
   return (

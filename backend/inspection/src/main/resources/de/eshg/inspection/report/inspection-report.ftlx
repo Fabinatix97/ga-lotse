@@ -15,62 +15,12 @@
   </head>
 
   <body>
-    <header>
-      <div class="officeName">${office.name}</div>
-      <div class="title">${inspection.title}</div>
-      <hr/>
-    </header>
-
     <!-- note: footer (and header) must be specified *before* all other content, not after! -->
-    <footer>
-      <div>
-      ${office.name} &nbsp; • &nbsp;
-      ${office.street} &nbsp; • &nbsp;
-      ${office.zipCode} ${office.city}
-      </div>
-      <div>
-        ☎ ${office.phoneNumber} &nbsp; • &nbsp;
-        <a href="${office.url}">${office.url}</a>
-      </div>
-    </footer>
+  <#include "header-table.ftlx">
+  <#include "footer.ftlx">
+  <#include "divider.ftlx">
 
-    <table class="header">
-      <colgroup>
-        <col style="width: 65%;"/>
-        <col style="width: 35%;"/>
-      </colgroup>
-      <tr>
-        <td valign="top">
-          <div class="officeName">${office.name}</div>
-          <p class="objectType">${inspection.objectType}</p>
-        </td>
-        <td valign="top">
-          <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" width="250px" alt="logo"/>
-        </td>
-      </tr>
-      <tr class="letterhead">
-        <td valign="top" class="receiver">
-          <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
-          <#if facility.contactPerson??>
-            <div>${facility.contactPerson}</div>
-          </#if>
-          <div>${facility.address.name}</div>
-          <div>${facility.address.street}</div>
-          <#if facility.address.addressAddition??>
-            <div>${facility.address.addressAddition}</div>
-          </#if>
-          <div>${facility.address.zipCode} ${facility.address.city}</div>
-        </td>
-        <td valign="top" class="sender">
-          <div>${office.name}</div>
-          <div>${office.street}</div>
-          <div>${office.zipCode} ${office.city}</div>
-          <div class="reportLocation">${reportInfo.location},</div>
-          <div>den ${reportInfo.date}</div>
-        </td>
-      </tr>
-    </table>
-
+    <div class="main">
     <#list inspection.content.elements as elem>
       <!-- note: we use #if/elseif instead of #switch because #switch is not recommended -->
       <!-- see https://freemarker.apache.org/docs/ref_directive_switch.html#autoid_125 -->
@@ -81,57 +31,105 @@
         <h2>${elem.title}</h2>
       <#elseif elem.type == 'SECTION'>
         <h3>${elem.title}</h3>
-      <#elseif elem.type == 'SEPARATOR'>
-        <hr/>
-      <#elseif elem.type == 'TEXT'>
-        <p class="elementText">${(elem.value)!""}</p>
-      <#elseif elem.type == 'TEXT_BLOCK' || elem.type == 'FULL_TEXT_BLOCK'>
-        <div class="no-page-break">
-          <p class="elementTitle">${(elem.title)!""}</p>
-          <p class="elementValue textBlock">${(elem.value)!""}</p>
-        </div>
-
-      <#elseif  elem.type == 'CHOICE'>
-        <#macro checkbox selected text>
-          <#assign box = (selected)?string("☑", "☐")>
-          <span class="choice">${box} ${text}</span>
-        </#macro>
-
-        <div class="no-page-break">
-          <#if elem.simpleYesNo>
-            <table class="simpleYesNo">
-              <tr valign="top">
-                <td class="elementTitle">${elem.title}</td>
-                <td class="elementValue">
-                  <#list elem.choices as choice>
-                    <@checkbox selected=choice.selected text=choice.text/>
-                  </#list>
-                </td>
-              </tr>
-            </table>
-          <#else>
-            <p class="elementTitle">${elem.title}</p>
-            <p class="elementValue">
-              <#list elem.choices as choice>
-                <@checkbox selected=choice.selected text=choice.text/>
-                <!-- if any choice has an extraText we stack all choices vertically using <br> -->
-                <#if elem.choiceWithExtraText>
-                  <br/>
-                  <#if (choice.extraText)?has_content>
-                    <div class="choice extraText">${choice.extraText}</div>
+      <#else>
+        <div class="elementPairs">
+          <#if elem.type == 'TEXT'>
+            <p class="elementValue elementText">${(elem.value)!""}</p>
+          <#elseif elem.type == 'TEXT_BLOCK' || elem.type == 'FULL_TEXT_BLOCK'>
+            <#if elem.type == 'TEXT_BLOCK' && elem.title?starts_with("Beteiligte Personen")>
+              <table class="generalInfo">
+                <colgroup>
+                  <col style="width: fit-content"/>
+                  <col style="width: stretch"/>
+                </colgroup>
+                <tr valign="top">
+                  <td class="elementTitle">
+                    <p>${(elem.title)!""}:</p>
+                  </td>
+                  <td class="participants">
+                    <#list elem.value?split("\n") as val>
+                      <p class="elementValue">${(val)!""}</p>
+                    </#list>
+                  </td>
+                </tr>
+              </table>
+            <#elseif elem.type == 'TEXT_BLOCK' && elem.title?starts_with("Datum")>
+              <div class="generalInfo">
+                <p class="elementTitle">${(elem.title)!""}: <span class="elementValue">${(elem.value)!""}</span></p>
+              </div>
+            <#elseif elem.type == 'TEXT_BLOCK' && elem.title?starts_with("Rechtsgrundlage")>
+              <div class="generalInfo legalBasis">
+                <p class="elementTitle">${(elem.title)!""}:</p>
+                <p class="elementValue">${(elem.value)!""}</p>
+              </div>
+            <#else>
+              <div class="no-page-break">
+                <p class="elementTitle">${(elem.title)!""}</p>
+                <p class="elementValue textBlock">${(elem.value)!""}</p>
+              </div>
+            </#if>
+          <#elseif  elem.type == 'CHOICE'>
+            <div class="choice">
+              <#macro checkbox selected text>
+                <#assign box>
+                  <#if selected>
+                    <img src="CheckboxCheckedIcon.svg" alt="checkbox checked"/>
+                  <#else>
+                    <img src="CheckboxUncheckedIcon.svg" alt="checkbox unchecked"></img>
                   </#if>
+                </#assign>
+                <div class="checkboxes no-page-break">
+                  ${box}
+                  <span class="label">${text}</span>
+                </div>
+              </#macro>
+              <div class="no-page-break">
+                <#if elem.simpleYesNo>
+                  <table class="simpleYesNo">
+                    <colgroup>
+                      <col style="width: 70%"/>
+                      <col style="width: 30%"/>
+                    </colgroup>
+                    <tr valign="top">
+                      <td class="elementTitle">${elem.title}</td>
+                      <td>
+                        <div class="elementValue">
+                          <#list elem.choices as choice>
+                            <@checkbox selected=choice.selected text=choice.text?cap_first/>
+                          </#list>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                <#else>
+                  <div style="no-page-break">
+                    <p class="elementTitle">${elem.title}</p>
+                    <p class="elementValue">
+                      <#list elem.choices as choice>
+                        <#if choice.text?starts_with("ja") || choice.text?starts_with("nein")>
+                          <@checkbox selected=choice.selected text=choice.text?cap_first/>
+                        <#else>
+                          <@checkbox selected=choice.selected text=choice.text/>
+                        </#if>
+                        <#if elem.choiceWithExtraText>
+                          <#if (choice.extraText)?has_content>
+                            <p class="checkboxes extraText">${choice.extraText}</p>
+                          </#if>
+                        </#if>
+                      </#list>
+                    </p>
+                  </div>
                 </#if>
-              </#list>
-            </p>
+              </div>
+            </div>
           </#if>
         </div>
       </#if>
     </#list>
-
-    <div class="no-page-break">
-      <p class="greetingEnd">Im Auftrag</p>
-      <p class="greetingPerson">${inspection.executingPerson}</p>
+      <div class="no-page-break greetingEnd">
+        <p>Im Auftrag</p>
+        <p>${inspection.executingPerson}</p>
+      </div>
     </div>
-
   </body>
 </html>

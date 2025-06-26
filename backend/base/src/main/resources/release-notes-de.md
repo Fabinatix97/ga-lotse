@@ -2,6 +2,22 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.12
+
+Dreizehnter Release der Anwendung GA-Lotse
+
+### Reisemedizinische Impfberatung:
+
+* Standardtermindauer
+  * Konfigurierbar über GA-Konfigurator
+  * Terminarten Seite entfernt
+
+### HIV/STI Beratung:
+
+* Standardtermindauer
+  * Konfigurierbar über GA-Konfigurator
+  * Terminarten Seite entfernt
+
 ## GA-Lotse 1.11
 _18.06.2025_
 

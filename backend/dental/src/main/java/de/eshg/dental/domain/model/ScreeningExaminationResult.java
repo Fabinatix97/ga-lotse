@@ -28,6 +28,8 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @DiscriminatorValue("SCREENING")
 public class ScreeningExaminationResult extends ExaminationResult {
 
+  private Integer childAge;
+
   private Boolean fluorideVarnishApplied;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
@@ -105,6 +107,14 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setToothDiagnoses(Map<Tooth, ToothDiagnosis> toothDiagnoses) {
     this.toothDiagnoses = toothDiagnoses;
+  }
+
+  public Integer getChildAge() {
+    return childAge;
+  }
+
+  public void setChildAge(Integer childAgeAtExamination) {
+    this.childAge = childAgeAtExamination;
   }
 
   public Boolean isFluorideVarnishApplied() {

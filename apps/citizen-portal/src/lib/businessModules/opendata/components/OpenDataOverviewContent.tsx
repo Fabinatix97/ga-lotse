@@ -17,7 +17,7 @@ import { startTransition } from "react";
 import { Trans } from "react-i18next";
 import { isDefined, isEmpty } from "remeda";
 
-import { InternalLink, useIsMobile } from "@eshg/lib-portal";
+import { useIsMobile } from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -35,6 +35,7 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 
 const PAGE_SIZE = 10;
 
@@ -142,7 +143,7 @@ function OpenDataCard({ version }: { version: ApiVersion }) {
         },
       }}
     >
-      <InternalLink
+      <ScopedInternalLink
         href={citizenRoutes.byId(version.externalId)}
         underline="none"
         overlay
@@ -174,7 +175,7 @@ function OpenDataCard({ version }: { version: ApiVersion }) {
           </Stack>
           <ChevronRightOutlined size="md" />
         </CardContent>
-      </InternalLink>
+      </ScopedInternalLink>
     </Card>
   );
 }

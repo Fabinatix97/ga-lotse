@@ -1,0 +1,51 @@
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
+<#-- @ftlvariable name="office" type="de.eshg.inspection.report.pdf.RepAddress" -->
+<#-- @ftlvariable name="facility" type="de.eshg.inspection.report.pdf.RepFacility" -->
+<#-- @ftlvariable name="inspection" type="de.eshg.inspection.report.pdf.RepInspection" -->
+<#-- @ftlvariable name="reportInfo" type="de.eshg.inspection.report.pdf.RepInfo" -->
+
+<table class="header">
+  <colgroup>
+    <col style="width: 74%;"/>
+    <col style="width: 26%;"/>
+  </colgroup>
+  <tr>
+    <td valign="top">
+      <p class="objectType">${inspection.objectType}</p>
+    </td>
+    <td valign="top">
+      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" alt="logo" style="width: 12.67rem; height: 5.78rem" />
+    </td>
+  </tr>
+  <tr class="letterhead">
+    <td valign="top" class="receiver">
+      <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
+      <div class="addressee">
+      <#if facility.contactPerson??>
+        <div>${facility.contactPerson}</div>
+      </#if>
+        <div>${facility.address.name}</div>
+        <div>${facility.address.street}</div>
+      <#if facility.address.addressAddition??>
+        <div>${facility.address.addressAddition}</div>
+      </#if>
+        <div>${facility.address.zipCode} ${facility.address.city}</div>
+      </div>
+    </td>
+    <td valign="top" class="sender">
+      <div class="sender-address">
+      <div>${office.name}</div>
+      <div>${office.street}</div>
+      <div>${office.zipCode} ${office.city}</div>
+      </div>
+      <div>
+        <div class="sender-label">Telefon</div>
+        <div class="sender-data">${office.phoneNumber}</div>
+        <div class="sender-label">E-Mail</div>
+        <div class="sender-data">${office.email}</div>
+        <div class="sender-label">Datum</div>
+        <div class="sender-data">${reportInfo.date}</div>
+      </div>
+    </td>
+  </tr>
+</table>

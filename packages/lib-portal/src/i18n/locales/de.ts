@@ -31,7 +31,7 @@ export const de = {
       wrongType:
         "Bitte eine Datei vom Typ {{types, list(style: 'short'; type: 'disjunction';)}} auswählen.",
       invalidName:
-        "Ungültiger Dateiname: Nur Buchstaben, Zahlen, Bindestriche '-' und Unterstriche '_' erlaubt.",
+        "Ungültiger Dateiname: Nur Basisbuchstaben (kein ä, ß, é, ñ etc.), Zahlen, Bindestriche '-' und Unterstriche '_' erlaubt.",
       nameTooLong: "Bitte eine Datei mit einem kürzeren Dateinamen auswählen.",
       invalidExtension:
         "Bitte eine Datei mit einer gültigen Dateiendung auswählen.",

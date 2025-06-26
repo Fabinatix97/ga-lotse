@@ -9,7 +9,6 @@ import static de.eshg.config.HashUtil.hashOf;
 
 import de.eshg.config.domain.Document;
 import de.eshg.config.domain.MultiLangDocument;
-import de.eshg.officialmedicalservice.config.persistence.entity.OmsConfiguration;
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
 
@@ -17,7 +16,8 @@ public class OmsConfigAuditLogMapper {
 
   private OmsConfigAuditLogMapper() {}
 
-  public static LinkedHashMap<String, String> getRelevantFieldsForLogging(OmsConfiguration config) {
+  public static LinkedHashMap<String, String> getRelevantFieldsForLogging(
+      IOmsConfiguration config) {
     LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
 
     addRelevantFieldsOfDocument(relevantFields, "concerns", config.getConcerns());

@@ -45,4 +45,5 @@ public record VaccinationStatusDto(
     BooleanWithUnknownDto perkombiHbv,
     Boolean measlesContraIndication,
     Boolean measlesContraIndicationIsPermanent,
-    LocalDate measlesContraIndicationUntil) {}
+    LocalDate measlesContraIndicationUntil,
+    String note) {}

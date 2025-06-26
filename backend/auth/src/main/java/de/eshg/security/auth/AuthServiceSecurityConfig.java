@@ -8,6 +8,8 @@ package de.eshg.security.auth;
 import com.google.common.collect.Iterables;
 import de.eshg.lib.common.TimeoutConstants;
 import de.eshg.security.auth.login.LoginMethod;
+import de.eshg.security.auth.login.LoginMethodTypeChangeFilter;
+import de.eshg.security.auth.login.LoginMethodTypeHolder;
 import de.eshg.security.auth.synapse.SynapseAuthController;
 import de.eshg.security.auth.synapse.SynapseLogoutHandler;
 import java.time.Clock;
@@ -34,6 +36,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -99,7 +102,9 @@ public class AuthServiceSecurityConfig {
       ReverseProxyAwareSavedRequestAwareAuthenticationSuccessHandler oauthLoginSuccessHandler,
       @Autowired(required = false) SynapseLogoutHandler synapseLogoutHandler,
       ClientRegistrationRepository clientRegistrationRepository,
-      CsrfTokenRepository csrfTokenRepository)
+      LoginMethodTypeHolder loginMethodTypeHolder,
+      CsrfTokenRepository csrfTokenRepository,
+      LoginMethodTypeChangeFilter loginMethodTypeChangeFilter)
       throws Exception {
     return http.authorizeHttpRequests(
             auth -> {
@@ -134,7 +139,8 @@ public class AuthServiceSecurityConfig {
                                     new LoginMethodAwareAuthorizationRequestResolver(
                                         clientRegistrationRepository,
                                         loginMethods,
-                                        AUTHORIZATION_ENDPOINT_BASE_URL))))
+                                        AUTHORIZATION_ENDPOINT_BASE_URL,
+                                        loginMethodTypeHolder))))
         .logout(
             logout -> {
               logout
@@ -174,6 +180,7 @@ public class AuthServiceSecurityConfig {
                                 CrossOriginResourcePolicyHeaderWriter.CrossOriginResourcePolicy
                                     .SAME_ORIGIN))
                     .xssProtection(HeadersConfigurer.XXssConfig::disable))
+        .addFilterAfter(loginMethodTypeChangeFilter, AuthorizationFilter.class)
         .build();
   }
 

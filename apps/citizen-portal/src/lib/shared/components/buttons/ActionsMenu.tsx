@@ -17,7 +17,7 @@ import {
 import { ColorPaletteProp, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface ActionsItem {
   label: string;
@@ -69,7 +69,7 @@ function createActionsLinkOrButton(item: ActionsItem) {
   if (typeof item.onClick === "string") {
     return (
       <MenuItem key={item.label} sx={{ padding: 0 }}>
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           key={item.label}
           variant="plain"
           color="neutral"
@@ -85,7 +85,7 @@ function createActionsLinkOrButton(item: ActionsItem) {
             startDecorator={item.startDecorator}
             sx={{ marginRight: "auto" }}
           />
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </MenuItem>
     );
   } else {

@@ -9,5 +9,5 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.dental.domain.model.Child;
 
-public record ChildWithAugmentedData(
-    Child child, GetPersonFileStateResponse personData, ContactDto contact) {}
+public record ChildWithPersonAndContactData(
+    Child child, GetPersonFileStateResponse person, ContactDto contact) {}

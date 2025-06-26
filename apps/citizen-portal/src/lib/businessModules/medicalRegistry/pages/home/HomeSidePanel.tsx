@@ -5,14 +5,13 @@
 
 import { Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
-
 import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 export function HomeSidePanel() {
   const { t } = useTranslation(["medicalRegistry/overview"]);
@@ -22,12 +21,12 @@ export function HomeSidePanel() {
     <ContentSheet>
       <ContentSheetTitle>{t("sidebar.title")}</ContentSheetTitle>
       <Typography>{t("sidebar.content")}</Typography>
-      <InternalLinkButton
+      <ScopedInternalLinkButton
         color="primary"
         href={citizenRoutes.professionalRegistrationForm}
       >
         {t("sidebar.registrationForm")}
-      </InternalLinkButton>
+      </ScopedInternalLinkButton>
     </ContentSheet>
   );
 }

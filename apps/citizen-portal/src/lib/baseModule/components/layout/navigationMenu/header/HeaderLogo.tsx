@@ -7,10 +7,9 @@ import { styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ComponentType, ImgHTMLAttributes } from "react";
 
-import { NavigationLink } from "@eshg/lib-portal";
-
 import { useGetDepartmentLogo } from "@/lib/shared/api/queries/department";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";
+import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
 
 interface HeaderLogoProps<TLogoImageProps> {
   slots?: { logoImage: ComponentType<ImgHTMLAttributes<TLogoImageProps>> };
@@ -33,9 +32,9 @@ export function HeaderLogo<TLogoImageProps>(
   const LogoComponent = props.slots?.logoImage ?? LogoImage;
 
   return (
-    <NavigationLink href="/" {...props.slotProps?.navLink}>
+    <ScopedNavigationLink href="/" {...props.slotProps?.navLink}>
       <LogoComponent src={departmentLogo.data} alt="logo" />
-    </NavigationLink>
+    </ScopedNavigationLink>
   );
 }
 

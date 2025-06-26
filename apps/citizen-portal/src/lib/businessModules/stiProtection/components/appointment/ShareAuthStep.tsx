@@ -5,7 +5,6 @@
 
 import { Typography } from "@mui/joy";
 import assert from "assert";
-import { useRouter } from "next/navigation";
 import { useId } from "react";
 
 import { Alert } from "@eshg/lib-portal";
@@ -14,6 +13,7 @@ import { DownloadDocumentCardField } from "@/lib/businessModules/stiProtection/c
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
@@ -32,7 +32,7 @@ const initialValues = {
 
 export function ShareAuthStep() {
   const { t } = useTranslation("stiProtection/forms");
-  const router = useRouter();
+  const router = useScopedRouter();
   const routes = useCitizenRoutes();
   const pinTitleId = useId();
 

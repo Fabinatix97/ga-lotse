@@ -4,7 +4,6 @@
  */
 
 import { Button, Stack } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
 
@@ -16,6 +15,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
@@ -24,7 +24,7 @@ export function AppointmentDetailsSidePanel({
 }: Readonly<{
   hasAccomplishedService: boolean;
 }>) {
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);

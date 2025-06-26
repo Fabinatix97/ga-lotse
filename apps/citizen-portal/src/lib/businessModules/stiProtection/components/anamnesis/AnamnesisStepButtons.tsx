@@ -5,7 +5,6 @@
 
 import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
 import { MouseEvent } from "react";
 
 import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
@@ -13,6 +12,7 @@ import { SubmitButton, useIsFormDisabled } from "@eshg/lib-portal";
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
@@ -31,7 +31,7 @@ export function StepButtons({ submitButton }: StepButtonsProps) {
   const { isSubmitting } = useFormikContext<FormDataWithoutConcern>();
   const { goBack, isFirstStep, isLastStep } = useStepContext();
   const { openCancelDialog } = useConfirmationDialog();
-  const router = useRouter();
+  const router = useScopedRouter();
   const routes = useCitizenRoutes();
   const disabled = useIsFormDisabled();
 

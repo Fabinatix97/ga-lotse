@@ -4,7 +4,6 @@
  */
 
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import { FormPlus, formatDate, formatPersonName } from "@eshg/lib-portal";
 
@@ -15,6 +14,7 @@ import { UpdateAppointmentContent } from "@/lib/businessModules/schoolEntry/page
 import { UpdateAppointmentSidePanel } from "@/lib/businessModules/schoolEntry/pages/appointment/update-appointment/UpdateAppointmentSidePanel";
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 interface AppointmentFormValues {
   newAppointment: Appointment | undefined;
@@ -29,7 +29,7 @@ export function UpdateAppointmentForm(props: UpdateAppointmentFormProps) {
   const childName = formatPersonName(props.procedure.child);
   const dateOfBirth = formatDate(props.procedure.child.dateOfBirth);
 
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const updateAppointment = useUpdateAppointmentAsCitizen();
 

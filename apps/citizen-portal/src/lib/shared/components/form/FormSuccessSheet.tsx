@@ -15,10 +15,12 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { InternalLinkButton, NavigationLink } from "@eshg/lib-portal";
-
 import { theme } from "@/lib/baseModule/theme/theme";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ScopedInternalLinkButton,
+  ScopedNavigationLink,
+} from "@/lib/shared/components/scopedLinks";
 
 const Container = styled(Box)({
   display: "flex",
@@ -70,7 +72,7 @@ export interface FormSuccessSheetProps {
     root?: BoxProps;
     icon?: SvgIconProps & { sx?: SxProps };
     button?: Omit<
-      ButtonProps & ButtonProps<typeof NavigationLink>,
+      ButtonProps & ButtonProps<typeof ScopedNavigationLink>,
       "onClick" | "component"
     >;
   };
@@ -107,9 +109,9 @@ export function FormSuccessSheet({
         {buttons ??
           (buttonLabel &&
             ((buttonHref && (
-              <InternalLinkButton href={buttonHref} {...buttonProps}>
+              <ScopedInternalLinkButton href={buttonHref} {...buttonProps}>
                 {buttonLabel}
-              </InternalLinkButton>
+              </ScopedInternalLinkButton>
             )) ??
               (onClick && (
                 <Button onClick={onClick} {...buttonProps}>

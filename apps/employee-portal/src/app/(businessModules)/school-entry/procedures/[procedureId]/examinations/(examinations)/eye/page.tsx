@@ -14,6 +14,7 @@ import {
   DynamicPageProps,
   addMissingKeys,
   dropEmptyKeys,
+  mapOptionalValue,
   useHandledMutation,
 } from "@eshg/lib-portal";
 import {
@@ -135,7 +136,7 @@ function mapToRequest(
       myopia: formValues.myopia,
       otherDiagnosis: formValues.otherDiagnosis,
       strabismus: formValues.strabismus,
-      note: formValues.note,
+      note: mapOptionalValue(formValues.note),
     },
   };
 }

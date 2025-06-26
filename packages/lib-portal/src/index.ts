@@ -336,6 +336,7 @@ export {
   validateInteger,
   validateIntegerAnd,
   validatePipe,
+  validateLength,
   validatePositiveInteger,
   validateRange,
   validateRegex,

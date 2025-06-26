@@ -49,6 +49,14 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
       @Param("appointmentStart") Instant appointmentStart,
       @Param("appointmentEnd") Instant appointmentEnd);
 
+  @Query(
+      "select a from AppointmentBlock a "
+          + "where a.appointmentBlockStart <= :start and a.appointmentBlockEnd >= :end "
+          + "or a.appointmentBlockStart >= :start and a.appointmentBlockStart <= :end "
+          + "or a.appointmentBlockEnd >= :start and a.appointmentBlockEnd <= :end order by a.id")
+  List<AppointmentBlock> findBlocksOverlappingWithTimeRange(
+      @Param("start") Instant start, @Param("end") Instant end);
+
   Optional<AppointmentBlock> findByExternalId(UUID uuid);
 
   List<AppointmentBlock> findAllByCalendarEventIdInOrderById(List<UUID> eventIds);

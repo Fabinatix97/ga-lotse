@@ -134,6 +134,8 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
   private Boolean canSwim;
   private Boolean hasSeahorseBadge;
 
+  private String note;
+
   @Override
   public Long getId() {
     return id;
@@ -640,5 +642,13 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
 
   public void setWasInDaycare(Boolean wasInDaycare) {
     this.wasInDaycare = wasInDaycare;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String notes) {
+    this.note = notes;
   }
 }

@@ -5,7 +5,6 @@
 
 import { Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import {
   FormPlus,
@@ -35,6 +34,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/route
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 import { CitizenAnamnesisStepOne } from "./steps/CitizenAnamnesisStepOne";
 
@@ -274,7 +274,7 @@ interface CitizenAnamnesisFormProps {
 export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
   const addCitizenAnamnesis = useAddCitizenAnamnesis();
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
 
   async function handleSubmit(values: CitizenAnamnesisFormValues) {

@@ -104,5 +104,6 @@
   <include file="migrations/0094_refactor_school_entry_appointment_standard_duration.xml"/>
   <include file="migrations/0095_height_in_cm.xml"/>
   <include file="migrations/0096_delete_invalid_values_in_systole_diastole.xml"/>
+  <include file="migrations/0097_add_note_to_anamnesis_and_vaccination_status.xml"/>
 
 </databaseChangeLog>

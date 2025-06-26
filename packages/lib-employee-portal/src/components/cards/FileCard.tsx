@@ -22,7 +22,7 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useRouter } from "next/navigation";
-import { ReactNode, createElement } from "react";
+import { FunctionComponent, ReactNode, createElement } from "react";
 import { isDefined } from "remeda";
 
 import { formatDate, formatFileSize } from "@eshg/lib-portal";
@@ -42,13 +42,15 @@ export const CustomFileType = {
   Audio: "AUDIO",
   Csv: "CSV",
   Md: "MD",
+  Yaml: "YAML",
   Svg: "SVG",
 } as const;
-type NonApiFileType = (typeof CustomFileType)[keyof typeof CustomFileType];
+export type CustomFileType =
+  (typeof CustomFileType)[keyof typeof CustomFileType];
 
 export interface FileCardProps {
   name: string;
-  type: ApiFileType | NonApiFileType;
+  type: ApiFileType | CustomFileType;
   creationDate?: Date;
   size: number;
   actions: FileCardActionProps[];
@@ -64,8 +66,9 @@ const iconByType = {
   AUDIO: AudioFileOutlined,
   CSV: ListAltOutlined,
   MD: Web,
+  YAML: Web,
   SVG: ImageOutlined,
-} as const;
+} as const satisfies Record<ApiFileType | CustomFileType, FunctionComponent>;
 
 export function FileCard(props: FileCardProps) {
   return (

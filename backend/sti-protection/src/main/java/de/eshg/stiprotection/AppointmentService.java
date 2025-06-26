@@ -13,6 +13,7 @@ import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.GetUserCalendarsRequest;
 import de.eshg.base.calendar.api.GetUserCalendarsResponse;
 import de.eshg.base.calendar.api.UserCalendar;
+import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
@@ -25,6 +26,7 @@ import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.AppointmentStatus;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import java.time.Clock;
 import java.time.Duration;
@@ -33,32 +35,36 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 @Service
-public class AppointmentService {
+public class AppointmentService extends AbstractAppointmentService<StiProtectionProcedure> {
   private final CalendarEventApi calendarEventApi;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final AppointmentCooldownService appointmentCooldownService;
   private final CalendarApi calendarApi;
-  private final Clock clock;
+  private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
 
   public AppointmentService(
       CalendarApi calendarApi,
       CalendarEventApi calendarEventApi,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       AppointmentCooldownService appointmentCooldownService,
-      Clock clock) {
+      Clock clock,
+      StiProtectionProcedureRepository stiProtectionProcedureRepository) {
+    super(clock);
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.appointmentCooldownService = appointmentCooldownService;
-    this.clock = clock;
+    this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
   }
 
   public void createAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
@@ -273,5 +279,29 @@ public class AppointmentService {
     procedure.setUserDefinedAppointment(null);
     appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
     addAppointmentHistoryEntry(procedure, appointment);
+  }
+
+  @Override
+  public void checkAppointmentBlockViewFeatureActive() {
+    throw new BadRequestException("no feature toggle");
+  }
+
+  @Override
+  protected List<StiProtectionProcedure> resolveEntitiesWithAppointments(
+      List<Appointment> appointments) {
+    return stiProtectionProcedureRepository.findByAppointmentIn(appointments);
+  }
+
+  @Override
+  protected Map<StiProtectionProcedure, String> getInformationForAppointmentOverview(
+      List<StiProtectionProcedure> entities) {
+    return entities.stream()
+        .filter(entity -> entity.getAccessCode() != null)
+        .collect(Collectors.toMap(entity -> entity, StiProtectionProcedure::getAccessCode));
+  }
+
+  @Override
+  protected UUID getProcedureId(StiProtectionProcedure entity) {
+    return entity.getExternalId();
   }
 }

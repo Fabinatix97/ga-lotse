@@ -16,8 +16,6 @@ import {
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { NavigationLink } from "@eshg/lib-portal";
-
 import {
   isItemSelected,
   isSubItemSelected,
@@ -26,6 +24,7 @@ import { maxContentWidthDesktop } from "@/lib/baseModule/components/layout/sizes
 import { NavigationItem } from "@/lib/baseModule/components/layout/types";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
+import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
 
 export function NavMenu({
   navigationItems,
@@ -133,7 +132,7 @@ function NavMenuItem({
             return (
               <MenuItem
                 key={subItem.name}
-                component={NavigationLink}
+                component={ScopedNavigationLink}
                 href={subItem.href}
                 sx={{
                   width: "373px",

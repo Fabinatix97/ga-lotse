@@ -14,4 +14,5 @@ export const baseConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "IMPRINT_MARKDOWNS_CONFIG",
   "ACCESSIBILITY_STATEMENT_MARKDOWNS_CONFIG",
   "LOGO_CONFIG",
+  "ADDRESS_REGISTRY",
 ];

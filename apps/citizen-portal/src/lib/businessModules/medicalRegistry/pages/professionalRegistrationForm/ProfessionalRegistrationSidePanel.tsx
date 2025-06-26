@@ -11,7 +11,6 @@ import {
   BooleanRadioField,
   ButtonLink,
   CheckboxField,
-  InternalLinkButton,
   useFileDownload,
   useMultiStepForm,
   useSnackbar,
@@ -27,6 +26,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/r
 import { useTranslation } from "@/lib/i18n/client";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function ProfessionalRegistrationSidePanel() {
@@ -111,13 +111,13 @@ export function ProfessionalRegistrationSidePanel() {
               {t("navigation.back")}
             </Button>
           )}
-          <InternalLinkButton
+          <ScopedInternalLinkButton
             variant="soft"
             color="neutral"
             href={citizenRoutes.home}
           >
             {t("navigation.abort")}
-          </InternalLinkButton>
+          </ScopedInternalLinkButton>
         </Stack>
       </ContentSheet>
     </>

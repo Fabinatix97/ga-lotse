@@ -37,6 +37,7 @@ const ERROR_MAPPING: Record<ApiErrorCode, PortalErrorCode> = {
   [ApiErrorCode.AggregationException]: PortalErrorCode.UnexpectedError,
   [ApiErrorCode.AlreadyExists]: PortalErrorCode.AlreadyExists,
   [ApiErrorCode.InvalidFile]: PortalErrorCode.InvalidFile,
+  [ApiErrorCode.CsvInvalidHeader]: PortalErrorCode.CsvInvalidHeader,
   [ApiErrorCode.Corrupt]: PortalErrorCode.Corrupt,
   [ApiErrorCode.Locked]: PortalErrorCode.Locked,
   [ApiErrorCode.XlsxTooManyRows]: PortalErrorCode.XlsxTooManyRows,

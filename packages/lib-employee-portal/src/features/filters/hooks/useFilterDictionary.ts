@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { startTransition, useId, useState } from "react";
+import { startTransition, useEffect, useId, useState } from "react";
 import { isDefined } from "remeda";
 
+import { useSessionPersistence } from "../../../contexts/sessionPersistence";
 import { ActiveFilter } from "../components/filterSettings/ActiveFilter";
 import { FilterSettingsSheetProps } from "../components/filterSettings/FilterSettingsSheet";
 import { ToggleFilterButtonProps } from "../components/filterSettings/ToggleFilterButton";
@@ -18,6 +19,27 @@ export type SetDictionaryFilterFn<
 > = ReturnType<
   typeof useFilterDictionary<TKey, TFilters>
 >["setFilterFormValue"];
+
+export function usePersistentFilterDictionary<
+  TKey extends string,
+  TFilters extends FilterDictionary<TKey>,
+>(props: { key: string; onChangeFilters?: () => void }) {
+  const sessionPersistence = useSessionPersistence<TFilters>({
+    key: props.key,
+    initialValue: {} as TFilters,
+  });
+
+  const filterDictionary = useFilterDictionary<TKey, TFilters>({
+    initialFilters: sessionPersistence.get(),
+    onChangeFilters: props.onChangeFilters,
+  });
+
+  useEffect(() => {
+    sessionPersistence.set(filterDictionary.filterValues);
+  }, [filterDictionary.filterValues, sessionPersistence]);
+
+  return filterDictionary;
+}
 
 export function useFilterDictionary<
   TKey extends string,

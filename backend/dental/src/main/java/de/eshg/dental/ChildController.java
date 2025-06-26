@@ -10,7 +10,7 @@ import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.dental.api.*;
-import de.eshg.dental.business.model.ChildWithAugmentedData;
+import de.eshg.dental.business.model.ChildWithPersonAndContactData;
 import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.business.model.PagedInstitutionsForTransition;
 import de.eshg.dental.domain.model.Child;
@@ -137,7 +137,7 @@ public class ChildController {
     ValidationUtil.validateVersion(request.version(), child);
     childService.updateChildPersonAndFlush(child, request);
     if (!childDetails.dateOfBirth().equals(request.dateOfBirth())) {
-      childService.updateDecayRisk(request.dateOfBirth(), child.getExaminations());
+      childService.updateAgeAndDecayRisk(request.dateOfBirth(), child.getExaminations());
     }
     return getChildDetails(child);
   }
@@ -150,7 +150,7 @@ public class ChildController {
     Child updatedChild = childService.syncPersonData(childId, request);
 
     ChildDetailsDto childDetails = getChildDetails(updatedChild);
-    childService.updateDecayRisk(childDetails.dateOfBirth(), updatedChild.getExaminations());
+    childService.updateAgeAndDecayRisk(childDetails.dateOfBirth(), updatedChild.getExaminations());
 
     return childDetails;
   }
@@ -190,7 +190,7 @@ public class ChildController {
   }
 
   private ChildDetailsDto getChildDetails(Child child) {
-    List<ChildWithAugmentedData> childAndAllPreviousChildren =
+    List<ChildWithPersonAndContactData> childAndAllPreviousChildren =
         childService.getChildAndAllPreviousChildren(child);
 
     List<Examination> examinations = childService.getAllExaminations(childAndAllPreviousChildren);
@@ -200,7 +200,8 @@ public class ChildController {
     List<AnnualInstitutionDto> institutions =
         childService.getAllInstitutions(childAndAllPreviousChildren);
 
-    ChildWithAugmentedData augmentedChildData = childService.augmentWithDetails(child);
+    ChildWithPersonAndContactData augmentedChildData =
+        childService.augmentWithPersonAndContactDetails(child);
 
     return ChildMapper.mapToChildDetailsDto(
         augmentedChildData, examinations, fluoridationConsents, institutions);

@@ -7,7 +7,6 @@ package de.eshg.inspection.inspection;
 
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 
-import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.inspection.facility.FacilityService;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
@@ -179,20 +178,6 @@ associated reference facility
       @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
       @RequestBody @Valid InspectionSyncFileStateRequest request) {
     return inspectionService.syncInspectionFacilityFileState(id, request);
-  }
-
-  @PostMapping(path = "/{id}/update-file-state-and-reference")
-  @Operation(
-      summary =
-          """
-Perform a consistent update of the existent facility file state and its
-associated reference facility
-""")
-  @Transactional
-  public InspectionDto updateInspectionFacilityFileStateAndReference(
-      @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
-      @RequestBody @Valid PutFacilityRequest request) {
-    return inspectionService.updateFacilityFileStateAndReference(id, request);
   }
 
   @GetMapping(path = "/{id}/pldrevisions")

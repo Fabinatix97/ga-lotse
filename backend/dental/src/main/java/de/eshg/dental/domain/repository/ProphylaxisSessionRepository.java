@@ -39,4 +39,6 @@ public interface ProphylaxisSessionRepository
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("from ProphylaxisSession ps where ps.externalId = :externalId")
   Optional<ProphylaxisSession> findByExternalIdForUpdate(UUID externalId);
+
+  void deleteByExternalId(UUID externalId);
 }

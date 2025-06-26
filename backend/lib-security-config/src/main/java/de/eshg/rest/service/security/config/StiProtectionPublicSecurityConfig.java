@@ -6,6 +6,7 @@
 package de.eshg.rest.service.security.config;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PUT;
 
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -25,6 +26,8 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
 
     requestMatchers(BaseUrls.StiProtection.CITIZEN_PUBLIC_CONTROLLER + "/**").permitAll();
 
+    requestMatchers(PUT, BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/*/reopen")
+        .hasRole(EmployeePermissionRole.STI_PROTECTION_LEADER);
     requestMatchers(GET, BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{id}/**")
         .hasAnyRole(
             EmployeePermissionRole.STI_PROTECTION_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);

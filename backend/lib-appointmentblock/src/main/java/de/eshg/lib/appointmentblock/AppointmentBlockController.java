@@ -6,13 +6,17 @@
 package de.eshg.lib.appointmentblock;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.lib.appointmentblock.api.AppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockPaginationAndSortParameters;
+import de.eshg.lib.appointmentblock.api.AppointmentBlockSlotDto;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
 import de.eshg.lib.appointmentblock.api.GetAppointmentBlockGroupDto;
 import de.eshg.lib.appointmentblock.api.GetAppointmentBlockGroupsResponse;
+import de.eshg.lib.appointmentblock.api.GetAppointmentBlocksResponse;
+import de.eshg.lib.appointmentblock.api.GetAppointmentsResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
@@ -42,9 +46,13 @@ public class AppointmentBlockController {
   static final String BASE_URL = BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API;
 
   private final AppointmentBlockService appointmentBlockService;
+  private final AppointmentBlockViewService appointmentBlockViewService;
 
-  public AppointmentBlockController(AppointmentBlockService appointmentBlockService) {
+  public AppointmentBlockController(
+      AppointmentBlockService appointmentBlockService,
+      AppointmentBlockViewService appointmentBlockViewService) {
     this.appointmentBlockService = appointmentBlockService;
+    this.appointmentBlockViewService = appointmentBlockViewService;
   }
 
   @Operation(summary = "Create appointment group with blocks for week days.")
@@ -81,6 +89,45 @@ public class AppointmentBlockController {
     return new GetAppointmentBlockGroupsResponse(
         appointmentBlockGroups,
         pagedAppointmentBlockGroups.totalNumberOfAppointmentBlockGroupData());
+  }
+
+  @Operation(summary = "Get appointment blocks in a certain time range (one week)")
+  @GetMapping("/overview")
+  @Transactional(readOnly = true)
+  public GetAppointmentBlocksResponse getAppointmentBlocks(
+      @RequestParam(name = "timeRangeStart") Instant timeRangeStart,
+      @RequestParam(name = "timeRangeEnd") Instant timeRangeEnd) {
+
+    List<AppointmentBlockDto> blocks =
+        appointmentBlockViewService.findAppointmentBlocksInTimeRange(timeRangeStart, timeRangeEnd);
+    return new GetAppointmentBlocksResponse(blocks);
+  }
+
+  @Operation(summary = "Get appointment block")
+  @GetMapping("/{appointmentBlockId}")
+  @Transactional(readOnly = true)
+  public AppointmentBlockDto getAppointmentBlock(
+      @PathVariable("appointmentBlockId") UUID appointmentBlockId) {
+    return appointmentBlockViewService.getAppointmentBlock(appointmentBlockId);
+  }
+
+  @Operation(summary = "Get appointments in a certain time range (one month)")
+  @GetMapping("/appointment/overview")
+  @Transactional(readOnly = true)
+  public GetAppointmentsResponse getAppointments(
+      @RequestParam(name = "timeRangeStart") Instant timeRangeStart,
+      @RequestParam(name = "timeRangeEnd") Instant timeRangeEnd) {
+
+    List<AppointmentBlockSlotDto> appointments =
+        appointmentBlockViewService.findAppointmentsInTimeRange(timeRangeStart, timeRangeEnd);
+    return new GetAppointmentsResponse(appointments);
+  }
+
+  @Operation(summary = "Get appointment")
+  @GetMapping("/appointment/{appointmentId}")
+  @Transactional(readOnly = true)
+  public AppointmentBlockSlotDto getAppointment(@PathVariable("appointmentId") Long appointmentId) {
+    return appointmentBlockViewService.getAppointment(appointmentId);
   }
 
   @Operation(summary = "Get free appointments for an appointment type.")

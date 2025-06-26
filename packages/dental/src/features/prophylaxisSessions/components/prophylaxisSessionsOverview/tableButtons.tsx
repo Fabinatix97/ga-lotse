@@ -16,7 +16,7 @@ export function CreateProphylaxisSessionButton() {
       startDecorator={<Add />}
       onClick={createProphylaxisSessionSidebar.open}
     >
-      Prophylaxe anlegen
+      Maßnahme planen
     </Button>
   );
 }

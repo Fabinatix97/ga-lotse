@@ -3,11 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack, ToggleButtonGroup, Typography } from "@mui/joy";
-import { useId } from "react";
+import {
+  Stack,
+  ToggleButtonGroup,
+  ToggleButtonGroupProps,
+  Typography,
+} from "@mui/joy";
+import { ReactNode, useId } from "react";
 
 import {
   FieldProps,
+  NullableFieldValue,
   OptionalFieldValue,
   SelectOption,
   isEmptyString,
@@ -48,9 +54,38 @@ export function TestValuesButtonGroupField<TValue extends string>(
   props: TestValuesButtonGroupFieldProps<TValue>,
 ) {
   const field = useBaseField<TValue>(props);
+  const disabled = useIsFormDisabled();
+
+  return (
+    <TestValuesButtonGroup
+      label={props.label}
+      options={props.options}
+      buttonWidth={72}
+      value={field.input.value}
+      disabled={disabled}
+      onChange={(newValue) =>
+        void field.helpers.setValue((newValue ?? "") as TValue)
+      }
+    />
+  );
+}
+
+interface TestValuesButtonGroup<TValue extends string> {
+  label: ReactNode;
+  options: Option<TValue>[];
+  buttonWidth: number;
+  disabled?: boolean;
+  onChange: (value: NullableFieldValue<TValue>) => void;
+  value?: OptionalFieldValue<TValue>;
+  variant?: ToggleButtonGroupProps["variant"];
+  color?: ToggleButtonGroupProps["color"];
+}
+
+export function TestValuesButtonGroup<TValue extends string>(
+  props: TestValuesButtonGroup<TValue>,
+) {
   const labelId = useId();
   const options = resolveOptions(props.options);
-  const disabled = useIsFormDisabled();
 
   return (
     <Stack
@@ -63,14 +98,14 @@ export function TestValuesButtonGroupField<TValue extends string>(
         {props.label}
       </Typography>
       <ToggleButtonGroup
-        value={resolveButtonValue(field.input.value)}
-        variant="soft"
-        color="neutral"
+        value={resolveButtonValue(props.value)}
+        variant={props.variant ?? "soft"}
+        color={props.color ?? "neutral"}
         spacing={0.5}
         aria-labelledby={labelId}
-        disabled={disabled}
+        disabled={props.disabled}
         onChange={(_, newValue) =>
-          void field.helpers.setValue((newValue ?? "") as TValue)
+          props.onChange(newValue as NullableFieldValue<TValue>)
         }
       >
         {options.map((option) => (

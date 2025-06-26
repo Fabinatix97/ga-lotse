@@ -83,7 +83,12 @@ public class FacilityController {
   }
 
   @PutMapping(path = "/{id}")
-  @Operation(summary = "Updates a facility")
+  @Operation(
+      summary =
+          """
+Perform a consistent update of the existent facility file state and its
+associated reference facility
+""")
   @Transactional
   public InspFacilityDto updateFacility(
       @PathVariable("id") UUID externalId, @Valid @RequestBody InspUpdateFacilityRequest request) {

@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { isNonNullish } from "remeda";
 
 import { ensureArray } from "@eshg/lib-portal";
+
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 type SearchParamValue =
   | string
@@ -25,7 +27,7 @@ export interface SearchParamReplacement {
 export function useReplaceSearchParams() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useScopedRouter();
 
   function replaceSearchParams(
     searchParamReplacements: SearchParamReplacement[],

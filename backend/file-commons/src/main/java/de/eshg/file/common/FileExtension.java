@@ -17,6 +17,8 @@ public enum FileExtension {
   XLSX("xlsx"),
   MD("md"),
   SVG("svg"),
+  YAML("yaml"),
+  YML("yml"),
   ;
 
   private final String value;

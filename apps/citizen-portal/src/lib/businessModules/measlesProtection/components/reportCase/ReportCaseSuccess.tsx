@@ -15,7 +15,6 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 import { Alert } from "@eshg/lib-portal";
@@ -23,6 +22,7 @@ import { Alert } from "@eshg/lib-portal";
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 
 import {
@@ -112,7 +112,7 @@ export function ReportCaseSuccess() {
 function ReportCaseSuccessActionsCard() {
   const { t } = useTranslation(["measlesProtection/forms"]);
   const replaceSearchParams = useReplaceSearchParams();
-  const router = useRouter();
+  const router = useScopedRouter();
   const {
     values: { facility, otherFacilityTypeInformation = "" },
     resetForm,

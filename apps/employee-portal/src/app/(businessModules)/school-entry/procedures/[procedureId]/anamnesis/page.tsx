@@ -138,6 +138,7 @@ function mapToFormValues(apiAnamnesis: Anamnesis): AnamnesisFormValues {
     personalConspicuities: parseOptionalValue(
       apiAnamnesis.personalConspicuities,
     ),
+    note: parseOptionalValue(apiAnamnesis.note),
   };
 }
 
@@ -362,6 +363,7 @@ function mapToRequest(
         formValues.promotionBeforeSchoolEntry,
       ),
       personalConspicuities: mapOptionalValue(formValues.personalConspicuities),
+      note: mapOptionalValue(formValues.note),
     },
   };
 }

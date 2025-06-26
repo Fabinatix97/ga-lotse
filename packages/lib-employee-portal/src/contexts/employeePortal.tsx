@@ -9,6 +9,7 @@ import { RequiresChildren } from "@eshg/lib-portal";
 
 import { ApiProvider } from "./api";
 import { LayoutConfig, LayoutConfigProvider } from "./layoutConfig";
+import { SessionPersistenceProvider } from "./sessionPersistence";
 import { SidenavProvider } from "./sidenav";
 
 interface EmployeePortalProviderProps extends RequiresChildren {
@@ -20,7 +21,9 @@ export function EmployeePortalProvider(props: EmployeePortalProviderProps) {
   return (
     <ApiProvider baseUrl={props.baseUrl}>
       <LayoutConfigProvider config={props.layoutConfig}>
-        <SidenavProvider>{props.children}</SidenavProvider>
+        <SessionPersistenceProvider>
+          <SidenavProvider>{props.children}</SidenavProvider>
+        </SessionPersistenceProvider>
       </LayoutConfigProvider>
     </ApiProvider>
   );

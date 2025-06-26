@@ -11,7 +11,6 @@ const proceduresSearchPath = `${basePath}/search-procedure`;
 const vaccinesPath = `${basePath}/vaccines`;
 const diseasesPath = `${basePath}/diseases`;
 const appointmentBlockPath = `${basePath}/appointment-block-groups`;
-const appointmentTypesPath = `${basePath}/appointment-definition`;
 const otherServicesTemplatesPath = `${basePath}/other-services`;
 const inboxPath = `${basePath}/inbox`;
 
@@ -53,9 +52,6 @@ export const routes = {
       `${proceduresPath}/${procedureId}/sync-person/${fileStateId}/${personVersion}`,
   },
   proceduresSearch: { index: `${proceduresSearchPath}` },
-  appointmentTypes: {
-    index: `${appointmentTypesPath}`,
-  },
   vaccines: {
     index: `${vaccinesPath}`,
   },

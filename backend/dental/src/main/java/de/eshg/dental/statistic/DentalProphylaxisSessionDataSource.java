@@ -5,8 +5,6 @@
 
 package de.eshg.dental.statistic;
 
-import static de.eshg.dental.domain.model.Examination_.prophylaxisSession;
-
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisSession_;
 import de.eshg.dental.domain.model.ProphylaxisType;
@@ -28,7 +26,7 @@ public class DentalProphylaxisSessionDataSource
 
   public static final UUID DATA_SOURCE_ID = UUID.fromString("d87a715f-150a-4d68-913a-ce972e43630b");
 
-  public static final String DATA_SOURCE_NAME = "ZAD Prophylaxe";
+  public static final String DATA_SOURCE_NAME = "ZAD Maßnahme";
 
   private final ProphylaxisSessionRepository prophylaxisSessionRepository;
   private final Clock clock;

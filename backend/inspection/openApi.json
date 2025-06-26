@@ -1909,7 +1909,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Updates a facility",
+        "summary" : "Perform a consistent update of the existent facility file state and its\nassociated reference facility\n",
         "tags" : [ "Facility" ]
       }
     },
@@ -3343,45 +3343,6 @@
           }
         },
         "summary" : "Update a differing facility file state by taking over the data from the\nassociated reference facility\n",
-        "tags" : [ "Inspection" ]
-      }
-    },
-    "/inspections/{id}/update-file-state-and-reference" : {
-      "post" : {
-        "operationId" : "updateInspectionFacilityFileStateAndReference",
-        "parameters" : [ {
-          "description" : "The id of the inspection",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PutFacilityRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Inspection"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Perform a consistent update of the existent facility file state and its\nassociated reference facility\n",
         "tags" : [ "Inspection" ]
       }
     },
@@ -7234,59 +7195,6 @@
           }
         }
       },
-      "FacilityDetails" : {
-        "required" : [ "name" ],
-        "type" : "object",
-        "properties" : {
-          "contactAddress" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
-            }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
-            } ]
-          },
-          "contactPersons" : {
-            "type" : "array",
-            "description" : "A list of contact persons of the Facility.",
-            "items" : {
-              "$ref" : "#/components/schemas/FacilityContactPerson"
-            }
-          },
-          "differentBillingAddress" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/DomesticAddress"
-            }, {
-              "$ref" : "#/components/schemas/PostboxAddress"
-            } ]
-          },
-          "emailAddresses" : {
-            "type" : "array",
-            "description" : "A list of email addresses of the Facility.",
-            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "name" : {
-            "maxLength" : 300,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The name of the Facility.",
-            "example" : "Example Facility"
-          },
-          "phoneNumbers" : {
-            "type" : "array",
-            "description" : "A list of telephone numbers of the Facility.",
-            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
-            "items" : {
-              "maxLength" : 23,
-              "minLength" : 0,
-              "type" : "string"
-            }
-          }
-        },
-        "description" : "The data relating to a facility"
-      },
       "FacilityDuplicateReview" : {
         "required" : [ "existingFacilities", "importedFacility" ],
         "type" : "object",
@@ -10158,16 +10066,6 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
-      },
-      "PutFacilityRequest" : {
-        "required" : [ "updatedFacility" ],
-        "type" : "object",
-        "properties" : {
-          "updatedFacility" : {
-            "$ref" : "#/components/schemas/FacilityDetails"
-          }
-        },
-        "description" : "Request used for performing a consistent update of file state and associated reference facility"
       },
       "ReportInfo" : {
         "required" : [ "creatorUserId", "fileContentId", "fileName", "fileSize", "reportDate", "reportId" ],

@@ -2780,6 +2780,34 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/population/procedures" : {
+      "post" : {
+        "operationId" : "populateMedicalRegistryProcedures",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MedicalRegistryProcedurePopulationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MedicalRegistryProcedurePopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/request-interceptor" : {
       "post" : {
         "operationId" : "interceptNextRequest",
@@ -5792,6 +5820,33 @@
       "MedicalRegistryFeature" : {
         "type" : "string",
         "enum" : [ "CITIZEN_PORTAL_ENABLED" ]
+      },
+      "MedicalRegistryProcedurePopulationRequest" : {
+        "required" : [ "numberOfEntitiesToPopulate" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfEntitiesToPopulate" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "MedicalRegistryProcedurePopulationResponse" : {
+        "required" : [ "count" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "procedures" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
       },
       "MetaData" : {
         "required" : [ "@type" ],

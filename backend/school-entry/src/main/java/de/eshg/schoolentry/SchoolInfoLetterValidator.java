@@ -285,6 +285,7 @@ public class SchoolInfoLetterValidator {
           anamnesisProperty(Anamnesis::getVisionImpairment),
           anamnesisProperty(Anamnesis::getVisionSchoolSince),
           anamnesisProperty(Anamnesis::getWasInDaycare),
+          anamnesisProperty(Anamnesis::getNote),
           eyeExaminationProperty(EyeExaminationResult::getAmblyopia),
           eyeExaminationProperty(EyeExaminationResult::getAstigmatism),
           eyeExaminationProperty(EyeExaminationResult::getColorVisionDisorder),
@@ -324,7 +325,8 @@ public class SchoolInfoLetterValidator {
           developmentScreeningProperty(DevelopmentScreening::getPhysicalExaminationNote),
           developmentScreeningProperty(DevelopmentScreening::getSchoolFeedback),
           developmentScreeningProperty(DevelopmentScreening::getSocial),
-          developmentScreeningProperty(DevelopmentScreening::getWeightPercentile));
+          developmentScreeningProperty(DevelopmentScreening::getWeightPercentile),
+          vaccinationStatusProperty(VaccinationStatus::getNote));
 
   private static PropertyDescriptor hearingTestProperty(
       TypedPropertyGetter<HearingTestResult, ?> getter) {

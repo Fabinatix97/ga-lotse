@@ -25,7 +25,7 @@ public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
 
   SCHULJAHR(
       IntegerAttribute.create(
-          "Schuljahr der Prophylaxe",
+          "Schuljahr der Maßnahme",
           "SCHULJAHR",
           DentalProphylaxisSessionAttributes.CATEGORY,
           true)),
@@ -36,7 +36,7 @@ public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
 
   TYP(
       ValueWithOptionsAttribute.create(
-          "Typ der Prophylaxe",
+          "Typ der Maßnahme",
           "TYP",
           DentalProphylaxisSessionAttributes.CATEGORY,
           false,
@@ -61,7 +61,7 @@ public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
           false,
           getFluoridationVarnishValueOptions()));
 
-  static final String CATEGORY = "Prophylaxe";
+  static final String CATEGORY = "Maßnahme";
 
   private final AttributeData attribute;
 

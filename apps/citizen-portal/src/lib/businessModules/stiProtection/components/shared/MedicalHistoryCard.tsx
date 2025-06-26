@@ -5,9 +5,10 @@
 
 import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
 import { Stack, Typography, styled } from "@mui/joy";
-import { UrlObject } from "url";
 
-import { InternalLinkButton, Row } from "@eshg/lib-portal";
+import { Row } from "@eshg/lib-portal";
+
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface MedicalHistoryCardProps {
   title: string;
@@ -15,7 +16,7 @@ interface MedicalHistoryCardProps {
   unfulfilledLabel: string;
   buttonLabel: string;
   status: boolean;
-  href: string | UrlObject;
+  href: string;
 }
 
 export function MedicalHistoryCard(props: MedicalHistoryCardProps) {
@@ -39,14 +40,14 @@ export function MedicalHistoryCard(props: MedicalHistoryCardProps) {
         </Typography>
       </Stack>
       {!isFulfilled ? (
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           color="primary"
           variant="solid"
           sx={{ padding: 0, flex: 1, minWidth: "10rem" }}
           href={href}
         >
           {buttonLabel}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       ) : null}
     </CardBox>
   );

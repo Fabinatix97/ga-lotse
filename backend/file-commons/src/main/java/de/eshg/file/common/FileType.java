@@ -24,6 +24,7 @@ public enum FileType {
   XLSX(de.eshg.file.common.CustomMediaTypes.APPLICATION_XLSX, FileExtension.XLSX),
   MD(MediaType.TEXT_MARKDOWN, FileExtension.MD),
   SVG(CustomMediaTypes.IMAGE_SVG_XML, FileExtension.SVG),
+  YAML(MediaType.APPLICATION_YAML, FileExtension.YAML, FileExtension.YML),
   ;
 
   private final MediaType mediaType;

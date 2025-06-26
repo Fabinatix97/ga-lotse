@@ -546,7 +546,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         randomIllnessAndAccidentInfoDto(faker),
         randomPromotionTherapyAndAidInfoDto(faker, promotionBeforeSchoolEntry),
         randomInterestsAndSportsInfoDto(faker),
-        faker.bool().bool());
+        faker.bool().bool(),
+        "");
   }
 
   private static CheckUpsDto randomCheckUpsDto(Faker faker) {
@@ -685,7 +686,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         randomBooleanWithUnknownSchoolEntry(faker),
         faker.bool().bool(),
         faker.bool().bool(),
-        null);
+        null,
+        "");
   }
 
   private static VaccinationSchemeValueDto randomVaccinationSchemeSchoolEntry(Faker faker) {

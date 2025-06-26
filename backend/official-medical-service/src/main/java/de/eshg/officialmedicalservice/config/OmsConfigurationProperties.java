@@ -13,5 +13,6 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("de.eshg.de.eshg.official-medical-service.validation")
 public record OmsConfigurationProperties(
     @DefaultValue("204800") long maxMarkdownFileSizeBytes,
+    @DefaultValue("204800") long maxYamlFileSizeBytes,
     @DefaultValue("5") int concernsMaxCategories,
     @DefaultValue("50") int concernsMaxConcernsPerCategory) {}

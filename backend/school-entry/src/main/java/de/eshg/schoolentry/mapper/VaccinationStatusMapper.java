@@ -43,7 +43,8 @@ public final class VaccinationStatusMapper {
         mapToDto(vaccinationStatus.getPerkombiHbv()),
         vaccinationStatus.getMeaslesContraIndication(),
         vaccinationStatus.getMeaslesContraIndicationIsPermanent(),
-        vaccinationStatus.getMeaslesContraIndicationUntil());
+        vaccinationStatus.getMeaslesContraIndicationUntil(),
+        vaccinationStatus.getNote());
   }
 
   private static List<OtherVaccinationDto> mapToDto(List<OtherVaccination> otherVaccinations) {
@@ -84,6 +85,7 @@ public final class VaccinationStatusMapper {
     vaccinationStatus.setMeaslesContraIndicationIsPermanent(
         dto.measlesContraIndicationIsPermanent());
     vaccinationStatus.setMeaslesContraIndicationUntil(dto.measlesContraIndicationUntil());
+    vaccinationStatus.setNote(dto.note());
     return vaccinationStatus;
   }
 

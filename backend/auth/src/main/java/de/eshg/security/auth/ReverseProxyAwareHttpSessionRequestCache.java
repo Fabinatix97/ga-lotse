@@ -33,11 +33,6 @@ class ReverseProxyAwareHttpSessionRequestCache extends HttpSessionRequestCache {
       Pattern.compile("^/(sw|(worker-|workbox-|fallback-)\\p{Alnum}+)\\.js$");
 
   @Override
-  public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
-    super.saveRequest(request, response);
-  }
-
-  @Override
   public SavedRequest getRequest(HttpServletRequest currentRequest, HttpServletResponse response) {
     SavedRequest request = super.getRequest(currentRequest, response);
     if (request == null) {

@@ -5,7 +5,6 @@
 
 import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import { ButtonLink, FormPlus, useFileDownload } from "@eshg/lib-portal";
 
@@ -17,12 +16,13 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function LandingpageSidePanel() {
   const { t } = useTranslation(["schoolEntry/overview"]);
   const accessCode = useAccessCodeParam();
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
 
   function handleConfirm() {

@@ -38,13 +38,13 @@ public class LogoutController {
 
   public LogoutController(
       CsrfTokenRepository csrfTokenRepository,
-      OAuth2ClientProperties auth2ClientProperties,
+      OAuth2ClientProperties oAuth2ClientProperties,
       AuthProperties authProperties) {
     this.csrfTokenRepository = csrfTokenRepository;
 
     String oauthProvider =
-        Iterables.getOnlyElement(auth2ClientProperties.getRegistration().keySet());
-    String clientId = auth2ClientProperties.getRegistration().get(oauthProvider).getClientId();
+        Iterables.getOnlyElement(oAuth2ClientProperties.getRegistration().keySet());
+    String clientId = oAuth2ClientProperties.getRegistration().get(oauthProvider).getClientId();
     this.keycloakLogoutUrl =
         UriComponentsBuilder.fromUri(authProperties.keycloak().logout().url())
             .queryParam("client_id", clientId)

@@ -37,6 +37,16 @@ public class AccessCodeLoginMethod extends LoginMethod {
   }
 
   @Override
+  public LoginMethodType getLoginMethodType(String redirectUrl) {
+    return switch (getAccessCodeLoginType(redirectUrl)) {
+      case SCHOOL_ENTRY -> LoginMethodType.ACCESS_CODE_SCHOOL_ENTRY;
+      case TRAVEL_MEDICINE -> LoginMethodType.ACCESS_CODE_TRAVEL_MEDICINE;
+      case STI_PROTECTION -> LoginMethodType.ACCESS_CODE_STI_PROTECTION;
+      case OFFICIAL_MEDICAL_SERVICE -> LoginMethodType.ACCESS_CODE_OFFICIAL_MEDICAL_SERVICE;
+    };
+  }
+
+  @Override
   protected void applyParameters(Map<String, Object> params, String redirectUrl) {
     AccessCodeLoginType accessCodeLoginType = getAccessCodeLoginType(redirectUrl);
     params.put("prompt", determineCredentialProviderId(accessCodeLoginType));

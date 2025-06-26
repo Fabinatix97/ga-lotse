@@ -8,7 +8,6 @@ import { Button, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import {
-  InternalLinkButton,
   formatDate,
   formatPersonName,
   useMultiStepForm,
@@ -22,6 +21,7 @@ import {
   InfoSectionTitle,
 } from "@/lib/shared/components/infoSection";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface CitizenAnamnesisSidePanelProps {
   child: ApiCitizenChild;
@@ -50,13 +50,13 @@ export function CitizenAnamnesisSidePanel({
         <Button onClick={goForward}>{t("result.continue")}</Button>
       )}
       {currentStep === 1 && (
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           variant="soft"
           color="neutral"
           href={citizenRoutes.appointment.index(undefined)}
         >
           {t("result.abort")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       )}
       {currentStep === totalSteps && (
         <Button onClick={() => handleSubmit()}>{t("result.submit")}</Button>

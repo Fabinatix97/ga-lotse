@@ -6,7 +6,6 @@
 "use client";
 
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -26,11 +25,12 @@ import { StepCounter } from "@/lib/businessModules/travelMedicine/components/sha
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export default function CitizenOmsEntryPage() {
   const { t } = useTranslation(["officialMedicalService/anamnesis"]);
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
 

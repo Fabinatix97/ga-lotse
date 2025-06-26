@@ -6,11 +6,10 @@
 import { Button, Stack, ToggleButtonGroup } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { NavigationLink } from "@eshg/lib-portal";
-
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
 
 export function PageSwitchButtons({ userType }: { userType: UserType }) {
   const { t } = useTranslation("base/header");
@@ -41,7 +40,7 @@ export function PageSwitchButtonsMobile({ userType }: { userType: UserType }) {
       <Button
         variant={userType === "person" ? "solid" : "soft"}
         color={userType === "person" ? "primary" : "neutral"}
-        component={NavigationLink}
+        component={ScopedNavigationLink}
         href={routes.citizenPath.index + "/"}
         sx={(theme) => ({
           flex: 1,
@@ -55,7 +54,7 @@ export function PageSwitchButtonsMobile({ userType }: { userType: UserType }) {
       <Button
         variant={userType === "organization" ? "solid" : "soft"}
         color={userType === "organization" ? "primary" : "neutral"}
-        component={NavigationLink}
+        component={ScopedNavigationLink}
         href={routes.organizationPath.index}
         sx={(theme) => ({
           flex: 1,
@@ -92,7 +91,7 @@ export function PageSwitchButton({
           isActive ? theme.palette.primary : theme.palette.text.primary,
         ...sx,
       }}
-      component={NavigationLink}
+      component={ScopedNavigationLink}
       href={href}
     >
       {name}

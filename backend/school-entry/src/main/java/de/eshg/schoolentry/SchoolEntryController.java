@@ -136,13 +136,16 @@ public class SchoolEntryController {
       @InlineParameterObject @ParameterObject @Valid ProcedureFilterParameters filterParameters,
       @InlineParameterObject @ParameterObject @Valid
           ProcedurePaginationAndSortParameters paginationAndSortParameters,
-      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
+      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          HumanReadablePersonIdSearchParameters humanReadablePersonId) {
 
-    Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(filterParameters, searchParameters);
+    Validator.validateOnlyOneOfSearchAndFilterParametersAndHumanReadableIdAreSet(
+        filterParameters, searchParameters, humanReadablePersonId);
     ProcedureValidator.validatePartialSearchParameters(searchParameters);
     PagedProcedures pagedProcedures =
         procedureOverviewService.getProcedures(
-            filterParameters, paginationAndSortParameters, searchParameters);
+            filterParameters, paginationAndSortParameters, searchParameters, humanReadablePersonId);
     return new GetProceduresResponse(
         pagedProcedures.stream().map(ProcedureMapper::mapProcedureToDto).toList(),
         pagedProcedures.totalNumberOfProcedures());

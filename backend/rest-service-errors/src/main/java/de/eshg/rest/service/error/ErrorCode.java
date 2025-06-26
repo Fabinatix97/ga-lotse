@@ -38,6 +38,8 @@ public enum ErrorCode {
   INVALID_FILE,
   /** Use when given PDF file does not meet requirements */
   NONCONFORM_PDF,
+  /** Use when headers of the uploaded csv file don´t match the template */
+  CSV_INVALID_HEADER,
   /** Use when data was illegally manipulated */
   CORRUPT,
   /** Use when a resource is locked by another user */

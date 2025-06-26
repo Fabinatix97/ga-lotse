@@ -26,6 +26,11 @@ public final class MukLoginMethod extends LoginMethod {
   }
 
   @Override
+  public LoginMethodType getLoginMethodType(String redirectUrl) {
+    return LoginMethodType.MUK;
+  }
+
+  @Override
   protected void applyParameters(Map<String, Object> params, String redirectUrl) {
     log.info("Adding MUK IDP hint to login url");
     params.put("kc_idp_hint", "muk");

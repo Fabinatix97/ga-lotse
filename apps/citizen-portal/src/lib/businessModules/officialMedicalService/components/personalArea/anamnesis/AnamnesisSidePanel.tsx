@@ -7,13 +7,12 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { Dispatch, SetStateAction } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
-
 import { ANAMNESIS_TOTAL_STEPS } from "@/lib/businessModules/officialMedicalService/components/personalArea/anamnesis/common";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 interface AnamnesisSidePanelProps {
@@ -47,13 +46,13 @@ export function AnamnesisSidePanel({
             {t("sidePanel.back")}
           </Button>
         )}
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           variant="soft"
           color="neutral"
           href={citizenRoutes.personalArea.index(accessCode)}
         >
           {t("sidePanel.cancel")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </Stack>
     </ContentSheet>
   );

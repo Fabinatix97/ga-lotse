@@ -12,6 +12,7 @@ public record InvitationData(
     DepartmentLogo departmentLogo,
     Address office,
     Address child,
+    String personId,
     InvitationExamination examination,
     InvitationInfo invitationInfo,
     String accentColorHex,

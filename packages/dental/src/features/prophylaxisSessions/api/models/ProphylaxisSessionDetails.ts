@@ -10,18 +10,18 @@ import {
   ApiPerformingPerson,
   ApiProphylaxisSessionDetails,
 } from "@eshg/dental-api";
+import { mapBaseEntity, mapVersioned } from "@eshg/lib-employee-portal";
 
-import {
-  ProphylaxisSession,
-  mapProphylaxisSession,
-} from "./ProphylaxisSession";
+import { mapInstitution } from "../../../../api/models/Institution";
+
+import { ProphylaxisSession } from "./ProphylaxisSession";
 import {
   ProphylaxisSessionExamination,
   mapProphylaxisSessionExamination,
 } from "./ProphylaxisSessionExamination";
 
-export interface ProphylaxisSessionDetails extends ProphylaxisSession {
-  version: number;
+export interface ProphylaxisSessionDetails
+  extends Omit<ProphylaxisSession, "isDeletable"> {
   dentitionType?: ApiDentitionType;
   participants: ProphylaxisSessionExamination[];
   dentists: ApiPerformingPerson[];
@@ -43,6 +43,21 @@ export function mapProphylaxisSessionDetails(
         isFluoridation,
       ),
     ),
-    version: response.version,
+  };
+}
+
+function mapProphylaxisSession(
+  response: ApiProphylaxisSessionDetails,
+): Omit<ProphylaxisSession, "isDeletable"> {
+  return {
+    ...mapBaseEntity(response),
+    ...mapVersioned(response),
+    dateAndTime: response.dateAndTime,
+    institution: mapInstitution(response.institution),
+    groupName: response.groupName,
+    type: response.type,
+    isScreening: response.isScreening,
+    fluoridationVarnish: response.fluoridationVarnish,
+    status: response.status,
   };
 }

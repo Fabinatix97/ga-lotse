@@ -58,14 +58,15 @@ public class AuthController {
       // exception for URLs with square brackets that are used by Next.js 14
       @RequestHeader(X_ORIGINAL_URI_HEADER) String originalUri,
       @RequestHeader(X_ORIGINAL_METHOD_HEADER) HttpMethod originalMethod,
-      @RequestHeader(value = "Sec-Fetch-Site", required = false) String secFetchSite) {
+      @RequestHeader(value = SecFetchHeaderUtil.SEC_FETCH_SITE_HEADER_NAME, required = false)
+          String secFetchSite) {
     validateUri(originalUri);
     validateHttpMethod(originalMethod);
     OAuth2AccessToken accessToken = client.getAccessToken();
     String originalUriPath =
         Objects.requireNonNull(UriComponentsBuilder.fromUriString(originalUri).build().getPath());
     if (originalUriPath.startsWith(AbstractPublicSecurityConfiguration.BACKEND_BASE_PATH + "/")) {
-      verifySecFetchSiteHeaderValue(secFetchSite);
+      SecFetchHeaderUtil.verifySecFetchSiteHeader(secFetchSite, SecFetchSite.SAME_ORIGIN);
 
       AuthorizationDefinition authorizationDefinition =
           findAuthorizationDefinition(originalUriPath, originalMethod);
@@ -103,13 +104,6 @@ public class AuthController {
             HttpHeaders.AUTHORIZATION,
             accessToken.getTokenType().getValue() + " " + accessToken.getTokenValue())
         .build();
-  }
-
-  private static void verifySecFetchSiteHeaderValue(String secFetchSiteHeaderValue) {
-    if (!(Objects.equals(secFetchSiteHeaderValue, "same-origin"))) {
-      throw new ForbiddenException(
-          "Illegal value of the Sec-Fetch-Site header: '%s'".formatted(secFetchSiteHeaderValue));
-    }
   }
 
   private AuthorizationDefinition findAuthorizationDefinition(

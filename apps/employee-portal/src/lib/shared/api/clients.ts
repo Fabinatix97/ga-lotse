@@ -4,6 +4,7 @@
  */
 
 import {
+  AddressDirectoryConfigApi,
   Configuration as BaseConfiguration,
   BasePrivacyDocumentsApi,
   ConfigurationParameters,
@@ -27,7 +28,10 @@ import {
   StatisticsProcedureReferenceApi,
 } from "@eshg/lib-statistics-api";
 import { MeaslesProtectionAppointmentStandardDurationApi } from "@eshg/measles-protection-api";
-import { OmsAppointmentStandardDurationApi } from "@eshg/official-medical-service-api";
+import {
+  OmsAppointmentStandardDurationApi,
+  OmsConfigApi,
+} from "@eshg/official-medical-service-api";
 import { OpenDataConfigApi } from "@eshg/opendata-api";
 import {
   SchoolEntryAppointmentStandardDurationApi,
@@ -183,6 +187,11 @@ export function useConfiguratorSchoolEntryApi() {
   return new SchoolEntryLibConfigApi(configuration);
 }
 
+export function useConfiguratorOmsApi() {
+  const configuration = useOmsConfiguration();
+  return new OmsConfigApi(configuration);
+}
+
 export function useNotificationConfigApi() {
   const configuration = useTravelMedicineConfiguration();
   return new NotificationConfigApi(configuration);
@@ -239,4 +248,9 @@ export function useStiProtectionAppointmentStandardDurationApi() {
 export function useOpenDataConfigApi() {
   const configuration = useOpenDataConfiguration();
   return new OpenDataConfigApi(configuration);
+}
+
+export function useAddressRegistryConfigurationApi() {
+  const configuration = useConfiguration();
+  return new AddressDirectoryConfigApi(configuration);
 }

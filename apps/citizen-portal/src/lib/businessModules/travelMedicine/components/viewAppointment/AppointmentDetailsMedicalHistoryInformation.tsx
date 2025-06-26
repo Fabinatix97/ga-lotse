@@ -5,7 +5,6 @@
 
 import { Check, CloseOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -15,6 +14,7 @@ import {
   InfoSectionGrid,
   InfoSectionTitle,
 } from "@/lib/shared/components/infoSection";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 interface AppointmentDetailsMedicalHistoryInformationProps {
@@ -25,7 +25,7 @@ export function AppointmentDetailsMedicalHistoryInformation(
   props: Readonly<AppointmentDetailsMedicalHistoryInformationProps>,
 ) {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { procedureId, procedureStepId } = useIdContext();

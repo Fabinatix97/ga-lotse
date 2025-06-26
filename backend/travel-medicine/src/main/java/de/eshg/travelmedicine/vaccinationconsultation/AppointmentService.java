@@ -5,28 +5,48 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
+import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStepRepository;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.UserDefinedAppointment;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.UserDefinedAppointmentRepository;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AppointmentService {
+public class AppointmentService extends AbstractAppointmentService<ProcedureStep> {
   private final UserDefinedAppointmentRepository userDefinedAppointmentRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final TravelMedicineFeatureToggle travelMedicineFeatureToggle;
+  private final ProcedureStepRepository procedureStepRepository;
+  private final PersonClient personClient;
 
   public AppointmentService(
+      Clock clock,
       UserDefinedAppointmentRepository userDefinedAppointmentRepository,
-      AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
+      AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      TravelMedicineFeatureToggle travelMedicineFeatureToggle,
+      ProcedureStepRepository procedureStepRepository,
+      PersonClient personClient) {
+    super(clock);
     this.userDefinedAppointmentRepository = userDefinedAppointmentRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.travelMedicineFeatureToggle = travelMedicineFeatureToggle;
+    this.procedureStepRepository = procedureStepRepository;
+    this.personClient = personClient;
   }
 
   public void createUserDefinedAppointment(
@@ -94,6 +114,53 @@ public class AppointmentService {
               "Procedure step %s already has an appointment from appointment block.",
               procedureStep.getId()));
     }
+  }
+
+  @Override
+  public void checkAppointmentBlockViewFeatureActive() {
+    throw new BadRequestException("No feature toggle");
+  }
+
+  @Override
+  protected List<ProcedureStep> resolveEntitiesWithAppointments(List<Appointment> appointments) {
+    return procedureStepRepository.findByAppointmentIn(appointments);
+  }
+
+  @Override
+  protected Map<ProcedureStep, String> getInformationForAppointmentOverview(
+      List<ProcedureStep> entities) {
+    Map<ProcedureStep, UUID> stepToCentralFileId =
+        entities.stream()
+            .collect(
+                Collectors.toMap(
+                    entity -> entity,
+                    entity ->
+                        entity
+                            .getVaccinationConsultation()
+                            .getPatientIdsFromCentralFile()
+                            .getFirst()));
+
+    Map<UUID, PatientDto> personsFromCentralFile =
+        personClient.getPersonsFromCentralFile(
+            stepToCentralFileId.values().stream().distinct().toList());
+
+    return entities.stream()
+        .collect(
+            Collectors.toMap(
+                entity -> entity,
+                entity -> {
+                  UUID centralFileId = stepToCentralFileId.get(entity);
+                  PatientDto patientDto = personsFromCentralFile.get(centralFileId);
+                  if (patientDto == null) {
+                    return "";
+                  }
+                  return "%s %s".formatted(patientDto.firstName(), patientDto.lastName());
+                }));
+  }
+
+  @Override
+  protected UUID getProcedureId(ProcedureStep entity) {
+    return entity.getVaccinationConsultation().getExternalId();
   }
 
   static class DummyEntityWithAppointment implements EntityWithAppointment {

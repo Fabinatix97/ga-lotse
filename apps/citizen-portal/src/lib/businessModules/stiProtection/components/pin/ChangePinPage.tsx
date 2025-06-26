@@ -4,7 +4,6 @@
  */
 
 import { Formik, FormikHelpers } from "formik";
-import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { FormPlus, useSnackbar } from "@eshg/lib-portal";
@@ -16,6 +15,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/rou
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 import { ChangePinConfirm } from "./ChangePinConfirm";
 import { ChangePinForm } from "./ChangePinForm";
@@ -36,7 +36,7 @@ const INITIAL_VALUES: ChangePinFormData = {
 export function ChangePinPage() {
   const { t } = useTranslation("stiProtection/pin");
   const citizenRoutes = useCitizenRoutes();
-  const router = useRouter();
+  const router = useScopedRouter();
   const snackbar = useSnackbar();
   const updatePin = useUpdatePin();
 

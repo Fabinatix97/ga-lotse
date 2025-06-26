@@ -21,8 +21,9 @@ interface ResultInputFieldProps {
   field: ToothFieldElement;
   result: ToothResult;
   toothContext: ToothContext;
+  isTabFocusable?: boolean;
   setResultAction: SetToothResultAction;
-  "aria-label": string;
+  "aria-labelledby": string;
 }
 
 export function ResultInputField(props: ResultInputFieldProps) {
@@ -46,6 +47,7 @@ export function ResultInputField(props: ResultInputFieldProps) {
       slotProps={{
         input: {
           ref: elementRef,
+          tabIndex: props.isTabFocusable ? 0 : -1,
           "aria-invalid": result.isInvalid,
         },
       }}

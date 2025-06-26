@@ -6,10 +6,9 @@
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
-
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface NoAppointmentCardProps {
   href: string;
@@ -33,9 +32,9 @@ export function NoAppointmentCard({ href }: NoAppointmentCardProps) {
           {t("appointment.appointmentPicker.noAppointmentsAvailable")}
         </Typography>
         <Typography>{t("appointment.appointmentPicker.tryLater")}</Typography>
-        <InternalLinkButton variant="solid" href={href}>
+        <ScopedInternalLinkButton variant="solid" href={href}>
           {t("appointment.backToOverview")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </Stack>
     </ContentSheet>
   );

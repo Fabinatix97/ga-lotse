@@ -7,8 +7,6 @@
 
 import { Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
-
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { GoToChangePinCard } from "@/lib/businessModules/stiProtection/components/pin/GoToChangePinCard";
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -18,6 +16,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { ColumnGridSidePanel } from "@/lib/shared/components/layout/grid";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 export function ResultsStatusSidePanel() {
   const { t } = useTranslation("stiProtection/resultsStatus");
@@ -35,9 +34,11 @@ export function ResultsStatusSidePanel() {
         <ContentSheetTitle>{t(`view.${messageKey}_title`)}</ContentSheetTitle>
         <Typography>{t(`view.${messageKey}_body`)}</Typography>
         {hasResults ? (
-          <InternalLinkButton href={citizenRoutes.personalArea.appointments}>
+          <ScopedInternalLinkButton
+            href={citizenRoutes.personalArea.appointments}
+          >
             {t("view.go_to_appointments")}
-          </InternalLinkButton>
+          </ScopedInternalLinkButton>
         ) : null}
       </ContentSheet>
       <GoToChangePinCard />

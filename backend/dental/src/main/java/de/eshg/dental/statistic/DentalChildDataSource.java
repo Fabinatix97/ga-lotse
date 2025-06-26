@@ -7,12 +7,14 @@ package de.eshg.dental.statistic;
 
 import static de.eshg.dental.statistic.StatisticsCalculationHelper.calculateDmftValue;
 
-import de.eshg.dental.domain.model.*;
+import de.eshg.dental.domain.model.Child;
+import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.MainResult;
+import de.eshg.dental.domain.model.ScreeningExaminationResult;
+import de.eshg.dental.domain.model.SecondaryResult;
+import de.eshg.dental.domain.model.Tooth;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.statistic.model.*;
-import de.eshg.dental.statistic.model.DecayStatus;
-import de.eshg.dental.statistic.model.MihStatus;
-import de.eshg.dental.statistic.model.OralHygieneStatus;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
 import de.eshg.lib.statistics.util.TimeRange;
@@ -50,9 +52,10 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
     return switch (attribute) {
       case PROCEDURE_ID -> child.getExternalId();
       case CHILD_CENTRAL_FILE_ID -> child.getChildIdFromCentralFile();
+      case CHILD_AGE -> latestScreeningExamination.map(this::getChildAgeAtExamination).orElse(null);
       case EINRICHTUNG -> child.getInstitutionId();
       case GRUPPE -> getGroup(child.getGroupName());
-      case ANZAHL_PROPHYLAXEN -> child.getExaminations().size();
+      case ANZAHL_MASSNAHMEN -> child.getExaminations().size();
       case MUNDHYGIENE_STATUS ->
           latestScreeningExamination.map(this::getOralHygieneStatus).orElse(null);
       case MIH_STATUS -> latestScreeningExamination.map(this::getMihStatus).orElse(null);
@@ -83,6 +86,10 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
       case F_WERTE_BLEIBEND ->
           getDValues(latestScreeningExamination, Tooth::isSecondaryTooth, DMFValues::getFValue);
     };
+  }
+
+  private Integer getChildAgeAtExamination(ScreeningExaminationResult latestScreeningExamination) {
+    return latestScreeningExamination.getChildAge();
   }
 
   private Integer getDValues(

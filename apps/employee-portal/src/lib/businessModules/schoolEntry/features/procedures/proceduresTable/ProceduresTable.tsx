@@ -6,7 +6,7 @@
 "use client";
 
 import { Chip, Stack } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import {
   ColumnSort,
   TableOptions,
@@ -31,9 +31,9 @@ import {
   formatSchoolYear,
   getSortDirection,
   getSortKey,
-  useFilterDictionary,
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
+  usePersistentFilterDictionary,
   usePersonSearch,
   useRowSelection,
   useSyncRowSelection,
@@ -90,7 +90,8 @@ export function ProceduresTable(props: ProceduresTableProps) {
     filterButtonProps,
     filterSettingsSheetProps,
     activeFilters,
-  } = useFilterDictionary<keyof ProcedureFilters, ProcedureFilters>({
+  } = usePersistentFilterDictionary<keyof ProcedureFilters, ProcedureFilters>({
+    key: "ESU_PROCEDURE_TABLE",
     onChangeFilters: () => {
       tableControl.paginationProps.onPageChange(0);
       personSearch.reset();
@@ -146,6 +147,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
                 <PersonSearchForm
                   {...personSearch.formProps}
                   allowPartialSearch
+                  allowPersonIdSearch
                   onChange={handleChangePersonSearch}
                 />
               </UnstyledTabPanel>
@@ -209,7 +211,7 @@ function ProcedureTableSheet({
     schoolEntryApi,
     mapProceduresQueryParams(searchParams, filterValues, paginationParams),
   );
-  const [procedures, gdprBanner] = useSuspenseQueries({
+  const [procedures, gdprBanner] = useQueries({
     queries: [proceduresQuery, gdprBannerQuery],
   });
 
@@ -218,26 +220,27 @@ function ProcedureTableSheet({
     businessModule: ApiBusinessModule.SchoolEntry,
   });
 
-  useSyncRowSelection(rowSelectionProps, procedures.data.elements);
+  useSyncRowSelection(rowSelectionProps, procedures.data?.elements);
 
   return (
     <TableSheet
       loading={procedures.isFetching}
       title={
         <ProceduresTableTitle
-          procedures={procedures.data.elements}
+          procedures={procedures.data?.elements ?? []}
           rowSelection={rowSelection}
         />
       }
       footer={
         <Pagination
-          totalCount={procedures.data.totalNumberOfElements}
+          loading={procedures.isFetching}
+          totalCount={procedures.data?.totalNumberOfElements ?? 0}
           {...tableControl.paginationProps}
         />
       }
     >
       <DataTable
-        data={procedures.data.elements}
+        data={procedures.data?.elements ?? []}
         columns={columns}
         sorting={tableControl.tableSorting}
         enableSortingRemoval={false}

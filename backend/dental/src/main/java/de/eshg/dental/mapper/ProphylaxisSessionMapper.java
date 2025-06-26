@@ -18,7 +18,7 @@ import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionDto;
 import de.eshg.dental.api.ProphylaxisStatusDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
-import de.eshg.dental.business.model.ChildWithAugmentedData;
+import de.eshg.dental.business.model.ChildWithPersonAndContactData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.domain.model.Examination;
@@ -27,11 +27,7 @@ import de.eshg.dental.domain.model.FluoridationVarnish;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisStatus;
 import de.eshg.dental.domain.model.ProphylaxisType;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public final class ProphylaxisSessionMapper {
 
@@ -43,13 +39,23 @@ public final class ProphylaxisSessionMapper {
     ContactDto institution = sessionWithAugmentedData.institution();
     return new ProphylaxisSessionDto(
         session.getExternalId(),
+        session.getVersion(),
         session.getDateAndTime(),
         InstitutionMapper.mapContactToInstitutionDto(institution),
         session.getGroupName(),
         mapToDto(session.getType()),
         session.isScreening(),
         mapToDto(session.getFluoridationVarnish()),
-        mapToDto(session.getProphylaxisStatus()));
+        mapToDto(session.getProphylaxisStatus()),
+        hasNoExaminationResults(session));
+  }
+
+  private static boolean hasNoExaminationResults(ProphylaxisSession session) {
+    return session.getExaminations().stream()
+        .map(Examination::getResult)
+        .filter(Objects::nonNull)
+        .toList()
+        .isEmpty();
   }
 
   private static ProphylaxisStatusDto mapToDto(ProphylaxisStatus status) {
@@ -117,7 +123,7 @@ public final class ProphylaxisSessionMapper {
 
   private static List<ProphylaxisSessionChildExaminationDto> getParticipants(
       ProphylaxisSessionWithAugmentedData prophylaxisSessionAugmented) {
-    Map<Examination, ChildWithAugmentedData> childrenData =
+    Map<Examination, ChildWithPersonAndContactData> childrenData =
         prophylaxisSessionAugmented.participants();
     if (childrenData == null) {
       return List.of();
@@ -126,7 +132,7 @@ public final class ProphylaxisSessionMapper {
         .map(
             entry -> {
               Examination examination = entry.getKey();
-              ChildWithAugmentedData childData = entry.getValue();
+              ChildWithPersonAndContactData childData = entry.getValue();
               List<Examination> previousExaminations =
                   prophylaxisSessionAugmented
                       .previousExaminationsByChildFileStateId()
@@ -144,11 +150,11 @@ public final class ProphylaxisSessionMapper {
 
   private static ProphylaxisSessionChildExaminationDto mapToChildExamination(
       Examination examination,
-      ChildWithAugmentedData childData,
+      ChildWithPersonAndContactData childData,
       List<Examination> previousExaminations,
       List<FluoridationConsent> allFluoridationConsents) {
 
-    GetPersonFileStateResponse personData = childData.personData();
+    GetPersonFileStateResponse personData = childData.person();
     return new ProphylaxisSessionChildExaminationDto(
         examination.getVersion(),
         examination.getExternalId(),

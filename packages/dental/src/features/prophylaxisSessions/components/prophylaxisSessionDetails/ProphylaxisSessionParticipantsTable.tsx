@@ -123,7 +123,7 @@ export function ProphylaxisSessionParticipantsTable() {
       color: "danger",
       title: "Kind entfernen?",
       confirmLabel: "Entfernen",
-      description: "Möchten Sie das Kind aus der Prophylaxe entfernen?",
+      description: "Möchten Sie das Kind aus der Maßnahme entfernen?",
       onConfirmMutation: {
         mutationOptions: deleteOptions,
         variableSupplier: () => childExternalId,
@@ -227,7 +227,7 @@ export function ProphylaxisSessionParticipantsTable() {
                     href={routeToExamination(firstParticipant.examinationId)}
                     endDecorator={<Start />}
                   >
-                    Prophylaxe starten
+                    Untersuchung starten
                   </InternalLinkButton>
                 ) : null}
               </>
@@ -566,7 +566,7 @@ function CloseProphylaxisButton() {
         <CloseProphylaxisSessionModal {...modalProps} />
       )}
     >
-      Prophylaxe abschließen
+      Untersuchung abschließen
     </OpenModalButton>
   );
 }

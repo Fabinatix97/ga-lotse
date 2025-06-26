@@ -103,7 +103,7 @@ export const TOOTH_DIAGNOSES = {
   H: "Hypoplasie",
   O: "Fistel",
   V: "Versiegelt",
-  N: "Keine Diganose",
+  N: "Keine Diagnose",
   U: "Fehlend",
   K: "Überkront",
   E: "Trepaniert",

@@ -12,11 +12,7 @@ import { Button, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 
-import {
-  InternalLinkButton,
-  formatDateToFullReadableString,
-  formatTime,
-} from "@eshg/lib-portal";
+import { formatDateToFullReadableString, formatTime } from "@eshg/lib-portal";
 import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
 
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
@@ -28,6 +24,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
@@ -108,13 +105,13 @@ export function BookAppointmentSidePanel({
               .toLowerCase(),
           })}
         </Button>
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           variant="soft"
           color="neutral"
           href={citizenRoutes.personalArea.index(accessCode)}
         >
           {t("sidePanel.cancel")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </Stack>
     </ContentSheet>
   );

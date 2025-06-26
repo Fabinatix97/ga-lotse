@@ -19,6 +19,7 @@ import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsRequest;
 import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsResponse;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.api.UserCalendar;
+import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
@@ -29,7 +30,12 @@ import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.measlesprotection.config.DateTimeConstants;
+import de.eshg.measlesprotection.config.MeaslesProtectionFeatureToggle;
+import de.eshg.measlesprotection.persistence.centralfile.PersonClient;
+import de.eshg.measlesprotection.persistence.centralfile.ProcedureWithPersonDetailsData;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
+import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedureRepository;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.time.Instant;
@@ -38,6 +44,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,7 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AppointmentService {
+public class AppointmentService extends AbstractAppointmentService<MeaslesProtectionProcedure> {
 
   public static final int MAX_DAYS = 45;
 
@@ -55,7 +62,9 @@ public class AppointmentService {
   private final ProcedureFinder procedureFinder;
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
-  private final Clock clock;
+  private final MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle;
+  private final MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository;
+  private final PersonClient personClient;
 
   public AppointmentService(
       CalendarApi calendarApi,
@@ -63,13 +72,19 @@ public class AppointmentService {
       ProcedureFinder procedureFinder,
       AppointmentBlockRepository appointmentBlockRepository,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
-      Clock clock) {
+      Clock clock,
+      MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle,
+      MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
+      PersonClient personClient) {
+    super(clock);
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
     this.procedureFinder = procedureFinder;
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
-    this.clock = clock;
+    this.measlesProtectionFeatureToggle = measlesProtectionFeatureToggle;
+    this.measlesProtectionProcedureRepository = measlesProtectionProcedureRepository;
+    this.personClient = personClient;
   }
 
   @Transactional(readOnly = true)
@@ -220,5 +235,38 @@ public class AppointmentService {
 
     return blockingEventsOfCalendars.calendarsWithBlockingEvents().stream()
         .flatMap(calendars -> calendars.events().stream());
+  }
+
+  @Override
+  public void checkAppointmentBlockViewFeatureActive() {
+    throw new BadRequestException("No feature toggle");
+  }
+
+  @Override
+  protected List<MeaslesProtectionProcedure> resolveEntitiesWithAppointments(
+      List<Appointment> appointments) {
+    return measlesProtectionProcedureRepository.findByAppointmentIn(appointments);
+  }
+
+  @Override
+  protected Map<MeaslesProtectionProcedure, String> getInformationForAppointmentOverview(
+      List<MeaslesProtectionProcedure> entities) {
+    return personClient
+        .augmentWithPersonDetails(entities, false)
+        .collect(
+            Collectors.toMap(
+                ProcedureWithPersonDetailsData::procedure,
+                data ->
+                    data.personDetails() == null
+                        ? ""
+                        : "%s %s"
+                            .formatted(
+                                data.personDetails().firstName(),
+                                data.personDetails().lastName())));
+  }
+
+  @Override
+  protected UUID getProcedureId(MeaslesProtectionProcedure entity) {
+    return entity.getExternalId();
   }
 }

@@ -31,6 +31,8 @@ export function FilterSettingsSheet({
   return (
     <Sheet
       id={id}
+      component="section"
+      aria-label="Filter-Einstellungen"
       sx={{
         width: scalingWidth ? "100%" : 250,
         minHeight: "15rem",

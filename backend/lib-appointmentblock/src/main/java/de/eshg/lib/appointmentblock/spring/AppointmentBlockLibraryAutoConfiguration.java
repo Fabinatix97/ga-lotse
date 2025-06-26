@@ -9,6 +9,7 @@ import de.eshg.lib.appointmentblock.AppointmentBlockController;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.AppointmentBlockValidator;
+import de.eshg.lib.appointmentblock.AppointmentBlockViewService;
 import de.eshg.lib.appointmentblock.AppointmentTypeController;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Import;
 @Import({
   AppointmentBlockController.class,
   AppointmentBlockService.class,
+  AppointmentBlockViewService.class,
   AppointmentBlockSlotUtil.class,
   AppointmentBlockValidator.class,
   AppointmentTypeController.class,

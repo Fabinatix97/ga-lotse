@@ -113,12 +113,12 @@ function UpdateProphylaxisSessionSidebar(
   return (
     <FormikProvider value={form}>
       <SidebarForm ref={props.formRef}>
-        <SidebarContent title="Prophylaxe ändern">
+        <SidebarContent title="Maßnahme ändern">
           <Stack gap={3}>
             {hasExaminationResults && (
               <Alert
                 color="primary"
-                message="Da es bereits Untersuchungsergebnisse zu dieser Prophylaxe gibt, können einige Daten nicht mehr geändert werden."
+                message="Da bereits Ergebnisse zu dieser Untersuchung eingetragen wurden, können einige Daten nicht mehr geändert werden."
               />
             )}
             <DateTimeField

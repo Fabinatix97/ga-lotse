@@ -10,6 +10,7 @@ export type Dentition = Record<QuadrantNumber, Quadrant>;
 export interface Quadrant {
   quadrantNumber: QuadrantNumber;
   teeth: Tooth[];
+  tabTarget: ApiTooth;
 }
 
 export type QuadrantNumber = "Q1" | "Q2" | "Q3" | "Q4";
@@ -75,9 +76,10 @@ export interface ElementContext {
 }
 
 export function hasPreviousExaminationResult(
-  tooth: ToothWithDiagnosis,
-): boolean {
+  tooth: Tooth,
+): tooth is ToothWithDiagnosis {
   return (
+    isToothWithDiagnosis(tooth) &&
     tooth.previousResults.length > 0 &&
     tooth.previousResults[0] !== ApiMainResult.S
   );

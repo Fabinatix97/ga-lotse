@@ -7,10 +7,9 @@ import { Box, CardContent, Typography } from "@mui/joy";
 import Card from "@mui/joy/Card";
 import { useId } from "react";
 
-import { NavigationLink } from "@eshg/lib-portal";
-
 import { SubNavigationItem } from "@/lib/baseModule/components/layout/types";
 import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
+import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
 
 type ServiceCardProps = Omit<SubNavigationItem, "description">;
 
@@ -18,7 +17,7 @@ export function ServiceCard(props: ServiceCardProps) {
   const nameId = useId();
 
   return (
-    <NavigationLink
+    <ScopedNavigationLink
       href={props.href}
       passHref
       sx={{
@@ -74,6 +73,6 @@ export function ServiceCard(props: ServiceCardProps) {
           </Box>
         </CardContent>
       </Card>
-    </NavigationLink>
+    </ScopedNavigationLink>
   );
 }

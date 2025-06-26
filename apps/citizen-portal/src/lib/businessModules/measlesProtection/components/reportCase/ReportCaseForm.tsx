@@ -6,7 +6,7 @@
 import { Box, Grid, Sheet, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Formik, FormikHelpers, FormikProps } from "formik";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { FormPlus, isAdult, isInteger, toUtcDate } from "@eshg/lib-portal";
@@ -18,6 +18,7 @@ import {
 } from "@/lib/businessModules/measlesProtection/helpers/reportCaseForm.storage";
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
@@ -98,7 +99,7 @@ interface ReportMeaslesCaseFormProps {
 }
 
 export function ReportCaseForm({ onSubmit }: ReportMeaslesCaseFormProps) {
-  const router = useRouter();
+  const router = useScopedRouter();
   const routes = useRoutes();
   const searchParams = useSearchParams();
   const replaceSearchParams = useReplaceSearchParams();

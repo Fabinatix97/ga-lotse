@@ -5,13 +5,15 @@
 
 import { LogoutOutlined } from "@mui/icons-material";
 
-import { InternalLinkButton, useIsMobile } from "@eshg/lib-portal";
+import { useIsMobile } from "@eshg/lib-portal";
+
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 export function LogoutButton(props: { text: string }) {
   const isMobile = useIsMobile();
 
   return (
-    <InternalLinkButton
+    <ScopedInternalLinkButton
       href="/logout/keycloak"
       color="danger"
       variant="soft"
@@ -19,6 +21,6 @@ export function LogoutButton(props: { text: string }) {
       endDecorator={isMobile ? undefined : <LogoutOutlined />}
     >
       {isMobile ? <LogoutOutlined /> : props.text}
-    </InternalLinkButton>
+    </ScopedInternalLinkButton>
   );
 }

@@ -4,7 +4,7 @@
  */
 
 import { FormikValues } from "formik";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Alert, useIsMobile } from "@eshg/lib-portal";
@@ -25,12 +25,13 @@ import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function MedicalHistoryStepper() {
   const { t } = useTranslation(["travelMedicine/medicalHistories"]);
   const isMobile = useIsMobile();
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const searchParams = useSearchParams();

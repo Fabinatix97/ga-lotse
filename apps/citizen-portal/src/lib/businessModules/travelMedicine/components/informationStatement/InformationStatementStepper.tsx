@@ -5,7 +5,7 @@
 
 import { Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import {
   FormPlus,
@@ -29,6 +29,7 @@ import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export interface InformationStatementFormValues {
@@ -40,7 +41,7 @@ export interface InformationStatementFormValues {
 export function InformationStatementStepper() {
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
-  const router = useRouter();
+  const router = useScopedRouter();
   const { t } = useTranslation([
     "travelMedicine/informationStatements",
     "travelMedicine/signature",

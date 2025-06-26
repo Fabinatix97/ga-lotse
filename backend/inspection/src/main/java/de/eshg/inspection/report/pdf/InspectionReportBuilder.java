@@ -120,7 +120,8 @@ public class InspectionReportBuilder {
         departmentInfo.city(),
         departmentInfo.phoneNumber(),
         null,
-        departmentInfo.homepage());
+        departmentInfo.homepage(),
+        departmentInfo.email());
   }
 
   private RepFacility createReportFacility(Inspection inspection) {
@@ -147,6 +148,7 @@ public class InspectionReportBuilder {
             baseFacility.contactAddress().postalCode(),
             baseFacility.contactAddress().city(),
             phoneNumber,
+            null,
             null,
             null);
     String contactPerson =

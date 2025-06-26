@@ -24,7 +24,6 @@ import de.eshg.dental.api.ToothDto;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
-import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.FluoridationExaminationResult;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ScreeningExaminationResult;
@@ -53,6 +52,8 @@ public class Validator {
 
   private static final String PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE =
       "ProphylaxisSession cannot be closed, because at least one existing examination has not yet been closed.";
+  private static final String PROPHYLAXIS_SESSION_HAS_RESULTS_MESSAGE =
+      "ProphylaxisSession cannot be deleted, because at least one existing examination has results.";
 
   private final Clock clock;
   private final ContactClient contactClient;
@@ -223,40 +224,65 @@ public class Validator {
     }
   }
 
-  public static void validateAllExaminationsAreClosed(ProphylaxisSession prophylaxisSession) {
-    List<Examination> examinations = prophylaxisSession.getExaminations();
+  public static void validateAllExaminationsAreComplete(ProphylaxisSession prophylaxisSession) {
+    boolean isScreeningSession = prophylaxisSession.isScreening();
+    boolean isFluoridationSession = prophylaxisSession.hasFluoridationVarnish();
+    boolean isUnfeasibleExamination = !isScreeningSession && !isFluoridationSession;
+    if (isUnfeasibleExamination) {
+      return;
+    }
 
+    List<Examination> examinations = prophylaxisSession.getExaminations();
     for (Examination examination : examinations) {
+      if (isUnfeasibleFluoridationOnly(prophylaxisSession, examination)) {
+        continue;
+      }
+
       if (!examination.hasResult()) {
         throw new BadRequestException(PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE);
       }
       ExaminationResult result = examination.getResult();
-      FluoridationConsent currentFluoridationConsent =
-          examination.getChild().getCurrentFluoridationConsent();
+      boolean isFluoridationConsentGiven =
+          examination.getChild().isFluoridationConsentCurrentlyGiven();
 
-      if (result instanceof FluoridationExaminationResult fluoridationExaminationResult) {
+      if (result instanceof FluoridationExaminationResult fluoridationResult) {
         validateFluoridationIsComplete(
-            fluoridationExaminationResult.isFluorideVarnishApplied(),
-            prophylaxisSession.hasFluoridationVarnish(),
-            currentFluoridationConsent);
-      } else if (result instanceof ScreeningExaminationResult screeningExaminationResult) {
+            isFluoridationSession,
+            isFluoridationConsentGiven,
+            fluoridationResult.isFluorideVarnishApplied());
+      } else if (result instanceof ScreeningExaminationResult screeningResult) {
         validateFluoridationIsComplete(
-            screeningExaminationResult.isFluorideVarnishApplied(),
-            prophylaxisSession.hasFluoridationVarnish(),
-            currentFluoridationConsent);
-        validateScreeningIsComplete(screeningExaminationResult);
+            isFluoridationSession,
+            isFluoridationConsentGiven,
+            screeningResult.isFluorideVarnishApplied());
+        validateScreeningIsComplete(screeningResult);
       }
     }
   }
 
+  public static void validateAllExaminationsAreEmpty(List<Examination> examinations) {
+    for (Examination examination : examinations) {
+      if (examination.hasResult()) {
+        throw new BadRequestException(PROPHYLAXIS_SESSION_HAS_RESULTS_MESSAGE);
+      }
+    }
+  }
+
+  private static boolean isUnfeasibleFluoridationOnly(
+      ProphylaxisSession prophylaxisSession, Examination examination) {
+    boolean isFluoridationConsentGiven =
+        examination.getChild().isFluoridationConsentCurrentlyGiven();
+    boolean isFluoridationOnly =
+        !prophylaxisSession.isScreening() && prophylaxisSession.hasFluoridationVarnish();
+    return isFluoridationOnly && !isFluoridationConsentGiven;
+  }
+
   private static void validateFluoridationIsComplete(
-      Boolean isFluorideVarnishApplied,
-      boolean isExaminationWithFluoridation,
-      FluoridationConsent currentFluoridationConsent) {
-    if (isFluorideVarnishApplied == null
-        && isExaminationWithFluoridation
-        && currentFluoridationConsent != null
-        && currentFluoridationConsent.isConsented()) {
+      boolean isFluoridationSession,
+      boolean isFluoridationConsentGiven,
+      Boolean isFluorideVarnishApplied) {
+    boolean isFeasibleFluoridation = isFluoridationSession && isFluoridationConsentGiven;
+    if (isFeasibleFluoridation && isFluorideVarnishApplied == null) {
       throw new BadRequestException(PROPHYLAXIS_SESSION_INCOMPLETE_MESSAGE);
     }
   }

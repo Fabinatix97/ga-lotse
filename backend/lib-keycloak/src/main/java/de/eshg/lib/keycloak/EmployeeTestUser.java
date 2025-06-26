@@ -143,6 +143,20 @@ public enum EmployeeTestUser implements KeycloakUser {
       "Felix",
       "Richter",
       List.of(ModuleMemberGroup.MEASLES_PROTECTION, ModuleLeaderGroup.MEASLES_PROTECTION)),
+  MEDS_ABROAD_MODULE_DUMMY(
+      "meds_abroad_dummy_user",
+      "+49 555 123 999",
+      "password",
+      "Thomas",
+      "Köner",
+      List.of(ModuleMemberGroup.MEDS_ABROAD)),
+  MEDS_ABROAD_MODULE_LEADER(
+      "meds_abroad_module_leader",
+      "+49 555 123 998",
+      "password",
+      "Laura",
+      "Richter",
+      List.of(ModuleMemberGroup.MEDS_ABROAD, ModuleLeaderGroup.MEDS_ABROAD)),
   STATISTICS_MODULE_DUMMY(
       "statistics_module_dummy_user",
       "+49 555 123 463",

@@ -193,6 +193,7 @@ public final class BaseUrls {
 
   public static final class MedsAbroad {
     public static final String PROCEDURE_CONTROLLER = "/meds-abroad-procedures";
+    public static final String CITIZEN_PUBLIC_CONTROLLER = "/citizen/public";
 
     private MedsAbroad() {}
   }

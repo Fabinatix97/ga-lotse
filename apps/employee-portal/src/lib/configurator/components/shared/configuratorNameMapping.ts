@@ -50,11 +50,15 @@ export function getTabNamesByEndpointName(
       return "Datenschutzerklärung PDF";
     case "APPOINTMENT_STANDARD_DURATION":
       return "Standard-Termindauer";
+    case "OFFICIAL_MEDICAL_SERVICE":
+      return "Fachliche Einstellungen";
     case "OPEN_DATA":
       return "Nutzungsbedingungen, Lizensierung und Autor";
     case "LOGO_CONFIG":
       return "Logo des Gesundheitsamts";
     case "MEDS_ABROAD":
       return "Reisen mit BtM";
+    case "ADDRESS_REGISTRY":
+      return "Straßen-/Gemeinde-Verzeichnis";
   }
 }

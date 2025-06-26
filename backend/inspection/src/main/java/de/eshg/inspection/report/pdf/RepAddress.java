@@ -14,4 +14,5 @@ public record RepAddress(
     String city,
     String phoneNumber,
     String mobilePhoneNumber,
-    String url) {}
+    String url,
+    String email) {}

@@ -11,6 +11,7 @@ import { ToothDiagnoses } from "../../api/models/ExaminationResult";
 import { ToothDiagnosis } from "../../api/models/ToothDiagnosis";
 import { OPTIONAL_TEETH, RELATED_TEETH } from "../../config/teeth";
 
+import { firstToothWithDiagnosis } from "./actions/utils";
 import {
   INITIALLY_TOGGLED_OPTIONAL_TEETH,
   TOOTH_TYPES,
@@ -143,6 +144,7 @@ function createQuadrant(
   return {
     quadrantNumber,
     teeth,
+    tabTarget: firstToothWithDiagnosis(teeth, quadrantNumber),
   };
 }
 

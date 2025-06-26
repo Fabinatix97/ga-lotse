@@ -25,13 +25,34 @@ import {
   useKeyboardNavigationHandler,
 } from "../../stores/examination/hooks/useKeyboardNavigationHandler";
 import {
-  QuadrantNumber,
   Tooth,
   ToothContext,
+  hasPreviousExaminationResult,
+  isAddableTooth,
 } from "../../stores/examination/types";
+import { formatToothNumber } from "../../utils/formatters";
 
 import { TOOTH_SIZE } from "./styles";
 import { ToothIcon } from "./toothIcons";
+
+interface ToothButtonProps {
+  tooth: Tooth;
+  toothContext: ToothContext;
+}
+
+export function ToothButton(props: ToothButtonProps) {
+  const { tooth, toothContext } = props;
+
+  if (isAddableTooth(tooth)) {
+    return <AddToothButton tooth={tooth} toothContext={toothContext} />;
+  }
+
+  if (tooth.isRemovable) {
+    return <RemoveToothButton tooth={tooth} toothContext={toothContext} />;
+  }
+
+  return <ToggleToothTypeButton tooth={tooth} toothContext={toothContext} />;
+}
 
 interface SizedIconButtonProps {
   isFocused: boolean;
@@ -73,12 +94,20 @@ const IconSizedBox = styled(Box)({
 interface ToothIconButtonProps extends Omit<IconButtonProps, "children"> {
   icon: ReactNode;
   hoverIcon?: ReactNode;
+  hasPreviousExaminationResults: boolean;
   toothContext: ToothContext;
   toothAction: ToothAction | ToothActionWithFocusChange;
 }
 
 function ToothIconButton(props: ToothIconButtonProps) {
-  const { hoverIcon, icon, toothContext, toothAction, ...buttonProps } = props;
+  const {
+    hoverIcon,
+    icon,
+    hasPreviousExaminationResults,
+    toothContext,
+    toothAction,
+    ...buttonProps
+  } = props;
 
   const { elementRef, isFocused, focusHandler, blurHandler } =
     useElementFocus<HTMLButtonElement>({
@@ -93,6 +122,10 @@ function ToothIconButton(props: ToothIconButtonProps) {
       ref={elementRef}
       variant="plain"
       isFocused={isFocused}
+      tabIndex={-1}
+      aria-description={
+        hasPreviousExaminationResults ? "Vorbefunde vorhanden" : undefined
+      }
       onFocus={focusHandler}
       onBlur={blurHandler}
       onClick={() => toothAction(toothContext, true)}
@@ -118,21 +151,20 @@ function ToothIconButton(props: ToothIconButtonProps) {
 }
 
 interface AddToothButtonProps {
-  index: number;
-  quadrantNumber: QuadrantNumber;
+  tooth: Tooth;
+  toothContext: ToothContext;
 }
 
-export function AddToothButton(props: AddToothButtonProps) {
-  const toothContext: ToothContext = {
-    quadrantNumber: props.quadrantNumber,
-    toothIndex: props.index,
-  };
+function AddToothButton(props: AddToothButtonProps) {
+  const { tooth, toothContext } = props;
+  const toothNumber = formatToothNumber(tooth.toothNumber);
   const addTooth = useExaminationStore((state) => state.addTooth);
 
   return (
     <ToothIconButton
       color="primary"
-      aria-label="Zahn hinzufügen"
+      aria-label={`${toothNumber} Zahn hinzufügen`}
+      hasPreviousExaminationResults={hasPreviousExaminationResult(tooth)}
       toothContext={toothContext}
       icon={<RoundedAddIcon />}
       toothAction={addTooth}
@@ -145,14 +177,18 @@ interface RemoveToothButtonProps {
   toothContext: ToothContext;
 }
 
-export function RemoveToothButton(props: RemoveToothButtonProps) {
+function RemoveToothButton(props: RemoveToothButtonProps) {
+  const { tooth, toothContext } = props;
+  const toothNumber = formatToothNumber(tooth.toothNumber);
   const removeTooth = useExaminationStore((state) => state.removeTooth);
+
   return (
     <ToothIconButton
       color="danger"
-      aria-label="Zahn entfernen"
-      toothContext={props.toothContext}
-      icon={<ToothIcon tooth={props.tooth} toothContext={props.toothContext} />}
+      aria-label={`${toothNumber} Zahn entfernen`}
+      hasPreviousExaminationResults={hasPreviousExaminationResult(tooth)}
+      toothContext={toothContext}
+      icon={<ToothIcon tooth={tooth} toothContext={toothContext} />}
       hoverIcon={<RoundedDeleteIcon />}
       toothAction={removeTooth}
     />
@@ -164,14 +200,18 @@ interface ToggleToothTypeButtonProps {
   toothContext: ToothContext;
 }
 
-export function ToggleToothTypeButton(props: ToggleToothTypeButtonProps) {
+function ToggleToothTypeButton(props: ToggleToothTypeButtonProps) {
+  const { tooth, toothContext } = props;
+  const toothNumber = formatToothNumber(tooth.toothNumber);
   const toggleToothType = useExaminationStore((state) => state.toggleToothType);
+
   return (
     <ToothIconButton
       color="primary"
-      aria-label="Zahntyp wechseln"
-      toothContext={props.toothContext}
-      icon={<ToothIcon tooth={props.tooth} toothContext={props.toothContext} />}
+      aria-label={`${toothNumber} Zahntyp wechseln`}
+      hasPreviousExaminationResults={hasPreviousExaminationResult(tooth)}
+      toothContext={toothContext}
+      icon={<ToothIcon tooth={tooth} toothContext={toothContext} />}
       hoverIcon={<RoundedChangeIcon />}
       toothAction={toggleToothType}
     />

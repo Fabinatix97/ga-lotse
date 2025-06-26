@@ -14,6 +14,8 @@ import de.eshg.validation.constraints.EmailAddressConstraint;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -308,7 +310,10 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
   protected LocalDate cellAsDateOfBirth(
       ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
-    LocalDate dateOfBirth = cellAsDate(cell, errorHandler);
+    LocalDate dateOfBirth =
+        Objects.equals(cell.getCellType(), CellType.STRING)
+            ? cellAsDateString(cell, errorHandler)
+            : cellAsDate(cell, errorHandler);
     if (dateOfBirth != null) {
       validateDateOfBirth(cell, dateOfBirth, errorHandler);
     }
@@ -339,6 +344,18 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
       return null;
     }
     return localDateTime.toLocalDate();
+  }
+
+  public static LocalDate cellAsDateString(Cell cell, ErrorHandler errorHandler) {
+    DateTimeFormatter dateTimeFormatter =
+        DateTimeFormatter.ofPattern("[dd.MM.yyyy]" + "[dd.MM.yy]");
+
+    try {
+      return LocalDate.parse(cell.getStringCellValue(), dateTimeFormatter);
+    } catch (DateTimeParseException exception) {
+      errorHandler.handleError(cell, "Ungültiges Datumsformat");
+    }
+    return null;
   }
 
   protected LocalDateTime cellAsDateTime(

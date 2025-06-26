@@ -179,6 +179,7 @@ public class ExaminationService {
         examination,
         ScreeningExaminationResult.class,
         existingResult -> {
+          existingResult.setChildAge(getAgeOfChildAtExamination(examination));
           existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied());
           existingResult.setOralHygieneStatus(
               ExaminationMapper.mapToDomain(newResult.oralHygieneStatus()));
@@ -196,7 +197,7 @@ public class ExaminationService {
           existingResult.setDecayRisk(
               StatisticsCalculationHelper.calculateDecayRisk(
                       ExaminationMapper.mapToDomain(newResult.toothDiagnoses()),
-                      getAgeOfChildAtExamination(examination))
+                      existingResult.getChildAge())
                   .orElse(null));
           existingResult.setDecayStatus(
               StatisticsCalculationHelper.calculateDecayStatus(

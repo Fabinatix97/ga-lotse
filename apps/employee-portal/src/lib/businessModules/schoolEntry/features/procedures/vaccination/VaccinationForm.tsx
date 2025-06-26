@@ -22,6 +22,7 @@ import {
   SetFieldValueHelper,
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
+  TextareaField,
   isEmptyString,
   useIsFormDisabled,
   validateIntegerAnd,
@@ -78,6 +79,7 @@ export interface VaccinationFormValues {
   measlesContraIndication: OptionalFieldValue<boolean>;
   measlesContraIndicationIsPermanent: OptionalFieldValue<boolean>;
   measlesContraIndicationUntil: string;
+  note: string;
 }
 
 export interface OtherVaccinationValues {
@@ -286,6 +288,8 @@ export function VaccinationForm(props: VaccinationFormProps) {
               </>
             )}
           </Stack>
+          <Divider />
+          <TextareaField name="note" label="Bemerkung" />
           <FormFooter isSubmitting={isSubmitting} />
         </FormStack>
       )}

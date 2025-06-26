@@ -7,7 +7,6 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -16,6 +15,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function LandingpageSidePanel({ concern }: { concern: ApiConcern }) {
@@ -28,15 +28,17 @@ export function LandingpageSidePanel({ concern }: { concern: ApiConcern }) {
       <ContentSheetTitle>{t("personal_area.title")}</ContentSheetTitle>
       <Typography>{t("personal_area.information")}</Typography>
       <Stack gap={2}>
-        <InternalLinkButton href={citizenRoutes.concernPath.bookAppointment}>
+        <ScopedInternalLinkButton
+          href={citizenRoutes.concernPath.bookAppointment}
+        >
           {t("personal_area.create_appointment")}
-        </InternalLinkButton>
-        <InternalLinkButton
+        </ScopedInternalLinkButton>
+        <ScopedInternalLinkButton
           href={citizenRoutes.personalArea.index(accessCode)}
           variant="outlined"
         >
           {t("personal_area.go_to_personal_area")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </Stack>
     </ContentSheet>
   );

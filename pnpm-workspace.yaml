@@ -83,7 +83,7 @@ catalogs:
     "tsup": "8.5.0"
     "zustand": "5.0.5"
     "@keycloak/keycloak-admin-client": "26.2.4"
-    "@cronn/vitest-file-snapshots": "0.6.0"
+    "@cronn/vitest-file-snapshots": "0.7.0"
     "tsx": "4.19.4"
 
 # add new dependencies with exact version instead of semver ranges

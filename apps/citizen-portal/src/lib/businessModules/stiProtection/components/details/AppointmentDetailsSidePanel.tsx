@@ -6,9 +6,8 @@
 "use client";
 
 import { Button, Stack } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
-import { InternalLinkButton, useSnackbar } from "@eshg/lib-portal";
+import { useSnackbar } from "@eshg/lib-portal";
 import { ApiCitizenProcedure } from "@eshg/sti-protection-api";
 
 import { useCancelBookedAppointment } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";
@@ -21,6 +20,10 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { ColumnGridSidePanel } from "@/lib/shared/components/layout/grid";
+import {
+  ScopedInternalLinkButton,
+  useScopedRouter,
+} from "@/lib/shared/components/scopedLinks";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { GoToResultsStatusCard } from "./GoToResultsStatusCard";
@@ -32,7 +35,7 @@ export function AppointmentDetailsSidePanel() {
   const { openCancelDialog } = useConfirmationDialog();
   const [{ procedure }] = useFormData<{ procedure: ApiCitizenProcedure }>();
   const citizenRoutes = useConcernedCitizenRoutes(procedure.concern);
-  const router = useRouter();
+  const router = useScopedRouter();
   const snackbar = useSnackbar();
 
   const hasAppointment = procedure.appointment !== undefined;
@@ -64,19 +67,19 @@ export function AppointmentDetailsSidePanel() {
         <ContentSheetTitle>{t("personal_area.title")}</ContentSheetTitle>
         <Stack gap={2}>
           {hasAppointment ? (
-            <InternalLinkButton
+            <ScopedInternalLinkButton
               href={citizenRoutes.personalArea.rebook}
               variant="solid"
             >
               {t("personal_area.rebook_appointment")}
-            </InternalLinkButton>
+            </ScopedInternalLinkButton>
           ) : null}
-          <InternalLinkButton
+          <ScopedInternalLinkButton
             href={citizenRoutes.personalArea.appointments}
             variant="outlined"
           >
             {t("personal_area.go_to_personal_area")}
-          </InternalLinkButton>
+          </ScopedInternalLinkButton>
           {hasAppointment ? (
             <Button variant="outlined" color="danger" onClick={onCancel}>
               {t("personal_area.cancel_appointment")}

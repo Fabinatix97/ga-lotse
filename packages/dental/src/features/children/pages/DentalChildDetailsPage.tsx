@@ -73,7 +73,7 @@ export function DentalChildDetailsPage(
                     openConfirmationDialog({
                       title: "Vorgang für Kind abschließen",
                       description:
-                        "Für dieses Kind sollen keine weiteren Untersuchungen und Prophylaxen mehr dokumentiert werden." +
+                        "Für dieses Kind sollen keine weiteren Untersuchungen und Maßnahmen mehr dokumentiert werden." +
                         "\nDiese Aktion kann nicht mehr rückgängig gemacht werden.",
                       confirmLabel: "Abschließen",
                       onConfirm: () => handleCloseChild(),

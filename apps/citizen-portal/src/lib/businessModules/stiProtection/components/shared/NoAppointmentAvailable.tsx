@@ -7,11 +7,12 @@ import { DateRangeOutlined } from "@mui/icons-material";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { useTranslation } from "react-i18next";
 
-import { InternalLinkButton, Row } from "@eshg/lib-portal";
+import { Row } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 export function NoAppointmentAvailable({ concern }: { concern: ApiConcern }) {
   const { t } = useTranslation("stiProtection/forms");
@@ -46,7 +47,7 @@ export function NoAppointmentAvailable({ concern }: { concern: ApiConcern }) {
           >
             {t("time_slot.try_later")}
           </Typography>
-          <InternalLinkButton
+          <ScopedInternalLinkButton
             href={routes.concernPath.index}
             size="lg"
             sx={(theme) => ({
@@ -56,7 +57,7 @@ export function NoAppointmentAvailable({ concern }: { concern: ApiConcern }) {
             })}
           >
             {t("base/translations:common.back")}
-          </InternalLinkButton>
+          </ScopedInternalLinkButton>
         </Stack>
       </Sheet>
     </Stack>

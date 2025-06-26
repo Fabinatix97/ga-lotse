@@ -24,6 +24,8 @@ public abstract class LoginMethod {
 
   protected abstract List<String> getPathPatterns();
 
+  public abstract LoginMethodType getLoginMethodType(String redirectUrl);
+
   protected abstract void applyParameters(Map<String, Object> params, String redirectUrl);
 
   public OAuth2AuthorizationRequest apply(

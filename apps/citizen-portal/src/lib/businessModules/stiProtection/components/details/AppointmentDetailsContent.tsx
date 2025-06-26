@@ -17,7 +17,6 @@ import { Typography } from "@mui/joy";
 
 import {
   ExternalLink,
-  InternalLink,
   durationBetweenDatesInMinutes,
   formatAppointmentTime,
   formatDateToYear,
@@ -47,6 +46,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
 export function AppointmentDetailsContent() {
@@ -200,12 +200,12 @@ function InternetSection({ concern }: { concern?: ApiConcern }) {
   return (
     <InfoSection icon={<LaptopMacOutlined />}>
       <InfoSectionTitle>{t("info.internet_section.title")}</InfoSectionTitle>
-      <InternalLink href="/">
+      <ScopedInternalLink href="/">
         {t("info.internet_section.health_department")}
-      </InternalLink>
-      <InternalLink href={ref}>
+      </ScopedInternalLink>
+      <ScopedInternalLink href={ref}>
         {t("info.internet_section.opening_hours")}
-      </InternalLink>
+      </ScopedInternalLink>
     </InfoSection>
   );
 }

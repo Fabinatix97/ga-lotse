@@ -5,7 +5,6 @@
 
 import { Box, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 import { FormPlus } from "@eshg/lib-portal";
@@ -19,6 +18,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/rou
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 import { StepButtons } from "./AnamnesisStepButtons";
@@ -87,7 +87,7 @@ export function AnamnesisStepLayout({ children }: PropsWithChildren) {
   const {
     data: { concern },
   } = useGetProcedure();
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
 

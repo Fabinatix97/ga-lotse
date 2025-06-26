@@ -15,7 +15,7 @@ import { ProphylaxisSessionsTable } from "../components/prophylaxisSessionsOverv
 
 export function DentalProphylaxisSessionsOverviewPage() {
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Prophylaxen" />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Maßnahmen" />}>
       <MainContentLayout fullViewportHeight>
         <ProphylaxisSessionsTable />
       </MainContentLayout>

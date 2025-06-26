@@ -47,14 +47,14 @@ export function FullDentitionFormSection() {
           <QuadrantForm quadrantNumber="Q1" titleId={q1TitleId} />
           <QuadrantForm quadrantNumber="Q2" titleId={q2TitleId} />
         </JawRow>
-        <JawRow>
-          <QuadrantForm quadrantNumber="Q4" titleId={q4TitleId} />
+        <JawRow reverse>
           <QuadrantForm quadrantNumber="Q3" titleId={q3TitleId} />
+          <QuadrantForm quadrantNumber="Q4" titleId={q4TitleId} />
         </JawRow>
       </Stack>
-      <JawHeaderRow>
-        <QuadrantTitle id={q4TitleId} quadrantNumber="Q4" />
+      <JawHeaderRow reverse>
         <QuadrantTitle id={q3TitleId} quadrantNumber="Q3" />
+        <QuadrantTitle id={q4TitleId} quadrantNumber="Q4" />
       </JawHeaderRow>
     </ExaminationSection>
   );
@@ -83,9 +83,17 @@ function FullDentitionHeader(props: ExaminationTitleProps) {
   );
 }
 
-function JawHeaderRow(props: RequiresChildren) {
+interface ReversableContainerProps extends RequiresChildren {
+  reverse?: boolean;
+}
+
+function JawHeaderRow(props: ReversableContainerProps) {
   return (
-    <Stack direction="row" gap={3} justifyContent="space-between">
+    <Stack
+      direction={props.reverse ? "row-reverse" : "row"}
+      gap={3}
+      justifyContent="space-between"
+    >
       {props.children}
     </Stack>
   );
@@ -108,10 +116,10 @@ function QuadrantTitle(props: QuadrantTitleProps) {
   );
 }
 
-function JawRow(props: RequiresChildren) {
+function JawRow(props: ReversableContainerProps) {
   return (
     <Stack
-      direction="row"
+      direction={props.reverse ? "row-reverse" : "row"}
       gap={3}
       flexWrap="wrap"
       alignItems="flex-start"

@@ -56,7 +56,10 @@ import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectType_;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
@@ -252,13 +255,16 @@ public class FacilityService {
 
     Inspection inspection = inspectionService.loadInspectionForUpdate(request.procedureId());
     Facility facility = loadFacility(externalId);
-
+    UUID previousFacilityFileStateId = inspection.getRelatedFacility().getCentralFileStateId();
+    GetFacilityFileStateResponse baseFacility =
+        facilityClient.getFacilityFileState(
+            inspection.getRelatedFacility().getCentralFileStateId());
     // call base module to save facility state in central file
     AddFacilityFileStateResponse baseResponse;
     try {
       baseResponse =
           facilityClient.updateFacilityFileStateAndReference(
-              facility.getCentralFileStateId(),
+              previousFacilityFileStateId,
               FacilityMapper.mapAddFacilityFileStateRequestToPutFacilityRequest(
                   request.baseFacility()));
     } catch (BadRequestException e) {
@@ -282,6 +288,13 @@ public class FacilityService {
 
     inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());
     log.info("updated inspection {}", inspection.getId());
+
+    if (!baseFacility.contactAddress().equals(request.baseFacility().contactAddress())) {
+      createProgressEntryForUpdateFacility(
+          inspection, previousFacilityFileStateId, "Die Adresse der Einrichtung wurde geändert.");
+    } else {
+      createProgressEntryForUpdateFacility(inspection, previousFacilityFileStateId);
+    }
 
     return FacilityMapper.fromAddFacilityResponse(savedFacility, baseResponse, fileNumber);
   }
@@ -1946,5 +1959,23 @@ public class FacilityService {
       return null;
     }
     return LocalDate.ofInstant(appointment.getAppointmentStart(), clock.getZone());
+  }
+
+  private void createProgressEntryForUpdateFacility(
+      Inspection inspection, UUID previousFacilityFileStateId) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            "INSPECTION_FACILITY_UPDATED", TriggerType.EMPLOYEE);
+    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
+    inspection.addProgressEntry(progressEntry);
+  }
+
+  private void createProgressEntryForUpdateFacility(
+      Inspection inspection, UUID previousFacilityFileStateId, String changeDescription) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            "INSPECTION_FACILITY_UPDATED", changeDescription, TriggerType.EMPLOYEE);
+    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
+    inspection.addProgressEntry(progressEntry);
   }
 }

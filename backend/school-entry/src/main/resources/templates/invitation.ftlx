@@ -75,7 +75,7 @@
     }
 
     .header .letterhead td {
-      padding-top: 20px;
+      padding-top: 10px;
     }
 
     .header .receiver .officeAddress {
@@ -191,6 +191,10 @@
       <#if office.email??>
         <div class="sender-label">E-Mail</div>
         <div class="sender-data">${office.email}</div>
+      </#if>
+      <#if personId??>
+        <div class="sender-label">Personen-ID</div>
+        <div class="sender-data">${personId}</div>
       </#if>
       <div class="sender-label">Aktenzeichen</div>
       <div>-</div>

@@ -5,6 +5,9 @@
 
 package de.eshg.dental;
 
+import static de.eshg.dental.Validator.validateAllExaminationsAreEmpty;
+import static de.eshg.dental.domain.model.Examination_.prophylaxisSession;
+
 import com.google.common.collect.Sets;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -23,7 +26,8 @@ import de.eshg.dental.api.UpdateExaminationsInBulkRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionExaminationsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionParticipantsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionRequest;
-import de.eshg.dental.business.model.ChildWithAugmentedData;
+import de.eshg.dental.business.model.ChildWithPersonAndContactData;
+import de.eshg.dental.business.model.ChildWithPersonData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.client.PersonClient;
@@ -46,11 +50,7 @@ import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.Year;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -185,9 +185,10 @@ public class ProphylaxisSessionService {
     ProphylaxisSession prophylaxisSession = findProphylaxisSession(prophylaxisSessionId);
 
     List<Examination> examinations = prophylaxisSession.getExaminations();
-    Map<UUID, ChildWithAugmentedData> fileStatesById = fetchPersonFileStatesInBulk(examinations);
+    Map<UUID, ChildWithPersonAndContactData> fileStatesById =
+        fetchPersonFileStatesInBulk(examinations);
 
-    Map<Examination, ChildWithAugmentedData> examinationMap =
+    Map<Examination, ChildWithPersonAndContactData> examinationMap =
         examinations.stream()
             .collect(
                 StreamUtil.toLinkedHashMap(
@@ -283,10 +284,10 @@ public class ProphylaxisSessionService {
             .isBefore(prophylaxisSession.getDateAndTime());
   }
 
-  private Map<UUID, ChildWithAugmentedData> fetchPersonFileStatesInBulk(
+  private Map<UUID, ChildWithPersonAndContactData> fetchPersonFileStatesInBulk(
       List<Examination> examinations) {
     List<Child> children = examinations.stream().map(Examination::getChild).toList();
-    List<ChildWithAugmentedData> augmentedChildren =
+    List<ChildWithPersonAndContactData> augmentedChildren =
         childService.augmentWithChildAndContactData(children);
     return augmentedChildren.stream()
         .collect(StreamUtil.toLinkedHashMap(child -> child.child().getChildIdFromCentralFile()));
@@ -385,11 +386,7 @@ public class ProphylaxisSessionService {
     ProphylaxisSession prophylaxisSession =
         findProphylaxisSessionForUpdate(prophylaxisSessionId, version);
 
-    boolean isExamination =
-        prophylaxisSession.isScreening() || prophylaxisSession.hasFluoridationVarnish();
-    if (isExamination) {
-      Validator.validateAllExaminationsAreClosed(prophylaxisSession);
-    }
+    Validator.validateAllExaminationsAreComplete(prophylaxisSession);
 
     prophylaxisSession.setProphylaxisStatus(ProphylaxisStatus.CLOSED);
     prophylaxisSessionRepository.flush();
@@ -412,16 +409,16 @@ public class ProphylaxisSessionService {
         childUpdates.stream().map(UpdateChildDetailsInBulkRequest::childId).toList();
 
     List<Child> children = childRepository.findByExternalIdsForUpdate(childIds).toList();
-    Map<UUID, ChildWithAugmentedData> augmentedChildren =
+    Map<UUID, ChildWithPersonData> augmentedChildren =
         childService.augmentWithChildData(children).stream()
             .collect(StreamUtil.toLinkedHashMap((child) -> child.child().getExternalId()));
     for (UpdateChildDetailsInBulkRequest childUpdate : childUpdates) {
-      ChildWithAugmentedData augmentedChild = augmentedChildren.get(childUpdate.childId());
+      ChildWithPersonData augmentedChild = augmentedChildren.get(childUpdate.childId());
       Child child = augmentedChild.child();
       ValidationUtil.validateVersion(childUpdate.version(), child);
-      if (hasChangedPersonAttribute(childUpdate, augmentedChild.personData())) {
+      if (hasChangedPersonAttribute(childUpdate, augmentedChild.person())) {
         childService.updateChildPerson(
-            child, mapToPersonDetailsDto(augmentedChild.personData(), childUpdate));
+            child, mapToPersonDetailsDto(augmentedChild.person(), childUpdate));
       }
       childService.updateChildData(
           child,
@@ -500,5 +497,15 @@ public class ProphylaxisSessionService {
     session.setDentistIds(request.dentistIds());
     session.setZfaIds(request.zfaIds());
     return session;
+  }
+
+  public void deleteProphylaxisSession(UUID prophylaxisSessionId, Long version) {
+    ProphylaxisSession prophylaxisSession =
+        findProphylaxisSessionForUpdate(prophylaxisSessionId, version);
+
+    List<Examination> examinations = prophylaxisSession.getExaminations();
+    validateAllExaminationsAreEmpty(examinations);
+
+    prophylaxisSessionRepository.deleteByExternalId(prophylaxisSessionId);
   }
 }

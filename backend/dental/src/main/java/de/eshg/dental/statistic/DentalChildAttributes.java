@@ -22,6 +22,8 @@ public enum DentalChildAttributes implements AttributeInfo {
       CentralFileIdPersonAttribute.create(
           "Kind", "CHILD_CENTRAL_FILE_ID", DentalChildAttributes.CATEGORY_CHILD, true)),
 
+  CHILD_AGE(IntegerAttribute.create("Alter", "ALTER", DentalChildAttributes.CATEGORY_CHILD, true)),
+
   EINRICHTUNG(
       ContactIdAttribute.create(
           "Einrichtung", "EINRICHTUNG", DentalChildAttributes.CATEGORY_CHILD, true)),
@@ -34,10 +36,10 @@ public enum DentalChildAttributes implements AttributeInfo {
           true,
           convertToValueOptions(Group.values()))),
 
-  ANZAHL_PROPHYLAXEN(
+  ANZAHL_MASSNAHMEN(
       IntegerAttribute.create(
-          "Anzahl Prophylaxeimpulse",
-          "ANZAHL_PROPHYLAXEN",
+          "Anzahl Maßnahmen",
+          "ANZAHL_MASSNAHMEN",
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
           true)),
 
@@ -149,7 +151,7 @@ public enum DentalChildAttributes implements AttributeInfo {
   ;
 
   static final String CATEGORY_CHILD = "Kind";
-  static final String CATEGORY_PROPHYLAXIS = "Prophylaxe";
+  static final String CATEGORY_PROPHYLAXIS = "Maßnahme";
   static final String CATEGORY_PROCEDURE_REFERENCE = "Vorgangsreferenz";
 
   private final AttributeData attribute;

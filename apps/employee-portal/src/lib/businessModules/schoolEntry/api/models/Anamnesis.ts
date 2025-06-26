@@ -32,6 +32,7 @@ export interface Anamnesis extends Versioned {
   interestsAndSportsInfo: ApiInterestsAndSportsInfo;
   migrationBackground: ApiMigrationBackground;
   personalConspicuities?: boolean;
+  note?: string;
 }
 
 export function mapAnamnesis(response: ApiAnamnesis): Anamnesis {
@@ -50,5 +51,6 @@ export function mapAnamnesis(response: ApiAnamnesis): Anamnesis {
     interestsAndSportsInfo: response.interestsAndSportsInfo,
     migrationBackground: response.migrationBackground,
     personalConspicuities: response.personalConspicuities,
+    note: response.note,
   };
 }

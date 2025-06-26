@@ -46,9 +46,9 @@ export function CloseProphylaxisSessionModal(
   }
 
   return (
-    <BaseModal modalTitle="Prophylaxe abschließen?" {...props}>
+    <BaseModal modalTitle="Untersuchung abschließen?" {...props}>
       <Typography level="body-md" marginBottom={1}>
-        Zusammenfassung der Prophylaxe in der Einrichtung {institutionName}{" "}
+        Zusammenfassung der Untersuchung in der Einrichtung {institutionName}{" "}
         Gruppe {groupName}:
       </Typography>
       <Typography fontWeight={600}>

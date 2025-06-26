@@ -70,7 +70,8 @@ public record KeycloakProperties(
     this.internal = internal;
     this.bootstrapAdmin = bootstrapAdmin;
     this.adminClient = adminClient;
-    this.setupAdmin = setupAdmin != null ? setupAdmin : new SetupAdmin(null, null, false);
+    this.setupAdmin =
+        setupAdmin != null ? setupAdmin : new SetupAdmin(null, null, false, Duration.ofDays(3));
     this.employeeRealm = employeeRealm;
     this.citizenRealm = citizenRealm;
     this.smtp = smtp;
@@ -222,7 +223,8 @@ public record KeycloakProperties(
     }
   }
 
-  public record SetupAdmin(String username, String email, @NotNull Boolean enabled) {
+  public record SetupAdmin(
+      String username, String email, @NotNull Boolean enabled, @NotNull Duration emailLifetime) {
 
     public SetupAdmin {
       if (BooleanUtils.isTrue(enabled)) {

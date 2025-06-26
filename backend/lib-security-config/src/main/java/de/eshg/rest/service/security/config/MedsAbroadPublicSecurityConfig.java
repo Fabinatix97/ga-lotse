@@ -23,6 +23,8 @@ public final class MedsAbroadPublicSecurityConfig extends AbstractPublicSecurity
     grantAccessToConfiguration();
     grantAccessToStatistics(EmployeePermissionRole.MEDS_ABROAD_ADMIN);
 
+    requestMatchers(BaseUrls.MedsAbroad.CITIZEN_PUBLIC_CONTROLLER + "/**").permitAll();
+
     requestMatchers(PUT, BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/{id}/reopen")
         .hasRole(EmployeePermissionRole.MEDS_ABROAD_LEADER);
     requestMatchers(GET, BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/{id}/**")

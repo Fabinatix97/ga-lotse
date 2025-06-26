@@ -17,4 +17,6 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   INSPECTION_ANNOUNCED: "Begehung angekündigt",
   INSPECTION_FINALIZED: "Begehung durchgeführt",
   INSPECTION_APPROVED: "Begehung freigegeben und Bericht erstellt",
+  INSPECTION_FACILITY_UPDATED: "Geänderte Einrichtungsdaten übernommen",
+  INSPECTION_FACILITY_SYNCED: "Geänderte Einrichtungsdaten übernommen",
 };

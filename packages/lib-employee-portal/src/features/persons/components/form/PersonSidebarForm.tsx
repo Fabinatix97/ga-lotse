@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Formik } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import { ComponentType, Ref } from "react";
 
 import { SidebarForm } from "../../../drawer/components/SidebarForm";
@@ -17,7 +17,7 @@ export interface PersonSidebarFormProps<TValues> {
   onBack?: () => void;
   onCancel: () => void;
   onDelete?: () => void;
-  onSubmit: (person: TValues) => Promise<void>;
+  onSubmit: (person: TValues, helpers: FormikHelpers<TValues>) => Promise<void>;
   initialValues: TValues;
   component: ComponentType<PersonFormProps<TValues>>;
   addressRequired?: boolean;

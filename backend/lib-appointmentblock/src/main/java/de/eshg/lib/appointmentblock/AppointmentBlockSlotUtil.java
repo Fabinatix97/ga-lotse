@@ -8,6 +8,7 @@ package de.eshg.lib.appointmentblock;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
+import de.eshg.lib.appointmentblock.model.AppointmentBlockSlotWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
@@ -19,6 +20,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,10 +62,7 @@ public class AppointmentBlockSlotUtil {
       if (typeHolderOptional.isEmpty()) {
         continue;
       }
-      Set<Duration> possibleDurations =
-          appointmentBlock.getAppointmentBlockGroup().getAppointmentTypeHolders().stream()
-              .map(AppointmentTypeHolder::getSlotDuration)
-              .collect(Collectors.toSet());
+      Set<Duration> possibleDurations = getPossibleDurations(appointmentBlock);
 
       List<AppointmentBlockSlot> freeSlots =
           calculateFreeAppointmentSlotsInBlock(
@@ -76,28 +75,45 @@ public class AppointmentBlockSlotUtil {
     return freeAppointmentBlockSlots;
   }
 
+  static Set<Duration> getPossibleDurations(AppointmentBlock appointmentBlock) {
+    return appointmentBlock.getAppointmentBlockGroup().getAppointmentTypeHolders().stream()
+        .map(AppointmentTypeHolder::getSlotDuration)
+        .collect(Collectors.toSet());
+  }
+
   @VisibleForTesting
   static List<AppointmentBlockSlot> calculateFreeAppointmentSlotsInBlock(
       AppointmentBlock appointmentBlock, Duration slotDuration, Set<Duration> possibleDurations) {
-    List<AppointmentBlockSlot> bookedSlots =
+    List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots =
+        calculateBinsWithBookedSlots(appointmentBlock, possibleDurations);
+    return FreeSlotsUtil.calculateBestAvailableFreeSlots(
+        binsWithBookedSlots, slotDuration, possibleDurations, appointmentBlock);
+  }
+
+  static List<List<AppointmentBlockSlotWithAppointment>> calculateBinsWithBookedSlots(
+      AppointmentBlock appointmentBlock, Set<Duration> possibleDurations) {
+    List<AppointmentBlockSlotWithAppointment> bookedSlots =
         appointmentBlock.getAppointments().stream()
             .map(
                 appointment ->
-                    new AppointmentBlockSlot(
-                        appointment.getAppointmentStart(), appointment.getAppointmentEnd()))
+                    new AppointmentBlockSlotWithAppointment(
+                        appointment.getAppointmentStart(),
+                        appointment.getAppointmentEnd(),
+                        appointment))
             .sorted(
-                Comparator.comparing(AppointmentBlockSlot::start)
-                    .thenComparing(Comparator.comparing(AppointmentBlockSlot::end).reversed()))
+                Comparator.comparing(AppointmentBlockSlotWithAppointment::start)
+                    .thenComparing(
+                        Comparator.comparing(AppointmentBlockSlotWithAppointment::end).reversed()))
             .toList();
 
-    List<List<AppointmentBlockSlot>> binsWithBookedSlots = new ArrayList<>();
+    List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots = new ArrayList<>();
     int parallelExaminations =
         appointmentBlock.getAppointmentBlockGroup().getParallelExaminations();
     for (int i = 0; i < parallelExaminations; i++) {
       binsWithBookedSlots.add(new ArrayList<>());
     }
-    for (AppointmentBlockSlot bookedSlot : bookedSlots) {
-      List<AppointmentBlockSlot> bin =
+    for (AppointmentBlockSlotWithAppointment bookedSlot : bookedSlots) {
+      List<AppointmentBlockSlotWithAppointment> bin =
           BinsWithBookedSlotsUtil.getBin(
               binsWithBookedSlots, bookedSlot, possibleDurations, appointmentBlock.getId());
       log.debug(
@@ -107,8 +123,7 @@ public class AppointmentBlockSlotUtil {
           appointmentBlock.getId());
       bin.add(bookedSlot);
     }
-    return FreeSlotsUtil.calculateBestAvailableFreeSlots(
-        binsWithBookedSlots, slotDuration, possibleDurations, appointmentBlock);
+    return binsWithBookedSlots;
   }
 
   public void updateAppointment(
@@ -296,12 +311,12 @@ public class AppointmentBlockSlotUtil {
 
   private static class BinsWithBookedSlotsUtil {
 
-    private static List<AppointmentBlockSlot> getBin(
-        List<List<AppointmentBlockSlot>> binsWithBookedSlots,
-        AppointmentBlockSlot bookedSlot,
+    private static List<AppointmentBlockSlotWithAppointment> getBin(
+        List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots,
+        AppointmentBlockSlotWithAppointment bookedSlot,
         Set<Duration> possibleDurations,
         Long appointmentBlockId) {
-      Optional<List<AppointmentBlockSlot>> greatFitOptional =
+      Optional<List<AppointmentBlockSlotWithAppointment>> greatFitOptional =
           binsWithBookedSlots.stream()
               .filter(
                   slotBin ->
@@ -310,7 +325,7 @@ public class AppointmentBlockSlotUtil {
       if (greatFitOptional.isPresent()) {
         return greatFitOptional.get();
       }
-      Optional<List<AppointmentBlockSlot>> goodFitOptional =
+      Optional<List<AppointmentBlockSlotWithAppointment>> goodFitOptional =
           binsWithBookedSlots.stream()
               .filter(slotBin -> goodFit(slotBin, bookedSlot, possibleDurations))
               .findFirst();
@@ -319,8 +334,8 @@ public class AppointmentBlockSlotUtil {
     }
 
     private static boolean goodFit(
-        List<AppointmentBlockSlot> slotBin,
-        AppointmentBlockSlot bookedSlot,
+        List<AppointmentBlockSlotWithAppointment> slotBin,
+        AppointmentBlockSlotWithAppointment bookedSlot,
         Set<Duration> possibleDurations) {
       Instant lastEnd = slotBin.getLast().end();
       if (!lastEnd.isBefore(bookedSlot.start())) {
@@ -351,9 +366,9 @@ public class AppointmentBlockSlotUtil {
           .collect(Collectors.toSet());
     }
 
-    private static List<AppointmentBlockSlot> getBadFitBin(
-        List<List<AppointmentBlockSlot>> binsWithBookedSlots,
-        AppointmentBlockSlot bookedSlot,
+    private static List<AppointmentBlockSlotWithAppointment> getBadFitBin(
+        List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots,
+        AppointmentBlockSlotWithAppointment bookedSlot,
         Long appointmentBlockId) {
       return binsWithBookedSlots.stream()
           .filter(slotBin -> badFit(slotBin, bookedSlot))
@@ -366,16 +381,18 @@ public class AppointmentBlockSlotUtil {
     }
 
     private static boolean badFit(
-        List<AppointmentBlockSlot> slotBin, AppointmentBlockSlot bookedSlot) {
+        List<AppointmentBlockSlotWithAppointment> slotBin,
+        AppointmentBlockSlotWithAppointment bookedSlot) {
       Instant lastEnd = slotBin.getLast().end();
       return lastEnd.isBefore(bookedSlot.start());
     }
   }
 
-  private static class FreeSlotsUtil {
+  static class FreeSlotsUtil {
+    private FreeSlotsUtil() {}
 
     private static List<AppointmentBlockSlot> calculateBestAvailableFreeSlots(
-        List<List<AppointmentBlockSlot>> binsWithBookedSlots,
+        List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots,
         Duration slotDuration,
         Set<Duration> possibleDurations,
         AppointmentBlock appointmentBlock) {
@@ -403,7 +420,7 @@ public class AppointmentBlockSlotUtil {
     }
 
     private static void calculateFreeSlotsInBin(
-        List<AppointmentBlockSlot> binWithBookedSlots,
+        List<AppointmentBlockSlotWithAppointment> binWithBookedSlots,
         Duration slotDuration,
         Set<Duration> possibleDurations,
         AppointmentBlock appointmentBlock,
@@ -419,7 +436,8 @@ public class AppointmentBlockSlotUtil {
                         Stream.of(timeSlot.start()),
                         timeSlot.end(),
                         slotDuration,
-                        possibleDurations)
+                        possibleDurations,
+                        new HashSet<>())
                     .toList();
 
             if (!freeSlots.isEmpty()) {
@@ -437,8 +455,9 @@ public class AppointmentBlockSlotUtil {
           });
     }
 
-    private static List<AppointmentBlockSlot> findFreeTimesInBin(
-        List<AppointmentBlockSlot> binWithBookedSlots, AppointmentBlock appointmentBlock) {
+    static List<AppointmentBlockSlot> findFreeTimesInBin(
+        List<AppointmentBlockSlotWithAppointment> binWithBookedSlots,
+        AppointmentBlock appointmentBlock) {
       if (binWithBookedSlots.isEmpty()) {
         return List.of(
             new AppointmentBlockSlot(
@@ -447,7 +466,7 @@ public class AppointmentBlockSlotUtil {
       }
 
       List<AppointmentBlockSlot> freeTimes = new ArrayList<>();
-      AppointmentBlockSlot firstBookedSlot = binWithBookedSlots.getFirst();
+      AppointmentBlockSlotWithAppointment firstBookedSlot = binWithBookedSlots.getFirst();
       if (firstBookedSlot.start().isAfter(appointmentBlock.getAppointmentBlockStart())) {
         freeTimes.add(
             new AppointmentBlockSlot(
@@ -455,14 +474,14 @@ public class AppointmentBlockSlotUtil {
       }
       if (binWithBookedSlots.size() > 1) {
         for (int i = 0; i < binWithBookedSlots.size() - 1; i++) {
-          AppointmentBlockSlot slotA = binWithBookedSlots.get(i);
-          AppointmentBlockSlot slotB = binWithBookedSlots.get(i + 1);
+          AppointmentBlockSlotWithAppointment slotA = binWithBookedSlots.get(i);
+          AppointmentBlockSlotWithAppointment slotB = binWithBookedSlots.get(i + 1);
           if (slotA.end().isBefore(slotB.start())) {
             freeTimes.add(new AppointmentBlockSlot(slotA.end(), slotB.start()));
           }
         }
       }
-      AppointmentBlockSlot lastBookedSlot = binWithBookedSlots.getLast();
+      AppointmentBlockSlotWithAppointment lastBookedSlot = binWithBookedSlots.getLast();
       if (lastBookedSlot.end().isBefore(appointmentBlock.getAppointmentBlockEnd())) {
         freeTimes.add(
             new AppointmentBlockSlot(
@@ -475,14 +494,17 @@ public class AppointmentBlockSlotUtil {
         Stream<Instant> starts,
         Instant end,
         Duration slotDuration,
-        Set<Duration> possibleDurations) {
+        Set<Duration> possibleDurations,
+        Set<Instant> checkedStarts) {
       List<Instant> allowedStarts =
           starts
               .filter(start -> Duration.between(start, end).compareTo(slotDuration) >= 0)
+              .filter(start -> !checkedStarts.contains(start))
               .toList();
       if (allowedStarts.isEmpty()) {
         return Stream.empty();
       } else {
+        checkedStarts.addAll(allowedStarts);
         Stream<AppointmentBlockSlot> nextSlotsStream =
             allowedStarts.stream()
                 .map(
@@ -491,7 +513,8 @@ public class AppointmentBlockSlotUtil {
                                 possibleDurations.stream().map(start::plus),
                                 end,
                                 slotDuration,
-                                possibleDurations)
+                                possibleDurations,
+                                checkedStarts)
                             .toList())
                 .flatMap(Collection::stream);
         return Stream.concat(

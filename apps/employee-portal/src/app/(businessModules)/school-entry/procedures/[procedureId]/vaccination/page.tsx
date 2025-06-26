@@ -120,6 +120,7 @@ function mapToFormValues(
     measlesContraIndicationUntil: parseOptionalDate(
       vaccinationStatus.measlesContraIndicationUntil,
     ),
+    note: parseOptionalValue(vaccinationStatus.note),
   };
 }
 
@@ -172,6 +173,7 @@ function mapToRequest(
       measlesContraIndicationUntil: formValues.measlesContraIndication
         ? mapOptionalDate(formValues.measlesContraIndicationUntil)
         : undefined,
+      note: formValues.note ? mapOptionalValue(formValues.note) : undefined,
     },
   };
 }

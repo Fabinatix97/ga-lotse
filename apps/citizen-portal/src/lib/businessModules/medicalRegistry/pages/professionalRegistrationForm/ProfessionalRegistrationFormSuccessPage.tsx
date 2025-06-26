@@ -6,13 +6,12 @@
 import { DoneOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
-
 import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface ProfessionalRegistrationFormProps {
   setShowSuccessPage: (showSuccessPage: boolean) => void;
@@ -45,13 +44,13 @@ export function ProfessionalRegistrationFormSuccessPage(
               {t("successPage.registrationForm")}
             </Button>
 
-            <InternalLinkButton
+            <ScopedInternalLinkButton
               variant="soft"
               color="neutral"
               href={citizenRoutes.home}
             >
               {t("navigation.abort")}
-            </InternalLinkButton>
+            </ScopedInternalLinkButton>
           </ContentSheet>
         }
       />

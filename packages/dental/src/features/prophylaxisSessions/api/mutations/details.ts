@@ -32,7 +32,7 @@ export function useUpdateProphylaxisSession(prophylaxisSessionId: string) {
       ),
     onSuccess: (response) => {
       queryClient.setQueryData(queryKey, response);
-      snackbar.confirmation("Prophylaxe erfolgreich gespeichert.");
+      snackbar.confirmation("Maßnahme erfolgreich gespeichert.");
     },
   });
 }
@@ -138,7 +138,9 @@ export function useCloseProphylaxisSession(prophylaxisSessionId: string) {
       }),
     onSuccess: (response) => {
       queryClient.setQueryData(queryKey, response);
-      snackbar.confirmation("Die Prophylaxe wurde erfolgreich abgeschlossen.");
+      snackbar.confirmation(
+        "Die Untersuchung wurde erfolgreich abgeschlossen.",
+      );
     },
   });
 }

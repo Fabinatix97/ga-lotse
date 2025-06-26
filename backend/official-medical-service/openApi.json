@@ -61,6 +61,70 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
+    "/appointment-blocks/appointment/overview" : {
+      "get" : {
+        "operationId" : "getAppointments",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointments in a certain time range (one month)",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/appointment/{appointmentId}" : {
+      "get" : {
+        "operationId" : "getAppointment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlockSlot"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointment",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
     "/appointment-blocks/daily-appointment-block-groups" : {
       "post" : {
         "operationId" : "createDailyAppointmentBlocksForGroup",
@@ -162,6 +226,42 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
+    "/appointment-blocks/overview" : {
+      "get" : {
+        "operationId" : "getAppointmentBlocks",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "timeRangeStart",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeRangeEnd",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlocksResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointment blocks in a certain time range (one week)",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
     "/appointment-blocks/{appointmentBlockId}" : {
       "delete" : {
         "operationId" : "deleteAppointmentBlock",
@@ -180,6 +280,32 @@
           }
         },
         "summary" : "Delete appointment block.",
+        "tags" : [ "AppointmentBlock" ]
+      },
+      "get" : {
+        "operationId" : "getAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get appointment block",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -4675,6 +4801,120 @@
         },
         "description" : "Appointment of a procedure."
       },
+      "AppointmentBlock" : {
+        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "physicians", "resolvedUsers", "start", "types" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockBins" : {
+            "maxItems" : 10,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlockBin"
+            }
+          },
+          "bookedAppointments" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlock.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "resolvedUsers" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          },
+          "types" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentType"
+            }
+          }
+        }
+      },
+      "AppointmentBlockBin" : {
+        "required" : [ "appointmentBlockSlots" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockSlots" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlockSlot"
+            }
+          }
+        },
+        "description" : "A bin represents a single sequence of slots in an appointment block, meaning there are no parallel slots within a bin. Multiple bins can occur within a block."
+      },
+      "AppointmentBlockSlot" : {
+        "required" : [ "booked", "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "appointmentType" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          },
+          "booked" : {
+            "type" : "boolean"
+          },
+          "end" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "information" : {
+            "type" : "string"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "start" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "description" : "A free time slot or a booked appointment"
+      },
       "AppointmentBlockSortKey" : {
         "type" : "string",
         "enum" : [ "START", "END" ]
@@ -6227,6 +6467,18 @@
           }
         }
       },
+      "GetAppointmentBlocksResponse" : {
+        "required" : [ "appointmentBlocks" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlocks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlock"
+            }
+          }
+        }
+      },
       "GetAppointmentTypesResponse" : {
         "required" : [ "allowedAppointmentTypeCombinations", "appointmentTypeConfigDtos" ],
         "type" : "object",
@@ -6241,6 +6493,18 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AppointmentTypeConfig"
+            }
+          }
+        }
+      },
+      "GetAppointmentsResponse" : {
+        "required" : [ "appointmentBlockSlots" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockSlots" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentBlockSlot"
             }
           }
         }

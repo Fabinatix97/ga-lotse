@@ -93,7 +93,8 @@ public class AnamnesisMapper {
             anamnesis.getOtherInterests(),
             anamnesis.getCanSwim(),
             anamnesis.getHasSeahorseBadge()),
-        anamnesis.getPersonalConspicuities());
+        anamnesis.getPersonalConspicuities(),
+        anamnesis.getNote());
   }
 
   private static CountryCodeDto mapToDto(SchoolEntryCountryCode nationalityChild) {
@@ -184,6 +185,7 @@ public class AnamnesisMapper {
     anamnesis.setHasMigrationBackground(dto.migrationBackground().hasMigrationBackground());
     anamnesis.setInGermanySince(dto.migrationBackground().inGermanySince());
     anamnesis.setPersonalConspicuities(dto.personalConspicuities());
+    anamnesis.setNote(dto.note());
 
     return anamnesis;
   }

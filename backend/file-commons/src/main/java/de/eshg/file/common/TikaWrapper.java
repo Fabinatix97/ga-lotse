@@ -10,8 +10,8 @@ import java.io.InputStream;
 import org.apache.tika.Tika;
 
 /**
- * Please remove once Tika returns the correct content type for markdown files (see also <a
- * href="https://github.com/plone/Products.CMFPlone/issues/2248">here</a>)
+ * Please remove once Tika returns the correct content types for markdown files and yaml files (see
+ * also <a href="https://github.com/plone/Products.CMFPlone/issues/2248">here</a>)
  */
 public class TikaWrapper {
 
@@ -32,6 +32,8 @@ public class TikaWrapper {
   private String correctContentType(String contentType) {
     if ("text/x-web-markdown".equals(contentType)) {
       return "text/markdown";
+    } else if ("text/x-yaml".equals(contentType)) {
+      return "application/yaml";
     } else {
       return contentType;
     }

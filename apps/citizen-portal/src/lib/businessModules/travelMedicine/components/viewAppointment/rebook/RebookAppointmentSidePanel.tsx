@@ -6,7 +6,6 @@
 import { AccessTimeOutlined, DateRange } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
 
 import {
   durationBetweenDatesInMinutes,
@@ -24,10 +23,11 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function RebookAppointmentSidePanel() {
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/rebookAppointment"]);

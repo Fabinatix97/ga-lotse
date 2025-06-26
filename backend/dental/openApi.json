@@ -2887,6 +2887,35 @@
       }
     },
     "/prophylaxis-sessions/{prophylaxisSessionId}" : {
+      "delete" : {
+        "operationId" : "deleteProphylaxisSession",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "prophylaxisSessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeleteProphylaxisSessionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Removes a prophylaxis",
+        "tags" : [ "ProphylaxisSession" ]
+      },
       "get" : {
         "operationId" : "getProphylaxisSession",
         "parameters" : [ {
@@ -4652,6 +4681,16 @@
               "type" : "string",
               "format" : "uuid"
             }
+          }
+        }
+      },
+      "DeleteProphylaxisSessionRequest" : {
+        "required" : [ "version" ],
+        "type" : "object",
+        "properties" : {
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -6881,7 +6920,7 @@
         }
       },
       "ProphylaxisSession" : {
-        "required" : [ "dateAndTime", "id", "institution", "isScreening", "status" ],
+        "required" : [ "dateAndTime", "id", "institution", "isDeletable", "isScreening", "status", "version" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -6901,6 +6940,9 @@
           "institution" : {
             "$ref" : "#/components/schemas/Institution"
           },
+          "isDeletable" : {
+            "type" : "boolean"
+          },
           "isScreening" : {
             "type" : "boolean"
           },
@@ -6909,6 +6951,10 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/ProphylaxisType"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },

@@ -63,7 +63,7 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   @DataSensitivity(PROTECTED)
   @OneToMany(
       orphanRemoval = true,
-      cascade = CascadeType.PERSIST,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       mappedBy = Examination_.PROPHYLAXIS_SESSION)
   @OrderBy
   @BatchSize(size = 100)

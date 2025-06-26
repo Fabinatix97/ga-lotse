@@ -5,7 +5,7 @@
 
 import { Box, Stack, Typography, styled } from "@mui/joy";
 
-import { InternalLink, RequiresChildren } from "@eshg/lib-portal";
+import { RequiresChildren } from "@eshg/lib-portal";
 import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
 import { useRoutes } from "@/lib/baseModule/shared/routes";
@@ -13,6 +13,7 @@ import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/
 import { useTranslation } from "@/lib/i18n/client";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
 import { contentMarginMobile } from "./sizes";
@@ -35,13 +36,13 @@ interface FooterLinkProps extends RequiresChildren {
 
 function FooterLink({ children, href }: FooterLinkProps) {
   return (
-    <InternalLink
+    <ScopedInternalLink
       level="title-md"
       sx={{ color: "white", textDecorationColor: "white" }}
       href={href}
     >
       {children}
-    </InternalLink>
+    </ScopedInternalLink>
   );
 }
 

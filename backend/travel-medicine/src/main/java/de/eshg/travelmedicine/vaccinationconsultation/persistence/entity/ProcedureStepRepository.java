@@ -5,6 +5,8 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.persistence.entity;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +17,6 @@ public interface ProcedureStepRepository extends JpaRepository<ProcedureStep, UU
   @Query(
       "select ps from ProcedureStep ps where ps.isFollowUp = false and ps.vaccinationConsultation.externalId =:externalId")
   Optional<ProcedureStep> findInitialProcedureStep(@Param("externalId") UUID procedureId);
+
+  List<ProcedureStep> findByAppointmentIn(List<Appointment> appointments);
 }

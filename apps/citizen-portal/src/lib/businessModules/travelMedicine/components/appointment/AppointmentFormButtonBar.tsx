@@ -4,7 +4,6 @@
  */
 
 import { FormikErrors, FormikTouched, useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
 import { isEmpty } from "remeda";
 
 import { useMultiStepForm } from "@eshg/lib-portal";
@@ -15,6 +14,7 @@ import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedici
 import { MultiStepFormButtonBar } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormButtonsBar";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 export function AppointmentFormButtonBar() {
   const { currentStep, totalSteps, goForward, goBack, setStep } =
@@ -23,7 +23,7 @@ export function AppointmentFormButtonBar() {
     useFormikContext<InitialAppointmentFormValues>();
 
   const { t } = useTranslation(["travelMedicine/forms"]);
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
 
   function handleCancel() {

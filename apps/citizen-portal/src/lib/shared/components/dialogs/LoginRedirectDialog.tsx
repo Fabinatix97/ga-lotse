@@ -8,11 +8,12 @@
 import { Button, Stack, Typography } from "@mui/joy";
 import { Trans } from "react-i18next";
 
-import { BaseModal, InternalLinkButton } from "@eshg/lib-portal";
+import { BaseModal } from "@eshg/lib-portal";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface LoginRedirectDialogProps {
   type: UserType;
@@ -57,7 +58,7 @@ export function LoginRedirectDialog(props: Readonly<LoginRedirectDialogProps>) {
         >
           {t("translation:common.cancel")}
         </Button>
-        <InternalLinkButton
+        <ScopedInternalLinkButton
           href={
             props.type === "organization"
               ? routes.organizationPath.mukPortal.overview
@@ -65,7 +66,7 @@ export function LoginRedirectDialog(props: Readonly<LoginRedirectDialogProps>) {
           }
         >
           {dialogText("submit")}
-        </InternalLinkButton>
+        </ScopedInternalLinkButton>
       </Stack>
     </BaseModal>
   );

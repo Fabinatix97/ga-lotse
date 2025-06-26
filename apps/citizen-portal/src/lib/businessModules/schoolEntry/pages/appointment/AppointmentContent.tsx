@@ -17,12 +17,7 @@ import { Box, Typography, styled } from "@mui/joy";
 import { formatDuration } from "date-fns";
 import { de } from "date-fns/locale";
 
-import {
-  InternalLinkButton,
-  formatDate,
-  formatPersonName,
-  formatTime,
-} from "@eshg/lib-portal";
+import { formatDate, formatPersonName, formatTime } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolEntryProcedure } from "@/lib/businessModules/schoolEntry/api/models/SchoolEntryProcedure";
@@ -38,6 +33,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import {
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
@@ -147,13 +143,13 @@ function CitizenAnamnesisAllowed() {
         <InfoSectionTitle>{t("anamnesis.title")}</InfoSectionTitle>
         <Typography>{t("anamnesis.notSubmitted")}</Typography>
       </InfoSection>
-      <InternalLinkButton
+      <ScopedInternalLinkButton
         href={citizenRoutes.appointment.citizenAnamnesis}
         sx={{ marginTop: 1 }}
         fullWidth
       >
         {t("anamnesis.fillIn")}
-      </InternalLinkButton>
+      </ScopedInternalLinkButton>
     </InfoSectionGrid>
   );
 }

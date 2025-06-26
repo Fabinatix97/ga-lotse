@@ -10,6 +10,7 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.measlesprotection.api.AffectedPersonDto;
 import de.eshg.measlesprotection.api.CustodianDto;
 import de.eshg.measlesprotection.api.RoleStatusDto;
+import java.util.Objects;
 
 public final class CoverLetterPersonMapper {
 
@@ -32,7 +33,7 @@ public final class CoverLetterPersonMapper {
 
   private static String street(AddressDto address) {
     if (address instanceof DomesticAddressDto da) {
-      return da.street() + " " + da.houseNumber();
+      return (da.street() + " " + Objects.toString(da.houseNumber(), "")).trim();
     } else {
       return "";
     }

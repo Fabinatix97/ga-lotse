@@ -59,6 +59,11 @@ const ERROR_DESCRIPTION: Record<PortalErrorCode, ErrorDescription> = {
     title: "Ungültige Datei",
     message: "Die übermittelte Datei war in einem ungültigen Format.",
   },
+  [PortalErrorCode.CsvInvalidHeader]: {
+    title: "Ungültige Spaltenüberschrift",
+    message:
+      "Die Spaltenüberschriften der ausgewählten Datei/en entsprechen nicht der Beispiel-Datei. ",
+  },
   [PortalErrorCode.Corrupt]: {
     title: "Daten korrupt",
     message:

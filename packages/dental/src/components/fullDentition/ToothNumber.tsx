@@ -5,9 +5,13 @@
 
 import { Typography, styled } from "@mui/joy";
 
-import { ApiTooth } from "@eshg/dental-api";
+import { Tooth, isAddableTooth } from "../../stores/examination/types";
+import { formatToothNumber } from "../../utils/formatters";
+
+import { SR_ONLY_STYLES } from "./styles";
 
 const ToothNumberTypography = styled(Typography)(({ theme }) => ({
+  display: "inline-block",
   fontSize: theme.fontSize.md,
   borderRadius: theme.radius.sm,
   backgroundColor: theme.palette.neutral[400],
@@ -19,17 +23,29 @@ const ToothNumberTypography = styled(Typography)(({ theme }) => ({
 
 interface ToothNumberProps {
   id: string;
-  toothNumber: ApiTooth;
+  tooth: Tooth;
 }
 
 export function ToothNumber(props: ToothNumberProps) {
+  const { id, tooth } = props;
+
   return (
-    <ToothNumberTypography id={props.id}>
-      {getToothNumber(props.toothNumber)}
-    </ToothNumberTypography>
+    <>
+      <ToothNumberTypography id={id} component="span">
+        {formatToothNumber(tooth.toothNumber)}
+      </ToothNumberTypography>
+      <SrOnlyText role="status" aria-live="polite">
+        {getToothType(tooth)}
+      </SrOnlyText>
+    </>
   );
 }
+const SrOnlyText = styled("p")(SR_ONLY_STYLES);
 
-function getToothNumber(toothNumber: ApiTooth): number {
-  return Number.parseInt(toothNumber.substring(1));
+function getToothType(tooth: Tooth): string {
+  if (isAddableTooth(tooth)) {
+    return "Kein Zahn vorhanden";
+  }
+
+  return tooth.toothType === "PRIMARY_TOOTH" ? "Milchzahn" : "bleibender Zahn";
 }

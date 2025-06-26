@@ -87,7 +87,10 @@ public class InvitationGenerator extends AbstractGenerator {
 
   @VisibleForTesting
   InvitationData buildInvitationData(
-      String accessCode, ChildData child, Instant appointmentStart, UUID locationId) {
+      String accessCode,
+      ChildDataWithPersonId childDataWithPersonId,
+      Instant appointmentStart,
+      UUID locationId) {
     String url = buildQrCodeUrl(accessCode);
     String qrCode =
         Base64.getEncoder()
@@ -103,6 +106,7 @@ public class InvitationGenerator extends AbstractGenerator {
       examinationExecutionLocation = departmentAddress;
     }
 
+    ChildData child = childDataWithPersonId.childData();
     AddressDto address = child.address();
     Address childAddress =
         switch (address) {
@@ -148,6 +152,7 @@ public class InvitationGenerator extends AbstractGenerator {
         departmentLogo,
         departmentAddress,
         childAddress,
+        childDataWithPersonId.personId(),
         examination,
         invitationInfo,
         schoolEntryConfigService.getPdfDocumentAccentColor(),
@@ -177,8 +182,12 @@ public class InvitationGenerator extends AbstractGenerator {
   }
 
   public Pdf generateInvitation(
-      String accessCode, ChildData childData, Instant start, UUID locationId) {
-    InvitationData invitationData = buildInvitationData(accessCode, childData, start, locationId);
+      String accessCode,
+      ChildDataWithPersonId childDataWithPersonId,
+      Instant start,
+      UUID locationId) {
+    InvitationData invitationData =
+        buildInvitationData(accessCode, childDataWithPersonId, start, locationId);
     return generateInvitation(invitationData);
   }
 

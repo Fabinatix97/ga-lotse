@@ -14,8 +14,6 @@ import {
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
-import { NavigationLink } from "@eshg/lib-portal";
-
 import {
   isItemSelected,
   isSubItemSelected,
@@ -25,6 +23,7 @@ import {
   SubNavigationItem as SubNavigationItemType,
 } from "@/lib/baseModule/components/layout/types";
 import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
+import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
 
 export function NavigationItem({
   item,
@@ -69,7 +68,7 @@ export function SubNavigationItem({
     <ListItem>
       <ListItemButton
         sx={{ padding: 2 }}
-        component={NavigationLink}
+        component={ScopedNavigationLink}
         href={subItem.href}
       >
         <ListItemDecorator>

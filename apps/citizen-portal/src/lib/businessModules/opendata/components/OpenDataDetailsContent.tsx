@@ -11,7 +11,6 @@ import { isEmpty, isNonNullish } from "remeda";
 
 import {
   ExternalLink,
-  InternalLink,
   RequiresChildren,
   formatDate,
   formatFileSize,
@@ -33,6 +32,7 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 
 interface OpenDataDetailsContentProps {
   versionId: string;
@@ -218,9 +218,9 @@ function OpenDataVersionInfo({ version }: { version: ApiVersion }) {
         </ExternalLink>
       </LabeledValue>
       <LabeledValue label={t("information.termsOfUse")}>
-        <InternalLink href={citizenRoutes.termsOfUse}>
+        <ScopedInternalLink href={citizenRoutes.termsOfUse}>
           {t("information.termsOfUseLink")}
-        </InternalLink>
+        </ScopedInternalLink>
       </LabeledValue>
     </Stack>
   );

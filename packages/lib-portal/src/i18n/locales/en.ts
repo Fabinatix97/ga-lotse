@@ -32,7 +32,7 @@ export const en = {
       wrongType:
         "Please select a file of type {{types, list(style: 'short'; type: 'disjunction';)}}.",
       invalidName:
-        "Invalid file name: Only letters, numbers, hyphens '-' and underscores '_' allowed.",
+        "Invalid file name: Only basic latin letters(no ä, ß, é, ñ etc.), numbers, hyphens '-' and underscores '_' allowed.",
       nameTooLong: "Please select a file with a shorter file name.",
       invalidExtension: "Please select a file with a valid file extension.",
       tooLarge: "Please select a file smaller than {{maxFileSize}}.",

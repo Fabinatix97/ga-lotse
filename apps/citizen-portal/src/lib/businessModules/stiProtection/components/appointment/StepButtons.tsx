@@ -6,12 +6,12 @@
 import { Button, Stack } from "@mui/joy";
 import { MouseEvent } from "react";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 import { useFormData } from "./AppointmentDataContext";
 import type { AppointmentFormData } from "./AppointmentStepper";
@@ -42,9 +42,9 @@ export function StepButtons({ submit }: StepButtonsProps) {
               {t("common.back")}
             </Button>
           ) : null}
-          <InternalLinkButton variant="soft" href={landingPageRoute}>
+          <ScopedInternalLinkButton variant="soft" href={landingPageRoute}>
             {t("common.cancel")}
-          </InternalLinkButton>
+          </ScopedInternalLinkButton>
         </>
       ) : null}
     </Stack>

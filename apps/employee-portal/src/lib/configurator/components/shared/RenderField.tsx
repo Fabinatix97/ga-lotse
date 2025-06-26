@@ -97,8 +97,10 @@ interface CheckboxFormField extends BaseFormField {
   readonly?: boolean;
 }
 
-interface RadioFormField extends BaseFormField {
+interface RadioFormField extends Omit<BaseFormField, "label"> {
   type: "radio";
+  label?: string;
+  direction?: "row" | "column";
   readonly?: boolean;
   alert?: ConfiguratorAlertProps;
   options: {
@@ -235,24 +237,27 @@ export function RenderField({
         >
           <Stack gap={2}>
             {isDefined(field.alert) && <ConfiguratorAlert {...field.alert} />}
-            {field.options.map((option) => (
-              <Stack key={option.value} direction="row" gap={1}>
-                <Radio
-                  value={option.value}
-                  label={option.label}
-                  readOnly={field.readonly}
-                  disabled={field.readonly}
-                />
-                {option.infoLabel && (
-                  <InfoIconTooltipButton
-                    infoText={option.infoLabel}
-                    title="Hinweis"
-                    iconSize="sm"
-                    tooltipSx={{ "--IconButton-size": "auto" }}
+            <Stack direction={field.direction ?? "column"} gap={2}>
+              {field.options.map((option) => (
+                <Stack key={option.value} direction="row" gap={1}>
+                  <Radio
+                    value={option.value}
+                    label={option.label}
+                    readOnly={field.readonly}
+                    disabled={field.readonly}
+                    sx={{}}
                   />
-                )}
-              </Stack>
-            ))}
+                  {option.infoLabel && (
+                    <InfoIconTooltipButton
+                      infoText={option.infoLabel}
+                      title="Hinweis"
+                      iconSize="sm"
+                      tooltipSx={{ "--IconButton-size": "auto" }}
+                    />
+                  )}
+                </Stack>
+              ))}
+            </Stack>
           </Stack>
         </RadioGroupField>
       );

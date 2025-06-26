@@ -19,6 +19,7 @@ import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.schoolentry.api.HumanReadablePersonIdSearchParameters;
 import de.eshg.schoolentry.api.ProcedureFilterParameters;
 import de.eshg.schoolentry.api.ProcedurePaginationAndSortParameters;
 import de.eshg.schoolentry.api.SchoolDto;
@@ -144,7 +145,8 @@ public class ProcedureOverviewService {
   public PagedProcedures getProcedures(
       ProcedureFilterParameters filterParameters,
       ProcedurePaginationAndSortParameters paginationAndSortParameters,
-      ProcedureSearchParameters searchParameters) {
+      ProcedureSearchParameters searchParameters,
+      HumanReadablePersonIdSearchParameters humanReadablePersonIdSearchParameters) {
 
     ProcedurePageSpec pageSpec = createPageSpec(paginationAndSortParameters);
 
@@ -157,19 +159,33 @@ public class ProcedureOverviewService {
           procedureSearchService.searchProceduresByPerson(
               searchParameters, Person.PERSON_TYPE_USED_FOR_CHILDREN);
 
-      int offset = pageSpec.pageNumber() * pageSpec.pageSize();
-
-      List<ProcedureData> sortedAndFilteredProcedures =
-          augmentWithChildData(allProcedures)
-              .sorted(procedureSortComparator(pageSpec.sortKey(), pageSpec.direction()))
-              .skip(offset)
-              .limit(pageSpec.pageSize())
-              .toList();
-
-      return new PagedProcedures(sortedAndFilteredProcedures, allProcedures.size());
-    } else {
-      return getOpenSchoolEntryProcedures(filterParameters, pageSpec);
+      return getPagedProcedures(pageSpec, allProcedures);
     }
+
+    if (ProcedureValidator.hasNonNullValue(humanReadablePersonIdSearchParameters)) {
+      List<SchoolEntryProcedure> allProcedures =
+          procedureSearchService.searchProceduresByPersonByHumanReadableId(
+              humanReadablePersonIdSearchParameters.searchHumanReadableId(),
+              Person.PERSON_TYPE_USED_FOR_CHILDREN);
+
+      return getPagedProcedures(pageSpec, allProcedures);
+    }
+
+    return getOpenSchoolEntryProcedures(filterParameters, pageSpec);
+  }
+
+  private PagedProcedures getPagedProcedures(
+      ProcedurePageSpec pageSpec, List<SchoolEntryProcedure> allProcedures) {
+    int offset = pageSpec.pageNumber() * pageSpec.pageSize();
+
+    List<ProcedureData> sortedAndFilteredProcedures =
+        augmentWithChildData(allProcedures)
+            .sorted(procedureSortComparator(pageSpec.sortKey(), pageSpec.direction()))
+            .skip(offset)
+            .limit(pageSpec.pageSize())
+            .toList();
+
+    return new PagedProcedures(sortedAndFilteredProcedures, allProcedures.size());
   }
 
   private PagedProcedures getOpenSchoolEntryProcedures(

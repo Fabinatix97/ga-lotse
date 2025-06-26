@@ -35,4 +35,5 @@ public record AnamnesisDto(
     @NotNull @Valid IllnessAndAccidentInfoDto illnessAndAccidentInfo,
     @NotNull @Valid PromotionTherapyAndAidInfoDto promotionTherapyAndAidInfo,
     @NotNull @Valid InterestsAndSportsInfoDto interestsAndSportsInfo,
-    Boolean personalConspicuities) {}
+    Boolean personalConspicuities,
+    String note) {}

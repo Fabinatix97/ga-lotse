@@ -145,6 +145,8 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
     try {
       omsConfigValidator.validateConcerns(concerns);
+      omsConfigValidator.validateLandingContent(landingContentDe, "de");
+      omsConfigValidator.validateLandingContent(landingContentEn, "en");
     } catch (OmsConfigValidator.OmsConfigValidatorException cve) {
       throw new BadRequestException("Validation error: " + cve.getMessage());
     }
@@ -162,14 +164,13 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
         configRequest.medicalOpinionCutOffDateLeadTime();
     Boolean updateCitizenPortalAnamnesisEnabled = configRequest.citizenPortalAnamnesisEnabled();
 
-    // the common audit log logic requires another (transient) instance of the config entity :o
-    OmsConfiguration updateConfig = new OmsConfiguration();
-    updateConfig.setConcerns(updateConcerns);
-    updateConfig.setLandingContent(updateLandingPage);
-    updateConfig.setKeycloakUserCleanupJobOverdueDuration(
-        updateKeycloakUserCleanupJobOverdueDuration);
-    updateConfig.setMedicalOpinionCutOffDateLeadTime(updateMedicalOpinionCutOffDateLeadTime);
-    updateConfig.setCitizenPortalAnamnesisEnabled(updateCitizenPortalAnamnesisEnabled);
+    IOmsConfiguration updateConfig =
+        new OmsConfigurationData(
+            updateConcerns,
+            updateLandingPage,
+            updateKeycloakUserCleanupJobOverdueDuration,
+            updateMedicalOpinionCutOffDateLeadTime,
+            updateCitizenPortalAnamnesisEnabled);
 
     auditLogWriter.writeChangeToAuditLog(
         "omsConfiguration",

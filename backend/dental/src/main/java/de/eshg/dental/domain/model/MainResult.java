@@ -28,7 +28,7 @@ public enum MainResult {
   O,
   /** Versiegelt */
   V,
-  /** Keine Diganose */
+  /** Keine Diagnose */
   N,
   /** Fehlend */
   U,

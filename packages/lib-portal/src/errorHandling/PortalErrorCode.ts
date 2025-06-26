@@ -13,6 +13,7 @@ export const PortalErrorCode = {
   AlreadyExists: "ALREADY_EXISTS",
   InvalidFile: "INVALID_FILE",
   NonconformPdf: "NONCONFORM_PDF",
+  CsvInvalidHeader: "CSV_INVALID_HEADER",
   Corrupt: "CORRUPT",
   Locked: "LOCKED",
   XlsxTooManyRows: "XLSX_TOO_MANY_ROWS",

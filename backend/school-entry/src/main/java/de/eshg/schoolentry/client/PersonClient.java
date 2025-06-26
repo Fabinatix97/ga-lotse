@@ -27,6 +27,7 @@ import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.mapper.PersonMapper;
+import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonId;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import java.util.*;
@@ -309,8 +310,17 @@ public class PersonClient {
     return procedures.stream().map(procedure -> extractChildData(procedure, personsById));
   }
 
+  public ChildDataWithPersonId fetchChildDataWithPersonId(SchoolEntryProcedure procedure) {
+    GetPersonFileStateResponse response = getPersonFileState(procedure.getChildIdFromCentralFile());
+    return new ChildDataWithPersonId(getChildData(response), response.humanReadableId());
+  }
+
   public ChildData fetchChildData(SchoolEntryProcedure procedure) {
     GetPersonFileStateResponse response = getPersonFileState(procedure.getChildIdFromCentralFile());
+    return getChildData(response);
+  }
+
+  private static ChildData getChildData(GetPersonFileStateResponse response) {
     return new ChildData(
         response.firstName(),
         response.lastName(),
@@ -372,18 +382,8 @@ public class PersonClient {
   private static ProcedureWithChildData extractChildData(
       SchoolEntryProcedure procedure, Map<UUID, GetPersonFileStateResponse> personsById) {
     GetPersonFileStateResponse child = personsById.get(procedure.getChildIdFromCentralFile());
-    ChildData childData =
-        new ChildData(
-            child.firstName(),
-            child.lastName(),
-            child.dateOfBirth(),
-            child.placeOfBirth(),
-            child.countryOfBirth(),
-            child.gender(),
-            child.contactAddress(),
-            child.phoneNumbers());
 
-    return new ProcedureWithChildData(procedure, childData);
+    return new ProcedureWithChildData(procedure, getChildData(child));
   }
 
   public List<UUID> updateChildren(List<ResolvedMergeProcedureData> mergeDataList) {

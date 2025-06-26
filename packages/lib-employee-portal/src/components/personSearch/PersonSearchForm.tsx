@@ -19,10 +19,14 @@ import {
   Alert,
   DateField,
   InputField,
+  LiveAnnouncer,
   isDateString,
   isNonEmptyString,
   toUtcDate,
   validateDateOfBirth,
+  validateLength,
+  validatePipe,
+  validateRegex,
 } from "@eshg/lib-portal";
 
 import { useManySearchParams } from "../../hooks/useSearchParam";
@@ -123,6 +127,8 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
           gap={2}
           role={props.role}
           sx={{ display: props.isHidden ? "none" : undefined }}
+          component="section"
+          aria-label="Suchpanel"
         >
           {props.allowPersonIdSearch && (
             <Alert
@@ -168,6 +174,7 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
           {isNonEmptyString(alertMessage) && (
             <Alert color="primary" message={alertMessage} />
           )}
+          <LiveAnnouncer message={alertMessage ?? ""} active={!!alertMessage} />
         </Stack>
       )}
     </Formik>
@@ -205,8 +212,32 @@ function ThreeFactorsFields(props: PersonSearchFormProps) {
   );
 }
 
+export function validatePersonId(personId: string) {
+  if (personId.length === 0) {
+    return undefined;
+  }
+
+  return validatePipe(
+    validateLength(8, 8, "Personen-ID muss genau 8 Zeichen haben."),
+    validateRegex(
+      /^(?!.*[O01I]).*$/,
+      "Die Zeichen O, 0, 1 und I sind nicht in einer Personen-ID.",
+    ),
+    validateRegex(
+      /^[A-Z0-9]+$/,
+      "Die Personen-ID darf nur aus Großbuchstaben und Zahlen bestehen.",
+    ),
+  )(personId);
+}
+
 function PersonIdField() {
-  return <InputField name="humanReadableId" label="Personen-ID" />;
+  return (
+    <InputField
+      name="humanReadableId"
+      label="Personen-ID"
+      validate={validatePersonId}
+    />
+  );
 }
 
 function Buttons({
@@ -305,10 +336,10 @@ function isInvalidPartialSearch(values: PersonSearchFormValues) {
 }
 
 export interface PersonSearchParams {
-  searchFirstName: string;
-  searchLastName: string;
+  searchFirstName?: string;
+  searchLastName?: string;
   searchDateOfBirth?: Date;
-  searchHumanReadableId: string;
+  searchHumanReadableId?: string;
 }
 
 export interface PersonSearchFormValues {
@@ -336,12 +367,21 @@ export function usePersonSearch() {
   function setValues(newFormValues: PersonSearchFormValues): void {
     setFormValues(newFormValues);
     setSearchParams({
-      searchFirstName: newFormValues.firstName,
-      searchLastName: newFormValues.lastName,
+      searchFirstName:
+        newFormValues.firstName.trim().length === 0
+          ? undefined
+          : newFormValues.firstName,
+      searchLastName:
+        newFormValues.lastName.trim().length === 0
+          ? undefined
+          : newFormValues.lastName,
       searchDateOfBirth: isDateString(newFormValues.dateOfBirth)
         ? toUtcDate(newFormValues.dateOfBirth)
         : undefined,
-      searchHumanReadableId: newFormValues.humanReadableId,
+      searchHumanReadableId:
+        (newFormValues.humanReadableId ?? "").trim().length === 0
+          ? undefined
+          : newFormValues.humanReadableId,
     });
   }
 

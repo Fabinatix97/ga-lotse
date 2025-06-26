@@ -22,6 +22,16 @@ export const FileType = {
   Mp3: { name: "MP3", extensions: ["mp3"], mimeType: "audio/mpeg" },
   Wav: { name: "WAV", extensions: ["wav"], mimeType: "audio/wav" },
   Md: { name: "MD", extensions: ["md"], mimeType: "text/markdown" },
+  Yaml: {
+    name: "YAML",
+    extensions: ["yml", "yaml"],
+    mimeType: [
+      "application/yaml",
+      "application/x-yaml",
+      "text/yaml",
+      "text/x-yaml",
+    ],
+  },
   Svg: { name: "SVG", extensions: ["svg"], mimeType: "image/svg+xml" },
   Vcf: {
     name: "vCard",

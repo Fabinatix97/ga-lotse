@@ -33,6 +33,7 @@ interface VaccinationStatus extends Versioned {
   measlesContraIndication?: boolean;
   measlesContraIndicationIsPermanent?: boolean;
   measlesContraIndicationUntil?: Date;
+  note?: string;
 }
 
 export function mapVaccinationStatus(
@@ -62,5 +63,6 @@ export function mapVaccinationStatus(
     measlesContraIndicationIsPermanent:
       response.measlesContraIndicationIsPermanent,
     measlesContraIndicationUntil: response.measlesContraIndicationUntil,
+    note: response.note,
   };
 }

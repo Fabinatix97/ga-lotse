@@ -14,10 +14,12 @@ import java.util.UUID;
 @Schema(name = "ProphylaxisSession")
 public record ProphylaxisSessionDto(
     @NotNull UUID id,
+    @NotNull long version,
     @NotNull Instant dateAndTime,
     @NotNull @Valid InstitutionDto institution,
     String groupName,
     ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
     FluoridationVarnishDto fluoridationVarnish,
-    @NotNull ProphylaxisStatusDto status) {}
+    @NotNull ProphylaxisStatusDto status,
+    @NotNull boolean isDeletable) {}

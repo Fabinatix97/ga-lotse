@@ -80,6 +80,30 @@ public class FileValidator {
     return detectedMediaType;
   }
 
+  public static MediaType validateYamlFile(MultipartFile file) {
+    try {
+      // Besides application/yaml, we want files of similar media types to be accepted, too.
+      FileType fileType = FileTypeDetector.getSupportedFileTypeOrThrow(file);
+      if (fileType != FileType.YAML) {
+        throw new BadRequestException("Wrong content type " + fileType.getMediaType());
+      }
+
+      String fileContentType = file.getContentType();
+      if (StringUtils.isBlank(fileContentType)) {
+        throw new BadRequestException("Missing content-type header");
+      }
+
+      Matcher fileNameMatcher = FILE_REGEX_PATTERN.matcher(file.getOriginalFilename());
+      validateFilename(fileNameMatcher);
+      validateExtension(fileNameMatcher, fileType);
+
+      return fileType.getMediaType();
+    } catch (final IOException e) {
+      log.error("File header was corrupt", e);
+      throw new BadRequestException("File header was corrupt");
+    }
+  }
+
   // Alteration of validateContentType because only the Inspection Module provides audio upload
   // therefore no filetype is implemented which, throws an "Unsupported file type" error using the
   // original method.

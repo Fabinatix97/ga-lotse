@@ -26,6 +26,11 @@ public final class BundIdLoginMethod extends LoginMethod {
   }
 
   @Override
+  public LoginMethodType getLoginMethodType(String redirectUrl) {
+    return LoginMethodType.BUND_ID;
+  }
+
+  @Override
   protected void applyParameters(Map<String, Object> params, String redirectUrl) {
     log.info("Adding BundID IDP hint to login url");
     params.put("kc_idp_hint", "bund-id");

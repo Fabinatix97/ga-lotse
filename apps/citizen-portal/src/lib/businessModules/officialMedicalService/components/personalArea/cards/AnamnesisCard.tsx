@@ -5,8 +5,6 @@
 
 import { Box, Sheet, Typography } from "@mui/joy";
 
-import { InternalLinkButton } from "@eshg/lib-portal";
-
 import { theme } from "@/lib/baseModule/theme/theme";
 import {
   FileSheetIndicator,
@@ -20,6 +18,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function AnamnesisCard({
@@ -77,14 +76,14 @@ export function AnamnesisCard({
                 width: "100%",
               }}
             >
-              <InternalLinkButton
+              <ScopedInternalLinkButton
                 variant="outlined"
                 fullWidth
                 href={citizenRoutes.personalArea.anamnesis(accessCode)}
                 sx={{ backgroundColor: "white", height: "40px" }}
               >
                 {t("anamnesis.file.placeholder")}
-              </InternalLinkButton>
+              </ScopedInternalLinkButton>
             </Box>
           )}
         </HeaderGrid>

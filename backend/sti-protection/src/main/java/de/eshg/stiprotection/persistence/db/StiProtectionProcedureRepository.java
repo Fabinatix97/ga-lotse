@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.persistence.db;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import java.time.Instant;
 import java.util.Collection;
@@ -42,4 +43,6 @@ public interface StiProtectionProcedureRepository
     ORDER BY sti.id
     """)
   List<StiProtectionProcedure> findAllAppointmentsWithEndBeforeOrEqual(Instant overdueDate);
+
+  List<StiProtectionProcedure> findByAppointmentIn(List<Appointment> appointments);
 }

@@ -20,6 +20,7 @@ import {
 
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
 import { hasAnyResult } from "./result";
+import { firstToothWithDiagnosis } from "./utils";
 
 type AddToothInputState = Pick<
   ExaminationState,
@@ -56,6 +57,10 @@ export function addTooth(
     {},
     previousToothDiagnoses,
   );
+  const updatedTeeth = targetQuadrant.teeth.with(
+    toothContext.toothIndex,
+    newTooth,
+  );
 
   return {
     currentFocus: {
@@ -66,7 +71,8 @@ export function addTooth(
       ...dentition,
       [quadrantNumber]: {
         ...targetQuadrant,
-        teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
+        tabTarget: firstToothWithDiagnosis(updatedTeeth, quadrantNumber),
+        teeth: updatedTeeth,
       },
     },
     dirty: true,
@@ -104,12 +110,17 @@ export function removeTooth(
     type: "AddableTooth",
     toothNumber: tooth.toothNumber,
   };
+  const updatedTeeth = targetQuadrant.teeth.with(
+    toothContext.toothIndex,
+    newTooth,
+  );
 
   const newDentition = {
     ...dentition,
     [quadrantNumber]: {
       ...targetQuadrant,
-      teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
+      tabTarget: firstToothWithDiagnosis(updatedTeeth, quadrantNumber),
+      teeth: updatedTeeth,
     },
   };
 

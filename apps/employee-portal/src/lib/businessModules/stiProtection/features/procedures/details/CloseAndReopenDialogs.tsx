@@ -167,10 +167,6 @@ export function ReopenConfirmationDialog({
       <DetailsTable>
         <tbody>
           <tr>
-            <th scope="row">Aktenzeichen</th>
-            <td>-</td>
-          </tr>
-          <tr>
             <th scope="row">Geburtsjahr</th>
             <td>{personDetails.yearOfBirth}</td>
           </tr>

@@ -11,6 +11,7 @@ import de.eshg.config.domain.MultiLangDocument;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.officialmedicalservice.config.IOmsConfiguration;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +20,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class OmsConfiguration extends BaseEntity implements Initializable {
+public class OmsConfiguration extends BaseEntity implements Initializable, IOmsConfiguration {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean initialized = false;

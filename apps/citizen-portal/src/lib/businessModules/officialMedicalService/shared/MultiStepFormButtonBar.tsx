@@ -7,7 +7,9 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isEmpty } from "remeda";
 
-import { InternalLinkButton, useMultiStepForm } from "@eshg/lib-portal";
+import { useMultiStepForm } from "@eshg/lib-portal";
+
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 interface MultiStepFormButtonBarProps<Values> {
   href: string;
@@ -61,9 +63,9 @@ export function MultiStepFormButtonBar<Values>({
           {backLabel}
         </Button>
       )}
-      <InternalLinkButton variant="soft" color="neutral" href={href}>
+      <ScopedInternalLinkButton variant="soft" color="neutral" href={href}>
         {cancelLabel}
-      </InternalLinkButton>
+      </ScopedInternalLinkButton>
     </Stack>
   );
 }

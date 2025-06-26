@@ -7,11 +7,10 @@
 
 import { List, ListItem } from "@mui/joy";
 
-import { InternalLink } from "@eshg/lib-portal";
-
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 
 export default function CitizenSchoolEntryPage() {
   return (
@@ -21,10 +20,14 @@ export default function CitizenSchoolEntryPage() {
         <ContentSheet>
           <List marker="disc">
             <ListItem>
-              <InternalLink href="/playground/snackbar">Snackbar</InternalLink>
+              <ScopedInternalLink href="/playground/snackbar">
+                Snackbar
+              </ScopedInternalLink>
             </ListItem>
             <ListItem>
-              <InternalLink href="/playground/alert">Alert</InternalLink>
+              <ScopedInternalLink href="/playground/alert">
+                Alert
+              </ScopedInternalLink>
             </ListItem>
           </List>
         </ContentSheet>

@@ -36,6 +36,7 @@ import org.springframework.util.DigestUtils;
 public class DepartmentConfigurationService
     extends EshgConfigurationService<DepartmentConfiguration> {
 
+  private static final String ADDRESS_REGISTRY_ENDPOINT = "ADDRESS_REGISTRY";
   public static final String ACCESSIBILITY_STATEMENT_MARKDOWNS_ENDPOINT =
       "ACCESSIBILITY_STATEMENT_MARKDOWNS_CONFIG";
   public static final String ACKNOWLEDGEMENTS_MARKDOWNS_ENDPOINT =
@@ -235,7 +236,8 @@ public class DepartmentConfigurationService
         getContactConfigurationStatus(config),
         getImprintConfigurationStatus(config),
         getLogoConfigurationStatus(config),
-        getPrivacyPolicyConfigurationStatus(config));
+        getPrivacyPolicyConfigurationStatus(config),
+        getAddressRegistryConfigurationStatus(config));
   }
 
   @VisibleForTesting
@@ -298,6 +300,15 @@ public class DepartmentConfigurationService
             config.isPrivacyPolicyMarkdownsInitialized(),
             config.getCitizenPortalPrivacyPolicyMarkdown(),
             config.getEmployeePortalPrivacyPolicyMarkdown()));
+  }
+
+  private static Map.Entry<String, ConfigurationStatus> getAddressRegistryConfigurationStatus(
+      DepartmentConfiguration config) {
+    return Map.entry(
+        ADDRESS_REGISTRY_ENDPOINT,
+        config.isStreetAndMunicipalityDirectoriesInitialized()
+            ? ConfigurationStatus.COMPLETE
+            : ConfigurationStatus.INCOMPLETE);
   }
 
   private ConfigurationStatus getConfigurationStatusOf(

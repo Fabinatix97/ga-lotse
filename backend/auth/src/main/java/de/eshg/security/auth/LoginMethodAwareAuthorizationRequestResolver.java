@@ -6,6 +6,7 @@
 package de.eshg.security.auth;
 
 import de.eshg.security.auth.login.LoginMethod;
+import de.eshg.security.auth.login.LoginMethodTypeHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -21,12 +22,15 @@ public class LoginMethodAwareAuthorizationRequestResolver
   private final OAuth2AuthorizationRequestResolver delegate;
   private final RequestCache requestCache = new ReverseProxyAwareHttpSessionRequestCache();
   private final List<LoginMethod> loginMethods;
+  private final LoginMethodTypeHolder loginMethodTypeHolder;
 
   public LoginMethodAwareAuthorizationRequestResolver(
       ClientRegistrationRepository clientRegistrationRepository,
       List<LoginMethod> loginMethods,
-      String authorizationRequestBaseUri) {
+      String authorizationRequestBaseUri,
+      LoginMethodTypeHolder loginMethodTypeHolder) {
     this.loginMethods = loginMethods;
+    this.loginMethodTypeHolder = loginMethodTypeHolder;
     this.delegate = buildRequestResolver(clientRegistrationRepository, authorizationRequestBaseUri);
   }
 
@@ -56,6 +60,7 @@ public class LoginMethodAwareAuthorizationRequestResolver
 
     for (LoginMethod loginMethod : loginMethods) {
       if (loginMethod.isApplicable(redirectUrl)) {
+        loginMethodTypeHolder.setLoginMethodType(loginMethod.getLoginMethodType(redirectUrl));
         return loginMethod.apply(authorizationRequest, redirectUrl);
       }
     }

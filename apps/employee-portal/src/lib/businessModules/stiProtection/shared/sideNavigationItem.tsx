@@ -36,11 +36,6 @@ const defaultSubItems: SideNavigationSubItem[] = [
     accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
   },
   {
-    name: "Terminarten",
-    href: routes.appointmentDefinition,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
-  },
-  {
     name: "Textvorlagen",
     href: routes.textTemplates,
     accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),

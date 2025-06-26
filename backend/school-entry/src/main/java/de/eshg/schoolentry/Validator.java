@@ -83,11 +83,17 @@ public class Validator {
     this.appointmentBlockConfig = appointmentBlockConfig;
   }
 
-  static void validateOnlyOneOfSearchAndFilterParametersAreSet(
-      ProcedureFilterParameters filterParameters, ProcedureSearchParameters searchParameters) {
-    if (hasNonNullValue(filterParameters) && hasNonNullValue(searchParameters)) {
+  static void validateOnlyOneOfSearchAndFilterParametersAndHumanReadableIdAreSet(
+      ProcedureFilterParameters filterParameters,
+      ProcedureSearchParameters searchParameters,
+      HumanReadablePersonIdSearchParameters humanReadablePersonId) {
+    int withNonNullValueCount =
+        (hasNonNullValue(filterParameters) ? 1 : 0)
+            + (hasNonNullValue(searchParameters) ? 1 : 0)
+            + (hasNonNullValue(humanReadablePersonId) ? 1 : 0);
+    if (withNonNullValueCount > 1) {
       throw new BadRequestException(
-          "Filter parameters and search parameters can not be used in the same request.");
+          "Filter parameters and search parameters and human readable id can not be used in the same request.");
     }
   }
 

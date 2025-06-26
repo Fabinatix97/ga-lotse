@@ -52,6 +52,7 @@ export function AffectedPersonForm(props: { name: string }) {
             name={fieldName("title")}
             label={t("affectedPerson.fields.title")}
             options={titleOptions(t)}
+            validate={validateLength(1, 119)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
@@ -90,6 +91,7 @@ export function AffectedPersonForm(props: { name: string }) {
             name={`${fieldName("contactAddress")}.street`}
             label={t("affectedPerson.fields.contactAddress.street")}
             required={t("affectedPerson.fields.contactAddress.street_required")}
+            validate={validateLength(1, 55)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 2 })}>
@@ -99,12 +101,14 @@ export function AffectedPersonForm(props: { name: string }) {
             required={t(
               "affectedPerson.fields.contactAddress.houseNumber_required",
             )}
+            validate={validateLength(1, 11)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
           <InputField
             name={`${fieldName("contactAddress")}.addressAddition`}
             label={t("affectedPerson.fields.contactAddress.addressAddition")}
+            validate={validateLength(1, 100)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 2 })}>
@@ -122,6 +126,7 @@ export function AffectedPersonForm(props: { name: string }) {
             name={`${fieldName("contactAddress")}.city`}
             label={t("affectedPerson.fields.contactAddress.city")}
             required={t("affectedPerson.fields.contactAddress.city_required")}
+            validate={validateLength(1, 50)}
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>

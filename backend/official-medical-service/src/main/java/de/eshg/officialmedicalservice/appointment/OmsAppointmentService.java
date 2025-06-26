@@ -8,11 +8,15 @@ package de.eshg.officialmedicalservice.appointment;
 import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_LONG;
 import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT;
 
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
+import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
@@ -38,21 +42,23 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class OmsAppointmentService {
+public class OmsAppointmentService extends AbstractAppointmentService<OmsAppointment> {
   private final OmsProcedureRepository omsProcedureRepository;
   private final OmsAppointmentRepository omsAppointmentRepository;
   private final OmsAppointmentMapper omsAppointmentMapper;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final ProgressEntryService progressEntryService;
   private final PersonClient personClient;
-  private final Clock clock;
   private final NotificationService notificationService;
   private final AppointmentTypeService appointmentTypeService;
 
@@ -72,13 +78,13 @@ public class OmsAppointmentService {
       Clock clock,
       NotificationService notificationService,
       AppointmentTypeService appointmentTypeService) {
+    super(clock);
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsAppointmentRepository = omsAppointmentRepository;
     this.omsAppointmentMapper = omsAppointmentMapper;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.progressEntryService = progressEntryService;
     this.personClient = personClient;
-    this.clock = clock;
     this.notificationService = notificationService;
     this.appointmentTypeService = appointmentTypeService;
   }
@@ -423,5 +429,60 @@ public class OmsAppointmentService {
     return omsAppointmentRepository
         .findById(appointmentId)
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
+  }
+
+  @Override
+  public void checkAppointmentBlockViewFeatureActive() {
+    throw new BadRequestException("no feature toggle");
+  }
+
+  @Override
+  protected List<OmsAppointment> resolveEntitiesWithAppointments(List<Appointment> appointments) {
+    return omsAppointmentRepository.findByAppointmentIn(appointments);
+  }
+
+  @Override
+  protected Map<OmsAppointment, String> getInformationForAppointmentOverview(
+      List<OmsAppointment> entities) {
+    Map<OmsAppointment, UUID> omsAppointmentToCentralFileId = new HashMap<>();
+    entities.forEach(
+        entity -> {
+          Person affectedPerson = entity.getProcedure().findAffectedPerson();
+          if (affectedPerson != null) {
+            omsAppointmentToCentralFileId.put(entity, affectedPerson.getCentralFileStateId());
+          }
+        });
+    Map<UUID, GetPersonFileStateResponse> centralFileIdToResponse =
+        personClient
+            .getPersonFileStates(
+                new GetPersonFileStatesRequest(
+                    omsAppointmentToCentralFileId.values().stream().distinct().toList()))
+            .personFileStates()
+            .stream()
+            .collect(Collectors.toMap(GetPersonFileStateResponse::id, person -> person));
+
+    return entities.stream()
+        .collect(
+            Collectors.toMap(
+                entity -> entity,
+                entity -> {
+                  UUID centralFileId = omsAppointmentToCentralFileId.get(entity);
+                  if (centralFileId == null) {
+                    return "";
+                  }
+                  GetPersonFileStateResponse personFileStateResponse =
+                      centralFileIdToResponse.get(centralFileId);
+                  if (personFileStateResponse == null) {
+                    return "";
+                  }
+                  return "%s %s"
+                      .formatted(
+                          personFileStateResponse.firstName(), personFileStateResponse.lastName());
+                }));
+  }
+
+  @Override
+  protected UUID getProcedureId(OmsAppointment entity) {
+    return entity.getProcedure().getExternalId();
   }
 }

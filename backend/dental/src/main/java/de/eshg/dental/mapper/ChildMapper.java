@@ -13,7 +13,7 @@ import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.FluoridationConsentDto;
 import de.eshg.dental.api.UpdatePersonRequest;
-import de.eshg.dental.business.model.ChildWithAugmentedData;
+import de.eshg.dental.business.model.ChildWithPersonAndContactData;
 import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
@@ -38,7 +38,7 @@ public final class ChildMapper {
   }
 
   public static ChildDetailsDto mapToChildDetailsDto(
-      ChildWithAugmentedData augmentedChild,
+      ChildWithPersonAndContactData augmentedChild,
       List<Examination> examinations,
       List<FluoridationConsent> fluoridationConsents,
       List<AnnualInstitutionDto> institutions) {
@@ -51,21 +51,21 @@ public final class ChildMapper {
         augmentedChild.child().getVersion(),
         augmentedChild.child().getChild().getVersion(),
         ProcedureMapper.toInterfaceType(augmentedChild.child().getProcedureStatus()),
-        augmentedChild.personData().id(),
-        augmentedChild.personData().outdated(),
-        augmentedChild.personData().title(),
-        augmentedChild.personData().salutation(),
-        augmentedChild.personData().gender(),
-        augmentedChild.personData().firstName(),
-        augmentedChild.personData().lastName(),
-        augmentedChild.personData().dateOfBirth(),
-        augmentedChild.personData().nameAtBirth(),
-        augmentedChild.personData().placeOfBirth(),
-        augmentedChild.personData().countryOfBirth(),
-        augmentedChild.personData().emailAddresses(),
-        augmentedChild.personData().phoneNumbers(),
-        augmentedChild.personData().contactAddress(),
-        augmentedChild.personData().differentBillingAddress(),
+        augmentedChild.person().id(),
+        augmentedChild.person().outdated(),
+        augmentedChild.person().title(),
+        augmentedChild.person().salutation(),
+        augmentedChild.person().gender(),
+        augmentedChild.person().firstName(),
+        augmentedChild.person().lastName(),
+        augmentedChild.person().dateOfBirth(),
+        augmentedChild.person().nameAtBirth(),
+        augmentedChild.person().placeOfBirth(),
+        augmentedChild.person().countryOfBirth(),
+        augmentedChild.person().emailAddresses(),
+        augmentedChild.person().phoneNumbers(),
+        augmentedChild.person().contactAddress(),
+        augmentedChild.person().differentBillingAddress(),
         augmentedChild.child().getYear().getValue(),
         augmentedChild.child().getGroupName() != null
                 && !augmentedChild.child().getGroupName().isBlank()
@@ -78,13 +78,13 @@ public final class ChildMapper {
         augmentedChild.child().getNote());
   }
 
-  public static ChildDto mapChildToDto(ChildWithAugmentedData child) {
+  public static ChildDto mapChildToDto(ChildWithPersonAndContactData child) {
     return new ChildDto(
         child.child().getExternalId(),
-        child.personData().firstName(),
-        child.personData().lastName(),
-        child.personData().gender(),
-        child.personData().dateOfBirth(),
+        child.person().firstName(),
+        child.person().lastName(),
+        child.person().gender(),
+        child.person().dateOfBirth(),
         child.child().getYear().getValue(),
         child.child().getGroupName(),
         InstitutionMapper.mapContactToInstitutionDto(child.contact()),

@@ -5,18 +5,24 @@
 
 import { Stack } from "@mui/joy";
 
-import { createFieldNameMapper } from "@eshg/lib-portal";
+import { createFieldNameMapper, useBaseField } from "@eshg/lib-portal";
 import { ApiDecibelValue, ApiHertzValue } from "@eshg/school-entry-api";
 
 import { ExaminationFormProps } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationFormProps";
 import { SideIndicator } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SideIndicator";
-import { TestValuesButtonGroupField } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/TestValuesButtonGroupField";
+import {
+  TestValuesButtonGroup,
+  TestValuesButtonGroupField,
+} from "@/lib/businessModules/schoolEntry/features/procedures/examinations/TestValuesButtonGroupField";
 
 const DECIBEL_VALUE_OPTIONS = Object.values(ApiDecibelValue);
 const HERTZ_VALUE_OPTIONS = Object.values(ApiHertzValue);
 
 export function EarForm(props: ExaminationFormProps) {
   const fieldName = createFieldNameMapper(props.name);
+  const field = useBaseField<Record<ApiHertzValue, ApiDecibelValue | null>>({
+    name: props.name,
+  });
 
   return (
     <Stack direction="row" gap={3} data-testid={props.name}>
@@ -25,6 +31,29 @@ export function EarForm(props: ExaminationFormProps) {
         sideIndicatorPosition={props.sideIndicatorPosition}
       />
       <Stack gap={0.5}>
+        <TestValuesButtonGroup
+          label="Alle"
+          variant="outlined"
+          color="primary"
+          options={DECIBEL_VALUE_OPTIONS}
+          buttonWidth={73}
+          onChange={(value) => {
+            const newValue = HERTZ_VALUE_OPTIONS.every(
+              (it) => field.input.value[it] === value,
+            )
+              ? null
+              : value;
+            void field.helpers.setValue({
+              250: newValue,
+              500: newValue,
+              1000: newValue,
+              2000: newValue,
+              4000: newValue,
+              6000: newValue,
+              8000: newValue,
+            });
+          }}
+        />
         {HERTZ_VALUE_OPTIONS.map((value) => (
           <TestValuesButtonGroupField
             key={value}

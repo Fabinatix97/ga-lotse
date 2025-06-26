@@ -46,6 +46,16 @@ tasks.register('tsc', PnpmTask) {
 tasks.register('assemble', PnpmTask) {
   dependsOn tsc
   args = ['vite', 'build']
+
+  inputs.files(fileTree('src') {
+    include '**/*'
+  })
+  inputs.file('vite.config.ts')
+  inputs.file('package.json')
+  inputs.file('tsconfig.json')
+
+  outputs.dir(layout.buildDirectory.dir('dist'))
+
   doLast {
     writeCspConfig()
   }

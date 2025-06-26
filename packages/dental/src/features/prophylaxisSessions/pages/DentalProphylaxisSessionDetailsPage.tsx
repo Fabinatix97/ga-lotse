@@ -33,7 +33,7 @@ export function DentalProphylaxisSessionDetailsPage() {
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          title={`Prophylaxe - ${institutionName} - ${groupName}`}
+          title={`Maßnahme - ${institutionName} - ${groupName}`}
           backButton={
             <ToolbarBackButton href={routes.prophylaxisSessions.overview} />
           }

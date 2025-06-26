@@ -124,7 +124,7 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
   return (
     <FormikProvider value={form}>
       <SidebarForm ref={props.formRef}>
-        <SidebarContent title="Prophylaxe anlegen">
+        <SidebarContent title="Maßnahme planen">
           <Stack gap={3}>
             <DateTimeField
               name="dateAndTime"

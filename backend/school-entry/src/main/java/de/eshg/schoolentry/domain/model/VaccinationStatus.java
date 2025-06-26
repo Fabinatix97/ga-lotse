@@ -63,6 +63,8 @@ public class VaccinationStatus extends GenericEntity<Long> implements Validatabl
 
   private LocalDate measlesContraIndicationUntil;
 
+  private String note;
+
   @Override
   public Long getId() {
     return id;
@@ -246,6 +248,14 @@ public class VaccinationStatus extends GenericEntity<Long> implements Validatabl
 
   public void setMeaslesContraIndicationUntil(LocalDate measlesContraIndicationUntil) {
     this.measlesContraIndicationUntil = measlesContraIndicationUntil;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String notes) {
+    this.note = notes;
   }
 
   public Stream<PropertyDescriptor> getPropertiesToValidate() {

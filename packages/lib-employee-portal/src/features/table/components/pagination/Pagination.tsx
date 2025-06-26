@@ -24,6 +24,7 @@ import {
 import { RowsPerPageSelect } from "./RowsPerPageSelect";
 
 export interface PaginationProps {
+  loading?: boolean;
   totalCount: number;
   pageSizeOptions: number[];
   pageSize: number;
@@ -44,7 +45,7 @@ export function Pagination(props: Readonly<PaginationProps>) {
     md: "flex",
   };
 
-  const lastPage = getLastPage(props.pageSize, props.totalCount);
+  const lastPage = getLastPage(props.pageSize, props.totalCount ?? 0);
   const isFirstPage = props.pageNumber < 1;
   const isLastPage = props.pageNumber === lastPage;
 
@@ -76,15 +77,15 @@ export function Pagination(props: Readonly<PaginationProps>) {
     <>
       <LiveAnnouncer
         message="Keine Einträge vorhanden"
-        active={props.totalCount === 0}
+        active={!props.loading && props.totalCount === 0}
       />
       <LiveAnnouncer
         message="Ein Eintrag vorhanden"
-        active={props.totalCount === 1}
+        active={!props.loading && props.totalCount === 1}
       />
       <LiveAnnouncer
         message={`${props.totalCount} Einträge vorhanden`}
-        active={props.totalCount > 1}
+        active={!props.loading && props.totalCount > 1}
       />
       <Stack mt={3} flexDirection="row" gap={2} justifyContent="space-between">
         <RowsPerPageSelect
@@ -148,7 +149,7 @@ export function Pagination(props: Readonly<PaginationProps>) {
               {getCurrentCountText(
                 props.pageNumber,
                 props.pageSize,
-                props.totalCount,
+                props.totalCount ?? 0,
               )}
             </Typography>
             <Typography level="body-xs" textColor="text.secondary">

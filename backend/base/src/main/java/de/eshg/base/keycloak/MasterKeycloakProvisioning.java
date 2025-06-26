@@ -260,7 +260,8 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
       userResource.executeActionsEmail(
           List.of(
               SecurityAction.UPDATE_PASSWORD.getProviderId(),
-              SecurityAction.WEBAUTHN_REGISTER.getProviderId()));
+              SecurityAction.WEBAUTHN_REGISTER.getProviderId()),
+          (int) this.keycloakProperties.setupAdmin().emailLifetime().toSeconds());
     } else {
       log.info(
           "Found setup admin with username {} and {} credentials",

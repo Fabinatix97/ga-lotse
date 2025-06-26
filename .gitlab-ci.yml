@@ -31,7 +31,8 @@ stages:
   needs: [ ]
   image: ${GRADLE_BASE_IMAGE}
   script:
-    - gradle --no-daemon build -x test -x lint -x formatCheck
+    # Dont build the pdf converter client because Docker in docker doesnt work
+    - gradle --no-daemon build -x test -x lint -x formatCheck -x :pdf-converter-portal:build -x :lib-gs-wasm:build
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 

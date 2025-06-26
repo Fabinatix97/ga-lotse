@@ -133,6 +133,7 @@ function createFilterDefinitions(
 export function PendingFacilitiesTable(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
+  const tableControl = useTableControl({ serverSideSorting: true });
   const { data: objectTypes } = useGetObjectTypes();
 
   const filterDefinitions = createFilterDefinitions(objectTypes);
@@ -183,7 +184,11 @@ export function PendingFacilitiesTable(
   const [{ data: procedures, isFetching }, { data: gdprBanner }] =
     useSuspenseQueries({
       queries: [
-        getPendingFacilitiesQuery(facilityApi, filter),
+        getPendingFacilitiesQuery(facilityApi, {
+          ...filter,
+          pageNumber: tableControl.paginationProps.pageNumber,
+          pageSize: tableControl.paginationProps.pageSize,
+        }),
         gdprBannerQuery,
       ],
     });
@@ -193,7 +198,6 @@ export function PendingFacilitiesTable(
     businessModule: ApiBusinessModule.Inspection,
   });
 
-  const tableControl = useTableControl({ serverSideSorting: true });
   const columns = createPendingFacilitiesColumns(
     handleViewIncidentsClick,
     openReviewFacilityDuplicateSidebar,

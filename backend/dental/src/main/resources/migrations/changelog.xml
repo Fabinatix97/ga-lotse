@@ -60,5 +60,6 @@
   <include file="migrations/0050_add_employee_person_type.xml"/>
   <include file="migrations/0051_drop_not_null_constraint_on_prophylaxis_session_type.xml"/>
   <include file="migrations/0052_move_note_to_child.xml"/>
+  <include file="migrations/0053_add_child_age_to_screening_examination_result.xml"/>
 
 </databaseChangeLog>

@@ -34,6 +34,7 @@ import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.domain.repository.*;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
+import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonId;
 import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
@@ -540,8 +541,9 @@ public class SchoolEntryService {
   public void updateAppointment(
       Instant start, Instant end, SchoolEntryProcedure procedure, AppointmentType appointmentType) {
 
-    ChildData childData = personClient.fetchChildData(procedure);
-    validator.validateChildHasAddress(childData);
+    ChildDataWithPersonId childDataWithPersonId =
+        personClient.fetchChildDataWithPersonId(procedure);
+    validator.validateChildHasAddress(childDataWithPersonId.childData());
 
     UUID locationId = getAppointmentLocation(procedure);
     if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
@@ -555,7 +557,7 @@ public class SchoolEntryService {
     String accessCode = citizenAccessCodeUser.accessCode();
     Pdf invitation =
         invitationGenerator.generateInvitation(
-            accessCode, childData, start, getAppointmentLocation(procedure));
+            accessCode, childDataWithPersonId, start, getAppointmentLocation(procedure));
     progressEntryUtil.addProgressEntry(
         procedure,
         APPOINTMENT_MODIFIED,

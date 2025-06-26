@@ -4,7 +4,6 @@
  */
 
 import { Formik, FormikHelpers } from "formik";
-import { useRouter } from "next/navigation";
 import {
   Dispatch,
   SetStateAction,
@@ -41,6 +40,7 @@ import { mapToApiPostCitizenVaccinationConsultationRequest } from "@/lib/busines
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 export const AppointmentFormStep = {
   AppointmentTypeStep: 1,
@@ -81,7 +81,7 @@ export function AppointmentStepper() {
   const { t } = useTranslation(["travelMedicine/forms"]);
   const postCitizenVaccinationConsultation =
     usePostCitizenVaccinationConsultation();
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const [showSidepanel, setShowSidepanel] = useState(true);
   const alert = useAlert();

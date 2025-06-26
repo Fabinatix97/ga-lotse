@@ -20,6 +20,7 @@ import de.eshg.base.street.csv.StreetDirectoryCsvEntry;
 import de.eshg.base.street.csv.opencsv.CsvBindByNameMappingStrategy;
 import de.eshg.base.street.csv.opencsv.CsvWritePositionOrderComparator;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -111,7 +112,8 @@ public class AddressDirectoryService {
                     .map(missingHeader -> "missing header: " + missingHeader))
             .toList();
     if (!errors.isEmpty()) {
-      throw new BadRequestException("Invalid header line: (" + String.join(",", errors) + ")");
+      throw new BadRequestException(
+          ErrorCode.CSV_INVALID_HEADER, "Invalid header line: (" + String.join(",", errors) + ")");
     }
   }
 

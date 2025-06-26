@@ -14,7 +14,6 @@ import {
   WatchLaterOutlined,
 } from "@mui/icons-material";
 import { Button, Sheet } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import {
   durationBetweenDatesInMinutes,
@@ -38,6 +37,7 @@ import {
   AppointmentOverviewSectionText,
   AppointmentOverviewSectionTitle,
 } from "@/lib/shared/components/appointments/AppointmentOverviewSection";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 interface AppointmentOverviewSheetButtonProps {
@@ -49,7 +49,7 @@ interface AppointmentOverviewSheetButtonProps {
 export function AppointmentOverviewSheetButton(
   props: Readonly<AppointmentOverviewSheetButtonProps>,
 ) {
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const isMobile = useIsMobile();

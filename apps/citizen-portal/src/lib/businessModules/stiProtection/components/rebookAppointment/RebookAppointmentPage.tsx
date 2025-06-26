@@ -7,7 +7,6 @@
 
 import { differenceInMinutes, startOfMonth } from "date-fns";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { isNullish, prop, sortBy } from "remeda";
 
@@ -29,6 +28,7 @@ import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 import { RebookAppointmentContent } from "./RebookAppointmentContent";
 import { RebookAppointmentSidePanel } from "./RebookAppointmentSidePanel";
@@ -55,7 +55,7 @@ export function RebookAppointmentPage() {
   const sortedAppointments = sortBy(appointments, prop("start"));
   const rebookAppointment = useRebookAppointment();
 
-  const router = useRouter();
+  const router = useScopedRouter();
   const snackbar = useSnackbar();
   const scrollToErrorRef = useRef<() => void>(null);
   const [hasConflict, setHasConflict] = useState(false);

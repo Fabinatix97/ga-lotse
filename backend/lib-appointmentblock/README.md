@@ -8,6 +8,10 @@ model to support the handling of appointmentblocks within business modules.
 This guide walks you through the process of integrating the appointment block library into your business
 module.
 
+### AbstractAppointmentService
+A single bean that implements the `AbstractAppointmentService` is required for the detailed
+view of the appointments and the appointment blocks.
+
 ### AppointmentBlock library auto configuration
 
 The appointment block library is by default auto-configured (

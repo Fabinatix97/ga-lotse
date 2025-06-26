@@ -49,4 +49,13 @@ public class CustomMediaTypes {
 
   public static final String CSV_VALUE = "text/csv";
   public static final MediaType CSV = MediaType.valueOf(CSV_VALUE);
+
+  public static final String APPLICATION_X_YAML_VALUE = "application/x-yaml";
+  public static final MediaType APPLICATION_X_YAML = MediaType.valueOf(APPLICATION_X_YAML_VALUE);
+
+  public static final String TEXT_YAML_VALUE = "text/yaml";
+  public static final MediaType TEXT_YAML = MediaType.valueOf(TEXT_YAML_VALUE);
+
+  public static final String TEXT_X_YAML_VALUE = "text/x-yaml";
+  public static final MediaType TEXT_X_YAML = MediaType.valueOf(TEXT_X_YAML_VALUE);
 }

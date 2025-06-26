@@ -4,7 +4,6 @@
  */
 
 import { Button, Stack, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { isDefined } from "remeda";
 
@@ -15,6 +14,7 @@ import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 interface ConfirmStartGdprProcedureDialogProps {
   type: ApiGdprProcedureType | undefined;
@@ -32,7 +32,7 @@ export function ConfirmStartGdprProcedureDialog({
   const [isPending, startTransition] = useTransition();
   const { t } = useTranslation("gdpr");
   const routes = useRoutes();
-  const router = useRouter();
+  const router = useScopedRouter();
 
   function handleClose() {
     resetAlertContext();

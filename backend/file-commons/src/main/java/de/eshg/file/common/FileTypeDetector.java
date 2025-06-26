@@ -46,6 +46,6 @@ public class FileTypeDetector {
   }
 
   private static boolean isConsistentWithTextFile(FileType fileType) {
-    return (fileType == FileType.CSV) || (fileType == FileType.MD);
+    return (fileType == FileType.CSV) || (fileType == FileType.MD) || (fileType == FileType.YAML);
   }
 }

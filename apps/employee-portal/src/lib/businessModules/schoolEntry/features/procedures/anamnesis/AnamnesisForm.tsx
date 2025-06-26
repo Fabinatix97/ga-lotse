@@ -20,6 +20,7 @@ import {
   MutationBundle,
   OptionalFieldValue,
   SoftRequiredBooleanSelectField,
+  TextareaField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
 import {
@@ -57,6 +58,7 @@ export interface AnamnesisFormValues {
   interestsAndSportsInfo: InterestAndSportsInfoValues;
   migrationBackground: MigrationBackgroundValues;
   personalConspicuities: OptionalFieldValue<boolean>;
+  note: OptionalFieldValue<string>;
 }
 
 export interface InterestAndSportsInfoValues {
@@ -253,6 +255,8 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
               dateOfBirth={props.dateOfBirth}
               countryCodes={props.countryCodes}
             />
+            <Divider />
+            <TextareaField name="note" label="Bemerkung" />
             <FormFooter isSubmitting={isSubmitting} />
           </FormStack>
         );

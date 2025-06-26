@@ -6,7 +6,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { isAfter, isEqual } from "date-fns";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import {
   getCloseable,
@@ -36,6 +35,7 @@ import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export interface RebookAppointmentFormValues {
@@ -49,7 +49,7 @@ const INITIAL_VALUES: RebookAppointmentFormValues = {
 export function RebookAppointmentPageContent() {
   const isMobile = useIsMobile();
   const idContext = useIdContext();
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const putAppointment = usePutAppointment();

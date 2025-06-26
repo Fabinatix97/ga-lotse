@@ -28,7 +28,7 @@ public final class PhysicalExaminationDto {
   ExaminationWithDiagnosisDto abdomen;
   private @Valid @NotNull @Schema(description = "Diagnosis related to ear, nose, and throat.")
   ExaminationWithDiagnosisDto earNoseThroat;
-  private @Schema(description = "Additional notes for the physical examination.") String note;
+  private @Schema(description = "Additional note for the physical examination.") String note;
 
   public PhysicalExaminationDto(
       ExaminationWithDiagnosisDto nutritionalCondition,

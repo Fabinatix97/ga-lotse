@@ -12,7 +12,10 @@ import { RequiresChildren } from "@eshg/lib-portal";
 import { FormButtonBar } from "../../../components/form/FormButtonBar";
 import { SidebarActions } from "../../drawer/components/SidebarActions";
 import { SidebarContent } from "../../drawer/components/SidebarContent";
-import { SidebarForm } from "../../drawer/components/SidebarForm";
+import {
+  SidebarForm,
+  useSidebarFormHandle,
+} from "../../drawer/components/SidebarForm";
 import { SidebarFormHandle } from "../../drawer/types/sidebar";
 import { ImportStatistics } from "../types/ImportStatistics";
 import { ImportDataResult } from "../utils/parseImportResult";
@@ -37,7 +40,13 @@ export function ImportDataForm({
   wasImportSuccessful,
   importResult,
 }: ImportDataFormProps) {
-  const { handleSubmit, isSubmitting } = useFormikContext();
+  const { handleSubmit, isSubmitting, dirty, resetForm } = useFormikContext();
+
+  useSidebarFormHandle(formRef, {
+    dirty: wasImportSuccessful ? false : dirty,
+    resetForm,
+  });
+
   return (
     <SidebarForm ref={formRef} onSubmit={handleSubmit}>
       <SidebarContent title={title}>

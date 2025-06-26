@@ -14,6 +14,7 @@ import {
   DynamicPageProps,
   addMissingKeys,
   dropEmptyKeys,
+  mapOptionalValue,
   useHandledMutation,
 } from "@eshg/lib-portal";
 import {
@@ -105,7 +106,7 @@ function mapToRequest(
       examinationResult: mapExaminationResultValues(
         formValues.examinationResult,
       ),
-      note: formValues.note,
+      note: mapOptionalValue(formValues.note),
     },
   };
 }

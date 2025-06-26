@@ -28,7 +28,7 @@ public enum SecondaryResult {
   O,
   /** Versiegelt */
   V,
-  /** Keine Diganose */
+  /** Keine Diagnose */
   N,
   /** Fehlend */
   U,

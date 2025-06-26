@@ -6,7 +6,7 @@
 package de.eshg.inspection.inspection;
 
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
-import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.inspection.checklist.ChecklistService;
 import de.eshg.inspection.checklist.api.ChecklistDto;
@@ -56,7 +56,7 @@ import de.eshg.lib.procedure.domain.model.ManualProgressEntryType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.ProcessedInboxProgressEntry;
-import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.inbox.InboxProcedureService;
 import de.eshg.rest.service.error.BadRequestException;
@@ -376,6 +376,10 @@ public class InspectionService {
   public InspectionDto syncInspectionFacilityFileState(
       UUID inspectionExternalId, InspectionSyncFileStateRequest request) {
     Inspection inspection = loadInspectionForUpdate(inspectionExternalId);
+    GetFacilityFileStateResponse baseFacility =
+        facilityClient.getFacilityFileState(
+            inspection.getRelatedFacility().getCentralFileStateId());
+    UUID previousFacilityFileStateId = inspection.getRelatedFacility().getCentralFileStateId();
 
     AddFacilityFileStateResponse baseResponse =
         facilityClient.syncFacilityFileState(
@@ -384,32 +388,12 @@ public class InspectionService {
     inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());
     inspection.getFacility().setCentralFileStateId(baseResponse.id());
 
-    ProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FACILITY_SYNCED", TriggerType.EMPLOYEE);
-
-    inspection.addProgressEntry(progressEntry);
-
-    return inspectionMapper.mapToDto(inspection);
-  }
-
-  public InspectionDto updateFacilityFileStateAndReference(
-      UUID inspectionExternalId, PutFacilityRequest request) {
-
-    Inspection inspection = loadInspection(inspectionExternalId);
-
-    AddFacilityFileStateResponse baseResponse =
-        facilityClient.updateFacilityFileStateAndReference(
-            inspection.getCentralFileStateId(), request);
-
-    inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());
-    inspection.getFacility().setCentralFileStateId(baseResponse.id());
-
-    ProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FACILITY_UPDATED", TriggerType.EMPLOYEE);
-
-    inspection.addProgressEntry(progressEntry);
+    if (!baseFacility.contactAddress().equals(baseResponse.contactAddress())) {
+      createProgressEntryForSyncFacility(
+          inspection, previousFacilityFileStateId, "Die Adresse der Einrichtung wurde geändert.");
+    } else {
+      createProgressEntryForSyncFacility(inspection, previousFacilityFileStateId);
+    }
 
     return inspectionMapper.mapToDto(inspection);
   }
@@ -532,5 +516,23 @@ public class InspectionService {
       processedInboxProgressEntry.setFile(inboxProgressEntry.getFile().copy());
     }
     return processedInboxProgressEntry;
+  }
+
+  private void createProgressEntryForSyncFacility(
+      Inspection inspection, UUID previousFacilityFileStateId) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            "INSPECTION_FACILITY_SYNCED", TriggerType.EMPLOYEE);
+    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
+    inspection.addProgressEntry(progressEntry);
+  }
+
+  private void createProgressEntryForSyncFacility(
+      Inspection inspection, UUID previousFacilityFileStateId, String changeDescription) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            "INSPECTION_FACILITY_SYNCED", changeDescription, TriggerType.EMPLOYEE);
+    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
+    inspection.addProgressEntry(progressEntry);
   }
 }

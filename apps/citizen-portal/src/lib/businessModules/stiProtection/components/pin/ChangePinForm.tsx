@@ -6,7 +6,7 @@
 import { useFormikContext } from "formik";
 import { useTranslation } from "react-i18next";
 
-import { Alert, InternalLinkButton, SubmitButton } from "@eshg/lib-portal";
+import { Alert, SubmitButton } from "@eshg/lib-portal";
 
 import { PinField } from "@/lib/businessModules/stiProtection/components/appointment/PinField";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -15,6 +15,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 import { ChangePinFormData } from "./ChangePinPage";
 
@@ -67,12 +68,12 @@ export function ChangePinForm() {
           <SubmitButton submitting={isSubmitting}>
             {t("form.button_label")}
           </SubmitButton>
-          <InternalLinkButton
+          <ScopedInternalLinkButton
             variant="outlined"
             href={citizenRoutes.personalArea.index(undefined)}
           >
             {t("form.cancel")}
-          </InternalLinkButton>
+          </ScopedInternalLinkButton>
         </ContentSheet>
       }
     />

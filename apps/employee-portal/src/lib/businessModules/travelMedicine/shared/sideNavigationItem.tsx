@@ -35,11 +35,6 @@ export function resolveSideNavigationItems({
       accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
     },
     {
-      name: "Terminarten",
-      href: routes.appointmentTypes.index,
-      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-    },
-    {
       name: "Anamnese",
       href: routes.medicalHistoryTemplates.index,
       accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),

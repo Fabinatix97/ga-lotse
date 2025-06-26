@@ -372,6 +372,7 @@ public class ExaminationResultService {
     toResult.setMeaslesContraIndicationIsPermanent(
         fromResult.getMeaslesContraIndicationIsPermanent());
     toResult.setMeaslesContraIndicationUntil(fromResult.getMeaslesContraIndicationUntil());
+    toResult.setNote(fromResult.getNote());
   }
 
   void updateAnamnesis(Anamnesis persistedAnamnesis, Anamnesis newAnamnesis) {
@@ -444,6 +445,7 @@ public class ExaminationResultService {
     toAnamnesis.setCanSwim(fromAnamnesis.getCanSwim());
     toAnamnesis.setHasSeahorseBadge(fromAnamnesis.getHasSeahorseBadge());
     toAnamnesis.setPersonalConspicuities(fromAnamnesis.getPersonalConspicuities());
+    toAnamnesis.setNote(fromAnamnesis.getNote());
   }
 
   public Map<String, String> resolveIcd10Codes(DevelopmentScreening developmentScreeningResult) {

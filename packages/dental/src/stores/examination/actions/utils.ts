@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiTooth } from "@eshg/dental-api";
+
 import {
   Dentition,
   QuadrantNumber,
@@ -39,4 +41,19 @@ export function isInUpperJaw(quadrantNumber: QuadrantNumber): boolean {
 
 export function isInLowerJaw(quadrantNumber: QuadrantNumber): boolean {
   return quadrantNumber === "Q3" || quadrantNumber === "Q4";
+}
+
+export function firstToothWithDiagnosis(
+  teeth: Tooth[],
+  quadrantNumber: QuadrantNumber,
+): ApiTooth {
+  const firstToothWithDiagnosis = isInUpperJaw(quadrantNumber)
+    ? teeth.find(isToothWithDiagnosis)
+    : teeth.findLast(isToothWithDiagnosis);
+
+  if (firstToothWithDiagnosis === undefined) {
+    throw new Error("Quadrant contains no tooth with diagnosis");
+  }
+
+  return firstToothWithDiagnosis.toothNumber;
 }

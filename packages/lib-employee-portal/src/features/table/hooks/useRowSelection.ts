@@ -51,10 +51,13 @@ export function useRowSelection<TData extends UniqueEntity>(
 
 export function useSyncRowSelection<TData extends UniqueEntity>(
   rowSelectionProps: RowSelectionProps<TData>,
-  rows: readonly TData[],
+  rows: readonly TData[] | undefined,
 ) {
   const { onRowSelectionChange } = rowSelectionProps;
   useEffect(() => {
+    if (rows === undefined) {
+      return;
+    }
     onRowSelectionChange((prevRowSelection) =>
       deselectMissingRows(prevRowSelection, rows),
     );

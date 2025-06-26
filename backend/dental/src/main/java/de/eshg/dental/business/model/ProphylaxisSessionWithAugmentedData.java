@@ -17,7 +17,7 @@ import java.util.UUID;
 public record ProphylaxisSessionWithAugmentedData(
     ProphylaxisSession prophylaxisSession,
     ContactDto institution,
-    Map<Examination, ChildWithAugmentedData> participants,
+    Map<Examination, ChildWithPersonAndContactData> participants,
     Map<UUID, UserDto> users,
     Map<UUID, List<Examination>> previousExaminationsByChildFileStateId,
     Map<UUID, List<FluoridationConsent>> allFluoridationConsentsByChildFileStateId) {}

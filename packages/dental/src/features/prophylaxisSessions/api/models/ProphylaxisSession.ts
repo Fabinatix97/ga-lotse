@@ -9,14 +9,19 @@ import {
   ApiProphylaxisStatus,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
-import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
+import {
+  BaseEntity,
+  Versioned,
+  mapBaseEntity,
+  mapVersioned,
+} from "@eshg/lib-employee-portal";
 
 import {
   Institution,
   mapInstitution,
 } from "../../../../api/models/Institution";
 
-export interface ProphylaxisSession extends BaseEntity {
+export interface ProphylaxisSession extends BaseEntity, Versioned {
   dateAndTime: Date;
   institution: Institution;
   groupName?: string;
@@ -24,6 +29,7 @@ export interface ProphylaxisSession extends BaseEntity {
   isScreening: boolean;
   fluoridationVarnish?: ApiFluoridationVarnish;
   status: ApiProphylaxisStatus;
+  isDeletable: boolean;
 }
 
 export function mapProphylaxisSession(
@@ -31,6 +37,7 @@ export function mapProphylaxisSession(
 ): ProphylaxisSession {
   return {
     ...mapBaseEntity(response),
+    ...mapVersioned(response),
     dateAndTime: response.dateAndTime,
     institution: mapInstitution(response.institution),
     groupName: response.groupName,
@@ -38,5 +45,6 @@ export function mapProphylaxisSession(
     isScreening: response.isScreening,
     fluoridationVarnish: response.fluoridationVarnish,
     status: response.status,
+    isDeletable: response.isDeletable,
   };
 }

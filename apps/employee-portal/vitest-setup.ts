@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { registerValidationFileMatcher } from "@cronn/vitest-file-snapshots/matcher";
+import { registerValidationFileMatchers } from "@cronn/vitest-file-snapshots/register";
 
-registerValidationFileMatcher({
+registerValidationFileMatchers({
   testDir: "src",
 });

@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.domain.repository;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
@@ -106,4 +107,6 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
   List<File> findInvitationLettersForProcedures(
       @Param("procedureIds") List<UUID> procedureIds,
       @Param("keyDocumentType") String keyDocumentType);
+
+  List<SchoolEntryProcedure> findByAppointmentIn(List<Appointment> appointments);
 }

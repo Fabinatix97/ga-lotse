@@ -1,0 +1,9 @@
+<#-- @ftlvariable name="office" type="de.eshg.inspection.report.pdf.RepAddress" -->
+<footer>
+    <div>
+    ${office.name} • ${office.street}, ${office.zipCode} ${office.city}
+    </div>
+    <div>
+      Webseite: <a href="${office.url}">${office.url}</a> / E-Mail: <a href="${office.email}">${office.email}</a>
+    </div>
+</footer>

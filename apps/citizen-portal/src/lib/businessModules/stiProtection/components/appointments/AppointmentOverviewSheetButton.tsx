@@ -16,7 +16,6 @@ import {
 import { Sheet } from "@mui/joy";
 
 import {
-  InternalLinkButton,
   durationBetweenDatesInMinutes,
   formatDate,
   formatTime,
@@ -40,6 +39,7 @@ import {
   AppointmentOverviewSectionTitle,
 } from "@/lib/shared/components/appointments/AppointmentOverviewSection";
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 
 import { ApiAppointmentSummary } from "./helpers";
 
@@ -70,7 +70,7 @@ export function AppointmentOverviewSheetButton({
       : "appointment_card.appointment_type.consultation";
 
   return (
-    <InternalLinkButton
+    <ScopedInternalLinkButton
       color="neutral"
       variant="plain"
       sx={{ padding: 0 }}
@@ -143,7 +143,7 @@ export function AppointmentOverviewSheetButton({
           }}
         />
       </Sheet>
-    </InternalLinkButton>
+    </ScopedInternalLinkButton>
   );
 }
 

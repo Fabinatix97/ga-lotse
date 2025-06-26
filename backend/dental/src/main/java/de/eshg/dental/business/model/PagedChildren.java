@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public record PagedChildren(
-    List<ChildWithAugmentedData> pagedChildren, long totalNumberOfChildren) {
-  public Stream<ChildWithAugmentedData> stream() {
+    List<ChildWithPersonAndContactData> pagedChildren, long totalNumberOfChildren) {
+  public Stream<ChildWithPersonAndContactData> stream() {
     return pagedChildren.stream();
   }
 }

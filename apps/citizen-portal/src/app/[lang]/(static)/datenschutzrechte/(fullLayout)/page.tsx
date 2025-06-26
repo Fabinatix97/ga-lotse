@@ -10,7 +10,7 @@ import { Button, Sheet, SheetProps, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 import { Trans } from "react-i18next";
 
-import { ExternalLink, InternalLink } from "@eshg/lib-portal";
+import { ExternalLink } from "@eshg/lib-portal";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
@@ -30,6 +30,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 
 interface LoginModalState {
   open: boolean;
@@ -59,9 +60,9 @@ export default function DataPrivacyRightsEntrypointPage() {
               i18nKey="gdpr:entrypoint.intro_section.description"
               components={{
                 InternalLink: (
-                  <InternalLink href={routes.privacyPolicy}>
+                  <ScopedInternalLink href={routes.privacyPolicy}>
                     {routes.privacyPolicy}
-                  </InternalLink>
+                  </ScopedInternalLink>
                 ),
               }}
             />

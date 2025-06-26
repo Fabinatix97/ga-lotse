@@ -21,7 +21,7 @@ const sideNavigationItem = {
 
 const defaultSubItems: SideNavigationSubItem[] = [
   {
-    name: "Prophylaxen",
+    name: "Maßnahmen",
     href: routes.prophylaxisSessions.overview,
     accessCheck: hasUserRole(ApiUserRole.DentalAdmin),
   },

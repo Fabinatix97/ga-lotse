@@ -7,7 +7,6 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import { ApiBookingState } from "@eshg/official-medical-service-api";
 
@@ -23,6 +22,7 @@ import { useTranslation } from "@/lib/i18n/client";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 const INITIAL_VALUES: BookAppointmentFormValues = {
@@ -34,7 +34,7 @@ export default function CitizenOmsEntryPage() {
   const [{ data: procedure }] = useSuspenseQueries({
     queries: [useGetProcedureDetails()],
   });
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const handleConcurrentAppointments = useHandleConcurrentAppointment();

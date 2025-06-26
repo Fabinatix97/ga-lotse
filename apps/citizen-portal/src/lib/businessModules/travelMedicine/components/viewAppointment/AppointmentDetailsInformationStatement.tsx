@@ -5,7 +5,6 @@
 
 import { Check, CloseOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { ApiInformationStatementSummary } from "@eshg/travel-medicine-api";
 
@@ -17,6 +16,7 @@ import {
   InfoSectionGrid,
   InfoSectionTitle,
 } from "@/lib/shared/components/infoSection";
+import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 interface AppointmentDetailsInformationStatementProp {
@@ -26,7 +26,7 @@ export function AppointmentDetailsInformationStatement(
   props: Readonly<AppointmentDetailsInformationStatementProp>,
 ) {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
-  const router = useRouter();
+  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { procedureId, procedureStepId } = useIdContext();
