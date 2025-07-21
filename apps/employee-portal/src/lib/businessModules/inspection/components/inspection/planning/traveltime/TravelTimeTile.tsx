@@ -9,7 +9,6 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import { Button, Grid, IconButton, Stack } from "@mui/joy";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { isNonNullish } from "remeda";
 
 import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
@@ -24,7 +23,7 @@ import { formatDateTime, useSnackbar } from "@eshg/lib-portal";
 
 import { useInspectionGeoApi } from "@/lib/businessModules/inspection/api/clients";
 import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/geo";
-import { TravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
+import { useTravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
@@ -105,12 +104,21 @@ export function TravelTimeTile({
   const { startBuffer, startTime, endBuffer, endTime } = getTravelTimeParts(
     inspection.travelTime,
   );
-  const [open, setOpen] = useState(false);
+  const sidebar = useTravelTimeSidebar();
   const showEdit = isNonNullish(addressString) && !readonly;
   const showTravelStart = isNonNullish(
     inspection.travelTime?.startBufferInMinutes,
   );
   const showTravelEnd = isNonNullish(inspection.travelTime?.endBufferInMinutes);
+
+  function openSidebar() {
+    sidebar.open({
+      procedureId: inspection.externalId,
+      objectType: inspection.facility?.objectType,
+      appointment: inspection.plannedAppointment,
+      travelTime: inspection.travelTime,
+    });
+  }
 
   async function handleClickRoutePlanner() {
     const url = await computeOpenStreetMapUrl();
@@ -142,7 +150,7 @@ export function TravelTimeTile({
           </Button>
         )
       }
-      onEdit={showEdit ? () => setOpen(true) : undefined}
+      onEdit={showEdit ? () => openSidebar() : undefined}
     >
       {addressString && (
         <Stack
@@ -163,14 +171,6 @@ export function TravelTimeTile({
           </IconButton>
         </Stack>
       )}
-      <TravelTimeSidebar
-        open={open}
-        procedureId={inspection.externalId}
-        objectType={inspection.facility?.objectType}
-        appointment={inspection.plannedAppointment}
-        travelTime={inspection.travelTime}
-        onClose={() => setOpen(false)}
-      />
       <Grid container columnSpacing={2} rowSpacing={3}>
         {showTravelStart && (
           <Grid xs={6}>

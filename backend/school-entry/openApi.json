@@ -9123,7 +9123,7 @@
       },
       "PrimaryLanguageValue" : {
         "type" : "string",
-        "enum" : [ "GERMAN", "OTHER", "UNKNOWN" ]
+        "enum" : [ "GERMAN", "OTHER", "OTHER_AND_GERMAN", "MULTIPLE_OTHER", "UNKNOWN" ]
       },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],

@@ -20,6 +20,7 @@ import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.citizenuser.api.CredentialTypeDto;
 import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.domain.model.SequencedBaseEntity_;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -351,11 +352,12 @@ public class StiProtectionProcedureService {
       GetStiProtectionProceduresSortByDto sortBy) {
     return (root, query, criteriaBuilder) -> {
       Path<?> sortProperty = getSortProperty(sortBy, root);
+      Path<Long> idProperty = root.get(SequencedBaseEntity_.id);
 
       if (sortOrder == ASC) {
-        query.orderBy(criteriaBuilder.asc(sortProperty));
+        query.orderBy(criteriaBuilder.asc(sortProperty), criteriaBuilder.asc(idProperty));
       } else {
-        query.orderBy(criteriaBuilder.desc(sortProperty));
+        query.orderBy(criteriaBuilder.desc(sortProperty), criteriaBuilder.desc(idProperty));
       }
       return criteriaBuilder.conjunction();
     };

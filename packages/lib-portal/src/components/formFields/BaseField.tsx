@@ -14,6 +14,7 @@ import {
 import { useField } from "formik";
 import { ReactNode } from "react";
 import { isDefined, isNullish } from "remeda";
+import { useDebounce } from "use-debounce";
 
 import { validatePipe, validateRequired } from "../../helpers/validators";
 import { ValidationRules } from "../../types/form";
@@ -87,11 +88,13 @@ export function BaseField(props: BaseFieldProps) {
     ...formControlProps
   } = props;
 
+  const [debouncedHelperText] = useDebounce(helperText, 1);
+
   return (
     <FormControl {...formControlProps}>
       {renderLabel(label)}
       {children}
-      {renderHelperText(helperText)}
+      {renderHelperText(debouncedHelperText)}
     </FormControl>
   );
 }

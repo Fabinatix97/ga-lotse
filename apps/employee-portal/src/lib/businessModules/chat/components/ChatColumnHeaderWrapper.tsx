@@ -7,6 +7,7 @@ import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
 export const chatColumnHeaderHeight = "5.25rem";
+export const chatMessageInputHeight = "5rem";
 
 export function ChatColumnHeaderWrapper({
   children,

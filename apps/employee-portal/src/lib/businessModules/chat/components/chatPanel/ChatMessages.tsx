@@ -4,6 +4,7 @@
  */
 
 import { Box, Divider, List, ListItem, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { isSameDay, startOfDay } from "date-fns";
 import { User } from "matrix-js-sdk";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -18,7 +19,6 @@ import {
 } from "remeda";
 
 import { ChatBubble } from "@/lib/businessModules/chat/components/chatPanel/ChatBubble";
-import { ChatBubbleMobile } from "@/lib/businessModules/chat/components/chatPanel/ChatBubbleMobile";
 import { ChatSystemMessage } from "@/lib/businessModules/chat/components/chatPanel/ChatSystemMessages";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
@@ -37,9 +37,10 @@ import { getDayLabel, isDMRoom } from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatMessagesProps {
   room: RoomWithCommunicationType;
+  sx?: SxProps;
 }
 
-export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
+export function ChatMessages({ room, sx }: Readonly<ChatMessagesProps>) {
   const { messages, paginateMessages, isLoading, hasNextPage, error } =
     useRoomTimeline(room.room.roomId);
   const { matrixClient } = useChatClientContext();
@@ -101,16 +102,23 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
   }
 
   return (
-    <Box sx={{ overflowY: "hidden", flex: 1 }}>
+    <Box
+      sx={{
+        overflowY: "hidden",
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        ...(sx ?? {}),
+      }}
+      data-testid="chat-messages"
+    >
       <List
         ref={rootRef}
         sx={{
           display: "flex",
           flexDirection: "column-reverse",
-          height: "calc(100% - 2rem)",
           overflowY: "auto",
         }}
-        data-testid="chat-messages"
       >
         {messages?.map((message, index: number) => {
           if (!message) return null;
@@ -167,63 +175,25 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                 {isSystemMessage(message) ? (
                   <ChatSystemMessage key={message.id} message={message} />
                 ) : (
-                  <>
-                    <Box
-                      sx={{
-                        display: {
-                          xxs: "none",
-                          sm: "block",
-                          width: "100%",
-                        },
-                      }}
-                    >
-                      <ChatBubble
-                        variant={
-                          message.sender?.userId === loggedInUserId
-                            ? "sent"
-                            : "received"
-                        }
-                        loggedInUserId={loggedInUserId}
-                        message={message}
-                        mentions={mentions}
-                        lastReadMessageIndexes={lastReadMessageIndexes}
-                        index={index}
-                        removeMessage={removeMessage}
-                        editMessage={(text, mentionedUsers) =>
-                          editChatMessage(message.id, text, mentionedUsers)
-                        }
-                        roomMembers={roomMembers}
-                        edited={message.edited}
-                        roomId={room.room.roomId}
-                      />
-                    </Box>
-                    <Box
-                      sx={{
-                        display: { xxs: "block", sm: "none", width: "100%" },
-                      }}
-                    >
-                      <ChatBubbleMobile
-                        message={message}
-                        variant={
-                          message.sender?.userId === loggedInUserId
-                            ? "sent"
-                            : "received"
-                        }
-                        loggedInUserId={loggedInUserId}
-                        lastReadMessageIndexes={lastReadMessageIndexes}
-                        index={index}
-                        mentions={mentions}
-                        removeMessage={removeMessage}
-                        editMessage={(text, mentionedUsers) =>
-                          editChatMessage(message.id, text, mentionedUsers)
-                        }
-                        roomMembers={roomMembers}
-                        roomId={room.room.roomId}
-                        edited={message.edited}
-                        communicationType={room.communicationType}
-                      />
-                    </Box>
-                  </>
+                  <ChatBubble
+                    variant={
+                      message.sender?.userId === loggedInUserId
+                        ? "sent"
+                        : "received"
+                    }
+                    loggedInUserId={loggedInUserId}
+                    message={message}
+                    mentions={mentions}
+                    lastReadMessageIndexes={lastReadMessageIndexes}
+                    index={index}
+                    removeMessage={removeMessage}
+                    editMessage={(text, mentionedUsers) =>
+                      editChatMessage(message.id, text, mentionedUsers)
+                    }
+                    roomMembers={roomMembers}
+                    edited={message.edited}
+                    roomId={room.room.roomId}
+                  />
                 )}
               </Box>
               {shouldShowDivider && message.timestamp && (

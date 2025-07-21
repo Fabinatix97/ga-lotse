@@ -33,11 +33,17 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
     }),
   ),
   waitingRoom: schoolEntryPath("/waiting-room"),
-  appointmentBlockGroups: defineRoutes(
-    schoolEntryPath("/appointment-block-groups"),
-    (appointmentBlockGroupsPath) => ({
-      overview: appointmentBlockGroupsPath("/"),
-      new: appointmentBlockGroupsPath("/new"),
+  appointments: defineRoutes(
+    schoolEntryPath("/appointments"),
+    (appointmentsPath) => ({
+      overview: appointmentsPath("/"),
+      appointmentBlockGroups: defineRoutes(
+        appointmentsPath("/appointment-block-groups"),
+        (appointmentBlockGroupsPath) => ({
+          overview: appointmentBlockGroupsPath("/"),
+          new: appointmentBlockGroupsPath("/new"),
+        }),
+      ),
     }),
   ),
   inbox: defineRoutes(schoolEntryPath("/inbox"), (inboxPath) => ({

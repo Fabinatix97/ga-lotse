@@ -21,11 +21,11 @@ import {
   formatAppointmentTime,
   formatDateToYear,
 } from "@eshg/lib-portal";
-import { ApiCitizenProcedure, ApiConcern } from "@eshg/sti-protection-api";
+import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { useDepartmentInfo } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
-import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
+import { useCitizenProcedure } from "@/lib/businessModules/stiProtection/components/appointment/CitizenProcedureContext";
 import { DownloadDocumentCard } from "@/lib/businessModules/stiProtection/components/shared/DownloadDocumentCard";
 import { MedicalHistoryCard } from "@/lib/businessModules/stiProtection/components/shared/MedicalHistoryCard";
 import { TranslatedList } from "@/lib/businessModules/stiProtection/components/shared/TranslatedList";
@@ -50,8 +50,8 @@ import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
 export function AppointmentDetailsContent() {
-  const [{ procedure }] = useFormData<{ procedure: ApiCitizenProcedure }>();
-  const { appointment, concern, medicalHistorySubmitted } = procedure;
+  const { appointment, concern, medicalHistorySubmitted } =
+    useCitizenProcedure();
   const { t } = useTranslation("stiProtection/appointmentInfo");
   const citizenRoutes = useConcernedCitizenRoutes(concern);
   const document = useAnonymousIdentificationDocumentQuery();
@@ -89,8 +89,7 @@ export function AppointmentDetailsContent() {
   );
 }
 export function Information() {
-  const [{ procedure }] = useFormData<{ procedure: ApiCitizenProcedure }>();
-  const { person, appointment, concern } = procedure;
+  const { person, appointment, concern } = useCitizenProcedure();
   const { t } = useTranslation("stiProtection/appointmentInfo");
   const { code } = useLocale();
   const { data: departmentInfo } = useDepartmentInfo(concern);

@@ -397,6 +397,8 @@ public class SopessStatistics {
       case null -> null;
       case GERMAN -> "1";
       case OTHER -> "2";
+      case OTHER_AND_GERMAN -> "3";
+      case MULTIPLE_OTHER -> "4";
       case UNKNOWN -> "9";
     };
   }

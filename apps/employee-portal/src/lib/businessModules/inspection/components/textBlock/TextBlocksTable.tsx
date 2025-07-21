@@ -8,7 +8,6 @@
 import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import { ApiTextBlock } from "@eshg/inspection-api";
 import {
@@ -23,7 +22,7 @@ import {
 } from "@eshg/lib-employee-portal";
 
 import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutations/textblocks";
-import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
+import { useEditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 
 const columnHelper = createColumnHelper<ApiTextBlock>();
@@ -34,11 +33,6 @@ interface TextBlocksTableProps {
   isFetching: boolean;
 }
 
-interface TextBlockTableState {
-  open: boolean;
-  textBlock: ApiTextBlock;
-}
-
 export function TextBlocksTable({
   elements,
   totalNumberOfElements,
@@ -46,21 +40,10 @@ export function TextBlocksTable({
 }: TextBlocksTableProps) {
   const deleteTextBlock = useDeleteTextBlock();
   const { openConfirmationDialog } = useConfirmationDialog();
-
-  const [state, setState] = useState<TextBlockTableState>({
-    open: false,
-    textBlock: {
-      id: "",
-      name: "",
-      content: "",
-    },
-  });
+  const sidebar = useEditTextBlockSidebar();
 
   function handleEdit(textBlock: ApiTextBlock) {
-    setState({
-      open: true,
-      textBlock,
-    });
+    sidebar.open(textBlock);
   }
 
   function handleAddButton() {
@@ -73,13 +56,6 @@ export function TextBlocksTable({
 
   function handleEditButton(textBlock: ApiTextBlock) {
     handleEdit(textBlock);
-  }
-
-  function handleClose() {
-    setState((prev) => ({
-      ...prev,
-      open: false,
-    }));
   }
 
   function handleDelete(textBlock: ApiTextBlock) {
@@ -136,53 +112,46 @@ export function TextBlocksTable({
   ];
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        data-testid="textblocks-table"
-        controls={
-          <ButtonBar
-            left={
-              <SearchFilter
-                tableControl={tableControl}
-                searchParamName="searchQuery"
-                label="Suche"
-              />
-            }
-            right={
-              <Button
-                type="submit"
-                startDecorator={<Add />}
-                onClick={handleAddButton}
-              >
-                Textbaustein hinzufügen
-              </Button>
-            }
+    <TablePage
+      fullHeight
+      data-testid="textblocks-table"
+      controls={
+        <ButtonBar
+          left={
+            <SearchFilter
+              tableControl={tableControl}
+              searchParamName="searchQuery"
+              label="Suche"
+            />
+          }
+          right={
+            <Button
+              type="submit"
+              startDecorator={<Add />}
+              onClick={handleAddButton}
+            >
+              Textbaustein hinzufügen
+            </Button>
+          }
+        />
+      }
+    >
+      <TableSheet
+        loading={isFetching}
+        footer={
+          <Pagination
+            totalCount={totalNumberOfElements}
+            {...tableControl.paginationProps}
           />
         }
       >
-        <TableSheet
-          loading={isFetching}
-          footer={
-            <Pagination
-              totalCount={totalNumberOfElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={elements}
-            columns={textBlocksTableColumns}
-            sorting={tableControl.tableSorting}
-            striped
-          />
-        </TableSheet>
-      </TablePage>
-      <EditTextBlockSidebar
-        open={state.open}
-        onClose={handleClose}
-        {...state.textBlock}
-      />
-    </>
+        <DataTable
+          data={elements}
+          columns={textBlocksTableColumns}
+          sorting={tableControl.tableSorting}
+          striped
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

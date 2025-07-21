@@ -20,6 +20,7 @@ import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
+  ApiSchoolEntryFeature,
 } from "@eshg/school-entry-api";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
@@ -36,6 +37,7 @@ import {
 } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { getAllAppointmentTypesQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentTypeApi";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import {
   AppointmentBlockGroupValuesWithDays,
@@ -151,9 +153,18 @@ export function CreateAppointmentBlockGroupForm() {
     }
   }, [validateAppointmentBlockGroup]);
 
+  const isAppointmentBlockViewEnabled = useIsNewFeatureEnabled(
+    ApiSchoolEntryFeature.AppointmentBlockView,
+  );
+
   async function handleSubmit(values: CreateAppointmentBlockGroupValues) {
     await createDailyAppointmentBlockGroup.mutateAsync(mapFormValues(values), {
-      onSuccess: () => router.push(routes.appointmentBlockGroups.overview),
+      onSuccess: () =>
+        router.push(
+          isAppointmentBlockViewEnabled
+            ? routes.appointments.overview
+            : routes.appointments.appointmentBlockGroups.overview,
+        ),
     });
   }
 
@@ -167,6 +178,7 @@ export function CreateAppointmentBlockGroupForm() {
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}
       locationSelectionMode={locationSelectionMode}
+      isAppointmentBlockViewEnabled={isAppointmentBlockViewEnabled}
       onSubmit={handleSubmit}
     />
   );

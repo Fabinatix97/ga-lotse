@@ -10,9 +10,13 @@ import { isNonNullish, isShallowEqual, isStrictEqual } from "remeda";
 import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
 import { Alert, AlertProps } from "@eshg/lib-portal";
 
-import { chatColumnHeaderHeight } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
+import {
+  chatColumnHeaderHeight,
+  chatMessageInputHeight,
+} from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { ChatMessages } from "@/lib/businessModules/chat/components/chatPanel/ChatMessages";
+import { ChatMessagesMobile } from "@/lib/businessModules/chat/components/chatPanel/ChatMessagesMobile";
 import { ChatPanelHeader } from "@/lib/businessModules/chat/components/chatPanel/ChatPanelHeader";
 import { MessageInput } from "@/lib/businessModules/chat/components/chatPanel/MessageInput";
 import { NewDirectChat } from "@/lib/businessModules/chat/components/chatPanel/NewDirectChat";
@@ -178,7 +182,7 @@ export function ChatPanel({
         <ChatPanelHeader roomId={roomId} setMobileView={setMobileView} />
         <Box
           sx={{
-            height: `calc(100% - ${chatColumnHeaderHeight})`,
+            height: `calc(100% - ${chatColumnHeaderHeight} - ${chatMessageInputHeight})`,
             display: "flex",
             flexDirection: "column",
           }}
@@ -186,17 +190,27 @@ export function ChatPanel({
           <ChatMessages
             key={selectedRoom?.roomId}
             room={roomWithCommunicationType}
+            sx={{
+              display: { xxs: "none", sm: "flex" },
+            }}
           />
-          <MessageInput
-            handleUserTyping={handleUserTyping}
-            selectedRoomId={roomId}
-            sendMessage={(text, mentionedUsers) =>
-              sendMessage({ text, mentionedUsers, roomId })
-            }
-            roomMembers={roomWithCommunicationType.room.getMembers()}
-            isRoomDeactivated={isRoomDeactivated}
+          <ChatMessagesMobile
+            key={selectedRoom?.roomId}
+            room={roomWithCommunicationType}
+            sx={{
+              display: { xxs: "flex", sm: "none" },
+            }}
           />
         </Box>
+        <MessageInput
+          handleUserTyping={handleUserTyping}
+          selectedRoomId={roomId}
+          sendMessage={(text, mentionedUsers) =>
+            sendMessage({ text, mentionedUsers, roomId })
+          }
+          roomMembers={roomWithCommunicationType.room.getMembers()}
+          isRoomDeactivated={isRoomDeactivated}
+        />
       </>
     );
   } else {

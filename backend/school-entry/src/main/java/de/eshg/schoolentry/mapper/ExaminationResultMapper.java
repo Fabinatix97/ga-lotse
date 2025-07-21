@@ -52,6 +52,8 @@ public final class ExaminationResultMapper {
       case null -> null;
       case GERMAN -> PrimaryLanguageValue.GERMAN;
       case OTHER -> PrimaryLanguageValue.OTHER;
+      case OTHER_AND_GERMAN -> PrimaryLanguageValue.OTHER_AND_GERMAN;
+      case MULTIPLE_OTHER -> PrimaryLanguageValue.MULTIPLE_OTHER;
       case UNKNOWN -> PrimaryLanguageValue.UNKNOWN;
     };
   }
@@ -523,6 +525,8 @@ public final class ExaminationResultMapper {
       case null -> null;
       case GERMAN -> PrimaryLanguageValueDto.GERMAN;
       case OTHER -> PrimaryLanguageValueDto.OTHER;
+      case OTHER_AND_GERMAN -> PrimaryLanguageValueDto.OTHER_AND_GERMAN;
+      case MULTIPLE_OTHER -> PrimaryLanguageValueDto.MULTIPLE_OTHER;
       case UNKNOWN -> PrimaryLanguageValueDto.UNKNOWN;
     };
   }

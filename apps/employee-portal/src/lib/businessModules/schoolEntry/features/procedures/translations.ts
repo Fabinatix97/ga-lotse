@@ -116,6 +116,8 @@ export const ARTICULATION_EVALUATION_TYPES: EnumMap<ApiEvaluationArticulationVal
 export const PRIMARY_LANGUAGE_VALUES: EnumMap<ApiPrimaryLanguageValue> = {
   [ApiPrimaryLanguageValue.German]: "1 deutsch",
   [ApiPrimaryLanguageValue.Other]: "2 andere",
+  [ApiPrimaryLanguageValue.OtherAndGerman]: "3 andere und deutsch",
+  [ApiPrimaryLanguageValue.MultipleOther]: "4 mehrere andere",
   [ApiPrimaryLanguageValue.Unknown]: "9 unbekannt",
 };
 
@@ -432,7 +434,7 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
 export const VACCINATION_SCHEME_VALUES: EnumMap<ApiVaccinationSchemeValue> = {
   [ApiVaccinationSchemeValue.Scheme2Plus1]: "2 + 1",
   [ApiVaccinationSchemeValue.Scheme3Plus1]: "3 + 1",
-  [ApiVaccinationSchemeValue.Unknown]: "Unbekannt",
+  [ApiVaccinationSchemeValue.Unknown]: "Fehlend",
 };
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {

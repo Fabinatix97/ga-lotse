@@ -16,7 +16,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
@@ -24,6 +23,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.jpa.domain.Specification;
@@ -59,6 +59,14 @@ class ChildForTransitionSpecification implements Specification<Child> {
       orders.add(getOrder(cb, root));
     }
 
+    if (Objects.equals(sortKey, ChildForTransitionSortKey.GROUP_NAME)) {
+      orders.add(
+          switch (sortDirection) {
+            case ASC -> cb.asc(root.get(Child_.GROUP_NAME));
+            case DESC -> cb.desc(root.get(Child_.GROUP_NAME));
+          });
+    }
+
     orders.add(
         switch (sortDirection) {
           case ASC -> cb.asc(root.get(Child_.id));
@@ -78,7 +86,7 @@ class ChildForTransitionSpecification implements Specification<Child> {
     Expression<?> expression =
         switch (sortKey) {
           case ID -> root.get(Child_.id);
-          case GROUP_NAME -> nullsLastString(root.get(Child_.groupName), cb);
+          case GROUP_NAME -> SpecificationUtil.leadingNumbersInGroupName(root, cb);
           case FIRST_NAME, LAST_NAME, DATE_OF_BIRTH -> {
             Assert.isTrue(
                 sortKey.isPersonAttribute(),
@@ -91,22 +99,5 @@ class ChildForTransitionSpecification implements Specification<Child> {
       case ASC -> cb.asc(expression);
       case DESC -> cb.desc(expression);
     };
-  }
-
-  private Expression<String> nullsLastString(Path<String> instantPath, CriteriaBuilder cb) {
-    String valueWhenNull =
-        switch (sortDirection) {
-          case ASC -> null;
-          case DESC -> "";
-        };
-    return nullsLast(instantPath, cb, valueWhenNull);
-  }
-
-  // This is a workaround because the CriteriaBuilder currently does not support
-  // generating SQL’s "NULLS LAST"
-  // It’s supposed to be added in Java Persistence 3.2 / Hibernate 7.0
-  private static <T> Expression<T> nullsLast(
-      Path<T> instantPath, CriteriaBuilder cb, T valueWhenNull) {
-    return cb.coalesce(instantPath, cb.literal(valueWhenNull));
   }
 }

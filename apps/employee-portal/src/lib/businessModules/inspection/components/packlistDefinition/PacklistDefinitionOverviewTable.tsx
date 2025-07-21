@@ -8,7 +8,6 @@
 import { Add, Edit, History } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { CellContext, createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import {
   ApiPacklistDefinition,
@@ -24,93 +23,52 @@ import {
 import { ButtonLink } from "@eshg/lib-portal";
 
 import { useGetPacklistDefinitions } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
-import { CreatePacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreatePacklistDefinitionSidebar";
-import { EditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/EditPacklistDefinitionSidebar";
-import { PacklistRevisionsSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/sidebars/PacklistRevisionsSidebar";
+import { usePacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/PacklistDefinitionSidebar";
 
 const columnHelper = createColumnHelper<ApiPacklistDefinition>();
 
-type UserActivityState =
-  | { type: "create-packlist" }
-  | {
-      type: "edit-packlist";
-      packlistDefinitionId: string;
-      revisionId: string;
-      version: number;
-    }
-  | {
-      type: "view-packlist-revision";
-      packlistDefinitionId: string;
-      revisionId: string;
-      returnToViewHistory: boolean;
-      version: number;
-    }
-  | { type: "view-table" }
-  | { type: "view-history"; packlistDefinitionId: string; version: number };
-
-const initialUserActivity: UserActivityState = { type: "view-table" };
-
 export function PacklistDefinitionOverviewTable() {
   const { data: packlists, isFetching } = useGetPacklistDefinitions();
+  const sidebar = usePacklistDefinitionSidebar();
 
-  const [userActivity, setUserActivity] =
-    useState<UserActivityState>(initialUserActivity);
-
-  function handleAddButtonClick() {
-    setUserActivity({
-      type: "create-packlist",
+  function openCreatePacklist() {
+    sidebar.open({
+      mode: "create",
     });
   }
 
-  function handleEditButtonClick(
-    defId: string,
+  function openEditPacklist(
+    packlistDefinitionId: string,
     version: number,
     revisionId: string,
   ) {
-    setUserActivity({
-      type: "edit-packlist",
-      packlistDefinitionId: defId,
-      version: version,
-      revisionId: revisionId,
+    sidebar.open({
+      mode: "edit",
+      packlistDefinitionId,
+      version,
+      revisionId,
     });
   }
 
-  function handleHistoryButtonClick(defId: string, version: number) {
-    setUserActivity({
-      type: "view-history",
-      packlistDefinitionId: defId,
-      version: version,
+  function openPacklistHistory(packlistDefinitionId: string, version: number) {
+    sidebar.open({
+      mode: "history",
+      packlistDefinitionId,
+      version,
     });
   }
 
-  function handleViewRevisionClick(
-    defId: string,
+  function openPacklistRevision(
+    packlistDefinitionId: string,
     version: number,
     revisionId: string,
-    returnToViewHistory: boolean,
   ) {
-    setUserActivity({
-      type: "view-packlist-revision",
-      packlistDefinitionId: defId,
-      version: version,
-      revisionId: revisionId,
-      returnToViewHistory: returnToViewHistory,
+    sidebar.open({
+      mode: "view",
+      packlistDefinitionId,
+      version,
+      revisionId,
     });
-  }
-
-  function handleSidebarClosed() {
-    if (
-      userActivity.type === "view-packlist-revision" &&
-      userActivity.returnToViewHistory
-    ) {
-      setUserActivity({
-        type: "view-history",
-        packlistDefinitionId: userActivity.packlistDefinitionId,
-        version: userActivity.version,
-      });
-    } else {
-      setUserActivity(initialUserActivity);
-    }
   }
 
   function revisionsCellRenderFunction(
@@ -125,11 +83,10 @@ export function PacklistDefinitionOverviewTable() {
       cell: (info) => (
         <ButtonLink
           onClick={() =>
-            handleViewRevisionClick(
+            openPacklistRevision(
               info.row.original.id,
               info.row.original.version,
               info.row.original.mostRecentRevisionId,
-              false,
             )
           }
         >
@@ -166,7 +123,7 @@ export function PacklistDefinitionOverviewTable() {
               {
                 label: "Anpassen",
                 onClick: () =>
-                  handleEditButtonClick(
+                  openEditPacklist(
                     packlistRow.id,
                     packlistRow.version,
                     packlistRow.mostRecentRevisionId,
@@ -176,7 +133,7 @@ export function PacklistDefinitionOverviewTable() {
               {
                 label: "Historie",
                 onClick: () => {
-                  handleHistoryButtonClick(packlistRow.id, packlistRow.version);
+                  openPacklistHistory(packlistRow.id, packlistRow.version);
                 },
                 startDecorator: <History />,
               },
@@ -193,60 +150,25 @@ export function PacklistDefinitionOverviewTable() {
   ];
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        controls={
-          <ButtonBar
-            right={
-              <Button
-                type="submit"
-                startDecorator={<Add />}
-                onClick={handleAddButtonClick}
-              >
-                Neue Definition anlegen
-              </Button>
-            }
-          />
-        }
-      >
-        <TableSheet loading={isFetching}>
-          <DataTable data={packlists} columns={columns} striped />
-        </TableSheet>
-      </TablePage>
-
-      {userActivity.type === "create-packlist" && (
-        <CreatePacklistDefinitionSidebar onClose={handleSidebarClosed} />
-      )}
-      {userActivity.type === "edit-packlist" && (
-        <EditPacklistDefinitionSidebar
-          readonly={false}
-          revisionId={userActivity.revisionId}
-          version={userActivity.version}
-          onClose={handleSidebarClosed}
-        />
-      )}
-      {userActivity.type === "view-packlist-revision" && (
-        <EditPacklistDefinitionSidebar
-          readonly
-          revisionId={userActivity.revisionId}
-          version={userActivity.version}
-          onClose={handleSidebarClosed}
-          onClickNewRevision={handleEditButtonClick}
-        />
-      )}
-      {userActivity.type === "view-history" && (
-        <PacklistRevisionsSidebar
-          open
-          packlistDefinitionId={userActivity.packlistDefinitionId}
-          version={userActivity.version}
-          onClose={handleSidebarClosed}
-          onClickOnRevision={(defId, version, revisionId) =>
-            handleViewRevisionClick(defId, version, revisionId, true)
+    <TablePage
+      fullHeight
+      controls={
+        <ButtonBar
+          right={
+            <Button
+              type="submit"
+              startDecorator={<Add />}
+              onClick={openCreatePacklist}
+            >
+              Neue Definition anlegen
+            </Button>
           }
-          onClickNewRevision={handleEditButtonClick}
         />
-      )}
-    </>
+      }
+    >
+      <TableSheet loading={isFetching}>
+        <DataTable data={packlists} columns={columns} striped />
+      </TableSheet>
+    </TablePage>
   );
 }

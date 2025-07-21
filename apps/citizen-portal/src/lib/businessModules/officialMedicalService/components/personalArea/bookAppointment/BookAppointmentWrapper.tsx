@@ -11,6 +11,7 @@ import {
   ApiGetCitizenProcedureDetailsResponse,
 } from "@eshg/official-medical-service-api";
 
+import Loading from "@/app/[lang]/loadingPages";
 import { useGetFreeAppointmentsForCitizenAfterCurrentDate } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";
 import { BookAppointment } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointment";
@@ -29,7 +30,7 @@ interface BookAppointmentWrapperProps {
 
 export function BookAppointmentWrapper(props: BookAppointmentWrapperProps) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <InnerBookAppointmentWrapper {...props} />
     </Suspense>
   );

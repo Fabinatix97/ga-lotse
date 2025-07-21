@@ -5,15 +5,13 @@
 
 "use client";
 
-import { useState } from "react";
-
 import type {
   ApiInspectionAppointment,
   ApiInspectionResource,
   ApiInspectionTravelTime,
 } from "@eshg/inspection-api";
 
-import { ResourceSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceSidebar";
+import { useResourceSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceSidebar";
 import { ResourcesTable } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourcesTable";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
@@ -35,7 +33,16 @@ export function ResourceTile({
   standardBufferTime,
   travelTime,
 }: Readonly<ResourceTileProps>) {
-  const [open, setOpen] = useState(false);
+  const sidebar = useResourceSidebar();
+
+  function openSidebar() {
+    sidebar.open({
+      procedureId,
+      plannedAppointment,
+      standardBufferTime,
+      travelTime,
+    });
+  }
 
   return (
     <InfoTile
@@ -43,7 +50,7 @@ export function ResourceTile({
       title="Ressourcen"
       footer={
         !readonly && (
-          <InfoTileAddButton onClick={() => setOpen(true)}>
+          <InfoTileAddButton onClick={openSidebar}>
             Ressource hinzufügen
           </InfoTileAddButton>
         )
@@ -54,17 +61,6 @@ export function ResourceTile({
           readonly={readonly}
           data={inspectionResources}
           procedureId={procedureId}
-        />
-      )}
-
-      {open && (
-        <ResourceSidebar
-          open
-          procedureId={procedureId}
-          plannedAppointment={plannedAppointment}
-          standardBufferTime={standardBufferTime}
-          travelTime={travelTime}
-          onClose={() => setOpen(false)}
         />
       )}
     </InfoTile>

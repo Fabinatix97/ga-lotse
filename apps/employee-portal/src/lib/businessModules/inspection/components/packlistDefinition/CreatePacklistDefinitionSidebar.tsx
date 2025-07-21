@@ -5,23 +5,20 @@
 
 "use client";
 
+import { SidebarWithFormRefProps } from "@eshg/lib-employee-portal";
+
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
-import { CreateOrEditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreateOrEditPacklistDefinitionSidebar";
+import { EmbeddedCreateOrEditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/EmbeddedCreateOrEditPacklistDefinitionSidebar";
 
-interface CreatePacklistDefinitionSidebarProps {
-  onClose: () => void;
-}
-
-export function CreatePacklistDefinitionSidebar({
-  onClose,
-}: Readonly<CreatePacklistDefinitionSidebarProps>) {
+export function CreatePacklistDefinitionSidebar(
+  props: Readonly<SidebarWithFormRefProps>,
+) {
   const { data: objectTypes } = useGetObjectTypes();
   return (
-    <CreateOrEditPacklistDefinitionSidebar
-      open
+    <EmbeddedCreateOrEditPacklistDefinitionSidebar
       title="Packliste erstellen"
       objectTypes={objectTypes}
-      onClose={onClose}
+      {...props}
     />
   );
 }

@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { addDays, startOfDay } from "date-fns";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
@@ -50,4 +55,48 @@ export function useValidateDailyAppointmentBlocksForGroup(
         : Promise.reject(new Error("Request is not defined")),
     enabled: request !== null,
   });
+}
+
+export function useGetAppointmentBlock(appointmentBlockId: string) {
+  const appointmentBlockApi = useAppointmentBlockApi();
+  const result = useSuspenseQuery({
+    queryKey: appointmentBlockApiQueryKey([
+      "getAppointmentBlock",
+      appointmentBlockId,
+    ]),
+    queryFn: () => appointmentBlockApi.getAppointmentBlock(appointmentBlockId),
+  });
+  return result.data;
+}
+
+export function useGetAppointment(appointmentId: number) {
+  const appointmentBlockApi = useAppointmentBlockApi();
+  const result = useSuspenseQuery({
+    queryKey: appointmentBlockApiQueryKey(["getAppointment", appointmentId]),
+    queryFn: () => appointmentBlockApi.getAppointment(appointmentId),
+  });
+  return result.data;
+}
+
+export function useFetchAppointmentBlocksForSingleDay() {
+  const appointmentBlockApi = useAppointmentBlockApi();
+  return async (timeRangeStart: Date) => {
+    const timeRangeEnd = startOfDay(addDays(timeRangeStart, 1));
+    return appointmentBlockApi.getAppointmentBlocks(
+      timeRangeStart,
+      timeRangeEnd,
+    );
+  };
+}
+
+export function useFetchAppointmentBlocks() {
+  const appointmentBlockApi = useAppointmentBlockApi();
+  return async (timeRangeStart: Date, timeRangeEnd: Date) =>
+    appointmentBlockApi.getAppointmentBlocks(timeRangeStart, timeRangeEnd);
+}
+
+export function useFetchAppointments() {
+  const appointmentBlockApi = useAppointmentBlockApi();
+  return async (timeRangeStart: Date, timeRangeEnd: Date) =>
+    appointmentBlockApi.getAppointments(timeRangeStart, timeRangeEnd);
 }

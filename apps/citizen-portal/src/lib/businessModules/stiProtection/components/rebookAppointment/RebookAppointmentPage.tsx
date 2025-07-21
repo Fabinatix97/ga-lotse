@@ -7,7 +7,7 @@
 
 import { differenceInMinutes, startOfMonth } from "date-fns";
 import { Formik } from "formik";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, Suspense, useEffect, useRef, useState } from "react";
 import { isNullish, prop, sortBy } from "remeda";
 
 import {
@@ -16,8 +16,9 @@ import {
   PortalErrorCode,
   useSnackbar,
 } from "@eshg/lib-portal";
-import { ApiAppointment } from "@eshg/sti-protection-api";
+import { ApiAppointment, ApiCitizenProcedure } from "@eshg/sti-protection-api";
 
+import Loading from "@/app/[lang]/loadingPages";
 import { useRebookAppointment } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { useFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
@@ -44,9 +45,22 @@ export interface RebookAppointmentFormValues {
 }
 
 export function RebookAppointmentPage() {
+  const { data: procedure } = useGetProcedure();
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <InnerRebookAppointmentPage procedure={procedure} />
+    </Suspense>
+  );
+}
+
+function InnerRebookAppointmentPage({
+  procedure,
+}: {
+  procedure: ApiCitizenProcedure;
+}) {
   const { t } = useTranslation("stiProtection/rebookAppointment");
   const routes = useCitizenRoutes();
-  const { data: procedure } = useGetProcedure();
   const now = startOfMonth(new Date());
   const { data: appointments } = useFreeAppointments({
     concern: procedure.concern,

@@ -8,10 +8,9 @@
 import { Button, Stack } from "@mui/joy";
 
 import { useSnackbar } from "@eshg/lib-portal";
-import { ApiCitizenProcedure } from "@eshg/sti-protection-api";
 
 import { useCancelBookedAppointment } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";
-import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
+import { useCitizenProcedure } from "@/lib/businessModules/stiProtection/components/appointment/CitizenProcedureContext";
 import { GoToChangePinCard } from "@/lib/businessModules/stiProtection/components/pin/GoToChangePinCard";
 import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -33,7 +32,7 @@ const keycloakLogoutHref = "/logout/keycloak";
 export function AppointmentDetailsSidePanel() {
   const { t } = useTranslation(["stiProtection/appointmentInfo"]);
   const { openCancelDialog } = useConfirmationDialog();
-  const [{ procedure }] = useFormData<{ procedure: ApiCitizenProcedure }>();
+  const procedure = useCitizenProcedure();
   const citizenRoutes = useConcernedCitizenRoutes(procedure.concern);
   const router = useScopedRouter();
   const snackbar = useSnackbar();

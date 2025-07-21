@@ -34,7 +34,7 @@ interface LanguageFormProps {
 
 export function LanguageForm(props: LanguageFormProps) {
   const fieldName = createFieldNameMapper("language");
-  const primaryLanguageIsGerman =
+  const primaryLanguageIsNotGerman =
     props.values.primaryLanguage !== ApiPrimaryLanguageValue.German;
 
   return (
@@ -55,7 +55,7 @@ export function LanguageForm(props: LanguageFormProps) {
           options={LANGUAGE_KNOWLEDGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FIXED_WIDTH_STYLE}
-          softRequired={primaryLanguageIsGerman}
+          softRequired={primaryLanguageIsNotGerman}
         />
         <SoftRequiredSelectField
           name={fieldName("familyLanguage")}
@@ -63,7 +63,7 @@ export function LanguageForm(props: LanguageFormProps) {
           options={FAMILY_LANGUAGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FAMILY_LANGUAGE_STYLE}
-          softRequired={primaryLanguageIsGerman}
+          softRequired={primaryLanguageIsNotGerman}
         />
         <SoftRequiredSelectField
           name={fieldName("germanKnowledgeChild")}
@@ -71,7 +71,7 @@ export function LanguageForm(props: LanguageFormProps) {
           options={GERMAN_KNOWLEDGE_OPTIONS}
           renderValue={getAbbreviation}
           sx={FIXED_WIDTH_STYLE}
-          softRequired={primaryLanguageIsGerman}
+          softRequired
         />
       </Stack>
     </Stack>

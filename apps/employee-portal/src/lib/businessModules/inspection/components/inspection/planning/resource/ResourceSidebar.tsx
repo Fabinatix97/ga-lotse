@@ -19,11 +19,12 @@ import type { ApiInspectionTravelTime } from "@eshg/inspection-api";
 import {
   FormButtonBar,
   OverlayBoundary,
-  Sidebar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  SidebarWithFormRefProps,
   TimeField,
+  useSidebarWithFormRef,
   validateTodayOrFutureDate,
 } from "@eshg/lib-employee-portal";
 import {
@@ -62,26 +63,22 @@ interface TimeIntervalType {
   end: Date;
 }
 
-interface ResourceSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface ResourceSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
   plannedAppointment?: TimeIntervalType;
   standardBufferTime?: number;
   travelTime?: ApiInspectionTravelTime;
 }
 
-export function ResourceSidebar(props: Readonly<ResourceSidebarProps>) {
-  return (
-    <OverlayBoundary>
-      <ResourceSidebarWithQuery {...props} />
-    </OverlayBoundary>
-  );
+export function useResourceSidebar() {
+  return useSidebarWithFormRef({
+    component: ResourceSidebarWithQuery,
+  });
 }
 
 function ResourceSidebarWithQuery({
-  open,
   onClose,
+  formRef,
   procedureId,
   plannedAppointment,
   standardBufferTime,
@@ -130,46 +127,45 @@ function ResourceSidebarWithQuery({
   }
 
   return (
-    <Sidebar open={open} onClose={onClose}>
-      <Formik
-        initialValues={initialValues}
-        enableReinitialize
-        validate={validateStartBeforeEnd}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, values, handleSubmit, touched, errors }) => (
-          <SidebarForm onSubmit={handleSubmit}>
-            <SidebarContent title="Ressource hinzufügen">
-              <ResourceSelectFields
-                plannedAppointment={plannedAppointment}
-                standardBufferTime={standardBufferTime}
-                travelTime={travelTime}
-              >
-                <OverlayBoundary>
-                  {isValidInput(values, errors) &&
-                    touched &&
-                    values.resourceType !== "" && (
-                      <SelectResource
-                        resourceType={values.resourceType}
-                        start={toLocalDateTime(values.date, values.startTime)}
-                        end={toLocalDateTime(values.date, values.endTime)}
-                      />
-                    )}
-                </OverlayBoundary>
-              </ResourceSelectFields>
-            </SidebarContent>
+    <Formik
+      ref={formRef}
+      initialValues={initialValues}
+      enableReinitialize
+      validate={validateStartBeforeEnd}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, values, handleSubmit, touched, errors }) => (
+        <SidebarForm onSubmit={handleSubmit}>
+          <SidebarContent title="Ressource hinzufügen">
+            <ResourceSelectFields
+              plannedAppointment={plannedAppointment}
+              standardBufferTime={standardBufferTime}
+              travelTime={travelTime}
+            >
+              <OverlayBoundary>
+                {isValidInput(values, errors) &&
+                  touched &&
+                  values.resourceType !== "" && (
+                    <SelectResource
+                      resourceType={values.resourceType}
+                      start={toLocalDateTime(values.date, values.startTime)}
+                      end={toLocalDateTime(values.date, values.endTime)}
+                    />
+                  )}
+              </OverlayBoundary>
+            </ResourceSelectFields>
+          </SidebarContent>
 
-            <SidebarActions>
-              <FormButtonBar
-                submitLabel="Hinzufügen"
-                submitting={isSubmitting}
-                onCancel={onClose}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </Sidebar>
+          <SidebarActions>
+            <FormButtonBar
+              submitLabel="Hinzufügen"
+              submitting={isSubmitting}
+              onCancel={onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 

@@ -71,7 +71,7 @@
     "zustand": "catalog:common"
   },
   "devDependencies": {
-    "@cronn/vitest-file-snapshots": "catalog:common",
+    "@cronn/vitest-file-snapshots": "catalog:vitest",
     "@eshg/lib-vitest": "workspace:*",
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",

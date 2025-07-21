@@ -8,5 +8,7 @@ package de.eshg.schoolentry.domain.model;
 public enum PrimaryLanguageValue {
   GERMAN,
   OTHER,
+  OTHER_AND_GERMAN,
+  MULTIPLE_OTHER,
   UNKNOWN
 }

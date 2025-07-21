@@ -11,5 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum PrimaryLanguageValueDto {
   GERMAN,
   OTHER,
+  OTHER_AND_GERMAN,
+  MULTIPLE_OTHER,
   UNKNOWN
 }

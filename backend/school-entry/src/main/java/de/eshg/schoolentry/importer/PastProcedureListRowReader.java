@@ -607,10 +607,13 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     return switch (value) {
       case 1 -> PrimaryLanguageValue.GERMAN;
       case 2 -> PrimaryLanguageValue.OTHER;
+      case 3 -> PrimaryLanguageValue.OTHER_AND_GERMAN;
+      case 4 -> PrimaryLanguageValue.MULTIPLE_OTHER;
       case 9 -> PrimaryLanguageValue.UNKNOWN;
       case null, default -> {
         errorHandler.handleError(
-            cell, "Ungültiger Wert (Erwartet: 1, 2 oder 9. Tatsächlich: %s)".formatted(value));
+            cell,
+            "Ungültiger Wert (Wert zwischen 1 und 4 sowie 9. Tatsächlich: %s)".formatted(value));
         yield null;
       }
     };

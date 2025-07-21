@@ -8,7 +8,7 @@
 import { useTranslation } from "react-i18next";
 
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
-import { FormDataProvider } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
+import { CitizenProcedureProvider } from "@/lib/businessModules/stiProtection/components/appointment/CitizenProcedureContext";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ColumnGrid } from "@/lib/shared/components/layout/grid";
@@ -31,7 +31,7 @@ export function ViewAppointmentDetailsPage() {
   return (
     <PageLayout>
       <PageContent>
-        <FormDataProvider initialData={{ procedure }}>
+        <CitizenProcedureProvider data={procedure}>
           <PageTitle
             toolbar={<LogoutButton text={t("translation:common.leave")} />}
           >
@@ -42,7 +42,7 @@ export function ViewAppointmentDetailsPage() {
             <AppointmentDetailsSidePanel />
             <Information />
           </ColumnGrid>
-        </FormDataProvider>
+        </CitizenProcedureProvider>
       </PageContent>
     </PageLayout>
   );

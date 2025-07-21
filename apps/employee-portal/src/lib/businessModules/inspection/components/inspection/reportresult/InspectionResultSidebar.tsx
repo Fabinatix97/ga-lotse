@@ -14,10 +14,11 @@ import {
 } from "@eshg/inspection-api";
 import {
   FormButtonBar,
-  Sidebar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
   validateTodayOrFutureDate,
 } from "@eshg/lib-employee-portal";
 import {
@@ -35,9 +36,7 @@ import {
 
 const FOLLOWUP_INSPECTION_INTERVAL_IN_DAYS = 14;
 
-interface InspectionResultSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface InspectionResultSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
   result: ApiInspectionResult;
   followupInfo?: ApiInspectionFollowupInfo;
@@ -50,9 +49,15 @@ interface ResultFormType {
   followupDate: string;
 }
 
-export function InspectionResultSidebar({
-  open,
+export function useInspectionResultSidebar() {
+  return useSidebarWithFormRef({
+    component: InspectionResultSidebar,
+  });
+}
+
+function InspectionResultSidebar({
   onClose,
+  formRef,
   procedureId,
   result,
   followupInfo,
@@ -118,59 +123,58 @@ export function InspectionResultSidebar({
   }
 
   return (
-    <Sidebar open={open} onClose={onClose}>
-      <Formik
-        initialValues={initialValues}
-        enableReinitialize
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, handleSubmit, values }) => (
-          <SidebarForm onSubmit={handleSubmit}>
-            <SidebarContent title="Bewertung">
-              <Grid container columnSpacing={2} rowSpacing={3}>
-                <Grid xs={12}>
-                  <SelectField
-                    name="result"
-                    label="Ergebnis"
-                    options={resultOptions}
-                    required="Bitte ein Ergebnis auswählen."
-                  />
-                </Grid>
-                {values.result ===
-                  ApiInspectionResult.SuccessfulWithIncidents && (
-                  <>
+    <Formik
+      ref={formRef}
+      initialValues={initialValues}
+      enableReinitialize
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, handleSubmit, values }) => (
+        <SidebarForm onSubmit={handleSubmit}>
+          <SidebarContent title="Bewertung">
+            <Grid container columnSpacing={2} rowSpacing={3}>
+              <Grid xs={12}>
+                <SelectField
+                  name="result"
+                  label="Ergebnis"
+                  options={resultOptions}
+                  required="Bitte ein Ergebnis auswählen."
+                />
+              </Grid>
+              {values.result ===
+                ApiInspectionResult.SuccessfulWithIncidents && (
+                <>
+                  <Grid xs={12}>
+                    <SelectField
+                      name="followupType"
+                      label="Folgebegehungstyp"
+                      options={followupTypes}
+                      required="Bitte den Folgebegehungstyp auswählen"
+                    />
+                  </Grid>
+                  {values.followupType === ApiFollowupType.Review && (
                     <Grid xs={12}>
-                      <SelectField
-                        name="followupType"
-                        label="Folgebegehungstyp"
-                        options={followupTypes}
-                        required="Bitte den Folgebegehungstyp auswählen"
+                      <DateField
+                        name="followupDate"
+                        label="Datum der Nachprüfung"
+                        required="Bitte das Datum der Nachprüfung auswählen"
+                        validate={validateTodayOrFutureDate}
                       />
                     </Grid>
-                    {values.followupType === ApiFollowupType.Review && (
-                      <Grid xs={12}>
-                        <DateField
-                          name="followupDate"
-                          label="Datum der Nachprüfung"
-                          required="Bitte das Datum der Nachprüfung auswählen"
-                          validate={validateTodayOrFutureDate}
-                        />
-                      </Grid>
-                    )}
-                  </>
-                )}
-              </Grid>
-            </SidebarContent>
-            <SidebarActions>
-              <FormButtonBar
-                submitLabel="Speichern"
-                submitting={isSubmitting}
-                onCancel={onClose}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </Sidebar>
+                  )}
+                </>
+              )}
+            </Grid>
+          </SidebarContent>
+          <SidebarActions>
+            <FormButtonBar
+              submitLabel="Speichern"
+              submitting={isSubmitting}
+              onCancel={onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }

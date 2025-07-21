@@ -175,6 +175,7 @@ data:
 
       ssl_prefer_server_ciphers off;
       ssl_protocols TLSv1.3;
+      ssl_ecdh_curve X25519:prime256v1:secp384r1;
       ssl_conf_command Ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384;
 
       # set timeouts for reading client request header and body
@@ -445,6 +446,7 @@ data:
 
       ssl_prefer_server_ciphers off;
       ssl_protocols TLSv1.3;
+      ssl_ecdh_curve X25519:prime256v1:secp384r1;
       ssl_conf_command Ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384;
 
       # set timeouts for reading client request header and body
@@ -2410,7 +2412,7 @@ spec:
       labels:
         app: pdf-converter-portal-app
       annotations:
-        checksum/config: 7d3b1fd901c6b2fd5bbfbe0bb9f3a315b5143938d605536d79ab2e763fc77f92
+        checksum/config: d5607509da267ec39cb68fa747928083a95470974b61760b0bea42db22aeaf6b
         kubectl.kubernetes.io/default-container: application
     spec:
       imagePullSecrets:

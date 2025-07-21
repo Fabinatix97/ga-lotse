@@ -167,6 +167,7 @@ export function useChatLifecycle(
    * This ensures proper behavior of requests that require User-Interactive Authentication (E2EE passphrase reset, account deactivation).
    */
   const registerChatUser = useCallback(async () => {
+    if (!selfUserChatAttributesData?.userId) return;
     if (wasRegisterFlowStarted.current) return;
     wasRegisterFlowStarted.current = true;
     logger.info("Step 0/5: registerChatUser");
@@ -229,7 +230,7 @@ export function useChatLifecycle(
     baseUrl,
     registerAccount,
     bindKeycloakIdToSynapseUser,
-    selfUserChatAttributesData.userId,
+    selfUserChatAttributesData,
     setClientState,
     updateSelfUserChatAttributes,
     userSettings.accountRegistered,
@@ -243,6 +244,11 @@ export function useChatLifecycle(
    * - Create MatrixClient
    */
   const createMatrixClient = useCallback(async () => {
+    if (
+      !selfUserChatAttributesData?.userId ||
+      !selfUserChatAttributesData.externalChatUsername
+    )
+      return;
     if (wasMatrixClientInitialized.current) return;
     wasMatrixClientInitialized.current = true;
     logger.info("Step 1/5: createMatrixClient");
@@ -310,7 +316,7 @@ export function useChatLifecycle(
     baseUrl,
     matrixClient,
     monitorChatActivity,
-    selfUserChatAttributesData.externalChatUsername,
+    selfUserChatAttributesData,
     setClientState,
     updateSelfUserChatAttributes,
     userSettings.accountRegistered,
@@ -320,6 +326,7 @@ export function useChatLifecycle(
    * Initiate matrix-sdk-crypto-wasm for E2EE communication and start matrixClient.
    */
   const initRustCryptoAndStartMatrixClient = useCallback(async () => {
+    if (!selfUserChatAttributesData?.chatCryptoStoreDeriveKeySecret) return;
     if (wasRustCryptoInitialized.current) return;
     wasRustCryptoInitialized.current = true;
 
@@ -422,6 +429,11 @@ export function useChatLifecycle(
   }, [matrixClient, setClientState]);
 
   const updateMatrixUserDisplayName = useCallback(async () => {
+    if (
+      !selfUserChatAttributesData?.firstName ||
+      !selfUserChatAttributesData?.lastName
+    )
+      return;
     if (!userDeviceRef.current?.userId) return;
 
     try {
@@ -440,11 +452,7 @@ export function useChatLifecycle(
     } catch (error) {
       logger.softError("Error updating matrix user displayName: ", error);
     }
-  }, [
-    matrixClient,
-    selfUserChatAttributesData.firstName,
-    selfUserChatAttributesData.lastName,
-  ]);
+  }, [matrixClient, selfUserChatAttributesData]);
 
   useEffect(() => {
     switch (clientState) {

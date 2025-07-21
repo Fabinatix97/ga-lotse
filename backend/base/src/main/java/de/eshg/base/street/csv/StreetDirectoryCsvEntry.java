@@ -13,7 +13,7 @@ import de.eshg.base.street.csv.opencsv.CsvWritePosition;
 public class StreetDirectoryCsvEntry implements StreetDirectory.EntryFields {
   @CsvBindByName(column = "Straßennummer")
   @CsvWritePosition(0)
-  private String streetNumber;
+  private String streetNumber = "";
 
   @CsvCustomBindByName(column = "Straßenname", converter = StreetNameConverter.class)
   @CsvWritePosition(1)

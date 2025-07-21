@@ -13,7 +13,7 @@ public enum GenderOptions {
   MALE("M", "männlich"),
   FEMALE("W", "weiblich"),
   DIVERSE("D", "divers"),
-  UNKNOWN("U", "unbekannt");
+  NOT_SPECIFIED("K", "keine Angabe");
 
   private final String value;
 
@@ -37,7 +37,7 @@ public enum GenderOptions {
         .map(
             entry ->
                 new ValueOptionInternal(
-                    entry.getValue(), entry.getMeaning(), entry.equals(UNKNOWN)))
+                    entry.getValue(), entry.getMeaning(), entry.equals(NOT_SPECIFIED)))
         .toList();
   }
 }

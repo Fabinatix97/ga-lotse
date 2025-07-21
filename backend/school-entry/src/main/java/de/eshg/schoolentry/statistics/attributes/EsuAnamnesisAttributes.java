@@ -9,7 +9,6 @@ import static de.eshg.lib.statistics.util.ConvertToValueOptionHelper.convertToVa
 
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.BooleanAttribute;
-import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.schoolentry.statistics.options.*;
@@ -28,14 +27,13 @@ public enum EsuAnamnesisAttributes implements EsuAttributes {
   VLK(
       BooleanAttribute.create(
           "Vorlaufkurs", "VLK", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
-
   GG(
-      IntegerAttribute.create(
+      ValueWithOptionsAttribute.create(
           "Geburtsgewicht",
           "GG",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true,
-          EsuAttributeUtil.createUnknownOption("9999"))),
+          convertToValueOptions(BirthWeight.values()))),
 
   SSW_DAUER(
       BooleanAttribute.create(

@@ -75,6 +75,7 @@ export function InfoPanelHeader({
               height: "100%",
               width: "3.25rem",
             }}
+            aria-label="go back to messages"
             onClick={onBackIconClick}
           >
             <ArrowBackIosIcon color="primary" size="lg" />

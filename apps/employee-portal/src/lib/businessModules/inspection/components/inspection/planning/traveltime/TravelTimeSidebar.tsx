@@ -17,12 +17,12 @@ import type {
 import {
   DateTimeField,
   FormButtonBar,
-  OverlayBoundary,
-  Sidebar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
   validateNonNegativeInteger,
 } from "@eshg/lib-employee-portal";
 import { NumberField, isEmptyString, toDateTimeString } from "@eshg/lib-portal";
@@ -31,9 +31,7 @@ import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutati
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";
 import { durationBetweenDatesInMinutes } from "@/lib/shared/helpers/dateTime";
 
-interface TravelTimeSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface TravelTimeSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
   objectType?: ApiObjectType;
   appointment?: ApiInspectionAppointment;
@@ -47,12 +45,10 @@ interface TravelTimeFormType {
   endTime: string;
 }
 
-export function TravelTimeSidebar(props: TravelTimeSidebarProps) {
-  return (
-    <OverlayBoundary>
-      <TravelTimeSidebarWithMutations {...props} />
-    </OverlayBoundary>
-  );
+export function useTravelTimeSidebar() {
+  return useSidebarWithFormRef({
+    component: TravelTimeSidebarWithMutations,
+  });
 }
 
 function getStartBuffer(
@@ -102,8 +98,8 @@ function calculateEndTime(
 }
 
 function TravelTimeSidebarWithMutations({
-  open,
   onClose,
+  formRef,
   procedureId,
   objectType,
   appointment,
@@ -157,101 +153,100 @@ function TravelTimeSidebarWithMutations({
   const title = "Fahrzeiten";
 
   return (
-    <Sidebar open={open} onClose={handleClose}>
-      <Formik
-        initialValues={initialValues}
-        enableReinitialize
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, handleSubmit, values, setValues }) => (
-          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
-            <SidebarContent title={title}>
-              <Grid container columnSpacing={2} rowSpacing={3}>
-                <Grid xs={12}>
-                  <Typography level="title-md">Hinweg</Typography>
-                </Grid>
-                <Grid xs={12}>
-                  <NumberField
-                    name="startBuffer"
-                    label="Anfahrtszeit in Minuten"
-                    sx={{ maxWidth: 100 }}
-                    validate={validateNonNegativeInteger}
-                    onChange={(newValue) =>
-                      handleStartBufferChange(
-                        newValue,
-                        values,
-                        setValues,
-                        appointment,
-                      )
-                    }
-                  />
-                </Grid>
-                <Grid xs={12}>
-                  <DateTimeField
-                    name="startTime"
-                    label="Zeitpunkt der Abfahrt"
-                    validate={(value) =>
-                      validateBeforeAppointment(value, appointment)
-                    }
-                    onChange={(newValue) =>
-                      handleStartTimeChange(
-                        newValue,
-                        values,
-                        setValues,
-                        appointment,
-                      )
-                    }
-                  />
-                </Grid>
-                <Grid xs={12}>
-                  <Typography level="title-md">Rückweg</Typography>
-                </Grid>
-                <Grid xs={12}>
-                  <NumberField
-                    name="endBuffer"
-                    label="Rückfahrzeit in Minuten"
-                    sx={{ maxWidth: 100 }}
-                    validate={validateNonNegativeInteger}
-                    onChange={(newValue) =>
-                      handleEndBufferChange(
-                        newValue,
-                        values,
-                        setValues,
-                        appointment,
-                      )
-                    }
-                  />
-                </Grid>
-                <Grid xs={12}>
-                  <DateTimeField
-                    name="endTime"
-                    label="Zeitpunkt der Rückkehr"
-                    validate={(value) =>
-                      validateAfterAppointment(value, appointment)
-                    }
-                    onChange={(newValue) =>
-                      handleEndTimeChange(
-                        newValue,
-                        values,
-                        setValues,
-                        appointment,
-                      )
-                    }
-                  />
-                </Grid>
+    <Formik
+      ref={formRef}
+      initialValues={initialValues}
+      enableReinitialize
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, handleSubmit, values, setValues }) => (
+        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+          <SidebarContent title={title}>
+            <Grid container columnSpacing={2} rowSpacing={3}>
+              <Grid xs={12}>
+                <Typography level="title-md">Hinweg</Typography>
               </Grid>
-            </SidebarContent>
-            <SidebarActions>
-              <FormButtonBar
-                submitting={isSubmitting}
-                submitLabel="Speichern"
-                onCancel={handleClose}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </Sidebar>
+              <Grid xs={12}>
+                <NumberField
+                  name="startBuffer"
+                  label="Anfahrtszeit in Minuten"
+                  sx={{ maxWidth: 100 }}
+                  validate={validateNonNegativeInteger}
+                  onChange={(newValue) =>
+                    handleStartBufferChange(
+                      newValue,
+                      values,
+                      setValues,
+                      appointment,
+                    )
+                  }
+                />
+              </Grid>
+              <Grid xs={12}>
+                <DateTimeField
+                  name="startTime"
+                  label="Zeitpunkt der Abfahrt"
+                  validate={(value) =>
+                    validateBeforeAppointment(value, appointment)
+                  }
+                  onChange={(newValue) =>
+                    handleStartTimeChange(
+                      newValue,
+                      values,
+                      setValues,
+                      appointment,
+                    )
+                  }
+                />
+              </Grid>
+              <Grid xs={12}>
+                <Typography level="title-md">Rückweg</Typography>
+              </Grid>
+              <Grid xs={12}>
+                <NumberField
+                  name="endBuffer"
+                  label="Rückfahrzeit in Minuten"
+                  sx={{ maxWidth: 100 }}
+                  validate={validateNonNegativeInteger}
+                  onChange={(newValue) =>
+                    handleEndBufferChange(
+                      newValue,
+                      values,
+                      setValues,
+                      appointment,
+                    )
+                  }
+                />
+              </Grid>
+              <Grid xs={12}>
+                <DateTimeField
+                  name="endTime"
+                  label="Zeitpunkt der Rückkehr"
+                  validate={(value) =>
+                    validateAfterAppointment(value, appointment)
+                  }
+                  onChange={(newValue) =>
+                    handleEndTimeChange(
+                      newValue,
+                      values,
+                      setValues,
+                      appointment,
+                    )
+                  }
+                />
+              </Grid>
+            </Grid>
+          </SidebarContent>
+          <SidebarActions>
+            <FormButtonBar
+              submitting={isSubmitting}
+              submitLabel="Speichern"
+              onCancel={handleClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 

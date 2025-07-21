@@ -7,7 +7,6 @@
 
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 import { useMemo, useRef } from "react";
 import { isDefined } from "remeda";
 
@@ -17,12 +16,11 @@ import {
 } from "@eshg/inspection-api";
 import {
   FormButtonBar,
-  OverlayBoundary,
-  Sidebar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
+  SidebarWithFormRefProps,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal";
 
@@ -34,11 +32,9 @@ import {
 import { PacklistDefinitionElementsList } from "@/lib/businessModules/inspection/components/packlistDefinition/elements/PacklistDefinitionElementsList";
 import { PacklistDefinitionHeaderCard } from "@/lib/businessModules/inspection/components/packlistDefinition/header/PacklistDefinitionHeaderCard";
 import { PacklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/packlistDefinition/header/PacklistDefinitionHeaderRow";
-import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-interface CreateOrEditPacklistDefinitionSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface CreateOrEditPacklistDefinitionSidebarProps
+  extends SidebarWithFormRefProps {
   pldRevision?: ApiPacklistDefinitionRevision; // unset when this is a completely new pld
   version?: number;
   readonly?: boolean;
@@ -51,21 +47,9 @@ interface CreateOrEditPacklistDefinitionSidebarProps {
   objectTypes: ApiObjectType[];
 }
 
-export function CreateOrEditPacklistDefinitionSidebar(
-  props: Readonly<CreateOrEditPacklistDefinitionSidebarProps>,
-) {
-  return (
-    <OverlayBoundary>
-      <CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations
-        {...props}
-      />
-    </OverlayBoundary>
-  );
-}
-
-function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
-  open,
+export function EmbeddedCreateOrEditPacklistDefinitionSidebar({
   onClose,
+  formRef,
   pldRevision,
   version,
   readonly,
@@ -73,7 +57,6 @@ function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
   onClickNewRevision,
   objectTypes,
 }: Readonly<CreateOrEditPacklistDefinitionSidebarProps>) {
-  const router = useRouter();
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
   const snackbar = useSnackbar();
 
@@ -117,65 +100,65 @@ function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
             version: version ?? -1,
             pldRevision: values,
           },
-          { onSuccess: () => router.push(routes.packlists.definitions.index) },
+          {
+            onSuccess: () => onClose(true),
+          },
         );
       } else {
         await createPacklist(values, {
-          onSuccess: () => router.push(routes.packlists.definitions.index),
+          onSuccess: () => onClose(true),
         });
       }
-      onClose();
     }
   }
 
   return (
-    <Sidebar open={open} onClose={handleClose}>
-      <Formik
-        initialValues={formData}
-        enableReinitialize
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
-            <SidebarContent title={title}>
-              <Stack spacing={2}>
-                <PacklistDefinitionHeaderRow
-                  readOnlyMode={readOnlyMode}
-                  newestRevision={isNewestRevision}
-                  revision={pldRevision?.revision}
-                  modifiedBy={pldRevision?.modifiedBy}
-                  defId={pldRevision?.defId}
-                  revisionId={pldRevision?.id}
-                  version={version}
-                  onClickNewRevision={onClickNewRevision}
-                />
-                <PacklistDefinitionHeaderCard
-                  readOnlyMode={readOnlyMode}
-                  revision={pldRevision?.revision}
-                  objectTypes={objectTypes}
-                />
-                <PacklistDefinitionElementsList readOnlyMode={readOnlyMode} />
-              </Stack>
-            </SidebarContent>
-            <SidebarActions>
-              {readOnlyMode ? (
-                <FormButtonBar
-                  submitting={isSubmitting}
-                  submitLabel="Speichern"
-                  onCancel={handleClose}
-                  onFinish={handleClose}
-                />
-              ) : (
-                <FormButtonBar
-                  submitting={isSubmitting}
-                  submitLabel="Speichern"
-                  onCancel={handleClose}
-                />
-              )}
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </Sidebar>
+    <Formik
+      ref={formRef}
+      initialValues={formData}
+      enableReinitialize
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, handleSubmit }) => (
+        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+          <SidebarContent title={title}>
+            <Stack spacing={2}>
+              <PacklistDefinitionHeaderRow
+                readOnlyMode={readOnlyMode}
+                newestRevision={isNewestRevision}
+                revision={pldRevision?.revision}
+                modifiedBy={pldRevision?.modifiedBy}
+                defId={pldRevision?.defId}
+                revisionId={pldRevision?.id}
+                version={version}
+                onClickNewRevision={onClickNewRevision}
+              />
+              <PacklistDefinitionHeaderCard
+                readOnlyMode={readOnlyMode}
+                revision={pldRevision?.revision}
+                objectTypes={objectTypes}
+              />
+              <PacklistDefinitionElementsList readOnlyMode={readOnlyMode} />
+            </Stack>
+          </SidebarContent>
+          <SidebarActions>
+            {readOnlyMode ? (
+              <FormButtonBar
+                submitting={isSubmitting}
+                submitLabel="Speichern"
+                onCancel={handleClose}
+                onFinish={handleClose}
+              />
+            ) : (
+              <FormButtonBar
+                submitting={isSubmitting}
+                submitLabel="Speichern"
+                onCancel={handleClose}
+              />
+            )}
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }

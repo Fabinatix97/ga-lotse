@@ -69,10 +69,11 @@ public class ImageRewriter {
       ImageWriter writer = ImageIO.getImageWritersByFormatName(mediaType.getSubtype()).next();
       writer.setOutput(ImageIO.createImageOutputStream(outputStream));
 
-      if (mediaType.getSubtype().equals("jpg")) {
+      if (mediaType.getSubtype().matches("jpe?g")) {
         JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
         jpegParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
         jpegParams.setCompressionQuality(1f);
+        jpegParams.setOptimizeHuffmanTables(true);
         writer.write(null, iioImage, jpegParams);
       } else {
         writer.write(iioImage);

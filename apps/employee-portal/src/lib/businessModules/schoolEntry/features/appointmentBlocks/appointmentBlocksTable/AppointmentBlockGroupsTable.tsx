@@ -69,18 +69,14 @@ export function AppointmentBlockGroupsTable(
         }),
       ],
     });
+
+  const deleteAppointmentBlock = useDeleteAppointmentBlock();
   const columns = useAppointmentBlockColumns({
     onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void handleDeleteAppointmentBlock(appointmentBlockId);
+      void deleteAppointmentBlock(appointmentBlockId);
     },
     locationSelectionMode,
   });
-
-  const deleteAppointmentBlock = useDeleteAppointmentBlock();
-
-  async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
-    await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
-  }
 
   const rows = getAppointmentBlockGroups.data.elements.map(
     toAggregatedAppointmentBlockRow,

@@ -129,7 +129,12 @@ export function InfoPanel({ setMobileView }: Readonly<InfoPanelProps>) {
           />
         );
       case InfoPanelView.MobileView:
-        return <MobileInfoView roomId={infoPanelState.payload} />;
+        return (
+          <MobileInfoView
+            roomId={infoPanelState.payload}
+            setMobileView={setMobileView}
+          />
+        );
       default:
         return null;
     }

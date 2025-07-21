@@ -24,7 +24,10 @@ import {
 } from "@/lib/businessModules/chat/shared//utils";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
-import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
+import {
+  InfoPanelView,
+  MobileView,
+} from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
@@ -32,9 +35,13 @@ import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomM
 
 interface MobileInfoViewProps {
   roomId: string;
+  setMobileView: (mobileView: MobileView) => void;
 }
 
-export function MobileInfoView({ roomId }: Readonly<MobileInfoViewProps>) {
+export function MobileInfoView({
+  roomId,
+  setMobileView,
+}: Readonly<MobileInfoViewProps>) {
   const { matrixClient, departmentInfo } = useChatClientContext();
   const { clearChatParams } = useChatSearchParams();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
@@ -53,6 +60,7 @@ export function MobileInfoView({ roomId }: Readonly<MobileInfoViewProps>) {
     setLeaveDialogOpen(false);
     clearChatParams();
     closeInfoPanel();
+    setMobileView(MobileView.RoomList);
     void leaveRoom(matrixClient, roomId);
   }
   async function handleRemoveUser() {

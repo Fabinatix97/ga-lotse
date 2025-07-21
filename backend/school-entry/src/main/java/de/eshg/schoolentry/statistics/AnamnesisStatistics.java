@@ -10,6 +10,7 @@ import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.SchoolEntryCountryCode;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.statistics.attributes.EsuAnamnesisAttributes;
+import de.eshg.schoolentry.statistics.options.BirthWeight;
 import de.eshg.schoolentry.statistics.options.BooleanWithUnknown;
 import de.eshg.schoolentry.statistics.options.Country;
 import de.eshg.schoolentry.statistics.options.CountryName;
@@ -38,7 +39,7 @@ public class AnamnesisStatistics {
       case KT -> getDaycareValue(procedure);
       case KISS -> getAnamnesisAttribute(procedure, Anamnesis::getChildLanguageScreening);
       case VLK -> getAnamnesisAttribute(procedure, Anamnesis::getPreliminaryCourse);
-      case GG -> getAnamnesisAttribute(procedure, Anamnesis::getBirthWeight);
+      case GG -> getBirthWeight(procedure);
       case SSW_DAUER -> getAnamnesisAttribute(procedure, Anamnesis::getGestationalAge);
       case U2E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU2);
       case U3E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU3);
@@ -74,6 +75,29 @@ public class AnamnesisStatistics {
       case GEBET2 -> getCountryCode(procedure, Anamnesis::getCountryOfBirthSecondParent);
       case MIG -> getAnamnesisAttribute(procedure, Anamnesis::getHasMigrationBackground);
     };
+  }
+
+  private String getBirthWeight(SchoolEntryProcedure procedure) {
+    Anamnesis anamnesis = procedure.getAnamnesis();
+    if (anamnesis == null) {
+      return null;
+    }
+    Integer birthWeight = anamnesis.getBirthWeight();
+    if (birthWeight == null || birthWeight == 9999) {
+      return BirthWeight.UNKNOWN.getValue();
+    } else if (birthWeight < 500) {
+      return BirthWeight.CATEGORY_1.getValue();
+    } else if (birthWeight < 1000) {
+      return BirthWeight.CATEGORY_2.getValue();
+    } else if (birthWeight < 1500) {
+      return BirthWeight.CATEGORY_3.getValue();
+    } else if (birthWeight < 2000) {
+      return BirthWeight.CATEGORY_4.getValue();
+    } else if (birthWeight < 2500) {
+      return BirthWeight.CATEGORY_5.getValue();
+    } else {
+      return BirthWeight.CATEGORY_6.getValue();
+    }
   }
 
   static <T> T getAnamnesisAttribute(

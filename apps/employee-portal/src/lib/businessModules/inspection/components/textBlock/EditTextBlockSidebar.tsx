@@ -11,12 +11,12 @@ import { useMemo, useRef } from "react";
 
 import {
   FormButtonBar,
-  OverlayBoundary,
-  Sidebar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
   FormPlus,
@@ -30,9 +30,7 @@ import {
   useUpdateTextBlock,
 } from "@/lib/businessModules/inspection/api/mutations/textblocks";
 
-interface TextBlockSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface TextBlockSidebarProps extends SidebarWithFormRefProps {
   id?: string;
   name: string;
   content: string;
@@ -43,17 +41,15 @@ interface TextBlockFormType {
   content: string;
 }
 
-export function EditTextBlockSidebar(props: TextBlockSidebarProps) {
-  return (
-    <OverlayBoundary>
-      <EditTextBlockSidebarWithQueriesAndMutations {...props} />
-    </OverlayBoundary>
-  );
+export function useEditTextBlockSidebar() {
+  return useSidebarWithFormRef({
+    component: EditTextBlockSidebarWithQueriesAndMutations,
+  });
 }
 
 function EditTextBlockSidebarWithQueriesAndMutations({
-  open,
   onClose,
+  formRef,
   id,
   name,
   content,
@@ -108,50 +104,49 @@ function EditTextBlockSidebarWithQueriesAndMutations({
   }, [id, name, content]);
 
   return (
-    <Sidebar open={open} onClose={handleClose}>
-      <Formik
-        initialValues={initialValues}
-        enableReinitialize
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
-            <SidebarContent
-              title={id ? "Textbaustein bearbeiten" : "Textbaustein erstellen"}
+    <Formik
+      ref={formRef}
+      initialValues={initialValues}
+      enableReinitialize
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, handleSubmit }) => (
+        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+          <SidebarContent
+            title={id ? "Textbaustein bearbeiten" : "Textbaustein erstellen"}
+          >
+            <Grid
+              container
+              component={FormPlus}
+              spacing={1}
+              sx={{ flexGrow: 1 }}
             >
-              <Grid
-                container
-                component={FormPlus}
-                spacing={1}
-                sx={{ flexGrow: 1 }}
-              >
-                <Grid xxs={12}>
-                  <InputField
-                    name="name"
-                    type="text"
-                    label="Name"
-                    required="Bitte einen Namen eingeben"
-                  />
-                </Grid>
-                <Grid xxs={12}>
-                  <TextareaField
-                    name="content"
-                    label="Inhalt"
-                    required="Bitte einen Inhalt definieren"
-                  />
-                </Grid>
+              <Grid xxs={12}>
+                <InputField
+                  name="name"
+                  type="text"
+                  label="Name"
+                  required="Bitte einen Namen eingeben"
+                />
               </Grid>
-            </SidebarContent>
-            <SidebarActions>
-              <FormButtonBar
-                submitting={isSubmitting}
-                submitLabel="Speichern"
-                onCancel={handleClose}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </Sidebar>
+              <Grid xxs={12}>
+                <TextareaField
+                  name="content"
+                  label="Inhalt"
+                  required="Bitte einen Inhalt definieren"
+                />
+              </Grid>
+            </Grid>
+          </SidebarContent>
+          <SidebarActions>
+            <FormButtonBar
+              submitting={isSubmitting}
+              submitLabel="Speichern"
+              onCancel={handleClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }

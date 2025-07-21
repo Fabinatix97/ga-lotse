@@ -47,6 +47,7 @@ function useDeleteAppointmentBlockOptions(): MutationOptions<
 
 export function useDeleteAppointmentBlock() {
   const deleteAppointmentBlockOptions = useDeleteAppointmentBlockOptions();
-
-  return useMutation(deleteAppointmentBlockOptions);
+  const mutation = useMutation(deleteAppointmentBlockOptions);
+  return async (appointmentBlockId: string) =>
+    mutation.mutateAsync({ appointmentBlockId });
 }

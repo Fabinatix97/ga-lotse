@@ -181,6 +181,7 @@ export function ChatPanelHeader({
             variant="outlined"
             color="primary"
             sx={{ display: { xxs: "flex", sm: "none" } }}
+            aria-label="open room settings"
             onClick={handleSettingOnMobileClick}
           >
             <InfoOutlinedIcon />

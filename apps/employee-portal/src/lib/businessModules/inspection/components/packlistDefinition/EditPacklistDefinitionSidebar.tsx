@@ -7,16 +7,17 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 
+import { SidebarWithFormRefProps } from "@eshg/lib-employee-portal";
+
 import {
   useObjectTypeApi,
   usePacklistDefinitionApi,
 } from "@/lib/businessModules/inspection/api/clients";
 import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { getPacklistDefinitionRevisionQuery } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
-import { CreateOrEditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreateOrEditPacklistDefinitionSidebar";
+import { EmbeddedCreateOrEditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/EmbeddedCreateOrEditPacklistDefinitionSidebar";
 
-interface EditPacklistDefinitionSidebarProps {
-  onClose: () => void;
+interface EditPacklistDefinitionSidebarProps extends SidebarWithFormRefProps {
   readonly?: boolean;
   revisionId: string;
   version: number;
@@ -28,11 +29,9 @@ interface EditPacklistDefinitionSidebarProps {
 }
 
 export function EditPacklistDefinitionSidebar({
-  onClose,
   readonly,
   revisionId,
-  version,
-  onClickNewRevision,
+  ...props
 }: Readonly<EditPacklistDefinitionSidebarProps>) {
   const objectTypeApi = useObjectTypeApi();
   const packlistDefinitionApi = usePacklistDefinitionApi();
@@ -46,8 +45,7 @@ export function EditPacklistDefinitionSidebar({
     });
 
   return (
-    <CreateOrEditPacklistDefinitionSidebar
-      open
+    <EmbeddedCreateOrEditPacklistDefinitionSidebar
       pldRevision={packlistRevision}
       readonly={readonly}
       title={
@@ -55,10 +53,8 @@ export function EditPacklistDefinitionSidebar({
           ? `Packlistendefinition ansehen: ${packlistRevision.name}`
           : `Packlistendefinition bearbeiten: ${packlistRevision.name}`
       }
-      version={version}
       objectTypes={objectTypes}
-      onClose={onClose}
-      onClickNewRevision={onClickNewRevision}
+      {...props}
     />
   );
 }

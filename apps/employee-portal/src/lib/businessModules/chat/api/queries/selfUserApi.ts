@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { selfUserChatAttributesApiQueryKey } from "@/lib/businessModules/chat/api/queries/apiQueryKeys";
@@ -14,7 +14,7 @@ export function getSelfUserChatAttributesQueryKey() {
 
 export function useGetSelfUserChatAttributes() {
   const userApi = useUserApi();
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: getSelfUserChatAttributesQueryKey(),
     queryFn: () => userApi.getSelfUserChatAttributes(),
   });

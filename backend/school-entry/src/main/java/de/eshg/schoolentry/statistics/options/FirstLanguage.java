@@ -10,6 +10,8 @@ import de.eshg.lib.statistics.util.ConvertibleToValueOptions;
 public enum FirstLanguage implements ConvertibleToValueOptions {
   VALUE_1("1", "deutsch"),
   VALUE_2("2", "andere"),
+  VALUE_3("3", "andere und deutsch"),
+  VALUE_4("4", "mehrere andere"),
   VALUE_9("9", "unbekannt");
 
   private final String value;

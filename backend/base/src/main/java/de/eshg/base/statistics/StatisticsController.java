@@ -269,7 +269,7 @@ public class StatisticsController implements BaseStatisticsApi {
 
   private Object getGender(Gender gender) {
     return switch (gender) {
-      case NOT_SPECIFIED -> GenderOptions.UNKNOWN.getValue();
+      case NOT_SPECIFIED -> GenderOptions.NOT_SPECIFIED.getValue();
       case DIVERSE -> GenderOptions.DIVERSE.getValue();
       case FEMALE -> GenderOptions.FEMALE.getValue();
       case MALE -> GenderOptions.MALE.getValue();

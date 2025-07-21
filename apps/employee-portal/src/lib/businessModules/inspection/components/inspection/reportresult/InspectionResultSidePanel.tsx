@@ -6,13 +6,12 @@
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import NoteAltOutlined from "@mui/icons-material/NoteAltOutlined";
 import { Button } from "@mui/joy";
-import { useState } from "react";
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
 import { DetailsItem, useIsOffline } from "@eshg/lib-employee-portal";
 import { InternalLink, formatDate } from "@eshg/lib-portal";
 
-import { InspectionResultSidebar } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidebar";
+import { useInspectionResultSidebar } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidebar";
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";
 import {
   inspectionIsBeforePhase,
@@ -27,13 +26,22 @@ export function InspectionResultSidePanel({
 }: Readonly<{
   inspection: ApiInspection;
 }>) {
-  const [sidebar, setSidebar] = useState<boolean>(false);
+  const sidebar = useInspectionResultSidebar();
   const hasResult = inspectionHasResult(inspection);
   const followupInfo = inspection.followupInfo;
   const isOffline = useIsOffline();
   const editable =
     !isOffline &&
     inspectionIsBeforePhase(inspection.phase, ApiInspectionPhase.Closed);
+
+  function openSidebar() {
+    sidebar.open({
+      procedureId: inspection.externalId,
+      result: inspection.result,
+      followupInfo: followupInfo,
+      executedAppointment: inspection.executedAppointment!.start,
+    });
+  }
 
   return (
     <InfoTile
@@ -45,13 +53,13 @@ export function InspectionResultSidePanel({
           <Button
             variant="outlined"
             startDecorator={<NoteAltOutlined />}
-            onClick={() => setSidebar(true)}
+            onClick={openSidebar}
           >
             Bewertung abgeben
           </Button>
         )
       }
-      onEdit={editable && hasResult ? () => setSidebar(true) : undefined}
+      onEdit={editable && hasResult ? () => openSidebar : undefined}
     >
       {hasResult && (
         <>
@@ -88,15 +96,6 @@ export function InspectionResultSidePanel({
           )}
         </>
       )}
-
-      <InspectionResultSidebar
-        open={sidebar}
-        procedureId={inspection.externalId}
-        result={inspection.result}
-        followupInfo={followupInfo}
-        executedAppointment={inspection.executedAppointment!.start}
-        onClose={() => setSidebar(false)}
-      />
     </InfoTile>
   );
 }

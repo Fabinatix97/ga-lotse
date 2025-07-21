@@ -9,9 +9,6 @@ settings:
 
 catalogs:
   common:
-    '@cronn/vitest-file-snapshots':
-      specifier: 0.8.0
-      version: 0.8.0
     '@keycloak/keycloak-admin-client':
       specifier: 26.2.5
       version: 26.2.5
@@ -180,6 +177,9 @@ catalogs:
       specifier: 6.3.5
       version: 6.3.5
   vitest:
+    '@cronn/vitest-file-snapshots':
+      specifier: 0.9.0
+      version: 0.9.0
     '@vitejs/plugin-react':
       specifier: 4.6.0
       version: 4.6.0
@@ -780,8 +780,8 @@ importers:
         version: 5.0.6(@types/react@19.1.8)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
       '@cronn/vitest-file-snapshots':
-        specifier: catalog:common
-        version: 0.8.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
+        specifier: catalog:vitest
+        version: 0.9.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
       '@eshg/lib-vitest':
         specifier: workspace:*
         version: link:../../packages/lib-vitest
@@ -1072,8 +1072,8 @@ importers:
         version: 5.0.6(@types/react@19.1.8)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
       '@cronn/vitest-file-snapshots':
-        specifier: catalog:common
-        version: 0.8.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
+        specifier: catalog:vitest
+        version: 0.9.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
       '@eshg/lib-vitest':
         specifier: workspace:*
         version: link:../lib-vitest
@@ -1563,8 +1563,8 @@ importers:
         version: 1.1.0(typescript@5.8.3)
     devDependencies:
       '@cronn/vitest-file-snapshots':
-        specifier: catalog:common
-        version: 0.8.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
+        specifier: catalog:vitest
+        version: 0.9.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
       '@eshg/lib-vitest':
         specifier: workspace:*
         version: link:../lib-vitest
@@ -2380,12 +2380,12 @@ packages:
     resolution: {integrity: sha512-LxEoOpNQwpanfplnyGtYRGuH9r4A0YecTkURUvbDYNcAb2g9ER2OQfjGNdpWE27uObrXUpATSYhljgTQ/TCRsA==}
     engines: {node: '>=22', pnpm: '>=10'}
 
-  '@cronn/lib-file-snapshots@0.5.0':
-    resolution: {integrity: sha512-N08auQZZyXK1z2NEoHn5ZxIBOgV2Fc8VauOvAaQ6mt7ohOBvUpZ7yf/UMbQNSX3dG23w8rEjA96aPGEpHO9Eng==}
+  '@cronn/lib-file-snapshots@0.8.0':
+    resolution: {integrity: sha512-0L6PKNZ1v2wtgKV3AoDVmLmgCN9hRyBMc4gQzz+8Mehm0neb4hu40Zw5l0mIxfzTJabhiix3N40iMdvos9d12A==}
     engines: {node: '>=22', pnpm: '>=10'}
 
-  '@cronn/vitest-file-snapshots@0.8.0':
-    resolution: {integrity: sha512-oU7oDXS5oiJBL+efNm+sXxX3oa7uEWza9vLO6PJyUmyrRw6Wn7mrZqwb/SdhoiJHPQHxyFe7lQaLb6q9jZnjog==}
+  '@cronn/vitest-file-snapshots@0.9.0':
+    resolution: {integrity: sha512-4cjFbqavRLaHgmbS7MmqGW1W6YMDvRM0H/XFc6H5yhtQyRTduvNPgoFP55saVsylzCmB+BDkY6T70hlM3sZ4GA==}
     engines: {node: '>=22', pnpm: '>=10'}
     peerDependencies:
       vitest: ^3
@@ -9698,11 +9698,11 @@ snapshots:
 
   '@cronn/k6-scenario-builder@1.0.0': {}
 
-  '@cronn/lib-file-snapshots@0.5.0': {}
+  '@cronn/lib-file-snapshots@0.8.0': {}
 
-  '@cronn/vitest-file-snapshots@0.8.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))':
+  '@cronn/vitest-file-snapshots@0.9.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))':
     dependencies:
-      '@cronn/lib-file-snapshots': 0.5.0
+      '@cronn/lib-file-snapshots': 0.8.0
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0)
 
   '@cyclonedx/cdxgen-plugins-bin-darwin-amd64@1.6.12':
