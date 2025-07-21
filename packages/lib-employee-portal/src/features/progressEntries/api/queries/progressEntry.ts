@@ -14,6 +14,7 @@ import {
 } from "@eshg/lib-procedures-api";
 
 import { progressEntryApiQueryKey } from "../../../../config/apiQueryKeys";
+import { useApi } from "../../../../contexts/api";
 import { useHasUserRoleCheck } from "../../../auth/hooks/useAccessControl";
 import { useProgressEntriesConfig } from "../../contexts/progressEntries";
 import {
@@ -30,6 +31,7 @@ export function useFetchProgressEntries(
   procedureId: string,
   leaderRole: ApiUserRole,
   progressEntryFilter: ProgressEntriesFilters,
+  groupName: string,
   getHeadersForOfflineCaching?: GetHeadersForOfflineCaching,
 ) {
   const preCache = isDefined(getHeadersForOfflineCaching);
@@ -41,6 +43,7 @@ export function useFetchProgressEntries(
       ? ApiGetProceduresSortOrder.Asc
       : ApiGetProceduresSortOrder.Desc;
 
+  const { userApi } = useApi();
   return useSuspenseQuery({
     queryKey: progressEntryApiQueryKey([
       "fetchProgressEntries",
@@ -50,6 +53,7 @@ export function useFetchProgressEntries(
       sortOrder,
       ...getQueryKeyInput(progressEntryFilter),
       `${fetchApprovalRequests}`,
+      groupName,
       `${preCache}`,
     ]),
     queryFn: async () => {
@@ -61,6 +65,7 @@ export function useFetchProgressEntries(
         files,
         detailedProcedure,
         approvalRequestsResponse,
+        usersByGroupResponse,
       ] = await Promise.all([
         progressEntryApi.getProgressEntriesRaw(
           {
@@ -79,12 +84,14 @@ export function useFetchProgressEntries(
         fetchApprovalRequests
           ? procedureApi.getApprovalRequests(procedureId, initOverrides)
           : undefined,
+        userApi.getUsersByGroup(groupName, initOverrides),
       ]);
       return {
         detailedProcedure,
         files: files.fileDetails,
         progressEntries: await progressEntries.value(),
         approvalRequestsResponse: approvalRequestsResponse,
+        users: usersByGroupResponse.users,
       };
     },
   });

@@ -121,4 +121,14 @@ public interface FacilityRepository
   @Transactional
   @Modifying
   int deleteByDeleteAtBefore(Instant expirationTime);
+
+  @Query(
+      """
+      select f from Facility f
+      join DomesticFacilityAddress a on f.contactAddress = a
+      where a.embeddedDomesticAddress.street = :street and upper(a.embeddedDomesticAddress.houseNumber) = upper(:houseNumber) and a.embeddedDomesticAddress.postalCode = :postalCode
+      and f.referenceFacility is not null
+      order by f.id
+      """)
+  List<Facility> findFileStatesByAddress(String street, String houseNumber, String postalCode);
 }

@@ -3,48 +3,52 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminActorSelector } from "@eshg/service-directory-api";
+import { formatActorSelector } from "@/lib/helpers/actorSelector";
+import { isActor, isOrgUnit, isRule } from "@/lib/helpers/entityValidation";
+import { Actor, EntityWrapper, OrgUnit, Rule } from "@/lib/hooks/useEntities";
 
-import { formatActorSelector } from "@/lib/components/table/cell/StaticActorSelectorCell";
+function getOrgUnitName(orgUnit: OrgUnit | undefined) {
+  const federalState = orgUnit?.entity?.federalState ?? "";
+  const orgUnitType = orgUnit?.entity?.type ?? "";
+  const readableName = orgUnit?.entity?.readableName ?? "";
 
-interface Entity {
-  id: string;
-  readableName?: string;
-  author?: string;
-  client?: ApiAdminActorSelector;
-  server?: ApiAdminActorSelector;
-  naturalId?: string;
+  if (!readableName) return orgUnit?.id ?? "";
+
+  return federalState + "/" + orgUnitType + "/" + readableName;
 }
 
-type EntityLike =
-  | Entity
-  | {
-      id: string;
-      entity: Entity;
-    };
+function getActorName(actor: Actor) {
+  const orgUnitPart = getOrgUnitName(actor.entity?._orgUnit);
+  const actorType = actor.entity?.type ?? "";
+  const readableName = actor.entity?.readableName ?? "";
 
-function getS(short: boolean, id: string) {
-  return short ? "" : ` (${id})`;
+  if (!readableName) return orgUnitPart + "/" + actor.id;
+
+  return orgUnitPart + "/" + actorType + "/" + readableName;
 }
 
-function getRuleName(entity: Entity, short: boolean, id: string) {
-  return entity.client && entity.server
-    ? `${formatActorSelector(entity.client)} → ${formatActorSelector(entity.server)}${getS(short, id)}`
-    : id;
+function getRuleName(rule: Rule) {
+  if (!rule.entity?.client || !rule.entity.server) return rule.id;
+  return `${formatActorSelector(rule.entity.client)} → ${formatActorSelector(rule.entity.server)}`;
 }
 
-function getName(entity: Entity, short: boolean, id: string) {
-  return entity.readableName
-    ? `${entity.readableName}${getS(short, id)}`
-    : getRuleName(entity, short, id);
-}
-
-export function entityToString(entity: EntityLike, short = false): string {
-  if ("entity" in entity) {
-    return entity.entity ? entityToString(entity.entity, short) : entity.id;
+export function entityToString(entity: EntityWrapper, short = false): string {
+  const name = isOrgUnit(entity)
+    ? getOrgUnitName(entity)
+    : isActor(entity)
+      ? getActorName(entity)
+      : isRule(entity)
+        ? getRuleName(entity)
+        : "";
+  if (!short && !name.includes(entity.id)) {
+    return `${name} (${entity.id})`;
   }
-  const id = entity.author ?? entity.id;
-  return entity.naturalId
-    ? `${entity.naturalId}${getS(short, id)}`
-    : getName(entity, short, id);
+  return name;
+}
+
+export function entityIdForLink(entity: EntityWrapper): string {
+  if (isRule(entity)) {
+    return entity.id;
+  }
+  return entityToString(entity, true);
 }

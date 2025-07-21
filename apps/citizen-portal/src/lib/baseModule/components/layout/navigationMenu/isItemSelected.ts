@@ -5,18 +5,16 @@
 
 import {
   NavigationItem,
-  SubNavigationItem,
+  isNavigationLink,
 } from "@/lib/baseModule/components/layout/types";
 
-export function isSubItemSelected(
-  subItem: SubNavigationItem,
+export function isItemSelected(
+  item: NavigationItem,
   pathname: string,
-) {
-  return subItem.href !== "/"
-    ? pathname.startsWith(subItem.href)
-    : subItem.href === pathname;
-}
+): boolean {
+  if (isNavigationLink(item)) {
+    return pathname.startsWith(item.href);
+  }
 
-export function isItemSelected(item: NavigationItem, pathname: string) {
-  return item.subItems.some((subItem) => isSubItemSelected(subItem, pathname));
+  return item.items.some((subItem) => isItemSelected(subItem, pathname));
 }

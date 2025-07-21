@@ -66,10 +66,9 @@ public class InboxProcedureService {
       GetInboxProceduresSortOptions sortOptions,
       GetInboxProceduresPaginationOptions paginationOptions) {
     return inboxProcedureRepository.findAll(
-        Specification.where(
-                inboxProcedureTypes(
-                    filterOptions.inboxProcedureType(), filterOptions.includeUntyped()))
-            .and(inboxProcedureStatus(filterOptions.inboxProcedureStatus())),
+        Specification.allOf(
+            inboxProcedureTypes(filterOptions.inboxProcedureType(), filterOptions.includeUntyped()),
+            inboxProcedureStatus(filterOptions.inboxProcedureStatus())),
         PageRequest.of(
             paginationOptions.pageNumber(),
             paginationOptions.pageSize(),

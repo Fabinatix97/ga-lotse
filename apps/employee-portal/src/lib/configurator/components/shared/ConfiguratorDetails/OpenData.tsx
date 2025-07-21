@@ -4,10 +4,10 @@
  */
 
 import { FormikValues } from "formik";
-import { validateURL } from "next/dist/server/web/utils";
 import { notFound } from "next/navigation";
 
 import { ApiLanguage } from "@eshg/lib-config-api";
+import { validateURL } from "@eshg/lib-employee-portal";
 import { FileType, useFileDownload } from "@eshg/lib-portal";
 
 import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";

@@ -108,10 +108,7 @@ export function CreateAppointmentBlockGroupForm() {
   const [
     { data: locationSelectionMode },
     {
-      data: {
-        appointmentTypeConfigs: allAppointmentTypes,
-        allowedAppointmentTypeCombinations,
-      },
+      data: { appointmentTypeConfigs: allAppointmentTypes },
     },
     { data: allPhysicians },
     { data: allMfas },
@@ -163,7 +160,6 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
-      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       allAppointmentTypes={allAppointmentTypes}
       allPhysicians={allPhysicians}
       allMfas={allMfas}

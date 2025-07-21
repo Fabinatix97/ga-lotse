@@ -10,6 +10,7 @@ import {
   SelectOption,
   SelectOptions,
 } from "@/lib/components/table/SelectOptions";
+import { canonicalColumnId } from "@/lib/hooks/useEntities";
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
 
 export function MultiSelectFilter(
@@ -23,12 +24,12 @@ export function MultiSelectFilter(
   const replaceSearchParams = useReplaceSearchParams();
 
   const selectProps: SelectProps<string, true> = {
-    value: searchParams.getAll(props.searchParamName),
+    value: searchParams.getAll(canonicalColumnId(props.searchParamName)),
     multiple: true,
     onChange(_event, value: string[]) {
       replaceSearchParams([
         {
-          name: props.searchParamName,
+          name: canonicalColumnId(props.searchParamName),
           value,
         },
       ]);

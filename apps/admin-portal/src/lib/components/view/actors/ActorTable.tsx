@@ -5,19 +5,15 @@
 
 "use client";
 
-import { createColumnHelper, filterFns } from "@tanstack/react-table";
-import { useMemo } from "react";
-
 import {
-  ApiAdminActor,
-  ApiAdminActorType,
-  ApiAdminPartialActor,
-  ApiAdminStagedEntityAdminPartialActor,
-  ApiAdminStagedEntityType,
-  ApiGetOrgUnitsResponse,
-} from "@eshg/service-directory-api";
+  TableOptions,
+  createColumnHelper,
+  filterFns,
+} from "@tanstack/react-table";
 
-import { DeleteRow } from "@/lib/components/table/DeleteRow";
+import { ApiAdminActorType } from "@eshg/service-directory-api";
+
+import { ActorSidebarContent } from "@/lib/components/sidebar/SidebarContent";
 import { EditableTable } from "@/lib/components/table/EditableTable";
 import {
   getFilterFn,
@@ -25,52 +21,21 @@ import {
   matchingServerRulesFilterFn,
   orgUnitFilterFn,
 } from "@/lib/components/table/Filter";
-import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
 import { ActiveCell } from "@/lib/components/table/cell/ActiveCell";
-import { BooleanCell } from "@/lib/components/table/cell/BooleanCell";
-import { CertificateCell } from "@/lib/components/table/cell/CertificateCell";
-import { EditableCommonNameCell } from "@/lib/components/table/cell/EditableCommonNameCell";
-import { EditableEnumCell } from "@/lib/components/table/cell/EditableEnumCell";
-import { RulesCell } from "@/lib/components/table/cell/ForeignKeyCell";
-import { MetadataCell } from "@/lib/components/table/cell/MetadataCell";
+import { getEditButtonColumnDef } from "@/lib/components/table/cell/EditButtonCell";
+import { getToggleExpandColumn } from "@/lib/components/table/cell/ExpandButtonCell";
 import { OrgUnitCell } from "@/lib/components/table/cell/OrgUnitCell";
-import { StringCell } from "@/lib/components/table/cell/StringCell";
 import { PageContent } from "@/lib/components/view/PageContent";
-import { useFilterActorBySelector } from "@/lib/helpers/actorSelector";
-import { OverridableEntity } from "@/lib/helpers/entities";
-import { isValidActor } from "@/lib/helpers/entityValidation";
-import { useActorsApi } from "@/lib/hooks/useActorsApi";
+import { entityToString } from "@/lib/helpers/entityToString";
 import {
-  PartialOrgUnitWithId,
-  useOrgUnitsQuery,
-} from "@/lib/hooks/useOrgUnits";
-import { PartialRuleWithId, useAuditedRules } from "@/lib/hooks/useRules";
-
-export type PartialActorWithId = Omit<ApiAdminPartialActor, "id"> & {
-  id: string;
-};
-
-export type StagedActorWithEntityId = Omit<
-  ApiAdminStagedEntityAdminPartialActor,
-  "entity"
-> & {
-  entity?: PartialActorWithId;
-};
-
-export type Actor = PartialActorWithId &
-  OverridableEntity<Actor> & {
-    metadata?: ApiAdminActor["metadata"];
-    naturalId?: ApiAdminActor["naturalId"];
-    _orgUnit?: PartialOrgUnitWithId;
-    _staged: StagedActorWithEntityId[];
-    author?: string;
-    _matchingClientRules: PartialRuleWithId[];
-    _matchingServerRules: PartialRuleWithId[];
-    _type: "actor";
-    _parent?: Actor;
-  };
-
-const NEW_ACTOR_PARENT_ID = "NEW_ACTOR_PARENT_ID";
+  Actor,
+  NEW_ENTITY_PARENT_ID,
+  canonicalColumnId,
+  isCommittedEntity,
+  isStagedEntity,
+  useEntities,
+  useEntitiesQuery,
+} from "@/lib/hooks/useEntities";
 
 const columnHelper = createColumnHelper<Actor>();
 // eslint-disable-next-line func-style
@@ -78,55 +43,43 @@ const accessor: (typeof columnHelper)["accessor"] = (a, c) => {
   const id = c.id ?? String(a);
   return columnHelper.accessor(a, {
     id,
-    header: `actorColumnHeader.${id}`,
+    header: `actorColumnHeader.${canonicalColumnId(id)}`,
     ...c,
-    filterFn: getFilterFn(c.filterFn, [NEW_ACTOR_PARENT_ID]),
+    filterFn: getFilterFn(c.filterFn, [NEW_ENTITY_PARENT_ID]),
   });
 };
 
-const columns = [
+const columns: TableOptions<Actor>["columns"] = [
+  getToggleExpandColumn(),
   accessor(
-    (row) => (row.author ? `${row.author} (${row.id})` : row.naturalId),
+    (row) =>
+      isStagedEntity(row)
+        ? `${row.author} (${row.id})`
+        : entityToString(row, true),
     {
       id: "id",
       enableColumnFilter: true,
       filterFn: filterFns.includesString,
     },
   ),
-  accessor("readableName", {
+  accessor("entity.readableName", {
     enableColumnFilter: true,
     filterFn: filterFns.includesString,
-    cell: StringCell,
   }),
-  accessor("_orgUnit", {
+  accessor("entity._orgUnit", {
     enableColumnFilter: true,
     filterFn: orgUnitFilterFn,
     cell: OrgUnitCell,
-    meta: { linkTo: "org-units" },
   }),
-  accessor("type", {
+  accessor("entity.type", {
     enableColumnFilter: true,
     filterFn: filterFns.arrIncludesSome,
-    cell: EditableEnumCell,
     meta: {
       options: Object.values(ApiAdminActorType),
       multiFilter: true,
     },
   }),
-  accessor("commonName", {
-    enableColumnFilter: true,
-    filterFn: filterFns.includesString,
-    cell: EditableCommonNameCell,
-  }),
-  accessor("networkId", {
-    enableColumnFilter: true,
-    filterFn: filterFns.includesString,
-    cell: StringCell,
-    meta: {
-      optional: true,
-    },
-  }),
-  accessor("active", {
+  accessor("entity.active", {
     enableColumnFilter: true,
     filterFn: filterFns.equals,
     cell: ActiveCell,
@@ -135,220 +88,47 @@ const columns = [
       stringToValue: (v) => v === "true",
     },
   }),
-  accessor("metadata", {
-    enableColumnFilter: true,
-    filterFn: filterFns.includesString,
-    cell: MetadataCell,
-  }),
-  accessor("manualCertificate", {
-    enableColumnFilter: true,
-    filterFn: filterFns.equals,
-    cell: BooleanCell,
-    meta: {
-      options: [false, true],
-      stringToValue: (v) => v === "true",
-    },
-  }),
-  accessor("certificate", {
-    enableColumnFilter: true,
-    cell: CertificateCell,
-  }),
-  accessor("_matchingClientRules", {
+  accessor("entity._matchingClientRules", {
     enableColumnFilter: true,
     filterFn: matchingClientRulesFilterFn,
-    cell: RulesCell,
-    meta: { linkTo: "rules" },
   }),
-  accessor("_matchingServerRules", {
+  accessor("entity._matchingServerRules", {
     enableColumnFilter: true,
     filterFn: matchingServerRulesFilterFn,
-    cell: RulesCell,
-    meta: { linkTo: "rules" },
   }),
+  getEditButtonColumnDef(),
 ];
 
 export function ActorTable() {
   return (
     <PageContent
       title="actorHeader"
-      query={useOrgUnitsQuery()}
-      renderContent={(data) => <ActorTableContent data={data} />}
+      query={useEntitiesQuery()}
+      renderContent={() => <ActorTableContent />}
     />
   );
 }
 
-function ActorTableContent({
-  data,
-}: Readonly<{ data: ApiGetOrgUnitsResponse }>) {
-  const actors = useActorsWithStagedSubRows(data);
-  const getSubRows = useGetSubRows();
-  const { api } = useActorsApi();
+function ActorTableContent() {
+  const { committedActors } = useEntities();
 
   return (
-    actors && (
-      <EditableTable
-        columns={columns}
-        data={actors}
-        getSubRows={getSubRows(data)}
-        api={api}
-        initialColumnVisibility={{
-          metadata: false,
-          networkId: false,
-          _matchingServerRules: false,
-          _matchingClientRules: false,
-          commonName: false,
-          manualCertificate: false,
-          certificate: false,
-        }}
-      />
-    )
+    <EditableTable
+      columns={columns}
+      data={committedActors}
+      getSubRows={getSubRows}
+      type="actor"
+      columnVisibility={{
+        "entity._matchingServerRules": false,
+        "entity._matchingClientRules": false,
+      }}
+      sidebarContent={ActorSidebarContent}
+    />
   );
 }
 
-function getStagedActors(
-  stagedActors: ApiAdminStagedEntityAdminPartialActor[],
-  id: string | undefined,
-): StagedActorWithEntityId[] {
-  return stagedActors
-    .filter((sa) => sa.originalEntityId === id)
-    .map((sa) => ({
-      ...sa,
-      entity: sa.entity ? { ...sa.entity, id: sa.id } : undefined,
-    }));
-}
-
-function useActorsWithStagedSubRows(
-  orgUnits?: ApiGetOrgUnitsResponse,
-): Actor[] | undefined {
-  const rules = useAuditedRules();
-  const filterActorBySelector = useFilterActorBySelector(true);
-
-  return useMemo<Actor[] | undefined>(() => {
-    if (!orgUnits) {
-      return undefined;
-    }
-
-    const mergedActors: Actor[] = orgUnits.orgUnits.flatMap((ou) =>
-      ou.actors.map((a) => ({
-        ...a,
-        _orgUnit: ou,
-        _staged: getStagedActors(orgUnits.stagedActors, a.id),
-        _matchingClientRules: rules.filter((r) =>
-          filterActorBySelector(r.client ?? {}, { ...a, orgUnitId: ou.id }),
-        ),
-        _matchingServerRules: rules.filter((r) =>
-          filterActorBySelector(r.server ?? {}, { ...a, orgUnitId: ou.id }),
-        ),
-        _type: "actor",
-      })),
-    );
-
-    const stagedActorsWithoutOriginal = getStagedActors(
-      orgUnits.stagedActors,
-      undefined,
-    );
-    if (stagedActorsWithoutOriginal.length) {
-      mergedActors.push({
-        id: NEW_ACTOR_PARENT_ID,
-        active: false,
-        commonName: "",
-        readableName: "",
-        type: ApiAdminActorType.Gm,
-        _staged: stagedActorsWithoutOriginal,
-        _override: NewEntityParentRow,
-        _orgUnit: undefined,
-        _matchingClientRules: [],
-        _matchingServerRules: [],
-        _type: "actor",
-      });
-    }
-    return mergedActors;
-  }, [filterActorBySelector, orgUnits, rules]);
-}
-
-function getOrgUnit(
-  orgUnits: ApiGetOrgUnitsResponse | undefined,
-  id: string | undefined,
-): PartialOrgUnitWithId | undefined {
-  if (!id) {
-    return undefined;
+function getSubRows(originalRow: Actor): Actor[] | undefined {
+  if (isCommittedEntity(originalRow)) {
+    return originalRow._staged;
   }
-  const orgUnit = orgUnits?.orgUnits.find((ou) => ou.id === id);
-  if (orgUnit) {
-    return orgUnit;
-  }
-  const stagedOrgUnit = orgUnits?.stagedOrgUnits.find((sou) => sou.id === id);
-  if (stagedOrgUnit) {
-    return {
-      ...stagedOrgUnit.entity,
-      id: stagedOrgUnit.id,
-    };
-  }
-  // eslint-disable-next-line no-console
-  console.error("Could not find OrgUnit", id);
-  return undefined;
-}
-
-function useGetSubRows() {
-  const rules = useAuditedRules();
-  const filterActorBySelector = useFilterActorBySelector(true);
-
-  return (orgUnits: ApiGetOrgUnitsResponse | undefined) => {
-    return (originalRow: Actor): Actor[] | undefined => {
-      return originalRow._staged.map((sa) => {
-        if (sa.entity) {
-          const ou = getOrgUnit(orgUnits, sa.entity.orgUnitId);
-          const isValid = isValidActor(sa.entity);
-          const _matchingClientRules = isValid
-            ? rules.filter((r) =>
-                filterActorBySelector(r.client ?? {}, {
-                  id: sa.id,
-                  ...sa.entity,
-                  orgUnitId: ou?.id,
-                }),
-              )
-            : [];
-          const _matchingServerRules = isValid
-            ? rules.filter((r) =>
-                filterActorBySelector(r.server ?? {}, {
-                  id: sa.id,
-                  ...sa.entity,
-                  orgUnitId: ou?.id,
-                }),
-              )
-            : [];
-          return {
-            ...sa.entity,
-            _staged: [],
-            _orgUnit: ou,
-            metadata: originalRow.metadata,
-            author: sa.author,
-            _matchingClientRules,
-            _matchingServerRules,
-            stagedEntityType: sa.stagedEntityType,
-            _type: "actor",
-            _parent: originalRow,
-          };
-        } else {
-          return {
-            id: sa.id,
-            active: false,
-            commonName: "",
-            readableName: "",
-            type: ApiAdminActorType.Gm,
-            _staged: [],
-            author: sa.author,
-            _override: DeleteRow,
-            _orgUnit: originalRow._orgUnit,
-            _matchingClientRules: [],
-            _matchingServerRules: [],
-            stagedEntityType: ApiAdminStagedEntityType.Del,
-            stagingStatus: sa.stagingStatus,
-            _type: "actor",
-            _parent: originalRow,
-          };
-        }
-      });
-    };
-  };
 }

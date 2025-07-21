@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 
 import { CustomAutocomplete } from "@eshg/lib-portal";
 
+import { canonicalColumnId } from "@/lib/hooks/useEntities";
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
 
 export function TextInputFilter(
@@ -23,7 +24,7 @@ export function TextInputFilter(
     <CustomAutocomplete
       freeSolo
       autoSelect
-      value={searchParams.get(props.searchParamName) ?? ""}
+      value={searchParams.get(canonicalColumnId(props.searchParamName)) ?? ""}
       size="sm"
       placeholder={props.placeholder}
       aria-label={props.placeholder}
@@ -32,7 +33,7 @@ export function TextInputFilter(
       onChange={(_event, value) => {
         replaceSearchParams([
           {
-            name: props.searchParamName,
+            name: canonicalColumnId(props.searchParamName),
             value: value,
           },
         ]);

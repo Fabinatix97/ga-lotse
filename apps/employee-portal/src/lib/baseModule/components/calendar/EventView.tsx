@@ -55,36 +55,38 @@ export function EventView(props: {
 
   return (
     <Stack gap={2}>
-      <Stack direction="row" gap={1}>
-        <WatchLaterOutlined />
-        <Typography level="title-md">
-          {props.event.timeData.wholeDay
-            ? formatDateRange(
-                props.event.timeData.start,
-                props.event.timeData.end,
-              )
-            : formatDateTimeRange(
-                props.event.timeData.start,
-                props.event.timeData.end,
-              )}
-        </Typography>
+      <Stack gap={2} role="list">
+        <Stack direction="row" gap={1} role="listitem">
+          <WatchLaterOutlined />
+          <Typography level="title-md">
+            {props.event.timeData.wholeDay
+              ? formatDateRange(
+                  props.event.timeData.start,
+                  props.event.timeData.end,
+                )
+              : formatDateTimeRange(
+                  props.event.timeData.start,
+                  props.event.timeData.end,
+                )}
+          </Typography>
+        </Stack>
+        {isDefined(props.event.metaData.subject) && (
+          <Stack direction="row" gap={1} role="listitem">
+            <Circle sx={{ color: props.calendarColor }} />
+            <Typography level="body-md">
+              Eintrag von {props.event.metaData.subject}
+            </Typography>
+          </Stack>
+        )}
+        {isDefined(props.event.metaData.location) && (
+          <Stack direction="row" gap={1} role="listitem">
+            <LocationOn />
+            <Typography level="body-md">
+              {props.event.metaData.location}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
-      {isDefined(props.event.metaData.subject) && (
-        <Stack direction="row" gap={1}>
-          <Circle sx={{ color: props.calendarColor }} />
-          <Typography level="body-md">
-            Eintrag von {props.event.metaData.subject}
-          </Typography>
-        </Stack>
-      )}
-      {isDefined(props.event.metaData.location) && (
-        <Stack direction="row" gap={1}>
-          <LocationOn />
-          <Typography level="body-md">
-            {props.event.metaData.location}
-          </Typography>
-        </Stack>
-      )}
       {description}
     </Stack>
   );

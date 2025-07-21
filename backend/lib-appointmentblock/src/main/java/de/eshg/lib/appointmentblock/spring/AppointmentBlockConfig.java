@@ -8,7 +8,6 @@ package de.eshg.lib.appointmentblock.spring;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 
 public interface AppointmentBlockConfig {
@@ -31,9 +30,4 @@ public interface AppointmentBlockConfig {
   LocationSelectionMode getLocationSelectionMode();
 
   void setLocationSelectionMode(LocationSelectionMode locationSelectionMode);
-
-  List<List<AppointmentType>> getAllowedAppointmentTypeCombinations();
-
-  void setAllowedAppointmentTypeCombinations(
-      List<List<AppointmentType>> allowedAppointmentTypeCombinations);
 }

@@ -45,17 +45,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class OpenDataController {
 
   private final OpenDataService openDataService;
-  private final OpenDataValidations openDataValidations;
   private final OpenDataFiltering openDataFiltering;
   private final OpenDataConfigService openDataConfigService;
 
   public OpenDataController(
       OpenDataService openDataService,
-      OpenDataValidations openDataValidations,
       OpenDataFiltering openDataFiltering,
       OpenDataConfigService openDataConfigService) {
     this.openDataService = openDataService;
-    this.openDataValidations = openDataValidations;
     this.openDataFiltering = openDataFiltering;
     this.openDataConfigService = openDataConfigService;
   }
@@ -74,7 +71,6 @@ public class OpenDataController {
       @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request,
       @InlineParameterObject @ParameterObject @Valid
           GetOpenDocumentsPaginationOptions paginationOptions) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataFiltering.getOpenDocumentsFromEmployeePortal(request, paginationOptions);
   }
 
@@ -87,7 +83,6 @@ public class OpenDataController {
           Gets one specific version of an open document by its id
           """)
   public VersionDto getVersion(@PathVariable("versionId") UUID versionId) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataService.getSpecificVersion(versionId);
   }
 
@@ -101,7 +96,6 @@ public class OpenDataController {
   @Transactional(readOnly = true)
   @Operation(summary = "Download a specific version of a document")
   public ResponseEntity<byte[]> downloadDocument(@PathVariable("versionId") UUID versionId) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataService.downloadDocument(versionId);
   }
 
@@ -113,7 +107,6 @@ public class OpenDataController {
   public void updateVersionMetadata(
       @PathVariable("versionId") UUID versionId,
       @RequestBody @Valid UpdateVersionMetaDataRequest updateRequest) {
-    openDataValidations.validateOpenDataEnabled();
     openDataService.updateVersionMetadata(versionId, updateRequest);
   }
 
@@ -123,7 +116,6 @@ public class OpenDataController {
       summary = "Deletes a version",
       description = "Deletes correlating resource as well if there are no other versions left")
   public void deleteVersion(@PathVariable("versionId") UUID versionId) {
-    openDataValidations.validateOpenDataEnabled();
     openDataService.deleteVersion(versionId);
   }
 
@@ -139,7 +131,6 @@ public class OpenDataController {
   public ResourceDto createOpenDocument(
       @RequestPart(name = "postOpenDocumentRequest") @Valid PostOpenDocumentRequest postRequest,
       @RequestPart(name = "file") MultipartFile file) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataService.createOpenDocument(postRequest, file);
   }
 

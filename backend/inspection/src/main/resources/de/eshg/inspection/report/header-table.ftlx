@@ -1,5 +1,6 @@
 <#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <#-- @ftlvariable name="office" type="de.eshg.inspection.report.pdf.RepAddress" -->
+<#-- @ftlvariable name="assignee" type="de.eshg.inspection.report.pdf.RepAssignee" -->
 <#-- @ftlvariable name="facility" type="de.eshg.inspection.report.pdf.RepFacility" -->
 <#-- @ftlvariable name="inspection" type="de.eshg.inspection.report.pdf.RepInspection" -->
 <#-- @ftlvariable name="reportInfo" type="de.eshg.inspection.report.pdf.RepInfo" -->
@@ -20,31 +21,37 @@
   <tr class="letterhead">
     <td valign="top" class="receiver">
       <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
-      <div class="addressee">
-      <#if facility.contactPerson??>
-        <div>${facility.contactPerson}</div>
-      </#if>
-        <div>${facility.address.name}</div>
-        <div>${facility.address.street}</div>
-      <#if facility.address.addressAddition??>
-        <div>${facility.address.addressAddition}</div>
-      </#if>
-        <div>${facility.address.zipCode} ${facility.address.city}</div>
-      </div>
+        <div class="addressee">
+          <#if facility.contactPerson??>
+            <div>${facility.contactPerson}</div>
+          </#if>
+          <div>${facility.address.name}</div>
+          <div>${facility.address.street}</div>
+          <#if facility.address.addressAddition??>
+            <div>${facility.address.addressAddition}</div>
+          </#if>
+          <div>${facility.address.zipCode} ${facility.address.city}</div>
+        </div>
     </td>
     <td valign="top" class="sender">
       <div class="sender-address">
-      <div>${office.name}</div>
-      <div>${office.street}</div>
-      <div>${office.zipCode} ${office.city}</div>
+        <div>${office.name}</div>
+        <div>${office.street}</div>
+        <div>${office.zipCode} ${office.city}</div>
       </div>
       <div>
-        <div class="sender-label">Telefon</div>
-        <div class="sender-data">${office.phoneNumber}</div>
+        <#if assignee.phoneNumber??>
+          <div class="sender-label">Telefon</div>
+          <div class="sender-data">${assignee.phoneNumber}</div>
+        </#if>
         <div class="sender-label">E-Mail</div>
-        <div class="sender-data">${office.email}</div>
+        <div class="sender-data">${assignee.email}</div>
         <div class="sender-label">Datum</div>
         <div class="sender-data">${reportInfo.date}</div>
+        <#if facility.fileNumber??>
+          <div class="sender-label">Aktenzeichen</div>
+          <div class="sender-data">${facility.fileNumber}</div>
+        </#if>
       </div>
     </td>
   </tr>

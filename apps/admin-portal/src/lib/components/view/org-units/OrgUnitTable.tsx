@@ -5,36 +5,35 @@
 
 "use client";
 
-import { createColumnHelper, filterFns } from "@tanstack/react-table";
-import { useMemo } from "react";
+import {
+  TableOptions,
+  createColumnHelper,
+  filterFns,
+} from "@tanstack/react-table";
 
 import {
   ApiAdminOrgUnitType,
-  ApiAdminStagedEntityAdminPartialOrgUnit,
-  ApiAdminStagedEntityType,
   ApiFederalState,
-  ApiGetOrgUnitsResponse,
-  ApiOrgUnitType,
 } from "@eshg/service-directory-api";
 
-import { DeleteRow } from "@/lib/components/table/DeleteRow";
+import { OrgUnitSidebarContent } from "@/lib/components/sidebar/SidebarContent";
 import { EditableTable } from "@/lib/components/table/EditableTable";
 import { actorsFilterFn, getFilterFn } from "@/lib/components/table/Filter";
-import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
 import { ActiveCell } from "@/lib/components/table/cell/ActiveCell";
-import { EditableEnumCell } from "@/lib/components/table/cell/EditableEnumCell";
-import { ActorsCell } from "@/lib/components/table/cell/ForeignKeyCell";
-import { StringCell } from "@/lib/components/table/cell/StringCell";
+import { ActorsCell } from "@/lib/components/table/cell/ActorsCell";
+import { getEditButtonColumnDef } from "@/lib/components/table/cell/EditButtonCell";
+import { getToggleExpandColumn } from "@/lib/components/table/cell/ExpandButtonCell";
 import { PageContent } from "@/lib/components/view/PageContent";
-import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";
+import { entityToString } from "@/lib/helpers/entityToString";
 import {
+  NEW_ENTITY_PARENT_ID,
   OrgUnit,
-  StagedOrgUnitWithEntityId,
-  useOrgUnitsQuery,
-} from "@/lib/hooks/useOrgUnits";
-import { useOrgUnitsApi } from "@/lib/hooks/useOrgUnitsApi";
-
-const NEW_ORG_UNIT_PARENT_ID = "NEW_ORG_UNIT_PARENT_ID";
+  canonicalColumnId,
+  isCommittedEntity,
+  isStagedEntity,
+  useEntities,
+  useEntitiesQuery,
+} from "@/lib/hooks/useEntities";
 
 const columnHelper = createColumnHelper<OrgUnit>();
 // eslint-disable-next-line func-style
@@ -42,48 +41,46 @@ const accessor: (typeof columnHelper)["accessor"] = (a, c) => {
   const id = c.id ?? String(a);
   return columnHelper.accessor(a, {
     id,
-    header: `orgUnitColumnHeader.${id}`,
+    header: `orgUnitColumnHeader.${canonicalColumnId(id)}`,
     ...c,
-    filterFn: getFilterFn(c.filterFn, [NEW_ORG_UNIT_PARENT_ID]),
+    filterFn: getFilterFn(c.filterFn, [NEW_ENTITY_PARENT_ID]),
   });
 };
 
-const columns = [
+const columns: TableOptions<OrgUnit>["columns"] = [
+  getToggleExpandColumn(),
   accessor(
     (row) =>
-      row.author
+      isStagedEntity(row)
         ? `${row.author} (${row.id})`
-        : `${row.federalState}/${row.type}/${row.readableName}`,
+        : entityToString(row, true),
     {
       id: "id",
       enableColumnFilter: true,
       filterFn: filterFns.includesString,
     },
   ),
-  accessor("federalState", {
+  accessor("entity.federalState", {
     enableColumnFilter: true,
     filterFn: filterFns.arrIncludesSome,
-    cell: EditableEnumCell,
     meta: {
       options: Object.values(ApiFederalState),
       multiFilter: true,
     },
   }),
-  accessor("type", {
+  accessor("entity.type", {
     enableColumnFilter: true,
     filterFn: filterFns.arrIncludesSome,
-    cell: EditableEnumCell,
     meta: {
       options: Object.values(ApiAdminOrgUnitType),
       multiFilter: true,
     },
   }),
-  accessor("readableName", {
+  accessor("entity.readableName", {
     enableColumnFilter: true,
     filterFn: filterFns.includesString,
-    cell: StringCell,
   }),
-  accessor("active", {
+  accessor("entity.active", {
     enableColumnFilter: true,
     filterFn: filterFns.equals,
     cell: ActiveCell,
@@ -92,124 +89,40 @@ const columns = [
       stringToValue: (v) => v === "true",
     },
   }),
-  accessor("actors", {
+  accessor("entity._actors", {
     enableColumnFilter: true,
     filterFn: actorsFilterFn,
     cell: ActorsCell,
   }),
+  getEditButtonColumnDef(),
 ];
 
 export function OrgUnitTable() {
   return (
     <PageContent
       title="orgUnitHeader"
-      query={useOrgUnitsQuery()}
-      renderContent={(data) => <OrgUnitTableContent data={data} />}
+      query={useEntitiesQuery()}
+      renderContent={() => <OrgUnitTableContent />}
     />
   );
 }
 
-function OrgUnitTableContent({
-  data,
-}: Readonly<{
-  data: ApiGetOrgUnitsResponse;
-}>) {
-  const orgUnits = useOrgUnitsWithStagedSubRows(data);
-  const { api } = useOrgUnitsApi();
+function OrgUnitTableContent() {
+  const { committedOrgUnits } = useEntities();
 
   return (
-    orgUnits && (
-      <EditableTable
-        columns={columns}
-        data={orgUnits}
-        getSubRows={getSubRows(data)}
-        api={api}
-      />
-    )
+    <EditableTable
+      columns={columns}
+      data={committedOrgUnits}
+      getSubRows={getSubRows}
+      type="orgUnit"
+      sidebarContent={OrgUnitSidebarContent}
+    />
   );
 }
 
-function getStagedOrgUnits(
-  stagedOrgUnits: ApiAdminStagedEntityAdminPartialOrgUnit[],
-  id: string | undefined,
-): StagedOrgUnitWithEntityId[] {
-  return stagedOrgUnits
-    .filter((sou) => sou.originalEntityId === id)
-    .map((sou) => ({
-      ...sou,
-      entity: sou.entity ? { ...sou.entity, id: sou.id } : undefined,
-    }));
-}
-
-function useOrgUnitsWithStagedSubRows(orgUnits?: ApiGetOrgUnitsResponse) {
-  return useMemo<OrgUnit[] | undefined>(() => {
-    if (!orgUnits) {
-      return undefined;
-    }
-    const mergedOrgUnits: OrgUnit[] = orgUnits.orgUnits.map((ou) => ({
-      ...ou,
-      _staged: getStagedOrgUnits(orgUnits.stagedOrgUnits, ou.id),
-      _type: "orgUnit",
-    }));
-    const stagedOrgUnitsWithoutOriginal = getStagedOrgUnits(
-      orgUnits.stagedOrgUnits,
-      undefined,
-    );
-    if (stagedOrgUnitsWithoutOriginal.length) {
-      mergedOrgUnits.push({
-        id: NEW_ORG_UNIT_PARENT_ID,
-        active: false,
-        actors: [],
-        readableName: "",
-        type: ApiOrgUnitType.Ga,
-        _staged: stagedOrgUnitsWithoutOriginal,
-        _override: NewEntityParentRow,
-        _type: "orgUnit",
-      });
-    }
-    return mergedOrgUnits;
-  }, [orgUnits]);
-}
-
-function getActors(
-  orgUnits: ApiGetOrgUnitsResponse | undefined,
-  originalRow: OrgUnit,
-  id: string,
-): PartialActorWithId[] {
-  if (originalRow.id !== NEW_ORG_UNIT_PARENT_ID) {
-    return originalRow.actors;
+function getSubRows(originalRow: OrgUnit): OrgUnit[] | undefined {
+  if (isCommittedEntity(originalRow)) {
+    return originalRow._staged;
   }
-  return orgUnits?.stagedActors.filter((a) => a.entity?.orgUnitId === id) ?? [];
-}
-
-function getSubRows(orgUnits: ApiGetOrgUnitsResponse | undefined) {
-  return (originalRow: OrgUnit): OrgUnit[] | undefined => {
-    return originalRow._staged.map((sou) =>
-      sou.entity
-        ? {
-            ...sou.entity,
-            id: sou.id,
-            actors: getActors(orgUnits, originalRow, sou.id),
-            _staged: [],
-            author: sou.author,
-            stagedEntityType: sou.stagedEntityType,
-            _type: "orgUnit",
-            _parent: originalRow,
-          }
-        : {
-            id: sou.id,
-            active: false,
-            actors: [],
-            readableName: "",
-            type: ApiOrgUnitType.Ga,
-            _staged: [],
-            author: sou.author,
-            _override: DeleteRow,
-            stagedEntityType: ApiAdminStagedEntityType.Del,
-            stagingStatus: sou.stagingStatus,
-            _type: "orgUnit",
-            _parent: originalRow,
-          },
-    );
-  };
 }

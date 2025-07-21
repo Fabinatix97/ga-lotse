@@ -207,6 +207,30 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/archiving/procedures/{procedureId}" : {
+      "get" : {
+        "operationId" : "downloadArchivableProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archivable procedure",
+        "tags" : [ "Archiving" ]
+      }
+    },
     "/archiving/relevant-procedures" : {
       "get" : {
         "operationId" : "getRelevantArchivableProcedures",

@@ -22,6 +22,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
+import de.eshg.inspection.facility.FacilityFileNumberService;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.report.persistence.element.ReportElement;
 import de.eshg.inspection.report.persistence.element.ReportElementAudios;
@@ -64,6 +65,7 @@ public class InspectionReportBuilder {
   private final DepartmentLogoClient departmentLogoClient;
   private final FacilityClient facilityClient;
   private final DepartmentInfoConfigService departmentInfoConfigService;
+  private final FacilityFileNumberService facilityFileNumberService;
 
   public InspectionReportBuilder(
       @Value(REPORT_TEMPLATE) ClassPathResource reportTemplate,
@@ -71,8 +73,10 @@ public class InspectionReportBuilder {
       UserClient userClient,
       DepartmentLogoClient departmentLogoClient,
       DepartmentInfoConfigService departmentInfoConfigService,
-      FacilityClient facilityClient) {
+      FacilityClient facilityClient,
+      FacilityFileNumberService facilityFileNumberService) {
     this.departmentInfoConfigService = departmentInfoConfigService;
+    this.facilityFileNumberService = facilityFileNumberService;
     Assert.isTrue(reportTemplate.exists(), reportTemplate + " does not exist");
     this.reportTemplate = reportTemplate;
     this.documentGenerator = documentGenerator;
@@ -93,24 +97,26 @@ public class InspectionReportBuilder {
 
     String title = getReportTitle(inspection);
     String objectType = inspection.getFacility().getObjectType().getName();
-    String executingPerson = getExecutingPerson(inspection);
     RepContent repContent = new RepContentCreator(inspection, facility).createRepContent();
-    RepInspection repInspection = new RepInspection(title, objectType, executingPerson, repContent);
+    RepInspection repInspection = new RepInspection(title, objectType, repContent);
 
     String reportDateDe = reportDate.format(DATE_FORMATTER_DE);
     String filename = getReportFilename(title, reportDate);
     RepAddress officeAddress = getOfficeAddress();
     RepInfo reportInfo = new RepInfo(officeAddress.city(), reportDateDe, filename);
 
+    RepAssignee assignee = getAssignee(inspection);
+
     DepartmentLogo departmentLogo = getDepartmentLogo();
-    return new RepData(departmentLogo, officeAddress, facility, repInspection, reportInfo);
+    return new RepData(
+        departmentLogo, officeAddress, facility, repInspection, reportInfo, assignee);
   }
 
-  public DepartmentLogo getDepartmentLogo() {
+  DepartmentLogo getDepartmentLogo() {
     return departmentLogoClient.getDepartmentLogo();
   }
 
-  public RepAddress getOfficeAddress() {
+  RepAddress getOfficeAddress() {
     GetDepartmentInfoResponse departmentInfo = departmentInfoConfigService.getDepartmentInfo();
     return new RepAddress(
         departmentInfo.name(),
@@ -156,11 +162,13 @@ public class InspectionReportBuilder {
             .findFirst()
             .map(person -> String.join(" ", person.title(), person.firstName(), person.lastName()))
             .orElse(null);
-    return new RepFacility(facilityAddress, contactPerson);
+    String fileNumber =
+        facilityFileNumberService.getFileNumber(baseFacility, inspection.getFileNumberSuffix());
+    return new RepFacility(facilityAddress, contactPerson, fileNumber);
   }
 
   private record RepContentCreator(Inspection inspection, RepFacility facility) {
-    public RepContent createRepContent() {
+    private RepContent createRepContent() {
       List<ReportElement> reportElements = inspection.getReport().getReportElements();
       List<RepChecklistElement> elements = reportElements.stream().map(this::mapElement).toList();
       return new RepContent(elements);
@@ -246,10 +254,11 @@ public class InspectionReportBuilder {
         .orElse("Begehungsprotokoll");
   }
 
-  private String getExecutingPerson(Inspection inspection) {
+  private RepAssignee getAssignee(Inspection inspection) {
     UUID assigneeId = inspection.getExecutionTask().orElseThrow().getAssigneeId();
     UserDto user = userClient.getUserById(assigneeId);
-    return String.join(" ", user.firstName(), user.lastName());
+    String fullName = String.join(" ", user.firstName(), user.lastName());
+    return new RepAssignee(fullName, user.phoneNumber(), user.email());
   }
 
   private static String getReportFilename(String title, ZonedDateTime reportDate) {

@@ -103,7 +103,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
     PartialOrgUnit orgUnit = getOrgUnit(index, faker, uniqueValueProvider);
 
     Optional<OrgUnitDto> existingOrgUnit =
-        serviceDirectoryReadService.getAllOrgUnits().orgUnits().stream()
+        serviceDirectoryReadService.getAllEntities().orgUnits().stream()
             .filter(ou -> ou.readableName().equalsIgnoreCase(orgUnit.name))
             .findAny();
     if (existingOrgUnit.isPresent()) {
@@ -220,7 +220,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
 
   @Override
   protected long countExistingEntities() {
-    return serviceDirectoryReadService.getAllOrgUnits().orgUnits().size();
+    return serviceDirectoryReadService.getAllEntities().orgUnits().size();
   }
 
   private void createLandDepartment(String orgUnitName, boolean generateCertificates)

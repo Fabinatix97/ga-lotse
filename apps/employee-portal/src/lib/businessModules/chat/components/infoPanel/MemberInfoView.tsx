@@ -20,9 +20,14 @@ import { getChatUser } from "@/lib/businessModules/chat/shared/utils";
 interface MemberInfoViewProps {
   userId: string;
   onClose: () => void;
+  onBackIconClick: () => void;
 }
 
-export function MemberInfoView({ userId, onClose }: MemberInfoViewProps) {
+export function MemberInfoView({
+  userId,
+  onClose,
+  onBackIconClick,
+}: Readonly<MemberInfoViewProps>) {
   const { matrixClient, departmentInfo } = useChatClientContext();
   const [user, setUser] = useState<UserFromDirectory>();
   const isMe = isStrictEqual(userId, matrixClient.getUserId());
@@ -51,7 +56,12 @@ export function MemberInfoView({ userId, onClose }: MemberInfoViewProps) {
 
   return (
     <>
-      <InfoPanelHeader user={user} close={onClose} type="memberInfo" />
+      <InfoPanelHeader
+        user={user}
+        close={onClose}
+        type="memberInfo"
+        onBackIconClick={onBackIconClick}
+      />
       <Box
         sx={{
           overflowY: "auto",

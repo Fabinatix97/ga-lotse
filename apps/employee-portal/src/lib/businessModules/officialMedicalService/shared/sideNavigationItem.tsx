@@ -7,8 +7,8 @@ import { isPlainObject } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
 import { SideNavigationItem, hasUserRole } from "@eshg/lib-employee-portal";
+import { StethoscopeIcon } from "@eshg/lib-portal";
 
-import { StethoscopeIcon } from "@/lib/businessModules/officialMedicalService/components/icons/StethoscopeIcon";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 
 const NAVIGATION_ITEMS: SideNavigationItem[] = [

@@ -226,7 +226,6 @@ public class AppointmentBlockService {
         request.types().stream()
             .map(type -> MappingUtil.mapEnum(AppointmentType.class, type))
             .collect(Collectors.toSet());
-    appointmentBlockValidator.validateAllowedCombinationOfTypes(requestedTypes);
 
     List<AppointmentTypeHolder> appointmentTypeHolders =
         requestedTypes.stream()
@@ -397,6 +396,7 @@ public class AppointmentBlockService {
     if (!removed) {
       log.warn("Appointment block does not exist: {}", appointmentBlockId);
     }
+    calendarClient.removeEventInCalendarIfExists(appointmentBlock);
     if (appointmentBlocks.isEmpty()) {
       appointmentBlockGroupRepository.delete(appointmentBlockGroup);
     }

@@ -9,7 +9,6 @@ import static de.eshg.domain.model.BaseEntity_.ID;
 import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
 import static de.eshg.lib.procedure.MapperHelper.toEnumSet;
 import static org.springframework.data.jpa.domain.Specification.allOf;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.foureyes.mapping.ApprovalRequestMapper;
@@ -141,7 +140,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
     Sort sort = mapToSort(sortOptions);
     Page<ProgressEntry> page =
         progressEntryRepository.findAll(
-            where(allOf(specifications)),
+            allOf(specifications),
             PageRequest.ofSize(paginationOptions.pageSize())
                 .withPage(paginationOptions.pageNumber())
                 .withSort(sort));

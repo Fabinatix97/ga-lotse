@@ -33,11 +33,22 @@ import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.model.SecondaryResult;
 import de.eshg.dental.domain.model.Tooth;
 import de.eshg.dental.domain.model.ToothDiagnosis;
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class ExaminationMapper {
   private ExaminationMapper() {}
+
+  private static Clock clock;
+
+  @Autowired
+  public void setClock(Clock clock) {
+    ExaminationMapper.clock = clock;
+  }
 
   public static ExaminationDto mapToDto(Examination examination) {
     if (examination == null) {
@@ -52,7 +63,10 @@ public final class ExaminationMapper {
         prophylaxisSession.isScreening(),
         DentitionTypeMapper.mapToDto(prophylaxisSession.getDentitionType()),
         prophylaxisSession.hasFluoridationVarnish(),
-        examination.getChild().isFluoridationConsentCurrentlyGivenOptionally(),
+        examination
+            .getChild()
+            .isFluoridationConsentGivenAtDateOptionally(
+                examination.getDateAndTime().atZone(clock.getZone()).toLocalDate()),
         examination.getChild().getNote(),
         mapToDto(examination.getResult()));
   }
@@ -62,7 +76,11 @@ public final class ExaminationMapper {
       return null;
     }
     boolean fluoridationIsConsented =
-        result.getExamination().getChild().isFluoridationConsentCurrentlyGiven();
+        result
+            .getExamination()
+            .getChild()
+            .isFluoridationConsentGivenAtDate(
+                result.getExamination().getDateAndTime().atZone(clock.getZone()).toLocalDate());
     return switch (result) {
       case FluoridationExaminationResult fluoridationExaminationResult ->
           new FluoridationExaminationResultDto(
@@ -84,6 +102,7 @@ public final class ExaminationMapper {
               screeningExaminationResult.hasCalculus(),
               screeningExaminationResult.hasGingivitis(),
               screeningExaminationResult.hasParodontitis(),
+              screeningExaminationResult.hasBlackStain(),
               mapToDto(screeningExaminationResult.getToothDiagnoses()),
               screeningExaminationResult.isIndividualProphylaxis(),
               screeningExaminationResult.isFissureSealing(),

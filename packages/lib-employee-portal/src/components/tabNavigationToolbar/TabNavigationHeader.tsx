@@ -38,7 +38,7 @@ export function TabNavigationHeaderTypography({
   return (
     <Typography
       level="title-md"
-      component="p"
+      component="span"
       sx={{ lineHeight: "27px", ...sx }}
       {...props}
       noWrap

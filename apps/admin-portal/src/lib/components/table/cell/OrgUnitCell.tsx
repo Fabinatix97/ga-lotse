@@ -4,64 +4,25 @@
  */
 
 import { CellContext } from "@tanstack/react-table";
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode } from "react";
 
-import { SelectOption } from "@/lib/components/table/SelectOptions";
-import { InnerEnumCell } from "@/lib/components/table/cell/EditableEnumCell";
-import { LinkCell } from "@/lib/components/table/cell/LinkCell";
-import { Actor } from "@/lib/components/view/actors/ActorTable";
-import { getAdminName } from "@/lib/helpers/adminName";
-import { useEditableRow } from "@/lib/helpers/entityFilter";
+import { EntityLink } from "@/lib/components/layout/nav/EntityLink";
 import { entityToString } from "@/lib/helpers/entityToString";
-import { PartialOrgUnitWithId, useOrgUnits } from "@/lib/hooks/useOrgUnits";
+import { Actor, OrgUnit } from "@/lib/hooks/useEntities";
 
 export function OrgUnitCell(
-  props: Readonly<CellContext<Actor, PartialOrgUnitWithId | undefined>>,
+  props: Readonly<CellContext<Actor, OrgUnit | undefined>>,
 ): ReactNode {
-  if (useEditableRow(props.row)) {
-    return <EditableOrgUnitCell {...props} />;
+  const value = props.getValue();
+  if (!value) {
+    return false;
   }
-  return <LinkCell {...props} />;
-}
 
-function EditableOrgUnitCell(
-  props: Readonly<CellContext<Actor, PartialOrgUnitWithId | undefined>>,
-): ReactNode {
-  const handleChange = useCallback(
-    (_event: unknown, value: string | null) => {
-      props.table.options.meta?.api?.update({
-        id: props.row.original.id,
-        orgUnitId: value ?? undefined,
-      });
-    },
-    [props.row, props.table.options.meta],
-  );
-
-  const orgUnits = useOrgUnits();
-
-  const adminName = getAdminName();
-  const orgUnitWithoutStagedFromOther = useMemo(
-    () =>
-      orgUnits.filter(
-        (o) =>
-          o.stagingStatus === undefined ||
-          ("author" in o && o.author === adminName),
-      ),
-    [orgUnits, adminName],
-  );
-
-  const options: SelectOption[] = orgUnitWithoutStagedFromOther.map((ou) => ({
-    value: ou.id,
-    label: entityToString(ou),
-  }));
+  const naturalOrgUnitId = entityToString(value, true);
 
   return (
-    <InnerEnumCell
-      value={props.getValue()?.id}
-      handleChange={handleChange}
-      options={options}
-      rowId={props.row.original.id}
-      columnId={props.column.id}
-    />
+    <EntityLink linkTo="org-units" value={naturalOrgUnitId}>
+      {value.entity?.readableName ?? ""}
+    </EntityLink>
   );
 }

@@ -27,8 +27,6 @@ export function useGetAppointmentDurations() {
           configDto.standardDurationInMinutes,
         ],
       ),
-      allowedAppointmentTypeCombinations:
-        response.allowedAppointmentTypeCombinations.map((it) => it.types),
     }),
   });
 }

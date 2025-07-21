@@ -85,7 +85,7 @@ export function getPageNumber(page: ReportCaseFormPageOption) {
 
 const reportCaseSubformStyles: SxProps = {
   backgroundColor: "white",
-  borderRadius: "xl",
+  borderRadius: { xxs: "none", md: "xl" },
   p: 3,
   flex: 1,
   mr: byBreakpoint({

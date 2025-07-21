@@ -4,9 +4,10 @@
  */
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { useState } from "react";
+import { useReducer } from "react";
 
 import { ApiProcedureStatus } from "@eshg/base-api";
+import { ApiGetFileNumberCollisionsResponse } from "@eshg/inspection-api";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
@@ -16,15 +17,12 @@ import { isNonEmptyString, mapOptionalValue } from "@eshg/lib-portal";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import {
-  getInspectionQuery,
-  useGetFileNumberCollisionsQuery,
-} from "@/lib/businessModules/inspection/api/queries/inspection";
+import { getInspectionQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { EditFileNumberForm } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberForm";
 import { FacilityForm } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { mapApiFacilityStateToFacilityFormValues } from "@/lib/shared/helpers/facilityUtils";
 
-type SidebarMode = "editFacility" | "search" | "editFileNumber";
+type SidebarMode = "editFacility" | "editFileNumber";
 
 export function useEditFacilitySidebar() {
   return useSidebarWithFormRef({
@@ -36,6 +34,38 @@ interface EditFacilitySidebarProps extends SidebarWithFormRefProps {
   inspectionId: string;
 }
 
+interface ReducerState {
+  fileNumber: string;
+  fileNumberCollisions?: ApiGetFileNumberCollisionsResponse;
+  activeMode: SidebarMode;
+}
+
+interface ReducerAction {
+  type: string;
+  payload: ReducerState;
+}
+
+function createInitialState(fileNumber: string): ReducerState {
+  return {
+    fileNumber: fileNumber,
+    fileNumberCollisions: undefined,
+    activeMode: "editFacility",
+  };
+}
+
+function reducer(state: ReducerState, action: ReducerAction) {
+  switch (action.type) {
+    case "updated_fileNumber":
+      return {
+        fileNumber: action.payload.fileNumber,
+        fileNumberCollisions: action.payload.fileNumberCollisions,
+        activeMode: action.payload.activeMode,
+      };
+    default:
+      return state;
+  }
+}
+
 function EmbeddedEditFacilitySidebar({
   inspectionId,
   formRef,
@@ -45,23 +75,18 @@ function EmbeddedEditFacilitySidebar({
   const [inspection] = useSuspenseQueries({
     queries: [getInspectionQuery(inspectionApi, inspectionId)],
   });
-  const [fileNumber, setFileNumber] = useState(
+  const [state, dispatch] = useReducer(
+    reducer,
     inspection.data.facility.fileNumber ?? "",
+    createInitialState,
   );
-  const [activeMode, setActiveMode] = useState<SidebarMode>("editFacility");
-
   const initialValues = mapApiFacilityStateToFacilityFormValues(
     inspection.data.facility.baseFacility,
   );
   const updateInspection = useUpdateInspection();
   const updateFacility = useUpdateInspectionFacility();
 
-  const fileNumberCollisions = useGetFileNumberCollisionsQuery(
-    inspection.data.externalId,
-    updateFacility.isSuccess,
-  );
-
-  if (activeMode === "editFacility") {
+  if (state.activeMode === "editFacility") {
     return (
       <FacilityForm
         mode="edit"
@@ -69,7 +94,6 @@ function EmbeddedEditFacilitySidebar({
         submitLabel="Speichern"
         initialValues={initialValues}
         sidebarFormRef={formRef}
-        submitting={fileNumberCollisions.isLoading}
         onSubmit={async (values) => {
           await updateFacility.mutateAsync(
             {
@@ -80,12 +104,21 @@ function EmbeddedEditFacilitySidebar({
             {
               onSuccess: (data) => {
                 if (
-                  isNonEmptyString(data.fileNumber) &&
-                  fileNumber !== data.fileNumber &&
-                  inspection.data.status !== ApiProcedureStatus.Draft
+                  isNonEmptyString(data.facility.fileNumber) &&
+                  state.fileNumber !== data.facility.fileNumber &&
+                  inspection.data.status !== ApiProcedureStatus.Draft &&
+                  data.fileNumberCollisionsResponse &&
+                  Object.keys(data.fileNumberCollisionsResponse.collisions)
+                    .length > 0
                 ) {
-                  setFileNumber(data.fileNumber);
-                  setActiveMode("editFileNumber");
+                  dispatch({
+                    type: "updated_fileNumber",
+                    payload: {
+                      fileNumber: data.facility.fileNumber,
+                      fileNumberCollisions: data.fileNumberCollisionsResponse,
+                      activeMode: "editFileNumber",
+                    },
+                  });
                 } else {
                   onClose(true);
                 }
@@ -97,12 +130,12 @@ function EmbeddedEditFacilitySidebar({
       />
     );
   }
-  if (activeMode === "editFileNumber") {
+  if (state.activeMode === "editFileNumber") {
     return (
       <EditFileNumberForm
         title="Aktenzeichen Kollision"
-        fileNumber={fileNumber}
-        fileNumberCollisions={fileNumberCollisions.data}
+        fileNumber={state.fileNumber}
+        fileNumberCollisions={state.fileNumberCollisions}
         formRef={formRef}
         onCancel={onClose}
         onSubmit={async (values) => {

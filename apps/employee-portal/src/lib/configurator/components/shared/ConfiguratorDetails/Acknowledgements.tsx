@@ -16,7 +16,6 @@ export function Acknowledgements(props: { module: ConfiguratorModuleName }) {
 
   return (
     <MarkdownFiles
-      mode="single"
       module={props.module}
       fileName="ACKNOWLEDGEMENTS"
       endpointName="ACKNOWLEDGEMENTS_MARKDOWNS_CONFIG"

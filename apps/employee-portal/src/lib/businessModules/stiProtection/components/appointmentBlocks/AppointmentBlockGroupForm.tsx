@@ -26,7 +26,6 @@ import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
@@ -54,7 +53,6 @@ export interface StiProtectionAppointmentValues {
 function validateForm(
   values: StiProtectionAppointmentValues,
   appointmentTypes: AppointmentTypeConfig[],
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
 ) {
   const errors: FormikErrors<StiProtectionAppointmentValues> = {};
   const appointmentDurations = mapToObj(
@@ -84,15 +82,6 @@ function validateForm(
     errors.consultants = msg;
   }
 
-  if (
-    values.types.length > 1 &&
-    allowedAppointmentTypeCombinations.every(
-      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
-    )
-  ) {
-    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
-  }
-
   return errors;
 }
 
@@ -106,7 +95,6 @@ function userToOption(user: ApiUser): NamedUser {
 
 interface AppointmentBlockGroupFormProps {
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   validateAvailability: (values: StiProtectionAppointmentValues) => void;
   appointmentTypes: AppointmentTypeConfig[];
   blockedStaff: string[];
@@ -118,7 +106,6 @@ interface AppointmentBlockGroupFormProps {
 
 export function AppointmentBlockGroupForm({
   onSubmit,
-  allowedAppointmentTypeCombinations,
   validateAvailability,
   appointmentTypes,
   blockedStaff,
@@ -133,13 +120,7 @@ export function AppointmentBlockGroupForm({
   return (
     <Formik
       initialValues={initialValues}
-      validate={(values) =>
-        validateForm(
-          values,
-          appointmentTypes,
-          allowedAppointmentTypeCombinations,
-        )
-      }
+      validate={(values) => validateForm(values, appointmentTypes)}
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

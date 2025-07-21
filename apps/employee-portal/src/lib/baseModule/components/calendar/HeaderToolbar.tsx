@@ -85,7 +85,12 @@ export function HeaderToolbar(props: {
             <ChevronRight />
           </IconButton>
         </Tooltip>
-        <Typography component="h2" level="h4" textColor="text.secondary">
+        <Typography
+          component="h2"
+          level="h4"
+          textColor="text.secondary"
+          aria-live="polite"
+        >
           {props.title}
         </Typography>
       </Stack>

@@ -12,6 +12,7 @@ import {
   DataTable,
   TablePage,
   TableSheet,
+  formatBoolean,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import {
@@ -54,6 +55,24 @@ const COLUMNS = [
     cell: (props) => formatOptionalKey(props.getValue(), PROPHYLAXIS_TYPES, ""),
     enableSorting: false,
     meta: {
+      width: 240,
+      canNavigate: { parentRow: true },
+    },
+  }),
+  columnHelper.accessor("screening", {
+    header: "Reihenuntersuchung",
+    cell: (props) => formatBoolean(props.getValue()),
+    enableSorting: false,
+    meta: {
+      width: 180,
+      canNavigate: { parentRow: true },
+    },
+  }),
+  columnHelper.accessor("fluoridation", {
+    header: "Fluoridierung",
+    cell: (props) => formatBoolean(props.getValue()),
+    enableSorting: false,
+    meta: {
       canNavigate: { parentRow: true },
     },
   }),
@@ -93,7 +112,7 @@ export function DentalChildExaminationsOverviewPage(
               routes.children.byId(child.id).examinations.byId(row.original.id),
             focusColumnAccessorKey: "dateAndTime",
           }}
-          minWidth={600}
+          minWidth={800}
         />
       </TableSheet>
     </TablePage>

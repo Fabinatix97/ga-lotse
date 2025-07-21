@@ -62,6 +62,7 @@ import de.eshg.statistics.persistence.entity.report.Report;
 import de.eshg.statistics.persistence.repository.CellEntryRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -79,10 +80,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DataAggregationService {
+  private static final Logger log = LoggerFactory.getLogger(DataAggregationService.class);
+
   private static final String ERROR_BUSINESS_MODULE_AGGREGATION =
       "Could not retrieve data from business module";
 
@@ -745,7 +750,7 @@ public class DataAggregationService {
         .orElse(-1);
   }
 
-  private static TableRow createMergedTableRow(
+  private TableRow createMergedTableRow(
       DataRow dataRow,
       Map<Integer, Map<UUID, DataRow>> indexToBaseModuleIdRows,
       MergeInformation mergeInformation,
@@ -785,7 +790,7 @@ public class DataAggregationService {
     IntStream.range(0, columnCountBaseModule).forEach(index -> allValues.add(null));
   }
 
-  private static CellEntry createCellEntry(Object value, TableColumn tableColumn) {
+  private CellEntry createCellEntry(Object value, TableColumn tableColumn) {
     CellEntry cellEntry =
         switch (tableColumn.getValueType()) {
           case BOOLEAN -> createBooleanEntry(value);
@@ -810,27 +815,43 @@ public class DataAggregationService {
     return entry;
   }
 
-  private static TextEntry createDateAsTextEntry(Object value) {
+  private TextEntry createDateAsTextEntry(Object value) {
     TextEntry entry = new TextEntry();
     if (value instanceof String stringValue) {
       try {
         entry.setTextValue(LocalDate.parse(stringValue).toString());
       } catch (DateTimeParseException ignored) {
-        // ignore broken value
+        log.debug("Could not interpret value {} as date, value is ignored", stringValue);
       }
     }
     return entry;
   }
 
-  private static DecimalEntry createDecimalEntry(Object value) {
-    DecimalEntry entry = new DecimalEntry();
+  private DecimalEntry createDecimalEntry(Object value) {
+    BigDecimal bigDecimalValue = null;
     if (value instanceof Double doubleValue) {
-      entry.setBigDecimalValue(BigDecimal.valueOf(doubleValue));
+      bigDecimalValue =
+          BigDecimal.valueOf(doubleValue).setScale(4, RoundingMode.HALF_UP).stripTrailingZeros();
+    }
+    if (value instanceof Integer integerValue) {
+      bigDecimalValue = BigDecimal.valueOf(integerValue);
+    }
+    if (value instanceof Long longValue) {
+      bigDecimalValue = BigDecimal.valueOf(longValue);
     }
 
-    if (value instanceof Integer integerValue) {
-      entry.setBigDecimalValue(BigDecimal.valueOf(integerValue));
+    // Avoid SQL error
+    // "A field with precision 10, scale 4 must round to an absolute value less than 10^6"
+    BigDecimal maxValue = new BigDecimal("999999.9999");
+    BigDecimal minValue = new BigDecimal("-999999.9999");
+    if (bigDecimalValue != null
+        && (bigDecimalValue.compareTo(minValue) < 0 || bigDecimalValue.compareTo(maxValue) > 0)) {
+      log.debug("Value {} exceeds the allowed absolute of 10^6, value is ignored", bigDecimalValue);
+      bigDecimalValue = null;
     }
+
+    DecimalEntry entry = new DecimalEntry();
+    entry.setBigDecimalValue(bigDecimalValue);
     return entry;
   }
 

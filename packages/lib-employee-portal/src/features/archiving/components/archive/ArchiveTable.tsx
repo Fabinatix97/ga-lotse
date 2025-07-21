@@ -40,12 +40,7 @@ import { archiveTableColumns } from "./archiveTableColumns";
 export type ArchiveTableProps = Omit<ArchivePageProps, "title">;
 
 export function ArchiveTable(props: ArchiveTableProps) {
-  const {
-    procedureDetailsRoute,
-    businessModule,
-    archivingApi,
-    procedureTypes,
-  } = props;
+  const { businessModule, archivingApi, procedureTypes } = props;
   const { data: configuration } = useGetArchivingConfiguration(
     archivingApi,
     businessModule,
@@ -118,10 +113,6 @@ export function ArchiveTable(props: ArchiveTableProps) {
               sorting={tableControl.tableSorting}
               enableSortingRemoval={false}
               rowSelectionProps={rowSelectionProps}
-              rowNavigation={{
-                route: (row) => procedureDetailsRoute(row.original.procedureId),
-                focusColumnAccessorKey: "closedAt",
-              }}
             />
           </TableSheet>
         </TablePage>

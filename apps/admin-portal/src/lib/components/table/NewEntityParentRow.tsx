@@ -8,11 +8,11 @@
 import { ReactNode } from "react";
 
 import { OverridableTableRowProps } from "@/lib/components/table/TableRow";
-import { ExpandButton } from "@/lib/helpers/addFeatureColumns";
-import { UniqueEntity } from "@/lib/helpers/entities";
+import { ExpandButton } from "@/lib/components/table/cell/ExpandButtonCell";
+import { EntityWrapper } from "@/lib/hooks/useEntities";
 
-export function NewEntityParentRow<TData extends UniqueEntity>(
-  props: OverridableTableRowProps<TData>,
+export function NewEntityParentRow<TData extends EntityWrapper>(
+  props: Pick<OverridableTableRowProps<TData>, "row">,
 ): ReactNode {
   return <ExpandButton {...props} />;
 }

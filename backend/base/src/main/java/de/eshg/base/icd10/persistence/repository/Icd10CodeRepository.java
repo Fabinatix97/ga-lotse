@@ -18,12 +18,12 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
       value =
           """
 
-                 select c.code_without_dot as code,
-                        c.code             as originalCode,
+                 select c.code             as code,
+                        c.original_code    as originalCode,
                         c.title            as title,
                         false              as "group"
                  from icd10code c
-                 where c.code_without_dot in :codes
+                 where c.code in :codes
 
                  union all
 
@@ -41,17 +41,17 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
       value =
           """
                 select code, originalCode, "group", title from (
-                    select c.code_without_dot as code, c.code as originalCode, false as "group", c.title as title
+                    select c.code as code, c.original_code as originalCode, false as "group", c.title as title
                     from icd10code c
-                    where c.code_without_dot in :codesWithoutDot
+                    where c.code in :codes
                     union
                     select g.group_start || '-' || g.group_end as code, g.group_start || '-' || g.group_end as originalCode, true as "group", g.title as title
                     from icd10group g
-                    where (g.group_start || '-' || g.group_end) in :codesWithoutDot
+                    where (g.group_start || '-' || g.group_end) in :codes
                 ) as codes
                 order by code asc, "group" asc
          """)
-  Stream<Icd10SearchResult> findAllCodes(@Param("codesWithoutDot") List<String> codesWithoutDot);
+  Stream<Icd10SearchResult> findAllCodes(@Param("codes") List<String> codes);
 
   @Query(
       nativeQuery = true,
@@ -91,19 +91,19 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
 
                                                    union all
 
-                                                   select code_without_dot as code,
-                                                          code             as originalCode,
+                                                   select code             as code,
+                                                          original_code    as originalCode,
                                                           title            as title,
                                                           false            as "group",
                                                           greatest(
                                                                   case
-                                                                      when starts_with(lower(code_without_dot), lower(:searchString))
-                                                                          then similarity(lower(code_without_dot), lower(:searchString))
+                                                                      when starts_with(lower(code), lower(:searchString))
+                                                                          then similarity(lower(code), lower(:searchString))
                                                                       else 0
                                                                       end,
                                                                   case
-                                                                      when starts_with(lower(code), lower(:searchString))
-                                                                          then similarity(lower(code), lower(:searchString))
+                                                                      when starts_with(lower(original_code), lower(:searchString))
+                                                                          then similarity(lower(original_code), lower(:searchString))
                                                                       else 0
                                                                       end)
                                                                   +

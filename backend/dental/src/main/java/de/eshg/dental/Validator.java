@@ -224,7 +224,7 @@ public class Validator {
     }
   }
 
-  public static void validateAllExaminationsAreComplete(ProphylaxisSession prophylaxisSession) {
+  public void validateAllExaminationsAreComplete(ProphylaxisSession prophylaxisSession) {
     boolean isScreeningSession = prophylaxisSession.isScreening();
     boolean isFluoridationSession = prophylaxisSession.hasFluoridationVarnish();
     boolean isUnfeasibleExamination = !isScreeningSession && !isFluoridationSession;
@@ -243,7 +243,10 @@ public class Validator {
       }
       ExaminationResult result = examination.getResult();
       boolean isFluoridationConsentGiven =
-          examination.getChild().isFluoridationConsentCurrentlyGiven();
+          examination
+              .getChild()
+              .isFluoridationConsentGivenAtDate(
+                  prophylaxisSession.getDateAndTime().atZone(clock.getZone()).toLocalDate());
 
       if (result instanceof FluoridationExaminationResult fluoridationResult) {
         validateFluoridationIsComplete(
@@ -268,10 +271,13 @@ public class Validator {
     }
   }
 
-  private static boolean isUnfeasibleFluoridationOnly(
+  private boolean isUnfeasibleFluoridationOnly(
       ProphylaxisSession prophylaxisSession, Examination examination) {
     boolean isFluoridationConsentGiven =
-        examination.getChild().isFluoridationConsentCurrentlyGiven();
+        examination
+            .getChild()
+            .isFluoridationConsentGivenAtDate(
+                prophylaxisSession.getDateAndTime().atZone(clock.getZone()).toLocalDate());
     boolean isFluoridationOnly =
         !prophylaxisSession.isScreening() && prophylaxisSession.hasFluoridationVarnish();
     return isFluoridationOnly && !isFluoridationConsentGiven;

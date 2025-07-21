@@ -12,8 +12,8 @@ import { PropsWithChildren } from "react";
 
 import { ButtonLink } from "@eshg/lib-portal";
 
-import { EDIT_BUTTON_ID } from "@/lib/components/table/addEditColumns";
-import { TOGGLE_EXPAND_ID } from "@/lib/helpers/addFeatureColumns";
+import { EDIT_BUTTON_ID } from "@/lib/components/table/cell/EditButtonCell";
+import { TOGGLE_EXPAND_ID } from "@/lib/components/table/cell/ExpandButtonCell";
 
 const StyledHeaderCell = styled("th")(({ theme }) => ({
   "--TableCell-paddingY": theme.spacing(1.5),

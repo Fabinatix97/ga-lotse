@@ -38,10 +38,21 @@ export function CustomAutocomplete<
           setAnnounce(resultOptions.length === 0);
           return resultOptions;
         }}
+        slotProps={{
+          clearIndicator: {
+            tabIndex: 0,
+          },
+        }}
         aria-description={
           props["aria-description"] ??
           (props.multiple ? "Mehrfachauswahl möglich" : undefined)
         }
+        sx={{
+          "& .MuiAutocomplete-clearIndicator": {
+            visibility: "visible",
+          },
+          ...props.sx,
+        }}
       />
       <LiveAnnouncer message="Keine Einträge vorhanden." active={announce} />
     </>

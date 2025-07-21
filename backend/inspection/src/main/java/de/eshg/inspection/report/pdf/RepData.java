@@ -13,4 +13,5 @@ public record RepData(
     RepAddress office,
     RepFacility facility,
     RepInspection inspection,
-    RepInfo reportInfo) {}
+    RepInfo reportInfo,
+    RepAssignee assignee) {}

@@ -1,8 +1,4 @@
 {
-  "notAvailable": {
-    "title": "Page not available",
-    "message": "This page is not activated."
-  },
   "sources": {
     "INSPECTION": "Inspection",
     "SCHOOL_ENTRY": "School entry examination",

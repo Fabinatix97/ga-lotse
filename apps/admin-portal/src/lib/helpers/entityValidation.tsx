@@ -5,28 +5,33 @@
 
 import { isEmpty } from "remeda";
 
-import { DeleteRow } from "@/lib/components/table/DeleteRow";
-import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";
-import { OverridableEntity, UniqueEntity } from "@/lib/helpers/entities";
-import { PartialOrgUnitWithId } from "@/lib/hooks/useOrgUnits";
-import { PartialRuleWithId } from "@/lib/hooks/useRules";
+import { ApiAdminStagedEntityType } from "@eshg/service-directory-api";
 
-function isActor(entity: UniqueEntity): entity is PartialActorWithId {
-  return Object.keys(entity).includes("orgUnitId");
+import {
+  Actor,
+  EntityWrapper,
+  OrgUnit,
+  Rule,
+  isStagedEntity,
+} from "@/lib/hooks/useEntities";
+
+export function isActor(entity: { _type: string }): entity is Actor {
+  return entity._type === "actor";
 }
 
-function isOrgUnit(entity: UniqueEntity): entity is PartialOrgUnitWithId {
-  return Object.keys(entity).includes("actors");
+export function isOrgUnit(entity: { _type: string }): entity is OrgUnit {
+  return entity._type === "orgUnit";
 }
 
-function isRule(entity: UniqueEntity): entity is PartialRuleWithId {
-  return Object.keys(entity).includes("client");
+export function isRule(entity: { _type: string }): entity is Rule {
+  return entity._type === "rule";
 }
 
-export function isValidEntity<TData>(
-  entity: UniqueEntity & OverridableEntity<TData>,
-) {
-  if (entity._override === DeleteRow) {
+export function isValidEntity<TData>(entity: EntityWrapper<TData>) {
+  if (
+    isStagedEntity(entity) &&
+    entity.stagedEntityType === ApiAdminStagedEntityType.Del
+  ) {
     return true;
   }
   if (isActor(entity)) {
@@ -43,23 +48,23 @@ export function isValidEntity<TData>(
   return false;
 }
 
-function isValidOrgUnit(orgUnit: PartialOrgUnitWithId) {
+function isValidOrgUnit(orgUnit: OrgUnit) {
   return (
-    orgUnit.active !== undefined &&
-    !isEmpty(orgUnit.readableName) &&
-    orgUnit.type !== undefined
+    orgUnit.entity?.active !== undefined &&
+    !isEmpty(orgUnit.entity.readableName) &&
+    orgUnit.entity.type !== undefined
   );
 }
 
-export function isValidActor(actor: PartialActorWithId) {
+export function isValidActor(actor: Actor) {
   return (
-    actor.active !== undefined &&
-    !isEmpty(actor.commonName) &&
-    !isEmpty(actor.readableName) &&
-    actor.type !== undefined
+    actor.entity?.active !== undefined &&
+    !isEmpty(actor.entity.commonName) &&
+    !isEmpty(actor.entity.readableName) &&
+    actor.entity.type !== undefined
   );
 }
 
-function isValidRule(rule: PartialRuleWithId) {
-  return rule.active !== undefined;
+function isValidRule(rule: Rule) {
+  return rule.entity?.active !== undefined;
 }

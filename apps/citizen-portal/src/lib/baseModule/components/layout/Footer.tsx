@@ -6,10 +6,8 @@
 import { Box, Stack, Typography, styled } from "@mui/joy";
 
 import { RequiresChildren } from "@eshg/lib-portal";
-import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
 import { useRoutes } from "@/lib/baseModule/shared/routes";
-import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/businessModules/opendata/api/queries/featureTogglesApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
@@ -24,7 +22,8 @@ const ResponsiveContainer = styled(Stack)(({ theme }) => ({
   ...responsiveContent(theme, {
     [MobileBreakpoint.Down]: {
       gap: theme.spacing(5),
-      paddingBlock: theme.spacing(6),
+      paddingBlockStart: theme.spacing(6),
+      paddingBlockEnd: theme.spacing(7),
       paddingInline: theme.spacing(contentMarginMobile.leftRight),
     },
   }),
@@ -49,9 +48,6 @@ function FooterLink({ children, href }: FooterLinkProps) {
 export function Footer(props: DepartmentInfoProps) {
   const { t } = useTranslation("footer");
   const routes = useRoutes();
-  const isOpenDataEnabled = useIsNewOpenDataFeatureEnabled(
-    ApiOpenDataFeature.OpenData,
-  );
 
   return (
     <Box
@@ -61,6 +57,8 @@ export function Footer(props: DepartmentInfoProps) {
         justifyContent: "center",
         backgroundColor: "neutral.700",
         marginTop: "auto",
+        paddingTop: byBreakpoint({ desktop: "150px", mobile: "80px" }),
+        backgroundClip: "content-box",
       }}
     >
       <ResponsiveContainer>
@@ -90,11 +88,7 @@ export function Footer(props: DepartmentInfoProps) {
           <FooterLink href={routes.termsOfUse}>
             {t("terms_of_use_link")}
           </FooterLink>
-          {isOpenDataEnabled && (
-            <FooterLink href={routes.openData}>
-              {t("open_data_link")}
-            </FooterLink>
-          )}
+          <FooterLink href={routes.openData}>{t("open_data_link")}</FooterLink>
           <FooterLink href={routes.contact}>{t("contact_link")}</FooterLink>
         </Stack>
       </ResponsiveContainer>

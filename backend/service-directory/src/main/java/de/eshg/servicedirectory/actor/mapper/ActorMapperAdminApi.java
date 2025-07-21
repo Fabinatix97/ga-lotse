@@ -106,7 +106,6 @@ public class ActorMapperAdminApi {
 
     return new ActorDto(
         auditedActor.getId(),
-        ActorMapperApi.calculateNaturalId(auditedActor),
         auditedActor.getReadableName(),
         ActorType.convert(auditedActor.getType(), ActorTypeDto.class),
         auditedActor.isActive(),

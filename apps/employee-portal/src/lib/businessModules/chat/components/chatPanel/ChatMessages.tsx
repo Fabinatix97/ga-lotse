@@ -18,6 +18,7 @@ import {
 } from "remeda";
 
 import { ChatBubble } from "@/lib/businessModules/chat/components/chatPanel/ChatBubble";
+import { ChatBubbleMobile } from "@/lib/businessModules/chat/components/chatPanel/ChatBubbleMobile";
 import { ChatSystemMessage } from "@/lib/businessModules/chat/components/chatPanel/ChatSystemMessages";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
@@ -158,7 +159,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                     message.sender?.userId === loggedInUserId
                       ? "row-reverse"
                       : "row",
-                  paddingX: 3,
+                  paddingX: { xxs: 0.5, sm: 3 },
                   paddingY: 0,
                   marginBottom: isChatMessage(message) ? 3 : 2,
                 }}
@@ -166,25 +167,63 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                 {isSystemMessage(message) ? (
                   <ChatSystemMessage key={message.id} message={message} />
                 ) : (
-                  <ChatBubble
-                    variant={
-                      message.sender?.userId === loggedInUserId
-                        ? "sent"
-                        : "received"
-                    }
-                    loggedInUserId={loggedInUserId}
-                    message={message}
-                    mentions={mentions}
-                    lastReadMessageIndexes={lastReadMessageIndexes}
-                    index={index}
-                    removeMessage={removeMessage}
-                    editMessage={(text, mentionedUsers) =>
-                      editChatMessage(message.id, text, mentionedUsers)
-                    }
-                    roomMembers={roomMembers}
-                    edited={message.edited}
-                    roomId={room.room.roomId}
-                  />
+                  <>
+                    <Box
+                      sx={{
+                        display: {
+                          xxs: "none",
+                          sm: "block",
+                          width: "100%",
+                        },
+                      }}
+                    >
+                      <ChatBubble
+                        variant={
+                          message.sender?.userId === loggedInUserId
+                            ? "sent"
+                            : "received"
+                        }
+                        loggedInUserId={loggedInUserId}
+                        message={message}
+                        mentions={mentions}
+                        lastReadMessageIndexes={lastReadMessageIndexes}
+                        index={index}
+                        removeMessage={removeMessage}
+                        editMessage={(text, mentionedUsers) =>
+                          editChatMessage(message.id, text, mentionedUsers)
+                        }
+                        roomMembers={roomMembers}
+                        edited={message.edited}
+                        roomId={room.room.roomId}
+                      />
+                    </Box>
+                    <Box
+                      sx={{
+                        display: { xxs: "block", sm: "none", width: "100%" },
+                      }}
+                    >
+                      <ChatBubbleMobile
+                        message={message}
+                        variant={
+                          message.sender?.userId === loggedInUserId
+                            ? "sent"
+                            : "received"
+                        }
+                        loggedInUserId={loggedInUserId}
+                        lastReadMessageIndexes={lastReadMessageIndexes}
+                        index={index}
+                        mentions={mentions}
+                        removeMessage={removeMessage}
+                        editMessage={(text, mentionedUsers) =>
+                          editChatMessage(message.id, text, mentionedUsers)
+                        }
+                        roomMembers={roomMembers}
+                        roomId={room.room.roomId}
+                        edited={message.edited}
+                        communicationType={room.communicationType}
+                      />
+                    </Box>
+                  </>
                 )}
               </Box>
               {shouldShowDivider && message.timestamp && (

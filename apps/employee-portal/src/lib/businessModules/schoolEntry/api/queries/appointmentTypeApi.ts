@@ -20,8 +20,6 @@ export function getAllAppointmentTypesQuery(
       appointmentTypeConfigs: response.appointmentTypeConfigDtos.map(
         mapAppointmentTypeConfig,
       ),
-      allowedAppointmentTypeCombinations:
-        response.allowedAppointmentTypeCombinations.map((it) => it.types),
     }),
   });
 }

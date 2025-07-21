@@ -19,8 +19,8 @@ export function ReadOnlyCLDElementWrapper({
   return (
     <Stack
       spacing={1}
-      role="region"
-      aria-label={`Element ${sectionIndex + 1}.${elementIndex + 1}`}
+      role="group"
+      aria-describedby={`${element.id}-label`}
       data-element-type={element.type}
     >
       <ChecklistLabel

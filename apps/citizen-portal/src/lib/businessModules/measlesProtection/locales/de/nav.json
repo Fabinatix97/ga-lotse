@@ -1,10 +1,7 @@
 {
-  "measles_protection_title": "Masernschutz",
+  "title": "Masernschutz",
   "overview_link": "Übersicht",
-  "notes_link": "Hinweise",
-  "notes_desc": "Weiterführende Informationen",
   "org": {
-    "report_form_link": "Meldeformular",
-    "report_form_desc": "Meldung nach Masernschutzgesetz."
+    "report_form_link": "Meldeformular"
   }
 }

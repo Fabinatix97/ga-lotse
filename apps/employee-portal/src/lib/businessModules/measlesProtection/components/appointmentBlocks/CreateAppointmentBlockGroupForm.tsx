@@ -54,12 +54,10 @@ function mapFormValues(
 
 interface CreateAppointmentBlockGroupFormProps {
   appointmentDurationsMeasles: AppointmentDurationsMeasles;
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
 }
 
 export function CreateAppointmentBlockGroupForm({
   appointmentDurationsMeasles,
-  allowedAppointmentTypeCombinations,
 }: Readonly<CreateAppointmentBlockGroupFormProps>) {
   const router = useRouter();
   const createDailyAppointmentBlocksForGroup =
@@ -80,7 +78,6 @@ export function CreateAppointmentBlockGroupForm({
   return (
     <AppointmentBlockGroupForm
       appointmentDurationsMeasles={appointmentDurationsMeasles}
-      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       initialValues={INITIAL_VALUES}
       onSubmit={async (values) => {
         await handleSubmit(values);

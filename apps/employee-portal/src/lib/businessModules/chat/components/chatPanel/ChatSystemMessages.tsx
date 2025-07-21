@@ -8,7 +8,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
-import { Stack, Typography } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import { SvgIconProps } from "@mui/joy/SvgIcon";
 
 import { Membership } from "@/lib/businessModules/chat/shared/enums";
@@ -125,8 +125,11 @@ export function ChatSystemMessage({
       alignItems="center"
       gap={1}
       width="100%"
+      textAlign="center"
     >
-      {displayIcon(message)}
+      <Box sx={{ display: { xxs: "none", sm: "flex" } }}>
+        {displayIcon(message)}
+      </Box>
       <Typography level="title-sm" textColor="neutral.500" fontWeight="500">
         {displayText(message)}
       </Typography>

@@ -5,8 +5,6 @@
 
 package de.eshg.rest.service.security.config;
 
-import static org.springframework.http.HttpMethod.GET;
-
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
@@ -31,16 +29,6 @@ public final class TravelMedicinePublicSecurityConfig extends AbstractPublicSecu
     requestMatchers(BaseUrls.TravelMedicine.CITIZEN_AUTH_CONTROLLER + "/**")
         .hasRole(CitizenPermissionRole.ACCESS_CODE_USER);
 
-    requestMatchers(
-            GET,
-            BaseUrls.TravelMedicine.INFORMATION_STATEMENT_TEMPLATE_CONTROLLER + "/**",
-            BaseUrls.TravelMedicine.VACCINE_CONTROLLER + "/**",
-            BaseUrls.TravelMedicine.DISEASE_CONTROLLER + "/**",
-            BaseUrls.TravelMedicine.OTHER_SERVICE_TEMPLATE_CONTROLLER + "/**",
-            BaseUrls.TravelMedicine.VACCINATION_CONSULTATION_CONTROLLER + "/{procedureId}/**",
-            BaseUrls.TravelMedicine.PROCEDURE_STEP_CONTROLLER + "/**")
-        .hasAnyRole(
-            EmployeePermissionRole.PROCEDURE_ARCHIVE, EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN);
     requestMatchers(
             BaseUrls.TravelMedicine.INFORMATION_STATEMENT_TEMPLATE_CONTROLLER + "/**",
             BaseUrls.TravelMedicine.MEDICAL_HISTORY_TEMPLATE_CONTROLLER + "/**",

@@ -27,7 +27,7 @@ const BackInternalLinkIconButton = styled(InternalLinkIconButton)(
 );
 
 const COMMON_BUTTON_PROPS = {
-  "aria-label": "Zurück",
+  "aria-label": "Zurück zur Übersicht",
   variant: "plain",
   color: "neutral",
 } satisfies ButtonProps;

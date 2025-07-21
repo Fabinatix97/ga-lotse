@@ -6,14 +6,10 @@
 package de.eshg.servicedirectory;
 
 import de.eshg.domain.model.GloballyUniqueEntityBase;
-import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
-import de.eshg.libservicedirectoryadminapi.api.actor.GetApplicableActorsResponse;
+import de.eshg.libservicedirectoryadminapi.api.GetEntitiesResponse;
 import de.eshg.libservicedirectoryadminapi.api.actor.PartialActorDto;
 import de.eshg.libservicedirectoryadminapi.api.impex.ExportResponse;
-import de.eshg.libservicedirectoryadminapi.api.orgunit.GetOrgUnitsResponse;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.PartialOrgUnitDto;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetActiveApplicableRulesResponse;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetRulesResponse;
 import de.eshg.libservicedirectoryadminapi.api.rule.PartialRuleDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
 import de.eshg.libservicedirectoryadminapi.api.staging.StagedEntityDto;
@@ -39,14 +35,12 @@ import de.eshg.servicedirectory.orgunit.persistence.repository.AuditedOrgUnitRep
 import de.eshg.servicedirectory.orgunit.persistence.repository.StagedOrgUnitRepository;
 import de.eshg.servicedirectory.rule.exception.RuleNotFoundException;
 import de.eshg.servicedirectory.rule.mapper.RuleMapper;
-import de.eshg.servicedirectory.rule.persistence.entity.ActorSelector;
 import de.eshg.servicedirectory.rule.persistence.entity.AuditedRule;
 import de.eshg.servicedirectory.rule.persistence.entity.Rule;
 import de.eshg.servicedirectory.rule.persistence.entity.StagedRule;
 import de.eshg.servicedirectory.rule.persistence.repository.AuditedRuleRepository;
 import de.eshg.servicedirectory.rule.persistence.repository.StagedRuleRepository;
 import de.eshg.servicedirectory.staging.persistence.entity.StagedEntity;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -117,13 +111,16 @@ public class ServiceDirectoryReadService {
   }
 
   @Transactional(readOnly = true)
-  public GetOrgUnitsResponse getAllOrgUnits() {
+  public GetEntitiesResponse getAllEntities() {
     var orgUnits = auditedOrgUnitRepository.findAll().stream().map(OrgUnitMapper::toApi).toList();
     var stagedOrgUnits =
         stagedOrgUnitRepository.findAll().stream().map(this::mapToStagedApi).toList();
     List<StagedEntityDto<PartialActorDto>> stagedActors =
         stagedActorRepository.findAll().stream().map(ActorMapperAdminApi::toApiStaged).toList();
-    return new GetOrgUnitsResponse(orgUnits, stagedOrgUnits, stagedActors);
+    List<RuleDto> rules = auditedRuleRepository.findAll().stream().map(RuleMapper::toApi).toList();
+    List<StagedEntityDto<PartialRuleDto>> stagedRules =
+        stagedRuleRepository.findAll().stream().map(RuleMapper::toApiStaged).toList();
+    return new GetEntitiesResponse(orgUnits, stagedOrgUnits, stagedActors, rules, stagedRules);
   }
 
   @Transactional(readOnly = true)
@@ -163,67 +160,6 @@ public class ServiceDirectoryReadService {
         yield stagedOrgUnitRepository.save(orgUnit);
       }
     };
-  }
-
-  @Transactional(readOnly = true)
-  public GetRulesResponse getAllRules() {
-    List<RuleDto> rules = auditedRuleRepository.findAll().stream().map(RuleMapper::toApi).toList();
-    List<StagedEntityDto<PartialRuleDto>> stagedRules =
-        stagedRuleRepository.findAll().stream().map(RuleMapper::toApiStaged).toList();
-    return new GetRulesResponse(rules, stagedRules);
-  }
-
-  @Transactional(readOnly = true)
-  public GetRulesResponse getAllActiveRules() {
-    List<RuleDto> rules =
-        auditedRuleRepository.findAllByActiveIsTrue().stream().map(RuleMapper::toApi).toList();
-    List<StagedEntityDto<PartialRuleDto>> stagedRules =
-        stagedRuleRepository.findAllByActiveIsTrue().stream().map(RuleMapper::toApiStaged).toList();
-    return new GetRulesResponse(rules, stagedRules);
-  }
-
-  @Transactional(readOnly = true)
-  public GetActiveApplicableRulesResponse getAllActiveAuditedRulesApplicableToActor(UUID actorId) {
-    ActorSelector actorSelector = selectorFromActorId(actorId);
-
-    List<RuleDto> clientRules =
-        auditedRuleRepository.findActiveWhereWeAreClient(actorSelector).stream()
-            .map(RuleMapper::toApi)
-            .toList();
-    List<RuleDto> serverRules =
-        auditedRuleRepository.findActiveWhereWeAreServer(actorSelector).stream()
-            .map(RuleMapper::toApi)
-            .toList();
-    return new GetActiveApplicableRulesResponse(clientRules, serverRules);
-  }
-
-  private ActorSelector selectorFromActorId(UUID actorId) {
-    AuditedActor actor = getAuditedActorOrThrow(actorId);
-    AuditedOrgUnit orgUnit = actor.getOrgUnit();
-    return new ActorSelector(
-        orgUnit.getFederalState().name(),
-        orgUnit.getType().name(),
-        orgUnit.getReadableName(),
-        actor.getType().name(),
-        actor.getReadableName());
-  }
-
-  public GetApplicableActorsResponse getActorsThatAreClientInRule(UUID ruleId) {
-    Rule rule = getRule(ruleId);
-    List<ActorDto> actors =
-        auditedActorRepository.findAllBySelector(rule.getClient()).stream()
-            .map(ActorMapperAdminApi::toApi)
-            .toList();
-    return new GetApplicableActorsResponse(actors);
-  }
-
-  public GetApplicableActorsResponse getActorsThatAreServerInRule(UUID ruleId) {
-    Rule rule = getRule(ruleId);
-    List<ActorDto> actors =
-        auditedActorRepository.findAllBySelector(rule.getServer()).stream()
-            .map(ActorMapperAdminApi::toApi)
-            .toList();
-    return new GetApplicableActorsResponse(actors);
   }
 
   Rule getRule(UUID id) {
@@ -274,29 +210,5 @@ public class ServiceDirectoryReadService {
               + " in entity "
               + entity.getId());
     }
-  }
-
-  public GetApplicableActorsResponse getClientActorsForActor(UUID actorId) {
-    ActorSelector actorSelector = selectorFromActorId(actorId);
-    List<AuditedActor> clients = new ArrayList<>();
-
-    for (AuditedRule rule : auditedRuleRepository.findActiveWhereWeAreServer(actorSelector)) {
-      clients.addAll(auditedActorRepository.findAllBySelector(rule.getClient()));
-    }
-
-    return new GetApplicableActorsResponse(
-        clients.stream().map(ActorMapperAdminApi::toApi).toList());
-  }
-
-  public GetApplicableActorsResponse getServerActorsForActor(UUID actorId) {
-    ActorSelector actorSelector = selectorFromActorId(actorId);
-    List<AuditedActor> servers = new ArrayList<>();
-
-    for (AuditedRule rule : auditedRuleRepository.findActiveWhereWeAreClient(actorSelector)) {
-      servers.addAll(auditedActorRepository.findAllBySelector(rule.getServer()));
-    }
-
-    return new GetApplicableActorsResponse(
-        servers.stream().map(ActorMapperAdminApi::toApi).toList());
   }
 }

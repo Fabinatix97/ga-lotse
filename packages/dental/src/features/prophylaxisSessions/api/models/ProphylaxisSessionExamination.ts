@@ -5,10 +5,10 @@
 
 import {
   ApiDentitionType,
-  ApiExaminationResult,
   ApiFluoridationConsent,
   ApiGender,
   ApiProphylaxisSessionChildExamination,
+  ApiScreeningExaminationResult,
 } from "@eshg/dental-api";
 import {
   ProcedureLabel,
@@ -18,8 +18,9 @@ import {
 
 import {
   ExaminationResult,
-  ExaminationResultWithDate,
+  ScreeningExaminationResultWithDate,
   mapExaminationResult,
+  mapScreeningExaminationResult,
 } from "../../../../api/models/ExaminationResult";
 import {
   ExaminationStatus,
@@ -50,7 +51,7 @@ export interface ProphylaxisSessionExamination extends ParticipantDetails {
   readonly result?: ExaminationResult;
   readonly note?: string;
   readonly prophylaxisDentitionType?: ApiDentitionType;
-  readonly previousExaminations: ExaminationResultWithDate[];
+  readonly previousScreeningExaminations: ScreeningExaminationResultWithDate[];
   readonly procedureLabels: ProcedureLabel[];
 }
 
@@ -60,7 +61,7 @@ export function mapProphylaxisSessionExamination(
   isFluoridation: boolean,
 ): ProphylaxisSessionExamination {
   const result = mapOptional(response.result, mapExaminationResult);
-  const currentFluoridationConsent = response.allFluoridationConsents[0];
+  const currentFluoridationConsent = response.relevantFluoridationConsents[0];
   const isFluoridationConsentGiven = currentFluoridationConsent?.consented;
   return {
     id: response.childId,
@@ -74,7 +75,7 @@ export function mapProphylaxisSessionExamination(
     groupName: response.groupName,
     gender: response.gender,
     currentFluoridationConsent: currentFluoridationConsent,
-    allFluoridationConsents: response.allFluoridationConsents,
+    allFluoridationConsents: response.relevantFluoridationConsents,
     result: result,
     status: mapToExaminationStatus(result, {
       isScreening,
@@ -83,18 +84,18 @@ export function mapProphylaxisSessionExamination(
     }),
     note: response.note,
     prophylaxisDentitionType: response.prophylaxisDentitionType,
-    previousExaminations: mapPreviousExaminations(
-      response.previousExaminationResults,
+    previousScreeningExaminations: mapPreviousExaminations(
+      response.previousScreeningExaminationResults,
     ),
     procedureLabels: response.procedureLabels,
   };
 }
 
 function mapPreviousExaminations(
-  response: Record<string, ApiExaminationResult>,
-): ExaminationResultWithDate[] {
+  response: Record<string, ApiScreeningExaminationResult>,
+): ScreeningExaminationResultWithDate[] {
   return Object.entries(response).map(([k, v]) => ({
-    result: mapExaminationResult(v),
+    result: mapScreeningExaminationResult(v),
     dateAndTime: new Date(k),
   }));
 }

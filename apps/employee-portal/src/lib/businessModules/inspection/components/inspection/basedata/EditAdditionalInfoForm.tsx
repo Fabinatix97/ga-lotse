@@ -45,11 +45,13 @@ interface EditAdditionalInfoFormProps {
   onCancel: () => void;
   onSubmit: (values: EditAdditionalInfoFormValues) => Promise<void>;
   onEditFileNumber: () => void;
+  editFileNumberPending?: boolean;
   title: string;
 }
 
 export function EditAdditionalInfoForm({
   inspection,
+  editFileNumberPending = false,
   ...props
 }: Readonly<EditAdditionalInfoFormProps>) {
   const userApi = useUserApi();
@@ -120,6 +122,7 @@ export function EditAdditionalInfoForm({
                       color="neutral"
                       variant="soft"
                       sx={{ alignSelf: "center" }}
+                      loading={editFileNumberPending}
                       onClick={props.onEditFileNumber}
                     >
                       Aktenzeichen bearbeiten

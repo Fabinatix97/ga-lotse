@@ -106,6 +106,7 @@ function mapToScreeningExaminationResult(
     calculus: formValues.calculus,
     gingivitis: formValues.gingivitis,
     parodontitis: formValues.parodontitis,
+    blackStain: formValues.blackStain,
     toothDiagnoses: toothDiagnoses,
     individualProphylaxis: formValues.individualProphylaxis,
     fissureSealing: formValues.fissureSealing,

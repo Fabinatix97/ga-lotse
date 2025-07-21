@@ -55,6 +55,7 @@ const screeningExaminationResultEmptinessRules: EmptinessRules<ScreeningExaminat
     calculus: (value) => !value,
     gingivitis: (value) => !value,
     parodontitis: (value) => !value,
+    blackStain: (value) => !value,
     toothDiagnoses: (value) =>
       Object.values(value).every(
         (tooth) =>

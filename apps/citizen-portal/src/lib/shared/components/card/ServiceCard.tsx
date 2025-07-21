@@ -3,76 +3,70 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Box, CardContent, Typography } from "@mui/joy";
+import { Box, CardContent, Stack, Typography, styled } from "@mui/joy";
 import Card from "@mui/joy/Card";
 import { useId } from "react";
 
-import { SubNavigationItem } from "@/lib/baseModule/components/layout/types";
+import { NavigationCardItem } from "@/lib/baseModule/components/layout/types";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
 import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
 
-type ServiceCardProps = Omit<SubNavigationItem, "description">;
-
-export function ServiceCard(props: ServiceCardProps) {
+export function ServiceCard(props: NavigationCardItem) {
   const nameId = useId();
 
   return (
-    <ScopedNavigationLink
-      href={props.href}
-      passHref
-      sx={{
-        width: "100%",
-        textDecoration: "none",
-      }}
-    >
+    <CardLink href={props.href} passHref>
       <Card
         sx={{
-          radius: "radius-lg",
-          padding: "92px 24px 16px 24px",
-          gap: "32px",
+          border: "none",
+          borderRadius: "xl",
           boxShadow: "md",
-          minHeight: "400px",
+          height: byBreakpoint({ mobile: "88px", desktop: "210px" }),
           backgroundColor: "background.body",
+          "&:hover": { backgroundColor: "background.level1" },
+          "&:active": { backgroundColor: "background.level2" },
         }}
       >
-        <Box
-          aria-hidden
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <GradientIcon
-            sx={{ width: "153px", height: "153px" }}
-            iconClass={props.icon}
-          />
-        </Box>
         <CardContent>
-          <Box
+          <Stack
+            direction={byBreakpoint({ mobile: "row", desktop: "column" })}
             sx={{
-              display: "flex",
-              justifyContent: "center",
               alignItems: "center",
+              textAlign: "center",
+              padding: byBreakpoint({ mobile: 1, desktop: 3 }),
             }}
           >
+            <Box aria-hidden>
+              <GradientIcon
+                sx={{
+                  width: byBreakpoint({ mobile: "40px", desktop: "70px" }),
+                  height: byBreakpoint({ mobile: "40px", desktop: "70px" }),
+                  mb: byBreakpoint({ mobile: 0, desktop: 3 }),
+                  mr: byBreakpoint({ mobile: 2, desktop: 0 }),
+                }}
+                iconClass={props.icon}
+              />
+            </Box>
             <Typography
               id={nameId}
               level="title-md"
-              textAlign="center"
+              textAlign={byBreakpoint({ mobile: "left", desktop: "center" })}
               sx={{
-                width: "248px",
-                height: "48px",
                 wordWrap: "break-word",
                 hyphens: "auto",
               }}
             >
               {props.name}
             </Typography>
-          </Box>
+          </Stack>
         </CardContent>
       </Card>
-    </ScopedNavigationLink>
+    </CardLink>
   );
 }
+
+const CardLink = styled(ScopedNavigationLink)({
+  width: "100%",
+  textDecoration: "none",
+});

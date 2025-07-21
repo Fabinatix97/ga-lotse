@@ -57,7 +57,7 @@ export function InspectionLockInfo({
         mr: "auto",
       }}
     >
-      <Typography level="body-md" color="neutral" noWrap>
+      <Typography level="body-md" color="neutral" component="span" noWrap>
         Gesperrt durch <UserLink user={inspection?.lockedByUser} />
       </Typography>
       {isTeamlead && !isOffline && (

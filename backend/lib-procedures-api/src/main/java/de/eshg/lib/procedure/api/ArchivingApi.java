@@ -24,9 +24,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -56,6 +59,14 @@ public interface ArchivingApi {
       @InlineParameterObject @ParameterObject @Valid GetArchivableProceduresSortOptions sortOptions,
       @InlineParameterObject @ParameterObject @Valid
           GetProceduresPaginationOptions paginationOptions);
+
+  @GetExchange("/procedures/{procedureId}")
+  @ApiResponse(
+      responseCode = "200",
+      content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
+  @Operation(summary = "Get archivable procedure")
+  ResponseEntity<Resource> downloadArchivableProcedure(
+      @PathVariable(name = "procedureId") UUID procedureId);
 
   @PostExchange("/procedures/bulk-update-archiving-relevance")
   @ApiResponse(responseCode = "200")

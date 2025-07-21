@@ -17,7 +17,7 @@ import {
 } from "@/lib/businessModules/chat/shared/utils";
 
 export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
-  const { userPresence, sharePresence } = useGetSelfUserPresence();
+  const { userPresence, isChatEnabled } = useGetSelfUserPresence();
   return (
     <Stack
       direction="row"
@@ -30,7 +30,7 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
       <Badge
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         badgeInset="14%"
-        invisible={!sharePresence}
+        invisible={!isChatEnabled}
         variant="solid"
         size="md"
         aria-label={`Benutzer (${getPresenceLabel(userPresence)})`}

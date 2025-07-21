@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack } from "@mui/joy";
 import { endOfDay, isPast } from "date-fns";
 import { Formik, useFormikContext } from "formik";
 import { Ref } from "react";
 
 import {
+  DetailsColumn,
   DetailsItem,
   MultiFormButtonBar,
   SidebarActions,
@@ -18,6 +18,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   DateField,
+  DetailsList,
   SelectField,
   SelectOption,
   SingleAutocompleteField,
@@ -77,34 +78,36 @@ export function AdditionalInfoForm(props: Readonly<AdditionalInfoFormProps>) {
       {({ isSubmitting }) => (
         <SidebarForm ref={props.formRef}>
           <SidebarContent title={props.title}>
-            <Stack gap={3} rowGap={3}>
-              <CategoryField
-                options={categoryOptions}
-                procedureStatus={props.procedureStatus}
-                category={props.initialValues.category}
-              />
-              <ConcernField
-                allConcernsResponse={props.allConcerns}
-                procedureStatus={props.procedureStatus}
-                concern={props.initialValues.concern}
-              />
-              <SingleAutocompleteField
-                label="Arzt/Ärztin"
-                name="physician"
-                options={createPhysicianOptions(props.allPhysicians)}
-              />
-              <DateField
-                label="Stichtag für Gutachten"
-                name="cutOffDate"
-                validate={validateCutOffDate}
-              />
-              {props.emailAddressesNumber > 0 && (
-                <SwitchField
-                  label="E-Mail-Benachrichtigungen an Bürger:in"
-                  name="sendEmailNotifications"
+            <DetailsList>
+              <DetailsColumn gap={3}>
+                <CategoryField
+                  options={categoryOptions}
+                  procedureStatus={props.procedureStatus}
+                  category={props.initialValues.category}
                 />
-              )}
-            </Stack>
+                <ConcernField
+                  allConcernsResponse={props.allConcerns}
+                  procedureStatus={props.procedureStatus}
+                  concern={props.initialValues.concern}
+                />
+                <SingleAutocompleteField
+                  label="Arzt/Ärztin"
+                  name="physician"
+                  options={createPhysicianOptions(props.allPhysicians)}
+                />
+                <DateField
+                  label="Stichtag für Gutachten"
+                  name="cutOffDate"
+                  validate={validateCutOffDate}
+                />
+                {props.emailAddressesNumber > 0 && (
+                  <SwitchField
+                    label="E-Mail-Benachrichtigungen an Bürger:in"
+                    name="sendEmailNotifications"
+                  />
+                )}
+              </DetailsColumn>
+            </DetailsList>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar

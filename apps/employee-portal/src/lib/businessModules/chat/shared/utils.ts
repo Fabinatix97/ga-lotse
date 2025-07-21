@@ -234,7 +234,7 @@ export function getStatusColor(status: Presence | undefined) {
       return "danger.plainColor";
     case "unavailable":
       return "warning.400";
-    case "deactivated":
+    case "disabled":
       return "danger.plainDisabledColor";
     default:
       return "danger.plainColor";
@@ -578,7 +578,7 @@ export function clearSearchParams(...paramNames: string[]) {
   window.history.replaceState(null, "", url.toString());
 }
 
-export function getRoomAdmins(room: Room | null) {
+export function getRoomAdmins(room: Room | null): string[] {
   const eventContent = room
     ?.getLiveTimeline()
     .getState(Direction.Forward)

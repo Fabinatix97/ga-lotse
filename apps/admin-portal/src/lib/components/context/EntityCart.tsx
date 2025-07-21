@@ -29,19 +29,15 @@ import { useSnackbar } from "@eshg/lib-portal";
 
 import { useAdminApi } from "@/lib/api/clients";
 import { getAdminName } from "@/lib/helpers/adminName";
-import { UniqueEntity } from "@/lib/helpers/entities";
 import { entityToString } from "@/lib/helpers/entityToString";
 import { isValidEntity } from "@/lib/helpers/entityValidation";
-import { ORG_UNITS_QUERY } from "@/lib/hooks/useOrgUnits";
-import { RULES_QUERY } from "@/lib/hooks/useRules";
+import { ENTITIES_QUERY, StagedEntity } from "@/lib/hooks/useEntities";
 import { useTranslation } from "@/lib/i18n/client";
 
-type EntityInCart = UniqueEntity & { author?: string };
-
 interface CartType {
-  entities: EntityInCart[];
-  canAddEntity: (entity: EntityInCart) => boolean;
-  addEntity: (entity: EntityInCart) => void;
+  entities: StagedEntity<unknown>[];
+  canAddEntity: (entity: StagedEntity<unknown>) => boolean;
+  addEntity: (entity: StagedEntity<unknown>) => void;
   removeEntity: (id: string) => void;
   clear: () => void;
 }
@@ -49,10 +45,10 @@ interface CartType {
 const EntityCartContext = createContext<CartType>(null!);
 
 export function EntityCartProvider({ children }: Readonly<PropsWithChildren>) {
-  const [entities, setEntities] = useState<EntityInCart[]>([]);
+  const [entities, setEntities] = useState<StagedEntity<unknown>[]>([]);
 
   const canAddEntity = useCallback(
-    (entity: EntityInCart) => {
+    (entity: StagedEntity<unknown>) => {
       return (
         entity.author !== getAdminName() &&
         !entities.some((e) => e.id === entity.id) &&
@@ -63,7 +59,7 @@ export function EntityCartProvider({ children }: Readonly<PropsWithChildren>) {
     [entities],
   );
 
-  const addEntity = useCallback((entity: EntityInCart) => {
+  const addEntity = useCallback((entity: StagedEntity<unknown>) => {
     if (!entity.author) {
       return;
     }
@@ -150,7 +146,7 @@ const SEntityCart = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
 
-function Entity({ entity }: Readonly<{ entity: EntityInCart }>) {
+function Entity({ entity }: Readonly<{ entity: StagedEntity<unknown> }>) {
   const { t } = useTranslation();
 
   const { removeEntity } = useEntityCart();
@@ -168,7 +164,10 @@ function Entity({ entity }: Readonly<{ entity: EntityInCart }>) {
   );
 }
 
-function useCommit(entities: EntityInCart[], clear: () => void): () => void {
+function useCommit(
+  entities: StagedEntity<unknown>[],
+  clear: () => void,
+): () => void {
   const adminApi = useAdminApi();
   const queryClient = useQueryClient();
 
@@ -176,10 +175,7 @@ function useCommit(entities: EntityInCart[], clear: () => void): () => void {
 
   const handleCommitStagedSuccess = useCallback(() => {
     clear();
-    return Promise.all([
-      queryClient.invalidateQueries({ queryKey: ORG_UNITS_QUERY }),
-      queryClient.invalidateQueries({ queryKey: RULES_QUERY }),
-    ]);
+    return queryClient.invalidateQueries({ queryKey: ENTITIES_QUERY });
   }, [clear, queryClient]);
 
   const commitStaged = useMutation({

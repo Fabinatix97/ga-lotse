@@ -34,7 +34,10 @@ interface PersonDetailsPanelProps {
   isCustodian?: boolean;
 }
 
-const COLUMN_STYLE: SxProps = { flexGrow: 1, maxWidth: "calc(100%/3)" };
+const COLUMN_STYLE: SxProps = {
+  flexGrow: 1,
+  maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
+};
 
 export function PersonDetailsPanel({
   title,

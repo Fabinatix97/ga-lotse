@@ -88,10 +88,7 @@ export function CreateAppointmentBlockGroupForm() {
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const [
     {
-      data: {
-        appointmentTypeConfigs: allAppointmentTypesData,
-        allowedAppointmentTypeCombinations,
-      },
+      data: { appointmentTypeConfigs: allAppointmentTypesData },
     },
     { data: allPhysicians },
     { data: allConsultants },
@@ -153,7 +150,6 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
-      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       appointmentTypes={allAppointmentTypes}
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}

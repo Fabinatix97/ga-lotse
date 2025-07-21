@@ -52,8 +52,12 @@ interface ContentSheetTitleProps
   "data-testid"?: string;
 }
 
+export function useSectionTitleId() {
+  return useContext(SectionTitleId);
+}
+
 export function ContentSheetTitle(props: ContentSheetTitleProps) {
-  const titleId = useContext(SectionTitleId);
+  const titleId = useSectionTitleId();
   return (
     <Typography
       level="h2"

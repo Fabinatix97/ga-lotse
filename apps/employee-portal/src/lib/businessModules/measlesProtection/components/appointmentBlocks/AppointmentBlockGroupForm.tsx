@@ -12,21 +12,18 @@ import {
   FormSheet,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
-import { ApiAppointmentType } from "@eshg/measles-protection-api";
 
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentBlockGroupValues } from "@/lib/shared/components/appointmentBlocks/calculateAppointmentCount";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 function validateForm(
   values: AppointmentBlockGroupValues,
   appointmentDurationsMeasles: AppointmentDurationsMeasles,
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
 ) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};
   const appointmentBlockErrors = validateFieldArray(
@@ -42,21 +39,11 @@ function validateForm(
     errors.appointmentBlocks = appointmentBlockErrors;
   }
 
-  if (
-    values.types.length > 1 &&
-    allowedAppointmentTypeCombinations.every(
-      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
-    )
-  ) {
-    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
-  }
-
   return errors;
 }
 
 interface AppointmentBlockGroupFormProps {
   initialValues: AppointmentBlockGroupValues;
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
   appointmentDurationsMeasles: AppointmentDurationsMeasles;
 }
@@ -68,11 +55,7 @@ export function AppointmentBlockGroupForm(
     <Formik
       initialValues={props.initialValues}
       validate={(values) =>
-        validateForm(
-          values,
-          props.appointmentDurationsMeasles,
-          props.allowedAppointmentTypeCombinations,
-        )
+        validateForm(values, props.appointmentDurationsMeasles)
       }
       onSubmit={props.onSubmit}
     >

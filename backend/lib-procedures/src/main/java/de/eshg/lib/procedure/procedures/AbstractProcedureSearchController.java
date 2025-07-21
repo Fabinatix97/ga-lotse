@@ -8,8 +8,6 @@ package de.eshg.lib.procedure.procedures;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.lib.procedure.api.ProcedureSearchApi;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
@@ -39,7 +37,6 @@ public abstract class AbstractProcedureSearchController<
       responseFactory;
   private final ProcedureRepository<DomainProcedure> procedureRepository;
   private final PersonApi personApi;
-  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   protected AbstractProcedureSearchController(
       ProcedureMapper<DomainProcedure, ProcedureDto> procedureMapper,
@@ -49,20 +46,17 @@ public abstract class AbstractProcedureSearchController<
               GetProceduresByPersonResponse>
           responseFactory,
       ProcedureRepository<DomainProcedure> procedureRepository,
-      PersonApi personApi,
-      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      PersonApi personApi) {
     this.procedureMapper = procedureMapper;
     this.responseFactory = responseFactory;
     this.procedureRepository = procedureRepository;
     this.personApi = personApi;
-    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
   }
 
   @Override
   @Transactional(readOnly = true)
   public GetProceduresByPersonResponse searchProceduresByPerson(
       String firstName, String lastName, LocalDate dateOfBirth) {
-    validateFeatureSearchProceduresEnabled();
     List<GetReferencePersonResponse> persons =
         personApi.searchReferencePersons(firstName, lastName, dateOfBirth).persons();
     Map<UUID, List<DomainProcedure>> proceduresByPersonUUID =
@@ -86,15 +80,5 @@ public abstract class AbstractProcedureSearchController<
   private Map<UUID, GetReferencePersonResponse> toPersonByIdMap(
       List<GetReferencePersonResponse> persons) {
     return persons.stream().collect(StreamUtil.toLinkedHashMap(GetReferencePersonResponse::id));
-  }
-
-  private void validateFeatureSearchProceduresEnabled() {
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.SEARCH_PROCEDURES)) {
-      throw new IllegalStateException(
-          "New feature %s is not enabled".formatted(BaseFeature.SEARCH_PROCEDURES));
-    }
   }
 }

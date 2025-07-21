@@ -94,9 +94,7 @@ export function SchoolInfoPageBottomBar(props: {
             <Button
               key="pdf-generate"
               onClick={async () => {
-                if (dirty) {
-                  await submitForm();
-                }
+                await submitForm();
                 await download();
                 props.onNavigate();
               }}

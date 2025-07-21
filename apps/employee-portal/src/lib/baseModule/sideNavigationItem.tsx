@@ -25,9 +25,6 @@ import {
   hasUserRole,
   noCheck,
 } from "@eshg/lib-employee-portal";
-import { ApiOpenDataFeature } from "@eshg/opendata-api";
-
-import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/opendata/queries/feature";
 
 import { routes } from "./shared/routes";
 
@@ -124,14 +121,5 @@ const sideNavigationItems: SideNavigationItem[] = [
 ];
 
 export function useSideNavigationItems(): SideNavigationItem[] {
-  const isOpenDataEnabled = useIsNewOpenDataFeatureEnabled(
-    ApiOpenDataFeature.OpenData,
-  );
-
-  let items = sideNavigationItems;
-  if (!isOpenDataEnabled) {
-    items = items.filter((item) => item.name !== "Open Data");
-  }
-
-  return items;
+  return sideNavigationItems;
 }

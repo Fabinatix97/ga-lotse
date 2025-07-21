@@ -34,6 +34,7 @@ public class StreetDirectoryService implements StreetDirectory {
   private final TransactionHelper transactionHelper;
   private final DepartmentConfigurationService departmentConfigurationService;
   private PatriciaTrie<Map<String, StreetDirectoryEntry>> directory;
+  private Map<String, Map<String, StreetDirectoryEntry>> streetNumberMap;
 
   @Autowired
   public StreetDirectoryService(
@@ -45,10 +46,13 @@ public class StreetDirectoryService implements StreetDirectory {
 
   @PostConstruct
   public void init() {
-    this.directory =
-        parse(
+    List<StreetDirectoryCsvEntry> csvEntries =
+        CsvMapper.csvToBeans(
             transactionHelper.executeInTransaction(
-                departmentConfigurationService::getStreetDirectory));
+                departmentConfigurationService::getStreetDirectory),
+            StreetDirectoryCsvEntry.class);
+    this.directory = convertToDirectoryMap(new ArrayList<>(csvEntries));
+    this.streetNumberMap = convertToStreetNumberMap(new ArrayList<>(csvEntries));
   }
 
   public PatriciaTrie<Map<String, StreetDirectoryEntry>> parse(byte[] content) {
@@ -56,10 +60,19 @@ public class StreetDirectoryService implements StreetDirectory {
         new ArrayList<>(CsvMapper.csvToBeans(content, StreetDirectoryCsvEntry.class)));
   }
 
+  @Override
   public Set<AdministrativeData> getAdministrativeDataByStreetName(String streetName) {
     return directory.prefixMap(normalizeStreetNameForAutocomplete(streetName)).values().stream()
         .map(Map::values)
         .flatMap(Collection::stream)
+        .flatMap(entry -> entry.sequences.stream())
+        .map(StreetSequence::administrativeData)
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  @Override
+  public Set<AdministrativeData> getAdministrativeDataByStreetNumber(String streetNumber) {
+    return streetNumberMap.get(streetNumber).values().stream()
         .flatMap(entry -> entry.sequences.stream())
         .map(StreetSequence::administrativeData)
         .collect(StreamUtil.toLinkedHashSet());
@@ -78,22 +91,43 @@ public class StreetDirectoryService implements StreetDirectory {
 
     PatriciaTrie<Map<String, StreetDirectoryEntry>> result = new PatriciaTrie<>();
 
-    for (String streetName : streetNames) {
-      List<StreetDirectory.EntryFields> streetSequences = streetMap.get(streetName);
-      Map<String, StreetDirectoryEntry> newEntry =
-          convertMultipleEntries(streetName, streetSequences);
-      String normalizedStreetName = normalizeStreetNameForAutocomplete(streetName);
+    assembleMap(streetMap, streetNames, result);
+
+    return result;
+  }
+
+  private Map<String, Map<String, StreetDirectoryEntry>> convertToStreetNumberMap(
+      List<StreetDirectory.EntryFields> csvEntries) {
+    Map<String, List<StreetDirectory.EntryFields>> streetMap =
+        csvEntries.stream()
+            .collect(Collectors.groupingBy(StreetDirectory.EntryFields::streetNumber));
+
+    Set<String> streetNumbers = streetMap.keySet();
+
+    Map<String, Map<String, StreetDirectoryEntry>> result = new HashMap<>();
+
+    assembleMap(streetMap, streetNumbers, result);
+
+    return result;
+  }
+
+  private void assembleMap(
+      Map<String, List<StreetDirectory.EntryFields>> streetMap,
+      Set<String> keys,
+      Map<String, Map<String, StreetDirectoryEntry>> result) {
+    for (String key : keys) {
+      List<StreetDirectory.EntryFields> streetSequences = streetMap.get(key);
+      Map<String, StreetDirectoryEntry> newEntry = convertMultipleEntries(key, streetSequences);
+      String normalizedStreetName = normalizeStreetNameForAutocomplete(key);
 
       Map<String, StreetDirectoryEntry> entry =
           result.computeIfAbsent(normalizedStreetName, k -> new LinkedHashMap<>());
       if (canBeMerged(entry, newEntry)) {
         entry.putAll(newEntry);
       } else {
-        throw new IllegalStateException("Duplicate street entry found for '" + streetName + "'");
+        throw new IllegalStateException("Duplicate street entry found for '" + key + "'");
       }
     }
-
-    return result;
   }
 
   private boolean canBeMerged(
@@ -147,6 +181,7 @@ public class StreetDirectoryService implements StreetDirectory {
   private AdministrativeData convertToAdministrativeData(StreetDirectory.EntryFields inputData) {
     return new AdministrativeData(
         StringUtils.normalizeSpace(inputData.streetNumber()),
+        StringUtils.normalizeSpace(inputData.streetName()),
         StringUtils.normalizeSpace(inputData.localDistrict()),
         StringUtils.normalizeSpace(inputData.districtName()),
         StringUtils.normalizeSpace(inputData.cityDistrict()),

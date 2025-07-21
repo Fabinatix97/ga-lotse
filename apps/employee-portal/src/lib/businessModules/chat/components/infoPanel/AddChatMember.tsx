@@ -19,7 +19,6 @@ import {
 import { FormPlus, useSnackbar } from "@eshg/lib-portal";
 
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
-import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
@@ -28,13 +27,11 @@ import { getChatUserDirectory } from "@/lib/businessModules/chat/shared/utils";
 
 interface AddChatMemberProps {
   roomId: string;
-  onClose: () => void;
   onCancel: () => void;
 }
 
 export function AddChatMember({
   roomId,
-  onClose,
   onCancel,
 }: Readonly<AddChatMemberProps>) {
   const { matrixClient, departmentInfo } = useChatClientContext();
@@ -123,40 +120,37 @@ export function AddChatMember({
   }
 
   return (
-    <>
-      <InfoPanelHeader close={onClose} roomId={roomId} />
-      <Box
-        sx={{
-          overflowY: "auto",
-          padding: 2,
-        }}
+    <Box
+      sx={{
+        overflowY: "auto",
+        padding: 2,
+      }}
+    >
+      <Typography level="title-lg" sx={{ marginBottom: 2 }}>
+        Mitglieder hinzufügen
+      </Typography>
+      <Formik
+        initialValues={{ users: [] }}
+        validate={validateForm}
+        onSubmit={handleAddRoomMember}
       >
-        <Typography level="title-lg" sx={{ marginBottom: 2 }}>
-          Mitglieder hinzufügen
-        </Typography>
-        <Formik
-          initialValues={{ users: [] }}
-          validate={validateForm}
-          onSubmit={handleAddRoomMember}
-        >
-          <FormPlus>
-            <UsersAutocomplete
-              name="users"
-              placeholder="Benutzer:in suchen"
-              usersList={userList}
-              multiple
-            />
-            <Stack direction="row" spacing={2} marginTop={1}>
-              <Button type="button" fullWidth variant="soft" onClick={onCancel}>
-                Abbrechen
-              </Button>
-              <Button type="submit" fullWidth>
-                Speichern
-              </Button>
-            </Stack>
-          </FormPlus>
-        </Formik>
-      </Box>
-    </>
+        <FormPlus>
+          <UsersAutocomplete
+            name="users"
+            placeholder="Benutzer:in suchen"
+            usersList={userList}
+            multiple
+          />
+          <Stack direction="row" spacing={2} marginTop={1}>
+            <Button type="button" fullWidth variant="soft" onClick={onCancel}>
+              Abbrechen
+            </Button>
+            <Button type="submit" fullWidth>
+              Speichern
+            </Button>
+          </Stack>
+        </FormPlus>
+      </Formik>
+    </Box>
   );
 }

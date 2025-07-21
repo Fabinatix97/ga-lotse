@@ -2,9 +2,123 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
-## GA-Lotse 1.12
+## GA-Lotse 2.0
+_09.07.2025_
 
 Dreizehnter Release der Anwendung GA-Lotse
+
+### Amtsärztliche Gutachten:
+
+* Unterstützung der Mitarbeitenden des Gesundheitsamtes bei der Planung des amtsärztlichen Gutachtens
+* Erstellen von Vorgängen
+  * Manuelles Anlegen von Vorgängen inklusive Anliegen, betroffener Person und Auftraggeber
+  * Definieren von Fristen und Zuweisen der Zuständigkeit zu Amtsärztinnen oder Ärzten
+  * Melden von Anliegen über das Online-Portal für betroffene Personen mit Auftragsschreiben
+  * Überprüfung dieser über das Mitarbeiterportal
+  * Revisionssichere Dokumentation von Vorgängen
+  * Ausfüllen von Anamnesebögen über das Online-Portal
+* Planung
+  * Planen von Terminblöcken für die Untersuchungen
+  * Zuordnung von Arzt:innen und MFA zu den Terminblöcken inklusive Verfügbarkeitsprüfung
+  * Berücksichtigung unterschiedlicher Untersuchungslängen
+  * Manuelle Terminvergabe durch die Mitarbeitenden oder Selbstbuchung über das Online-Portal durch die Bürger:innen
+  * Versenden von Einladungen über E-Mails mit Access-Code Authentifizierung
+  * Terminverwaltung über das Online-Portal
+  * Eintragen von benötigten Dokumenten durch Mitarbeitende und Möglichkeit für Bürger:innen, diese über das Online-Portal vorab hochzuladen
+  * Protokollierung des Gutachtenstatus und Ergebnis
+* Statistische Auswertungen zu Vorgängen aus dem Amtsärztlichen Dienst
+
+
+### HIV-STI-Beratung:
+
+* Unterstützung bei Vorgängen zu vertraulichen und anonymen Beratung sowie Testangebote für HIV und sexuell übertragbare Infektionen (STI)
+* Funktionen im Mitarbeitendenportal
+  * Manuelles Anlegen eines Vorgangs
+  * Erstellen, verwalten und herunterladen von Dokumenten zur anonymen Identifizierung
+  * Durchführung von ID-Checks
+  * Erstellen und Löschen von Terminblöcken zu HIV-STI-Beratung, Sexarbeit und Ergebnisbesprechung
+  * Erfassung der digitalen Anamnese
+  * Herunterladen der Druckvorlagen für die analoge Anamnese
+  * Erfassung der Konsultation und Diagnose
+  * Erfassung und Dokumentation von Schnell- und Labortests
+  * Verwaltung und einfügen von definierten Textvorlagen
+  * Datenübernahmekonzept durch optionalen Folgevorgang
+  * Vollständige Dokumentation des Vorgangsverlaufs
+  * Wartezimmerkonzept
+  * Erstellen von anonymisierten Statistiken
+* Funktionen im Online-Portal als Bürger:in
+  * Anonyme Terminbuchung
+  * Termin einsehen, ändern und stornieren
+  * Erfassung der anonymen, digitalen Anamnese
+  * Überprüfung des Ergebnisstatus
+* Standardtermindauer
+  * Konfigurierbar über GA-Konfigurator
+  * Terminarten Seite entfernt
+
+### Zahnärztlicher Dienst
+
+* Unterstützung der Mitarbeitenden des Gesundheitsamtes bei der Planung und Durchführungen zu Maßnahmen zur Erkennung und Verhütung von Zahnerkrankungen
+* Erstellen von Kinderdatenpunkten
+  * Manuelles Anlegen von Kinderdatenpunkten
+  * Zuordnung von Schulen und Klassen
+  * Import von Schullisten mithilfe einer Excel-Tabelle, Prüfung auf Duplikate und fehlerhafte Datensätze
+  * Erfassung des Fluoridierungseinverständnisses
+  * Anlegen und Zuordnen von Kennungen zu Kinderdatenpunkten
+  * Export von Klassenlisten
+* Planung einer Maßnahme
+  * Planung einer Maßnahme für eine Klasse an einer Schule
+  * Zuordnung von Zahnärzt:innen und ZFA
+  * Auswahl der Maßnahmenart
+    * Reihenuntersuchung
+    * Fluoridierung
+    * Prophylaxeeinheit
+  * Hinzufügen und Entfernen von teilnehmenden Kinder
+* Durchführung einer Maßnahme
+  * Reihenuntersuchung
+    * Erfassung des Befundes
+    * Anzeige automatisierter Werte (DMF-T, Kariesstatus und Kariesrisiko)
+    * Anzeige der Vorbefunde
+    * Falls in Planung ausgewählt: Erfassung des Fluoridierungsstatus
+    * Dokumentation der Abwesenheit
+  * Fluoridierung
+    * Erfassung des Fluoridierungsstatus
+* Schuljahreswechsel
+  * Automatisches Hochstufen von Klassen bei Schulkindern
+  * Auswahl von abgehenden Klassen
+  * KiTa: Auswahl von bleibenden und abgehenden Kindern
+* Statistik
+  * Auswertung der Untersuchungsergebnisse
+  * Auswertung der durchgeführten Maßnahmen
+
+
+### Medizinalaufsicht
+
+* Unterstützung der Mitarbeitenden des Gesundheitsamtes bei der Bearbeitung von Anzeigen und Unterlagen zur Niederlassung und Berufsausübung im Gesundheitswesen
+* Mitarbeiterportal
+  * Import einer bestehenden Berufskartei
+  * Übersicht (inkl. Suche und Filter) der Berufskartei-Einträge
+  * Detailansicht einzelner Einträge
+  * Formular zur Erstellung von Änderungs-Aufträgen: Anlage/Löschen/Ändern
+  * Bestätigen/Ablehnen der Änderungs-Aufträge
+  * Archivierung alter Einträge
+  * Konfiguration modulspezifischer Eigenschaften
+* Onlineportal
+  * Informationsseite
+  * Formular zur Erstellung von Änderungs-Aufträgen: Anlage/Löschen/Ändern
+* Datenquelle für das Statistikmodul
+
+### Open Data
+
+* Mitarbeiterportal
+  * Übersicht (inkl. Suche und Filter) der Open-Data-Dokumente
+  * Löschen/Anlegen von Open-Data-Dokumenten (inkl Versionierung)
+  * Bearbeiten der Metadaten von Open-Data-Dokumenten
+  * Detailansicht der Metadaten einzelner Open-Data-Dokumente
+  * Download einzelner Open-Data-Dokumente
+* Onlineportal
+  * Übersicht (inkl. Suche und Filter) der Open-Data-Dokumente
+  * Detailansicht der Metadaten einzelner Open-Data-Dokumente
+  * Download einzelner Open-Data-Dokumente
 
 ### Reisemedizinische Impfberatung:
 
@@ -12,11 +126,21 @@ Dreizehnter Release der Anwendung GA-Lotse
   * Konfigurierbar über GA-Konfigurator
   * Terminarten Seite entfernt
 
-### HIV/STI Beratung:
+### Einschulungsuntersuchungen:
 
-* Standardtermindauer
-  * Konfigurierbar über GA-Konfigurator
-  * Terminarten Seite entfernt
+* Generelle Verbesserungen
+  * Im Einladungsschreiben und in der Vorgangssuche wird die Personen-ID unterstützt
+  *  Körpergröße wird in cm eingetragen
+  *  Messwerte im S1-Befund dürfen maximal dreistellig sein
+  *  Kleinere Änderungen im Layout des Schulinfobriefes, vor allem Erhöhung der Schriftgröße
+  *  Fehlerhaftes Übergeben von Statistik-Attributen behoben
+  *  Alle auswählen-Option zum Hörtest hinzugefügt
+  *  Korrektur logischer Kopplungen in der Untersuchungsmaske
+  *  Kennungen können nur noch von Admins verwaltet werden
+  *  In der Vorgangsübersicht bleiben Filtereinstellungen auch bei Wechsel auf die Vorgangsdetailseite erhalten
+  *  Korrektur fehlerhafter Mappings der Untersuchungsdaten auf die Konfiguration des Schulinfobriefs
+  *  Terminblöcke können unterschiedliche Terminarten mit unterschiedlichen Dauern enthalten
+  *  Die Dauer von Terminen muss ein Vielfaches von 5 Minuten sein
 
 ## GA-Lotse 1.11
 _18.06.2025_

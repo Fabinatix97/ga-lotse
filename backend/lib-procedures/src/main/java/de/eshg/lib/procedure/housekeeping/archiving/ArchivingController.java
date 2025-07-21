@@ -19,22 +19,24 @@ import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.springframework.data.domain.PageRequest.ofSize;
-import static org.springframework.data.jpa.domain.Specification.where;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.util.CollectionUtils;
 import de.eshg.domain.model.EntityWithExternalId;
 import de.eshg.domain.model.SequencedBaseEntityWithExternalId_;
+import de.eshg.domain.model.serialization.FileContentSerializingCustomizer;
 import de.eshg.domain.model.serialization.SerializationService;
+import de.eshg.domain.model.serialization.ZipFileWrapper;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.procedure.api.ArchivingApi;
 import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
-import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecification;
+import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecifications;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ArchivingDetailsDto;
@@ -56,6 +58,8 @@ import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortOptions;
 import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortOrderDto;
 import de.eshg.lib.procedure.model.ProcedureDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
@@ -67,9 +71,12 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -105,7 +112,7 @@ public class ArchivingController<
   private static final int CSV_FILE_SIZE_ESTIMATE = 3000;
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
   private final ProcedureRepository<ProcedureT> procedureRepository;
-  private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
+  private final ArchivableProceduresSpecifications<ProcedureT> archivableProceduresSpecifications;
   private final ArchivingProperties archivingProperties;
   private final SerializationService serializationService;
   private final Clock clock;
@@ -113,16 +120,66 @@ public class ArchivingController<
   public ArchivingController(
       ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper,
       ProcedureRepository<ProcedureT> procedureRepository,
-      ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification,
+      ArchivableProceduresSpecifications<ProcedureT> archivableProceduresSpecifications,
       ArchivingProperties archivingProperties,
       SerializationService serializationService,
       Clock clock) {
     this.enrichingMapper = enrichingMapper;
     this.procedureRepository = procedureRepository;
-    this.archivableProceduresSpecification = archivableProceduresSpecification;
+    this.archivableProceduresSpecifications = archivableProceduresSpecifications;
     this.archivingProperties = archivingProperties;
     this.serializationService = serializationService;
     this.clock = clock;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ResponseEntity<Resource> downloadArchivableProcedure(UUID procedureId) {
+    final ProcedureT procedure =
+        procedureRepository
+            .findByExternalId(procedureId)
+            .orElseThrow(() -> new NotFoundException("Procedure not found"));
+
+    validateProcedureIsArchivable(procedure);
+
+    return toResponseEntity(
+        serializationService.toCsv(
+            procedure, new FileContentSerializingCustomizer(new ZipFileWrapper())),
+        ARCHIVE_EXPORT_ZIP_ENTRY_NAME_TEMPLATE + procedureId + ".csv");
+  }
+
+  private ResponseEntity<Resource> toResponseEntity(byte[] csvFileContent, String filename) {
+    return ResponseEntity.ok()
+        .headers(
+            httpHeaders ->
+                httpHeaders.setContentDisposition(
+                    ContentDisposition.attachment().filename(filename).build()))
+        .contentType(CustomMediaTypes.CSV)
+        .body(new ByteArrayResource(csvFileContent));
+  }
+
+  private void validateProcedureIsArchivable(ProcedureT procedure) {
+    if (procedure.getProcedureStatus() != ProcedureStatus.CLOSED) {
+      throw procedureNotArchivableException();
+    }
+
+    final Instant earliestInstantForArchiving =
+        archivableProceduresSpecifications.getArchivingPeriodInstant(
+            Optional.ofNullable(archivingProperties.details().get(procedure.getProcedureType()))
+                .map(ArchivingProperties.Details::years)
+                .orElse(ArchivingProperties.DEFAULT_ARCHIVING_PERIOD));
+
+    if (procedure.getClosedAt().compareTo(earliestInstantForArchiving) >= 0) {
+      throw procedureNotArchivableException();
+    }
+
+    if (procedure.getArchivingRelevance() != ArchivingRelevance.DEFAULT) {
+      throw procedureNotArchivableException();
+    }
+  }
+
+  private BadRequestException procedureNotArchivableException() {
+    return new BadRequestException("Procedure is not archivable");
   }
 
   @Override
@@ -134,8 +191,9 @@ public class ArchivingController<
 
     Page<ProcedureT> procedurePage =
         procedureRepository.findAll(
-            where(archivableProceduresSpecification)
-                .and(archivableProceduresSpecification.procedureHasArchivingRelevanceDefault())
+            archivableProceduresSpecifications
+                .procedureIsArchivable()
+                .and(archivableProceduresSpecifications.procedureHasArchivingRelevanceDefault())
                 .and(procedureTypes(filterOptions.procedureType()))
                 .and(closedAtDay(filterOptions.closedAtDay()))
                 .and(defaultArchivingRelevance(filterOptions.defaultArchivingRelevance())),
@@ -233,7 +291,9 @@ public class ArchivingController<
       BulkUpdateProceduresArchivingRelevanceRequest request) {
     List<ProcedureT> procedures =
         procedureRepository.findAll(
-            where(archivableProceduresSpecification).and(externalIds(request.procedures())));
+            archivableProceduresSpecifications
+                .procedureIsArchivable()
+                .and(externalIds(request.procedures())));
 
     ArchivingRelevance domainArchivingRelevance =
         ProcedureMapper.toDomainType(request.archivingRelevance());
@@ -265,7 +325,7 @@ public class ArchivingController<
       GetProceduresPaginationOptions paginationOptions) {
     Page<ProcedureT> procedurePage =
         procedureRepository.findAll(
-            where(archivingRelevanceRelevant())
+            archivingRelevanceRelevant()
                 .and(closedAtDay(filterOptions.closedAtDay()))
                 .and(exported(filterOptions.exported())),
             ofSize(paginationOptions.pageSize())
@@ -324,7 +384,7 @@ public class ArchivingController<
       ExportArchivingRelevantProceduresRequest request) {
     List<ProcedureT> procedures =
         procedureRepository.findAll(
-            where(archivingRelevanceRelevant()).and(externalIds(request.procedures())),
+            archivingRelevanceRelevant().and(externalIds(request.procedures())),
             Sort.by(Direction.ASC, CLOSED_AT, ID));
 
     Instant now = Instant.now(clock);

@@ -789,7 +789,9 @@ public class EmployeeOmsProcedureService {
       throw new BadRequestException("Procedure doesn't have a facility");
     }
     Facility facility = optionalFacility.get();
+
     ValidationUtil.validateVersion(request.updatedFacility().version(), facility);
+    UUID currentFileStateId = facility.getCentralFileStateId();
 
     AddFacilityFileStateResponse baseResponse;
     try {
@@ -807,6 +809,8 @@ public class EmployeeOmsProcedureService {
     }
 
     facility.setCentralFileStateId(baseResponse.id());
+
+    progressEntryService.createProgressEntryForUpdateFacility(procedure, currentFileStateId);
   }
 
   @Transactional
@@ -822,12 +826,13 @@ public class EmployeeOmsProcedureService {
       throw new BadRequestException("Procedure doesn't have a facility");
     }
     Facility facility = optionalFacility.get();
+    UUID currentFileStateId = facility.getCentralFileStateId();
 
     UUID updatedFileStateId =
         facilityClient.syncFacility(facility.getCentralFileStateId(), request.referenceVersion());
     facility.setCentralFileStateId(updatedFileStateId);
 
-    progressEntryService.createProgressEntryForSyncFacility(procedure);
+    progressEntryService.createProgressEntryForSyncFacility(procedure, currentFileStateId);
   }
 
   @Transactional

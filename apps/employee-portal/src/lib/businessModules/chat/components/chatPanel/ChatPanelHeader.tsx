@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -25,7 +27,11 @@ import { ChatHeader } from "@/lib/businessModules/chat/components/chatPanel/Chat
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
-import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
+import {
+  InfoPanelView,
+  MobileView,
+} from "@/lib/businessModules/chat/shared/enums";
+import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import { useRoomStateEventUpdate } from "@/lib/businessModules/chat/shared/hooks/useRoomStateEventUpdate";
@@ -38,9 +44,13 @@ import {
 
 interface ChatPanelHeaderProps {
   roomId: string;
+  setMobileView: (viewType: MobileView) => void;
 }
 
-export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
+export function ChatPanelHeader({
+  roomId,
+  setMobileView,
+}: Readonly<ChatPanelHeaderProps>) {
   const { matrixClient } = useChatClientContext();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const {
@@ -53,9 +63,11 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
   const { joinedAndInvitedMembersWithoutMe } = useRoomMembers(roomId);
   useRoomStateEventUpdate(roomId);
   const [isOpen, setIsOpen] = useState(false);
+  const { setRoomIdParam } = useChatSearchParams();
 
   function handleRoomInfoClick() {
     setInfoPanelView(InfoPanelView.RoomInfo, roomId);
+    setMobileView(MobileView.Settings);
   }
 
   function handleLeaveRoomClick() {
@@ -63,6 +75,12 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
     clearSearchParams(chatSearchParamNames.userId, chatSearchParamNames.roomId);
     closeInfoPanel();
     void leaveRoom(matrixClient, roomId);
+    setMobileView(MobileView.ChatMessages);
+  }
+
+  function handleSettingOnMobileClick() {
+    setInfoPanelView(InfoPanelView.MobileView, roomId);
+    setMobileView(MobileView.Settings);
   }
 
   const roomSettingsItem = isDMRoom(communicationType) ? (
@@ -93,6 +111,20 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
             height: "100%",
           }}
         >
+          <IconButton
+            sx={{
+              display: { xxs: "flex", sm: "none" },
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+            onClick={() => {
+              setRoomIdParam("");
+              setMobileView(MobileView.RoomList);
+            }}
+          >
+            <ArrowBackIosIcon color="primary" sx={{ width: "3.25rem" }} />
+          </IconButton>
           <ChatHeader
             avatarUrl={getAvatarUrl()}
             communicationType={communicationType}
@@ -106,6 +138,7 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
             spacing={1}
             sx={{
               alignItems: "center",
+              display: { xxs: "none", sm: "block" },
             }}
           >
             <Dropdown>
@@ -144,6 +177,14 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
               </Menu>
             </Dropdown>
           </Stack>
+          <IconButton
+            variant="outlined"
+            color="primary"
+            sx={{ display: { xxs: "flex", sm: "none" } }}
+            onClick={handleSettingOnMobileClick}
+          >
+            <InfoOutlinedIcon />
+          </IconButton>
         </Stack>
       </ChatColumnHeaderWrapper>
       <LeaveChatConfirmation

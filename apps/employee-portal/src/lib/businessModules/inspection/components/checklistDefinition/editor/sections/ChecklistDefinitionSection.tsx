@@ -16,6 +16,8 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
+import { useId } from "react";
 import { doNothing } from "remeda";
 import { v4 as uuidv4 } from "uuid";
 
@@ -77,6 +79,8 @@ export function ChecklistDefinitionSection({
   }
 
   const defaultIndex = sectionIndex + 1;
+  const titleId = useId();
+
   return (
     <AccordionGroup
       variant="plain"
@@ -90,7 +94,7 @@ export function ChecklistDefinitionSection({
           key={section?.id}
           spacing={2}
           component="section"
-          aria-label={`Sektion ${defaultIndex}`}
+          aria-labelledby={titleId}
         >
           <InformationSheet>
             <InputFieldBar
@@ -102,7 +106,10 @@ export function ChecklistDefinitionSection({
                       aria-label={`Sektion ${defaultIndex} ziehen und verschieben`}
                     />
                   )}
-                  <Typography aria-label="Sektionsnummer" level="body-lg">
+                  <Typography component="h2" level="body-lg" id={titleId}>
+                    <Typography component="span" sx={visuallyHidden}>
+                      Sektion
+                    </Typography>
                     {defaultIndex.toString()}
                   </Typography>
                 </>
@@ -135,6 +142,7 @@ export function ChecklistDefinitionSection({
               }
             />
             <AccordionDetails
+              role={undefined}
               aria-label={`Fragen zu Sektion ${sectionIndex}`}
               slotProps={{
                 root: {

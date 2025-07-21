@@ -4,23 +4,37 @@
  */
 
 // @ts-expect-error Typescript doesn't know about global variables from IDs
-const footerClose = window['footer-close'] as HTMLButtonElement;
-
-const footer = document.querySelector('footer')!;
+const imprint = window['imprint-link'] as HTMLButtonElement;
+// @ts-expect-error Typescript doesn't know about global variables from IDs
+const privacy = window['privacy-link'] as HTMLButtonElement;
+// @ts-expect-error Typescript doesn't know about global variables from IDs
+const accessibility = window['accessibility-link'] as HTMLButtonElement;
 
 export function initFooter() {
-  document.querySelectorAll(".footer-link").forEach((el, i) => {
-    el.addEventListener('click', () => {
-      document.querySelectorAll('.footer-text')
-      .forEach((el, j) => j === i ? el.classList.remove('invisible') : el.classList.add('invisible'));
-
-      if (el === footerClose) {
-        footerClose.classList.add('hidden');
-        footer.classList.add('collapsed');
-      } else {
-        footerClose.classList.remove('hidden');
-        footer.classList.remove('collapsed');
-      }
+  document.querySelectorAll(".back-to-main").forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.main').forEach((el) => el.classList.remove('invisible'));
+      document.querySelectorAll('.imprint').forEach((el) => el.classList.add('invisible'));
+      document.querySelectorAll('.privacy').forEach((el) => el.classList.add('invisible'));
+      document.querySelectorAll('.accessibility').forEach((el) => el.classList.add('invisible'));
     });
+  });
+  imprint.addEventListener("click", () => {
+    document.querySelectorAll('.main').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.imprint').forEach((el) => el.classList.remove('invisible'));
+    document.querySelectorAll('.privacy').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.accessibility').forEach((el) => el.classList.add('invisible'));
+  });
+  privacy.addEventListener("click", () => {
+    document.querySelectorAll('.main').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.imprint').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.privacy').forEach((el) => el.classList.remove('invisible'));
+    document.querySelectorAll('.accessibility').forEach((el) => el.classList.add('invisible'));
+  });
+  accessibility.addEventListener("click", () => {
+    document.querySelectorAll('.main').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.imprint').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.privacy').forEach((el) => el.classList.add('invisible'));
+    document.querySelectorAll('.accessibility').forEach((el) => el.classList.remove('invisible'));
   });
 }

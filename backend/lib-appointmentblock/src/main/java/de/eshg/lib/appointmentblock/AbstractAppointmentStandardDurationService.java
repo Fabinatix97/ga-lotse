@@ -117,4 +117,34 @@ public abstract class AbstractAppointmentStandardDurationService<T extends BaseE
       return result;
     }
   }
+
+  protected void validateStandardDurationUpdate(T entityUpdate) {
+    Duration[] durations =
+        appointmentDurationInfos.values().stream()
+            .map(info -> info.entityGetter().apply(entityUpdate))
+            .toArray(Duration[]::new);
+    validateStandardDurations(durations);
+  }
+
+  protected void validateStandardDurations(Duration... durations) {
+    for (Duration duration : durations) {
+      validateRange(duration);
+      validateMultipleOfFive(duration);
+    }
+  }
+
+  private void validateRange(Duration duration) {
+    long minutes = duration.toMinutes();
+    if (minutes < 5L || 240L < minutes) {
+      throw new BadRequestException(
+          "Appointment standard duration must be between 5 and 240 minutes.");
+    }
+  }
+
+  private void validateMultipleOfFive(Duration duration) {
+    if (!DurationUtil.isDivisible(duration, Duration.ofMinutes(5))) {
+      throw new BadRequestException(
+          "Appointment standard duration must be a multiple of 5 minutes.");
+    }
+  }
 }

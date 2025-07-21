@@ -26,6 +26,8 @@ import {
 } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
+import { useIsMobile } from "@eshg/lib-portal";
+
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
@@ -71,6 +73,7 @@ export function TextareaComponent({
     (isTyping: boolean) => handleUserTyping?.(selectedRoomId ?? "", isTyping),
     250,
   );
+  const isMobile = useIsMobile();
   useEffect(() => {
     if (!isSubmitting && field.value === "") {
       const innerTextareaElement = inputRef.current?.childNodes?.[0];
@@ -229,7 +232,7 @@ export function TextareaComponent({
           ref.current = el;
         }}
         minRows={1}
-        maxRows={5}
+        maxRows={isMobile ? 3.5 : 5}
         placeholder="Nachricht schreiben"
         value={field.value}
         variant="plain"

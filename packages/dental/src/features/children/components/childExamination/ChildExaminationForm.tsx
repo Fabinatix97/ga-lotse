@@ -122,6 +122,7 @@ function mapExaminationResultRequest(
       calculus: formValues.calculus,
       gingivitis: formValues.gingivitis,
       parodontitis: formValues.parodontitis,
+      blackStain: formValues.blackStain,
       toothDiagnoses: mapToothDiagnosesToRequest(toothDiagnoses),
       individualProphylaxis: formValues.individualProphylaxis,
       fissureSealing: formValues.fissureSealing,

@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { isNullish } from "remeda";
-
 import { BasePrivacyDocumentsApi } from "@eshg/base-api";
 import { ApiLanguage, PrivacyDocumentApi } from "@eshg/lib-config-api";
 import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
 import { PrivacyPolicyFormModel } from "@/lib/configurator/components/shared/ConfiguratorDetails/PrivacyPolicy";
-import { ConfigFile } from "@/lib/configurator/components/shared/RenderField";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { useConfiguratorPrivacyDocumentApi } from "@/lib/shared/api/clients";
+
+import { buildFilePayload, buildOptionalFilePayload } from "./buildFilePayload";
 
 export function useUpdatePrivacyPolicy(module: ConfiguratorModuleName) {
   const snackbar = useSnackbar();
@@ -63,31 +62,17 @@ async function buildPayloadBase(
   params: PrivacyPolicyFormModel,
 ) {
   return {
-    de: await buildFilePayload(params.germanPrivacyPolicyDocument, () =>
-      api.downloadPrivacyPolicy(ApiLanguage.German),
+    de: await buildFilePayload(
+      params.germanPrivacyPolicyDocument,
+      () => api.downloadPrivacyPolicy(ApiLanguage.German),
+      "document.pdf",
+      "application/pdf",
     ),
     en: await buildOptionalFilePayload(
       params.englishPrivacyPolicyDocument,
       () => api.downloadPrivacyPolicy(ApiLanguage.English),
+      "document.pdf",
+      "application/pdf",
     ),
   };
-}
-async function buildOptionalFilePayload(
-  value: ConfigFile,
-  downloadFn: () => Promise<Blob>,
-) {
-  return isNullish(value)
-    ? undefined
-    : await buildFilePayload(value, downloadFn);
-}
-
-async function buildFilePayload(
-  value: ConfigFile,
-  downloadFn: () => Promise<Blob>,
-) {
-  return value instanceof File
-    ? value
-    : new File([await downloadFn()], "document.pdf", {
-        type: "application/pdf",
-      });
 }

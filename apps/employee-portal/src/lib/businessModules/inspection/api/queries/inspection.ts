@@ -129,26 +129,17 @@ export function useGetInspectionDuplicates(procedureId: string) {
   });
 }
 
-export function getFileNumberCollisionsQuery(
-  inspectionApi: InspectionApi,
-  procedureId: string,
-) {
-  return queryOptions({
-    queryKey: getFileNumberCollisionsQueryKey(procedureId),
-    queryFn: () => inspectionApi.getFileNumberCollisions(procedureId),
-    select: (response) => response,
-  });
-}
-
-export function useGetFileNumberCollisionsQuery(
-  procedureId: string,
-  enabled: boolean,
-) {
+export function useGetFileNumberCollisionsQuery({
+  procedureId,
+  enabled,
+}: {
+  procedureId: string;
+  enabled: boolean;
+}) {
   const inspectionApi = useInspectionApi();
   return useQuery({
     queryKey: getFileNumberCollisionsQueryKey(procedureId),
     queryFn: () => inspectionApi.getFileNumberCollisions(procedureId),
-    select: (response) => response,
-    enabled: enabled,
+    enabled,
   });
 }

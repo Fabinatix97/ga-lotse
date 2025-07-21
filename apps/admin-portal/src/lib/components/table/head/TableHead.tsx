@@ -10,20 +10,20 @@ import { Fragment } from "react";
 import { isNonEmptyString } from "@eshg/lib-portal";
 
 import { Filter } from "@/lib/components/table/Filter";
+import { TOGGLE_EXPAND_ID } from "@/lib/components/table/cell/ExpandButtonCell";
 import { Header } from "@/lib/components/table/head/Header";
-import { TOGGLE_EXPAND_ID } from "@/lib/helpers/addFeatureColumns";
-import { OverridableEntity, UniqueEntity } from "@/lib/helpers/entities";
+import { UniqueEntity } from "@/lib/hooks/useEntities";
 import { useTranslation } from "@/lib/i18n/client";
 
-interface TableHeadProps<TData> {
+interface TableHeadProps<TData extends UniqueEntity> {
   enableColumnHeaders: boolean;
   reactTable: TanstackTable<TData>;
   enableColumnFilter: boolean;
 }
 
-export function TableHead<
-  TData extends UniqueEntity & OverridableEntity<TData>,
->(props: TableHeadProps<TData>) {
+export function TableHead<TData extends UniqueEntity>(
+  props: TableHeadProps<TData>,
+) {
   const { t } = useTranslation();
 
   return (
@@ -34,7 +34,6 @@ export function TableHead<
             {headerGroup.headers.map((header) => {
               const column = header.column;
               const columnDef = column.columnDef;
-              const meta = columnDef.meta;
               return (
                 <Fragment key={column.id}>
                   <Header
@@ -44,7 +43,7 @@ export function TableHead<
                     label={
                       isNonEmptyString(columnDef.header)
                         ? t(columnDef.header)
-                        : meta?.headerLabel
+                        : ""
                     }
                     id={column.id}
                     onSort={column.getToggleSortingHandler()}

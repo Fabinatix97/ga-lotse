@@ -8,21 +8,26 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { Dropdown, Input, Menu, MenuButton, MenuItem, Stack } from "@mui/joy";
 
+import { useIsMobile } from "@eshg/lib-portal";
+
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
   ChatPanelView,
   ClientState,
+  MobileView,
 } from "@/lib/businessModules/chat/shared/enums";
 
 interface RoomsPanelHeaderProps {
   setChatPanelView: (viewType: ChatPanelView) => void;
+  setMobileView: (viewType: MobileView) => void;
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
   roomSearchDisabled: boolean;
 }
 export function RoomsPanelHeader({
   setChatPanelView,
+  setMobileView,
   setSearchQuery,
   searchQuery,
   roomSearchDisabled,
@@ -31,6 +36,17 @@ export function RoomsPanelHeader({
     setSearchQuery("");
   }
   const { clientState } = useChatClientContext();
+  const isMobile = useIsMobile();
+
+  function handleStartNewDirectChat() {
+    setChatPanelView(ChatPanelView.NewDirectChat);
+    setMobileView(MobileView.ChatMessages);
+  }
+
+  function handleStartNewGropChat() {
+    setChatPanelView(ChatPanelView.NewGroupChat);
+    setMobileView(MobileView.ChatMessages);
+  }
 
   return (
     <ChatColumnHeaderWrapper>
@@ -52,6 +68,7 @@ export function RoomsPanelHeader({
           }
           placeholder="Suche nach Konversation..."
           disabled={roomSearchDisabled}
+          fullWidth
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Dropdown>
@@ -64,15 +81,16 @@ export function RoomsPanelHeader({
           >
             <AddIcon size="sm" />
           </MenuButton>
-          <Menu>
-            <MenuItem
-              onClick={() => setChatPanelView(ChatPanelView.NewDirectChat)}
-            >
+          <Menu
+            placement={isMobile ? "bottom-end" : "bottom"}
+            variant={isMobile ? "soft" : "plain"}
+            size={isMobile ? "lg" : "md"}
+            color={isMobile ? "primary" : "neutral"}
+          >
+            <MenuItem onClick={handleStartNewDirectChat}>
               Direktnachricht
             </MenuItem>
-            <MenuItem
-              onClick={() => setChatPanelView(ChatPanelView.NewGroupChat)}
-            >
+            <MenuItem onClick={handleStartNewGropChat}>
               Gruppe erstellen
             </MenuItem>
           </Menu>

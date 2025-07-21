@@ -605,18 +605,6 @@
           }
         }
       },
-      "AllowedAppointmentTypeCombination" : {
-        "required" : [ "types" ],
-        "type" : "object",
-        "properties" : {
-          "types" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AppointmentType"
-            }
-          }
-        }
-      },
       "Appointment" : {
         "required" : [ "end", "start" ],
         "type" : "object",
@@ -1000,15 +988,9 @@
         }
       },
       "GetAppointmentTypesResponse" : {
-        "required" : [ "allowedAppointmentTypeCombinations", "appointmentTypeConfigDtos" ],
+        "required" : [ "appointmentTypeConfigDtos" ],
         "type" : "object",
         "properties" : {
-          "allowedAppointmentTypeCombinations" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AllowedAppointmentTypeCombination"
-            }
-          },
           "appointmentTypeConfigDtos" : {
             "type" : "array",
             "items" : {

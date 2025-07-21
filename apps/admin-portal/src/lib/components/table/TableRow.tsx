@@ -4,12 +4,19 @@
  */
 
 import { Box, styled } from "@mui/joy";
-import { Row, Table, flexRender } from "@tanstack/react-table";
-import { PropsWithChildren, createElement, useRef } from "react";
-import { isFunction } from "remeda";
+import { Row, flexRender } from "@tanstack/react-table";
+import { PropsWithChildren, useRef } from "react";
 
+import { ApiAdminStagedEntityType } from "@eshg/service-directory-api";
+
+import { DeleteRow } from "@/lib/components/table/DeleteRow";
+import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
 import { CellStyle } from "@/lib/components/table/Table";
-import { OverridableEntity } from "@/lib/helpers/entities";
+import {
+  EntityWrapper,
+  NEW_ENTITY_PARENT_ID,
+  isStagedEntity,
+} from "@/lib/hooks/useEntities";
 
 const StyledRow = styled("tr")<{ $subRow: boolean }>(({ theme, $subRow }) => ({
   color: $subRow ? theme.palette.warning.plainColor + "!important" : undefined,
@@ -37,45 +44,58 @@ const SBox = styled(Box)(() => ({
 }));
 
 export type OverridableTableRowProps<TData> = Readonly<{
-  table: Table<TData>;
   row: Row<TData>;
   onClick: () => void;
 }>;
 
-export function OverridableTableRow<TData extends OverridableEntity<TData>>(
+export function OverridableTableRow<TData extends EntityWrapper>(
   props: OverridableTableRowProps<TData>,
 ) {
-  const { table, row, onClick } = props;
-  if (row.original._override) {
+  return (
+    <StyledRow $subRow={props.row.depth > 0} onClick={props.onClick}>
+      <InnerOverridableTableRow {...props} />
+    </StyledRow>
+  );
+}
+
+function InnerOverridableTableRow<TData extends EntityWrapper>({
+  row,
+}: Pick<OverridableTableRowProps<TData>, "row">) {
+  if (row.original.id === NEW_ENTITY_PARENT_ID) {
     return (
-      <StyledRow $subRow={row.depth > 0}>
-        <td colSpan={row.getVisibleCells().length}>
-          {isFunction(row.original._override)
-            ? createElement(row.original._override, {
-                table,
-                row,
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                onClick: () => {},
-              })
-            : row.original._override}
-        </td>
-      </StyledRow>
+      <td colSpan={row.getVisibleCells().length}>
+        <NewEntityParentRow row={row} />
+      </td>
     );
   }
-  return <TableRow row={row} onClick={onClick} />;
+  if (
+    isStagedEntity(row.original) &&
+    row.original.stagedEntityType === ApiAdminStagedEntityType.Del
+  ) {
+    return (
+      <td colSpan={row.getVisibleCells().length}>
+        <DeleteRow row={row} />
+      </td>
+    );
+  }
+  return <InnerTableRow row={row} />;
 }
 
 export function TableRow<TData>({
   row,
-  onClick,
-}: Readonly<{ row: Row<TData>; onClick?: () => void }>) {
+}: Pick<OverridableTableRowProps<TData>, "row">) {
   return (
-    <StyledRow
-      $subRow={row.depth > 0}
-      onClick={() => {
-        onClick?.();
-      }}
-    >
+    <StyledRow $subRow={row.depth > 0}>
+      <InnerTableRow row={row} />
+    </StyledRow>
+  );
+}
+
+function InnerTableRow<TData>({
+  row,
+}: Pick<OverridableTableRowProps<TData>, "row">) {
+  return (
+    <>
       {row.getVisibleCells().map((cell) => {
         const cellStyle = cell.column.columnDef.meta?.cellStyle;
         const rendered = flexRender(
@@ -93,7 +113,7 @@ export function TableRow<TData>({
           </StyledCell>
         );
       })}
-    </StyledRow>
+    </>
   );
 }
 

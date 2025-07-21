@@ -5,13 +5,19 @@
 
 package de.eshg.servicedirectory;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.lib.servicedirectory.api.*;
+import de.eshg.lib.servicedirectory.api.ActorMetadataDto;
+import de.eshg.lib.servicedirectory.api.ActorRequestDto;
+import de.eshg.lib.servicedirectory.api.ActorResponseDto;
+import de.eshg.lib.servicedirectory.api.ActorTypeDto;
+import de.eshg.lib.servicedirectory.api.CertificateDto;
+import de.eshg.lib.servicedirectory.api.GetTrustedActorsResponse;
+import de.eshg.lib.servicedirectory.api.OrgUnitTypeDto;
 import de.eshg.lib.servicedirectory.util.CertificateSignatureUtil;
 import de.eshg.servicedirectory.actor.exception.ActorNotActiveException;
 import de.eshg.servicedirectory.actor.exception.ActorNotFoundException;

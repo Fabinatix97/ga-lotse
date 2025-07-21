@@ -57,7 +57,7 @@ export interface RoomEventDetails {
   isSent?: boolean;
 }
 
-export type Presence = IPresenceOpts["presence"] | "deactivated";
+export type Presence = IPresenceOpts["presence"] | "disabled";
 export type UsersPresence = Record<string, Presence>;
 
 interface ReceiptData {

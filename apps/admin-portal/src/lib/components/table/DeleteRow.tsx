@@ -8,29 +8,19 @@
 import { Box, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { TableApi } from "@/lib/components/table/EditableTable";
 import { OverridableTableRowProps } from "@/lib/components/table/TableRow";
-import { StagedRowButtons } from "@/lib/components/table/addEditColumns";
-import { EditableEntity, UniqueEntity } from "@/lib/helpers/entities";
-import {
-  OneOfStagedEntity,
-  isOneOfStagedEntity,
-} from "@/lib/helpers/entityFilter";
+import { StagedRowButtons } from "@/lib/components/table/cell/EditButtonCell";
+import { EntityWrapper, isStagedEntity } from "@/lib/hooks/useEntities";
 import { useTranslation } from "@/lib/i18n/client";
 
-export function DeleteRow<TData extends EditableEntity & UniqueEntity>({
-  table,
+export function DeleteRow<TData extends EntityWrapper>({
   row,
-}: OverridableTableRowProps<TData>): ReactNode {
+}: Pick<OverridableTableRowProps<TData>, "row">): ReactNode {
   const { t } = useTranslation();
 
-  if (!isOneOfStagedEntity(row.original)) {
+  if (!isStagedEntity(row.original)) {
     throw new Error("staged entity expected");
   }
-
-  const api = table.options.meta?.api as
-    | TableApi<OneOfStagedEntity>
-    | undefined;
 
   return (
     <Stack align-items="center" justifyContent="space-between">
@@ -38,7 +28,7 @@ export function DeleteRow<TData extends EditableEntity & UniqueEntity>({
         {t("deleteHint", { author: row.original.author })}
       </STypography>
       <Box pr={1}>
-        <StagedRowButtons api={api} row={row.original} />
+        <StagedRowButtons entity={row.original} />
       </Box>
     </Stack>
   );

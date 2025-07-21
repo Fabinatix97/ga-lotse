@@ -5,85 +5,140 @@
 
 import { useEffect } from "react";
 
+import { useIsMobile } from "@eshg/lib-portal";
+
 import { AddChatMember } from "@/lib/businessModules/chat/components/infoPanel/AddChatMember";
 import { AdminSettings } from "@/lib/businessModules/chat/components/infoPanel/AdminSettings";
 import { AssignAdminView } from "@/lib/businessModules/chat/components/infoPanel/AssignAdminView";
+import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { MemberInfoView } from "@/lib/businessModules/chat/components/infoPanel/MemberInfoView";
+import { MobileInfoView } from "@/lib/businessModules/chat/components/infoPanel/MobileInfoPanelView";
 import { RenameChat } from "@/lib/businessModules/chat/components/infoPanel/RenameChat";
 import { RoomInfoView } from "@/lib/businessModules/chat/components/infoPanel/RoomInfoView";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
-import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
+import {
+  InfoPanelView,
+  MobileView,
+} from "@/lib/businessModules/chat/shared/enums";
 
-export function InfoPanel() {
+interface InfoPanelProps {
+  setMobileView: (viewType: MobileView) => void;
+}
+
+export function InfoPanel({ setMobileView }: Readonly<InfoPanelProps>) {
   const { closeInfoPanel, infoPanelState, setInfoPanelView } =
     useInfoPanelContext();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!infoPanelState.payload) {
+      setMobileView(MobileView.ChatMessages);
       closeInfoPanel();
     }
-  }, [closeInfoPanel, infoPanelState.payload]);
+  }, [closeInfoPanel, infoPanelState.payload, setMobileView]);
 
-  if (!infoPanelState.payload) {
-    return null;
+  function onClose() {
+    closeInfoPanel();
+    setMobileView(MobileView.ChatMessages);
   }
 
-  switch (infoPanelState.view) {
-    case InfoPanelView.RoomInfo:
-      return (
-        <RoomInfoView
-          roomId={infoPanelState.payload}
-          onClose={closeInfoPanel}
-        />
-      );
-    case InfoPanelView.UserInfo:
-      return (
-        <MemberInfoView
-          userId={infoPanelState.payload}
-          onClose={closeInfoPanel}
-        />
-      );
-    case InfoPanelView.AddChatMember:
-      return (
-        <AddChatMember
-          roomId={infoPanelState.payload}
-          onClose={closeInfoPanel}
-          onCancel={() =>
-            setInfoPanelView(InfoPanelView.RoomInfo, infoPanelState.payload)
-          }
-        />
-      );
-    case InfoPanelView.AdminSettings:
-      return (
-        <AdminSettings
-          roomId={infoPanelState.payload}
-          onClose={closeInfoPanel}
-        />
-      );
-    case InfoPanelView.AssignAdminLevel:
-      return (
-        <AssignAdminView
-          roomId={infoPanelState.payload}
-          onClose={closeInfoPanel}
-          onCancel={() =>
-            setInfoPanelView(InfoPanelView.RoomInfo, infoPanelState.payload)
-          }
-        />
-      );
-    case InfoPanelView.RenameGroupChat:
-      return (
-        <RenameChat
-          roomId={infoPanelState.payload}
-          onClose={closeInfoPanel}
-          onCancel={() =>
-            setInfoPanelView(
-              InfoPanelView.AdminSettings,
-              infoPanelState.payload,
-            )
-          }
-        />
-      );
-    default:
+  function infoPanelHeader() {
+    switch (infoPanelState.view) {
+      case InfoPanelView.RoomInfo:
+      case InfoPanelView.AdminSettings:
+      case InfoPanelView.MobileView:
+        return (
+          <InfoPanelHeader
+            close={onClose}
+            roomId={infoPanelState.payload}
+            onBackIconClick={() => setMobileView(MobileView.ChatMessages)}
+          />
+        );
+      case InfoPanelView.RenameGroupChat:
+      case InfoPanelView.AssignAdminLevel:
+      case InfoPanelView.AddChatMember:
+        return (
+          <InfoPanelHeader
+            close={onClose}
+            roomId={infoPanelState.payload}
+            onBackIconClick={() =>
+              setInfoPanelView(InfoPanelView.MobileView, infoPanelState.payload)
+            }
+          />
+        );
+      case InfoPanelView.UserInfo:
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  function infoPanelContent() {
+    if (!infoPanelState.payload) {
       return null;
+    }
+    switch (infoPanelState.view) {
+      case InfoPanelView.RoomInfo:
+        return <RoomInfoView roomId={infoPanelState.payload} />;
+      case InfoPanelView.UserInfo:
+        return (
+          <MemberInfoView
+            userId={infoPanelState.payload}
+            onBackIconClick={() => setMobileView(MobileView.ChatMessages)}
+            onClose={onClose}
+          />
+        );
+      case InfoPanelView.AddChatMember:
+        return (
+          <AddChatMember
+            roomId={infoPanelState.payload}
+            onCancel={() =>
+              setInfoPanelView(
+                isMobile ? InfoPanelView.MobileView : InfoPanelView.RoomInfo,
+                infoPanelState.payload,
+              )
+            }
+          />
+        );
+      case InfoPanelView.AdminSettings:
+        return <AdminSettings roomId={infoPanelState.payload} />;
+      case InfoPanelView.AssignAdminLevel:
+        return (
+          <AssignAdminView
+            roomId={infoPanelState.payload}
+            onCancel={() =>
+              setInfoPanelView(
+                isMobile ? InfoPanelView.MobileView : InfoPanelView.RoomInfo,
+                infoPanelState.payload,
+              )
+            }
+          />
+        );
+      case InfoPanelView.RenameGroupChat:
+        return (
+          <RenameChat
+            roomId={infoPanelState.payload}
+            onCancel={() =>
+              setInfoPanelView(
+                isMobile
+                  ? InfoPanelView.MobileView
+                  : InfoPanelView.AdminSettings,
+                infoPanelState.payload,
+              )
+            }
+          />
+        );
+      case InfoPanelView.MobileView:
+        return <MobileInfoView roomId={infoPanelState.payload} />;
+      default:
+        return null;
+    }
   }
+
+  return (
+    <>
+      {infoPanelHeader()}
+      {infoPanelContent()}
+    </>
+  );
 }

@@ -53,7 +53,6 @@ import {
   inspectionTypeNames,
 } from "@/lib/businessModules/inspection/shared/enums";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
-import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
 
 import {
   createPendingFacilitiesColumns,
@@ -126,6 +125,31 @@ function createFilterDefinitions(
       key: "banned",
       name: "Untersagte Einrichtung",
       options: optionsFromRecord(inspectionBannedFacilityFilterNames),
+    },
+    {
+      type: "Text",
+      key: "name",
+      name: "Name",
+    },
+    {
+      type: "Text",
+      key: "postalCode",
+      name: "Postleitzahl",
+    },
+    {
+      type: "Text",
+      key: "city",
+      name: "Stadt",
+    },
+    {
+      type: "Text",
+      key: "street",
+      name: "Straße",
+    },
+    {
+      type: "Text",
+      key: "fileNumber",
+      name: "Aktenzeichen",
     },
   ];
 }
@@ -255,31 +279,7 @@ export function PendingFacilitiesTable(
         fullHeight
         controls={
           <ButtonBar
-            left={
-              <>
-                <ToggleFilterButton {...filterSettings.filterButtonProps} />
-                <TextInputFilter
-                  searchParamName="name"
-                  placeholder="Name"
-                  tableControl={tableControl}
-                />
-                <TextInputFilter
-                  searchParamName="postalCode"
-                  placeholder="PLZ"
-                  tableControl={tableControl}
-                />
-                <TextInputFilter
-                  searchParamName="city"
-                  placeholder="Stadt"
-                  tableControl={tableControl}
-                />
-                <TextInputFilter
-                  searchParamName="street"
-                  placeholder="Straße"
-                  tableControl={tableControl}
-                />
-              </>
-            }
+            left={<ToggleFilterButton {...filterSettings.filterButtonProps} />}
             right={
               <>
                 <ExportBannedFacilitiesButton />
@@ -376,6 +376,9 @@ function activeValuesToFilters(
         break;
       case "Enum":
         filters.set(value.key, value.selectedValues);
+        break;
+      case "Text":
+        filters.set(value.key, value.value);
         break;
       default:
         break;

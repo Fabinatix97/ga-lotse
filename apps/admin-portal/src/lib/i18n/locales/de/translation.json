@@ -51,16 +51,16 @@
   "collapseMenu": "Menü einklappen",
   "collapseRow": "Zeile einklappen",
   "columnHeader": {
+    "_actors": "Aktoren",
     "_matchingClientActors": "Clients",
     "_matchingClientRules": "Client Regeln",
     "_matchingServerActors": "Server",
     "_matchingServerRules": "Server Regeln",
     "_orgUnit": "Organisationseinheit",
     "active": "Aktiv",
-    "actors": "Aktoren",
     "author": "Autor",
-    "client": "Client Pattern",
     "certificate": "Zertifikate",
+    "client": "Client Pattern",
     "commonName": "CN",
     "description": "Beschreibung",
     "empty": "leer",
@@ -169,8 +169,8 @@
   },
   "negativeDateRangeHint": "Ungültiger Zeitraum",
   "orgUnitColumnHeader": {
+    "_actors": "Aktoren",
     "active": "Aktiv",
-    "actors": "Aktoren",
     "author": "Autor",
     "federalState": "Bundesland",
     "id": "ID / Autor",
@@ -206,5 +206,6 @@
   "toggleLanguage": "Sprache wechseln",
   "toggleMenu": "Navigation ein-/ausklappen",
   "upload": "Importieren",
-  "username": "Nutzer"
+  "username": "Nutzer",
+  "wildcard": "Platzhalter"
 }

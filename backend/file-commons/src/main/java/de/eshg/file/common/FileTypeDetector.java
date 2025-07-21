@@ -7,6 +7,7 @@ package de.eshg.file.common;
 
 import de.eshg.rest.service.error.BadRequestException;
 import java.io.IOException;
+import org.apache.tika.io.TikaInputStream;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +20,7 @@ public class FileTypeDetector {
   }
 
   public static FileType getSupportedFileTypeOrThrow(MultipartFile file) throws IOException {
-    String contentType = new TikaWrapper().detect(file.getInputStream());
+    String contentType = new TikaWrapper().detect(TikaInputStream.get(file.getInputStream()));
     if (MediaType.TEXT_PLAIN_VALUE.equals(contentType)) {
       FileType fileType =
           getFileType(new TikaWrapper().detect(file.getInputStream(), file.getOriginalFilename()));

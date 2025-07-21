@@ -84,10 +84,7 @@ export function CreateAppointmentBlockGroupForm() {
   const [
     { data: allPhysicians },
     {
-      data: {
-        appointmentTypeConfigs: allAppointmentTypes,
-        allowedAppointmentTypeCombinations,
-      },
+      data: { appointmentTypeConfigs: allAppointmentTypes },
     },
   ] = useSuspenseQueries({
     queries: [useGetAllPhysiciansQuery(), useGetAllAppointmentTypesQuery()],
@@ -135,7 +132,6 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
-      allowedAppointmentTypeCombinations={allowedAppointmentTypeCombinations}
       allPhysicians={allPhysicians}
       allAppointmentTypes={allAppointmentTypes}
       validateAvailability={validateAvailability}

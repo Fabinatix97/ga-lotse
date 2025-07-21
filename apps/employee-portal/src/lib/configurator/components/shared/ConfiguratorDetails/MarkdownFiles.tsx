@@ -3,47 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileDownloadOutlined } from "@mui/icons-material";
-import { Typography } from "@mui/joy";
 import assert from "assert";
-import { MouseEvent } from "react";
 
 import {
   ApiCitizenPortalMarkdownName,
-  ApiEmployeePortalMarkdownName,
   ApiLanguage,
   ApiMultiLangDocument,
-  UpdateAcknowledgementsMarkdownRequest,
-  UpdateImprintMarkdownRequest,
-  UpdatePrivacyMarkdownRequest,
 } from "@eshg/base-api";
-import { ButtonLink, FileType } from "@eshg/lib-portal";
+import { FileType } from "@eshg/lib-portal";
 
+import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import {
-  ConfiguratorForm,
-  FormSheet,
-} from "@/lib/configurator/components/shared/ConfiguratorForm";
+  ConfigFile,
+  FormFields,
+} from "@/lib/configurator/components/shared/RenderField";
 import { getTabNamesByEndpointName } from "@/lib/configurator/components/shared/configuratorNameMapping";
 import { useTabStatus } from "@/lib/configurator/components/shared/hooks/useTabStatus";
 import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import {
-  useGetCitizenMarkdownFile,
-  useGetEmployeeMarkdownFile,
-} from "@/lib/shared/api/queries/configurator/markdown";
-
-const Portal = {
-  citizen: "citizen",
-  employee: "employee",
-} as const;
-type Portal = keyof typeof Portal;
-
-interface MarkdownFile {
-  file: Blob | null;
-  required: boolean;
-}
+import { useGetCitizenMarkdownFile } from "@/lib/shared/api/queries/configurator/markdown";
 
 type Language = keyof ApiMultiLangDocument;
 const Language = {
@@ -51,48 +31,46 @@ const Language = {
   en: "en",
 } as const satisfies Record<string, Language>;
 
-type MarkdownFormMode = "single" | "split";
-type MarkdownFileData<T extends MarkdownFormMode> = T extends "single"
-  ? Record<Language, MarkdownFile>
-  : Record<Portal, MarkdownFileData<"single">>;
+type MarkdownFileData = Record<Language, ConfigFile>;
 
-interface MarkdownFormData<T extends MarkdownFormMode> {
-  markdownFiles: MarkdownFileData<T>;
+export interface MarkdownFormData {
+  markdownFiles: MarkdownFileData;
 }
 
-type MarkdownInfo<T extends MarkdownFormMode> = T extends "single"
-  ? ApiMultiLangDocument
-  : Record<Portal, ApiMultiLangDocument>;
-
-function singleInitialValues(): MarkdownFormData<"single"> {
+function getInitialValues(
+  markdownFiles?: ApiMultiLangDocument,
+): MarkdownFormData {
   return {
     markdownFiles: {
-      de: { file: null, required: true },
-      en: { file: null, required: false },
+      de: markdownFiles?.de
+        ? {
+            name: markdownFiles?.de.fileName,
+            size: markdownFiles.de.fileSizeBytes,
+            type: "MD",
+          }
+        : null,
+      en: markdownFiles?.en
+        ? {
+            name: markdownFiles?.en.fileName,
+            size: markdownFiles.en.fileSizeBytes,
+            type: "MD",
+          }
+        : null,
     },
   };
 }
 
-function splitInitialValues(): MarkdownFormData<"split"> {
-  return {
-    markdownFiles: {
-      citizen: singleInitialValues().markdownFiles,
-      employee: singleInitialValues().markdownFiles,
-    },
-  };
+export interface UpdateMarkdownRequest {
+  de: ConfigFile;
+  en?: ConfigFile;
 }
 
-type UpdateMarkdownRequest<T extends MarkdownFormMode> = T extends "single"
-  ? UpdateImprintMarkdownRequest | UpdateAcknowledgementsMarkdownRequest
-  : UpdatePrivacyMarkdownRequest;
-
-export function MarkdownFiles<T extends MarkdownFormMode>(props: {
-  mode: T;
+export function MarkdownFiles(props: {
   module: ConfiguratorModuleName;
   endpointName: ConfiguratorEndpointName;
-  fileName: DownloadFileNameForMode<T>;
-  markdownFiles: MarkdownInfo<T> | undefined;
-  updateMarkdown: (u: UpdateMarkdownRequest<T>) => Promise<void>;
+  fileName: ApiCitizenPortalMarkdownName;
+  markdownFiles: ApiMultiLangDocument | undefined;
+  updateMarkdown: (u: UpdateMarkdownRequest) => Promise<void>;
 }) {
   const { currentTabStatus } = useTabStatus({
     moduleName: props.module,
@@ -100,53 +78,74 @@ export function MarkdownFiles<T extends MarkdownFormMode>(props: {
   });
 
   const markdownFiles = props.markdownFiles;
-  const initialValues = (
-    props.mode === "single" ? singleInitialValues() : splitInitialValues()
-  ) as MarkdownFormData<T>;
+  const initialValues = getInitialValues(markdownFiles);
 
   const citizenFileDownload = useGetCitizenMarkdownFile();
-  const employeeFileDownload = useGetEmployeeMarkdownFile();
 
-  async function onSubmit({ markdownFiles }: MarkdownFormData<T>) {
-    if (props.mode === "single") {
-      const { de, en } =
-        markdownFiles as MarkdownFormData<"single">["markdownFiles"];
+  async function onSubmit({ markdownFiles }: MarkdownFormData) {
+    const { de, en } = markdownFiles;
 
-      assert.ok(de.file, "Eine deutsche Markdown-Datei ist erforderlich");
+    assert.ok(de, "German language file required");
 
-      const updateMarkdownRequest = {
-        de: de.file,
-        en: en.file ?? undefined,
-      } as UpdateMarkdownRequest<T>;
+    const updateMarkdownRequest = { de, en };
 
-      await props.updateMarkdown(updateMarkdownRequest);
-    } else {
-      throw Error("Split not yet implemented");
-    }
+    await props.updateMarkdown(updateMarkdownRequest);
   }
 
   const title = getTabNamesByEndpointName(props.module, props.endpointName);
 
+  function downloadFileNow(lang: ApiLanguage) {
+    void citizenFileDownload.download({
+      name: props.fileName,
+      lang,
+    });
+  }
+
   return (
     <ConfiguratorForm
-      sheets={
-        props.mode === "single"
-          ? [
-              singleSheet<"citizen">({
-                title,
-                markdownFiles: markdownFiles as MarkdownInfo<"single">,
-                downloadFile: citizenFileDownload.download,
-                fileName: props.fileName,
-              }),
-            ]
-          : sheetPerPortal({
-              title,
-              markdownFiles: markdownFiles as MarkdownInfo<"split">,
-              citizenDownloadFile: citizenFileDownload.download,
-              employeeDownloadFile: employeeFileDownload.download,
-              fileName: props.fileName as SplitFileName,
-            })
-      }
+      sheets={[
+        {
+          title,
+          sections: [
+            {
+              title: "Deutsch",
+              content: {
+                type: "field",
+                rows: [
+                  {
+                    fields: [
+                      {
+                        downloadFile: () => downloadFileNow(ApiLanguage.German),
+                        name: `markdownFiles.de`,
+                        required: "Bitte ausfüllen",
+                        ...MARKDOWN_UPLOAD_FIELD_PROPS,
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              title: "Englisch",
+              content: {
+                type: "field",
+                rows: [
+                  {
+                    fields: [
+                      {
+                        downloadFile: () =>
+                          downloadFileNow(ApiLanguage.English),
+                        name: `markdownFiles.en`,
+                        ...MARKDOWN_UPLOAD_FIELD_PROPS,
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ]}
       initialValues={initialValues}
       status={currentTabStatus}
       onSubmit={onSubmit}
@@ -154,176 +153,11 @@ export function MarkdownFiles<T extends MarkdownFormMode>(props: {
   );
 }
 
-type SplitFileName = ApiCitizenPortalMarkdownName &
-  ApiEmployeePortalMarkdownName;
+const UPLOAD_FIELD_MAX_WIDTH = "500px";
 
-type DownloadFileNameForMode<T extends MarkdownFormMode> = T extends "single"
-  ? ApiCitizenPortalMarkdownName
-  : SplitFileName;
-type DownloadFileName<T extends Portal> = T extends "citizen"
-  ? ApiCitizenPortalMarkdownName
-  : ApiEmployeePortalMarkdownName;
-type DownloadFile<T extends Portal> = (arg: {
-  name: DownloadFileName<T>;
-  lang: ApiLanguage;
-}) => Promise<void>;
-
-function singleSheet<T extends Portal = "citizen">({
-  title,
-  portal,
-  markdownFiles,
-  downloadFile,
-  fileName,
-}: {
-  title: string;
-  portal?: Portal;
-  markdownFiles: MarkdownInfo<"single"> | undefined;
-  downloadFile: DownloadFile<T>;
-  fileName: DownloadFileName<T>;
-}): FormSheet {
-  const prefix = portal ? `.${portal}` : "";
-
-  function downloadFileNow(lang: ApiLanguage) {
-    if (markdownFiles?.de.fileName === undefined) {
-      return;
-    }
-    void downloadFile({
-      name: fileName,
-      lang,
-    });
-  }
-
-  return {
-    title,
-    sections: [
-      {
-        title: "Deutsch",
-        description: (
-          <CurrentFileLabel
-            markdownInfo={markdownFiles}
-            language={Language.de}
-            onClick={() => {
-              downloadFileNow(ApiLanguage.German);
-            }}
-          />
-        ),
-        content: {
-          type: "field",
-          rows: [
-            {
-              fields: [
-                {
-                  downloadFile() {
-                    throw Error("Not implemented");
-                  },
-                  type: "upload",
-                  label: "Upload (Markdown-Datei)",
-                  name: `markdownFiles${prefix}.de.file`,
-                  required: "Bitte ausfüllen",
-                  accept: [FileType.Md],
-                },
-              ],
-            },
-          ],
-        },
-      },
-      {
-        title: "Englisch",
-        description: (
-          <CurrentFileLabel
-            markdownInfo={markdownFiles}
-            language={Language.en}
-            onClick={() => {
-              downloadFileNow(ApiLanguage.English);
-            }}
-          />
-        ),
-        content: {
-          type: "field",
-          rows: [
-            {
-              fields: [
-                {
-                  downloadFile() {
-                    throw Error("Not implemented");
-                  },
-                  type: "upload",
-                  label: "Upload (Markdown-Datei)",
-                  name: `markdownFiles${prefix}.en.file`,
-                  accept: [FileType.Md],
-                },
-              ],
-            },
-          ],
-        },
-      },
-    ],
-  };
-}
-
-function sheetPerPortal({
-  title,
-  markdownFiles,
-  citizenDownloadFile,
-  employeeDownloadFile,
-  fileName,
-}: {
-  title: string;
-  markdownFiles: MarkdownInfo<"split"> | undefined;
-  citizenDownloadFile: DownloadFile<"citizen">;
-  employeeDownloadFile: DownloadFile<"employee">;
-  fileName: SplitFileName;
-}): FormSheet[] {
-  return [
-    singleSheet({
-      title: `${title} für das Online Portal`,
-      portal: Portal.citizen,
-      markdownFiles: markdownFiles?.[Portal.citizen],
-      downloadFile: citizenDownloadFile,
-      fileName,
-    }),
-    singleSheet({
-      title: `${title} für das Mitarbeitendenportal`,
-      portal: Portal.employee,
-      markdownFiles: markdownFiles?.[Portal.employee],
-      downloadFile: employeeDownloadFile,
-      fileName,
-    }),
-  ];
-}
-
-function CurrentFileLabel({
-  markdownInfo,
-  language,
-  onClick,
-}: {
-  markdownInfo?: ApiMultiLangDocument;
-  language: Language;
-  onClick?: () => void;
-}) {
-  function handleClick(e: MouseEvent<HTMLButtonElement>) {
-    if (onClick === undefined) {
-      return;
-    }
-    e.preventDefault();
-    onClick();
-  }
-
-  const data = markdownInfo?.[language];
-  const downloadButton = (
-    <ButtonLink
-      startDecorator={<FileDownloadOutlined />}
-      fontSize="sm"
-      onClick={handleClick}
-    >
-      {data?.fileName}
-    </ButtonLink>
-  );
-
-  return (
-    <Typography level="body-xs">
-      <Typography fontWeight={500}>Aktuelle Datei: </Typography>
-      {data ? downloadButton : "Keine Datei vorhanden"}
-    </Typography>
-  );
-}
+const MARKDOWN_UPLOAD_FIELD_PROPS = {
+  type: "upload",
+  label: "Upload (Markdown-Datei)",
+  accept: FileType.Md,
+  width: { width: "100%", maxWidth: UPLOAD_FIELD_MAX_WIDTH },
+} as const satisfies Partial<FormFields>;

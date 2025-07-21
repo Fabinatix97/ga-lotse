@@ -7,10 +7,10 @@ import {
   createPdfToPdfaMessage,
   isPdfToPdfaResponse,
 } from "@/messageModel";
-import {downloadFile} from "@/downloadLink";
+import {setOutputFile} from "@/fileOutput";
 import {
-  setError, setIdle,
-  setProgressSpinner,
+  setError,
+  setProgressSpinner, setSuccess,
 } from "@/setState";
 
 export async function convertAndDownload(files?: FileList) {
@@ -35,12 +35,11 @@ export async function convertAndDownload(files?: FileList) {
       type: 'application/pdf',
       lastModified: Date.now()
     });
-    downloadFile(pdfaFile);
-    setIdle();
+    setOutputFile(pdfaFile);
+    setSuccess();
   } catch {
     setError();
   }
-
 }
 
 async function pdfToPdfa(pdf: ArrayBuffer): Promise<Uint8Array> {

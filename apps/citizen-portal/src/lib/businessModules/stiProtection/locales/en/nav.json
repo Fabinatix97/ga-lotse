@@ -1,8 +1,8 @@
 {
-  "sti_protection_title": "Sexual health / STI",
+  "title": "Sexual Health / STI",
   "landing": {
     "sti_consultation_title": "HIV / STI Consultation",
-    "sex_work_title": "Sex work",
-    "results_status_title": "Results status"
+    "sex_work_title": "Sex Work",
+    "results_status_title": "Results Status"
   }
 }

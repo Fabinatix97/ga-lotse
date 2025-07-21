@@ -9,24 +9,11 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
-import de.eshg.dental.api.ExistingUserDto;
-import de.eshg.dental.api.FluoridationVarnishDto;
-import de.eshg.dental.api.NonExistingUserDto;
-import de.eshg.dental.api.PerformingPersonDto;
-import de.eshg.dental.api.ProphylaxisSessionChildExaminationDto;
-import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
-import de.eshg.dental.api.ProphylaxisSessionDto;
-import de.eshg.dental.api.ProphylaxisStatusDto;
-import de.eshg.dental.api.ProphylaxisTypeDto;
+import de.eshg.dental.api.*;
 import de.eshg.dental.business.model.ChildWithPersonAndContactData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
-import de.eshg.dental.domain.model.Examination;
-import de.eshg.dental.domain.model.FluoridationConsent;
-import de.eshg.dental.domain.model.FluoridationVarnish;
-import de.eshg.dental.domain.model.ProphylaxisSession;
-import de.eshg.dental.domain.model.ProphylaxisStatus;
-import de.eshg.dental.domain.model.ProphylaxisType;
+import de.eshg.dental.domain.model.*;
 import java.util.*;
 
 public final class ProphylaxisSessionMapper {
@@ -135,7 +122,7 @@ public final class ProphylaxisSessionMapper {
               ChildWithPersonAndContactData childData = entry.getValue();
               List<Examination> previousExaminations =
                   prophylaxisSessionAugmented
-                      .previousExaminationsByChildFileStateId()
+                      .previousScreeningExaminationsByChildFileStateId()
                       .getOrDefault(examination.getChild().getChildIdFromCentralFile(), List.of());
               List<FluoridationConsent> allFluoridationConsents =
                   prophylaxisSessionAugmented
@@ -179,10 +166,14 @@ public final class ProphylaxisSessionMapper {
         ExaminationMapper.mapToDto(examination.getResult()),
         previousExaminations.stream()
             .filter(e -> e.getResult() != null)
+            .filter(e -> e.getResult() instanceof ScreeningExaminationResult)
             .sorted(Comparator.comparing(Examination::getDateAndTime).reversed())
             .collect(
                 StreamUtil.toLinkedHashMap(
-                    Examination::getDateAndTime, e -> ExaminationMapper.mapToDto(e.getResult()))));
+                    Examination::getDateAndTime,
+                    e ->
+                        (ScreeningExaminationResultDto)
+                            ExaminationMapper.mapToDto(e.getResult()))));
   }
 
   private static List<? extends PerformingPersonDto> mapPersons(

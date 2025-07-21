@@ -21,6 +21,7 @@ import de.eshg.inspection.facility.api.GetPendingFacilitiesFilterOptionsDto;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesPaginationOptionsDto;
 import de.eshg.inspection.facility.api.InspAddFacilityRequest;
 import de.eshg.inspection.facility.api.InspAddFacilityResponse;
+import de.eshg.inspection.facility.api.InspFacilityAndFileNumberCollisionsDto;
 import de.eshg.inspection.facility.api.InspFacilityDto;
 import de.eshg.inspection.facility.api.InspLinkBaseFacilityRequest;
 import de.eshg.inspection.facility.api.InspLinkBaseFacilityResponse;
@@ -35,12 +36,10 @@ import de.eshg.inspection.facility.persistence.PendingFacilityView;
 import de.eshg.inspection.facility.websearch.WebSearchService;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntry;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntryStatus;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.incident.persistence.InspectionIncident;
 import de.eshg.inspection.incident.persistence.InspectionIncident_;
 import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
-import de.eshg.inspection.inspection.api.FileNumberCollisionInspectionDto;
 import de.eshg.inspection.inspection.api.GetFileNumberCollisionsResponse;
 import de.eshg.inspection.inspection.api.InspectionPhase;
 import de.eshg.inspection.inspection.api.InspectionType;
@@ -94,8 +93,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -121,9 +118,9 @@ public class FacilityService {
   private final EntityManager entityManager;
   private final InspectionFinalizer inspectionFinalizer;
   private final InspectionRepository inspectionRepository;
-  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
-  private final InspectionFeatureToggle inspectionFeatureToggle;
+  private final FacilityFileNumberService facilityFileNumberService;
   private final InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository;
+  private final FileNumberCollisionService fileNumberCollisionService;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -134,9 +131,11 @@ public class FacilityService {
       EntityManager entityManager,
       InspectionFinalizer inspectionFinalizer,
       InspectionRepository inspectionRepository,
+      FacilityFileNumberService facilityFileNumberService,
+      InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository,
       FacilityFileNumberConfiguration facilityFileNumberConfiguration,
-      InspectionFeatureToggle inspectionFeatureToggle,
-      InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository) {
+      //      InspectionFeatureToggle inspectionFeatureToggle,
+      FileNumberCollisionService fileNumberCollisionService) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -145,9 +144,9 @@ public class FacilityService {
     this.entityManager = entityManager;
     this.inspectionFinalizer = inspectionFinalizer;
     this.inspectionRepository = inspectionRepository;
-    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
+    this.facilityFileNumberService = facilityFileNumberService;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
+    this.fileNumberCollisionService = fileNumberCollisionService;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -160,10 +159,7 @@ public class FacilityService {
     AddFacilityFileStateResponse baseResponse =
         facilityClient.addFacilityFileState(request.baseFacility());
 
-    String fileNumber =
-        facilityClient
-            .getFacilityFileNumber(baseResponse.id(), facilityFileNumberConfiguration.getMethod())
-            .fileNumber();
+    String fileNumber = facilityFileNumberService.getFileNumber(baseResponse);
 
     Optional<Facility> matchedInspFacility = findMatchingInspFacility(baseResponse.id());
 
@@ -250,7 +246,8 @@ public class FacilityService {
         isNew);
   }
 
-  public InspFacilityDto updateFacility(UUID externalId, InspUpdateFacilityRequest request) {
+  public InspFacilityAndFileNumberCollisionsDto updateFacility(
+      UUID externalId, InspUpdateFacilityRequest request) {
     validateFacility(request.baseFacility());
 
     Inspection inspection = inspectionService.loadInspectionForUpdate(request.procedureId());
@@ -259,6 +256,9 @@ public class FacilityService {
     GetFacilityFileStateResponse baseFacility =
         facilityClient.getFacilityFileState(
             inspection.getRelatedFacility().getCentralFileStateId());
+
+    String fileNumberBefore = facilityFileNumberService.getFileNumber(inspection);
+
     // call base module to save facility state in central file
     AddFacilityFileStateResponse baseResponse;
     try {
@@ -276,10 +276,23 @@ public class FacilityService {
       baseResponse = facilityClient.addFacilityFileState(request.baseFacility());
     }
 
-    String fileNumber =
-        facilityClient
-            .getFacilityFileNumber(baseResponse.id(), facilityFileNumberConfiguration.getMethod())
-            .fileNumber();
+    String fileNumberAfter = facilityFileNumberService.getFileNumber(baseResponse);
+
+    GetFileNumberCollisionsResponse fileNumberCollisionsResponse = null;
+    if (!com.google.common.base.Objects.equal(fileNumberBefore, fileNumberAfter)) {
+      inspection.setFileNumberSuffix(null);
+
+      if (fileNumberAfter != null
+          && baseResponse.contactAddress() instanceof DomesticAddressDto domesticAddress) {
+        fileNumberCollisionsResponse =
+            fileNumberCollisionService.getPossibleFileNumberCollisionsForFileState(
+                baseResponse.id(),
+                domesticAddress.postalCode(),
+                domesticAddress.street(),
+                domesticAddress.houseNumber(),
+                true);
+      }
+    }
 
     // save in db with new central file state
     Facility savedFacility =
@@ -296,7 +309,9 @@ public class FacilityService {
       createProgressEntryForUpdateFacility(inspection, previousFacilityFileStateId);
     }
 
-    return FacilityMapper.fromAddFacilityResponse(savedFacility, baseResponse, fileNumber);
+    return new InspFacilityAndFileNumberCollisionsDto(
+        FacilityMapper.fromAddFacilityResponse(savedFacility, baseResponse, fileNumberAfter),
+        fileNumberCollisionsResponse);
   }
 
   public InspPendingFacilitiesOverviewResponse getPendingFacilities(
@@ -331,6 +346,20 @@ public class FacilityService {
         (long) facilityIdsWithFacilityDuplicate.size()
             + (long) inspectionIdsWithInspectionDuplicate.size();
 
+    List<UUID> centralFileStateIdsForFileNumber = null;
+    Integer fileNumberSuffix = null;
+    if (params.fileNumber() != null) {
+      centralFileStateIdsForFileNumber =
+          facilityFileNumberService.getFileStates(params).stream()
+              .map(GetFacilityFileStateResponse::id)
+              .toList();
+
+      String[] splitString = params.fileNumber().split("-");
+      if (splitString.length >= 4) {
+        fileNumberSuffix = Integer.parseInt(splitString[3]);
+      }
+    }
+
     PendingFacilitiesInspectionDatabaseFilters inspectionDatabaseFilters =
         new PendingFacilitiesInspectionDatabaseFilters(
             params.kind(),
@@ -344,7 +373,9 @@ public class FacilityService {
             params.banned(),
             facilityIdsWithFacilityDuplicate,
             inspectionIdsWithInspectionDuplicate,
-            null);
+            null,
+            centralFileStateIdsForFileNumber,
+            fileNumberSuffix);
 
     FindPendingFacilitiesResult inspectionDatabaseResult =
         findPendingFacilities(
@@ -880,6 +911,8 @@ public class FacilityService {
   }
 
   boolean hasBaseSideFilter(GetPendingFacilitiesFilterOptionsDto filters) {
+    // For the purpose of this method, we do not consider file number a base side filter, because
+    // for file numbers, we do our search before even reading inspections from the database.
     return filters.name() != null
         || filters.postalCode() != null
         || filters.city() != null
@@ -1043,6 +1076,25 @@ public class FacilityService {
           cb.equal(rootAndJoins.facilityJoin.get(Facility_.BANNED), cb.literal(filters.banned)));
     }
 
+    if (filters.facilityCentralFileStateIds != null) {
+      if (filters.facilityCentralFileStateIds.isEmpty()) {
+        predicates.add(cb.or());
+      } else {
+        predicates.add(
+            rootAndJoins
+                .irfJoin
+                .get(InspectionRelatedFacility_.CENTRAL_FILE_STATE_ID)
+                .in(filters.facilityCentralFileStateIds));
+      }
+    }
+
+    if (filters.fileNumberSuffix != null) {
+      predicates.add(
+          cb.equal(
+              rootAndJoins.inspectionRoot.get(Inspection_.fileNumberSuffix),
+              cb.literal(filters.fileNumberSuffix)));
+    }
+
     return predicates;
   }
 
@@ -1061,7 +1113,9 @@ public class FacilityService {
       @Nullable Boolean banned,
       @NotNull List<Long> facilityIdsWithFacilityDuplicate,
       @NotNull List<Long> inspectionIds,
-      @Nullable UUID facilityExternalId) {}
+      @Nullable UUID facilityExternalId,
+      @Nullable List<UUID> facilityCentralFileStateIds,
+      @Nullable Integer fileNumberSuffix) {}
 
   private FindPendingFacilitiesResult findPendingFacilities(
       Instant now,
@@ -1840,7 +1894,9 @@ public class FacilityService {
                     null,
                     List.of(),
                     List.of(),
-                    externalId),
+                    externalId,
+                    null,
+                    null),
                 null,
                 null,
                 null,
@@ -1860,105 +1916,6 @@ public class FacilityService {
         candidates.stream().map(e -> createInspPendingFacilityDto(e, centralFileData)).toList();
 
     return new InspPendingFacilitiesOverviewResponse(1, result.size(), result, 0);
-  }
-
-  public GetFileNumberCollisionsResponse getFileNumberCollisionsForInspection(UUID externalId) {
-    Inspection inspection = inspectionService.loadInspection(externalId);
-    return getPossibleFileNumberCollisionsForFileState(inspection.getCentralFileStateId());
-  }
-
-  public GetFileNumberCollisionsResponse getPossibleFileNumberCollisionsForFileState(
-      UUID centralFileStateId) {
-    GetFacilityFileStateResponse fileState =
-        facilityClient.getFacilityFileState(centralFileStateId);
-
-    if (fileState.contactAddress() instanceof DomesticAddressDto domesticAddress) {
-      return getPossibleFileNumberCollisionsForFileState(
-          centralFileStateId,
-          domesticAddress.postalCode(),
-          domesticAddress.street(),
-          domesticAddress.houseNumber());
-    } else {
-      return new GetFileNumberCollisionsResponse(Collections.emptyMap());
-    }
-  }
-
-  public GetFileNumberCollisionsResponse getPossibleFileNumberCollisionsForFileState(
-      UUID centralFileStateId, String postalCode, String street, String houseNumber) {
-    facilityClient.getFacilityFileStatesFiltered(
-        new GetFacilityFileStatesFilteredRequest(
-            null,
-            null,
-            postalCode,
-            null,
-            street,
-            houseNumber,
-            null,
-            null,
-            Collections.emptyList()));
-
-    CentralFileData centralFileData =
-        fetchCentralFileDataFiltered(
-            new GetFacilityFileStatesFilteredRequest(
-                null,
-                null,
-                postalCode,
-                null,
-                street,
-                houseNumber,
-                null,
-                null,
-                Collections.emptyList()));
-
-    List<InspectionRelatedFacility> inspectionRelatedFacilities =
-        inspectionRelatedFacilityRepository.findAllByCentralFileStateIdIn(
-            centralFileData.facilityFileStateMap.keySet().stream()
-                .filter(id -> !centralFileStateId.equals(id))
-                .toList());
-
-    Map<Integer, List<InspectionRelatedFacility>> suffixMap =
-        inspectionRelatedFacilities.stream()
-            .collect(
-                Collectors.groupingBy(
-                    irf ->
-                        Optional.ofNullable(irf.getProcedure().getFileNumberSuffix()).orElse(0)));
-
-    SortedMap<Integer, List<FileNumberCollisionInspectionDto>> collisionInspections =
-        new TreeMap<>();
-    for (Map.Entry<Integer, List<InspectionRelatedFacility>> entry : suffixMap.entrySet()) {
-      collisionInspections.put(
-          entry.getKey(),
-          entry.getValue().stream()
-              .map(
-                  inspectionRelatedFacility ->
-                      new FileNumberCollisionInspectionDto(
-                          inspectionRelatedFacility.getProcedure().getExternalId(),
-                          centralFileData
-                              .facilityFileStateMap
-                              .get(inspectionRelatedFacility.getCentralFileStateId())
-                              .name(),
-                          inspectionRelatedFacility.getProcedure().getProcedureStatus(),
-                          getDateOfInspection(inspectionRelatedFacility.getProcedure())))
-              .sorted(
-                  Comparator.comparing(FileNumberCollisionInspectionDto::facilityName)
-                      .thenComparing(FileNumberCollisionInspectionDto::dayOfInspection)
-                      .thenComparing(FileNumberCollisionInspectionDto::inspectionStatus)
-                      .thenComparing(FileNumberCollisionInspectionDto::inspectionId))
-              .toList());
-    }
-
-    return new GetFileNumberCollisionsResponse(collisionInspections);
-  }
-
-  private LocalDate getDateOfInspection(Inspection inspection) {
-    InspectionAppointment appointment =
-        inspection.getExecutionAppointment() != null
-            ? inspection.getExecutionAppointment()
-            : inspection.getPlannedAppointment();
-    if (appointment == null) {
-      return null;
-    }
-    return LocalDate.ofInstant(appointment.getAppointmentStart(), clock.getZone());
   }
 
   private void createProgressEntryForUpdateFacility(

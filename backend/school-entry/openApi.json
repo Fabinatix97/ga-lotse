@@ -590,6 +590,30 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/archiving/procedures/{procedureId}" : {
+      "get" : {
+        "operationId" : "downloadArchivableProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archivable procedure",
+        "tags" : [ "Archiving" ]
+      }
+    },
     "/archiving/relevant-procedures" : {
       "get" : {
         "operationId" : "getRelevantArchivableProcedures",
@@ -5143,18 +5167,6 @@
           "propertyName" : "@type"
         }
       },
-      "AllowedAppointmentTypeCombination" : {
-        "required" : [ "types" ],
-        "type" : "object",
-        "properties" : {
-          "types" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AppointmentType"
-            }
-          }
-        }
-      },
       "Anamnesis" : {
         "required" : [ "additionalChildInfo", "checkUps", "daycareAndSchoolInfo", "developmentInfo", "familyHistoryInfo", "illnessAndAccidentInfo", "interestsAndSportsInfo", "migrationBackground", "promotionBeforeSchoolEntry", "promotionTherapyAndAidInfo", "version" ],
         "type" : "object",
@@ -7060,15 +7072,9 @@
         }
       },
       "GetAppointmentTypesResponse" : {
-        "required" : [ "allowedAppointmentTypeCombinations", "appointmentTypeConfigDtos" ],
+        "required" : [ "appointmentTypeConfigDtos" ],
         "type" : "object",
         "properties" : {
-          "allowedAppointmentTypeCombinations" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AllowedAppointmentTypeCombination"
-            }
-          },
           "appointmentTypeConfigDtos" : {
             "type" : "array",
             "items" : {
@@ -9663,7 +9669,7 @@
       },
       "SchoolEntryFeature" : {
         "type" : "string",
-        "enum" : [ "DUMMY", "EDITABLE_SCHOOL_INFO_LETTER", "ALL_APPOINTMENT_TYPE_COMBINATIONS", "APPOINTMENT_BLOCK_VIEW" ]
+        "enum" : [ "DUMMY", "EDITABLE_SCHOOL_INFO_LETTER", "APPOINTMENT_BLOCK_VIEW" ]
       },
       "SchoolEntryProcedure" : {
         "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],

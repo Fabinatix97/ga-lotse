@@ -5,7 +5,7 @@
 
 import { Delete, Download } from "@mui/icons-material";
 import { IconButton, Radio, Stack } from "@mui/joy";
-import { FormikValues, useField } from "formik";
+import { useField } from "formik";
 import { isDefined } from "remeda";
 
 import {
@@ -123,14 +123,8 @@ export type ConfiguratorAlertProps = Pick<
   "title" | "message" | "color"
 >;
 
-export function RenderField({
-  field,
-  values,
-}: {
-  field: FormFields;
-  values: FormikValues;
-}) {
-  const fieldHelper = useField(field.name)[2];
+export function RenderField({ field }: { field: FormFields }) {
+  const [inputProps, _meta, fieldHelper] = useField(field.name);
   const fileCardActions = useFileCardActions(field);
   switch (field.type) {
     case "text":
@@ -165,7 +159,7 @@ export function RenderField({
         </Stack>
       );
     case "upload":
-      const uploadValue = values[field.name] as ConfigFile;
+      const uploadValue = inputProps.value as ConfigFile;
       const isFileUpload = !uploadValue || uploadValue instanceof File;
       const showDeleteButton = !isDefined(field.required) && uploadValue;
       const isCard = !isFileUpload && uploadValue?.name;

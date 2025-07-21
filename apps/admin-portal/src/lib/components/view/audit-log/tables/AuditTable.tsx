@@ -9,7 +9,7 @@ import { TableOptions } from "@tanstack/react-table";
 
 import { Table } from "@/lib/components/table/Table";
 import { AuditTableHeader } from "@/lib/components/view/audit-log/tables/AuditTableHeader";
-import { UniqueEntity } from "@/lib/helpers/entities";
+import { UniqueEntity } from "@/lib/hooks/useEntities";
 import { useTranslation } from "@/lib/i18n/client";
 
 interface AuditTableProps<TData> {

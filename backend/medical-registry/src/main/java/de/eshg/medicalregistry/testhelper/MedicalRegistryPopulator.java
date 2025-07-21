@@ -111,7 +111,7 @@ public class MedicalRegistryPopulator extends BasePopulator<UUID> {
         faker.ancient().primordial(),
         faker.timeAndDate().birthday(),
         faker.team().creature() + " Authority",
-        faker.phoneNumber().phoneNumber(),
+        faker.regexify("\\d{9}"),
         BasePopulator.randomElement(faker, EmploymentTypeDto.values()),
         BasePopulator.randomElement(faker, EmploymentStatusDto.values()));
   }

@@ -3,29 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { StickyNote2Outlined } from "@mui/icons-material";
-
-import { NavigationItem } from "@/lib/baseModule/components/layout/types";
+import {
+  ModuleCategory,
+  ModuleNavigationItem,
+} from "@/lib/baseModule/components/layout/types";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 
-export function useCitizenNavigationItems(): NavigationItem[] {
+export function useCitizenNavigationItem(): ModuleNavigationItem {
   const citizenRoutes = useCitizenRoutes();
   const { t } = useTranslation("travelMedicine/nav");
-  return [
-    {
-      name: t("travel_medicine_title"),
-      subItems: [
-        {
-          name: t("overview_link"),
-          href: citizenRoutes.overview,
-          icon: StickyNote2Outlined,
-        },
-      ],
+  return {
+    category: ModuleCategory.InfectiousDiseases,
+    navigationItem: {
+      name: t("title"),
+      href: citizenRoutes.overview,
     },
-  ];
-}
-
-export function useOrganizationNavigationItems(): NavigationItem[] {
-  return [];
+  };
 }

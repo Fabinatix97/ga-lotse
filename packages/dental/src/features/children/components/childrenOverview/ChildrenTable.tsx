@@ -207,7 +207,7 @@ export function ChildrenTable() {
           rowSelectionProps={rowSelectionProps}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
-          minWidth={1200}
+          minWidth={1250}
           rowNavigation={{
             focusColumnAccessorKey: "lastName",
             route: (row) => routes.children.byId(row.original.id).details,

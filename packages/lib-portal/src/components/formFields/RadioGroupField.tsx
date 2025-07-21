@@ -23,6 +23,7 @@ export interface RadioGroupFieldProps
   orientation?: "horizontal" | "vertical";
   onChange?: (newValue: string) => void;
   "data-testid"?: string;
+  "aria-labelledby"?: string;
 }
 
 export function RadioGroupField(props: RadioGroupFieldProps) {
@@ -71,6 +72,13 @@ function InnerRadioGroupField({
     }
   }
 
+  // This weird way of writing it, prevents breaking the JoyUI internal way of setting it
+  const rootSlotProps = props["aria-labelledby"]
+    ? {
+        "aria-labelledby": props["aria-labelledby"],
+      }
+    : {};
+
   return (
     <FormControl
       error={fieldError}
@@ -84,6 +92,9 @@ function InnerRadioGroupField({
         name={fieldInputName}
         value={fieldInputValue}
         orientation={orientation}
+        slotProps={{
+          root: rootSlotProps,
+        }}
         onChange={handleChange}
       >
         {children}

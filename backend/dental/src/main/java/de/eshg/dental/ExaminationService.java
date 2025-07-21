@@ -33,6 +33,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -48,16 +49,19 @@ public class ExaminationService {
   private final ProgressEntryUtil progressEntryUtil;
   private final PersonClient personClient;
   private final ChildService childService;
+  private final Clock clock;
 
   public ExaminationService(
       ExaminationRepository examinationRepository,
       ProgressEntryUtil progressEntryUtil,
       PersonClient personClient,
-      ChildService childService) {
+      ChildService childService,
+      Clock clock) {
     this.examinationRepository = examinationRepository;
     this.progressEntryUtil = progressEntryUtil;
     this.personClient = personClient;
     this.childService = childService;
+    this.clock = clock;
   }
 
   Examination findExamination(UUID examinationId) {
@@ -121,8 +125,7 @@ public class ExaminationService {
             existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied()));
   }
 
-  private static void validateExaminationResult(
-      Examination examination, ExaminationResultDto newResult) {
+  private void validateExaminationResult(Examination examination, ExaminationResultDto newResult) {
     if (newResult == null) {
       return;
     }
@@ -155,7 +158,14 @@ public class ExaminationService {
 
     if (newResult instanceof IsFluorideVarnishApplicable fluorideVarnishApplicableResult
         && fluorideVarnishApplicableResult.isFluorideVarnishAppliedOrFalse()
-        && !examination.getChild().isFluoridationConsentCurrentlyGiven()) {
+        && !examination
+            .getChild()
+            .isFluoridationConsentGivenAtDate(
+                examination
+                    .getProphylaxisSession()
+                    .getDateAndTime()
+                    .atZone(clock.getZone())
+                    .toLocalDate())) {
       throw newIllegalExaminationResultException(
           "Got fluorideVarnishApplied=true but fluoridation consent is not given");
     }
@@ -194,6 +204,7 @@ public class ExaminationService {
           existingResult.setCalculus(newResult.calculus());
           existingResult.setGingivitis(newResult.gingivitis());
           existingResult.setParodontitis(newResult.parodontitis());
+          existingResult.setBlackStain(newResult.blackStain());
           existingResult.setDecayRisk(
               StatisticsCalculationHelper.calculateDecayRisk(
                       ExaminationMapper.mapToDomain(newResult.toothDiagnoses()),

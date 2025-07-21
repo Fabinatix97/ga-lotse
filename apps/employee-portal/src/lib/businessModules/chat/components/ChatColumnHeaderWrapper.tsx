@@ -20,7 +20,7 @@ export function ChatColumnHeaderWrapper({
         height: chatColumnHeaderHeight,
         borderBottom: "1px solid",
         borderColor: "neutral.outlinedBorder",
-        paddingX: 3,
+        paddingX: { xxs: 1, sm: 3 },
         flexShrink: 0,
       }}
     >

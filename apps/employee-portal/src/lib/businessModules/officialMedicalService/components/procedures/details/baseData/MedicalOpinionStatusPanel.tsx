@@ -7,11 +7,13 @@ import { Formik, FormikHelpers } from "formik";
 
 import {
   ButtonBar,
+  DetailsColumn,
   DetailsItem,
   FormStack,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsList,
   SelectField,
   SubmitButton,
   TextareaField,
@@ -144,30 +146,32 @@ export function MedicalOpinionStatusPanel({
           }}
         </Formik>
       ) : (
-        <>
-          <DetailsItem
-            label="Status"
-            value={
-              STATUS_NAMES_MEDICAL_OPINION_STATUS[
-                procedure.medicalOpinionStatus
-              ]
-            }
-          />
-          <DetailsItem
-            label="Ergebnis"
-            value={
-              procedure.medicalOpinionResult
-                ? STATUS_NAMES_MEDICAL_OPINION_RESULT[
-                    procedure.medicalOpinionResult
-                  ]
-                : undefined
-            }
-          />
-          <DetailsItem
-            label="Abschließende Bemerkung"
-            value={procedure.medicalOpinionComment ?? "-"}
-          />
-        </>
+        <DetailsList>
+          <DetailsColumn gap={2}>
+            <DetailsItem
+              label="Status"
+              value={
+                STATUS_NAMES_MEDICAL_OPINION_STATUS[
+                  procedure.medicalOpinionStatus
+                ]
+              }
+            />
+            <DetailsItem
+              label="Ergebnis"
+              value={
+                procedure.medicalOpinionResult
+                  ? STATUS_NAMES_MEDICAL_OPINION_RESULT[
+                      procedure.medicalOpinionResult
+                    ]
+                  : undefined
+              }
+            />
+            <DetailsItem
+              label="Abschließende Bemerkung"
+              value={procedure.medicalOpinionComment ?? "-"}
+            />
+          </DetailsColumn>
+        </DetailsList>
       )}
     </InfoTile>
   );

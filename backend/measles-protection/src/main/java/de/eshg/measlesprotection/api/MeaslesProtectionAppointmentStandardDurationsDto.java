@@ -8,8 +8,6 @@ package de.eshg.measlesprotection.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
-import org.hibernate.validator.constraints.time.DurationMax;
 
 @Schema(name = "MeaslesProtectionAppointmentStandardDurations")
-public record MeaslesProtectionAppointmentStandardDurationsDto(
-    @NotNull @DurationMax(minutes = 1000L) Duration proofSubmission) {}
+public record MeaslesProtectionAppointmentStandardDurationsDto(@NotNull Duration proofSubmission) {}

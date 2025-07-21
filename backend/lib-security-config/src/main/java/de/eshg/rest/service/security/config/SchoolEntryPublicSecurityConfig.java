@@ -35,16 +35,13 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
             BaseUrls.SchoolEntry.CONFIG_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
 
-    // Allow read-only access to individual procedures including examination results etc.
-    // for PROCEDURE_ARCHIVE
     requestMatchers(
             GET,
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/{procedureId}",
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/{procedureId}/**",
             BaseUrls.SchoolEntry.VALUE_EVALUATOR_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.COUNTRY_CODES_CONTROLLER + "/**")
-        .hasAnyRole(
-            EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+        .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
 
     requestMatchers(GET, BaseUrls.SchoolEntry.PROCEDURE_LABEL_CONTROLLER + "/**")
         .hasAnyRole(

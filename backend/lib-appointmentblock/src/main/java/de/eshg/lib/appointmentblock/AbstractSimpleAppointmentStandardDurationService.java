@@ -48,6 +48,7 @@ public abstract class AbstractSimpleAppointmentStandardDurationService<
   }
 
   public void updateAppointmentStandardDurations(T entityUpdate) {
+    validateStandardDurationUpdate(entityUpdate);
     T persistentEntity = getConfig();
     auditLogWriter.writeChangeToAuditLog(
         "appointmentStandardDuration",

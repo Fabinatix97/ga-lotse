@@ -32,8 +32,6 @@ public final class OpenDataPublicSecurityConfig extends AbstractPublicSecurityCo
 
     requestMatchers(HttpMethod.GET, OpenData.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
 
-    requestMatchers(BaseUrls.OpenData.FEATURE_TOGGLES_CONTROLLER + "/**").permitAll();
-
     grantAccessToConfiguration();
   }
 }

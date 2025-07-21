@@ -209,7 +209,17 @@ export function paramValuesToActiveValue(
           startDate: mapOptionalString(dates[0]),
           endDate: mapOptionalString(dates[1]),
         };
+      } else {
+        return undefined;
       }
+    case "Text":
+      return values[0]
+        ? {
+            type: def.type,
+            key: def.key,
+            value: values[0],
+          }
+        : undefined;
     default:
       return undefined;
   }

@@ -10,7 +10,10 @@ import { use } from "react";
 
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { ExaminationResultWithDate } from "../../../api/models/ExaminationResult";
+import {
+  ScreeningExaminationResult,
+  ScreeningExaminationResultWithDate,
+} from "../../../api/models/ExaminationResult";
 import { ExaminationFormLayout } from "../../../components/examination/ExaminationFormLayout";
 import { useDentalApi } from "../../../contexts/dental";
 import { ExaminationStoreProvider } from "../../../stores/examination/ExaminationStoreProvider";
@@ -37,10 +40,23 @@ export function DentalChildExaminationPage(
     (institution) => institution.year === examination.dateAndTime.getFullYear(),
   );
 
+  const allScreeningExaminations = mapPreviousScreeningExaminations(
+    child.examinations,
+  );
+
+  const previousScreeningExaminations = allScreeningExaminations.filter(
+    (e) => e.dateAndTime < examination.dateAndTime,
+  );
+
   return (
     <ExaminationStoreProvider
       examinationResult={examination.result}
       defaultDentitionType={examination.prophylaxisDentitionType}
+      previousExaminationResult={
+        previousScreeningExaminations.length > 0
+          ? previousScreeningExaminations[0]
+          : undefined
+      }
     >
       <ChildExaminationForm examination={examination}>
         <ExaminationFormLayout
@@ -51,18 +67,20 @@ export function DentalChildExaminationPage(
           institution={institutionAtExaminationDate?.institution}
           groupName={institutionAtExaminationDate?.groupName}
           child={child}
-          previousExaminations={mapPreviousExaminations(child.examinations)}
+          previousExaminations={allScreeningExaminations}
         />
       </ChildExaminationForm>
     </ExaminationStoreProvider>
   );
 }
 
-function mapPreviousExaminations(
+function mapPreviousScreeningExaminations(
   response: ChildExamination[],
-): ExaminationResultWithDate[] {
-  return response.map((examination) => ({
-    result: examination.result,
-    dateAndTime: examination.dateAndTime,
-  }));
+): ScreeningExaminationResultWithDate[] {
+  return response
+    .filter((e) => e.result?.type === "screening" && e.result !== null)
+    .map((examination) => ({
+      result: examination.result as ScreeningExaminationResult,
+      dateAndTime: examination.dateAndTime,
+    }));
 }

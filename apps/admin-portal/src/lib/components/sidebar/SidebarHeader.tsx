@@ -3,22 +3,52 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack } from "@mui/joy";
+import { Stack, styled } from "@mui/joy";
 import { ReactNode } from "react";
 
-export function SidebarHeader({
+import { SidebarCellInfo } from "@/lib/components/sidebar/SidebarDetails";
+import { SidebarData } from "@/lib/components/sidebar/SidebarTable";
+import { Actor, OrgUnit, Rule } from "@/lib/hooks/useEntities";
+import { useTranslation } from "@/lib/i18n/client";
+
+export function SidebarHeader<TData extends OrgUnit | Actor | Rule>({
   editButton,
-  children,
+  headerCells,
+  entity,
+  editable,
+  additionalContent,
 }: Readonly<{
   editButton: ReactNode;
-  children: ReactNode;
+  headerCells: SidebarCellInfo<TData>[];
+  entity: TData;
+  editable: boolean;
+  additionalContent?: ReactNode;
 }>) {
+  const { t } = useTranslation();
+
   return (
     <Stack paddingTop={2} justifyContent="space-between" alignItems="center">
       <Stack flexDirection="column" gap={0.4}>
-        {children}
+        {headerCells.map((cell) => (
+          <>
+            <InvisibleLabel id={cell.id}>
+              {t(`columnHeader.${cell.id}`)}
+            </InvisibleLabel>
+            <SidebarData
+              key={cell.id}
+              entity={entity}
+              cell={cell}
+              editable={editable}
+            />
+          </>
+        ))}
+        {additionalContent}
       </Stack>
       <Stack gap={1}>{editButton}</Stack>
     </Stack>
   );
 }
+
+const InvisibleLabel = styled("label")({
+  display: "none",
+});

@@ -32,10 +32,11 @@ import {
 import { saveDownload } from "@/lib/helpers/files";
 import { useAuditLogsQuery, useUsernames } from "@/lib/hooks/useAuditLogs";
 import { useConfirmationDialog } from "@/lib/hooks/useConfirmationDialog";
+import { UniqueEntity } from "@/lib/hooks/useEntities";
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
 import { useTranslation } from "@/lib/i18n/client";
 
-export type Revision = Omit<ApiAdminRevision, "id"> & { id: string };
+export type Revision = Omit<ApiAdminRevision, "id"> & UniqueEntity;
 
 function getOneWeekAgo() {
   const date = new Date();

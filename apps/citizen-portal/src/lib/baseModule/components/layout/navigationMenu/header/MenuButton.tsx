@@ -18,7 +18,7 @@ export function MenuButton(props: NavigationProps) {
       onClick={() => {
         props.setNavigationState((prev) =>
           prev.type === "closed" || prev.type === "language"
-            ? { type: "main-menu" }
+            ? { type: "topic-menu" }
             : { type: "closed" },
         );
       }}

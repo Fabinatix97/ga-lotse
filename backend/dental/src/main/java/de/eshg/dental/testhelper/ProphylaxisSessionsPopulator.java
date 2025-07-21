@@ -51,6 +51,7 @@ import java.io.Serial;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -219,7 +220,10 @@ public class ProphylaxisSessionsPopulator
     }
 
     boolean isFluoridationConsentGiven =
-        examination.getChild().isFluoridationConsentCurrentlyGiven();
+        examination
+            .getChild()
+            .isFluoridationConsentGivenAtDate(
+                prophylaxisSession.getDateAndTime().atZone(ZoneId.systemDefault()).toLocalDate());
 
     if (isScreening) {
       return new ScreeningExaminationResultDto(
@@ -230,6 +234,7 @@ public class ProphylaxisSessionsPopulator
           randomOrthodonticFindings(faker),
           optional(faker, randomElement(faker, OrthodonticStatusDto.values())),
           randomDentitionType(faker),
+          faker.bool().bool(),
           faker.bool().bool(),
           faker.bool().bool(),
           faker.bool().bool(),

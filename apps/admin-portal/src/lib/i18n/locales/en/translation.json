@@ -51,16 +51,16 @@
   "collapseMenu": "Collapse menu",
   "collapseRow": "Collapse row",
   "columnHeader": {
+    "_actors": "Actors",
     "_matchingClientActors": "Clients",
     "_matchingClientRules": "Client Rules",
     "_matchingServerActors": "Server",
     "_matchingServerRules": "Server Rules",
     "_orgUnit": "Organization Unit",
     "active": "Active",
-    "actors": "Actors",
     "author": "Author",
-    "client": "Client Pattern",
     "certificate": "Certificates",
+    "client": "Client Pattern",
     "commonName": "CN",
     "description": "Description",
     "empty": "empty",
@@ -169,8 +169,8 @@
   },
   "negativeDateRangeHint": "Bad timespan",
   "orgUnitColumnHeader": {
+    "_actors": "Actors",
     "active": "Active",
-    "actors": "Actors",
     "author": "Author",
     "federalState": "Federal state",
     "id": "ID / Author",
@@ -207,5 +207,6 @@
   "toggleLanguage": "Change language",
   "toggleMenu": "expand/collapse Navigation",
   "upload": "Import",
-  "username": "User"
+  "username": "User",
+  "wildcard": "Wildcard"
 }

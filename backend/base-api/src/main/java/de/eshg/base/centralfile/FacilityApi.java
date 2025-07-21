@@ -30,6 +30,7 @@ public interface FacilityApi {
   String REFERENCE_URL = "/reference";
   String REFERENCE_UPDATE_URL = REFERENCE_URL + "/{id}/update";
   String FILE_NUMBER_URL = BaseUrls.Base.FACILITY_FILE_STATE_URL + "/{id}/file-number/{method}";
+  String FILE_NUMBER_SEARCH_URL = BaseUrls.Base.FACILITY_FILE_STATE_URL + "/file-number-search";
 
   @PostExchange(FILE_STATES_URL)
   @ApiResponse(responseCode = "200")
@@ -218,4 +219,11 @@ Gets the file number for a facility file state, if it can be determined from its
 """)
   FacilityFileNumberResponse getFacilityFileNumber(
       @PathVariable("id") UUID fileStateId, @PathVariable("method") String method);
+
+  @GetExchange(FILE_NUMBER_SEARCH_URL)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Search facility file states by file number")
+  SearchFacilityFileStatesByFileNumberResponse getFacilityFileStatesByFileNumber(
+      @RequestParam(name = "fileNumber") String fileNumber,
+      @RequestParam(name = "method") String method);
 }

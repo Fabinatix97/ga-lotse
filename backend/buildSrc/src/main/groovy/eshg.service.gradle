@@ -75,7 +75,7 @@ bootJar {
 
 ext {
     listenPort = 8080
-    jreDockerImage = 'eclipse-temurin:21.0.6_7-jre-noble@sha256:c42ef675fc9ff8a662a03eec2e6719133c736681068d474f96bc1a6139f99904'
+    jreDockerImage = 'eclipse-temurin:21.0.7_6-jre-noble@sha256:85ec8e47d408fe0b7efd463844fe9670b2c59b17b49661079b38058c43d2d6a2'
 }
 
 tasks.register('createDockerfile', Dockerfile) {

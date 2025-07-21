@@ -13,10 +13,13 @@ public interface StreetDirectory {
 
   Set<AdministrativeData> getAdministrativeDataByStreetName(String streetName);
 
+  Set<AdministrativeData> getAdministrativeDataByStreetNumber(String streetNumber);
+
   Set<String> getFullStreetNamesForPrefix(String streetName);
 
   record AdministrativeData(
       String streetNumber,
+      String streetName,
       String localDistrict,
       String districtName,
       String cityDistrict,

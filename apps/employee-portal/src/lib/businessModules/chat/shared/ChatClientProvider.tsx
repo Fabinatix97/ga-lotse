@@ -26,7 +26,7 @@ import {
 import { isNullish } from "remeda";
 
 import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
-import { RequiresChildren } from "@eshg/lib-portal";
+import { RequiresChildren, useIsMobile } from "@eshg/lib-portal";
 
 import { useGetDepartment } from "@/lib/businessModules/chat/api/queries/department";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
@@ -78,6 +78,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     useState<ChatTabTakeoverView>(ChatTabTakeoverView.ActiveChatTab);
 
   const { data: departmentInfo } = useGetDepartment();
+  const isMobile = useIsMobile();
 
   /**
    * If isClientPrepared is true, the main chat layout will be rendered.
@@ -127,7 +128,8 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
           loggedInUser: currentMatrixClient.getUserId(),
           timestamp: event.getDate(),
         }) &&
-        sender?.displayName
+        sender?.displayName &&
+        !isMobile
       ) {
         showMessageTeaser({
           title: room.name,
@@ -157,27 +159,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     return () => {
       currentMatrixClient.removeListener(RoomEvent.Timeline, onRoomTimeline);
     };
-  }, [isClientPrepared, showMessageTeaser]);
-
-  /**
-   * It notifies the user when they're not on the chat page
-   * that they need to complete the encryption process to use the chat.
-   */
-  useEffect(() => {
-    if (
-      clientState === ClientState.CreateKeyBackup ||
-      clientState === ClientState.RestoreKeyBackup
-    ) {
-      showMessageTeaser({
-        title: "Chat",
-        text:
-          clientState === ClientState.CreateKeyBackup
-            ? "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen"
-            : "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen",
-        type: "info",
-      });
-    }
-  }, [clientState, showMessageTeaser]);
+  }, [isClientPrepared, isMobile, showMessageTeaser]);
 
   /**
    * Automatically join rooms when invited

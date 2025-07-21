@@ -7,8 +7,5 @@ package de.eshg.servicedirectory.rule.persistence.repository;
 
 import de.eshg.servicedirectory.rule.persistence.entity.StagedRule;
 import de.eshg.servicedirectory.staging.persistence.repository.StagedEntityRepository;
-import java.util.List;
 
-public interface StagedRuleRepository extends StagedEntityRepository<StagedRule> {
-  List<StagedRule> findAllByActiveIsTrue();
-}
+public interface StagedRuleRepository extends StagedEntityRepository<StagedRule> {}

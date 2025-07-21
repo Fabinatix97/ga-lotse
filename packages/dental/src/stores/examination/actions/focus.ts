@@ -8,7 +8,7 @@ import { ElementContext, Tooth, ToothElement } from "../types";
 
 type FocusOutputState = Pick<ExaminationState, "currentFocus">;
 
-export const DEFAULT_FOCUS_ELEMENT = "mainResultField" satisfies ToothElement;
+const DEFAULT_FOCUS_ELEMENT = "mainResultField" satisfies ToothElement;
 
 export function setFocus(
   newFocus: ElementContext | undefined,

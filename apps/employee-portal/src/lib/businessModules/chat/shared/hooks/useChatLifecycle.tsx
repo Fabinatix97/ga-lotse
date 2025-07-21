@@ -365,6 +365,7 @@ export function useChatLifecycle(
       logger.info("Step 3/5: startMatrixClient");
       await matrixClient.current.startClient({
         initialSyncLimit: 20,
+        disablePresence: !userSettings.sharePresence,
       });
 
       logger.info("Step 3/5: startMatrixClient - FINISHED");
@@ -374,6 +375,7 @@ export function useChatLifecycle(
       setClientState(ClientState.Error);
     }
   }, [
+    userSettings.sharePresence,
     matrixClient,
     setClientState,
     selfUserChatAttributesData,

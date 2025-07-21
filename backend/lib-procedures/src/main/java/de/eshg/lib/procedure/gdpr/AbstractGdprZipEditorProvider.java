@@ -62,11 +62,9 @@ public abstract class AbstractGdprZipEditorProvider {
   }
 
   private ZipEditor createLegalBasisEnricher() {
-    return (jsonNode, zipFileWrapper) -> {
-      if (!zipFileWrapper.getFileNames().contains("Rechtsgrundlage.txt")) {
-        zipFileWrapper.addEntry("Rechtsgrundlage.txt", getLegalBasis().getBytes());
-      }
-    };
+    return ZipEditor.makePostProcessor(
+        zipFileWrapper ->
+            zipFileWrapper.addEntry("Rechtsgrundlage.txt", getLegalBasis().getBytes()));
   }
 
   private static ZipEditor createCommonFilter(List<UUID> fileStateIds) {

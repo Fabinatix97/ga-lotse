@@ -36,17 +36,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class OpenDataPublicCitizenController {
 
   private final OpenDataService openDataService;
-  private final OpenDataValidations openDataValidations;
   private final OpenDataFiltering openDataFiltering;
   private final OpenDataConfigService openDataConfigService;
 
   public OpenDataPublicCitizenController(
       OpenDataService openDataService,
-      OpenDataValidations openDataValidations,
       OpenDataFiltering openDataFiltering,
       OpenDataConfigService openDataConfigService) {
     this.openDataService = openDataService;
-    this.openDataValidations = openDataValidations;
     this.openDataFiltering = openDataFiltering;
     this.openDataConfigService = openDataConfigService;
   }
@@ -65,7 +62,6 @@ public class OpenDataPublicCitizenController {
       @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request,
       @InlineParameterObject @ParameterObject @Valid
           GetOpenDocumentsPaginationOptions paginationOptions) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataFiltering.getOpenDocumentsFromCitizenPortal(request, paginationOptions);
   }
 
@@ -78,7 +74,6 @@ public class OpenDataPublicCitizenController {
           Gets one specific version of an open document by its id
           """)
   public VersionDto getVersion(@PathVariable("versionId") UUID versionId) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataService.getSpecificVersion(versionId);
   }
 
@@ -92,7 +87,6 @@ public class OpenDataPublicCitizenController {
   @Transactional(readOnly = true)
   @Operation(summary = "Download a specific version of a document")
   public ResponseEntity<byte[]> downloadDocument(@PathVariable("versionId") UUID versionId) {
-    openDataValidations.validateOpenDataEnabled();
     return openDataService.downloadDocument(versionId);
   }
 

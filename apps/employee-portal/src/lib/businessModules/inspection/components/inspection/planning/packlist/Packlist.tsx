@@ -101,6 +101,7 @@ export function Packlist({
               />
             </Stack>
             <AccordionDetails
+              role={undefined}
               aria-label={`Fragen zu Abschnitt ${revisionName}`}
               slotProps={{
                 root: {

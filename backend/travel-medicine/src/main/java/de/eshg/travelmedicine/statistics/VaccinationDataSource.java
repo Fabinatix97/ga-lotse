@@ -61,7 +61,7 @@ public class VaccinationDataSource extends EntityDataSource<Vaccination, Vaccina
   protected Object mapSpecificValue(
       Vaccination entity, VaccinationAttributes attribute, TimeRange timeRange) {
     return switch (attribute) {
-      case VACCINATION_ID -> entity.getId();
+      case PROCEDURE_ID -> entity.getVaccinationConsultation().getExternalId();
       case PERSON_CENTRAL_FILE_ID ->
           entity.getVaccinationConsultation().getPatientIdsFromCentralFile().getFirst();
       case DISEASE -> entity.getDiseaseName();

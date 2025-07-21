@@ -13,7 +13,7 @@ import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { ProcedureLabel, useSidenav } from "@eshg/lib-employee-portal";
 import { useIsBreakpointDown } from "@eshg/lib-portal";
 
-import { ExaminationResultWithDate } from "../../api/models/ExaminationResult";
+import { ScreeningExaminationResultWithDate } from "../../api/models/ExaminationResult";
 import { Institution } from "../../api/models/Institution";
 import { FullDentitionFormSection } from "../fullDentition/FullDentitionFormSection";
 
@@ -49,7 +49,7 @@ interface ExaminationFormLayoutProps {
   institution?: Institution;
   groupName?: string;
   child: ExaminedChild;
-  previousExaminations: ExaminationResultWithDate[];
+  previousExaminations: ScreeningExaminationResultWithDate[];
   showChildDetails?: boolean;
 }
 

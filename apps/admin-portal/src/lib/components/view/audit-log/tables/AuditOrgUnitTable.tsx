@@ -13,8 +13,8 @@ import {
   ApiPairAdminPartialOrgUnit,
 } from "@eshg/service-directory-api";
 
-import { AuditCell } from "@/lib/components/table/cell/AuditCell";
-import { RevisionTypeCell } from "@/lib/components/table/cell/RevisionTypeCell";
+import { AuditCell } from "@/lib/components/table/cell/audit/AuditCell";
+import { RevisionTypeCell } from "@/lib/components/table/cell/audit/RevisionTypeCell";
 import { AuditTable } from "@/lib/components/view/audit-log/tables/AuditTable";
 import { RevisionType } from "@/lib/types/audit";
 

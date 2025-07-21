@@ -46,13 +46,16 @@ export function FacilitySyncContent({
       {
         onSuccess: (data) => {
           if (
-            isNonNullish(data.facility.fileNumber) &&
-            fileNumber !== data.facility.fileNumber &&
-            procedureStatus !== ApiProcedureStatus.Draft
+            isNonNullish(data.inspection.facility.fileNumber) &&
+            fileNumber !== data.inspection.facility.fileNumber &&
+            procedureStatus !== ApiProcedureStatus.Draft &&
+            data.fileNumberCollisionsResponse &&
+            Object.keys(data.fileNumberCollisionsResponse.collisions).length > 0
           ) {
             editFileNumberSidebar.open({
               inspectionId: procedureId,
-              fileNumber: data.facility.fileNumber,
+              fileNumber: data.inspection.facility.fileNumber,
+              fileNumberCollisions: data.fileNumberCollisionsResponse,
             });
           } else {
             router.back();

@@ -29,10 +29,6 @@ public final class DentalPublicSecurityConfig extends AbstractPublicSecurityConf
     requestMatchers(PUT, BaseUrls.Dental.PROCEDURE_LABEL_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.DENTAL_LEADER);
 
-    // allow read-only access to child data for role PROCEDURE_ARCHIVE
-    requestMatchers(GET, BaseUrls.Dental.CHILD_CONTROLLER + "/**")
-        .hasAnyRole(EmployeePermissionRole.DENTAL_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
-
     requestMatchers(
             BaseUrls.Dental.CHILD_CONTROLLER + "/**",
             BaseUrls.Dental.PROPHYLAXIS_SESSION_CONTROLLER + "/**")

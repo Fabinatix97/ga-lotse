@@ -7,14 +7,12 @@
 
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { ApiUserRole } from "@eshg/base-api";
 import { SearchParams } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
-import { useGetUsersByGroupQuery } from "../../../api/queries/users";
 import { ButtonBar } from "../../../components/buttons/ButtonBar";
 import { InformationSheet } from "../../../components/content/InformationSheet";
 import { PageGrid } from "../../../components/page/PageGrid";
@@ -74,6 +72,7 @@ export function ProgressEntriesPage({
     detailedProcedure,
     files,
     approvalRequestsResponse,
+    users,
   } = useFetchProgressEntries(
     progressEntryApi,
     procedureApi,
@@ -81,14 +80,9 @@ export function ProgressEntriesPage({
     procedureId,
     props.leaderRole,
     filters,
+    props.groupName,
     props.getHeadersForOfflineCaching,
   ).data;
-  const { data: users } = useSuspenseQuery(
-    useGetUsersByGroupQuery(
-      props.groupName,
-      props.getHeadersForOfflineCaching?.(),
-    ),
-  );
 
   const filterSettings = useProgressEntriesFilterSettings({
     users,

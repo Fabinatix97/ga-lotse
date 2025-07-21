@@ -108,7 +108,7 @@ export function ProphylaxisSessionExaminationLayout(
           groupName={participant.groupName ?? ""}
           institution={participant.institution}
           child={participant}
-          previousExaminations={participant.previousExaminations}
+          previousExaminations={participant.previousScreeningExaminations}
           showChildDetails
         />
       </ProphylaxisSessionExaminationForm>

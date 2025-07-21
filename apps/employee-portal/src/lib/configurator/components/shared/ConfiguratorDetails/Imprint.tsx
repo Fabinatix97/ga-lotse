@@ -15,7 +15,6 @@ export function Imprint(props: { module: ConfiguratorModuleName }) {
 
   return (
     <MarkdownFiles
-      mode="single"
       module={props.module}
       endpointName="IMPRINT_MARKDOWNS_CONFIG"
       fileName="IMPRINT"

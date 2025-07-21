@@ -12,6 +12,7 @@ import {
   SelectOption,
   SelectOptions,
 } from "@/lib/components/table/SelectOptions";
+import { canonicalColumnId } from "@/lib/hooks/useEntities";
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
 
 export function SingleSelectFilter(
@@ -27,12 +28,12 @@ export function SingleSelectFilter(
   const searchParams = useSearchParams();
 
   const selectProps: SelectProps<string, false> = {
-    value: searchParams.get(props.searchParamName),
+    value: searchParams.get(canonicalColumnId(props.searchParamName)),
     multiple: false,
     onChange(_event, value: string | null) {
       replaceSearchParams([
         {
-          name: props.searchParamName,
+          name: canonicalColumnId(props.searchParamName),
           value,
         },
       ]);
@@ -46,7 +47,7 @@ export function SingleSelectFilter(
         onReset={() => {
           replaceSearchParams([
             {
-              name: props.searchParamName,
+              name: canonicalColumnId(props.searchParamName),
               value: undefined,
             },
           ]);

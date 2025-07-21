@@ -20,7 +20,6 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.PageRequest.ofSize;
 import static org.springframework.data.jpa.domain.Specification.allOf;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
@@ -31,8 +30,6 @@ import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.BusinessModule;
@@ -147,7 +144,6 @@ public class ProcedureController<
   private final PersonApi personApi;
   private final UserHelper userHelper;
   private final ProcedureSearchService<ProcedureT> procedureSearchService;
-  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   public ProcedureController(
       BusinessModule businessModule,
@@ -159,8 +155,7 @@ public class ProcedureController<
       FacilityApi facilityApi,
       PersonApi personApi,
       UserHelper userHelper,
-      ProcedureSearchService<ProcedureT> procedureSearchService,
-      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      ProcedureSearchService<ProcedureT> procedureSearchService) {
     this.businessModule = businessModule;
     this.procedureRepository = procedureRepository;
     this.approvalRequestRepository = approvalRequestRepository;
@@ -171,7 +166,6 @@ public class ProcedureController<
     this.userHelper = userHelper;
     this.progressEntryRepository = progressEntryRepository;
     this.procedureSearchService = procedureSearchService;
-    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
   }
 
   @Override
@@ -188,7 +182,7 @@ public class ProcedureController<
     List<ProcedureT> recentProcedures =
         procedureRepository
             .findAll(
-                where(anyTaskIsAssignedToUser(userId)).and(statusIsIn(status)).and(typeIsIn(types)),
+                anyTaskIsAssignedToUser(userId).and(statusIsIn(status)).and(typeIsIn(types)),
                 ofSize(limit).withSort(Direction.DESC, MODIFIED_AT, ID))
             .stream()
             .toList();
@@ -227,7 +221,7 @@ public class ProcedureController<
 
     Page<ProcedureT> page =
         procedureRepository.findAll(
-            where(allOf(specifications)),
+            allOf(specifications),
             ofSize(paginationOptions.pageSize())
                 .withPage(paginationOptions.pageNumber())
                 .withSort(mapToSort(sortOptions)));
@@ -242,14 +236,6 @@ public class ProcedureController<
   @Override
   @Transactional(readOnly = true)
   public GetProceduresResponse searchProcedures(String query) {
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.SEARCH_PROCEDURES)) {
-      throw new IllegalStateException(
-          "New feature %s is not enabled".formatted(BaseFeature.SEARCH_PROCEDURES));
-    }
-
     List<ProcedureDto> enrichedProcedures =
         enrichingMapper.enrichAndMapProcedures(
             procedureSearchService.searchProcedures(query).procedures());
@@ -262,7 +248,7 @@ public class ProcedureController<
     ProcedureT procedure = resolveProcedureByExternalIdOrThrow(procedureId);
     List<ApprovalRequest<?>> approvalRequests =
         approvalRequestRepository.findAllByStatusIsOpenAndUserIsNotCurrent(
-            where(isAttachedToProcedure(procedure)));
+            isAttachedToProcedure(procedure));
 
     List<ApprovalRequestDto> approvalRequestDtos =
         approvalRequests.stream().map(approvalRequestMapper::toInterfaceType).toList();

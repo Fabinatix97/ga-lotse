@@ -89,7 +89,9 @@ public class FileValidator {
       }
 
       String fileContentType = file.getContentType();
-      if (StringUtils.isBlank(fileContentType)) {
+      if (fileContentType == null) {
+        // note: "" is accepted because some browsers fail to determine the type of a local file
+        // properly, resulting in a mime type "" in the upload request
         throw new BadRequestException("Missing content-type header");
       }
 

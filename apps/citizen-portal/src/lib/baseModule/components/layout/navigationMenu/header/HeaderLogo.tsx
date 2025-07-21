@@ -7,6 +7,7 @@ import { styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ComponentType, ImgHTMLAttributes } from "react";
 
+import { useTranslation } from "@/lib/i18n/client";
 import { useGetDepartmentLogo } from "@/lib/shared/api/queries/department";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";
 import { ScopedNavigationLink } from "@/lib/shared/components/scopedLinks";
@@ -28,12 +29,13 @@ const LogoImage = styled("img")(({ theme }) => ({
 export function HeaderLogo<TLogoImageProps>(
   props: HeaderLogoProps<TLogoImageProps>,
 ) {
+  const { t } = useTranslation("base/header");
   const departmentLogo = useGetDepartmentLogo();
   const LogoComponent = props.slots?.logoImage ?? LogoImage;
 
   return (
     <ScopedNavigationLink href="/" {...props.slotProps?.navLink}>
-      <LogoComponent src={departmentLogo.data} alt="logo" />
+      <LogoComponent src={departmentLogo.data} alt={t("home_link")} />
     </ScopedNavigationLink>
   );
 }

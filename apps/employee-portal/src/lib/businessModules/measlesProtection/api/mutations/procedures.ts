@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { isNullish } from "remeda";
 
 import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
@@ -75,7 +76,6 @@ export function useUpdateProcedureMutation({
     mutationFn: ({ id, data }: UpdateProcedureParams) => {
       return measlesProtectionApi.updateProcedure(id, data);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]), // reload all procedures for now
     onSuccess,
     onError,
   });
@@ -91,6 +91,7 @@ export function useSubmitDraftProcedureMutation({
   onError,
 }: MutationPassThrough<OpenProcedureParams, ApiOpenProcedureResponse>) {
   const measlesProtectionApi = useDraftProcedureApi();
+  const client = useQueryClient();
   return useHandledMutation({
     mutationFn: ({ id, data }: OpenProcedureParams) => {
       return measlesProtectionApi.openProcedure(id, {
@@ -101,8 +102,12 @@ export function useSubmitDraftProcedureMutation({
         roleStatus: data.roleStatus,
       });
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
-    onSuccess,
+    async onSuccess(data, variables, context) {
+      await client.invalidateQueries({
+        queryKey: measlesProtectionApiQueryKey(["procedures"]),
+      });
+      return onSuccess?.(data, variables, context);
+    },
     onError,
   });
 }
@@ -112,7 +117,6 @@ export function useCreateDraftProcedure() {
   const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: (data: ApiCreatePersonRequest) => api.createPerson(data),
-    mutationKey: measlesProtectionApiQueryKey(["createPerson"]),
     onSuccess: () => {
       snackbar.confirmation("Vorgang erfolgreich angelegt.");
     },
@@ -130,7 +134,6 @@ export function useAddCustodian() {
   return useHandledMutation({
     mutationFn: ({ procedureId, data }: AddCustodianParams) =>
       api.addCustodian(procedureId, data),
-    mutationKey: measlesProtectionApiQueryKey(["addCustodian"]),
     onSuccess: () => {
       snackbar.confirmation("Personensorgeberechtigte:r erfolgreich angelegt.");
     },
@@ -156,7 +159,6 @@ export function useEditCustodian() {
         custodianDetails: custodian,
       });
     },
-    mutationKey: measlesProtectionApiQueryKey(["editCustodian"]),
     onSuccess: () => {
       snackbar.confirmation("Änderungen an PSB erfolgreich gespeichert.");
     },
@@ -180,7 +182,6 @@ export function useSyncCustodian() {
     }: SyncCustodianParams): Promise<void> => {
       return api.syncCustodian(procedureId, custodianId, request);
     },
-    mutationKey: measlesProtectionApiQueryKey(["syncCustodian"]),
     onSuccess: () => {
       snackbar.confirmation("PSB erfolgreich synchronisiert.");
     },
@@ -213,7 +214,6 @@ export function useAddProofMutation({
         data.fileMetaData,
       );
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -247,7 +247,6 @@ export function useCreateProofRequestLetterMutation({
       });
       return createFile(response);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -272,7 +271,6 @@ export function useSaveProofRequestLetterMutation({
         })
         .then(unwrapRawResponse);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -292,7 +290,6 @@ export function useAddFineMutation({
     mutationFn: ({ id, data }: AddFineParams) => {
       return api.createMonetaryFine(id, data);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -312,7 +309,6 @@ export function useAddAccessRestrictionMutation({
     mutationFn: ({ id, data }: AddAccessRestrictionParams) => {
       return api.createAccessRestriction(id, data);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -340,7 +336,6 @@ export function useAddAccessRestrictionLetterMutation({
 
       return api.createAccessRestrictionLetter(id, data, file);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
   });
 }
@@ -364,7 +359,6 @@ export function useUpdateAccessRestrictionMutation({
         restrictionTerminationDate,
       });
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -420,7 +414,6 @@ export function useAddFacility() {
       const request = mapMeaslesFacilityToApiAddFacilityRequest(facility);
       return api.addFacility(procedureId, request);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess: () => {
       snackbar.confirmation("Einrichtung erfolgreich gespeichert.");
     },
@@ -444,7 +437,6 @@ export function useEditFacility() {
         mapDefaultFacilityFormValuesToApiPutFacilityRequest(facility);
       return api.editFacility(procedureId, request);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess: () => {
       snackbar.confirmation("Einrichtung erfolgreich bearbeitet.");
     },
@@ -466,7 +458,6 @@ export function useSyncFacility() {
     }: SyncFacilityParams): Promise<void> => {
       return api.syncFacility(procedureId, request);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess: () => {
       snackbar.confirmation("Einrichtungsdaten erfolgreich synchronisiert.");
     },
@@ -490,7 +481,6 @@ export function useUpdateCaseStatusMutation({
     mutationFn: ({ procedureId, data }: UpdateCaseStatusParams) => {
       return api.updateCaseStatus(procedureId, data);
     },
-    mutationKey: measlesProtectionApiQueryKey(["procedures"]),
     onSuccess,
     onError,
   });
@@ -510,7 +500,6 @@ export function useEditAffectedPerson() {
         affectedPersonDetails: person,
       });
     },
-    mutationKey: measlesProtectionApiQueryKey(["editAffectedPerson"]),
     onSuccess: () => {
       snackbar.confirmation("Betroffene Person erfolgreich bearbeitet.");
     },
@@ -532,7 +521,6 @@ export function useSyncAffectedPerson() {
     }: SyncAffectedPersonParams): Promise<void> => {
       return api.syncAffectedPerson(procedureId, request);
     },
-    mutationKey: measlesProtectionApiQueryKey(["syncAffectedPerson"]),
     onSuccess: () => {
       snackbar.confirmation("Personendaten erfolgreich synchronisiert.");
     },

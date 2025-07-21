@@ -11,32 +11,36 @@ import { usePresence } from "@/lib/businessModules/chat/shared/hooks/usePresence
 import { Presence } from "@/lib/businessModules/chat/shared/types";
 
 export function useGetSelfUserPresence() {
-  const { canAccessChat, userSettings } = useChat();
-  const { matrixClient } = useContext(ChatClientContext) ?? {};
+  const { userSettings, canAccessChat } = useChat();
+  const { matrixClient, isClientPrepared } =
+    useContext(ChatClientContext) ?? {};
   const loggedInUserId = matrixClient?.getUserId();
   const { usersPresence } = usePresence(loggedInUserId ?? undefined);
 
   const isChatEnabled =
     canAccessChat &&
     userSettings.chatUsageEnabled &&
-    matrixClient &&
     !userSettings.accountDeactivated;
 
   return useMemo(() => {
-    let userPresence: Presence | undefined = undefined;
-    const sharePresence = userSettings.sharePresence;
-
-    if (isChatEnabled && userSettings.sharePresence) {
-      userPresence = usersPresence[loggedInUserId ?? ""];
+    let presence: Presence | undefined;
+    if (!isClientPrepared) {
+      presence = "offline";
+    } else if (!userSettings.sharePresence) {
+      presence = "disabled";
+    } else {
+      presence = usersPresence[loggedInUserId ?? ""] ?? "offline";
     }
+
     return {
-      userPresence,
-      sharePresence: Boolean(sharePresence && isChatEnabled),
+      userPresence: presence,
+      isChatEnabled,
     };
   }, [
-    isChatEnabled,
     loggedInUserId,
     userSettings.sharePresence,
     usersPresence,
+    isChatEnabled,
+    isClientPrepared,
   ]);
 }

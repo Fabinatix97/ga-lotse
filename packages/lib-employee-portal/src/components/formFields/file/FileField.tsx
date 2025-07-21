@@ -15,7 +15,7 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
-import { isDefined, isFunction, isString } from "remeda";
+import { isDefined, isFunction } from "remeda";
 
 import {
   ExternalLink,
@@ -36,18 +36,16 @@ const HiddenInput = styled("input")({ display: "none" });
 
 const DEFAULT_PLACEHOLDER = "Datei auswählen";
 
-function resolveAcceptedFileTypes(
-  accept: FileType | FileType[] | undefined,
-): FileType[] {
-  if (accept === undefined) {
+function toArray<T>(value: T | T[] | undefined): T[] {
+  if (value === undefined) {
     return [];
   }
 
-  if (Array.isArray(accept)) {
-    return accept;
+  if (Array.isArray(value)) {
+    return value;
   }
 
-  return [accept];
+  return [value];
 }
 
 function renderLabel(
@@ -81,7 +79,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const acceptsPdf = [props.accept].flat().includes(FileType.Pdf);
   const validateFileType = useValidateFileType();
   const validateFile = useValidateFile();
-  const acceptedFileTypes = resolveAcceptedFileTypes(props.accept);
+  const acceptedFileTypes = toArray(props.accept);
   const fileTypeErrorVal = validateFileType(acceptedFileTypes);
   const validate = validatePipe(
     fileTypeErrorVal,
@@ -94,15 +92,16 @@ export function FileField(props: Readonly<FileFieldProps>) {
   const field = useBaseField<File | null>({ ...props, validate });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputId = useId();
-  const acceptedMimeTypes =
+  const acceptString =
     acceptedFileTypes.length > 0
-      ? acceptedFileTypes
-          .flatMap((fileType) =>
-            isString(fileType.mimeType)
-              ? [fileType.mimeType]
-              : fileType.mimeType,
-          )
-          .join(", ")
+      ? [
+          ...acceptedFileTypes.flatMap((fileType) =>
+            toArray(fileType.mimeType),
+          ),
+          ...acceptedFileTypes.flatMap((fileType) =>
+            fileType.extensions.map((it) => `.${it}`),
+          ),
+        ].join(", ")
       : undefined;
   const fileName = field.input.value?.name;
   const placeholder = props.placeholder ?? DEFAULT_PLACEHOLDER;
@@ -152,7 +151,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
             type="file"
             name={props.name}
             placeholder={placeholder}
-            accept={acceptedMimeTypes}
+            accept={acceptString}
             required={field.required}
             tabIndex={-1}
             onChange={handleChange}

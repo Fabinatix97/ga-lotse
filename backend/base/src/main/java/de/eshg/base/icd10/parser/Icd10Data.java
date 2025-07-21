@@ -5,6 +5,7 @@
 
 package de.eshg.base.icd10.parser;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public record Icd10Data(List<Icd10Group> groups, List<Icd10Code> codes) {
@@ -15,13 +16,14 @@ public record Icd10Data(List<Icd10Group> groups, List<Icd10Code> codes) {
     }
   }
 
-  public record Icd10Code(String code, String codeWithoutDot, String group, String title) {
+  public record Icd10Code(
+      @JsonProperty("code") String originalCode,
+      @JsonProperty("codeWithoutDot") String code,
+      String group,
+      String title) {
     static Icd10Code fromCode(de.eshg.base.icd10.persistence.entity.Icd10Code code) {
       return new Icd10Code(
-          code.getCode(),
-          code.getCodeWithoutDot(),
-          code.getGroup().getGroupStart(),
-          code.getTitle());
+          code.getOriginalCode(), code.getCode(), code.getGroup().getGroupStart(), code.getTitle());
     }
   }
 }

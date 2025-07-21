@@ -5,7 +5,8 @@
 
 package de.eshg.x509;
 
-import de.eshg.servicedirectory.util.X509Utils;
+import static de.eshg.servicedirectory.util.X509Utils.getSignatureAlgorithm;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -142,7 +143,8 @@ public class CertificateTestUtil {
 
   private static ContentSigner getContentSigner(KeyPair keyPair) {
     try {
-      return new JcaContentSignerBuilder(X509Utils.SIGNATURE_ALGORITHM).build(keyPair.getPrivate());
+      String signatureAlgorithm = getSignatureAlgorithm(keyPair);
+      return new JcaContentSignerBuilder(signatureAlgorithm).build(keyPair.getPrivate());
     } catch (OperatorCreationException e) {
       throw new UnsupportedOperationException(e);
     }

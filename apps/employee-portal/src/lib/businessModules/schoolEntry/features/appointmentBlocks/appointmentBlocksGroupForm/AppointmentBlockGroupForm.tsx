@@ -14,10 +14,7 @@ import {
   FormSheet,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
-import {
-  ApiAppointmentType,
-  ApiLocationSelectionMode,
-} from "@eshg/school-entry-api";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
@@ -26,12 +23,10 @@ import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentLocationSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentLocationSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
   appointmentTypes: AppointmentTypeConfig[],
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
 ) {
   const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
   const examinationDurations = mapToObj(
@@ -61,21 +56,11 @@ function validateForm(
     errors.mfas = msg;
   }
 
-  if (
-    values.types.length > 1 &&
-    allowedAppointmentTypeCombinations.every(
-      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
-    )
-  ) {
-    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
-  }
-
   return errors;
 }
 
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
   allAppointmentTypes: AppointmentTypeConfig[];
   allPhysicians: ApiUser[];
@@ -87,7 +72,7 @@ interface AppointmentBlockGroupFormProps {
 }
 
 export function AppointmentBlockGroupForm(
-  props: AppointmentBlockGroupFormProps,
+  props: Readonly<AppointmentBlockGroupFormProps>,
 ) {
   const physicianOptions = props.allPhysicians.map((option) => ({
     userId: option.userId,
@@ -104,13 +89,7 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) =>
-        validateForm(
-          values,
-          props.allAppointmentTypes,
-          props.allowedAppointmentTypeCombinations,
-        )
-      }
+      validate={(values) => validateForm(values, props.allAppointmentTypes)}
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

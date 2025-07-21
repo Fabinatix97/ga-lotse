@@ -5,6 +5,8 @@
 
 package de.eshg.inspection.inspection;
 
+import com.google.common.base.Objects;
+import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
@@ -18,8 +20,12 @@ import de.eshg.inspection.checklist.persistence.Checklist;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersionRepository;
 import de.eshg.inspection.facility.FacilityClient;
+import de.eshg.inspection.facility.FacilityFileNumberConfiguration;
+import de.eshg.inspection.facility.FileNumberCollisionService;
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.inspection.api.FinalizeInspectionRequest;
+import de.eshg.inspection.inspection.api.GetFileNumberCollisionsResponse;
+import de.eshg.inspection.inspection.api.InspectionAndFileNumberCollisionsDto;
 import de.eshg.inspection.inspection.api.InspectionAvailableCLDVersionsResponse;
 import de.eshg.inspection.inspection.api.InspectionAvailablePLDRevisionsResponse;
 import de.eshg.inspection.inspection.api.InspectionDto;
@@ -97,6 +103,8 @@ public class InspectionService {
   private final FacilityClient facilityClient;
   private final PacklistService packlistService;
   private final InboxProcedureService inboxProcedureService;
+  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
+  private final FileNumberCollisionService fileNumberCollisionService;
 
   public InspectionService(
       InspectionRepository inspectionRepository,
@@ -111,7 +119,9 @@ public class InspectionService {
       AuditLogger auditLogger,
       FacilityClient facilityClient,
       PacklistService packlistService,
-      InboxProcedureService inboxProcedureService) {
+      InboxProcedureService inboxProcedureService,
+      FacilityFileNumberConfiguration facilityFileNumberConfiguration,
+      FileNumberCollisionService fileNumberCollisionService) {
     this.inspectionRepository = inspectionRepository;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.objectTypeRepository = objectTypeRepository;
@@ -125,9 +135,12 @@ public class InspectionService {
     this.facilityClient = facilityClient;
     this.packlistService = packlistService;
     this.inboxProcedureService = inboxProcedureService;
+    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
+    this.fileNumberCollisionService = fileNumberCollisionService;
   }
 
-  public InspectionDto startInspection(UUID externalId, StartInspectionRequest request) {
+  public InspectionAndFileNumberCollisionsDto startInspection(
+      UUID externalId, StartInspectionRequest request) {
     Inspection inspection = loadInspection(externalId);
     if (inspection.getProcedureStatus() != ProcedureStatus.DRAFT) {
       throw new BadRequestException(ErrorCode.CONFLICT, "This procedure is not in status DRAFT.");
@@ -165,7 +178,10 @@ public class InspectionService {
       inspectionMapper.addChecklistVersionToInspection(versions.getFirst(), inspection);
     }
 
-    return inspectionMapper.mapToDto(inspection);
+    return new InspectionAndFileNumberCollisionsDto(
+        inspectionMapper.mapToDto(inspection),
+        fileNumberCollisionService.getPossibleFileNumberCollisionsForFileState(
+            inspection.getCentralFileStateId(), true));
   }
 
   public Inspection createDraftInspection(Facility facility) {
@@ -373,7 +389,7 @@ public class InspectionService {
         inspection, packlistId, packlistElementId, request.checked());
   }
 
-  public InspectionDto syncInspectionFacilityFileState(
+  public InspectionAndFileNumberCollisionsDto syncInspectionFacilityFileState(
       UUID inspectionExternalId, InspectionSyncFileStateRequest request) {
     Inspection inspection = loadInspectionForUpdate(inspectionExternalId);
     GetFacilityFileStateResponse baseFacility =
@@ -381,12 +397,39 @@ public class InspectionService {
             inspection.getRelatedFacility().getCentralFileStateId());
     UUID previousFacilityFileStateId = inspection.getRelatedFacility().getCentralFileStateId();
 
+    String fileNumberBefore =
+        facilityClient
+            .getFacilityFileNumber(
+                inspection.getCentralFileStateId(), facilityFileNumberConfiguration.getMethod())
+            .fileNumber();
+
     AddFacilityFileStateResponse baseResponse =
         facilityClient.syncFacilityFileState(
             inspection.getCentralFileStateId(), request.facilityVersion());
 
+    String fileNumberAfter =
+        facilityClient
+            .getFacilityFileNumber(baseResponse.id(), facilityFileNumberConfiguration.getMethod())
+            .fileNumber();
+
     inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());
     inspection.getFacility().setCentralFileStateId(baseResponse.id());
+
+    GetFileNumberCollisionsResponse fileNumberCollisionsResponse = null;
+    if (!Objects.equal(fileNumberBefore, fileNumberAfter)) {
+      inspection.setFileNumberSuffix(null);
+
+      if (fileNumberAfter != null
+          && baseResponse.contactAddress() instanceof DomesticAddressDto domesticAddress) {
+        fileNumberCollisionsResponse =
+            fileNumberCollisionService.getPossibleFileNumberCollisionsForFileState(
+                baseResponse.id(),
+                domesticAddress.postalCode(),
+                domesticAddress.street(),
+                domesticAddress.houseNumber(),
+                true);
+      }
+    }
 
     if (!baseFacility.contactAddress().equals(baseResponse.contactAddress())) {
       createProgressEntryForSyncFacility(
@@ -395,7 +438,14 @@ public class InspectionService {
       createProgressEntryForSyncFacility(inspection, previousFacilityFileStateId);
     }
 
-    return inspectionMapper.mapToDto(inspection);
+    return new InspectionAndFileNumberCollisionsDto(
+        inspectionMapper.mapToDto(inspection), fileNumberCollisionsResponse);
+  }
+
+  public GetFileNumberCollisionsResponse getFileNumberCollisionsForInspection(UUID externalId) {
+    Inspection inspection = loadInspection(externalId);
+    return fileNumberCollisionService.getPossibleFileNumberCollisionsForFileState(
+        inspection.getCentralFileStateId(), false);
   }
 
   private ObjectType loadObjectType(UUID objectTypeId) {

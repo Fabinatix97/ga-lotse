@@ -136,6 +136,8 @@ tasks.register('updateLockfile', PnpmTask) {
 }
 
 tasks.register('updateDependencies', PnpmTask) {
+  dependsOn 'updateSvgSanitizer'
+  dependsOn 'updatePerformanceTestPdf2Json'
   group = 'maintenance'
   description = "Update ALL npm dependencies to the latest release"
   inputs.files depsInputs
@@ -146,11 +148,29 @@ tasks.register('updateDependencies', PnpmTask) {
   args = ['dlx', 'taze', 'major', '--write', '--update', '--recursive', '--include-locked']
 }
 
+tasks.register('updateSvgSanitizer', PnpmTask) {
+  group = 'maintenance'
+  description = 'Update ALL npm dependencies of the svg-sanitizer to the latest release'
+  workingDir =  rootProject.layout.projectDirectory.dir('backend/svg-sanitizer/resources')
+  args = ['dlx', 'taze', 'major', '--write', '--update', '--include-locked']
+}
+
+tasks.register('updatePerformanceTestPdf2Json', PnpmTask) {
+  group = 'maintenance'
+  description = 'Update ALL npm dependencies of the pdf2json package to the latest release'
+  workingDir =  rootProject.layout.projectDirectory.dir('performance-test/src/infrastructure/pdf2json')
+  args = ['dlx', 'taze', 'major', '--write', '--update', '--include-locked']
+}
+
 tasks.register('outdatedDependencies', PnpmTask) {
   group = 'maintenance'
   description = 'List all outdated npm dependencies'
-  inputs.files depsInputs
-  outputs.upToDateWhen { true }
+  args = ['outdated', '--recursive']
+}
+
+tasks.register('dedupeDependencies', PnpmTask) {
+  group = 'maintenance'
+  description = 'Remove older dependencies in the lockfile if a newer version can be used.'
   args = ['outdated', '--recursive']
 }
 

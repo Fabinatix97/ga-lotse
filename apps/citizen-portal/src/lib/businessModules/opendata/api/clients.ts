@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Configuration,
-  OpenDataFeatureTogglesApi,
-  OpenDataPublicCitizenApi,
-} from "@eshg/opendata-api";
+import { Configuration, OpenDataPublicCitizenApi } from "@eshg/opendata-api";
 
 import { useCitizenPortalApiConfiguration } from "@/lib/shared/api/useCitizenPortalApiConfiguration";
 
@@ -20,8 +16,4 @@ function useConfiguration() {
 
 export function useOpenDataPublicCitizenApi() {
   return new OpenDataPublicCitizenApi(useConfiguration());
-}
-
-export function useOpenDataFeatureTogglesApi() {
-  return new OpenDataFeatureTogglesApi(useConfiguration());
 }

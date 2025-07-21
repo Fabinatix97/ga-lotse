@@ -9,7 +9,6 @@ import de.eshg.domain.model.serialization.ZipEditor;
 import de.eshg.domain.model.serialization.ZipFileWrapper;
 import de.eshg.lib.procedure.gdpr.AbstractGdprZipEditorProvider;
 import java.util.Set;
-import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -24,14 +23,13 @@ public class InspectionGdprZipEditorProvider extends AbstractGdprZipEditorProvid
 
   @Override
   public ZipEditor createSpecificFilter() {
-    return (jsonNode, zipFile) ->
-        filterFiles(zipFile, InspectionGdprZipEditorProvider::isNotReportPdf);
+    return ZipEditor.makePostProcessor(this::filterFiles);
   }
 
-  private static void filterFiles(ZipFileWrapper zipFile, Predicate<String> predicate) {
+  private void filterFiles(ZipFileWrapper zipFile) {
     Set<String> fileNames = Set.copyOf(zipFile.getFileNames());
     for (String fileName : fileNames) {
-      if (predicate.test(fileName)) {
+      if (isNotReportPdf(fileName)) {
         zipFile.removeEntry(fileName);
       }
     }

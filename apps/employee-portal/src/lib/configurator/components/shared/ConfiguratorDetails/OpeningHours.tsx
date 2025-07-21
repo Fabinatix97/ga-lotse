@@ -73,8 +73,8 @@ export function OpeningHours(props: { module: ConfiguratorModuleName }) {
                 Geben Sie Wochentag und Zeitfenster separat an.
               </ListItem>
               <ListItem>
-                Lassen Sie einzelne Eingabefelder pro Zeile frei, um Leeräume zu
-                erzeugen.
+                Lassen Sie einzelne Eingabefelder pro Zeile frei, um Leerräume
+                zu erzeugen.
               </ListItem>
               <ListItem>
                 Definieren Sie optional Zusatzinformationen wie Angaben zur

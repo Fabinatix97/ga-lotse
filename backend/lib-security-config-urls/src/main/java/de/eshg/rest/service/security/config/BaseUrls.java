@@ -306,7 +306,6 @@ public final class BaseUrls {
   public static final class OpenData {
     public static final String OPEN_DATA_CONTROLLER = "/open-documents";
     public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
-    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 
     private OpenData() {}
   }

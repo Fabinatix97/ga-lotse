@@ -22,6 +22,7 @@ import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import {
   ChatPanelView,
   CommunicationType,
+  MobileView,
 } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
@@ -41,12 +42,14 @@ interface ChatPanelProps {
   roomId: string | null;
   chatPanelView: ChatPanelView;
   setChatPanelView: (viewType: ChatPanelView) => void;
+  setMobileView: (viewType: MobileView) => void;
 }
 
 export function ChatPanel({
   roomId,
   chatPanelView,
   setChatPanelView,
+  setMobileView,
 }: Readonly<ChatPanelProps>) {
   const {
     userSettings: { showTypingNotification, showReadConfirmation },
@@ -136,6 +139,11 @@ export function ChatPanel({
     }
   }, [chatPanelView, departmentInfo?.name, loggedInUserId, matrixClient]);
 
+  function handleCancelNewChat() {
+    setMobileView(MobileView.RoomList);
+    setChatPanelView(ChatPanelView.NoChatSelected);
+  }
+
   if (isNonNullish(alert)) {
     return (
       <Box sx={{ paddingRight: SIDEBAR_PADDING, paddingLeft: SIDEBAR_PADDING }}>
@@ -149,7 +157,7 @@ export function ChatPanel({
   if (chatPanelView === ChatPanelView.NewDirectChat) {
     return (
       <NewDirectChat
-        cancel={() => setChatPanelView(ChatPanelView.NoChatSelected)}
+        cancel={handleCancelNewChat}
         userList={userList}
         setChatPanelView={setChatPanelView}
       />
@@ -158,7 +166,7 @@ export function ChatPanel({
   if (chatPanelView === ChatPanelView.NewGroupChat) {
     return (
       <NewGroupChat
-        cancel={() => setChatPanelView(ChatPanelView.NoChatSelected)}
+        cancel={handleCancelNewChat}
         userList={userList}
         setChatPanelView={setChatPanelView}
       />
@@ -167,7 +175,7 @@ export function ChatPanel({
   if (roomId && roomWithCommunicationType) {
     return (
       <>
-        <ChatPanelHeader roomId={roomId} />
+        <ChatPanelHeader roomId={roomId} setMobileView={setMobileView} />
         <Box
           sx={{
             height: `calc(100% - ${chatColumnHeaderHeight})`,

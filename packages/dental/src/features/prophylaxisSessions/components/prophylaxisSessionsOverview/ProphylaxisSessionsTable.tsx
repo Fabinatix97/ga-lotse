@@ -41,7 +41,7 @@ import {
 import { CreateProphylaxisSessionButton } from "./tableButtons";
 
 const INITIAL_SORTING: ColumnSort = {
-  id: "id",
+  id: "dateAndTime",
   desc: true,
 };
 
@@ -136,7 +136,7 @@ export function ProphylaxisSessionsTable() {
           columns={columnDefs(handleDelete)}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
-          minWidth={1200}
+          minWidth={1210}
           rowNavigation={{
             route: (row) =>
               routes.prophylaxisSessions.byId(row.original.id).details,
@@ -203,7 +203,7 @@ function columnDefs(
       cell: (props) => formatBoolean(props.getValue()),
       enableSorting: true,
       meta: {
-        width: 180,
+        width: 195,
         canNavigate: { parentRow: true },
       },
     }),
@@ -212,7 +212,7 @@ function columnDefs(
       cell: (props) => formatFluoridationVarnishDescription(props.getValue()),
       enableSorting: true,
       meta: {
-        width: 120,
+        width: 145,
         canNavigate: { parentRow: true },
       },
     }),

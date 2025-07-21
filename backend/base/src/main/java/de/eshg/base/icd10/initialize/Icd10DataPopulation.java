@@ -63,8 +63,8 @@ public class Icd10DataPopulation {
 
             for (Icd10Data.Icd10Code code : icd10Data.codes()) {
               Icd10Code persistentCode = new Icd10Code();
+              persistentCode.setOriginalCode(code.originalCode());
               persistentCode.setCode(code.code());
-              persistentCode.setCodeWithoutDot(code.codeWithoutDot());
               persistentCode.setTitle(code.title());
               persistentCode.setGroup(
                   icd10GroupRepository

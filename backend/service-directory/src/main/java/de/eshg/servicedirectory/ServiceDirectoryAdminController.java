@@ -8,20 +8,16 @@ package de.eshg.servicedirectory;
 import static de.eshg.servicedirectory.ServiceDirectoryCommitService.handleMissingEntitiesError;
 
 import de.eshg.libservicedirectoryadminapi.ServiceDirectoryAdminApi;
+import de.eshg.libservicedirectoryadminapi.api.GetEntitiesResponse;
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
-import de.eshg.libservicedirectoryadminapi.api.actor.ActorMetadataDto;
-import de.eshg.libservicedirectoryadminapi.api.actor.GetApplicableActorsResponse;
 import de.eshg.libservicedirectoryadminapi.api.actor.PartialActorDto;
 import de.eshg.libservicedirectoryadminapi.api.audit.GetRevisionsResponse;
 import de.eshg.libservicedirectoryadminapi.api.audit.GetUsernamesResponse;
 import de.eshg.libservicedirectoryadminapi.api.audit.RevisionDto;
 import de.eshg.libservicedirectoryadminapi.api.impex.ExportResponse;
 import de.eshg.libservicedirectoryadminapi.api.impex.ImportRequest;
-import de.eshg.libservicedirectoryadminapi.api.orgunit.GetOrgUnitsResponse;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.PartialOrgUnitDto;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetActiveApplicableRulesResponse;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetRulesResponse;
 import de.eshg.libservicedirectoryadminapi.api.rule.PartialRuleDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
@@ -95,13 +91,8 @@ public class ServiceDirectoryAdminController implements ServiceDirectoryAdminApi
   }
 
   @Override
-  public ActorMetadataDto getActorMetadataByActorId(UUID actorId) {
-    return serviceDirectoryAdminService.getActorMetadataByActorId(actorId);
-  }
-
-  @Override
-  public GetOrgUnitsResponse getAllOrgUnits() {
-    return serviceDirectoryReadService.getAllOrgUnits();
+  public GetEntitiesResponse getAllEntities() {
+    return serviceDirectoryReadService.getAllEntities();
   }
 
   @Override
@@ -127,41 +118,6 @@ public class ServiceDirectoryAdminController implements ServiceDirectoryAdminApi
   @Override
   public OrgUnitDto activateOrgUnitById(UUID id) {
     return serviceDirectoryAdminService.activateOrgUnitById(id);
-  }
-
-  @Override
-  public GetRulesResponse getAllRules() {
-    return serviceDirectoryReadService.getAllRules();
-  }
-
-  @Override
-  public GetRulesResponse getAllActiveRules() {
-    return serviceDirectoryReadService.getAllActiveRules();
-  }
-
-  @Override
-  public GetActiveApplicableRulesResponse getAllActiveAuditedRulesApplicableToActor(UUID actorId) {
-    return serviceDirectoryReadService.getAllActiveAuditedRulesApplicableToActor(actorId);
-  }
-
-  @Override
-  public GetApplicableActorsResponse getActorsThatAreClientInRule(UUID ruleId) {
-    return serviceDirectoryReadService.getActorsThatAreClientInRule(ruleId);
-  }
-
-  @Override
-  public GetApplicableActorsResponse getActorsThatAreServerInRule(UUID ruleId) {
-    return serviceDirectoryReadService.getActorsThatAreServerInRule(ruleId);
-  }
-
-  @Override
-  public GetApplicableActorsResponse getClientActorsForActor(UUID actorId) {
-    return serviceDirectoryReadService.getClientActorsForActor(actorId);
-  }
-
-  @Override
-  public GetApplicableActorsResponse getServerActorsForActor(UUID actorId) {
-    return serviceDirectoryReadService.getServerActorsForActor(actorId);
   }
 
   @Override

@@ -257,6 +257,16 @@ public class FacilityController implements FacilityApi {
         facilityService.getFacilityFileNumber(fileStateId, method));
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public SearchFacilityFileStatesByFileNumberResponse getFacilityFileStatesByFileNumber(
+      String fileNumber, String method) {
+    return new SearchFacilityFileStatesByFileNumberResponse(
+        facilityService.searchByFacilityFileNumber(fileNumber, method).stream()
+            .map(FacilityController::mapFacilityToGetFacilityFileStateResponse)
+            .toList());
+  }
+
   private Facility findReferenceFacility(UUID id) {
     return facilityRepository
         .findReferenceFacilityByFileStateExternalId(id)

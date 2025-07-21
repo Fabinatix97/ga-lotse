@@ -51,9 +51,7 @@ public class BaseInternalSecurityConfig {
       auth.requestMatchers(POST, InventoryApi.BASE_URL + "/*" + InventoryApi.BOOKING + "/**")
           .hasRole(EmployeePermissionRole.BASE_INVENTORY_USE.name());
       auth.requestMatchers(POST, ContactApi.BASE_URL + BaseUrls.Base.BULK_GET_URL_END)
-          .hasAnyRole(
-              EmployeePermissionRole.BASE_CONTACTS_READ.name(),
-              EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
+          .hasRole(EmployeePermissionRole.BASE_CONTACTS_READ.name());
       auth.requestMatchers(PUT, LabelApi.BASE_URL + "/**")
           .hasRole(EmployeePermissionRole.BASE_LABELS_WRITE.name());
 
@@ -141,9 +139,7 @@ public class BaseInternalSecurityConfig {
           auth) {
     auth.requestMatchers(
             POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + BaseUrls.Base.BULK_GET_URL_END)
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_PERSONS_READ.name(),
-            EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
+        .hasRole(EmployeePermissionRole.BASE_PERSONS_READ.name());
     auth.requestMatchers(POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + ARCHIVE_DELETION)
         .hasRole(EmployeePermissionRole.BASE_PERSONS_DELETE.name());
 
@@ -157,13 +153,7 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(GET, BaseUrls.Base.PERSON_API + PersonApi.FILE_STATES_URL + "/*")
         .hasAnyRole(
             EmployeePermissionRole.BASE_PERSONS_READ.name(),
-            CitizenPermissionRole.ACCESS_CODE_USER.name(),
-            EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
-
-    auth.requestMatchers(GET, BaseUrls.Base.PERSON_API + PersonApi.FILE_STATES_URL + "/**")
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_PERSONS_READ.name(),
-            EmployeePermissionRole.PROCEDURE_ARCHIVE.name());
+            CitizenPermissionRole.ACCESS_CODE_USER.name());
 
     auth.requestMatchers(POST, PersonApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.name());

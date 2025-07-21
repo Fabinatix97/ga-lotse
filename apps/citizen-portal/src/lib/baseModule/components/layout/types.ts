@@ -8,18 +8,42 @@ import { Dispatch, SetStateAction } from "react";
 
 export type NavigationState =
   | { type: "closed" }
-  | { type: "main-menu" }
-  | { type: "sub-menu"; selectedMainItem: NavigationItem }
+  | { type: "topic-menu" }
   | { type: "language" };
 
-export interface NavigationItem {
-  name: string;
-  subItems: SubNavigationItem[];
+export const ModuleCategory = {
+  ChildAndYouthHealth: "child_and_youth_health",
+  InfectiousDiseases: "infectious_diseases",
+  MentalHealth: "mental_health",
+  Hygiene: "hygiene",
+  DentalHealth: "dental_health",
+};
+export type ModuleCategory =
+  (typeof ModuleCategory)[keyof typeof ModuleCategory];
+
+export interface ModuleNavigationItem {
+  category?: ModuleCategory;
+  navigationItem: NavigationItem;
 }
 
-export interface SubNavigationItem {
+export type NavigationItem = NavigationCategory | NavigationLink;
+
+export type NavigationCategory = NavigationGroup<NavigationItem>;
+
+export interface NavigationGroup<TItem> {
   name: string;
-  description?: string;
+  items: TItem[];
+}
+
+export interface NavigationLink {
+  name: string;
+  href: string;
+}
+
+export type NavigationCards = NavigationGroup<NavigationCardItem>;
+
+export interface NavigationCardItem {
+  name: string;
   href: string;
   icon: SvgIconComponent;
 }
@@ -31,4 +55,8 @@ export interface NavigationProps {
   setNavigationState: Dispatch<SetStateAction<NavigationState>>;
   navigationItems: NavigationItem[];
   userType: UserType;
+}
+
+export function isNavigationLink(item: NavigationItem): item is NavigationLink {
+  return "href" in item;
 }

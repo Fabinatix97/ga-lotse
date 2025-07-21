@@ -12,6 +12,7 @@ import { useUnreadNotificationsPerRoom } from "@/lib/businessModules/chat/shared
 import {
   ChatPanelView,
   InfoPanelView,
+  MobileView,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
@@ -20,6 +21,7 @@ import { RoomData } from "@/lib/businessModules/chat/shared/types";
 interface RoomListProps {
   roomList: RoomData[];
   setChatPanelView: (viewType: ChatPanelView) => void;
+  setMobileView: (viewType: MobileView) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }
@@ -27,6 +29,7 @@ interface RoomListProps {
 export function RoomList({
   roomList,
   setChatPanelView,
+  setMobileView,
   searchQuery,
   setSearchQuery,
 }: Readonly<RoomListProps>) {
@@ -57,6 +60,7 @@ export function RoomList({
               onClick={() => {
                 setRoomIdParam(data.room.roomId);
                 setChatPanelView(ChatPanelView.ChatMessages);
+                setMobileView(MobileView.ChatMessages);
                 setSearchQuery("");
                 if (infoPanelState.isOpen) {
                   setInfoPanelView(InfoPanelView.RoomInfo, data.room.roomId);

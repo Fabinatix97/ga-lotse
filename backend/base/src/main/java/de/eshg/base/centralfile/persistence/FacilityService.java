@@ -19,6 +19,7 @@ import de.eshg.base.centralfile.CentralFileAuditLogger;
 import de.eshg.base.centralfile.api.DiffDto;
 import de.eshg.base.centralfile.api.facility.*;
 import de.eshg.base.centralfile.mapper.FacilityMapper;
+import de.eshg.base.centralfile.persistence.FacilityFileNumberService.StreetNameHouseNumberAndPostalCode;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.FacilitySearchSpecification;
@@ -470,8 +471,8 @@ public class FacilityService {
     Facility facility = facilityRepository.findFileStateByExternalId(fileStateId).orElseThrow();
 
     switch (method) {
-      case "DEFAULT":
-        return facilityFileNumberService.calculateFacilityFileNumberDefault();
+      case "NO_FILE_NUMBERS":
+        return facilityFileNumberService.calculateFacilityFileNumberNoFileNumbers();
       case "INSPECTION_FRANKFURT":
         FacilityAddress address = facility.getContactAddress();
 
@@ -483,6 +484,24 @@ public class FacilityService {
         } else {
           return null;
         }
+      default:
+        throw new IllegalArgumentException("Unknown file number calculation method: " + method);
+    }
+  }
+
+  public List<Facility> searchByFacilityFileNumber(String fileNumber, String method) {
+    switch (method) {
+      case "DEFAULT":
+        return Collections.emptyList();
+      case "INSPECTION_FRANKFURT":
+        StreetNameHouseNumberAndPostalCode address =
+            facilityFileNumberService.getAddressFromFileNumberForInspectionFrankfurt(fileNumber);
+        if (address == null) {
+          return Collections.emptyList();
+        }
+        return facilityRepository.findFileStatesByAddress(
+            address.streetName(), address.houseNumber(), address.postalCode());
+
       default:
         throw new IllegalArgumentException("Unknown file number calculation method: " + method);
     }

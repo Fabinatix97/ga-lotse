@@ -32,8 +32,6 @@ public class OfficialMedicalServicePublicSecurityConfig
     requestMatchers(
             BaseUrls.OfficialMedicalService.EMPLOYEE_API + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
-        .hasAnyRole(
-            EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN,
-            EmployeePermissionRole.PROCEDURE_ARCHIVE);
+        .hasRole(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
   }
 }

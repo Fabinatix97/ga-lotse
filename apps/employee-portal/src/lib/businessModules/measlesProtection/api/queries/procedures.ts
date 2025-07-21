@@ -71,7 +71,7 @@ export function getProcedureQuery(
   return queryOptions({
     queryFn: ({ signal }) =>
       protectionProcedureApi.getProcedure(procedureId, { signal }),
-    queryKey: measlesProtectionApiQueryKey(["getProcedure", procedureId]),
+    queryKey: measlesProtectionApiQueryKey(["procedures", procedureId]),
   });
 }
 

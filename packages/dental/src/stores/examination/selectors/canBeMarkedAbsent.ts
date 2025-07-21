@@ -53,6 +53,7 @@ const examinationFormValuesEmptinessRules: EmptinessRules<ExaminationFormValues>
     calculus: (value) => !value,
     gingivitis: (value) => !value,
     parodontitis: (value) => !value,
+    blackStain: (value) => !value,
     note: () => true,
     individualProphylaxis: (value) => !value,
     fissureSealing: (value) => !value,

@@ -23,6 +23,7 @@ import {
   APPOINTMENT_PICKER_FIELD_LABELS_DE,
   Alert,
   AppointmentPickerField,
+  DetailsList,
   NumberField,
   SelectField,
   isDateCurrentDateOrGreater,
@@ -486,14 +487,16 @@ function AppointmentBlockForm({
 function AssignedPhysician({ physician }: { physician?: ApiUser }) {
   return (
     physician && (
-      <DetailsItem
-        label="Zugewiesene:r Arzt/Ärztin"
-        value={physician.firstName + " " + physician.lastName}
-        slotProps={{
-          label: { level: "title-md" },
-          value: { level: "body-sm" },
-        }}
-      />
+      <DetailsList>
+        <DetailsItem
+          label="Zugewiesene:r Arzt/Ärztin"
+          value={physician.firstName + " " + physician.lastName}
+          slotProps={{
+            label: { level: "title-md" },
+            value: { level: "body-sm" },
+          }}
+        />
+      </DetailsList>
     )
   );
 }

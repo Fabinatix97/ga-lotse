@@ -8,6 +8,7 @@ package de.eshg.base.centralfile.persistence;
 import de.eshg.base.street.HouseNumber;
 import de.eshg.base.street.StreetDirectory.AdministrativeData;
 import de.eshg.base.street.StreetDirectoryService;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,7 @@ public class FacilityFileNumberService {
     this.streetDirectoryService = streetDirectoryService;
   }
 
-  public String calculateFacilityFileNumberDefault() {
+  public String calculateFacilityFileNumberNoFileNumbers() {
     return null;
   }
 
@@ -65,7 +66,11 @@ public class FacilityFileNumberService {
         }
         String paddedStreetNumber = paddedStreetNumberStringBuilder.toString();
 
-        return firstCharacterOfStreetName + "-" + paddedStreetNumber + "-" + houseNumber;
+        return firstCharacterOfStreetName
+            + "-"
+            + paddedStreetNumber
+            + "-"
+            + houseNumber.toLowerCase();
       } else {
         return null;
       }
@@ -74,4 +79,77 @@ public class FacilityFileNumberService {
       return null;
     }
   }
+
+  public StreetNameHouseNumberAndPostalCode getAddressFromFileNumberForInspectionFrankfurt(
+      String fileNumber) {
+    if (fileNumber == null) {
+      return null;
+    }
+
+    String[] splitString = fileNumber.split("-");
+    if (splitString.length < 3) {
+      return null;
+    }
+    try {
+      String firstLetterOfStreetName = splitString[0];
+      String streetNumber = String.valueOf(Integer.parseInt(splitString[1]));
+      String houseNumber = splitString[2];
+
+      // We get the administrative data for the street number (which may include other post codes
+      // that are not for our house number, but should only have one street name.
+      Set<AdministrativeData> administrativeDataSet =
+          streetDirectoryService.getAdministrativeDataByStreetNumber(streetNumber);
+
+      Set<String> streetNames =
+          administrativeDataSet.stream()
+              .map(AdministrativeData::streetName)
+              .collect(Collectors.toSet());
+
+      Set<String> postCodes =
+          administrativeDataSet.stream()
+              .map(AdministrativeData::postalCode)
+              .collect(Collectors.toSet());
+
+      // There should always be only one street name, but if there isn't, something must have gone
+      // wrong and we don't proceed.
+      if (streetNames.size() == 1) {
+        String streetName = streetNames.stream().findFirst().orElseThrow();
+
+        if (streetName.isEmpty() || !streetName.substring(0, 1).equals(firstLetterOfStreetName)) {
+          return null;
+        }
+
+        // We look up each post code. Only one these lookups should actually return something, as
+        // all other post codes are invalid for this house number.
+        Set<AdministrativeData> validAdministrativeData = new HashSet<>();
+        for (String postCode : postCodes) {
+          validAdministrativeData.addAll(
+              streetDirectoryService.getAdministrativeDataBy(
+                  streetName, HouseNumber.parseHouseNumber(houseNumber), postCode));
+        }
+
+        Set<String> validPostCodes =
+            validAdministrativeData.stream()
+                .map(AdministrativeData::postalCode)
+                .collect(Collectors.toSet());
+
+        if (validPostCodes.size() == 1) {
+          return new StreetNameHouseNumberAndPostalCode(
+              streetName, houseNumber, validPostCodes.stream().findFirst().orElseThrow());
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      log.error(
+          "Exception was thrown when trying to calculate address from file number, returning null",
+          e);
+      return null;
+    }
+  }
+
+  public record StreetNameHouseNumberAndPostalCode(
+      String streetName, String houseNumber, String postalCode) {}
 }

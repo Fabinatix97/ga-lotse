@@ -7,6 +7,7 @@ package de.eshg.inspection.testhelper;
 
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.inspection.checklist.persistence.ChecklistRepository;
+import de.eshg.inspection.facility.FacilityFileNumberConfiguration;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
@@ -16,6 +17,7 @@ import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -28,17 +30,20 @@ public class InspectionTestHelperController extends TestHelperController
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final InspectionFeatureToggle inspectionFeatureToggle;
   private final ChecklistRepository checklistRepository;
+  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
 
   public InspectionTestHelperController(
       DefaultTestHelperService testHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
       InspectionFeatureToggle inspectionFeatureToggle,
       EnvironmentConfig environmentConfig,
-      ChecklistRepository checklistRepository) {
+      ChecklistRepository checklistRepository,
+      FacilityFileNumberConfiguration facilityFileNumberConfiguration) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.checklistRepository = checklistRepository;
+    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
   }
 
   @Override
@@ -61,5 +66,10 @@ public class InspectionTestHelperController extends TestHelperController
   @Transactional
   public void makeChecklistsCorrupt() {
     checklistRepository.makeChecklistsCorruptForTestHelper();
+  }
+
+  @PostExchange("/file-number-method")
+  public void setFileNumberMethod(@RequestParam(name = "method") String method) {
+    facilityFileNumberConfiguration.setMethod(method);
   }
 }

@@ -12,7 +12,7 @@ import {
   TurnLeft,
   WorkOutline,
 } from "@mui/icons-material";
-import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/joy";
+import { Box, Button, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { ReactElement, ReactNode } from "react";
@@ -27,6 +27,7 @@ import {
   usePrivacyNoticeFile,
   usePrivacyPolicyFile,
 } from "@/lib/businessModules/measlesProtection/api/queries";
+import { FormHeader } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
 import {
   reportingReasonNames,
   roleStatusNames,
@@ -40,6 +41,10 @@ import { formatAddress } from "./helpers";
 import { ReportMeaslesCase } from "./types";
 
 export const reportCaseOverviewCardStyles: SxProps = {
+  backgroundColor: "white",
+  borderRadius: { xxs: "none", md: "xl" },
+  padding: "24px",
+  flex: 1,
   minWidth: byBreakpoint({
     mobile: "250px",
     desktop: "400px",
@@ -102,9 +107,9 @@ export function ReportCaseOverviewCard({
   const currentAffectedPerson = affectedPersons[currentAffectedPersonIndex];
 
   return (
-    <Card sx={reportCaseOverviewCardStyles} variant="plain">
-      <CardContent orientation="vertical">
-        <Typography level="h2">{t("common.overview")}</Typography>
+    <Stack component="div" gap={2} sx={reportCaseOverviewCardStyles}>
+      <FormHeader>{t("common.overview")}</FormHeader>
+      <Box>
         <Box sx={{ display: "flex", my: 1 }}>
           <Business sx={{ color: iconColor }} />
           <Box sx={{ display: "flex", ml: 2, flexDirection: "column" }}>
@@ -184,8 +189,8 @@ export function ReportCaseOverviewCard({
           finalSubmit={finalSubmit}
           onCancel={onCancel}
         />
-      </CardContent>
-    </Card>
+      </Box>
+    </Stack>
   );
 }
 
@@ -217,11 +222,20 @@ function ReportCaseOverviewCardButtons({
       {finalSubmit && (
         <DataAndPrivacySection affectedPersonCount={affectedPersonCount} />
       )}
-      <SubmitButton submitting={isSubmitting} disabled={submitDisabled}>
+      <SubmitButton
+        submitting={isSubmitting}
+        disabled={submitDisabled}
+        sx={{ height: "40px" }}
+      >
         {submitLabel ?? t("common.continue")}
       </SubmitButton>
       {actionButton}
-      <Button variant="soft" color="neutral" onClick={onCancel}>
+      <Button
+        variant="soft"
+        color="neutral"
+        sx={{ height: "40px" }}
+        onClick={onCancel}
+      >
         {cancelLabel ?? t("common.cancel")}
       </Button>
     </Stack>

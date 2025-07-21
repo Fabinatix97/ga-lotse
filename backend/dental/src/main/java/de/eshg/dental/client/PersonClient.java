@@ -150,12 +150,6 @@ public class PersonClient {
     return response.fileStateIds();
   }
 
-  public AddPersonFileStateResponse addChild(CreateChildRequest request, DataOriginDto dataOrigin) {
-    AddPersonFileStateRequest addPersonRequest =
-        mapToAddPersonFileStateRequest(dataOrigin, request);
-    return personApi.addPersonFileState(addPersonRequest);
-  }
-
   public List<UUID> addChildren(Collection<CreateChildRequest> requests, DataOriginDto dataOrigin) {
     List<AddPersonFileStateRequest> personsToAdd =
         requests.stream()

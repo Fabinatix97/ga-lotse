@@ -77,7 +77,7 @@ export function EditFileNumberForm({
     fileNumberSuffix: isDefined(initFileNumberSuffix)
       ? parseInt(initFileNumberSuffix)
       : "",
-    fileNumberSuffixSelect: "KEEP",
+    fileNumberSuffixSelect: isDefined(initFileNumberSuffix) ? "DEFINE" : "KEEP",
   };
 
   return (
@@ -118,7 +118,7 @@ export function EditFileNumberForm({
                 <Radio
                   color="primary"
                   value="KEEP"
-                  label="Akztenzeichen nutzen"
+                  label="Aktenzeichen ohne Erweiterung nutzen"
                 />
                 <Radio
                   color="primary"

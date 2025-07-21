@@ -14,6 +14,7 @@ import {
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
   UPDATE_AFFECTED_PERSON: "Geänderte Personendaten übernommen",
+  UPDATE_FACILITY: "Geänderte Auftraggeberdaten synchronisiert",
   SYNC_AFFECTED_PERSON: "Geänderte Personendaten synchronisiert",
   SYNC_FACILITY: "Geänderte Auftraggeberdaten übernommen",
   PROCEDURE_STARTED: "Vorgang gestartet",

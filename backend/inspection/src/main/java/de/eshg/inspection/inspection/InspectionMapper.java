@@ -19,7 +19,7 @@ import de.eshg.inspection.checklist.persistence.Checklist;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
-import de.eshg.inspection.facility.FacilityFileNumberConfiguration;
+import de.eshg.inspection.facility.FacilityFileNumberService;
 import de.eshg.inspection.facility.FacilityMapper;
 import de.eshg.inspection.facility.api.InspFacilityDto;
 import de.eshg.inspection.facility.persistence.Facility;
@@ -73,7 +73,7 @@ public class InspectionMapper {
   private final UserClient userClient;
   private final CalendarEventApi calendarEventApi;
   private final FacilityClient facilityClient;
-  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
+  private final FacilityFileNumberService facilityFileNumberService;
 
   public InspectionMapper(
       InventoryApi inventoryApi,
@@ -81,13 +81,13 @@ public class InspectionMapper {
       UserClient userClient,
       CalendarEventApi calendarEventApi,
       FacilityClient facilityClient,
-      FacilityFileNumberConfiguration facilityFileNumberConfiguration) {
+      FacilityFileNumberService facilityFileNumberService) {
     this.inventoryApi = inventoryApi;
     this.resourceApi = resourceApi;
     this.userClient = userClient;
     this.calendarEventApi = calendarEventApi;
     this.facilityClient = facilityClient;
-    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
+    this.facilityFileNumberService = facilityFileNumberService;
   }
 
   public static String mapToTaskSummary(String facilityName, TaskType taskType) {
@@ -340,13 +340,7 @@ public class InspectionMapper {
       UUID centralFileStateId, Facility facility, Integer fileNumberSuffix) {
     GetFacilityFileStateResponse baseFacility =
         facilityClient.getFacilityFileState(centralFileStateId);
-    String fileNumber =
-        facilityClient
-            .getFacilityFileNumber(baseFacility.id(), facilityFileNumberConfiguration.getMethod())
-            .fileNumber();
-    if (fileNumber != null && fileNumberSuffix != null) {
-      fileNumber += "-" + fileNumberSuffix;
-    }
+    String fileNumber = facilityFileNumberService.getFileNumber(baseFacility, fileNumberSuffix);
     return FacilityMapper.fromGetFacilityResponse(facility, baseFacility, fileNumber);
   }
 

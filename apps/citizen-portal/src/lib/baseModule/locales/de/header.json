@@ -1,4 +1,5 @@
 {
+  "home_link": "Gesundheitsamt Startseite",
   "help_link": "Hilfe",
   "login_link": "Login",
   "menu": "Menü",
@@ -7,7 +8,14 @@
     "person_link": "Privatperson",
     "org_link": "Unternehmen"
   },
-  "org_menu": {
-    "measles_protection_link": "Measles Protection"
+  "nav": {
+    "child_and_youth_health": "Kinder- und Jugendgesundheit",
+    "infectious_diseases": "Infektionskrankheiten",
+    "mental_health": "Psychische Gesundheit",
+    "hygiene": "Hygiene",
+    "dental_health": "Zahngesundheit",
+    "more_topics": "Weitere Themen",
+    "all_topics": "Alle Themen",
+    "back_button": "Zurück"
   }
 }

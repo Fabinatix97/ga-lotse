@@ -139,7 +139,15 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                 }}
               >
                 <Box sx={{ position: "relative" }}>
-                  <AccordionSummary>
+                  <AccordionSummary
+                    slotProps={{
+                      indicator: {
+                        sx: {
+                          color: "var(--joy-palette-primary-outlinedColor)",
+                        },
+                      },
+                    }}
+                  >
                     <Box sx={{ display: "flex" }}>
                       <Typography level="h3" sx={{ p: 1, fontWeight: 600 }}>
                         {formatName(affectedPerson)}
@@ -163,7 +171,7 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                         color: "neutral",
                       },
                     ]}
-                    color="neutral"
+                    color="primary"
                     sx={{
                       "--IconButton-size": "1.5rem",
                       position: "absolute",
@@ -279,7 +287,11 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
         submitLabel={t("overview.submit", { count: affectedPersons.length })}
         finalSubmit
         actionButton={
-          <Button variant="outlined" onClick={handleAddAffectedPerson}>
+          <Button
+            variant="outlined"
+            sx={{ height: "40px" }}
+            onClick={handleAddAffectedPerson}
+          >
             {t("overview.reportAdditionalPerson")}
           </Button>
         }

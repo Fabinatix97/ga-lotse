@@ -114,7 +114,7 @@ export function AdditionalInformationFormSection(
         <Grid {...FIELD_BREAKPOINTS} xlOffset={isFluoridation ? 0 : 1}>
           <SelectField
             name="mihStatus"
-            label="MIH-Status"
+            label="MIH/MMH-Status"
             options={MIH_STATUS_OPTIONS}
           />
         </Grid>
@@ -161,8 +161,6 @@ function FluoridationField(props: FluoridationFieldProps) {
   );
 }
 
-const CHECKBOX_BREAKPOINTS = { xxs: 4, xs: 2, xl: 1 } as const;
-
 function ParodontalStatusFormGroup() {
   const titleId = useId();
 
@@ -176,20 +174,13 @@ function ParodontalStatusFormGroup() {
       <ExaminationSectionSecondaryTitle titleId={titleId}>
         Parodontalstatus
       </ExaminationSectionSecondaryTitle>
-      <Grid container columns={4} spacing={2} wrap="wrap">
-        <Grid {...CHECKBOX_BREAKPOINTS}>
-          <CheckboxField name="plaque" label="Plaque" />
-        </Grid>
-        <Grid {...CHECKBOX_BREAKPOINTS}>
-          <CheckboxField name="calculus" label="Zahnstein" />
-        </Grid>
-        <Grid {...CHECKBOX_BREAKPOINTS}>
-          <CheckboxField name="gingivitis" label="Gingivitis" />
-        </Grid>
-        <Grid {...CHECKBOX_BREAKPOINTS}>
-          <CheckboxField name="parodontitis" label="Parodontitis" />
-        </Grid>
-      </Grid>
+      <Stack direction="row" gap={4} sx={{ flexWrap: "wrap" }}>
+        <CheckboxField name="plaque" label="Plaque" />
+        <CheckboxField name="calculus" label="Zahnstein" />
+        <CheckboxField name="gingivitis" label="Gingivitis" />
+        <CheckboxField name="blackStain" label="Black Stain" />
+        <CheckboxField name="parodontitis" label="Parodontitis" />
+      </Stack>
     </Stack>
   );
 }

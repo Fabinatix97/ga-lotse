@@ -25,6 +25,7 @@ import {
   ChatPanelView,
   ChatTabTakeoverView,
   ClientState,
+  MobileView,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import {
@@ -52,6 +53,9 @@ export function Chat() {
   const { createNewChat } = useCreateNewChat();
   const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
     roomId ? ChatPanelView.ChatMessages : ChatPanelView.NoChatSelected,
+  );
+  const [visibleOnMobile, setVisibleOnMobile] = useState<MobileView>(
+    MobileView.RoomList,
   );
 
   function changeChatPanelView(newView: ChatPanelView) {
@@ -157,7 +161,6 @@ export function Chat() {
       ) : (
         <Stack
           direction="row"
-          border={1}
           sx={{
             height: "100%",
             justifyContent: "space-between",
@@ -171,12 +174,19 @@ export function Chat() {
             sx={{
               flex: 1,
               minWidth: "12.5rem",
-              maxWidth: "27rem",
+              maxWidth: { xxs: "100%", sm: "27rem" },
               height: "100%",
               overflow: "auto",
+              display: {
+                xxs: visibleOnMobile === MobileView.RoomList ? "flex" : "none",
+                sm: "flex",
+              },
             }}
           >
-            <RoomsPanel setChatPanelView={changeChatPanelView} />
+            <RoomsPanel
+              setChatPanelView={changeChatPanelView}
+              setMobileView={setVisibleOnMobile}
+            />
           </Stack>
           <Stack
             sx={{
@@ -185,6 +195,11 @@ export function Chat() {
               borderLeft: "1px solid",
               borderColor: theme.palette.neutral.outlinedBorder,
               overflow: "auto",
+              display: {
+                xxs:
+                  visibleOnMobile === MobileView.ChatMessages ? "flex" : "none",
+                sm: "flex",
+              },
             }}
           >
             <ChatPanel
@@ -192,19 +207,24 @@ export function Chat() {
               roomId={roomId}
               chatPanelView={chatPanelView}
               setChatPanelView={changeChatPanelView}
+              setMobileView={setVisibleOnMobile}
             />
           </Stack>
           {infoPanelState.isOpen && (
             <Stack
               sx={{
-                flex: 1,
+                flex: { sm: 1 },
                 minWidth: 0,
-                maxWidth: "22rem",
+                maxWidth: { xxs: "100%", sm: "22rem" },
+                width: {
+                  xxs: visibleOnMobile === MobileView.Settings ? "100%" : "0%",
+                  sm: "auto",
+                },
                 borderLeft: "1px solid",
                 borderColor: "neutral.outlinedBorder",
               }}
             >
-              <InfoPanel key={roomId} />
+              <InfoPanel key={roomId} setMobileView={setVisibleOnMobile} />
             </Stack>
           )}
         </Stack>

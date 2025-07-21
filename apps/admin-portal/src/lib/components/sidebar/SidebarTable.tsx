@@ -4,36 +4,49 @@
  */
 
 import { Sheet, Table } from "@mui/joy";
-import { Row, flexRender } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { PropsWithChildren, ReactNode } from "react";
+import { isNullish } from "remeda";
 
-import { EmptyCell } from "@/lib/components/table/cell/EmptyCell";
+import { SidebarCellInfo } from "@/lib/components/sidebar/SidebarDetails";
+import { EmptyCell } from "@/lib/components/table/cell/common/EmptyCell";
+import { Actor, OrgUnit, Rule } from "@/lib/hooks/useEntities";
 import { useTranslation } from "@/lib/i18n/client";
 
-export function renderData<TData>(row: Row<TData>, id: string): ReactNode {
-  const cell = row.getAllCells().find((c) => c.column.columnDef.id === id);
-  return cell ? (
-    <div key={id}>
-      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-    </div>
-  ) : (
-    <EmptyCell />
+export function SidebarData<TData extends OrgUnit | Actor | Rule>({
+  entity,
+  cell,
+  editable,
+}: {
+  entity: TData;
+  cell: SidebarCellInfo<TData>;
+  editable: boolean;
+}): ReactNode {
+  if (!editable && isValueNullish(cell.id, entity.entity))
+    return <EmptyCell key={cell.id} />;
+
+  return (
+    <cell.cell
+      key={cell.id}
+      id={cell.id}
+      entity={entity}
+      optional={cell.optional}
+      options={cell.options}
+      editable={editable}
+    />
   );
 }
 
-export function renderDataRow<TData>(
-  row: Row<TData>,
-  id: string,
-  title?: string,
-) {
-  return renderRow(renderData(row, id), title ?? id);
-}
-
-export function renderRow(data: ReactNode, title: string) {
+export function SidebarRow({
+  title,
+  labelId,
+  children,
+}: Readonly<PropsWithChildren<{ title: string; labelId?: string }>>) {
+  const { t } = useTranslation();
   return (
-    <SidebarRow key={title} title={title}>
-      {data}
-    </SidebarRow>
+    <tr>
+      <th id={labelId}>{t(title)}</th>
+      <td>{children}</td>
+    </tr>
   );
 }
 
@@ -69,18 +82,8 @@ export function SidebarTable({ children }: { children: ReactNode }) {
   );
 }
 
-function SidebarRow({
-  children,
-  title,
-}: {
-  children: ReactNode;
-  title?: string;
-}) {
-  const { t } = useTranslation();
-  return (
-    <tr>
-      {title && <th>{t(title)}</th>}
-      <td>{children}</td>
-    </tr>
-  );
+function isValueNullish(id: string, entity?: Record<string, unknown>): boolean {
+  if (!entity) return true;
+  if (!(id in entity)) return true;
+  return isNullish(entity[id]);
 }

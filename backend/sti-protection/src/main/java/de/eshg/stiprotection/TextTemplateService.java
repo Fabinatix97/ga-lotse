@@ -57,8 +57,7 @@ public class TextTemplateService {
     if (CollectionUtils.isEmpty(contexts)) {
       return textTemplateRepository.findAll(sortByNameAsc);
     } else {
-      return textTemplateRepository.findAll(
-          Specification.where(contextIsIn(contexts)), sortByNameAsc);
+      return textTemplateRepository.findAll(contextIsIn(contexts), sortByNameAsc);
     }
   }
 

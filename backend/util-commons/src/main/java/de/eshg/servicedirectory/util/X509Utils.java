@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 public class X509Utils {
   private static final Logger logger = LoggerFactory.getLogger(X509Utils.class);
 
-  public static final String SIGNATURE_ALGORITHM = "SHA384withRSA";
   public static final String ESHGACTOR_BUNDLE_NAME = "eshgactor";
 
   private static final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
@@ -176,17 +175,8 @@ public class X509Utils {
 
   public static boolean isValidSignature(
       String dataThatWasSigned, String base64EncodedSignature, String signatoryAsPemCertificate) {
-    return isValidSignature(
-        dataThatWasSigned, base64EncodedSignature, signatoryAsPemCertificate, SIGNATURE_ALGORITHM);
-  }
-
-  public static boolean isValidSignature(
-      String dataThatWasSigned,
-      String base64EncodedSignature,
-      String signatoryAsPemCertificate,
-      String signatureAlgorithm) {
     PublicKey publicKey = X509Utils.parsePem(signatoryAsPemCertificate).getPublicKey();
-    Signature sig = getSignature(signatureAlgorithm);
+    Signature sig = getSignature(getSignatureAlgorithm(publicKey));
     try {
       sig.initVerify(publicKey);
     } catch (InvalidKeyException e) {
@@ -204,7 +194,7 @@ public class X509Utils {
   }
 
   public static String sign(String data, PrivateKey privateKey) {
-    return sign(data, privateKey, SIGNATURE_ALGORITHM);
+    return sign(data, privateKey, getSignatureAlgorithm(privateKey));
   }
 
   /**
@@ -303,5 +293,19 @@ public class X509Utils {
             .orElseThrow(
                 () -> new IllegalArgumentException("Expected at least one dNSName(2) SAN entry."))
             .getLast();
+  }
+
+  public static String getSignatureAlgorithm(Key privateKey) {
+    String keyAlgorithm = privateKey.getAlgorithm();
+
+    return switch (keyAlgorithm.toUpperCase()) {
+      case "RSA" -> "SHA384withRSA";
+      case "EC" -> "SHA384withECDSA";
+      default -> throw new IllegalArgumentException("Unsupported key algorithm: " + keyAlgorithm);
+    };
+  }
+
+  public static String getSignatureAlgorithm(KeyPair keyPair) {
+    return getSignatureAlgorithm(keyPair.getPrivate());
   }
 }

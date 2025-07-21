@@ -145,10 +145,16 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
 
     try {
       omsConfigValidator.validateConcerns(concerns);
-      omsConfigValidator.validateLandingContent(landingContentDe, "de");
-      omsConfigValidator.validateLandingContent(landingContentEn, "en");
+      omsConfigValidator.validateLandingContent(landingContentDe, Language.GERMAN);
+      omsConfigValidator.validateLandingContent(landingContentEn, Language.ENGLISH);
     } catch (OmsConfigValidator.OmsConfigValidatorException cve) {
-      throw new BadRequestException("Validation error: " + cve.getMessage());
+      String jsonInfo =
+          "{ \"document\": \""
+              + cve.getWhichDocument()
+              + "\", \"message\": \""
+              + cve.getMessage()
+              + "\" }";
+      throw new BadRequestException(jsonInfo);
     }
 
     OmsConfiguration currentConfig = getConfig();

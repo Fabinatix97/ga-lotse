@@ -8,7 +8,6 @@ package de.eshg.servicedirectory;
 import static de.eshg.servicedirectory.actor.mapper.ActorMapperAdminApi.toPersistence;
 
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
-import de.eshg.libservicedirectoryadminapi.api.actor.ActorMetadataDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.CertificateDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.PartialActorDto;
 import de.eshg.libservicedirectoryadminapi.api.impex.ExportResponse;
@@ -118,9 +117,6 @@ public class ServiceDirectoryAdminService {
     }
     if (partialActorDto.manualCertificate() != null) {
       updatedActor.setManualCertificate(partialActorDto.manualCertificate());
-    }
-    if (partialActorDto.commonName() != null) {
-      updatedActor.setCommonName(partialActorDto.commonName());
     }
     if (partialActorDto.certificate() != null) {
       updatedActor.setCertificate(toPersistence(partialActorDto.certificate()));
@@ -277,16 +273,6 @@ public class ServiceDirectoryAdminService {
       return OrgUnitMapper.toApi(orgUnit);
     } else {
       throw new OrgUnitNotFoundException(id);
-    }
-  }
-
-  @Transactional
-  public ActorMetadataDto getActorMetadataByActorId(UUID actorId) {
-    var optionalActor = auditedActorRepository.findById(actorId);
-    if (optionalActor.isPresent()) {
-      return ActorMapperAdminApi.toApi(optionalActor.get().getActorMetadata());
-    } else {
-      throw new ActorNotFoundException(actorId);
     }
   }
 

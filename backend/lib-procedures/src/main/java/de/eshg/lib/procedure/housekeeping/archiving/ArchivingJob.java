@@ -7,13 +7,12 @@ package de.eshg.lib.procedure.housekeeping.archiving;
 
 import static de.eshg.lib.procedure.domain.model.ArchivingRelevance.IRRELEVANT;
 import static java.time.temporal.ChronoUnit.DAYS;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.eshg.domain.model.GenericEntity;
 import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
-import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecification;
+import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecifications;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import java.time.Clock;
@@ -39,7 +38,7 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
   private static final Logger logger = LoggerFactory.getLogger(ArchivingJob.class);
   private final ArchivingProperties archivingProperties;
   private final ProcedureRepository<ProcedureT> procedureRepository;
-  private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
+  private final ArchivableProceduresSpecifications<ProcedureT> archivableProceduresSpecifications;
   private final ProcedureDeletionService<ProcedureT> procedureDeletionService;
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final Clock clock;
@@ -47,13 +46,13 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
   public ArchivingJob(
       ArchivingProperties archivingProperties,
       ProcedureRepository<ProcedureT> procedureRepository,
-      ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification,
+      ArchivableProceduresSpecifications<ProcedureT> archivableProceduresSpecifications,
       ProcedureDeletionService<ProcedureT> procedureDeletionService,
       ModuleClientAuthenticator moduleClientAuthenticator,
       Clock clock) {
     this.archivingProperties = archivingProperties;
     this.procedureRepository = procedureRepository;
-    this.archivableProceduresSpecification = archivableProceduresSpecification;
+    this.archivableProceduresSpecifications = archivableProceduresSpecifications;
     this.procedureDeletionService = procedureDeletionService;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.clock = clock;
@@ -75,8 +74,9 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
     if (!withinGracePeriod) {
       List<ProcedureT> proceduresRelevantForUpdate =
           procedureRepository.findAll(
-              where(archivableProceduresSpecification)
-                  .and(archivableProceduresSpecification.procedureHasArchivingRelevanceDefault()));
+              archivableProceduresSpecifications
+                  .procedureIsArchivable()
+                  .and(archivableProceduresSpecifications.procedureHasArchivingRelevanceDefault()));
 
       logger.info("Procedures to be updated: {}", getProcedureIds(proceduresRelevantForUpdate));
 
@@ -108,8 +108,9 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
   private void updateProcedures() {
     List<ProcedureT> proceduresRelevantForUpdate =
         procedureRepository.findAll(
-            where(archivableProceduresSpecification)
-                .and(archivableProceduresSpecification.procedureHasArchivingRelevanceDefault()));
+            archivableProceduresSpecifications
+                .procedureIsArchivable()
+                .and(archivableProceduresSpecifications.procedureHasArchivingRelevanceDefault()));
 
     for (ProcedureT procedure : proceduresRelevantForUpdate) {
       ArchivingRelevance configuredDefaultRelevance =

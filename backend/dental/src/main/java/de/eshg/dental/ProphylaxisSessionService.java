@@ -6,7 +6,6 @@
 package de.eshg.dental;
 
 import static de.eshg.dental.Validator.validateAllExaminationsAreEmpty;
-import static de.eshg.dental.domain.model.Examination_.prophylaxisSession;
 
 import com.google.common.collect.Sets;
 import de.cronn.commons.lang.StreamUtil;
@@ -31,12 +30,7 @@ import de.eshg.dental.business.model.ChildWithPersonData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.client.PersonClient;
-import de.eshg.dental.domain.model.Child;
-import de.eshg.dental.domain.model.Examination;
-import de.eshg.dental.domain.model.FluoridationConsent;
-import de.eshg.dental.domain.model.Person;
-import de.eshg.dental.domain.model.ProphylaxisSession;
-import de.eshg.dental.domain.model.ProphylaxisStatus;
+import de.eshg.dental.domain.model.*;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
@@ -235,19 +229,23 @@ public class ProphylaxisSessionService {
             .collect(
                 StreamUtil.toLinkedHashMap(
                     Function.identity(),
-                    getPreviousExaminations(
+                    getPreviousScreeningExaminations(
                         prophylaxisSession,
                         examinationsByFileStateId,
                         associatedFileStateIdsByFileStateIdInSession)));
 
-    Map<UUID, List<FluoridationConsent>> allFluoridationConsentsByChildFileStateId =
+    Map<UUID, List<FluoridationConsent>> relevantFluoridationConsentsByChildFileStateId =
         examinations.stream()
             .collect(
                 StreamUtil.toLinkedHashMap(
                     (Examination ex) -> ex.getChild().getChildIdFromCentralFile(),
                     (Examination ex) ->
-                        childService.getAllFluoridationConsents(
-                            childService.getChildAndAllPreviousChildren(ex.getChild()))));
+                        childService.getRelevantFluoridationConsentsForExamination(
+                            childService.getChildAndAllPreviousChildren(ex.getChild()),
+                            prophylaxisSession
+                                .getDateAndTime()
+                                .atZone(clock.getZone())
+                                .toLocalDate())));
 
     return new ProphylaxisSessionWithAugmentedData(
         prophylaxisSession,
@@ -255,10 +253,10 @@ public class ProphylaxisSessionService {
         examinationMap,
         usersMap,
         previousExaminationsBySessionChildFileStateId,
-        allFluoridationConsentsByChildFileStateId);
+        relevantFluoridationConsentsByChildFileStateId);
   }
 
-  private static Function<UUID, List<Examination>> getPreviousExaminations(
+  private static Function<UUID, List<Examination>> getPreviousScreeningExaminations(
       ProphylaxisSession prophylaxisSessionToIgnore,
       Map<UUID, List<Examination>> examinationsByChildFileStateId,
       Map<UUID, List<UUID>> associatedFileStateIdsByChildFileStateId) {
@@ -272,6 +270,9 @@ public class ProphylaxisSessionService {
                     .map(examinationsByChildFileStateId::get)
                     .filter(Objects::nonNull)
                     .flatMap(List::stream))
+            .filter(
+                prophylaxisSession ->
+                    prophylaxisSession.getResult() instanceof ScreeningExaminationResult)
             .filter(isBefore(prophylaxisSessionToIgnore))
             .toList();
   }
@@ -386,7 +387,7 @@ public class ProphylaxisSessionService {
     ProphylaxisSession prophylaxisSession =
         findProphylaxisSessionForUpdate(prophylaxisSessionId, version);
 
-    Validator.validateAllExaminationsAreComplete(prophylaxisSession);
+    validator.validateAllExaminationsAreComplete(prophylaxisSession);
 
     prophylaxisSession.setProphylaxisStatus(ProphylaxisStatus.CLOSED);
     prophylaxisSessionRepository.flush();

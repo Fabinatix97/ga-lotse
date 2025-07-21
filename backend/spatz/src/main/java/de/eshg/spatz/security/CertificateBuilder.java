@@ -5,6 +5,8 @@
 
 package de.eshg.spatz.security;
 
+import static de.eshg.servicedirectory.util.X509Utils.getSignatureAlgorithm;
+
 import de.eshg.servicedirectory.util.X509Utils;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -54,7 +56,6 @@ public class CertificateBuilder {
   private Date notBefore = new Date(System.currentTimeMillis());
   private String keyAlgorithm = DefaultKeyParameters.RSA.keyAlgorithm;
   private int keySize = DefaultKeyParameters.RSA.keySize;
-  private String signingAlgorithm = DefaultKeyParameters.RSA.signingAlgorithm;
   private boolean ca = false;
   private CertificateBuild signingCA;
 
@@ -96,17 +97,14 @@ public class CertificateBuilder {
     return this;
   }
 
-  public CertificateBuilder keyParameters(
-      String keyAlgorithm, int keySize, String signingAlgorithm) {
+  public CertificateBuilder keyParameters(String keyAlgorithm, int keySize) {
     this.keyAlgorithm = keyAlgorithm;
     this.keySize = keySize;
-    this.signingAlgorithm = signingAlgorithm;
     return this;
   }
 
   public CertificateBuilder keyParameters(DefaultKeyParameters keyParameters) {
-    return keyParameters(
-        keyParameters.keyAlgorithm, keyParameters.keySize, keyParameters.signingAlgorithm);
+    return keyParameters(keyParameters.keyAlgorithm, keyParameters.keySize);
   }
 
   public CertificateBuilder certificateAuthority(boolean ca) {
@@ -209,8 +207,9 @@ public class CertificateBuilder {
           false,
           new JcaX509ExtensionUtils().createSubjectKeyIdentifier(keyPair.getPublic()));
 
+      String signatureAlgorithm = getSignatureAlgorithm(keyPair);
       final ContentSigner signer =
-          new JcaContentSignerBuilder(signingAlgorithm).build(keyPair.getPrivate());
+          new JcaContentSignerBuilder(signatureAlgorithm).build(keyPair.getPrivate());
 
       X509Certificate certificate =
           new JcaX509CertificateConverter()

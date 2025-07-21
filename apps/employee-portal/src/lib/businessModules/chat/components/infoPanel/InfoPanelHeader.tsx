@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Stack, Typography } from "@mui/joy";
 
@@ -17,6 +18,7 @@ interface InfoPanelHeaderProps {
   roomId?: string;
   user?: UserFromDirectory;
   close: () => void;
+  onBackIconClick: () => void;
   type?: "roomInfo" | "memberInfo";
 }
 
@@ -24,8 +26,9 @@ export function InfoPanelHeader({
   roomId,
   user,
   close,
+  onBackIconClick,
   type = "roomInfo",
-}: InfoPanelHeaderProps) {
+}: Readonly<InfoPanelHeaderProps>) {
   const { communicationType, getAvatarUrl, getDMRoomMember, room } =
     useRoomInfo(roomId);
 
@@ -49,20 +52,33 @@ export function InfoPanelHeader({
     <ChatColumnHeaderWrapper>
       <Stack
         direction="row"
-        spacing={1}
         sx={{
           alignItems: "center",
+          height: "100%",
         }}
       >
         <Stack
           direction="row"
-          spacing={2}
+          spacing={{ xxs: 1, sm: 2 }}
           sx={{
             alignItems: "center",
             width: "100%",
             minWidth: 0,
+            height: "100%",
           }}
         >
+          <IconButton
+            sx={{
+              display: { xxs: "flex", sm: "none" },
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              width: "3.25rem",
+            }}
+            onClick={onBackIconClick}
+          >
+            <ArrowBackIosIcon color="primary" size="lg" />
+          </IconButton>
           <ChatAvatar
             name={name}
             communicationType={avatarType}
@@ -79,6 +95,7 @@ export function InfoPanelHeader({
           aria-label="close sidebar"
           sx={{
             borderColor: "primary.outlinedBorder",
+            display: { xxs: "none", sm: "block" },
           }}
           onClick={close}
         >

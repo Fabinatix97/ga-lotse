@@ -21,6 +21,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -131,7 +132,18 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
     return fluoridationConsents;
   }
 
-  public FluoridationConsent getCurrentFluoridationConsent() {
+  public FluoridationConsent getLatestFluoridationConsentAtDate(LocalDate date) {
+    return fluoridationConsents.stream()
+        .filter(
+            consent ->
+                consent.getDateOfConsent() != null && !consent.getDateOfConsent().isAfter(date))
+        .max(
+            Comparator.comparing(FluoridationConsent::getDateOfConsent)
+                .thenComparing(FluoridationConsent::getModifiedAt))
+        .orElse(null);
+  }
+
+  public FluoridationConsent getLatestFluoridationConsent() {
     return fluoridationConsents.stream()
         .max(
             Comparator.comparing(FluoridationConsent::getDateOfConsent)
@@ -140,15 +152,15 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   }
 
   @Nullable
-  public Boolean isFluoridationConsentCurrentlyGivenOptionally() {
-    if (getCurrentFluoridationConsent() == null) {
+  public Boolean isFluoridationConsentGivenAtDateOptionally(LocalDate dateOfExamination) {
+    if (getLatestFluoridationConsentAtDate(dateOfExamination) == null) {
       return null;
     }
-    return getCurrentFluoridationConsent().isConsented();
+    return getLatestFluoridationConsentAtDate(dateOfExamination).isConsented();
   }
 
-  public boolean isFluoridationConsentCurrentlyGiven() {
-    return BooleanUtils.isTrue(isFluoridationConsentCurrentlyGivenOptionally());
+  public boolean isFluoridationConsentGivenAtDate(LocalDate dateOfExamination) {
+    return BooleanUtils.isTrue(isFluoridationConsentGivenAtDateOptionally(dateOfExamination));
   }
 
   public void addFluoridationConsent(FluoridationConsent fluoridationConsent) {

@@ -20,6 +20,7 @@ import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.facility.SearchFacilityFileStatesByFileNumberResponse;
 import de.eshg.base.centralfile.api.facility.SearchReferenceFacilitiesResponse;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.rest.service.error.BadRequestException;
@@ -116,6 +117,12 @@ public class FacilityClient {
 
   public FacilityFileNumberResponse getFacilityFileNumber(UUID fileStateId, String method) {
     return doAndForwardErrorCodes(() -> facilityApi.getFacilityFileNumber(fileStateId, method));
+  }
+
+  public SearchFacilityFileStatesByFileNumberResponse getFacilityFileStatesByFileNumber(
+      String fileNumber, String method) {
+    return doAndForwardErrorCodes(
+        () -> facilityApi.getFacilityFileStatesByFileNumber(fileNumber, method));
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

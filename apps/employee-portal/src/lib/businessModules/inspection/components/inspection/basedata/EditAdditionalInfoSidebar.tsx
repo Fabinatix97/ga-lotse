@@ -35,12 +35,13 @@ function EditAdditionalInfoSidebar({
 }: Readonly<EditAdditionalInfoSidebarProps>) {
   const [activeMode, setActiveMode] =
     useState<SidebarMode>("editAdditionalInfo");
-  const updateInspection = useUpdateInspection();
+  const { mutateAsync: updateInspection } = useUpdateInspection();
 
-  const { data: fileNumberCollisions } = useGetFileNumberCollisionsQuery(
-    inspection.externalId,
-    isNonNullish(inspection.facility.fileNumber),
-  );
+  const { data: fileNumberCollisions, isPending: fileNumberCollisionsPending } =
+    useGetFileNumberCollisionsQuery({
+      procedureId: inspection.externalId,
+      enabled: isNonNullish(inspection.facility.fileNumber),
+    });
 
   if (activeMode === "editAdditionalInfo") {
     return (
@@ -48,13 +49,11 @@ function EditAdditionalInfoSidebar({
         title="Zusatzinfos bearbeiten"
         inspection={inspection}
         formRef={props.formRef}
+        editFileNumberPending={fileNumberCollisionsPending}
         onCancel={props.onClose}
-        onEditFileNumber={() => {
-          if (isNonNullish(inspection.facility.fileNumber))
-            setActiveMode("editFileNumber");
-        }}
+        onEditFileNumber={() => setActiveMode("editFileNumber")}
         onSubmit={async (values) => {
-          await updateInspection.mutateAsync(
+          await updateInspection(
             {
               id: inspection.externalId,
               apiUpdateInspectionRequest: {
@@ -85,11 +84,16 @@ function EditAdditionalInfoSidebar({
         onBack={() => setActiveMode("editAdditionalInfo")}
         onCancel={props.onClose}
         onSubmit={async (values) => {
-          await updateInspection.mutateAsync(
+          const fileNumberSuffix =
+            values.fileNumberSuffixSelect === "DEFINE"
+              ? mapOptionalValue(values.fileNumberSuffix)
+              : 0;
+
+          await updateInspection(
             {
               id: inspection.externalId,
               apiUpdateInspectionRequest: {
-                fileNumberSuffix: mapOptionalValue(values.fileNumberSuffix),
+                fileNumberSuffix,
               },
             },
             {

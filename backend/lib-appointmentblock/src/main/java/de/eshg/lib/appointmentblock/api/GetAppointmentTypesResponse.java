@@ -10,5 +10,4 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record GetAppointmentTypesResponse(
-    @NotNull @Valid List<AppointmentTypeConfigDto> appointmentTypeConfigDtos,
-    @NotNull @Valid List<AllowedAppointmentTypeCombination> allowedAppointmentTypeCombinations) {}
+    @NotNull @Valid List<AppointmentTypeConfigDto> appointmentTypeConfigDtos) {}

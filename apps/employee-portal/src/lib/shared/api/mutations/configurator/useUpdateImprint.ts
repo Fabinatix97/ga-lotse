@@ -3,10 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UpdateImprintMarkdownRequest } from "@eshg/base-api";
+import {
+  ApiCitizenPortalMarkdownName,
+  ApiLanguage,
+  UpdateImprintMarkdownRequest,
+} from "@eshg/base-api";
 import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 
+import { UpdateMarkdownRequest } from "@/lib/configurator/components/shared/ConfiguratorDetails/MarkdownFiles";
 import { useDepartmentConfigurationApi } from "@/lib/shared/api/clients";
+
+import { buildMultiLanguagePayload } from "./buildFilePayload";
 
 export function useUpdateImprintMarkdown() {
   const snackbar = useSnackbar();
@@ -20,7 +27,17 @@ export function useUpdateImprintMarkdown() {
       snackbar.confirmation("Die Änderungen wurden gespeichert."),
   });
 
-  return (request: UpdateImprintMarkdownRequest) => {
-    return mutation.mutateAsync(request);
+  return async (data: UpdateMarkdownRequest) => {
+    const updateRequest = await buildMultiLanguagePayload(
+      data,
+      (lang: ApiLanguage) =>
+        configuratorApi.getCitizenMarkdownFile(
+          ApiCitizenPortalMarkdownName.Imprint,
+          lang,
+        ),
+      "impressum.md",
+      "text/markdown",
+    );
+    return mutation.mutateAsync(updateRequest);
   };
 }

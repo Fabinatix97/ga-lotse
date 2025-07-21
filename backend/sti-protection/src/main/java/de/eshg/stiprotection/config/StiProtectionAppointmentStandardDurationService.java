@@ -113,6 +113,8 @@ public class StiProtectionAppointmentStandardDurationService
   public void updateSexWorkAppointmentStandardDurations(
       Duration resultsReviewAppointmentStandardDuration,
       Duration sexworkAppointmentStandardDuration) {
+    validateStandardDurations(
+        resultsReviewAppointmentStandardDuration, sexworkAppointmentStandardDuration);
     StiProtectionAppointmentStandardDuration config = getConfig();
     update(
         config,
@@ -124,6 +126,8 @@ public class StiProtectionAppointmentStandardDurationService
   public void updateHivStiConsultationAppointmentStandardDurations(
       Duration resultsReviewAppointmentStandardDuration,
       Duration hivStiConsultationStandardDuration) {
+    validateStandardDurations(
+        resultsReviewAppointmentStandardDuration, hivStiConsultationStandardDuration);
     StiProtectionAppointmentStandardDuration config = getConfig();
     update(
         config,

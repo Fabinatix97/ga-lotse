@@ -103,10 +103,15 @@ export function AdditionalInfoTile({
       },
       {
         onSuccess: (data) => {
-          if (isNonNullish(data.facility.fileNumber)) {
+          if (
+            isNonNullish(data.inspection.facility.fileNumber) &&
+            data.fileNumberCollisionsResponse &&
+            Object.keys(data.fileNumberCollisionsResponse.collisions).length > 0
+          ) {
             editFileNumberSidebar.open({
               inspectionId: procedureId,
-              fileNumber: data.facility.fileNumber,
+              fileNumber: data.inspection.facility.fileNumber,
+              fileNumberCollisions: data.fileNumberCollisionsResponse,
             });
           } else {
             handleSuccess();

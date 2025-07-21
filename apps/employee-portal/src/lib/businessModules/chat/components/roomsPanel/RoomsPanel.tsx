@@ -9,13 +9,20 @@ import { useMemo, useState } from "react";
 import { RoomList } from "@/lib/businessModules/chat/components/roomList/RoomList";
 import { RoomsPanelHeader } from "@/lib/businessModules/chat/components/roomsPanel/RoomsPanelHeader";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
-import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
+import {
+  ChatPanelView,
+  MobileView,
+} from "@/lib/businessModules/chat/shared/enums";
 import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 
 interface RoomsPanelProps {
   setChatPanelView: (viewType: ChatPanelView) => void;
+  setMobileView: (viewType: MobileView) => void;
 }
-export function RoomsPanel({ setChatPanelView }: Readonly<RoomsPanelProps>) {
+export function RoomsPanel({
+  setChatPanelView,
+  setMobileView,
+}: Readonly<RoomsPanelProps>) {
   const { roomList } = useChatRoomList();
   const { closeInfoPanel, infoPanelState } = useInfoPanelContext();
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,6 +42,7 @@ export function RoomsPanel({ setChatPanelView }: Readonly<RoomsPanelProps>) {
             closeInfoPanel();
           }
         }}
+        setMobileView={setMobileView}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         roomSearchDisabled={roomList.length === 0}
@@ -48,6 +56,7 @@ export function RoomsPanel({ setChatPanelView }: Readonly<RoomsPanelProps>) {
         <RoomList
           roomList={searchQuery?.length ? filteredRooms : roomList}
           setChatPanelView={setChatPanelView}
+          setMobileView={setMobileView}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />

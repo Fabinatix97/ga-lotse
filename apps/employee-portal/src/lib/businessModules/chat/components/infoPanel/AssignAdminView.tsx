@@ -10,7 +10,6 @@ import { mapToObj } from "remeda";
 import { FormPlus, useSnackbar } from "@eshg/lib-portal";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
-import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
@@ -24,13 +23,11 @@ import { SwitchField } from "@/lib/shared/components/formFields/SwitchField";
 type AdminFormValues = Record<string, boolean>;
 interface AssignAdminProps {
   roomId: string;
-  onClose: () => void;
   onCancel: () => void;
 }
 
 export function AssignAdminView({
   roomId,
-  onClose,
   onCancel,
 }: Readonly<AssignAdminProps>) {
   const { matrixClient } = useChatClientContext();
@@ -84,79 +81,76 @@ export function AssignAdminView({
   }
 
   return (
-    <>
-      <InfoPanelHeader close={onClose} roomId={roomId} />
-      <Box sx={{ overflowY: "auto", flex: 1 }}>
-        <Stack
-          spacing={2}
-          sx={{
-            padding: 3,
-            overflowY: "auto",
-            height: "100%",
-          }}
+    <Box sx={{ overflowY: "auto", flex: 1 }}>
+      <Stack
+        spacing={2}
+        sx={{
+          padding: 3,
+          overflowY: "auto",
+          height: "100%",
+        }}
+      >
+        <Typography level="title-lg">Admins bestimmen</Typography>
+        <Formik
+          initialValues={initialValues}
+          enableReinitialize
+          onSubmit={handleSubmit}
         >
-          <Typography level="title-lg">Admins bestimmen</Typography>
-          <Formik
-            initialValues={initialValues}
-            enableReinitialize
-            onSubmit={handleSubmit}
-          >
-            {({ initialValues }) => (
-              <FormPlus>
-                {Object.keys(initialValues).map((id) => {
-                  const memberInfo = joinedMembers.find(
-                    (member) => member.member.userId === id,
-                  );
-                  const member = memberInfo?.member;
-                  if (!member) return null;
+          {({ initialValues }) => (
+            <FormPlus>
+              {Object.keys(initialValues).map((id) => {
+                const memberInfo = joinedMembers.find(
+                  (member) => member.member.userId === id,
+                );
+                const member = memberInfo?.member;
+                if (!member) return null;
 
-                  return (
-                    <Stack
-                      key={`['${member.userId}']`}
-                      direction="row"
-                      justifyContent="space-between"
-                      marginBottom={2}
-                    >
-                      <Stack direction="row" alignItems="center" gap={1}>
-                        <ChatAvatar
-                          avatarUrl={null}
-                          userId={member.userId}
-                          name={member.name}
-                          size="sm"
-                        />
-                        <Typography level="title-sm">{member.name}</Typography>
-                      </Stack>
-                      {initialValues[member.userId] ? (
-                        <Switch checked size="lg" disabled />
-                      ) : (
-                        <SwitchField name={`['${member.userId}']`} label="" />
-                      )}
-                    </Stack>
-                  );
-                })}
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  gap={2}
-                  marginTop={3}
-                >
-                  <Button
-                    type="buttom"
-                    variant="soft"
-                    fullWidth
-                    onClick={onCancel}
+                return (
+                  <Stack
+                    key={`['${member.userId}']`}
+                    direction="row"
+                    justifyContent="space-between"
+                    marginBottom={2}
                   >
-                    Abbrechen
-                  </Button>
-                  <Button type="submit" fullWidth>
-                    Speichern
-                  </Button>
-                </Stack>
-              </FormPlus>
-            )}
-          </Formik>
-        </Stack>
-      </Box>
-    </>
+                    <Stack direction="row" alignItems="center" gap={1}>
+                      <ChatAvatar
+                        avatarUrl={null}
+                        userId={member.userId}
+                        name={member.name}
+                        size="sm"
+                      />
+                      <Typography level="title-sm">{member.name}</Typography>
+                    </Stack>
+                    {initialValues[member.userId] ? (
+                      <Switch checked size="lg" disabled />
+                    ) : (
+                      <SwitchField name={`['${member.userId}']`} label="" />
+                    )}
+                  </Stack>
+                );
+              })}
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                gap={2}
+                marginTop={3}
+              >
+                <Button
+                  type="buttom"
+                  variant="soft"
+                  fullWidth
+                  onClick={onCancel}
+                >
+                  Abbrechen
+                </Button>
+                <Button type="submit" fullWidth>
+                  Speichern
+                </Button>
+              </Stack>
+            </FormPlus>
+          )}
+        </Formik>
+      </Stack>
+    </Box>
   );
 }

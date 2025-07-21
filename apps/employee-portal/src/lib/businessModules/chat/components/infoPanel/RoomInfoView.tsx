@@ -15,7 +15,6 @@ import { ButtonLink, useSnackbar } from "@eshg/lib-portal";
 import { GroupChatMember } from "@/lib/businessModules/chat/components/GroupChatMember";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
 import { MemberInfo } from "@/lib/businessModules/chat/components/MemberInfo";
-import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import {
   isDMRoom,
   isGroupRoom,
@@ -31,10 +30,9 @@ import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomM
 
 interface RoomInfoViewProps {
   roomId: string;
-  onClose: () => void;
 }
 
-export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
+export function RoomInfoView({ roomId }: Readonly<RoomInfoViewProps>) {
   const { matrixClient, departmentInfo } = useChatClientContext();
   const { clearChatParams } = useChatSearchParams();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
@@ -74,7 +72,6 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
 
   return (
     <>
-      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Box
         data-testid="chat-room-info-panel"
         sx={{

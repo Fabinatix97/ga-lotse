@@ -115,29 +115,28 @@ public class OpenDataFiltering {
       boolean returnOnlyMostRecentMinorVersions,
       List<Resource> resourcesToConsider) {
 
-    return Specification.where(
-        (root, query, criteriaBuilder) -> {
-          List<Predicate> predicates = new ArrayList<>();
+    return (root, query, criteriaBuilder) -> {
+      List<Predicate> predicates = new ArrayList<>();
 
-          if (resourcesToConsider != null) {
-            Set<Long> idsOfResourcesToConsider =
-                resourcesToConsider.stream().map(BaseEntity::getId).collect(Collectors.toSet());
-            Predicate filterForResourceIdsToConsider =
-                root.get(Version_.resource).get(BaseEntity_.id).in(idsOfResourcesToConsider);
-            predicates.add(filterForResourceIdsToConsider);
-          }
+      if (resourcesToConsider != null) {
+        Set<Long> idsOfResourcesToConsider =
+            resourcesToConsider.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Predicate filterForResourceIdsToConsider =
+            root.get(Version_.resource).get(BaseEntity_.id).in(idsOfResourcesToConsider);
+        predicates.add(filterForResourceIdsToConsider);
+      }
 
-          Predicate commonVersionFilters = filterVersions(filterOptions, criteriaBuilder, root);
-          predicates.add(commonVersionFilters);
+      Predicate commonVersionFilters = filterVersions(filterOptions, criteriaBuilder, root);
+      predicates.add(commonVersionFilters);
 
-          if (returnOnlyMostRecentMinorVersions) {
-            predicates.add(filterForOnlyMostRecentMinorVersions(root, query, criteriaBuilder));
-          }
+      if (returnOnlyMostRecentMinorVersions) {
+        predicates.add(filterForOnlyMostRecentMinorVersions(root, query, criteriaBuilder));
+      }
 
-          query.orderBy(getOrderForResourceAndVersion(root, criteriaBuilder));
+      query.orderBy(getOrderForResourceAndVersion(root, criteriaBuilder));
 
-          return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
-        });
+      return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+    };
   }
 
   private List<Order> getOrderForResourceAndVersion(
@@ -164,17 +163,15 @@ public class OpenDataFiltering {
       Stream<Version> versionStream, int totalPages, long totalElements) {
     List<Version> versionsWithEagerlyFetchedResources =
         versionRepository.findAll(
-            Specification.where(
-                (root, query, criteriaBuilder) -> {
-                  Set<Long> collect =
-                      versionStream.map(BaseEntity::getId).collect(Collectors.toSet());
-                  root.fetch(Version_.resource);
-                  root.fetch(Version_.sources, JoinType.LEFT);
+            (root, query, criteriaBuilder) -> {
+              Set<Long> collect = versionStream.map(BaseEntity::getId).collect(Collectors.toSet());
+              root.fetch(Version_.resource);
+              root.fetch(Version_.sources, JoinType.LEFT);
 
-                  query.orderBy(getOrderForResourceAndVersion(root, criteriaBuilder));
+              query.orderBy(getOrderForResourceAndVersion(root, criteriaBuilder));
 
-                  return root.get(id).in(collect);
-                }));
+              return root.get(id).in(collect);
+            });
 
     List<ResourceDto> result = groupVersionsByResourcesAndMap(versionsWithEagerlyFetchedResources);
     return new GetOpenDocumentsResponse(totalPages, totalElements, result);
@@ -192,12 +189,11 @@ public class OpenDataFiltering {
   private Page<Resource> getResourcesToConsiderWithPagination(
       GetOpenDocumentsRequest filterOptions, GetOpenDocumentsPaginationOptions paginationOptions) {
     Specification<Resource> resourceSpec =
-        Specification.where(
-            (root, query, cb) -> {
-              query.distinct(true);
-              query.orderBy(getOrderForResource(cb, root));
-              return filterVersions(filterOptions, cb, root.join(Resource_.versions));
-            });
+        (root, query, cb) -> {
+          query.distinct(true);
+          query.orderBy(getOrderForResource(cb, root));
+          return filterVersions(filterOptions, cb, root.join(Resource_.versions));
+        };
     PageRequest pageRequest =
         ofSize(paginationOptions.pageSize()).withPage(paginationOptions.pageNumber());
 

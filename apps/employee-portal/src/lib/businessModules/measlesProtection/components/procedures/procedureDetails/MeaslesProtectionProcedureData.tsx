@@ -26,7 +26,10 @@ import { UpdateProcedureForm } from "./helpers";
 
 export function MeaslesProtectionProcedureData({ id }: { id: string }) {
   const procedure = useProcedureQuery(id).data;
-  assert(procedure.type === "MeaslesProtectionProcedure");
+  assert(
+    procedure.type === "MeaslesProtectionProcedure",
+    `Incorrect procedure type: ${procedure.type}`,
+  );
 
   return (
     <Grid container spacing={3} data-testid="procedureDetailPage">

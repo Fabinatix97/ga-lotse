@@ -11,7 +11,7 @@ import de.eshg.inspection.facility.api.GetPendingFacilitiesFilterOptionsDto;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesPaginationOptionsDto;
 import de.eshg.inspection.facility.api.InspAddFacilityRequest;
 import de.eshg.inspection.facility.api.InspAddFacilityResponse;
-import de.eshg.inspection.facility.api.InspFacilityDto;
+import de.eshg.inspection.facility.api.InspFacilityAndFileNumberCollisionsDto;
 import de.eshg.inspection.facility.api.InspLinkBaseFacilityRequest;
 import de.eshg.inspection.facility.api.InspLinkBaseFacilityResponse;
 import de.eshg.inspection.facility.api.InspPendingFacilitiesOverviewResponse;
@@ -90,7 +90,7 @@ Perform a consistent update of the existent facility file state and its
 associated reference facility
 """)
   @Transactional
-  public InspFacilityDto updateFacility(
+  public InspFacilityAndFileNumberCollisionsDto updateFacility(
       @PathVariable("id") UUID externalId, @Valid @RequestBody InspUpdateFacilityRequest request) {
     return facilityService.updateFacility(externalId, request);
   }

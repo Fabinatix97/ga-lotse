@@ -19,7 +19,7 @@ import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Vaccina
 import java.util.Arrays;
 
 public enum VaccinationAttributes implements AttributeInfo {
-  VACCINATION_ID(ProcedureAttribute.create("Impfungs-ID", ATTRIBUTE_CATEGORY_PROCEDURE, true)),
+  PROCEDURE_ID(ProcedureAttribute.create("Vorgangsreferenz", ATTRIBUTE_CATEGORY_PROCEDURE, true)),
   PERSON_CENTRAL_FILE_ID(
       CentralFileIdPersonAttribute.create(
           "Person", "PERSON_CENTRAL_FILE_ID", ATTRIBUTE_CATEGORY_PROCEDURE, true)),

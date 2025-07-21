@@ -5,19 +5,15 @@
 
 package de.eshg.libservicedirectoryadminapi;
 
+import de.eshg.libservicedirectoryadminapi.api.GetEntitiesResponse;
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
-import de.eshg.libservicedirectoryadminapi.api.actor.ActorMetadataDto;
-import de.eshg.libservicedirectoryadminapi.api.actor.GetApplicableActorsResponse;
 import de.eshg.libservicedirectoryadminapi.api.actor.PartialActorDto;
 import de.eshg.libservicedirectoryadminapi.api.audit.GetRevisionsResponse;
 import de.eshg.libservicedirectoryadminapi.api.audit.GetUsernamesResponse;
 import de.eshg.libservicedirectoryadminapi.api.impex.ExportResponse;
 import de.eshg.libservicedirectoryadminapi.api.impex.ImportRequest;
-import de.eshg.libservicedirectoryadminapi.api.orgunit.GetOrgUnitsResponse;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.PartialOrgUnitDto;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetActiveApplicableRulesResponse;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetRulesResponse;
 import de.eshg.libservicedirectoryadminapi.api.rule.PartialRuleDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
@@ -43,6 +39,8 @@ public interface ServiceDirectoryAdminApi {
   String ACTORS_PREFIX = "/actors";
 
   String ORG_UNITS_PREFIX = "/orgUnits";
+
+  String ENTITIES_PREFIX = "/entities";
 
   String RULES_PREFIX = "/rules";
 
@@ -76,15 +74,10 @@ public interface ServiceDirectoryAdminApi {
   @ApiResponse(responseCode = "200", description = "Activates an actor")
   ActorDto activateActorById(@PathVariable(name = "id") UUID id);
 
-  @Operation(summary = "Get the meta data of an actor by its actor id")
-  @GetExchange(value = ACTORS_PREFIX + "/metadata/{actorId}", accept = "application/json")
-  @ApiResponse(responseCode = "200", description = "Gets the meta data of an actor")
-  ActorMetadataDto getActorMetadataByActorId(@PathVariable(name = "actorId") UUID actorId);
-
-  @Operation(summary = "Get all orgUnits")
-  @GetExchange(value = ORG_UNITS_PREFIX)
-  @ApiResponse(responseCode = "200", description = "Returns all orgUnits")
-  GetOrgUnitsResponse getAllOrgUnits();
+  @Operation(summary = "Get all orgUnits, actors and rules")
+  @GetExchange(value = ENTITIES_PREFIX)
+  @ApiResponse(responseCode = "200", description = "Returns all entities")
+  GetEntitiesResponse getAllEntities();
 
   @Operation(summary = "Create an orgUnit")
   @PostExchange(value = ORG_UNITS_PREFIX, accept = "application/json")
@@ -110,54 +103,6 @@ public interface ServiceDirectoryAdminApi {
   @PutExchange(value = ORG_UNITS_PREFIX + "/activate/{id}", accept = "application/json")
   @ApiResponse(responseCode = "200", description = "Activates an orgUnit")
   OrgUnitDto activateOrgUnitById(@PathVariable(name = "id") UUID id);
-
-  @Operation(summary = "Get all rules")
-  @GetExchange(value = RULES_PREFIX)
-  @ApiResponse(responseCode = "200", description = "Returns all rules")
-  GetRulesResponse getAllRules();
-
-  @Operation(summary = "Get all active rules")
-  @GetExchange(value = RULES_PREFIX + "/active")
-  @ApiResponse(responseCode = "200", description = "Returns all active rules")
-  GetRulesResponse getAllActiveRules();
-
-  @Operation(summary = "Get all active audited rules applicable to actor")
-  @GetExchange(value = RULES_PREFIX + "/active/{actorId}")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Returns all active audited rules applicable to the actor")
-  GetActiveApplicableRulesResponse getAllActiveAuditedRulesApplicableToActor(
-      @PathVariable(name = "actorId") UUID actorId);
-
-  @Operation(summary = "Get all audited actors that are a client in this rule")
-  @GetExchange(value = RULES_PREFIX + "/{ruleId}/clients", accept = "application/json")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Returns all audited actors that are a client in this rule")
-  GetApplicableActorsResponse getActorsThatAreClientInRule(
-      @PathVariable(name = "ruleId") UUID ruleId);
-
-  @Operation(summary = "Get all audited actors that are a server in this rule")
-  @GetExchange(value = RULES_PREFIX + "/{ruleId}/servers", accept = "application/json")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Returns all audited actors that are a server in this rule")
-  GetApplicableActorsResponse getActorsThatAreServerInRule(
-      @PathVariable(name = "ruleId") UUID ruleId);
-
-  @Operation(summary = "Get all audited actors that are a valid client for this actor")
-  @GetExchange(value = ACTORS_PREFIX + "/{actorId}/clients", accept = "application/json")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Returns all audited actors that are a valid client for this actor")
-  GetApplicableActorsResponse getClientActorsForActor(@PathVariable(name = "actorId") UUID actorId);
-
-  @Operation(summary = "Get all audited actors that are a valid server for this actor")
-  @GetExchange(value = ACTORS_PREFIX + "/{actorId}/servers", accept = "application/json")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Returns all audited actors that are a valid server for this actor")
-  GetApplicableActorsResponse getServerActorsForActor(@PathVariable(name = "actorId") UUID actorId);
 
   @Operation(summary = "Create an rule")
   @PostExchange(value = RULES_PREFIX, accept = "application/json")

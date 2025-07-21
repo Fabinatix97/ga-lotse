@@ -4,13 +4,15 @@
  */
 
 import { Close } from "@mui/icons-material";
-import { Chip, ChipProps, Tooltip } from "@mui/joy";
+import { Chip, ChipProps, Stack, Tooltip } from "@mui/joy";
 import { useId } from "react";
+import { isDefined } from "remeda";
 
 import {
   BaseField,
   CustomAutocomplete,
   FieldProps,
+  LiveAnnouncer,
   formatUserName,
   useBaseField,
 } from "@eshg/lib-portal";
@@ -27,6 +29,7 @@ interface StaffUserFieldProps extends FieldProps<string[]> {
   placeholder?: string;
   blockedStaff: string[];
   freeStaff: string[];
+  label: string;
 }
 
 export function UserField(props: Readonly<StaffUserFieldProps>) {
@@ -42,16 +45,19 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
   function getAvailability(item: NamedUser): {
     title: string;
     color: ChipProps["color"];
+    label?: string;
   } {
     if (props.freeStaff.includes(item.userId)) {
       return {
         title: "Es gibt keine Konflikte.",
         color: "success",
+        label: "verfügbar",
       };
     } else if (props.blockedStaff.includes(item.userId)) {
       return {
         title: "Es gibt mindestens einen Terminkonflikt.",
         color: "danger",
+        label: "belegt",
       };
     } else {
       return {
@@ -97,40 +103,48 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
         options={props.options}
         getOptionLabel={(value) => formatUserName(value)}
         getOptionKey={(value) => value.userId}
-        renderTags={(options, getTagProps) =>
-          options.map((item, index) => (
-            <Tooltip
-              key={index}
-              id={tooltipId}
-              title={getAvailability(item).title}
-            >
-              <Chip
-                variant="soft"
-                color={getAvailability(item).color}
-                size="sm"
-                endDecorator={
-                  <Close
-                    id={iconId}
-                    fontSize="sm"
-                    aria-label="Auswahl entfernen"
-                  />
-                }
-                sx={{ minWidth: 0 }}
-                {...getTagProps({ index })}
-                key={item.userId}
-                slotProps={{
-                  label: { id: labelId },
-                  action: {
-                    "aria-labelledby": `${labelId} ${iconId}`,
-                    "aria-describedby": tooltipId,
-                  },
-                }}
+        renderTags={(options, getTagProps) => (
+          <Stack direction="column">
+            {options.map((item, index) => (
+              <Tooltip
+                key={index}
+                id={tooltipId}
+                title={getAvailability(item).title}
               >
-                {formatUserName(item)}
-              </Chip>
-            </Tooltip>
-          ))
-        }
+                <Chip
+                  variant="soft"
+                  size="sm"
+                  endDecorator={
+                    <Close
+                      id={iconId}
+                      fontSize="sm"
+                      aria-label="Auswahl entfernen"
+                    />
+                  }
+                  sx={{ minWidth: 0 }}
+                  {...getTagProps({ index })}
+                  key={item.userId}
+                  slotProps={{
+                    label: { id: labelId },
+                    action: {
+                      "aria-labelledby": `${labelId} ${iconId}`,
+                      "aria-describedby": tooltipId,
+                    },
+                  }}
+                >
+                  <Stack direction="row" gap={1}>
+                    {formatUserName(item)}
+                    {isDefined(getAvailability(item).label) && (
+                      <Chip color={getAvailability(item).color}>
+                        {getAvailability(item).label}
+                      </Chip>
+                    )}
+                  </Stack>
+                </Chip>
+              </Tooltip>
+            ))}
+          </Stack>
+        )}
         slotProps={{
           listbox: {
             disablePortal: true,
@@ -140,6 +154,14 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
           setValue(newValue.map((user) => user.userId));
         }}
         onBlur={field.input.onBlur}
+      />
+      <LiveAnnouncer
+        active={props.blockedStaff.length > 0}
+        message={`${props.label}: Es gibt mindestens einen Terminkonflikt`}
+      />
+      <LiveAnnouncer
+        active={props.blockedStaff.length === 0 && props.freeStaff.length > 0}
+        message={`${props.label}: Es gibt keine Terminkonflikte`}
       />
     </BaseField>
   );

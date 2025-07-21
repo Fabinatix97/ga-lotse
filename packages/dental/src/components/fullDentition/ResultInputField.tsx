@@ -57,12 +57,16 @@ export function ResultInputField(props: ResultInputFieldProps) {
         result.isInvalid ? "danger" : isMainResultField ? "primary" : "neutral"
       }
       type="text"
-      onChange={(event) => {
-        setResultAction(toothContext, event.target.value.toUpperCase());
-      }}
+      onChange={(event) =>
+        setResultAction(toothContext, normalizeValue(event.target.value))
+      }
       onFocus={focusHandler}
       onBlur={blurHandler}
       onKeyDown={keyboardNavigationHandler}
     />
   );
+}
+
+function normalizeValue(value: string): string {
+  return value.trim().toUpperCase();
 }

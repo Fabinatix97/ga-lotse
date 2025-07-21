@@ -2194,6 +2194,40 @@
         "tags" : [ "Facility" ]
       }
     },
+    "/facilities/centralfilestates/file-number-search" : {
+      "get" : {
+        "operationId" : "getFacilityFileStatesByFileNumber",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "fileNumber",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "method",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchFacilityFileStatesByFileNumberResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Search facility file states by file number",
+        "tags" : [ "Facility" ]
+      }
+    },
     "/facilities/centralfilestates/mark-for-deletion" : {
       "post" : {
         "operationId" : "markFacilityFileStateForDeletion",
@@ -7360,7 +7394,7 @@
       },
       "BaseFeature" : {
         "type" : "string",
-        "enum" : [ "CHAT_USERNAME", "SEARCH_PROCEDURES", "INBOX" ]
+        "enum" : [ "CHAT_USERNAME", "INBOX" ]
       },
       "BlockingEventsOfCalendar" : {
         "required" : [ "calendarId", "events" ],
@@ -11816,6 +11850,19 @@
             "type" : "integer",
             "description" : "The total number of Contacts in the response.",
             "format" : "int64"
+          }
+        }
+      },
+      "SearchFacilityFileStatesByFileNumberResponse" : {
+        "required" : [ "facilityFileStates" ],
+        "type" : "object",
+        "properties" : {
+          "facilityFileStates" : {
+            "type" : "array",
+            "description" : "A list of found File States of Facilities.",
+            "items" : {
+              "$ref" : "#/components/schemas/GetFacilityFileStateResponse"
+            }
           }
         }
       },

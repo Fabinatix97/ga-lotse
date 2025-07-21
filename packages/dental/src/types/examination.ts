@@ -27,6 +27,7 @@ export interface AdditionalInformationFormValues {
   calculus: boolean;
   gingivitis: boolean;
   parodontitis: boolean;
+  blackStain: boolean;
   individualProphylaxis: boolean;
   fissureSealing: boolean;
   tartarRemoval: boolean;

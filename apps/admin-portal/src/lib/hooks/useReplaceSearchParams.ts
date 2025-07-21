@@ -9,6 +9,8 @@ import { isNonNullish } from "remeda";
 
 import { ensureArray } from "@eshg/lib-portal";
 
+import { canonicalColumnId } from "@/lib/hooks/useEntities";
+
 type SearchParamValue =
   | string
   | number
@@ -32,13 +34,16 @@ export function useReplaceSearchParams() {
   ) {
     const newSearchParams = new URLSearchParams(searchParams);
     searchParamReplacements.forEach((replacement) => {
-      newSearchParams.delete(replacement.name);
+      newSearchParams.delete(canonicalColumnId(replacement.name));
       if (isNonNullish(replacement.value)) {
         const values = ensureArray(replacement.value);
         values.forEach((value) => {
           const stringValue = String(value).trim();
           if (stringValue.length > 0) {
-            newSearchParams.append(replacement.name, stringValue);
+            newSearchParams.append(
+              canonicalColumnId(replacement.name),
+              stringValue,
+            );
           }
         });
       }

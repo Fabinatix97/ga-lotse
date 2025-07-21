@@ -11,4 +11,5 @@ export const omsConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "PRIVACY_POLICY",
   "APPOINTMENT_STANDARD_DURATION",
   "OFFICIAL_MEDICAL_SERVICE",
+  "DEPARTMENT_INFO",
 ];

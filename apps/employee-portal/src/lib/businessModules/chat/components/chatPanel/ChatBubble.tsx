@@ -101,6 +101,7 @@ export function ChatBubble({
   let content = (
     <Tooltip
       disableHoverListener={!isSent}
+      disableTouchListener={!isSent}
       placement="top-end"
       disablePortal
       leaveDelay={200}
@@ -182,7 +183,7 @@ export function ChatBubble({
 
   return (
     <>
-      <Stack direction="column" alignItems="flex-start">
+      <Stack direction="column" alignItems="flex-start" width="100%">
         <Stack
           direction="row"
           justifyContent={
@@ -224,7 +225,12 @@ export function ChatBubble({
           }}
         >
           {isEditing ? (
-            <Box sx={{ backgroundColor: "white" }}>
+            <Box
+              sx={{
+                backgroundColor: "white",
+                width: "100%",
+              }}
+            >
               <Formik<MessageFormValues>
                 initialValues={{
                   message: message.content,
@@ -337,7 +343,7 @@ export function ChatBubble({
   );
 }
 
-function splitMessageWithNames(
+export function splitMessageWithNames(
   message: Message,
   mentions: MentionedMember[],
   onClick: (userId: string) => void,

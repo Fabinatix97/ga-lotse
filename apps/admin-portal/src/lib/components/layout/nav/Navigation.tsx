@@ -15,14 +15,13 @@ import {
 } from "@mui/icons-material";
 import { Button, List, Stack, Typography } from "@mui/joy";
 import { useMemo, useState } from "react";
-import { prop, sortBy } from "remeda";
+import { prop, sortBy, uniqueBy } from "remeda";
 
 import { ExpandNavigation } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/components/layout/theme/theme";
 import { useHeaderHeights } from "@/lib/components/layout/useHeaderHeights";
-import { entityToString } from "@/lib/helpers/entityToString";
-import { useOrgUnitsQuery } from "@/lib/hooks/useOrgUnits";
+import { ORG_UNIT_WILDCARD_ID, useEntities } from "@/lib/hooks/useEntities";
 import { useTranslation } from "@/lib/i18n/client";
 
 import { MainItem, NavigationItem, SubItem } from "./NavigationItem";
@@ -61,35 +60,50 @@ const items: MainItem[] = [
 ];
 
 export function Navigation() {
-  const { data: getOrgUnitsResponse } = useOrgUnitsQuery();
+  const { allOrgUnits } = useEntities();
   const [navigationSidebarOpen, setNavigationSidebarOpen] = useState(true);
   const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
   const { t } = useTranslation();
 
-  const itemsWithActorSubItems = useMemo<MainItem[]>(() => {
-    const orgUnits = getOrgUnitsResponse?.orgUnits ?? [];
+  const itemsWithSubItems = useMemo<MainItem[]>(() => {
     const actorSubItems: SubItem[] = sortBy(
-      orgUnits.map((ou) => ({
-        path: `/actors?_orgUnit=${ou.readableName}`,
-        name: entityToString(ou, true),
+      uniqueBy(
+        allOrgUnits.filter((ou) => ou.entity?.readableName),
+        (ou) => ou.entity?.readableName,
+      ).map((ou) => ({
+        path: `/actors?_orgUnit=${ou.entity?.readableName}`,
+        name: ou.entity?.readableName ?? "",
       })),
       prop("name"),
     );
 
-    let foundActor = false;
-    const result = items.map((v) => {
+    const ruleSubItems: SubItem[] = sortBy(
+      uniqueBy(
+        allOrgUnits.filter((ou) => ou.entity?.readableName),
+        (ou) => ou.entity?.readableName,
+      ).map((ou) => ({
+        path: `/rules?_exactOrgUnitIds=${ou.id}`,
+        name: ou.entity?.readableName ?? "",
+      })),
+      prop("name"),
+    );
+    ruleSubItems.push({
+      path: `/rules?_exactOrgUnitIds=${ORG_UNIT_WILDCARD_ID}`,
+      name: (
+        <Typography sx={{ fontStyle: "italic" }}>{t("wildcard")}</Typography>
+      ),
+    });
+
+    return items.map((v) => {
       if (v.path === "/actors") {
-        foundActor = true;
         return { ...v, subItems: actorSubItems };
+      }
+      if (v.path === "/rules") {
+        return { ...v, subItems: ruleSubItems };
       }
       return v;
     });
-
-    // eslint-disable-next-line no-console
-    console.assert(foundActor, "no item found with '/actors' path");
-
-    return result;
-  }, [getOrgUnitsResponse]);
+  }, [allOrgUnits, t]);
 
   return (
     <Stack
@@ -130,9 +144,9 @@ export function Navigation() {
         <ExpandNavigation size="md" color="neutral" />
       </Button>
       <List>
-        {itemsWithActorSubItems.map((item) => (
+        {itemsWithSubItems.map((item) => (
           <NavigationItem
-            key={item.name}
+            key={item.path}
             open={navigationSidebarOpen}
             item={item}
           />

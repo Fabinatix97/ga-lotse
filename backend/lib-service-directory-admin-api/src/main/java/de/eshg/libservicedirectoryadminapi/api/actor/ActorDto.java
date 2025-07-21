@@ -13,7 +13,6 @@ import java.util.UUID;
 @Schema(name = "AdminActor")
 public record ActorDto(
     @NotNull UUID id,
-    String naturalId,
     @NotNull String readableName,
     @NotNull ActorTypeDto type,
     @NotNull boolean active,

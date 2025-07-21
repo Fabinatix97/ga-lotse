@@ -17,18 +17,19 @@ import {
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ReactNode } from "react";
+import { isString } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
 
 export interface MainItem {
-  name: string;
+  name: ReactNode;
   path: string;
   decorator: ReactNode;
   subItems?: SubItem[];
 }
 
 export interface SubItem {
-  name: string;
+  name: ReactNode;
   path: string;
 }
 
@@ -51,6 +52,13 @@ function Item({
       if (
         itemParams.has("_orgUnit") &&
         itemParams.get("_orgUnit") === curSearchParams.get("_orgUnit")
+      ) {
+        return true;
+      }
+      if (
+        itemParams.has("_exactOrgUnitIds") &&
+        itemParams.get("_exactOrgUnitIds") ===
+          curSearchParams.get("_exactOrgUnitIds")
       ) {
         return true;
       }
@@ -103,7 +111,9 @@ function Item({
               component="span"
               level={isMainItem && isItemSelected ? "title-md" : "body-md"}
             >
-              {t(`navigation.${item.name}`, item.name)}
+              {isString(item.name)
+                ? t(`navigation.${item.name}`, item.name)
+                : item.name}
             </Typography>
           </ListItemContent>
         )}
@@ -117,7 +127,7 @@ function Item({
           }}
         >
           {item.subItems.map((subItem) => {
-            return <Item key={subItem.name} open={open} item={subItem} />;
+            return <Item key={subItem.path} open={open} item={subItem} />;
           })}
         </List>
       )}

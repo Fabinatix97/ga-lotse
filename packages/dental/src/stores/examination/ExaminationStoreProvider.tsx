@@ -13,7 +13,7 @@ import { RequiresChildren } from "@eshg/lib-portal";
 
 import {
   ExaminationResult,
-  ExaminationResultWithDate,
+  ScreeningExaminationResultWithDate,
 } from "../../api/models/ExaminationResult";
 
 import {
@@ -27,9 +27,9 @@ type ExaminationStoreApi = ReturnType<typeof createExaminationStore>;
 const ExaminationStoreContext = createContext<ExaminationStoreApi | null>(null);
 
 interface ExaminationStoreProviderProps extends RequiresChildren {
-  examinationResult?: ExaminationResult;
-  defaultDentitionType?: ApiDentitionType;
-  previousExaminationResult?: ExaminationResultWithDate;
+  examinationResult: ExaminationResult | undefined;
+  defaultDentitionType: ApiDentitionType | undefined;
+  previousExaminationResult: ScreeningExaminationResultWithDate | undefined;
 }
 
 export function ExaminationStoreProvider({

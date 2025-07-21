@@ -22,12 +22,8 @@ import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { isArrayEqualIgnoringOrder } from "@/lib/shared/helpers/isArrayEqualIgnoringOrder";
 
-function validateForm(
-  values: AppointmentBlockGroupValues,
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][],
-) {
+function validateForm(values: AppointmentBlockGroupValues) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};
 
   const appointmentBlockErrors = validateFieldArray(
@@ -50,21 +46,11 @@ function validateForm(
     errors.mfas = msg;
   }
 
-  if (
-    values.types.length > 1 &&
-    allowedAppointmentTypeCombinations.every(
-      (combination) => !isArrayEqualIgnoringOrder(combination, values.types),
-    )
-  ) {
-    errors.types = "Diese Kombination von Terminarten ist nicht erlaubt.";
-  }
-
   return errors;
 }
 
 interface AppointmentBlockGroupFormProps {
   initialValues: AppointmentBlockGroupValues;
-  allowedAppointmentTypeCombinations: ApiAppointmentType[][];
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
   allMedicalAssistants: ApiUser[];
   allPhysicians: ApiUser[];
@@ -100,9 +86,7 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) =>
-        validateForm(values, props.allowedAppointmentTypeCombinations)
-      }
+      validate={(values) => validateForm(values)}
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

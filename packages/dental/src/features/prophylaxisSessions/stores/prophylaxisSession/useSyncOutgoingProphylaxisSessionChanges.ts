@@ -149,6 +149,7 @@ function mapScreeningResult(
     calculus: screeningResult.calculus,
     gingivitis: screeningResult.gingivitis,
     parodontitis: screeningResult.parodontitis,
+    blackStain: screeningResult.blackStain,
     toothDiagnoses: mapToothDiagnosesToRequest(screeningResult.toothDiagnoses),
     individualProphylaxis: screeningResult.individualProphylaxis,
     fissureSealing: screeningResult.fissureSealing,

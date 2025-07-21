@@ -28,8 +28,7 @@ public final class MedsAbroadPublicSecurityConfig extends AbstractPublicSecurity
     requestMatchers(PUT, BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/{id}/reopen")
         .hasRole(EmployeePermissionRole.MEDS_ABROAD_LEADER);
     requestMatchers(GET, BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/{id}/**")
-        .hasAnyRole(
-            EmployeePermissionRole.MEDS_ABROAD_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+        .hasRole(EmployeePermissionRole.MEDS_ABROAD_ADMIN);
     requestMatchers(
             BaseUrls.MedsAbroad.PROCEDURE_CONTROLLER + "/**", BaseUrls.EVENT_METADATA_API + "/**")
         .hasAnyRole(EmployeePermissionRole.MEDS_ABROAD_ADMIN);

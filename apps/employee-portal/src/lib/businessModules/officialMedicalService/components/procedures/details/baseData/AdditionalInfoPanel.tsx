@@ -9,8 +9,12 @@ import { InfoOutlined } from "@mui/icons-material";
 import { Alert } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { DetailsItem, EditButton } from "@eshg/lib-employee-portal";
-import { formatDate, formatPersonName } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsItem,
+  EditButton,
+} from "@eshg/lib-employee-portal";
+import { DetailsList, formatDate, formatPersonName } from "@eshg/lib-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
@@ -60,27 +64,36 @@ export function AdditionalInfoPanel({
           Um einen Vorgang anzulegen, muss ein Anliegen ergänzt werden.
         </Alert>
       )}
-      <DetailsItem label="Anliegen" value={procedure.concern?.nameDe ?? "-"} />
-      <DetailsItem
-        label="Arzt/Ärztin"
-        value={
-          procedure.physician ? formatPersonName(procedure.physician) : "-"
-        }
-      />
-      <DetailsItem
-        label="Stichtag"
-        value={
-          procedure.medicalOpinionCutOffDate
-            ? formatDate(procedure.medicalOpinionCutOffDate)
-            : "-"
-        }
-      />
-      {!!procedure.affectedPerson.emailAddresses?.length && (
-        <DetailsItem
-          label="E-Mail-Benachrichtigungen"
-          value={procedure.sendEmailNotifications ? "Aktiviert" : "Deaktiviert"}
-        />
-      )}
+      <DetailsList>
+        <DetailsColumn gap={2}>
+          <DetailsItem
+            label="Anliegen"
+            value={procedure.concern?.nameDe ?? "-"}
+          />
+          <DetailsItem
+            label="Arzt/Ärztin"
+            value={
+              procedure.physician ? formatPersonName(procedure.physician) : "-"
+            }
+          />
+          <DetailsItem
+            label="Stichtag"
+            value={
+              procedure.medicalOpinionCutOffDate
+                ? formatDate(procedure.medicalOpinionCutOffDate)
+                : "-"
+            }
+          />
+          {!!procedure.affectedPerson.emailAddresses?.length && (
+            <DetailsItem
+              label="E-Mail-Benachrichtigungen"
+              value={
+                procedure.sendEmailNotifications ? "Aktiviert" : "Deaktiviert"
+              }
+            />
+          )}
+        </DetailsColumn>
+      </DetailsList>
     </InfoTile>
   );
 }

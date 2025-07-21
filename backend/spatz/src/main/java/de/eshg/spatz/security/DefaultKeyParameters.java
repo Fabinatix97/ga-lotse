@@ -5,19 +5,15 @@
 
 package de.eshg.spatz.security;
 
-import de.eshg.servicedirectory.util.X509Utils;
-
 public enum DefaultKeyParameters {
-  RSA("RSA", 2048, X509Utils.SIGNATURE_ALGORITHM),
-  ECDSA("EC", 256, "SHA384withECDSA");
+  RSA("RSA", 2048),
+  ECDSA("EC", 256);
 
   public final String keyAlgorithm;
   public final int keySize;
-  public final String signingAlgorithm;
 
-  DefaultKeyParameters(String keyAlgorithm, int keySize, String signingAlgorithm) {
+  DefaultKeyParameters(String keyAlgorithm, int keySize) {
     this.keyAlgorithm = keyAlgorithm;
     this.keySize = keySize;
-    this.signingAlgorithm = signingAlgorithm;
   }
 }

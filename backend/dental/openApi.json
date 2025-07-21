@@ -207,6 +207,30 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/archiving/procedures/{procedureId}" : {
+      "get" : {
+        "operationId" : "downloadArchivableProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archivable procedure",
+        "tags" : [ "Archiving" ]
+      }
+    },
     "/archiving/relevant-procedures" : {
       "get" : {
         "operationId" : "getRelevantArchivableProcedures",
@@ -6959,15 +6983,9 @@
         }
       },
       "ProphylaxisSessionChildExamination" : {
-        "required" : [ "allFluoridationConsents", "childId", "childVersion", "dateOfBirth", "examinationId", "examinationVersion", "firstName", "institution", "lastName", "previousExaminationResults", "procedureLabels" ],
+        "required" : [ "childId", "childVersion", "dateOfBirth", "examinationId", "examinationVersion", "firstName", "institution", "lastName", "previousScreeningExaminationResults", "procedureLabels", "relevantFluoridationConsents" ],
         "type" : "object",
         "properties" : {
-          "allFluoridationConsents" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/FluoridationConsent"
-            }
-          },
           "childId" : {
             "type" : "string",
             "format" : "uuid"
@@ -7006,16 +7024,10 @@
           "note" : {
             "type" : "string"
           },
-          "previousExaminationResults" : {
+          "previousScreeningExaminationResults" : {
             "type" : "object",
             "additionalProperties" : {
-              "oneOf" : [ {
-                "$ref" : "#/components/schemas/AbsenceExaminationResult"
-              }, {
-                "$ref" : "#/components/schemas/FluoridationExaminationResult"
-              }, {
-                "$ref" : "#/components/schemas/ScreeningExaminationResult"
-              } ]
+              "$ref" : "#/components/schemas/ScreeningExaminationResult"
             }
           },
           "procedureLabels" : {
@@ -7026,6 +7038,12 @@
           },
           "prophylaxisDentitionType" : {
             "$ref" : "#/components/schemas/DentitionType"
+          },
+          "relevantFluoridationConsents" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FluoridationConsent"
+            }
           },
           "result" : {
             "oneOf" : [ {
@@ -7149,13 +7167,16 @@
         "enum" : [ "COMPLETE", "INCOMPLETE" ]
       },
       "ScreeningExaminationResult" : {
-        "required" : [ "calculus", "dentitionType", "fissureSealing", "gingivitis", "gingivitisTreatment", "individualProphylaxis", "inspectionAppointment", "orthodonticFindings", "orthodonticTreatment", "parodontitis", "plaque", "plaqueTreatment", "tartarRemoval", "toothDiagnoses" ],
+        "required" : [ "blackStain", "calculus", "dentitionType", "fissureSealing", "gingivitis", "gingivitisTreatment", "individualProphylaxis", "inspectionAppointment", "orthodonticFindings", "orthodonticTreatment", "parodontitis", "plaque", "plaqueTreatment", "tartarRemoval", "toothDiagnoses" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/DentalExaminationResult"
         }, {
           "type" : "object",
           "properties" : {
+            "blackStain" : {
+              "type" : "boolean"
+            },
             "calculus" : {
               "type" : "boolean"
             },

@@ -11,7 +11,6 @@ import { useState } from "react";
 import { ButtonLink } from "@eshg/lib-portal";
 
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
-import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import {
   clearSearchParams,
   leaveRoom,
@@ -23,13 +22,9 @@ import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 
 interface AdminSettingsProps {
   roomId: string;
-  onClose: () => void;
 }
 
-export function AdminSettings({
-  roomId,
-  onClose,
-}: Readonly<AdminSettingsProps>) {
+export function AdminSettings({ roomId }: Readonly<AdminSettingsProps>) {
   const { matrixClient } = useChatClientContext();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
@@ -43,7 +38,6 @@ export function AdminSettings({
 
   return (
     <>
-      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Stack gap={2} sx={{ overflowY: "auto", padding: 2, marginTop: 2 }}>
         <ButtonLink
           level="title-md"

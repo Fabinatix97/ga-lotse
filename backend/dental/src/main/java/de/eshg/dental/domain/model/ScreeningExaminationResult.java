@@ -59,6 +59,8 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   private boolean parodontitis;
 
+  private boolean blackStain;
+
   private Boolean decayRisk;
 
   private boolean individualProphylaxis;
@@ -155,6 +157,14 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setParodontitis(boolean parodontitis) {
     this.parodontitis = parodontitis;
+  }
+
+  public boolean hasBlackStain() {
+    return blackStain;
+  }
+
+  public void setBlackStain(boolean blackStain) {
+    this.blackStain = blackStain;
   }
 
   public MihStatus getMihStatus() {

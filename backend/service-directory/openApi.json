@@ -121,90 +121,6 @@
         "tags" : [ "ServiceDirectoryAdmin" ]
       }
     },
-    "/adminapi/actors/metadata/{actorId}" : {
-      "get" : {
-        "operationId" : "getActorMetadataByActorId",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "actorId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AdminActorMetadata"
-                }
-              }
-            },
-            "description" : "Gets the meta data of an actor"
-          }
-        },
-        "summary" : "Get the meta data of an actor by its actor id",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
-    "/adminapi/actors/{actorId}/clients" : {
-      "get" : {
-        "operationId" : "getClientActorsForActor",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "actorId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetApplicableActorsResponse"
-                }
-              }
-            },
-            "description" : "Returns all audited actors that are a valid client for this actor"
-          }
-        },
-        "summary" : "Get all audited actors that are a valid client for this actor",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
-    "/adminapi/actors/{actorId}/servers" : {
-      "get" : {
-        "operationId" : "getServerActorsForActor",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "actorId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetApplicableActorsResponse"
-                }
-              }
-            },
-            "description" : "Returns all audited actors that are a valid server for this actor"
-          }
-        },
-        "summary" : "Get all audited actors that are a valid server for this actor",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
     "/adminapi/actors/{id}" : {
       "delete" : {
         "operationId" : "deleteActorById",
@@ -223,6 +139,25 @@
           }
         },
         "summary" : "Delete an actor by its id",
+        "tags" : [ "ServiceDirectoryAdmin" ]
+      }
+    },
+    "/adminapi/entities" : {
+      "get" : {
+        "operationId" : "getAllEntities",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetEntitiesResponse"
+                }
+              }
+            },
+            "description" : "Returns all entities"
+          }
+        },
+        "summary" : "Get all orgUnits, actors and rules",
         "tags" : [ "ServiceDirectoryAdmin" ]
       }
     },
@@ -277,23 +212,6 @@
       }
     },
     "/adminapi/orgUnits" : {
-      "get" : {
-        "operationId" : "getAllOrgUnits",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetOrgUnitsResponse"
-                }
-              }
-            },
-            "description" : "Returns all orgUnits"
-          }
-        },
-        "summary" : "Get all orgUnits",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      },
       "post" : {
         "operationId" : "createOrgUnit",
         "requestBody" : {
@@ -470,23 +388,6 @@
       }
     },
     "/adminapi/rules" : {
-      "get" : {
-        "operationId" : "getAllRules",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRulesResponse"
-                }
-              }
-            },
-            "description" : "Returns all rules"
-          }
-        },
-        "summary" : "Get all rules",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      },
       "post" : {
         "operationId" : "createRule",
         "requestBody" : {
@@ -570,53 +471,6 @@
         "tags" : [ "ServiceDirectoryAdmin" ]
       }
     },
-    "/adminapi/rules/active" : {
-      "get" : {
-        "operationId" : "getAllActiveRules",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetRulesResponse"
-                }
-              }
-            },
-            "description" : "Returns all active rules"
-          }
-        },
-        "summary" : "Get all active rules",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
-    "/adminapi/rules/active/{actorId}" : {
-      "get" : {
-        "operationId" : "getAllActiveAuditedRulesApplicableToActor",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "actorId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetActiveApplicableRulesResponse"
-                }
-              }
-            },
-            "description" : "Returns all active audited rules applicable to the actor"
-          }
-        },
-        "summary" : "Get all active audited rules applicable to actor",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
     "/adminapi/rules/deactivate/{id}" : {
       "put" : {
         "operationId" : "deactivateRuleById",
@@ -663,62 +517,6 @@
           }
         },
         "summary" : "Delete an rule",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
-    "/adminapi/rules/{ruleId}/clients" : {
-      "get" : {
-        "operationId" : "getActorsThatAreClientInRule",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "ruleId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetApplicableActorsResponse"
-                }
-              }
-            },
-            "description" : "Returns all audited actors that are a client in this rule"
-          }
-        },
-        "summary" : "Get all audited actors that are a client in this rule",
-        "tags" : [ "ServiceDirectoryAdmin" ]
-      }
-    },
-    "/adminapi/rules/{ruleId}/servers" : {
-      "get" : {
-        "operationId" : "getActorsThatAreServerInRule",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "ruleId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetApplicableActorsResponse"
-                }
-              }
-            },
-            "description" : "Returns all audited actors that are a server in this rule"
-          }
-        },
-        "summary" : "Get all audited actors that are a server in this rule",
         "tags" : [ "ServiceDirectoryAdmin" ]
       }
     },
@@ -1412,9 +1210,6 @@
           "metadata" : {
             "$ref" : "#/components/schemas/AdminActorMetadata"
           },
-          "naturalId" : {
-            "type" : "string"
-          },
           "networkId" : {
             "type" : "string"
           },
@@ -1857,43 +1652,20 @@
           }
         }
       },
-      "GetActiveApplicableRulesResponse" : {
-        "required" : [ "clientRules", "serverRules" ],
-        "type" : "object",
-        "properties" : {
-          "clientRules" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AdminRule"
-            }
-          },
-          "serverRules" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AdminRule"
-            }
-          }
-        }
-      },
-      "GetApplicableActorsResponse" : {
-        "type" : "object",
-        "properties" : {
-          "actors" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AdminActor"
-            }
-          }
-        }
-      },
-      "GetOrgUnitsResponse" : {
-        "required" : [ "orgUnits", "stagedActors", "stagedOrgUnits" ],
+      "GetEntitiesResponse" : {
+        "required" : [ "orgUnits", "rules", "stagedActors", "stagedOrgUnits", "stagedRules" ],
         "type" : "object",
         "properties" : {
           "orgUnits" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AdminOrgUnit"
+            }
+          },
+          "rules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdminRule"
             }
           },
           "stagedActors" : {
@@ -1907,6 +1679,12 @@
             "items" : {
               "$ref" : "#/components/schemas/AdminStagedEntityAdminPartialOrgUnit"
             }
+          },
+          "stagedRules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdminStagedEntityAdminPartialRule"
+            }
           }
         }
       },
@@ -1918,24 +1696,6 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AdminRevision"
-            }
-          }
-        }
-      },
-      "GetRulesResponse" : {
-        "required" : [ "rules", "stagedRules" ],
-        "type" : "object",
-        "properties" : {
-          "rules" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AdminRule"
-            }
-          },
-          "stagedRules" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AdminStagedEntityAdminPartialRule"
             }
           }
         }

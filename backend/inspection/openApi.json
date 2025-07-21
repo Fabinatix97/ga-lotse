@@ -207,6 +207,30 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/archiving/procedures/{procedureId}" : {
+      "get" : {
+        "operationId" : "downloadArchivableProcedure",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : { }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get archivable procedure",
+        "tags" : [ "Archiving" ]
+      }
+    },
     "/archiving/relevant-procedures" : {
       "get" : {
         "operationId" : "getRelevantArchivableProcedures",
@@ -1370,6 +1394,13 @@
           }
         }, {
           "in" : "query",
+          "name" : "fileNumber",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
           "name" : "objectTypeId",
           "required" : false,
           "schema" : {
@@ -1902,7 +1933,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/InspFacility"
+                  "$ref" : "#/components/schemas/InspFacilityAndFileNumberCollisions"
                 }
               }
             },
@@ -2902,7 +2933,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Inspection"
+                  "$ref" : "#/components/schemas/InspectionAndFileNumberCollisions"
                 }
               }
             },
@@ -3335,7 +3366,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Inspection"
+                  "$ref" : "#/components/schemas/InspectionAndFileNumberCollisions"
                 }
               }
             },
@@ -4860,6 +4891,25 @@
           "required" : true,
           "schema" : {
             "$ref" : "#/components/schemas/InspectionFeature"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/file-number-method" : {
+      "post" : {
+        "operationId" : "setFileNumberMethod",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "method",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -8751,6 +8801,18 @@
           }
         }
       },
+      "InspFacilityAndFileNumberCollisions" : {
+        "required" : [ "facility" ],
+        "type" : "object",
+        "properties" : {
+          "facility" : {
+            "$ref" : "#/components/schemas/InspFacility"
+          },
+          "fileNumberCollisionsResponse" : {
+            "$ref" : "#/components/schemas/GetFileNumberCollisionsResponse"
+          }
+        }
+      },
       "InspLinkBaseFacilityRequest" : {
         "required" : [ "facility" ],
         "type" : "object",
@@ -9008,6 +9070,18 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/InspectionType"
+          }
+        }
+      },
+      "InspectionAndFileNumberCollisions" : {
+        "required" : [ "inspection" ],
+        "type" : "object",
+        "properties" : {
+          "fileNumberCollisionsResponse" : {
+            "$ref" : "#/components/schemas/GetFileNumberCollisionsResponse"
+          },
+          "inspection" : {
+            "$ref" : "#/components/schemas/Inspection"
           }
         }
       },

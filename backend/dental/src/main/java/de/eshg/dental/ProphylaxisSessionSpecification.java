@@ -17,14 +17,15 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -59,10 +60,24 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
   @Override
   public Predicate toPredicate(
       Root<ProphylaxisSession> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-    query.orderBy(
-        Stream.of(getPrimarySortOrder(cb, root), cb.asc(root.get(ProphylaxisSession_.id)))
-            .distinct()
-            .toList());
+    Set<Order> orders = new LinkedHashSet<>();
+
+    orders.add(getPrimarySortOrder(cb, root));
+
+    if (Objects.equals(sortKey, ProphylaxisSessionSortKey.GROUP_NAME)) {
+      orders.add(
+          switch (sortDirection) {
+            case ASC -> cb.asc(root.get(ProphylaxisSession_.GROUP_NAME));
+            case DESC -> cb.desc(root.get(ProphylaxisSession_.GROUP_NAME));
+          });
+    }
+    orders.add(
+        switch (sortDirection) {
+          case ASC -> cb.asc(root.get(ProphylaxisSession_.id));
+          case DESC -> cb.desc(root.get(ProphylaxisSession_.id));
+        });
+
+    query.orderBy(orders.stream().toList());
 
     List<Predicate> conjunctions = new ArrayList<>();
 
@@ -91,28 +106,11 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
     return switch (sortKey) {
       case ID -> root.get(ProphylaxisSession_.id);
       case TYPE -> root.get(ProphylaxisSession_.type);
-      case GROUP_NAME -> nullsLastString(root.get(ProphylaxisSession_.groupName), cb);
+      case GROUP_NAME -> SpecificationUtil.leadingNumbersInGroupName(root, cb);
       case DATE_AND_TIME -> root.get(ProphylaxisSession_.dateAndTime);
       case IS_SCREENING -> root.get(ProphylaxisSession_.isScreening);
       case FLUORIDATION_VARNISH -> root.get(ProphylaxisSession_.fluoridationVarnish);
       case STATUS -> root.get(ProphylaxisSession_.status);
     };
-  }
-
-  private Expression<String> nullsLastString(Path<String> instantPath, CriteriaBuilder cb) {
-    String valueWhenNull =
-        switch (sortDirection) {
-          case ASC -> null;
-          case DESC -> "";
-        };
-    return nullsLast(instantPath, cb, valueWhenNull);
-  }
-
-  // This is a workaround because the CriteriaBuilder currently does not support
-  // generating SQL’s "NULLS LAST"
-  // It’s supposed to be added in Java Persistence 3.2 / Hibernate 7.0
-  private static <T> Expression<T> nullsLast(
-      Path<T> instantPath, CriteriaBuilder cb, T valueWhenNull) {
-    return cb.coalesce(instantPath, cb.literal(valueWhenNull));
   }
 }

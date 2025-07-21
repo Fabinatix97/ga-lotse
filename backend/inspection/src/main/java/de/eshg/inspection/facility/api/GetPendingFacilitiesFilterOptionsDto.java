@@ -20,6 +20,7 @@ public record GetPendingFacilitiesFilterOptionsDto(
     String postalCode,
     String city,
     String street,
+    String fileNumber,
     UUID objectTypeId,
     Set<ProcedureStatusDto> status,
     Set<InspectionType> type,

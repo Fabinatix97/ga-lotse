@@ -10,6 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @FunctionalInterface
 public interface ObjectMapperCustomizer {
 
+  static ObjectMapperCustomizer doNothing() {
+    return objectMapper -> {};
+  }
+
   void customize(ObjectMapper objectMapper);
 
   static ObjectMapperCustomizer combine(ObjectMapperCustomizer... objectMapperCustomizers) {

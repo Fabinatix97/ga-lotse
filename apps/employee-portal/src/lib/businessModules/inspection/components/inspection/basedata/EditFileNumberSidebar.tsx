@@ -3,17 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQueries } from "@tanstack/react-query";
-
+import { ApiGetFileNumberCollisionsResponse } from "@eshg/inspection-api";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal";
 
-import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { getFileNumberCollisionsQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { EditFileNumberForm } from "@/lib/businessModules/inspection/components/inspection/basedata/EditFileNumberForm";
 
 export function useEditFileNumberSidebar(onClose: () => void) {
@@ -26,18 +23,16 @@ export function useEditFileNumberSidebar(onClose: () => void) {
 interface EditFileNumberSidebarProps extends SidebarWithFormRefProps {
   inspectionId: string;
   fileNumber: string;
+  fileNumberCollisions: ApiGetFileNumberCollisionsResponse;
 }
 
 function EditFileNumberSidebar({
   inspectionId,
   fileNumber,
+  fileNumberCollisions,
   ...props
 }: Readonly<EditFileNumberSidebarProps>) {
-  const inspectionApi = useInspectionApi();
   const updateInspection = useUpdateInspection();
-  const [{ data: fileNumberCollisions }] = useSuspenseQueries({
-    queries: [getFileNumberCollisionsQuery(inspectionApi, inspectionId)],
-  });
 
   return (
     <EditFileNumberForm

@@ -8,6 +8,7 @@
 <#-- @ftlvariable name="facility" type="de.eshg.inspection.report.pdf.RepFacility" -->
 <#-- @ftlvariable name="inspection" type="de.eshg.inspection.report.pdf.RepInspection" -->
 <#-- @ftlvariable name="reportInfo" type="de.eshg.inspection.report.pdf.RepInfo" -->
+<#-- @ftlvariable name="assignee" type="de.eshg.inspection.report.pdf.RepAssignee" -->
 
 <html xml:lang="de" lang="de">
   <head>
@@ -128,7 +129,7 @@
     </#list>
       <div class="no-page-break greetingEnd">
         <p>Im Auftrag</p>
-        <p>${inspection.executingPerson}</p>
+        <p>${assignee.fullName}</p>
       </div>
     </div>
   </body>

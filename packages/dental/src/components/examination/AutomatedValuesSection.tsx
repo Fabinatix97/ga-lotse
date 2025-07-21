@@ -23,10 +23,7 @@ import {
   formatOptionalKey,
 } from "@eshg/lib-portal";
 
-import {
-  ExaminationResultWithDate,
-  ScreeningExaminationResult,
-} from "../../api/models/ExaminationResult";
+import { ScreeningExaminationResultWithDate } from "../../api/models/ExaminationResult";
 import { useExaminationStore } from "../../stores/examination/ExaminationStoreProvider";
 import { createDentitionByType } from "../../stores/examination/factories";
 import { selectDecayRiskValue } from "../../stores/examination/selectors/decayRisk";
@@ -52,7 +49,7 @@ const WarningIcon = styled(WarningAmberOutlined)(({ theme }) => ({
 interface AutomatedValuesSectionProps {
   participantDateOfBirth: Date;
   dateOfExamination: Date;
-  previousExaminations: ExaminationResultWithDate[];
+  previousExaminations: ScreeningExaminationResultWithDate[];
 }
 
 export function AutomatedValuesSection(props: AutomatedValuesSectionProps) {
@@ -163,13 +160,8 @@ function resolveDecayHistoryItems(
   );
 }
 
-interface ScreeningExaminationResultWithDate {
-  result: ScreeningExaminationResult;
-  dateAndTime: Date;
-}
-
 function isPreviousScreeningExamination(
-  examination: ExaminationResultWithDate,
+  examination: ScreeningExaminationResultWithDate,
   currentDateOfExamination: Date,
 ): examination is ScreeningExaminationResultWithDate {
   return (

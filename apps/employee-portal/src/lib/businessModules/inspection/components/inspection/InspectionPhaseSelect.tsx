@@ -17,7 +17,13 @@ export function InspectionPhaseSelect({
   inspection: ApiInspection;
 }>) {
   return (
-    <Typography sx={{ ml: "auto" }} level="body-md" color="neutral" noWrap>
+    <Typography
+      sx={{ ml: "auto" }}
+      level="body-md"
+      color="neutral"
+      component="span"
+      noWrap
+    >
       Phase: {translateInspectionPhase(inspection.phase)}
     </Typography>
   );

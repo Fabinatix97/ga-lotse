@@ -27,8 +27,7 @@ export function HeaderButtons() {
   const userSidebar = useSelfUserSidebar();
   const { data: notificationResponse } = useGetUnreadNotifications();
   const notificationsSidebar = useNotificationsSidebar();
-
-  const { userPresence, sharePresence } = useGetSelfUserPresence();
+  const { userPresence, isChatEnabled } = useGetSelfUserPresence();
 
   const notificationsCount = notificationResponse
     ? notificationResponse.notifications.length
@@ -71,6 +70,7 @@ export function HeaderButtons() {
           <NotificationsIcon sx={{ color: "background.body" }} />
         </Badge>
       </HeaderIconButton>
+
       {canAccessChat && !userSettings.accountDeactivated && (
         <HeaderMessagesButton />
       )}
@@ -83,7 +83,7 @@ export function HeaderButtons() {
         onClick={toggleUserSidebar}
       >
         <Badge
-          invisible={!sharePresence}
+          invisible={!isChatEnabled}
           size="sm"
           badgeInset="18%"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

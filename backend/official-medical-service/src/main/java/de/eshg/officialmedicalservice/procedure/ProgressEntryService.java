@@ -46,7 +46,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.UPDATE_AFFECTED_PERSON.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
     progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
     procedure.addProgressEntry(progressEntry);
   }
@@ -56,16 +55,25 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.SYNC_AFFECTED_PERSON.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
     progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
     procedure.addProgressEntry(progressEntry);
   }
 
-  public void createProgressEntryForSyncFacility(OmsProcedure procedure) {
+  public void createProgressEntryForUpdateFacility(
+      OmsProcedure procedure, UUID previousFacilityFileStateId) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.UPDATE_FACILITY.name(), TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForSyncFacility(
+      OmsProcedure procedure, UUID previousFacilityFileStateId) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.SYNC_FACILITY.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
+    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -76,7 +84,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.APPOINTMENT_FOR_SELF_BOOKING_ADDED.name(),
             note,
             TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -92,7 +99,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_ADDED_WITH_BOOKING.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -111,7 +117,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_REBOOKED.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -130,7 +135,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_REBOOKED.name(), note, TriggerType.CITIZEN);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -145,7 +149,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_BOOKED.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -160,7 +163,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_BOOKED.name(), note, triggerType);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -175,7 +177,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_CANCELED.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -190,7 +191,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_CANCELED.name(), note, TriggerType.CITIZEN);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -199,7 +199,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_OPTION_WITHDRAWN.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -216,7 +215,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_CLOSED.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -298,7 +296,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.DOCUMENT_DELETED.name(),
             changeDescription,
             TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -312,7 +309,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.DOCUMENT_REVIEWED.name(), changeDescription, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -338,7 +334,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.FACILITY_ADDED.name(),
             changeDescription,
             TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -366,7 +361,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.MEDICAL_OPINION_STATUS_CHANGED.name(),
             changeDescription,
             TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -400,7 +394,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.ADDITIONAL_INFO_CHANGED.name(),
             changeDescription,
             TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -417,7 +410,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.CONCERN_CHANGED.name(),
             changeDescription,
             TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -426,7 +418,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.ANAMNESIS_CHANGED_BY_EMPLOYEE.name(), note, TriggerType.EMPLOYEE);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 
@@ -435,7 +426,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.ANAMNESIS_CHANGED_BY_CITIZEN.name(), note, TriggerType.CITIZEN);
-    progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
 }

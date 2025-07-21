@@ -6,7 +6,13 @@
 import { FormikValues } from "formik";
 import { notFound } from "next/navigation";
 
-import { validateIntegerAnd, validateRange } from "@eshg/lib-portal";
+import {
+  OptionalFieldValue,
+  isEmptyString,
+  validateInteger,
+  validatePipe,
+  validateRange,
+} from "@eshg/lib-portal";
 
 import { ConfiguratorForm } from "@/lib/configurator/components/shared/ConfiguratorForm";
 import { ConfiguratorAlertProps } from "@/lib/configurator/components/shared/RenderField";
@@ -47,7 +53,7 @@ export interface StandardDurationField<TFormModel> {
   alert?: ConfiguratorAlertProps;
 }
 
-const MIN_0 = 0;
+const MIN_5 = 5;
 const MAX_240 = 240;
 
 export function AppointmentStandardDurationConfiguratorForm<
@@ -83,12 +89,10 @@ export function AppointmentStandardDurationConfiguratorForm<
                       name: field.name,
                       label: field.label,
                       alert: field.alert,
-                      min: MIN_0,
+                      min: MIN_5,
                       max: MAX_240,
                       required: "Bitte eine Termindauer eingeben.",
-                      validate: validateIntegerAnd(
-                        validateRange(MIN_0, MAX_240),
-                      ),
+                      validate: validateStandardDuration,
                     },
                   ],
                 })),
@@ -102,4 +106,15 @@ export function AppointmentStandardDurationConfiguratorForm<
       onSubmit={updateAppointmentStandardDuration}
     />
   );
+}
+
+const validateStandardDuration = validatePipe(
+  validateInteger,
+  validateRange(MIN_5, MAX_240),
+  validateMultipleOfFive,
+);
+
+function validateMultipleOfFive(value: OptionalFieldValue<number>) {
+  if (isEmptyString(value) || value % 5 === 0) return undefined;
+  return "Bitte ein Vielfaches von 5 angeben.";
 }

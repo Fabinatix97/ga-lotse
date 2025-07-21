@@ -26,6 +26,7 @@ import {
   unique,
 } from "remeda";
 
+import { getActiveLabel } from "@/lib/components/sidebar/cell/ActiveCell";
 import { MultiSelectFilter } from "@/lib/components/table/MultiSelectFilter";
 import { SelectOption } from "@/lib/components/table/SelectOptions";
 import { SingleSelectFilter } from "@/lib/components/table/SingleSelectFilter";
@@ -33,18 +34,22 @@ import { TextInputFilter } from "@/lib/components/table/TextInputFilter";
 import {
   EDIT_BUTTON_ID,
   HeaderButtons,
-} from "@/lib/components/table/addEditColumns";
-import { getActiveLabel } from "@/lib/components/table/cell/ActiveCell";
+} from "@/lib/components/table/cell/EditButtonCell";
 import {
   formatActorSelector,
   isActorSelector,
-} from "@/lib/components/table/cell/StaticActorSelectorCell";
-import { Actor } from "@/lib/components/view/actors/ActorTable";
-import { UniqueEntity } from "@/lib/helpers/entities";
+} from "@/lib/helpers/actorSelector";
 import { entityToString } from "@/lib/helpers/entityToString";
-import { OrgUnit } from "@/lib/hooks/useOrgUnits";
+import {
+  Actor,
+  EntityWrapper,
+  OrgUnit,
+  Rule,
+  UniqueEntity,
+  canonicalColumnId,
+  isStagedEntity,
+} from "@/lib/hooks/useEntities";
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
-import { Rule } from "@/lib/hooks/useRules";
 
 function toColumnFilter<TData, TValue>(
   searchParams: ReadonlyURLSearchParams,
@@ -56,7 +61,9 @@ function toColumnFilter<TData, TValue>(
       return [];
     }
     if (columnDef.meta?.multiFilter) {
-      const value = searchParams.getAll(columnDef.id).map(stringToValue);
+      const value = searchParams
+        .getAll(canonicalColumnId(columnDef.id))
+        .map(stringToValue);
       if (isEmpty(value)) {
         return [];
       }
@@ -67,7 +74,7 @@ function toColumnFilter<TData, TValue>(
         },
       ];
     }
-    const value = searchParams.get(columnDef.id);
+    const value = searchParams.get(canonicalColumnId(columnDef.id));
     if (value === null) {
       return [];
     }
@@ -203,8 +210,15 @@ export function useColumnFilters<TData>(columns: ColumnDef<TData>[]) {
   return { columnFilters, onColumnFiltersChange };
 }
 
-function isEntity(e: unknown): e is { id: string; readableName?: string } {
-  return isObjectType(e) && "id" in e && isString(e.id);
+function isEntity(e: unknown): e is EntityWrapper {
+  return (
+    isObjectType(e) &&
+    "id" in e &&
+    isString(e.id) &&
+    "_type" in e &&
+    isString(e._type) &&
+    ["orgUnit", "actor", "rule"].includes(e._type)
+  );
 }
 
 // eslint-disable-next-line func-style
@@ -213,8 +227,9 @@ export const actorsFilterFn: FilterFn<OrgUnit> = (
   _columnId,
   filterValue,
 ) => {
+  const lowerFilterValue = (filterValue as string).toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
-    arrayFilter(orig.actors, filterValue),
+    arrayFilter(orig.entity?._actors ?? [], lowerFilterValue),
   );
 };
 
@@ -224,8 +239,9 @@ export const matchingClientActorsFilterFn: FilterFn<Rule> = (
   _columnId,
   filterValue,
 ) => {
+  const lowerFilterValue = (filterValue as string).toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
-    arrayFilter(orig._matchingClientActors, filterValue),
+    arrayFilter(orig.entity?._matchingClientActors ?? [], lowerFilterValue),
   );
 };
 
@@ -235,8 +251,9 @@ export const matchingServerActorsFilterFn: FilterFn<Rule> = (
   _columnId,
   filterValue,
 ) => {
+  const lowerFilterValue = (filterValue as string).toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
-    arrayFilter(orig._matchingServerActors, filterValue),
+    arrayFilter(orig.entity?._matchingServerActors ?? [], lowerFilterValue),
   );
 };
 
@@ -246,8 +263,9 @@ export const matchingClientRulesFilterFn: FilterFn<Actor> = (
   _columnId,
   filterValue,
 ) => {
+  const lowerFilterValue = (filterValue as string).toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
-    arrayFilter(orig._matchingClientRules, filterValue),
+    arrayFilter(orig.entity?._matchingClientRules ?? [], lowerFilterValue),
   );
 };
 
@@ -257,13 +275,16 @@ export const matchingServerRulesFilterFn: FilterFn<Actor> = (
   _columnId,
   filterValue,
 ) => {
+  const lowerFilterValue = (filterValue as string).toLowerCase();
   return thisOrParentOrChildApplies(row, (orig) =>
-    arrayFilter(orig._matchingServerRules, filterValue),
+    arrayFilter(orig.entity?._matchingServerRules ?? [], lowerFilterValue),
   );
 };
 
-function arrayFilter(entities: UniqueEntity[], filterValue: unknown): boolean {
-  const lowerFilterValue = (filterValue as string).toLowerCase();
+function arrayFilter(
+  entities: EntityWrapper[],
+  lowerFilterValue: string,
+): boolean {
   return (
     entities?.some((entity) =>
       entityToString(entity).toLowerCase().includes(lowerFilterValue),
@@ -271,9 +292,9 @@ function arrayFilter(entities: UniqueEntity[], filterValue: unknown): boolean {
   );
 }
 
-function thisOrParentOrChildApplies<T extends { _parent?: T }>(
-  row: Row<T>,
-  predicate: (orig: T) => boolean,
+function thisOrParentOrChildApplies<T>(
+  row: Row<EntityWrapper<T>>,
+  predicate: (orig: EntityWrapper<T>) => boolean,
 ): boolean {
   if (row.original === undefined) {
     return false;
@@ -283,9 +304,12 @@ function thisOrParentOrChildApplies<T extends { _parent?: T }>(
     return true;
   }
 
-  // if parent or child would match the filter, also show this row
-  const parent = row.original._parent;
-  if (parent !== undefined && predicate(parent)) {
+  // if the parent or child matches the filter, also show this row
+  if (
+    isStagedEntity(row.original) &&
+    row.original._parent &&
+    predicate(row.original._parent)
+  ) {
     return true;
   }
 
@@ -307,8 +331,8 @@ export function getActorSelectorFilterFn(
     return thisOrParentOrChildApplies(
       row,
       (orig) =>
-        !isNullish(orig[columnId]) &&
-        formatActorSelector(orig[columnId])
+        !isNullish(orig.entity?.[columnId]) &&
+        formatActorSelector(orig.entity?.[columnId])
           .toLowerCase()
           .includes(lowerFilterValue),
     );
@@ -321,21 +345,18 @@ export const orgUnitFilterFn: FilterFn<Actor> = (
   _columnId,
   filterValue,
 ) => {
-  if (!row.original._orgUnit) {
+  if (!row.original.entity?._orgUnit) {
     return false;
   }
   const lowerFilterValue = (filterValue as string).toLowerCase();
 
   return thisOrParentOrChildApplies(row, (orig) => {
-    const ou = orig?._orgUnit;
-    return (
-      ou !== undefined &&
-      entityToString(ou).toLowerCase().includes(lowerFilterValue)
-    );
+    const ou = orig.entity?._orgUnit;
+    return !!ou && entityToString(ou).toLowerCase().includes(lowerFilterValue);
   });
 };
 
-export function getFilterFn<TData extends UniqueEntity>(
+export function getFilterFn<TData extends EntityWrapper>(
   fn: FilterFnOption<TData> | undefined,
   omitRows: string[],
 ): FilterFnOption<TData> | undefined {

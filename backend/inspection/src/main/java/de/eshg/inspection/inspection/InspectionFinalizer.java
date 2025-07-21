@@ -217,6 +217,7 @@ public class InspectionFinalizer {
     followupInspection.setPhase(InspectionPhase.NEW);
     followupInspection.setProcedureType(ProcedureType.INSPECTION);
     followupInspection.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    followupInspection.setFileNumberSuffix(precedingInspection.getFileNumberSuffix());
 
     // create a new "sachstand" for the followup inspection
     UUID newFacilityFileState =

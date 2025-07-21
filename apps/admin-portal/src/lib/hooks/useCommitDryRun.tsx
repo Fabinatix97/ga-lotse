@@ -14,7 +14,7 @@ import { EntityLink } from "@/lib/components/layout/nav/EntityLink";
 import { getAdminName } from "@/lib/helpers/adminName";
 import { entityToString } from "@/lib/helpers/entityToString";
 import { partitionByUuids } from "@/lib/helpers/uuid";
-import { useOrgUnitsQuery } from "@/lib/hooks/useOrgUnits";
+import { useEntities } from "@/lib/hooks/useEntities";
 
 class ErrorMessage {
   message: string;
@@ -82,48 +82,35 @@ export function useCommitDryRun() {
 function useOwnStagedEntityIds() {
   const adminName = getAdminName();
 
-  const { data } = useOrgUnitsQuery();
+  const { stagedOrgUnits, stagedActors } = useEntities();
 
   return useMemo<[string, string[]]>(() => {
-    if (!data) {
-      return ["", []];
-    }
-    const orgUnits = data.stagedOrgUnits.filter(
-      (ou) => ou.author === adminName,
+    const orgUnits = stagedOrgUnits.filter((ou) => ou.author === adminName);
+    const actors = stagedActors.filter((a) => a.author === adminName);
+    const key = JSON.stringify({ orgUnits, actors }, (k, v: unknown) =>
+      k.startsWith("_") ? undefined : v,
     );
-    const actors = data.stagedActors.filter((a) => a.author === adminName);
-    const key = JSON.stringify({ orgUnits, actors });
     return [key, [...orgUnits.map((ou) => ou.id), ...actors.map((a) => a.id)]];
-  }, [adminName, data]);
+  }, [adminName, stagedOrgUnits, stagedActors]);
 }
 
 function FormatedErrorMessage({ error }: { error: ErrorMessage }): ReactNode {
-  const { data } = useOrgUnitsQuery();
+  const { allOrgUnits, allActors } = useEntities();
 
   const entitiesById = useMemo(() => {
-    if (!data) {
-      return {};
-    }
     return Object.fromEntries(
       [
-        ...data.orgUnits.map((ou) => ({
+        ...allOrgUnits.map((ou) => ({
           ...ou,
           linkTo: "org-units",
         })),
-        ...data.orgUnits
-          .flatMap((ou) => ou.actors)
-          .map((a) => ({ ...a, linkTo: "actors" })),
-        ...data.stagedOrgUnits.map((ou) => ({
-          ...ou,
-          linkTo: "org-units",
-        })),
-        ...data.stagedActors.map((a) => ({
+        ...allActors.map((a) => ({
           ...a,
           linkTo: "actors",
         })),
       ].map((e) => [e.id, e]),
     );
-  }, [data]);
+  }, [allOrgUnits, allActors]);
 
   return (
     <span>

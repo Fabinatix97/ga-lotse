@@ -75,14 +75,30 @@ export interface ElementContext {
   element: ToothElement;
 }
 
+const RELEVANT_RESULTS: ToothDiagnosisResult[] = [
+  ApiMainResult.I,
+  ApiMainResult.D,
+  ApiMainResult.F,
+  ApiMainResult.M,
+  ApiMainResult.X,
+  ApiMainResult.Z,
+  ApiMainResult.T,
+  ApiMainResult.H,
+  ApiMainResult.O,
+  ApiMainResult.V,
+];
+
 export function hasPreviousExaminationResult(
   tooth: Tooth,
 ): tooth is ToothWithDiagnosis {
-  return (
-    isToothWithDiagnosis(tooth) &&
-    tooth.previousResults.length > 0 &&
-    tooth.previousResults[0] !== ApiMainResult.S
-  );
+  if (isToothWithDiagnosis(tooth) && tooth.previousResults.length > 0) {
+    const latestPreviousResult = tooth.previousResults[0];
+    return (
+      latestPreviousResult !== undefined &&
+      RELEVANT_RESULTS.includes(latestPreviousResult)
+    );
+  }
+  return false;
 }
 
 export interface DmftValues {

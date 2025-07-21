@@ -12,6 +12,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockBinDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSlotDto;
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlotWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
@@ -26,6 +27,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -89,12 +91,14 @@ public class AppointmentBlockViewService {
 
   private Map<UUID, UserDto> getResolvedUsers(List<AppointmentBlock> blocks) {
     Set<UUID> allUserIds = new HashSet<>();
-    blocks.forEach(
-        block -> {
-          allUserIds.addAll(block.getAppointmentBlockGroup().getPhysicians());
-          allUserIds.addAll(block.getAppointmentBlockGroup().getMfas());
-          allUserIds.addAll(block.getAppointmentBlockGroup().getConsultants());
-        });
+    blocks.stream()
+        .filter(this::isWithDetails)
+        .forEach(
+            block -> {
+              allUserIds.addAll(block.getAppointmentBlockGroup().getPhysicians());
+              allUserIds.addAll(block.getAppointmentBlockGroup().getMfas());
+              allUserIds.addAll(block.getAppointmentBlockGroup().getConsultants());
+            });
     if (allUserIds.isEmpty()) {
       return Map.of();
     }
@@ -102,6 +106,10 @@ public class AppointmentBlockViewService {
     GetUsersResponse getUsersResponse = userApi.getUsersBulk(new GetUsersRequest(allUserIds, true));
     return getUsersResponse.users().stream()
         .collect(Collectors.toMap(UserDto::userId, userDto -> userDto));
+  }
+
+  private boolean isWithDetails(AppointmentBlock appointmentBlock) {
+    return !appointmentBlock.getAppointmentBlockEnd().isBefore(appointmentService.getStartOfWeek());
   }
 
   private List<AppointmentBlockDto> resolveAppointmentBlocks(
@@ -139,46 +147,62 @@ public class AppointmentBlockViewService {
     return AppointmentBlockSlotUtil.calculateBinsWithBookedSlots(block, possibleDurations);
   }
 
-  private static AppointmentBlockDto getAppointmentBlockDto(
+  private AppointmentBlockDto getAppointmentBlockDto(
       AppointmentBlock block,
       List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots,
       Map<Appointment, AppointmentBlockSlotDto> appointmentToSlot,
       Map<UUID, UserDto> allResolvedUsers) {
     AppointmentBlockGroup appointmentBlockGroup = block.getAppointmentBlockGroup();
-
-    Set<UUID> userIds = new HashSet<>();
-    userIds.addAll(appointmentBlockGroup.getPhysicians());
-    userIds.addAll(appointmentBlockGroup.getMfas());
-    userIds.addAll(appointmentBlockGroup.getConsultants());
-
-    Map<UUID, UserDto> resolvedUsers =
-        allResolvedUsers.entrySet().stream()
-            .filter(entry -> userIds.contains(entry.getKey()))
-            .sorted(Comparator.comparing(e -> e.getValue().firstName()))
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue,
-                    (first, second) -> first,
-                    LinkedHashMap::new));
-
+    List<AppointmentTypeDto> appointmentTypes =
+        appointmentBlockGroup.getTypes().stream()
+            .map(AppointmentTypeMapper::toInterfaceType)
+            .toList();
     List<AppointmentBlockBinDto> appointmentBlockBins =
         binsWithBookedSlots.stream()
             .map(bin -> getAppointmentBlockBin(block, bin, appointmentToSlot))
             .toList();
-    return new AppointmentBlockDto(
-        block.getExternalId(),
-        block.getAppointmentBlockStart(),
-        block.getAppointmentBlockEnd(),
-        appointmentBlockGroup.getTypes().stream()
-            .map(AppointmentTypeMapper::toInterfaceType)
-            .toList(),
-        appointmentBlockGroup.getPhysicians(),
-        appointmentBlockGroup.getMfas(),
-        appointmentBlockGroup.getConsultants(),
-        resolvedUsers,
-        block.getAppointments().size(),
-        appointmentBlockBins);
+
+    if (isWithDetails(block)) {
+      Set<UUID> userIds = new HashSet<>();
+      userIds.addAll(appointmentBlockGroup.getPhysicians());
+      userIds.addAll(appointmentBlockGroup.getMfas());
+      userIds.addAll(appointmentBlockGroup.getConsultants());
+
+      Map<UUID, UserDto> resolvedUsers =
+          allResolvedUsers.entrySet().stream()
+              .filter(entry -> userIds.contains(entry.getKey()))
+              .sorted(Comparator.comparing(e -> e.getValue().firstName()))
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      Map.Entry::getValue,
+                      (first, second) -> first,
+                      LinkedHashMap::new));
+
+      return new AppointmentBlockDto(
+          block.getExternalId(),
+          block.getAppointmentBlockStart(),
+          block.getAppointmentBlockEnd(),
+          appointmentTypes,
+          appointmentBlockGroup.getPhysicians(),
+          appointmentBlockGroup.getMfas(),
+          appointmentBlockGroup.getConsultants(),
+          resolvedUsers,
+          block.getAppointments().size(),
+          appointmentBlockBins);
+    } else {
+      return new AppointmentBlockDto(
+          block.getExternalId(),
+          block.getAppointmentBlockStart(),
+          block.getAppointmentBlockEnd(),
+          appointmentTypes,
+          Collections.emptyList(),
+          Collections.emptyList(),
+          Collections.emptyList(),
+          Map.of(),
+          block.getAppointments().size(),
+          appointmentBlockBins);
+    }
   }
 
   private static AppointmentBlockBinDto getAppointmentBlockBin(

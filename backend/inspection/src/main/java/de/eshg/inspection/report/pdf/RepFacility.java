@@ -6,4 +6,4 @@
 package de.eshg.inspection.report.pdf;
 
 /** Data for the inspection report "inspection-report.ftlx". */
-public record RepFacility(RepAddress address, String contactPerson) {}
+public record RepFacility(RepAddress address, String contactPerson, String fileNumber) {}

@@ -5,6 +5,8 @@
 
 package de.eshg.domain.model.serialization;
 
+import static de.eshg.domain.model.serialization.ObjectMapperCustomizer.combine;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -58,7 +60,7 @@ public class SerializationService {
   }
 
   public byte[] toNestedZip(String entryNamePrefix, List<? extends EntityWithExternalId> entities) {
-    return toNestedZip(entryNamePrefix, entities, o -> {});
+    return toNestedZip(entryNamePrefix, entities, ObjectMapperCustomizer.doNothing());
   }
 
   public byte[] toNestedZip(
@@ -70,13 +72,14 @@ public class SerializationService {
       String entryBaseName = entryNamePrefix + entity.getExternalId().toString();
       zipFileWrapper.addEntry(
           entryBaseName + ".zip",
-          toZip(entryBaseName, entity, (n, z) -> {}, objectMapperCustomizer));
+          toZip(entryBaseName, entity, ZipEditor.doNothing(), objectMapperCustomizer));
     }
     return zipFileWrapper.asByteArray();
   }
 
   public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity) {
-    return toZip(dataFileBaseName, entity, (n, z) -> {}, o -> {});
+    return toZip(
+        dataFileBaseName, entity, ZipEditor.doNothing(), ObjectMapperCustomizer.doNothing());
   }
 
   public byte[] toZip(
@@ -86,32 +89,34 @@ public class SerializationService {
       ObjectMapperCustomizer objectMapperCustomizer) {
     ZipFileWrapper zipFileWrapper = new ZipFileWrapper();
 
-    ObjectMapper objectMapper = createObjectMapper(zipFileWrapper, objectMapperCustomizer);
+    zipFileWrapper.addEntry(
+        dataFileBaseName + ".csv",
+        toCsv(
+            entity,
+            combine(objectMapperCustomizer, new FileContentSerializingCustomizer(zipFileWrapper)),
+            zipEditor.toJsonFilter(zipFileWrapper)));
 
-    JsonNode jsonNode = toJsonNode(entity, objectMapper);
-    zipEditor.filter(jsonNode, zipFileWrapper);
-    String jsonNodeAsCsv = jsonNodeToCsv(entity.getClass().getSimpleName(), jsonNode);
-    zipFileWrapper.addEntry(dataFileBaseName + ".csv", jsonNodeAsCsv.getBytes());
-    zipEditor.filter(jsonNode, zipFileWrapper);
+    zipEditor.postProcess(zipFileWrapper);
 
     return zipFileWrapper.asByteArray();
   }
 
-  private ObjectMapper createObjectMapper(
-      ZipFileWrapper zipFileWrapper, ObjectMapperCustomizer objectMapperCustomizer) {
-    ObjectMapper objectMapper =
-        jsonObjectMapper
-            .copy()
-            .registerModule(createFileContentSerializationModule(zipFileWrapper));
-    objectMapperCustomizer.customize(objectMapper);
-    return objectMapper;
+  public byte[] toCsv(EntityWithExternalId entity, ObjectMapperCustomizer customizer) {
+    return toCsv(entity, customizer, JsonFilter.doNothing());
   }
 
-  private static SimpleModule createFileContentSerializationModule(ZipFileWrapper zipFileWrapper) {
-    return new SimpleModule()
-        .addSerializer(
-            new FileContentSerializer(
-                zipFileWrapper::addEntry, zipFileWrapper::getCollisionFreeFileName));
+  private byte[] toCsv(
+      EntityWithExternalId entity, ObjectMapperCustomizer customizer, JsonFilter jsonFilter) {
+    ObjectMapper objectMapper = createObjectMapper(customizer);
+    JsonNode jsonNode = toJsonNode(entity, objectMapper);
+    jsonFilter.filter(jsonNode);
+    return jsonNodeToCsv(entity.getClass().getSimpleName(), jsonNode).getBytes();
+  }
+
+  private ObjectMapper createObjectMapper(ObjectMapperCustomizer objectMapperCustomizer) {
+    ObjectMapper objectMapper = jsonObjectMapper.copy();
+    objectMapperCustomizer.customize(objectMapper);
+    return objectMapper;
   }
 
   private String jsonNodeToCsv(String baseKey, JsonNode node) {

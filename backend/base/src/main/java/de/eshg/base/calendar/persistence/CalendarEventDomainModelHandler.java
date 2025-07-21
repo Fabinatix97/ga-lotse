@@ -6,7 +6,6 @@
 package de.eshg.base.calendar.persistence;
 
 import static org.springframework.data.domain.PageRequest.ofSize;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.eshg.base.calendar.api.BaseEventRequest;
 import de.eshg.base.calendar.api.BusinessCaseEventRequest;
@@ -152,9 +151,7 @@ public class CalendarEventDomainModelHandler {
       UUID calendarExternalId, Instant timeRangeStart, Instant timeRangeEnd) {
     return calendarEventRepository
         .findAll(
-            where(
-                isInCalendar(calendarExternalId)
-                    .and(timeRangeOverlaps(timeRangeStart, timeRangeEnd))),
+            isInCalendar(calendarExternalId).and(timeRangeOverlaps(timeRangeStart, timeRangeEnd)),
             ofSize(Integer.MAX_VALUE)
                 .withSort(Sort.Direction.ASC, CalendarEvent_.EVENT_START, BaseEntity_.ID))
         .stream()
@@ -202,9 +199,7 @@ public class CalendarEventDomainModelHandler {
       List<UUID> calendarExternalIds, Instant timeRangeStart, Instant timeRangeEnd) {
     return calendarEventRepository
         .findAll(
-            where(
-                isInCalendars(calendarExternalIds)
-                    .and(timeRangeOverlaps(timeRangeStart, timeRangeEnd))))
+            isInCalendars(calendarExternalIds).and(timeRangeOverlaps(timeRangeStart, timeRangeEnd)))
         .stream()
         .map(CalendarEventData::new)
         .toList();
@@ -214,9 +209,7 @@ public class CalendarEventDomainModelHandler {
       List<UUID> calendarExternalIds, Instant timeRangeStart, Instant timeRangeEnd) {
     return (Root<CalendarEvent> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
       Specification<CalendarEvent> specification =
-          where(
-              isInCalendars(calendarExternalIds)
-                  .and(timeRangeOverlaps(timeRangeStart, timeRangeEnd)));
+          isInCalendars(calendarExternalIds).and(timeRangeOverlaps(timeRangeStart, timeRangeEnd));
 
       query.multiselect(
           criteriaBuilder.construct(

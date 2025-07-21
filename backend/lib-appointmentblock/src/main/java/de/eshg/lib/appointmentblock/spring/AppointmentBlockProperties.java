@@ -10,8 +10,6 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.testhelper.ResettableProperties;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.hibernate.validator.constraints.time.DurationMin;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,7 +27,6 @@ public final class AppointmentBlockProperties
   private boolean allowAppointmentBlocksWithCalendarEventConflicts = true;
   private boolean createAppointmentBlockForCurrentUser = true;
   private LocationSelectionMode locationSelectionMode = LocationSelectionMode.NONE;
-  private List<List<AppointmentType>> allowedAppointmentTypeCombinations = new ArrayList<>();
 
   @Override
   public Map<AppointmentType, Duration> getDefaultAppointmentTypeConfiguration() {
@@ -78,16 +75,5 @@ public final class AppointmentBlockProperties
   @Override
   public void setLocationSelectionMode(LocationSelectionMode locationSelectionMode) {
     this.locationSelectionMode = locationSelectionMode;
-  }
-
-  @Override
-  public List<List<AppointmentType>> getAllowedAppointmentTypeCombinations() {
-    return allowedAppointmentTypeCombinations;
-  }
-
-  @Override
-  public void setAllowedAppointmentTypeCombinations(
-      List<List<AppointmentType>> allowedAppointmentTypeCombinations) {
-    this.allowedAppointmentTypeCombinations = allowedAppointmentTypeCombinations;
   }
 }

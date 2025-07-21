@@ -57,4 +57,11 @@ export enum InfoPanelView {
   AssignAdminLevel = "ASSIGN_ADMIN_LEVEL",
   RenameGroupChat = "RENAME_GROUP_CHAT",
   AdminSettings = "ADMIN_SETTINGS",
+  MobileView = "MOBILE_VIEW",
+}
+
+export enum MobileView {
+  RoomList = "ROOM_LIST",
+  ChatMessages = "CHAT_MESSAGES",
+  Settings = "SETTINGS",
 }

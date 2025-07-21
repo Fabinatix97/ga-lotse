@@ -1,4 +1,5 @@
 {
+  "home_link": "Health Department Home",
   "help_link": "Help",
   "login_link": "Login",
   "menu": "Menu",
@@ -7,7 +8,14 @@
     "person_link": "Private Person",
     "org_link": "Organisation"
   },
-  "org_menu": {
-    "measles_protection_link": "Masernschutz"
+  "nav": {
+    "child_and_youth_health": "Child and Youth Health",
+    "infectious_diseases": "Infectious Diseases",
+    "mental_health": "Mental Health",
+    "hygiene": "Hygiene",
+    "dental_health": "Dental Health",
+    "more_topics": "More Topics",
+    "all_topics": "All Topics",
+    "back_button": "Back"
   }
 }

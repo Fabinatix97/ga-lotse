@@ -20,7 +20,7 @@ export function SubPageHeader({
       <Stack direction="row" divider={<Divider orientation="vertical" />}>
         <InternalLinkIconButton
           href={routeBack}
-          aria-label="Zurück"
+          aria-label="Zurück zur Übersicht"
           sx={{ width: iconSize, height: iconSize }}
         >
           <ChevronLeft sx={{ width: "40px", height: "40px" }} />

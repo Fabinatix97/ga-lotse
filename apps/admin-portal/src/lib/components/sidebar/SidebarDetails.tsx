@@ -3,51 +3,81 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row } from "@tanstack/react-table";
+import { FunctionComponent } from "react";
 
-import { SidebarHeader } from "@/lib/components/sidebar/SidebarHeader";
 import {
-  SidebarTable,
-  renderData,
-  renderDataRow,
-  renderRow,
-} from "@/lib/components/sidebar/SidebarTable";
-import { EDIT_BUTTON_ID } from "@/lib/components/table/addEditColumns";
-import { TableContextProvider } from "@/lib/components/table/context/TableEditContext";
-import { getAdminName } from "@/lib/helpers/adminName";
-import { EditableEntity, UniqueEntity } from "@/lib/helpers/entities";
+  ApiAdminStagedEntityType,
+  ApiStagingStatus,
+} from "@eshg/service-directory-api";
 
-export function SidebarDetails<TData extends UniqueEntity & EditableEntity>({
-  row,
-  headerIds,
-  rowIds,
-  idOrAuthor,
+import { SidebarEntityToDelete } from "@/lib/components/sidebar/SidebarEntityToDelete";
+import { SidebarHeader } from "@/lib/components/sidebar/SidebarHeader";
+import { SidebarTable } from "@/lib/components/sidebar/SidebarTable";
+import { SidebarTableContent } from "@/lib/components/sidebar/SidebarTableContent";
+import { EditButton } from "@/lib/components/table/cell/EditButtonCell";
+import { getAdminName } from "@/lib/helpers/adminName";
+import { Actor, OrgUnit, Rule, isStagedEntity } from "@/lib/hooks/useEntities";
+
+export interface SidebarCellInfo<TData extends OrgUnit | Actor | Rule> {
+  id: keyof NonNullable<TData["entity"]> & string;
+  cell: FunctionComponent<{
+    id: keyof NonNullable<TData["entity"]> & string;
+    optional?: boolean;
+    options?: string[];
+    editable: boolean;
+    entity: TData;
+  }>;
+  optional?: boolean;
+  options?: string[];
+}
+
+export function SidebarDetails<TData extends OrgUnit | Actor | Rule>({
+  entity,
+  headerCells,
+  cells,
+  naturalId,
 }: Readonly<{
-  row: Row<TData>;
-  headerIds: string[];
-  rowIds: string[];
-  idOrAuthor?: boolean;
+  entity?: TData;
+  headerCells: SidebarCellInfo<TData>[];
+  cells: SidebarCellInfo<TData>[];
+  naturalId?: boolean;
 }>) {
-  const editRow = row.subRows.find((r) => r.original.author === getAdminName());
-  const rowToDisplay = editRow ?? row;
+  if (!entity) return false;
+
+  const editable =
+    isStagedEntity(entity) &&
+    entity.stagingStatus === ApiStagingStatus.WorkInProgress &&
+    entity.author === getAdminName();
+
+  if (
+    isStagedEntity(entity) &&
+    entity.stagedEntityType === ApiAdminStagedEntityType.Del
+  ) {
+    return (
+      <SidebarEntityToDelete
+        entity={entity}
+        headerCells={headerCells}
+        naturalId={naturalId}
+      />
+    );
+  }
 
   return (
-    <TableContextProvider editable>
-      <SidebarHeader editButton={renderData(rowToDisplay, EDIT_BUTTON_ID)}>
-        {headerIds.map((id) => renderData(rowToDisplay, id))}
-      </SidebarHeader>
+    <>
+      <SidebarHeader
+        headerCells={headerCells}
+        entity={entity}
+        editable={editable}
+        editButton={<EditButton entity={entity} />}
+      />
       <SidebarTable>
-        {idOrAuthor &&
-          renderDataRow(
-            rowToDisplay,
-            "id",
-            editRow ? "columnHeader.author" : "columnHeader.naturalId",
-          )}
-        {rowIds.map((id) =>
-          renderDataRow(rowToDisplay, id, "columnHeader." + id),
-        )}
-        {renderRow(rowToDisplay.original.id, "columnHeader.id")}
+        <SidebarTableContent
+          entity={entity}
+          cells={cells}
+          naturalId={naturalId}
+          editable={editable}
+        />
       </SidebarTable>
-    </TableContextProvider>
+    </>
   );
 }

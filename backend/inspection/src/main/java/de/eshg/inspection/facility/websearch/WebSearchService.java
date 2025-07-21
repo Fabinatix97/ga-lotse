@@ -12,7 +12,6 @@ import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.eshg.inspection.facility.websearch.api.UpdateWebSearchEntryRequest;
 import de.eshg.inspection.facility.websearch.api.WebSearchEntriesResponse;
@@ -177,7 +176,7 @@ public class WebSearchService {
     WebSearch webSearch = findWebSearch(id);
     Page<WebSearchEntry> result =
         webSearchEntryRepository.findAll(
-            where(withWebSearch(webSearch))
+            withWebSearch(webSearch)
                 .and(withName(params.name()))
                 .and(withAddress(params.address()))
                 .and(withStatus(params.status()))

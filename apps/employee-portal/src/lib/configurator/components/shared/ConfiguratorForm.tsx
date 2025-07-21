@@ -127,7 +127,7 @@ function SectionContent({
             <Stack key={`field-row-${index}`} gap={3}>
               <Stack direction="row" gap={3}>
                 {row.fields.map((field) => (
-                  <RenderField key={field.name} field={field} values={values} />
+                  <RenderField key={field.name} field={field} />
                 ))}
               </Stack>
               {row.footer}

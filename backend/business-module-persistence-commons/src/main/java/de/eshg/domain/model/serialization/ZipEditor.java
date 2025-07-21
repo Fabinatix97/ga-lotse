@@ -6,18 +6,48 @@
 package de.eshg.domain.model.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public interface ZipEditor extends BiConsumer<JsonNode, ZipFileWrapper> {
+@FunctionalInterface
+public interface ZipEditor {
 
-  default void filter(JsonNode jsonNode, ZipFileWrapper zipFileWrapper) {
-    accept(jsonNode, zipFileWrapper);
+  static ZipEditor doNothing() {
+    return (jsonNode, zipFile) -> {};
+  }
+
+  static ZipEditor makePostProcessor(Consumer<ZipFileWrapper> postProcessor) {
+    return new ZipEditor() {
+      @Override
+      public void filter(JsonNode jsonNode, ZipFileWrapper zipFileWrapper) {}
+
+      @Override
+      public void postProcess(ZipFileWrapper zipFileWrapper) {
+        postProcessor.accept(zipFileWrapper);
+      }
+    };
+  }
+
+  default void postProcess(ZipFileWrapper zipFileWrapper) {}
+
+  void filter(JsonNode jsonNode, ZipFileWrapper zipFileWrapper);
+
+  default JsonFilter toJsonFilter(ZipFileWrapper zipFileWrapper) {
+    return jsonNode -> filter(jsonNode, zipFileWrapper);
   }
 
   default ZipEditor andThen(ZipEditor after) {
-    return (l, r) -> {
-      accept(l, r);
-      after.accept(l, r);
+    return new ZipEditor() {
+      @Override
+      public void filter(JsonNode jsonNode, ZipFileWrapper zipFileWrapper) {
+        ZipEditor.this.filter(jsonNode, zipFileWrapper);
+        after.filter(jsonNode, zipFileWrapper);
+      }
+
+      @Override
+      public void postProcess(ZipFileWrapper zipFileWrapper) {
+        ZipEditor.this.postProcess(zipFileWrapper);
+        after.postProcess(zipFileWrapper);
+      }
     };
   }
 }

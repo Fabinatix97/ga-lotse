@@ -8,21 +8,15 @@ import { Formik, FormikErrors } from "formik";
 
 import { FormPlus, InputField, useSnackbar } from "@eshg/lib-portal";
 
-import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 interface RenameChatProps {
   roomId: string;
-  onClose: () => void;
   onCancel: () => void;
 }
 
-export function RenameChat({
-  roomId,
-  onClose,
-  onCancel,
-}: Readonly<RenameChatProps>) {
+export function RenameChat({ roomId, onCancel }: Readonly<RenameChatProps>) {
   const { matrixClient } = useChatClientContext();
   const snackbar = useSnackbar();
 
@@ -47,40 +41,37 @@ export function RenameChat({
   }
 
   return (
-    <>
-      <InfoPanelHeader close={onClose} roomId={roomId} />
-      <Box
-        sx={{
-          overflowY: "auto",
-          padding: 2,
-        }}
+    <Box
+      sx={{
+        overflowY: "auto",
+        padding: 2,
+      }}
+    >
+      <Typography level="title-lg" sx={{ marginBottom: 2 }}>
+        Gruppe umbenennen
+      </Typography>
+      <Formik
+        initialValues={{ name: "" }}
+        validate={validateForm}
+        onSubmit={handleRenameChat}
       >
-        <Typography level="title-lg" sx={{ marginBottom: 2 }}>
-          Gruppe umbenennen
-        </Typography>
-        <Formik
-          initialValues={{ name: "" }}
-          validate={validateForm}
-          onSubmit={handleRenameChat}
-        >
-          <FormPlus>
-            <InputField
-              name="name"
-              placeholder="Neuen Namen eingeben"
-              aria-label="Group name"
-              label=""
-            />
-            <Stack direction="row" spacing={2} marginTop={2}>
-              <Button type="button" fullWidth variant="soft" onClick={onCancel}>
-                Abbrechen
-              </Button>
-              <Button type="submit" fullWidth>
-                Speichern
-              </Button>
-            </Stack>
-          </FormPlus>
-        </Formik>
-      </Box>
-    </>
+        <FormPlus>
+          <InputField
+            name="name"
+            placeholder="Neuen Namen eingeben"
+            aria-label="Group name"
+            label=""
+          />
+          <Stack direction="row" spacing={2} marginTop={2}>
+            <Button type="button" fullWidth variant="soft" onClick={onCancel}>
+              Abbrechen
+            </Button>
+            <Button type="submit" fullWidth>
+              Speichern
+            </Button>
+          </Stack>
+        </FormPlus>
+      </Formik>
+    </Box>
   );
 }

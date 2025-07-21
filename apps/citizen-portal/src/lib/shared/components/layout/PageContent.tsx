@@ -37,14 +37,14 @@ export const PageContent = styled("div", {
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(spacing === "lg" ? 5 : contentMarginDesktop.topBottom),
-  paddingBlock: theme.spacing(
+  paddingBlockStart: theme.spacing(
     spacing === "lg" ? 5 : contentMarginDesktop.topBottom,
   ),
   paddingInline: 0,
   ...responsiveContent(theme, {
     [MobileBreakpoint.Down]: {
       gap: theme.spacing(contentMarginMobile.topBottom),
-      paddingBlock: theme.spacing(contentMarginMobile.topBottom),
+      paddingBlockStart: theme.spacing(contentMarginMobile.topBottom),
       paddingInline: spaceContentToSide
         ? theme.spacing(contentMarginMobile.leftRight)
         : 0,

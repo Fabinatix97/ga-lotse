@@ -22,7 +22,12 @@ public enum DentalChildAttributes implements AttributeInfo {
       CentralFileIdPersonAttribute.create(
           "Kind", "CHILD_CENTRAL_FILE_ID", DentalChildAttributes.CATEGORY_CHILD, true)),
 
-  CHILD_AGE(IntegerAttribute.create("Alter", "ALTER", DentalChildAttributes.CATEGORY_CHILD, true)),
+  CHILD_AGE(
+      IntegerAttribute.create(
+          "Alter bei letzter Reihenuntersuchung",
+          "ALTER",
+          DentalChildAttributes.CATEGORY_CHILD,
+          true)),
 
   EINRICHTUNG(
       ContactIdAttribute.create(
@@ -53,7 +58,7 @@ public enum DentalChildAttributes implements AttributeInfo {
 
   MIH_STATUS(
       ValueWithOptionsAttribute.create(
-          "MIH-Status",
+          "MIH/MMH-Status",
           "MIH_STATUS",
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
           true,

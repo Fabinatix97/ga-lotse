@@ -35,7 +35,7 @@ export function DentalProphylaxisSessionExaminationPage(
       `Participant with examinationId ${examinationId} does not exist`,
     );
   }
-  const previousExaminations = participant.previousExaminations;
+  const previousExaminations = participant.previousScreeningExaminations;
 
   return (
     <ExaminationStoreProvider

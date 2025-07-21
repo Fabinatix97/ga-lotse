@@ -7,11 +7,9 @@
 
 import { useMemo, useState } from "react";
 
-import { ApiGetOrgUnitsResponse } from "@eshg/service-directory-api";
-
 import { PageContent } from "@/lib/components/view/PageContent";
 import { ImportContent } from "@/lib/components/view/service-directory/dataTransfer/ImportContent";
-import { useOrgUnitsQuery } from "@/lib/hooks/useOrgUnits";
+import { useEntities, useEntitiesQuery } from "@/lib/hooks/useEntities";
 
 import { ExportContent } from "./dataTransfer/ExportContent";
 
@@ -19,22 +17,19 @@ export function ServiceDirectoryConfiguration() {
   return (
     <PageContent
       title="serviceDirectoryHeader"
-      query={useOrgUnitsQuery()}
-      renderContent={(data) => <ServiceDirectoryContent data={data} />}
+      query={useEntitiesQuery()}
+      renderContent={() => <ServiceDirectoryContent />}
     />
   );
 }
 
-function ServiceDirectoryContent({
-  data,
-}: Readonly<{
-  data: ApiGetOrgUnitsResponse;
-}>) {
+function ServiceDirectoryContent() {
+  const { committedOrgUnits, committedRules } = useEntities();
   const [isDbEmpty, setIsDbEmpty] = useState<boolean>();
 
   useMemo(() => {
-    setIsDbEmpty(data.orgUnits.length === 0);
-  }, [data]);
+    setIsDbEmpty(committedOrgUnits.length === 0 && committedRules.length === 0);
+  }, [committedOrgUnits, committedRules]);
 
   return isDbEmpty ? (
     <ImportContent isDbEmpty={isDbEmpty} setIsDbEmpty={setIsDbEmpty} />

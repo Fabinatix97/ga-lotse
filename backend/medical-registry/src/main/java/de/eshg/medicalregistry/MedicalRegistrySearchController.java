@@ -6,7 +6,6 @@
 package de.eshg.medicalregistry;
 
 import de.eshg.base.centralfile.PersonApi;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.lib.procedure.procedures.AbstractProcedureSearchController;
 import de.eshg.medicalregistry.api.MedicalRegistryEntrySearchResultDto;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
@@ -24,13 +23,11 @@ public class MedicalRegistrySearchController
   protected MedicalRegistrySearchController(
       SearchProcedureByPersonMapper searchProcedureByPersonMapper,
       MedicalRegistryProcedureRepository medicalRegistryProcedureRepository,
-      PersonApi personApi,
-      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      PersonApi personApi) {
     super(
         searchProcedureByPersonMapper,
         SearchMedicalRegistryByPersonResponse::new,
         medicalRegistryProcedureRepository,
-        personApi,
-        baseFeatureTogglesApi);
+        personApi);
   }
 }

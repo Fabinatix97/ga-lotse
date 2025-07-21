@@ -16,7 +16,7 @@ import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 import { PageSwitchButton, PageSwitchButtons } from "./PageSwitchButtons";
 
-export function MainMenu({ userType }: { userType: UserType }) {
+export function MainMenu({ userType }: Readonly<{ userType: UserType }>) {
   return (
     <Stack
       flexDirection="row"
@@ -33,10 +33,9 @@ export function MainMenu({ userType }: { userType: UserType }) {
   );
 }
 
-export function MainMenuReduced({ userType }: { userType: UserType }) {
-  const { t } = useTranslation("base/header");
-  const routes = useRoutes();
-
+export function MainMenuReduced({
+  userType,
+}: Readonly<{ userType: UserType }>) {
   return (
     <Stack
       flexDirection="row"
@@ -45,14 +44,7 @@ export function MainMenuReduced({ userType }: { userType: UserType }) {
       flex={1}
       paddingBlock={1}
     >
-      <PageSwitchButton
-        name={t("main_menu.person_link")}
-        href={routes.citizenPath.index + "/"}
-        isActive={userType === "person"}
-        sx={{
-          display: byBreakpoint({ mobile: "none", desktop: "flex" }),
-        }}
-      />
+      <UserTypeButton userType={userType} />
       <Stack flexDirection="row">
         <LanguagePickerReduced
           slotProps={{
@@ -75,5 +67,30 @@ export function MainMenuReduced({ userType }: { userType: UserType }) {
         />
       </Stack>
     </Stack>
+  );
+}
+
+function UserTypeButton({ userType }: Readonly<{ userType: UserType }>) {
+  const { t } = useTranslation("base/header");
+  const routes = useRoutes();
+
+  return userType === "person" ? (
+    <PageSwitchButton
+      name={t("main_menu.person_link")}
+      href={routes.citizenPath.index + "/"}
+      isActive={userType === "person"}
+      sx={{
+        display: byBreakpoint({ mobile: "none", desktop: "flex" }),
+      }}
+    />
+  ) : (
+    <PageSwitchButton
+      name={t("main_menu.org_link")}
+      href={routes.organizationPath.index}
+      isActive={userType === "organization"}
+      sx={{
+        display: byBreakpoint({ mobile: "none", desktop: "flex" }),
+      }}
+    />
   );
 }

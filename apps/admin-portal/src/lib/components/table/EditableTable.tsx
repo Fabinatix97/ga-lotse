@@ -7,8 +7,8 @@
 
 import { Box, Sheet, Stack, Table } from "@mui/joy";
 import {
-  ColumnDef,
   FilterFnOption,
+  Row,
   TableOptions,
   Table as TanstackTable,
   VisibilityState,
@@ -18,61 +18,31 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, FunctionComponent, useEffect, useState } from "react";
 
 import { Sidebar } from "@/lib/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/components/sidebar/SidebarContent";
 import { EmptyTableHint } from "@/lib/components/table/EmptyTableHint";
 import { useColumnFilters } from "@/lib/components/table/Filter";
-import { addEditColumns } from "@/lib/components/table/addEditColumns";
 import { TableHead } from "@/lib/components/table/head/TableHead";
-import { addFeatureColumns } from "@/lib/helpers/addFeatureColumns";
-import {
-  EditableEntity,
-  OverridableEntity,
-  UniqueEntity,
-} from "@/lib/helpers/entities";
+import { EntityWrapper } from "@/lib/hooks/useEntities";
 import { useGlobalFilter } from "@/lib/hooks/useGlobalFilter";
 
 import { OverridableTableRow } from "./TableRow";
 
-interface EditableTableProps<
-  TData extends UniqueEntity & OverridableEntity<TData> & EditableEntity,
-> {
+interface EditableTableProps<TData extends EntityWrapper> {
   data: TableOptions<TData>["data"];
   columns: TableOptions<TData>["columns"];
-  initialColumnVisibility?: VisibilityState;
+  columnVisibility?: VisibilityState;
   getSubRows?: (originalRow: TData, index: number) => TData[] | undefined;
   showColumnHeaders?: boolean;
   globalFilterFn?: FilterFnOption<TData>;
-  api: TableApi<TData>;
+  type?: "orgUnit" | "actor" | "rule";
+  sidebarContent: FunctionComponent<{ row?: Row<TData> }>;
 }
 
-export interface TableApi<TData> {
-  create: (orgUnitId?: string) => void;
-  update: (
-    entity: Partial<
-      Omit<
-        TData,
-        | "actors"
-        | "_staged"
-        | "_matchingClientRules"
-        | "_matchingServerRules"
-        | "_matchingClientActors"
-        | "_matchingServerActors"
-        | "_type"
-      >
-    >,
-  ) => void;
-  deleteAudited: (id: string) => void;
-  deleteStaged: (id: string) => void;
-  activate: (id: string) => void;
-  deactivate: (id: string) => void;
-}
-
-export function EditableTable<
-  TData extends UniqueEntity & OverridableEntity<TData> & EditableEntity,
->(props: Readonly<EditableTableProps<TData>>) {
+export function EditableTable<TData extends EntityWrapper>(
+  props: Readonly<EditableTableProps<TData>>,
+) {
   const { columnFilters, onColumnFiltersChange } = useColumnFilters(
     props.columns,
   );
@@ -85,19 +55,15 @@ export function EditableTable<
   );
   const enableColumnFilter = props.columns.some((c) => c.enableColumnFilter);
 
-  const columns: ColumnDef<TData>[] = addEditColumns(
-    addFeatureColumns(props.columns, { toggleExpand: true }),
-  );
-
   const tableConfig: TableOptions<TData> = {
     data: props.data,
-    columns,
+    columns: props.columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     sortDescFirst: false,
     initialState: {
-      columnVisibility: props.initialColumnVisibility,
+      columnVisibility: props.columnVisibility,
     },
     getSubRows: props.getSubRows,
     getFilteredRowModel: getFilteredRowModel(),
@@ -109,9 +75,6 @@ export function EditableTable<
     state: {
       columnFilters,
       globalFilter,
-    },
-    meta: {
-      api: props.api,
     },
   };
 
@@ -178,7 +141,6 @@ export function EditableTable<
                 return (
                   <Fragment key={row.id}>
                     <OverridableTableRow
-                      table={reactTable}
                       row={row}
                       onClick={() => viewDetails(i)}
                     />
@@ -189,7 +151,7 @@ export function EditableTable<
           </Table>
           {rows[sidebarIndex ?? 0] && (
             <Sidebar open={openDetails} onClose={setOpenDetails}>
-              <SidebarContent row={rows[sidebarIndex ?? 0]} />
+              <props.sidebarContent row={rows[sidebarIndex ?? 0]} />
             </Sidebar>
           )}
         </Box>

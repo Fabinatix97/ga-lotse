@@ -13,7 +13,6 @@ import {
   ToothElement,
 } from "../types";
 
-import { DEFAULT_FOCUS_ELEMENT } from "./focus";
 import {
   firstToothWithDiagnosisIndex,
   isInUpperJaw,
@@ -268,7 +267,7 @@ function navigateRecursive(
   if (tooth.type === "ToothWithDiagnosis") {
     return navigateToElement({
       toothContext,
-      element: isButtonNavigation ? "toothButton" : DEFAULT_FOCUS_ELEMENT,
+      element: navigateContext.element,
     });
   }
 

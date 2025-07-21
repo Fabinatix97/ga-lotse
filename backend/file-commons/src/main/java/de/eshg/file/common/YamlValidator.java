@@ -22,9 +22,14 @@ public class YamlValidator {
   public static void validate(MultipartFile yamlFile) {
     FileValidator.validateYamlFile(yamlFile);
     String fileContentType = yamlFile.getContentType();
-    if (fileContentType != null) {
-      MediaType fileMediaType = MediaType.parseMediaType(fileContentType);
-      validateFileType(fileMediaType);
+    // isBlank(): some browsers fail to determine the type of a local file properly
+    if (fileContentType != null && !fileContentType.isBlank()) {
+      try {
+        MediaType fileMediaType = MediaType.parseMediaType(fileContentType);
+        validateFileType(fileMediaType);
+      } catch (RuntimeException rte) {
+        throw new BadRequestException(rte.getLocalizedMessage());
+      }
     }
   }
 

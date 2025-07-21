@@ -26,8 +26,8 @@ export type ExaminationResult =
   | ScreeningExaminationResult
   | AbsenceExaminationResult;
 
-export interface ExaminationResultWithDate {
-  result: ExaminationResult | undefined;
+export interface ScreeningExaminationResultWithDate {
+  result: ScreeningExaminationResult;
   dateAndTime: Date;
 }
 
@@ -48,6 +48,7 @@ export interface ScreeningExaminationResult {
   readonly calculus: boolean;
   readonly gingivitis: boolean;
   readonly parodontitis: boolean;
+  readonly blackStain: boolean;
   readonly toothDiagnoses: ToothDiagnoses;
   readonly individualProphylaxis: boolean;
   readonly fissureSealing: boolean;
@@ -87,7 +88,7 @@ function mapFluoridationExaminationResult(
   };
 }
 
-function mapScreeningExaminationResult(
+export function mapScreeningExaminationResult(
   response: ApiScreeningExaminationResult,
 ): ScreeningExaminationResult {
   return {
@@ -102,6 +103,7 @@ function mapScreeningExaminationResult(
     calculus: response.calculus,
     gingivitis: response.gingivitis,
     parodontitis: response.parodontitis,
+    blackStain: response.blackStain,
     toothDiagnoses: mapToObj(
       response.toothDiagnoses,
       (toothDiagnosisResponse) => [

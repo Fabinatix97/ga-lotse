@@ -7,17 +7,14 @@ package de.eshg.lib.appointmentblock;
 
 import static de.eshg.lib.appointmentblock.AppointmentTypeMapper.mapUUIDToAppointmentType;
 
-import de.eshg.lib.appointmentblock.api.AllowedAppointmentTypeCombination;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeConfigDto;
 import de.eshg.lib.appointmentblock.api.GetAppointmentTypesResponse;
 import de.eshg.lib.appointmentblock.api.UpdateAppointmentTypeRequest;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +22,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AppointmentTypeService {
   private final AbstractAppointmentStandardDurationService<?> appointmentStandardDurationService;
-  private final AppointmentBlockConfig appointmentBlockConfig;
 
   private static final Comparator<AppointmentTypeConfigDto> appointmentTypeDtoComparator =
       Comparator.comparing(atd -> atd.appointmentTypeDto().name());
 
   public AppointmentTypeService(
-      AppointmentBlockConfig appointmentBlockConfig,
       AbstractAppointmentStandardDurationService<?> appointmentStandardDurationService) {
-    this.appointmentBlockConfig = appointmentBlockConfig;
     this.appointmentStandardDurationService = appointmentStandardDurationService;
   }
 
@@ -48,22 +42,7 @@ public class AppointmentTypeService {
             .sorted(appointmentTypeDtoComparator)
             .toList();
 
-    Set<AppointmentType> allowedTypes = standardDurationsMap.keySet();
-
-    List<AllowedAppointmentTypeCombination> allowedAppointmentTypeCombinations =
-        appointmentBlockConfig.getAllowedAppointmentTypeCombinations().stream()
-            .filter(allowedTypes::containsAll)
-            .map(
-                list ->
-                    new AllowedAppointmentTypeCombination(
-                        list.stream()
-                            .distinct()
-                            .sorted()
-                            .map(AppointmentTypeMapper::toInterfaceType)
-                            .toList()))
-            .toList();
-    return new GetAppointmentTypesResponse(
-        appointmentTypeConfigDtoList, allowedAppointmentTypeCombinations);
+    return new GetAppointmentTypesResponse(appointmentTypeConfigDtoList);
   }
 
   public AppointmentTypeConfigDto getOneAppointmentType(UUID id) {

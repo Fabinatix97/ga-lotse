@@ -42,8 +42,8 @@ export function MedicalHistoryCard(props: MedicalHistoryCardProps) {
       {!isFulfilled ? (
         <ScopedInternalLinkButton
           color="primary"
-          variant="solid"
-          sx={{ padding: 0, flex: 1, minWidth: "10rem" }}
+          variant="outlined"
+          sx={{ padding: 0, flex: 1, minWidth: "10rem", background: "white" }}
           href={href}
         >
           {buttonLabel}

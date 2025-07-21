@@ -5,8 +5,6 @@
 
 "use client";
 
-import { Box } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 // eslint-disable-next-line no-restricted-imports
 import NextLink from "next/link";
 import { ReactNode } from "react";
@@ -14,12 +12,11 @@ import { ReactNode } from "react";
 import { useNavigation } from "./NavigationContext";
 
 export function NavigationLink(
-  props: Omit<Parameters<typeof NextLink>[0], "style"> & { sx?: SxProps },
+  props: Parameters<typeof NextLink>[0],
 ): ReactNode {
   const { tryNavigate } = useNavigation();
   return (
-    <Box
-      component={NextLink}
+    <NextLink
       {...props}
       // Since we only use client-side requests, there is only a small performance advantage for the user when prefetching server components.
       // By deactivating this, we reduce the load on the Next.js backend and the reverse proxy.

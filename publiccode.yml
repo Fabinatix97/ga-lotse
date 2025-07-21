@@ -32,7 +32,7 @@ maintenance:
   type: internal
   contacts:
     - name: Gesundheitsamt Stadt Frankfurt am Main
-      email: info.gesundheitsamt@stadt-frankfurt.de
+      email: ga-lotse.gesundheitsamt@stadt-frankfurt.de
       phone: +49 69 21233970
 legal:
   license: AGPL-3.0-only
@@ -53,7 +53,6 @@ description:
       - inventory
       - resource management
       - contact management
-      - procedure metrics
       - school-entry module
       - inspection module
       - measles-protection module
@@ -86,20 +85,19 @@ description:
       https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation/-/tree/main/open-api
     documentation: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation'
     features:
-      - Basismodul
+      - Grundmodul
       - Identitäts- und Zugriffsmanagement
-      - Zentrale Datei für Personen und Einrichtungen
+      - Stammdatenkonverter
       - Kalender
       - Inventar
       - Ressourcenmanagement
       - Kontaktmanagement
-      - Verfahrensmetriken
-      - Schulaufnahme-Modul
-      - Inspektionsmodul
+      - Einschulungsuntersuchungsmodul
+      - Begehungsmodul
       - Masernschutz-Modul
-      - Reisemedizin-Modul
+      - Reisemedizin- und Impfberatungs-Modul
       - Statistikmodul
-      - Bürgerportal
+      - Onlineportal für Bürger:innen
       - Service-Mesh
       - Relay-Server
     genericName: Anwendung für Gesundheitsämter

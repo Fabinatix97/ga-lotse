@@ -64,7 +64,7 @@ public abstract class AbstractAppointmentService<T extends EntityWithAppointment
     return !appointment.getAppointmentEnd().isBefore(getStartOfWeek());
   }
 
-  private Instant getStartOfWeek() {
+  Instant getStartOfWeek() {
     LocalDate startOfWeek =
         Instant.now(clock)
             .atZone(clock.getZone())

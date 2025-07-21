@@ -725,7 +725,7 @@ public class InspectionUpdater {
   }
 
   private void updateFileNumberSuffix(Inspection inspection, Integer fileNumberSuffix) {
-    inspection.setFileNumberSuffix(fileNumberSuffix);
+    inspection.setFileNumberSuffix(fileNumberSuffix == 0 ? null : fileNumberSuffix);
   }
 
   Inspection lockInspection(Inspection inspection, boolean lock) {

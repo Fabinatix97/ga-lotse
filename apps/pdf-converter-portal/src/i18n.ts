@@ -5,69 +5,72 @@
 
 const locales: Record<string, Record<string, string>> = {
   de: {
-    title: "PDF nach PDF/A-Konvertierer - GA-Lotse",
-    header: "PDF nach PDF/A-Konvertierer",
+    back: "Zurück",
+    title: "PDF-nach-PDF/A-Konvertierer - GA-Lotse",
+    header: "PDF-nach-PDF/A-Konvertierer",
     language_switch: "Sprachauswahl",
-    drop_zone_info: "PDF-Datei hier ablegen oder auswählen",
-    file_selector_button: "PDF-Datei auswählen",
-    close: "Schließen",
-    dismiss: "Verwerfen",
-    error: "Fehler wärend der PDF Konvertierung.",
-    processing: "Wird konvertiert...",
-    pdfa_info_text: "PDF/A ist eine spezielle Art von PDF-Datei, die für die Langzeitarchivierung und -aufbewahrung entwickelt wurde. Stellen Sie es sich als die \"Archivversion\" einer normalen PDF vor – es ist darauf ausgelegt, Jahrzehnte zu überdauern, ohne an Qualität zu verlieren oder unlesbar zu werden.",
+    drop_zone_info: "PDF Datei hier ablegen oder auswählen",
+    file_selector_button: "PDF Datei auswählen",
+    success: "Die Datei wurde erfolgreich konvertiert",
+    download: "PDF/A Datei herunterladen",
+    dismiss: "Datei Verwerfen",
+    error: "Fehler während der PDF Konvertierung.",
+    processing: "Die Datei wird gerade konvertiert.",
+    processing_1: "Die PDF Konvertierung kann je nach Endgerät und Dateigröße einige Zeit (einige Minuten) in Anspruch nehmen.",
+    info_text: "ⓘ Hinweis zum Konvertierungsprozess",
+    info_text_1: "Die Konvertierung kann je nach Endgerät und Dateigröße einige Zeit (mehrere Minuten) dauern.",
+    info_text_2: "Die Inhalte werden ggf. anders formatiert. Das liegt daran, dass nicht alle Schrifttypen und Funktionen von PDFs auch für PDF/A gelten und der Konvertierer sie daher nicht vollständig ausführen oder umwandeln kann.",
+    info_text_3: "Bestimmte PDF Inahlte können nicht konvertiert werden, zum Beispiel engebettete Dateien.",
+    info_text_4: "Das Ergebnis sollte daher vom Benutzenden überprüft werden.",
+    info_text_success: "ⓘ Datei wurde erfolgreich konvertiert",
+    info_text_error: "ⓘ Fehler während der Konvertierung",
+    info_text_error_1: "Bitte brechen Sie den Prozess ab, indem Sie die Datei verwerfen und es erneut versuchen.",
 
     // footer
     imprint_link: "Impressum",
-    privacy_policy_link: "Datenschutzerklärung",
+    privacy_link: "Datenschutzerklärung",
     accessibility_link: "Barrierefreiheit",
   },
   en: {
-    title: "PDF to PDF/A Converter - GA-Lotse",
-    header: "PDF to PDF/A Converter",
+    back: "Back",
+    title: "PDF-to-PDF/A-Converter - GA-Lotse",
+    header: "PDF-to-PDF/A-Converter",
     language_switch: "Language Selection",
     drop_zone_info: "Select or drag and drop a PDF file here",
     file_selector_button: "Select PDF File",
-    close: "Close",
-    dismiss: "Dismiss",
+    success: "The file has been successfully converted",
+    download: "Download PDF/A file",
+    dismiss: "Dismiss File",
     error: "Error during PDF conversion.",
-    processing: "Processing...",
-    pdfa_info_text: "PDF/A is a special type of PDF file designed for long-term storage and preservation. Think of it as the \"archival version\" of a regular PDF – it's built to last decades without losing quality or becoming unreadable.",
+    processing: "The file is currently being converted.",
+    processing_1: "PDF conversion may take some time (several minutes) depending on your device and file size.",
+    info_text: "ⓘ Note about the conversion process",
+    info_text_1: "The conversion may take some time (several minutes) depending on your device and file size.",
+    info_text_2: "The content may be formatted differently. This is because not all font types and PDF functions are also valid for PDF/A, so the converter may not be able to fully execute or convert them.",
+    info_text_3: "Certain PDF content cannot be converted, for example, embedded files.",
+    info_text_4: "The user should therefore review the result.",
+    info_text_success: "ⓘ File has been successfully converted",
+    info_text_error: "ⓘ Error during conversion",
+    info_text_error_1: "Please abort the process by dismissing the file and try again.",
 
     // footer
     imprint_link: "Imprint",
-    privacy_policy_link: "Privacy policy",
+    privacy_link: "Privacy policy",
     accessibility_link: "Accessibility",
   },
 }
 
 // @ts-expect-error Typescript doesn't know about global variables from IDs
-const languageSwitch = window['language-switch'] as HTMLFieldSetElement;
+const inputEn = window['lang-en'] as HTMLButtonElement;
 // @ts-expect-error Typescript doesn't know about global variables from IDs
-const inputEn = window['lang-en'] as HTMLInputElement;
-// @ts-expect-error Typescript doesn't know about global variables from IDs
-const inputDe = window['lang-de'] as HTMLInputElement;
-
-function toggleLanguageSwitch(e: Event) {
-  if (e?.target instanceof HTMLInputElement) {
-    applyLocale(e.target.value);
-  }
-}
+const inputDe = window['lang-de'] as HTMLButtonElement;
 
 export function initI18n() {
   const lang = getLang();
 
-  if (lang === 'de') {
-    inputDe.checked = true;
-  }
-
-  const locale = locales[lang];
-  if (!locale) {
-    return;
-  }
-
   applyLocale(lang);
-  inputEn.addEventListener('change', (e) => toggleLanguageSwitch(e));
-  inputDe.addEventListener('change', (e) => toggleLanguageSwitch(e));
+  inputEn.addEventListener('click', () => applyLocale("en"));
+  inputDe.addEventListener('click', () => applyLocale("de"));
 }
 
 function getLang() {
@@ -84,7 +87,15 @@ function applyLocale(lang: string) {
   if (!locale) {
     return;
   }
-  languageSwitch.ariaLabel = locale.language_switch!;
+
+  if (lang === 'de') {
+    inputEn.parentElement?.classList.remove('invisible');
+    inputDe.parentElement?.classList.add('invisible');
+  } else {
+    lang = 'en';
+    inputEn.parentElement?.classList.add('invisible');
+    inputDe.parentElement?.classList.remove('invisible');
+  }
 
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {

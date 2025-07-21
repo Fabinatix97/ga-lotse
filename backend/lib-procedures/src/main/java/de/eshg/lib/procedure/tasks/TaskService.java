@@ -69,11 +69,12 @@ public class TaskService<
 
     Page<TaskT> page =
         taskRepository.findAll(
-            Specification.where(assigneeId(filterOptions.assigneeId()))
-                .and(assignedById(filterOptions.assignedById()))
-                .and(taskTypes(filterOptions.taskTypes()))
-                .and(taskStatuses(filterOptions.taskStatus()))
-                .and(sort(sortOptions.sortKey(), sortOptions.sortOrder())),
+            Specification.allOf(
+                assigneeId(filterOptions.assigneeId()),
+                assignedById(filterOptions.assignedById()),
+                taskTypes(filterOptions.taskTypes()),
+                taskStatuses(filterOptions.taskStatus()),
+                sort(sortOptions.sortKey(), sortOptions.sortOrder())),
             PageRequest.ofSize(limit));
 
     List<TaskDto> enrichedTasks = enrichingMapper.enrichAndMapTasks(page.stream().toList());

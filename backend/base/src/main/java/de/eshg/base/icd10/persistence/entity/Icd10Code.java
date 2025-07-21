@@ -24,7 +24,7 @@ public class Icd10Code {
 
   public static final String TABLE_NAME = "icd10code";
 
-  @Id private String code;
+  @Id private String originalCode;
 
   @SuppressWarnings("unused" /* Required by Hibernate to make batched inserts possible */)
   @Version
@@ -32,7 +32,7 @@ public class Icd10Code {
   private Long version;
 
   @Column(nullable = false, unique = true)
-  private String codeWithoutDot;
+  private String code;
 
   @Column(nullable = false)
   private String title;
@@ -49,20 +49,20 @@ public class Icd10Code {
     this.title = title;
   }
 
+  public String getOriginalCode() {
+    return originalCode;
+  }
+
+  public void setOriginalCode(String originalCode) {
+    this.originalCode = originalCode;
+  }
+
   public String getCode() {
     return code;
   }
 
   public void setCode(String code) {
     this.code = code;
-  }
-
-  public String getCodeWithoutDot() {
-    return codeWithoutDot;
-  }
-
-  public void setCodeWithoutDot(String codeWithoutDot) {
-    this.codeWithoutDot = codeWithoutDot;
   }
 
   public Icd10Group getGroup() {

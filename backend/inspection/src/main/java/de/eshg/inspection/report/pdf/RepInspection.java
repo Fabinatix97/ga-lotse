@@ -6,5 +6,4 @@
 package de.eshg.inspection.report.pdf;
 
 /** Data for the inspection report "inspection-report.ftlx". */
-public record RepInspection(
-    String title, String objectType, String executingPerson, RepContent content) {}
+public record RepInspection(String title, String objectType, RepContent content) {}

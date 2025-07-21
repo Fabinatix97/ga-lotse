@@ -19,6 +19,7 @@ export function validateFileType({
   return (file) => {
     if (
       file === null ||
+      file.type === "" || // "": some browsers fail to determine the type of a local file properly
       acceptedFileTypes.length === 0 ||
       acceptedFileTypes.some((fileType) =>
         isString(fileType.mimeType)

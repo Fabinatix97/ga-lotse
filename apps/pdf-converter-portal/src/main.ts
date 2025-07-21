@@ -8,6 +8,7 @@ import {initFileInput} from "@/fileInput";
 import {initI18n} from "./i18n";
 import {initFooter} from "@/footer";
 import {initState} from "@/setState";
+import {initFileOutput} from "@/fileOutput";
 
 document.addEventListener('DOMContentLoaded', () => {
   initI18n();
@@ -16,4 +17,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initFileInput();
   initFooter();
   initState();
+  initFileOutput();
 });

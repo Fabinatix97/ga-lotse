@@ -127,18 +127,18 @@ public abstract class AbstractPublicSecurityConfiguration {
   protected void grantAccessToLibAppointmentBlockUrls(
       PermissionRole permissionRole, boolean allowUpdateAppointmentType) {
     requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
-        .hasAnyRole(permissionRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+        .hasRole(permissionRole);
     requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
         .hasRole(permissionRole);
 
     if (allowUpdateAppointmentType) {
       requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-          .hasAnyRole(permissionRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+          .hasRole(permissionRole);
       requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
           .hasRole(permissionRole);
     } else {
       requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-          .hasAnyRole(permissionRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+          .hasRole(permissionRole);
     }
   }
 
@@ -152,7 +152,7 @@ public abstract class AbstractPublicSecurityConfiguration {
 
     requestMatchers(
             GET, ProcedureLibrary.PROCEDURES_API + "/**", ProcedureLibrary.FILES_API + "/**")
-        .hasAnyRole(procedureAccessRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+        .hasRole(procedureAccessRole);
 
     requestMatchers(
             GET, ProcedureLibrary.INBOX_PROCEDURES_API + "/**", ProcedureLibrary.TASKS_API + "/**")
@@ -202,6 +202,9 @@ public abstract class AbstractPublicSecurityConfiguration {
             EmployeePermissionRole.PROCEDURE_ARCHIVE_ADMIN);
 
     requestMatchers(GET, ProcedureLibrary.ARCHIVING_API + "/procedures")
+        .hasRole(EmployeePermissionRole.PROCEDURE_ARCHIVE);
+
+    requestMatchers(GET, ProcedureLibrary.ARCHIVING_API + "/procedures/*")
         .hasRole(EmployeePermissionRole.PROCEDURE_ARCHIVE);
 
     requestMatchers(GET, ProcedureLibrary.ARCHIVING_API + "/relevant-procedures")

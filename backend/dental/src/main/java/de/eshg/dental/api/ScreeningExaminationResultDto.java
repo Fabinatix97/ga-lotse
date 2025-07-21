@@ -22,6 +22,7 @@ public record ScreeningExaminationResultDto(
     @NotNull boolean calculus,
     @NotNull boolean gingivitis,
     @NotNull boolean parodontitis,
+    @NotNull boolean blackStain,
     @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses,
     @NotNull boolean individualProphylaxis,
     @NotNull boolean fissureSealing,
@@ -42,6 +43,7 @@ public record ScreeningExaminationResultDto(
         List.of(),
         null,
         dentitionType,
+        false,
         false,
         false,
         false,
@@ -81,6 +83,7 @@ public record ScreeningExaminationResultDto(
         false,
         false,
         false,
+        false,
         false);
   }
 
@@ -94,7 +97,8 @@ public record ScreeningExaminationResultDto(
       boolean plaque,
       boolean calculus,
       boolean gingivitis,
-      boolean parodontitis) {
+      boolean parodontitis,
+      boolean blackStain) {
     this(
         fluorideVarnishApplied,
         oralHygieneStatus,
@@ -106,6 +110,7 @@ public record ScreeningExaminationResultDto(
         calculus,
         gingivitis,
         parodontitis,
+        blackStain,
         List.of(),
         false,
         false,

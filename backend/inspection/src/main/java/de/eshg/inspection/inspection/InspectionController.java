@@ -7,7 +7,7 @@ package de.eshg.inspection.inspection;
 
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 
-import de.eshg.inspection.facility.FacilityService;
+import de.eshg.inspection.facility.FileNumberCollisionService;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -51,25 +51,25 @@ public class InspectionController {
 
   private final InspectionFeatureToggle inspectionFeatureToggle;
   private final AuditLogger auditLogger;
-  private final FacilityService facilityService;
+  private final FileNumberCollisionService fileNumberCollisionService;
 
   public InspectionController(
       InspectionService inspectionService,
       ReviewService reviewService,
       InspectionFeatureToggle inspectionFeatureToggle,
       AuditLogger auditLogger,
-      FacilityService facilityService) {
+      FileNumberCollisionService fileNumberCollisionService) {
     this.inspectionService = inspectionService;
     this.reviewService = reviewService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.auditLogger = auditLogger;
-    this.facilityService = facilityService;
+    this.fileNumberCollisionService = fileNumberCollisionService;
   }
 
   @PostMapping(path = "/{id}")
   @Operation(summary = "Starts a new inspection")
   @Transactional
-  public InspectionDto startInspection(
+  public InspectionAndFileNumberCollisionsDto startInspection(
       @PathVariable("id") UUID procedureId, @Valid @RequestBody StartInspectionRequest request) {
     validateAssignmentRole(request.assigneeId());
     return inspectionService.startInspection(procedureId, request);
@@ -174,7 +174,7 @@ Update a differing facility file state by taking over the data from the
 associated reference facility
 """)
   @Transactional
-  public InspectionDto syncInspectionFacilityFileState(
+  public InspectionAndFileNumberCollisionsDto syncInspectionFacilityFileState(
       @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
       @RequestBody @Valid InspectionSyncFileStateRequest request) {
     return inspectionService.syncInspectionFacilityFileState(id, request);
@@ -243,7 +243,7 @@ associated reference facility
   @Transactional(readOnly = true)
   public GetFileNumberCollisionsResponse getFileNumberCollisions(
       @PathVariable("id") UUID externalId) {
-    return facilityService.getFileNumberCollisionsForInspection(externalId);
+    return inspectionService.getFileNumberCollisionsForInspection(externalId);
   }
 
   private static void validateAssignmentRole(UUID assigneeId) {

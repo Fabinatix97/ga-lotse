@@ -35,8 +35,7 @@ public final class MeaslesProtectionPublicSecurityConfig
     requestMatchers(GET, BaseUrls.MeaslesProtection.PROCEDURE_CONTROLLER + "/{id}/**")
         .hasAnyRole(
             EmployeePermissionRole.MEASLES_PROTECTION_LEADER,
-            EmployeePermissionRole.MEASLES_PROTECTION_ADMIN,
-            EmployeePermissionRole.PROCEDURE_ARCHIVE);
+            EmployeePermissionRole.MEASLES_PROTECTION_ADMIN);
     requestMatchers(
             BaseUrls.MeaslesProtection.PROCEDURE_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")

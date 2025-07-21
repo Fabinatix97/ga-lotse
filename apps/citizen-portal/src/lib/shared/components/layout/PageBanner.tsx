@@ -112,3 +112,27 @@ const Title = styled(Typography)(({ theme }) => ({
     fontSize: "2rem",
   },
 }));
+
+export function PageBannerReduced() {
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        height: 24,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        position: "relative",
+        [theme.breakpoints.down(MobileBreakpoint.Down)]: { display: "none" },
+        overflow: "hidden",
+      }}
+    >
+      <BannerPicture>
+        <BannerImage src="/reducedBanner1728x24.png" aria-hidden="true" />
+      </BannerPicture>
+    </Box>
+  );
+}

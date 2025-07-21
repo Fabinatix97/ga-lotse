@@ -5,9 +5,8 @@
 
 package de.eshg.servicedirectory.testhelper;
 
-import de.eshg.libservicedirectoryadminapi.api.orgunit.GetOrgUnitsResponse;
+import de.eshg.libservicedirectoryadminapi.api.GetEntitiesResponse;
 import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
-import de.eshg.libservicedirectoryadminapi.api.rule.GetRulesResponse;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
 import de.eshg.libservicedirectoryadminapi.api.staging.StagedEntityDto;
 import de.eshg.libservicedirectoryadminapi.api.testhelper.OrgUnitPopulationResponse;
@@ -98,12 +97,11 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
   }
 
   private Set<String> getAuthorsOfStagedEntities() {
-    GetOrgUnitsResponse orgUnits = serviceDirectoryReadService.getAllOrgUnits();
-    GetRulesResponse rules = serviceDirectoryReadService.getAllRules();
+    GetEntitiesResponse entities = serviceDirectoryReadService.getAllEntities();
     return Stream.of(
-            orgUnits.stagedOrgUnits().stream().map(StagedEntityDto::author),
-            orgUnits.stagedActors().stream().map(StagedEntityDto::author),
-            rules.stagedRules().stream().map(StagedEntityDto::author))
+            entities.stagedOrgUnits().stream().map(StagedEntityDto::author),
+            entities.stagedActors().stream().map(StagedEntityDto::author),
+            entities.stagedRules().stream().map(StagedEntityDto::author))
         .flatMap(Function.identity())
         .collect(Collectors.toSet());
   }

@@ -14,6 +14,7 @@ import {
   RadioButtonChecked,
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/joy";
+import { useId } from "react";
 
 import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
 import { InformationSheet } from "@eshg/lib-employee-portal";
@@ -72,11 +73,12 @@ export function ChecklistDefinitionElement({
 
     updateElement(createChecklistElement(type, element, true));
   }
+  const titleId = useId();
 
   return !isSeparator ? (
     <InformationSheet
-      component="section"
-      aria-label={`Element ${sectionIndex + 1}.${elementIndex + 1}`}
+      role="group"
+      aria-labelledby={titleId}
       sx={{
         background: (theme) => theme.palette.background.level1,
       }}
@@ -90,7 +92,7 @@ export function ChecklistDefinitionElement({
                 aria-label={`Element ${elementIndex + 1} der Sektion ${sectionIndex + 1} ziehen und verschieben`}
               />
             )}
-            <Typography aria-label="Fragenummer" level="body-lg">
+            <Typography component="h3" level="body-lg" id={titleId}>
               {sectionIndex + 1 + "." + (elementIndex + 1)}
             </Typography>
           </>
@@ -185,8 +187,8 @@ export function ChecklistDefinitionElement({
           }}
         />
         <IconButton
-          title="Löschen"
-          aria-label="Löschen"
+          title="Trennlinie löschen"
+          aria-label="Trennlinie löschen"
           color="danger"
           onClick={deleteElement}
         >

@@ -6,6 +6,7 @@
 "use client";
 
 import { Box, Stack, styled } from "@mui/joy";
+import { useRef } from "react";
 
 import { EnvironmentIndicator, useIsMobile } from "@eshg/lib-portal";
 
@@ -13,7 +14,7 @@ import {
   MainMenu,
   MainMenuReduced,
 } from "@/lib/baseModule/components/layout/navigationMenu/header/MainMenu";
-import { NavMenu } from "@/lib/baseModule/components/layout/navigationMenu/header/NavMenu";
+import { TopicNavigation } from "@/lib/baseModule/components/layout/navigationMenu/topicNavigation/TopicNavigation";
 import {
   appBarHeightDesktop,
   appBarHeightDesktopReduced,
@@ -32,6 +33,8 @@ const ResponsiveContainer = styled(Stack)(({ theme }) =>
 );
 
 export function Header(props: NavigationProps) {
+  const desktopHeaderRef = useRef<HTMLDivElement>(null);
+
   return (
     <Box
       component="header"
@@ -58,6 +61,7 @@ export function Header(props: NavigationProps) {
         })}
       >
         <ResponsiveContainer
+          ref={desktopHeaderRef}
           display={byBreakpoint({ mobile: "none", desktop: "flex" })}
           flexDirection="row"
           gap={2}
@@ -69,7 +73,10 @@ export function Header(props: NavigationProps) {
               <MainMenu userType={props.userType} />
             </Stack>
             <Stack height="50%">
-              <NavMenu navigationItems={props.navigationItems} />
+              <TopicNavigation
+                topics={props.navigationItems}
+                dropdownAnchorEl={desktopHeaderRef.current}
+              />
             </Stack>
           </Stack>
         </ResponsiveContainer>

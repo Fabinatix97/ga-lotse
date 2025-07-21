@@ -13,7 +13,6 @@ import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
@@ -170,9 +169,11 @@ public class ChildService {
   }
 
   Child createChild(CreateChildRequest request, Child existingChild) {
-    AddPersonFileStateResponse response = personClient.addChild(request, DataOriginDto.MANUAL);
+    UUID newChildId =
+        Iterables.getOnlyElement(personClient.addChildren(List.of(request), DataOriginDto.MANUAL));
+    Child createdChild = createChild(request, newChildId);
+    personClient.updateReferencePersons(Map.of(request, createdChild));
 
-    Child createdChild = createChild(request, response.id());
     if (existingChild != null) {
       createdChild.setProcedureLabels(new ArrayList<>(existingChild.getProcedureLabels()));
       createdChild.setNote(existingChild.getNote());
@@ -317,6 +318,19 @@ public class ChildService {
         .map(ChildWithPersonAndContactData::child)
         .map(Child::getFluoridationConsents)
         .flatMap(Collection::stream)
+        .sorted(
+            Comparator.comparing(FluoridationConsent::getDateOfConsent, Comparator.reverseOrder())
+                .thenComparing(FluoridationConsent::getModifiedAt, Comparator.reverseOrder()))
+        .toList();
+  }
+
+  public List<FluoridationConsent> getRelevantFluoridationConsentsForExamination(
+      List<ChildWithPersonAndContactData> childDataList, LocalDate examinationDate) {
+
+    return childDataList.stream()
+        .map(ChildWithPersonAndContactData::child)
+        .flatMap(child -> child.getFluoridationConsents().stream())
+        .filter(consent -> !consent.getDateOfConsent().isAfter(examinationDate))
         .sorted(
             Comparator.comparing(FluoridationConsent::getDateOfConsent, Comparator.reverseOrder())
                 .thenComparing(FluoridationConsent::getModifiedAt, Comparator.reverseOrder()))
@@ -654,7 +668,7 @@ public class ChildService {
 
   private void updateFluoridationConsent(
       Child child, FluoridationConsent requestedFluoridationConsent) {
-    FluoridationConsent persistedFluoridationConsent = child.getCurrentFluoridationConsent();
+    FluoridationConsent persistedFluoridationConsent = child.getLatestFluoridationConsent();
     boolean updateFluoridationConsent =
         requestedFluoridationConsent != null
             && (persistedFluoridationConsent == null

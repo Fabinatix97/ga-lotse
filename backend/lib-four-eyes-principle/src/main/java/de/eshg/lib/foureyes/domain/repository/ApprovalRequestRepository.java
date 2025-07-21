@@ -25,8 +25,7 @@ public interface ApprovalRequestRepository<T extends ApprovalRequest<?>>
 
   default List<T> findAllByStatusIsOpenAndUserIsNotCurrent(Specification<T> spec) {
     return findAll(
-        where(spec)
-            .and(ApprovalRequestSpecifications.isNotCreatedByCurrentUser())
+        spec.and(ApprovalRequestSpecifications.isNotCreatedByCurrentUser())
             .and(ApprovalRequestSpecifications.isOpen()),
         Sort.by(Direction.DESC, ApprovalRequest_.CREATED_AT, ApprovalRequest_.ID));
   }

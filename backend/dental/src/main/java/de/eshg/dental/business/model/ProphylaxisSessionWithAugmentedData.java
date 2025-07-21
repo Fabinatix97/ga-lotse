@@ -19,5 +19,5 @@ public record ProphylaxisSessionWithAugmentedData(
     ContactDto institution,
     Map<Examination, ChildWithPersonAndContactData> participants,
     Map<UUID, UserDto> users,
-    Map<UUID, List<Examination>> previousExaminationsByChildFileStateId,
+    Map<UUID, List<Examination>> previousScreeningExaminationsByChildFileStateId,
     Map<UUID, List<FluoridationConsent>> allFluoridationConsentsByChildFileStateId) {}

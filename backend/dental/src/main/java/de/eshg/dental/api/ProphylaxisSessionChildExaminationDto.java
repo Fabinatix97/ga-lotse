@@ -30,6 +30,7 @@ public record ProphylaxisSessionChildExaminationDto(
     @Valid @NotNull List<ProcedureLabelDto> procedureLabels,
     String note,
     DentitionTypeDto prophylaxisDentitionType,
-    @Valid @NotNull List<FluoridationConsentDto> allFluoridationConsents,
+    @Valid @NotNull List<FluoridationConsentDto> relevantFluoridationConsents,
     @Valid ExaminationResultDto result,
-    @Valid @NotNull Map<Instant, ExaminationResultDto> previousExaminationResults) {}
+    @Valid @NotNull
+        Map<Instant, ScreeningExaminationResultDto> previousScreeningExaminationResults) {}

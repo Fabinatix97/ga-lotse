@@ -13,7 +13,6 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
-import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
@@ -22,12 +21,10 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -67,25 +64,6 @@ public class AppointmentBlockValidator {
   void validateNumberOfAppointmentBlocks(CreateDailyAppointmentBlockGroupRequest request) {
     if (request.appointmentBlocks().size() > 5) {
       throw new BadRequestException("Number of AppointmentBlocks must be at most 5. ");
-    }
-  }
-
-  public void validateAllowedCombinationOfTypes(Set<AppointmentType> requestedTypes) {
-    if (requestedTypes.size() > 1) {
-      Set<Set<AppointmentType>> allowedCombinations =
-          appointmentBlockConfig.getAllowedAppointmentTypeCombinations().stream()
-              .map(HashSet::new)
-              .collect(Collectors.toSet());
-      if (allowedCombinations.stream()
-          .noneMatch(
-              allowedCombination ->
-                  allowedCombination.size() == requestedTypes.size()
-                      && allowedCombination.containsAll(requestedTypes))) {
-        throw new BadRequestException(
-            "The following appointment types cannot be combined in an AppointmentBlockGroup: %s"
-                .formatted(
-                    String.join(", ", requestedTypes.stream().map(Enum::name).sorted().toList())));
-      }
     }
   }
 

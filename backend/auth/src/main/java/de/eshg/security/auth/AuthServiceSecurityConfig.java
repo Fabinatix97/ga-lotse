@@ -42,7 +42,7 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 
 @Configuration
@@ -59,8 +59,8 @@ public class AuthServiceSecurityConfig {
   static final String LOGOUT_URL = "/logout";
   private static final String LOGIN_ERROR_URL = "/login-error";
 
-  private static final AntPathRequestMatcher LOGOUT_REQUEST_MATCHER =
-      new AntPathRequestMatcher(LOGOUT_URL, HttpMethod.GET.name());
+  private static final PathPatternRequestMatcher LOGOUT_REQUEST_MATCHER =
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, LOGOUT_URL);
 
   /*
    * Make sure that the access-/refresh tokens are stored in the session (i.e. in Redis)

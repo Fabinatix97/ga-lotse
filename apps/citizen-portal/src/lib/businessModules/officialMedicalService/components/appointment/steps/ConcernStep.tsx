@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { isDefined, isEmpty } from "remeda";
 
 import { Alert, RadioGroupField, isNonEmptyString } from "@eshg/lib-portal";
+import { ApiConcern } from "@eshg/official-medical-service-api";
 
 import {
   useGetAllAppointmentTypesQuery,
@@ -23,12 +24,12 @@ import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
   ContentSheetTitle,
+  useSectionTitleId,
 } from "@/lib/shared/components/layout/contentSheet";
 
 export function ConcernStep() {
-  const { t, i18n } = useTranslation(["officialMedicalService/appointment"]);
+  const { t } = useTranslation(["officialMedicalService/appointment"]);
   const { setFieldValue, values } = useFormikContext<AppointmentFormValues>();
-  const filterValues = useConcernFilterValues();
 
   const [{ data }, { data: appointmentTypes }] = useSuspenseQueries({
     queries: [useGetConcerns(), useGetAllAppointmentTypesQuery()],
@@ -73,40 +74,50 @@ export function ConcernStep() {
         {t("concern.description")}
       </Typography>
       {numberOfCategories > 1 && <ConcernFilters allConcerns={data} />}
-      <Stack gap={1}>
-        <RadioGroupField
-          name="concern.index"
-          required={t("concern.fields.concern_required")}
-        >
-          <Stack gap={2}>
-            {data
-              .filter((item) =>
-                isNonEmptyString(filterValues.category)
-                  ? item.categoryNameDe === filterValues.category
-                  : item,
-              )
-              .map((concern, index) => {
-                return (
-                  <RadioSheet
-                    key={`${concern.nameDe}.${index}`}
-                    label={
-                      i18n.language === "en" && isDefined(concern.nameEn)
-                        ? concern.nameEn
-                        : concern.nameDe
-                    }
-                    value={index}
-                    radioProps={{
-                      sx: (theme) => ({
-                        label: { ...theme.typography["title-md"] },
-                        alignItems: "center",
-                      }),
-                    }}
-                  />
-                );
-              })}
-          </Stack>
-        </RadioGroupField>
-      </Stack>
+      <ConcernStepRadioGroup data={data} />
     </ContentSheet>
+  );
+}
+
+function ConcernStepRadioGroup(props: { data: ApiConcern[] }) {
+  const titleId = useSectionTitleId();
+  const { t, i18n } = useTranslation(["officialMedicalService/appointment"]);
+  const filterValues = useConcernFilterValues();
+  return (
+    <Stack gap={1}>
+      <RadioGroupField
+        name="concern.index"
+        aria-labelledby={titleId}
+        required={t("concern.fields.concern_required")}
+      >
+        <Stack gap={2}>
+          {props.data
+            .filter((item) =>
+              isNonEmptyString(filterValues.category)
+                ? item.categoryNameDe === filterValues.category
+                : item,
+            )
+            .map((concern, index) => {
+              return (
+                <RadioSheet
+                  key={`${concern.nameDe}.${index}`}
+                  label={
+                    i18n.language === "en" && isDefined(concern.nameEn)
+                      ? concern.nameEn
+                      : concern.nameDe
+                  }
+                  value={index}
+                  radioProps={{
+                    sx: (theme) => ({
+                      label: { ...theme.typography["title-md"] },
+                      alignItems: "center",
+                    }),
+                  }}
+                />
+              );
+            })}
+        </Stack>
+      </RadioGroupField>
+    </Stack>
   );
 }

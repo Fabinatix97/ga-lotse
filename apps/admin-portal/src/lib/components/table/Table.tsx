@@ -15,27 +15,18 @@ import {
 } from "@tanstack/react-table";
 import { Fragment, useEffect, useState } from "react";
 
-import { TableApi } from "@/lib/components/table/EditableTable";
 import { EmptyTableHint } from "@/lib/components/table/EmptyTableHint";
 import { TableRow } from "@/lib/components/table/TableRow";
 import { TableHead } from "@/lib/components/table/head/TableHead";
-import { UniqueEntity } from "@/lib/helpers/entities";
+import { UniqueEntity } from "@/lib/hooks/useEntities";
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line unused-imports/no-unused-vars
   interface ColumnMeta<TData, TValue> {
-    width?: number | string;
-    headerLabel?: string;
     cellStyle?: CellStyle;
     options?: TValue[];
     multiFilter?: boolean;
     stringToValue?: (value: string) => TValue;
-    linkTo?: string;
-    optional?: boolean;
-  }
-
-  interface TableMeta<TData> {
-    api?: TableApi<TData>;
   }
 }
 
@@ -44,7 +35,7 @@ export type CellStyle = "button";
 interface TableProps<TData> {
   data: TableOptions<TData>["data"];
   columns: TableOptions<TData>["columns"];
-  initialColumnVisibility?: VisibilityState;
+  columnVisibility?: VisibilityState;
 }
 
 export function Table<TData extends UniqueEntity>(
@@ -63,7 +54,7 @@ export function Table<TData extends UniqueEntity>(
     getSortedRowModel: getSortedRowModel(),
     sortDescFirst: false,
     initialState: {
-      columnVisibility: props.initialColumnVisibility,
+      columnVisibility: props.columnVisibility,
     },
   };
   const reactTable: TanstackTable<TData> = useReactTable(tableConfig);

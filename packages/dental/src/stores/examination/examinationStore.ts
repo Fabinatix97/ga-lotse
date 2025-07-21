@@ -9,8 +9,7 @@ import { ApiDentitionType } from "@eshg/dental-api";
 
 import {
   ExaminationResult,
-  ExaminationResultWithDate,
-  ScreeningExaminationResult,
+  ScreeningExaminationResultWithDate,
   ToothDiagnoses,
 } from "../../api/models/ExaminationResult";
 
@@ -79,7 +78,7 @@ export interface DmftValuesByDentitionType {
 export function initExaminationStore(
   examinationResult: ExaminationResult | undefined,
   defaultDentitionType: ApiDentitionType = ApiDentitionType.Mixed,
-  previousExaminationResult: ExaminationResultWithDate | undefined,
+  previousExaminationResult: ScreeningExaminationResultWithDate | undefined,
 ): ExaminationState {
   const isScreening = examinationResult?.type === "screening";
   const previousWasScreening =
@@ -87,8 +86,7 @@ export function initExaminationStore(
 
   const toothDiagnoses = isScreening ? examinationResult.toothDiagnoses : {};
   const previousToothDiagnoses = previousWasScreening
-    ? (previousExaminationResult.result as ScreeningExaminationResult)
-        .toothDiagnoses
+    ? previousExaminationResult.result.toothDiagnoses
     : {};
 
   const dentitionType =

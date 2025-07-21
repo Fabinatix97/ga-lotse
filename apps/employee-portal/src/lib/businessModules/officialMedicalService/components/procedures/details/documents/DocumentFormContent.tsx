@@ -18,11 +18,12 @@ import { ReactNode } from "react";
 import { isEmpty } from "remeda";
 
 import {
+  DetailsColumn,
   DetailsItem,
   EditButton,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { InputField } from "@eshg/lib-portal";
+import { DetailsList, InputField } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,
@@ -51,56 +52,64 @@ export function DocumentFormContent(props: {
   return (
     <SidebarContent title={props.title}>
       <Stack rowGap={3}>
-        <Stack
-          gap={3}
-          direction="row"
-          flexWrap="wrap"
-          width="90%"
-          data-testid="core-data"
-        >
-          <ChipItem
-            label="Status"
-            color={statusColorsDocumentStatus[props.document.documentStatus]}
-            value={STATUS_NAMES_DOCUMENT_STATUS[props.document.documentStatus]}
-          />
-          <ChipItem
-            label="Pflichtdokument"
-            color={props.document.mandatoryDocument ? "danger" : "neutral"}
-            value={props.document.mandatoryDocument ? "Ja" : "Nein"}
-          />
-          {props.document.documentStatus !== ApiDocumentStatus.Missing && (
+        <DetailsList>
+          <Stack
+            gap={3}
+            direction="row"
+            flexWrap="wrap"
+            width="90%"
+            data-testid="core-data"
+          >
             <ChipItem
-              label="Hochgeladen von"
-              color={
-                props.document.uploadedBy === "EXTERN" ? "warning" : "primary"
-              }
+              label="Status"
+              color={statusColorsDocumentStatus[props.document.documentStatus]}
               value={
-                props.document.uploadedBy === "EXTERN" ? "Extern" : "Intern"
+                STATUS_NAMES_DOCUMENT_STATUS[props.document.documentStatus]
               }
             />
-          )}
-          <ChipItem
-            label="Upload-Option"
-            color={props.document.uploadInCitizenPortal ? "warning" : "neutral"}
-            value={
-              props.document.uploadInCitizenPortal
-                ? "Intern und Extern"
-                : "Intern"
-            }
-          />
-        </Stack>
+            <ChipItem
+              label="Pflichtdokument"
+              color={props.document.mandatoryDocument ? "danger" : "neutral"}
+              value={props.document.mandatoryDocument ? "Ja" : "Nein"}
+            />
+            {props.document.documentStatus !== ApiDocumentStatus.Missing && (
+              <ChipItem
+                label="Hochgeladen von"
+                color={
+                  props.document.uploadedBy === "EXTERN" ? "warning" : "primary"
+                }
+                value={
+                  props.document.uploadedBy === "EXTERN" ? "Extern" : "Intern"
+                }
+              />
+            )}
+            <ChipItem
+              label="Upload-Option"
+              color={
+                props.document.uploadInCitizenPortal ? "warning" : "neutral"
+              }
+              value={
+                props.document.uploadInCitizenPortal
+                  ? "Intern und Extern"
+                  : "Intern"
+              }
+            />
+          </Stack>
+        </DetailsList>
         <Divider orientation="horizontal" />
         {props.document.documentStatus !== ApiDocumentStatus.Submitted &&
           props.document.reasonForRejection && (
             <>
-              <DetailsItem
-                label="Ablehnungsgrund"
-                value={props.document.reasonForRejection}
-                slotProps={{
-                  label: { level: "title-md", textColor: "text.primary" },
-                  value: { level: "body-md" },
-                }}
-              />
+              <DetailsList>
+                <DetailsItem
+                  label="Ablehnungsgrund"
+                  value={props.document.reasonForRejection}
+                  slotProps={{
+                    label: { level: "title-md", textColor: "text.primary" },
+                    value: { level: "body-md" },
+                  }}
+                />
+              </DetailsList>
               <Divider orientation="horizontal" />
             </>
           )}
@@ -112,10 +121,12 @@ export function DocumentFormContent(props: {
                 <Alert color="warning" startDecorator={<WarningAmber />}>
                   Neu hochgeladene Dateien nach Ablehnung
                 </Alert>
-                <DetailsItem
-                  label="Ablehnungsgrund"
-                  value={props.document.reasonForRejection}
-                />
+                <DetailsList>
+                  <DetailsItem
+                    label="Ablehnungsgrund"
+                    value={props.document.reasonForRejection}
+                  />
+                </DetailsList>
               </>
             )}
           <FilesSection
@@ -138,13 +149,15 @@ export function DocumentFormContent(props: {
               alignItems="start"
               data-testid="noteSection"
             >
-              <DetailsItem
-                label="Stichwörter"
-                value={
-                  !isEmpty(props.document.note) ? props.document.note : "-"
-                }
-                slotProps={{ value: { pt: 1 } }}
-              />
+              <DetailsList>
+                <DetailsItem
+                  label="Stichwörter"
+                  value={
+                    !isEmpty(props.document.note) ? props.document.note : "-"
+                  }
+                  slotProps={{ value: { pt: 1 } }}
+                />
+              </DetailsList>
               {!isEmpty(props.document.files) &&
                 !props.isProcedureFinalized && (
                   <EditButton
@@ -157,41 +170,43 @@ export function DocumentFormContent(props: {
         </Stack>
 
         <Divider orientation="horizontal" />
-        <Stack direction="column" gap={2} data-testid="additional-info">
-          <Stack direction="row" gap={2} justifyContent="space-between">
-            <Typography level="title-md">Dokument-Angaben</Typography>
-            {props.document.documentStatus === ApiDocumentStatus.Missing &&
-              !props.isProcedureFinalized && (
-                <EditButton
-                  aria-label="Dokument-Angaben bearbeiten"
-                  onClick={props.onEditInformation}
-                />
-              )}
-          </Stack>
-          <DetailsItem
-            label="Dokumentenart (EN)"
-            value={props.document.documentTypeEn ?? "-"}
-          />
-          <DetailsItem
-            label="Hilfstext"
-            value={
-              !isEmpty(props.document.helpTextDe)
-                ? props.document.helpTextDe
-                : "-"
-            }
-          />
-          <DetailsItem
-            label="Hilfstext (EN)"
-            value={props.document.helpTextEn ?? "-"}
-          />
-          <DetailsItem
-            label="Labortest-Barcode"
-            value={
-              !isEmpty(props.document.labCode) ? props.document.labCode : "-"
-            }
-            slotProps={{ value: { pt: 1 } }}
-          />
-        </Stack>
+        <DetailsList>
+          <DetailsColumn gap={2} data-testid="additional-info">
+            <Stack direction="row" gap={2} justifyContent="space-between">
+              <Typography level="title-md">Dokument-Angaben</Typography>
+              {props.document.documentStatus === ApiDocumentStatus.Missing &&
+                !props.isProcedureFinalized && (
+                  <EditButton
+                    aria-label="Dokument-Angaben bearbeiten"
+                    onClick={props.onEditInformation}
+                  />
+                )}
+            </Stack>
+            <DetailsItem
+              label="Dokumentenart (EN)"
+              value={props.document.documentTypeEn ?? "-"}
+            />
+            <DetailsItem
+              label="Hilfstext"
+              value={
+                !isEmpty(props.document.helpTextDe)
+                  ? props.document.helpTextDe
+                  : "-"
+              }
+            />
+            <DetailsItem
+              label="Hilfstext (EN)"
+              value={props.document.helpTextEn ?? "-"}
+            />
+            <DetailsItem
+              label="Labortest-Barcode"
+              value={
+                !isEmpty(props.document.labCode) ? props.document.labCode : "-"
+              }
+              slotProps={{ value: { pt: 1 } }}
+            />
+          </DetailsColumn>
+        </DetailsList>
       </Stack>
     </SidebarContent>
   );
@@ -215,7 +230,7 @@ function ChipItem({
         </Chip>
       }
       slots={{ value: Box }}
-      slotProps={{ value: { sx: { pt: 1 } } }}
+      slotProps={{ value: { sx: { pt: 1, m: 0 } } }}
     />
   );
 }

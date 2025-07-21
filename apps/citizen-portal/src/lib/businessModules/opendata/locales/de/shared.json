@@ -1,8 +1,4 @@
 {
-  "notAvailable": {
-    "title": "Seite nicht verfügbar",
-    "message": "Die aufgerufene Seite ist nicht freigeschaltet."
-  },
   "sources": {
     "INSPECTION": "Begehung",
     "SCHOOL_ENTRY": "Einschulungsuntersuchung",
