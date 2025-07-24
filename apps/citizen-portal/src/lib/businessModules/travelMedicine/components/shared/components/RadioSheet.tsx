@@ -35,7 +35,7 @@ export function RadioSheet({
       })}
     >
       <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Radio value={value} label={label} {...radioProps} />
+        <Radio overlay value={value} label={label} {...radioProps} />
         {endDecorator}
       </Stack>
     </Sheet>

@@ -64,8 +64,8 @@ export function HeaderButtons<TData extends UniqueEntity>({
       size="sm"
       aria-label={t("create")}
       onClick={() => {
-        const orgUnitId = getOrgUnitIdFromFilter(table, allOrgUnits);
-        return create(orgUnitId);
+        const orgUnit = getOrgUnitFromFilter(table, allOrgUnits);
+        return create(orgUnit);
       }}
     >
       <Add />
@@ -202,13 +202,15 @@ export function StagedRowButtons({
   }
 }
 
-function getOrgUnitIdFromFilter<TData>(
+function getOrgUnitFromFilter<TData>(
   table: Table<TData>,
   allOrgUnits: OrgUnit[],
 ) {
   const orgUnitSearchString = table
     .getState()
-    .columnFilters.find(({ id }) => id === "entity._orgUnit")
+    .columnFilters.find(({ id }) =>
+      ["entity._orgUnit", "entity._exactOrgUnitIds"].includes(id),
+    )
     ?.value?.toString()
     .toLowerCase();
   if (!orgUnitSearchString) return undefined;
@@ -222,10 +224,10 @@ function getOrgUnitIdFromFilter<TData>(
     const matchingCommittedOrgUnits = matchingOrgUnits.filter((ou) =>
       isCommittedEntity(ou),
     );
-    return only(matchingCommittedOrgUnits)?.id;
+    return only(matchingCommittedOrgUnits);
   }
 
-  return only(matchingOrgUnits)?.id;
+  return only(matchingOrgUnits);
 }
 
 function clear(

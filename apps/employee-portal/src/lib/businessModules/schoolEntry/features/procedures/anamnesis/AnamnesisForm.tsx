@@ -25,6 +25,7 @@ import {
 } from "@eshg/lib-portal";
 import {
   ApiBooleanWithUnknown,
+  ApiMediaConsumption,
   ApiSchoolEntryCountryCode,
   UpdateAnamnesisRequest,
 } from "@eshg/school-entry-api";
@@ -46,6 +47,7 @@ import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/Confir
 
 export interface AnamnesisFormValues {
   childLanguageScreening: OptionalFieldValue<boolean>;
+  languageScreeningConsent: OptionalFieldValue<boolean>;
   preliminaryCourse: OptionalFieldValue<boolean>;
   additionalChildInfo: AdditionalChildInfoValues;
   daycareAndSchoolInfo: DaycareAndSchoolInfoValues;
@@ -66,6 +68,7 @@ export interface InterestAndSportsInfoValues {
   hasSeahorseBadge: OptionalFieldValue<boolean>;
   clubSport: OptionalFieldValue<string>;
   otherInterests: OptionalFieldValue<string>;
+  mediaConsumption: OptionalFieldValue<ApiMediaConsumption>;
 }
 
 export interface FamilyHistoryInfoValues {
@@ -99,6 +102,10 @@ export interface DevelopmentInfoValues {
   birthWeight: OptionalFieldValue<number>;
   developmentConspicuities: OptionalFieldValue<boolean>;
   infancyConspicuities: OptionalFieldValue<boolean>;
+  dailyTeethBrushing: OptionalFieldValue<number>;
+  teethBrushingAfterCare: OptionalFieldValue<boolean>;
+  electricToothBrush: OptionalFieldValue<boolean>;
+  fluorideToothPaste: OptionalFieldValue<boolean>;
 }
 
 export interface CheckUpsValues {
@@ -223,6 +230,13 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
                 type="text"
                 component={HorizontalField}
                 sx={TEXT_INPUT_STYLE}
+              />
+              <BooleanSelectField
+                name="languageScreeningConsent"
+                label="Einverständnis zum Einsehen der KiSS-Unterlagen in der Einschulungsuntersuchung"
+                component={HorizontalField}
+                sx={BOOLEAN_SELECT_STYLE}
+                allowDeselection
               />
             </Stack>
             <Divider />

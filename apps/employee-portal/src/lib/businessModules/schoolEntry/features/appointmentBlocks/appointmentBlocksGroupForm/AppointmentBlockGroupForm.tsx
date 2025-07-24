@@ -69,7 +69,6 @@ interface AppointmentBlockGroupFormProps {
   freeStaff: string[];
   validateAvailability: (values: CreateAppointmentBlockGroupValues) => void;
   locationSelectionMode: ApiLocationSelectionMode;
-  isAppointmentBlockViewEnabled: boolean;
 }
 
 export function AppointmentBlockGroupForm(
@@ -120,11 +119,7 @@ export function AppointmentBlockGroupForm(
           <FormButtonBar
             submitLabel="Planen"
             submitting={isSubmitting}
-            onCancel={
-              props.isAppointmentBlockViewEnabled
-                ? routes.appointments.overview
-                : routes.appointments.appointmentBlockGroups.overview
-            }
+            onCancel={routes.appointments.overview}
           />
         </FormSheet>
       )}

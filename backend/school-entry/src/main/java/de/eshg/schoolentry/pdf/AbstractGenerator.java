@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.pdf;
 
+import com.google.common.base.Strings;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.contact.api.ContactDto;
@@ -12,6 +13,7 @@ import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.schoolentry.client.DepartmentInfoClient;
+import java.util.Arrays;
 import java.util.UUID;
 import org.springframework.util.Assert;
 
@@ -30,7 +32,7 @@ public abstract class AbstractGenerator {
     GetDepartmentInfoResponse departmentInfo = departmentInfoClient.getDepartmentInfo();
     return new Address(
         departmentInfo.name(),
-        departmentInfo.street() + " " + departmentInfo.houseNumber(),
+        concat(departmentInfo.street(), departmentInfo.houseNumber()),
         departmentInfo.postalCode(),
         departmentInfo.city(),
         departmentInfo.phoneNumber(),
@@ -47,12 +49,11 @@ public abstract class AbstractGenerator {
         InstitutionContactDto.class,
         institution,
         () -> "Function must only be used to retrieve institution contacts");
-
     return switch (institution.contactAddress()) {
       case DomesticAddressDto domesticAddress ->
           new Address(
               institution.name(),
-              domesticAddress.street() + " " + domesticAddress.houseNumber(),
+              concat(domesticAddress.street(), domesticAddress.houseNumber()),
               domesticAddress.postalCode(),
               domesticAddress.city(),
               null,
@@ -70,5 +71,9 @@ public abstract class AbstractGenerator {
               null,
               null);
     };
+  }
+
+  protected static String concat(String... strings) {
+    return String.join(" ", Arrays.stream(strings).filter(s -> !Strings.isNullOrEmpty(s)).toList());
   }
 }

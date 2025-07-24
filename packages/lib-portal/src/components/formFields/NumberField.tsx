@@ -71,6 +71,7 @@ export function NumberField(props: NumberFieldProps) {
           },
         }}
         color={props.primary ? "primary" : undefined}
+        sx={props.sx}
         disabled={disabled}
         readOnly={props.readOnly}
         startDecorator={props.startDecorator}

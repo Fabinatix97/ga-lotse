@@ -27,15 +27,19 @@ spec:
 kind: Secret
 apiVersion: v1
 data:
-  truststore.crt: {{ .Values.adminportal.usercerts | b64enc}}
+  {{- if .Values.adminportal.usercerts }}
+  truststore.crt: {{ .Values.adminportal.usercerts | b64enc }}
+  {{- else }}
+  truststore.crt: {{ (default "chartsnap_test_value" (and .Values.env .Values.env.ADMIN_PORTAL_TRUSTSTORE_CRT)) | quote }}
+  {{- end }}
 metadata:
   name: admin-portal-users-tls
   namespace: {{ .Release.Namespace }}
 type: Opaque
 
----
+{{- end }}
 
-{{- end -}}
+---
 
 {{ include "ingress" (list "adminportal" .Values.ingress.type .Values.domains.hosts.adminportal "proxy-incoming" "adminportal" .Release.Namespace)}}
 {{ include "lib.certificate" (list .Values.adminportal.certificate.secret .Values.domains.hosts.adminportal .Values.domains.clusterIssuer .Release.Namespace .Values.development.injectSelfSignedCA) }}

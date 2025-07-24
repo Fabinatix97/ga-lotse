@@ -24,8 +24,10 @@ import {
   PropsWithChildren,
   ReactNode,
   RefObject,
+  useEffect,
   useId,
   useRef,
+  useState,
 } from "react";
 import { isDefined } from "remeda";
 
@@ -90,6 +92,7 @@ export interface FileSheetArrayProps extends FooterGridProps {
   helperText?: string;
   labels: FileSheetArrayLabels;
   indicator?: FileSheetIndicator;
+  shouldSetFocus?: boolean;
 }
 
 export function FileSheetArray({
@@ -106,6 +109,7 @@ export function FileSheetArray({
   labels,
   indicator,
   showPdfaConvertLink: showPdfaConvertLinkProp,
+  shouldSetFocus,
   ...props
 }: Readonly<FileSheetArrayProps>) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -121,6 +125,42 @@ export function FileSheetArray({
     : isNonEmptyArray(files)
       ? FileSheetIndicator.Success
       : FileSheetIndicator.Error;
+
+  const [actionFlag, setActionFlag] = useState<number | undefined>(undefined);
+  const deleteButtonRefs = useRef<HTMLAnchorElement[]>([]);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+
+  function focusAddButton() {
+    addButtonRef.current?.focus();
+  }
+
+  useEffect(() => {
+    function focusNthElement(index: number) {
+      deleteButtonRefs.current.at(index)?.focus();
+    }
+    if (isDefined(actionFlag)) {
+      // if an element is added, keep focus on the button
+      // if an element is removed, focus the next (or last) element; if no element is left, focus the add button
+      const removedIndex = actionFlag;
+      if (files.length === 0) {
+        focusAddButton();
+      }
+      focusNthElement(
+        removedIndex === files.length ? removedIndex - 1 : removedIndex,
+      );
+      setActionFlag(undefined);
+    }
+  }, [actionFlag, files.length]);
+
+  function setDeleteButtonRefs(el: HTMLAnchorElement, index: number) {
+    deleteButtonRefs.current[index] = el;
+  }
+
+  useEffect(() => {
+    if (shouldSetFocus) {
+      addButtonRef.current?.focus();
+    }
+  }, [shouldSetFocus]);
 
   return (
     <>
@@ -163,6 +203,7 @@ export function FileSheetArray({
               <FileInput
                 fileInputRef={fileInputRef}
                 fileInputId={fileInputId}
+                addButtonRef={addButtonRef}
                 accept={accept}
                 name={name}
                 required={required}
@@ -175,9 +216,17 @@ export function FileSheetArray({
           </Box>
         </HeaderGrid>
         <FileStack
+          setDeleteButtonRefs={setDeleteButtonRefs}
           files={files}
           labels={labels}
-          onRemove={showRemoveButtons ? onRemove : undefined}
+          onRemove={
+            showRemoveButtons && isDefined(onRemove)
+              ? (index) => {
+                  onRemove(index);
+                  setActionFlag(index);
+                }
+              : undefined
+          }
         >
           {isDefined(onRemoveAll) && showRemoveButtons && (
             <StyledRemoveButton
@@ -187,7 +236,10 @@ export function FileSheetArray({
                 fontWeight: theme.fontWeight.md,
                 paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
               }}
-              onClick={() => onRemoveAll()}
+              onClick={() => {
+                onRemoveAll();
+                focusAddButton();
+              }}
             >
               {labels.removeAllFiles}
             </StyledRemoveButton>
@@ -326,6 +378,7 @@ const HiddenInput = styled("input")({ display: "none" });
 interface FileInputProps {
   fileInputId: string;
   fileInputRef: RefObject<HTMLInputElement | null>;
+  addButtonRef: RefObject<HTMLButtonElement | null>;
   onChange: (files: File[]) => void;
   accept: FileType[];
   name?: string;
@@ -338,6 +391,7 @@ interface FileInputProps {
 function FileInput({
   fileInputId,
   fileInputRef,
+  addButtonRef,
   onChange,
   accept,
   name,
@@ -374,6 +428,7 @@ function FileInput({
   return (
     <>
       <FileButton
+        ref={addButtonRef}
         activeDragOver={dropState === "copy"}
         error={error || dropState === "no-drop"}
         aria-controls={fileInputId}
@@ -405,6 +460,7 @@ function FileInput({
 type FileStackProps = PropsWithChildren<
   Pick<FileSheetArrayProps, "files" | "onRemove"> & {
     labels: Pick<FileSheetArrayLabels, "removeFile">;
+    setDeleteButtonRefs(el: HTMLAnchorElement, index: number): void;
   }
 >;
 
@@ -412,6 +468,7 @@ function FileStack({
   files,
   onRemove,
   labels,
+  setDeleteButtonRefs,
   children,
 }: Readonly<FileStackProps>) {
   if (files.length === 0) {
@@ -428,6 +485,7 @@ function FileStack({
       {files.map((file, index) => (
         <FileSheet
           key={`${file.name}.${index}`}
+          ref={(el) => setDeleteButtonRefs(el, index)}
           file={file}
           removeLabel={labels.removeFile(file.name)}
           onRemove={onRemove ? () => onRemove(index) : undefined}

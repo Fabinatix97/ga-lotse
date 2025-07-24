@@ -7,7 +7,6 @@ import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
-import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal";
 
 import { CLDInfoCard } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
@@ -22,9 +21,6 @@ export function ReadOnlyCLDPage({
   cldVersion,
   infoCard,
 }: Readonly<ReadOnlyCLDPageProps>) {
-  const { headerHeightDesktop } = useHeaderHeights();
-  const { simpleToolbarHeight } = useLayoutConfig();
-
   return (
     <Box
       sx={{
@@ -45,8 +41,7 @@ export function ReadOnlyCLDPage({
       <Box
         sx={{
           position: { lg: "sticky" },
-          top: (theme) =>
-            `calc(${headerHeightDesktop} + ${simpleToolbarHeight} + ${theme.spacing(2)})`,
+          top: (theme) => theme.spacing(2),
           alignSelf: "flex-start",
           gridArea: "info",
         }}

@@ -8,12 +8,6 @@ import path from "path";
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
-  server: {
-    port: 3004,
-    strictPort: true,
-    host: true,
-    allowedHosts: ["host.docker.internal"],
-  },
   preview: {
     port: 3004,
     strictPort: true,

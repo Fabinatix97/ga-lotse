@@ -3902,44 +3902,6 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
-    "/school-entries/{procedureId}/school-info-letter-pdf" : {
-      "post" : {
-        "operationId" : "createSchoolInfoLetter",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "procedureId",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/CreateSchoolInfoLetterRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "binary"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "SchoolEntry" ]
-      }
-    },
     "/school-entries/{procedureId}/school-info-letter-print" : {
       "post" : {
         "operationId" : "generateSchoolInfoLetterPdf",
@@ -5196,6 +5158,10 @@
           "interestsAndSportsInfo" : {
             "$ref" : "#/components/schemas/InterestsAndSportsInfo"
           },
+          "languageScreeningConsent" : {
+            "type" : "boolean",
+            "description" : "Boolean that indicates, if the KiSS language screening documents are allowed to be viewed during the examination."
+          },
           "migrationBackground" : {
             "$ref" : "#/components/schemas/MigrationBackground"
           },
@@ -5751,6 +5717,10 @@
           "interestsAndSportsInfo" : {
             "$ref" : "#/components/schemas/InterestsAndSportsInfo"
           },
+          "languageScreeningConsent" : {
+            "type" : "boolean",
+            "description" : "Boolean that indicates, if the KiSS language screening documents are allowed to be viewed during the examination."
+          },
           "migrationBackground" : {
             "$ref" : "#/components/schemas/CitizenMigrationBackground"
           },
@@ -6193,33 +6163,6 @@
           }
         }
       },
-      "CreateSchoolInfoLetterRequest" : {
-        "required" : [ "consultationWithCustodianRecommended", "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended", "prefilled", "referredToFurtherConsultationFromSchool" ],
-        "type" : "object",
-        "properties" : {
-          "consultationWithCustodianRecommended" : {
-            "type" : "boolean"
-          },
-          "customRecommendation" : {
-            "type" : "string"
-          },
-          "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended" : {
-            "type" : "boolean"
-          },
-          "note" : {
-            "type" : "string"
-          },
-          "parentsWishNote" : {
-            "type" : "string"
-          },
-          "prefilled" : {
-            "type" : "boolean"
-          },
-          "referredToFurtherConsultationFromSchool" : {
-            "type" : "boolean"
-          }
-        }
-      },
       "DataOrigin" : {
         "type" : "string",
         "description" : "A list of possible origins of Persons and Facility in the Central Files. EDIT will only be set automatically on changes. EXTERNAL is for entries that come, e.g., from the citizen portal. IMPORT is reserved for automatic imports. MANUAL shall be set for every creation or connection done by an employee.",
@@ -6381,13 +6324,26 @@
             "type" : "integer",
             "format" : "int32"
           },
+          "dailyTeethBrushing" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
           "developmentConspicuities" : {
+            "type" : "boolean"
+          },
+          "electricToothBrush" : {
+            "type" : "boolean"
+          },
+          "fluorideToothPaste" : {
             "type" : "boolean"
           },
           "gestationalAge" : {
             "type" : "boolean"
           },
           "infancyConspicuities" : {
+            "type" : "boolean"
+          },
+          "teethBrushingAfterCare" : {
             "type" : "boolean"
           }
         }
@@ -8487,6 +8443,9 @@
           "hasSeahorseBadge" : {
             "type" : "boolean"
           },
+          "mediaConsumption" : {
+            "$ref" : "#/components/schemas/MediaConsumption"
+          },
           "otherInterests" : {
             "type" : "string"
           }
@@ -8705,6 +8664,10 @@
           }
         },
         "description" : "Body measurement results of the examination."
+      },
+      "MediaConsumption" : {
+        "type" : "string",
+        "enum" : [ "LITTLE", "MEDIUM", "MUCH" ]
       },
       "MetaData" : {
         "required" : [ "@type" ],
@@ -9669,7 +9632,7 @@
       },
       "SchoolEntryFeature" : {
         "type" : "string",
-        "enum" : [ "DUMMY", "EDITABLE_SCHOOL_INFO_LETTER", "APPOINTMENT_BLOCK_VIEW" ]
+        "enum" : [ "DUMMY" ]
       },
       "SchoolEntryProcedure" : {
         "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],
@@ -9804,7 +9767,7 @@
         }
       },
       "SchoolInfoLetterExamination" : {
-        "required" : [ "child", "consultationWithCustodianRecommended", "date", "postponed", "schoolYear" ],
+        "required" : [ "child", "consultationWithCustodianRecommended", "date", "eyeExaminationInfo", "hearingExaminationInfo", "parentsWish", "physiciansRecommendation", "postponed", "schoolAndPromotionHints", "schoolYear", "therapyAndPromotionInfo", "type", "vaccinationInfo" ],
         "type" : "object",
         "properties" : {
           "child" : {

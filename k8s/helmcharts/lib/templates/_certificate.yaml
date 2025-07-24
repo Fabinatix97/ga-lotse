@@ -28,9 +28,10 @@ spec:
     kind: ClusterIssuer
     name: "{{ $clusterIssuer }}"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "{{ $name }}"
   subject: {}
   usages:

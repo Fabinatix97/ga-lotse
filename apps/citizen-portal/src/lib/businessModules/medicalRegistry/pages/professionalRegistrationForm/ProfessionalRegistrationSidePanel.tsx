@@ -11,6 +11,7 @@ import {
   BooleanRadioField,
   ButtonLink,
   CheckboxField,
+  scrollToFirstFormError,
   useFileDownload,
   useMultiStepForm,
   useSnackbar,
@@ -57,6 +58,7 @@ export function ProfessionalRegistrationSidePanel() {
       handleFunction();
     } else {
       snackbar.error(t("snackbar.errors"), { manualClose: false });
+      scrollToFirstFormError();
     }
   }
 

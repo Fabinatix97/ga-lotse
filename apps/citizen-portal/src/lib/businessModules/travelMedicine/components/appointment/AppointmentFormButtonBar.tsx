@@ -6,7 +6,7 @@
 import { FormikErrors, FormikTouched, useFormikContext } from "formik";
 import { isEmpty } from "remeda";
 
-import { useMultiStepForm } from "@eshg/lib-portal";
+import { scrollToFirstFormError, useMultiStepForm } from "@eshg/lib-portal";
 import { ApiAppointmentType, ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { AppointmentFormStep } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentStepper";
@@ -47,6 +47,8 @@ export function AppointmentFormButtonBar() {
 
     if (isEmpty(errors)) {
       await doNext();
+    } else {
+      scrollToFirstFormError();
     }
   }
 

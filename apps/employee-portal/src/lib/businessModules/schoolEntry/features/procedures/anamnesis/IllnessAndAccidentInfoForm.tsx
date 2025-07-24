@@ -75,7 +75,7 @@ export function IllnessAndAccidentInfoForm() {
         />
       </Stack>
       <Stack gap={2} flexWrap="wrap" data-testid="allergies">
-        <FormLabel sx={{ fontSize: "14px", fontWeight: "500" }}>
+        <FormLabel sx={{ fontSize: "sm", fontWeight: "500" }}>
           Allergien
         </FormLabel>
         <InputArrayField

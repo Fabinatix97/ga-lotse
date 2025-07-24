@@ -11,6 +11,7 @@ import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.api.citizen.CitizenMigrationBackgroundDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.BooleanWithUnknown;
+import de.eshg.schoolentry.domain.model.MediaConsumption;
 import de.eshg.schoolentry.domain.model.SchoolEntryCountryCode;
 import jakarta.annotation.Nullable;
 
@@ -26,6 +27,7 @@ public class AnamnesisMapper {
     return new AnamnesisDto(
         anamnesis.getVersion(),
         anamnesis.getChildLanguageScreening(),
+        anamnesis.getLanguageScreeningConsent(),
         anamnesis.getPreliminaryCourse(),
         new CheckUpsDto(
             mapToDto(anamnesis.getU2()),
@@ -67,7 +69,11 @@ public class AnamnesisMapper {
             anamnesis.getDevelopmentConspicuities(),
             anamnesis.getInfancyConspicuities(),
             anamnesis.getGestationalAge(),
-            anamnesis.getBirthWeight()),
+            anamnesis.getBirthWeight(),
+            anamnesis.getDailyTeethBrushing(),
+            anamnesis.getTeethBrushingAfterCare(),
+            anamnesis.getElectricToothBrush(),
+            anamnesis.getFluorideToothPaste()),
         new IllnessAndAccidentInfoDto(
             anamnesis.getSevereIllnesses(),
             anamnesis.getAllergies(),
@@ -92,9 +98,21 @@ public class AnamnesisMapper {
             anamnesis.getClubSport(),
             anamnesis.getOtherInterests(),
             anamnesis.getCanSwim(),
-            anamnesis.getHasSeahorseBadge()),
+            anamnesis.getHasSeahorseBadge(),
+            mapToDto(anamnesis.getMediaConsumption())),
         anamnesis.getPersonalConspicuities(),
         anamnesis.getNote());
+  }
+
+  private static MediaConsumptionDto mapToDto(MediaConsumption mediaConsumption) {
+    if (mediaConsumption == null) {
+      return null;
+    }
+    return switch (mediaConsumption) {
+      case LITTLE -> MediaConsumptionDto.LITTLE;
+      case MEDIUM -> MediaConsumptionDto.MEDIUM;
+      case MUCH -> MediaConsumptionDto.MUCH;
+    };
   }
 
   private static CountryCodeDto mapToDto(SchoolEntryCountryCode nationalityChild) {
@@ -120,8 +138,13 @@ public class AnamnesisMapper {
 
     Anamnesis anamnesis = new Anamnesis();
     anamnesis.setChildLanguageScreening(dto.childLanguageScreening());
+    anamnesis.setLanguageScreeningConsent(dto.languageScreeningConsent());
     anamnesis.setPreliminaryCourse(dto.preliminaryCourse());
     anamnesis.setBirthWeight(dto.developmentInfo().birthWeight());
+    anamnesis.setDailyTeethBrushing(dto.developmentInfo().dailyTeethBrushing());
+    anamnesis.setTeethBrushingAfterCare(dto.developmentInfo().teethBrushingAfterCare());
+    anamnesis.setElectricToothBrush(dto.developmentInfo().electricToothBrush());
+    anamnesis.setFluorideToothPaste(dto.developmentInfo().fluorideToothPaste());
     anamnesis.setGestationalAge(dto.developmentInfo().gestationalAge());
     anamnesis.setDevelopmentConspicuities(dto.developmentInfo().developmentConspicuities());
     anamnesis.setInfancyConspicuities(dto.developmentInfo().infancyConspicuities());
@@ -145,6 +168,7 @@ public class AnamnesisMapper {
     anamnesis.setOtherInterests(dto.interestsAndSportsInfo().otherInterests());
     anamnesis.setCanSwim(dto.interestsAndSportsInfo().canSwim());
     anamnesis.setHasSeahorseBadge(dto.interestsAndSportsInfo().hasSeahorseBadge());
+    anamnesis.setMediaConsumption(mapToDomain(dto.interestsAndSportsInfo().mediaConsumption()));
     anamnesis.setU2(mapToDomain(dto.checkUps().u2()));
     anamnesis.setU3(mapToDomain(dto.checkUps().u3()));
     anamnesis.setU4(mapToDomain(dto.checkUps().u4()));
@@ -218,6 +242,7 @@ public class AnamnesisMapper {
     anamnesis.setInGermanySince(citizenAnamnesisDto.migrationBackground().inGermanySince());
     anamnesis.setPreliminaryCourse(citizenAnamnesisDto.preliminaryCourse());
     anamnesis.setChildLanguageScreening(citizenAnamnesisDto.childLanguageScreening());
+    anamnesis.setLanguageScreeningConsent(citizenAnamnesisDto.languageScreeningConsent());
     anamnesis.setEarlySupport(citizenAnamnesisDto.promotionBeforeSchoolEntry().earlySupport());
     anamnesis.setIntegrationPlace(
         citizenAnamnesisDto.promotionBeforeSchoolEntry().integrationPlace());
@@ -251,6 +276,11 @@ public class AnamnesisMapper {
     anamnesis.setInfancyConspicuities(citizenAnamnesisDto.developmentInfo().infancyConspicuities());
     anamnesis.setGestationalAge(citizenAnamnesisDto.developmentInfo().gestationalAge());
     anamnesis.setBirthWeight(citizenAnamnesisDto.developmentInfo().birthWeight());
+    anamnesis.setDailyTeethBrushing(citizenAnamnesisDto.developmentInfo().dailyTeethBrushing());
+    anamnesis.setTeethBrushingAfterCare(
+        citizenAnamnesisDto.developmentInfo().teethBrushingAfterCare());
+    anamnesis.setElectricToothBrush(citizenAnamnesisDto.developmentInfo().electricToothBrush());
+    anamnesis.setFluorideToothPaste(citizenAnamnesisDto.developmentInfo().fluorideToothPaste());
 
     anamnesis.setSevereIllnesses(citizenAnamnesisDto.illnessAndAccidentInfo().severeIllnesses());
     anamnesis.setAllergies(
@@ -293,6 +323,8 @@ public class AnamnesisMapper {
     anamnesis.setOtherInterests(citizenAnamnesisDto.interestsAndSportsInfo().otherInterests());
     anamnesis.setCanSwim(citizenAnamnesisDto.interestsAndSportsInfo().canSwim());
     anamnesis.setHasSeahorseBadge(citizenAnamnesisDto.interestsAndSportsInfo().hasSeahorseBadge());
+    anamnesis.setMediaConsumption(
+        mapToDomain(citizenAnamnesisDto.interestsAndSportsInfo().mediaConsumption()));
 
     anamnesis.setPersonalConspicuities(citizenAnamnesisDto.personalConspicuities());
     return anamnesis;
@@ -316,5 +348,16 @@ public class AnamnesisMapper {
       return null;
     }
     return SchoolEntryCountryCode.valueOf(dto.name());
+  }
+
+  private static MediaConsumption mapToDomain(MediaConsumptionDto dto) {
+    if (dto == null) {
+      return null;
+    }
+    return switch (dto) {
+      case LITTLE -> MediaConsumption.LITTLE;
+      case MEDIUM -> MediaConsumption.MEDIUM;
+      case MUCH -> MediaConsumption.MUCH;
+    };
   }
 }

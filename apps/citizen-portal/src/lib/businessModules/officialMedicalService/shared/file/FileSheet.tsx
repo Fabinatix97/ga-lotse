@@ -18,12 +18,14 @@ export interface FileSheetProps {
   file: FileDescriptor;
   removeLabel?: string;
   onRemove?: () => void;
+  ref?: (el: HTMLAnchorElement) => void;
 }
 
 export function FileSheet({
   file,
   onRemove,
   removeLabel,
+  ref,
 }: Readonly<FileSheetProps>) {
   return (
     <Stack>
@@ -57,6 +59,7 @@ export function FileSheet({
           </Typography>
           {onRemove && (
             <IconButton
+              ref={ref}
               aria-label={removeLabel}
               color="danger"
               sx={{

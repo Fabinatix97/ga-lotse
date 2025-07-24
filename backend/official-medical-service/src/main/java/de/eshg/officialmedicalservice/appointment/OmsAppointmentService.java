@@ -53,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OmsAppointmentService extends AbstractAppointmentService<OmsAppointment> {
+  private final Clock clock;
   private final OmsProcedureRepository omsProcedureRepository;
   private final OmsAppointmentRepository omsAppointmentRepository;
   private final OmsAppointmentMapper omsAppointmentMapper;
@@ -69,16 +70,16 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
   private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
   public OmsAppointmentService(
+      Clock clock,
       OmsProcedureRepository omsProcedureRepository,
       OmsAppointmentRepository omsAppointmentRepository,
       OmsAppointmentMapper omsAppointmentMapper,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       ProgressEntryService progressEntryService,
       PersonClient personClient,
-      Clock clock,
       NotificationService notificationService,
       AppointmentTypeService appointmentTypeService) {
-    super(clock);
+    this.clock = clock;
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsAppointmentRepository = omsAppointmentRepository;
     this.omsAppointmentMapper = omsAppointmentMapper;
@@ -87,6 +88,11 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
     this.personClient = personClient;
     this.notificationService = notificationService;
     this.appointmentTypeService = appointmentTypeService;
+  }
+
+  @Override
+  public Clock getClock() {
+    return clock;
   }
 
   @Transactional
@@ -429,11 +435,6 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
     return omsAppointmentRepository
         .findById(appointmentId)
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
-  }
-
-  @Override
-  public void checkAppointmentBlockViewFeatureActive() {
-    throw new BadRequestException("no feature toggle");
   }
 
   @Override

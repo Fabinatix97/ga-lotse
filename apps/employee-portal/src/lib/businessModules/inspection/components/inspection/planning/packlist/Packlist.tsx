@@ -17,6 +17,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+import { useEffect, useRef, useState } from "react";
 
 import { ApiPacklist } from "@eshg/inspection-api";
 
@@ -39,9 +40,27 @@ export function Packlist({
   handleDeleteClick,
   readonly,
 }: Readonly<PacklistProps>) {
+  const accordionRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (expanded) {
+      accordionRef.current
+        ?.querySelectorAll("input")
+        .forEach((r) => (r.tabIndex = 0));
+    }
+  }, [expanded]);
+
   return (
     <AccordionGroup variant="plain" transition="0.5s">
-      <Accordion sx={{ p: 0 }}>
+      <Accordion
+        ref={accordionRef}
+        sx={{ p: 0 }}
+        expanded={expanded}
+        onChange={(event, expanded) => {
+          setExpanded(expanded);
+        }}
+      >
         <Stack direction="row" spacing={2} alignItems="flex-start">
           <Grid
             sx={(theme) => ({

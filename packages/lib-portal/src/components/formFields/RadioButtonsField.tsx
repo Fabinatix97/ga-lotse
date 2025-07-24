@@ -24,6 +24,7 @@ export interface RadioButtonsFieldProps<T extends SelectOption = SelectOption>
   orientation?: "vertical" | "horizontal";
   onChange?: (value: T["value"] | null) => unknown;
   sx?: SxProps;
+  radioButtonsSx?: SxProps;
   // Retains the styling of the radio buttons but prevents onChange from being called
   readOnly?: boolean;
   // Disables the radio buttons
@@ -62,6 +63,7 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>({
         disabled={formDisabled || props.disabled}
         readOnly={props.readOnly}
         orientation={props.orientation}
+        sx={props.radioButtonsSx}
         required={!!props.required}
         resettable={resettable}
         additionalField={additionalField}
@@ -85,6 +87,7 @@ interface RadioButtonsProps<T extends SelectOption> {
   resettable?: true;
   resetLabel?: string;
   additionalField?: ReactNode;
+  sx?: SxProps;
 }
 
 function RadioButtons<T extends SelectOption>(props: RadioButtonsProps<T>) {
@@ -105,6 +108,7 @@ interface InnerRadioButtonsProps<T extends SelectOption>
   extends RadioButtonsProps<T> {
   value: T;
   setFieldValue: FormikContextType<T>["setFieldValue"];
+  sx?: SxProps;
 }
 
 function InnerRadioButtons<T extends SelectOption>({
@@ -120,6 +124,7 @@ function InnerRadioButtons<T extends SelectOption>({
   additionalField,
   value,
   setFieldValue,
+  sx,
 }: InnerRadioButtonsProps<T>) {
   const { t } = useTranslation();
 
@@ -134,7 +139,7 @@ function InnerRadioButtons<T extends SelectOption>({
   const verticalOrientation = orientation === "vertical";
 
   return (
-    <Row flexDirection={verticalOrientation ? "column" : "row"}>
+    <Row flexDirection={verticalOrientation ? "column" : "row"} sx={sx}>
       {options.map((t) => (
         <Radio
           key={name + t.value}

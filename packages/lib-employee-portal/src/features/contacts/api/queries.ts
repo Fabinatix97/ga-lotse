@@ -5,8 +5,8 @@
 
 import {
   keepPreviousData,
+  queryOptions,
   useQuery,
-  useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
@@ -23,9 +23,9 @@ import { useApi } from "../../../contexts/api";
 
 import { Contact } from "./models/Contact";
 
-export function useGetContactQuery(id: string) {
+export function useGetContactQueryOptions(id: string) {
   const { contactApi } = useApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: contactApiQueryKey(["getContact", id]),
     queryFn: async (): Promise<Contact> => await contactApi.getContact(id),
   });

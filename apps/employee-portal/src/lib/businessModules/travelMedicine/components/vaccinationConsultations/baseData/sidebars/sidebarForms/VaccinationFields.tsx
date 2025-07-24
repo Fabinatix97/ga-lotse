@@ -129,7 +129,7 @@ export function VaccinationFields({
                   label="Impfserie erstellen"
                   sx={{
                     pt: "8px",
-                    fontSize: "14px",
+                    fontSize: "sm",
                   }}
                 />
               )}

@@ -208,7 +208,7 @@ export function ProphylaxisSessionParticipantsTable() {
               <Typography level="h3" component="h2">
                 Teilnehmende Kinder
               </Typography>
-              {(isScreening || isFluoridation) && (
+              {isExamination && (
                 <Stack direction="row" gap={2}>
                   <Typography level="title-md">{`${completedParticipants} von ${allParticipants.length} abgeschlossen`}</Typography>
                   <CheckCircleOutline color="success" />
@@ -220,6 +220,9 @@ export function ProphylaxisSessionParticipantsTable() {
             status === ApiProphylaxisStatus.Open && (
               <>
                 <AddChildButton />
+                {!isScreening && isFluoridation && (
+                  <UpdateAllFluoridationButton />
+                )}
                 {allParticipantsCompleted || !isExamination ? (
                   <CloseProphylaxisButton />
                 ) : isScreening && firstParticipant !== undefined ? (
@@ -553,6 +556,42 @@ function AddChildButton() {
       }
     >
       Kind hinzufügen
+    </Button>
+  );
+}
+
+function UpdateAllFluoridationButton() {
+  const allParticipants = useProphylaxisSessionStore(
+    (state) => state.participants,
+  );
+
+  const participantsToBeUpdated = allParticipants
+    .filter(
+      (participant) =>
+        participant.currentFluoridationConsent?.consented === true,
+    )
+    .filter((participant) => participant.result === undefined)
+    .map((p) => p.examinationId);
+
+  const setExaminations = useProphylaxisSessionStore(
+    (state) => state.setExaminations,
+  );
+
+  if (participantsToBeUpdated.length === 0) {
+    return null;
+  }
+
+  return (
+    <Button
+      variant="outlined"
+      onClick={() =>
+        setExaminations(participantsToBeUpdated, {
+          type: "fluoridation",
+          fluorideVarnishApplied: true,
+        })
+      }
+    >
+      Alle Fluoridierungen erledigt
     </Button>
   );
 }

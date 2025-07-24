@@ -43,7 +43,7 @@ export default function InspectionRepositoryPage(
         />
       }
     >
-      <MainContentLayout>
+      <MainContentLayout fullViewportHeight>
         <ReadOnlyCLDPage
           cldVersion={checklistDefinition.versions[0]!}
           infoCard={

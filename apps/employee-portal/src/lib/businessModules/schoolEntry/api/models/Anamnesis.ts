@@ -20,6 +20,7 @@ import {
 
 export interface Anamnesis extends Versioned {
   childLanguageScreening?: boolean;
+  languageScreeningConsent?: boolean;
   preliminaryCourse?: boolean;
   additionalChildInfo: ApiAdditionalChildInfo;
   daycareAndSchoolInfo: ApiDaycareAndSchoolInfo;
@@ -37,8 +38,9 @@ export interface Anamnesis extends Versioned {
 
 export function mapAnamnesis(response: ApiAnamnesis): Anamnesis {
   return {
-    childLanguageScreening: response.childLanguageScreening,
     ...mapVersioned(response),
+    childLanguageScreening: response.childLanguageScreening,
+    languageScreeningConsent: response.languageScreeningConsent,
     preliminaryCourse: response.preliminaryCourse,
     additionalChildInfo: response.additionalChildInfo,
     daycareAndSchoolInfo: response.daycareAndSchoolInfo,

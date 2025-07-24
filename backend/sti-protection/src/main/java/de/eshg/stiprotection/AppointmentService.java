@@ -46,6 +46,7 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class AppointmentService extends AbstractAppointmentService<StiProtectionProcedure> {
+  private final Clock clock;
   private final CalendarEventApi calendarEventApi;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final AppointmentCooldownService appointmentCooldownService;
@@ -53,18 +54,23 @@ public class AppointmentService extends AbstractAppointmentService<StiProtection
   private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
 
   public AppointmentService(
+      Clock clock,
       CalendarApi calendarApi,
       CalendarEventApi calendarEventApi,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       AppointmentCooldownService appointmentCooldownService,
-      Clock clock,
       StiProtectionProcedureRepository stiProtectionProcedureRepository) {
-    super(clock);
+    this.clock = clock;
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.appointmentCooldownService = appointmentCooldownService;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
+  }
+
+  @Override
+  public Clock getClock() {
+    return clock;
   }
 
   public void createAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
@@ -279,11 +285,6 @@ public class AppointmentService extends AbstractAppointmentService<StiProtection
     procedure.setUserDefinedAppointment(null);
     appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
     addAppointmentHistoryEntry(procedure, appointment);
-  }
-
-  @Override
-  public void checkAppointmentBlockViewFeatureActive() {
-    throw new BadRequestException("no feature toggle");
   }
 
   @Override

@@ -22,6 +22,10 @@ public record CitizenAnamnesisDto(
             description =
                 "Boolean that indicates, if the child participated in the KiSS language screening.")
         Boolean childLanguageScreening,
+    @Schema(
+            description =
+                "Boolean that indicates, if the KiSS language screening documents are allowed to be viewed during the examination.")
+        Boolean languageScreeningConsent,
     @NotNull @Valid PromotionBeforeSchoolEntryDto promotionBeforeSchoolEntry,
     @NotNull @Valid CitizenAdditionalChildInfoDto additionalChildInfo,
     @NotNull @Valid DaycareAndSchoolInfoDto daycareAndSchoolInfo,
@@ -40,6 +44,7 @@ public record CitizenAnamnesisDto(
         migrationBackground,
         preliminaryCourse,
         childLanguageScreening,
+        null,
         promotionBeforeSchoolEntry,
         new CitizenAdditionalChildInfoDto(),
         new DaycareAndSchoolInfoDto(),
@@ -54,6 +59,7 @@ public record CitizenAnamnesisDto(
   public CitizenAnamnesisDto(DaycareAndSchoolInfoDto daycareAndSchoolInfo) {
     this(
         new CitizenMigrationBackgroundDto(),
+        null,
         null,
         null,
         new PromotionBeforeSchoolEntryDto(),

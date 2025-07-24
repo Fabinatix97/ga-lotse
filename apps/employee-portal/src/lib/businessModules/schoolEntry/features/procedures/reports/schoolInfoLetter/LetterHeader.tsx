@@ -10,9 +10,7 @@ import { SchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/models/S
 export function LetterHeader({ values }: { values: SchoolInfoLetter }) {
   return (
     <Stack gap={3} data-testid="letter-header">
-      <Typography level="body-md">
-        Schulinfobrief / Schulärztliches Gutachten
-      </Typography>
+      <Typography level="body-md">Schulinfobrief</Typography>
       <Typography level="h2">
         Einschulungsuntersuchung {values.schoolYear}
       </Typography>

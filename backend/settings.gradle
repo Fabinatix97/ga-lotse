@@ -16,8 +16,8 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            version('keycloak-client', '26.0.3')
-            version('keycloak-server', '26.0.8')
+            version('keycloak-client', '26.0.6')
+            version('keycloak-server', '26.3.1')
 
             library('keycloak-client-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak-client')
 

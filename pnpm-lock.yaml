@@ -152,6 +152,22 @@ catalogs:
     next:
       specifier: 15.3.3
       version: 15.3.3
+  playwright:
+    '@axe-core/playwright':
+      specifier: 4.10.1
+      version: 4.10.1
+    '@cronn/playwright-file-snapshots':
+      specifier: 0.7.0
+      version: 0.7.0
+    '@playwright/test':
+      specifier: 1.52.0
+      version: 1.52.0
+    axe-core:
+      specifier: 4.10.3
+      version: 4.10.3
+    axe-html-reporter:
+      specifier: 2.2.11
+      version: 2.2.11
   prettier:
     '@trivago/prettier-plugin-sort-imports':
       specifier: 5.2.2
@@ -892,8 +908,11 @@ importers:
   e2e:
     devDependencies:
       '@axe-core/playwright':
-        specifier: 4.10.1
+        specifier: catalog:playwright
         version: 4.10.1(playwright-core@1.52.0)
+      '@cronn/playwright-file-snapshots':
+        specifier: catalog:playwright
+        version: 0.7.0(@playwright/test@1.52.0)(yaml@2.8.0)
       '@eshg/auditlog-api':
         specifier: workspace:*
         version: link:../packages/auditlog-api
@@ -955,7 +974,7 @@ importers:
         specifier: catalog:common
         version: 26.2.5
       '@playwright/test':
-        specifier: 1.52.0
+        specifier: catalog:playwright
         version: 1.52.0
       '@trivago/prettier-plugin-sort-imports':
         specifier: catalog:prettier
@@ -964,10 +983,10 @@ importers:
         specifier: catalog:common
         version: 22.15.34
       axe-core:
-        specifier: 4.10.3
+        specifier: catalog:playwright
         version: 4.10.3
       axe-html-reporter:
-        specifier: 2.2.11
+        specifier: catalog:playwright
         version: 2.2.11(axe-core@4.10.3)
       date-fns:
         specifier: catalog:common
@@ -1005,12 +1024,6 @@ importers:
       uuid:
         specifier: catalog:common
         version: 11.1.0
-      vite-tsconfig-paths:
-        specifier: catalog:vitest
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))
-      vitest:
-        specifier: catalog:vitest
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0)
       yaml:
         specifier: 2.8.0
         version: 2.8.0
@@ -2383,6 +2396,13 @@ packages:
   '@cronn/lib-file-snapshots@0.8.0':
     resolution: {integrity: sha512-0L6PKNZ1v2wtgKV3AoDVmLmgCN9hRyBMc4gQzz+8Mehm0neb4hu40Zw5l0mIxfzTJabhiix3N40iMdvos9d12A==}
     engines: {node: '>=22', pnpm: '>=10'}
+
+  '@cronn/playwright-file-snapshots@0.7.0':
+    resolution: {integrity: sha512-LHqN7xIcHytK7xtplZwaRmMMwp3ENn2inUTHOmJhATUs4FBMUsEE2ctjdPs2pL5h8aWAc9Aq3YlBLdi49qZdlw==}
+    engines: {node: '>=22', pnpm: '>=10'}
+    peerDependencies:
+      '@playwright/test': ^1.5
+      yaml: ^2
 
   '@cronn/vitest-file-snapshots@0.9.0':
     resolution: {integrity: sha512-4cjFbqavRLaHgmbS7MmqGW1W6YMDvRM0H/XFc6H5yhtQyRTduvNPgoFP55saVsylzCmB+BDkY6T70hlM3sZ4GA==}
@@ -9699,6 +9719,12 @@ snapshots:
   '@cronn/k6-scenario-builder@1.0.0': {}
 
   '@cronn/lib-file-snapshots@0.8.0': {}
+
+  '@cronn/playwright-file-snapshots@0.7.0(@playwright/test@1.52.0)(yaml@2.8.0)':
+    dependencies:
+      '@cronn/lib-file-snapshots': 0.8.0
+      '@playwright/test': 1.52.0
+      yaml: 2.8.0
 
   '@cronn/vitest-file-snapshots@0.9.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.15.34)(terser@5.40.0)(tsx@4.20.3)(yaml@2.8.0))':
     dependencies:

@@ -188,7 +188,7 @@ export {
   isPersonContact,
 } from "./features/contacts/api/models/Contact";
 export {
-  useGetContactQuery,
+  useGetContactQueryOptions,
   useSearchContactsQuery,
 } from "./features/contacts/api/queries";
 export { SearchContactField } from "./features/contacts/components/SearchContactField";
@@ -239,6 +239,7 @@ export { defaultDraftValueDateComparisonFilter } from "./features/filters/compon
 export { EnumFilter } from "./features/filters/components/filterFields/EnumFilter";
 export { NumberFilter } from "./features/filters/components/filterFields/NumberFilter";
 export { SearchInstitutionFilter } from "./features/filters/components/filterFields/SearchInstitutionFilter";
+export { YearFilter } from "./features/filters/components/filterFields/YearFilter";
 export {
   ActiveFilter,
   type ActiveFilterProps,

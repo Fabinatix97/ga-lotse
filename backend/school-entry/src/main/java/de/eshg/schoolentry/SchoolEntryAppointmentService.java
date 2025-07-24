@@ -7,11 +7,8 @@ package de.eshg.schoolentry;
 
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
 import de.eshg.schoolentry.client.PersonClient;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
-import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import java.time.Clock;
@@ -24,26 +21,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class SchoolEntryAppointmentService
     extends AbstractAppointmentService<SchoolEntryProcedure> {
-  private final SchoolEntryFeatureToggle featureToggle;
+  private final Clock clock;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final PersonClient personClient;
 
   public SchoolEntryAppointmentService(
       Clock clock,
-      SchoolEntryFeatureToggle featureToggle,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       PersonClient personClient) {
-    super(clock);
-    this.featureToggle = featureToggle;
+    this.clock = clock;
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.personClient = personClient;
   }
 
   @Override
-  public void checkAppointmentBlockViewFeatureActive() {
-    if (!featureToggle.isNewFeatureEnabled(SchoolEntryFeature.APPOINTMENT_BLOCK_VIEW)) {
-      throw new BadRequestException("Feature toggle is disabled");
-    }
+  public Clock getClock() {
+    return clock;
   }
 
   @Override

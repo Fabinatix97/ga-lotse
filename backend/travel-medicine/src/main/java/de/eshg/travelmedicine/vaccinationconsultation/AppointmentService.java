@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppointmentService extends AbstractAppointmentService<ProcedureStep> {
+  private final Clock clock;
   private final UserDefinedAppointmentRepository userDefinedAppointmentRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final TravelMedicineFeatureToggle travelMedicineFeatureToggle;
@@ -41,12 +42,17 @@ public class AppointmentService extends AbstractAppointmentService<ProcedureStep
       TravelMedicineFeatureToggle travelMedicineFeatureToggle,
       ProcedureStepRepository procedureStepRepository,
       PersonClient personClient) {
-    super(clock);
+    this.clock = clock;
     this.userDefinedAppointmentRepository = userDefinedAppointmentRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.travelMedicineFeatureToggle = travelMedicineFeatureToggle;
     this.procedureStepRepository = procedureStepRepository;
     this.personClient = personClient;
+  }
+
+  @Override
+  public Clock getClock() {
+    return clock;
   }
 
   public void createUserDefinedAppointment(
@@ -114,11 +120,6 @@ public class AppointmentService extends AbstractAppointmentService<ProcedureStep
               "Procedure step %s already has an appointment from appointment block.",
               procedureStep.getId()));
     }
-  }
-
-  @Override
-  public void checkAppointmentBlockViewFeatureActive() {
-    throw new BadRequestException("No feature toggle");
   }
 
   @Override

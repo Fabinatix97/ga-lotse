@@ -6,6 +6,7 @@
 "use client";
 
 import { Box, Grid, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
 
 import {
@@ -14,11 +15,11 @@ import {
   StickyToolbarLayout,
   Toolbar,
   ToolbarBackButton,
-  useGetContactQuery,
+  useGetContactQueryOptions,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { useGetContactHistoryQuery } from "@/lib/baseModule/api/queries/contacts";
+import { useGetContactHistoryQueryOptions } from "@/lib/baseModule/api/queries/contacts";
 import { ContactDetails } from "@/lib/baseModule/components/contacts/ContactDetails";
 import { fullContactName } from "@/lib/baseModule/components/contacts/helpers";
 import { ContactHistory } from "@/lib/baseModule/components/contacts/history/ContactHistory";
@@ -30,8 +31,12 @@ export default function ContactDetailsPage(
   }>,
 ) {
   const { id } = use(props.params);
-  const { data: contact } = useGetContactQuery(id);
-  const { data: history } = useGetContactHistoryQuery({ id });
+  const [{ data: contact }, { data: history }] = useSuspenseQueries({
+    queries: [
+      useGetContactQueryOptions(id),
+      useGetContactHistoryQueryOptions({ id }),
+    ],
+  });
 
   return (
     <StickyToolbarLayout

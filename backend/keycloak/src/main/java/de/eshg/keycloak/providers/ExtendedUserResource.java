@@ -36,7 +36,7 @@ import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.representations.account.DeviceRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.services.resources.KeycloakOpenAPI;
-import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
+import org.keycloak.services.resources.admin.fgap.AdminPermissionEvaluator;
 
 @Extension(name = KeycloakOpenAPI.Profiles.ADMIN, value = "")
 public class ExtendedUserResource {

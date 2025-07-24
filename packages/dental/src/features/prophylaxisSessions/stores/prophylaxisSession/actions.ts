@@ -142,6 +142,47 @@ export function setExamination(
   };
 }
 
+export function setExaminations(
+  examinationIds: string[],
+  result: ExaminationResult | undefined,
+  state: SetExaminationInputState,
+): SetExaminationState {
+  function updateParticipants(participants: ProphylaxisSessionExamination[]) {
+    return participants.map((participant) => {
+      if (!examinationIds.includes(participant.examinationId)) {
+        return participant;
+      }
+
+      const status = mapToExaminationStatus(result, {
+        isScreening: state.isScreening,
+        isFluoridation: isDefined(state.fluoridationVarnish),
+        isFluoridationConsentGiven:
+          participant.currentFluoridationConsent?.consented,
+      });
+
+      return {
+        ...participant,
+        status,
+        result,
+      };
+    });
+  }
+
+  const updatedParticipants = updateParticipants(state.participants);
+  const updatedParticipantsToBeExamined = updateParticipants(
+    state.participantsToBeExamined,
+  );
+
+  return {
+    participants: updatedParticipants,
+    participantsToBeExamined: updatedParticipantsToBeExamined,
+    changedExaminationsById: new Set([
+      ...state.changedExaminationsById,
+      ...examinationIds,
+    ]),
+  };
+}
+
 type SetParticipantDetailsState = Pick<
   ProphylaxisSessionState,
   "participants" | "participantsToBeExamined" | "changedParticipantDetailsById"

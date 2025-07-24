@@ -95,7 +95,12 @@ function InnerRadioGroupField({
         slotProps={{
           root: rootSlotProps,
         }}
+        tabIndex={-1}
         onChange={handleChange}
+        onFocus={(el) => {
+          // Transfer the focus to its first Radio input
+          el.target.querySelector("input")?.focus();
+        }}
       >
         {children}
       </RadioGroup>

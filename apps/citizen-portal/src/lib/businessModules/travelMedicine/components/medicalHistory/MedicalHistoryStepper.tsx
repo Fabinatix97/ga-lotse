@@ -5,7 +5,8 @@
 
 import { FormikValues } from "formik";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { isDefined } from "remeda";
 
 import { Alert, useIsMobile } from "@eshg/lib-portal";
 import { ApiDocumentContent } from "@eshg/travel-medicine-api";
@@ -62,8 +63,24 @@ export function MedicalHistoryStepper() {
     });
   }
 
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  function focusTitle() {
+    if (isDefined(titleRef.current)) {
+      titleRef.current?.focus();
+    }
+  }
+
+  // Focus the title once the form is loaded
+  useEffect(() => {
+    if (currentStep === 0) {
+      focusTitle();
+    }
+  }, [currentStep]);
+
   return (
     <MultiStepFormWrapper
+      titleRef={titleRef}
       initialValues={medicalHistory}
       stepperTitle={t("header.stepText", {
         currentStepIndex: currentStep + 1,
@@ -100,6 +117,7 @@ export function MedicalHistoryStepper() {
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
                 medicalHistory={medicalHistory}
+                focusTitle={focusTitle}
                 onRouteBack={routeBackToDetails}
               />
             </>
@@ -131,6 +149,7 @@ export function MedicalHistoryStepper() {
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
               medicalHistory={medicalHistory}
+              focusTitle={focusTitle}
               onRouteBack={routeBackToDetails}
             />
           }

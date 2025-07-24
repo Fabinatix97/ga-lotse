@@ -11,18 +11,13 @@ import { use, useState } from "react";
 
 import { PageGrid } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal";
-import {
-  ApiRequiredProcedureArea,
-  ApiSchoolEntryFeature,
-} from "@eshg/school-entry-api";
+import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { IncompleteProcedureAreasModal } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/IncompleteProcedureAreasModal";
 import { useMedicalReportSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/MedicalReportSidebar";
-import { useSchoolInfoLetterSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/SchoolInfoLetterSidebar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelNav } from "@/lib/shared/components/sidePanel/SidePanelNav";
@@ -93,15 +88,10 @@ interface CreateReportsPanelProps {
 
 function CreateReportsPanel(props: CreateReportsPanelProps) {
   const medicalReportSidebar = useMedicalReportSidebar();
-  const schoolInfoLetterSidebar = useSchoolInfoLetterSidebar();
   const [incompleteProcedureAreas, setIncompleteProcedureAreas] = useState<
     ApiRequiredProcedureArea[]
   >([]);
   const schoolEntryApi = useSchoolEntryApi();
-
-  const isSchoolInfoLetterEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.EditableSchoolInfoLetter,
-  );
 
   const router = useRouter();
 
@@ -111,13 +101,9 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
     );
     const incompleteAreas = validationResponse.incompleteAreas;
     if (incompleteAreas.length === 0) {
-      if (isSchoolInfoLetterEnabled) {
-        router.push(
-          routes.procedures.byId(props.procedureId).examinations.infoLetter,
-        );
-      } else {
-        schoolInfoLetterSidebar.open({ procedureId: props.procedureId });
-      }
+      router.push(
+        routes.procedures.byId(props.procedureId).examinations.infoLetter,
+      );
     }
     setIncompleteProcedureAreas(incompleteAreas);
   }

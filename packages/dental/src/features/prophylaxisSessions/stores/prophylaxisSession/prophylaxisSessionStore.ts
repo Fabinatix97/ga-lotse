@@ -15,6 +15,7 @@ import {
 import {
   getParticipantsToBeExamined,
   setExamination,
+  setExaminations,
   setParticipantDetails,
   setParticipantFilters,
   setParticipantSorting,
@@ -43,6 +44,10 @@ interface ProphylaxisSessionActions {
     examinationId: string,
     result: ExaminationResult | undefined,
     note: string | undefined,
+  ) => void;
+  setExaminations: (
+    examinationIds: string[],
+    result: ExaminationResult | undefined,
   ) => void;
   setParticipantDetails: (participantDetails: ParticipantDetails) => void;
 }
@@ -95,6 +100,10 @@ export function createProphylaxisSessionStore(
       result: ExaminationResult | undefined,
       note: string | undefined,
     ) => set((state) => setExamination(examinationId, result, note, state)),
+    setExaminations: (
+      examinationIds: string[],
+      result: ExaminationResult | undefined,
+    ) => set((state) => setExaminations(examinationIds, result, state)),
     setParticipantDetails: (participantDetails: ParticipantDetails) =>
       set((state) => setParticipantDetails(participantDetails, state)),
   }));

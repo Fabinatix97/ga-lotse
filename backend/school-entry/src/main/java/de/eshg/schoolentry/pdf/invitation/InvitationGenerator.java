@@ -99,9 +99,12 @@ public class InvitationGenerator extends AbstractGenerator {
     Address departmentAddress = getDepartmentAddress();
     DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
     Address examinationExecutionLocation;
-    if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
-        && locationId != null) {
+    LocationSelectionMode locationSelectionMode = appointmentBlockConfig.getLocationSelectionMode();
+    if (locationSelectionMode != LocationSelectionMode.NONE && locationId != null) {
       examinationExecutionLocation = getAddressOfInstitution(locationId);
+      if (locationSelectionMode == LocationSelectionMode.HEALTH_DEPARTMENT) {
+        departmentAddress = examinationExecutionLocation;
+      }
     } else {
       examinationExecutionLocation = departmentAddress;
     }
@@ -113,9 +116,7 @@ public class InvitationGenerator extends AbstractGenerator {
           case DomesticAddressDto domesticAddress ->
               new Address(
                   concat(child.firstName(), child.lastName()),
-                  concat(
-                      domesticAddress.street(),
-                      domesticAddress.houseNumber() == null ? "" : domesticAddress.houseNumber()),
+                  concat(domesticAddress.street(), domesticAddress.houseNumber()),
                   address.postalCode(),
                   address.city(),
                   null,
@@ -157,10 +158,6 @@ public class InvitationGenerator extends AbstractGenerator {
         invitationInfo,
         schoolEntryConfigService.getPdfDocumentAccentColor(),
         "#EBEBEB");
-  }
-
-  private static String concat(String... strings) {
-    return String.join(" ", strings);
   }
 
   private String buildQrCodeUrl(String accessCode) {

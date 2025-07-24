@@ -20,6 +20,10 @@ import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -38,18 +42,24 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
   private final ProphylaxisSessionSortKey sortKey;
   private final ProphylaxisType typeFilter;
   private final UUID institutionIdFilter;
+  private final Integer yearFilter;
   private final ProphylaxisStatus statusFilter;
+  private final ZoneId zoneId;
 
   public ProphylaxisSessionSpecification(
       ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters,
       UUID institutionIdFilter,
+      Integer yearFilter,
       ProphylaxisType typeFilter,
-      ProphylaxisStatus statusFilter) {
+      ProphylaxisStatus statusFilter,
+      ZoneId zoneId) {
     sortKey = paginationAndSortParameters.sortKeyOrFallback(ProphylaxisSessionSortKey.ID);
     sortDirection = paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC);
     this.typeFilter = typeFilter;
     this.institutionIdFilter = institutionIdFilter;
+    this.yearFilter = yearFilter;
     this.statusFilter = statusFilter;
+    this.zoneId = zoneId;
   }
 
   static Pageable toPageSpec(PaginationParameters paginationParameters) {
@@ -87,11 +97,20 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
     if (institutionIdFilter != null) {
       conjunctions.add(cb.equal(root.get(ProphylaxisSession_.institutionId), institutionIdFilter));
     }
+    if (yearFilter != null) {
+      Instant start = getStartOfFirstDayOfYear(yearFilter).toInstant();
+      Instant end = getStartOfFirstDayOfYear(yearFilter + 1).minusSeconds(1).toInstant();
+      conjunctions.add(cb.between(root.get(ProphylaxisSession_.dateAndTime), start, end));
+    }
     if (statusFilter != null) {
       conjunctions.add(cb.equal(root.get(ProphylaxisSession_.status), statusFilter));
     }
 
     return cb.and(conjunctions.toArray(Predicate[]::new));
+  }
+
+  private ZonedDateTime getStartOfFirstDayOfYear(Integer year) {
+    return LocalDate.of(year, 1, 1).atStartOfDay(zoneId);
   }
 
   private Order getPrimarySortOrder(CriteriaBuilder cb, Root<ProphylaxisSession> root) {

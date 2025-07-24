@@ -14,15 +14,11 @@ import {
   SideNavigationSuspenseItem,
   hasUserRole,
 } from "@eshg/lib-employee-portal";
-import {
-  ApiLocationSelectionMode,
-  ApiSchoolEntryFeature,
-} from "@eshg/school-entry-api";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 
 import { routes } from "./routes";
 
@@ -39,11 +35,6 @@ const proceduresNavigationItem: SideNavigationSubItem = {
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [
-  {
-    name: "Terminblöcke",
-    href: routes.appointments.appointmentBlockGroups.overview,
-    accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
-  },
   {
     name: "Terminübersicht",
     href: routes.appointments.overview,
@@ -85,20 +76,10 @@ function SchoolEntrySideNavigationItem({
   const hasLocationMode =
     locationSelectionMode !== ApiLocationSelectionMode.None;
 
-  const isAppointmentBlockOverviewEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.AppointmentBlockView,
-  );
-
-  const filteredDefaultSubItems = defaultSubItems.filter((item) =>
-    isAppointmentBlockOverviewEnabled
-      ? item.name === "Terminübersicht" || item.name === "Kennungen"
-      : item.name === "Terminblöcke" || item.name === "Kennungen",
-  );
-
   const subItems = [
     proceduresNavigationItem,
     ...(hasLocationMode ? [] : [waitingRoomNavigationItem]),
-    ...filteredDefaultSubItems,
+    ...defaultSubItems,
     ...(isInboxEnabled ? [inboxNavigationItem] : []),
   ];
 

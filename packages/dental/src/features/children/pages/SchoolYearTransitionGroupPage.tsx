@@ -4,7 +4,7 @@
  */
 
 import { Stack } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import {
@@ -16,7 +16,7 @@ import {
   Toolbar,
   ToolbarBackButton,
   formatSchoolYear,
-  useGetContactQuery,
+  useGetContactQueryOptions,
   useRowSelection,
   useSyncRowSelection,
 } from "@eshg/lib-employee-portal";
@@ -53,11 +53,14 @@ export function SchoolYearTransitionGroupPage(
 ) {
   const { childApi } = useDentalApi();
   const { institutionId } = useGroupsRouteParams(props.params);
-  const { data: institution } = useGetContactQuery(institutionId);
   const currentSchoolYear = formatSchoolYear(new Date().getFullYear() - 1);
-  const { data: groupsForTransition, isFetching } = useSuspenseQuery(
-    getGroupsForTransitionQuery(childApi, institutionId),
-  );
+  const [{ data: institution }, { data: groupsForTransition, isFetching }] =
+    useSuspenseQueries({
+      queries: [
+        useGetContactQueryOptions(institutionId),
+        getGroupsForTransitionQuery(childApi, institutionId),
+      ],
+    });
   const { rowSelection, rowSelectionProps } =
     useRowSelection<GroupsForTransition>({
       toggleSelectProps: {

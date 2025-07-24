@@ -60,7 +60,7 @@ export function TestValuesButtonGroupField<TValue extends string>(
     <TestValuesButtonGroup
       label={props.label}
       options={props.options}
-      buttonWidth={72}
+      buttonWidth={props.buttonWidth}
       value={field.input.value}
       disabled={disabled}
       onChange={(newValue) =>
@@ -94,7 +94,7 @@ export function TestValuesButtonGroup<TValue extends string>(
       justifyContent="flex-end"
       gap={3}
     >
-      <Typography id={labelId} level="body-md">
+      <Typography id={labelId} level="body-md" whiteSpace="nowrap">
         {props.label}
       </Typography>
       <ToggleButtonGroup

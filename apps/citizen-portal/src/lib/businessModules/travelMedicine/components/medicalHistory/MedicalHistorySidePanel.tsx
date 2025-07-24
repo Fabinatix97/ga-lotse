@@ -16,6 +16,7 @@ interface MedicalHistorySidePanel {
   setCurrentStep: Dispatch<SetStateAction<number>>;
   medicalHistory: ApiDocumentContent;
   onRouteBack: () => void;
+  focusTitle: () => void;
 }
 
 export function MedicalHistorySidePanel(
@@ -25,10 +26,12 @@ export function MedicalHistorySidePanel(
 
   function goToNextSection() {
     props.setCurrentStep(props.currentStep + 1);
+    props.focusTitle();
   }
 
   function goToPrevSection() {
     props.setCurrentStep(props.currentStep - 1);
+    props.focusTitle();
   }
 
   return (

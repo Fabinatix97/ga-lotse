@@ -118,7 +118,7 @@ if [ -z "$registry" ]; then
 
   for image in $(docker image ls --filter=reference='ga-lotse/*' --format "{{.Repository}}"); do
     docker tag "$image" "localhost:5050/${image}"
-    docker push "localhost:5050/${image}"
+    docker push --quiet "localhost:5050/${image}"
   done
 fi
 

@@ -11,9 +11,11 @@ import {
   BooleanSelectField,
   HorizontalField,
   InputField,
+  SelectField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
 
+import { MEDIA_CONSUMPTION_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 
 export function InterestAndSportsInfoForm() {
@@ -57,6 +59,13 @@ export function InterestAndSportsInfoForm() {
           component={HorizontalField}
           sx={BOOLEAN_SELECT_STYLE}
           allowDeselection
+        />
+        <SelectField
+          name={interestAndSportsInfo("mediaConsumption")}
+          label="Medienkonsum"
+          component={HorizontalField}
+          options={MEDIA_CONSUMPTION_OPTIONS}
+          sx={{ ".MuiSelect-root": { width: "260px" } }}
         />
       </Stack>
     </Stack>

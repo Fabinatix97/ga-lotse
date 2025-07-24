@@ -106,5 +106,6 @@
   <include file="migrations/0096_delete_invalid_values_in_systole_diastole.xml"/>
   <include file="migrations/0097_add_note_to_anamnesis_and_vaccination_status.xml"/>
   <include file="migrations/0098_add_primary_language_values.xml"/>
+  <include file="migrations/0099_add_media_consumption_and_dental_health.xml"/>
 
 </databaseChangeLog>

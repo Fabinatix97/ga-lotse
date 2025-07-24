@@ -30,6 +30,7 @@ export function MultiStepFormWrapper(props: Readonly<MultiStepFormProps>) {
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
       <Stack gap={2}>
         <MultiStepFormTitle
+          titleRef={props.titleRef}
           title={props.title}
           stepperTitle={props.stepperTitle}
           withLogoutButton={props.withLogoutButton}

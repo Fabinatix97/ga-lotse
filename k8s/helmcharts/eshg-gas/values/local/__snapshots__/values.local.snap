@@ -3650,7 +3650,7 @@ spec:
             memory: 50Mi
         command: ["bash", "-c"]
         args:
-        - rm -rf /ws/keycloak/ && mkdir -p /ws/keycloak/ && cp -R /opt/keycloak/* /ws/keycloak/
+        - rm -rf /ws/keycloak/ && mkdir -p /ws/keycloak/ && cp -R /opt/keycloak/* /ws/keycloak/ && touch -m --date=@$(cat /opt/keycloak/provider-timestamp.txt) /ws/keycloak/providers/*
         volumeMounts:
         - name: workspace
           mountPath: /ws
@@ -6132,9 +6132,10 @@ spec:
     kind: ClusterIssuer
     name: "local-ca"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "citizen-portal-public-tls"
   subject: {}
   usages:
@@ -6154,9 +6155,10 @@ spec:
     kind: ClusterIssuer
     name: "local-ca"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "employee-portal-public-tls"
   subject: {}
   usages:
@@ -6176,9 +6178,10 @@ spec:
     kind: ClusterIssuer
     name: "local-ca"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "keycloak-public-tls"
   subject: {}
   usages:
@@ -6198,9 +6201,10 @@ spec:
     kind: ClusterIssuer
     name: "local-ca"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "keycloak-private-tls"
   subject: {}
   usages:
@@ -6221,9 +6225,10 @@ spec:
     kind: ClusterIssuer
     name: "local-ca"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "lsd-public-tls"
   subject: {}
   usages:
@@ -6243,9 +6248,10 @@ spec:
     kind: ClusterIssuer
     name: "local-ca"
   privateKey:
-    algorithm: RSA
+    algorithm: ECDSA
     encoding: PKCS1
-    size: 2048
+    size: 256
+    rotationPolicy: Always
   secretName: "maildev-public-tls"
   subject: {}
   usages:

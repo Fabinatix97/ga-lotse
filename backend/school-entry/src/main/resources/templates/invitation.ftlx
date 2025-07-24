@@ -150,8 +150,14 @@
   ${office.zipCode} ${office.city}
   </div>
   <div>
-    ${office.phoneNumber} &nbsp; • &nbsp;
+  <#if office.phoneNumber??>
+    ${office.phoneNumber}
+    <#if office.url??>&nbsp; • &nbsp;
+    </#if>
+  </#if>
+  <#if office.url??>
     ${office.url}
+  </#if>
   </div>
 </footer>
 
@@ -186,8 +192,10 @@
         <div>${office.street}</div>
         <div class="sender-data">${office.zipCode} ${office.city}</div>
       </div>
+      <#if office.phoneNumber??>
       <div class="sender-label">Telefon</div>
       <div class="sender-data">${office.phoneNumber}</div>
+      </#if>
       <#if office.email??>
         <div class="sender-label">E-Mail</div>
         <div class="sender-data">${office.email}</div>
@@ -207,7 +215,7 @@
     <span style="font-weight: 500;">Sehr geehrte Eltern/Personensorgeberechtigte,</span>
 </p>
   <div>Die Einschulungsuntersuchung für ihr Kind <span style="font-weight: 500;">${child.name}</span></div>
-  <div>findet am: <span style="font-weight: 500;">${examination.executionDate}</span> um <span style="font-weight: 500;">${examination.executionTime} Uhr</span> im ${office.name} statt.</div>
+  <div>findet am: <span style="font-weight: 500;">${examination.executionDate}</span> um <span style="font-weight: 500;">${examination.executionTime} Uhr</span> in dem/der ${examination.executionLocation.name} statt.</div>
 <p>
   Vor der Aufnahme eines Kindes in die Schule ist eine schulärztliche Untersuchung als verbindlicher Bestandteil des Schulaufnahmeverfahrens vorgeschrieben.
   Diese Untersuchung dient der Vorsorge und ist auf die spezifischen Anforderungen in der Schule ausgerichtet.

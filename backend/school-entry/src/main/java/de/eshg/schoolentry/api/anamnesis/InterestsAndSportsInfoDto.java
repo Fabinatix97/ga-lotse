@@ -9,8 +9,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "InterestsAndSportsInfo")
 public record InterestsAndSportsInfoDto(
-    String clubSport, String otherInterests, Boolean canSwim, Boolean hasSeahorseBadge) {
+    String clubSport,
+    String otherInterests,
+    Boolean canSwim,
+    Boolean hasSeahorseBadge,
+    MediaConsumptionDto mediaConsumption) {
   public InterestsAndSportsInfoDto() {
-    this(null, null, null, null);
+    this(null, null, null, null, null);
   }
 }

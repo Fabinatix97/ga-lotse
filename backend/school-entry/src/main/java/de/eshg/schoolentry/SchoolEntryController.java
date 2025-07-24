@@ -29,8 +29,6 @@ import de.eshg.schoolentry.api.schoolinfoletter.SaveSchoolInfoLetterRequest;
 import de.eshg.schoolentry.business.model.PagedProcedures;
 import de.eshg.schoolentry.business.model.PagedWaitingRoomProcedures;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
-import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.mapper.SchoolInfoLetterExaminationMapper;
@@ -80,7 +78,6 @@ public class SchoolEntryController {
   private final SchoolInfoLetterService schoolInfoLetterService;
   private final Validator validator;
   private final Clock clock;
-  private final SchoolEntryFeatureToggle featureToggle;
   private final AppointmentBlockConfig appointmentBlockConfig;
   private final ProgressEntryUtil progressEntryUtil;
   private final AuditLogger auditLogger;
@@ -96,7 +93,6 @@ public class SchoolEntryController {
       SchoolInfoLetterService schoolInfoLetterService,
       Validator validator,
       Clock clock,
-      SchoolEntryFeatureToggle featureToggle,
       AppointmentBlockConfig appointmentBlockConfig,
       ProgressEntryUtil progressEntryUtil,
       AuditLogger auditLogger) {
@@ -110,7 +106,6 @@ public class SchoolEntryController {
     this.schoolInfoLetterService = schoolInfoLetterService;
     this.validator = validator;
     this.clock = clock;
-    this.featureToggle = featureToggle;
     this.appointmentBlockConfig = appointmentBlockConfig;
     this.progressEntryUtil = progressEntryUtil;
     this.auditLogger = auditLogger;
@@ -520,7 +515,6 @@ public class SchoolEntryController {
   @Transactional(readOnly = true)
   public GetSchoolInfoLetterResponse getSchoolInfoLetter(
       @PathVariable("procedureId") UUID procedureId) {
-    validateEditableSchoolInfoLetterEnabled();
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     validateCompletenessForSchoolInfoLetter(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
@@ -528,12 +522,6 @@ public class SchoolEntryController {
         schoolInfoLetterService.determineDefaultSchoolInfoLetterExamination(
             procedure, procedureDetailsData),
         schoolInfoLetterService.getSchoolInfoLetterExamination(procedure, procedureDetailsData));
-  }
-
-  private void validateEditableSchoolInfoLetterEnabled() {
-    if (!featureToggle.isNewFeatureEnabled(SchoolEntryFeature.EDITABLE_SCHOOL_INFO_LETTER)) {
-      throw new BadRequestException("Editable SchoolInfoLetter feature is not enabled");
-    }
   }
 
   private static void validateCompletenessForSchoolInfoLetter(SchoolEntryProcedure procedure) {
@@ -551,7 +539,6 @@ public class SchoolEntryController {
   public void saveSchoolInfoLetter(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody SaveSchoolInfoLetterRequest request) {
-    validateEditableSchoolInfoLetterEnabled();
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     ProcedureValidator.validateProcedureStatusNotClosed(procedure);
 
@@ -562,8 +549,6 @@ public class SchoolEntryController {
   @Transactional
   public ResponseEntity<Resource> generateSchoolInfoLetterPdf(
       @PathVariable("procedureId") UUID procedureId) {
-    validateEditableSchoolInfoLetterEnabled();
-
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     validateForGeneration(procedure);
@@ -596,38 +581,6 @@ public class SchoolEntryController {
     if (SchoolInfoLetterValidator.isDetailsIncomplete(procedure)) {
       throw new BadRequestException("Procedure details are incomplete.");
     }
-  }
-
-  @PostMapping("/{procedureId}/school-info-letter-pdf")
-  @Transactional
-  public ResponseEntity<Resource> createSchoolInfoLetter(
-      @PathVariable("procedureId") UUID procedureId,
-      @Valid @RequestBody CreateSchoolInfoLetterRequest request) {
-    SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
-    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
-    validateCompletenessForSchoolInfoLetter(procedure);
-    ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
-
-    Pdf pdf =
-        schoolInfoLetterGenerator.generateSchoolInfoLetter(
-            procedure, procedureDetailsData, request);
-    progressEntryUtil.addProgressEntry(
-        procedure,
-        SCHOOL_INFO_LETTER_GENERATED,
-        pdf,
-        SchoolEntryKeyDocumentType.SCHOOL_INFO_LETTER);
-    procedure.setSchoolInfoLetterCreatedAt(Instant.now(clock));
-    TaskUtil.closeOptionalTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
-
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-        .body(new ByteArrayResource(pdf.getFileContent().getContent()));
   }
 
   @PutMapping("/{procedureId}/waiting-room")

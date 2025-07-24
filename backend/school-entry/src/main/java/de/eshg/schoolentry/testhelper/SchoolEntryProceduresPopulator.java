@@ -536,6 +536,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         0L,
         faker.bool().bool(),
         faker.bool().bool(),
+        faker.bool().bool(),
         randomCheckUpsDto(faker),
         promotionBeforeSchoolEntry,
         randomMigrationBackgroundDto(faker),
@@ -619,7 +620,11 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         faker.bool().bool(),
         faker.bool().bool(),
         faker.bool().bool(),
-        faker.random().nextInt(500, 3500));
+        faker.random().nextInt(500, 3500),
+        faker.random().nextInt(0, 4),
+        faker.bool().bool(),
+        faker.bool().bool(),
+        faker.bool().bool());
   }
 
   private static PromotionTherapyAndAidInfoDto randomPromotionTherapyAndAidInfoDto(
@@ -658,7 +663,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         faker.olympicSport().summerOlympics(),
         faker.olympicSport().summerOlympics(),
         faker.bool().bool(),
-        faker.bool().bool());
+        faker.bool().bool(),
+        randomElement(faker, MediaConsumptionDto.values()));
   }
 
   /* vaccination status */

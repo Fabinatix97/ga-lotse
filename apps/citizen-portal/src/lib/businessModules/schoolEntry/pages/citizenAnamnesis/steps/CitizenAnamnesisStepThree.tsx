@@ -76,6 +76,48 @@ export function CitizenAnamnesisStepThree() {
         }
         allowDeselection
       />
+      <Typography level="h3">{t("health.dentalHealth")}</Typography>
+      <QuarterWidthGrid>
+        <NumberField
+          name={developmentInfo("dailyTeethBrushing")}
+          min={0}
+          label={
+            <FormLabel>
+              <Typography level="title-md">
+                {t("health.dailyTeethBrushing")}
+              </Typography>
+            </FormLabel>
+          }
+          endDecorator={<Typography>{t("health.daily")}</Typography>}
+        />
+      </QuarterWidthGrid>
+      <LocalBooleanRadioField
+        name={developmentInfo("teethBrushingAfterCare")}
+        label={
+          <Typography level="title-md">
+            {t("health.teethBrushingAfterCare")}
+          </Typography>
+        }
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        name={developmentInfo("electricToothBrush")}
+        label={
+          <Typography level="title-md">
+            {t("health.electricToothBrush")}
+          </Typography>
+        }
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        name={developmentInfo("fluorideToothPaste")}
+        label={
+          <Typography level="title-md">
+            {t("health.fluorideToothPaste")}
+          </Typography>
+        }
+        allowDeselection
+      />
       <Typography level="h3">{t("health.illnesses")}</Typography>
       <LocalBooleanRadioField
         name={illnessAndAccidentInfo("severeIllnesses")}

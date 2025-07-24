@@ -30,6 +30,7 @@ export interface CommonAutocompleteFieldProps<T>
     reason: string,
   ) => void;
   onChange?: (value: string[]) => void;
+  isOptionEqualToValue?: (option: string, value: string) => boolean;
 }
 
 interface UseAutocompleteFieldContextReturn<T> {
@@ -47,6 +48,7 @@ interface UseAutocompleteFieldContextReturn<T> {
     | "getOptionLabel"
     | "renderOption"
     | "color"
+    | "isOptionEqualToValue"
   >;
 }
 
@@ -87,6 +89,7 @@ export function useAutocompleteFieldContext<T>(
       getOptionLabel: (value) => valueToOption.get(value)?.label ?? value,
       renderOption: renderAutocompleteSelectOptions(valueToOption),
       color: props.primary ? "primary" : undefined,
+      isOptionEqualToValue: props.isOptionEqualToValue,
     },
   };
 }

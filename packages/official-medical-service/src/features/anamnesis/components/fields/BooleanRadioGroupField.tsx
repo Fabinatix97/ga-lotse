@@ -74,7 +74,12 @@ function InnerBooleanRadioGroupField({
         name={fieldInputName}
         value={fieldInputValue}
         orientation={props.orientation}
+        tabIndex={-1}
         onChange={handleChange}
+        onFocus={(el) => {
+          // Transfer the focus to its first Radio input
+          el.target.querySelector("input")?.focus();
+        }}
       >
         {props.children}
       </RadioGroup>

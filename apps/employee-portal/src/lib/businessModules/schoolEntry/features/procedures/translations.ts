@@ -18,6 +18,7 @@ import {
   ApiGermanKnowledgeValue,
   ApiHandednessValue,
   ApiLanguageKnowledgeValue,
+  ApiMediaConsumption,
   ApiPercentageValue,
   ApiPrimaryLanguageValue,
   ApiRequiredProcedureArea,
@@ -465,4 +466,10 @@ export const BOOLEAN_WITH_UNKNOWN_VALUES: EnumMap<ApiBooleanWithUnknown> = {
   [ApiBooleanWithUnknown.True]: "Ja",
   [ApiBooleanWithUnknown.False]: "Nein",
   [ApiBooleanWithUnknown.Unknown]: "Unbekannt",
+};
+
+export const MEDIA_CONSUMPTION_VALUES: EnumMap<ApiMediaConsumption> = {
+  [ApiMediaConsumption.Little]: "wenig (unter 30 min/Tag)",
+  [ApiMediaConsumption.Medium]: "mittel (30 bis 90 min/Tag)",
+  [ApiMediaConsumption.Much]: "viel (über 90 min/Tag)",
 };

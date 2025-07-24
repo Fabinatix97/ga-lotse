@@ -18,7 +18,6 @@ import {
   ApiCreateAppointmentsBulkRequest,
   ApiCreateMedicalReportRequest,
   ApiCreateProcedureRequest,
-  ApiCreateSchoolInfoLetterRequest,
   ApiDevelopmentScreeningResult,
   ApiEyeExaminationResult,
   ApiHearingTestResult,
@@ -361,17 +360,6 @@ export function useCreateMedicalReport(procedureId: string) {
       schoolEntryApi.createMedicalReportRaw({
         procedureId,
         apiCreateMedicalReportRequest: request,
-      }),
-  });
-}
-
-export function useCreateSchoolInfoLetter(procedureId: string) {
-  const schoolEntryApi = useSchoolEntryApi();
-  return useHandledMutation({
-    mutationFn: (request: ApiCreateSchoolInfoLetterRequest) =>
-      schoolEntryApi.createSchoolInfoLetterRaw({
-        procedureId,
-        apiCreateSchoolInfoLetterRequest: request,
       }),
   });
 }

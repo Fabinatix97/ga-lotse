@@ -23,6 +23,7 @@ import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 interface AnamnesisWrapperProps {
   stepIndex: number;
   setStepIndex: Dispatch<SetStateAction<number>>;
+  focusTitle: () => void;
 }
 
 export function AnamnesisWrapper(props: AnamnesisWrapperProps) {

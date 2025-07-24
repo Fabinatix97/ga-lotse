@@ -60,8 +60,6 @@ public class AppointmentBlockViewService {
 
   public List<AppointmentBlockDto> findAppointmentBlocksInTimeRange(
       Instant timeRangeStart, Instant timeRangeEnd) {
-    appointmentService.checkAppointmentBlockViewFeatureActive();
-
     if (timeRangeStart == null || timeRangeEnd == null || !timeRangeStart.isBefore(timeRangeEnd)) {
       throw new BadRequestException("Invalid time range specified.");
     }
@@ -229,8 +227,6 @@ public class AppointmentBlockViewService {
 
   public List<AppointmentBlockSlotDto> findAppointmentsInTimeRange(
       Instant timeRangeStart, Instant timeRangeEnd) {
-    appointmentService.checkAppointmentBlockViewFeatureActive();
-
     if (timeRangeStart == null || timeRangeEnd == null || !timeRangeStart.isBefore(timeRangeEnd)) {
       throw new BadRequestException("Invalid time range specified.");
     }

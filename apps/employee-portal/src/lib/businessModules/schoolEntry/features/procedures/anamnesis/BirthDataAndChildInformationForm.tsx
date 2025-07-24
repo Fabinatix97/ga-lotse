@@ -5,12 +5,13 @@
 
 "use client";
 
-import { FormLabel, Stack, Typography } from "@mui/joy";
+import { Divider, FormLabel, Stack, Typography } from "@mui/joy";
 
 import {
   BooleanSelectField,
   HorizontalField,
   InputField,
+  NumberField,
   OptionalFieldValue,
   SetFieldValueHelper,
   SoftRequiredNumberField,
@@ -25,7 +26,7 @@ import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconToolt
 
 import { AnamnesisFormValues, TEXT_INPUT_STYLE } from "./AnamnesisForm";
 
-const LABEL_TEXT_STYLE = { fontSize: "12px" };
+const LABEL_TEXT_STYLE = { fontSize: "sm", fontWeight: 400 };
 
 function validateBirthWeight(value: OptionalFieldValue<number>) {
   if (isEmptyString(value)) {
@@ -138,6 +139,43 @@ export function BirthDataAndChildInformationForm(
               sx={{ width: "90px" }}
             />
           ))}
+      </Stack>
+      <Divider />
+      <Typography level="title-sm">Zahngesundheit</Typography>
+      <Stack direction="row" gap={4} flexWrap="wrap">
+        <Stack direction="row" gap={2}>
+          <NumberField
+            name={developmentInfo("dailyTeethBrushing")}
+            label="Wie oft wird geputzt?"
+            component={HorizontalField}
+            min={0}
+            fieldSx={{
+              ".MuiInput-root": { width: "80px" },
+            }}
+          />
+          <FormLabel sx={LABEL_TEXT_STYLE}>mal täglich</FormLabel>
+        </Stack>
+        <BooleanSelectField
+          name={developmentInfo("teethBrushingAfterCare")}
+          label="Wird nachgeputzt?"
+          component={HorizontalField}
+          sx={BOOLEAN_SELECT_STYLE}
+          allowDeselection
+        />
+        <BooleanSelectField
+          name={developmentInfo("electricToothBrush")}
+          label="Elektrische Zahnbürste"
+          component={HorizontalField}
+          sx={BOOLEAN_SELECT_STYLE}
+          allowDeselection
+        />
+        <BooleanSelectField
+          name={developmentInfo("fluorideToothPaste")}
+          label="Fluoridhaltige Zahnpasta"
+          component={HorizontalField}
+          sx={BOOLEAN_SELECT_STYLE}
+          allowDeselection
+        />
       </Stack>
     </Stack>
   );

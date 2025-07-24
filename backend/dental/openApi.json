@@ -2854,6 +2854,15 @@
           }
         }, {
           "in" : "query",
+          "name" : "yearFilter",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
           "name" : "typeFilter",
           "required" : false,
           "schema" : {

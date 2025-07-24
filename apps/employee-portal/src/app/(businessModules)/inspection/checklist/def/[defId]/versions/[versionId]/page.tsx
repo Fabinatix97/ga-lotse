@@ -42,7 +42,7 @@ export default function ViewChecklistVersion(
         />
       }
     >
-      <MainContentLayout>
+      <MainContentLayout fullViewportHeight>
         <ReadOnlyCLDPage cldVersion={checklistVersion} />
       </MainContentLayout>
     </StickyToolbarLayout>

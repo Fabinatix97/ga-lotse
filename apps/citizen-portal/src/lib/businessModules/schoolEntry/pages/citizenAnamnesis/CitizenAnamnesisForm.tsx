@@ -20,6 +20,7 @@ import {
 } from "@eshg/lib-portal";
 import {
   ApiAddCitizenAnamnesisRequest,
+  ApiMediaConsumption,
   ApiSchoolEntryCountryCode,
 } from "@eshg/school-entry-api";
 
@@ -40,6 +41,7 @@ import { CitizenAnamnesisStepOne } from "./steps/CitizenAnamnesisStepOne";
 
 export interface CitizenAnamnesisFormValues {
   childLanguageScreening: OptionalFieldValue<boolean>;
+  languageScreeningConsent: OptionalFieldValue<boolean>;
   preliminaryCourse: OptionalFieldValue<boolean>;
   promotionBeforeSchoolEntry: PromotionBeforeSchoolEntryValues;
   migrationBackground: MigrationBackgroundValues;
@@ -96,6 +98,7 @@ interface InterestAndSportsInfoValues {
   hasSeahorseBadge: boolean | null;
   clubSport: OptionalFieldValue<string>;
   otherInterests: OptionalFieldValue<string>;
+  mediaConsumption: ApiMediaConsumption | null;
 }
 
 interface DevelopmentInfoValues {
@@ -103,6 +106,10 @@ interface DevelopmentInfoValues {
   infancyConspicuities: boolean | null;
   gestationalAge: boolean | null;
   birthWeight: OptionalFieldValue<number>;
+  dailyTeethBrushing: OptionalFieldValue<number>;
+  teethBrushingAfterCare: boolean | null;
+  electricToothBrush: boolean | null;
+  fluorideToothPaste: boolean | null;
 }
 
 interface IllnessAndAccidentInfoValues {
@@ -156,6 +163,7 @@ interface ToggleableSectionFormValue {
 
 const INITIAL_VALUES: CitizenAnamnesisFormValues = {
   childLanguageScreening: "",
+  languageScreeningConsent: "",
   preliminaryCourse: "",
   migrationBackground: {
     child: {
@@ -200,6 +208,7 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
     hasSeahorseBadge: null,
     clubSport: "",
     otherInterests: "",
+    mediaConsumption: null,
   },
   personalConspicuities: null,
   developmentInfo: {
@@ -207,6 +216,10 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
     infancyConspicuities: null,
     gestationalAge: null,
     birthWeight: "",
+    dailyTeethBrushing: "",
+    teethBrushingAfterCare: null,
+    electricToothBrush: null,
+    fluorideToothPaste: null,
   },
   illnessAndAccidentInfo: {
     allergies: {
@@ -345,6 +358,9 @@ function mapToRequest(
   return {
     anamnesis: {
       childLanguageScreening: mapOptionalValue(values.childLanguageScreening),
+      languageScreeningConsent: mapOptionalValue(
+        values.languageScreeningConsent,
+      ),
       preliminaryCourse: mapOptionalValue(values.preliminaryCourse),
       migrationBackground: {
         inGermanySince: mapMonthAndYear(
@@ -423,6 +439,18 @@ function mapToRequest(
         ),
         gestationalAge: mapNullableValue(values.developmentInfo.gestationalAge),
         birthWeight: mapOptionalValue(values.developmentInfo.birthWeight),
+        dailyTeethBrushing: mapOptionalValue(
+          values.developmentInfo.dailyTeethBrushing,
+        ),
+        teethBrushingAfterCare: mapNullableValue(
+          values.developmentInfo.teethBrushingAfterCare,
+        ),
+        electricToothBrush: mapNullableValue(
+          values.developmentInfo.electricToothBrush,
+        ),
+        fluorideToothPaste: mapNullableValue(
+          values.developmentInfo.fluorideToothPaste,
+        ),
       },
       familyHistoryInfo: {
         spectaclesInFamily: mapNullableValue(
@@ -460,6 +488,9 @@ function mapToRequest(
         clubSport: mapOptionalValue(values.interestsAndSportsInfo.clubSport),
         otherInterests: mapOptionalValue(
           values.interestsAndSportsInfo.otherInterests,
+        ),
+        mediaConsumption: mapNullableValue(
+          values.interestsAndSportsInfo.mediaConsumption,
         ),
       },
       promotionTherapyAndAidInfo: {

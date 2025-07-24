@@ -6,7 +6,7 @@
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { Fragment } from "react";
+import { Fragment, useRef, useState } from "react";
 
 import { FieldArrayWithFocus as FieldArray, FileType } from "@eshg/lib-portal";
 import {
@@ -44,6 +44,12 @@ export function ProfessionalRegistrationFormStepFour() {
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
   ]);
+
+  const addOtherRelevantDocumentsRef = useRef<HTMLButtonElement>(null);
+
+  const [focusOnElement, setFocusOnElement] = useState<number | undefined>(
+    undefined,
+  );
 
   return (
     <ContentSheet>
@@ -109,6 +115,8 @@ export function ProfessionalRegistrationFormStepFour() {
                       accept={FileType.Jpeg}
                       maxFileSize={MAX_FILE_SIZE}
                       required={t(requiredFieldMessageKey)}
+                      shouldFocus={focusOnElement === index}
+                      resetFocus={() => setFocusOnElement(undefined)}
                     />
                   </Sheet>
 
@@ -120,7 +128,18 @@ export function ProfessionalRegistrationFormStepFour() {
                       alignSelf: "center",
                       "--Icon-fontSize": (theme) => theme.fontSize.xl,
                     }}
-                    onClick={() => remove(index)}
+                    onClick={() => {
+                      if (otherRelevantDocuments.length > 1) {
+                        setFocusOnElement(
+                          index === otherRelevantDocuments.length - 1
+                            ? otherRelevantDocuments.length - 2
+                            : index,
+                        );
+                      } else {
+                        addOtherRelevantDocumentsRef.current?.focus();
+                      }
+                      remove(index);
+                    }}
                   >
                     <DeleteOutlined />
                   </IconButton>
@@ -129,7 +148,14 @@ export function ProfessionalRegistrationFormStepFour() {
             ))}
             <Grid xxs={6}>
               {otherRelevantDocuments.length < MAX_OTHER_RELEVANT_DOCUMENTS && (
-                <Button startDecorator={<Add />} onClick={() => push(null)}>
+                <Button
+                  ref={addOtherRelevantDocumentsRef}
+                  startDecorator={<Add />}
+                  onClick={() => {
+                    setFocusOnElement(otherRelevantDocuments.length);
+                    push(null);
+                  }}
+                >
                   {t("stepFour.label.anotherRelevantDocument")}
                 </Button>
               )}
@@ -171,6 +197,8 @@ function TranslatedFileField(
       }}
       helperText={t("stepFour.fileField.helperText")}
       removeFile={t("stepFour.fileField.removeFile")}
+      shouldFocus={props.shouldFocus}
+      resetFocus={props.resetFocus}
     />
   );
 }

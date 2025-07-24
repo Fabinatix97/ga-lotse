@@ -131,7 +131,7 @@ export function mapSchoolInfoLetter(
     therapyAndPromotionInfo: mapObjectToSelected(
       response.therapyAndPromotionInfo,
     ),
-    type: response.type!,
+    type: response.type,
     measlesProtectionComplete: isDefined(
       response.vaccinationInfo?.measlesProtectionComplete,
     )

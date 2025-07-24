@@ -8,18 +8,22 @@ import { FormLabel, Grid, IconButton, Typography } from "@mui/joy";
 import { Fragment, useId } from "react";
 
 import {
+  EnumMap,
   FieldArrayWithFocus as FieldArray,
   FormAddMoreButton,
   InputField,
+  RadioButtonsField,
   YearField,
+  buildEnumOptions,
 } from "@eshg/lib-portal";
+import { ApiMediaConsumption } from "@eshg/school-entry-api";
 
 import { CitizenAnamnesisFormValues } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
 import { CitizenPortalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/CitizenPortalMonthAndYearFields";
 import { LocalBooleanRadioField } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalBooleanRadioField";
 import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/QuarterWidthGrid";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
-import { useTranslation } from "@/lib/i18n/client";
+import { TranslateFn, useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
@@ -187,6 +191,16 @@ export function CitizenAnamnesisStepTwo({
           label={t("additionalInfo.schoolName")}
         />
       </QuarterWidthGrid>
+      <Typography level="h3">{t("additionalInfo.consent")}</Typography>
+      <LocalBooleanRadioField
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.consentKiss")}
+          </Typography>
+        }
+        name="languageScreeningConsent"
+        allowDeselection
+      />
       <Typography level="h3">{t("additionalInfo.interests")}</Typography>
       <Typography level="title-md" id={clubSportAndOtherId}>
         {t("additionalInfo.clubSportAndOther")}
@@ -229,6 +243,18 @@ export function CitizenAnamnesisStepTwo({
         }
         allowDeselection
       />
+      <RadioButtonsField
+        name={interestsAndSportsInfo("mediaConsumption")}
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.mediaConsumption.name")}
+          </Typography>
+        }
+        options={buildEnumOptions(mediaConsumptionValues(t))}
+        orientation="vertical"
+        radioButtonsSx={{ rowGap: 3 }}
+        resettable
+      />
       <LocalBooleanRadioField
         name="personalConspicuities"
         label={
@@ -245,4 +271,12 @@ export function CitizenAnamnesisStepTwo({
       />
     </ContentSheet>
   );
+}
+
+function mediaConsumptionValues(t: TranslateFn): EnumMap<ApiMediaConsumption> {
+  return {
+    [ApiMediaConsumption.Little]: t("additionalInfo.mediaConsumption.little"),
+    [ApiMediaConsumption.Medium]: t("additionalInfo.mediaConsumption.medium"),
+    [ApiMediaConsumption.Much]: t("additionalInfo.mediaConsumption.much"),
+  };
 }

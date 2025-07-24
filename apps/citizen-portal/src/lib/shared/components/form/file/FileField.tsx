@@ -12,7 +12,7 @@ import {
   Typography,
   styled,
 } from "@mui/joy";
-import { ChangeEvent, ReactNode, useId, useRef } from "react";
+import { ChangeEvent, ReactNode, useEffect, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
 import {
@@ -30,7 +30,7 @@ import {
 
 import { FileButton, StyledRemoveButton } from "./buttonVariants";
 
-const HiddenInput = styled("input")({ display: "none" });
+const HiddenInput = styled("input")({ position: "absolute", left: "-9999px" });
 
 function resolveAcceptedFileTypes(
   accept: FileType | FileType[] | undefined,
@@ -78,6 +78,8 @@ export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
   fileInformationTranslation: FileInformationTranslations;
   onChange?: (file: FileLike | null) => void;
   maxFileSize?: number;
+  shouldFocus?: boolean;
+  resetFocus?: () => void;
 }
 
 export function FileField(props: Readonly<FileFieldProps>) {
@@ -131,6 +133,15 @@ export function FileField(props: Readonly<FileFieldProps>) {
       onChange: field.helpers.setValue,
     });
 
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (props.shouldFocus && isDefined(props.resetFocus)) {
+      addButtonRef.current!.focus();
+      props.resetFocus();
+    }
+  }, [props]);
+
   return (
     <FormControl error={field.error} required={field.required}>
       <Stack direction="row" flexWrap="wrap" gap={3} alignItems="center">
@@ -167,6 +178,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
                 onClick={async () => {
                   fileInputRef.current!.value = "";
                   await field.helpers.setValue(null);
+                  addButtonRef.current!.focus();
                 }}
               >
                 {props.removeFile}
@@ -174,6 +186,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
             )}
 
             <FileButton
+              ref={addButtonRef}
               activeDragOver={dropState === "copy"}
               error={field.error || dropState === "no-drop"}
               aria-controls={fileLabelId}
@@ -194,6 +207,9 @@ export function FileField(props: Readonly<FileFieldProps>) {
               accept={acceptedMimeTypes}
               required={field.required}
               tabIndex={-1}
+              onFocus={() => {
+                addButtonRef.current!.focus();
+              }}
               onChange={handleChange}
             />
             {isDefined(field.helperText) && (

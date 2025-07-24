@@ -99,3 +99,32 @@ image::assets/multiplatform_gradle_base_image.png[]
 You will also need to push an extended base image based on the gradle image to the gitlab container repository,
 see  link:../resources/gradle-docker-cosign-image/README.md[resources/gradle-docker-cosign-image/README.md].
 This image is used in our gitlab pipelines.
+
+== Updating Keycloak ==
+
+There are three kinds of keycloak dependencies:
+
+1. Keycloak itself (as docker image)
+2. Keycloak Plugins (currently only for BundID)
+3. Keycloak client library
+
+To get faster feedback about changes you can check the `base`, `auth` and `local-service-directory` backend tests and as well as the `@keycloak` tagged e2e tests.
+
+=== Keycloak
+
+There two places to update keycloak itself: The gradle version catalog has a `keycloak-server` component, which are relevant as dependencies for our code base and plugins. The used docker image is referenced as digest in the `buildDockerImage` task in the `keycloak` module.
+
+To update the changed dependencies run:
+
+[,bash]
+----
+./gradlew resolveAndLockAll --update-locks 'org.keycloak:*'
+----
+
+=== Keycloak Plugins
+
+The gradle dependencies in the gradle `keycloak` module also list `keycloakProviders` as dependencies, which reference fixed versions and will therefore not be udpated when all other backend dependencies are updated.
+
+=== Keycloak client libraries
+
+The gradle version catalog has a `keycloak-client` version. The keycloak client libraries release independently from the server version and usually cover a broader range of server version which they support. (For updating the gradle lockfile see Keycloak)

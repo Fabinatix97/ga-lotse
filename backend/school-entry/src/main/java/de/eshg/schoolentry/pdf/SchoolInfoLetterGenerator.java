@@ -13,7 +13,6 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.SchoolInfoLetterService;
-import de.eshg.schoolentry.api.CreateSchoolInfoLetterRequest;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.client.DepartmentInfoClient;
@@ -59,42 +58,6 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
   }
 
   public Pdf generateSchoolInfoLetter(
-      SchoolEntryProcedure procedure,
-      ProcedureDetailsData procedureDetailsData,
-      CreateSchoolInfoLetterRequest request) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    SchoolInfoLetterData templateData =
-        buildSchoolInfoLetterData(procedure, procedureDetailsData, request);
-    documentGenerator.createPdfFromTemplate(schoolInfoLetterTemplate, templateData, baos);
-
-    PdfMetaData pdfMetaData = new PdfMetaData();
-    ZonedDateTime now = ZonedDateTime.now(clock);
-    pdfMetaData.setCreatedDate(now.toInstant());
-    pdfMetaData.setDescription("Schulinfobrief");
-    String filename =
-        "Schulinfobrief_%s.pdf"
-            .formatted(now.format(ReportGeneratorConstants.FILENAME_TIMESTAMP_FORMAT));
-    return FileFactory.createPdfWithMetaData(filename, baos.toByteArray(), pdfMetaData);
-  }
-
-  @VisibleForTesting
-  SchoolInfoLetterData buildSchoolInfoLetterData(
-      SchoolEntryProcedure procedure,
-      ProcedureDetailsData procedureDetailsData,
-      CreateSchoolInfoLetterRequest request) {
-    Address departmentAddress = getDepartmentAddress();
-    Address schoolAddress = getAddressOfInstitution(procedureDetailsData.school().id());
-    DepartmentLogo departmentLogo = departmentLogoClient.getDepartmentLogo();
-    return new SchoolInfoLetterData(
-        LocalDate.now(clock).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-        departmentLogo,
-        departmentAddress,
-        schoolAddress,
-        schoolInfoLetterService.getSchoolInfoLetterExamination(
-            procedure, procedureDetailsData, request));
-  }
-
-  public Pdf generateSchoolInfoLetter(
       SchoolEntryProcedure procedure, ProcedureDetailsData procedureDetailsData) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     SchoolInfoLetterData templateData = buildSchoolInfoLetterData(procedure, procedureDetailsData);
@@ -110,7 +73,8 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
     return FileFactory.createPdfWithMetaData(filename, baos.toByteArray(), pdfMetaData);
   }
 
-  private SchoolInfoLetterData buildSchoolInfoLetterData(
+  @VisibleForTesting
+  SchoolInfoLetterData buildSchoolInfoLetterData(
       SchoolEntryProcedure procedure, ProcedureDetailsData procedureDetailsData) {
     Address departmentAddress = getDepartmentAddress();
     Address schoolAddress = getAddressOfInstitution(procedureDetailsData.school().id());

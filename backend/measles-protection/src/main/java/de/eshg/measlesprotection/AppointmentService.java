@@ -30,12 +30,10 @@ import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.measlesprotection.config.DateTimeConstants;
-import de.eshg.measlesprotection.config.MeaslesProtectionFeatureToggle;
 import de.eshg.measlesprotection.persistence.centralfile.PersonClient;
 import de.eshg.measlesprotection.persistence.centralfile.ProcedureWithPersonDetailsData;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedureRepository;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
 import java.time.Instant;
@@ -57,34 +55,37 @@ public class AppointmentService extends AbstractAppointmentService<MeaslesProtec
 
   public static final int MAX_DAYS = 45;
 
+  private final Clock clock;
   private final CalendarApi calendarApi;
   private final CalendarEventApi calendarEventApi;
   private final ProcedureFinder procedureFinder;
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
-  private final MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle;
   private final MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository;
   private final PersonClient personClient;
 
   public AppointmentService(
+      Clock clock,
       CalendarApi calendarApi,
       CalendarEventApi calendarEventApi,
       ProcedureFinder procedureFinder,
       AppointmentBlockRepository appointmentBlockRepository,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
-      Clock clock,
-      MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle,
       MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
       PersonClient personClient) {
-    super(clock);
+    this.clock = clock;
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
     this.procedureFinder = procedureFinder;
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
-    this.measlesProtectionFeatureToggle = measlesProtectionFeatureToggle;
     this.measlesProtectionProcedureRepository = measlesProtectionProcedureRepository;
     this.personClient = personClient;
+  }
+
+  @Override
+  public Clock getClock() {
+    return clock;
   }
 
   @Transactional(readOnly = true)
@@ -235,11 +236,6 @@ public class AppointmentService extends AbstractAppointmentService<MeaslesProtec
 
     return blockingEventsOfCalendars.calendarsWithBlockingEvents().stream()
         .flatMap(calendars -> calendars.events().stream());
-  }
-
-  @Override
-  public void checkAppointmentBlockViewFeatureActive() {
-    throw new BadRequestException("No feature toggle");
   }
 
   @Override

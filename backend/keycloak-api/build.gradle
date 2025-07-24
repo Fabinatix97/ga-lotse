@@ -14,8 +14,3 @@ dependencies {
     api 'io.swagger.core.v3:swagger-annotations-jakarta:latest.release'
     implementation 'jakarta.validation:jakarta.validation-api'
 }
-
-java {
-    targetCompatibility = JavaVersion.VERSION_17
-    sourceCompatibility = JavaVersion.VERSION_17
-}

@@ -10,7 +10,7 @@ import { useCallback } from "react";
 import { ApiStagingStatus } from "@eshg/service-directory-api";
 
 import { useAdminApi } from "@/lib/api/clients";
-import { ENTITIES_QUERY } from "@/lib/hooks/useEntities";
+import { ENTITIES_QUERY, OrgUnit } from "@/lib/hooks/useEntities";
 
 export function useCreateEntity() {
   const adminApi = useAdminApi();
@@ -24,7 +24,7 @@ export function useCreateEntity() {
   );
 
   const { mutate } = useMutation({
-    mutationFn: async (orgUnitId?: string) => {
+    mutationFn: async (orgUnit?: OrgUnit) => {
       switch (path) {
         case "/org-units":
           await adminApi.createOrgUnit({
@@ -34,16 +34,23 @@ export function useCreateEntity() {
           break;
         case "/actors":
           await adminApi.createActor({
-            orgUnitId,
+            orgUnitId: orgUnit?.id,
             active: false,
             manualCertificate: false,
             stagingStatus: ApiStagingStatus.WorkInProgress,
           });
           break;
         case "/rules":
+          const selector = orgUnit?.entity
+            ? {
+                federalState: orgUnit.entity.federalState,
+                orgUnitName: orgUnit.entity.readableName,
+                orgUnitType: orgUnit.entity.type,
+              }
+            : {};
           await adminApi.createRule({
-            client: {},
-            server: {},
+            client: selector,
+            server: selector,
             active: false,
             stagingStatus: ApiStagingStatus.WorkInProgress,
           });

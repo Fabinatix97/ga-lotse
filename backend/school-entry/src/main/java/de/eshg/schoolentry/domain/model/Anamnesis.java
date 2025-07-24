@@ -32,12 +32,20 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
   private SchoolEntryProcedure procedure;
 
   private Boolean childLanguageScreening;
+  private Boolean languageScreeningConsent;
   private Boolean preliminaryCourse;
 
   @Min(0)
   private Integer birthWeight;
 
   private Boolean gestationalAge;
+
+  @Min(0)
+  private Integer dailyTeethBrushing;
+
+  private Boolean teethBrushingAfterCare;
+  private Boolean electricToothBrush;
+  private Boolean fluorideToothPaste;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private BooleanWithUnknown u2;
@@ -133,6 +141,9 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
   private String otherInterests;
   private Boolean canSwim;
   private Boolean hasSeahorseBadge;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private MediaConsumption mediaConsumption;
 
   private String note;
 
@@ -650,5 +661,53 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
 
   public void setNote(String notes) {
     this.note = notes;
+  }
+
+  public MediaConsumption getMediaConsumption() {
+    return mediaConsumption;
+  }
+
+  public void setMediaConsumption(MediaConsumption mediaConsumption) {
+    this.mediaConsumption = mediaConsumption;
+  }
+
+  public Integer getDailyTeethBrushing() {
+    return dailyTeethBrushing;
+  }
+
+  public void setDailyTeethBrushing(Integer dailyTeethBrushing) {
+    this.dailyTeethBrushing = dailyTeethBrushing;
+  }
+
+  public Boolean getTeethBrushingAfterCare() {
+    return teethBrushingAfterCare;
+  }
+
+  public void setTeethBrushingAfterCare(Boolean teethBrushingAfterCare) {
+    this.teethBrushingAfterCare = teethBrushingAfterCare;
+  }
+
+  public Boolean getElectricToothBrush() {
+    return electricToothBrush;
+  }
+
+  public void setElectricToothBrush(Boolean electricToothBrush) {
+    this.electricToothBrush = electricToothBrush;
+  }
+
+  public Boolean getFluorideToothPaste() {
+    return fluorideToothPaste;
+  }
+
+  public void setFluorideToothPaste(Boolean fluorideToothPaste) {
+    this.fluorideToothPaste = fluorideToothPaste;
+  }
+
+  public Boolean getLanguageScreeningConsent() {
+    return languageScreeningConsent;
+  }
+
+  public void setLanguageScreeningConsent(Boolean languageScreeningConsent) {
+    this.languageScreeningConsent = languageScreeningConsent;
   }
 }

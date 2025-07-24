@@ -75,7 +75,7 @@ export function DiseaseForm(props: Readonly<DiseaseFormProps>) {
                 label="Sichtbarkeit im Bürgerportal"
                 sx={{
                   pt: "8px",
-                  fontSize: "14px",
+                  fontSize: "sm",
                 }}
               />
             </Stack>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { GetContactHistoryRequest, GetContactsRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal";
@@ -21,9 +21,11 @@ export function useGetContactsOverviewPageQuery(request: GetContactsRequest) {
   });
 }
 
-export function useGetContactHistoryQuery(request: GetContactHistoryRequest) {
+export function useGetContactHistoryQueryOptions(
+  request: GetContactHistoryRequest,
+) {
   const contactApi = useContactApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: contactApiQueryKey(["getContactHistory", request]),
     queryFn: async () => {
       return await contactApi

@@ -107,7 +107,7 @@ spec:
               memory: 50Mi
           command: ["bash", "-c"]
           args:
-            - rm -rf /ws/keycloak/ && mkdir -p /ws/keycloak/ && cp -R /opt/keycloak/* /ws/keycloak/
+            - rm -rf /ws/keycloak/ && mkdir -p /ws/keycloak/ && cp -R /opt/keycloak/* /ws/keycloak/ && touch -m --date=@$(cat /opt/keycloak/provider-timestamp.txt) /ws/keycloak/providers/*
           volumeMounts:
             - name: workspace
               mountPath: /ws

@@ -26,7 +26,6 @@ export const filterOrgUnit =
 export function filterActorBySelector(
   selector: ApiAdminActorSelector,
   actor: Actor,
-  filterActorName = false,
 ) {
   let result = true;
   if (actor.entity?._orgUnit?.entity) {
@@ -35,7 +34,7 @@ export function filterActorBySelector(
   if (selector.actorType && actor.entity?.type) {
     result &&= actor.entity.type === selector.actorType;
   }
-  if (filterActorName && selector.actorName && actor.entity?.readableName) {
+  if (selector.actorName && actor.entity?.readableName) {
     result &&= actor.entity.readableName === selector.actorName;
   }
   return result;

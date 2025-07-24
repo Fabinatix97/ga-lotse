@@ -385,9 +385,14 @@ public class ExaminationResultService {
 
   public static void copyValues(Anamnesis fromAnamnesis, Anamnesis toAnamnesis) {
     toAnamnesis.setChildLanguageScreening(fromAnamnesis.getChildLanguageScreening());
+    toAnamnesis.setLanguageScreeningConsent(fromAnamnesis.getLanguageScreeningConsent());
     toAnamnesis.setPreliminaryCourse(fromAnamnesis.getPreliminaryCourse());
     toAnamnesis.setBirthWeight(fromAnamnesis.getBirthWeight());
     toAnamnesis.setGestationalAge(fromAnamnesis.getGestationalAge());
+    toAnamnesis.setDailyTeethBrushing(fromAnamnesis.getDailyTeethBrushing());
+    toAnamnesis.setTeethBrushingAfterCare(fromAnamnesis.getTeethBrushingAfterCare());
+    toAnamnesis.setElectricToothBrush(fromAnamnesis.getElectricToothBrush());
+    toAnamnesis.setFluorideToothPaste(fromAnamnesis.getFluorideToothPaste());
     toAnamnesis.setU2(fromAnamnesis.getU2());
     toAnamnesis.setU3(fromAnamnesis.getU3());
     toAnamnesis.setU4(fromAnamnesis.getU4());
@@ -444,6 +449,7 @@ public class ExaminationResultService {
     toAnamnesis.setOtherInterests(fromAnamnesis.getOtherInterests());
     toAnamnesis.setCanSwim(fromAnamnesis.getCanSwim());
     toAnamnesis.setHasSeahorseBadge(fromAnamnesis.getHasSeahorseBadge());
+    toAnamnesis.setMediaConsumption(fromAnamnesis.getMediaConsumption());
     toAnamnesis.setPersonalConspicuities(fromAnamnesis.getPersonalConspicuities());
     toAnamnesis.setNote(fromAnamnesis.getNote());
   }

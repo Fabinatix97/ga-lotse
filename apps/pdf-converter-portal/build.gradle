@@ -8,6 +8,18 @@ plugins {
   id 'source-checks'
   id 'com.bmuschko.docker-remote-api'
   id "eshg.image-push-sign"
+  id 'com.avast.gradle.docker-compose'
+}
+
+dockerCompose {
+    projectName = rootProject.name
+    retainContainersOnStartupFailure = true
+    useComposeFiles = ["${rootDir}/docker-compose.yaml"]
+    startedServices = ['pdf-converter-portal']
+}
+
+tasks.named("composeUp").configure {
+  dependsOn tasks.named("buildDockerImage")
 }
 
 def dockerBuildDir = layout.buildDirectory.dir('docker')
@@ -61,9 +73,8 @@ tasks.register('assemble', PnpmTask) {
   }
 }
 
-tasks.register('run', PnpmTask) {
-  dependsOn 'assemble'
-  args = ['vite', 'preview']
+tasks.register('run') {
+  dependsOn 'composeUp'
 }
 
 tasks.register('build') {

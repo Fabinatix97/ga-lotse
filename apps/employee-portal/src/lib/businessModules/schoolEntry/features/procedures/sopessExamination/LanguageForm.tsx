@@ -25,7 +25,7 @@ import {
 import { LanguageValues } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
 
 const FAMILY_LANGUAGE_STYLE: SxProps = {
-  ".MuiSelect-root": { width: "70px" },
+  ".MuiSelect-root": { width: "75px" },
 };
 
 interface LanguageFormProps {

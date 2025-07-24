@@ -4,7 +4,7 @@
  */
 
 import { Stack } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
@@ -20,7 +20,7 @@ import {
   formatSchoolYear,
   getSortDirection,
   getSortKey,
-  useGetContactQuery,
+  useGetContactQueryOptions,
   useRowSelection,
   useSyncRowSelection,
   useTableControl,
@@ -95,7 +95,6 @@ export function SchoolYearTransitionChildrenPage(
 ) {
   const { childApi } = useDentalApi();
   const { institutionId } = useGroupsRouteParams(props.params);
-  const { data: institution } = useGetContactQuery(institutionId);
   const currentSchoolYear = formatSchoolYear(new Date().getFullYear() - 1);
 
   const tableControl = useTableControl({
@@ -105,13 +104,17 @@ export function SchoolYearTransitionChildrenPage(
     initialSorting,
   });
 
-  const { data: childrenForTransition, isFetching } = useSuspenseQuery(
-    getChildrenForTransitionQuery(childApi, {
-      institutionId,
-      sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
-      sortDirection: getSortDirection(tableControl.tableSorting),
-    }),
-  );
+  const [{ data: institution }, { data: childrenForTransition, isFetching }] =
+    useSuspenseQueries({
+      queries: [
+        useGetContactQueryOptions(institutionId),
+        getChildrenForTransitionQuery(childApi, {
+          institutionId,
+          sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
+          sortDirection: getSortDirection(tableControl.tableSorting),
+        }),
+      ],
+    });
 
   const { rowSelection, rowSelectionProps } =
     useRowSelection<ChildForTransition>({

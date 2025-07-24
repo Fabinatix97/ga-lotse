@@ -30,20 +30,32 @@ export function MultiStepFormButtonBar<Values>({
 }: Readonly<MultiStepFormButtonBarProps<Values>>) {
   const { currentStep, totalSteps, goForward, goBack } = useMultiStepForm();
 
-  const { handleSubmit, validateForm, setTouched, touched, values } =
-    useFormikContext<Values>();
-
+  const {
+    handleSubmit,
+    validateForm,
+    setTouched,
+    touched,
+    values,
+    setSubmitting,
+  } = useFormikContext<Values>();
   async function handleValidation(handleFunction: () => void) {
+    setSubmitting(true);
     const errors = await validateForm();
     await setTouched({ ...touched, ...errors });
+    try {
+      // run backend validation even if local validation failed
+      //  to make it a bit easier for the user
+      const backendValidationSuccess = await backendValidation(values);
 
-    // run backend validation even if local validation failed
-    //  to make it a bit easier for the user
-    const backendValidationSuccess = await backendValidation(values);
-
-    if (isEmpty(errors) && backendValidationSuccess) {
-      handleFunction();
+      if (isEmpty(errors) && backendValidationSuccess) {
+        handleFunction();
+      }
+      // eslint-disable-next-line unused-imports/no-unused-vars
+    } catch (e) {
+      setSubmitting(false);
+      throw Error();
     }
+    setSubmitting(false);
   }
 
   return (

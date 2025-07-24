@@ -17,13 +17,19 @@ COPY ./eshg-keycloak-plugin.jar ./providers/
 COPY ./keycloak-extension-bundid.jar ./providers/
 COPY ./resources/themes ./themes/
 
+RUN echo $(( $(date +%s) / 3600 * 3600 )) > provider-timestamp.txt
+
+USER root:root
+RUN touch -m --date=@$(cat provider-timestamp.txt) ./providers/*
+USER keycloak:root
+
 RUN /opt/keycloak/bin/kc.sh build
 
 FROM quay.io/keycloak/keycloak:$keycloakVersion
 
 USER 0:0
 RUN sed -i -e 's/keycloak:x:0:root/keycloak:x:10001:/g' /etc/group && \
-    sed -i -e 's/keycloak:x:1000:0/keycloak:x:10001:100001/g' /etc/passwd
+    sed -i -e 's/keycloak:x:1000:0/keycloak:x:10001:10001/g' /etc/passwd
 USER 10001:10001
 
 COPY --chown=10001:10001 --from=keycloak-builder /opt/keycloak/ /opt/keycloak/

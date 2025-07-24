@@ -46,7 +46,7 @@ export function resourceCalendarSxProps(theme: Theme) {
       flexGrow: 0,
     },
     ".fc .fc-col-header-cell-cushion": {
-      fontSize: "14px",
+      fontSize: "sm",
       fontWeight: 400,
       lineHeight: "21px",
       color: theme.palette.text.primary,

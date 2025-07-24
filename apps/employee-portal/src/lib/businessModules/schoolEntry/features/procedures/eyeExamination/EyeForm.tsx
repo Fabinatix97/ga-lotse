@@ -34,7 +34,7 @@ export function EyeForm(props: ExaminationFormProps) {
             name={fieldName(eyeExaminationType.value)}
             label={eyeExaminationType.label}
             options={PERCENTAGE_VALUE_OPTIONS}
-            buttonWidth={60}
+            buttonWidth={59}
           />
         ))}
       </Stack>

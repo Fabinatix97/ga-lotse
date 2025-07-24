@@ -185,7 +185,7 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
       <Stack direction="row" gap={2}>
         <FormLabel
           id={inGermanySinceId}
-          sx={{ fontSize: "14px", fontWeight: "500" }}
+          sx={{ fontSize: "sm", fontWeight: "500" }}
         >
           in Deutschland seit
         </FormLabel>

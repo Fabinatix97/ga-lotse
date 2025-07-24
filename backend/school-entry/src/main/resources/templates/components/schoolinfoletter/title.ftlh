@@ -23,7 +23,7 @@
 <#-- @ftlvariable name="child" type="de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterChild" -->
 <#-- @ftlvariable name="date" type="java.lang.String" -->
 <#-- @ftlvariable name="schoolYear" type="java.lang.String" -->
-  <div class="small-font">Schulinfobrief / Schulärztliches Gutachten</div>
+  <div class="small-font">Schulinfobrief</div>
   <div class="title">Einschulungsuntersuchung ${schoolYear}</div>
   <span class="nameAndDateOfBirth"><span class="name">${child.name}</span> geb. <span
       class="dateOfBirth">${child.dateOfBirth}</span></span>

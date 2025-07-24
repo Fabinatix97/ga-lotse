@@ -15,7 +15,6 @@ public enum KeycloakSecurityHeaders {
   X_CONTENT_TYPE_OPTIONS("xContentTypeOptions", "nosniff"),
   X_FRAME_OPTIONS("xFrameOptions", "SAMEORIGIN"),
   X_ROBOTS_TAG("xRobotsTag", "none"),
-  X_XXS_PROTECTION("xXSSProtection", ""),
   ;
 
   KeycloakSecurityHeaders(String keycloakName, String value) {

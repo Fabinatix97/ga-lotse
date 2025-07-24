@@ -31,6 +31,9 @@ export function CountryField(props: CountryFieldProps) {
         }
         return `Bitte ein ${props.label} auswählen.`;
       }}
+      isOptionEqualToValue={(option, value) => {
+        return isEmptyString(value) || option === value;
+      }}
     />
   );
 }

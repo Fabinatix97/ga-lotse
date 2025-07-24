@@ -110,6 +110,9 @@ function mapToFormValues(apiAnamnesis: Anamnesis): AnamnesisFormValues {
     childLanguageScreening: parseOptionalValue(
       apiAnamnesis.childLanguageScreening,
     ),
+    languageScreeningConsent: parseOptionalValue(
+      apiAnamnesis.languageScreeningConsent,
+    ),
     preliminaryCourse: parseOptionalValue(apiAnamnesis.preliminaryCourse),
     additionalChildInfo: parseAdditionalChildInfo(
       apiAnamnesis.additionalChildInfo,
@@ -144,12 +147,13 @@ function mapToFormValues(apiAnamnesis: Anamnesis): AnamnesisFormValues {
 
 function parseInterestAndSportInfo(
   interestAndSportInfo: ApiInterestsAndSportsInfo,
-) {
+): InterestAndSportsInfoValues {
   return {
     canSwim: parseOptionalValue(interestAndSportInfo.canSwim),
     hasSeahorseBadge: parseOptionalValue(interestAndSportInfo.hasSeahorseBadge),
     clubSport: parseOptionalValue(interestAndSportInfo.clubSport),
     otherInterests: parseOptionalValue(interestAndSportInfo.otherInterests),
+    mediaConsumption: parseOptionalValue(interestAndSportInfo.mediaConsumption),
   };
 }
 
@@ -208,7 +212,9 @@ function parseDaycareAndSchoolInfo(
   };
 }
 
-function parseDevelopmentInfo(developmentInfo: ApiDevelopmentInfo) {
+function parseDevelopmentInfo(
+  developmentInfo: ApiDevelopmentInfo,
+): DevelopmentInfoValues {
   return {
     birthWeight: parseOptionalValue(developmentInfo.birthWeight),
     gestationalAge: parseOptionalValue(developmentInfo.gestationalAge),
@@ -218,6 +224,12 @@ function parseDevelopmentInfo(developmentInfo: ApiDevelopmentInfo) {
     infancyConspicuities: parseOptionalValue(
       developmentInfo.infancyConspicuities,
     ),
+    dailyTeethBrushing: parseOptionalValue(developmentInfo.dailyTeethBrushing),
+    teethBrushingAfterCare: parseOptionalValue(
+      developmentInfo.teethBrushingAfterCare,
+    ),
+    electricToothBrush: parseOptionalValue(developmentInfo.electricToothBrush),
+    fluorideToothPaste: parseOptionalValue(developmentInfo.fluorideToothPaste),
   };
 }
 
@@ -336,6 +348,9 @@ function mapToRequest(
       childLanguageScreening: mapOptionalValue(
         formValues.childLanguageScreening,
       ),
+      languageScreeningConsent: mapOptionalValue(
+        formValues.languageScreeningConsent,
+      ),
       preliminaryCourse: mapOptionalValue(formValues.preliminaryCourse),
       additionalChildInfo: mapAdditionalChildInfo(
         formValues.additionalChildInfo,
@@ -368,12 +383,15 @@ function mapToRequest(
   };
 }
 
-function mapInterestsAndSportsInfo(values: InterestAndSportsInfoValues) {
+function mapInterestsAndSportsInfo(
+  values: InterestAndSportsInfoValues,
+): ApiInterestsAndSportsInfo {
   return {
     canSwim: mapOptionalValue(values.canSwim),
     hasSeahorseBadge: mapOptionalValue(values.hasSeahorseBadge),
     clubSport: mapOptionalValue(values.clubSport),
     otherInterests: mapOptionalValue(values.otherInterests),
+    mediaConsumption: mapOptionalValue(values.mediaConsumption),
   };
 }
 
@@ -416,12 +434,16 @@ function mapDaycareAndSchoolInfo(values: DaycareAndSchoolInfoValues) {
   };
 }
 
-function mapDevelopmentInfo(values: DevelopmentInfoValues) {
+function mapDevelopmentInfo(values: DevelopmentInfoValues): ApiDevelopmentInfo {
   return {
     birthWeight: mapOptionalValue(values.birthWeight),
     gestationalAge: mapOptionalValue(values.gestationalAge),
     developmentConspicuities: mapOptionalValue(values.developmentConspicuities),
     infancyConspicuities: mapOptionalValue(values.infancyConspicuities),
+    dailyTeethBrushing: mapOptionalValue(values.dailyTeethBrushing),
+    teethBrushingAfterCare: mapOptionalValue(values.teethBrushingAfterCare),
+    electricToothBrush: mapOptionalValue(values.electricToothBrush),
+    fluorideToothPaste: mapOptionalValue(values.fluorideToothPaste),
   };
 }
 

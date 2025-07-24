@@ -47,13 +47,13 @@ export function BooleanSelectField(props: BooleanSelectFieldProps) {
       required={field.required}
       error={field.error}
       fieldDecorator={props.fieldDecorator}
+      disabled={disabled || props.disabled}
       sx={props.sx}
     >
       <SelectComponent
         name={props.name}
         value={isEmptyString(field.input.value) ? null : field.input.value}
         placeholder={props.placeholder}
-        disabled={disabled || props.disabled}
         color={props.primary ? "primary" : undefined}
         onChange={(_, newValue) => {
           const newFieldValue = newValue ?? "";

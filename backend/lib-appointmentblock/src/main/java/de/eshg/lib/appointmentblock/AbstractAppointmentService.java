@@ -14,15 +14,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Service;
 
+@Service
 public abstract class AbstractAppointmentService<T extends EntityWithAppointment> {
-  protected final Clock clock;
-
-  protected AbstractAppointmentService(Clock clock) {
-    this.clock = clock;
-  }
-
-  public abstract void checkAppointmentBlockViewFeatureActive();
+  protected abstract Clock getClock();
 
   public Map<Appointment, AppointmentBlockSlotDto> getAppointmentBlockSlotsForAppointments(
       List<Appointment> appointments) {
@@ -65,6 +61,7 @@ public abstract class AbstractAppointmentService<T extends EntityWithAppointment
   }
 
   Instant getStartOfWeek() {
+    Clock clock = getClock();
     LocalDate startOfWeek =
         Instant.now(clock)
             .atZone(clock.getZone())

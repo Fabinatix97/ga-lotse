@@ -15,7 +15,7 @@ import {
   SearchInstitutionFilter,
   SetDictionaryFilterFn,
 } from "@eshg/lib-employee-portal";
-import { SelectOptions } from "@eshg/lib-portal";
+import { SelectOptions, YearInput } from "@eshg/lib-portal";
 
 import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 import {
@@ -25,13 +25,14 @@ import {
 
 export type ProphylaxisSessionFilters = Pick<
   GetProphylaxisSessionsRequest,
-  "typeFilter" | "institutionIdFilter" | "statusFilter"
+  "typeFilter" | "institutionIdFilter" | "yearFilter" | "statusFilter"
 >;
 
 const FILTER_NAMES: Record<keyof ProphylaxisSessionFilters, string> = {
   typeFilter: "Typ",
   institutionIdFilter: "Einrichtung",
   statusFilter: "Status",
+  yearFilter: "Jahr",
 };
 
 function getFilterLabel(
@@ -77,6 +78,15 @@ export function ProphylaxisSessionFilterSettings(
             categories={SCHOOL_OR_DAYCARE_CONTACT}
             onChange={(institutionId) =>
               props.setFilterFormValue("institutionIdFilter", institutionId)
+            }
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Jahr</FormLabel>
+          <YearInput
+            value={props.filterFormValues.yearFilter ?? ""}
+            onChange={(event) =>
+              props.setFilterFormValue("yearFilter", event.target.valueAsNumber)
             }
           />
         </FormControl>

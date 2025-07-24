@@ -31,6 +31,9 @@ export interface ChangePinFormData {
 const INITIAL_VALUES: ChangePinFormData = {
   hasSavedPin: false,
   hasConfirmedPin: false,
+  currentPin: "",
+  newPin: "",
+  repeatedPin: "",
 };
 
 export function ChangePinPage() {

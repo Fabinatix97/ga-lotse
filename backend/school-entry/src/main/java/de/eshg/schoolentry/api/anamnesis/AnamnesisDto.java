@@ -23,6 +23,10 @@ public record AnamnesisDto(
         Boolean childLanguageScreening,
     @Schema(
             description =
+                "Boolean that indicates, if the KiSS language screening documents are allowed to be viewed during the examination.")
+        Boolean languageScreeningConsent,
+    @Schema(
+            description =
                 "Boolean that indicates, if the child participated in a preliminary course.")
         Boolean preliminaryCourse,
     @NotNull @Valid CheckUpsDto checkUps,

@@ -19,6 +19,7 @@ import {
   isNonEmptyArray,
   isNonEmptyString,
   useBaseField,
+  usePrevious,
   useValidateFile,
   useValidateFileType,
   validatePipe,
@@ -130,9 +131,9 @@ function FileSheetArrayFieldInner({
     | string
     | string[]
     | undefined;
-  // helper text is a single string and will be displayed below the field
+  // helperText is a single string and will be displayed below the field
   const helperText = isNonEmptyString(fieldHelperText) ? fieldHelperText : "";
-  // helper text is an array, errors will be displayed below each file sheet
+  // helperTexts is an array, errors will be displayed below each file sheet
   const helperTexts =
     typeof fieldHelperText !== "string" && isNonEmptyArray(fieldHelperText)
       ? fieldHelperText
@@ -144,6 +145,7 @@ function FileSheetArrayFieldInner({
       fileToFileDescriptor(file, helperTexts[index]),
     ) ?? []),
   ];
+  const wasSubmitting = usePrevious(ctx.isSubmitting);
 
   return (
     <FormControl error={isDefined(field.meta.error)} required={field.required}>
@@ -160,6 +162,7 @@ function FileSheetArrayFieldInner({
         showPdfaConvertLink={props.showPdfaConvertLink}
         extraInfo={props.extraInfo}
         extraButton={props.extraButton}
+        shouldSetFocus={field.error && wasSubmitting && !ctx.isSubmitting}
         onChange={handleChange}
         onRemove={handleRemove}
         onRemoveAll={handleRemoveAll}

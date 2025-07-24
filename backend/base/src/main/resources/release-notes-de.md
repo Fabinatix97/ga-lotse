@@ -2,6 +2,30 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.1
+_23.07.2025_
+
+Vierzehnter Release der Anwendung GA-Lotse
+
+### Einschulungsuntersuchungen:
+
+* Planung
+  * Termine in Terminblöcken werden im neuen Reiter Terminübersicht übersichtlich dargestellt
+* Untersuchungstag
+  * Diverse Anpassungen SOPESS für das Schulahr 2025/2026
+    * Kategorienerweiterung ESPR
+    * Änderung SPRDEU zum Pflichtfeld
+    * Anpassung Statistikmapping: Geschl, PLZ, GG, Impfschema
+    * Erweiterungen Elternanamnese
+  * Für Schulinfobriefe existiert ein Konfigurator mit weitreichenden Bearbeitungsmöglichkeiten
+
+### Zahnärztlicher Dienst
+
+* Durchführung einer Maßnahme
+  * Fluoridierung
+    * Sammelerfassung des Fluoridierungsstatus
+
+
 ## GA-Lotse 2.0
 _09.07.2025_
 

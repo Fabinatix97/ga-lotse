@@ -10,7 +10,6 @@ import static de.eshg.schoolentry.domain.model.SchoolRecommendation.BACK_REGULAR
 import static de.eshg.schoolentry.mapper.SchoolInfoLetterExaminationMapper.*;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.schoolentry.api.CreateSchoolInfoLetterRequest;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterChild;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationDto;
 import de.eshg.schoolentry.api.schoolinfoletter.SchoolInfoLetterExaminationTypeDto;
@@ -86,43 +85,6 @@ public class SchoolInfoLetterService {
 
   public static String getFormattedSchoolYear(ProcedureDetailsData procedureDetails) {
     return YEAR_FORMATTER.format(procedureDetails.schoolYear());
-  }
-
-  public SchoolInfoLetterExaminationDto getSchoolInfoLetterExamination(
-      SchoolEntryProcedure procedure,
-      ProcedureDetailsData procedureDetailsData,
-      CreateSchoolInfoLetterRequest request) {
-    DevelopmentScreening developmentScreening = procedure.getDevelopmentScreeningResult();
-    SopessExaminationResult sopess = procedure.getSopessExaminationResult();
-    VaccinationStatus vaccinationStatus = procedure.getVaccinationStatus();
-    EyeExaminationResult eyeExaminationResult = procedure.getEyeExaminationResult();
-    boolean prefilled = request.prefilled();
-    LocalDate examinationDate = getExaminationDate(procedure, procedureDetailsData);
-
-    return new SchoolInfoLetterExaminationDto(
-        createSchoolInfoLetterChild(procedureDetailsData),
-        getFormattedSchoolYear(procedureDetailsData),
-        DATE_FORMATTER.format(examinationDate),
-        prefilled ? determineSchoolInfoLetterExaminationType(procedureDetailsData.type()) : null,
-        prefilled
-            && List.of(BACK_REGULAR, BACK_ENTRY_LEVEL)
-                .contains(developmentScreening.getSchoolRecommendation()),
-        prefilled ? determineSopessExaminationResult(sopess) : null,
-        request.note(),
-        request.customRecommendation(),
-        prefilled ? determineVaccinationResult(vaccinationStatus) : null,
-        prefilled
-            ? determineEyeExaminationResult(
-                eyeExaminationResult, procedure.getAnamnesis().getSpectaclesSince() != null)
-            : null,
-        prefilled ? determineHearingExaminationResult(procedure.getHearingTestResult()) : null,
-        request.consultationWithCustodianRecommended(),
-        prefilled
-            ? determineTherapyAndPromotionInfo(procedure.getAnamnesis(), examinationDate)
-            : null,
-        determinePhysiciansRecommendation(procedure.getDevelopmentScreeningResult(), request),
-        new SchoolInfoLetterParentsWishDto(
-            request.parentsWishNote(), request.referredToFurtherConsultationFromSchool()));
   }
 
   private static SchoolInfoLetterChild createSchoolInfoLetterChild(
@@ -325,22 +287,6 @@ public class SchoolInfoLetterService {
   private static boolean endDateNotPresentOrNotBeforeExamination(
       LocalDate therapyEnd, LocalDate examinationDate) {
     return therapyEnd == null || !therapyEnd.isBefore(examinationDate);
-  }
-
-  private static SchoolInfoLetterPhysiciansRecommendationDto determinePhysiciansRecommendation(
-      DevelopmentScreening result, CreateSchoolInfoLetterRequest request) {
-    SchoolRecommendation schoolRecommendation = result.getSchoolRecommendation();
-    boolean prefilled = request == null || request.prefilled();
-    return new SchoolInfoLetterPhysiciansRecommendationDto(
-        prefilled
-            && (schoolRecommendation.equals(SchoolRecommendation.CONCERNS_EARLY_ENROLMENT)
-                || schoolRecommendation.equals(SchoolRecommendation.BACK_REGULAR)),
-        prefilled && result.getSchoolCounselling(),
-        prefilled && schoolRecommendation.equals(SchoolRecommendation.ADVICE_CENTER),
-        prefilled && schoolRecommendation.equals(SchoolRecommendation.BACK_REGULAR),
-        prefilled && result.getOtherSupport(),
-        request != null
-            && request.meetingBetweenYouthHealthServicesAndSchoolManagementRecommended());
   }
 
   private static boolean determineClarificationArranged(

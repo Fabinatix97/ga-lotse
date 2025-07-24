@@ -143,8 +143,10 @@ public class ProphylaxisSessionService {
             new ProphylaxisSessionSpecification(
                 paginationAndSortParameters,
                 filterParameters.institutionIdFilter(),
+                filterParameters.yearFilter(),
                 ProphylaxisSessionMapper.mapToDomain(filterParameters.typeFilter()),
-                ProphylaxisSessionMapper.mapToDomain(filterParameters.statusFilter())),
+                ProphylaxisSessionMapper.mapToDomain(filterParameters.statusFilter()),
+                clock.getZone()),
             ProphylaxisSessionSpecification.toPageSpec(paginationAndSortParameters));
 
     Map<UUID, ContactDto> contacts = fetchContactsInBulk(page);

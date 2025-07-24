@@ -198,32 +198,38 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     return loginUncached(usernamePassword, null);
   }
 
+  public Keycloak getKeycloakClient(UsernamePassword usernamePassword, String userAgent) {
+    ResteasyClient resteasyClient = getResteasyClient(userAgent);
+    return KeycloakBuilder.builder()
+        .serverUrl(keycloakProperties.internal().url())
+        .grantType(OAuth2Constants.PASSWORD)
+        .realm(getRealmName(usernamePassword.realm()))
+        .scope(OAuth2Constants.SCOPE_OPENID)
+        .clientId(KeycloakTestProvisioning.TEST_HELPER_CLIENT_ID)
+        .username(usernamePassword.username())
+        .password(usernamePassword.password())
+        .resteasyClient(resteasyClient)
+        .build();
+  }
+
+  public AccessToken getAccessTokenFromResponse(AccessTokenResponse accessTokenResponse) {
+    Assert.isTrue(
+        accessTokenResponse.getTokenType().equals("Bearer"),
+        () ->
+            "Access token of type 'Bearer' expected but got: "
+                + accessTokenResponse.getTokenType());
+    AccessToken accessToken =
+        new AccessToken(
+            accessTokenResponse.getToken(),
+            Instant.now().plusSeconds(accessTokenResponse.getExpiresIn()));
+    Assert.isTrue(!hasExpired(accessToken), () -> "The new access token already expired");
+    return accessToken;
+  }
+
   public AccessToken loginUncached(UsernamePassword usernamePassword, String userAgent) {
     environmentConfig.assertIsNotProduction();
-    try (ResteasyClient resteasyClient = getResteasyClient(userAgent);
-        Keycloak keycloak =
-            KeycloakBuilder.builder()
-                .serverUrl(keycloakProperties.internal().url())
-                .grantType(OAuth2Constants.PASSWORD)
-                .realm(getRealmName(usernamePassword.realm()))
-                .scope(OAuth2Constants.SCOPE_OPENID)
-                .clientId(KeycloakTestProvisioning.TEST_HELPER_CLIENT_ID)
-                .username(usernamePassword.username())
-                .password(usernamePassword.password())
-                .resteasyClient(resteasyClient)
-                .build()) {
-      AccessTokenResponse accessTokenResponse = keycloak.tokenManager().getAccessToken();
-      Assert.isTrue(
-          accessTokenResponse.getTokenType().equals("Bearer"),
-          () ->
-              "Access token of type 'Bearer' expected but got: "
-                  + accessTokenResponse.getTokenType());
-      AccessToken accessToken =
-          new AccessToken(
-              accessTokenResponse.getToken(),
-              Instant.now().plusSeconds(accessTokenResponse.getExpiresIn()));
-      Assert.isTrue(!hasExpired(accessToken), () -> "The new access token already expired");
-      return accessToken;
+    try (Keycloak keycloak = getKeycloakClient(usernamePassword, userAgent)) {
+      return getAccessTokenFromResponse(keycloak.tokenManager().getAccessToken());
     }
   }
 

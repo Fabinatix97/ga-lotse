@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1752128918977-1">
+    <ext:createPostgresEnumType name="mediaconsumption"
+                                values="LITTLE, MEDIUM, MUCH"/>
+    <addColumn tableName="anamnesis">
+      <column name="media_consumption" type="MEDIACONSUMPTION"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1752128918977-2">
+    <addColumn tableName="anamnesis">
+      <column name="language_screening_consent" type="BOOLEAN"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="daily_teeth_brushing" type="INTEGER"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="electric_tooth_brush" type="BOOLEAN"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="fluoride_tooth_paste" type="BOOLEAN"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="teeth_brushing_after_care" type="BOOLEAN"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

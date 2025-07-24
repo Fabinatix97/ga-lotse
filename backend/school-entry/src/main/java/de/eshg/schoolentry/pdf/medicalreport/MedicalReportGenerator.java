@@ -66,10 +66,6 @@ public class MedicalReportGenerator extends AbstractGenerator {
         departmentLogo, departmentAddress, medicalReportChild, request.remark(), request.isVisio());
   }
 
-  private static String concat(String... strings) {
-    return String.join(" ", strings);
-  }
-
   public Pdf generateMedicalReport(
       PersonDetailsData childData, CreateMedicalReportRequest request) {
     MedicalReportData medicalReportData = buildMedicalReportData(childData, request);
