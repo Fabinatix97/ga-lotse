@@ -114,8 +114,8 @@
       "fullName_label": "Name",
       "dateOfBirth_label": "Date of birth",
       "emailAddress_label": "E-Mail address",
-      "contactAddress_label": "Address",
-      "contactAddress_value": "{{ street }} <br> {{ city }} </br>"
+      "street_label": "Street, Housenumber",
+      "city_label": "Postalcode, City"
     }
   },
   "appointmentInformation": {

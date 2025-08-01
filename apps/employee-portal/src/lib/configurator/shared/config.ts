@@ -4,6 +4,7 @@
  */
 
 import { baseConfigRouterEndpoints } from "@/lib/baseModule/shared/configuratorConfig";
+import { inspectionConfigRouterEndpoints } from "@/lib/businessModules/inspection/shared/configuratorConfig";
 import { measlesProtectionConfigRouterEndpoints } from "@/lib/businessModules/measlesProtection/shared/configuratorConfig";
 import { medicalRegistryConfigRouterEndpoints } from "@/lib/businessModules/medicalRegistry/shared/configuratorConfig";
 import { omsConfigRouterEndpoints } from "@/lib/businessModules/officialMedicalService/shared/configuratorConfig";
@@ -38,6 +39,8 @@ export function getEndpointNamesByModule(
       return travelMedicineConfigRouterEndpoints;
     case "MEDS_ABROAD":
       return medsAbroadConfigRouterEndpoints;
+    case "INSPECTION":
+      return inspectionConfigRouterEndpoints;
   }
 }
 

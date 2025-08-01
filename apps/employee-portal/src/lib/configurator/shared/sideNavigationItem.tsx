@@ -88,6 +88,12 @@ function ConfiguratorSideNavigationItem() {
             data,
           }),
           subItem({
+            name: "Begehung",
+            module: "INSPECTION",
+            accessCheck: sideNavigationItem.accessCheck,
+            data,
+          }),
+          subItem({
             name: "Impfberatung",
             module: "TRAVEL_MEDICINE",
             accessCheck: sideNavigationItem.accessCheck,

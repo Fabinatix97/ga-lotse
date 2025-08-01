@@ -15,7 +15,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
@@ -24,7 +24,6 @@ export function AppointmentDetailsSidePanel({
 }: Readonly<{
   hasAccomplishedService: boolean;
 }>) {
-  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
@@ -49,11 +48,6 @@ export function AppointmentDetailsSidePanel({
     });
   }
 
-  function navigateToRebookAppointment() {
-    const url = `${citizenRoutes.viewAppointment.details.rebook(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
-    router.push(url);
-  }
-
   function bookingsRemaining() {
     return appointmentDetails.bookingsRemaining > 0;
   }
@@ -69,23 +63,23 @@ export function AppointmentDetailsSidePanel({
 
   return (
     <ContentSheet>
-      <Stack gap="16px">
-        {!hasAccomplishedService && (
-          <>
-            <ContentSheetTitle sx={{ paddingBottom: "8px" }}>
-              {t("sidePanel.title", { context: isBooked().toString() })}
-            </ContentSheetTitle>
+      {!hasAccomplishedService ? (
+        <>
+          <ContentSheetTitle>
+            {t("sidePanel.title", { context: isBooked().toString() })}
+          </ContentSheetTitle>
+          <Stack gap={2}>
             {bookingsRemaining() && (
-              <Button
+              <ScopedInternalLinkButton
                 color="primary"
                 variant="outlined"
                 type="submit"
-                onClick={navigateToRebookAppointment}
+                href={`${citizenRoutes.viewAppointment.details.rebook(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`}
               >
                 {isBooked()
                   ? t("sidePanel.postponeAppointment")
                   : t("sidePanel.bookAppointment")}
-              </Button>
+              </ScopedInternalLinkButton>
             )}
             {isBooked() && (
               <Button
@@ -97,19 +91,26 @@ export function AppointmentDetailsSidePanel({
                 {t("sidePanel.cancelAppointment")}
               </Button>
             )}
-          </>
-        )}
-        <Button
+            <ScopedInternalLinkButton
+              color="neutral"
+              variant="soft"
+              type="submit"
+              href={citizenRoutes.viewAppointment.index(accessCode)}
+            >
+              {t("sidePanel.back")}
+            </ScopedInternalLinkButton>
+          </Stack>
+        </>
+      ) : (
+        <ScopedInternalLinkButton
           color="neutral"
           variant="soft"
           type="submit"
-          onClick={() =>
-            router.push(citizenRoutes.viewAppointment.index(accessCode))
-          }
+          href={citizenRoutes.viewAppointment.index(accessCode)}
         >
           {t("sidePanel.back")}
-        </Button>
-      </Stack>
+        </ScopedInternalLinkButton>
+      )}
     </ContentSheet>
   );
 }

@@ -10,6 +10,8 @@ import static java.util.stream.Collectors.toUnmodifiableMap;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesFilteredRequest;
+import de.eshg.inspection.config.InspectionPropertiesConfigService;
+import de.eshg.inspection.config.persistence.FacilityFileNumberMethod;
 import de.eshg.inspection.inspection.api.FileNumberCollisionInspectionDto;
 import de.eshg.inspection.inspection.api.GetFileNumberCollisionsResponse;
 import de.eshg.inspection.inspection.persistence.Inspection;
@@ -37,22 +39,25 @@ public class FileNumberCollisionService {
   private final FacilityClient facilityClient;
   private final Clock clock;
   private final InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository;
-  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
+  private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
 
   public FileNumberCollisionService(
       FacilityClient facilityClient,
       Clock clock,
       InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository,
-      FacilityFileNumberConfiguration facilityFileNumberConfiguration) {
+      InspectionPropertiesConfigService inspectionPropertiesConfigService) {
     this.facilityClient = facilityClient;
     this.clock = clock;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
-    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
+    this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
   }
 
   public GetFileNumberCollisionsResponse getPossibleFileNumberCollisionsForFileState(
       UUID centralFileStateId, boolean suppressIfAllAreTheSameReferenceFacilityAndSuffix) {
-    if (!"INSPECTION_FRANKFURT".equals(facilityFileNumberConfiguration.getMethod())) {
+    FacilityFileNumberMethod facilityFileNumberMethod =
+        inspectionPropertiesConfigService.getConfiguration().getFacilityFileNumberMethod();
+
+    if (!"INSPECTION_FRANKFURT".equals(facilityFileNumberMethod.name())) {
       return new GetFileNumberCollisionsResponse(Collections.emptyMap());
     }
 
@@ -77,7 +82,10 @@ public class FileNumberCollisionService {
       String street,
       String houseNumber,
       boolean suppressIfAllAreTheSameReferenceFacilityAndSuffix) {
-    if (!"INSPECTION_FRANKFURT".equals(facilityFileNumberConfiguration.getMethod())) {
+    FacilityFileNumberMethod facilityFileNumberMethod =
+        inspectionPropertiesConfigService.getConfiguration().getFacilityFileNumberMethod();
+
+    if (!"INSPECTION_FRANKFURT".equals(facilityFileNumberMethod.name())) {
       return new GetFileNumberCollisionsResponse(Collections.emptyMap());
     }
 

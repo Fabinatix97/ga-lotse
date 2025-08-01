@@ -102,9 +102,6 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     omsConfiguration.setCitizenPortalAnamnesisEnabled(
         initialOmsConfiguration.citizenPortalAnamnesisEnabled());
 
-    // OMS config is complete right from the start since all documents are set
-    omsConfiguration.setInitialized(true);
-
     return omsConfiguration;
   }
 
@@ -190,6 +187,7 @@ public class OmsConfigService extends EshgConfigurationService<OmsConfiguration>
     currentConfig.setMedicalOpinionCutOffDateLeadTime(
         configRequest.medicalOpinionCutOffDateLeadTime());
     currentConfig.setCitizenPortalAnamnesisEnabled(configRequest.citizenPortalAnamnesisEnabled());
+    currentConfig.setInitialized(true);
   }
 
   private ConfigurationStatus determineConfigurationStatus() {

@@ -23,7 +23,7 @@ export function SummaryStep() {
       direction={isMobile ? "row" : "row-reverse"}
     >
       <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-        <ContentSheet>
+        <ContentSheet data-testid="overview">
           <OverviewSection />
         </ContentSheet>
       </Grid>

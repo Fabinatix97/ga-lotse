@@ -79,21 +79,6 @@ function mapToApiTravelInformation(
   };
 }
 
-export function formatTravelDuration(
-  label: string,
-  travelTimeAmount: string,
-  travelTimeUnit: string,
-) {
-  return `${label} ${travelTimeAmount} ${travelTimeUnit}`;
-}
-
-export function formatTravelDestinations(
-  label: string,
-  travelDestinations: string,
-) {
-  return `${label} ${travelDestinations}`;
-}
-
 export function travelDestinationsTranslation(
   destinations: ApiCountryCode[],
   translateCountry: (countryCode: ApiCountryCode) => string,

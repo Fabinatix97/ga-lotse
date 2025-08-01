@@ -6,8 +6,8 @@
 import { Sheet, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { DetailsColumn, DetailsSection } from "@eshg/lib-employee-portal";
-import { ButtonLink } from "@eshg/lib-portal";
+import { DetailsSection } from "@eshg/lib-employee-portal";
+import { ButtonLink, DetailsColumn } from "@eshg/lib-portal";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";

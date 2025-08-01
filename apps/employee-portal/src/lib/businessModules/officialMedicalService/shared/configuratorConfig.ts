@@ -6,10 +6,10 @@
 import { ConfiguratorEndpointName } from "@/lib/configurator/shared/types";
 
 export const omsConfigRouterEndpoints: ConfiguratorEndpointName[] = [
+  "DEPARTMENT_INFO",
   "OPENING_HOURS",
+  "OFFICIAL_MEDICAL_SERVICE",
   "PRIVACY_NOTICE",
   "PRIVACY_POLICY",
   "APPOINTMENT_STANDARD_DURATION",
-  "OFFICIAL_MEDICAL_SERVICE",
-  "DEPARTMENT_INFO",
 ];

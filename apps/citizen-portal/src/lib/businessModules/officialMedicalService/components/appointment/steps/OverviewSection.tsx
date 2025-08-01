@@ -17,10 +17,11 @@ import {
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ReactNode } from "react";
-import { Trans } from "react-i18next";
 import { isDefined } from "remeda";
 
 import {
+  DetailsColumn,
+  DetailsList,
   formatDate,
   formatDateToFullReadableString,
   formatPersonName,
@@ -31,6 +32,7 @@ import {
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { useDepartmentContext } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
 import {
@@ -56,156 +58,137 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
   });
 
   return (
-    <Stack gap={2} data-testid="overview">
+    <>
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
-      <Stack gap={1} data-testid="appointment-overview-summary" role="list">
-        {currentStep > 1 && (
-          <DetailsItem
-            slotProps={{
-              stack: { role: "listitem" },
-            }}
-            label={t("overview.fields.concernAndDuration", {
-              context: "label",
-            })}
-            value={`${concernName} ${t("overview.fields.appointmentDuration", { durationInMinutes: values.concern.standardDurationInMinutes })}`}
-            icon={<MedicalServicesOutlined />}
-            hiddenLabel
-          />
-        )}
-        {isDefined(department) && (
-          <DetailsItem
-            slotProps={{
-              stack: { role: "listitem" },
-            }}
-            label={t("overview.fields.department", {
-              context: "label",
-            })}
-            value={formatDepartmentAddress(department)}
-            icon={<FmdGoodOutlined />}
-            hiddenLabel
-          />
-        )}
-        {currentStep > 2 && (
-          <>
-            {values.appointment && (
-              <DetailsItem
-                slotProps={{
-                  stack: { role: "listitem" },
-                }}
-                label={t("overview.fields.date", {
-                  context: "label",
-                })}
-                value={formatDateToFullReadableString(values.appointment.start)}
-                icon={<DateRange />}
-                hiddenLabel
-              />
-            )}
-            {values.appointment && (
-              <DetailsItem
-                slotProps={{
-                  stack: { role: "listitem" },
-                }}
-                label={t("overview.fields.time", {
-                  context: "label",
-                })}
-                value={t("overview.fields.time", {
-                  appointmentStart: formatTime(values.appointment?.start),
-                  context: "value",
-                })}
-                icon={<AccessTimeOutlined />}
-                hiddenLabel
-              />
-            )}
-          </>
-        )}
-        {currentStep > 3 && (
-          <>
-            {values.affectedPerson.firstName &&
-              values.affectedPerson.lastName && (
+      <DetailsList data-testid="appointment-overview-summary">
+        <DetailsColumn sx={{ gap: byBreakpoint({ mobile: 1, desktop: 2 }) }}>
+          {currentStep > 1 && (
+            <DetailsItem
+              label={t("overview.fields.concernAndDuration", {
+                context: "label",
+              })}
+              value={`${concernName} ${t("overview.fields.appointmentDuration", { durationInMinutes: values.concern.standardDurationInMinutes })}`}
+              icon={<MedicalServicesOutlined />}
+              hiddenLabel
+            />
+          )}
+          {isDefined(department) && (
+            <DetailsItem
+              label={t("overview.fields.department", {
+                context: "label",
+              })}
+              value={formatDepartmentAddress(department)}
+              icon={<FmdGoodOutlined />}
+              hiddenLabel
+            />
+          )}
+          {currentStep > 2 && (
+            <>
+              {values.appointment && (
                 <DetailsItem
-                  slotProps={{
-                    stack: { role: "listitem" },
-                  }}
-                  label={t("overview.fields.fullName", {
+                  label={t("overview.fields.date", {
                     context: "label",
                   })}
-                  value={formatPersonName(values.affectedPerson)}
-                  icon={<PersonOutlined />}
+                  value={formatDateToFullReadableString(
+                    values.appointment.start,
+                  )}
+                  icon={<DateRange />}
                   hiddenLabel
                 />
               )}
-            {values.affectedPerson.dateOfBirth && (
-              <DetailsItem
-                slotProps={{
-                  stack: { role: "listitem" },
-                }}
-                label={t("overview.fields.dateOfBirth", {
-                  context: "label",
-                })}
-                value={formatDate(new Date(values.affectedPerson.dateOfBirth))}
-                icon={<CakeOutlined />}
-                hiddenLabel
-              />
-            )}
-            {values.affectedPerson.contactAddress && (
-              <DetailsItem
-                slotProps={{
-                  stack: { role: "listitem" },
-                }}
-                label={t("overview.fields.contactAddress", {
-                  context: "label",
-                })}
-                value={
-                  <Trans
-                    i18nKey="overview.fields.contactAddress"
-                    ns="officialMedicalService/appointment"
-                    context="value"
-                    values={{
-                      street: formatStreetAndHouseNumber(
-                        values.affectedPerson.contactAddress,
-                      ),
-                      city: formatPostalCodeAndCity(
-                        values.affectedPerson.contactAddress,
-                      ),
+              {values.appointment && (
+                <DetailsItem
+                  label={t("overview.fields.time", {
+                    context: "label",
+                  })}
+                  value={t("overview.fields.time", {
+                    appointmentStart: formatTime(values.appointment?.start),
+                    context: "value",
+                  })}
+                  icon={<AccessTimeOutlined />}
+                  hiddenLabel
+                />
+              )}
+            </>
+          )}
+          {currentStep > 3 && (
+            <>
+              {values.affectedPerson.firstName &&
+                values.affectedPerson.lastName && (
+                  <DetailsItem
+                    label={t("overview.fields.fullName", {
+                      context: "label",
+                    })}
+                    value={formatPersonName(values.affectedPerson)}
+                    icon={<PersonOutlined />}
+                    hiddenLabel
+                  />
+                )}
+              {values.affectedPerson.dateOfBirth && (
+                <DetailsItem
+                  label={t("overview.fields.dateOfBirth", {
+                    context: "label",
+                  })}
+                  value={formatDate(
+                    new Date(values.affectedPerson.dateOfBirth),
+                  )}
+                  icon={<CakeOutlined />}
+                  hiddenLabel
+                />
+              )}
+              {values.affectedPerson.contactAddress && (
+                <Stack direction="column" gap={0.5}>
+                  <DetailsItem
+                    label={t("overview.fields.street", {
+                      context: "label",
+                    })}
+                    value={formatStreetAndHouseNumber(
+                      values.affectedPerson.contactAddress,
+                    )}
+                    icon={<HomeOutlined sx={{ alignSelf: "self-start" }} />}
+                    hiddenLabel
+                  />
+                  <DetailsItem
+                    label={t("overview.fields.city", {
+                      context: "label",
+                    })}
+                    value={formatPostalCodeAndCity(
+                      values.affectedPerson.contactAddress,
+                    )}
+                    hiddenLabel
+                    slotProps={{
+                      value: { sx: { paddingLeft: 5 } },
                     }}
                   />
-                }
-                icon={<HomeOutlined sx={{ alignSelf: "self-start" }} />}
-                hiddenLabel
-              />
-            )}
-            {values.affectedPerson.emailAddresses && (
-              <DetailsItem
-                slotProps={{
-                  stack: { role: "listitem" },
-                }}
-                label={t("overview.fields.emailAddress", {
-                  context: "label",
-                })}
-                value={values.affectedPerson.emailAddresses}
-                icon={<MailOutlined />}
-                hiddenLabel
-              />
-            )}
-            {values.confirmOnlineServices && (
-              <DetailsItem
-                slotProps={{
-                  stack: { role: "listitem" },
-                }}
-                label={t("overview.fields.confirmOnlineServices", {
-                  context: "label",
-                })}
-                value={t("overview.fields.confirmOnlineServices", {
-                  context: "value",
-                })}
-                icon={<MarkEmailReadOutlined />}
-                hiddenLabel
-              />
-            )}
-          </>
-        )}
-      </Stack>
+                </Stack>
+              )}
+              {values.affectedPerson.emailAddresses && (
+                <DetailsItem
+                  label={t("overview.fields.emailAddress", {
+                    context: "label",
+                  })}
+                  value={values.affectedPerson.emailAddresses}
+                  icon={<MailOutlined />}
+                  hiddenLabel
+                />
+              )}
+              {values.confirmOnlineServices && (
+                <DetailsItem
+                  label={t("overview.fields.confirmOnlineServices", {
+                    context: "label",
+                  })}
+                  value={t("overview.fields.confirmOnlineServices", {
+                    context: "value",
+                  })}
+                  icon={<MarkEmailReadOutlined />}
+                  hiddenLabel
+                />
+              )}
+            </>
+          )}
+        </DetailsColumn>
+      </DetailsList>
       {isDefined(buttonBar) && buttonBar}
-    </Stack>
+    </>
   );
 }

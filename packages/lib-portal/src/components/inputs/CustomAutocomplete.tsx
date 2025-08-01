@@ -8,7 +8,7 @@ import {
   Autocomplete as JoyAutocomplete,
   createFilterOptions,
 } from "@mui/joy";
-import { useState } from "react";
+import { useRef } from "react";
 
 import { LiveAnnouncer } from "../liveAnnouncer/LiveAnnouncer";
 
@@ -25,7 +25,8 @@ export function CustomAutocomplete<
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
 >(props: CustomAutocompleteProps<T, Multiple, DisableClearable, FreeSolo>) {
-  const [announce, setAnnounce] = useState(false);
+  const filteredOptionsLengthRef = useRef<number>(null);
+  const announce = filteredOptionsLengthRef.current === 0;
 
   return (
     <>
@@ -35,7 +36,7 @@ export function CustomAutocomplete<
           const resultOptions =
             props.filterOptions?.(options, state) ??
             createFilterOptions<T>()(options, state);
-          setAnnounce(resultOptions.length === 0);
+          filteredOptionsLengthRef.current = resultOptions.length;
           return resultOptions;
         }}
         slotProps={{

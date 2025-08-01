@@ -14,7 +14,7 @@ import { AlertSlot, RequiresChildren } from "@eshg/lib-portal";
 import { theme } from "@/lib/baseModule/theme/theme";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";
 
-import { BannerType, PageBanner, PageBannerReduced } from "./PageBanner";
+import { BannerType, PageBanner } from "./PageBanner";
 import { PageContent } from "./PageContent";
 
 const MainContents = styled("main")({
@@ -33,11 +33,7 @@ interface PageLayoutProps extends RequiresChildren {
 export function PageLayout(props: PageLayoutProps) {
   return (
     <>
-      {isDefined(props.banner) ? (
-        <PageBanner type={props.banner} />
-      ) : (
-        <PageBannerReduced />
-      )}
+      {isDefined(props.banner) && <PageBanner type={props.banner} />}
       <MainContents>
         <AlertSlot container={AlertContainer} />
         {props.children}

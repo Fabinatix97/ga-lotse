@@ -4,7 +4,7 @@
  */
 
 import { AutocompleteProps, CircularProgress } from "@mui/joy";
-import { ReactNode, SyntheticEvent, useMemo } from "react";
+import { FocusEvent, ReactNode, SyntheticEvent, useMemo } from "react";
 
 import { FieldProps } from "../../../types/form";
 import { BaseFieldProps, useBaseField } from "../BaseField";
@@ -31,6 +31,7 @@ export interface CommonAutocompleteFieldProps<T>
   ) => void;
   onChange?: (value: string[]) => void;
   isOptionEqualToValue?: (option: string, value: string) => boolean;
+  onBlur?: (e: FocusEvent) => void;
 }
 
 interface UseAutocompleteFieldContextReturn<T> {
@@ -72,7 +73,10 @@ export function useAutocompleteFieldContext<T>(
     },
     autocompleteProps: {
       name: props.name,
-      onBlur: field.input.onBlur,
+      onBlur: (e) => {
+        field.input.onBlur(e);
+        props.onBlur?.(e);
+      },
       disableClearable: field.required,
       loading: props.loading,
       placeholder: props.placeholder,

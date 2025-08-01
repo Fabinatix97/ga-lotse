@@ -90,7 +90,6 @@ export { ConfirmationDialog } from "./components/confirmationDialog/Confirmation
 export { InformationSheet } from "./components/content/InformationSheet";
 export { ContentPanel } from "./components/contentPanel/ContentPanel";
 export { ContentPanelTitle } from "./components/contentPanel/ContentPanelTitle";
-export { DetailsColumn } from "./components/detailsSection/DetailsColumn";
 export { DetailsRow } from "./components/detailsSection/DetailsRow";
 export {
   DetailsSection,

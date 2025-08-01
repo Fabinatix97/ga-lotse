@@ -123,14 +123,10 @@ export function RebookAppointmentPageContent() {
       {filteredAppointments.length > 0 ? (
         isMobile ? (
           <OneColumnGrid
-            contentTop={null}
-            contentCenter={
-              <>
-                <RebookAppointment appointments={filteredAppointments} />
-                <RebookAppointmentSidePanel />
-              </>
+            contentTop={
+              <RebookAppointment appointments={filteredAppointments} />
             }
-            contentBottom={null}
+            contentCenter={<RebookAppointmentSidePanel />}
           />
         ) : (
           <TwoColumnGrid

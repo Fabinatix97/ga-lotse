@@ -99,6 +99,10 @@ public class CitizenPublicProcedureService {
           case ENGLISH -> landingContent.getEn();
           case GERMAN -> landingContent.getDe();
         };
-    return landingDocument.getContent();
+    if (landingDocument != null) {
+      return landingDocument.getContent();
+    } else {
+      return landingContent.getDe().getContent();
+    }
   }
 }

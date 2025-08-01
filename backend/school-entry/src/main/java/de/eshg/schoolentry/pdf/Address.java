@@ -5,12 +5,14 @@
 
 package de.eshg.schoolentry.pdf;
 
+import java.util.List;
+
 public record Address(
     String name,
     String street,
     String zipCode,
     String city,
-    String phoneNumber,
+    List<String> phoneNumber,
     String url,
     String addressAddition,
-    String email) {}
+    List<String> email) {}

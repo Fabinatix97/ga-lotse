@@ -28,7 +28,7 @@ import { useTranslation } from "@/lib/i18n/client";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 import { RebookAppointmentContent } from "./RebookAppointmentContent";
@@ -97,35 +97,33 @@ function InnerRebookAppointmentPage({
   }
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle
-          toolbar={<LogoutButton text={t("translation:common.leave")} />}
-        >
-          {t("common.appointment_booking_title")}
-        </PageTitle>
-        <ConflictError
-          hasConflict={hasConflict}
-          scrollToErrorRef={scrollToErrorRef}
-        />
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          <FormPlus sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {sortedAppointments.length > 0 ? (
-              <TwoColumnGrid
-                content={
-                  <RebookAppointmentContent appointments={sortedAppointments} />
-                }
-                sidePanel={
-                  <RebookAppointmentSidePanel concern={procedure.concern} />
-                }
-              />
-            ) : (
-              <NoAppointmentAvailable concern={procedure.concern} />
-            )}
-          </FormPlus>
-        </Formik>
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle
+        toolbar={<LogoutButton text={t("translation:common.leave")} />}
+      >
+        {t("common.appointment_booking_title")}
+      </PageTitle>
+      <ConflictError
+        hasConflict={hasConflict}
+        scrollToErrorRef={scrollToErrorRef}
+      />
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <FormPlus sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {sortedAppointments.length > 0 ? (
+            <TwoColumnGrid
+              content={
+                <RebookAppointmentContent appointments={sortedAppointments} />
+              }
+              sidePanel={
+                <RebookAppointmentSidePanel concern={procedure.concern} />
+              }
+            />
+          ) : (
+            <NoAppointmentAvailable concern={procedure.concern} />
+          )}
+        </FormPlus>
+      </Formik>
+    </PageContent>
   );
 }
 

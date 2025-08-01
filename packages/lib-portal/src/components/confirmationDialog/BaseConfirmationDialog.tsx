@@ -67,7 +67,9 @@ export function BaseConfirmationDialog({
       open={open}
       onClose={handleCancel}
     >
-      {!hideDescription && <Typography>{description}</Typography>}
+      {!hideDescription && (
+        <Typography data-testid="info-text">{description}</Typography>
+      )}
       {children}
       <ButtonBarComponent
         {...props}

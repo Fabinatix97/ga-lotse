@@ -23,9 +23,10 @@
     "date_label": "Date",
     "appointmentTime": {
       "label": "Time",
-      "time": "{{ time }}",
-      "duration": "Duration: {{ duration }} minutes"
-    }
+      "time": "{{ time }}"
+    },
+    "appointmentDuration_label": "Duration:",
+    "appointmentDuration_value": "{{ duration }} minutes"
   },
   "anamnesis": {
     "title": "Anamnesis",

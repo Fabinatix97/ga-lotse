@@ -12,7 +12,13 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { WithRequired, formatDate, formatPersonName } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  WithRequired,
+  formatDate,
+  formatPersonName,
+} from "@eshg/lib-portal";
 import {
   ApiBookingState,
   ApiGetCitizenProcedureDetailsResponse,
@@ -21,6 +27,7 @@ import {
 import { useCancelAppointmentByCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
@@ -48,37 +55,46 @@ export function PersonalAreaSidePanel({
   return (
     <ContentSheet data-testid="appointment-panel">
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
-      <Stack direction="column" gap={2}>
-        <DetailsItem
-          label={t("overview.name.title")}
-          value={formatPersonName(procedure)}
-          icon={<PersonOutlined />}
-        />
-        <DetailsItem
-          label={t("overview.birthdate.title")}
-          value={formatDate(procedure.dateOfBirth)}
-          icon={<CakeOutlined />}
-        />
-        <DetailsItem
-          label={t("overview.concern.title")}
-          value={concernName}
-          icon={<MedicalServicesOutlined />}
-        />
-        <DetailsItem
-          label={t("overview.medicalOpinion.title")}
-          value={t("overview.medicalOpinion.value", {
-            context: procedure.medicalOpinionStatus,
-          })}
-          icon={<DifferenceOutlined />}
-        />
-        {isDefined(procedure.appointment) &&
-          renderActions(
+      <DetailsList data-testid="overview-summary">
+        <DetailsColumn sx={{ gap: byBreakpoint({ mobile: 1, desktop: 2 }) }}>
+          <DetailsItem
+            label={t("overview.name.title")}
+            value={formatPersonName(procedure)}
+            icon={<PersonOutlined />}
+            hiddenLabel
+          />
+          <DetailsItem
+            label={t("overview.birthdate.title")}
+            value={formatDate(procedure.dateOfBirth)}
+            icon={<CakeOutlined />}
+            hiddenLabel
+          />
+          <DetailsItem
+            label={t("overview.concern.title")}
+            value={concernName}
+            icon={<MedicalServicesOutlined />}
+            hiddenLabel
+          />
+          <DetailsItem
+            label={t("overview.medicalOpinion.title")}
+            value={t("overview.medicalOpinion.value", {
+              context: procedure.medicalOpinionStatus,
+            })}
+            icon={<DifferenceOutlined />}
+            hiddenLabel
+          />
+        </DetailsColumn>
+      </DetailsList>
+      {isDefined(procedure.appointment) && (
+        <Stack gap={2}>
+          {renderActions(
             procedure as WithRequired<
               ApiGetCitizenProcedureDetailsResponse,
               "appointment"
             >,
           )}
-      </Stack>
+        </Stack>
+      )}
     </ContentSheet>
   );
 }

@@ -5633,21 +5633,26 @@
         "type" : "object",
         "properties" : {
           "abbreviation" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "country" : {
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "latitude" : {
@@ -5659,15 +5664,19 @@
             "format" : "double"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -6990,25 +6999,10 @@
         }
       },
       "GetOmsConfigResponse" : {
-        "required" : [ "citizenPortalAnamnesisEnabled", "concerns", "keycloakUserCleanupJobOverdueDuration", "landingPageContent", "medicalOpinionCutOffDateLeadTime" ],
         "type" : "object",
         "properties" : {
-          "citizenPortalAnamnesisEnabled" : {
-            "type" : "boolean"
-          },
-          "concerns" : {
-            "$ref" : "#/components/schemas/DocumentDetails"
-          },
-          "keycloakUserCleanupJobOverdueDuration" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "landingPageContent" : {
-            "$ref" : "#/components/schemas/MultiLangDocument"
-          },
-          "medicalOpinionCutOffDateLeadTime" : {
-            "type" : "integer",
-            "format" : "int32"
+          "configuration" : {
+            "$ref" : "#/components/schemas/OmsConfig"
           }
         }
       },
@@ -8068,6 +8062,29 @@
           }
         },
         "description" : "A request containing the standard durations. All standard durations must be set."
+      },
+      "OmsConfig" : {
+        "required" : [ "citizenPortalAnamnesisEnabled", "concerns", "keycloakUserCleanupJobOverdueDuration", "landingPageContent", "medicalOpinionCutOffDateLeadTime" ],
+        "type" : "object",
+        "properties" : {
+          "citizenPortalAnamnesisEnabled" : {
+            "type" : "boolean"
+          },
+          "concerns" : {
+            "$ref" : "#/components/schemas/DocumentDetails"
+          },
+          "keycloakUserCleanupJobOverdueDuration" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "landingPageContent" : {
+            "$ref" : "#/components/schemas/MultiLangDocument"
+          },
+          "medicalOpinionCutOffDateLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "OmsFile" : {
         "required" : [ "creationDate", "fileType", "id", "name", "size" ],

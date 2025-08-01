@@ -12,12 +12,15 @@ import { ApiFacilityContactPerson } from "@eshg/base-api";
 import {
   BaseAddress,
   BaseAddressDetailsColumn,
-  DetailsColumn,
   DetailsItem,
   ExternalLinkDetailsItem,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { formatPersonName, isNonEmptyArray } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  formatPersonName,
+  isNonEmptyArray,
+} from "@eshg/lib-portal";
 
 interface CentralFileFacility {
   readonly name: string;

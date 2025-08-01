@@ -10,7 +10,6 @@ import { ReactNode } from "react";
 import { ApiGender } from "@eshg/base-api";
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import {
-  DetailsColumn,
   DetailsItem,
   DetailsRow,
   EditButton,
@@ -18,6 +17,7 @@ import {
   ProcedureLabelChip,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   DetailsList,
   ExternalLinkButton,
   GENDER_VALUES,

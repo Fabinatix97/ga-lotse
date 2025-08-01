@@ -112,7 +112,7 @@ export function useStatisticsProcedureReferenceApi(
 // note: STI_PROTECTION and SEX_WORK have different paths
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const { INSPECTION, DENTAL, ...configBusinessModuleBackendUrls } =
+const { DENTAL, ...configBusinessModuleBackendUrls } =
   businessModuleBackendUrls;
 const configuratorModuleBackendUrls = {
   ...configBusinessModuleBackendUrls,

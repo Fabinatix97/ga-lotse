@@ -18,7 +18,6 @@ import { AppointmentPageTitle } from "@/lib/businessModules/schoolEntry/pages/ap
 import { UpdateAppointmentForm } from "@/lib/businessModules/schoolEntry/pages/appointment/update-appointment/UpdateAppointmentForm";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function SchoolEntryUpdateAppointmentPage() {
   const { t } = useTranslation(["schoolEntry/appointment"]);
@@ -31,24 +30,22 @@ export default function SchoolEntryUpdateAppointmentPage() {
   });
 
   return (
-    <PageLayout>
-      <PageContent>
-        <AppointmentPageTitle />
-        {procedure.isClosedProcedure ? (
-          <Alert
-            title={t("procedureClosed.title")}
-            message={t("procedureClosed.message")}
-            color="warning"
+    <PageContent>
+      <AppointmentPageTitle />
+      {procedure.isClosedProcedure ? (
+        <Alert
+          title={t("procedureClosed.title")}
+          message={t("procedureClosed.message")}
+          color="warning"
+        />
+      ) : (
+        <DisabledFormProvider disabled={procedure.isClosedProcedure}>
+          <UpdateAppointmentForm
+            procedure={procedure}
+            freeAppointments={freeAppointments}
           />
-        ) : (
-          <DisabledFormProvider disabled={procedure.isClosedProcedure}>
-            <UpdateAppointmentForm
-              procedure={procedure}
-              freeAppointments={freeAppointments}
-            />
-          </DisabledFormProvider>
-        )}
-      </PageContent>
-    </PageLayout>
+        </DisabledFormProvider>
+      )}
+    </PageContent>
   );
 }

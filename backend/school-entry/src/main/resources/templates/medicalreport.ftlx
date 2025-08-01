@@ -141,7 +141,7 @@
   </div>
   <div>
     Website: ${office.url} &nbsp; • &nbsp;
-    E-Mail: ${office.email}
+    E-Mail: ${office.email?join(", ")}
   </div>
 </footer>
 
@@ -171,11 +171,21 @@
         <div>${office.street}</div>
         <div class="sender-data">${office.zipCode} ${office.city}</div>
       </div>
-      <div class="sender-label">Telefon</div>
-      <div class="sender-data">${office.phoneNumber}</div>
-      <#if office.email??>
+      <#if office.phoneNumber?has_content>
+            <div class="sender-label">Telefon</div>
+            <div class="sender-data">
+              <#list office.phoneNumber as phone>
+                <div>${phone}</div>
+              </#list>
+            </div>
+      </#if>
+      <#if office.email?has_content>
         <div class="sender-label">E-Mail</div>
-        <div class="sender-data">${office.email}</div>
+        <div class="sender-data">
+         <#list office.email as email>
+          <div>${email}</div>
+         </#list>
+        </div>
       </#if>
       <div class="sender-label">Aktenzeichen</div>
       <div>-</div>

@@ -18,12 +18,11 @@ import { ReactNode } from "react";
 import { isEmpty } from "remeda";
 
 import {
-  DetailsColumn,
   DetailsItem,
   EditButton,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
-import { DetailsList, InputField } from "@eshg/lib-portal";
+import { DetailsColumn, DetailsList, InputField } from "@eshg/lib-portal";
 import {
   ApiDocument,
   ApiDocumentStatus,

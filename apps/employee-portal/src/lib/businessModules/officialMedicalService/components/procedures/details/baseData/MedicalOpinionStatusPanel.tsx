@@ -7,12 +7,12 @@ import { Formik, FormikHelpers } from "formik";
 
 import {
   ButtonBar,
-  DetailsColumn,
   DetailsItem,
   FormStack,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   DetailsList,
   SelectField,
   SubmitButton,

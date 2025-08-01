@@ -138,6 +138,7 @@ public final class BaseUrls {
     public static final String PACKLIST_DEFINITION_CONTROLLER =
         PACKLIST_CONTROLLER + "/definitions";
     public static final String INSPECTION_IMPORT_CONTROLLER = "/import";
+    public static final String CONFIGURATION_API = "/configuration";
 
     private Inspection() {}
   }
@@ -314,6 +315,8 @@ public final class BaseUrls {
     public static final String EMPLOYEE_API = "/employee";
     public static final String CITIZEN_PUBLIC_API = "/citizen-public";
     public static final String CITIZEN_AUTH_API = "/citizen-auth";
+
+    public static final String CONFIGURATION_API = "/configuration";
 
     private OfficialMedicalService() {}
   }

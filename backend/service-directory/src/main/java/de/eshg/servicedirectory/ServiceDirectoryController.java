@@ -130,7 +130,6 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
   @Transactional(readOnly = true)
   @Override
   public ResponseEntity<GetTrustedActorsResponse> getTrustedActors(String ifNoneMatch) {
-    getTrustedActorsStatistics.increment();
     String clientCommonName =
         Optional.ofNullable(CallingClientHelper.getClientCommonName()).orElse("");
 
@@ -141,11 +140,10 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
 
     long currentRevisionId = serviceDirectoryService.getCurrentRevisionId();
     String eTag = formatETagForTrustedActors(clientCommonName, currentRevisionId);
+    getTrustedActorsStatistics.increment(eTag);
 
-    if (checkNotModified(ifNoneMatch, eTag)) {
+    if (checkNotModified(ifNoneMatch, eTag))
       return ResponseEntity.status(HttpStatus.NOT_MODIFIED).header(HttpHeaders.ETAG, eTag).build();
-    }
-    log.info("Processing getTrustedActors request for client {}", clientCommonName);
 
     final GetTrustedActorsResponse result;
 
@@ -166,7 +164,6 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
       result = serviceDirectoryService.getTrustedActorsForActor(clientActor);
     }
 
-    log.info("Processed getTrustedActors: {}", result);
     return ResponseEntity.ok().header(HttpHeaders.ETAG, eTag).body(result);
   }
 

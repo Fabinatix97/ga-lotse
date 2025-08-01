@@ -8,20 +8,21 @@ package de.eshg.config.api;
 import de.eshg.config.initialization.InitialDepartmentInfo;
 import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "DepartmentInfo")
 public record DepartmentInfoDto(
-    @NotNull String name,
-    @NotNull String abbreviation,
-    @NotNull String street,
-    @NotNull String houseNumber,
-    @NotNull String postalCode,
-    @NotNull String city,
+    @NotBlank String name,
+    @NotBlank String abbreviation,
+    @NotBlank String street,
+    @NotBlank String houseNumber,
+    @NotBlank String postalCode,
+    @NotBlank String city,
     @NotNull CountryCode country,
-    @NotNull String phoneNumber,
-    @NotNull String homepage,
-    @NotNull String email,
+    @NotBlank String phoneNumber,
+    @NotBlank String homepage,
+    @NotBlank String email,
     @NotNull Double latitude,
     @NotNull Double longitude)
     implements InitialDepartmentInfo {}

@@ -8,7 +8,6 @@ import { Formik, useFormikContext } from "formik";
 import { Ref } from "react";
 
 import {
-  DetailsColumn,
   DetailsItem,
   MultiFormButtonBar,
   SidebarActions,
@@ -18,6 +17,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   DateField,
+  DetailsColumn,
   DetailsList,
   SelectField,
   SelectOption,

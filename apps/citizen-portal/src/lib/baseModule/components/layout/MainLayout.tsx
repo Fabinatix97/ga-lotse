@@ -5,7 +5,7 @@
 
 "use client";
 
-import { styled } from "@mui/joy";
+import { Box, styled } from "@mui/joy";
 import { ComponentType, PropsWithChildren } from "react";
 
 import { Footer } from "@/lib/baseModule/components/layout/Footer";
@@ -34,10 +34,18 @@ export function MainLayout<THeaderProps extends NavigationProps>({
   const { data: department } = useGetDepartmentInfo();
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        scrollbarGutter: "stable both-edges",
+        overflowX: "clip",
+      }}
+    >
       <NavigationMenu slots={{ header: props.slots?.header }} />
       <FullWidthContainer>{children}</FullWidthContainer>
       <Footer department={department} />
-    </>
+    </Box>
   );
 }

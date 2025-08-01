@@ -7,13 +7,13 @@ import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import {
-  DetailsColumn,
   DetailsRow,
   DetailsSection,
   InformationSheet,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   GENDER_VALUES,
   PERSON_FIELD_NAME,
   formatDate,

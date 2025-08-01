@@ -14,7 +14,7 @@ import { useTranslation } from "@/lib/i18n/client";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenOmsEntryPage() {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
@@ -23,16 +23,14 @@ export default function CitizenOmsEntryPage() {
   });
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle toolbar={<LogoutButton text={t("common.logoutButton")} />}>
-          {t("common.pageTitle")}
-        </PageTitle>
-        <TwoColumnGrid
-          content={<PersonalAreaContent procedure={procedure} />}
-          sidePanel={<PersonalAreaSidePanel procedure={procedure} />}
-        />
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle toolbar={<LogoutButton text={t("common.logoutButton")} />}>
+        {t("common.pageTitle")}
+      </PageTitle>
+      <TwoColumnGrid
+        content={<PersonalAreaContent procedure={procedure} />}
+        sidePanel={<PersonalAreaSidePanel procedure={procedure} />}
+      />
+    </PageContent>
   );
 }

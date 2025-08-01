@@ -14,7 +14,7 @@ import { PageLayout } from "@/lib/shared/components/layout/page";
 export default function OpenDataLayout(props: LayoutProps) {
   return (
     <MainLayout slots={{ header: ReducedHeader }}>
-      <PageLayout>{props.children}</PageLayout>
+      <PageLayout banner="reduced">{props.children}</PageLayout>
     </MainLayout>
   );
 }

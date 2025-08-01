@@ -8,6 +8,8 @@ import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import {
+  DetailsColumn,
+  DetailsList,
   durationBetweenDatesInMinutes,
   formatDateToFullReadableString,
   formatTime,
@@ -18,16 +20,16 @@ import { useIdContext } from "@/lib/businessModules/travelMedicine/components/sh
 import { RebookAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointmentPageContent";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
+import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function RebookAppointmentSidePanel() {
-  const router = useScopedRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/rebookAppointment"]);
@@ -42,11 +44,6 @@ export function RebookAppointmentSidePanel() {
       values.appointment?.end,
     );
 
-  function routeBackToDetails() {
-    const url = `${citizenRoutes.viewAppointment.details.index(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
-    router.push(url);
-  }
-
   function isBooked() {
     return (
       appointmentDetails.summaryDto.appointmentBookingType ===
@@ -59,41 +56,43 @@ export function RebookAppointmentSidePanel() {
   return (
     <ContentSheet data-testid="rebook-appointment-side-panel">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
-      {appointmentStart && (
-        <Stack role="list" gap={1}>
-          <DetailsItem
-            slotProps={{
-              stack: { role: "listitem" },
-            }}
-            label={t("overview.fields.date", {
-              context: "label",
-            })}
-            value={formatDateToFullReadableString(appointmentStart)}
-            icon={<DateRange />}
-            hiddenLabel
-          />
-          <DetailsItem
-            slotProps={{
-              stack: { role: "listitem" },
-            }}
-            label={t("overview.fields.time", {
-              context: "label",
-            })}
-            value={`${formatTime(appointmentStart)} ${t("sidePanel.appointmentDuration", { durationInMinutes })}`}
-            icon={<AccessTimeOutlined />}
-            hiddenLabel
-          />
-        </Stack>
-      )}
+      <DetailsList>
+        <DetailsColumn sx={{ gap: byBreakpoint({ mobile: 1, desktop: 2 }) }}>
+          {appointmentStart && (
+            <>
+              <DetailsItem
+                label={t("overview.fields.date", {
+                  context: "label",
+                })}
+                value={formatDateToFullReadableString(appointmentStart)}
+                icon={<DateRange />}
+                hiddenLabel
+              />
+              <DetailsItem
+                label={t("overview.fields.time", {
+                  context: "label",
+                })}
+                value={`${formatTime(appointmentStart)} ${t("sidePanel.appointmentDuration", { durationInMinutes })}`}
+                icon={<AccessTimeOutlined />}
+                hiddenLabel
+              />
+            </>
+          )}
+        </DetailsColumn>
+      </DetailsList>
       <Stack gap={2}>
         <Button color="primary" variant="solid" onClick={() => handleSubmit()}>
           {isBooked()
             ? t("sidePanel.postponeAppointment")
             : t("sidePanel.bookAppointment")}
         </Button>
-        <Button color="neutral" variant="soft" onClick={routeBackToDetails}>
+        <ScopedInternalLinkButton
+          variant="soft"
+          color="neutral"
+          href={`${citizenRoutes.viewAppointment.details.index(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`}
+        >
           {t("sidePanel.back")}
-        </Button>
+        </ScopedInternalLinkButton>
       </Stack>
     </ContentSheet>
   );

@@ -16,12 +16,15 @@ import {
   ApiUserGroup,
 } from "@eshg/base-api";
 import {
-  DetailsColumn,
   DetailsRow,
   EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { InternalLinkButton, SALUTATION_VALUES } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  InternalLinkButton,
+  SALUTATION_VALUES,
+} from "@eshg/lib-portal";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";

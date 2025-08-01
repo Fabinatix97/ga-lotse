@@ -25,7 +25,9 @@ export function AppointmentFormSidePanel({
 
   return (
     <ContentSheet
-      data-testid={currentStep === totalSteps ? "confirmation-form" : undefined}
+      data-testid={
+        currentStep === totalSteps ? "confirmation-form" : "overview"
+      }
     >
       {currentStep !== totalSteps && (
         <OverviewSection

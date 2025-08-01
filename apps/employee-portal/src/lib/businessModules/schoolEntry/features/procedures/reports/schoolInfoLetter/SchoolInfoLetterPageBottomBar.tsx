@@ -5,28 +5,38 @@
 
 import { Button } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import {
   BottomToolbar,
   ButtonBar,
+  OverlayBoundary,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
+import { BaseConfirmationDialog } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/models/SchoolInfoLetter";
-import { useGenerateSchoolInfoLetterPdf } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import {
+  useCloseProcedure,
+  useGenerateSchoolInfoLetterPdf,
+} from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 import { LeaveDirtyConfirmationDialogProps } from "./LeaveDirtyConfirmationDialogProps";
 
-export function SchoolInfoPageBottomBar(props: {
-  onNavigate: () => void;
+export function SchoolInfoLetterPageBottomBar(props: {
   procedureId: string;
+  navigateToEyeExamination: () => void;
 }) {
   const { handleReset, dirty, isSubmitting, submitForm } =
     useFormikContext<SchoolInfoLetter>();
 
   const { openCancelDialog, openConfirmationDialog } = useConfirmationDialog();
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false);
   const { download } = useGenerateSchoolInfoLetterPdf(props.procedureId);
 
   function handleResetWhenDirty() {
@@ -58,11 +68,11 @@ export function SchoolInfoPageBottomBar(props: {
                   openConfirmationDialog(
                     LeaveDirtyConfirmationDialogProps(
                       submitForm,
-                      props.onNavigate,
+                      props.navigateToEyeExamination,
                     ),
                   );
                 } else {
-                  props.onNavigate();
+                  props.navigateToEyeExamination();
                 }
               }}
             >
@@ -96,7 +106,7 @@ export function SchoolInfoPageBottomBar(props: {
               onClick={async () => {
                 await submitForm();
                 await download();
-                props.onNavigate();
+                setCloseDialogOpen(true);
               }}
             >
               PDF generieren
@@ -104,6 +114,53 @@ export function SchoolInfoPageBottomBar(props: {
           ]}
         />
       </BottomToolbar>
+      <OverlayBoundary>
+        <CloseProcedureModal
+          procedureId={props.procedureId}
+          closeDialogOpen={closeDialogOpen}
+          setCloseDialogOpen={setCloseDialogOpen}
+          navigateToEyeExamination={props.navigateToEyeExamination}
+        />
+      </OverlayBoundary>
     </StickyBottomBox>
+  );
+}
+
+interface CloseProcedureModalProps {
+  procedureId: string;
+  closeDialogOpen: boolean;
+  setCloseDialogOpen: (
+    value: ((prevState: boolean) => boolean) | boolean,
+  ) => void;
+  navigateToEyeExamination: () => void;
+}
+
+function CloseProcedureModal(props: CloseProcedureModalProps) {
+  const { data: procedure } = useGetProcedure(props.procedureId);
+  const closeProcedure = useCloseProcedure(props.procedureId);
+  const router = useRouter();
+
+  async function handleCloseProcedure() {
+    await closeProcedure.mutateAsync({ version: procedure.version });
+    props.setCloseDialogOpen(false);
+    router.push(routes.procedures.byId(props.procedureId).details);
+  }
+
+  return (
+    <BaseConfirmationDialog
+      title="Vorgang abschließen"
+      description="Durch das Erstellen des Schulinfobriefs kann der Vorgang geschlossen werden. Möchten Sie den Vorgang jetzt abschließen?"
+      confirmLabel="Abschließen"
+      open={props.closeDialogOpen}
+      cancelLabel="Vorgang nicht abschließen"
+      onConfirm={handleCloseProcedure}
+      onCancel={() => {
+        props.setCloseDialogOpen(false);
+        props.navigateToEyeExamination();
+      }}
+      onClose={() => {
+        props.setCloseDialogOpen(false);
+      }}
+    />
   );
 }

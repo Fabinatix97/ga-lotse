@@ -14,6 +14,7 @@ import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.schoolentry.client.DepartmentInfoClient;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.util.Assert;
 
@@ -35,10 +36,10 @@ public abstract class AbstractGenerator {
         concat(departmentInfo.street(), departmentInfo.houseNumber()),
         departmentInfo.postalCode(),
         departmentInfo.city(),
-        departmentInfo.phoneNumber(),
+        List.of(departmentInfo.phoneNumber()),
         departmentInfo.homepage(),
         null,
-        departmentInfo.email());
+        List.of(departmentInfo.email()));
   }
 
   protected Address getAddressOfInstitution(UUID institutionLocationId) {
@@ -56,20 +57,20 @@ public abstract class AbstractGenerator {
               concat(domesticAddress.street(), domesticAddress.houseNumber()),
               domesticAddress.postalCode(),
               domesticAddress.city(),
-              null,
+              institution.phoneNumbers(),
               null,
               domesticAddress.addressAddition(),
-              null);
+              institution.emailAddresses());
       case PostboxAddressDto postboxAddress ->
           new Address(
               postboxAddress.postbox(),
               postboxAddress.differentName(),
               postboxAddress.postalCode(),
               postboxAddress.city(),
+              institution.phoneNumbers(),
               null,
               null,
-              null,
-              null);
+              institution.emailAddresses());
     };
   }
 

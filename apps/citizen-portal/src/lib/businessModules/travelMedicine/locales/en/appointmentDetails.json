@@ -12,12 +12,20 @@
     "cancelAppointment": "Cancel appointment",
     "back": "Back"
   },
-  "appointmentType": {
+  "patientName_label": "Name",
+  "dateOfBirth_label": "Date of Birth",
+  "appointmentDate_label": "Appointment Date",
+  "appointmentType_label": "Appointment Type",
+  "appointmentType_value": {
     "consultation": "Travel consultation",
     "vaccination": "Vaccination"
   },
-  "start": "{{ time }}",
-  "duration": "Duration: {{ appointmentDuration }} minutes",
+  "start_label": "Appointment Start",
+  "start_value": "{{ time }}",
+  "duration_label": "Duration:",
+  "duration_value": "{{ appointmentDuration }} minutes",
+  "departmentName_label": "Department Name",
+  "departmentAddress_label": "Department Address",
   "medicalHistoryPanel": {
     "title": "Appointment Preparations",
     "medicalHistorySheet": "Medical history form",

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 variables:
-  GRADLE_BASE_IMAGE: gradle:8.12.1-jdk21-jammy@sha256:7d4ac2c6029b8fa1d61643365086ac232e6e8de4bedcf4671666381881e82de0
+  GRADLE_BASE_IMAGE: gradle:8.14.3-jdk21-jammy@sha256:07d6a8466f384729663705497a041076c400e6d63ff4b07f6657b25c2e0c96e9
 
 workflow:
   rules:

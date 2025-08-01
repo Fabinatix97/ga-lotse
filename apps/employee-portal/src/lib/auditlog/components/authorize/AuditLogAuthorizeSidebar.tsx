@@ -14,7 +14,6 @@ import {
 } from "@eshg/auditlog-api";
 import { ApiUser } from "@eshg/base-api";
 import {
-  DetailsColumn,
   FormButtonBar,
   SidebarActions,
   SidebarContent,
@@ -24,7 +23,7 @@ import {
   useConfirmationDialog,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatUserName } from "@eshg/lib-portal";
+import { DetailsColumn, formatDate, formatUserName } from "@eshg/lib-portal";
 
 import { AuditLogSheet } from "@/lib/auditlog/components/AuditLogSheet";
 import {

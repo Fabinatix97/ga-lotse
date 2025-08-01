@@ -26,7 +26,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/s
 import { StepCounter } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormWrapper";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
@@ -69,31 +69,29 @@ export default function CitizenOmsEntryPage() {
   }
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle
-          titleRef={titleRef}
-          toolbar={
-            <StepCounter
-              stepperTitle={t("common.stepTitle", {
-                currentStepIndex: stepIndex + 1,
-                totalSteps,
-              })}
-            />
-          }
-        >
-          {t("common.title")}
-        </PageTitle>
-        <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-          <FormPlus>
-            <AnamnesisWrapper
-              stepIndex={stepIndex}
-              setStepIndex={setStepIndex}
-              focusTitle={focusTitle}
-            />
-          </FormPlus>
-        </Formik>
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle
+        titleRef={titleRef}
+        toolbar={
+          <StepCounter
+            stepperTitle={t("common.stepTitle", {
+              currentStepIndex: stepIndex + 1,
+              totalSteps,
+            })}
+          />
+        }
+      >
+        {t("common.title")}
+      </PageTitle>
+      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+        <FormPlus>
+          <AnamnesisWrapper
+            stepIndex={stepIndex}
+            setStepIndex={setStepIndex}
+            focusTitle={focusTitle}
+          />
+        </FormPlus>
+      </Formik>
+    </PageContent>
   );
 }

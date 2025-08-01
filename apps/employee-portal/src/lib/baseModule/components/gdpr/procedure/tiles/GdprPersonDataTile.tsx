@@ -10,13 +10,13 @@ import { SxProps } from "@mui/joy/styles/types";
 import { ApiGdprPerson, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
-  DetailsColumn,
   DetailsItem,
   DetailsRow,
   ExternalLinkDetailsItem,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
   formatDate,

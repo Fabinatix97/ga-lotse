@@ -8,13 +8,12 @@ import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
 import {
-  DetailsColumn,
   DetailsRow,
   DetailsSection,
   InformationSheet,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { isNonEmptyString } from "@eshg/lib-portal";
+import { DetailsColumn, isNonEmptyString } from "@eshg/lib-portal";
 import {
   ApiGetProcedure200Response,
   ApiPractice,

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { PrivacyPolicyConfirmationSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/PrivacyPolicyConfirmationSection";
@@ -21,10 +20,8 @@ export function ConfirmationSection({
   return (
     <>
       <ContentSheetTitle>{t("confirmation.title")}</ContentSheetTitle>
-      <Stack gap={2}>
-        <PrivacyPolicyConfirmationSection />
-        {buttonBar}
-      </Stack>
+      <PrivacyPolicyConfirmationSection />
+      {buttonBar}
     </>
   );
 }

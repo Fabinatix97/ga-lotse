@@ -6145,21 +6145,26 @@
         "type" : "object",
         "properties" : {
           "abbreviation" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "country" : {
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "latitude" : {
@@ -6171,15 +6176,19 @@
             "format" : "double"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }

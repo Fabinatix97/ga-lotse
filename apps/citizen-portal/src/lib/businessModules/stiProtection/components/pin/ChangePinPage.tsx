@@ -14,7 +14,7 @@ import { parsePin } from "@/lib/businessModules/stiProtection/components/appoint
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
 import { ChangePinConfirm } from "./ChangePinConfirm";
@@ -75,21 +75,19 @@ export function ChangePinPage() {
   }
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle
-          toolbar={<LogoutButton text={t("translation:common.leave")} />}
-        >
-          {t("title")}
-        </PageTitle>
-        <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-          {({ values }) => (
-            <FormPlus>
-              {!values.hasSavedPin ? <ChangePinForm /> : <ChangePinConfirm />}
-            </FormPlus>
-          )}
-        </Formik>
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle
+        toolbar={<LogoutButton text={t("translation:common.leave")} />}
+      >
+        {t("title")}
+      </PageTitle>
+      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+        {({ values }) => (
+          <FormPlus>
+            {!values.hasSavedPin ? <ChangePinForm /> : <ChangePinConfirm />}
+          </FormPlus>
+        )}
+      </Formik>
+    </PageContent>
   );
 }

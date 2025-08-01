@@ -41,9 +41,11 @@ export function AppLayout({
             component="body"
             sx={{
               backgroundColor: "neutral.100",
-              minHeight: "100%",
+              minHeight: "100vh",
               display: "flex",
               flexDirection: "column",
+              width: "100vw",
+              overflowX: "hidden",
             }}
           >
             <noscript>

@@ -12,12 +12,20 @@
     "cancelAppointment": "Termin absagen",
     "back": "Zurück"
   },
-  "appointmentType": {
+  "patientName_label": "Name",
+  "dateOfBirth_label": "Geburtsdatum",
+  "appointmentDate_label": "Datum des Termins",
+  "appointmentType_label": "Terminart",
+  "appointmentType_value": {
     "consultation": "Reiseberatung",
     "vaccination": "Impfung"
   },
-  "start": "{{ time }} Uhr",
-  "duration": "Dauer: {{ appointmentDuration }} Minuten",
+  "start_label": "Terminbeginn",
+  "start_value": "{{ time }} Uhr",
+  "duration_label": "Dauer:",
+  "duration_value": "{{ appointmentDuration }} Minuten",
+  "departmentName_label": "Name des Gesundheitsamts",
+  "departmentAddress_label": "Adresse des Gesundheitsamts",
   "medicalHistoryPanel": {
     "title": "Vorbereitung zum Termin",
     "medicalHistorySheet": "Anamnesebogen",

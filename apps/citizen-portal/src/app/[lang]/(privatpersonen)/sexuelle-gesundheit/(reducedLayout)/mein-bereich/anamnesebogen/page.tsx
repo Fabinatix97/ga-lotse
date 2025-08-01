@@ -7,14 +7,11 @@
 
 import { AnamnesisStepper } from "@/lib/businessModules/stiProtection/components/anamnesis/AnamnesisStepper";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function CitizenSexualHealthAnamnesisPage() {
   return (
-    <PageLayout>
-      <PageContent>
-        <AnamnesisStepper />
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <AnamnesisStepper />
+    </PageContent>
   );
 }

@@ -9,12 +9,13 @@ import { InfoOutlined } from "@mui/icons-material";
 import { Alert } from "@mui/joy";
 import { isDefined } from "remeda";
 
+import { DetailsItem, EditButton } from "@eshg/lib-employee-portal";
 import {
   DetailsColumn,
-  DetailsItem,
-  EditButton,
-} from "@eshg/lib-employee-portal";
-import { DetailsList, formatDate, formatPersonName } from "@eshg/lib-portal";
+  DetailsList,
+  formatDate,
+  formatPersonName,
+} from "@eshg/lib-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,

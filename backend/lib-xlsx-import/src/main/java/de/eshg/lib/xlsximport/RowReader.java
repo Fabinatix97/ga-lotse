@@ -8,9 +8,9 @@ package de.eshg.lib.xlsximport;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.common.ValidationPatterns;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
-import de.eshg.validation.constraints.EmailAddressConstraint;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -168,9 +168,7 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
   }
 
   private boolean isValidEmail(String value) {
-    return Pattern.compile(EmailAddressConstraint.E_MAIL_PATTERN, Pattern.CASE_INSENSITIVE)
-        .matcher(value)
-        .matches();
+    return Pattern.compile(ValidationPatterns.E_MAIL_PATTERN).matcher(value).matches();
   }
 
   protected String cellAsString(

@@ -1,3 +1,6 @@
+// Copyright 2025 cronn GmbH
+// SPDX-License-Identifier: Apache-2.0
+
 //TODO ISSUE-4546: Duplicate of eshg-frontend/buildsrc/main/groovy/reverse-proxy.gradle
 plugins {
   id 'com.avast.gradle.docker-compose'

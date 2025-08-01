@@ -10,7 +10,7 @@ import { ContactAndAvailability } from "@/lib/businessModules/stiProtection/comp
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 import { ResultsStatusContent } from "./ResultsStatusContent";
 import { ResultsStatusSidePanel } from "./ResultsStatusSidePanel";
@@ -21,19 +21,17 @@ export function ResultsStatusPage() {
   const { concern } = procedure;
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle
-          toolbar={<LogoutButton text={t("translation:common.leave")} />}
-        >
-          {t("title")}
-        </PageTitle>
-        <ColumnGrid>
-          <ResultsStatusContent />
-          <ResultsStatusSidePanel />
-          <ContactAndAvailability concern={concern} />
-        </ColumnGrid>
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle
+        toolbar={<LogoutButton text={t("translation:common.leave")} />}
+      >
+        {t("title")}
+      </PageTitle>
+      <ColumnGrid>
+        <ResultsStatusContent />
+        <ResultsStatusSidePanel />
+        <ContactAndAvailability concern={concern} />
+      </ColumnGrid>
+    </PageContent>
   );
 }

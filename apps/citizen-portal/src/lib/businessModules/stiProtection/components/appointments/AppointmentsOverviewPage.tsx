@@ -29,7 +29,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 export function AppointmentsOverviewPage() {
   const { t } = useTranslation(["stiProtection/appointmentOverview"]);
@@ -69,56 +69,54 @@ export function AppointmentsOverviewPage() {
   assert.ok(accessCode, "accessCode is not ok");
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle
-          toolbar={<LogoutButton text={t("translation:common.leave")} />}
-        >
-          {t("header.title")}
-        </PageTitle>
-        <GridColumnStack>
-          <TypeSwitchButtons
-            selected={selectedAppointmentType}
-            configs={appointmentTypeConfigs}
-          />
-          {!appointments.length ? (
-            <ContentSheet>
-              <ContentSheetTitle>
-                {t("appointments.no_data.past")}
-              </ContentSheetTitle>
-              <Stack
-                gap={2}
-                direction="column"
-                alignItems="center"
-                p={6}
-                data-testid="no-appointments"
-              >
-                <DateRange
-                  sx={{
-                    height: 100,
-                    width: 100,
-                  }}
-                />
-                <Typography level="title-lg">
-                  {t("appointments.no_data.default")}
-                </Typography>
-              </Stack>
-            </ContentSheet>
-          ) : (
-            <Stack role="group" gap={2} aria-label="appointment-overview-list">
-              {appointments.map((appointment, index) => (
-                <AppointmentOverviewSheetButton
-                  key={index}
-                  index={index}
-                  appointment={appointment}
-                  concern={concern}
-                  accessCode={accessCode}
-                />
-              ))}
+    <PageContent>
+      <PageTitle
+        toolbar={<LogoutButton text={t("translation:common.leave")} />}
+      >
+        {t("header.title")}
+      </PageTitle>
+      <GridColumnStack>
+        <TypeSwitchButtons
+          selected={selectedAppointmentType}
+          configs={appointmentTypeConfigs}
+        />
+        {!appointments.length ? (
+          <ContentSheet>
+            <ContentSheetTitle>
+              {t("appointments.no_data.past")}
+            </ContentSheetTitle>
+            <Stack
+              gap={2}
+              direction="column"
+              alignItems="center"
+              p={6}
+              data-testid="no-appointments"
+            >
+              <DateRange
+                sx={{
+                  height: 100,
+                  width: 100,
+                }}
+              />
+              <Typography level="title-lg">
+                {t("appointments.no_data.default")}
+              </Typography>
             </Stack>
-          )}
-        </GridColumnStack>
-      </PageContent>
-    </PageLayout>
+          </ContentSheet>
+        ) : (
+          <Stack role="group" gap={2} aria-label="appointment-overview-list">
+            {appointments.map((appointment, index) => (
+              <AppointmentOverviewSheetButton
+                key={index}
+                index={index}
+                appointment={appointment}
+                concern={concern}
+                accessCode={accessCode}
+              />
+            ))}
+          </Stack>
+        )}
+      </GridColumnStack>
+    </PageContent>
   );
 }

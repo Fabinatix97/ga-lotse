@@ -14,9 +14,13 @@ const UnstyledDescriptionList = styled("dl")({
 
 const DetailsListContext = createContext(false);
 
-export function DetailsList(props: RequiresChildren) {
+interface DetailsListProps extends RequiresChildren {
+  "data-testid"?: string;
+}
+
+export function DetailsList(props: DetailsListProps) {
   return (
-    <UnstyledDescriptionList>
+    <UnstyledDescriptionList data-testid={props["data-testid"]}>
       <DetailsListContext value>{props.children}</DetailsListContext>
     </UnstyledDescriptionList>
   );

@@ -19,8 +19,9 @@ import de.eshg.inspection.checklist.api.update.UpdateChecklistResponse;
 import de.eshg.inspection.checklist.persistence.Checklist;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersionRepository;
+import de.eshg.inspection.config.InspectionPropertiesConfigService;
+import de.eshg.inspection.config.persistence.FacilityFileNumberMethod;
 import de.eshg.inspection.facility.FacilityClient;
-import de.eshg.inspection.facility.FacilityFileNumberConfiguration;
 import de.eshg.inspection.facility.FileNumberCollisionService;
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.inspection.api.FinalizeInspectionRequest;
@@ -103,8 +104,8 @@ public class InspectionService {
   private final FacilityClient facilityClient;
   private final PacklistService packlistService;
   private final InboxProcedureService inboxProcedureService;
-  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
   private final FileNumberCollisionService fileNumberCollisionService;
+  private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
 
   public InspectionService(
       InspectionRepository inspectionRepository,
@@ -120,8 +121,8 @@ public class InspectionService {
       FacilityClient facilityClient,
       PacklistService packlistService,
       InboxProcedureService inboxProcedureService,
-      FacilityFileNumberConfiguration facilityFileNumberConfiguration,
-      FileNumberCollisionService fileNumberCollisionService) {
+      FileNumberCollisionService fileNumberCollisionService,
+      InspectionPropertiesConfigService inspectionPropertiesConfigService) {
     this.inspectionRepository = inspectionRepository;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.objectTypeRepository = objectTypeRepository;
@@ -135,8 +136,8 @@ public class InspectionService {
     this.facilityClient = facilityClient;
     this.packlistService = packlistService;
     this.inboxProcedureService = inboxProcedureService;
-    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
     this.fileNumberCollisionService = fileNumberCollisionService;
+    this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
   }
 
   public InspectionAndFileNumberCollisionsDto startInspection(
@@ -397,10 +398,12 @@ public class InspectionService {
             inspection.getRelatedFacility().getCentralFileStateId());
     UUID previousFacilityFileStateId = inspection.getRelatedFacility().getCentralFileStateId();
 
+    FacilityFileNumberMethod facilityFileNumberMethod =
+        inspectionPropertiesConfigService.getConfiguration().getFacilityFileNumberMethod();
+
     String fileNumberBefore =
         facilityClient
-            .getFacilityFileNumber(
-                inspection.getCentralFileStateId(), facilityFileNumberConfiguration.getMethod())
+            .getFacilityFileNumber(inspection.getCentralFileStateId(), facilityFileNumberMethod)
             .fileNumber();
 
     AddFacilityFileStateResponse baseResponse =
@@ -409,7 +412,7 @@ public class InspectionService {
 
     String fileNumberAfter =
         facilityClient
-            .getFacilityFileNumber(baseResponse.id(), facilityFileNumberConfiguration.getMethod())
+            .getFacilityFileNumber(baseResponse.id(), facilityFileNumberMethod)
             .fileNumber();
 
     inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());

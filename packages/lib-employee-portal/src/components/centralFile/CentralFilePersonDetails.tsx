@@ -9,6 +9,7 @@ import { isDefined } from "remeda";
 
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
 import {
+  DetailsColumn,
   GENDER_VALUES,
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
@@ -20,7 +21,6 @@ import {
 import { BaseAddress } from "../../api/models/address";
 import { ResponsiveDivider } from "../ResponsiveDivider";
 import { BaseAddressDetailsColumn } from "../address/BaseAddressDetailsColumn";
-import { DetailsColumn } from "../detailsSection/DetailsColumn";
 import { DetailsRow } from "../detailsSection/DetailsRow";
 import { DetailsItem } from "../detailsSection/items/DetailsItem";
 import { ExternalLinkDetailsItem } from "../detailsSection/items/ExternalLinkDetailsItem";

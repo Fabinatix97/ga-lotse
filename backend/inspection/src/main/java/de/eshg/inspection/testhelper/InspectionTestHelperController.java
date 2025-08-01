@@ -7,7 +7,11 @@ package de.eshg.inspection.testhelper;
 
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.inspection.checklist.persistence.ChecklistRepository;
-import de.eshg.inspection.facility.FacilityFileNumberConfiguration;
+import de.eshg.inspection.config.InspectionPropertiesConfigService;
+import de.eshg.inspection.config.api.FacilityFileNumberMethodDto;
+import de.eshg.inspection.config.mapper.InspectionPropertiesConfigMapper;
+import de.eshg.inspection.config.persistence.FacilityFileNumberMethod;
+import de.eshg.inspection.config.persistence.InspectionPropertiesConfigurationProvider;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
@@ -30,7 +34,8 @@ public class InspectionTestHelperController extends TestHelperController
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final InspectionFeatureToggle inspectionFeatureToggle;
   private final ChecklistRepository checklistRepository;
-  private final FacilityFileNumberConfiguration facilityFileNumberConfiguration;
+  private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
+  private final InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper;
 
   public InspectionTestHelperController(
       DefaultTestHelperService testHelperService,
@@ -38,12 +43,14 @@ public class InspectionTestHelperController extends TestHelperController
       InspectionFeatureToggle inspectionFeatureToggle,
       EnvironmentConfig environmentConfig,
       ChecklistRepository checklistRepository,
-      FacilityFileNumberConfiguration facilityFileNumberConfiguration) {
+      InspectionPropertiesConfigService inspectionPropertiesConfigService,
+      InspectionPropertiesConfigMapper inspectionPropertiesConfigMapper) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.checklistRepository = checklistRepository;
-    this.facilityFileNumberConfiguration = facilityFileNumberConfiguration;
+    this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
+    this.inspectionPropertiesConfigMapper = inspectionPropertiesConfigMapper;
   }
 
   @Override
@@ -69,7 +76,14 @@ public class InspectionTestHelperController extends TestHelperController
   }
 
   @PostExchange("/file-number-method")
-  public void setFileNumberMethod(@RequestParam(name = "method") String method) {
-    facilityFileNumberConfiguration.setMethod(method);
+  public void setFileNumberMethod(
+      @RequestParam(name = "method") FacilityFileNumberMethodDto method) {
+    inspectionPropertiesConfigService.updateConfiguration(
+        new InspectionPropertiesConfigurationProvider() {
+          @Override
+          public FacilityFileNumberMethod getFacilityFileNumberMethod() {
+            return inspectionPropertiesConfigMapper.toDomainType(method);
+          }
+        });
   }
 }

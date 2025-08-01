@@ -57,7 +57,7 @@ class OmsConfigController {
       return omsConfigMapper.toInterfaceType(config);
     } else {
       log.error("getOmsDataConfig(): config isn't intialized.");
-      return null;
+      return new GetOmsConfigResponse(null);
     }
   }
 

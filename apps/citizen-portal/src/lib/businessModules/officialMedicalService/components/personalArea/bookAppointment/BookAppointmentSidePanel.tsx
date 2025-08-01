@@ -12,13 +12,19 @@ import { Button, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 
-import { formatDateToFullReadableString, formatTime } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  formatDateToFullReadableString,
+  formatTime,
+} from "@eshg/lib-portal";
 import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
 
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
@@ -56,47 +62,43 @@ export function BookAppointmentSidePanel({
   return (
     <ContentSheet data-testid="overview">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
-      <Stack gap={1} data-testid="appointment-summary" role="list">
-        <DetailsItem
-          slotProps={{
-            stack: { role: "listitem" },
-          }}
-          label={t("sidePanel.concernAndDuration", {
-            context: "label",
-          })}
-          value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentTypeConfig?.standardDurationInMinutes })}`}
-          icon={<MedicalServicesOutlined />}
-          hiddenLabel
-        />
-        {values.appointment && (
-          <>
-            <DetailsItem
-              slotProps={{
-                stack: { role: "listitem" },
-              }}
-              label={t("sidePanel.date", {
-                context: "label",
-              })}
-              value={formatDateToFullReadableString(values.appointment?.start)}
-              icon={<DateRange />}
-              hiddenLabel
-            />
-            <DetailsItem
-              slotProps={{
-                stack: { role: "listitem" },
-              }}
-              label={t("sidePanel.time", {
-                context: "label",
-              })}
-              value={t("sidePanel.time", {
-                appointmentStart: formatTime(values.appointment?.start),
-              })}
-              icon={<AccessTimeOutlined />}
-              hiddenLabel
-            />
-          </>
-        )}
-      </Stack>
+      <DetailsList data-testid="appointment-summary">
+        <DetailsColumn sx={{ gap: byBreakpoint({ mobile: 1, desktop: 2 }) }}>
+          <DetailsItem
+            label={t("sidePanel.concernAndDuration", {
+              context: "label",
+            })}
+            value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentTypeConfig?.standardDurationInMinutes })}`}
+            icon={<MedicalServicesOutlined />}
+            hiddenLabel
+          />
+          {values.appointment && (
+            <>
+              <DetailsItem
+                label={t("sidePanel.date", {
+                  context: "label",
+                })}
+                value={formatDateToFullReadableString(
+                  values.appointment?.start,
+                )}
+                icon={<DateRange />}
+                hiddenLabel
+              />
+              <DetailsItem
+                label={t("sidePanel.time", {
+                  context: "label",
+                })}
+                value={t("sidePanel.time", {
+                  context: "value",
+                  appointmentStart: formatTime(values.appointment?.start),
+                })}
+                icon={<AccessTimeOutlined />}
+                hiddenLabel
+              />
+            </>
+          )}
+        </DetailsColumn>
+      </DetailsList>
       <Stack gap={2}>
         <Button color="primary" variant="solid" onClick={() => handleSubmit()}>
           {t("sidePanel.bookAppointment", {

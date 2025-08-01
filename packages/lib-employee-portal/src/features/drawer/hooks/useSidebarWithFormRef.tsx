@@ -43,6 +43,11 @@ export function useSidebarWithFormRef<
     onBeforeClose: (confirmClose) => {
       if (formRef.current?.dirty) {
         openCancelDialog({
+          title: "Änderungen verwerfen",
+          description:
+            "Sie haben nicht gespeicherte Änderungen. Was möchten Sie damit machen?",
+          cancelLabel: "Behalten",
+          confirmLabel: "Verwerfen",
           onConfirm: () => confirmClose(true),
           onCancel: () => confirmClose(false),
         });

@@ -4,18 +4,13 @@
  */
 
 import { TravelExploreOutlined } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { useMultiStepForm } from "@eshg/lib-portal";
 import { ApiTravelTimeUnit, ApiTravelType } from "@eshg/travel-medicine-api";
 
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
-import {
-  formatTravelDestinations,
-  formatTravelDuration,
-  travelDestinationsTranslation,
-} from "@/lib/businessModules/travelMedicine/helpers/appointmentFormHelper";
+import { travelDestinationsTranslation } from "@/lib/businessModules/travelMedicine/helpers/appointmentFormHelper";
 import {
   TRAVEL_TIME_UNITS,
   TRAVEL_TYPES,
@@ -30,11 +25,6 @@ export function TravelInformationOverviewDetails() {
   const { translateCountry } = useTranslateCountry();
   const { currentStep } = useMultiStepForm();
 
-  const travelDurationLabel = t("overview.fields.travelDuration");
-  const travelDestinationsLabel = t("overview.fields.travelDestinations", {
-    count: values.travelInformation.travelDestinations.length,
-  });
-
   function isTravelDataComplete() {
     return (
       values.travelInformation.travelType &&
@@ -47,7 +37,7 @@ export function TravelInformationOverviewDetails() {
   }
 
   return (
-    <Stack role="listitem">
+    <>
       {currentStep > 3 && (
         <DetailsItem
           label={t("overview.fields.travelData", {
@@ -62,26 +52,35 @@ export function TravelInformationOverviewDetails() {
       )}
       {currentStep > 4 && isTravelDataComplete() && (
         <>
-          <Typography sx={{ paddingInlineStart: "2.25rem" }}>
-            {formatTravelDestinations(
-              travelDestinationsLabel,
-              travelDestinationsTranslation(
-                values.travelInformation.travelDestinations,
-                translateCountry,
-              ),
+          <DetailsItem
+            label={t("overview.fields.travelDestinations", {
+              count: values.travelInformation.travelDestinations.length,
+            })}
+            value={travelDestinationsTranslation(
+              values.travelInformation.travelDestinations,
+              translateCountry,
             )}
-          </Typography>
-          <Typography sx={{ paddingInlineStart: "2.25rem" }}>
-            {formatTravelDuration(
-              travelDurationLabel,
-              values.travelInformation.travelTimeAmount,
-              TRAVEL_TIME_UNITS[
-                values.travelInformation.travelTimeUnit as ApiTravelTimeUnit
-              ],
-            )}
-          </Typography>
+            slotProps={{
+              stack: { direction: "row", gap: 0.66, sx: { paddingLeft: 5 } },
+              label: { level: "body-md" },
+            }}
+          />
+          <DetailsItem
+            label={t("overview.fields.travelDuration_label")}
+            value={t("overview.fields.travelDuration_value", {
+              travelTimeAmount: values.travelInformation.travelTimeAmount,
+              travelTimeUnit:
+                TRAVEL_TIME_UNITS[
+                  values.travelInformation.travelTimeUnit as ApiTravelTimeUnit
+                ],
+            })}
+            slotProps={{
+              stack: { direction: "row", gap: 0.66, sx: { paddingLeft: 5 } },
+              label: { level: "body-md" },
+            }}
+          />
         </>
       )}
-    </Stack>
+    </>
   );
 }

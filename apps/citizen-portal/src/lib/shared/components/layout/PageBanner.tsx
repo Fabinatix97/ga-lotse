@@ -10,7 +10,7 @@ import { useGetDepartmentInfo } from "@/lib/shared/api/queries/department";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 
-export type BannerType = "private" | "business" | "general";
+export type BannerType = "private" | "business" | "general" | "reduced";
 
 interface PageBannerProps {
   type: BannerType;
@@ -34,6 +34,9 @@ export function PageBanner(props: PageBannerProps) {
   const { t } = useTranslation();
   const { data: department } = useGetDepartmentInfo();
 
+  if (props.type === "reduced") {
+    return <PageBannerReduced />;
+  }
   return (
     <Box
       sx={{
@@ -113,7 +116,7 @@ const Title = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export function PageBannerReduced() {
+function PageBannerReduced() {
   const theme = useTheme();
 
   return (

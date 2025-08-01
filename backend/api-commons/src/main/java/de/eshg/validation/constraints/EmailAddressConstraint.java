@@ -5,10 +5,10 @@
 
 package de.eshg.validation.constraints;
 
+import de.eshg.lib.common.ValidationPatterns;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,10 +17,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {})
 @Target({ElementType.TYPE_USE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Email(regexp = EmailAddressConstraint.E_MAIL_PATTERN, flags = Pattern.Flag.CASE_INSENSITIVE)
+@Email(regexp = ValidationPatterns.E_MAIL_PATTERN)
 public @interface EmailAddressConstraint {
-  String E_MAIL_PATTERN =
-      "^(?=.{6,254})(?!\\.)(?!.*\\.\\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9]+(-+[A-Z0-9]+)*\\.)+[A-Z]{2,}$";
 
   String message() default "";
 

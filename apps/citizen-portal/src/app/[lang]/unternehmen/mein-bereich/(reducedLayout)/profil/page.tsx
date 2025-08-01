@@ -26,25 +26,23 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function OrganizationProfilePage() {
   const { t } = useTranslation("translation");
   const { data: linkedFacility } = useGetLinkedReferenceFacility();
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle>{t("common.organization_profile")}</PageTitle>
+    <PageContent>
+      <PageTitle>{t("common.organization_profile")}</PageTitle>
 
-        <QueryBoundary>
-          <TwoColumnGrid
-            content={<ProfileContent linkedFacility={linkedFacility} />}
-            sidePanel={<GdprContactForm />}
-          />
-        </QueryBoundary>
-      </PageContent>
-    </PageLayout>
+      <QueryBoundary>
+        <TwoColumnGrid
+          content={<ProfileContent linkedFacility={linkedFacility} />}
+          sidePanel={<GdprContactForm />}
+        />
+      </QueryBoundary>
+    </PageContent>
   );
 }
 

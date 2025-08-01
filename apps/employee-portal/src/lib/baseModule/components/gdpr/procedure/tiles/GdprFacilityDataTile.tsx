@@ -10,12 +10,11 @@ import { SxProps } from "@mui/joy/styles/types";
 import { ApiGdprFacility } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
-  DetailsColumn,
   DetailsItem,
   ExternalLinkDetailsItem,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { isNonEmptyString } from "@eshg/lib-portal";
+import { DetailsColumn, isNonEmptyString } from "@eshg/lib-portal";
 
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 

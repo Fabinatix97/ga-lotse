@@ -23,25 +23,23 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function IndividualProfilePage() {
   const { t } = useTranslation("translation");
   const { data: linkedPerson } = useGetLinkedReferencePerson();
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle>{t("common.individual_profile")}</PageTitle>
+    <PageContent>
+      <PageTitle>{t("common.individual_profile")}</PageTitle>
 
-        <QueryBoundary>
-          <TwoColumnGrid
-            content={<ProfileContent linkedPerson={linkedPerson} />}
-            sidePanel={<GdprContactForm />}
-          />
-        </QueryBoundary>
-      </PageContent>
-    </PageLayout>
+      <QueryBoundary>
+        <TwoColumnGrid
+          content={<ProfileContent linkedPerson={linkedPerson} />}
+          sidePanel={<GdprContactForm />}
+        />
+      </QueryBoundary>
+    </PageContent>
   );
 }
 

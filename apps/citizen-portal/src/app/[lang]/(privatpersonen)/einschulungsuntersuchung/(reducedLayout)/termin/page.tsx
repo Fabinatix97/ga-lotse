@@ -16,7 +16,6 @@ import { usePublicDepartmentApi } from "@/lib/shared/api/clients";
 import { getDepartmentInfoQuery } from "@/lib/shared/api/queries/department";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function SchoolEntryAppointmentPage() {
   const departmentApi = usePublicDepartmentApi();
@@ -29,22 +28,20 @@ export default function SchoolEntryAppointmentPage() {
   });
 
   return (
-    <PageLayout>
-      <PageContent>
-        <AppointmentPageTitle />
-        <TwoColumnGrid
-          content={<AppointmentContent procedure={procedure} />}
-          sidePanel={
-            <AppointmentSidePanel
-              isClosed={procedure.isClosedProcedure}
-              appointmentChangesByCitizenLeft={
-                procedure.appointmentChangesByCitizenLeft
-              }
-              departmentPhoneNumber={departmentInfo.phoneNumber}
-            />
-          }
-        />
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <AppointmentPageTitle />
+      <TwoColumnGrid
+        content={<AppointmentContent procedure={procedure} />}
+        sidePanel={
+          <AppointmentSidePanel
+            isClosed={procedure.isClosedProcedure}
+            appointmentChangesByCitizenLeft={
+              procedure.appointmentChangesByCitizenLeft
+            }
+            departmentPhoneNumber={departmentInfo.phoneNumber}
+          />
+        }
+      />
+    </PageContent>
   );
 }

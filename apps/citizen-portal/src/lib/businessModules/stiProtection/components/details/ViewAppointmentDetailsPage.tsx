@@ -12,7 +12,7 @@ import { CitizenProcedureProvider } from "@/lib/businessModules/stiProtection/co
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ColumnGrid } from "@/lib/shared/components/layout/grid";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 import {
   AppointmentDetailsContent,
@@ -29,21 +29,19 @@ export function ViewAppointmentDetailsPage() {
       : "header.past_appointment_title";
 
   return (
-    <PageLayout>
-      <PageContent>
-        <CitizenProcedureProvider data={procedure}>
-          <PageTitle
-            toolbar={<LogoutButton text={t("translation:common.leave")} />}
-          >
-            {t(titleKey)}
-          </PageTitle>
-          <ColumnGrid>
-            <AppointmentDetailsContent />
-            <AppointmentDetailsSidePanel />
-            <Information />
-          </ColumnGrid>
-        </CitizenProcedureProvider>
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <CitizenProcedureProvider data={procedure}>
+        <PageTitle
+          toolbar={<LogoutButton text={t("translation:common.leave")} />}
+        >
+          {t(titleKey)}
+        </PageTitle>
+        <ColumnGrid>
+          <AppointmentDetailsContent />
+          <AppointmentDetailsSidePanel />
+          <Information />
+        </ColumnGrid>
+      </CitizenProcedureProvider>
+    </PageContent>
   );
 }

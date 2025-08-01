@@ -5,7 +5,8 @@
 
 import { Chip, Sheet, styled } from "@mui/joy";
 
-import { DetailsColumn, DetailsSection } from "@eshg/lib-employee-portal";
+import { DetailsSection } from "@eshg/lib-employee-portal";
+import { DetailsColumn } from "@eshg/lib-portal";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";

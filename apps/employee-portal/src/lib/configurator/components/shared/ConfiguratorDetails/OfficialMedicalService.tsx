@@ -35,9 +35,9 @@ import {
 } from "@/lib/shared/api/queries/configurator/officialMedicalService";
 
 export interface OfficialMedicalServiceFormModel {
-  keycloakUserCleanupJobOverdueDuration: number;
-  medicalOpinionCutOffDateLeadTime: number;
-  citizenPortalAnamnesisEnabled: "true" | "false";
+  keycloakUserCleanupJobOverdueDuration: number | string;
+  medicalOpinionCutOffDateLeadTime: number | string;
+  citizenPortalAnamnesisEnabled: "true" | "false" | "";
   concerns: ConfigFile;
   landingContentDe: ConfigFile;
   landingContentEn: ConfigFile;
@@ -71,7 +71,8 @@ function OfficialMedicalServiceConfiguratorForm(props: {
     landingContentDe,
     landingContentEn,
     citizenPortalAnamnesisEnabled,
-    ...rest
+    keycloakUserCleanupJobOverdueDuration,
+    medicalOpinionCutOffDateLeadTime,
   }: OfficialMedicalServiceFormModel) {
     await updateOms({
       concerns: mapFileToRequest(concerns),
@@ -79,7 +80,9 @@ function OfficialMedicalServiceConfiguratorForm(props: {
       landingContentEn: mapFileToRequest(landingContentEn),
       deleteLandingPageEn: landingContentEn === null,
       citizenPortalAnamnesisEnabled: citizenPortalAnamnesisEnabled === "true",
-      ...rest,
+      keycloakUserCleanupJobOverdueDuration:
+        +keycloakUserCleanupJobOverdueDuration,
+      medicalOpinionCutOffDateLeadTime: +medicalOpinionCutOffDateLeadTime,
     });
   }
 
@@ -91,13 +94,13 @@ function OfficialMedicalServiceConfiguratorForm(props: {
         citizenPortalAnamnesisEnabled: booleanToString(
           data.citizenPortalAnamnesisEnabled,
         ),
-        concerns: mapDocument(data.concerns, CustomFileType.Yaml),
+        concerns: mapOptionalDocument(data.concerns, CustomFileType.Yaml),
         landingContentDe: mapOptionalDocument(
-          data.landingPageContent.de,
+          data.landingPageContent?.de,
           CustomFileType.Md,
         ),
         landingContentEn: mapOptionalDocument(
-          data.landingPageContent.en,
+          data.landingPageContent?.en,
           CustomFileType.Md,
         ),
       }}
@@ -147,11 +150,17 @@ function useOmsSheets() {
           required: "Bitte Dauer eingeben.",
           min: 0,
         }),
-        yesNoSheet({
+        fieldSheet({
           title: "Anamnese anzeigen im Online Portal",
-          description:
-            "Soll der Anamnesebogen im Online Portal angezeigt werden?",
+          label: "Soll der Anamnesebogen im Online Portal angezeigt werden?",
           name: "citizenPortalAnamnesisEnabled",
+          type: "radio",
+          direction: "row",
+          options: [
+            { value: "true", label: "Ja" },
+            { value: "false", label: "Nein" },
+          ],
+          required: "Bitte eine Option auswählen.",
         }),
         {
           title: "Startseite im Online Portal",
@@ -195,22 +204,6 @@ function fieldSheet({
       },
     ],
   };
-}
-
-function yesNoSheet(
-  props: Pick<FormSheet, "title" | "description"> & {
-    name: string;
-  },
-) {
-  return fieldSheet({
-    ...props,
-    type: "radio",
-    direction: "row",
-    options: [
-      { value: "true", label: "Ja" },
-      { value: "false", label: "Nein" },
-    ],
-  });
 }
 
 function fileSection({
@@ -281,7 +274,10 @@ function mapOptionalDocument(
   return mapDocument(file, type);
 }
 
-function booleanToString(value: boolean) {
+function booleanToString(value: boolean | string) {
+  if (typeof value === "string") {
+    return "";
+  }
   return value ? "true" : "false";
 }
 

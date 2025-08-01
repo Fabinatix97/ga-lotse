@@ -6,14 +6,13 @@
 import { Sheet, Stack } from "@mui/joy";
 
 import {
-  DetailsColumn,
   DetailsItem,
   DetailsSection,
   EditButton,
   ResponsiveDivider,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { GENDER_VALUES } from "@eshg/lib-portal";
+import { DetailsColumn, GENDER_VALUES } from "@eshg/lib-portal";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";

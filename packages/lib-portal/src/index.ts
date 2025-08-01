@@ -83,6 +83,7 @@ export {
   BaseDetailsItemValue,
 } from "./components/details/BaseDetailsItem";
 export { DetailsList } from "./components/details/DetailsList";
+export { DetailsColumn } from "./components/details/DetailsColumn";
 export {
   DisabledFormProvider,
   useIsFormDisabled,

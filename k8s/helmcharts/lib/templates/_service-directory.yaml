@@ -148,13 +148,11 @@ spec:
                   key: POSTGRESQL_PASSWORD
             - name: eshg.sd.allowed-admin-client-commonnames
               value: {{ .Values.domains.hosts.adminportal }}
-            {{- if or (.Values.adminportal.usercerts) (not .Values.adminportal.selfmanagedUserCerts) }}
             - name: eshg.sd.admin-certs
               valueFrom:
                 secretKeyRef:
                   name: admin-portal-users-tls
                   key: truststore.crt
-            {{- end }}
             - name: spring.profiles.active
               value: "{{ .Values.spring.profiles.active }}"
             - name: eshg.sd.self.common-name

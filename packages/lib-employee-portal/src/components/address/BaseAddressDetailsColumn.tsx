@@ -6,14 +6,13 @@
 import { SxProps } from "@mui/joy/styles/types/theme";
 import { isNonNullish } from "remeda";
 
-import { translateCountry } from "@eshg/lib-portal";
+import { DetailsColumn, translateCountry } from "@eshg/lib-portal";
 
 import {
   BaseAddress,
   isDomesticAddress,
   isPostboxAddress,
 } from "../../api/models/address";
-import { DetailsColumn } from "../detailsSection/DetailsColumn";
 import { DetailsRow } from "../detailsSection/DetailsRow";
 import { DetailsItem } from "../detailsSection/items/DetailsItem";
 

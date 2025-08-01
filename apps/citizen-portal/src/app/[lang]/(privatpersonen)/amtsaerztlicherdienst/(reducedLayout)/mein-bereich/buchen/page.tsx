@@ -21,7 +21,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/s
 import { useTranslation } from "@/lib/i18n/client";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
@@ -70,15 +70,13 @@ export default function CitizenOmsEntryPage() {
   }
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle toolbar={<LogoutButton text={t("common.logout")} />}>
-          {t("common.title")}
-        </PageTitle>
-        <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-          <BookAppointmentWrapper procedure={procedure} />
-        </Formik>
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle toolbar={<LogoutButton text={t("common.logout")} />}>
+        {t("common.title")}
+      </PageTitle>
+      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+        <BookAppointmentWrapper procedure={procedure} />
+      </Formik>
+    </PageContent>
   );
 }

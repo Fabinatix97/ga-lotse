@@ -987,6 +987,45 @@
         "tags" : [ "DepartmentInfoConfig" ]
       }
     },
+    "/configuration/inspection-properties" : {
+      "get" : {
+        "operationId" : "getInspectionPropertiesConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInspectionPropertiesConfigurationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the Inspection properties configuration",
+        "tags" : [ "InspectionPropertiesConfig" ]
+      },
+      "put" : {
+        "operationId" : "putInspectionPropertiesConfig",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PutInspectionPropertiesConfigurationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the Inspection properties configuration",
+        "tags" : [ "InspectionPropertiesConfig" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-notice" : {
       "get" : {
         "operationId" : "getPrivacyNoticeConfig",
@@ -4909,7 +4948,7 @@
           "name" : "method",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/FacilityFileNumberMethod"
           }
         } ],
         "responses" : {
@@ -6717,21 +6756,26 @@
         "type" : "object",
         "properties" : {
           "abbreviation" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "city" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "country" : {
             "$ref" : "#/components/schemas/CountryCode"
           },
           "email" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "homepage" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "houseNumber" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "latitude" : {
@@ -6743,15 +6787,19 @@
             "format" : "double"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "phoneNumber" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "postalCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "street" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -7259,6 +7307,10 @@
             "$ref" : "#/components/schemas/FacilityForDuplicateReview"
           }
         }
+      },
+      "FacilityFileNumberMethod" : {
+        "type" : "string",
+        "enum" : [ "NO_FILE_NUMBERS", "INSPECTION_FRANKFURT" ]
       },
       "FacilityForDuplicateReview" : {
         "required" : [ "city", "emailAddresses", "name", "phoneNumbers", "postalCode", "referenceId", "street" ],
@@ -7913,6 +7965,18 @@
             "items" : {
               "$ref" : "#/components/schemas/InspectionIncident"
             }
+          }
+        }
+      },
+      "GetInspectionPropertiesConfigurationResponse" : {
+        "required" : [ "facilityFileNumberMethod", "initialized" ],
+        "type" : "object",
+        "properties" : {
+          "facilityFileNumberMethod" : {
+            "$ref" : "#/components/schemas/FacilityFileNumberMethod"
+          },
+          "initialized" : {
+            "type" : "boolean"
           }
         }
       },
@@ -10140,6 +10204,15 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "PutInspectionPropertiesConfigurationRequest" : {
+        "required" : [ "facilityFileNumberMethod" ],
+        "type" : "object",
+        "properties" : {
+          "facilityFileNumberMethod" : {
+            "$ref" : "#/components/schemas/FacilityFileNumberMethod"
+          }
+        }
       },
       "ReportInfo" : {
         "required" : [ "creatorUserId", "fileContentId", "fileName", "fileSize", "reportDate", "reportId" ],

@@ -20,7 +20,7 @@ import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { InfoSectionGrid } from "@/lib/shared/components/infoSection";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 const gdprProcedureTypes = Object.values(ApiGdprProcedureType);
 
@@ -42,51 +42,47 @@ export function GdprRightsOverview({ userType }: { userType: UserType }) {
   }
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle
-          toolbar={<LogoutButton text={t("translation:common.leave")} />}
-        >
-          {t(`gdpr:overview.title.${userType}`)}
-        </PageTitle>
+    <PageContent>
+      <PageTitle
+        toolbar={<LogoutButton text={t("translation:common.leave")} />}
+      >
+        {t(`gdpr:overview.title.${userType}`)}
+      </PageTitle>
 
-        {procedures.length > 0 && (
-          <ContentSheet missingTitle>
-            <GdprProcedureList procedures={procedures} />
-          </ContentSheet>
-        )}
-
+      {procedures.length > 0 && (
         <ContentSheet missingTitle>
-          <InfoSectionGrid>
-            {gdprProcedureTypes.map((type) => (
-              <ActionTile
-                key={type}
-                title={msg(type, "title")}
-                buttonLabel={msg(type, "button")}
-                onClick={() => setChosenProcedureType(type)}
-              >
-                {t(
-                  `gdpr:overview.${type.toLowerCase()}.description.${userType}`,
-                )}
-              </ActionTile>
-            ))}
-          </InfoSectionGrid>
+          <GdprProcedureList procedures={procedures} />
         </ContentSheet>
+      )}
 
-        <QueryBoundary>
-          <GdprObjectionFormDialog
-            open={chosenProcedureType === ApiGdprProcedureType.ToObject}
-            onClose={() => setChosenProcedureType(undefined)}
-          />
+      <ContentSheet missingTitle>
+        <InfoSectionGrid>
+          {gdprProcedureTypes.map((type) => (
+            <ActionTile
+              key={type}
+              title={msg(type, "title")}
+              buttonLabel={msg(type, "button")}
+              onClick={() => setChosenProcedureType(type)}
+            >
+              {t(`gdpr:overview.${type.toLowerCase()}.description.${userType}`)}
+            </ActionTile>
+          ))}
+        </InfoSectionGrid>
+      </ContentSheet>
 
-          <ConfirmStartGdprProcedureDialog
-            type={chosenProcedureType}
-            userType={userType}
-            onClose={() => setChosenProcedureType(undefined)}
-          />
-        </QueryBoundary>
-      </PageContent>
-    </PageLayout>
+      <QueryBoundary>
+        <GdprObjectionFormDialog
+          open={chosenProcedureType === ApiGdprProcedureType.ToObject}
+          onClose={() => setChosenProcedureType(undefined)}
+        />
+
+        <ConfirmStartGdprProcedureDialog
+          type={chosenProcedureType}
+          userType={userType}
+          onClose={() => setChosenProcedureType(undefined)}
+        />
+      </QueryBoundary>
+    </PageContent>
   );
 }
 

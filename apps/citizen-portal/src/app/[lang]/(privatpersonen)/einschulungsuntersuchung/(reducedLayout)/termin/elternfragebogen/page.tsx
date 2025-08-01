@@ -11,7 +11,6 @@ import { useSchoolEntryCitizenApi } from "@/lib/businessModules/schoolEntry/api/
 import { getSelfProcedureAsCitizenQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryCitizenApi";
 import { CitizenAnamnesisForm } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function SchoolEntrySelfAnamnesisPage() {
   const schoolEntryCitizenApi = useSchoolEntryCitizenApi();
@@ -20,10 +19,8 @@ export default function SchoolEntrySelfAnamnesisPage() {
   );
 
   return (
-    <PageLayout>
-      <PageContent>
-        <CitizenAnamnesisForm child={procedure.child} />
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <CitizenAnamnesisForm child={procedure.child} />
+    </PageContent>
   );
 }

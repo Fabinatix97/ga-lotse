@@ -133,7 +133,6 @@ public class FacilityService {
       InspectionRepository inspectionRepository,
       FacilityFileNumberService facilityFileNumberService,
       InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository,
-      FacilityFileNumberConfiguration facilityFileNumberConfiguration,
       //      InspectionFeatureToggle inspectionFeatureToggle,
       FileNumberCollisionService fileNumberCollisionService) {
     this.facilityRepository = facilityRepository;

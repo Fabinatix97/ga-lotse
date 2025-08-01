@@ -16,7 +16,7 @@
       ${office.name} • ${office.street} ${office.zipCode} ${office.city}
     </div>
     <div>
-      Website: ${office.url} • E-Mail: ${office.email}
+      Website: ${office.url} • E-Mail: ${office.email?join(", ")}
     </div>
   </footer>
 </#macro>

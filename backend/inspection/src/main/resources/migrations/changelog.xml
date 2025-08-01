@@ -85,5 +85,6 @@
   <include file="migrations/0070_add_meds_abroad_procedure_type.xml"/>
   <include file="migrations/0071_add_employee_person_type.xml"/>
   <include file="migrations/0072_file_number_suffix.xml"/>
+  <include file="migrations/0073_configurator.xml"/>
 
 </databaseChangeLog>

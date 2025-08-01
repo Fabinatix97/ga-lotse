@@ -8,7 +8,7 @@
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { isNonNullish } from "remeda";
 
 import { ApiCountryCode } from "@eshg/base-api";
@@ -200,12 +200,11 @@ function CommonAddressFields({
 }) {
   const validateLength = useValidateLength();
   const ctx = useFormikContext<BaseAddressFormInputs>();
+  const [street, setStreet] = useState<string | undefined>(undefined);
 
   function getValue<K extends keyof BaseAddressFormInputs>(key: K) {
     return ctx.getFieldMeta<BaseAddressFormInputs[K]>(fieldName(key)).value;
   }
-
-  const street = getValue("street");
 
   return (
     <>
@@ -225,6 +224,7 @@ function CommonAddressFields({
               label="Straße"
               required="Bitte eine Straße angeben"
               validate={validateLength(1, 55)}
+              onBlur={() => setStreet(getValue("street"))}
             />
           </Grid>
           <Grid xxs={12} xs={3}>

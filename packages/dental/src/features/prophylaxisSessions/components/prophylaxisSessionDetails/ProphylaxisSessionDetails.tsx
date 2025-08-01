@@ -8,13 +8,13 @@ import { Stack, Typography } from "@mui/joy";
 import { ApiExistingUser, ApiPerformingPerson } from "@eshg/dental-api";
 import {
   ContentPanel,
-  DetailsColumn,
   DetailsItem,
   DetailsRow,
   DetailsSection,
   formatBoolean,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   DetailsList,
   formatDateTime,
   formatOptionalKey,

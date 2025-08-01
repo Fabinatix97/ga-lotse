@@ -29,7 +29,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 
 interface LoginModalState {
@@ -47,7 +47,7 @@ export default function DataPrivacyRightsEntrypointPage() {
   const routes = useRoutes();
 
   return (
-    <PageLayout>
+    <>
       <PageContent>
         <PageTitle>{t("entrypoint.title")}</PageTitle>
 
@@ -167,7 +167,6 @@ export default function DataPrivacyRightsEntrypointPage() {
           </InfoSectionGrid>
         </ContentSheet>
       </PageContent>
-
       <LoginRedirectDialog
         type={loginModalState.type}
         open={loginModalState.open}
@@ -178,7 +177,7 @@ export default function DataPrivacyRightsEntrypointPage() {
           })
         }
       />
-    </PageLayout>
+    </>
   );
 }
 

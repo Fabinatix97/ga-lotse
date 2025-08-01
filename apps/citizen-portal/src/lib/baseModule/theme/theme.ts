@@ -392,5 +392,16 @@ export const theme = extendTheme({
         backdrop: noBackdrop,
       },
     },
+    JoyButton: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => ({
+          ...(ownerState.size === "md" && {
+            height: "2.5rem",
+            fontSize: theme.fontSize.md,
+            lineHeight: "0.875",
+          }),
+        }),
+      },
+    },
   },
 });

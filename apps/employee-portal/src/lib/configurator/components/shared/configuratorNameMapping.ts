@@ -19,6 +19,7 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   SEX_WORK: "Sexarbeit",
   OFFICIAL_MEDICAL_SERVICE: "Amtsärztliche Dienste",
   OPEN_DATA: "Open Data",
+  INSPECTION: "Begehung",
 };
 
 export function getTabNamesByEndpointName(
@@ -60,5 +61,7 @@ export function getTabNamesByEndpointName(
       return "Reisen mit BtM";
     case "ADDRESS_REGISTRY":
       return "Straßen-/Gemeinde-Verzeichnis";
+    case "INSPECTION":
+      return "Fachliche Einstellungen";
   }
 }

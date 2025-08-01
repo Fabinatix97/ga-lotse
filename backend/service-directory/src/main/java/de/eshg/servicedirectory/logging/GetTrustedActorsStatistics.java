@@ -7,6 +7,8 @@ package de.eshg.servicedirectory.logging;
 
 import static de.eshg.lib.servicedirectory.ServiceDirectoryApi.GET_TRUSTED_ACTORS_FULL_PATH;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
@@ -21,16 +23,18 @@ public class GetTrustedActorsStatistics {
 
   private static final Logger logger = LoggerFactory.getLogger(GetTrustedActorsStatistics.class);
 
-  AtomicInteger numberOfCalls = new AtomicInteger(0);
+  Map<String, AtomicInteger> numberOfCalls = new ConcurrentHashMap<>();
 
-  public void increment() {
-    numberOfCalls.incrementAndGet();
+  public void increment(String eTag) {
+    numberOfCalls.computeIfAbsent(eTag, k -> new AtomicInteger()).incrementAndGet();
   }
 
-  @Scheduled(fixedRate = 1, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+  @Scheduled(fixedRate = 15, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
   public void log() {
-    int currentCount = numberOfCalls.getAndSet(0);
     logger.info(
-        "GET {} called {} times in the last minute", GET_TRUSTED_ACTORS_FULL_PATH, currentCount);
+        "GET {} requests in the last 15 minutes by response ETag: {}",
+        GET_TRUSTED_ACTORS_FULL_PATH,
+        numberOfCalls);
+    numberOfCalls.clear();
   }
 }

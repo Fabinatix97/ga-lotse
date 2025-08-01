@@ -8,11 +8,17 @@ import {
   EventOutlined,
   WatchLaterOutlined,
 } from "@mui/icons-material";
-import { Chip, Stack, Typography } from "@mui/joy";
+import { Chip, Stack } from "@mui/joy";
 import { ColorPaletteProp, DefaultColorPalette } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
-import { Alert, EnumMap, formatDate, formatTime } from "@eshg/lib-portal";
+import {
+  Alert,
+  DetailsList,
+  EnumMap,
+  formatDate,
+  formatTime,
+} from "@eshg/lib-portal";
 import {
   ApiBookingState,
   ApiOmsAppointment,
@@ -84,52 +90,59 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         {shouldShowAppointmentAlert() && (
           <AppointmentAlert appointment={appointment} />
         )}
-        <InfoSectionGrid>
-          {isDefined(appointment.bookingState) && (
-            <DetailsItem
-              label={t("appointment.bookingState.label")}
-              value={
-                <Chip
-                  color={BOOKING_STATE_COLORS[appointment.bookingState]}
-                  size="lg"
-                  sx={{ fontWeight: theme.fontWeight.md }}
-                >
-                  {t(
-                    `appointment.bookingState.value.${appointment.bookingState}`,
-                  )}
-                </Chip>
-              }
-              icon={<EventOutlined />}
-            />
-          )}
-          {appointmentHasDate(appointment) && (
-            <DetailsItem
-              label={t("appointment.date_label")}
-              value={formatDate(appointment.start)}
-              icon={<DateRangeOutlined />}
-            />
-          )}
-          {appointmentHasDate(appointment) && (
-            <DetailsItem
-              label={t("appointment.appointmentTime.label")}
-              value={
-                <Stack direction="column" gap={0.5}>
-                  <Typography>
-                    {t("appointment.appointmentTime.time", {
-                      time: formatTime(appointment.start),
-                    })}
-                  </Typography>
-                  <Typography>
-                    {t("appointment.appointmentTime.duration", {
-                      duration: appointment.duration,
-                    })}
-                  </Typography>
-                </Stack>
-              }
-              icon={<WatchLaterOutlined />}
-            />
-          )}
-        </InfoSectionGrid>
+        <DetailsList data-testid="appointment-summary">
+          <InfoSectionGrid>
+            {isDefined(appointment.bookingState) && (
+              <DetailsItem
+                label={t("appointment.bookingState.label")}
+                value={
+                  <Chip
+                    color={BOOKING_STATE_COLORS[appointment.bookingState]}
+                    size="lg"
+                    sx={{ fontWeight: theme.fontWeight.md }}
+                  >
+                    {t(
+                      `appointment.bookingState.value.${appointment.bookingState}`,
+                    )}
+                  </Chip>
+                }
+                icon={<EventOutlined />}
+              />
+            )}
+            {appointmentHasDate(appointment) && (
+              <DetailsItem
+                label={t("appointment.date_label")}
+                value={formatDate(appointment.start)}
+                icon={<DateRangeOutlined />}
+              />
+            )}
+            {appointmentHasDate(appointment) && (
+              <Stack direction="column">
+                <DetailsItem
+                  label={t("appointment.appointmentTime.label")}
+                  value={t("appointment.appointmentTime.time", {
+                    time: formatTime(appointment.start),
+                  })}
+                  icon={<WatchLaterOutlined />}
+                />
+
+                <DetailsItem
+                  label={t("appointment.appointmentDuration", {
+                    context: "label",
+                  })}
+                  value={t("appointment.appointmentDuration", {
+                    context: "value",
+                    duration: appointment.duration,
+                  })}
+                  slotProps={{
+                    stack: { direction: "row", sx: { paddingLeft: 5 } },
+                    label: { level: "body-md" },
+                  }}
+                />
+              </Stack>
+            )}
+          </InfoSectionGrid>
+        </DetailsList>
       </Stack>
     </ContentSheet>
   );

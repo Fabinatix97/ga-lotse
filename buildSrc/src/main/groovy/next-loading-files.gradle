@@ -1,3 +1,6 @@
+// Copyright 2025 cronn GmbH
+// SPDX-License-Identifier: Apache-2.0
+
 /**
  * Workaround for a Next.js bug where the loading.tsx is not applied to pages nested within a route group.
  * It circumvents the bug by generating separate loading.tsx for each included page.

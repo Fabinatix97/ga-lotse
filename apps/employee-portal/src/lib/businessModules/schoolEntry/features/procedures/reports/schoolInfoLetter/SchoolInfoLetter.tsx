@@ -13,7 +13,7 @@ import { SchoolInfoLetter as SchoolInfoLetterType } from "@/lib/businessModules/
 import { useSaveSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { useGetSchoolInfoLetter } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { SchoolInfoLetterContent } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterContent";
-import { SchoolInfoPageBottomBar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterPageBottomBar";
+import { SchoolInfoLetterPageBottomBar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/schoolInfoLetter/SchoolInfoLetterPageBottomBar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
@@ -23,15 +23,14 @@ export function SchoolInfoLetter({ procedureId }: { procedureId: string }) {
   const { data } = useGetSchoolInfoLetter(procedureId);
 
   const router = useRouter();
-
-  function onNavigate() {
-    router.push(routes.procedures.byId(procedureId).examinations.index);
-  }
-
   const saveSchoolInfoLetter = useSaveSchoolInfoLetter(procedureId);
 
   async function handleSubmit(values: SchoolInfoLetterType) {
     await saveSchoolInfoLetter(values);
+  }
+
+  function navigateToEyeExamination() {
+    router.push(routes.procedures.byId(procedureId).examinations.index);
   }
 
   if (data)
@@ -49,7 +48,7 @@ export function SchoolInfoLetter({ procedureId }: { procedureId: string }) {
               <ConfirmLeaveDirtyFormEffect
                 confirmationDialogProps={LeaveDirtyConfirmationDialogProps(
                   formikProps.submitForm,
-                  onNavigate,
+                  navigateToEyeExamination,
                 )}
               />
               <Box marginBottom={3}>
@@ -58,9 +57,9 @@ export function SchoolInfoLetter({ procedureId }: { procedureId: string }) {
                   data={data}
                 />
               </Box>
-              <SchoolInfoPageBottomBar
+              <SchoolInfoLetterPageBottomBar
                 procedureId={procedureId}
-                onNavigate={onNavigate}
+                navigateToEyeExamination={navigateToEyeExamination}
               />
             </FormPlus>
           );

@@ -39,7 +39,7 @@ import {
   AppointmentOverviewSectionTitle,
 } from "@/lib/shared/components/appointments/AppointmentOverviewSection";
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
-import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
+import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
 
 import { ApiAppointmentSummary } from "./helpers";
 
@@ -70,80 +70,77 @@ export function AppointmentOverviewSheetButton({
       : "appointment_card.appointment_type.consultation";
 
   return (
-    <ScopedInternalLinkButton
-      color="neutral"
-      variant="plain"
-      sx={{ padding: 0 }}
-      href={citizenRoutes.personalArea.index(accessCode)}
+    <Sheet
+      component="section"
+      sx={{
+        display: "flex",
+        flexGrow: 1,
+        [theme.breakpoints.down("sm")]: {
+          borderRadius: 0,
+        },
+        "&:hover": {
+          filter: "brightness(90%)",
+        },
+        minHeight: theme.spacing(18),
+        gap: theme.spacing(3),
+      }}
     >
-      <Sheet
-        component="section"
-        sx={{
-          display: "flex",
-          flexGrow: 1,
-          [theme.breakpoints.down("sm")]: {
-            borderRadius: 0,
-          },
-          "&:hover": {
-            filter: "brightness(90%)",
-          },
-          minHeight: theme.spacing(18),
-          gap: theme.spacing(3),
-        }}
+      <ScopedInternalLink
+        sx={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+        href={citizenRoutes.personalArea.index(accessCode)}
+      />
+      <AppointmentOverviewSectionGrid
+        columns={byBreakpoint({ mobile: 1, desktop: 5 })}
       >
-        <AppointmentOverviewSectionGrid
-          columns={byBreakpoint({ mobile: 1, desktop: 5 })}
-        >
-          <AppointmentOverviewButtonElement
-            icon={<DateRangeOutlined />}
-            text={formatDate(appointment.appointmentStart)}
-          />
-          <AppointmentOverviewSection icon={<WatchLaterOutlined />}>
-            <AppointmentOverviewSectionTitle>
-              {t("appointment_card.start", {
-                time: formatTime(appointment.appointmentStart),
-              })}
-            </AppointmentOverviewSectionTitle>
-            {appointment.appointmentEnd && (
-              <AppointmentOverviewSectionText>
-                {t("appointment_card.duration", {
-                  appointmentDuration: durationBetweenDatesInMinutes(
-                    appointment.appointmentStart,
-                    appointment.appointmentEnd,
-                  ),
-                })}
-              </AppointmentOverviewSectionText>
-            )}
-          </AppointmentOverviewSection>
-          {concern === ApiConcern.HivStiConsultation ? (
-            <AppointmentOverviewButtonElement
-              icon={<HivOutlined />}
-              text={t("appointment_card.concern.hiv_sti")}
-            />
-          ) : (
-            <AppointmentOverviewButtonElement
-              icon={<MedicalServicesOutlined />}
-              text={t("appointment_card.concern.sex_work")}
-            />
-          )}
-          <AppointmentOverviewButtonElement
-            icon={<PeopleAltOutlined />}
-            text={t(appointmentTypeTransKey)}
-          />
-          <AppointmentOverviewButtonElement
-            icon={statusIcon}
-            text={t(statusTextKey)}
-          />
-        </AppointmentOverviewSectionGrid>
-        <ChevronRightOutlined
-          color="primary"
-          size="md"
-          sx={{
-            alignSelf: isMobile ? "start" : "center",
-          }}
+        <AppointmentOverviewButtonElement
+          icon={<DateRangeOutlined />}
+          text={formatDate(appointment.appointmentStart)}
         />
-      </Sheet>
-    </ScopedInternalLinkButton>
+        <AppointmentOverviewSection icon={<WatchLaterOutlined />}>
+          <AppointmentOverviewSectionTitle>
+            {t("appointment_card.start", {
+              time: formatTime(appointment.appointmentStart),
+            })}
+          </AppointmentOverviewSectionTitle>
+          {appointment.appointmentEnd && (
+            <AppointmentOverviewSectionText>
+              {t("appointment_card.duration", {
+                appointmentDuration: durationBetweenDatesInMinutes(
+                  appointment.appointmentStart,
+                  appointment.appointmentEnd,
+                ),
+              })}
+            </AppointmentOverviewSectionText>
+          )}
+        </AppointmentOverviewSection>
+        {concern === ApiConcern.HivStiConsultation ? (
+          <AppointmentOverviewButtonElement
+            icon={<HivOutlined />}
+            text={t("appointment_card.concern.hiv_sti")}
+          />
+        ) : (
+          <AppointmentOverviewButtonElement
+            icon={<MedicalServicesOutlined />}
+            text={t("appointment_card.concern.sex_work")}
+          />
+        )}
+        <AppointmentOverviewButtonElement
+          icon={<PeopleAltOutlined />}
+          text={t(appointmentTypeTransKey)}
+        />
+        <AppointmentOverviewButtonElement
+          icon={statusIcon}
+          text={t(statusTextKey)}
+        />
+      </AppointmentOverviewSectionGrid>
+      <ChevronRightOutlined
+        color="primary"
+        size="md"
+        sx={{
+          alignSelf: isMobile ? "start" : "center",
+        }}
+      />
+    </Sheet>
   );
 }
 

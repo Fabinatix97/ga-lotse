@@ -68,11 +68,21 @@
           <div>${sender.street}</div>
           <div>${sender.zipCode} ${sender.city}</div>
         </div>
-        <div class="sender-label">Telefon</div>
-        <div class="sender-data">${sender.phoneNumber}</div>
-        <#if sender.email??>
+        <#if office.phoneNumber?has_content>
+          <div class="sender-label">Telefon</div>
+          <div class="sender-data">
+            <#list office.phoneNumber as phone>
+              <div>${phone}</div>
+            </#list>
+          </div>
+        </#if>
+        <#if office.email?has_content>
           <div class="sender-label">E-Mail</div>
-          <div class="sender-data">${sender.email}</div>
+          <div class="sender-data">
+            <#list office.email as email>
+              <div>${email}</div>
+            </#list>
+          </div>
         </#if>
         <div class="sender-label">Datum</div>
         <div class="sender-data">${date}</div>

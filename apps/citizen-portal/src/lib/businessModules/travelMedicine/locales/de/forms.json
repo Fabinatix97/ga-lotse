@@ -121,10 +121,10 @@
       "dateOfBirth_label": "Geburtsdatum",
       "emailAddress_label": "E-Mailadresse",
       "travelData_label": "Reisedaten",
-      "travelDuration": "Reisedauer",
+      "travelDuration_label": "Reisedauer",
+      "travelDuration_value": "{{travelTimeAmount}} {{travelTimeUnit}}",
       "travelDestinations_one": "Reiseziel",
       "travelDestinations_other": "Reiseziele",
-      "travelStartDate": "Reisebeginn",
       "appointmentDuration": "(Dauer: {{ durationInMinutes }} Minuten)"
     }
   },

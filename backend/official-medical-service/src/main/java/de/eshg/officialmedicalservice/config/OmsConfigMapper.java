@@ -9,6 +9,7 @@ import de.eshg.config.api.DocumentDetailsDto;
 import de.eshg.config.api.MultiLangDocumentDto;
 import de.eshg.config.domain.Document;
 import de.eshg.officialmedicalservice.config.api.GetOmsConfigResponse;
+import de.eshg.officialmedicalservice.config.api.OmsConfigDto;
 import de.eshg.officialmedicalservice.config.persistence.entity.OmsConfiguration;
 import java.nio.charset.StandardCharsets;
 import org.springframework.core.io.ByteArrayResource;
@@ -28,10 +29,6 @@ public class OmsConfigMapper {
   }
 
   public GetOmsConfigResponse toInterfaceType(OmsConfiguration omsConfiguration) {
-    if (!omsConfiguration.isInitialized()) {
-      return null;
-    }
-
     MultiLangDocumentDto landingContentMultiLangDocumentDto =
         extractLandingContent(omsConfiguration);
 
@@ -40,11 +37,12 @@ public class OmsConfigMapper {
             OmsConfigService.CONCERNS_FILENAME, omsConfiguration.getConcerns().getContent().length);
 
     return new GetOmsConfigResponse(
-        concernsDocumentDetailsDto,
-        landingContentMultiLangDocumentDto,
-        omsConfiguration.getKeycloakUserCleanupJobOverdueDuration(),
-        omsConfiguration.getMedicalOpinionCutOffDateLeadTime(),
-        omsConfiguration.isCitizenPortalAnamnesisEnabled());
+        new OmsConfigDto(
+            concernsDocumentDetailsDto,
+            landingContentMultiLangDocumentDto,
+            omsConfiguration.getKeycloakUserCleanupJobOverdueDuration(),
+            omsConfiguration.getMedicalOpinionCutOffDateLeadTime(),
+            omsConfiguration.isCitizenPortalAnamnesisEnabled()));
   }
 
   private MultiLangDocumentDto extractLandingContent(OmsConfiguration omsConfiguration) {

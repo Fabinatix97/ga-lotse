@@ -19,7 +19,7 @@ import { setReportCaseForm } from "@/lib/businessModules/measlesProtection/helpe
 import { mapFacilityToApiAddFacilityFileStateRequest } from "@/lib/businessModules/measlesProtection/shared/facility/helpers";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageTitle } from "@/lib/shared/components/layout/page";
 
 function mapMeaslesCaseReport(report: ReportMeaslesCase): ApiReportCaseRequest {
   const apiReportCaseRequest: ApiReportCaseRequest = {
@@ -51,11 +51,9 @@ export default function CitizenMeaslesProtectionReportCasePage() {
   }
 
   return (
-    <PageLayout>
-      <PageContent>
-        <PageTitle>{t("reportMeaslesCaseForm.pageTitle")}</PageTitle>
-        <ReportCaseForm onSubmit={handleSubmit} />
-      </PageContent>
-    </PageLayout>
+    <PageContent>
+      <PageTitle>{t("reportMeaslesCaseForm.pageTitle")}</PageTitle>
+      <ReportCaseForm onSubmit={handleSubmit} />
+    </PageContent>
   );
 }

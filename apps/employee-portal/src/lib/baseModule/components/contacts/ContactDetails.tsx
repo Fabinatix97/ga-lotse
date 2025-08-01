@@ -13,7 +13,6 @@ import {
   CONTACT_CATEGORY_NAMES,
   Contact,
   ContentPanel,
-  DetailsColumn,
   DetailsItem,
   DetailsRow,
   EditButton,
@@ -24,6 +23,7 @@ import {
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   GENDER_VALUES,
   InternalLinkButton,
   SALUTATION_VALUES,

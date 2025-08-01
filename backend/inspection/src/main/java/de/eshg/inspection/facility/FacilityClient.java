@@ -23,6 +23,7 @@ import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.base.centralfile.api.facility.SearchFacilityFileStatesByFileNumberResponse;
 import de.eshg.base.centralfile.api.facility.SearchReferenceFacilitiesResponse;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
+import de.eshg.inspection.config.persistence.FacilityFileNumberMethod;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -115,14 +116,22 @@ public class FacilityClient {
     return doAndForwardErrorCodes(() -> facilityApi.searchReferenceFacilities(name));
   }
 
-  public FacilityFileNumberResponse getFacilityFileNumber(UUID fileStateId, String method) {
-    return doAndForwardErrorCodes(() -> facilityApi.getFacilityFileNumber(fileStateId, method));
+  public FacilityFileNumberResponse getFacilityFileNumber(
+      UUID fileStateId, FacilityFileNumberMethod method) {
+    return doAndForwardErrorCodes(
+        () ->
+            facilityApi.getFacilityFileNumber(
+                fileStateId,
+                (method != null ? method : FacilityFileNumberMethod.NO_FILE_NUMBERS).name()));
   }
 
   public SearchFacilityFileStatesByFileNumberResponse getFacilityFileStatesByFileNumber(
-      String fileNumber, String method) {
+      String fileNumber, FacilityFileNumberMethod method) {
     return doAndForwardErrorCodes(
-        () -> facilityApi.getFacilityFileStatesByFileNumber(fileNumber, method));
+        () ->
+            facilityApi.getFacilityFileStatesByFileNumber(
+                fileNumber,
+                (method != null ? method : FacilityFileNumberMethod.NO_FILE_NUMBERS).name()));
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

@@ -14,7 +14,6 @@ import {
   AuditLogApi,
 } from "@eshg/auditlog-api";
 import {
-  DetailsColumn,
   FormButtonBar,
   Sidebar,
   SidebarActions,
@@ -23,6 +22,7 @@ import {
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsColumn,
   createFieldNameMapper,
   encodeReservedHtmlCharacters,
   formatDate,

@@ -4,9 +4,9 @@
  */
 
 import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types/theme";
+import { SxProps } from "@mui/joy/styles/types";
 
-import { RequiresChildren } from "@eshg/lib-portal";
+import { RequiresChildren } from "../../types/react";
 
 interface DetailsColumnProps extends RequiresChildren {
   gap?: number;
@@ -15,7 +15,13 @@ interface DetailsColumnProps extends RequiresChildren {
 
 export function DetailsColumn(props: Readonly<DetailsColumnProps>) {
   return (
-    <Stack gap={props.gap ?? 1} flex={1} minWidth={0} sx={props.sx}>
+    <Stack
+      gap={props.gap ?? 1}
+      flex={1}
+      direction="column"
+      minWidth={0}
+      sx={props.sx}
+    >
       {props.children}
     </Stack>
   );

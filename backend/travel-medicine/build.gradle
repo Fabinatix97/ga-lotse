@@ -1,3 +1,6 @@
+// Copyright 2025 SCOOP Software GmbH, cronn GmbH
+// SPDX-License-Identifier: AGPL-3.0-only
+
 plugins {
     id "eshg.service"
     id "eshg.base-test-dependency"

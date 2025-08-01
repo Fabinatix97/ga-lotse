@@ -11,12 +11,14 @@ import {
   VaccinesOutlined,
   WatchLaterOutlined,
 } from "@mui/icons-material";
-import { Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
+  DetailsList,
   durationBetweenDatesInMinutes,
   formatDate,
+  formatPersonName,
   formatTime,
 } from "@eshg/lib-portal";
 import {
@@ -26,11 +28,8 @@ import {
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";
-import {
-  InfoSection,
-  InfoSectionGrid,
-  InfoSectionTitle,
-} from "@/lib/shared/components/infoSection";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
+import { InfoSectionGrid } from "@/lib/shared/components/infoSection";
 import {
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
@@ -49,63 +48,116 @@ export function AppointmentDetailsMetaInformation(
   });
 
   return (
-    <InfoSectionGrid>
-      <InfoSection icon={<PersonOutlined />}>
-        <InfoSectionTitle data-testid="patient-name">
-          {props.appointmentDetails.firstName}{" "}
-          {props.appointmentDetails.lastName}
-        </InfoSectionTitle>
-      </InfoSection>
-      <InfoSection icon={<CakeOutlined />}>
-        <InfoSectionTitle data-testid="patient-date-of-birth">
-          {formatDate(props.appointmentDetails.dateOfBirth)}
-        </InfoSectionTitle>
-      </InfoSection>
-      <InfoSection icon={<DateRangeOutlined />}>
-        <InfoSectionTitle data-testid="appointment-date">
-          {formatDate(
+    <DetailsList data-testid="information-summary">
+      <InfoSectionGrid>
+        <DetailsItem
+          label={t("patientName", {
+            context: "label",
+          })}
+          value={formatPersonName(props.appointmentDetails)}
+          icon={<PersonOutlined />}
+          hiddenLabel
+          slotProps={{ value: { level: "title-md" } }}
+        />
+        <DetailsItem
+          label={t("dateOfBirth", {
+            context: "label",
+          })}
+          value={formatDate(props.appointmentDetails.dateOfBirth)}
+          icon={<CakeOutlined />}
+          hiddenLabel
+          slotProps={{ value: { level: "title-md" } }}
+        />
+        <DetailsItem
+          label={t("appointmentDate", {
+            context: "label",
+          })}
+          value={formatDate(
             props.appointmentDetails.summaryDto.start ??
               props.appointmentDetails.summaryDto.earliestDate,
           )}
-        </InfoSectionTitle>
-      </InfoSection>
-      <InfoSection icon={<WatchLaterOutlined />}>
-        <InfoSectionTitle data-testid="appointment-time">
-          {props.appointmentDetails.summaryDto.start !== undefined
-            ? t("start", {
-                time: formatTime(props.appointmentDetails.summaryDto.start),
-              })
-            : "Noch nicht gebucht"}
-        </InfoSectionTitle>
-      </InfoSection>
-      <InfoSection icon={<VaccinesOutlined />}>
-        <InfoSectionTitle data-testid="appointment-type">
-          {props.appointmentDetails.summaryDto.appointmentType ===
-          ApiAppointmentType.Consultation
-            ? t("appointmentType.consultation")
-            : t("appointmentType.vaccination")}
-        </InfoSectionTitle>
-        {props.appointmentDetails.summaryDto.start && (
-          <Typography data-testid="appointment-duration">
-            {t("duration", {
-              appointmentDuration: durationBetweenDatesInMinutes(
-                props.appointmentDetails.summaryDto.start,
-                props.appointmentDetails.summaryDto.end!,
-              ),
+          icon={<DateRangeOutlined />}
+          hiddenLabel
+          slotProps={{ value: { level: "title-md" } }}
+        />
+        <DetailsItem
+          label={t("start", {
+            context: "label",
+          })}
+          value={
+            props.appointmentDetails.summaryDto.start !== undefined
+              ? t("start", {
+                  context: "value",
+                  time: formatTime(props.appointmentDetails.summaryDto.start),
+                })
+              : "Noch nicht gebucht"
+          }
+          icon={<WatchLaterOutlined />}
+          hiddenLabel
+          slotProps={{ value: { level: "title-md" } }}
+        />
+        <Stack direction="column">
+          <DetailsItem
+            label={t("appointmentType", {
+              context: "label",
             })}
-          </Typography>
-        )}
-      </InfoSection>
-      <InfoSection icon={<FmdGoodOutlined />}>
-        <InfoSectionTitle data-testid="department-name">
-          {department.name}
-        </InfoSectionTitle>
-        <Typography data-testid="department-address">
-          {formatStreetAndHouseNumber(department)}
-          <br />
-          {formatPostalCodeAndCity(department)}
-        </Typography>
-      </InfoSection>
-    </InfoSectionGrid>
+            value={
+              props.appointmentDetails.summaryDto.appointmentType ===
+              ApiAppointmentType.Consultation
+                ? t("appointmentType_value.consultation")
+                : t("appointmentType_value.vaccination")
+            }
+            icon={<VaccinesOutlined />}
+            hiddenLabel
+            slotProps={{ value: { level: "title-md" } }}
+          />
+          {props.appointmentDetails.summaryDto.start && (
+            <DetailsItem
+              label={t("duration", {
+                context: "label",
+              })}
+              value={t("duration", {
+                context: "value",
+                appointmentDuration: durationBetweenDatesInMinutes(
+                  props.appointmentDetails.summaryDto.start,
+                  props.appointmentDetails.summaryDto.end!,
+                ),
+              })}
+              slotProps={{
+                stack: { direction: "row", sx: { paddingLeft: 5 } },
+                label: { level: "body-md" },
+              }}
+            />
+          )}
+        </Stack>
+        <Stack direction="column">
+          <DetailsItem
+            label={t("departmentName", {
+              context: "label",
+            })}
+            value={department.name}
+            icon={<FmdGoodOutlined />}
+            hiddenLabel
+            slotProps={{ value: { level: "title-md" } }}
+          />
+          <DetailsItem
+            label={t("departmentAddress", {
+              context: "label",
+            })}
+            value={
+              <>
+                {formatStreetAndHouseNumber(department)}
+                <br />
+                {formatPostalCodeAndCity(department)}
+              </>
+            }
+            hiddenLabel
+            slotProps={{
+              stack: { direction: "row", sx: { paddingLeft: 5 } },
+            }}
+          />
+        </Stack>
+      </InfoSectionGrid>
+    </DetailsList>
   );
 }

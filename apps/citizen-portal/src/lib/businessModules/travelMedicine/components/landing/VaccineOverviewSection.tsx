@@ -31,7 +31,12 @@ export function VaccineOverviewSection() {
           }}
         >
           {diseases.map((el, index) => (
-            <ListItem key={`vaccine[${el.name}.${index}]`}>{el.name}</ListItem>
+            <ListItem
+              key={`vaccine[${el.name}.${index}]`}
+              sx={{ wordWrap: "break-word" }}
+            >
+              {el.name}
+            </ListItem>
           ))}
         </List>
       </ContentSheet>

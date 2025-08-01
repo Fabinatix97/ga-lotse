@@ -1,3 +1,6 @@
+// Copyright 2025 cronn GmbH
+// SPDX-License-Identifier: Apache-2.0
+
 import de.eshg.FindUnusedValidationFiles
 
 buildscript {
@@ -48,7 +51,7 @@ configurations {
 reporting {
     reports {
         testCodeCoverageReport(JacocoCoverageReport) {
-            testType = TestSuiteType.UNIT_TEST
+            testSuiteName = "test"
         }
     }
 }
@@ -64,7 +67,7 @@ sonar {
 //CAUTION: run ./gradlew wrapper (twice) after changes to this task!
 //See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
 wrapper {
-    gradleVersion = "8.12.1"
+    gradleVersion = "8.14.3"
     distributionType = Wrapper.DistributionType.ALL
 }
 

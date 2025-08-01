@@ -35,6 +35,7 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
 
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT, ModuleLeaderRole.INSPECTION_LEADER);
+    grantAccessToConfiguration();
   }
 
   private void objectType() {

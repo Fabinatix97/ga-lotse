@@ -86,6 +86,7 @@ If there were no adjustments necessary, this is optional.
 Adjust the version in the `wrapper` task configuration in link:../build.gradle[build.gradle] and run `./gradlew wrapper` *twice*.
 This should result in an updated `gradle/wrapper/gradle-wrapper.properties` and
 potentially in changed wrapper scripts (`gradlew`, `gradlew.bat`) in the project root.
+You might also need to update the backend lockfiles as described in <<Updating Gradle dependencies, Updating Gradle dependencies>>.
 
 The gitlab pipeline does not use the gradle wrapper but the gradle version installed in the stage image (based on https://hub.docker.com/_/gradle).
 The `GRADLE_BASE_IMAGE_HASH` variable needs to be updated with a hash corresponding to the new version.

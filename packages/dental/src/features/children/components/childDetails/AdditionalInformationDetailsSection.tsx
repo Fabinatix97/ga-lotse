@@ -7,11 +7,10 @@ import { Divider, Stack } from "@mui/joy";
 
 import {
   ChipWithTooltip,
-  DetailsColumn,
   DetailsItem,
   DetailsSection,
 } from "@eshg/lib-employee-portal";
-import { DetailsList } from "@eshg/lib-portal";
+import { DetailsColumn, DetailsList } from "@eshg/lib-portal";
 
 import { FluoridationConsentInformationSection } from "../../../../components/fluoridationConsent/FluoridationConsentInformationSection";
 import { ChildDetails } from "../../api/models/ChildDetails";

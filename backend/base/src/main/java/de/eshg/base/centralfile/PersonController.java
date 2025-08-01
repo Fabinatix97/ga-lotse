@@ -195,7 +195,6 @@ public class PersonController implements PersonApi {
   @Override
   @Transactional(readOnly = true)
   public GetFileStateIdsResponse getPersonFileStateIdsAssociatedWithReferencePerson(UUID id) {
-    System.err.println("!!! getPersonFileStateIdsAssociatedWithReferencePerson id: " + id);
     Person referencePerson =
         personRepository
             .findByExternalIdEqualsAndReferencePersonIsNull(id)
