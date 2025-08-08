@@ -12,7 +12,6 @@ import de.eshg.officialmedicalservice.waitingroom.api.WaitingStatusDto;
 import de.eshg.officialmedicalservice.waitingroom.persistence.entity.WaitingRoom;
 import de.eshg.officialmedicalservice.waitingroom.persistence.entity.WaitingStatus;
 import de.eshg.officialmedicalservice.waitingroom.util.WaitingRoomPageSpec;
-import org.springframework.data.domain.Sort;
 
 public class WaitingRoomMapper {
 
@@ -46,14 +45,6 @@ public class WaitingRoomMapper {
 
   public static WaitingRoomPageSpec mapToPageSpec(
       int page, int pageSize, WaitingRoomSortKey sortField, SortDirection direction) {
-    return new WaitingRoomPageSpec(page, pageSize, sortField, mapDirection(direction));
-  }
-
-  public static Sort.Direction mapDirection(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case null -> Sort.Direction.ASC;
-      case ASC -> Sort.Direction.ASC;
-      case DESC -> Sort.Direction.DESC;
-    };
+    return new WaitingRoomPageSpec(page, pageSize, sortField, direction);
   }
 }

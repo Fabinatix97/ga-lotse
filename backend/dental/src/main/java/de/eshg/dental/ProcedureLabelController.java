@@ -8,13 +8,16 @@ package de.eshg.dental;
 import static de.eshg.dental.util.ExceptionUtil.*;
 
 import com.google.common.annotations.VisibleForTesting;
+import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.dental.api.CreateProcedureLabelRequest;
 import de.eshg.dental.api.GetProcedureLabelsResponse;
 import de.eshg.dental.api.ProcedureLabelDto;
+import de.eshg.dental.api.ProcedureLabelPaginationParameters;
 import de.eshg.dental.api.UpdateProcedureLabelRequest;
 import de.eshg.dental.domain.model.ProcedureLabel;
 import de.eshg.dental.domain.repository.ProcedureLabelRepository;
 import de.eshg.dental.mapper.ProcedureLabelMapper;
+import de.eshg.domain.model.BaseEntity_;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
@@ -26,6 +29,11 @@ import jakarta.validation.Valid;
 import java.awt.Color;
 import java.security.SecureRandom;
 import java.util.*;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,10 +65,26 @@ public class ProcedureLabelController {
   @GetMapping
   @Transactional(readOnly = true)
   @Operation(summary = "Retrieves a list of procedure labels sorted by ID")
-  public GetProcedureLabelsResponse getLabels() {
-    List<ProcedureLabel> procedureLabels = procedureLabelRepository.findAllByOrderById();
-
-    return new GetProcedureLabelsResponse(ProcedureLabelMapper.toDto(procedureLabels));
+  public GetProcedureLabelsResponse getLabels(
+      @InlineParameterObject @ParameterObject @Valid
+          ProcedureLabelPaginationParameters procedureLabelPaginationParameters) {
+    List<ProcedureLabel> labels;
+    long totalNumberOfElements;
+    if (procedureLabelPaginationParameters == null) {
+      labels = procedureLabelRepository.findAllByOrderById();
+      totalNumberOfElements = labels.size();
+    } else {
+      Pageable pageable =
+          PageRequest.of(
+              procedureLabelPaginationParameters.pageNumberOrFallback(0),
+              procedureLabelPaginationParameters.pageSizeOrFallback(25),
+              Sort.by(Sort.Order.by(BaseEntity_.ID)));
+      Page<ProcedureLabel> page = procedureLabelRepository.findAll(pageable);
+      labels = page.getContent();
+      totalNumberOfElements = page.getTotalElements();
+    }
+    return new GetProcedureLabelsResponse(
+        ProcedureLabelMapper.toDto(labels), totalNumberOfElements);
   }
 
   @GetMapping("/{id}")

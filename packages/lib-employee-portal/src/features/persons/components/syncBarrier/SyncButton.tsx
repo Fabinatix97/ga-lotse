@@ -17,6 +17,7 @@ export function SyncButton(props: SyncButtonProps) {
       color="danger"
       variant="soft"
       size="sm"
+      aria-label="Daten aktualisieren"
       {...props}
     >
       {props.children ?? "Update"}

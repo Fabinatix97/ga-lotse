@@ -86,8 +86,17 @@ export function MeasurementFields(props: MeasurementFieldsProps) {
   const percentiles = getPercentiles.data ?? {};
 
   return (
-    <Stack direction="row" gap={2} alignItems="center" flexWrap="wrap">
-      <Typography level="title-sm">Maße</Typography>
+    <Stack
+      direction="row"
+      gap={2}
+      alignItems="center"
+      flexWrap="wrap"
+      role="group"
+      aria-labelledby="masse-label"
+    >
+      <Typography level="title-sm" component="h2" id="masse-label">
+        Maße
+      </Typography>
       <Stack direction="row" gap={4} alignItems="center" flexWrap="wrap">
         <Stack direction="row" gap={2} alignItems="center" flexWrap="wrap">
           <Stack direction="row" gap={2} alignItems="center">

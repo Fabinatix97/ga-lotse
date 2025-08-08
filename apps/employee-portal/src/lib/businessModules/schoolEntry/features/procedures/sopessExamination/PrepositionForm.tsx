@@ -50,10 +50,16 @@ export function PrepositionForm(props: PrepositionFormProps) {
   const fieldName = createFieldNameMapper("speech");
 
   return (
-    <Stack gap={2} data-testid="prepositionForm">
+    <Stack
+      gap={2}
+      data-testid="prepositionForm"
+      role="group"
+      aria-labelledby="praepositionen-label"
+    >
       <FormSectionTitle
         title="Präpositionen"
         tooltip="(0-4 auffall, 5 grenz, 6-8 unauff, 9 - unbekannt)"
+        id="praepositionen-label"
       />
       <Stack direction="row" gap={2}>
         <SoftRequiredNumberField

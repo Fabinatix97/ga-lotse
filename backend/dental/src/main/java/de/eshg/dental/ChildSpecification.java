@@ -15,6 +15,7 @@ import de.eshg.dental.domain.model.ProcedureLabel;
 import de.eshg.dental.domain.model.ProcedureLabel_;
 import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.persistence.SpecificationUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -70,20 +71,12 @@ class ChildSpecification implements Specification<Child> {
   public Predicate toPredicate(Root<Child> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
     Set<Order> orders = new LinkedHashSet<>();
     if (!sortKey.isPersonAttribute()) {
-      orders.add(getPrimarySortOrder(cb, root));
+      orders.add(SpecificationUtil.getOrder(sortDirection, cb, mapToSortPath(root, cb)));
     }
     if (Objects.equals(sortKey, ChildSortKey.GROUP_NAME)) {
-      orders.add(
-          switch (sortDirection) {
-            case ASC -> cb.asc(root.get(Child_.GROUP_NAME));
-            case DESC -> cb.desc(root.get(Child_.GROUP_NAME));
-          });
+      orders.add(SpecificationUtil.getOrder(sortDirection, cb, root.get(Child_.GROUP_NAME)));
     }
-    orders.add(
-        switch (sortDirection) {
-          case ASC -> cb.asc(root.get(Child_.id));
-          case DESC -> cb.desc(root.get(Child_.id));
-        });
+    orders.add(SpecificationUtil.getOrder(sortDirection, cb, root.get(Child_.id)));
     query.orderBy(orders.stream().toList());
 
     List<Predicate> conjunctions = new ArrayList<>();
@@ -119,20 +112,11 @@ class ChildSpecification implements Specification<Child> {
     return cb.and(conjunctions.toArray(Predicate[]::new));
   }
 
-  private Order getPrimarySortOrder(CriteriaBuilder cb, Root<Child> root) {
-    Expression<?> sortPath = mapToSortPath(root, cb);
-
-    return switch (sortDirection) {
-      case ASC -> cb.asc(sortPath);
-      case DESC -> cb.desc(sortPath);
-    };
-  }
-
   private Expression<?> mapToSortPath(Root<Child> root, CriteriaBuilder cb) {
     return switch (sortKey) {
       case ID -> root.get(Child_.id);
       case YEAR -> root.get(Child_.year);
-      case GROUP_NAME -> SpecificationUtil.leadingNumbersInGroupName(root, cb);
+      case GROUP_NAME -> DentalSpecificationUtil.leadingNumbersInGroupName(root, cb);
       case FIRST_NAME, LAST_NAME, DATE_OF_BIRTH -> {
         Assert.isTrue(
             sortKey.isPersonAttribute(),

@@ -10,10 +10,10 @@ import { Formik, FormikHelpers } from "formik";
 
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import {
+  DebouncedTextareaField,
   FormProps,
   MutationBundle,
   OptionalFieldValue,
-  TextareaField,
   isEmptyString,
   isInteger,
 } from "@eshg/lib-portal";
@@ -246,7 +246,7 @@ export function SopessExaminationForm(props: SopessExaminationFormProps) {
               setFieldValue={setFieldValue}
             />
           </Stack>
-          <TextareaField name="note" label="Bemerkung" />
+          <DebouncedTextareaField name="note" label="Bemerkung" />
           <FormFooter isSubmitting={isSubmitting} />
         </FormStack>
       )}

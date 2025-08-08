@@ -20,7 +20,7 @@ import { formatList } from "../../../../../utils/formatters";
 import { SyncFormField } from "../SyncFormField";
 import { DiffArrow, SyncFormBlock, SyncFormSection } from "../SyncFormGrid";
 
-const ADDRESS_FIELD_NAME = {
+export const ADDRESS_FIELD_NAME = {
   type: "Art",
   differentName: "Abweichender Empfänger",
   streetAndHouseNumber: "Straße und Haus-Nr.",

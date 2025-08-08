@@ -10,7 +10,7 @@ import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { SearchParams } from "@eshg/lib-portal";
+import { LiveAnnouncer, SearchParams } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import { ButtonBar } from "../../../components/buttons/ButtonBar";
@@ -53,6 +53,7 @@ export interface ProgressEntriesPageProps extends ProgressEntryClients {
   systemProgressEntryTypes: Record<string, string>;
   groupName: string;
   additionalKeyDocumentTypes?: Record<string, string>;
+  ariaRole?: string;
 }
 
 export function ProgressEntriesPage({
@@ -63,6 +64,7 @@ export function ProgressEntriesPage({
   searchParams,
   additionalKeyDocumentTypes,
   systemProgressEntryTypes,
+  ariaRole,
   ...props
 }: ProgressEntriesPageProps) {
   const [filters, setFilters] = useState<ProgressEntriesFilters>({});
@@ -115,13 +117,13 @@ export function ProgressEntriesPage({
       }}
     >
       <SidebarScope>
-        <ProgressEntriesPageComponent />
+        <ProgressEntriesPageComponent ariaRole={ariaRole} />
       </SidebarScope>
     </ProgressEntriesProvider>
   );
 }
 
-function ProgressEntriesPageComponent() {
+function ProgressEntriesPageComponent(props: { ariaRole?: string }) {
   const progressEntriesContext = useProgressEntriesContext();
   const { filterSettings } = progressEntriesContext.config;
   const createProgressEntrySidebar = useCreateProgressEntrySidebar();
@@ -133,8 +135,9 @@ function ProgressEntriesPageComponent() {
 
   return (
     <>
-      <Stack gap={3} data-testid="progressEntriesPage">
+      <Stack gap={3} data-testid="progressEntriesPage" role={props.ariaRole}>
         <ButtonBar
+          invertDomOrder
           left={
             !isOffline && (
               <ToggleFilterButton {...filterSettings.filterButtonProps} />
@@ -206,14 +209,14 @@ function ProgressEntriesInformationSheet() {
     !!approvalRequests?.length;
 
   return (
-    <InformationSheet>
+    <InformationSheet role="region" aria-labelledby="verlaufseintraege-label">
       <Stack
         direction="row"
         justifyContent="space-between"
         flexWrap="wrap"
         gap={1}
       >
-        <Typography level="h3" component="h2">
+        <Typography level="h3" component="h1" id="verlaufseintraege-label">
           Verlaufseinträge
         </Typography>
         <Stack direction="row" spacing={2}>
@@ -243,6 +246,14 @@ function ProgressEntriesInformationSheet() {
           />
         ))}
       </Timeline>
+      <LiveAnnouncer
+        message="Keine Einträge vorhanden"
+        active={timelineEntryProps.length === 0}
+      />
+      <LiveAnnouncer
+        message={`${timelineEntryProps.length} Einträge vorhanden`}
+        active={timelineEntryProps.length > 0}
+      />
     </InformationSheet>
   );
 }
@@ -252,21 +263,27 @@ function FilesSheet() {
   const filesSidebar = useFilesSidebar();
 
   return (
-    <Sheet data-testid="files">
+    <Sheet data-testid="files" role="region" aria-labelledby="dateien-label">
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
-        <Typography level="title-md" marginTop={0.5}>
+        <Typography
+          level="title-md"
+          marginTop={0.5}
+          component="h2"
+          id="dateien-label"
+        >
           {`Dateien (${files.length})`}
         </Typography>
         <Button variant="plain" size="sm" onClick={filesSidebar.open}>
           Alle anzeigen
         </Button>
       </Stack>
-      <Stack spacing={1}>
+      <Stack spacing={1} role="list">
         {files.slice(0, 5).map(({ file, progressEntryId }) => (
           <FileCardWithActions
             key={`file-overview-${file.fileId}`}
             detailsProgressEntryId={progressEntryId}
             file={file}
+            role="listitem"
           />
         ))}
       </Stack>

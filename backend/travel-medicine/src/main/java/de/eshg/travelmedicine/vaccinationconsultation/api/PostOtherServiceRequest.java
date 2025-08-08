@@ -11,4 +11,5 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record PostOtherServiceRequest(
-    @NotNull @Size(max = 200) String description, @NotNull @PositiveOrZero BigDecimal fee) {}
+    @NotNull @Size(min = 1, max = 200) String description,
+    @NotNull @PositiveOrZero BigDecimal fee) {}

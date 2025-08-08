@@ -46,6 +46,7 @@ function ChangeSetLabel({ type }: { type: "NEW" | "OLD" }) {
       size="sm"
       color={type === "OLD" ? "neutral" : "primary"}
       variant="solid"
+      aria-hidden="true"
     >
       {type === "OLD" ? "Alt" : "Neu"}
     </Chip>

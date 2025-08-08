@@ -19,11 +19,16 @@ const StyledButton = styled(Button)<{ width: number }>(({ theme, width }) => ({
 interface TestValueButtonProps extends RequiresChildren {
   value: string;
   buttonWidth: number;
+  pressed: boolean;
 }
 
 export function TestValueButton(props: TestValueButtonProps) {
   return (
-    <StyledButton value={props.value} width={props.buttonWidth}>
+    <StyledButton
+      value={props.value}
+      width={props.buttonWidth}
+      aria-pressed={props.pressed}
+    >
       {props.children}
     </StyledButton>
   );

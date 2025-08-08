@@ -4,6 +4,7 @@
  */
 
 import { Stack } from "@mui/joy";
+import { groupBy } from "remeda";
 
 import { createFieldNameMapper, useBaseField } from "@eshg/lib-portal";
 import { ApiDecibelValue, ApiHertzValue } from "@eshg/school-entry-api";
@@ -24,11 +25,28 @@ export function EarForm(props: ExaminationFormProps) {
     name: props.name,
   });
 
+  const alleValue =
+    Object.keys(
+      groupBy(
+        HERTZ_VALUE_OPTIONS.map((it) => field.input.value[it]),
+        (it) => it ?? undefined,
+      ),
+    ).length === 1
+      ? (Object.values(field.input.value)[0] ?? undefined)
+      : undefined;
+
   return (
-    <Stack direction="row" gap={3} data-testid={props.name}>
+    <Stack
+      direction="row"
+      gap={3}
+      data-testid={props.name}
+      role="group"
+      aria-labelledby={`ear-indicator-label-${props.sideIndicator}`}
+    >
       <SideIndicator
         sideIndicator={props.sideIndicator}
         sideIndicatorPosition={props.sideIndicatorPosition}
+        id={`ear-indicator-label-${props.sideIndicator}`}
       />
       <Stack gap={0.5}>
         <TestValuesButtonGroup
@@ -37,6 +55,7 @@ export function EarForm(props: ExaminationFormProps) {
           color="primary"
           options={DECIBEL_VALUE_OPTIONS}
           buttonWidth={73}
+          value={alleValue}
           onChange={(value) => {
             const newValue = HERTZ_VALUE_OPTIONS.every(
               (it) => field.input.value[it] === value,

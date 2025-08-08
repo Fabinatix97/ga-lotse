@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Grid, Stack } from "@mui/joy";
+import { Box, Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { PageGrid } from "@eshg/lib-employee-portal";
@@ -43,39 +43,41 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
   });
 
   return (
-    <PageGrid>
-      <Grid xs={8}>
-        <Stack spacing={SPACING}>
-          <PersonDetailsPanel
-            title="Kind"
-            person={procedure.child}
-            procedure={procedure}
-            name="child-details"
-          />
-          {procedure.custodians.map((custodian, index) => (
+    <Box role="tabpanel">
+      <PageGrid>
+        <Grid xs={8}>
+          <Stack spacing={SPACING}>
             <PersonDetailsPanel
-              key={custodian.fileStateId}
-              isCustodian
-              title={`${index + 1}. PSB - Personensorgeberechtigte:r`}
-              person={custodian}
+              title="Kind"
+              person={procedure.child}
               procedure={procedure}
-              name={`custodian-details-${index}`}
+              name="child-details"
             />
-          ))}
-          {!procedure.isClosed && <AddCustodianPanel procedure={procedure} />}
-        </Stack>
-      </Grid>
-      <Grid xs={4}>
-        <Stack spacing={SPACING}>
-          <ProcedureDetailsSection procedure={procedure} />
-          <ProcedureActionsPanel procedure={procedure} />
-          {locationSelectionMode === ApiLocationSelectionMode.None &&
-            !procedure.isClosed &&
-            isDefined(procedure.appointment) && (
-              <WaitingRoomPanel procedure={procedure} />
-            )}
-        </Stack>
-      </Grid>
-    </PageGrid>
+            {procedure.custodians.map((custodian, index) => (
+              <PersonDetailsPanel
+                key={custodian.fileStateId}
+                isCustodian
+                title={`${index + 1}. PSB - Personensorgeberechtigte:r`}
+                person={custodian}
+                procedure={procedure}
+                name={`custodian-details-${index}`}
+              />
+            ))}
+            {!procedure.isClosed && <AddCustodianPanel procedure={procedure} />}
+          </Stack>
+        </Grid>
+        <Grid xs={4}>
+          <Stack spacing={SPACING}>
+            <ProcedureDetailsSection procedure={procedure} />
+            <ProcedureActionsPanel procedure={procedure} />
+            {locationSelectionMode === ApiLocationSelectionMode.None &&
+              !procedure.isClosed &&
+              isDefined(procedure.appointment) && (
+                <WaitingRoomPanel procedure={procedure} />
+              )}
+          </Stack>
+        </Grid>
+      </PageGrid>
+    </Box>
   );
 }

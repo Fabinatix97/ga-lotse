@@ -113,6 +113,7 @@ export function TestValuesButtonGroup<TValue extends string>(
             key={option.value}
             value={option.value}
             buttonWidth={props.buttonWidth}
+            pressed={option.value === resolveButtonValue(props.value)}
           >
             {option.label}
           </TestValueButton>

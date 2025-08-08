@@ -111,7 +111,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   }
 
   private void assignSpecialNeedsLabel(List<CreateProcedureResponse> procedures) {
-    UUID labelId = procedureLabelController.getLabels().labels().getFirst().id();
+    UUID labelId = procedureLabelController.getLabels(null).labels().getFirst().id();
     for (CreateProcedureResponse procedure : procedures) {
       ProcedureDetailsDto procedureToUpdate =
           schoolEntryController.getProcedure(procedure.procedureId());

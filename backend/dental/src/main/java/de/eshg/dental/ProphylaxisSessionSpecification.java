@@ -13,6 +13,7 @@ import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisSession_;
 import de.eshg.dental.domain.model.ProphylaxisStatus;
 import de.eshg.dental.domain.model.ProphylaxisType;
+import de.eshg.persistence.SpecificationUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -72,20 +73,13 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
       Root<ProphylaxisSession> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
     Set<Order> orders = new LinkedHashSet<>();
 
-    orders.add(getPrimarySortOrder(cb, root));
+    orders.add(SpecificationUtil.getOrder(sortDirection, cb, mapToSortPath(root, cb)));
 
     if (Objects.equals(sortKey, ProphylaxisSessionSortKey.GROUP_NAME)) {
       orders.add(
-          switch (sortDirection) {
-            case ASC -> cb.asc(root.get(ProphylaxisSession_.GROUP_NAME));
-            case DESC -> cb.desc(root.get(ProphylaxisSession_.GROUP_NAME));
-          });
+          SpecificationUtil.getOrder(sortDirection, cb, root.get(ProphylaxisSession_.GROUP_NAME)));
     }
-    orders.add(
-        switch (sortDirection) {
-          case ASC -> cb.asc(root.get(ProphylaxisSession_.id));
-          case DESC -> cb.desc(root.get(ProphylaxisSession_.id));
-        });
+    orders.add(SpecificationUtil.getOrder(sortDirection, cb, root.get(ProphylaxisSession_.id)));
 
     query.orderBy(orders.stream().toList());
 
@@ -113,19 +107,11 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
     return LocalDate.of(year, 1, 1).atStartOfDay(zoneId);
   }
 
-  private Order getPrimarySortOrder(CriteriaBuilder cb, Root<ProphylaxisSession> root) {
-    Expression<?> sortPath = mapToSortPath(root, cb);
-    return switch (sortDirection) {
-      case ASC -> cb.asc(sortPath);
-      case DESC -> cb.desc(sortPath);
-    };
-  }
-
   private Expression<?> mapToSortPath(Root<ProphylaxisSession> root, CriteriaBuilder cb) {
     return switch (sortKey) {
       case ID -> root.get(ProphylaxisSession_.id);
       case TYPE -> root.get(ProphylaxisSession_.type);
-      case GROUP_NAME -> SpecificationUtil.leadingNumbersInGroupName(root, cb);
+      case GROUP_NAME -> DentalSpecificationUtil.leadingNumbersInGroupName(root, cb);
       case DATE_AND_TIME -> root.get(ProphylaxisSession_.dateAndTime);
       case IS_SCREENING -> root.get(ProphylaxisSession_.isScreening);
       case FLUORIDATION_VARNISH -> root.get(ProphylaxisSession_.fluoridationVarnish);

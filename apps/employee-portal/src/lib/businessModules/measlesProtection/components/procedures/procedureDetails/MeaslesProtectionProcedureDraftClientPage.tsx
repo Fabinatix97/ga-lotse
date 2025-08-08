@@ -15,6 +15,7 @@ import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
 import { useSubmitDraftProcedureMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { NewCustodianButton } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/NewCustodianButton";
+import { UnderagedPersonAlert } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/UnderagedPersonAlert";
 import { MeaslesProtectionLayout } from "@/lib/businessModules/measlesProtection/layout/MeaslesProtectionLayout";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
@@ -57,6 +58,7 @@ export function MeaslesProtectionProcedureDraftClientPage({
       <Grid container gap={3} data-testid="procedureDraftPage">
         <Grid xs={12} lg>
           <Stack gap={3}>
+            <UnderagedPersonAlert procedure={procedure} />
             <AffectedPerson procedure={procedure} />
             <Custodians procedure={procedure} />
             {procedure.facility && <Facility procedure={procedure} />}

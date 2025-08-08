@@ -52,8 +52,15 @@ export function PsychoSocialRiskFields(props: PsychoSocialRiskFieldsProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="psychoSocialRiskFields">
-      <Typography level="title-sm">Psy-Soz. Risiko</Typography>
+    <Stack
+      gap={2}
+      data-testid="psychoSocialRiskFields"
+      role="group"
+      aria-labelledby="psycho-social-risk-label"
+    >
+      <Typography level="title-sm" component="h2" id="psycho-social-risk-label">
+        Psy-Soz. Risiko
+      </Typography>
       <Stack direction="row" gap={5} flexWrap="wrap">
         <SetAllBooleanSelect
           label="Alle"

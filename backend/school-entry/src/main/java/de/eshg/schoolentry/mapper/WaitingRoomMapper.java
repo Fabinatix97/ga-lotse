@@ -11,7 +11,6 @@ import de.eshg.schoolentry.business.model.WaitingRoomProcedureData;
 import de.eshg.schoolentry.domain.model.WaitingRoom;
 import de.eshg.schoolentry.domain.model.WaitingStatus;
 import de.eshg.schoolentry.util.WaitingRoomPageSpec;
-import org.springframework.data.domain.Sort;
 
 public final class WaitingRoomMapper {
   private WaitingRoomMapper() {}
@@ -88,7 +87,7 @@ public final class WaitingRoomMapper {
   public static WaitingRoomPageSpec mapToPageSpec(
       int page, int pageSize, WaitingRoomSortKey sortField, SortDirection direction) {
     return new WaitingRoomPageSpec(
-        page, pageSize, mapSortField(sortField), mapDirection(direction));
+        page, pageSize, mapSortField(sortField), direction == null ? SortDirection.ASC : direction);
   }
 
   private static de.eshg.schoolentry.util.WaitingRoomSortKey mapSortField(
@@ -102,14 +101,6 @@ public final class WaitingRoomMapper {
       case INFO -> de.eshg.schoolentry.util.WaitingRoomSortKey.INFO;
       case STATUS -> de.eshg.schoolentry.util.WaitingRoomSortKey.STATUS;
       case MODIFIED_AT -> de.eshg.schoolentry.util.WaitingRoomSortKey.MODIFIED_AT;
-    };
-  }
-
-  public static Sort.Direction mapDirection(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case null -> Sort.Direction.ASC;
-      case ASC -> Sort.Direction.ASC;
-      case DESC -> Sort.Direction.DESC;
     };
   }
 }

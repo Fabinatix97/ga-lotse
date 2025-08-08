@@ -9,7 +9,12 @@ import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
 import { RefObject } from "react";
 
-import { FormPlus, RequiresChildren, useIsMobile } from "@eshg/lib-portal";
+import {
+  FormPlus,
+  RequiresChildren,
+  useIsMobile,
+  useUpdateDocumentTitle,
+} from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useTranslation } from "@/lib/i18n/client";
@@ -75,6 +80,8 @@ export function MultiStepFormTitle({
 }: Readonly<MultiStepFormTitleProps>) {
   const isMobile = useIsMobile();
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
+
+  useUpdateDocumentTitle(`${stepperTitle} - ${title}`);
 
   return (
     <PageTitle

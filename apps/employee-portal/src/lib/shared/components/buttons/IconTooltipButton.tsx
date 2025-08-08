@@ -110,6 +110,7 @@ function IconTooltipButton({
         <IconButton
           aria-label={title}
           aria-labelledby={iconLabelledBy}
+          aria-hidden="true" // This tooltip button is generally used for visual users. Screen Reader users should receive the details via aria-describedby or aria-details
           onClick={() => setOpen(true)}
         >
           {icon}

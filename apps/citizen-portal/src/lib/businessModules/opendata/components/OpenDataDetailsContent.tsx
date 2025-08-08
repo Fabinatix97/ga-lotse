@@ -15,6 +15,7 @@ import {
   formatDate,
   formatFileSize,
   useFileDownload,
+  useUpdateDocumentTitle,
 } from "@eshg/lib-portal";
 import { ApiVersion } from "@eshg/opendata-api";
 
@@ -45,10 +46,11 @@ export function OpenDataDetailsContent(props: OpenDataDetailsContentProps) {
   const resourceTitleId = useId();
   const informationTitleId = useId();
 
+  useUpdateDocumentTitle(data.versionName);
+
   return (
     <PageContent>
       <PageTitle>{t("pageTitle")}</PageTitle>
-
       <GridColumnStack>
         <ContentSheet>
           <ContentSheetTitle>{data.versionName}</ContentSheetTitle>

@@ -37,7 +37,6 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
@@ -339,7 +338,7 @@ public class PersonClient {
   public List<GetPersonFileStateResponse> fetchPersonsBulk(
       List<UUID> personIdsToFetch,
       GetPersonsSortKey sortKey,
-      Sort.Direction direction,
+      SortDirection direction,
       Integer pageNumber,
       Integer pageSize) {
     if (personIdsToFetch.isEmpty()) {
@@ -365,18 +364,11 @@ public class PersonClient {
   }
 
   private static GetPersonFileStatesSortParameters mapToSortParameters(
-      GetPersonsSortKey sortKey, Sort.Direction direction, Integer pageNumber, Integer pageSize) {
+      GetPersonsSortKey sortKey, SortDirection direction, Integer pageNumber, Integer pageSize) {
     if (sortKey == null) {
       return null;
     }
-    return new GetPersonFileStatesSortParameters(
-        sortKey,
-        switch (direction) {
-          case ASC -> SortDirection.ASC;
-          case DESC -> SortDirection.DESC;
-        },
-        pageNumber,
-        pageSize);
+    return new GetPersonFileStatesSortParameters(sortKey, direction, pageNumber, pageSize);
   }
 
   private static ProcedureWithChildData extractChildData(

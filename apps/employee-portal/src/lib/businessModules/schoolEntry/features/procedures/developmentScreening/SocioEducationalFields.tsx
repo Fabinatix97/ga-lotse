@@ -75,8 +75,15 @@ export function SocioEducationalFields(props: SocioEducationalFieldsProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="socioEducationalFields">
-      <Typography level="title-sm">SozPäd Leistung</Typography>
+    <Stack
+      gap={2}
+      data-testid="socioEducationalFields"
+      role="group"
+      aria-labelledby="soc-pad-label"
+    >
+      <Typography level="title-sm" component="h2" id="soc-pad-label">
+        SozPäd Leistung
+      </Typography>
       <Stack direction="row" gap={5} alignItems="flex-start" flexWrap="wrap">
         <SetAllBooleanSelect
           label={<FlexLabel>Maßnahmen</FlexLabel>}

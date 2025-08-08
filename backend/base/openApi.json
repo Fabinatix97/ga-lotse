@@ -5058,9 +5058,10 @@
         "tags" : [ "Street" ]
       }
     },
-    "/streets/postcode-and-city" : {
+    "/streets/postal-code-and-city" : {
       "get" : {
-        "operationId" : "getPostCodeAndCityForStreet",
+        "description" : "Returns postal code and city information for a street based on the provided street name prefix. An exact match will take precedence and be returned, even if there are other matches that differ only in case or are the result of street names not being prefix-free. A house number can optionally be supplied for streets that span multiple postal codes.",
+        "operationId" : "getPostalCodeAndCityForStreet",
         "parameters" : [ {
           "description" : "The case-insensitive street name prefix of the street",
           "example" : "Breite ga",
@@ -5070,20 +5071,28 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "in" : "query",
+          "name" : "houseNumber",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(\\d+)([ a-zA-Z]*)$|",
+            "type" : "string"
+          }
         } ],
         "responses" : {
           "200" : {
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PostCodeAndCity"
+                  "$ref" : "#/components/schemas/PostalCodeAndCityResponse"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "summary" : "Returns post code and city for a given street name, if it is unambiguous",
+        "summary" : "Returns postal code and city for a given street name, if it is unambiguous",
         "tags" : [ "Street" ]
       }
     },
@@ -11459,13 +11468,13 @@
           }
         }
       },
-      "PostCodeAndCity" : {
+      "PostalCodeAndCityResponse" : {
         "type" : "object",
         "properties" : {
           "city" : {
             "type" : "string"
           },
-          "postCode" : {
+          "postalCode" : {
             "type" : "string"
           }
         }

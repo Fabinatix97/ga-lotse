@@ -124,6 +124,7 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
 
   return (
     <>
+      const custodianLabel = {t("common.terms.custodian")};
       <Stack component="div" gap={2} rowGap={2} sx={sx}>
         <FormHeader>{t("overview.title")}</FormHeader>
         <AccordionGroup data-testid="affectedPersonsAccordionGroup">
@@ -245,7 +246,7 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                                 level="h3"
                                 sx={{ pt: 1, fontWeight: 600 }}
                               >
-                                {`Personensorgeberechtigte ${custodianIndex + 1}`}
+                                {`${t("common.terms.custodian")} ${custodianIndex + 1}`}
                               </Typography>
                             </Grid>
                             <DetailsField

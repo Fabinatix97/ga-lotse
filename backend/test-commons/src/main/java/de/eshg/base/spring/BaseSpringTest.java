@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @Import({ApplicationContextCreationWatcher.class, QueryAndParamsCapturingListener.class})
-@ActiveProfiles({"test-commons", LOCAL_PROFILE_NAME})
+@ActiveProfiles({"test-commons", LOCAL_PROFILE_NAME, "legacy-config"})
 public abstract class BaseSpringTest extends BaseTest
     implements AuthenticationTraits,
         QueryValidationTraits,

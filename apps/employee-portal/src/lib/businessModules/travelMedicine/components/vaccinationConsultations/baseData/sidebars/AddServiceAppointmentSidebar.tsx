@@ -75,7 +75,7 @@ function AddServiceAppointmentSidebar(
     const { appointmentStart, durationInMinutes } = determineStartAndDuration(
       values.bookingType,
       values.userDefinedAppointmentDate!,
-      values.appointmentBlockDate,
+      values.blockAppointment,
       values.appointmentTypeStandardDuration,
     );
 
@@ -115,7 +115,7 @@ function AddServiceAppointmentSidebar(
     procedureId: props.procedureId,
     serviceChecks: [],
     bookingType: "" as ApiAppointmentBookingType,
-    appointmentBlockDate: undefined,
+    blockAppointment: undefined,
     userDefinedAppointmentDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     appointmentTypeStandardDuration: vaccinationStandardDuration as number,
     appointmentType: "" as ApiAppointmentType,

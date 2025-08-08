@@ -6,10 +6,8 @@
 package de.eshg.stiprotection;
 
 import de.eshg.base.SortDirection;
-import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomSortKey;
-import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
@@ -26,15 +24,12 @@ public class WaitingRoomService {
 
   private final StiProtectionProcedureFinder procedureFinder;
   private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
-  private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
 
   public WaitingRoomService(
       StiProtectionProcedureFinder procedureFinder,
-      StiProtectionProcedureRepository stiProtectionProcedureRepository,
-      CitizenAccessCodeUserApi citizenAccessCodeUserApi) {
+      StiProtectionProcedureRepository stiProtectionProcedureRepository) {
     this.procedureFinder = procedureFinder;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
-    this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
   }
 
   public Page<StiProtectionProcedure> getWaitingRoomProcedures(
@@ -42,8 +37,7 @@ public class WaitingRoomService {
     WaitingRoomSpecification specification =
         new WaitingRoomSpecification(
             parameters.sortKeyOrFallback(WaitingRoomSortKey.ID),
-            WaitingRoomMapper.toDatabaseType(
-                parameters.sortDirectionOrFallback(SortDirection.DESC)));
+            parameters.sortDirectionOrFallback(SortDirection.DESC));
 
     PageRequest pageable =
         PageRequest.of(parameters.pageNumberOrFallback(0), parameters.pageSizeOrFallback(25));

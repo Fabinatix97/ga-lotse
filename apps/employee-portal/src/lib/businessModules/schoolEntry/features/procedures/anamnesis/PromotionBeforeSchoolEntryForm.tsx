@@ -59,8 +59,13 @@ export function PromotionBeforeSchoolEntryForm(
   }
 
   return (
-    <Stack gap={2} data-testid="promotionBeforeSchoolEntryForm">
-      <Typography level="title-sm">
+    <Stack
+      gap={2}
+      data-testid="promotionBeforeSchoolEntryForm"
+      role="group"
+      aria-labelledby="foerdermassnahmen-label"
+    >
+      <Typography level="title-sm" component="h2" id="foerdermassnahmen-label">
         Fördermaßnahmen / Therapien / Hilfsmittel
       </Typography>
       <Grid direction="row" container spacing={2}>

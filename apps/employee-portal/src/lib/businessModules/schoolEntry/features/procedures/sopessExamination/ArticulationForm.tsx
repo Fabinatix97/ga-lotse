@@ -39,6 +39,7 @@ interface BooleanField {
   name: keyof Omit<ArticulationFormProps, "setFieldValue">;
   label: string;
 }
+
 const BOOLEAN_FIELDS: BooleanField[] = [
   { name: "lettersSAndZPoints", label: "S, Z" },
   { name: "formationSchPoints", label: "Sch" },
@@ -90,12 +91,20 @@ export function ArticulationForm(props: ArticulationFormProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="articulationForm">
-      <Typography level="title-sm">Artikulation, Dyslalie</Typography>
+    <Stack
+      gap={2}
+      data-testid="articulationForm"
+      role="group"
+      aria-labelledby="artikulation-label"
+    >
+      <Typography level="title-sm" component="h2" id="artikulation-label">
+        Artikulation, Dyslalie
+      </Typography>
       <Stack direction="row" gap={2} alignItems="flex-start">
         <Button
           variant="outlined"
           disabled={disabled}
+          aria-pressed={articulationValuesSum === 0}
           onClick={markAllAsInconspicuous}
         >
           unauffällig

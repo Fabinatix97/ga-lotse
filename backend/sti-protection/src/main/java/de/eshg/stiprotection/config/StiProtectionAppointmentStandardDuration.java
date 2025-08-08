@@ -16,10 +16,10 @@ import java.time.Duration;
 public class StiProtectionAppointmentStandardDuration extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  boolean hivStiConsultationInitialized = true;
+  boolean hivStiConsultationInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  boolean sexWorkConsultationInitialized = true;
+  boolean sexWorkConsultationInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @NotNull

@@ -25,10 +25,10 @@ public class DepartmentConfiguration extends BaseEntity {
   private Document logo;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean logoInitialized = true;
+  private boolean logoInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean streetAndMunicipalityDirectoriesInitialized = true;
+  private boolean streetAndMunicipalityDirectoriesInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -41,7 +41,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private Document municipalityDirectory;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean accessibilityStatementMarkdownsInitialized = true;
+  private boolean accessibilityStatementMarkdownsInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -54,7 +54,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private MultiLangDocument employeePortalAccessibilityStatementMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean acknowledgementsMarkdownsInitialized = true;
+  private boolean acknowledgementsMarkdownsInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -62,7 +62,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private MultiLangDocument acknowledgementsMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean contactMarkdownsInitialized = true;
+  private boolean contactMarkdownsInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -70,7 +70,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private MultiLangDocument contactMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean imprintMarkdownsInitialized = true;
+  private boolean imprintMarkdownsInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -78,7 +78,7 @@ public class DepartmentConfiguration extends BaseEntity {
   private MultiLangDocument imprintMarkdown;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean privacyPolicyMarkdownsInitialized = true;
+  private boolean privacyPolicyMarkdownsInitialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)

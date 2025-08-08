@@ -9111,7 +9111,7 @@
         "properties" : {
           "description" : {
             "maxLength" : 200,
-            "minLength" : 0,
+            "minLength" : 1,
             "type" : "string"
           },
           "fee" : {
@@ -9358,6 +9358,7 @@
         "type" : "object",
         "properties" : {
           "description" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "fee" : {

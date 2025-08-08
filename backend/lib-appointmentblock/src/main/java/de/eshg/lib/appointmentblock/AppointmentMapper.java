@@ -14,7 +14,6 @@ import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockGroupData;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import java.time.Instant;
-import org.springframework.data.domain.Sort;
 
 public final class AppointmentMapper {
   private AppointmentMapper() {}
@@ -58,13 +57,6 @@ public final class AppointmentMapper {
 
   public static AppointmentBlockGroupPageSpec mapToPageSpec(
       int page, int pageSize, AppointmentBlockSortKey sortField, SortDirection direction) {
-    return new AppointmentBlockGroupPageSpec(page, pageSize, sortField, mapDirection(direction));
-  }
-
-  public static Sort.Direction mapDirection(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case ASC -> Sort.Direction.ASC;
-      case DESC -> Sort.Direction.DESC;
-    };
+    return new AppointmentBlockGroupPageSpec(page, pageSize, sortField, direction);
   }
 }

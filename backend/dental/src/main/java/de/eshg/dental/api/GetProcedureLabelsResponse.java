@@ -11,4 +11,5 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Schema(name = "GetDentalLabelsResponse")
-public record GetProcedureLabelsResponse(@NotNull @Valid List<ProcedureLabelDto> labels) {}
+public record GetProcedureLabelsResponse(
+    @NotNull @Valid List<ProcedureLabelDto> labels, @NotNull long totalNumberOfElements) {}

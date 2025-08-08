@@ -44,7 +44,9 @@ export function SyncFormButtonBar(props: SyncFormButtonBarProps) {
           Abbrechen
         </Button>
       )}
-      <Button onClick={saveWithConfirmation}>Update</Button>
+      <Button aria-label="Daten aktualisieren" onClick={saveWithConfirmation}>
+        Update
+      </Button>
     </Stack>
   );
 }

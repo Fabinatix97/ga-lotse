@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.VisibleForTesting;
 
 public abstract class AbstractAppointmentStandardDurationService<T extends BaseEntity>
     extends EshgConfigurationService<T> {
@@ -100,9 +99,6 @@ public abstract class AbstractAppointmentStandardDurationService<T extends BaseE
         MapUtils.orderedMapOf(info.name(), durationUpdate.toString()));
     info.entitySetter().accept(config, durationUpdate);
   }
-
-  @VisibleForTesting
-  public abstract void setNotInitialized();
 
   protected ConfigurationStatus toConfigStatus(boolean initialized) {
     return initialized ? ConfigurationStatus.COMPLETE : ConfigurationStatus.INCOMPLETE;

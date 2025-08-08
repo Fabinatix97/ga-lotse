@@ -50,8 +50,19 @@ export function CheckUpsForm(props: CheckUpsFormProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="checkUpsForm">
-      <Typography level="title-sm">Vorsorgeuntersuchungen</Typography>
+    <Stack
+      gap={2}
+      data-testid="checkUpsForm"
+      role="group"
+      aria-labelledby="vorsorgeuntersuchungen-label"
+    >
+      <Typography
+        level="title-sm"
+        component="h2"
+        id="vorsorgeuntersuchungen-label"
+      >
+        Vorsorgeuntersuchungen
+      </Typography>
       <Stack direction="row" gap={4}>
         <SetAllBooleanWithUnknownSelect
           label="Alle"

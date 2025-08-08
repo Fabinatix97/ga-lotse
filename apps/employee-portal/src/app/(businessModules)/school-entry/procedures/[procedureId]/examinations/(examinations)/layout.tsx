@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Button, Grid, Stack } from "@mui/joy";
+import { Box, Button, Grid, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 
@@ -59,26 +59,32 @@ export default function SchoolEntryExaminationLayout(
   const procedureDetails = useGetProcedure(procedureId).data;
 
   return (
-    <PageGrid>
-      <Grid xs={9}>{props.children}</Grid>
-      <Grid xs={3}>
-        <Stack gap={3}>
-          <SidePanel>
-            <SidePanelTitle>Untersuchungen</SidePanelTitle>
-            <SidePanelNav>
-              {navItems.map((navItem) => (
-                <SidePanelNavLink key={navItem.name} href={navItem.href}>
-                  {navItem.name}
-                </SidePanelNavLink>
-              ))}
-            </SidePanelNav>
-          </SidePanel>
-          {!procedureDetails.isClosed && (
-            <CreateReportsPanel procedureId={procedureId} />
-          )}
-        </Stack>
-      </Grid>
-    </PageGrid>
+    <Box role="tabpanel">
+      <PageGrid>
+        <Grid xs={9}>{props.children}</Grid>
+        <Grid xs={3}>
+          <Stack gap={3}>
+            <SidePanel role="navigation" ariaLablledby="untersuchungen-label">
+              <SidePanelTitle id="untersuchengen-label">
+                Untersuchungen
+              </SidePanelTitle>
+              <SidePanelNav role="list">
+                {navItems.map((navItem) => (
+                  <span key={navItem.name} role="listitem">
+                    <SidePanelNavLink href={navItem.href} fullWidth>
+                      {navItem.name}
+                    </SidePanelNavLink>
+                  </span>
+                ))}
+              </SidePanelNav>
+            </SidePanel>
+            {!procedureDetails.isClosed && (
+              <CreateReportsPanel procedureId={procedureId} />
+            )}
+          </Stack>
+        </Grid>
+      </PageGrid>
+    </Box>
   );
 }
 
@@ -109,8 +115,14 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
   }
 
   return (
-    <SidePanel data-testid="reportsPanel">
-      <SidePanelTitle>Berichte erstellen</SidePanelTitle>
+    <SidePanel
+      data-testid="reportsPanel"
+      role="group"
+      ariaLablledby="bericht-erstellen-label"
+    >
+      <SidePanelTitle id="bericht-erstellen-label">
+        Berichte erstellen
+      </SidePanelTitle>
       <Button variant="solid" onClick={handleSchoolInfoLetterClick}>
         Schulinfobrief erstellen
       </Button>

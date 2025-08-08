@@ -50,7 +50,6 @@ import java.util.*;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -351,7 +350,7 @@ public class ProcedureOverviewService {
   }
 
   private static Comparator<ProcedureData> procedureSortComparator(
-      ProcedureSortKey sortKey, Sort.Direction sortDirection) {
+      ProcedureSortKey sortKey, SortDirection sortDirection) {
     return switch (sortKey) {
       case ID -> comparingLong(ProcedureData::internalId);
       case DATE_OF_BIRTH ->
@@ -376,9 +375,9 @@ public class ProcedureOverviewService {
   }
 
   private static <T extends Comparable<T>> Comparator<T> nullsComparator(
-      Sort.Direction sortDirection) {
+      SortDirection sortDirection) {
     Comparator<T> innerComparator = Comparator.naturalOrder();
-    if (sortDirection.equals(Sort.Direction.DESC)) {
+    if (sortDirection.equals(SortDirection.DESC)) {
       innerComparator = innerComparator.reversed();
     }
     return nullsLast(innerComparator);

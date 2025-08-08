@@ -54,8 +54,8 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
   }
 
   return (
-    <ContentPanel>
-      <ContentPanelTitle>Wartezimmer</ContentPanelTitle>
+    <ContentPanel role="form" ariaLabel="Wartezimmer">
+      <ContentPanelTitle component="h2">Wartezimmer</ContentPanelTitle>
       <Formik
         initialValues={mapToFormValues(props.procedure.waitingRoom)}
         onSubmit={handleSubmit}
@@ -79,11 +79,15 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
                   <>
                     <Button
                       variant="outlined"
+                      aria-label="Wartezimmer zurücksetzen"
                       onClick={() => handleReset(setFieldValue)}
                     >
                       Zurücksetzen
                     </Button>
-                    <SubmitButton submitting={isSubmitting}>
+                    <SubmitButton
+                      submitting={isSubmitting}
+                      aria-label="Wartezimmer speichern"
+                    >
                       Speichern
                     </SubmitButton>
                   </>

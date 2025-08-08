@@ -5,4 +5,4 @@
 
 package de.eshg.base.street;
 
-public record PostCodeAndCity(String postCode, String city) {}
+public record PostalCodeAndCityResponse(String postalCode, String city) {}

@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.util;
 
-import org.springframework.data.domain.Sort;
+import de.eshg.base.SortDirection;
 
 public record ProcedurePageSpec(
-    int pageNumber, int pageSize, ProcedureSortKey sortKey, Sort.Direction direction) {}
+    int pageNumber, int pageSize, ProcedureSortKey sortKey, SortDirection direction) {}

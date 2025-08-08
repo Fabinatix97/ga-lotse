@@ -7,7 +7,7 @@
 
 import { Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useId } from "react";
+import { useEffect, useId, useRef } from "react";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { usePublicDepartmentApi } from "@/lib/shared/api/clients";
@@ -28,11 +28,24 @@ export default function CitizenHomePage() {
   );
   const titleId = useId();
 
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Focus the title when the page is loaded
+    titleRef.current?.focus();
+  }, []);
+
   return (
     <PageLayout banner="private">
       <PageContent spacing="lg" spaceContentToSide>
         <section aria-labelledby={titleId}>
-          <Typography level="h1" mb={3} id={titleId}>
+          <Typography
+            ref={titleRef}
+            level="h1"
+            mb={3}
+            id={titleId}
+            tabIndex={-1}
+          >
             {t("private_person.landing_page.header")}
           </Typography>
           <Typography>

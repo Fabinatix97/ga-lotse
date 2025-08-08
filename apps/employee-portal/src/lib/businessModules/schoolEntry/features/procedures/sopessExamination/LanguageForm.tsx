@@ -38,8 +38,15 @@ export function LanguageForm(props: LanguageFormProps) {
     props.values.primaryLanguage !== ApiPrimaryLanguageValue.German;
 
   return (
-    <Stack gap={2} data-testid="languageForm">
-      <Typography level="title-sm">Sprache</Typography>
+    <Stack
+      gap={2}
+      data-testid="languageForm"
+      role="group"
+      aria-labelledby="language-label"
+    >
+      <Typography level="title-sm" component="h2" id="language-label">
+        Sprache
+      </Typography>
       <Stack direction="row" gap={3} flexWrap="wrap">
         <SoftRequiredSelectField
           name={fieldName("primaryLanguage")}

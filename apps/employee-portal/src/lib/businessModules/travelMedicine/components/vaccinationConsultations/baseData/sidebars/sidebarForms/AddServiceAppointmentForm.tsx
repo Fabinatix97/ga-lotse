@@ -35,7 +35,7 @@ export interface AddServiceAppointmentFormValues {
   procedureId: string;
   serviceChecks?: ApiAssignableService[];
   bookingType?: ApiAppointmentBookingType;
-  appointmentBlockDate?: { start: Date; end: Date };
+  blockAppointment?: { start: Date; end: Date };
   userDefinedAppointmentDate?: string;
   appointmentTypeStandardDuration: number;
   appointmentType?: ApiAppointmentType;
@@ -62,9 +62,9 @@ export function AddServiceAppointmentForm(
     const errors: FormikErrors<AddServiceAppointmentFormValues> = {};
     if (
       values.bookingType === ApiAppointmentBookingType.AppointmentBlock &&
-      values.appointmentBlockDate?.start === undefined
+      values.blockAppointment?.start === undefined
     ) {
-      errors.appointmentBlockDate = "Bitte einen Termin auswählen";
+      errors.blockAppointment = "Bitte einen Termin auswählen";
     } else if (values.bookingType === ApiAppointmentBookingType.UserDefined) {
       if (values.userDefinedAppointmentDate === "") {
         errors.userDefinedAppointmentDate =

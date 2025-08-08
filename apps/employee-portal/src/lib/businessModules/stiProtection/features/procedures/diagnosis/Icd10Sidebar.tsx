@@ -20,6 +20,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { visuallyHidden } from "@mui/utils";
 import { FormikErrors } from "formik";
 import { ChangeEvent, TdHTMLAttributes, useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -33,6 +34,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@eshg/lib-employee-portal";
+import { LiveAnnouncer } from "@eshg/lib-portal";
 
 import { useSearchIcd10Codes } from "@/lib/baseModule/api/queries/icd10Codes";
 
@@ -130,9 +132,17 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
 
   return (
     <>
+      <LiveAnnouncer
+        message="Keine ICD-10 Codes gefunden"
+        active={displayedCodes.length === 0}
+      />
+      <LiveAnnouncer
+        message={`${displayedCodes.length} ICD-10 Codes gefunden`}
+        active={displayedCodes.length > 0}
+      />
       <SidebarContent title="ICD-10 Katalog">
         <Stack gap={3}>
-          <FormControl size="md">
+          <FormControl size="md" role="search" aria-label="ICD-10 Katalog">
             <FormLabel>Suche</FormLabel>
             <Input
               value={searchString}
@@ -164,6 +174,13 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
             {`${selectedCodes.length} Befunde ausgewählt`}
           </Button>
           <StyledTable>
+            <Box component="thead" sx={visuallyHidden}>
+              <tr>
+                <th>An- und Abwählen</th>
+                <th>ICD-10 Code</th>
+                <th>Beschreibung</th>
+              </tr>
+            </Box>
             <tbody>
               {displayedCodes.map((currentRowCode) => (
                 <tr

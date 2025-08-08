@@ -19,8 +19,8 @@ import {
 
 import { isInteger } from "./guards";
 
-export function validateTodayOrFutureDate(value: string) {
-  if (isDateString(value) && isPast(endOfDay(value))) {
+export function validateTodayOrFutureDate(value?: string) {
+  if (value && isDateString(value) && isPast(endOfDay(value))) {
     return "Das Datum liegt in der Vergangenheit.";
   }
 

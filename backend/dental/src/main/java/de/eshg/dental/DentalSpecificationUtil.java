@@ -9,9 +9,9 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Root;
 
-public class SpecificationUtil {
+public class DentalSpecificationUtil {
 
-  private SpecificationUtil() {}
+  private DentalSpecificationUtil() {}
 
   public static Expression<Integer> leadingNumbersInGroupName(Root<?> root, CriteriaBuilder cb) {
 

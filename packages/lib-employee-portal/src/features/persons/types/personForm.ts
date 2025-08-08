@@ -13,6 +13,7 @@ export interface PersonFormProps<TValues> extends FormikProps<TValues> {
   onCancel: () => void;
   onDelete?: () => void;
   addressRequired?: boolean;
+  canChooseAddressType?: boolean;
   mode?: "edit" | "create";
 }
 

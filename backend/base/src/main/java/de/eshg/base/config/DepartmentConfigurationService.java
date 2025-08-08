@@ -7,7 +7,6 @@ package de.eshg.base.config;
 
 import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
 
-import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.department.CitizenPortalMarkdownName;
 import de.eshg.base.department.EmployeePortalMarkdownName;
 import de.eshg.base.department.MarkdownName;
@@ -238,17 +237,6 @@ public class DepartmentConfigurationService
         getLogoConfigurationStatus(config),
         getPrivacyPolicyConfigurationStatus(config),
         getAddressRegistryConfigurationStatus(config));
-  }
-
-  @VisibleForTesting
-  public void setNotInitialized() {
-    getConfig().setAccessibilityStatementMarkdownsInitialized(false);
-    getConfig().setAcknowledgementsMarkdownsInitialized(false);
-    getConfig().setContactMarkdownsInitialized(false);
-    getConfig().setImprintMarkdownsInitialized(false);
-    getConfig().setPrivacyPolicyMarkdownsInitialized(false);
-    getConfig().setLogoInitialized(false);
-    getConfig().setStreetAndMunicipalityDirectoriesInitialized(false);
   }
 
   private Map.Entry<String, ConfigurationStatus> getAccessibilityStatementConfigurationStatus(

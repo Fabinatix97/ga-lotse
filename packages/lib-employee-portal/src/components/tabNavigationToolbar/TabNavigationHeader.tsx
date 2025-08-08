@@ -4,7 +4,7 @@
  */
 
 import { Stack, Typography, TypographyProps } from "@mui/joy";
-import { Children } from "react";
+import { Children, useEffect, useRef } from "react";
 
 import { RequiresChildren, useIsMobile } from "@eshg/lib-portal";
 
@@ -17,9 +17,20 @@ export function TabNavigationHeader(props: TabNavigationHeaderProps) {
 
   const firstChild = Children.toArray(props.children)[0];
 
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (props.titleAsH1) {
+      // Focus the title when the page is loaded
+      titleRef.current?.focus();
+    }
+  }, [props.titleAsH1]);
+
   return (
     <Stack
+      ref={titleRef}
       component={props.titleAsH1 ? "h1" : "div"}
+      tabIndex={props.titleAsH1 ? -1 : undefined}
       sx={{ margin: "0" }}
       direction="row"
       gap={4}

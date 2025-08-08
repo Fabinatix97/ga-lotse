@@ -50,10 +50,16 @@ export function CountingForm(props: CountingFormProps) {
   const fieldName = createFieldNameMapper("knowledgeThinking");
 
   return (
-    <Stack gap={2} data-testid="countingForm">
+    <Stack
+      gap={2}
+      data-testid="countingForm"
+      role="group"
+      aria-labelledby="zaehlen-label"
+    >
       <FormSectionTitle
         title="Zählen"
         tooltip="(0-12 auffall, 13-16 grenz, 17-20 unauff, 99 - unbekannt)"
+        id="zaehlen-label"
       />
       <Stack direction="row" gap={2}>
         <SoftRequiredNumberField

@@ -17,7 +17,7 @@ import java.time.Duration;
 public class SchoolEntryAppointmentStandardDuration extends BaseEntity implements Initializable {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean initialized = true;
+  private boolean initialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @NotNull

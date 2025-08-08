@@ -183,6 +183,14 @@ function GroupAccordion<TItem extends SearchableGroupItem>({
   const expandableContentId = useId();
 
   function renderItems(items: TItem[]) {
+    if (items.length === 1) {
+      return (
+        <Box paddingBottom={2} paddingTop={2}>
+          {renderItem(items[0]!)}
+        </Box>
+      );
+    }
+
     return (
       <List>
         {items.map((item) => {

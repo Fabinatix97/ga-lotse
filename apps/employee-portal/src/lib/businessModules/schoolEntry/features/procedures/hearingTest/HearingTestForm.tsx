@@ -10,10 +10,10 @@ import { Formik, FormikHelpers } from "formik";
 
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import {
+  DebouncedTextareaField,
   FormProps,
   MutationBundle,
   OptionalFieldValue,
-  TextareaField,
 } from "@eshg/lib-portal";
 import {
   ApiDecibelValue,
@@ -90,7 +90,7 @@ export function HearingTestForm(props: HearingTestFormProps) {
           <Divider />
           <FormGroupGrid>
             <Grid xs={12}>
-              <TextareaField name="note" label="Bemerkung" />
+              <DebouncedTextareaField name="note" label="Bemerkung" />
             </Grid>
           </FormGroupGrid>
           <FormFooter isSubmitting={isSubmitting} />

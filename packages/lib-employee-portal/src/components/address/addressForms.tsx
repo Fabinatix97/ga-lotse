@@ -8,7 +8,7 @@
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useId, useState } from "react";
+import { useId } from "react";
 import { isNonNullish } from "remeda";
 
 import { ApiCountryCode } from "@eshg/base-api";
@@ -27,8 +27,8 @@ import {
 import { BaseAddressType } from "../../api/models/address";
 import { CountryField } from "../formFields/CountryField";
 
+import { AddressAutoFillField } from "./AddressAutoFillField";
 import { StreetField } from "./StreetField";
-import { StreetListeningField } from "./StreetListeningField";
 import { createEmptyAddress } from "./helpers";
 
 export interface BaseAddressFormInputs {
@@ -45,12 +45,13 @@ export interface BaseAddressFormInputs {
 
 interface AddressFormProps extends Partial<NestedFormProps> {
   type: BaseAddressType;
+  canChooseType?: boolean;
 }
 
 export function ContactAddressForm(props: AddressFormProps) {
   const fieldName = createFieldNameMapper<BaseAddressFormInputs>(props.name);
 
-  return <CommonAddressFields type={props.type} fieldName={fieldName} />;
+  return <CommonAddressFields {...props} fieldName={fieldName} />;
 }
 
 export function OptionalContactAddressForm(props: {
@@ -193,14 +194,15 @@ const typeOptions: SelectOption[] = [
 
 function CommonAddressFields({
   type,
+  canChooseType = true,
   fieldName,
 }: {
   type: BaseAddressType;
+  canChooseType?: boolean;
   fieldName: (key: keyof BaseAddressFormInputs) => string;
 }) {
   const validateLength = useValidateLength();
   const ctx = useFormikContext<BaseAddressFormInputs>();
-  const [street, setStreet] = useState<string | undefined>(undefined);
 
   function getValue<K extends keyof BaseAddressFormInputs>(key: K) {
     return ctx.getFieldMeta<BaseAddressFormInputs[K]>(fieldName(key)).value;
@@ -208,14 +210,16 @@ function CommonAddressFields({
 
   return (
     <>
-      <Grid xxs={12}>
-        <SelectField
-          options={typeOptions}
-          name={fieldName("type")}
-          label="Art"
-          required="Bitte die Art der Adresse angeben"
-        />
-      </Grid>
+      {canChooseType && (
+        <Grid xxs={12}>
+          <SelectField
+            options={typeOptions}
+            name={fieldName("type")}
+            label="Art"
+            required="Bitte die Art der Adresse angeben"
+          />
+        </Grid>
+      )}
       {type === "DomesticAddress" && (
         <>
           <Grid xxs={12} xs={9}>
@@ -224,7 +228,6 @@ function CommonAddressFields({
               label="Straße"
               required="Bitte eine Straße angeben"
               validate={validateLength(1, 55)}
-              onBlur={() => setStreet(getValue("street"))}
             />
           </Grid>
           <Grid xxs={12} xs={3}>
@@ -256,26 +259,24 @@ function CommonAddressFields({
         </Grid>
       )}
       <Grid xxs={12} xs={4}>
-        <StreetListeningField
-          name={fieldName("postalCode")}
+        <AddressAutoFillField
+          fieldName={fieldName}
+          name="postalCode"
           label="Postleitzahl"
           required="Bitte PLZ angeben"
           validate={validatePipe(
             validateZipCode(getValue("country")),
             validateLength(1, 20),
           )}
-          property="postCode"
-          street={street}
         />
       </Grid>
       <Grid xxs={12} xs={8}>
-        <StreetListeningField
-          name={fieldName("city")}
+        <AddressAutoFillField
+          fieldName={fieldName}
+          name="city"
           label="Ort"
           required="Bitte einen Ort angeben"
           validate={validateLength(1, 50)}
-          property="city"
-          street={street}
         />
       </Grid>
       <Grid xxs={12}>

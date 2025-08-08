@@ -76,8 +76,8 @@ export function validateTime(value: string) {
   return undefined;
 }
 
-export function validateDateTime(value: OptionalFieldValue<string>) {
-  if (isEmptyString(value)) {
+export function validateDateTime(value?: OptionalFieldValue<string>) {
+  if (isNullish(value) || isEmptyString(value)) {
     return undefined;
   }
 

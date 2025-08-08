@@ -641,10 +641,9 @@ businessmodules:
 # this configures the active spring profiles for the backend service applications
 spring:
   profiles:
-    # some health department specific configuration is set via spring profiles in the backend services
-    active: "dev, preview-features, health-department-frankfurt"
+    active: "dev, preview-features"
     # or maybe
-    #active: "production, health-department-frankfurt"
+    #active: "production"
 
 # the citizen portal has a separate option to define
 # whether it is production deployment or not (default "test") 
@@ -712,6 +711,10 @@ The local deployment already contains two "pre generated" certificates which are
 ## Changelog
 
 ### changes since last version
+
+* A health department specific spring profile is no longer necessary - all configuration must be done via the configurator.
+
+### 1.11.0
 
 * Add new deployment "PDF converter" to central services - its domain name
   needs to be configured for each GA instance\

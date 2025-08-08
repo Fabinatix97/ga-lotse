@@ -51,7 +51,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -266,7 +265,7 @@ public class WaitingRoomService {
   private List<GetPersonFileStateResponse> fetchPersonsBulk(
       List<UUID> personIdsToFetch,
       GetPersonsSortKey sortKey,
-      Sort.Direction direction,
+      SortDirection direction,
       Integer pageNumber,
       Integer pageSize) {
     if (personIdsToFetch.isEmpty()) {
@@ -292,7 +291,7 @@ public class WaitingRoomService {
 
   private List<GetFacilityFileStateResponse> fetchFacilitiesBulk(
       List<UUID> facilityIdsToFetch,
-      Sort.Direction direction,
+      SortDirection direction,
       Integer pageNumber,
       Integer pageSize) {
     if (facilityIdsToFetch.isEmpty()) {
@@ -307,7 +306,7 @@ public class WaitingRoomService {
     Comparator<GetFacilityFileStateResponse> comparator =
         comparing(GetFacilityFileStateResponse::name);
 
-    if (direction == Sort.Direction.DESC) {
+    if (direction == SortDirection.DESC) {
       comparator = comparator.reversed();
     }
 
@@ -325,7 +324,7 @@ public class WaitingRoomService {
 
   private List<UUID> fetchPhysiciansBulk(
       List<UUID> physicianIdsToFetch,
-      Sort.Direction direction,
+      SortDirection direction,
       Integer pageNumber,
       Integer pageSize) {
 
@@ -342,7 +341,7 @@ public class WaitingRoomService {
 
     Comparator<Map.Entry<UUID, String>> comparator = comparing(Map.Entry::getValue);
 
-    if (direction == Sort.Direction.DESC) {
+    if (direction == SortDirection.DESC) {
       comparator = comparator.reversed();
     }
 
@@ -359,18 +358,11 @@ public class WaitingRoomService {
   }
 
   private GetPersonFileStatesSortParameters mapToSortParameters(
-      GetPersonsSortKey sortKey, Sort.Direction direction, Integer pageNumber, Integer pageSize) {
+      GetPersonsSortKey sortKey, SortDirection direction, Integer pageNumber, Integer pageSize) {
     if (sortKey == null) {
       return null;
     }
-    return new GetPersonFileStatesSortParameters(
-        sortKey,
-        switch (direction) {
-          case ASC -> SortDirection.ASC;
-          case DESC -> SortDirection.DESC;
-        },
-        pageNumber,
-        pageSize);
+    return new GetPersonFileStatesSortParameters(sortKey, direction, pageNumber, pageSize);
   }
 
   private static GetPersonsSortKey mapToGetPersonsSortKey(WaitingRoomSortKey sortKey) {

@@ -36,8 +36,9 @@ public class StreetController implements StreetApi {
   }
 
   @Override
-  public PostCodeAndCity getPostCodeAndCityForStreet(String streetNamePrefix) {
-    return streetService.getPostCodeAndCityForStreet(streetNamePrefix);
+  public PostalCodeAndCityResponse getPostalCodeAndCityForStreet(
+      String streetNamePrefix, String houseNumber) {
+    return streetService.getPostalCodeAndCityForStreet(streetNamePrefix, houseNumber);
   }
 
   static class StreetMapper {

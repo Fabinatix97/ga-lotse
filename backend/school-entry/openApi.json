@@ -4161,6 +4161,25 @@
     "/school-entry-procedure-labels" : {
       "get" : {
         "operationId" : "getLabels",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -7975,7 +7994,7 @@
         }
       },
       "GetSchoolEntryLabelsResponse" : {
-        "required" : [ "labels" ],
+        "required" : [ "labels", "totalNumberOfElements" ],
         "type" : "object",
         "properties" : {
           "labels" : {
@@ -7983,6 +8002,10 @@
             "items" : {
               "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
             }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },

@@ -30,7 +30,6 @@ export async function generateMetadata(
     return {};
   }
   return {
-    title: baseTranslations.de.site_title,
     description: baseTranslations.de.site_description,
     keywords: baseTranslations.de.site_keywords,
     alternates: { canonical: canonicalURL },

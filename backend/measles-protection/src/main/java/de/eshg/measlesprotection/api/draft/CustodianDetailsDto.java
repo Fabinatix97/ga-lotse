@@ -9,7 +9,6 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.lib.common.CountryCode;
-import de.eshg.measlesprotection.validation.Adult;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -26,9 +25,7 @@ public record CustodianDetailsDto(
         String firstName,
     @NotBlank @Schema(description = "Last name of the custodian.", example = "Himmel")
         String lastName,
-    @NotNull
-        @Adult(message = "Custodian must be an adult")
-        @Schema(description = "Date of birth of the custodian.", example = "1951-02-16")
+    @NotNull @Schema(description = "Date of birth of the custodian.", example = "1951-02-16")
         LocalDate dateOfBirth,
     List<@NotBlank String> phoneNumbers,
     List<@Email String> emailAddresses,

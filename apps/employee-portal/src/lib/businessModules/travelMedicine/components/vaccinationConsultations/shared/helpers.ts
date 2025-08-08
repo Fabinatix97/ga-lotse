@@ -200,7 +200,7 @@ export function createMedicalAssistantOptions(
 export function determineStartAndDuration(
   bookingType: ApiAppointmentBookingType | undefined,
   userDefinedAppointmentDate: string,
-  appointmentBlockDate: { start: Date; end: Date } | undefined,
+  blockAppointment: { start: Date; end: Date } | undefined,
   appointmentTypeStandardDuration: number,
 ): { appointmentStart: Date; durationInMinutes: number } {
   let appointmentStart;
@@ -209,11 +209,11 @@ export function determineStartAndDuration(
     appointmentStart = new Date(userDefinedAppointmentDate);
     durationInMinutes = appointmentTypeStandardDuration;
   } else {
-    appointmentStart = appointmentBlockDate?.start ?? new Date();
-    durationInMinutes = appointmentBlockDate
+    appointmentStart = blockAppointment?.start ?? new Date();
+    durationInMinutes = blockAppointment
       ? durationBetweenDatesInMinutes(
-          appointmentBlockDate.start,
-          appointmentBlockDate.end,
+          blockAppointment.start,
+          blockAppointment.end,
         )
       : appointmentTypeStandardDuration;
   }

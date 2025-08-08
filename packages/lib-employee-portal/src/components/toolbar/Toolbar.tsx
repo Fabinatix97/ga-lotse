@@ -4,7 +4,7 @@
  */
 
 import { Divider, Stack, Typography, styled } from "@mui/joy";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 import { useLayoutConfig } from "../../contexts/layoutConfig";
 
@@ -41,6 +41,12 @@ export interface ToolbarProps {
 export function Toolbar(props: ToolbarProps) {
   const { title, backButton, afterTitle } = props;
   const { simpleToolbarHeight } = useLayoutConfig();
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Focus the title when the page is loaded
+    titleRef.current?.focus();
+  }, []);
 
   return (
     <ToolbarStack
@@ -50,7 +56,7 @@ export function Toolbar(props: ToolbarProps) {
     >
       {backButton}
       <TitleStack direction="row">
-        <Typography component="h1" level="h2">
+        <Typography ref={titleRef} component="h1" level="h2" tabIndex={-1}>
           {title}
         </Typography>
         {afterTitle}

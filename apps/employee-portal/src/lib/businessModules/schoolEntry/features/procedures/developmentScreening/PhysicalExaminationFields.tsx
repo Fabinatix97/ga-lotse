@@ -6,9 +6,9 @@
 import { Stack, Typography } from "@mui/joy";
 
 import {
+  DebouncedTextareaField,
   NestedFormProps,
   SetFieldValueHelper,
-  TextareaField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
 import {
@@ -123,8 +123,19 @@ export function PhysicalExaminationFields(
   }
 
   return (
-    <Stack gap={2} data-testid="physicalExaminationForm">
-      <Typography level="title-sm">Körperliche Untersuchung</Typography>
+    <Stack
+      gap={2}
+      data-testid="physicalExaminationForm"
+      role="group"
+      aria-labelledby="koerperliche-untersuchung-label"
+    >
+      <Typography
+        level="title-sm"
+        component="h2"
+        id="koerperliche-untersuchung-label"
+      >
+        Körperliche Untersuchung
+      </Typography>
       <Stack direction="row" gap={4} alignItems="flex-start" flexWrap="wrap">
         <SetAllExaminationResultsSelect
           label="Alle"
@@ -148,7 +159,7 @@ export function PhysicalExaminationFields(
           ))}
         </Stack>
       </Stack>
-      <TextareaField name={fieldName("note")} label="Bemerkung" />
+      <DebouncedTextareaField name={fieldName("note")} label="Bemerkung" />
     </Stack>
   );
 }

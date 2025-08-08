@@ -7,11 +7,11 @@ import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import {
+  DebouncedTextareaField,
   NestedFormProps,
   OptionalFieldValue,
   SetFieldValueHelper,
   SoftRequiredSelectField,
-  TextareaField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
 import { ApiDisabilityType } from "@eshg/school-entry-api";
@@ -62,8 +62,15 @@ export function HandicapFields(props: HandicapFieldsProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="handicapForm">
-      <Typography level="title-sm">Handicap</Typography>
+    <Stack
+      gap={2}
+      data-testid="handicapForm"
+      role="group"
+      aria-labelledby="handicap-label"
+    >
+      <Typography level="title-sm" component="h2" id="handicap-label">
+        Handicap
+      </Typography>
       <Stack direction="row" gap={4} alignItems="flex-start" flexWrap="wrap">
         <SetAllBooleanSelect
           label="Alle"
@@ -96,7 +103,7 @@ export function HandicapFields(props: HandicapFieldsProps) {
           />
         </Stack>
       </Stack>
-      <TextareaField name={fieldName("note")} label="Bemerkung" />
+      <DebouncedTextareaField name={fieldName("note")} label="Bemerkung" />
     </Stack>
   );
 }

@@ -19,7 +19,6 @@ import jakarta.persistence.EntityManager;
 import java.util.Map;
 import java.util.SequencedMap;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.VisibleForTesting;
 
 public abstract class AbstractSimpleAppointmentStandardDurationService<
         T extends BaseEntity & Initializable>
@@ -67,12 +66,6 @@ public abstract class AbstractSimpleAppointmentStandardDurationService<
   public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
     return MapUtils.orderedMapOf(
         configurationEndpoint.name(), toConfigStatus(getConfig().isInitialized()));
-  }
-
-  @VisibleForTesting
-  @Override
-  public void setNotInitialized() {
-    getConfig().setInitialized(false);
   }
 
   private Map<String, String> getRelevantFieldsForLogging(T entity) {

@@ -1,0 +1,24 @@
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet id="1729689708899-1" author="GA-Lotse">
+    <sql>
+      UPDATE development_screening
+      SET handicap_note = NULL
+      WHERE handicap_note = ''
+    </sql>
+  </changeSet>
+  <changeSet id="1729689708899-2" author="GA-Lotse">
+    <sql>
+      UPDATE development_screening
+      SET physical_examination_note = NULL
+      WHERE physical_examination_note = ''
+    </sql>
+  </changeSet>
+</databaseChangeLog>

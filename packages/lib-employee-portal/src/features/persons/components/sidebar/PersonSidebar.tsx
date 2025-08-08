@@ -51,7 +51,7 @@ type SearchFormProps<TSearchValues> =
 type CreateFormProps<TSearchValues, TCreateValues> =
   | {
       initialCreateState: CreatePersonStateMapper<TSearchValues, TCreateValues>;
-      createFormComponent: ComponentType<SearchPersonFormProps<TCreateValues>>;
+      createFormComponent: ComponentType<PersonFormProps<TCreateValues>>;
     }
   | {
       initialCreateState?: never;
@@ -90,6 +90,7 @@ export type PersonSidebarProps<
     title: string;
     submitLabel: string;
     addressRequired?: boolean;
+    canChooseAddressType?: boolean;
     associatedProcedures?: AssociatedProceduresProps<TProcedure>;
   };
 
@@ -258,6 +259,7 @@ export function PersonSidebar<
         submitLabel={props.submitLabel}
         sidebarFormRef={props.formRef}
         addressRequired={props.addressRequired}
+        canChooseAddressType={props.canChooseAddressType}
         initialValues={state.createState}
         component={CreateFormComponent}
         onCancel={() => props.onClose(false)}

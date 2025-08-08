@@ -8,6 +8,7 @@ import { Typography, TypographyProps } from "@mui/joy";
 export interface SideIndicatorProps {
   sideIndicator: "L" | "R";
   sideIndicatorPosition: TypographyProps["textAlign"];
+  id?: string;
 }
 
 export function SideIndicator(props: SideIndicatorProps) {
@@ -18,6 +19,7 @@ export function SideIndicator(props: SideIndicatorProps) {
       alignSelf="center"
       flexGrow={1}
       textAlign={props.sideIndicatorPosition}
+      id={props.id}
     >
       {props.sideIndicator}
     </Typography>

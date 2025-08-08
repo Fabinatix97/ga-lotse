@@ -7,6 +7,7 @@ package de.eshg.base.street;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.CountryCode;
+import jakarta.annotation.Nullable;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,25 +42,39 @@ public class StreetService {
         .collect(StreamUtil.toLinkedHashSet());
   }
 
-  public PostCodeAndCity getPostCodeAndCityForStreet(String streetName) {
+  public PostalCodeAndCityResponse getPostalCodeAndCityForStreet(
+      String streetName, @Nullable String houseNumber) {
     Set<StreetDirectory.AdministrativeData> administrativeData =
-        streetDirectory.getAdministrativeDataByStreetName(streetName);
-
-    Set<PostCodeAndCity> result =
+        houseNumber == null
+            ? streetDirectory.getAdministrativeDataByStreetName(streetName)
+            : streetDirectory.getAdministrativeDataByStreetNameAndHouseNumber(
+                streetName, houseNumber);
+    Set<String> postalCodes =
         administrativeData.stream()
-            .map(
-                ad -> {
-                  MunicipalityDirectory.AdministrativeData x =
-                      municipalityDirectory.getAdministrativeDataBy(ad.postalCode());
-                  return new PostCodeAndCity(ad.postalCode(), x.municipality());
-                })
+            .map(StreetDirectory.AdministrativeData::postalCode)
             .collect(Collectors.toSet());
 
-    if (result.size() == 1) {
-      return result.stream().findFirst().orElseThrow();
-    } else {
-      return new PostCodeAndCity(null, null);
+    if (postalCodes.size() == 1) {
+      return mapToPostalCodeAndCityResponse(postalCodes.stream().findAny().orElseThrow());
     }
+
+    Set<String> exactMatchPostalCodes =
+        administrativeData.stream()
+            .filter(ad -> ad.streetName().equals(streetName))
+            .map(StreetDirectory.AdministrativeData::postalCode)
+            .collect(Collectors.toSet());
+
+    if (exactMatchPostalCodes.size() == 1) {
+      return mapToPostalCodeAndCityResponse(exactMatchPostalCodes.stream().findAny().orElseThrow());
+    }
+
+    return new PostalCodeAndCityResponse(null, null);
+  }
+
+  private PostalCodeAndCityResponse mapToPostalCodeAndCityResponse(String postalCode) {
+    MunicipalityDirectory.AdministrativeData municipalityData =
+        municipalityDirectory.getAdministrativeDataBy(postalCode);
+    return new PostalCodeAndCityResponse(postalCode, municipalityData.municipality());
   }
 
   private static Function<StreetDirectory.AdministrativeData, AdministrativeData>

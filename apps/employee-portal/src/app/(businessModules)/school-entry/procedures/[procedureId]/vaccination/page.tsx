@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { use } from "react";
 import { isEmpty } from "remeda";
@@ -66,9 +68,12 @@ export default function SchoolEntryVaccinationStatusPage(
   }
 
   return (
-    <ContentPanel>
+    <ContentPanel role="tabpanel">
       <ContentPanelTitle tooltip="(0 - Sicher nicht erfolgt, 1-8 - Anzahl Impfungen, 9 - unbekannt)">
         Impfstatus
+        <Typography component="span" sx={visuallyHidden}>
+          (0 - Sicher nicht erfolgt, 1-8 - Anzahl Impfungen, 9 - unbekannt)
+        </Typography>
       </ContentPanelTitle>
       <DisabledFormProvider disabled={procedure.isClosed}>
         <VaccinationForm

@@ -19,6 +19,7 @@ import {
   FIRST_NAME_MAX_LENGTH,
   LAST_NAME_MAX_LENGTH,
 } from "@/lib/businessModules/measlesProtection/shared/constants";
+import { useTranslation } from "@/lib/i18n/client";
 
 export interface NestedFormProps {
   name: string;
@@ -36,44 +37,30 @@ export const minimalPersonInitial: MinimalPerson = {
   dateOfBirth: "",
 };
 
-const minimalPersonFormConfig = {
-  firstName: {
-    label: "Vorname",
-    required: "Bitte einen Vorname angeben",
-  },
-  lastName: {
-    label: "Nachname",
-    required: "Bitte einen Nachname angeben",
-  },
-  dateOfBirth: {
-    label: "Geburtsdatum",
-    required: "Bitte ein Geburtsdatum angeben",
-  },
-};
-
 export function MinimalPersonForm(props: Readonly<NestedFormProps>) {
+  const { t } = useTranslation(["measlesProtection/forms"]);
   const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper(props.name);
   return (
     <Stack gap={2} rowGap={2}>
       <InputField
         name={fieldName("firstName")}
-        label={minimalPersonFormConfig.firstName.label}
-        required={minimalPersonFormConfig.firstName.required}
+        label={t("minimal_person_config.firstName.label")}
+        required={t("minimal_person_config.firstName.required")}
         validate={validateLength(1, FIRST_NAME_MAX_LENGTH)}
       />
       <InputField
         name={fieldName("lastName")}
-        label={minimalPersonFormConfig.lastName.label}
-        required={minimalPersonFormConfig.lastName.required}
+        label={t("minimal_person_config.lastName.label")}
+        required={t("minimal_person_config.lastName.required")}
         validate={validateLength(1, LAST_NAME_MAX_LENGTH)}
       />
       <Grid container columnSpacing={2}>
         <Grid xxs={12}>
           <DateField
             name={fieldName("dateOfBirth")}
-            label={minimalPersonFormConfig.dateOfBirth.label}
-            required={minimalPersonFormConfig.dateOfBirth.required}
+            label={t("minimal_person_config.dateOfBirth.label")}
+            required={t("minimal_person_config.dateOfBirth.required")}
             validate={validateDateOfBirth}
           />
         </Grid>

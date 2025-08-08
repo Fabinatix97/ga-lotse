@@ -86,7 +86,7 @@ export default function SchoolEntryAnamnesisPage(
   }
 
   return (
-    <ContentPanel>
+    <ContentPanel role="tabpanel">
       <ContentPanelTitle>S1 - Anamnese</ContentPanelTitle>
       <DisabledFormProvider disabled={procedure.isClosed}>
         <AnamnesisForm

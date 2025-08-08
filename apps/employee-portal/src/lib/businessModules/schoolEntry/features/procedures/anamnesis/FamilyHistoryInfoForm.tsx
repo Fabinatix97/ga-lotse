@@ -23,8 +23,14 @@ export function FamilyHistoryInfoForm() {
   const familyHistoryInfo = createFieldNameMapper("familyHistoryInfo");
 
   return (
-    <Stack gap={2}>
-      <Typography level="title-sm">Familienvorgeschichten</Typography>
+    <Stack gap={2} role="group" aria-labelledby="familienvorgeschichten-label">
+      <Typography
+        level="title-sm"
+        component="h2"
+        id="familienvorgeschichten-label"
+      >
+        Familienvorgeschichten
+      </Typography>
       <Stack direction="row" gap={2} flexWrap="wrap">
         <BooleanSelectField
           name={familyHistoryInfo("spectaclesInFamily")}

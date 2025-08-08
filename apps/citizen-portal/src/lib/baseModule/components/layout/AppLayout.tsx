@@ -25,6 +25,8 @@ import { CitizenSnackbar } from "@/lib/shared/components/CitizenSnackbar";
 import { CitizenPortalErrorModal } from "@/lib/shared/components/boundaries/CitizenPortalErrorModal";
 import { CitizenPortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/CitizenPortalConfirmationDialog";
 
+import { ClientLayout } from "./ClientLayout";
+
 export function AppLayout({
   lang,
   children,
@@ -61,7 +63,9 @@ export function AppLayout({
                     errorModal={CitizenPortalErrorModal}
                   >
                     <ConfirmNavigationProvider>
-                      <QueryBoundary>{children}</QueryBoundary>
+                      <QueryBoundary>
+                        <ClientLayout>{children}</ClientLayout>
+                      </QueryBoundary>
                     </ConfirmNavigationProvider>
                   </ConfirmationDialogProvider>
                 </ApiProvider>

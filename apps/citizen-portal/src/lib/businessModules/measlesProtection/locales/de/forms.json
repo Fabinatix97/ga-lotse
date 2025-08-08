@@ -114,6 +114,9 @@
     "role_status": {
       "employee": "Beschäftigte:r",
       "supervised": "Betreut / Bewohner:in"
+    },
+    "terms": {
+      "custodian": "Personensorgeberechtigte"
     }
   },
   "data_and_privacy": {
@@ -124,6 +127,20 @@
     "confirm_privacy_policy": "Ich akzeptiere die Datenschutzerklärung.",
     "privacy_policy": "Zur Datenschutzerklärung",
     "confirm_required": "Bitte Zustimmung erteilen um fortzufahren."
+  },
+  "minimal_person_config": {
+    "firstName": {
+      "label": "Vorname",
+      "required": "Bitte einen Vornamen angeben"
+    },
+    "lastName": {
+      "label": "Nachname",
+      "required": "Bitte einen Nachnamen angeben"
+    },
+    "dateOfBirth": {
+      "label": "Geburtsdatum",
+      "required": "Bitte ein Geburtsdatum angeben"
+    }
   },
   "reportCaseSuccess": {}
 }

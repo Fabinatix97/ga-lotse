@@ -56,6 +56,7 @@ function combineResults(
     ),
   };
 }
+
 export function useGetAllModulesStatuses() {
   const { data: config } = useGetPublicConfig();
   const activeModules = [
@@ -130,10 +131,12 @@ function getStatusQuery(
     }),
   });
 }
+
 export interface ConfigurationStatusUnavailableResponse {
   endpointStates: undefined;
   moduleState: "UNAVAILABLE";
 }
+
 function unavailableModule(): ConfigurationStatusUnavailableResponse {
   return { endpointStates: undefined, moduleState: "UNAVAILABLE" };
 }

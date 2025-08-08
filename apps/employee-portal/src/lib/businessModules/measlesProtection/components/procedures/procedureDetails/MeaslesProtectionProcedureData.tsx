@@ -17,6 +17,7 @@ import {
   reportingReasonNames,
   roleStatusNames,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
+import { UnderagedPersonAlert } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/UnderagedPersonAlert";
 
 import { AdditionalInfoSection } from "./AdditionalInfoSection";
 import { AffectedPerson } from "./AffectedPerson";
@@ -35,6 +36,7 @@ export function MeaslesProtectionProcedureData({ id }: { id: string }) {
     <Grid container spacing={3} data-testid="procedureDetailPage">
       <Grid xs={12} lg>
         <Stack gap={3}>
+          <UnderagedPersonAlert procedure={procedure} />
           <AffectedPerson procedure={procedure} />
           <Custodians procedure={procedure} />
           <Facility procedure={procedure} />

@@ -72,6 +72,7 @@ export function ServicesSheet(props: Readonly<ServicesSheetProps>) {
                       <TextareaField
                         name={`services.${index}.description`}
                         label="Beschreibung"
+                        required="Bitte eine Beschreibung angeben"
                       />
                       <NumberField
                         name={`services.${index}.fee`}

@@ -27,12 +27,12 @@ import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/comp
 
 export interface EditServiceAppointmentFormValues {
   procedureId: string;
-  bookingType?: ApiAppointmentBookingType;
-  appointmentBlockDate?: { start: Date; end: Date };
-  userDefinedAppointmentDate?: string;
-  procedureStepId: string;
   appointmentType?: ApiAppointmentType;
+  bookingType?: ApiAppointmentBookingType;
+  blockAppointment?: { start: Date; end: Date };
+  userDefinedAppointmentDate?: string;
   appointmentTypeStandardDuration: number;
+  procedureStepId: string;
   appointmentDate: Date | undefined;
   earliestDate: Date | undefined;
 }
@@ -108,9 +108,9 @@ export function EditServiceAppointmentForm(
     const errors: FormikErrors<EditServiceAppointmentFormValues> = {};
     if (
       values.bookingType === ApiAppointmentBookingType.AppointmentBlock &&
-      values.appointmentBlockDate?.start === undefined
+      values.blockAppointment?.start === undefined
     ) {
-      errors.appointmentBlockDate = "Bitte einen Termin auswählen";
+      errors.blockAppointment = "Bitte einen Termin auswählen";
     } else if (values.bookingType === ApiAppointmentBookingType.UserDefined) {
       if (values.userDefinedAppointmentDate === "") {
         errors.userDefinedAppointmentDate =
@@ -186,7 +186,7 @@ export function EditServiceAppointmentForm(
                     sx={{ flexGrow: 1 }}
                     onChange={async () => {
                       await setFieldValue("bookingType", "");
-                      await setFieldValue("appointmentBlockDate", "");
+                      await setFieldValue("blockAppointment", undefined);
                     }}
                   />
                 </Sheet>

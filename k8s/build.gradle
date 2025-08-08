@@ -85,7 +85,8 @@ def createOpencodeRelease = tasks.register('createOpencodeRelease', Copy) {
     'helmcharts/*/charts',
     'helmcharts/*/values/cronn-dev',
     'helmcharts/*/values/cronn-test1',
-    'helmcharts/*/values/prod1'
+    'helmcharts/*/values/prod1',
+    'helmcharts/*/values/vshn-test'
   ])
 
   doLast {

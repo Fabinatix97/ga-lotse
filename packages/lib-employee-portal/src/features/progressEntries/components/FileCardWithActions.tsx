@@ -34,10 +34,12 @@ interface FileCardWithActionsProps {
   detailsProgressEntryId?: string;
   /** the file to display */
   file: ApiAbstractFile;
+  role?: string;
 }
 
 interface FileCardWithDownloadProps {
   file: ApiAbstractFile;
+  role?: string;
 }
 
 export function FileCardWithActions(props: FileCardWithActionsProps) {
@@ -59,6 +61,7 @@ function FileCardWithOptionalDetailsLinkAndDownload({
   detailsProgressEntryId,
   file,
   additionalAction,
+  role,
 }: FileCardWithActionsProps & {
   additionalAction?: FileCardActionProps;
 }) {
@@ -95,12 +98,15 @@ function FileCardWithOptionalDetailsLinkAndDownload({
     color: "neutral",
   });
 
-  return <FileCard {...mapToFileCardProps(file)} actions={actions} />;
+  return (
+    <FileCard {...mapToFileCardProps(file)} actions={actions} role={role} />
+  );
 }
 
 function FileCardWithOptionalDetailsLinkAndDeleteAndDownload({
   detailsProgressEntryId,
   file,
+  role,
 }: FileCardWithActionsProps) {
   const { name } = useDeletionProps();
   const { openFileDeletionModal } = useProgressEntriesContext().action;
@@ -120,6 +126,7 @@ function FileCardWithOptionalDetailsLinkAndDeleteAndDownload({
       detailsProgressEntryId={detailsProgressEntryId}
       file={file}
       additionalAction={deleteActionProps}
+      role={role}
     />
   );
 }

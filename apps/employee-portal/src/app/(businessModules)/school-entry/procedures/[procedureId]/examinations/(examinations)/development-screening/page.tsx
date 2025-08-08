@@ -276,7 +276,7 @@ function mapPhysicalExamination(
     earNoseThroat: mapExaminationResultWithDiagnosis(
       physicalExamination.earNoseThroat,
     ),
-    note: physicalExamination.note,
+    note: mapOptionalValue(physicalExamination.note),
   };
 }
 
@@ -294,7 +294,7 @@ function mapHandicap(handicap: HandicapFieldsValues): ApiHandicap {
     chronicDisease: mapHandicapWithDiagnosis(handicap.chronicDisease),
     disability: mapHandicapWithDiagnosis(handicap.disability),
     disabilityType: mapOptionalValue(handicap.disabilityType),
-    note: handicap.note,
+    note: mapOptionalValue(handicap.note),
   };
 }
 

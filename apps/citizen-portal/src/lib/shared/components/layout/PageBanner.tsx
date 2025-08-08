@@ -6,9 +6,9 @@
 import { Box, Typography, styled, useTheme } from "@mui/joy";
 
 import { useTranslation } from "@/lib/i18n/client";
-import { useGetDepartmentInfo } from "@/lib/shared/api/queries/department";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { useDepartmentName } from "@/lib/shared/hooks/useDepartmentName";
 
 export type BannerType = "private" | "business" | "general" | "reduced";
 
@@ -32,7 +32,7 @@ const BannerImage = styled("img")({
 export function PageBanner(props: PageBannerProps) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { data: department } = useGetDepartmentInfo();
+  const name = useDepartmentName();
 
   if (props.type === "reduced") {
     return <PageBannerReduced />;
@@ -98,7 +98,7 @@ export function PageBanner(props: PageBannerProps) {
               desktop: "1.33",
             })}
           >
-            {department.name.replace(/^Gesundheitsamt\s+/, "")}
+            {name}
           </Typography>
         </Box>
       </PageContent>

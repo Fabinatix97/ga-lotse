@@ -55,10 +55,16 @@ export function QuantityKnowledgeForm(props: QuantityKnowledgeFormProps) {
   const fieldName = createFieldNameMapper("knowledgeThinking");
 
   return (
-    <Stack gap={2} data-testid="quantityKnowledgeForm">
+    <Stack
+      gap={2}
+      data-testid="quantityKnowledgeForm"
+      role="group"
+      aria-labelledby="menge-vorwissen-label"
+    >
       <FormSectionTitle
         title="Mengenvorwissen"
         tooltip="(0-10 auffall, 11-13 grenz, 14-16 unauff, 99 - unbekannt)"
+        id="menge-vorwissen-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

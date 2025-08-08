@@ -35,7 +35,6 @@ export async function generateMetadata(
 
   const translations: BaseTranslation = baseTranslations[lang];
   return {
-    title: translations.site_title,
     description: translations.site_description,
     keywords: translations.site_keywords,
   };

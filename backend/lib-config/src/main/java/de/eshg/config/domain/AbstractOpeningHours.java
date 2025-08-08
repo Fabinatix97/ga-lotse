@@ -24,7 +24,7 @@ public class AbstractOpeningHours extends BaseEntity implements Initializable {
   private List<String> en = new ArrayList<>();
 
   @Column(nullable = false)
-  private boolean initialized = true;
+  private boolean initialized = false;
 
   public List<String> getDe() {
     return de;

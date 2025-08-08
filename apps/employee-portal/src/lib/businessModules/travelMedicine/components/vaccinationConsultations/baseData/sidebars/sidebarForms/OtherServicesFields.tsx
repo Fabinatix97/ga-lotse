@@ -76,7 +76,7 @@ export function OtherServicesFields({
         label="Beschreibung"
         placeholder="auswählen"
         options={createOtherServicesTemplateOptions(allTemplates)}
-        required="Bitte eine Beschreibung auswählen."
+        required="Bitte eine Leistung auswählen."
         onChange={async (templateId) => {
           await getDescription(index, templateId, setFieldValue);
           await getFeeForTemplate(index, templateId, setFieldValue);

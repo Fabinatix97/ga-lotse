@@ -14,7 +14,6 @@ import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.util.ProcedurePageSpec;
 import de.eshg.schoolentry.util.ProcedureSortKey;
 import java.time.Year;
-import org.springframework.data.domain.Sort;
 
 public final class ProcedureMapper {
 
@@ -118,7 +117,7 @@ public final class ProcedureMapper {
 
   public static ProcedurePageSpec mapToPageSpec(
       int page, int pageSize, SchoolEntryProcedureSortKey sortField, SortDirection direction) {
-    return new ProcedurePageSpec(page, pageSize, mapSortField(sortField), mapDirection(direction));
+    return new ProcedurePageSpec(page, pageSize, mapSortField(sortField), direction);
   }
 
   private static ProcedureSortKey mapSortField(SchoolEntryProcedureSortKey sortKey) {
@@ -133,14 +132,6 @@ public final class ProcedureMapper {
       case APPOINTMENT_START -> ProcedureSortKey.APPOINTMENT_START;
       case CREATED_AT -> ProcedureSortKey.CREATED_AT;
       case MODIFIED_AT -> ProcedureSortKey.MODIFIED_AT;
-    };
-  }
-
-  public static Sort.Direction mapDirection(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case null -> Sort.Direction.ASC;
-      case ASC -> Sort.Direction.ASC;
-      case DESC -> Sort.Direction.DESC;
     };
   }
 

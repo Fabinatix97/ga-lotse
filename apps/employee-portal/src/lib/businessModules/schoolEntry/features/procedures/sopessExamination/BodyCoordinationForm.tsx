@@ -75,10 +75,16 @@ export function BodyCoordinationForm(props: BodyCoordinationFormProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="bodyCoordinationForm">
+    <Stack
+      gap={2}
+      data-testid="bodyCoordinationForm"
+      role="group"
+      aria-labelledby="koerperkoordination-label"
+    >
       <FormSectionTitle
         title="Körperkoordination"
         tooltip="(0-6 auffall, 7-8 grenz, 9-30 unauff, 99 - unbekannt)"
+        id="koerperkoordination-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

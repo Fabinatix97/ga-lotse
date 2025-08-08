@@ -21,6 +21,7 @@ export interface PersonSidebarFormProps<TValues> {
   initialValues: TValues;
   component: ComponentType<PersonFormProps<TValues>>;
   addressRequired?: boolean;
+  canChooseAddressType?: boolean;
   sidebarFormRef: Ref<SidebarFormHandle>;
   mode?: "edit" | "create";
 }
@@ -44,6 +45,7 @@ export function PersonSidebarForm<TValues extends PersonFormValues>(
             subtitle={props.subtitle}
             submitLabel={props.submitLabel ?? "Speichern"}
             addressRequired={props.addressRequired}
+            canChooseAddressType={props.canChooseAddressType}
             mode={props.mode}
             onBack={props.onBack}
             onCancel={props.onCancel}

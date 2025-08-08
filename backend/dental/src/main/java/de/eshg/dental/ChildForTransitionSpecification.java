@@ -12,6 +12,7 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Child_;
 import de.eshg.dental.util.ChildForTransitionPageSpec;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.persistence.SpecificationUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -56,22 +57,14 @@ class ChildForTransitionSpecification implements Specification<Child> {
   public Predicate toPredicate(Root<Child> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
     Set<Order> orders = new LinkedHashSet<>();
     if (!sortKey.isPersonAttribute()) {
-      orders.add(getOrder(cb, root));
+      orders.add(SpecificationUtil.getOrder(sortDirection, cb, mapToSortPath(cb, root)));
     }
 
     if (Objects.equals(sortKey, ChildForTransitionSortKey.GROUP_NAME)) {
-      orders.add(
-          switch (sortDirection) {
-            case ASC -> cb.asc(root.get(Child_.GROUP_NAME));
-            case DESC -> cb.desc(root.get(Child_.GROUP_NAME));
-          });
+      orders.add(SpecificationUtil.getOrder(sortDirection, cb, root.get(Child_.GROUP_NAME)));
     }
 
-    orders.add(
-        switch (sortDirection) {
-          case ASC -> cb.asc(root.get(Child_.id));
-          case DESC -> cb.desc(root.get(Child_.id));
-        });
+    orders.add(SpecificationUtil.getOrder(sortDirection, cb, root.get(Child_.id)));
     query.orderBy(orders.stream().toList());
 
     List<Predicate> conjunctions = new ArrayList<>();
@@ -82,22 +75,16 @@ class ChildForTransitionSpecification implements Specification<Child> {
     return cb.and(conjunctions.toArray(Predicate[]::new));
   }
 
-  private Order getOrder(CriteriaBuilder cb, Root<Child> root) {
-    Expression<?> expression =
-        switch (sortKey) {
-          case ID -> root.get(Child_.id);
-          case GROUP_NAME -> SpecificationUtil.leadingNumbersInGroupName(root, cb);
-          case FIRST_NAME, LAST_NAME, DATE_OF_BIRTH -> {
-            Assert.isTrue(
-                sortKey.isPersonAttribute(),
-                sortKey + " was expected to be a person attribute but it is not");
-            throw new IllegalArgumentException("Unexpected sort key: " + sortKey);
-          }
-        };
-
-    return switch (sortDirection) {
-      case ASC -> cb.asc(expression);
-      case DESC -> cb.desc(expression);
+  private Expression<?> mapToSortPath(CriteriaBuilder cb, Root<Child> root) {
+    return switch (sortKey) {
+      case ID -> root.get(Child_.id);
+      case GROUP_NAME -> DentalSpecificationUtil.leadingNumbersInGroupName(root, cb);
+      case FIRST_NAME, LAST_NAME, DATE_OF_BIRTH -> {
+        Assert.isTrue(
+            sortKey.isPersonAttribute(),
+            sortKey + " was expected to be a person attribute but it is not");
+        throw new IllegalArgumentException("Unexpected sort key: " + sortKey);
+      }
     };
   }
 }

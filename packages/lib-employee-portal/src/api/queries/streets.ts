@@ -25,8 +25,8 @@ export function useAutocompleteStreetQuery(
   });
 }
 
-export function useGetPostCodeAndCityForStreet(
-  { street }: { street?: string },
+export function useGetPostalCodeAndCityForStreet(
+  { street, houseNumber }: { street?: string; houseNumber?: string },
   { enabled }: { enabled: boolean },
 ) {
   const { streetApi } = useApi();
@@ -34,16 +34,25 @@ export function useGetPostCodeAndCityForStreet(
   return useQuery({
     queryFn: async ({ signal }) => {
       if (street) {
-        return await streetApi.getPostCodeAndCityForStreet(street, { signal });
+        return await streetApi.getPostalCodeAndCityForStreet(
+          street,
+          houseNumber,
+          { signal },
+        );
       } else {
         return {
           city: null,
-          postCode: null,
+          postalCode: null,
         };
       }
     },
-    queryKey: streetApiQueryKey(["getPostCodeAndCityForStreet", street]),
+    queryKey: streetApiQueryKey([
+      "getPostalCodeAndCityForStreet",
+      street ?? "",
+      houseNumber ?? "",
+    ]),
     enabled,
+    throwOnError: false,
     gcTime: 60000, // 1 minute cache
     staleTime: 60000,
   });

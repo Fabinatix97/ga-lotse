@@ -111,7 +111,7 @@ public final class BaseUrls {
     public static final String MUK_FACILITY_LINK_API = "/muk-facility-link";
     public static final String MUK_SELF_USER_FACILITY = "/self/facility";
     public static final String STREET_AUTOCOMPLETE_URL = "/autocomplete";
-    public static final String POST_CODE_AND_CITY_URL = "/postcode-and-city";
+    public static final String POSTAL_CODE_AND_CITY_URL = "/postal-code-and-city";
     public static final String SELF_RECENT_PROCEDURES_API = "/recent-procedures";
     public static final String PROCEDURE_METRICS_API = "/procedure-metrics";
     public static final String TASK_METRICS_API = "/task-metrics";

@@ -72,7 +72,7 @@ function EditServiceAppointmentSidebar(
     const { appointmentStart, durationInMinutes } = determineStartAndDuration(
       values.bookingType,
       values.userDefinedAppointmentDate!,
-      values.appointmentBlockDate,
+      values.blockAppointment,
       values.appointmentTypeStandardDuration,
     );
     const request: PatchAppointmentRequest = {
@@ -101,12 +101,12 @@ function EditServiceAppointmentSidebar(
 
   function mapProcedureStepToEditAppointmentValues(
     procedureStep: ApiServicePlanGroup,
-  ) {
+  ): EditServiceAppointmentFormValues {
     return {
       procedureId: props.procedureId,
       procedureStepId: procedureStep.procedureStepId ?? "",
       bookingType: procedureStep.appointmentBookingType,
-      appointmentBlockDate: undefined,
+      blockAppointment: undefined,
       appointmentType: procedureStep.appointmentType,
       userDefinedAppointmentDate: mapDateTimeToInput(new Date(), false),
       appointmentTypeStandardDuration: vaccinationStandardDuration as number,

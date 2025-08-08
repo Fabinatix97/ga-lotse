@@ -14,6 +14,7 @@ import { isDefined } from "remeda";
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import {
   DateField,
+  DebouncedTextareaField,
   FieldArrayWithFocus as FieldArray,
   FormProps,
   HorizontalField,
@@ -22,7 +23,6 @@ import {
   SetFieldValueHelper,
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
-  TextareaField,
   isEmptyString,
   useIsFormDisabled,
   validateIntegerAnd,
@@ -289,7 +289,7 @@ export function VaccinationForm(props: VaccinationFormProps) {
             )}
           </Stack>
           <Divider />
-          <TextareaField name="note" label="Bemerkung" />
+          <DebouncedTextareaField name="note" label="Bemerkung" />
           <FormFooter isSubmitting={isSubmitting} />
         </FormStack>
       )}

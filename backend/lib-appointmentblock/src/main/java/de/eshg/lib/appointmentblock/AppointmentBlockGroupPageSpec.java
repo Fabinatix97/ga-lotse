@@ -5,8 +5,8 @@
 
 package de.eshg.lib.appointmentblock;
 
+import de.eshg.base.SortDirection;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
-import org.springframework.data.domain.Sort;
 
 public record AppointmentBlockGroupPageSpec(
-    int pageNumber, int pageSize, AppointmentBlockSortKey sortKey, Sort.Direction direction) {}
+    int pageNumber, int pageSize, AppointmentBlockSortKey sortKey, SortDirection direction) {}

@@ -146,11 +146,6 @@ public class SchoolEntryConfigService extends EshgConfigurationService<SchoolEnt
     persistentConfig.setPdfDocumentAccentColor(pdfDocumentAccentColor);
   }
 
-  @VisibleForTesting
-  void setNotInitialized() {
-    getConfig().setInitialized(false);
-  }
-
   private ConfigurationStatus mapToConfigurationStatus(SchoolEntryConfig config) {
     return config.isInitialized() ? ConfigurationStatus.COMPLETE : ConfigurationStatus.INCOMPLETE;
   }

@@ -114,6 +114,9 @@
     "role_status": {
       "employee": "Employee",
       "supervised": "Supervised / Resident"
+    },
+    "terms": {
+      "custodian": "Custodian"
     }
   },
   "data_and_privacy": {
@@ -124,5 +127,19 @@
     "confirm_privacy_policy": "I accept the privacy policy.",
     "privacy_policy": "View Privacy Policy",
     "confirm_required": "Please give your consent to continue."
+  },
+  "minimal_person_config": {
+    "firstName": {
+      "label": "First Name",
+      "required": "Please enter a first name"
+    },
+    "lastName": {
+      "label": "Last Name",
+      "required": "Please enter a last name"
+    },
+    "dateOfBirth": {
+      "label": "Date of Birth",
+      "required": "Please enter a date of birth"
+    }
   }
 }

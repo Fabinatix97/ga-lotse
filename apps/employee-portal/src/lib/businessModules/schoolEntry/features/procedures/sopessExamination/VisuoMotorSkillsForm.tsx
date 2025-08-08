@@ -75,10 +75,16 @@ export function VisuoMotorSkillsForm(props: VisuoMotorSkillsFormProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="visuomotorSkillsForm">
+    <Stack
+      gap={2}
+      data-testid="visuomotorSkillsForm"
+      role="group"
+      aria-labelledby="visuomotorik-label"
+    >
       <FormSectionTitle
         title="Visuomotorik"
         tooltip="(0-4 auffall, 5-6 grenz, 7-12 unauff, 99 - unbekannt)"
+        id="visuomotorik-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

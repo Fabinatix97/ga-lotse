@@ -14,6 +14,7 @@ import {
   useIsOffline,
   useSidenav,
 } from "@eshg/lib-employee-portal";
+import { DocumentTitleProvider } from "@eshg/lib-portal";
 
 import { Header } from "@/lib/baseModule/components/layout/header/Header";
 import { SideNavigation } from "@/lib/baseModule/components/layout/sideNavigation/SideNavigation";
@@ -29,7 +30,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
 
   return (
-    <>
+    <DocumentTitleProvider defaultTitle="GA-Lotse">
       <Header />
       <Box
         sx={{
@@ -92,6 +93,6 @@ export function MainLayout({ children }: { children: ReactNode }) {
 
         <SidebarSlot />
       </Box>
-    </>
+    </DocumentTitleProvider>
   );
 }

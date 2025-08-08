@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
@@ -21,7 +22,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 public interface StreetApi {
   String BASE_URL = BaseUrls.Base.STREET_API;
   String AUTOCOMPLETE = BaseUrls.Base.STREET_AUTOCOMPLETE_URL;
-  String POST_CODE_AND_CITY = Base.POST_CODE_AND_CITY_URL;
+  String POSTAL_CODE_AND_CITY = Base.POSTAL_CODE_AND_CITY_URL;
   String HOUSE_NUMBER_REGEXP = "^(\\d+)([ a-zA-Z]*)$|";
 
   @GetExchange
@@ -61,13 +62,23 @@ public interface StreetApi {
           @RequestParam(name = "streetNamePrefix")
           String streetNamePrefix);
 
-  @GetExchange(POST_CODE_AND_CITY)
+  @GetExchange(POSTAL_CODE_AND_CITY)
   @ApiResponse(responseCode = "200")
-  @Operation(summary = "Returns post code and city for a given street name, if it is unambiguous")
-  PostCodeAndCity getPostCodeAndCityForStreet(
+  @Operation(
+      summary = "Returns postal code and city for a given street name, if it is unambiguous",
+      description =
+          "Returns postal code and city information for a street based on the provided street name prefix. "
+              + "An exact match will take precedence and be returned, even if there are other matches "
+              + "that differ only in case or are the result of street names not being prefix-free. "
+              + "A house number can optionally be supplied for streets that span multiple postal codes.")
+  PostalCodeAndCityResponse getPostalCodeAndCityForStreet(
       @Parameter(
               description = "The case-insensitive street name prefix of the street",
               example = "Breite ga")
           @RequestParam(name = "streetNamePrefix")
-          String streetNamePrefix);
+          String streetNamePrefix,
+      @Nullable
+          @RequestParam(name = "houseNumber", required = false)
+          @Pattern(regexp = HOUSE_NUMBER_REGEXP)
+          String houseNumber);
 }

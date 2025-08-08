@@ -17,7 +17,7 @@ import java.time.Duration;
 public class TravelMedicineAppointmentStandardDuration extends BaseEntity implements Initializable {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean initialized = true;
+  private boolean initialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @NotNull

@@ -55,10 +55,16 @@ export function PluralForm(props: PluralsFormProps) {
   const fieldName = createFieldNameMapper("speech");
 
   return (
-    <Stack gap={2} data-testid="pluralsForm">
+    <Stack
+      gap={2}
+      data-testid="pluralsForm"
+      role="group"
+      aria-labelledby="plurale-label"
+    >
       <FormSectionTitle
         title="Plurale"
         tooltip="(0-3 auffall, 4-5 grenz, 6-7 unauff, 9 - unbekannt)"
+        id="plurale-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

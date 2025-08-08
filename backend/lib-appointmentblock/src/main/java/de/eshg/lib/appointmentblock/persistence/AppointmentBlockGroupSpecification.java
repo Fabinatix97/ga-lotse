@@ -5,22 +5,21 @@
 
 package de.eshg.lib.appointmentblock.persistence;
 
+import de.eshg.base.SortDirection;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup_;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock_;
+import de.eshg.persistence.SpecificationUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import java.io.Serial;
 import java.time.Instant;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 public class AppointmentBlockGroupSpecification implements Specification<AppointmentBlockGroup> {
@@ -29,10 +28,10 @@ public class AppointmentBlockGroupSpecification implements Specification<Appoint
 
   private final Instant startSearchDate;
   private final AppointmentBlockSortKey sortKey;
-  private final Sort.Direction sortDirection;
+  private final SortDirection sortDirection;
 
   public AppointmentBlockGroupSpecification(
-      Instant startSearchDate, AppointmentBlockSortKey sortKey, Sort.Direction sortDirection) {
+      Instant startSearchDate, AppointmentBlockSortKey sortKey, SortDirection sortDirection) {
     this.startSearchDate = startSearchDate;
     this.sortKey = sortKey;
     this.sortDirection = sortDirection;
@@ -42,8 +41,10 @@ public class AppointmentBlockGroupSpecification implements Specification<Appoint
   public Predicate toPredicate(
       Root<AppointmentBlockGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     query.orderBy(
-        getPrimarySortOrder(root, query, criteriaBuilder),
-        getFallbackSortOrder(root, criteriaBuilder));
+        SpecificationUtil.getOrder(
+            sortDirection, criteriaBuilder, mapToSortPath(root, query, criteriaBuilder)),
+        SpecificationUtil.getOrder(
+            sortDirection, criteriaBuilder, root.get(AppointmentBlockGroup_.id)));
 
     Subquery<Instant> maxAppointmentBlockEndSubquery = query.subquery(Instant.class);
     Root<AppointmentBlock> allBlocks = maxAppointmentBlockEndSubquery.from(AppointmentBlock.class);
@@ -55,7 +56,7 @@ public class AppointmentBlockGroupSpecification implements Specification<Appoint
         maxAppointmentBlockEndSubquery.getSelection(), startSearchDate);
   }
 
-  private Order getPrimarySortOrder(
+  private Expression<Instant> mapToSortPath(
       Root<AppointmentBlockGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     Subquery<Instant> subquery = query.subquery(Instant.class);
     Root<AppointmentBlock> subqueryRoot = subquery.from(AppointmentBlock.class);
@@ -73,19 +74,6 @@ public class AppointmentBlockGroupSpecification implements Specification<Appoint
         .where(
             criteriaBuilder.equal(subqueryRoot.get(AppointmentBlock_.appointmentBlockGroup), root));
 
-    Expression<Instant> selection = subquery.getSelection();
-    return switch (sortDirection) {
-      case ASC -> criteriaBuilder.asc(selection);
-      case DESC -> criteriaBuilder.desc(selection);
-    };
-  }
-
-  private Order getFallbackSortOrder(
-      Root<AppointmentBlockGroup> root, CriteriaBuilder criteriaBuilder) {
-    Path<Long> idPath = root.get(AppointmentBlockGroup_.id);
-    return switch (sortDirection) {
-      case ASC -> criteriaBuilder.asc(idPath);
-      case DESC -> criteriaBuilder.desc(idPath);
-    };
+    return subquery.getSelection();
   }
 }

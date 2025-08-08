@@ -193,7 +193,6 @@ function ResultCard(props: ResultCardProps) {
     <SelectableCard
       key={child.id}
       value={child.id}
-      forGroupName={RADIO_GROUP_FIELD_NAME}
       radioProps={{
         disabled,
       }}

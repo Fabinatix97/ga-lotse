@@ -11,7 +11,6 @@ import static de.eshg.lib.appointmentblock.persistence.AppointmentType.HIV_STI_C
 import static de.eshg.lib.appointmentblock.persistence.AppointmentType.RESULTS_REVIEW;
 import static de.eshg.lib.appointmentblock.persistence.AppointmentType.SEX_WORK;
 
-import com.google.common.annotations.VisibleForTesting;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.util.MapUtils;
 import de.eshg.config.AuditLogWriter;
@@ -155,14 +154,6 @@ public class StiProtectionAppointmentStandardDurationService
             fieldUpdate -> {
               fieldUpdate.fieldInfo.entitySetter().accept(config, fieldUpdate.update);
             });
-  }
-
-  @VisibleForTesting
-  @Override
-  public void setNotInitialized() {
-    StiProtectionAppointmentStandardDuration config = getConfig();
-    config.setSexWorkConsultationInitialized(false);
-    config.setHivStiConsultationInitialized(false);
   }
 
   private record FieldUpdate(

@@ -90,7 +90,7 @@ export function FacilityForm({ onCancel, name, sx }: FacilityFormProps) {
             <InputField
               name="otherFacilityTypeInformation"
               label={t("facility.fields.facilityTypeOther")}
-              required="Bitte einen spezifischen anderen Typ angeben."
+              required={t("facility.fields.facilityTypeOther_required")}
             />
           </Grid>
         )}

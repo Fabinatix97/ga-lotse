@@ -17,7 +17,7 @@ import java.time.Duration;
 public class OmsAppointmentStandardDuration extends BaseEntity implements Initializable {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  boolean initialized = true;
+  boolean initialized = false;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @NotNull

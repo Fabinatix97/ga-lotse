@@ -5,9 +5,10 @@
 
 package de.eshg.travelmedicine.otherservicetemplate.api;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record PostPutOtherServiceTemplateRequest(
-    @NotNull String description, @NotNull @PositiveOrZero BigDecimal fee) {}
+    @NotEmpty String description, @NotNull @PositiveOrZero BigDecimal fee) {}

@@ -6,6 +6,7 @@
 "use client";
 
 import { Divider, FormLabel, Stack, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 
 import {
   BooleanSelectField,
@@ -21,6 +22,7 @@ import {
   isInteger,
 } from "@eshg/lib-portal";
 
+import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
@@ -67,115 +69,140 @@ export function BirthDataAndChildInformationForm(
 
   return (
     <Stack gap={2}>
-      <Typography level="title-sm">Geburt/Informationen zum Kind</Typography>
-      <Stack direction="row" gap={4} flexWrap="wrap">
-        <Stack direction="row" gap={2}>
-          <SoftRequiredNumberField
-            name={developmentInfo("birthWeight")}
-            label="Gewicht"
-            validate={validateBirthWeight}
-            min={300}
-            max={9999}
-            sx={{ width: "100px" }}
-            softRequired
+      <Stack
+        gap={2}
+        role="group"
+        aria-labelledby="birth-data-and-child-info-label"
+      >
+        <Typography
+          level="title-sm"
+          component="h2"
+          id="birth-data-and-child-info-label"
+        >
+          Geburt/Informationen zum Kind
+        </Typography>
+        <Stack direction="row" gap={4} flexWrap="wrap">
+          <Stack direction="row" gap={2}>
+            <SoftRequiredNumberField
+              name={developmentInfo("birthWeight")}
+              label={
+                <FlexLabel>
+                  Gewicht
+                  <Typography component="span" sx={visuallyHidden}>
+                    in g (300 - 6000, 9999 - unbekannt)
+                  </Typography>
+                </FlexLabel>
+              }
+              validate={validateBirthWeight}
+              min={300}
+              max={9999}
+              sx={{ width: "100px" }}
+              softRequired
+            />
+            <FormLabel aria-hidden="true" sx={LABEL_TEXT_STYLE}>
+              in g
+            </FormLabel>
+            <InfoIconTooltipButton
+              infoText="(300 - 6000, 9999 - unbekannt)"
+              tooltipColor="success"
+              title="Hinweis Gewicht"
+            />
+          </Stack>
+          <BooleanSelectField
+            name={developmentInfo("gestationalAge")}
+            label="Schwangerschaftsdauer regelrecht"
+            component={HorizontalField}
+            sx={BOOLEAN_SELECT_STYLE}
+            allowDeselection
           />
-          <FormLabel sx={LABEL_TEXT_STYLE}>in g</FormLabel>
-          <InfoIconTooltipButton
-            infoText="(300 - 6000, 9999 - unbekannt)"
-            tooltipColor="success"
-            title="Hinweis Gewicht"
+          <BooleanSelectField
+            name={developmentInfo("developmentConspicuities")}
+            label="Besonderheiten in der Entwicklung"
+            component={HorizontalField}
+            sx={BOOLEAN_SELECT_STYLE}
+            allowDeselection
+          />
+          <BooleanSelectField
+            name={developmentInfo("infancyConspicuities")}
+            label="Besonderheiten der Säuglings- und Kleinkinderzeit"
+            component={HorizontalField}
+            sx={BOOLEAN_SELECT_STYLE}
+            allowDeselection
           />
         </Stack>
-        <BooleanSelectField
-          name={developmentInfo("gestationalAge")}
-          label="Schwangerschaftsdauer regelrecht"
-          component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
-        />
-        <BooleanSelectField
-          name={developmentInfo("developmentConspicuities")}
-          label="Besonderheiten in der Entwicklung"
-          component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
-        />
-        <BooleanSelectField
-          name={developmentInfo("infancyConspicuities")}
-          label="Besonderheiten der Säuglings- und Kleinkinderzeit"
-          component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
-        />
-      </Stack>
-      <Stack direction="row" gap={4} flexWrap="wrap">
-        <InputField
-          name={additionalChildInfo("responsiblePhysician")}
-          label="Hausarzt:in"
-          type="text"
-          component={HorizontalField}
-          sx={{
-            ".MuiFormLabel-root": { width: "80px" },
-            ...TEXT_INPUT_STYLE,
-          }}
-        />
-        <SoftRequiredNumberField
-          name={additionalChildInfo("numberOfSiblings")}
-          label="Anzahl Geschwister / im Haushalt lebende Kinder"
-          min={0}
-          sx={{ width: "80px" }}
-          softRequired
-          onChange={handleChange}
-        />
-        {!isEmptyString(numberOfSiblings) &&
-          Array.from(Array(numberOfSiblings).keys()).map((index) => (
-            <YearField
-              key={index}
-              name={additionalChildInfo(`siblingsBirthYears.${index}`)}
-              label={`Geburtsjahr Geschwisterkind ${index + 1}`}
-              component={HorizontalField}
-              min={1900}
-              max={new Date().getFullYear()}
-              sx={{ width: "90px" }}
-            />
-          ))}
-      </Stack>
-      <Divider />
-      <Typography level="title-sm">Zahngesundheit</Typography>
-      <Stack direction="row" gap={4} flexWrap="wrap">
-        <Stack direction="row" gap={2}>
-          <NumberField
-            name={developmentInfo("dailyTeethBrushing")}
-            label="Wie oft wird geputzt?"
+        <Stack direction="row" gap={4} flexWrap="wrap">
+          <InputField
+            name={additionalChildInfo("responsiblePhysician")}
+            label="Hausarzt:in"
+            type="text"
             component={HorizontalField}
-            min={0}
-            fieldSx={{
-              ".MuiInput-root": { width: "80px" },
+            sx={{
+              ".MuiFormLabel-root": { width: "80px" },
+              ...TEXT_INPUT_STYLE,
             }}
           />
-          <FormLabel sx={LABEL_TEXT_STYLE}>mal täglich</FormLabel>
+          <SoftRequiredNumberField
+            name={additionalChildInfo("numberOfSiblings")}
+            label="Anzahl Geschwister / im Haushalt lebende Kinder"
+            min={0}
+            sx={{ width: "80px" }}
+            softRequired
+            onChange={handleChange}
+          />
+          {!isEmptyString(numberOfSiblings) &&
+            Array.from(Array(numberOfSiblings).keys()).map((index) => (
+              <YearField
+                key={index}
+                name={additionalChildInfo(`siblingsBirthYears.${index}`)}
+                label={`Geburtsjahr Geschwisterkind ${index + 1}`}
+                component={HorizontalField}
+                min={1900}
+                max={new Date().getFullYear()}
+                sx={{ width: "90px" }}
+              />
+            ))}
         </Stack>
-        <BooleanSelectField
-          name={developmentInfo("teethBrushingAfterCare")}
-          label="Wird nachgeputzt?"
-          component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
-        />
-        <BooleanSelectField
-          name={developmentInfo("electricToothBrush")}
-          label="Elektrische Zahnbürste"
-          component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
-        />
-        <BooleanSelectField
-          name={developmentInfo("fluorideToothPaste")}
-          label="Fluoridhaltige Zahnpasta"
-          component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
-        />
+      </Stack>
+      <Divider />
+      <Stack gap={2} role="group" aria-labelledby="zahngesundheit-label">
+        <Typography level="title-sm" component="h2" id="zahngesundheit-label">
+          Zahngesundheit
+        </Typography>
+        <Stack direction="row" gap={4} flexWrap="wrap">
+          <Stack direction="row" gap={2}>
+            <NumberField
+              name={developmentInfo("dailyTeethBrushing")}
+              label="Wie oft wird geputzt?"
+              component={HorizontalField}
+              min={0}
+              fieldSx={{
+                ".MuiInput-root": { width: "80px" },
+              }}
+            />
+            <FormLabel sx={LABEL_TEXT_STYLE}>mal täglich</FormLabel>
+          </Stack>
+          <BooleanSelectField
+            name={developmentInfo("teethBrushingAfterCare")}
+            label="Wird nachgeputzt?"
+            component={HorizontalField}
+            sx={BOOLEAN_SELECT_STYLE}
+            allowDeselection
+          />
+          <BooleanSelectField
+            name={developmentInfo("electricToothBrush")}
+            label="Elektrische Zahnbürste"
+            component={HorizontalField}
+            sx={BOOLEAN_SELECT_STYLE}
+            allowDeselection
+          />
+          <BooleanSelectField
+            name={developmentInfo("fluorideToothPaste")}
+            label="Fluoridhaltige Zahnpasta"
+            component={HorizontalField}
+            sx={BOOLEAN_SELECT_STYLE}
+            allowDeselection
+          />
+        </Stack>
       </Stack>
     </Stack>
   );

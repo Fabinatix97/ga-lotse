@@ -75,10 +75,16 @@ export function VisualPerceptionForm(props: VisualPerceptionFormProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="visualPerceptionForm">
+    <Stack
+      gap={2}
+      data-testid="visualPerceptionForm"
+      role="group"
+      aria-labelledby="visuelle-perzeption-label"
+    >
       <FormSectionTitle
         title="Visuelle Perzeption"
         tooltip="(0-8 auffall, 9-10 grenz, 11-15 unauff, 99 - unbekannt)"
+        id="visuelle-perzeption-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

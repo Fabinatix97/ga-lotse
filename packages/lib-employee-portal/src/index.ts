@@ -219,6 +219,7 @@ export {
   type UseSidebarResult,
   useSidebar,
 } from "./features/drawer/hooks/useSidebar";
+export { useSidebarFromSearchParam } from "./features/drawer/hooks/useSidebarFromSearchParam";
 export {
   type SidebarWithFormRefProps,
   type UseSidebarWithFormRefResult,

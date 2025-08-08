@@ -30,9 +30,9 @@ import {
 import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import {
-  RadioSheet,
-  RadioSheetOption,
-} from "@/lib/businessModules/travelMedicine/shared/RadioSheet";
+  RadioAccordionGroupField,
+  RadioAccordionItem,
+} from "@/lib/shared/components/formFields/RadioAccordionField";
 
 interface AppointmentRadioGroupProps extends RadioGroupFieldProps {
   type?: ApiAppointmentType;
@@ -65,20 +65,20 @@ export function AppointmentRadioGroup({
   );
 
   return (
-    <Stack gap={2}>
-      <RadioSheet
-        label={props.label}
-        name={props.name}
-        required="Bitte einen Termintyp auswählen"
+    <RadioAccordionGroupField
+      name={props.name}
+      label={props.label}
+      required="Bitte einen Termintyp auswählen"
+      data-testid="booking-type-radio-control"
+    >
+      {props.appointmentInfo}
+      <RadioAccordionItem
+        value={ApiAppointmentBookingType.AppointmentBlock}
+        label="Aus Terminblock"
+        disabled={!isNonEmptyArray(filteredAppointments)}
       >
-        {props.appointmentInfo}
-        <RadioSheetOption
-          name={props.name}
-          value={ApiAppointmentBookingType.AppointmentBlock}
-          label="Aus Terminblock"
-          disabled={!isNonEmptyArray(filteredAppointments)}
-        >
-          {!isNonEmptyArray(filteredAppointments) ? (
+        {(isExpanded) =>
+          !isNonEmptyArray(filteredAppointments) ? (
             <FormHelperText
               component="p"
               sx={{ m: 0, fontSize: theme.typography["body-sm"] }}
@@ -88,23 +88,25 @@ export function AppointmentRadioGroup({
             </FormHelperText>
           ) : (
             <AppointmentPickerField
-              name="appointmentBlockDate"
+              name="blockAppointment"
               currentMonth={currentMonth}
               setCurrentMonth={setCurrentMonth}
               monthAppointments={filteredAppointments}
               required={
+                isExpanded &&
                 bookingTypeFieldProps.value ===
-                ApiAppointmentBookingType.AppointmentBlock
+                  ApiAppointmentBookingType.AppointmentBlock
               }
               labels={APPOINTMENT_PICKER_FIELD_LABELS_DE}
             />
-          )}
-        </RadioSheetOption>
-        <RadioSheetOption
-          label="Individueller Termin"
-          name={props.name}
-          value={ApiAppointmentBookingType.UserDefined}
-        >
+          )
+        }
+      </RadioAccordionItem>
+      <RadioAccordionItem
+        label="Individueller Termin"
+        value={ApiAppointmentBookingType.UserDefined}
+      >
+        {(isExpanded) => (
           <Stack
             gap={1}
             sx={{ flexGrow: 1, m: 0, p: 0, border: 0 }}
@@ -115,6 +117,9 @@ export function AppointmentRadioGroup({
               label="Datum und Uhrzeit"
               name="userDefinedAppointmentDate"
               validate={validateTodayOrFutureDate}
+              required={
+                isExpanded ? "Datum und Zeit sind erforderlich" : undefined
+              }
             />
             <NumberField
               label="Termindauer in Minuten"
@@ -122,17 +127,18 @@ export function AppointmentRadioGroup({
               min={APPOINTMENT_DURATION_MIN_LENGTH}
               max={APPOINTMENT_DURATION_MAX_LENGTH}
               validate={validateAppointmentDuration}
+              required={isExpanded ? "Termindauer ist erforderlich" : undefined}
             />
           </Stack>
-        </RadioSheetOption>
-        {isCitizenFollowUp && (
-          <RadioSheetOption
-            label="Selbstbucher"
-            name={props.name}
-            value={ApiAppointmentBookingType.SelfBooking}
-          />
         )}
-      </RadioSheet>
-    </Stack>
+      </RadioAccordionItem>
+      {isCitizenFollowUp && (
+        <RadioAccordionItem
+          sx={{ "& .MuiAccordionDetails-root": { height: 0 } }}
+          value={ApiAppointmentBookingType.SelfBooking}
+          label="Selbstbucher"
+        />
+      )}
+    </RadioAccordionGroupField>
   );
 }

@@ -20,7 +20,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 public class SchoolEntryConfig extends BaseEntity implements Initializable {
 
   @Column(nullable = false)
-  private boolean initialized = true;
+  private boolean initialized = false;
 
   @Column(nullable = false)
   @JdbcType(PostgreSQLEnumJdbcType.class)

@@ -4,129 +4,94 @@
  */
 
 import {
-  durationBetweenDatesInMinutes,
+  BaseAddressFormInputs,
+  DefaultPersonFormValues,
+  createEmptyAddress,
+  isPostboxAddress,
+  mapBaseAddressToApi,
+  mapOptional,
+  normalizeListInputs,
+} from "@eshg/lib-employee-portal";
+import {
+  mapOptionalNonEmptyStringArray,
   mapOptionalValue,
+  parseOptionalValue,
   toDateString,
 } from "@eshg/lib-portal";
 import {
-  ApiAppointmentBookingType,
   ApiPatchVaccinationConsultationPatientRequest,
   ApiPatient,
-  ApiPostVaccinationConsultationRequest,
-  ApiTravelType,
+  ApiPersonAddress,
 } from "@eshg/travel-medicine-api";
 
-import { InitialAppointmentFormValuesProps } from "@/lib/businessModules/travelMedicine/components/personSidebar/appointment/InitialAppointmentForm";
-import { mapToApiPersonAddress } from "@/lib/businessModules/travelMedicine/shared/helper";
-import { createEmptyLegacyAddress } from "@/lib/shared/components/form/address/LegacyAddressForm";
-import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";
-import { BASE_PERSON_VALUES } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
-import {
-  LegacyPerson,
-  LegacyPersonFormConfig,
-  PERSON_VALUES,
-} from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
-import { mapToBasePersonData } from "@/lib/shared/components/legacyPersonSidebar/personSidebarHelper";
-
-function mapToApiAffectedPersonDetails(basePerson: LegacyPerson): ApiPatient {
+function mapToApiPatient(basePerson: DefaultPersonFormValues): ApiPatient {
+  const address = mapBaseAddressToApi(basePerson.contactAddress);
+  const differentBillingAddress = mapBaseAddressToApi(
+    basePerson.differentBillingAddress,
+  );
+  if (isPostboxAddress(address)) {
+    throw new Error("Postbox address is not supported");
+  }
+  if (isPostboxAddress(differentBillingAddress)) {
+    throw new Error("Postbox address is not supported");
+  }
   return {
-    ...PERSON_VALUES,
-    ...mapToBasePersonData(basePerson),
-    dateOfBirth: new Date(basePerson.dateOfBirth),
+    address,
     countryOfBirth: mapOptionalValue(basePerson.countryOfBirth),
-    address:
-      basePerson.postalAddress !== undefined &&
-      basePerson.postalAddress.street.length !== 0
-        ? mapToApiPersonAddress(basePerson.postalAddress)
-        : undefined,
+    dateOfBirth: new Date(basePerson.dateOfBirth),
+    differentBillingAddress,
+    emailAddresses: mapOptionalNonEmptyStringArray(basePerson.emailAddresses),
+    firstName: basePerson.firstName,
+    gender: mapOptionalValue(basePerson.gender),
+    lastName: basePerson.lastName,
+    nameAtBirth: mapOptionalValue(basePerson.nameAtBirth),
+    phoneNumbers: mapOptionalNonEmptyStringArray(basePerson.phoneNumbers),
+    placeOfBirth: mapOptionalValue(basePerson.placeOfBirth),
+    salutation: mapOptionalValue(basePerson.salutation),
+    title: mapOptionalValue(basePerson.title),
   };
 }
 
-function mapToApiPatient(basePerson: LegacyPerson): ApiPatient {
+export function mapApiPatientToForm(
+  person: ApiPatient,
+): DefaultPersonFormValues {
   return {
-    ...mapToBasePersonData(basePerson),
-    dateOfBirth: new Date(basePerson.dateOfBirth),
-    countryOfBirth: mapOptionalValue(basePerson.countryOfBirth),
-    address:
-      basePerson.postalAddress !== undefined &&
-      basePerson.postalAddress.street.length !== 0
-        ? mapToApiPersonAddress(basePerson.postalAddress)
-        : undefined,
-  };
-}
-
-export function mapToPersonFormData(person: ApiPatient): LegacyPerson {
-  return {
-    ...BASE_PERSON_VALUES,
-    ...mapToBasePersonData(person),
+    salutation: parseOptionalValue(person.salutation),
+    title: parseOptionalValue(person.title),
+    firstName: person.firstName,
+    lastName: person.lastName,
     dateOfBirth: toDateString(person.dateOfBirth),
-    postalAddress: {
-      ...(person.address ??
-        createEmptyLegacyAddress(ApiFacilityAddressType.Postal)),
-      addressAddition: person.address?.addressAddition ?? "",
-      type: ApiFacilityAddressType.Postal,
-    },
+    gender: parseOptionalValue(person.gender),
+    countryOfBirth: parseOptionalValue(person.countryOfBirth),
+    nameAtBirth: parseOptionalValue(person.nameAtBirth),
+    placeOfBirth: parseOptionalValue(person.placeOfBirth),
+    emailAddresses: normalizeListInputs(person.emailAddresses),
+    phoneNumbers: normalizeListInputs(person.phoneNumbers),
+    contactAddress: mapOptional(person.address, mapApiAddressToForm),
+    differentBillingAddress: mapOptional(
+      person.differentBillingAddress,
+      mapApiAddressToForm,
+    ),
+  };
+}
+
+function mapApiAddressToForm(address: ApiPersonAddress): BaseAddressFormInputs {
+  const values: BaseAddressFormInputs = createEmptyAddress();
+
+  return {
+    ...values,
+    type: "DomesticAddress",
+    street: address.street,
+    houseNumber: address.houseNumber ?? "",
+    addressAddition: address.addressAddition ?? "",
+    country: address.country,
+    postalCode: address.postalCode,
+    city: address.city,
   };
 }
 
 export function mapToApiPatchVaccinationConsultationPatientRequest(
-  person: LegacyPerson,
+  person: DefaultPersonFormValues,
 ): ApiPatchVaccinationConsultationPatientRequest {
   return { patient: mapToApiPatient(person) };
 }
-
-export function mapToApiPostVaccinationConsultationRequest(
-  data: InitialAppointmentFormValuesProps,
-): ApiPostVaccinationConsultationRequest {
-  let appointmentStart;
-  let durationInMinutes;
-  if (data.bookingType === ApiAppointmentBookingType.UserDefined) {
-    appointmentStart = new Date(data.userDefinedAppointmentDate!);
-    durationInMinutes = data.appointmentTypeStandardDuration;
-  } else {
-    appointmentStart = data.appointmentBlockDate!.start;
-    durationInMinutes = durationBetweenDatesInMinutes(
-      data.appointmentBlockDate!.start,
-      data.appointmentBlockDate!.end,
-    );
-  }
-  return {
-    ...data,
-    patient: mapToApiAffectedPersonDetails(data.selectedPerson!),
-    initialStepAppointmentType: data.initialStepAppointmentType,
-    appointmentBookingType: data.bookingType!,
-    appointmentStart: appointmentStart,
-    durationInMinutes: durationInMinutes,
-    travelType: ApiTravelType.Unspecified,
-    travelDestinations: [],
-  };
-}
-
-export enum PersonSidebarMode {
-  // search for person in central file
-  searchInCentralFile,
-  // create new person or add additional information to person
-  editInCentralFile,
-  // book appointment
-  bookAppointment,
-}
-
-export const TRAVEL_MEDICINE_EDIT_PERSON_CONFIG: LegacyPersonFormConfig = {
-  hiddenFields: ["billingAddress"],
-  optionalFields: [
-    "salutation",
-    "title",
-    "gender",
-    "nameAtBirth",
-    "placeOfBirth",
-    "countryOfBirth",
-    "phoneNumbers",
-    "postalAddress",
-    "emailAddresses",
-  ],
-};
-
-export const TRAVEL_MEDICINE_PERSON_CONFIG: LegacyPersonFormConfig = {
-  ...TRAVEL_MEDICINE_EDIT_PERSON_CONFIG,
-  disabledFields: ["firstName", "lastName", "dateOfBirth"],
-};

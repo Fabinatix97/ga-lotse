@@ -2,6 +2,16 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.2
+_05.08.2025_
+
+Fünfzehnter Release der Anwendung GA-Lotse
+
+### Grundfunktionen:
+
+* Einrichtung und Konfiguration einer neuen GA-Lotse-Instanz über den Konfigurator
+
+
 ## GA-Lotse 2.1
 _23.07.2025_
 

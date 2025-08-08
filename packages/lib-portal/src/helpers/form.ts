@@ -58,6 +58,14 @@ export function mapOptionalString(
   return isNonEmptyString(value) ? value : undefined;
 }
 
+export function mapOptionalNonEmptyStringArray(
+  stringArray: string[],
+): string[] | undefined {
+  const truthyStringArray = stringArray.filter((item) => item.length);
+
+  return truthyStringArray.length ? truthyStringArray : undefined;
+}
+
 export function mapOptionalDate(
   value: OptionalFieldValue<string>,
 ): Date | undefined {

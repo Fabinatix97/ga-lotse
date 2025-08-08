@@ -19,7 +19,7 @@ public class NotificationConfig extends BaseEntity implements Initializable {
   @NotNull private String fromAddress;
   @NotNull private String greeting;
 
-  @NotNull private boolean initialized = true;
+  @NotNull private boolean initialized = false;
 
   public String getFromAddress() {
     return fromAddress;

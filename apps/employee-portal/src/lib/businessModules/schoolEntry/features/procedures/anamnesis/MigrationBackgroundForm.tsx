@@ -146,8 +146,14 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
   }
 
   return (
-    <Stack gap={2}>
-      <Typography level="title-sm">Migrationshintergrund</Typography>
+    <Stack gap={2} role="group" aria-labelledby="migrationshintergrund-label">
+      <Typography
+        level="title-sm"
+        component="h2"
+        id="migrationshintergrund-label"
+      >
+        Migrationshintergrund
+      </Typography>
       <SoftRequiredBooleanSelectField
         name={fieldName("hasMigrationBackground")}
         label="Migrationshintergrund"

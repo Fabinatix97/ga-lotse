@@ -74,9 +74,4 @@ public class NotificationConfigService extends EshgConfigurationService<Notifica
             ? ConfigurationStatus.COMPLETE
             : ConfigurationStatus.INCOMPLETE);
   }
-
-  // VisibleForTesting
-  public void setNotInitialized() {
-    getConfig().setInitialized(false);
-  }
 }

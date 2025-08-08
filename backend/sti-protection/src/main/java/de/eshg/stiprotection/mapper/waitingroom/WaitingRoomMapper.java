@@ -5,10 +5,8 @@
 
 package de.eshg.stiprotection.mapper.waitingroom;
 
-import de.eshg.base.SortDirection;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomDto;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
-import org.springframework.data.domain.Sort;
 
 public class WaitingRoomMapper {
   private WaitingRoomMapper() {}
@@ -26,12 +24,5 @@ public class WaitingRoomMapper {
     entity.setInfo(dto.info());
     entity.setStatus(WaitingStatusMapper.toDatabaseType(dto.status()));
     return entity;
-  }
-
-  public static Sort.Direction toDatabaseType(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case ASC -> Sort.Direction.ASC;
-      case DESC -> Sort.Direction.DESC;
-    };
   }
 }

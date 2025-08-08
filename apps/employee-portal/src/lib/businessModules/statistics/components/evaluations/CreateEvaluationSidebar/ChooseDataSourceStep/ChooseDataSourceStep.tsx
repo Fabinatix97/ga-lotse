@@ -42,18 +42,11 @@ export function ChooseDataSourceStep(props: ChooseDataSourceStepProps) {
           required="Bitte Vorlage oder Datenquelle auswählen"
         >
           <Stack gap={2}>
-            <SelectableCard
-              value={CHOOSE_EVALUATION_TEMPLATE}
-              forGroupName={props.fieldName("dataSourceId")}
-            >
+            <SelectableCard value={CHOOSE_EVALUATION_TEMPLATE}>
               <Typography level="title-md">Vorlage anwenden</Typography>
             </SelectableCard>
             {props.dataSources.map((dataSource) => (
-              <SelectableCard
-                key={dataSource.id}
-                value={dataSource.id}
-                forGroupName={props.fieldName("dataSourceId")}
-              >
+              <SelectableCard key={dataSource.id} value={dataSource.id}>
                 <Stack gap={0.5}>
                   <Typography level="title-md">
                     {

@@ -38,6 +38,7 @@ export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
           size="sm"
           sx={{ justifyContent: "flex-start" }}
           startDecorator={<AddIcon />}
+          aria-label="Personensorgeberechtigte:r hinzufügen"
           onClick={() => personSidebar.open(props)}
         >
           Hinzufügen

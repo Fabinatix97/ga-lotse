@@ -12,6 +12,7 @@ import { useId } from "react";
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import {
   BooleanSelectField,
+  DebouncedTextareaField,
   FormProps,
   HorizontalField,
   InputField,
@@ -20,7 +21,6 @@ import {
   MutationBundle,
   OptionalFieldValue,
   SoftRequiredBooleanSelectField,
-  TextareaField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
 import {
@@ -184,7 +184,13 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
               onSaveMutation={props.valuesToMutationBundle(values)}
             />
             <Divider />
-            <Stack direction="row" gap={4} flexWrap="wrap">
+            <Stack
+              direction="row"
+              gap={4}
+              flexWrap="wrap"
+              role="group"
+              aria-label="Allgemeine Angaben"
+            >
               <BooleanSelectField
                 component={HorizontalField}
                 name={daycareAndSchoolInfo("wasInDaycare")}
@@ -270,7 +276,7 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
               countryCodes={props.countryCodes}
             />
             <Divider />
-            <TextareaField name="note" label="Bemerkung" />
+            <DebouncedTextareaField name="note" label="Bemerkung" />
             <FormFooter isSubmitting={isSubmitting} />
           </FormStack>
         );

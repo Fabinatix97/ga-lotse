@@ -38,6 +38,10 @@ export {
   type BaseModalPropsRequiredClose,
 } from "./components/BaseModal";
 export {
+  DocumentTitleProvider,
+  useUpdateDocumentTitle,
+} from "./components/DocumentTitleProvider";
+export {
   EnvironmentIndicator,
   useEnvironmentIndicatorHeight,
 } from "./components/EnvironmentIndicator";
@@ -311,6 +315,7 @@ export {
   dropEmptyKeys,
   mapNullableValue,
   mapOptionalDate,
+  mapOptionalNonEmptyStringArray,
   mapOptionalString,
   mapOptionalValue,
   mapRequiredValue,

@@ -7,7 +7,6 @@ package de.eshg.base.config;
 
 import static de.eshg.config.mapper.DepartmentInfoMapper.mapToDomain;
 
-import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.config.BaseDepartmentInfoConfigService.MandatoryInitialDepartmentInfo;
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
 import de.eshg.base.util.MapUtils;
@@ -78,11 +77,6 @@ public class BaseDepartmentInfoConfigService
 
   boolean isInitialized() {
     return getConfig().isInitialized();
-  }
-
-  @VisibleForTesting
-  void setNotInitialized() {
-    getConfig().setInitialized(false);
   }
 
   @Validated

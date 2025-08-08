@@ -17,7 +17,7 @@ import {
   useGetConcerns,
 } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
-import { ConcernFilters } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConcerFilters";
+import { ConcernFilters } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/ConcernFilters";
 import { useConcernFilterValues } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/useConcernFilterValues";
 import { RadioSheet } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioSheet";
 import { useTranslation } from "@/lib/i18n/client";

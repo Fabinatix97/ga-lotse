@@ -85,87 +85,91 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
     <>
       <SidebarContent title={props.title} subtitle={props.subtitle}>
         <Stack gap={3}>
-          <Grid container spacing={2}>
-            <Grid xxs>
-              <SelectField
-                name={fieldName("salutation")}
-                label={PERSON_FIELD_NAME.salutation}
-                options={SALUTATION_OPTIONS}
-              />
+          <Stack gap={3} role="group" aria-label="Personendaten">
+            <Grid container spacing={2}>
+              <Grid xxs>
+                <SelectField
+                  name={fieldName("salutation")}
+                  label={PERSON_FIELD_NAME.salutation}
+                  options={SALUTATION_OPTIONS}
+                />
+              </Grid>
+              <Grid xxs>
+                <SelectField
+                  name={fieldName("title")}
+                  label={PERSON_FIELD_NAME.title}
+                  options={TITLE_OPTIONS}
+                />
+              </Grid>
             </Grid>
-            <Grid xxs>
-              <SelectField
-                name={fieldName("title")}
-                label={PERSON_FIELD_NAME.title}
-                options={TITLE_OPTIONS}
-              />
+
+            <InputField
+              name={fieldName("firstName")}
+              label={PERSON_FIELD_NAME.firstName}
+              readOnly={props.mode !== "edit"}
+              required={
+                props.mode === "edit"
+                  ? "Bitte einen Vornamen angeben"
+                  : undefined
+              }
+              validate={validateLength(1, 80)}
+            />
+            <InputField
+              name={fieldName("lastName")}
+              label={PERSON_FIELD_NAME.lastName}
+              readOnly={props.mode !== "edit"}
+              required={
+                props.mode === "edit" ? "Bitte einen Namen angeben" : undefined
+              }
+              validate={validateLength(1, 120)}
+            />
+
+            <Grid container spacing={2}>
+              <Grid xxs>
+                <DateField
+                  name={fieldName("dateOfBirth")}
+                  label={PERSON_FIELD_NAME.dateOfBirth}
+                  readOnly={props.mode !== "edit"}
+                  required={
+                    props.mode === "edit"
+                      ? "Bitte ein Geburtsdatum angeben"
+                      : undefined
+                  }
+                  validate={validateDateOfBirth}
+                />
+              </Grid>
+              <Grid xxs>
+                <SelectField
+                  name={fieldName("gender")}
+                  label={PERSON_FIELD_NAME.gender}
+                  options={GENDER_OPTIONS}
+                />
+              </Grid>
             </Grid>
-          </Grid>
 
-          <InputField
-            name={fieldName("firstName")}
-            label={PERSON_FIELD_NAME.firstName}
-            readOnly={props.mode !== "edit"}
-            required={
-              props.mode === "edit" ? "Bitte einen Vornamen angeben" : undefined
-            }
-            validate={validateLength(1, 80)}
-          />
-          <InputField
-            name={fieldName("lastName")}
-            label={PERSON_FIELD_NAME.lastName}
-            readOnly={props.mode !== "edit"}
-            required={
-              props.mode === "edit" ? "Bitte einen Namen angeben" : undefined
-            }
-            validate={validateLength(1, 120)}
-          />
+            <InputField
+              name={fieldName("nameAtBirth")}
+              label={PERSON_FIELD_NAME.nameAtBirth}
+              validate={validateLength(1, 40)}
+            />
 
-          <Grid container spacing={2}>
-            <Grid xxs>
-              <DateField
-                name={fieldName("dateOfBirth")}
-                label={PERSON_FIELD_NAME.dateOfBirth}
-                readOnly={props.mode !== "edit"}
-                required={
-                  props.mode === "edit"
-                    ? "Bitte ein Geburtsdatum angeben"
-                    : undefined
-                }
-                validate={validateDateOfBirth}
-              />
-            </Grid>
-            <Grid xxs>
-              <SelectField
-                name={fieldName("gender")}
-                label={PERSON_FIELD_NAME.gender}
-                options={GENDER_OPTIONS}
-              />
-            </Grid>
-          </Grid>
+            <InputField
+              name={fieldName("placeOfBirth")}
+              label={PERSON_FIELD_NAME.placeOfBirth}
+              validate={validateLength(1, 50)}
+            />
 
-          <InputField
-            name={fieldName("nameAtBirth")}
-            label={PERSON_FIELD_NAME.nameAtBirth}
-            validate={validateLength(1, 40)}
-          />
-
-          <InputField
-            name={fieldName("placeOfBirth")}
-            label={PERSON_FIELD_NAME.placeOfBirth}
-            validate={validateLength(1, 50)}
-          />
-
-          <CountryField
-            name={fieldName("countryOfBirth")}
-            label={PERSON_FIELD_NAME.countryOfBirth}
-          />
+            <CountryField
+              name={fieldName("countryOfBirth")}
+              label={PERSON_FIELD_NAME.countryOfBirth}
+            />
+          </Stack>
 
           <Divider />
 
           {isNonNullish(props.values.contactAddress) ? (
             <Box
-              component="section"
+              role="group"
               aria-labelledby="contact-address-section-title"
               sx={{ display: "contents" }}
             >
@@ -178,6 +182,7 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
                   level="title-md"
                   sx={{ flex: 1 }}
                   id="contact-address-section-title"
+                  component="h2"
                 >
                   Kontaktadresse
                 </Typography>
@@ -202,6 +207,7 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
                 <ContactAddressForm
                   name={fieldName("contactAddress")}
                   type={props.values.contactAddress.type}
+                  canChooseType={props.canChooseAddressType}
                 />
               </Grid>
             </Box>
@@ -221,7 +227,7 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
 
           <Divider />
 
-          <section aria-label="E-Mail-Adressen">
+          <div role="group" aria-label="E-Mail-Adressen">
             <InputArrayField
               name={fieldName("emailAddresses")}
               addMoreLabel="E-Mail-Adresse hinzufügen"
@@ -231,9 +237,9 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
               }
               validateEach={validateLength(6, 254)}
             />
-          </section>
+          </div>
 
-          <section aria-label="Telefonnummern">
+          <div role="group" aria-label="Telefonnummern">
             <InputArrayField
               name={fieldName("phoneNumbers")}
               addMoreLabel="Telefonnummer hinzufügen"
@@ -242,7 +248,7 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
               }
               validateEach={validateLength(1, 23)}
             />
-          </section>
+          </div>
         </Stack>
       </SidebarContent>
       <SidebarActions>

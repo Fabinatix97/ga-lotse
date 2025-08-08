@@ -22,8 +22,8 @@ export function InterestAndSportsInfoForm() {
   const interestAndSportsInfo = createFieldNameMapper("interestsAndSportsInfo");
 
   return (
-    <Stack gap={2}>
-      <Typography level="title-sm">
+    <Stack gap={2} role="group" aria-labelledby="besonderheiten-label">
+      <Typography level="title-sm" component="h2" id="besonderheiten-label">
         Persönliche Besonderheiten / Interessen
       </Typography>
       <Stack direction="row" gap={2} flexWrap="wrap">

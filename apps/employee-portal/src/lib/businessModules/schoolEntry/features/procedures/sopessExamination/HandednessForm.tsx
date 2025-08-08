@@ -15,8 +15,15 @@ import { HANDEDNESS_OPTIONS } from "@/lib/businessModules/schoolEntry/features/p
 
 export function HandednessForm() {
   return (
-    <Stack gap={2} data-testid="handednessForm">
-      <Typography level="title-sm">Händigkeit</Typography>
+    <Stack
+      gap={2}
+      data-testid="handednessForm"
+      role="group"
+      aria-labelledby="handedness-label"
+    >
+      <Typography level="title-sm" component="h2" id="handedness-label">
+        Händigkeit
+      </Typography>
       <SoftRequiredSelectField
         name="handedness"
         label="Ergebnis"

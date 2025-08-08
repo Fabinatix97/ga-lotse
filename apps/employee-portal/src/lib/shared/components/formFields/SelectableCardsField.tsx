@@ -29,7 +29,6 @@ export function SelectableCardsField(props: SelectableCardsFieldProps) {
           <SelectableCard
             key={it.value}
             value={it.value}
-            forGroupName={props.name}
             radioProps={{
               color: error ? "danger" : undefined,
             }}

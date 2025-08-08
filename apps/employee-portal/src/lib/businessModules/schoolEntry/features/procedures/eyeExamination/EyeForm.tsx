@@ -22,10 +22,17 @@ export function EyeForm(props: ExaminationFormProps) {
   const fieldName = createFieldNameMapper(props.name);
 
   return (
-    <Stack direction="row" gap={2} data-testid={props.name}>
+    <Stack
+      direction="row"
+      gap={2}
+      data-testid={props.name}
+      role="group"
+      aria-labelledby={`eye-indicator-label-${props.sideIndicator}`}
+    >
       <SideIndicator
         sideIndicator={props.sideIndicator}
         sideIndicatorPosition={props.sideIndicatorPosition}
+        id={`eye-indicator-label-${props.sideIndicator}`}
       />
       <Stack gap={0.5}>
         {EYE_EXAMINATION_TYPE_OPTIONS.map((eyeExaminationType) => (

@@ -47,6 +47,7 @@ export default function SchoolEntryProgressEntriesPage(
       procedureApi={procedureApi}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
+      ariaRole="tabpanel"
     />
   );
 }

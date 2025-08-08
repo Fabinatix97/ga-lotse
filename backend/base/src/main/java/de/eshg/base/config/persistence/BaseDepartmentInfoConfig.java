@@ -19,7 +19,7 @@ public class BaseDepartmentInfoConfig extends AbstractDepartmentInfoConfig
     implements Initializable {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private boolean initialized = true;
+  private boolean initialized = false;
 
   @Override
   public boolean isInitialized() {

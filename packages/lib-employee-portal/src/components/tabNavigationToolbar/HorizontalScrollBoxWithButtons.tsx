@@ -159,7 +159,6 @@ function ScrollButton({
   endScroll: () => void;
 }) {
   const Icon = dir < 0 ? ChevronLeft : ChevronRight;
-  const label = dir < 0 ? "Links scrollen" : "Rechts scrollen";
   const sx = {
     position: "absolute",
     zIndex: 2,
@@ -175,7 +174,7 @@ function ScrollButton({
       variant="plain"
       sx={sx}
       disabled={false}
-      aria-label={label}
+      aria-hidden="true"
       onMouseDown={() => startScroll(dir)}
       onMouseUp={endScroll}
       onMouseLeave={endScroll}

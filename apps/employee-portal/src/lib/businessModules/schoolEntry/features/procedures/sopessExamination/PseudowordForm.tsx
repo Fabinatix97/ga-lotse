@@ -75,10 +75,16 @@ export function PseudowordForm(props: PseudowordFormProps) {
   }
 
   return (
-    <Stack gap={2} data-testid="pseudowordForm">
+    <Stack
+      gap={2}
+      data-testid="pseudowordForm"
+      role="group"
+      aria-labelledby="pseudoword-label"
+    >
       <FormSectionTitle
         title="Pseudowörter"
         tooltip="(0-3 auffall, 4 grenz, 5-6 unauff, 9 - unbekannt)"
+        id="pseudoword-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

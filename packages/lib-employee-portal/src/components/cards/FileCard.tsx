@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 import {
   AspectRatio,
+  Box,
   Card,
   CardContent,
   ColorPaletteProp,
@@ -56,6 +57,7 @@ export interface FileCardProps {
   actions: FileCardActionProps[];
   sx?: SxProps;
   actionMenuButtonColor?: ColorPaletteProp;
+  role?: string;
 }
 
 const iconByType = {
@@ -77,6 +79,7 @@ export function FileCard(props: FileCardProps) {
       sx={{ backgroundColor: "white", "--Card-padding": "0.5rem", ...props.sx }}
       size="sm"
       data-testid="fileCard"
+      role={props.role}
     >
       <AspectRatio
         ratio="1"
@@ -84,7 +87,9 @@ export function FileCard(props: FileCardProps) {
         color="neutral"
         sx={{ minWidth: 48, borderRadius: "10%", svg: { fontSize: "24px" } }}
       >
-        <div>{createElement(iconByType[props.type])}</div>
+        <Box role="img" aria-label={`Dateityp: ${props.type}`}>
+          {createElement(iconByType[props.type])}
+        </Box>
       </AspectRatio>
       <CardContent sx={{ justifyContent: "space-between" }}>
         <Typography level="body-sm" sx={{ wordBreak: "break-word" }}>

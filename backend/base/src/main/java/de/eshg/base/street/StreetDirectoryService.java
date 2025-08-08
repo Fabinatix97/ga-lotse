@@ -12,6 +12,7 @@ import de.eshg.base.street.csv.StreetDirectoryCsvEntry;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.lang3.StringUtils;
@@ -66,6 +67,24 @@ public class StreetDirectoryService implements StreetDirectory {
         .map(Map::values)
         .flatMap(Collection::stream)
         .flatMap(entry -> entry.sequences.stream())
+        .map(StreetSequence::administrativeData)
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  @Override
+  public Set<AdministrativeData> getAdministrativeDataByStreetNameAndHouseNumber(
+      String streetName, String houseNumberString) {
+    HouseNumber houseNumber = HouseNumber.parseHouseNumber(houseNumberString);
+    Predicate<StreetSequence> streetNumberFilter =
+        sequence ->
+            oddEvenSequenceMatches(sequence, houseNumber)
+                && houseNumberIsInRange(sequence, houseNumber);
+
+    return directory.prefixMap(normalizeStreetNameForAutocomplete(streetName)).values().stream()
+        .map(Map::values)
+        .flatMap(Collection::stream)
+        .flatMap(entry -> entry.sequences.stream())
+        .filter(streetNumberFilter)
         .map(StreetSequence::administrativeData)
         .collect(StreamUtil.toLinkedHashSet());
   }

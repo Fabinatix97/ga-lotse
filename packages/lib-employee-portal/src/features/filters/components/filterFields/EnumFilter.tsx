@@ -8,7 +8,9 @@ import { Checkbox, CheckboxProps, Stack } from "@mui/joy";
 import { EnumFilterDefinition, EnumFilterValue } from "../../types/EnumFilter";
 
 function EnumFilterCheckbox(
-  props: Required<Pick<CheckboxProps, "label" | "checked" | "onChange">>,
+  props: Required<
+    Pick<CheckboxProps, "label" | "checked" | "onChange" | "role">
+  >,
 ) {
   return (
     <Checkbox
@@ -48,12 +50,13 @@ export function EnumFilter(props: EnumFilterProps) {
   }
 
   return (
-    <Stack gap={1}>
+    <Stack gap={1} role="list">
       {props.definition.options.map((option) => (
         <EnumFilterCheckbox
           key={option.value}
           label={option.label}
           checked={selectedValues.includes(option.value)}
+          role="listitem"
           onChange={(event) => handleChange(event.target.checked, option.value)}
         />
       ))}

@@ -15,6 +15,7 @@ import { getSidePanelNavItemStyles } from "@/lib/shared/components/sidePanel/Sid
 
 interface SidePanelNavLinkProps extends RequiresChildren {
   href: string;
+  fullWidth?: boolean;
 }
 
 export function SidePanelNavLink(props: SidePanelNavLinkProps) {
@@ -26,6 +27,7 @@ export function SidePanelNavLink(props: SidePanelNavLinkProps) {
       {...getSidePanelNavItemStyles(isActive)}
       href={props.href}
       aria-current={isActive ? "true" : undefined}
+      fullWidth={props.fullWidth}
     >
       {props.children}
     </InternalLinkButton>

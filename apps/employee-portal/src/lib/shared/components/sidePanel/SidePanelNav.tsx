@@ -17,9 +17,9 @@ export function getSidePanelNavItemStyles(isActive: boolean) {
   } satisfies ButtonProps;
 }
 
-export function SidePanelNav(props: RequiresChildren) {
+export function SidePanelNav(props: RequiresChildren & { role?: string }) {
   return (
-    <Stack component="nav" aria-label="Seitenpanel-Navigation" gap={1}>
+    <Stack gap={1} role={props.role}>
       {props.children}
     </Stack>
   );

@@ -55,10 +55,16 @@ export function SelectiveAttentionForm(props: SelectiveAttentionFormProps) {
   const fieldName = createFieldNameMapper("psychologicalBehavior");
 
   return (
-    <Stack gap={2} data-testid="selectiveAttentionForm">
+    <Stack
+      gap={2}
+      data-testid="selectiveAttentionForm"
+      role="group"
+      aria-labelledby="selektive-aufmerksamkeit-label"
+    >
       <FormSectionTitle
         title="Selektive Aufmerksamkeit"
         tooltip="(0-10 auffall, 11-13 grenz, 14-29 unauff, 99 - unbekannt)"
+        id="selektive-aufmerksamkeit-label"
       />
       <Stack direction="row" gap={2} flexWrap="wrap">
         <Stack direction="row" gap={2}>

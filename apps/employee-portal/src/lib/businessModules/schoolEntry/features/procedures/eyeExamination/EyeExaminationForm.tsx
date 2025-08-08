@@ -11,11 +11,11 @@ import { Formik, FormikHelpers } from "formik";
 import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import {
   CheckboxField,
+  DebouncedTextareaField,
   FormProps,
   MutationBundle,
   OptionalFieldValue,
   SetFieldValueHelper,
-  TextareaField,
 } from "@eshg/lib-portal";
 import {
   ApiDoctorLetterValue,
@@ -206,7 +206,7 @@ export function EyeExaminationForm(props: EyeExaminationFormProps) {
             </Grid>
           </Grid>
           <Divider />
-          <TextareaField name="note" label="Bemerkung" />
+          <DebouncedTextareaField name="note" label="Bemerkung" />
           <FormFooter isSubmitting={isSubmitting} />
         </FormStack>
       )}

@@ -4,6 +4,7 @@
  */
 
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 import {
   unwrapRawResponse,
@@ -28,16 +29,19 @@ import {
 } from "@eshg/travel-medicine-api";
 
 import { useVaccinationConsultationApi } from "@/lib/businessModules/travelMedicine/api/clients";
+import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
 export function useSaveVaccinationConsultation() {
   const snackbar = useSnackbar();
+  const router = useRouter();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
   return useHandledMutation({
     mutationFn: (request: ApiPostVaccinationConsultationRequest) =>
       vaccinationConsultationApi.postVaccinationConsultation(request),
-    onSuccess: () => {
+    onSuccess: (procedureId: string) => {
       snackbar.confirmation("Der Vorgang wurde angelegt.");
+      router.push(routes.procedures.baseData(procedureId));
     },
   });
 }

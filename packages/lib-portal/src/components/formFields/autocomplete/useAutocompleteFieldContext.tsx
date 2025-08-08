@@ -29,7 +29,7 @@ export interface CommonAutocompleteFieldProps<T>
     value: string,
     reason: string,
   ) => void;
-  onChange?: (value: string[]) => void;
+  onChange?: (value: T) => void;
   isOptionEqualToValue?: (option: string, value: string) => boolean;
   onBlur?: (e: FocusEvent) => void;
 }

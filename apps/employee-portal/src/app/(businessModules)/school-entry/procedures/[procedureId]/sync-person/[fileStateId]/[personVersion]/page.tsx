@@ -5,6 +5,7 @@
 
 "use client";
 
+import { Box } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { use } from "react";
 import * as v from "valibot";
@@ -50,12 +51,14 @@ export default function SyncPersonPage(props: DynamicPageProps) {
   }
 
   return (
-    <CentralFileSyncForm
-      title={formatPersonName(data.personDetailsDiff.fileState)}
-      onAccept={handleSync}
-      onCancel={() => router.back()}
-    >
-      <BasePersonDiffForm diff={data} />
-    </CentralFileSyncForm>
+    <Box role="tabpanel">
+      <CentralFileSyncForm
+        title={formatPersonName(data.personDetailsDiff.fileState)}
+        onAccept={handleSync}
+        onCancel={() => router.back()}
+      >
+        <BasePersonDiffForm diff={data} />
+      </CentralFileSyncForm>
+    </Box>
   );
 }
