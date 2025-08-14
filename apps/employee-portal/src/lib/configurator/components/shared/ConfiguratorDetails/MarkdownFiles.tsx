@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Typography } from "@mui/joy";
 import assert from "assert";
 
 import {
   ApiCitizenPortalMarkdownName,
+  ApiEmployeePortalMarkdownName,
   ApiLanguage,
   ApiMultiLangDocument,
 } from "@eshg/base-api";
@@ -23,14 +25,12 @@ import {
   ConfiguratorEndpointName,
   ConfiguratorModuleName,
 } from "@/lib/configurator/shared/types";
-import { useGetCitizenMarkdownFile } from "@/lib/shared/api/queries/configurator/markdown";
+import {
+  useGetCitizenMarkdownFile,
+  useGetEmployeeMarkdownFile,
+} from "@/lib/shared/api/queries/configurator/markdown";
 
 type Language = keyof ApiMultiLangDocument;
-const Language = {
-  de: "de",
-  en: "en",
-} as const satisfies Record<string, Language>;
-
 type MarkdownFileData = Record<Language, ConfigFile>;
 
 export interface MarkdownFormData {
@@ -65,10 +65,29 @@ export interface UpdateMarkdownRequest {
   en?: ConfigFile;
 }
 
-export function MarkdownFiles(props: {
+type PortalType = "EMPLOYEE" | "CITIZEN";
+type PortalMarkdownName<T extends PortalType> = T extends "EMPLOYEE"
+  ? ApiEmployeePortalMarkdownName
+  : ApiCitizenPortalMarkdownName;
+
+function getDescription(
+  endpointName: ConfiguratorEndpointName,
+): string | undefined {
+  switch (endpointName) {
+    case "IMPRINT_MARKDOWNS_CONFIG":
+      return "Das Impressum wird im Online Portal angezeigt.";
+    case "CONTACT_MARKDOWNS_CONFIG":
+      return "Definieren Sie die Inhalte, die auf der Kontakt-Seite im Mitarbeitendenportal angezeigt werden.";
+    default:
+      return undefined;
+  }
+}
+
+export function MarkdownFiles<T extends PortalType>(props: {
+  portalType: T;
   module: ConfiguratorModuleName;
   endpointName: ConfiguratorEndpointName;
-  fileName: ApiCitizenPortalMarkdownName;
+  fileName: PortalMarkdownName<T>;
   markdownFiles: ApiMultiLangDocument | undefined;
   updateMarkdown: (u: UpdateMarkdownRequest) => Promise<void>;
 }) {
@@ -81,6 +100,7 @@ export function MarkdownFiles(props: {
   const initialValues = getInitialValues(markdownFiles);
 
   const citizenFileDownload = useGetCitizenMarkdownFile();
+  const employeeFileDownload = useGetEmployeeMarkdownFile();
 
   async function onSubmit({ markdownFiles }: MarkdownFormData) {
     const { de, en } = markdownFiles;
@@ -93,12 +113,20 @@ export function MarkdownFiles(props: {
   }
 
   const title = getTabNamesByEndpointName(props.module, props.endpointName);
+  const description = getDescription(props.endpointName);
 
   function downloadFileNow(lang: ApiLanguage) {
-    void citizenFileDownload.download({
-      name: props.fileName,
-      lang,
-    });
+    if (props.portalType === "EMPLOYEE") {
+      void employeeFileDownload.download({
+        name: props.fileName as ApiEmployeePortalMarkdownName,
+        lang,
+      });
+    } else {
+      void citizenFileDownload.download({
+        name: props.fileName as ApiCitizenPortalMarkdownName,
+        lang,
+      });
+    }
   }
 
   return (
@@ -106,6 +134,9 @@ export function MarkdownFiles(props: {
       sheets={[
         {
           title,
+          description: description ? (
+            <Typography level="body-md">{description}</Typography>
+          ) : undefined,
           sections: [
             {
               title: "Deutsch",

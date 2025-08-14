@@ -13,7 +13,7 @@ import {
 import { useObjectTypeApi } from "@/lib/businessModules/inspection/api/clients";
 import { EditableObjectType } from "@/lib/businessModules/inspection/components/objectType/EditObjectTypeSidebar";
 
-export function useUpdateObjectType({ onSuccess }: { onSuccess?: () => void }) {
+export function useUpdateObjectType() {
   const objectTypeApi = useObjectTypeApi();
   const snackbar = useSnackbar();
 
@@ -25,7 +25,6 @@ export function useUpdateObjectType({ onSuccess }: { onSuccess?: () => void }) {
     },
     onSuccess: () => {
       snackbar.confirmation("Erfolgreich gespeichert!");
-      onSuccess?.();
     },
   });
 }

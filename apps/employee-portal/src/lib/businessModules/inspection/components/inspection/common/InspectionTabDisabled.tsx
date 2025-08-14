@@ -43,6 +43,7 @@ export function InspectionTabDisabled({
         alignItems: "center",
         margin: { margin },
       }}
+      role="tabpanel"
     >
       <Stack spacing={2} sx={{ alignItems: "center", marginBottom: 50 }}>
         <SvgIcon sx={{ width: "40px", height: "40px" }}>

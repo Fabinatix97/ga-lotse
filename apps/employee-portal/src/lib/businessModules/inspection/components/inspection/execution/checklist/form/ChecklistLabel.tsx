@@ -28,7 +28,7 @@ export function ChecklistLabel(props: Readonly<ChecklistLabelProps>) {
   return (
     <>
       <Stack direction="row" justifyContent="space-between">
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} alignItems="center">
           <FormLabel
             id={props["label-id"]}
             required={props.required}

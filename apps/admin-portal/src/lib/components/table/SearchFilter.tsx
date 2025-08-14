@@ -40,7 +40,6 @@ export function SearchFilter({
   return (
     <FloatingLabelInput
       placeholder={label}
-      inputRole="searchbox"
       type="search"
       startDecorator={<SearchIcon />}
       defaultValue={searchParams.get(searchParamName) ?? undefined}

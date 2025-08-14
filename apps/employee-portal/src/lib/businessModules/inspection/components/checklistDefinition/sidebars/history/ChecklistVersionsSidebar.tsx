@@ -76,7 +76,7 @@ function ChecklistVersionsSidebarWithQuery({
           </Typography>
           <ChecklistHint version={newestVersion} permissions={permissions} />
           <Stack direction="column" gap={2}>
-            <Typography fontSize="14px" lineHeight="21px" fontWeight="500">
+            <Typography fontSize="0.875rem" lineHeight="21px" fontWeight="500">
               {newestVersion.context.published ? "Aktuelle Version" : "Entwurf"}
             </Typography>
             <VersionSheet
@@ -90,7 +90,11 @@ function ChecklistVersionsSidebarWithQuery({
               onUpdateCldClick={onUpdateCldClick}
             />
             {oldVersions.length > 0 && (
-              <Typography fontSize="14px" lineHeight="21px" fontWeight="500">
+              <Typography
+                fontSize="0.875rem"
+                lineHeight="21px"
+                fontWeight="500"
+              >
                 Ältere Versionen
               </Typography>
             )}

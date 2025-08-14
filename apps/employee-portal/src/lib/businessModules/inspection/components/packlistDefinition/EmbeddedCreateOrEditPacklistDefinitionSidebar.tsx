@@ -120,7 +120,11 @@ export function EmbeddedCreateOrEditPacklistDefinitionSidebar({
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, handleSubmit }) => (
-        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+        <SidebarForm
+          ref={sidebarFormRef}
+          aria-label={title}
+          onSubmit={handleSubmit}
+        >
           <SidebarContent title={title}>
             <Stack spacing={2}>
               <PacklistDefinitionHeaderRow

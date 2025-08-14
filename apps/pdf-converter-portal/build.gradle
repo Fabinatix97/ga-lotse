@@ -87,7 +87,7 @@ tasks.register('build') {
 
 
 tasks.register('createDockerfile', Dockerfile) {
-  def nginxDockerImage = "nginx:1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+  def nginxDockerImage = "nginx:1.29.0@sha256:776b2e787034135a7614429eee7f07e7421cfe37718b1e89de3b41366ea2335d"
 
   from("${System.getenv('CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX') ?: 'docker.io'}/${nginxDockerImage}")
 

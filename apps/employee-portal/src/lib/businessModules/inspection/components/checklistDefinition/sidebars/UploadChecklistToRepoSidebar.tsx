@@ -92,16 +92,17 @@ function UploadChecklistToRepoSidebarWithMutations({
     handleClose();
   }
 
+  const title = create ? "Checkliste hochladen" : "Checkliste aktualisieren";
   return (
     <Sidebar open={open} onClose={handleClose}>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
-            <SidebarContent
-              title={
-                create ? "Checkliste hochladen" : "Checkliste aktualisieren"
-              }
-            >
+          <SidebarForm
+            ref={sidebarFormRef}
+            aria-label={title}
+            onSubmit={handleSubmit}
+          >
+            <SidebarContent title={title}>
               <Stack direction="column" spacing={2}>
                 <InputField
                   name="contact"

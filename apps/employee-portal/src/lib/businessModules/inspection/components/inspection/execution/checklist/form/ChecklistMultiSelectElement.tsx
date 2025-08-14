@@ -6,13 +6,14 @@
 "use client";
 
 import {
+  Box,
   Checkbox,
   FormControl,
   FormHelperText,
   List,
   ListItem,
 } from "@mui/joy";
-import { ChangeEvent, ReactNode } from "react";
+import { ChangeEvent, ReactNode, useId } from "react";
 
 import { useBaseField } from "@eshg/lib-portal";
 
@@ -48,6 +49,7 @@ export function ChecklistMultiSelectElement({
   readOnly,
   ...restProps
 }: Readonly<ChecklistMultiSelectElementProps>) {
+  const titleId = useId();
   const { input, meta, helpers, helperText } = useBaseField<string[]>({
     validate: (value: string[]) => {
       if (element.context.mandatory && value.length === 0)
@@ -80,13 +82,14 @@ export function ChecklistMultiSelectElement({
   }
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby={titleId}>
       <ChecklistLabel
         incident={incident}
         required={element.context.mandatory}
         tooltipText={element.context.help}
         endDecorator={labelEndDecorator}
         note={element.context.note}
+        label-id={titleId}
       >
         {label}
       </ChecklistLabel>
@@ -120,6 +123,6 @@ export function ChecklistMultiSelectElement({
       <FormControl error={!!meta.error}>
         <FormHelperText>{helperText}</FormHelperText>
       </FormControl>
-    </>
+    </Box>
   );
 }

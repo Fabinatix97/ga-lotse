@@ -50,7 +50,7 @@ export function ChecklistDefinitionHeaderCard({
   const { values } = useFormikContext<FormChecklistDefinitionVersion>();
 
   return (
-    <InformationSheet>
+    <InformationSheet role="region" aria-label="Meta-Informationen">
       <InputField
         name="context.name"
         label="Name der Checkliste"

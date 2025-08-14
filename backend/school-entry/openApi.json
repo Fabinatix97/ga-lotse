@@ -3055,6 +3055,34 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
+    "/school-entries/bulk-procedure-label" : {
+      "patch" : {
+        "operationId" : "updateProceduresWithLabels",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateProceduresWithLabelsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpdateProceduresBulkResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SchoolEntry" ]
+      }
+    },
     "/school-entries/by-person-id" : {
       "get" : {
         "operationId" : "getProceduresByPersonQuery",
@@ -9667,7 +9695,7 @@
         "enum" : [ "DUMMY" ]
       },
       "SchoolEntryProcedure" : {
-        "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],
+        "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type", "version" ],
         "type" : "object",
         "properties" : {
           "appointmentStart" : {
@@ -9709,6 +9737,10 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/SchoolEntryProcedureType"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -10595,6 +10627,49 @@
           "version" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "UpdateProceduresBulkResponse" : {
+        "required" : [ "numError", "numUnmodified", "numUpdated" ],
+        "type" : "object",
+        "properties" : {
+          "numError" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "numUnmodified" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "numUpdated" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "UpdateProceduresWithLabelsRequest" : {
+        "required" : [ "procedureIdsAndVersion", "procedureLabels" ],
+        "type" : "object",
+        "properties" : {
+          "procedureIdsAndVersion" : {
+            "minProperties" : 1,
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int64"
+            }
+          },
+          "procedureLabels" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           }
         }
       },

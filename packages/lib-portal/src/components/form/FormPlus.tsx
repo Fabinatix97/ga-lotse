@@ -97,6 +97,7 @@ interface FormPlusOptions {
   scrollToError?: boolean;
   revalidateOnLanguageChange?: boolean;
   sx?: SxProps;
+  "data-testid"?: string;
 }
 
 /* Formik <Form> wrapper that utilizes useScrollToError()

@@ -79,7 +79,7 @@ function InventorySidebarWithQueryAndMutations({
     <Sidebar open={open} onClose={onClose}>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ isSubmitting, handleSubmit, values }) => (
-          <SidebarForm onSubmit={handleSubmit}>
+          <SidebarForm aria-label="Inventar hinzufügen" onSubmit={handleSubmit}>
             <SidebarContent title="Inventar hinzufügen">
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>

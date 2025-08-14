@@ -135,7 +135,7 @@ function ResourceSidebarWithQuery({
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, values, handleSubmit, touched, errors }) => (
-        <SidebarForm onSubmit={handleSubmit}>
+        <SidebarForm aria-label="Ressource hinzufügen" onSubmit={handleSubmit}>
           <SidebarContent title="Ressource hinzufügen">
             <ResourceSelectFields
               plannedAppointment={plannedAppointment}

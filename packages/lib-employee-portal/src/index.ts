@@ -310,6 +310,7 @@ export { gdprRoutes } from "./features/gdpr/config/gdprRoutes";
 export { useGdprValidationTasksAlert } from "./features/gdpr/hooks/useGdprValidationTasksAlert";
 
 export { ImportDataForm } from "./features/import/components/ImportDataForm";
+export { UpdateResultSummary } from "./components/UpdateResultSummary";
 export {
   formatDuplicatedRecordCount,
   formatFaultyRecordCount,
@@ -402,6 +403,7 @@ export {
 export {
   type UseTableControlResult,
   useTableControl,
+  usePersistentTableControl,
 } from "./features/table/hooks/useTableControl";
 export { useTableSorting } from "./features/table/hooks/useTableSorting";
 export { type SubRowColumns } from "./features/table/types/subRowColumns";

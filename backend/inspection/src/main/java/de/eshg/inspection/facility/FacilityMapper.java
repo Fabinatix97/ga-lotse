@@ -46,7 +46,7 @@ public class FacilityMapper {
       AddFacilityFileStateResponse baseFacility,
       InspUpdateFacilityRequest request) {
     // mapping result of post response of central file api
-    facility.setCentralFileStateId(baseFacility.id());
+    facility.setOriginalCentralFileStateId(baseFacility.id());
 
     // mapping remaining fields from put request
     if (request.banned() != null) {
@@ -84,7 +84,7 @@ public class FacilityMapper {
 
   static Facility facilityFrom(AddFacilityFileStateResponse baseFacility) {
     Facility facility = new Facility();
-    facility.setCentralFileStateId(baseFacility.id());
+    facility.setOriginalCentralFileStateId(baseFacility.id());
     facility.setBanned(false);
     return facility;
   }
@@ -102,7 +102,9 @@ public class FacilityMapper {
         .map(
             facility ->
                 mapFacilityToExportedBannedFacility(
-                    facility, baseFacilityMap.get(facility.getCentralFileStateId()), zoneId))
+                    facility,
+                    baseFacilityMap.get(facility.getOriginalCentralFileStateId()),
+                    zoneId))
         .toList();
   }
 

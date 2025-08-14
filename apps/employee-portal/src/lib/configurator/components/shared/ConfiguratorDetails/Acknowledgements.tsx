@@ -16,6 +16,7 @@ export function Acknowledgements(props: { module: ConfiguratorModuleName }) {
 
   return (
     <MarkdownFiles
+      portalType="EMPLOYEE"
       module={props.module}
       fileName="ACKNOWLEDGEMENTS"
       endpointName="ACKNOWLEDGEMENTS_MARKDOWNS_CONFIG"

@@ -4,7 +4,6 @@
  */
 
 import { Divider, Stack, Typography } from "@mui/joy";
-import { visuallyHidden } from "@mui/utils";
 import { Fragment, useId } from "react";
 
 import { ApiCLSection } from "@eshg/inspection-api";
@@ -30,11 +29,13 @@ export function ChecklistSection({
   const titleId = useId();
 
   return (
-    <Stack spacing={1} sx={{ margin: 2 }} aria-labelledby={titleId}>
-      <Typography level="h4" component="h2" color="primary" id={titleId}>
-        <Typography component="span" sx={visuallyHidden}>
-          Sektion
-        </Typography>
+    <Stack
+      spacing={1}
+      sx={{ margin: 2 }}
+      role="region"
+      aria-labelledby={titleId}
+    >
+      <Typography level="h4" component="h3" color="primary" id={titleId}>
         {`${sectionIndex + 1}. ${section.context.title}`}
       </Typography>
       {section.elements.map((element, elementIndex) => {

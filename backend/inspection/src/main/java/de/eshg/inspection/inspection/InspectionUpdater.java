@@ -54,11 +54,8 @@ import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.packlist.PacklistService;
 import de.eshg.inspection.util.Holder;
 import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -108,6 +105,7 @@ public class InspectionUpdater {
   private final Clock clock;
   private final AuditLogger auditLogger;
   private final FacilityClient facilityClient;
+  private final InspectionProgressEntryService inspectionProgressEntryService;
 
   public InspectionUpdater(
       InspectionRepository inspectionRepository,
@@ -121,7 +119,8 @@ public class InspectionUpdater {
       CalendarEventApi calendarEventApi,
       Clock clock,
       AuditLogger auditLogger,
-      FacilityClient facilityClient) {
+      FacilityClient facilityClient,
+      InspectionProgressEntryService inspectionProgressEntryService) {
     this.inspectionRepository = inspectionRepository;
     this.cldVersionRepository = cldVersionRepository;
     this.packlistService = packlistService;
@@ -134,6 +133,7 @@ public class InspectionUpdater {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.facilityClient = facilityClient;
+    this.inspectionProgressEntryService = inspectionProgressEntryService;
   }
 
   Inspection updateInspection(Inspection inspection, UpdateInspectionRequest request) {
@@ -410,22 +410,8 @@ public class InspectionUpdater {
     inspectionAnnouncement.setDate(announcementDate);
     inspectionAnnouncement.setType(announcementType);
     inspection.setAnnouncement(inspectionAnnouncement);
-    addAnnouncementProgressEntry(announcementType, announcementDate, inspection);
-  }
-
-  private void addAnnouncementProgressEntry(
-      InspectionAnnouncementType announcementType,
-      Instant announcementDate,
-      Inspection inspection) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_ANNOUNCED",
-            "Ankündigung am %s per %s durchgeführt"
-                .formatted(
-                    announcementDate.atZone(clock.getZone()).format(DATE_FORMAT),
-                    announcementType.description),
-            TriggerType.EMPLOYEE);
-    inspection.addProgressEntry(progressEntry);
+    inspectionProgressEntryService.addAnnouncementProgressEntry(
+        announcementType, announcementDate.atZone(clock.getZone()).format(DATE_FORMAT), inspection);
   }
 
   private UUID createOrUpdateCalendarEvent(

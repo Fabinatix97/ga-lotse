@@ -4,12 +4,19 @@
  */
 
 import { Button, Sheet, Stack, Typography } from "@mui/joy";
+import { useId } from "react";
 import { isDefined } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
-import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
-import { SubmitButton, formatDateTime, useSnackbar } from "@eshg/lib-portal";
+import { DetailsItem, useHasUserRolesCheck } from "@eshg/lib-employee-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  SubmitButton,
+  formatDateTime,
+  useSnackbar,
+} from "@eshg/lib-portal";
 
 import { useSyncCentralRepoChecklistDefinition } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { CLDInfoCardCoreChecklistLabel } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
@@ -84,28 +91,49 @@ export function RepoCLDInfoCard({
     });
   }
 
+  const titleId = useId();
   return (
-    <Sheet component="section" aria-label="Checklistdefinition Informationen">
+    <Sheet component="section" aria-labelledby={titleId}>
       <Stack gap={2}>
-        <Typography level="title-lg" aria-label="Checklistdefinition Name">
-          {cldVersion.context.name}
+        <Typography level="title-lg" component="h2" id={titleId}>
+          Informationen zur Checklistendefinition
         </Typography>
-        <CLDInfoCardCoreChecklistLabel cldVersion={cldVersion} />
-        <Typography>
-          <span>Version: </span>
-          <span>{cldVersion.context.version}</span>
-        </Typography>
-        {isDefined(cldVersion.objectType) && (
-          <Typography aria-label="Objekttyp">
-            {cldVersion.objectType.name}
-          </Typography>
-        )}
-        <Typography>
-          <span>Veröffentlicht von </span>
-          <span>{metadata.contact}</span>
-          <span> am </span>
-          <time dateTime={createdAtDateIso}>{createdAtDateHuman}</time>
-        </Typography>
+        <DetailsList>
+          <DetailsColumn>
+            {cldVersion.isCoreChecklist && (
+              <DetailsItem
+                label="Checklistentyp"
+                value={
+                  <CLDInfoCardCoreChecklistLabel cldVersion={cldVersion} />
+                }
+              />
+            )}
+            <DetailsItem
+              label="Version"
+              value={
+                `Lokal ${cldVersion.context.version}` +
+                (!cldVersion.context.repositoryVersion
+                  ? ""
+                  : ", Remote " + cldVersion.context.repositoryVersion)
+              }
+            />
+            {isDefined(cldVersion.objectType) && (
+              <DetailsItem
+                label="Objekttyp"
+                value={cldVersion.objectType?.name}
+              />
+            )}
+            <DetailsItem label="Veröffentlicht von" value={metadata.contact} />
+            {isDefined(cldVersion.context.lastModified) && (
+              <DetailsItem
+                label="Veröffentlicht am"
+                value={
+                  <time dateTime={createdAtDateIso}>{createdAtDateHuman}</time>
+                }
+              />
+            )}
+          </DetailsColumn>
+        </DetailsList>
         <Button onClick={openDetails}>Details</Button>
         {showSyncButton && (
           <SubmitButton submitting={isPending} onClick={handleSubmit}>

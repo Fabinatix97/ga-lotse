@@ -21,12 +21,11 @@ import { ApiCountryCode } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
   BaseAddressFormInputs,
+  DetailsItem,
   DetailsRow,
   formatList,
 } from "@eshg/lib-employee-portal";
 import { FieldProps, translateCountry, useBaseField } from "@eshg/lib-portal";
-
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
 interface AddressSelectOption {
   label: string;
@@ -43,44 +42,26 @@ interface AddressCardsFieldProps
 function AddressOption({ address }: { address: BaseAddressFormInputs }) {
   return (
     <Stack gap={1}>
-      <DetailsCell
-        name="differentName"
+      <DetailsItem
         label="Abweichender Empfänger"
         value={address.differentName}
       />
-      <DetailsCell
-        name="postbox"
-        label="Postfachnummer"
-        value={address.postbox}
-      />
+      <DetailsItem label="Postfachnummer" value={address.postbox} />
       {address.street ? (
-        <DetailsCell
-          name="street"
+        <DetailsItem
           label="Straße und Haus-Nr."
           value={formatList([address.street, address.houseNumber], " ")}
         />
       ) : null}
 
-      <DetailsCell
-        name="addressAddition"
-        label="Adresszusatz"
-        value={address.addressAddition}
-      />
+      <DetailsItem label="Adresszusatz" value={address.addressAddition} />
       <DetailsRow>
-        <DetailsCell
-          name="postalCode"
-          label="Postleitzahl"
-          value={address.postalCode}
-        />
-        <DetailsCell name="city" label="Ort" value={address.city} avoidWrap />
+        <DetailsItem label="Postleitzahl" value={address.postalCode} />
+        <DetailsItem label="Ort" value={address.city} avoidWrap />
       </DetailsRow>
 
       {address.country !== ApiCountryCode.De && (
-        <DetailsCell
-          name="country"
-          label="Land"
-          value={translateCountry(address.country)}
-        />
+        <DetailsItem label="Land" value={translateCountry(address.country)} />
       )}
     </Stack>
   );

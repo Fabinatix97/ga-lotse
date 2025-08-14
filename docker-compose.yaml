@@ -3,7 +3,7 @@
 
 services:
   reverse-proxy-base:
-    image: nginx:1.27.4
+    image: nginx:1.29.0
     read_only: true
     tmpfs:
       - /var/cache/nginx

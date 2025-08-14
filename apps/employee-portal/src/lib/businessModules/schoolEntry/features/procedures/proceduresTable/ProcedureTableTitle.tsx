@@ -14,6 +14,8 @@ import {
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { BulkCreateAppointmentsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/BulkCreateAppointmentsButton";
 import { BulkDownloadInvitationsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkDownloadInvitations/BulkDownloadInvitationsButton";
+import { UpdateLabelsButton } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkProcedureLabelUpdate/UpdateLabelsButton";
+import { ProcedureIdVersion } from "@/lib/businessModules/schoolEntry/shared/types";
 
 interface ProcedureTableTitleProps {
   rowSelection: RowSelectionState;
@@ -22,6 +24,13 @@ interface ProcedureTableTitleProps {
 
 export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
   const selectedProcedureIds = mapRowSelectionToRowIds(props.rowSelection);
+
+  const selectedProcedures = props.procedures.filter((p) =>
+    selectedProcedureIds.includes(p.id),
+  );
+  const procedureIdsAndVersion: ProcedureIdVersion = Object.fromEntries(
+    selectedProcedures.map((p) => [p.id, p.version]),
+  );
 
   return (
     <RowSelectionTableToolbar
@@ -41,6 +50,8 @@ export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
             selectedProcedureIds={selectedProcedureIds}
             procedures={props.procedures}
           />
+          <Divider orientation="vertical" sx={{ marginY: 1 }} />
+          <UpdateLabelsButton procedureIdsAndVersion={procedureIdsAndVersion} />
         </>
       )}
     </RowSelectionTableToolbar>

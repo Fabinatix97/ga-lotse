@@ -20,6 +20,7 @@ export type ConfiguratorModuleName =
 
 export type ConfiguratorEndpointName =
   | "ACKNOWLEDGEMENTS_MARKDOWNS_CONFIG"
+  | "CONTACT_MARKDOWNS_CONFIG"
   | "DEPARTMENT_INFO"
   | "IMPRINT_MARKDOWNS_CONFIG"
   | "OPENING_HOURS"

@@ -38,18 +38,18 @@ function renderIcon(type: ListItemType) {
   }
 }
 
-export interface ImportResultItem {
+export interface ResultItem {
   type: ListItemType;
   value: string;
 }
 
 type ListItemType = "info" | "success" | "warning" | "error";
 
-interface ImportResultSummaryProps {
-  items: ImportResultItem[];
+interface ResultSummaryProps {
+  items: ResultItem[];
 }
 
-export function ImportResultSummary(props: ImportResultSummaryProps) {
+export function UpdateResultSummary(props: ResultSummaryProps) {
   return (
     <StyledList variant="soft" aria-label="Statistiken">
       {props.items.map((item, index) => (

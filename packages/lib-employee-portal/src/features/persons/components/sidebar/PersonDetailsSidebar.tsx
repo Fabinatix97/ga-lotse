@@ -9,6 +9,7 @@ import { isDefined } from "remeda";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
+  DetailsList,
   GENDER_VALUES,
   SALUTATION_VALUES,
   formatDate,
@@ -42,78 +43,80 @@ export function PersonDetailsSidebar(props: PersonDetailsSidebarProps) {
       {({ isSubmitting }) => (
         <SidebarForm>
           <SidebarContent title={props.title} subtitle="Ausgewählte Person">
-            <Stack gap={2}>
-              <DetailsRow>
+            <DetailsList>
+              <Stack gap={2}>
+                <DetailsRow>
+                  <DetailsItem
+                    label="Anrede"
+                    value={SALUTATION_VALUES[person.salutation]}
+                  />
+                  <DetailsItem
+                    label="Titel"
+                    value={getOptionalTitle(person.title)}
+                    avoidWrap
+                  />
+                </DetailsRow>
+                <DetailsRow>
+                  <DetailsItem label="Vorname" value={person.firstName} />
+                  <DetailsItem label="Name" value={person.lastName} avoidWrap />
+                </DetailsRow>
+                <DetailsRow>
+                  <DetailsItem
+                    label="Geburtsdatum"
+                    value={formatDate(person.dateOfBirth)}
+                  />
+                  <DetailsItem
+                    label="Geschlecht"
+                    value={GENDER_VALUES[person.gender]}
+                  />
+                </DetailsRow>
+                <DetailsItem label="Geburtsname" value={person.nameAtBirth} />
+                <DetailsItem label="Geburtsort" value={person.placeOfBirth} />
                 <DetailsItem
-                  label="Anrede"
-                  value={SALUTATION_VALUES[person.salutation]}
+                  label="Geburtsland"
+                  value={
+                    isDefined(person.countryOfBirth)
+                      ? translateCountry(person.countryOfBirth)
+                      : undefined
+                  }
                 />
-                <DetailsItem
-                  label="Titel"
-                  value={getOptionalTitle(person.title)}
-                  avoidWrap
-                />
-              </DetailsRow>
-              <DetailsRow>
-                <DetailsItem label="Vorname" value={person.firstName} />
-                <DetailsItem label="Name" value={person.lastName} avoidWrap />
-              </DetailsRow>
-              <DetailsRow>
-                <DetailsItem
-                  label="Geburtsdatum"
-                  value={formatDate(person.dateOfBirth)}
-                />
-                <DetailsItem
-                  label="Geschlecht"
-                  value={GENDER_VALUES[person.gender]}
-                />
-              </DetailsRow>
-              <DetailsItem label="Geburtsname" value={person.nameAtBirth} />
-              <DetailsItem label="Geburtsort" value={person.placeOfBirth} />
-              <DetailsItem
-                label="Geburtsland"
-                value={
-                  isDefined(person.countryOfBirth)
-                    ? translateCountry(person.countryOfBirth)
-                    : undefined
-                }
-              />
 
-              {isDefined(person.contactAddress) && (
-                <>
-                  <Divider />
-                  <BaseAddressDetailsColumn address={person.contactAddress} />
-                  {isDefined(person.differentBillingAddress) && (
-                    <>
-                      <Divider />
-                      <BaseAddressDetailsColumn
-                        address={person.differentBillingAddress}
+                {isDefined(person.contactAddress) && (
+                  <>
+                    <Divider />
+                    <BaseAddressDetailsColumn address={person.contactAddress} />
+                    {isDefined(person.differentBillingAddress) && (
+                      <>
+                        <Divider />
+                        <BaseAddressDetailsColumn
+                          address={person.differentBillingAddress}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+
+                {showEmailPhoneSection && (
+                  <>
+                    <Divider />
+                    {person.emailAddresses.map((email, index) => (
+                      <DetailsItem
+                        key={`${email}-${index}`}
+                        label="E-Mail-Adresse"
+                        value={email}
                       />
-                    </>
-                  )}
-                </>
-              )}
-
-              {showEmailPhoneSection && (
-                <>
-                  <Divider />
-                  {person.emailAddresses.map((email, index) => (
-                    <DetailsItem
-                      key={`${email}-${index}`}
-                      label="E-Mail-Adresse"
-                      value={email}
-                    />
-                  ))}
-                  {person.phoneNumbers.map((phoneNumber, index) => (
-                    <DetailsItem
-                      key={`${phoneNumber}-${index}`}
-                      label="Telefonnummer"
-                      value={phoneNumber}
-                    />
-                  ))}
-                </>
-              )}
-            </Stack>
+                    ))}
+                    {person.phoneNumbers.map((phoneNumber, index) => (
+                      <DetailsItem
+                        key={`${phoneNumber}-${index}`}
+                        label="Telefonnummer"
+                        value={phoneNumber}
+                      />
+                    ))}
+                  </>
+                )}
+              </Stack>
+            </DetailsList>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar

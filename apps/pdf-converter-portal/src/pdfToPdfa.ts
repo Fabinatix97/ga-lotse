@@ -42,13 +42,13 @@ export async function convertAndDownload(files?: FileList) {
   }
 }
 
-async function pdfToPdfa(pdf: ArrayBuffer): Promise<Uint8Array> {
+async function pdfToPdfa(pdf: ArrayBuffer): Promise<Uint8Array<ArrayBuffer>> {
   const worker = new Worker(
     new URL("./pdfToPdfa.worker", import.meta.url),
     {type: "module"},
   );
   const channel = new MessageChannel();
-  return new Promise<Uint8Array>((resolve, reject) => {
+  return new Promise<Uint8Array<ArrayBuffer>>((resolve, reject) => {
     channel.port1.onmessage = (event: MessageEvent<unknown>) => {
       if (!isPdfToPdfaResponse(event.data)) {
         throw new Error(

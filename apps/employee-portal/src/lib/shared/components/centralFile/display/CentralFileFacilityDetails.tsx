@@ -18,6 +18,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   DetailsColumn,
+  DetailsList,
   formatPersonName,
   isNonEmptyArray,
 } from "@eshg/lib-portal";
@@ -51,57 +52,59 @@ export function CentralFileFacilityDetails<T extends CentralFileFacility>(
   const showContactPersonChip = props.showContactPersonChip ?? false;
 
   return (
-    <Stack
-      direction={{ md: "row" }}
-      gap={3}
-      divider={<ResponsiveDivider breakpoint="md" />}
-      width="100%"
-    >
-      <DetailsColumn sx={props.columnSx}>
-        <DetailsItem label="Name" value={facility.name} />
-        {props.children}
-      </DetailsColumn>
-      {facility.contactAddress && (
-        <BaseAddressDetailsColumn
-          sx={props.columnSx}
-          address={facility.contactAddress}
-        />
-      )}
-      {isNonEmptyArray(contactPersons) && isDefined(mainContact) ? (
+    <DetailsList>
+      <Stack
+        direction={{ md: "row" }}
+        gap={3}
+        divider={<ResponsiveDivider breakpoint="md" />}
+        width="100%"
+      >
         <DetailsColumn sx={props.columnSx}>
-          <MainContactDetails
-            contactPersons={contactPersons}
-            mainContact={mainContact}
-          />
+          <DetailsItem label="Name" value={facility.name} />
+          {props.children}
         </DetailsColumn>
-      ) : (
-        emailAddresses.length + phoneNumbers.length > 0 && (
+        {facility.contactAddress && (
+          <BaseAddressDetailsColumn
+            sx={props.columnSx}
+            address={facility.contactAddress}
+          />
+        )}
+        {isNonEmptyArray(contactPersons) && isDefined(mainContact) ? (
           <DetailsColumn sx={props.columnSx}>
-            {emailAddresses.map((email, index) => (
-              <ExternalLinkDetailsItem
-                key={`${email}.${index}`}
-                label="E-Mail-Adresse"
-                value={email}
-                href={(value) => `mailto:${value}`}
-              />
-            ))}
-            {phoneNumbers.map((phoneNumber, index) => (
-              <DetailsItem
-                key={`${phoneNumber}.${index}`}
-                label="Telefonnummer"
-                value={phoneNumber}
-              />
-            ))}
-            {showContactPersonChip && contactPersons?.length >= 1 && (
-              <Chip
-                color="primary"
-                variant="solid"
-              >{`${contactPersons.length} ${contactPersons.length === 1 ? "Kontaktperson" : "Kontaktpersonen"}`}</Chip>
-            )}
+            <MainContactDetails
+              contactPersons={contactPersons}
+              mainContact={mainContact}
+            />
           </DetailsColumn>
-        )
-      )}
-    </Stack>
+        ) : (
+          emailAddresses.length + phoneNumbers.length > 0 && (
+            <DetailsColumn sx={props.columnSx}>
+              {emailAddresses.map((email, index) => (
+                <ExternalLinkDetailsItem
+                  key={`${email}.${index}`}
+                  label="E-Mail-Adresse"
+                  value={email}
+                  href={(value) => `mailto:${value}`}
+                />
+              ))}
+              {phoneNumbers.map((phoneNumber, index) => (
+                <DetailsItem
+                  key={`${phoneNumber}.${index}`}
+                  label="Telefonnummer"
+                  value={phoneNumber}
+                />
+              ))}
+              {showContactPersonChip && contactPersons?.length >= 1 && (
+                <Chip
+                  color="primary"
+                  variant="solid"
+                >{`${contactPersons.length} ${contactPersons.length === 1 ? "Kontaktperson" : "Kontaktpersonen"}`}</Chip>
+              )}
+            </DetailsColumn>
+          )
+        )}
+      </Stack>
+    </DetailsList>
   );
 }
 

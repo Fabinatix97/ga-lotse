@@ -193,7 +193,7 @@ function CreateProofRequestLetterSidebarForm({
               <Typography
                 textColor="text.secondary"
                 sx={{
-                  fontSize: "16px",
+                  fontSize: "1rem",
                   fontWeight: "600",
                 }}
               >
@@ -266,7 +266,7 @@ function PreviewProofRequestLetterSidebarForm({
               <Typography
                 textColor="text.secondary"
                 sx={{
-                  fontSize: "16px",
+                  fontSize: "1rem",
                   fontWeight: "600",
                 }}
               >
@@ -295,7 +295,7 @@ function PreviewProofRequestLetterSidebarForm({
                   <Typography
                     textColor="text.primary"
                     sx={{
-                      fontSize: "16px",
+                      fontSize: "1rem",
                       fontWeight: "600",
                     }}
                   >

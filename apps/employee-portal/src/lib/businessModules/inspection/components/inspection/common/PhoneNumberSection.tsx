@@ -6,9 +6,9 @@
 import { Grid } from "@mui/joy";
 
 import {
-  ExternalLinkDetailsCell,
+  ExternalLinkDetailsItem,
   phoneHref,
-} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsItem";
 
 export function PhoneNumberSection({
   phoneNumber,
@@ -19,9 +19,8 @@ export function PhoneNumberSection({
 }>) {
   return (
     <Grid xs={12} paddingInline={0}>
-      <ExternalLinkDetailsCell
+      <ExternalLinkDetailsItem
         key={[phoneNumber, index].join("-")}
-        name={`phoneNumbers.${index}`}
         label="Telefonnummer"
         value={phoneNumber}
         href={phoneHref}

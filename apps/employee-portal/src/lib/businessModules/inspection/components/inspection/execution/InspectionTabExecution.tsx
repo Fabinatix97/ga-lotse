@@ -9,7 +9,7 @@ import {
   AutorenewOutlined,
   Checklist as ChecklistIcon,
 } from "@mui/icons-material";
-import { Grid } from "@mui/joy";
+import { Box, Grid } from "@mui/joy";
 import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
@@ -211,74 +211,74 @@ export function InspectionTabExecution({
   ]);
 
   return (
-    <ChecklistValidationProvider>
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          overflow: { xxs: "auto", lg: "hidden" },
-          flexDirection: { xxs: undefined, lg: "row" },
-        }}
-      >
+    <Box display="contents" role="tabpanel">
+      <ChecklistValidationProvider>
         <Grid
-          xxs={12}
-          lg={8}
+          container
+          spacing={2}
           sx={{
-            overflow: { xxs: undefined, lg: "hidden" },
-            display: { xxs: undefined, lg: "flex" },
-            flexGrow: { xxs: undefined, lg: 1 },
-            order: { xxs: 1, lg: 0 },
-            maxHeight: "100%",
+            overflow: { xxs: "auto", lg: "hidden" },
+            flexDirection: { xxs: undefined, lg: "row-reverse" },
           }}
         >
-          {tabState.tab === "CHECKLIST" && (
-            <Checklist
-              checklist={checklists.find((c) => c.id === tabState.tabId)}
-              inspectionExternalId={inspectionId}
+          <Grid
+            xxs={12}
+            lg={4}
+            sx={{
+              maxHeight: { xxs: undefined, lg: "100%" },
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <ExecutionSidePanel
+              tabs={tabsList.map((tab) => tab.SidePanelProps)}
+              activeTabId={tabState.tabId}
+              inspection={inspection}
+              checklists={checklists}
               readOnly={readOnly}
+              onActiveTabChange={handleActiveTabChange}
+              onAddButtonClick={handleAddClick}
+              onDeleteClick={handleDeleteClick}
             />
-          )}
-          {tabState.tab === "INCIDENTS" && (
-            <IncidentsPanel
-              procedureId={inspectionId}
-              incidents={incidents}
-              readOnly={readOnly}
-            />
-          )}
-        </Grid>
-        <Grid
-          xxs={12}
-          lg={4}
-          sx={{
-            order: { xxs: 0, lg: 1 },
-            maxHeight: { xxs: undefined, lg: "100%" },
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <ExecutionSidePanel
-            tabs={tabsList.map((tab) => tab.SidePanelProps)}
-            activeTabId={tabState.tabId}
-            inspection={inspection}
-            checklists={checklists}
-            readOnly={readOnly}
-            onActiveTabChange={handleActiveTabChange}
-            onAddButtonClick={handleAddClick}
-            onDeleteClick={handleDeleteClick}
-          />
-        </Grid>
+          </Grid>
+          <Grid
+            xxs={12}
+            lg={8}
+            sx={{
+              overflow: { xxs: undefined, lg: "hidden" },
+              display: { xxs: undefined, lg: "flex" },
+              flexGrow: { xxs: undefined, lg: 1 },
+              maxHeight: "100%",
+            }}
+          >
+            {tabState.tab === "CHECKLIST" && (
+              <Checklist
+                checklist={checklists.find((c) => c.id === tabState.tabId)}
+                inspectionExternalId={inspectionId}
+                readOnly={readOnly}
+              />
+            )}
+            {tabState.tab === "INCIDENTS" && (
+              <IncidentsPanel
+                procedureId={inspectionId}
+                incidents={incidents}
+                readOnly={readOnly}
+              />
+            )}
+          </Grid>
 
-        {checklistSidebar && (
-          <ChecklistSelectSidebar
-            open
-            withCoreVersions={false}
-            inspectionExternalId={inspectionId}
-            currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
-            onClose={() => setChecklistSidebar(false)}
-          />
-        )}
-      </Grid>
-    </ChecklistValidationProvider>
+          {checklistSidebar && (
+            <ChecklistSelectSidebar
+              open
+              withCoreVersions={false}
+              inspectionExternalId={inspectionId}
+              currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
+              onClose={() => setChecklistSidebar(false)}
+            />
+          )}
+        </Grid>
+      </ChecklistValidationProvider>
+    </Box>
   );
 }
 

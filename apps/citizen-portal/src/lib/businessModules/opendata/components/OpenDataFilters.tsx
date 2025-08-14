@@ -123,6 +123,7 @@ export function OpenDataFilters({ isMobile }: OpenDataFilterProps) {
     updateFilterValue([{ name: SEARCH_PARAMS.topic, value: newValue }]);
   }
 
+  const titleId = useId();
   return (
     <>
       <WrapperComponent>
@@ -131,21 +132,17 @@ export function OpenDataFilters({ isMobile }: OpenDataFilterProps) {
           direction={byBreakpoint({ mobile: "column", desktop: "row" })}
           sx={{ "> *": { flex: "1" } }}
         >
-          <Stack gap={1}>
+          <Stack gap={1} role="search" aria-labelledby={titleId}>
             <Typography
               level="title-lg"
               component="label"
+              id={titleId}
               htmlFor={searchInputId}
             >
               {t("filterSection.search")}
             </Typography>
             <Input
               type="search"
-              slotProps={{
-                input: {
-                  role: "searchbox",
-                },
-              }}
               value={search}
               placeholder={t("filterSection.search")}
               startDecorator={<SearchOutlined />}

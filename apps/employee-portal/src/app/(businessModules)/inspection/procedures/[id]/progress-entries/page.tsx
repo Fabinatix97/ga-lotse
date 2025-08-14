@@ -45,6 +45,7 @@ export default function InspectionProgressEntriesPage(
       procedureApi={procedureApi}
       fileApi={fileApi}
       approvalRequestApi={approvalRequestApi}
+      ariaRole="tabpanel"
     />
   );
 }

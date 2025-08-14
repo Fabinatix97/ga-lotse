@@ -146,9 +146,9 @@ export function GDPRProcedureDetails({
     >
       <Stack gap={3} flex={1}>
         {isGdprPerson(identity) ? (
-          <GdprPersonDataTile identity={identity} columnSx={COLUMN_STYLE} />
+          <GdprPersonDataTile identity={identity} />
         ) : (
-          <GdprFacilityDataTile identity={identity} columnSx={COLUMN_STYLE} />
+          <GdprFacilityDataTile identity={identity} />
         )}
         {linkedPersons.map((person, index) => (
           <SectionTile key={person.id} id={person.id}>

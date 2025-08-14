@@ -9,7 +9,7 @@ import { Button } from "@mui/joy";
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
 import { DetailsItem, useIsOffline } from "@eshg/lib-employee-portal";
-import { InternalLink, formatDate } from "@eshg/lib-portal";
+import { DetailsList, InternalLink, formatDate } from "@eshg/lib-portal";
 
 import { useInspectionResultSidebar } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidebar";
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";
@@ -59,10 +59,10 @@ export function InspectionResultSidePanel({
           </Button>
         )
       }
-      onEdit={editable && hasResult ? () => openSidebar : undefined}
+      onEdit={editable && hasResult ? openSidebar : undefined}
     >
       {hasResult && (
-        <>
+        <DetailsList>
           <DetailsItem
             label="Ergebnis"
             value={translateInspectionResult(inspection.result)}
@@ -94,7 +94,7 @@ export function InspectionResultSidePanel({
               )}
             </>
           )}
-        </>
+        </DetailsList>
       )}
     </InfoTile>
   );

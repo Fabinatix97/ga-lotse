@@ -8,7 +8,10 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
-import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
+import {
+  ApiOtherServiceTemplate,
+  ApiPostPutOtherServiceTemplateRequest,
+} from "@eshg/travel-medicine-api";
 
 import {
   OtherServiceFormValues,
@@ -22,7 +25,7 @@ export function useOtherServiceSidebar(): UseSidebarWithFormRefResult<OtherServi
 }
 
 interface OtherServiceSidebarProps extends SidebarWithFormRefProps {
-  otherService?: ApiPostPutOtherServiceTemplateRequest;
+  otherService?: ApiOtherServiceTemplate;
   createOtherServiceTemplate: (
     request: ApiPostPutOtherServiceTemplateRequest,
     onSuccess?: () => void,
@@ -36,9 +39,9 @@ interface OtherServiceSidebarProps extends SidebarWithFormRefProps {
 
 function OtherServiceSidebar(props: Readonly<OtherServiceSidebarProps>) {
   const initialFormValuesOtherServices: OtherServiceFormValues = {
-    description: "",
-    fee: 0,
-    id: "",
+    description: props.otherService?.description ?? "",
+    fee: props.otherService?.fee ?? 0,
+    id: props.otherService?.id ?? "",
   };
 
   async function handleSubmit(values: OtherServiceFormValues) {

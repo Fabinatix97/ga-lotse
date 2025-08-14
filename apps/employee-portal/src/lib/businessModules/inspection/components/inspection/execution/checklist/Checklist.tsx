@@ -47,7 +47,7 @@ export function Checklist({
             justifyContent: "space-between",
           }}
         >
-          <Typography level="h3" component="p">
+          <Typography level="h3" component="h2">
             Checkliste: {checklist.context.name} (Version{" "}
             {checklist.context.version})
           </Typography>

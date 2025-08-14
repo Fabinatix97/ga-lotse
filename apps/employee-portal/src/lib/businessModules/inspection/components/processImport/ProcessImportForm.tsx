@@ -43,7 +43,7 @@ export function ProcessImportForm({
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {({ isSubmitting }) => (
-        <SidebarForm>
+        <SidebarForm aria-label="Daten importieren">
           <SidebarContent title="Daten importieren">
             <Stack gap={2}>
               <FileField

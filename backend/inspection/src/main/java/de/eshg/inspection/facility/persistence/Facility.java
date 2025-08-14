@@ -27,7 +27,7 @@ public class Facility extends BaseEntityWithExternalId {
   @Column(nullable = false)
   @NotNull
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private UUID centralFileStateId;
+  private UUID originalCentralFileStateId;
 
   /** Last Inspection Date, null if never inspected */
   @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -47,17 +47,17 @@ public class Facility extends BaseEntityWithExternalId {
 
   public Facility() {}
 
-  public Facility(ObjectType objectType, UUID centralFileStateId) {
+  public Facility(ObjectType objectType, UUID originalCentralFileStateId) {
     this.objectType = objectType;
-    this.centralFileStateId = centralFileStateId;
+    this.originalCentralFileStateId = originalCentralFileStateId;
   }
 
-  public UUID getCentralFileStateId() {
-    return centralFileStateId;
+  public UUID getOriginalCentralFileStateId() {
+    return originalCentralFileStateId;
   }
 
-  public void setCentralFileStateId(UUID centralFileStateId) {
-    this.centralFileStateId = centralFileStateId;
+  public void setOriginalCentralFileStateId(UUID centralFileStateId) {
+    this.originalCentralFileStateId = centralFileStateId;
   }
 
   public boolean isBanned() {

@@ -36,8 +36,9 @@ export function TextInputClientFilter(
         ...props.sx,
       }}
       slotProps={{
-        input: {
-          role: "searchbox",
+        root: {
+          role: "search",
+          "aria-label": props.placeholder,
         },
       }}
       onChange={(event) => {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
 import { ReactNode, useId } from "react";
 
 import { TextareaField } from "@eshg/lib-portal";
@@ -38,7 +39,7 @@ export function ChecklistTextareaElement({
     : undefined;
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby={labelId}>
       <ChecklistLabel
         label-id={labelId}
         incident={incident}
@@ -63,6 +64,6 @@ export function ChecklistTextareaElement({
         required={requiredText}
         readOnly={readOnly}
       />
-    </>
+    </Box>
   );
 }

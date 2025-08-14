@@ -5,6 +5,10 @@
 
 import { Stack, Typography } from "@mui/joy";
 
+import {
+  ResultItem,
+  UpdateResultSummary,
+} from "../../../components/UpdateResultSummary";
 import { ImportStatistics } from "../types/ImportStatistics";
 import {
   formatDuplicatedRecordCount,
@@ -14,9 +18,8 @@ import {
 
 import { FileDownloadButton } from "./FileDownloadButton";
 import { ImportResultProceduresSummary } from "./ImportResultProceduresSummary";
-import { ImportResultItem, ImportResultSummary } from "./ImportResultSummary";
 
-function buildStatisticItems(statistics: ImportStatistics): ImportResultItem[] {
+function buildStatisticItems(statistics: ImportStatistics): ResultItem[] {
   if (statistics.total === 0) {
     return [
       {
@@ -51,7 +54,7 @@ interface ImportResultProps {
 export function ImportResult(props: ImportResultProps) {
   return (
     <Stack gap={3}>
-      <ImportResultSummary items={buildStatisticItems(props.statistics)} />
+      <UpdateResultSummary items={buildStatisticItems(props.statistics)} />
       <Stack gap={3}>
         <Stack gap={1}>
           <Typography level="h4" component="h2" data-testid="statusHeading">

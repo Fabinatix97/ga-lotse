@@ -6,9 +6,9 @@
 import { Grid } from "@mui/joy";
 
 import {
-  ExternalLinkDetailsCell,
+  ExternalLinkDetailsItem,
   emailHref,
-} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsItem";
 
 export function EmailSection({
   emailAddress,
@@ -19,9 +19,8 @@ export function EmailSection({
 }>) {
   return (
     <Grid xs={12} paddingInline={0}>
-      <ExternalLinkDetailsCell
+      <ExternalLinkDetailsItem
         key={[emailAddress, index].join("-")}
-        name={`emailAddresses.${index}`}
         label="E-Mail-Adresse"
         value={emailAddress}
         href={emailHref}

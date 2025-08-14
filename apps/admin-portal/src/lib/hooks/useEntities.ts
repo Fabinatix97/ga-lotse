@@ -86,14 +86,13 @@ function fetchEntities(
   adminApi: ServiceDirectoryAdminApi,
 ): () => Promise<ApiGetEntitiesResponse> {
   return async (): Promise<ApiGetEntitiesResponse> => {
-    return await adminApi
-      .getAllEntities()
-      .catch((error: BackendError | Error) => {
-        if (error.message.startsWith("Failed to fetch"))
-          throw new Error("FetchFailed");
-        if ("status" in error) throw new Error(error.status.toString());
-        else throw new Error(error.message);
-      });
+    return await adminApi.getAllEntities().catch((error: Error) => {
+      if (error.message.startsWith("Failed to fetch"))
+        throw new Error("FetchFailed");
+      if (error instanceof BackendError)
+        throw new Error(error.status.toString());
+      else throw new Error(error.message);
+    });
   };
 }
 

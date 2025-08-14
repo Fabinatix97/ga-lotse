@@ -130,7 +130,7 @@ function InspectionResultSidebar({
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, handleSubmit, values }) => (
-        <SidebarForm onSubmit={handleSubmit}>
+        <SidebarForm aria-label="Bewertung" onSubmit={handleSubmit}>
           <SidebarContent title="Bewertung">
             <Grid container columnSpacing={2} rowSpacing={3}>
               <Grid xs={12}>

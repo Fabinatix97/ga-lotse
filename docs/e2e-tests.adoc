@@ -63,3 +63,21 @@ The BundId smoke expects a running "AusweisApp" container at post 24727 locally.
 ----
 docker run --pull always --rm -d --name AusweisApp -p 24727:24727 -v ./e2e/resources/base/gdpr/ausweisapp-file-system.json:/fs.json -e AUSWEISAPP_AUTOMATIC_SIMULATOR=/fs.json governikus/ausweisapp2
 ----
+
+== Updating Snapshots ==
+
+Normal test runs use snapshot retries by default. When a test contains lots of retried snapshots, updating them can be take long, because each snapshot needs to time out before Playwright continues with the next snapshot.
+
+For this reason, it is possible to disable snapshot retries by passing the `-PupdateSnapshots` parameter.
+
+.Updating snapshots using the CLI
+[source,shell]
+----
+./gradlew :e2e:test -Pfilter=myTest.spec.ts -PupdateSnapshots
+----
+
+.Updating snapshots using the UI mode
+[source,shell]
+----
+./gradlew :e2e:testUi -PupdateSnapshots
+----

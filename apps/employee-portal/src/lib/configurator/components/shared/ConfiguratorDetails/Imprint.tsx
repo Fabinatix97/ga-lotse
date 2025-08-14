@@ -15,6 +15,7 @@ export function Imprint(props: { module: ConfiguratorModuleName }) {
 
   return (
     <MarkdownFiles
+      portalType="CITIZEN"
       module={props.module}
       endpointName="IMPRINT_MARKDOWNS_CONFIG"
       fileName="IMPRINT"

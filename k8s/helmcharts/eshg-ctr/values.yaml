@@ -13,22 +13,22 @@ image:
 thirdPartyImages:
   kubectl:
     name: bitnami/kubectl
-    tag: "1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+    tag: "1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
     registry: "mirror.gcr.io"
     pullPolicy: IfNotPresent
   nginx:
     name: nginx
-    tag: "1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+    tag: "1.29.0@sha256:776b2e787034135a7614429eee7f07e7421cfe37718b1e89de3b41366ea2335d"
     registry: "docker.io"
     pullPolicy: IfNotPresent
   redis:
     name: redis
-    tag: "7.4.4-alpine3.21@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273"
+    tag: "8.2.0-alpine3.22@sha256:7521abdff715d396aa482183942f3fe643344287c29ccb66eee16ac08a92190f"
     registry: "docker.io"
     pullPolicy: IfNotPresent
   postgres:
     name: postgres
-    tag: "15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+    tag: "15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
     registry: "docker.io"
     pullPolicy: IfNotPresent
   maildev:

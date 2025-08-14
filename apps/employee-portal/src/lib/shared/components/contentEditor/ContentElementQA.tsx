@@ -10,6 +10,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+import { useId } from "react";
 
 import { ApiEditorElementQA } from "@eshg/lib-editor-api";
 
@@ -20,11 +21,13 @@ export function ContentElementQA({
   element: ApiEditorElementQA;
   readonly?: boolean;
 }) {
+  const titleId = useId();
   return (
-    <Stack spacing={1}>
+    <Stack spacing={1} role="group" aria-labelledby={titleId}>
       <Typography
         level="title-md"
         color={element.highlighted ? "danger" : undefined}
+        id={titleId}
       >
         {element.title}
       </Typography>

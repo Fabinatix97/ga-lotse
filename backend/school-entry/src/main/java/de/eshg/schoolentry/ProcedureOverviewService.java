@@ -302,6 +302,7 @@ public class ProcedureOverviewService {
                 new ProcedureData(
                     data.procedure().getId(),
                     data.procedure().getExternalId(),
+                    data.procedure().getVersion(),
                     data.procedure().getProcedureType(),
                     data.child(),
                     data.procedure().getProcedureStatus(),

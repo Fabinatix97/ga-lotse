@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ReactNode } from "react";
+import { Box } from "@mui/joy";
+import { ReactNode, useId } from "react";
 
 import { RadioButtonsField } from "@eshg/lib-portal";
 
@@ -27,6 +28,7 @@ export function ChecklistRadioButtonElement({
   labelEndDecorator,
   readOnly,
 }: Readonly<ChecklistRadioButtonElementProps>) {
+  const titleId = useId();
   if (element.type !== "SINGLE_SELECT") {
     return;
   }
@@ -36,13 +38,14 @@ export function ChecklistRadioButtonElement({
     : undefined;
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby={titleId}>
       <ChecklistLabel
         incident={incident}
         required={element.context.mandatory}
         tooltipText={element.context.help}
         endDecorator={labelEndDecorator}
         note={element.context.note}
+        label-id={titleId}
       >
         {label}
       </ChecklistLabel>
@@ -61,6 +64,6 @@ export function ChecklistRadioButtonElement({
         sx={{ gap: 1 }}
         readOnly={readOnly}
       />
-    </>
+    </Box>
   );
 }

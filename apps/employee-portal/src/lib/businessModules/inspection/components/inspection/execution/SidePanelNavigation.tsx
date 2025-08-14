@@ -4,7 +4,7 @@
  */
 
 import { DeleteOutlined } from "@mui/icons-material";
-import { Button, IconButton, Stack } from "@mui/joy";
+import { Box, Button, IconButton, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
 import {
@@ -39,38 +39,48 @@ export function SidePanelNavigation({
   const checklistIsDeletable =
     tabs.filter((tab) => tab.type === "CHECKLIST").length > 1;
 
+  // Note: Its not trivial to convert this into a tablist, what its supposed to be,
+  // because this list contains nested buttons, which contradicts its semantic.
   return (
-    <SidePanelNav>
-      {tabs.map((tab) => (
-        <Stack
-          key={tab.type + "-" + tab.tabId}
-          direction="row"
-          gap={1}
-          aria-label={tab.ariaLabel}
-        >
-          <Button
-            {...getSidePanelNavItemStyles(tab.tabId === activeTabId)}
-            startDecorator={tab.startDecorator}
-            sx={{ flex: 1, justifyContent: "flex-start", textAlign: "left" }}
-            onClick={() => onActiveTabChange(tab)}
+    <SidePanelNav role="navigation" ariaLabel="Aufgaben">
+      <Box display="contents" role="list">
+        {tabs.map((tab) => (
+          <Stack
+            key={tab.type + "-" + tab.tabId}
+            direction="row"
+            gap={1}
+            aria-label={tab.ariaLabel}
+            role="listitem"
           >
-            {tab.label}
-          </Button>
-          {!readOnly &&
-            tab.type === "CHECKLIST" &&
-            !tab.isCoreChecklist &&
-            checklistIsDeletable && (
-              <IconButton
-                aria-label="Löschen"
-                variant="plain"
-                color="danger"
-                onClick={onDeleteClick ? () => onDeleteClick(tab) : undefined}
-              >
-                <DeleteOutlined />
-              </IconButton>
-            )}
-        </Stack>
-      ))}
+            <Button
+              {...getSidePanelNavItemStyles(tab.tabId === activeTabId)}
+              aria-pressed={tab.tabId === activeTabId}
+              startDecorator={tab.startDecorator}
+              sx={{
+                flex: 1,
+                justifyContent: "flex-start",
+                textAlign: "left",
+              }}
+              onClick={() => onActiveTabChange(tab)}
+            >
+              {tab.label}
+            </Button>
+            {!readOnly &&
+              tab.type === "CHECKLIST" &&
+              !tab.isCoreChecklist &&
+              checklistIsDeletable && (
+                <IconButton
+                  aria-label="Löschen"
+                  variant="plain"
+                  color="danger"
+                  onClick={onDeleteClick ? () => onDeleteClick(tab) : undefined}
+                >
+                  <DeleteOutlined />
+                </IconButton>
+              )}
+          </Stack>
+        ))}
+      </Box>
     </SidePanelNav>
   );
 }

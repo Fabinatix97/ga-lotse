@@ -86,5 +86,5 @@
   <include file="migrations/0071_add_employee_person_type.xml"/>
   <include file="migrations/0072_file_number_suffix.xml"/>
   <include file="migrations/0073_configurator.xml"/>
-
+  <include file="migrations/0074_facility_rename_cfid.xml"/>
 </databaseChangeLog>

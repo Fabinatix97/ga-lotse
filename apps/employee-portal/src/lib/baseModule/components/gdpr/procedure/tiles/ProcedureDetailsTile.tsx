@@ -24,6 +24,7 @@ import {
 import {
   AlertSlot,
   BaseModal,
+  DetailsList,
   FormPlus,
   InputField,
   formatDateTime,
@@ -92,7 +93,7 @@ export function ProcedureDetailsTile({
       procedure.status === ApiGdprProcedureStatus.Closed);
 
   return (
-    <>
+    <DetailsList>
       <SectionTile id="procedure-details">
         <SectionTitle id="procedure-details">
           <Stack
@@ -191,7 +192,7 @@ export function ProcedureDetailsTile({
           onClose={() => setCloseModalMode(undefined)}
         />
       </QueryBoundary>
-    </>
+    </DetailsList>
   );
 }
 

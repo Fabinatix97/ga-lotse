@@ -13,7 +13,7 @@ export function InspectionTabHistory({
   inspectionId,
 }: Readonly<{ inspectionId: string }>) {
   return (
-    <Box padding={2}>
+    <Box padding={2} role="tabpanel">
       <InspectionHistoryTable filter={{}} inspectionId={inspectionId} />
     </Box>
   );

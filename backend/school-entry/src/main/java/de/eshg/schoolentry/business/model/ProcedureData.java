@@ -18,6 +18,7 @@ import java.util.UUID;
 public record ProcedureData(
     Long internalId,
     UUID externalId,
+    long version,
     ProcedureType type,
     ChildData child,
     ProcedureStatus status,

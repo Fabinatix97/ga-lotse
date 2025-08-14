@@ -13,7 +13,7 @@ import {
   SidebarContent,
   useSidebar,
 } from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal";
+import { DetailsList, formatDateTime } from "@eshg/lib-portal";
 
 interface CreateChecklistVersionsSidebarProps extends DrawerProps {
   metadata?: ApiChecklistDefinitionCentralRepoMetadata;
@@ -34,12 +34,14 @@ function MetadataDetailsSidebar({
 
   return (
     <SidebarContent title="Details">
-      <Grid container direction="column" gap={2}>
-        <DetailsItem label="Beschreibung" value={metadata?.description} />
-        <DetailsItem label="Änderungshinweis" value={metadata?.changeLog} />
-        <DetailsItem label="Kontakt" value={metadata?.contact} />
-        <DetailsItem label="Erstellt am" value={createdAt} />
-      </Grid>
+      <DetailsList>
+        <Grid container direction="column" gap={2}>
+          <DetailsItem label="Beschreibung" value={metadata?.description} />
+          <DetailsItem label="Änderungshinweis" value={metadata?.changeLog} />
+          <DetailsItem label="Kontakt" value={metadata?.contact} />
+          <DetailsItem label="Erstellt am" value={createdAt} />
+        </Grid>
+      </DetailsList>
     </SidebarContent>
   );
 }

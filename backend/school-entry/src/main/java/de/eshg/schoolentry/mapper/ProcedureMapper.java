@@ -58,6 +58,7 @@ public final class ProcedureMapper {
 
     return new ProcedureDto(
         procedureData.externalId(),
+        procedureData.version(),
         mapTypeToDto(procedureData.type()),
         PersonMapper.mapChildToDto(procedureData.child()),
         mapStatusToDto(procedureData.status()),

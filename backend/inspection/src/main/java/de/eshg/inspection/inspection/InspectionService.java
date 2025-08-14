@@ -53,7 +53,6 @@ import de.eshg.inspection.packlist.api.UpdatePacklistElementRequest;
 import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevision;
 import de.eshg.inspection.util.Holder;
 import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.InboxProcedure;
 import de.eshg.lib.procedure.domain.model.InboxProcedureStatus;
@@ -63,8 +62,6 @@ import de.eshg.lib.procedure.domain.model.ManualProgressEntryType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.ProcessedInboxProgressEntry;
-import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.inbox.InboxProcedureService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
@@ -106,6 +103,7 @@ public class InspectionService {
   private final InboxProcedureService inboxProcedureService;
   private final FileNumberCollisionService fileNumberCollisionService;
   private final InspectionPropertiesConfigService inspectionPropertiesConfigService;
+  private final InspectionProgressEntryService inspectionProgressEntryService;
 
   public InspectionService(
       InspectionRepository inspectionRepository,
@@ -122,7 +120,8 @@ public class InspectionService {
       PacklistService packlistService,
       InboxProcedureService inboxProcedureService,
       FileNumberCollisionService fileNumberCollisionService,
-      InspectionPropertiesConfigService inspectionPropertiesConfigService) {
+      InspectionPropertiesConfigService inspectionPropertiesConfigService,
+      InspectionProgressEntryService inspectionProgressEntryService) {
     this.inspectionRepository = inspectionRepository;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.objectTypeRepository = objectTypeRepository;
@@ -138,6 +137,7 @@ public class InspectionService {
     this.inboxProcedureService = inboxProcedureService;
     this.fileNumberCollisionService = fileNumberCollisionService;
     this.inspectionPropertiesConfigService = inspectionPropertiesConfigService;
+    this.inspectionProgressEntryService = inspectionProgressEntryService;
   }
 
   public InspectionAndFileNumberCollisionsDto startInspection(
@@ -186,7 +186,7 @@ public class InspectionService {
   }
 
   public Inspection createDraftInspection(Facility facility) {
-    UUID centralFileStateId = facility.getCentralFileStateId();
+    UUID centralFileStateId = facility.getOriginalCentralFileStateId();
     verifyAllInspectionsClosed(centralFileStateId);
 
     Inspection inspection = new Inspection();
@@ -416,7 +416,6 @@ public class InspectionService {
             .fileNumber();
 
     inspection.getRelatedFacility().setCentralFileStateId(baseResponse.id());
-    inspection.getFacility().setCentralFileStateId(baseResponse.id());
 
     GetFileNumberCollisionsResponse fileNumberCollisionsResponse = null;
     if (!Objects.equal(fileNumberBefore, fileNumberAfter)) {
@@ -435,10 +434,11 @@ public class InspectionService {
     }
 
     if (!baseFacility.contactAddress().equals(baseResponse.contactAddress())) {
-      createProgressEntryForSyncFacility(
+      inspectionProgressEntryService.createProgressEntryForSyncFacility(
           inspection, previousFacilityFileStateId, "Die Adresse der Einrichtung wurde geändert.");
     } else {
-      createProgressEntryForSyncFacility(inspection, previousFacilityFileStateId);
+      inspectionProgressEntryService.createProgressEntryForSyncFacility(
+          inspection, previousFacilityFileStateId);
     }
 
     return new InspectionAndFileNumberCollisionsDto(
@@ -569,23 +569,5 @@ public class InspectionService {
       processedInboxProgressEntry.setFile(inboxProgressEntry.getFile().copy());
     }
     return processedInboxProgressEntry;
-  }
-
-  private void createProgressEntryForSyncFacility(
-      Inspection inspection, UUID previousFacilityFileStateId) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FACILITY_SYNCED", TriggerType.EMPLOYEE);
-    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
-    inspection.addProgressEntry(progressEntry);
-  }
-
-  private void createProgressEntryForSyncFacility(
-      Inspection inspection, UUID previousFacilityFileStateId, String changeDescription) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FACILITY_SYNCED", changeDescription, TriggerType.EMPLOYEE);
-    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
-    inspection.addProgressEntry(progressEntry);
   }
 }

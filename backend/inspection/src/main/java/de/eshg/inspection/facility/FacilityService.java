@@ -39,6 +39,7 @@ import de.eshg.inspection.facility.websearch.persistence.WebSearchEntryStatus;
 import de.eshg.inspection.incident.persistence.InspectionIncident;
 import de.eshg.inspection.incident.persistence.InspectionIncident_;
 import de.eshg.inspection.inspection.InspectionFinalizer;
+import de.eshg.inspection.inspection.InspectionProgressEntryService;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.GetFileNumberCollisionsResponse;
 import de.eshg.inspection.inspection.api.InspectionPhase;
@@ -47,7 +48,6 @@ import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment_;
 import de.eshg.inspection.inspection.persistence.InspectionRelatedFacility;
-import de.eshg.inspection.inspection.persistence.InspectionRelatedFacilityRepository;
 import de.eshg.inspection.inspection.persistence.InspectionRelatedFacility_;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
 import de.eshg.inspection.inspection.persistence.Inspection_;
@@ -55,10 +55,7 @@ import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectType_;
 import de.eshg.lib.common.CountryCode;
-import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
@@ -119,8 +116,8 @@ public class FacilityService {
   private final InspectionFinalizer inspectionFinalizer;
   private final InspectionRepository inspectionRepository;
   private final FacilityFileNumberService facilityFileNumberService;
-  private final InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository;
   private final FileNumberCollisionService fileNumberCollisionService;
+  private final InspectionProgressEntryService inspectionProgressEntryService;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -132,9 +129,9 @@ public class FacilityService {
       InspectionFinalizer inspectionFinalizer,
       InspectionRepository inspectionRepository,
       FacilityFileNumberService facilityFileNumberService,
-      InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository,
       //      InspectionFeatureToggle inspectionFeatureToggle,
-      FileNumberCollisionService fileNumberCollisionService) {
+      FileNumberCollisionService fileNumberCollisionService,
+      InspectionProgressEntryService inspectionProgressEntryService) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -144,8 +141,8 @@ public class FacilityService {
     this.inspectionFinalizer = inspectionFinalizer;
     this.inspectionRepository = inspectionRepository;
     this.facilityFileNumberService = facilityFileNumberService;
-    this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.fileNumberCollisionService = fileNumberCollisionService;
+    this.inspectionProgressEntryService = inspectionProgressEntryService;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -225,7 +222,7 @@ public class FacilityService {
       newestInspection = inspectionService.createDraftInspection(savedFacility);
     } else {
       Facility inspFacility = matchedInspFacility.get();
-      centralFileStateId = inspFacility.getCentralFileStateId();
+      centralFileStateId = inspFacility.getOriginalCentralFileStateId();
       newestInspection = inspectionService.findNewestOpenInspectionForFacility(inspFacility);
       if (newestInspection == null) {
         isNew = true;
@@ -302,10 +299,11 @@ public class FacilityService {
     log.info("updated inspection {}", inspection.getId());
 
     if (!baseFacility.contactAddress().equals(request.baseFacility().contactAddress())) {
-      createProgressEntryForUpdateFacility(
+      inspectionProgressEntryService.createProgressEntryForUpdateFacility(
           inspection, previousFacilityFileStateId, "Die Adresse der Einrichtung wurde geändert.");
     } else {
-      createProgressEntryForUpdateFacility(inspection, previousFacilityFileStateId);
+      inspectionProgressEntryService.createProgressEntryForUpdateFacility(
+          inspection, previousFacilityFileStateId);
     }
 
     return new InspFacilityAndFileNumberCollisionsDto(
@@ -478,8 +476,8 @@ public class FacilityService {
     MANUAL_PAGINATION(false, false),
     ;
 
-    private boolean canPaginateInBaseDatabase;
-    private boolean canPaginateInInspectionDatabase;
+    private final boolean canPaginateInBaseDatabase;
+    private final boolean canPaginateInInspectionDatabase;
 
     PaginationMode(boolean canPaginateInBaseDatabase, boolean canPaginateInInspectionDatabase) {
       this.canPaginateInBaseDatabase = canPaginateInBaseDatabase;
@@ -1661,7 +1659,7 @@ public class FacilityService {
     UUID centralFileStateId =
         view.irf() != null
             ? view.irf().getCentralFileStateId()
-            : view.facility().getCentralFileStateId();
+            : view.facility().getOriginalCentralFileStateId();
     GetFacilityFileStateResponse facilityDto = centralFileData.get(centralFileStateId);
     ObjectType objectType = view.facility().getObjectType();
     ObjectTypeRefDto objecttype =
@@ -1824,7 +1822,7 @@ public class FacilityService {
   private Optional<Facility> findMatchingInspFacility(
       List<UUID> relatedBaseFacilityIds, UUID centralFileStateId) {
     List<Facility> matchedInspFacilities =
-        facilityRepository.findAllByCentralFileStateIdIn(relatedBaseFacilityIds);
+        facilityRepository.findAllByOriginalCentralFileStateIdIn(relatedBaseFacilityIds);
 
     if (matchedInspFacilities.size() > 1) {
       if (centralFileStateId != null) {
@@ -1915,23 +1913,5 @@ public class FacilityService {
         candidates.stream().map(e -> createInspPendingFacilityDto(e, centralFileData)).toList();
 
     return new InspPendingFacilitiesOverviewResponse(1, result.size(), result, 0);
-  }
-
-  private void createProgressEntryForUpdateFacility(
-      Inspection inspection, UUID previousFacilityFileStateId) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FACILITY_UPDATED", TriggerType.EMPLOYEE);
-    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
-    inspection.addProgressEntry(progressEntry);
-  }
-
-  private void createProgressEntryForUpdateFacility(
-      Inspection inspection, UUID previousFacilityFileStateId, String changeDescription) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FACILITY_UPDATED", changeDescription, TriggerType.EMPLOYEE);
-    progressEntry.setPreviousFacilityFileStateId(previousFacilityFileStateId);
-    inspection.addProgressEntry(progressEntry);
   }
 }

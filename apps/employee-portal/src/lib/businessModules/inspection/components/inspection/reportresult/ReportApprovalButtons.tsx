@@ -64,12 +64,14 @@ export function ReportApprovalButtons({
         )}
         variant="outlined"
         startDecorator={<EditRoadOutlined />}
+        aria-label="Bericht bearbeiten"
       >
         Zum Editor
       </InternalLinkButton>
       <Button
         variant="solid"
         startDecorator={<CheckOutlined />}
+        aria-label="Bericht freigeben"
         onClick={handleApproveInspection}
       >
         Freigeben

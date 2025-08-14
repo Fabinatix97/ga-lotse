@@ -89,7 +89,7 @@ export function AnnouncementSidebar({
     <Sidebar open={open} onClose={handleClose}>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm onSubmit={handleSubmit}>
+          <SidebarForm aria-label="Ankündigung" onSubmit={handleSubmit}>
             <SidebarContent title="Ankündigung">
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>

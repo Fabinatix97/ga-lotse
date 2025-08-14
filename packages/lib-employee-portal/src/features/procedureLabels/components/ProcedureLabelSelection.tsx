@@ -14,15 +14,22 @@ interface ProcedureLabelSelectionProps {
   onChange?: (newValue: ProcedureLabel[]) => void;
   procedureLabelApi: ProcedureLabelClient;
   procedureLabelApiQueryKey: QueryKeyFactory;
+  required?: string;
 }
 
 export function ProcedureLabelSelection(props: ProcedureLabelSelectionProps) {
   const field = useBaseField<ProcedureLabel[]>({
     name: "procedureLabels",
+    required: props.required,
   });
 
   return (
-    <BaseField label="Kennungen">
+    <BaseField
+      label="Kennungen"
+      required={field.required}
+      error={field.error}
+      helperText={field.helperText}
+    >
       <ProcedureLabelAutocomplete
         name={field.input.name}
         value={field.input.value}

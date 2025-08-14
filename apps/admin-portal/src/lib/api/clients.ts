@@ -13,9 +13,13 @@ import {
 
 import { setAdminName } from "@/lib/helpers/adminName";
 
-export interface BackendError {
+export class BackendError extends Error {
+  readonly name = "BackendError";
   status: number;
-  message: string;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
 }
 
 let lastMockClientCert: string | undefined;
@@ -74,15 +78,12 @@ const errorInterceptionMiddleware: Middleware = {
 async function resolveErrorResponse(response: Response): Promise<BackendError> {
   try {
     const message = await response.text();
-    return {
-      status: response.status,
-      message,
-    };
+    return new BackendError(response.status, message);
   } catch {
-    return {
-      status: response.status,
-      message: `Response returned error code ${response.status} for ${response.url}`,
-    };
+    return new BackendError(
+      response.status,
+      `Response returned error code ${response.status} for ${response.url}`,
+    );
   }
 }
 

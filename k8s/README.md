@@ -38,7 +38,7 @@ are verified as part of the (merge) pipelines.
 * locally
 ```shell
 # install plugin
-helm plugin install --version 0.4.2 https://github.com/jlandowner/helm-chartsnap
+helm plugin install --version 0.5.0 https://github.com/jlandowner/helm-chartsnap
 # check
 ./helm-chartsnap.sh
 # update
@@ -56,8 +56,6 @@ docker login -u <TOKEN_USERNAME> -p <TOKEN> registry.gitlab.com
 docker tag helm-chartsnap:<VERSION> registry.gitlab.com/ga-ffm/ga-lotse/ga-lotse-code/helm-chartsnap:<VERSION>
 docker push registry.gitlab.com/ga-ffm/ga-lotse/ga-lotse-code/helm-chartsnap:<VERSION>
 ```
-
-The helm version is based on the version currently used by the `$OC_IMAGE` during deployments.
 
 ### Remarks
 

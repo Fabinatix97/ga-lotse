@@ -34,10 +34,10 @@ import {
   useGdprValidationTasksAlert,
   useGetGdprValidationBannerQuery,
   usePersistentFilterDictionary,
+  usePersistentTableControl,
   usePersonSearch,
   useRowSelection,
   useSyncRowSelection,
-  useTableControl,
 } from "@eshg/lib-employee-portal";
 import { formatDate, formatWeekdayDateTime } from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
@@ -71,15 +71,19 @@ interface ProceduresTableProps {
   buttons?: ReactNode[];
 }
 
-const initialSorting: ColumnSort = { id: "child_dateOfBirth", desc: true };
+const initialSorting: ColumnSort = { id: "child_lastName", desc: false };
 
 export function ProceduresTable(props: ProceduresTableProps) {
-  const tableControl = useTableControl({
-    serverSideSorting: true,
-    sortFieldName: "sortKey",
-    sortDirectionName: "sortDirection",
-    initialSorting: initialSorting,
-  });
+  const tableControl = usePersistentTableControl(
+    "ESU_PROCEDURE_TABLE_SORTING",
+    {
+      serverSideSorting: true,
+      sortFieldName: "sortKey",
+      sortDirectionName: "sortDirection",
+      initialSorting,
+    },
+  );
+
   const personSearch = usePersonSearch();
   const {
     filterValues,

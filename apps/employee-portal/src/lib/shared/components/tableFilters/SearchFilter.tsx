@@ -45,13 +45,14 @@ export function SearchFilter({
       placeholder={label}
       aria-label={label}
       type="search"
-      startDecorator={<SearchIcon />}
-      defaultValue={searchParams.get(searchParamName) ?? undefined}
       slotProps={{
-        input: {
-          role: "searchbox",
+        root: {
+          role: "search",
+          "aria-label": label,
         },
       }}
+      startDecorator={<SearchIcon />}
+      defaultValue={searchParams.get(searchParamName) ?? undefined}
       onChange={(event) => {
         onValueChange(event.target.value);
       }}

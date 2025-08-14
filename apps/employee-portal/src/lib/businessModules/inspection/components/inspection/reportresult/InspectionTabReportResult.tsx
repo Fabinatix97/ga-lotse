@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Grid } from "@mui/joy";
+import { Box, Grid } from "@mui/joy";
 
 import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
 
@@ -32,7 +32,7 @@ export function InspectionTabReportResult({
   const { basePath } = useConfiguration();
 
   return (
-    <>
+    <Box display="contents" role="tabpanel">
       <Grid
         container
         m={2}
@@ -73,6 +73,6 @@ export function InspectionTabReportResult({
           />
         </BottomToolbar>
       </StickyBottomBox>
-    </>
+    </Box>
   );
 }

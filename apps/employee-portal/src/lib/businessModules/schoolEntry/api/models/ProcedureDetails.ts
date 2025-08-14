@@ -14,7 +14,6 @@ import { Procedure, mapProcedure } from "./Procedure";
 import { WaitingRoom, mapWaitingRoom } from "./WaitingRoom";
 
 export interface ProcedureDetails extends Procedure {
-  readonly version: number;
   readonly appointment?: Appointment;
   readonly location?: Location;
   readonly isEntryLevel: boolean;
@@ -36,7 +35,6 @@ export function mapProcedureDetails(
 ): ProcedureDetails {
   return {
     ...mapProcedure(response),
-    version: response.version,
     labels: mapProcedureLabels(response.labels),
     appointment: mapOptional(response.appointment, mapAppointment),
     location: mapOptional(response.location, mapLocation),

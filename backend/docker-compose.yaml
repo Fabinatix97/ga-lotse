@@ -36,7 +36,7 @@ services:
       - 8093:8080
 
   auth-cache:
-    image: redis:7.4.4-alpine3.21
+    image: redis:8.2.0-alpine3.22
     ports:
       - 6379:6379
     command: redis-server --requirepass redis_secret
@@ -151,7 +151,6 @@ services:
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.centralrepository.mock-cert-subject-cn=inspection.frankfurt.ga-lotse
       - de.eshg.auditlog.service-url=http://auditlog:8080
-      - de.eshg.inspection.config.facility-file-number-method=INSPECTION_FRANKFURT
     depends_on:
       inspection-db:
         condition: service_healthy

@@ -5,7 +5,8 @@
 
 "use client";
 
-import { ReactNode } from "react";
+import { Box } from "@mui/joy";
+import { ReactNode, useId } from "react";
 
 import { RadioButtonsField } from "@eshg/lib-portal";
 
@@ -29,6 +30,7 @@ export function ChecklistCheckboxElement({
   labelEndDecorator,
   readOnly,
 }: Readonly<ChecklistCheckboxElementProps>) {
+  const titleId = useId();
   if (element.type !== "CHECKBOX") {
     return;
   }
@@ -38,13 +40,14 @@ export function ChecklistCheckboxElement({
     : undefined;
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby={titleId}>
       <ChecklistLabel
         incident={incident}
         required={element.context.mandatory}
         tooltipText={element.context.help}
         endDecorator={labelEndDecorator}
         note={element.context.note}
+        label-id={titleId}
       >
         {label}
       </ChecklistLabel>
@@ -58,6 +61,6 @@ export function ChecklistCheckboxElement({
         sx={{ gap: 1 }}
         readOnly={readOnly}
       />
-    </>
+    </Box>
   );
 }

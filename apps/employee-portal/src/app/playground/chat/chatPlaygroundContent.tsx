@@ -199,7 +199,7 @@ function StateItem({ item }: { item: [string, unknown] }) {
     <Stack spacing={1}>
       <Typography>{item[0]}</Typography>
       <Sheet sx={{ padding: 1 }}>
-        <Typography level="body-xs" fontFamily="monospace" fontSize="10px">
+        <Typography level="body-xs" fontFamily="monospace" fontSize="0.625rem">
           {JSON.stringify(item[1], null, 2)}
         </Typography>
       </Sheet>

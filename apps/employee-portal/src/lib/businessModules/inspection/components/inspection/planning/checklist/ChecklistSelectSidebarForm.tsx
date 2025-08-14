@@ -111,7 +111,11 @@ export function ChecklistSelectSidebarForm({
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, handleSubmit, setFieldValue, values, errors }) => (
-        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+        <SidebarForm
+          ref={sidebarFormRef}
+          aria-label="Checkliste auswählen"
+          onSubmit={handleSubmit}
+        >
           <SidebarContent title="Checkliste auswählen">
             <Stack direction="column" spacing={2}>
               {isExpandable && (

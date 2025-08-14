@@ -5,9 +5,8 @@
 
 import { Stack, Typography } from "@mui/joy";
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { FieldProps, SelectField } from "@eshg/lib-portal";
-
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
 interface MergeStringFieldProps extends FieldProps<string> {
   target: string | undefined;
@@ -42,14 +41,7 @@ export function MergeStringField({
   if (normalizedTarget === normalizedSource || normalizedSource === " ") {
     const value = getLabel(normalizedTarget);
 
-    return (
-      <DetailsCell
-        name={fieldProps.name}
-        label={fieldProps.label as string}
-        value={value}
-        showIfEmpty
-      />
-    );
+    return <DetailsItem label={fieldProps.label as string} value={value} />;
   }
 
   const selectOptions = [

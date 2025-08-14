@@ -5,12 +5,19 @@
 
 import { CopyAllOutlined } from "@mui/icons-material";
 import { Sheet, Stack, Typography } from "@mui/joy";
+import { useId } from "react";
 import { isDefined } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
-import { Alert, InternalLinkButton, formatDateTime } from "@eshg/lib-portal";
+import { DetailsItem, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  Alert,
+  DetailsColumn,
+  DetailsList,
+  InternalLinkButton,
+  formatDateTime,
+} from "@eshg/lib-portal";
 
 import {
   getIsNewestVersion,
@@ -42,43 +49,60 @@ export function CLDInfoCard({
     cldVersion.context.id,
   );
 
+  const titleId = useId();
   return (
-    <Sheet component="section" aria-label="Checklistdefinition Informationen">
+    <Sheet component="section" aria-labelledby={titleId}>
       <Stack gap={2}>
-        <Typography level="title-lg" aria-label="Checklistdefinition Name">
-          {cldVersion.context.name}
+        <Typography level="title-lg" component="h2" id={titleId}>
+          Informationen zur Checklistendefinition
         </Typography>
-        <CLDInfoCardCoreChecklistLabel cldVersion={cldVersion} />
-        <Typography>
-          <span>Version: </span>
-          <span>{`Lokal ${cldVersion.context.version}`}</span>
-          {isDefined(cldVersion.context.repositoryVersion) && (
-            <>
-              <span>, </span>
-              <span>{`Remote ${cldVersion.context.repositoryVersion}`}</span>
-            </>
-          )}
-        </Typography>
-        {isDefined(cldVersion.objectType) && (
-          <Typography aria-label="Objekttyp">
-            {cldVersion.objectType.name}
-          </Typography>
-        )}
-        <Typography>
-          <span>Veröffentlicht von </span>
-          {isDefined(cldVersion.modifiedBy) &&
-          !isUnknownUser(cldVersion.modifiedBy) ? (
-            <UserLink user={cldVersion.modifiedBy} />
-          ) : (
-            <span>unbekannt</span>
-          )}
-          {isDefined(cldVersion.context.lastModified) && (
-            <>
-              <span> am </span>
-              <time dateTime={modifiedDateIso}>{modifiedDateHuman}</time>
-            </>
-          )}
-        </Typography>
+
+        <DetailsList>
+          <DetailsColumn>
+            {cldVersion.isCoreChecklist && (
+              <DetailsItem
+                label="Checklistentyp"
+                value={
+                  <CLDInfoCardCoreChecklistLabel cldVersion={cldVersion} />
+                }
+              />
+            )}
+            <DetailsItem
+              label="Version"
+              value={
+                `Lokal ${cldVersion.context.version}` +
+                (!cldVersion.context.repositoryVersion
+                  ? ""
+                  : ", Remote " + cldVersion.context.repositoryVersion)
+              }
+            />
+            {isDefined(cldVersion.objectType) && (
+              <DetailsItem
+                label="Objekttyp"
+                value={cldVersion.objectType?.name}
+              />
+            )}
+            <DetailsItem
+              label="Veröffentlicht von"
+              value={
+                isDefined(cldVersion.modifiedBy) &&
+                !isUnknownUser(cldVersion.modifiedBy) ? (
+                  <UserLink user={cldVersion.modifiedBy} />
+                ) : (
+                  "Unbekannt"
+                )
+              }
+            />
+            {isDefined(cldVersion.context.lastModified) && (
+              <DetailsItem
+                label="Veröffentlicht am"
+                value={
+                  <time dateTime={modifiedDateIso}>{modifiedDateHuman}</time>
+                }
+              />
+            )}
+          </DetailsColumn>
+        </DetailsList>
         {cldVersion.isCoreChecklist && !cldVersion.context.expandable && (
           <Alert
             color="primary"

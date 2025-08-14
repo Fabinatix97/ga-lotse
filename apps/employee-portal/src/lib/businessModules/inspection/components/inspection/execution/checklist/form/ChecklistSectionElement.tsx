@@ -321,7 +321,7 @@ function AutoSubmitForm({
 
   return (
     <FormPlus
-      aria-label={clFormElement.type}
+      data-testid={clFormElement.type}
       onChange={(e) => {
         if (readOnly) {
           return;

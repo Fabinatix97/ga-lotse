@@ -6,7 +6,7 @@
 "use client";
 
 import { InfoOutlined } from "@mui/icons-material";
-import { Alert, Stack } from "@mui/joy";
+import { Alert, Box, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
 import { ReactNode, useMemo } from "react";
@@ -64,6 +64,7 @@ export function EditChecklistDefinition({
   const hasDraft = cldVersion?.hasDraft ?? false;
 
   let publish = true;
+
   async function sendToBackend(
     values: FormChecklistDefinitionVersion,
     formikHelpers: FormikHelpers<FormChecklistDefinitionVersion>,
@@ -105,42 +106,44 @@ export function EditChecklistDefinition({
   }
 
   return (
-    <Formik
-      initialValues={formData}
-      enableReinitialize
-      validateOnChange={false}
-      onSubmit={sendToBackend}
-    >
-      {({ isSubmitting }) => (
-        <FormPlus>
-          <ConfirmLeaveDirtyFormEffect />
-          <Stack spacing={2}>
-            {headerRow ?? (
-              <ChecklistDefinitionHeaderRow
-                version={cldVersion?.context.version}
-                modifiedBy={cldVersion?.modifiedBy}
-                isSubmitting={isSubmitting}
-                hasDraft={hasDraft}
-                onPublish={(shouldPublish) => (publish = shouldPublish)}
-              />
-            )}
-            <ChecklistDefinitionHeaderCard
-              version={cldVersion?.context.version}
-              objectTypes={objectTypes}
-            />
-            <ChecklistDefinitionSectionsList />
-            <ButtonBar
-              right={
-                <ChecklistDefinitionSubmitButtons
+    <Box display="contents" role="form" aria-label="Checkliste bearbeiten">
+      <Formik
+        initialValues={formData}
+        enableReinitialize
+        validateOnChange={false}
+        onSubmit={sendToBackend}
+      >
+        {({ isSubmitting }) => (
+          <FormPlus>
+            <ConfirmLeaveDirtyFormEffect />
+            <Stack spacing={2}>
+              {headerRow ?? (
+                <ChecklistDefinitionHeaderRow
+                  version={cldVersion?.context.version}
+                  modifiedBy={cldVersion?.modifiedBy}
                   isSubmitting={isSubmitting}
+                  hasDraft={hasDraft}
                   onPublish={(shouldPublish) => (publish = shouldPublish)}
                 />
-              }
-            />
-          </Stack>
-        </FormPlus>
-      )}
-    </Formik>
+              )}
+              <ChecklistDefinitionHeaderCard
+                version={cldVersion?.context.version}
+                objectTypes={objectTypes}
+              />
+              <ChecklistDefinitionSectionsList />
+              <ButtonBar
+                right={
+                  <ChecklistDefinitionSubmitButtons
+                    isSubmitting={isSubmitting}
+                    onPublish={(shouldPublish) => (publish = shouldPublish)}
+                  />
+                }
+              />
+            </Stack>
+          </FormPlus>
+        )}
+      </Formik>
+    </Box>
   );
 }
 

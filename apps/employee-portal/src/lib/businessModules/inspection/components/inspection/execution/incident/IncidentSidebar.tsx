@@ -89,7 +89,10 @@ function IncidentSidebarInner({
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm onSubmit={handleSubmit}>
+          <SidebarForm
+            aria-label="Vorkommnis hinzufügen"
+            onSubmit={handleSubmit}
+          >
             <SidebarContent title="Vorkommnis hinzufügen">
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>

@@ -333,6 +333,10 @@ public class SchoolEntryService {
     return person;
   }
 
+  private List<SchoolEntryProcedure> findProceduresByExternalIdForUpdate(List<UUID> procedureIds) {
+    return schoolEntryProcedureRepository.findByExternalIdsForUpdate(procedureIds).toList();
+  }
+
   SchoolEntryProcedure findProcedureByExternalIdForUpdate(UUID procedureId, long version) {
     SchoolEntryProcedure procedure =
         schoolEntryProcedureRepository
@@ -882,5 +886,44 @@ public class SchoolEntryService {
             personFileStateIds, Person.PERSON_TYPE_USED_FOR_CHILDREN)
         .stream()
         .map(this::augmentWithDetails);
+  }
+
+  public UpdateProceduresBulkResponse updateProceduresWithLabels(
+      Map<UUID, Long> procedureIdsAndVersion, List<UUID> labelIds) {
+    BulkUpdateProceduresStatistics stats = new BulkUpdateProceduresStatistics();
+
+    List<ProcedureLabel> requestedLabels = labelService.findByExternalIds(labelIds);
+    Validator.validateLabelsExist(
+        labelIds, requestedLabels.stream().map(ProcedureLabel::getExternalId).toList());
+
+    List<SchoolEntryProcedure> procedures =
+        findProceduresByExternalIdForUpdate(procedureIdsAndVersion.keySet().stream().toList());
+
+    for (SchoolEntryProcedure procedure : procedures) {
+      try {
+        ValidationUtil.validateVersion(
+            procedureIdsAndVersion.get(procedure.getExternalId()), procedure);
+        ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+      } catch (Exception e) {
+        log.info("Error in bulk label update: ", e);
+        stats.countError();
+        continue;
+      }
+
+      List<ProcedureLabel> persistedLabels = procedure.getLabels();
+
+      if (CollectionUtils.isSubCollection(requestedLabels, persistedLabels)) {
+        stats.countUnmodified();
+      } else {
+        procedure.setLabels(
+            Stream.of(persistedLabels, requestedLabels)
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList());
+        progressEntryUtil.addProgressEntry(procedure, LABELS_MODIFIED);
+        stats.countUpdated();
+      }
+    }
+    return stats.mapToResponse();
   }
 }

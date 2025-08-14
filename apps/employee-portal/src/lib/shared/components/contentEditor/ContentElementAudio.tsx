@@ -5,6 +5,7 @@
 
 import { OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
+import { useId } from "react";
 
 import { ApiEditorElementAudios } from "@eshg/lib-editor-api";
 import {
@@ -20,9 +21,12 @@ export function ContentElementAudios({
   element: ApiEditorElementAudios;
   basePath?: string;
 }) {
+  const titleId = useId();
   return (
-    <Stack spacing={1}>
-      <Typography level="title-md">{element.title}</Typography>
+    <Stack spacing={1} role="group" aria-labelledby={element.title}>
+      <Typography level="title-md" id={titleId}>
+        {element.title}
+      </Typography>
       {element.audios.length === 0 ? (
         <Typography level="body-md">(keine)</Typography>
       ) : (

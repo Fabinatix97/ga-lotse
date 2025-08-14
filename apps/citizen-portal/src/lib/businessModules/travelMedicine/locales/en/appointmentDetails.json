@@ -4,6 +4,8 @@
     "logout": "Logout"
   },
   "title": "Information",
+  "cancelled_header": "Cancelled",
+  "cancelled_message": "The appointment has been cancelled.",
   "sidePanel": {
     "title_false": "Please select your appointment",
     "title_true": "Not able to make the appointment?",
@@ -20,6 +22,7 @@
     "consultation": "Travel consultation",
     "vaccination": "Vaccination"
   },
+  "appointment_bookable": "Not yet booked",
   "start_label": "Appointment Start",
   "start_value": "{{ time }}",
   "duration_label": "Duration:",

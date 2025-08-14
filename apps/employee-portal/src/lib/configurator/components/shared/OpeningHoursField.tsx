@@ -73,13 +73,11 @@ export function OpeningHoursField(props: OpeningHoursFieldProps) {
       if (currentValue?.length > maxLength) {
         return `Maximal ${maxLength} Zeichen`;
       }
-      if (!props.english) {
-        if (isEmpty) {
-          return "Mind. eine Zeile oder Zusatzinformationen ausfüllen";
-        }
-        if (emptyRow) {
-          return "Die Zeile muss ausgefüllt sein";
-        }
+      if (isEmpty) {
+        return "Mind. eine Zeile oder Zusatzinformationen ausfüllen";
+      }
+      if (emptyRow) {
+        return "Die Zeile muss ausgefüllt sein";
       }
       if (emptyTimeWindow) {
         return "Das Zeitfenster muss ausgefüllt sein";

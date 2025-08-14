@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Grid } from "@mui/joy";
+import { Box, Grid } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
@@ -57,52 +57,54 @@ export function InspectionTabBasedata({
   }
 
   return (
-    <Grid
-      container
-      spacing={3}
-      direction={{ xxs: "column-reverse", lg: "row" }}
-    >
-      <Grid lg={9}>
-        <FacilityTile
-          inspection={inspection}
-          readonly={readonly}
-          onEdit={openEdit}
-        />
-        <Grid container spacing={2} columns={{ xxs: 1, lg: 2 }} mt={1}>
-          {(!readonly ||
-            inspection.facility.baseFacility.differentBillingAddress) && (
-            <Grid xxs={1} display="flex">
-              <BillingAddressTile
-                readonly={readonly}
-                billingAddress={
-                  inspection.facility.baseFacility.differentBillingAddress
-                }
-                onEdit={openEdit}
-              />
-            </Grid>
-          )}
-          {inspection.facility.baseFacility.contactPersons?.map(
-            (contactPerson, idx) => (
-              <Grid key={`contactPerson-${idx}`} xxs={1} display="flex">
-                <ContactPersonTile
-                  contactPerson={contactPerson}
+    <Box display="contents" role="tabpanel">
+      <Grid
+        container
+        spacing={3}
+        direction={{ xxs: "column-reverse", lg: "row" }}
+      >
+        <Grid lg={9}>
+          <FacilityTile
+            inspection={inspection}
+            readonly={readonly}
+            onEdit={openEdit}
+          />
+          <Grid container spacing={2} columns={{ xxs: 1, lg: 2 }} mt={1}>
+            {(!readonly ||
+              inspection.facility.baseFacility.differentBillingAddress) && (
+              <Grid xxs={1} display="flex">
+                <BillingAddressTile
                   readonly={readonly}
-                  index={idx}
+                  billingAddress={
+                    inspection.facility.baseFacility.differentBillingAddress
+                  }
                   onEdit={openEdit}
                 />
               </Grid>
-            ),
-          )}
-          {!readonly && (
-            <Grid xxs={1} display="flex">
-              <ContactPersonTile onEdit={openEdit} />
-            </Grid>
-          )}
+            )}
+            {inspection.facility.baseFacility.contactPersons?.map(
+              (contactPerson, idx) => (
+                <Grid key={`contactPerson-${idx}`} xxs={1} display="flex">
+                  <ContactPersonTile
+                    contactPerson={contactPerson}
+                    readonly={readonly}
+                    index={idx}
+                    onEdit={openEdit}
+                  />
+                </Grid>
+              ),
+            )}
+            {!readonly && (
+              <Grid xxs={1} display="flex">
+                <ContactPersonTile onEdit={openEdit} />
+              </Grid>
+            )}
+          </Grid>
+        </Grid>
+        <Grid lg={3}>
+          <AdditionalInfoCard inspection={inspection} readonly={readonly} />
         </Grid>
       </Grid>
-      <Grid lg={3}>
-        <AdditionalInfoCard inspection={inspection} readonly={readonly} />
-      </Grid>
-    </Grid>
+    </Box>
   );
 }

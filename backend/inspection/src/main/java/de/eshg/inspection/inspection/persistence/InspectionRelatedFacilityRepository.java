@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InspectionRelatedFacilityRepository
     extends JpaRepository<InspectionRelatedFacility, Long> {
-  Optional<InspectionRelatedFacility> findByCentralFileStateId(UUID centralFileStatId);
+  Optional<InspectionRelatedFacility> findByCentralFileStateId(UUID centralFileStateId);
 
-  List<InspectionRelatedFacility> findAllByCentralFileStateIdIn(List<UUID> centralFileStatId);
+  List<InspectionRelatedFacility> findAllByCentralFileStateIdIn(List<UUID> centralFileStateId);
 }

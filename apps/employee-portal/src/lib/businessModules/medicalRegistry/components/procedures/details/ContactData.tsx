@@ -7,9 +7,9 @@ import { PERSON_FIELD_NAME } from "@eshg/lib-portal";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
-  ExternalLinkDetailsCell,
+  ExternalLinkDetailsItem,
   emailHref,
-} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsItem";
 
 interface ContactDataProps {
   subject: {
@@ -23,7 +23,7 @@ export function ContactData({ subject }: ContactDataProps) {
   return (
     <>
       {emailAddresses.map((emailAddress) => (
-        <ExternalLinkDetailsCell
+        <ExternalLinkDetailsItem
           key={emailAddress}
           label={PERSON_FIELD_NAME.emailAddresses}
           value={emailAddress}

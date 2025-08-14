@@ -28,7 +28,11 @@ import {
   useConfirmationDialog,
   useIsOffline,
 } from "@eshg/lib-employee-portal";
-import { scrollToFirstFormError } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  DetailsList,
+  scrollToFirstFormError,
+} from "@eshg/lib-portal";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";
@@ -168,72 +172,76 @@ export function ExecutionSidePanel({
 
       <Divider sx={{ marginY: 1 }} />
 
-      <DetailsItem
-        label="Durchführung durch"
-        value={
-          (inspection?.executedAppointment?.assignedTo && (
-            <UserLink user={inspection?.executedAppointment?.assignedTo} />
-          )) ?? (
-            <Typography
-              data-testid="user.value"
-              component="i"
-              color="neutral"
-              level="title-md"
-            >
-              Keine Angaben
-            </Typography>
-          )
-        }
-      />
-
-      <DetailsItem label="Geplanter Termin" value={plannedDateAndTime} />
-      <DetailsItem
-        label="Tatsächlicher Begehungstermin"
-        value={
-          <Grid container alignItems="center">
-            <Typography
-              role="paragraph"
-              component="p"
-              data-testid="date.value"
-              level="title-md"
-              sx={{
-                width: undefined,
-                textWrap: "pretty",
-                hyphens: "auto",
-              }}
-            >
-              {executedDateAndTime}
-            </Typography>
-            {!readOnly && (
-              <IconButton
-                aria-label="Termin ändern"
-                color="primary"
-                sx={{ p: 0, ml: 1, minHeight: 0 }}
-                onClick={() => setApprovalSidebarOpen(true)}
-              >
-                <EditIcon />
-              </IconButton>
-            )}
-          </Grid>
-        }
-      />
-
-      {!readOnly && (
-        <>
-          <Divider sx={{ mb: 1, mt: 1 }} />
-          <Button onClick={handleApprove}>Begehung abschließen</Button>
-        </>
-      )}
-
-      {inspection.phase === ApiInspectionPhase.Executed && (
-        <>
-          <Divider sx={{ mb: 1, mt: 1 }} />
+      <DetailsList>
+        <DetailsColumn>
           <DetailsItem
-            label="Begehung abgeschlossen"
-            value="Die Begehung ist abgeschlossen. Sie sind noch offline. Die eingegebenen Daten wurden gespeichert und werden übertragen, sobald Sie wieder online sind."
+            label="Durchführung durch"
+            value={
+              (inspection?.executedAppointment?.assignedTo && (
+                <UserLink user={inspection?.executedAppointment?.assignedTo} />
+              )) ?? (
+                <Typography
+                  data-testid="user.value"
+                  component="i"
+                  color="neutral"
+                  level="title-md"
+                >
+                  Keine Angaben
+                </Typography>
+              )
+            }
           />
-        </>
-      )}
+
+          <DetailsItem label="Geplanter Termin" value={plannedDateAndTime} />
+          <DetailsItem
+            label="Tatsächlicher Begehungstermin"
+            value={
+              <Grid container alignItems="center">
+                <Typography
+                  role="paragraph"
+                  component="p"
+                  data-testid="date.value"
+                  level="title-md"
+                  sx={{
+                    width: undefined,
+                    textWrap: "pretty",
+                    hyphens: "auto",
+                  }}
+                >
+                  {executedDateAndTime}
+                </Typography>
+                {!readOnly && (
+                  <IconButton
+                    aria-label="Termin ändern"
+                    color="primary"
+                    sx={{ p: 0, ml: 1, minHeight: 0 }}
+                    onClick={() => setApprovalSidebarOpen(true)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                )}
+              </Grid>
+            }
+          />
+
+          {!readOnly && (
+            <>
+              <Divider sx={{ mb: 1, mt: 1 }} />
+              <Button onClick={handleApprove}>Begehung abschließen</Button>
+            </>
+          )}
+
+          {inspection.phase === ApiInspectionPhase.Executed && (
+            <>
+              <Divider sx={{ mb: 1, mt: 1 }} />
+              <DetailsItem
+                label="Begehung abgeschlossen"
+                value="Die Begehung ist abgeschlossen. Sie sind noch offline. Die eingegebenen Daten wurden gespeichert und werden übertragen, sobald Sie wieder online sind."
+              />
+            </>
+          )}
+        </DetailsColumn>
+      </DetailsList>
 
       {approvalSidebarOpen && (
         <AppointmentSidebar

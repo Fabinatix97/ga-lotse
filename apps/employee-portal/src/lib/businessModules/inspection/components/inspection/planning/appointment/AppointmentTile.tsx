@@ -10,7 +10,7 @@ import { isNonNullish, isNullish } from "remeda";
 
 import { ApiInspection, ApiInspectionAppointment } from "@eshg/inspection-api";
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { Alert } from "@eshg/lib-portal";
+import { Alert, DetailsList } from "@eshg/lib-portal";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";
@@ -77,8 +77,10 @@ export function AppointmentTile({
           message="Termin muss ausgewählt sein, um eine Begehung durchzuführen."
         />
       )}
-      <DetailsItem label="Datum" value={date} />
-      <DetailsItem label="Zeitraum" value={fromTo} />
+      <DetailsList>
+        <DetailsItem label="Datum" value={date} />
+        <DetailsItem label="Zeitraum" value={fromTo} />
+      </DetailsList>
     </InfoTile>
   );
 }

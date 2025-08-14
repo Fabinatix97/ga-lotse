@@ -15,6 +15,7 @@ import java.util.UUID;
 @Schema(name = "SchoolEntryProcedure")
 public record ProcedureDto(
     @NotNull UUID id,
+    @NotNull long version,
     @NotNull ProcedureTypeDto type,
     @NotNull @Valid ChildDto child,
     @NotNull ProcedureStatusDto status,

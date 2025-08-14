@@ -103,7 +103,7 @@ export function FacilityForm(props: FacilityFormProps) {
       onSubmit={props.onSubmit}
     >
       {({ isSubmitting, values }) => (
-        <SidebarForm ref={props.sidebarFormRef}>
+        <SidebarForm ref={props.sidebarFormRef} aria-label={props.title}>
           <SidebarContent
             title={props.title}
             subtitle={

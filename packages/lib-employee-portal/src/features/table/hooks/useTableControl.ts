@@ -6,14 +6,20 @@
 import { SelectProps } from "@mui/joy";
 import { ColumnSort, SortingState } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { isDefined } from "remeda";
 
+import { useSessionPersistence } from "../../../contexts/sessionPersistence";
 import {
   SearchParamReplacement,
   useReplaceSearchParams,
 } from "../../../hooks/useReplaceSearchParams";
 import { PaginationProps } from "../components/pagination/Pagination";
-import { DEFAULT_PAGE_SIZE_OPTIONS } from "../config/pagination";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+} from "../config/pagination";
 import { TableSortingProps } from "../types/tableSorting";
 
 interface UseTableControlParams {
@@ -60,6 +66,7 @@ function getTableSortingProps(
   params: UseTableControlParams,
   searchParams: ReturnType<typeof useSearchParams>,
   replaceSearchParams: ReturnType<typeof useReplaceSearchParams>,
+  session?: TableControlSortingAndPaginationParams,
 ): TableSortingProps {
   const {
     pageNumberName = "pageNumber",
@@ -67,9 +74,10 @@ function getTableSortingProps(
     sortDirectionName = "sortDirection",
     serverSideSorting = false,
   } = params;
-
-  const sortField = searchParams.get(sortFieldName);
-  const sortDirection = searchParams.get(sortDirectionName);
+  const sortField =
+    searchParams.get(sortFieldName) ?? session?.sortField ?? null;
+  const sortDirection =
+    searchParams.get(sortDirectionName) ?? session?.sortDirection;
   const sortingState =
     sortField !== null
       ? [{ id: sortField, desc: sortDirection === "desc" }]
@@ -83,26 +91,22 @@ function getTableSortingProps(
       onSortingChange: (state?: SortingState) => {
         const defined = isDefined(state) && state.length > 0;
         const sortState = defined ? state[state.length - 1] : undefined;
-        const isInitialSorting =
-          sortState?.id === params.initialSorting?.id &&
-          sortState?.desc === params.initialSorting?.desc;
         replaceSearchParams([
           {
             name: pageNumberName,
-            value: undefined,
+            value: 0,
           },
           {
             name: sortFieldName,
-            value: !isInitialSorting ? sortState?.id : undefined,
+            value: sortState?.id,
           },
           {
             name: sortDirectionName,
-            value:
-              isDefined(sortState) && !isInitialSorting
-                ? sortState?.desc
-                  ? "desc"
-                  : "asc"
-                : undefined,
+            value: isDefined(sortState)
+              ? sortState?.desc
+                ? "desc"
+                : "asc"
+              : undefined,
           },
         ]);
       },
@@ -120,11 +124,12 @@ function getPaginationProps(
   params: UseTableControlParams,
   searchParams: ReturnType<typeof useSearchParams>,
   replaceSearchParams: ReturnType<typeof useReplaceSearchParams>,
+  session?: TableControlSortingAndPaginationParams,
 ): CustomPaginationProps {
   const {
     pageNumberName = "pageNumber",
     pageSizeName = "pageSize",
-    defaultPageSize = "25",
+    defaultPageSize = DEFAULT_PAGE_SIZE.toString(),
   } = params;
 
   return {
@@ -132,11 +137,11 @@ function getPaginationProps(
       replaceSearchParams([
         {
           name: pageNumberName,
-          value: undefined,
+          value: 0,
         },
         {
           name: pageSizeName,
-          value: value === defaultPageSize ? undefined : value,
+          value,
         },
       ]);
     },
@@ -145,20 +150,75 @@ function getPaginationProps(
       replaceSearchParams([
         {
           name: pageNumberName,
-          value: value === 0 ? undefined : value,
+          value,
         },
       ]);
     },
 
-    pageSize: parseInt(searchParams.get(pageSizeName) ?? defaultPageSize),
-    pageNumber: parseInt(searchParams.get(pageNumberName) ?? "0"),
+    pageSize: parseInt(
+      searchParams.get(pageSizeName) ?? session?.pageSize ?? defaultPageSize,
+    ),
+    pageNumber: parseInt(
+      searchParams.get(pageNumberName) ??
+        session?.pageNumber ??
+        DEFAULT_PAGE_NUMBER.toString(),
+    ),
     pageSizeOptions: DEFAULT_PAGE_SIZE_OPTIONS,
     alwaysShowPageSizeSelect: false,
   };
 }
 
+interface TableControlSortingAndPaginationParams {
+  sortDirection?: string;
+  sortField?: string;
+  pageNumber?: string;
+  pageSize?: string;
+}
+
+export function usePersistentTableControl(
+  key: string,
+  params: UseTableControlParams = {},
+): UseTableControlResult {
+  const sessionPersistence =
+    useSessionPersistence<TableControlSortingAndPaginationParams>({
+      key,
+      initialValue: {
+        sortDirection: params.initialSorting?.desc ? "desc" : "asc",
+        sortField: params.initialSorting?.id,
+        pageNumber: DEFAULT_PAGE_NUMBER.toString(),
+        pageSize: params.defaultPageSize ?? DEFAULT_PAGE_SIZE.toString(),
+      },
+    });
+
+  const tableControl = useTableControl(params, sessionPersistence.get());
+  useEffect(() => {
+    const manualTableSortingState = tableControl.tableSorting.manualSorting
+      ? tableControl.tableSorting.sortingState[0]
+      : params.initialSorting;
+
+    sessionPersistence.set({
+      sortDirection: manualTableSortingState?.desc ? "desc" : "asc",
+      sortField: manualTableSortingState?.id,
+      pageNumber:
+        tableControl.paginationProps.pageNumber.toString() ??
+        DEFAULT_PAGE_NUMBER.toString(),
+      pageSize:
+        tableControl.paginationProps.pageSize.toString() ??
+        DEFAULT_PAGE_SIZE.toString(),
+    });
+  }, [
+    tableControl.tableSorting,
+    tableControl.paginationProps,
+    params.initialSorting,
+    sessionPersistence,
+  ]);
+
+  return tableControl;
+}
+
 export function useTableControl(
   params: UseTableControlParams = {},
+  session?: TableControlSortingAndPaginationParams,
 ): UseTableControlResult {
   const searchParams = useSearchParams();
   const replaceSearchParams = useReplaceSearchParams();
@@ -169,12 +229,14 @@ export function useTableControl(
     params,
     searchParams,
     replaceSearchParams,
+    session,
   );
 
   const tableSorting = getTableSortingProps(
     params,
     searchParams,
     replaceSearchParams,
+    session,
   );
 
   function getFilter(paramName: string) {

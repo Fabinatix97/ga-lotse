@@ -195,6 +195,14 @@ public class SchoolEntryController {
     return ProcedureMapper.mapProcedureToDetailsDto(procedureDetailsData);
   }
 
+  @PatchMapping("/bulk-procedure-label")
+  @Transactional
+  public UpdateProceduresBulkResponse updateProceduresWithLabels(
+      @Valid @RequestBody UpdateProceduresWithLabelsRequest request) {
+    return schoolEntryService.updateProceduresWithLabels(
+        request.procedureIdsAndVersion(), request.procedureLabels());
+  }
+
   @PostMapping("/{procedureId}/close-procedure")
   @Transactional
   public ProcedureDetailsDto closeProcedure(

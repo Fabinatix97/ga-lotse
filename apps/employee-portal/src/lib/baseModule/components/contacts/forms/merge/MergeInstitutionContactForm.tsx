@@ -22,6 +22,7 @@ import {
   hasSubCategories,
 } from "@eshg/lib-employee-portal";
 import {
+  DetailsList,
   InputArrayField,
   createFieldNameMapper,
   getIndexLabel,
@@ -137,103 +138,105 @@ export function MergeInstitutionContactForm({
       {({ isSubmitting, values }) => (
         <SidebarForm ref={sidebarFormRef}>
           <SidebarContent title="Institution zusammenführen">
-            <Stack gap={3} divider={<Divider />}>
-              <Stack gap="inherit">
-                <MergeStringField
-                  target={into.name}
-                  source={from.data.name}
-                  name={fieldName("name")}
-                  label="Name"
-                  sourceValueLabel={fromLabel}
-                  targetValueLabel={intoLabel}
-                />
-                <MergeStringField
-                  target={into.category}
-                  source={from.data.category}
-                  name={fieldName("category")}
-                  label="Objekttyp"
-                  getOptionLabel={(value) =>
-                    CONTACT_CATEGORY_NAMES[
-                      value as keyof typeof CONTACT_CATEGORY_NAMES
-                    ]
-                  }
-                  sourceValueLabel={fromLabel}
-                  targetValueLabel={intoLabel}
-                />
-                {hasSubCategories(mapRequiredMergeValue(values.category)) && (
+            <DetailsList>
+              <Stack gap={3} divider={<Divider />}>
+                <Stack gap="inherit">
                   <MergeStringField
-                    target={into.subCategory}
-                    source={from.data.subCategory}
-                    name={fieldName("subCategory")}
-                    label="Objektart"
+                    target={into.name}
+                    source={from.data.name}
+                    name={fieldName("name")}
+                    label="Name"
+                    sourceValueLabel={fromLabel}
+                    targetValueLabel={intoLabel}
+                  />
+                  <MergeStringField
+                    target={into.category}
+                    source={from.data.category}
+                    name={fieldName("category")}
+                    label="Objekttyp"
                     getOptionLabel={(value) =>
-                      formatSubCategory(
-                        mapRequiredMergeValue(values.category),
-                        value as ApiContactSubCategory,
-                      )
+                      CONTACT_CATEGORY_NAMES[
+                        value as keyof typeof CONTACT_CATEGORY_NAMES
+                      ]
                     }
                     sourceValueLabel={fromLabel}
                     targetValueLabel={intoLabel}
                   />
+                  {hasSubCategories(mapRequiredMergeValue(values.category)) && (
+                    <MergeStringField
+                      target={into.subCategory}
+                      source={from.data.subCategory}
+                      name={fieldName("subCategory")}
+                      label="Objektart"
+                      getOptionLabel={(value) =>
+                        formatSubCategory(
+                          mapRequiredMergeValue(values.category),
+                          value as ApiContactSubCategory,
+                        )
+                      }
+                      sourceValueLabel={fromLabel}
+                      targetValueLabel={intoLabel}
+                    />
+                  )}
+                </Stack>
+                {(isDefined(values.contactAddress) ||
+                  requiresContactAddressMerge) && (
+                  <AddressMergeField
+                    options={[
+                      {
+                        label: `Übernehmen von ${intoLabel}`,
+                        value: intoContactAddress,
+                      },
+                      {
+                        label: `Übernehmen von ${fromLabel}`,
+                        value: fromContactAddress,
+                      },
+                    ]}
+                    name={fieldName("contactAddress")}
+                    label="Kontaktadresse"
+                    required="Bitte auswählen"
+                    value={values.contactAddress}
+                    readOnly={!requiresContactAddressMerge}
+                  />
                 )}
-              </Stack>
-              {(isDefined(values.contactAddress) ||
-                requiresContactAddressMerge) && (
-                <AddressMergeField
-                  options={[
-                    {
-                      label: `Übernehmen von ${intoLabel}`,
-                      value: intoContactAddress,
-                    },
-                    {
-                      label: `Übernehmen von ${fromLabel}`,
-                      value: fromContactAddress,
-                    },
-                  ]}
-                  name={fieldName("contactAddress")}
-                  label="Kontaktadresse"
-                  required="Bitte auswählen"
-                  value={values.contactAddress}
-                  readOnly={!requiresContactAddressMerge}
-                />
-              )}
-              {(isDefined(values.differentBillingAddress) ||
-                requiresBillingAddressMerge) && (
-                <AddressMergeField
-                  options={[
-                    {
-                      label: `Übernehmen von ${intoLabel}`,
-                      value: intoBillingAddress,
-                    },
-                    {
-                      label: `Übernehmen von ${fromLabel}`,
-                      value: fromBillingAddress,
-                    },
-                  ]}
-                  name={fieldName("differentBillingAddress")}
-                  label="Abweichende Rechnungsadresse"
-                  required="Bitte auswählen"
-                  value={values.differentBillingAddress}
-                  readOnly={!requiresBillingAddressMerge}
-                />
-              )}
-              <Stack gap="inherit">
-                <Box component="section" aria-label="E-Mail-Adressen">
-                  <InputArrayField
-                    name={fieldName("emailAddresses")}
-                    label={(index) => getIndexLabel("E-Mail-Adresse", index)}
-                    addMoreLabel="E-Mail-Adresse hinzufügen"
+                {(isDefined(values.differentBillingAddress) ||
+                  requiresBillingAddressMerge) && (
+                  <AddressMergeField
+                    options={[
+                      {
+                        label: `Übernehmen von ${intoLabel}`,
+                        value: intoBillingAddress,
+                      },
+                      {
+                        label: `Übernehmen von ${fromLabel}`,
+                        value: fromBillingAddress,
+                      },
+                    ]}
+                    name={fieldName("differentBillingAddress")}
+                    label="Abweichende Rechnungsadresse"
+                    required="Bitte auswählen"
+                    value={values.differentBillingAddress}
+                    readOnly={!requiresBillingAddressMerge}
                   />
-                </Box>
-                <Box component="section" aria-label="Telefonnummern">
-                  <InputArrayField
-                    name={fieldName("phoneNumbers")}
-                    label={(index) => getIndexLabel("Telefonnummer", index)}
-                    addMoreLabel="Telefonnummer hinzufügen"
-                  />
-                </Box>
+                )}
+                <Stack gap="inherit">
+                  <Box component="section" aria-label="E-Mail-Adressen">
+                    <InputArrayField
+                      name={fieldName("emailAddresses")}
+                      label={(index) => getIndexLabel("E-Mail-Adresse", index)}
+                      addMoreLabel="E-Mail-Adresse hinzufügen"
+                    />
+                  </Box>
+                  <Box component="section" aria-label="Telefonnummern">
+                    <InputArrayField
+                      name={fieldName("phoneNumbers")}
+                      label={(index) => getIndexLabel("Telefonnummer", index)}
+                      addMoreLabel="Telefonnummer hinzufügen"
+                    />
+                  </Box>
+                </Stack>
               </Stack>
-            </Stack>
+            </DetailsList>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar

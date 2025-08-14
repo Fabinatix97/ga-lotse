@@ -90,7 +90,6 @@ interface FloatingLabelInputProps {
   startDecorator?: ReactNode;
   defaultValue?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  inputRole?: string;
 }
 
 export function FloatingLabelInput({
@@ -99,7 +98,6 @@ export function FloatingLabelInput({
   startDecorator,
   defaultValue,
   onChange,
-  inputRole,
 }: Readonly<FloatingLabelInputProps>) {
   const { t } = useTranslation();
   return (
@@ -109,9 +107,12 @@ export function FloatingLabelInput({
       defaultValue={defaultValue}
       slots={{ input: InnerInput }}
       slotProps={{
+        root: {
+          role: "search",
+          "aria-label": placeholder,
+        },
         input: {
           placeholder: t("enterSearchterm"),
-          role: inputRole,
           label: placeholder,
         },
       }}

@@ -26,6 +26,7 @@ export function ReportDownloadButtons({
         variant="plain"
         color="neutral"
         startDecorator={<FileDownloadOutlined />}
+        aria-label="Begehungsprotokoll downloaden"
         onClick={() => reportFile.download()}
       >
         Download
@@ -37,6 +38,7 @@ export function ReportDownloadButtons({
           variant="plain"
           color="neutral"
           startDecorator={<RemoveRedEyeOutlined />}
+          aria-label="Begehungsprotokoll vorschau"
           onClick={() => reportFile.preview()}
         >
           Vorschau

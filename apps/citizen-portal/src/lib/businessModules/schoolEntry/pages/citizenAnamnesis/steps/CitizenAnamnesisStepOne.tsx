@@ -97,7 +97,7 @@ function ContactForm(props: ContactFormProps) {
       {props.for === "child" && (
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
           <FormLabel
-            sx={{ fontSize: "16px", fontWeight: "700" }}
+            sx={{ fontSize: "1rem", fontWeight: "700" }}
             id={inGermanySinceId}
           >
             {t("migration.inGermanySince")}

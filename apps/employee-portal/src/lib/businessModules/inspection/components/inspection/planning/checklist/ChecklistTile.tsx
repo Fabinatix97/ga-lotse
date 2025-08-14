@@ -137,7 +137,7 @@ export function ChecklistTile({
         />
       )}
 
-      <Stack direction="column" spacing={1}>
+      <Stack direction="column" spacing={1} role="list">
         {!inspection.selectedChecklistDefinitionVersions.length && (
           <Alert
             color="primary"
@@ -148,6 +148,7 @@ export function ChecklistTile({
           return (
             <Stack
               key={"version-info-" + version.name + "-" + idx}
+              role="listitem"
               direction="row"
               spacing={2}
             >

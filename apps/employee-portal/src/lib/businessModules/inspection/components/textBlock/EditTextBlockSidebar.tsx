@@ -103,6 +103,7 @@ function EditTextBlockSidebarWithQueriesAndMutations({
     };
   }, [id, name, content]);
 
+  const title = id ? "Textbaustein bearbeiten" : "Textbaustein erstellen";
   return (
     <Formik
       ref={formRef}
@@ -111,10 +112,12 @@ function EditTextBlockSidebarWithQueriesAndMutations({
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, handleSubmit }) => (
-        <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
-          <SidebarContent
-            title={id ? "Textbaustein bearbeiten" : "Textbaustein erstellen"}
-          >
+        <SidebarForm
+          ref={sidebarFormRef}
+          aria-label={title}
+          onSubmit={handleSubmit}
+        >
+          <SidebarContent title={title}>
             <Grid
               container
               component={FormPlus}

@@ -164,7 +164,7 @@ export function TravelTimeTile({
             color="primary"
             variant="plain"
             size="sm"
-            aria-label={`Copy: ${addressString}`}
+            aria-label={`Kopieren: ${addressString}`}
             onClick={handleClickCopyAddress}
           >
             <CopyAllIcon />

@@ -90,7 +90,7 @@ export function AppointmentDetailsMetaInformation(
                   context: "value",
                   time: formatTime(props.appointmentDetails.summaryDto.start),
                 })
-              : "Noch nicht gebucht"
+              : t("appointment_bookable")
           }
           icon={<WatchLaterOutlined />}
           hiddenLabel

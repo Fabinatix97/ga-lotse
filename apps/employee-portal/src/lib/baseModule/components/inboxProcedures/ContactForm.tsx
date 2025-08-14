@@ -99,7 +99,15 @@ export function ContactForm(props: NestedFormProps) {
               />
             </Grid>
           </Stack>
-          <InputField name={fieldName("firstName")} label="Vorname" />
+          <InputField
+            name={fieldName("firstName")}
+            label="Vorname"
+            required={
+              values.contact.type === ApiContactType.PrivatePerson
+                ? "Bitte einen Vornamen angeben."
+                : undefined
+            }
+          />
           <InputField
             data-testid="last-name"
             name={fieldName("lastName")}
@@ -113,6 +121,11 @@ export function ContactForm(props: NestedFormProps) {
           <DateField
             name={fieldName("dateOfBirth")}
             label="Geburtsdatum"
+            required={
+              values.contact.type === ApiContactType.PrivatePerson
+                ? "Bitte ein Geburtsdatum angeben."
+                : undefined
+            }
             validate={validateDateOfBirth}
           />
           <Divider />

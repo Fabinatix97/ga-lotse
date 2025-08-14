@@ -55,14 +55,14 @@ public class FacilityExportService {
         facilityRepository.findAllByBannedTrueOrderByLastInspectedAscIdAsc();
 
     Map<UUID, GetFacilityFileStateResponse> baseFacilityMap =
-        facilityService.fetchCentralFileData(extractCentralFileStateIds(facilities));
+        facilityService.fetchCentralFileData(extractOriginalCentralFileStateIds(facilities));
 
     return FacilityMapper.mapFacilitiesToExportedBannedFacility(
         facilities, baseFacilityMap, clock.getZone());
   }
 
-  private static List<UUID> extractCentralFileStateIds(List<Facility> facilities) {
-    return facilities.stream().map(Facility::getCentralFileStateId).toList();
+  private static List<UUID> extractOriginalCentralFileStateIds(List<Facility> facilities) {
+    return facilities.stream().map(Facility::getOriginalCentralFileStateId).toList();
   }
 
   private Resource exportFacilities(List<ExportedBannedFacility> facilities) {

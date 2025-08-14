@@ -33,20 +33,14 @@ export function ContentElement({
     case "EditorElementChapter":
       return (
         <Stack>
-          <Typography level="h3" component="p">
-            {element.title}
-          </Typography>
+          <Typography level="h3">{element.title}</Typography>
           <Divider />
         </Stack>
       );
 
     case "SECTION":
     case "EditorElementSection":
-      return (
-        <Typography level="h4" component="p">
-          {element.title}
-        </Typography>
-      );
+      return <Typography level="h4">{element.title}</Typography>;
 
     case "TEXT":
     case "EditorElementText":
@@ -64,13 +58,17 @@ export function ContentElement({
     case "EditorElementTextBlock":
     case "FULL_TEXT_BLOCK":
     case "EditorElementFullTextBlock":
+      // Not perfect: A list with only one element
       return (
-        <Stack spacing={1}>
-          <Typography level="title-md">{element.title}</Typography>
+        <Stack spacing={1} component="dl" margin={0}>
+          <Typography role="term" level="title-md">
+            {element.title}
+          </Typography>
           <Typography
             level="body-md"
             whiteSpace="pre-line"
             sx={{ overflowWrap: "break-word" }}
+            role="definition"
           >
             {element.text}
           </Typography>

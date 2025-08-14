@@ -94,7 +94,7 @@ export function FacilitySearchResults(props: FacilitySearchResultsProps) {
       }}
     >
       {({ errors }) => (
-        <SidebarForm>
+        <SidebarForm aria-label={props.title}>
           <SidebarContent
             title={props.title}
             subtitle="Einrichtung auswählen"

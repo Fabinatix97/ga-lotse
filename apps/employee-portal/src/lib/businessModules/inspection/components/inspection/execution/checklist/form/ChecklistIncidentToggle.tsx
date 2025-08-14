@@ -44,6 +44,7 @@ export function ChecklistIncidentToggle({
                 ? theme.palette.danger[500]
                 : theme.palette.neutral,
               color: checked ? "white" : theme.palette.text,
+              height: "100%",
             },
           };
         },

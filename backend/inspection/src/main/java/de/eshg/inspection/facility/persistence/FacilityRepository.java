@@ -21,9 +21,9 @@ public interface FacilityRepository
 
   Optional<Facility> findByExternalId(UUID externalId);
 
-  Optional<Facility> findByCentralFileStateId(UUID centralFileStatId);
+  Optional<Facility> findByOriginalCentralFileStateId(UUID centralFileStateId);
 
-  List<Facility> findAllByCentralFileStateIdIn(List<UUID> centralFileStateIds);
+  List<Facility> findAllByOriginalCentralFileStateIdIn(List<UUID> centralFileStateIds);
 
   @Query("select id from Facility where possibleDuplicates = true")
   List<Long> getFacilityIdsWithDuplicates();

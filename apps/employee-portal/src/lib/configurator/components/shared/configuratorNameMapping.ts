@@ -35,6 +35,8 @@ export function getTabNamesByEndpointName(
         : "Angaben zur Fachabteilung";
     case "IMPRINT_MARKDOWNS_CONFIG":
       return "Impressum";
+    case "CONTACT_MARKDOWNS_CONFIG":
+      return "Kontakt";
     case "OPENING_HOURS":
       return "Öffnungszeiten";
     case "SCHOOL_ENTRY":

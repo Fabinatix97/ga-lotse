@@ -33,9 +33,9 @@ import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
-  ExternalLinkDetailsCell,
+  ExternalLinkDetailsItem,
   emailHref,
-} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsItem";
 
 import { UserAvatar } from "./UserAvatar";
 
@@ -145,8 +145,7 @@ export function UserProfileDetails({
             </DetailsColumn>
 
             <DetailsColumn>
-              <ExternalLinkDetailsCell
-                name="email"
+              <ExternalLinkDetailsItem
                 label="E-Mail-Adresse"
                 value={user.email}
                 href={emailHref}

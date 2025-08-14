@@ -24,12 +24,12 @@ export function createPdfToPdfaMessage(
 
 export interface PdfToPdfaResponse {
   output: string;
-  outputFile?: Uint8Array;
+  outputFile?: Uint8Array<ArrayBuffer>;
 }
 
 export function createPdfToPdfaResponse(
   output: string,
-  outputFile?: Uint8Array,
+  outputFile?: Uint8Array<ArrayBuffer>,
 ): PdfToPdfaResponse {
   return {output, outputFile};
 }

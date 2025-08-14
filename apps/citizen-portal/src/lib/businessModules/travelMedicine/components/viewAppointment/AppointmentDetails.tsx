@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetAppointmentDetailsResponse } from "@eshg/travel-medicine-api";
+import { Alert } from "@eshg/lib-portal";
+import {
+  ApiAppointmentBookingType,
+  ApiGetAppointmentDetailsResponse,
+} from "@eshg/travel-medicine-api";
 
 import { AppointmentDetailsAdditionalInformation } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsAdditionalInformation";
 import { AppointmentDetailsMetaInformation } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsMetaInformation";
@@ -21,10 +25,24 @@ interface AppointmentDetailsProps {
 export function AppointmentDetails(props: Readonly<AppointmentDetailsProps>) {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
 
+  function isCancelled() {
+    return (
+      props.appointmentDetails.summaryDto.appointmentBookingType ===
+      ApiAppointmentBookingType.Cancelled
+    );
+  }
+
   return (
     <GridColumnStack>
       <ContentSheet>
         <ContentSheetTitle>{t("title")}</ContentSheetTitle>
+        {isCancelled() && (
+          <Alert
+            title={t("cancelled_header")}
+            message={t("cancelled_message")}
+            color="danger"
+          />
+        )}
         <AppointmentDetailsMetaInformation
           appointmentDetails={props.appointmentDetails}
         />

@@ -63,11 +63,15 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
     legalBasis: objectType.legalBasis ?? "",
   };
 
-  const { mutateAsync: saveObjectType } = useUpdateObjectType({
-    onSuccess: () => onClose(true),
-  });
+  const { mutateAsync: saveObjectType } = useUpdateObjectType();
 
   function saveWithConfirmation(values: EditableObjectType) {
+    async function confirmSave() {
+      await saveObjectType(values, {
+        onSuccess: () => onClose(true),
+      });
+    }
+
     if (
       initialValues.routineInterval !== values.routineInterval ||
       initialValues.complaintInterval !== values.complaintInterval
@@ -78,11 +82,11 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
           "Möchten Sie die Änderung wirklich speichern? Da mindestens ein Intervall geändert wurde, werden die Termine für anstehende Begehungen angepasst.",
         confirmLabel: "Speichern und Inspektionen anpassen",
         color: "danger",
-        onConfirm: () => saveObjectType(values),
+        onConfirm: confirmSave,
       });
     } else {
       openConfirmationDialog({
-        onConfirm: () => saveObjectType(values),
+        onConfirm: confirmSave,
       });
     }
     return Promise.resolve();
@@ -93,10 +97,9 @@ function EditObjectTypeSidebarWithQueriesAndMutations({
       initialValues={initialValues}
       enableReinitialize
       onSubmit={saveWithConfirmation}
-      onReset={() => onClose(true)}
     >
       {({ isSubmitting }) => (
-        <SidebarForm ref={formRef}>
+        <SidebarForm ref={formRef} aria-label={`${objectType.name} bearbeiten`}>
           <SidebarContent title={`${objectType.name} bearbeiten`}>
             <Grid container columnSpacing={1} rowSpacing={3}>
               <Grid xs={12}>

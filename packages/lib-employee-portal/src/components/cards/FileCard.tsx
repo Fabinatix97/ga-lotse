@@ -85,7 +85,7 @@ export function FileCard(props: FileCardProps) {
         ratio="1"
         variant="soft"
         color="neutral"
-        sx={{ minWidth: 48, borderRadius: "10%", svg: { fontSize: "24px" } }}
+        sx={{ minWidth: 48, borderRadius: "10%", svg: { fontSize: "1.5rem" } }}
       >
         <Box role="img" aria-label={`Dateityp: ${props.type}`}>
           {createElement(iconByType[props.type])}

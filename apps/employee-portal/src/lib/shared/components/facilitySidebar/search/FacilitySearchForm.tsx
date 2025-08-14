@@ -41,7 +41,11 @@ export function FacilitySearchForm<TValues extends FacilitySearchFormValues>(
       }}
     >
       {({ isSubmitting, ...formikProps }) => (
-        <SidebarForm ref={props.sidebarFormRef}>
+        <SidebarForm
+          ref={props.sidebarFormRef}
+          role="search"
+          aria-label={props.title}
+        >
           <SidebarContent title={props.title}>
             <FormFieldsComponent {...formikProps} isSubmitting={isSubmitting} />
           </SidebarContent>

@@ -22,12 +22,12 @@ async function convertPdfWithGs(
       FS.writeFile("input.pdf", new Uint8Array(inputFile));
     },
     postRun: ({FS}: MainModule) => {
-      let outputFile: Uint8Array | undefined = undefined;
+      let outputFile: Uint8Array<ArrayBuffer> | undefined = undefined;
       if (!error) {
         try {
           outputFile = FS.readFile("output.pdf", {
             encoding: "binary",
-          }) as Uint8Array;
+          }) as Uint8Array<ArrayBuffer>;
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error("Failed to read output file of gs", e);

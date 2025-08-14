@@ -24,7 +24,8 @@ interface AddressAutoFillFieldProps
 }
 
 export function AddressAutoFillField(props: AddressAutoFillFieldProps) {
-  const { setFieldValue } = useFormikContext<BaseAddressFormInputs>();
+  const { setFieldValue, setFieldTouched } =
+    useFormikContext<BaseAddressFormInputs>();
 
   const query = useSuggestedPostalCodeAndCity(props.fieldName);
 
@@ -34,9 +35,18 @@ export function AddressAutoFillField(props: AddressAutoFillFieldProps) {
 
   useEffect(() => {
     if (autofillValue) {
-      void setFieldValue(formFieldName, autofillValue);
+      void Promise.all([
+        // It appears that using setFieldValue with two different fields simultaneously
+        //  like we are doing here because the useEffect hook triggers at the same time
+        //  in both instances of this component cause the form to validate with
+        //  outdated values.
+        //  Triggering the validation after using setFieldTouched seems to resolve
+        //  this issue.
+        setFieldValue(formFieldName, autofillValue, false),
+        setFieldTouched(formFieldName, false, true),
+      ]);
     }
-  }, [autofillValue, formFieldName, setFieldValue]);
+  }, [autofillValue, formFieldName, setFieldTouched, setFieldValue]);
 
   return (
     <InputField

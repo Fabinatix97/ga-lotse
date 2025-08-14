@@ -32,7 +32,11 @@ import {
   SidebarForm,
   formatList,
 } from "@eshg/lib-employee-portal";
-import { SALUTATION_VALUES, getOptionalTitle } from "@eshg/lib-portal";
+import {
+  DetailsList,
+  SALUTATION_VALUES,
+  getOptionalTitle,
+} from "@eshg/lib-portal";
 
 import {
   MeaslesFacilityTypeSelect,
@@ -70,55 +74,59 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
       onSubmit={props.onSubmit}
     >
       {({ isSubmitting }) => (
-        <SidebarForm>
+        <SidebarForm aria-label={props.title}>
           <SidebarContent
             title={props.title}
             subtitle="Ausgewählte Einrichtung"
           >
-            <Stack gap={2}>
-              <DetailsItem label="Name" value={facility.name} />
-              {props.showMeaslesFacilityType && <MeaslesFacilityTypeSelect />}
+            <DetailsList>
+              <Stack gap={2}>
+                <DetailsItem label="Name" value={facility.name} />
+                {props.showMeaslesFacilityType && <MeaslesFacilityTypeSelect />}
 
-              {isDefined(facility.contactAddress) && (
-                <>
-                  <Divider />
-                  <BaseAddressDetailsColumn address={facility.contactAddress} />
-                  {isDefined(facility.differentBillingAddress) && (
-                    <>
-                      <Divider />
-                      <BaseAddressDetailsColumn
-                        address={facility.differentBillingAddress}
+                {isDefined(facility.contactAddress) && (
+                  <>
+                    <Divider />
+                    <BaseAddressDetailsColumn
+                      address={facility.contactAddress}
+                    />
+                    {isDefined(facility.differentBillingAddress) && (
+                      <>
+                        <Divider />
+                        <BaseAddressDetailsColumn
+                          address={facility.differentBillingAddress}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+
+                {showEmailPhoneSection && (
+                  <>
+                    <Divider />
+
+                    {facility.emailAddresses.map((email, index) => (
+                      <DetailsItem
+                        key={`${email}-${index}`}
+                        label="E-Mail-Adresse"
+                        value={email}
                       />
-                    </>
-                  )}
-                </>
-              )}
+                    ))}
+                    {facility.phoneNumbers.map((phoneNumber, index) => (
+                      <DetailsItem
+                        key={`${phoneNumber}-${index}`}
+                        label="Telefonnummer"
+                        value={phoneNumber}
+                      />
+                    ))}
+                  </>
+                )}
 
-              {showEmailPhoneSection && (
-                <>
-                  <Divider />
-
-                  {facility.emailAddresses.map((email, index) => (
-                    <DetailsItem
-                      key={`${email}-${index}`}
-                      label="E-Mail-Adresse"
-                      value={email}
-                    />
-                  ))}
-                  {facility.phoneNumbers.map((phoneNumber, index) => (
-                    <DetailsItem
-                      key={`${phoneNumber}-${index}`}
-                      label="Telefonnummer"
-                      value={phoneNumber}
-                    />
-                  ))}
-                </>
-              )}
-
-              <ContactPersonDetails
-                contactPersons={facility.contactPersons ?? []}
-              />
-            </Stack>
+                <ContactPersonDetails
+                  contactPersons={facility.contactPersons ?? []}
+                />
+              </Stack>
+            </DetailsList>
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar

@@ -13,7 +13,6 @@ import static de.eshg.lib.procedure.domain.model.Procedure_.MODIFIED_AT;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureStatus;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureType;
 import static de.eshg.lib.procedure.domain.model.Procedure_.tasks;
-import static de.eshg.lib.procedure.domain.model.ProgressEntry_.procedureId;
 import static de.eshg.lib.procedure.domain.model.Task_.currentAssignment;
 import static de.eshg.lib.procedure.domain.model.Task_.procedure;
 import static java.util.function.Predicate.not;
@@ -34,31 +33,28 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.foureyes.domain.model.ApprovalRequest;
-import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
 import de.eshg.lib.foureyes.mapping.ApprovalRequestMapper;
 import de.eshg.lib.foureyes.model.ApprovalRequestDto;
 import de.eshg.lib.procedure.api.ProcedureApi;
 import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
-import de.eshg.lib.procedure.domain.model.File_;
 import de.eshg.lib.procedure.domain.model.KeyDocumentAware;
 import de.eshg.lib.procedure.domain.model.Mail;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
-import de.eshg.lib.procedure.domain.model.ManualProgressEntry_;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
-import de.eshg.lib.procedure.domain.model.ProgressEntry_;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository.StatusAndCount;
+import de.eshg.lib.procedure.domain.repository.ProgressEntryApprovalRequestRepository;
 import de.eshg.lib.procedure.domain.repository.ProgressEntryRepository;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.helper.UserHelper.UserFirstAndLastName;
@@ -95,8 +91,6 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -136,7 +130,7 @@ public class ProcedureController<
 
   private final BusinessModule businessModule;
   private final ProcedureRepository<ProcedureT> procedureRepository;
-  private final GenericApprovalRequestRepository approvalRequestRepository;
+  private final ProgressEntryApprovalRequestRepository progressEntryApprovalRequestRepository;
   private final ProgressEntryRepository progressEntryRepository;
   private final ApprovalRequestMapper approvalRequestMapper;
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
@@ -148,7 +142,7 @@ public class ProcedureController<
   public ProcedureController(
       BusinessModule businessModule,
       ProcedureRepository<ProcedureT> procedureRepository,
-      GenericApprovalRequestRepository approvalRequestRepository,
+      ProgressEntryApprovalRequestRepository progressEntryApprovalRequestRepository,
       ProgressEntryRepository progressEntryRepository,
       ApprovalRequestMapper approvalRequestMapper,
       ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper,
@@ -158,7 +152,7 @@ public class ProcedureController<
       ProcedureSearchService<ProcedureT> procedureSearchService) {
     this.businessModule = businessModule;
     this.procedureRepository = procedureRepository;
-    this.approvalRequestRepository = approvalRequestRepository;
+    this.progressEntryApprovalRequestRepository = progressEntryApprovalRequestRepository;
     this.approvalRequestMapper = approvalRequestMapper;
     this.enrichingMapper = enrichingMapper;
     this.facilityApi = facilityApi;
@@ -246,12 +240,18 @@ public class ProcedureController<
   @Transactional(readOnly = true)
   public GetProcedureApprovalRequestsResponse getApprovalRequests(UUID procedureId) {
     ProcedureT procedure = resolveProcedureByExternalIdOrThrow(procedureId);
-    List<ApprovalRequest<?>> approvalRequests =
-        approvalRequestRepository.findAllByStatusIsOpenAndUserIsNotCurrent(
-            isAttachedToProcedure(procedure));
+    List<ManualProgressEntryDeletionApprovalRequest> manualApprovalRequests =
+        progressEntryApprovalRequestRepository.findManualProgressEntryDeletionRequests(
+            procedure.getId(), CurrentUserHelper.getCurrentUserId());
+    List<FileDeletionApprovalRequest> fileDeletionApprovalRequests =
+        progressEntryApprovalRequestRepository.findFileDeletionRequests(
+            procedure.getId(), CurrentUserHelper.getCurrentUserId());
 
     List<ApprovalRequestDto> approvalRequestDtos =
-        approvalRequests.stream().map(approvalRequestMapper::toInterfaceType).toList();
+        Stream.concat(manualApprovalRequests.stream(), fileDeletionApprovalRequests.stream())
+            .sorted(ProcedureController::descCreatedAtAndId)
+            .map(approvalRequestMapper::toInterfaceType)
+            .toList();
     Map<UUID, UserDto> resolvedUsers = userHelper.resolveUsers(approvalRequestDtos);
 
     return new GetProcedureApprovalRequestsResponse(approvalRequestDtos, resolvedUsers);
@@ -265,54 +265,12 @@ public class ProcedureController<
     return new CheckFileStateUsageResponse(centralFileStateIdsInUse);
   }
 
-  private Specification<ApprovalRequest<?>> isAttachedToProcedure(ProcedureT procedure) {
-    return (root, query, cb) ->
-        cb.or(
-            isManualProgressEntryAttachedToProcedure(procedure, root, query, cb),
-            isFileDeletionApprovalRequestAttachedToProcedure(procedure, root, query, cb));
-  }
-
-  private Predicate isFileDeletionApprovalRequestAttachedToProcedure(
-      ProcedureT procedure,
-      Root<ApprovalRequest<?>> root,
-      CriteriaQuery<?> query,
-      CriteriaBuilder cb) {
-
-    Root<FileDeletionApprovalRequest> fileDeletionApprovalRequestRoot =
-        cb.treat(root, FileDeletionApprovalRequest.class);
-
-    Root<ProgressEntry> progressEntryRoot = query.from(ProgressEntry.class);
-    Join<ProgressEntry, File> progressEntryFile =
-        progressEntryRoot.join(ProgressEntry_.file, JoinType.LEFT);
-
-    Join<File, ApprovalRequest<?>> fileApprovalRequest =
-        progressEntryFile.join(File_.DELETION_APPROVAL_REQUEST, JoinType.LEFT);
-
-    return cb.and(
-        cb.equal(fileApprovalRequest, fileDeletionApprovalRequestRoot),
-        cb.equal(progressEntryRoot.get(procedureId), procedure.getId()));
-  }
-
-  private Predicate isManualProgressEntryAttachedToProcedure(
-      ProcedureT procedure,
-      Root<ApprovalRequest<?>> root,
-      CriteriaQuery<?> query,
-      CriteriaBuilder cb) {
-
-    Root<ManualProgressEntryDeletionApprovalRequest>
-        manualProgressEntryDeletionApprovalRequestRoot =
-            cb.treat(root, ManualProgressEntryDeletionApprovalRequest.class);
-
-    Root<ManualProgressEntry> manualProgressEntryRoot = query.from(ManualProgressEntry.class);
-    Join<ManualProgressEntry, ManualProgressEntryDeletionApprovalRequest>
-        manualProgressEntryDeletionRequest =
-            manualProgressEntryRoot.join(
-                ManualProgressEntry_.DELETION_APPROVAL_REQUEST, JoinType.LEFT);
-
-    return cb.and(
-        cb.equal(
-            manualProgressEntryDeletionRequest, manualProgressEntryDeletionApprovalRequestRoot),
-        cb.equal(manualProgressEntryRoot.get(procedureId), procedure.getId()));
+  private static int descCreatedAtAndId(ApprovalRequest<?> a, ApprovalRequest<?> b) {
+    int createdAtComparison = b.getCreatedAt().compareTo(a.getCreatedAt());
+    if (createdAtComparison != 0) {
+      return createdAtComparison;
+    }
+    return b.getId().compareTo(a.getId());
   }
 
   private Sort mapToSort(GetProceduresSortOptionsDto sortOptions) {

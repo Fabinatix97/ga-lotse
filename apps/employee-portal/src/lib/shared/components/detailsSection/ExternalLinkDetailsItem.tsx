@@ -5,22 +5,17 @@
 
 import { isDefined } from "remeda";
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { ExternalLink } from "@eshg/lib-portal";
 
-import {
-  DetailsCell,
-  DetailsCellProps,
-} from "@/lib/shared/components/detailsSection/DetailsCell";
-
-export function ExternalLinkDetailsCell(
-  props: DetailsCellProps & {
-    value: string | undefined;
-    href: (value: string) => string;
-  },
-) {
+export function ExternalLinkDetailsItem(props: {
+  label: string;
+  value: string | undefined;
+  href: (value: string) => string;
+}) {
   return (
-    <DetailsCell
-      {...props}
+    <DetailsItem
+      label={props.label}
       value={
         isDefined(props.value) ? (
           <ExternalLink

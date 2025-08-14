@@ -29,14 +29,11 @@ import de.eshg.inspection.report.persistence.InspectionSignature;
 import de.eshg.inspection.report.persistence.Report;
 import de.eshg.inspection.util.FileUtil;
 import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
-import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
@@ -70,6 +67,7 @@ public class InspectionFinalizer {
   private final InspectionUpdater inspectionUpdater;
   private final InspectionReportService inspectionReportService;
   private final InspectionReportBuilder inspectionReportBuilder;
+  private final InspectionProgressEntryService inspectionProgressEntryService;
   private final InspectionValidator inspectionValidator;
   private final InspectionRepository inspectionRepository;
   private final FacilityClient facilityClient;
@@ -81,6 +79,7 @@ public class InspectionFinalizer {
       InspectionUpdater inspectionUpdater,
       InspectionReportService inspectionReportService,
       InspectionReportBuilder inspectionReportBuilder,
+      InspectionProgressEntryService inspectionProgressEntryService,
       InspectionValidator inspectionValidator,
       InspectionRepository inspectionRepository,
       FacilityClient facilityClient,
@@ -90,6 +89,7 @@ public class InspectionFinalizer {
     this.inspectionUpdater = inspectionUpdater;
     this.inspectionReportService = inspectionReportService;
     this.inspectionReportBuilder = inspectionReportBuilder;
+    this.inspectionProgressEntryService = inspectionProgressEntryService;
     this.inspectionValidator = inspectionValidator;
     this.inspectionRepository = inspectionRepository;
     this.facilityClient = facilityClient;
@@ -139,7 +139,7 @@ public class InspectionFinalizer {
     InspectionSignature signature = createSignature(request, signatureFile);
 
     inspectionReportService.createReport(inspection, signature);
-    addProgressEntryForFinalization(inspection);
+    inspectionProgressEntryService.addProgressEntryForFinalization(inspection);
     inspection.setPhase(InspectionPhase.CREATING_REPORT_AND_INVOICE);
     inspection.getExecutionTaskOrThrow().setTaskStatus(TaskStatus.CLOSED);
     inspection.createReportTask(clock.instant());
@@ -160,7 +160,7 @@ public class InspectionFinalizer {
   void approveInspection(Inspection inspection) {
     checkApprovalPrerequisites(inspection);
     createReportPdf(inspection);
-    addProgressEntryForApproval(inspection);
+    inspectionProgressEntryService.addProgressEntryForApproval(inspection);
 
     // Banning facility if the result is negative, unbanning it otherwise
     InspectionRelatedFacility relatedFacility = inspection.getRelatedFacility();
@@ -328,21 +328,6 @@ public class InspectionFinalizer {
     appointment.setAppointmentEnd(followupEndDate);
 
     return appointment;
-  }
-
-  private void addProgressEntryForFinalization(Inspection inspection) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_FINALIZED", TriggerType.EMPLOYEE);
-    inspection.addProgressEntry(progressEntry);
-  }
-
-  private void addProgressEntryForApproval(Inspection inspection) {
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            "INSPECTION_APPROVED", TriggerType.EMPLOYEE);
-    progressEntry.setFile(inspection.getReport().getReportFile());
-    inspection.addProgressEntry(progressEntry);
   }
 
   public ResponseEntity<Resource> downloadReport(UUID reportId) {

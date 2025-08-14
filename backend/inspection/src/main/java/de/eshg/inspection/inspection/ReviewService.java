@@ -199,9 +199,9 @@ public class ReviewService {
           if (targetFacility == inspectionFacility) {
             inspectionFacility.setPossibleDuplicates(false);
 
-            UUID previousFileStateId = inspectionFacility.getCentralFileStateId();
+            UUID previousFileStateId = inspectionFacility.getOriginalCentralFileStateId();
             centralFileStatesToDelete.add(previousFileStateId);
-            inspectionFacility.setCentralFileStateId(
+            inspectionFacility.setOriginalCentralFileStateId(
                 createNewFileState(chosenReferenceId, previousFileStateId));
           }
 
@@ -234,14 +234,14 @@ public class ReviewService {
             } else {
               // If the targetFacility is the original facility, its central file state id also has
               // to be updated
-              inspectionFacility.setCentralFileStateId(
+              inspectionFacility.setOriginalCentralFileStateId(
                   inspectionToBeUpdated.getCentralFileStateId());
             }
           }
 
           if (targetFacility != inspectionFacility) {
             facilityRepository.delete(inspectionFacility);
-            centralFileStatesToDelete.add(inspectionFacility.getCentralFileStateId());
+            centralFileStatesToDelete.add(inspectionFacility.getOriginalCentralFileStateId());
           }
 
           for (Inspection inspectionToBeUpdated : allInspectionsOfImportedInspection) {
@@ -261,7 +261,7 @@ public class ReviewService {
                 List<Inspection> allInspectionsOfFacility =
                     inspectionRepository.findAllById(inspectionIdsToUpdate);
                 Set<UUID> centralFileStateIds = new HashSet<>();
-                centralFileStateIds.add(inspection.getFacility().getCentralFileStateId());
+                centralFileStateIds.add(inspection.getFacility().getOriginalCentralFileStateId());
                 centralFileStateIds.add(inspection.getCentralFileStateId());
                 centralFileStateIds.addAll(
                     allInspectionsOfFacility.stream()
@@ -290,7 +290,8 @@ public class ReviewService {
 
     // For historical reasons there could exist inspection facilities without inspection procedures
     // matching one of the fileStateIds. Include them, too, if they exist.
-    List<Facility> facilities = facilityRepository.findAllByCentralFileStateIdIn(fileStateIds);
+    List<Facility> facilities =
+        facilityRepository.findAllByOriginalCentralFileStateIdIn(fileStateIds);
 
     HashMap<Long, Facility> uniqueFacilities = new HashMap<>();
     inspections.forEach(i -> uniqueFacilities.put(i.getFacility().getId(), i.getFacility()));
@@ -330,10 +331,10 @@ public class ReviewService {
   }
 
   private void checkForInspectionDuplicates(Inspection inspection) {
-    UUID centralFileStateId = inspection.getFacility().getCentralFileStateId();
+    UUID originalCentralFileStateId = inspection.getFacility().getOriginalCentralFileStateId();
 
     List<UUID> centralFileStateIds =
-        facilityClient.getFacilityFileStateIdsWithSameReferenceFacility(centralFileStateId);
+        facilityClient.getFacilityFileStateIdsWithSameReferenceFacility(originalCentralFileStateId);
 
     Instant startTime =
         Optional.ofNullable(inspection.getExecutionAppointment())

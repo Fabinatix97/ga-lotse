@@ -24,7 +24,7 @@ public class PostgresTestContainer {
   // this means that we need to use GenericContainer instead of PostgreSQLContainer.
   private static final DockerImageName POSTGRES_DOCKER_IMAGE =
       DockerImageName.parse(
-          "postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659");
+          "postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c");
   public static final int POSTGRES_PORT = 5432;
   public static final String POSTGRES_URL_TEMPLATE = "jdbc:postgresql://%s:%s/%s";
   private static final String POSTGRES_PASSWORD = "testpassword";

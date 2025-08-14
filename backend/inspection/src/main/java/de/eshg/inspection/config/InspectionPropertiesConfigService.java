@@ -65,8 +65,8 @@ public class InspectionPropertiesConfigService
   @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
-    ConfigurationStatus configurationStatus = determineConfigurationStatus();
-    return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, configurationStatus);
+    /* the configuration is not exposed on the UI, therefore the status is suppressed */
+    return MapUtils.orderedMapOfEntries();
   }
 
   @Transactional(propagation = Propagation.REQUIRED)
@@ -82,14 +82,6 @@ public class InspectionPropertiesConfigService
       currentConfig.setFacilityFileNumberMethod(updateConfig.getFacilityFileNumberMethod());
       currentConfig.setInitialized(true);
     }
-  }
-
-  private ConfigurationStatus determineConfigurationStatus() {
-    InspectionPropertiesConfiguration config = getConfig();
-    if (!(config.isInitialized())) {
-      return ConfigurationStatus.INCOMPLETE;
-    }
-    return ConfigurationStatus.COMPLETE;
   }
 
   @VisibleForTesting

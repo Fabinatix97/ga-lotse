@@ -52,6 +52,7 @@ export function ChecklistFileElement({
 }: Readonly<ChecklistFileElementProps>) {
   const { data: config } = useGetPublicConfig();
   const uploadTooltipTitleId = useId();
+  const titleId = useId();
   if (element.type !== "IMAGE" && element.type !== "AUDIO") {
     return;
   }
@@ -99,13 +100,14 @@ export function ChecklistFileElement({
   );
 
   return (
-    <FormPlus aria-label={element.type}>
-      <Stack direction="column" gap={1}>
+    <FormPlus data-testid={element.type}>
+      <Stack direction="column" gap={1} role="group" aria-labelledby={titleId}>
         <ChecklistLabel
           incident={false}
           required={element.context.mandatory}
           tooltipText={element.context.help}
           note={element.context.note}
+          label-id={titleId}
         >
           {label}
         </ChecklistLabel>

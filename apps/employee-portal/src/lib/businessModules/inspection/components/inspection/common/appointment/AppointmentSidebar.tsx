@@ -108,7 +108,11 @@ function AppointmentSidebarWithMutations({
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit, values, setValues }) => (
-          <SidebarForm ref={sidebarFormRef} onSubmit={handleSubmit}>
+          <SidebarForm
+            ref={sidebarFormRef}
+            aria-label={title}
+            onSubmit={handleSubmit}
+          >
             <SidebarContent title={title}>
               <Grid container columnSpacing={2} rowSpacing={3}>
                 <Grid xs={12}>

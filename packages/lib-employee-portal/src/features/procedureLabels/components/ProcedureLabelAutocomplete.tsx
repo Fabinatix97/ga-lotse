@@ -21,6 +21,7 @@ interface ProcedureLabelAutocompleteProps {
   onChange: (newValue: ProcedureLabel[]) => void;
   procedureLabelApi: ProcedureLabelClient;
   procedureLabelApiQueryKey: QueryKeyFactory;
+  required?: boolean;
 }
 
 export function ProcedureLabelAutocomplete(
@@ -38,6 +39,7 @@ export function ProcedureLabelAutocomplete(
       name={props.name}
       multiple
       placeholder="Kennung"
+      required={props.required}
       getOptionKey={getEntityId}
       getOptionLabel={getProcedureLabelName}
       isOptionEqualToValue={isSameEntity}

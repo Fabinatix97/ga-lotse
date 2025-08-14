@@ -10,9 +10,9 @@ import { Row, SALUTATION_VALUES } from "@eshg/lib-portal";
 import { ApiFacilityContactPerson } from "@eshg/measles-protection-api";
 
 import {
-  ExternalLinkDetailsCell,
+  ExternalLinkDetailsItem,
   emailHref,
-} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 function FacilityContact({ person }: { person: ApiFacilityContactPerson }) {
@@ -35,7 +35,7 @@ function FacilityContact({ person }: { person: ApiFacilityContactPerson }) {
         </Row>
       </Stack>
       <Stack gap={1}>
-        <ExternalLinkDetailsCell
+        <ExternalLinkDetailsItem
           label="E-Mail-Adresse"
           value={person.emailAddress}
           href={emailHref}

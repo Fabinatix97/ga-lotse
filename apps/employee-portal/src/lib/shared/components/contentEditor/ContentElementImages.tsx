@@ -5,6 +5,7 @@
 
 import { OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
+import { useId } from "react";
 
 import { ApiEditorElementImages } from "@eshg/lib-editor-api";
 import { FileCard, FileCardActionProps } from "@eshg/lib-employee-portal";
@@ -17,14 +18,18 @@ export function ContentElementImages({
   element: ApiEditorElementImages;
   basePath?: string;
 }) {
+  const titleId = useId();
   return (
-    <Stack spacing={1}>
-      <Typography level="title-md">{element.title}</Typography>
+    <Stack spacing={1} role="group" aria-labelledby={titleId}>
+      <Typography level="title-md" id={titleId}>
+        {element.title}
+      </Typography>
       {element.images.length === 0 ? (
         <Typography level="body-md">(keine)</Typography>
       ) : (
         element.images.map((image) => {
           const url = `${basePath}/${image.externalId}`;
+
           function openImage() {
             window.open(url, "_blank");
           }

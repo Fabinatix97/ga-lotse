@@ -9,8 +9,8 @@ plugins {
   id 'com.bmuschko.docker-remote-api'
 }
 
-def helmVersion = '3.17.1'
-def chartsnapVersion = '0.4.3'
+def helmVersion = '3.18.4'
+def chartsnapVersion = '0.5.0'
 def chartsnapImage = "helm-chartsnap:${helmVersion}-${chartsnapVersion}"
 
 def opencodeDir = layout.buildDirectory.dir("opencode")
@@ -78,6 +78,7 @@ def createOpencodeRelease = tasks.register('createOpencodeRelease', Copy) {
   exclude([
     'hetzner-setup.sh',
     'deployment-check.sh',
+    'check-all-prod-instances.sh',
     'k3d',
     'build',
     'data',

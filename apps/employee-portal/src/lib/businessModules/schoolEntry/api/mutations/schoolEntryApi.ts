@@ -27,6 +27,7 @@ import {
   ApiSopessExaminationResult,
   ApiSyncPersonRequest,
   ApiUpdatePersonRequest,
+  ApiUpdateProceduresWithLabelsRequest,
   ApiVaccinationStatus,
   ApiWaitingRoom,
   DeleteProcedureRequest,
@@ -56,6 +57,15 @@ export function useCreateAppointmentsInBulk() {
   return useHandledMutation({
     mutationFn: (values: ApiCreateAppointmentsBulkRequest) =>
       schoolEntryApi.createAppointmentsInBulk(values),
+  });
+}
+
+export function useUpdateProceduresInBulk() {
+  const schoolEntryApi = useSchoolEntryApi();
+
+  return useHandledMutation({
+    mutationFn: (values: ApiUpdateProceduresWithLabelsRequest) =>
+      schoolEntryApi.updateProceduresWithLabels(values),
   });
 }
 

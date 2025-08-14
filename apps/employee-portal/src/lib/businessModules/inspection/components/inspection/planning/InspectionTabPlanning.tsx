@@ -92,69 +92,101 @@ export function InspectionTabPlanning({
 
   if (isLargeLayout) {
     return (
-      <Box
-        sx={{
-          display: "grid",
-          flexDirection: "column",
-          gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
-          gap: 2,
-          paddingBottom: 2,
-        }}
-      >
+      <Box display="contents" role="tabpanel">
         <Box
           sx={{
-            gridColumn: "span 8 / span 8",
-            display: "flex",
+            display: "grid",
             flexDirection: "column",
+            gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
             gap: 2,
+            paddingBottom: 2,
           }}
         >
           <Box
             sx={{
               gridColumn: "span 8 / span 8",
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               gap: 2,
-              height: "min-content",
             }}
           >
-            <TopTwinElements
-              isOffline={isOffline}
-              lockedByDifferentUser={lockedByDifferentUser}
-              hasReachedExecuting={hasReachedExecuting}
-              inspection={inspection}
-              availableCldvs={availableCldvs}
-            />
+            <Box
+              sx={{
+                gridColumn: "span 8 / span 8",
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                height: "min-content",
+              }}
+            >
+              <TopTwinElements
+                isOffline={isOffline}
+                lockedByDifferentUser={lockedByDifferentUser}
+                hasReachedExecuting={hasReachedExecuting}
+                inspection={inspection}
+                availableCldvs={availableCldvs}
+              />
+            </Box>
+            <Box
+              sx={{
+                gridColumn: "span 8 / span 8",
+                gap: 2,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <LeftColumnBottomElements
+                isOffline={isOffline}
+                lockedByDifferentUser={lockedByDifferentUser}
+                hasReachedExecuted={hasReachedExecuted}
+                hasReachedClosed={hasReachedClosed}
+                inspection={inspection}
+              />
+            </Box>
           </Box>
           <Box
             sx={{
-              gridColumn: "span 8 / span 8",
+              gridColumn: "span 4 / span 4",
+              gridRow: "span 2 / span 2", // allows the previous child to shrink
               gap: 2,
               display: "flex",
               flexDirection: "column",
+              position: "sticky",
+              top: `calc(${headerHeightDesktop} + 5.75rem + 24px)`,
+              alignSelf: "flex-start", // required for stickiness
             }}
           >
-            <LeftColumnBottomElements
+            <RightColumnElements
               isOffline={isOffline}
               lockedByDifferentUser={lockedByDifferentUser}
+              hasReachedExecuting={hasReachedExecuting}
               hasReachedExecuted={hasReachedExecuted}
               hasReachedClosed={hasReachedClosed}
               inspection={inspection}
+              department={department}
             />
           </Box>
         </Box>
+      </Box>
+    );
+  } else {
+    return (
+      <Box display="contents" role="tabpanel">
         <Box
           sx={{
-            gridColumn: "span 4 / span 4",
-            gridRow: "span 2 / span 2", // allows the previous child to shrink
-            gap: 2,
-            display: "flex",
+            display: "grid",
             flexDirection: "column",
-            position: "sticky",
-            top: `calc(${headerHeightDesktop} + 5.75rem + 24px)`,
-            alignSelf: "flex-start", // required for stickiness
+            gap: 2,
+            paddingBottom: 2,
           }}
         >
+          <TopTwinElements
+            isOffline={isOffline}
+            lockedByDifferentUser={lockedByDifferentUser}
+            hasReachedExecuting={hasReachedExecuting}
+            inspection={inspection}
+            availableCldvs={availableCldvs}
+          />
           <RightColumnElements
             isOffline={isOffline}
             lockedByDifferentUser={lockedByDifferentUser}
@@ -164,42 +196,14 @@ export function InspectionTabPlanning({
             inspection={inspection}
             department={department}
           />
+          <LeftColumnBottomElements
+            isOffline={isOffline}
+            lockedByDifferentUser={lockedByDifferentUser}
+            hasReachedExecuted={hasReachedExecuted}
+            hasReachedClosed={hasReachedClosed}
+            inspection={inspection}
+          />
         </Box>
-      </Box>
-    );
-  } else {
-    return (
-      <Box
-        sx={{
-          display: "grid",
-          flexDirection: "column",
-          gap: 2,
-          paddingBottom: 2,
-        }}
-      >
-        <TopTwinElements
-          isOffline={isOffline}
-          lockedByDifferentUser={lockedByDifferentUser}
-          hasReachedExecuting={hasReachedExecuting}
-          inspection={inspection}
-          availableCldvs={availableCldvs}
-        />
-        <RightColumnElements
-          isOffline={isOffline}
-          lockedByDifferentUser={lockedByDifferentUser}
-          hasReachedExecuting={hasReachedExecuting}
-          hasReachedExecuted={hasReachedExecuted}
-          hasReachedClosed={hasReachedClosed}
-          inspection={inspection}
-          department={department}
-        />
-        <LeftColumnBottomElements
-          isOffline={isOffline}
-          lockedByDifferentUser={lockedByDifferentUser}
-          hasReachedExecuted={hasReachedExecuted}
-          hasReachedClosed={hasReachedClosed}
-          inspection={inspection}
-        />
       </Box>
     );
   }

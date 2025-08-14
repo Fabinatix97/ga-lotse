@@ -147,6 +147,7 @@ function InnerRadioButtons<T extends SelectOption>({
           label={t.label}
           disabled={disabled}
           readOnly={readOnly}
+          required={required}
         />
       ))}
       {additionalField}

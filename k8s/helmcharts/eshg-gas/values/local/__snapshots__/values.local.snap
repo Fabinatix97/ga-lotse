@@ -246,7 +246,7 @@ data:
 
       # HSTS (ngx_http_headers_module is required) (63072000 seconds)
       proxy_hide_header Strict-Transport-Security;
-      add_header Strict-Transport-Security "max-age=63072000" always;
+      add_header Strict-Transport-Security "max-age=63072000; includeSubdomains" always;
 
       proxy_set_header x-eshg-host "";
 
@@ -608,7 +608,7 @@ data:
 
       # HSTS (ngx_http_headers_module is required) (63072000 seconds)
       proxy_hide_header Strict-Transport-Security;
-      add_header Strict-Transport-Security "max-age=63072000" always;
+      add_header Strict-Transport-Security "max-age=63072000; includeSubdomains" always;
 
       proxy_set_header x-eshg-host "";
 
@@ -908,7 +908,7 @@ data:
 
       # HSTS (ngx_http_headers_module is required) (63072000 seconds)
       proxy_hide_header Strict-Transport-Security;
-      add_header Strict-Transport-Security "max-age=63072000" always;
+      add_header Strict-Transport-Security "max-age=63072000; includeSubdomains" always;
 
       location /js/ {
           proxy_pass https://keycloak.frankfurt.svc.cluster.local/;
@@ -1516,7 +1516,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1544,7 +1544,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-auditlog-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1838,7 +1838,7 @@ spec:
             path: ca.crt
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1866,7 +1866,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-citizen-portal-auth-cache
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2091,7 +2091,7 @@ spec:
       - name: "gitlab-registry-pull-secret"
       containers:
       - name: citizen-portal-auth-cache
-        image: "docker.io/redis:7.4.4-alpine3.21@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273"
+        image: "docker.io/redis:8.2.0-alpine3.22@sha256:7521abdff715d396aa482183942f3fe643344287c29ccb66eee16ac08a92190f"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2172,7 +2172,7 @@ spec:
           value: "53"
       initContainers:
       - name: waitfor-citizen-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2201,7 +2201,7 @@ spec:
             memory: 50Mi
       containers:
       - name: application
-        image: "docker.io/nginx:1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+        image: "docker.io/nginx:1.29.0@sha256:776b2e787034135a7614429eee7f07e7421cfe37718b1e89de3b41366ea2335d"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2428,7 +2428,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-citizen-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2675,7 +2675,7 @@ spec:
             path: ca.crt
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2703,7 +2703,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-employee-portal-auth-cache
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2928,7 +2928,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: employee-portal-auth-cache
-        image: "docker.io/redis:7.4.4-alpine3.21@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273"
+        image: "docker.io/redis:8.2.0-alpine3.22@sha256:7521abdff715d396aa482183942f3fe643344287c29ccb66eee16ac08a92190f"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3009,7 +3009,7 @@ spec:
           value: "53"
       initContainers:
       - name: waitfor-employee-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3038,7 +3038,7 @@ spec:
             memory: 50Mi
       containers:
       - name: application
-        image: "docker.io/nginx:1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+        image: "docker.io/nginx:1.29.0@sha256:776b2e787034135a7614429eee7f07e7421cfe37718b1e89de3b41366ea2335d"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3261,7 +3261,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-employee-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3498,7 +3498,7 @@ spec:
           value: "53"
       initContainers:
       - name: waitfor-keycloak
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3527,7 +3527,7 @@ spec:
             memory: 50Mi
       containers:
       - name: application
-        image: "docker.io/nginx:1.27.4@sha256:9d6b58feebd2dbd3c56ab5853333d627cc6e281011cfd6050fa4bcf2072c9496"
+        image: "docker.io/nginx:1.29.0@sha256:776b2e787034135a7614429eee7f07e7421cfe37718b1e89de3b41366ea2335d"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3655,7 +3655,7 @@ spec:
         - name: workspace
           mountPath: /ws
       - name: waitfor-keycloak-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3839,7 +3839,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-keycloak
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4142,7 +4142,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4170,7 +4170,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-svgsanitizer
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4198,7 +4198,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-base-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4688,7 +4688,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4716,7 +4716,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-base
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4744,7 +4744,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-inspection-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5056,7 +5056,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5084,7 +5084,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-base
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5112,7 +5112,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-schoolentry-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5420,7 +5420,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.32.2@sha256:9933302d768bbb344fedae9e6e1e452beaf63ae231f3f328272032455ea9aa1e"
+        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5635,7 +5635,7 @@ spec:
           type: RuntimeDefault
       initContainers:
       - name: db-init
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: false
@@ -5651,7 +5651,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: auditlog-db
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5734,7 +5734,7 @@ spec:
           type: RuntimeDefault
       initContainers:
       - name: db-init
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: false
@@ -5750,7 +5750,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: keycloak-db
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5833,7 +5833,7 @@ spec:
           type: RuntimeDefault
       initContainers:
       - name: db-init
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: false
@@ -5849,7 +5849,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: base-db
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5932,7 +5932,7 @@ spec:
           type: RuntimeDefault
       initContainers:
       - name: db-init
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: false
@@ -5948,7 +5948,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: inspection-db
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -6031,7 +6031,7 @@ spec:
           type: RuntimeDefault
       initContainers:
       - name: db-init
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsNonRoot: false
@@ -6047,7 +6047,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: schoolentry-db
-        image: "docker.io/postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659"
+        image: "docker.io/postgres:15.12@sha256:8f6fbd24a12304d2adc332a2162ee9ff9d6044045a0b07f94d6e53e73125e11c"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false

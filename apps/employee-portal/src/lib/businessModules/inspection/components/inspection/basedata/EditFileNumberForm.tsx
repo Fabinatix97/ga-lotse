@@ -51,6 +51,7 @@ type EditFileNumberOptions = "KEEP" | "DEFINE";
 
 const MIN_SUFFIX = 1;
 const MAX_SUFFIX = 99;
+
 export interface EditFileNumberFormValues {
   fileNumberSuffix: OptionalFieldValue<number>;
   fileNumberSuffixSelect: EditFileNumberOptions;
@@ -87,7 +88,7 @@ export function EditFileNumberForm({
       onSubmit={props.onSubmit}
     >
       {({ isSubmitting, values }) => (
-        <SidebarForm ref={props.formRef}>
+        <SidebarForm ref={props.formRef} aria-label={props.title}>
           <SidebarContent
             title={
               <DialogTitle level="h2" component="h1">

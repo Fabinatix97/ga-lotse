@@ -7,6 +7,7 @@ import {
   BaseAddress,
   BaseAddressDetailsColumn,
 } from "@eshg/lib-employee-portal";
+import { DetailsList } from "@eshg/lib-portal";
 
 import { HistoryDetailsSheet } from "@/lib/baseModule/components/contacts/history/HistoryDetailsSheet";
 
@@ -17,7 +18,9 @@ export function ContactAddressChangeDetails({
 }) {
   return (
     <HistoryDetailsSheet>
-      <BaseAddressDetailsColumn address={address} />
+      <DetailsList>
+        <BaseAddressDetailsColumn address={address} />
+      </DetailsList>
     </HistoryDetailsSheet>
   );
 }

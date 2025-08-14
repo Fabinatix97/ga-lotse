@@ -4,6 +4,8 @@
     "logout": "Mein Bereich verlassen"
   },
   "title": "Informationen",
+  "cancelled_header": "Abgesagt",
+  "cancelled_message": "Der Termin wurde abgesagt.",
   "sidePanel": {
     "title_false": "Wählen Sie jetzt Ihren Termin",
     "title_true": "Sie können den Termin nicht wahrnehmen?",
@@ -20,6 +22,7 @@
     "consultation": "Reiseberatung",
     "vaccination": "Impfung"
   },
+  "appointment_bookable": "Noch nicht gebucht",
   "start_label": "Terminbeginn",
   "start_value": "{{ time }} Uhr",
   "duration_label": "Dauer:",
