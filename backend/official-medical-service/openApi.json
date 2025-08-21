@@ -4825,6 +4825,12 @@
               "$ref" : "#/components/schemas/AppointmentBlockBin"
             }
           },
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          },
           "bookedAppointments" : {
             "type" : "integer",
             "format" : "int32"
@@ -5454,6 +5460,12 @@
             "items" : {
               "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
             }
+          },
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
           },
           "consultants" : {
             "type" : "array",
@@ -6446,6 +6458,12 @@
             "items" : {
               "$ref" : "#/components/schemas/GetAppointmentBlock"
             }
+          },
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
           },
           "id" : {
             "type" : "string",

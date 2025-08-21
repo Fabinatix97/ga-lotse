@@ -98,6 +98,9 @@ interface FormPlusOptions {
   revalidateOnLanguageChange?: boolean;
   sx?: SxProps;
   "data-testid"?: string;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
 }
 
 /* Formik <Form> wrapper that utilizes useScrollToError()
@@ -121,6 +124,10 @@ export function FormPlus({
       {...props}
       ref={formRef}
       noValidate
+      role="form"
+      aria-label={props["aria-label"]}
+      aria-labelledby={props["aria-labelledby"]}
+      aria-describedby={props["aria-describedby"]}
     >
       {children}
     </Box>

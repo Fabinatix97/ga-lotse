@@ -161,8 +161,8 @@ export default function DataPrivacyRightsEntrypointPage() {
               <Typography level="h2" id="column-2-section">
                 {t("entrypoint.your_rights_section.in_person.title")}
               </Typography>
-              <AddressSection department={department} localePath="contact" />
-              <ContactSection department={department} localePath="contact" />
+              <AddressSection department={department} />
+              <ContactSection department={department} />
             </StyledColumnSheet>
           </InfoSectionGrid>
         </ContentSheet>

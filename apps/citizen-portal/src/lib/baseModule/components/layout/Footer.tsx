@@ -9,6 +9,7 @@ import { RequiresChildren } from "@eshg/lib-portal";
 
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { useGetConfig } from "@/lib/shared/api/queries/publicConfig";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
 import { ScopedInternalLink } from "@/lib/shared/components/scopedLinks";
@@ -35,19 +36,22 @@ interface FooterLinkProps extends RequiresChildren {
 
 function FooterLink({ children, href }: FooterLinkProps) {
   return (
-    <ScopedInternalLink
-      level="title-md"
-      sx={{ color: "white", textDecorationColor: "white" }}
-      href={href}
-    >
-      {children}
-    </ScopedInternalLink>
+    <Box display="contents" role="listitem">
+      <ScopedInternalLink
+        level="title-md"
+        sx={{ color: "white", textDecorationColor: "white" }}
+        href={href}
+      >
+        {children}
+      </ScopedInternalLink>
+    </Box>
   );
 }
 
 export function Footer(props: DepartmentInfoProps) {
   const { t } = useTranslation("footer");
   const routes = useRoutes();
+  const { data: config } = useGetConfig();
 
   return (
     <Box
@@ -66,6 +70,7 @@ export function Footer(props: DepartmentInfoProps) {
           © {props.department.name} {new Date().getFullYear()}
         </Typography>
         <Stack
+          role="list"
           sx={{
             flexDirection: byBreakpoint({
               mobile: "column",
@@ -88,7 +93,11 @@ export function Footer(props: DepartmentInfoProps) {
           <FooterLink href={routes.termsOfUse}>
             {t("terms_of_use_link")}
           </FooterLink>
-          <FooterLink href={routes.openData}>{t("open_data_link")}</FooterLink>
+          {config.isOpenDataEnabled && (
+            <FooterLink href={routes.openData}>
+              {t("open_data_link")}
+            </FooterLink>
+          )}
           <FooterLink href={routes.contact}>{t("contact_link")}</FooterLink>
         </Stack>
       </ResponsiveContainer>

@@ -5,7 +5,7 @@
 
 import { Typography } from "@mui/joy";
 
-import { formatList } from "@eshg/lib-employee-portal";
+import { formatList } from "@eshg/lib-portal";
 
 import { useExaminationStore } from "../../stores/examination/ExaminationStoreProvider";
 import {

@@ -3,22 +3,6 @@
   "information": {
     "title": "Information"
   },
-  "contact": {
-    "title": "Contact and Availability",
-    "addressSection": {
-      "title": "Address"
-    },
-    "phoneSection": {
-      "title": "Phone",
-      "number": "Phone: {{ phoneNumber }}"
-    },
-    "openingHoursSection": {
-      "title": "Opening and Consultation Hours"
-    },
-    "emailSection": {
-      "title": "Email"
-    }
-  },
   "personalArea": {
     "title": "Here you can report your concern for an official medical examination.",
     "information": "To report a concern, an order letter is required.",

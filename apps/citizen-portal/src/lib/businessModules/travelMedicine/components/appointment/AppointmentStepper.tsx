@@ -8,6 +8,7 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
+  useId,
   useMemo,
   useState,
 } from "react";
@@ -135,6 +136,8 @@ export function AppointmentStepper() {
     [showSidepanel, setShowSidepanel],
   );
 
+  const titleId = useId();
+  const stepperTitleId = useId();
   return (
     <DepartmentContextProvider>
       <AppointmentStepperContext value={contextValue}>
@@ -144,6 +147,8 @@ export function AppointmentStepper() {
               <MultiStepFormTitle
                 titleRef={titleRef}
                 title={t("common.title")}
+                titleId={titleId}
+                stepperTitleId={stepperTitleId}
                 stepperTitle={t("common.stepperTitle", {
                   currentStepIndex: currentStep,
                   totalSteps: totalSteps,
@@ -158,7 +163,10 @@ export function AppointmentStepper() {
                 }
               >
                 {(formikProps) => (
-                  <FormPlus>
+                  <FormPlus
+                    aria-labelledby={titleId}
+                    aria-describedby={stepperTitleId}
+                  >
                     {currentStep !== totalSteps && showSidepanel ? (
                       <TwoColumnGrid
                         content={<Outlet {...formikProps} />}

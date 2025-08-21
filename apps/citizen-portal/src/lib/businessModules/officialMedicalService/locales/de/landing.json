@@ -3,22 +3,6 @@
   "information": {
     "title": "Informationen"
   },
-  "contact": {
-    "title": "Kontakt und Erreichbarkeit",
-    "addressSection": {
-      "title": "Adresse"
-    },
-    "phoneSection": {
-      "title": "Telefon",
-      "number": "Telefon: {{ phoneNumber }}"
-    },
-    "openingHoursSection": {
-      "title": "Öffnungs- und Sprechzeiten"
-    },
-    "emailSection": {
-      "title": "E-Mail"
-    }
-  },
   "personalArea": {
     "title": "Hier können Sie Ihr Anliegen für ein amtsärztliches Gutachten melden",
     "information": "Um ein Anliegen zu melden, ist ein Auftragsschreiben notwendig.",

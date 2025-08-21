@@ -155,6 +155,8 @@ public class KeycloakMapper {
         "true",
         "ssl",
         String.valueOf(smtp.sslEnabled()),
+        "starttls",
+        String.valueOf(smtp.startTls()),
         "user",
         smtp.username(),
         "password",

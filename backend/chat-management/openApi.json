@@ -404,7 +404,7 @@
       },
       "ChatFeature" : {
         "type" : "string",
-        "enum" : [ "CHAT_BASE", "RESET_KEY_BACKUP_PASSPHRASE" ]
+        "enum" : [ "RESET_KEY_BACKUP_PASSPHRASE" ]
       },
       "DeactivateRequest" : {
         "required" : [ "matrixUserId" ],

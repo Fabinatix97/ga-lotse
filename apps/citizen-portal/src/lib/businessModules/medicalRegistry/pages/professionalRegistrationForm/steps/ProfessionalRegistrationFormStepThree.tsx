@@ -40,7 +40,10 @@ import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/p
 import { useTranslation } from "@/lib/i18n/client";
 import { allBreakpoints, byBreakpoint } from "@/lib/shared/breakpoints";
 import { StyledRemoveButton } from "@/lib/shared/components/form/file/buttonVariants";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 const MAX_EMPLOYEES = 30;
@@ -71,7 +74,7 @@ export function ProfessionalRegistrationFormStepThree() {
 
   return (
     <ContentSheet>
-      <Typography level="h2">{t("stepThree.pageTitle")}</Typography>
+      <ContentSheetTitle>{t("stepThree.pageTitle")}</ContentSheetTitle>
 
       {shouldEnableSection("practice", changeType) && (
         <>

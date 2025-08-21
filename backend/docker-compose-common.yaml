@@ -5,7 +5,7 @@ services:
   eshg-service-base:
     environment:
       - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,legacy-config,test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,dev-config,test-helper}
       - eshg.keycloak.internal.url=http://keycloak:8080
       - eshg.population.enabled=${POPULATION_ENABLED:-true}
     restart: unless-stopped

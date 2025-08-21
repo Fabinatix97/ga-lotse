@@ -428,30 +428,12 @@ public class SchoolEntryService {
       return List.of();
     }
     return getFreeAppointmentsForProcedure(
-        procedure, earliestStart, null, true, appointmentType, schoolId, locationId);
+        procedure, earliestStart, appointmentType, schoolId, locationId);
   }
 
   List<AppointmentDto> getFreeAppointmentsForProcedure(
       SchoolEntryProcedure procedure,
       Instant earliestStart,
-      Instant latestStart,
-      boolean returnCurrentAppointment,
-      AppointmentType appointmentType) {
-    return getFreeAppointmentsForProcedure(
-        procedure,
-        earliestStart,
-        latestStart,
-        returnCurrentAppointment,
-        appointmentType,
-        null,
-        null);
-  }
-
-  List<AppointmentDto> getFreeAppointmentsForProcedure(
-      SchoolEntryProcedure procedure,
-      Instant earliestStart,
-      Instant latestStart,
-      boolean returnCurrentAppointment,
       AppointmentType appointmentType,
       UUID schoolId,
       UUID locationId) {
@@ -471,10 +453,10 @@ public class SchoolEntryService {
 
     List<AppointmentDto> freeAppointments =
         appointmentBlockService.getFreeAppointments(
-            earliestStart, latestStart, appointmentType, appointmentLocationId, null);
+            earliestStart, null, appointmentType, appointmentLocationId, null);
 
     Appointment persistedAppointment = procedure.getAppointment();
-    if (persistedAppointment != null && returnCurrentAppointment) {
+    if (persistedAppointment != null) {
       AppointmentDto appointmentDto =
           de.eshg.lib.appointmentblock.AppointmentMapper.mapAppointmentToDto(persistedAppointment);
       return Stream.concat(freeAppointments.stream(), Stream.of(appointmentDto))
@@ -484,6 +466,36 @@ public class SchoolEntryService {
     }
 
     return freeAppointments;
+  }
+
+  List<AppointmentDto> getFreeAppointmentsWithAvailability(
+      SchoolEntryProcedure procedure,
+      Instant earliestStart,
+      Instant latestStart,
+      AppointmentType appointmentType,
+      Boolean availableForCitizen,
+      Boolean availableForBulkBooking) {
+
+    if (procedure.hasBeenClosed()) {
+      log.info(
+          "Returning an empty list of free appointments, because the procedure has been closed before.");
+      return List.of();
+    }
+
+    UUID appointmentLocationId = computeLocationIdForAppointment(procedure, null, null);
+
+    if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
+        && appointmentLocationId == null) {
+      return List.of();
+    }
+
+    return appointmentBlockService.getFreeAppointmentsWithAvailability(
+        earliestStart,
+        latestStart,
+        appointmentType,
+        appointmentLocationId,
+        availableForCitizen,
+        availableForBulkBooking);
   }
 
   UUID getAppointmentLocation(SchoolEntryProcedure procedure) {
@@ -636,8 +648,8 @@ public class SchoolEntryService {
           AppointmentType appointmentType = computeAppointmentType(procedure, null, null);
 
           List<AppointmentDto> freeAppointments =
-              getFreeAppointmentsForProcedure(
-                  procedure, earliestStart, null, false, appointmentType);
+              getFreeAppointmentsWithAvailability(
+                  procedure, earliestStart, null, appointmentType, null, true);
           if (freeAppointments.isEmpty()) {
             stats.countError();
           } else {

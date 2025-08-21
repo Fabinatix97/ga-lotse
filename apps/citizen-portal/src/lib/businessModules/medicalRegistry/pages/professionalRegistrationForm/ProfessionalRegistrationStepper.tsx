@@ -5,6 +5,7 @@
 
 import { Typography } from "@mui/joy";
 import { FormikProps, useFormikContext } from "formik";
+import { useId } from "react";
 
 import {
   FormPlus,
@@ -45,6 +46,8 @@ export function ProfessionalRegistrationStepper(
     "medicalRegistry/professionalRegistrationForm",
   ]);
 
+  const titleId = useId();
+  const stepperLabelId = useId();
   return (
     <MultiStepForm<MedicalRegistryCreateProcedureFormValues>
       steps={steps(changeType)}
@@ -58,16 +61,18 @@ export function ProfessionalRegistrationStepper(
           />
           <PageTitle
             titleRef={titleRef}
+            titleId={titleId}
             toolbar={
               <StepIndicator
                 currentStep={currentStep}
                 totalSteps={totalSteps}
+                id={stepperLabelId}
               />
             }
           >
             {t("navigation.pageTitle")}
           </PageTitle>
-          <FormPlus>
+          <FormPlus aria-labelledby={titleId} aria-describedby={stepperLabelId}>
             <TwoColumnGrid
               content={<Outlet {...props.formikProps} />}
               sidePanel={<ProfessionalRegistrationSidePanel />}
@@ -104,9 +109,11 @@ function steps(changeType: OptionalFieldValue<ApiTypeOfChange>) {
 function StepIndicator({
   currentStep,
   totalSteps,
+  id,
 }: {
   currentStep: number;
   totalSteps: number;
+  id?: string;
 }) {
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
@@ -116,6 +123,7 @@ function StepIndicator({
       component="span"
       data-testid="multiStepFormIndicator"
       level="h4"
+      id={id}
       sx={{
         color: theme.palette.text.tertiary,
       }}

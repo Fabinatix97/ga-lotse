@@ -139,7 +139,9 @@ public class AppointmentBlockGroupsPopulator
             physicianIds,
             mfaIds,
             consultantIds,
-            locationId);
+            locationId,
+            true,
+            true);
 
     return appointmentBlockController.createDailyAppointmentBlocksForGroup(request);
   }

@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
+import { formatList, useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiArchivingRelevance,
   ArchivingApiInterface,
 } from "@eshg/lib-procedures-api";
-
-import { formatList } from "../../../utils/formatters";
 
 export function useBulkUpdateProceduresArchivingRelevance(
   archivingApi: ArchivingApiInterface,

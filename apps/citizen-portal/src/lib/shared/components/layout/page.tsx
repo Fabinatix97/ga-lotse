@@ -45,6 +45,7 @@ export function PageLayout(props: PageLayoutProps) {
 interface PageTitleProps extends RequiresChildren {
   toolbar?: ReactNode;
   titleRef?: RefObject<HTMLDivElement | null>;
+  titleId?: string;
 }
 
 export function PageTitle(props: PageTitleProps) {
@@ -76,6 +77,7 @@ export function PageTitle(props: PageTitleProps) {
         flexGrow={1}
         sx={{ hyphens: "auto", overflowWrap: "break-word" }}
         tabIndex={-1}
+        id={props.titleId}
       >
         {props.children}
       </Typography>

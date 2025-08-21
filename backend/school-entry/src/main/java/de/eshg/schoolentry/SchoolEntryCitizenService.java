@@ -106,8 +106,8 @@ public class SchoolEntryCitizenService {
       return List.of();
     }
     return schoolEntryService
-        .getFreeAppointmentsForProcedure(
-            schoolEntryProcedure, earliestStart, latestStart, false, appointmentType)
+        .getFreeAppointmentsWithAvailability(
+            schoolEntryProcedure, earliestStart, latestStart, appointmentType, true, null)
         .stream()
         .filter(excludeAppointment(schoolEntryProcedure.getAppointment()))
         .toList();

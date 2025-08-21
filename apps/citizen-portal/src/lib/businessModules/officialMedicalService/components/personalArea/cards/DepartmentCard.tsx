@@ -11,7 +11,11 @@ import { Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Trans } from "react-i18next";
 
-import { ExternalLink } from "@eshg/lib-portal";
+import {
+  ExternalLink,
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
+} from "@eshg/lib-portal";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";
@@ -21,10 +25,6 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import {
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
 
 export function DepartmentCard() {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);

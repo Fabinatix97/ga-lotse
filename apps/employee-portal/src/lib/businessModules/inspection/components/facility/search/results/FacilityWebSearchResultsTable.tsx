@@ -21,10 +21,9 @@ import {
   TablePage,
   TableSheet,
   UseTableControlResult,
-  formatList,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { optionsFromRecord, useSnackbar } from "@eshg/lib-portal";
+import { formatList, optionsFromRecord, useSnackbar } from "@eshg/lib-portal";
 
 import {
   useDeleteWebSearchQuery,

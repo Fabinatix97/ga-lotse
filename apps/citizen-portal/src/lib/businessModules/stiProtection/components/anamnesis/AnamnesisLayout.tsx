@@ -5,7 +5,7 @@
 
 import { Box, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useId } from "react";
 
 import { FormPlus } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/sti-protection-api";
@@ -29,18 +29,23 @@ import {
 } from "./AnamnesisStepper.config";
 import { mapFormValuesToApi } from "./helpers";
 
-export function AnamnesisTitle() {
+export function AnamnesisTitle(props: {
+  titleId: string;
+  stepperTitleId: string;
+}) {
   const { t } = useTranslation(["stiProtection/anamnesis"]);
   const [{ concern }] = useFormData<AnamnesisFormData>();
   const { currentStepIndex, totalSteps } = useStepContext();
 
   return (
     <PageTitle
+      titleId={props.titleId}
       toolbar={
         <Typography
           level="h4"
           sx={{ alignContent: "center", whiteSpace: "nowrap" }}
           textColor="text.tertiary"
+          id={props.stepperTitleId}
         >
           {t("stiProtection/forms:common.current_step", {
             currentStep: currentStepIndex + 1,
@@ -111,14 +116,17 @@ export function AnamnesisStepLayout({ children }: PropsWithChildren) {
       },
     );
   }
+
+  const titleId = useId();
+  const stepperTitleId = useId();
   return (
     <>
-      <AnamnesisTitle />
+      <AnamnesisTitle titleId={titleId} stepperTitleId={stepperTitleId} />
       <Formik
         initialValues={{ ...INITIAL_VALUES, ...formData }}
         onSubmit={handleSubmit}
       >
-        <FormPlus>
+        <FormPlus aria-labelledby={titleId} aria-describedby={stepperTitleId}>
           <TwoColumnGrid
             content={
               <Sheet>

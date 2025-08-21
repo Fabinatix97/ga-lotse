@@ -6,14 +6,14 @@
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { ApiBaseFeature, ApiUser } from "@eshg/base-api";
+import { ApiUser, ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import {
   ExternalLink,
   InternalLinkIconButton,
   formatUserName,
 } from "@eshg/lib-portal";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
 import { routes as chatRoutes } from "@/lib/businessModules/chat/shared/routes";
 import { sortUsersByName } from "@/lib/shared/helpers/users";
@@ -97,8 +97,7 @@ const userColumns = [
 ];
 
 export function useUserTableColumns() {
-  const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
-  return showChatUsername
+  return useHasUserRoleCheck(ApiUserRole.ChatUser)
     ? userColumns
     : userColumns.filter((column) => column.header !== "Chat");
 }

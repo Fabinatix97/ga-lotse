@@ -4,11 +4,14 @@
  */
 
 import { DoneOutlined } from "@mui/icons-material";
-import { Button, Typography } from "@mui/joy";
+import { Button } from "@mui/joy";
 
 import { useCitizenRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
@@ -31,7 +34,7 @@ export function ProfessionalRegistrationFormSuccessPage(
       <TwoColumnGrid
         content={
           <ContentSheet>
-            <Typography level="h2">{t("successPage.content")}</Typography>
+            <ContentSheetTitle>{t("successPage.content")}</ContentSheetTitle>
             <DoneOutlined
               sx={{ height: 80, width: 80, alignSelf: "center" }}
               color="success"

@@ -15,6 +15,7 @@ import java.util.UUID;
 
 public record PersonDetailsData(
     long version,
+    String humanReadableId,
     UUID fileStateId,
     Boolean fileStateOutdated,
     String title,

@@ -212,7 +212,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         optional(faker, randomListOfEmails(1), 0.4),
         optional(faker, randomListOfPhoneNumbers(1), 0.4),
         optional(faker, BasePopulator::randomAddress, 0.3),
-        optional(faker, BasePopulator::randomAddress, 0.9));
+        null);
   }
 
   private void createRandomExaminationsAndAnamnesisForProcedure(UUID procedureId, Faker faker) {

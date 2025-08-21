@@ -1,19 +1,5 @@
 {
   "pageTitle": "Travel Medicine Vaccination Consultation",
-  "contact": {
-    "title": "Contact and Availability",
-    "addressSection": {
-      "title": "Address"
-    },
-    "contactSection": {
-      "title": "Contact",
-      "phoneNumber": "Phone: {{ phoneNumber }}",
-      "eMail": "Email:"
-    },
-    "openingHoursSection": {
-      "title": "Opening Hours"
-    }
-  },
   "personalArea": {
     "title": "Schedule an Appointment?",
     "information": "You have the opportunity to schedule appointments for vaccinations, follow-up vaccinations, and consultations with subsequent vaccination.",

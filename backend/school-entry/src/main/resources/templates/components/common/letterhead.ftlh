@@ -86,9 +86,6 @@
         </#if>
         <div class="sender-label">Datum</div>
         <div class="sender-data">${date}</div>
-        <div class="sender-label">Aktenzeichen</div>
-        <div>-</div>
-        <div class="sender-label">(bitte bei Antwort angeben)</div>
       </td>
     </tr>
   </table>

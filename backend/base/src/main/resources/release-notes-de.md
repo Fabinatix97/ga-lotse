@@ -2,6 +2,46 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.4
+_20.08.2025_
+
+Siebzehnter Release der Anwendung GA-Lotse
+
+### Einschulungsuntersuchungen:
+
+* Erstellen von Vorgängen
+  * Anzeige der Personen-ID auf Vorgangsdetailseite
+* Planung
+  * Konfiguration von Terminblöcken zur Einbeziehung bei Online-Portalbuchungen sowie Massenterminvergabe
+* Untersuchungstag
+  * Anzeige Personen-ID auf Arztbrief
+
+### Chat
+
+* Unterstützung der Mitarbeitenden des Gesundheitsamtes in der internen Kommunikation (Ende-zu-Ende verschlüsselt)
+* Starten einer Konversation
+	* Einzelchats
+		* Start über Benutzerverzeichnis
+		* Start über Chatmodul
+	* Gruppenchats
+		* Start über Chatmodul
+		* Erweitern von Einzelchats
+* Nachrichten schreiben
+	* Nachricht senden
+	* Nachricht bearbeiten
+	* Nachricht löschen
+* Einstellungen
+  * Mitglieder zu Gruppe hinzufügen
+  * Mitglieder aus Gruppe entfernen
+  * Gruppe verlassen
+  * Gruppennamen ändern
+  * Adminrechte verwalten
+  * Chateinstellungen
+    * Präsenzstatus anzeigen/teilen
+    * Eingabebenachrichtigung anzeigen/teilen
+    * Lesebestätigung anzeigen/teilen 
+  * Account deaktivieren
+
 ## GA-Lotse 2.3
 _13.08.2025_
 

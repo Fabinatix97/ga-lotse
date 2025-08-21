@@ -17,25 +17,21 @@ import {
 
 interface ContactSectionProps {
   department: ApiGetDepartmentInfoResponse;
-  localePath: string;
 }
 
-export function ContactSection({
-  department,
-  localePath,
-}: Readonly<ContactSectionProps>) {
-  const { t } = useTranslation([`${localePath}`]);
+export function ContactSection({ department }: Readonly<ContactSectionProps>) {
+  const { t } = useTranslation(["shared/contactSection"]);
 
   return (
     <InfoSection icon={<ChatBubbleOutlineOutlined />}>
-      <InfoSectionTitle>{t("contact.contactSection.title")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("title")}</InfoSectionTitle>
       <Typography>
-        {t("contact.contactSection.phoneNumber", {
+        {t("phoneNumber", {
           phoneNumber: department.phoneNumber,
         })}
       </Typography>
       <Typography>
-        {t("contact.contactSection.eMail")}
+        {t("eMail")}
         {`\u00A0`}
         <ExternalLink
           sx={{ wordBreak: "break-all" }}

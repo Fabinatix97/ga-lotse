@@ -5,20 +5,19 @@
 
 "use client";
 
-import { useCloseInboxProcedure } from "@/lib/businessModules/travelMedicine/api/mutations/inbox";
-import {
-  useFetchInboxProcedure,
-  useFetchInboxProcedures,
-} from "@/lib/businessModules/travelMedicine/api/queries/inboxProcedures";
+import { ApiBusinessModule } from "@eshg/base-api";
+import { InboxProceduresPage } from "@eshg/lib-employee-portal";
+
+import { useInboxProcedureApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { procedureTypes } from "@/lib/businessModules/travelMedicine/shared/constants";
-import { InboxProceduresPage } from "@/lib/shared/components/procedures/inbox/InboxProceduresPage";
 
 export default function TravelMedicineInboxProceduresPage() {
+  const inboxProcedureApi = useInboxProcedureApi();
+
   return (
     <InboxProceduresPage
-      useFetchInboxProcedure={useFetchInboxProcedure}
-      useFetchInboxProcedures={useFetchInboxProcedures}
-      useCloseInboxProcedure={useCloseInboxProcedure}
+      inboxProcedureApi={inboxProcedureApi}
+      businessModule={ApiBusinessModule.TravelMedicine}
       procedureTypes={procedureTypes}
     />
   );

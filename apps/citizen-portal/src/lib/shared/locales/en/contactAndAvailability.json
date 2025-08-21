@@ -1,0 +1,9 @@
+{
+  "title": "Contact and Availability",
+  "contact": "Contact",
+  "phone": "Phone: {{phoneNumber}}",
+  "email": "E-Mail:",
+  "internet": "Internet",
+  "address": "Address",
+  "openingAndConsultationHours": "Opening and Consultation Hours"
+}

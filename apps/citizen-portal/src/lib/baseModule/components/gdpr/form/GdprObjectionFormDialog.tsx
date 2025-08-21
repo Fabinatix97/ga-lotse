@@ -58,7 +58,9 @@ export function GdprObjectionFormDialog(props: {
       {props.open && (
         <Formik initialValues={{ matterOfConcern: "" }} onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
-            <FormPlus>
+            <FormPlus
+              aria-label={t("start_procedure_dialog.RIGHT_TO_OBJECT.title")}
+            >
               <Stack gap={2}>
                 <Typography>
                   {t("start_procedure_dialog.RIGHT_TO_OBJECT.description")}

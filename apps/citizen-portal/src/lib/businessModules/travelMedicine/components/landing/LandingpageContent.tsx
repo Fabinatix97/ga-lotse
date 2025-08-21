@@ -9,42 +9,22 @@ import {
   useGetDepartmentInfoQuery,
   useGetOpeningHoursQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
-import { useTranslation } from "@/lib/i18n/client";
-import { AddressSection } from "@/lib/shared/components/AddressSection";
-import { ContactSection } from "@/lib/shared/components/ContactSection";
-import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
-import { InfoSectionGrid } from "@/lib/shared/components/infoSection";
-import {
-  ContentSheet,
-  ContentSheetTitle,
-} from "@/lib/shared/components/layout/contentSheet";
+import { ContactAndAvailabilitySheet } from "@/lib/shared/components/ContactAndAvailabilitySheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 
 export function LandingpageContent() {
-  const { t } = useTranslation(["travelMedicine/landing"]);
   const [{ data: department }, { data: openingHours }] = useSuspenseQueries({
     queries: [useGetDepartmentInfoQuery(), useGetOpeningHoursQuery()],
   });
 
   return (
     <GridColumnStack>
-      <ContentSheet>
-        <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
-        <InfoSectionGrid>
-          <AddressSection
-            department={department}
-            localePath="travelMedicine/landing"
-          />
-          <ContactSection
-            department={department}
-            localePath="travelMedicine/landing"
-          />
-          <OpeningHoursSection
-            openingHours={openingHours}
-            localePath="officialMedicalService/landing"
-          />
-        </InfoSectionGrid>
-      </ContentSheet>
+      <ContactAndAvailabilitySheet
+        openingHoursSectionProps={{
+          openingHourTranslations: openingHours,
+        }}
+        departmentInfo={department}
+      />
     </GridColumnStack>
   );
 }

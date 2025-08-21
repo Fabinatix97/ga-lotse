@@ -10,4 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record GetConfigurationResponse(
-    @NotNull long maxFileSize, @NotNull List<BusinessModule> activeModules) {}
+    @NotNull long maxFileSize,
+    @NotNull List<BusinessModule> activeModules,
+    @NotNull boolean isOpenDataEnabled) {}

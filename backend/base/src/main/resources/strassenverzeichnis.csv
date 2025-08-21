@@ -1,22 +1,22 @@
-Straßennummer;Straßenname;Folge;Hausnr. (von);Zusatz zur Hausnr (von);Hausnr. (bis);Zusatz zur Hausnr (bis);Ortsbezirk;Stadtteil Name;Stadtbezirk;Stadtbezirksvorst;Schiedsamtsbezirk;Sozialrathausbezirk;Sozialbezirk;Polizeirevier;Postleitzahl
-1;"Musterstraße";;;;;;;"Musterstadt";;;;;;;12345
-2;"Beispielweg";;;;;;;"Beispielstadt";;;;;;;23456
-3;"Teststraße";;;;;;;"Teststadt";;;;;;;34567
-4;"Fiktivweg";;;;;;;"Fiktivstadt";;;;;;;45678
-5;"Probenstraße";;;;;;;"Probenstadt";;;;;;;56789
-6;"Testweg";;;;;;;"Testdorf";;;;;;;67890
-16;"Testallee";;;;;;;"Testdorf";;;;;;;67890
-17;"Alleetester";;;;;;;"Testdorf";;;;;;;67890
-18;"Neuer Test";;;;;;;"Testdorf";;;;;;;67890
-7;"Musterallee";"gerade";;;;;;"Musterhausen";;;;;;;78901
-7;"Musterallee";"ungerade";;;;;;"Musterhausen";;;;;;;78901
-8;"Beispielstraße";"gerade";2;;12;;;"Beispielhausen";;;;;;;89012
-8;"Beispielstraße";"ungerade";1;;17;;;"Beispielhausen";;;;;;;89012
-9;"Fantasieweg";;2;;30;;;"Fantasienstadt";;;;;;;90123
-10;"Traumstraße";"gerade";2;"A";44;;;"Traumstadt";;;;;;;12345
-11;"Visionstraße";"ungerade";1;;11;"C";;"Visionstadt";;;;;;;12346
-11;"Visionstraße";;;;;;;"Visionstadt";;;;;;;12346
-12;"Illusionsweg";;;;;;;"Illusionsstadt";;;;;;;23457
-13;"Traumallee";;;;;;;"Traumhausen";;;;;;;34568
-14;"Phantasieweg";;;;;;;"Phantasienstadt";;;;;;;45679
-15;"Wunschstraße";;;;;;;"Wunschstadt";;;;;;;56780
+Straßennummer;Straßenname;Folge;Hausnr. (von);Zusatz zur Hausnr (von);Hausnr. (bis);Zusatz zur Hausnr (bis);Ortsbezirk;Stadtteil Name;Stadtbezirk;Postleitzahl
+1;"Musterstraße";;;;;;;"Musterstadt";;12345
+2;"Beispielweg";;;;;;;"Beispielstadt";;23456
+3;"Teststraße";;;;;;;"Teststadt";;34567
+4;"Fiktivweg";;;;;;;"Fiktivstadt";;45678
+5;"Probenstraße";;;;;;;"Probenstadt";;56789
+6;"Testweg";;;;;;;"Testdorf";;67890
+16;"Testallee";;;;;;;"Testdorf";;67890
+17;"Alleetester";;;;;;;"Testdorf";;67890
+18;"Neuer Test";;;;;;;"Testdorf";;67890
+7;"Musterallee";"gerade";;;;;;"Musterhausen";;78901
+7;"Musterallee";"ungerade";;;;;;"Musterhausen";;78901
+8;"Beispielstraße";"gerade";2;;12;;;"Beispielhausen";;89012
+8;"Beispielstraße";"ungerade";1;;17;;;"Beispielhausen";;89012
+9;"Fantasieweg";;2;;30;;;"Fantasienstadt";;90123
+10;"Traumstraße";"gerade";2;"A";44;;;"Traumstadt";;12345
+11;"Visionstraße";"ungerade";1;;11;"C";;"Visionstadt";;12346
+11;"Visionstraße";;;;;;;"Visionstadt";;12346
+12;"Illusionsweg";;;;;;;"Illusionsstadt";;23457
+13;"Traumallee";;;;;;;"Traumhausen";;34568
+14;"Phantasieweg";;;;;;;"Phantasienstadt";;45679
+15;"Wunschstraße";;;;;;;"Wunschstadt";;56780

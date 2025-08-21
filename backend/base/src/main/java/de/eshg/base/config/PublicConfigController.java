@@ -23,14 +23,21 @@ public class PublicConfigController implements PublicConfigApi {
   private DataSize maxFileSize;
 
   private final BusinessModuleClientRegistry businessModuleClientRegistry;
+  private final BaseConfigurationProperties baseConfigurationProperties;
 
-  public PublicConfigController(BusinessModuleClientRegistry businessModuleClientRegistry) {
+  public PublicConfigController(
+      BusinessModuleClientRegistry businessModuleClientRegistry,
+      BaseConfigurationProperties baseConfigurationProperties) {
     this.businessModuleClientRegistry = businessModuleClientRegistry;
+    this.baseConfigurationProperties = baseConfigurationProperties;
   }
 
   @Override
   public GetConfigurationResponse getConfig() {
-    return new GetConfigurationResponse(maxFileSize.toBytes(), getRegisteredBusinessModules());
+    return new GetConfigurationResponse(
+        maxFileSize.toBytes(),
+        getRegisteredBusinessModules(),
+        baseConfigurationProperties.isOpenDataEnabled());
   }
 
   private List<BusinessModule> getRegisteredBusinessModules() {

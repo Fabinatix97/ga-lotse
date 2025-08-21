@@ -11,9 +11,9 @@ image:
 
 thirdPartyImages:
   kubectl:
-    name: bitnami/kubectl
-    tag: "1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
-    registry: "mirror.gcr.io"
+    name: bitnamisecure/kubectl
+    tag: "1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+    registry: "docker.io"
     pullPolicy: IfNotPresent
   nginx:
     name: nginx
@@ -84,7 +84,6 @@ domains:
     keycloakInternal: keycloak-internal.frankfurt.my-ga-lotse.de
   clusterIssuer: letsencrypt-production
   internalClusterIssuer: letsencrypt-production-internal
-  lsdOrgUnit: frankfurt
 
 keycloak:
   enabled: false
@@ -230,7 +229,6 @@ citizenportalnextjs:
     allowList: []
 
 synapse:
-  enabled: false
   port: 8080
   database:
     selfmanaged: true
@@ -305,6 +303,7 @@ businessmodules:
     noreplyMail: support@ga-lotse.de
     smtp:
       ssl: false
+      startTls: false
     resources:
       requests:
         cpu: 10m

@@ -43,10 +43,6 @@ export const appointmentStaffApiQueryKey = queryKeyFactory(
   apiQueryKey(["appointmentStaffApi"]),
 );
 
-export const inboxProcedureApiQueryKey = queryKeyFactory(
-  apiQueryKey(["inboxProcedureApi"]),
-);
-
 export const procedureStepsApiQueryKey = queryKeyFactory(
   apiQueryKey(["procedureStepApi"]),
 );

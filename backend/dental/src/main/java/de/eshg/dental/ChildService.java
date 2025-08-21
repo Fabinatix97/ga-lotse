@@ -1163,6 +1163,8 @@ public class ChildService {
         comparator
             .thenComparing(
                 institutionForTransition -> institutionForTransition.institution().name())
+            .thenComparing(
+                institutionForTransitionDto -> institutionForTransitionDto.institution().city())
             .thenComparing(institutionForTransition -> institutionForTransition.institution().id());
 
     return comparator;

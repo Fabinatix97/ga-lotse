@@ -4,7 +4,7 @@
  */
 
 import { Add, DeleteOutlined } from "@mui/icons-material";
-import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
+import { Button, Grid, IconButton, Sheet, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { Fragment, useRef, useState } from "react";
 
@@ -22,7 +22,10 @@ import {
   FileField,
   FileFieldProps,
 } from "@/lib/shared/components/form/file/FileField";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 const MAX_OTHER_RELEVANT_DOCUMENTS = 3;
@@ -53,7 +56,7 @@ export function ProfessionalRegistrationFormStepFour() {
 
   return (
     <ContentSheet>
-      <Typography level="h2">{t("stepFour.pageTitle")}</Typography>
+      <ContentSheetTitle>{t("stepFour.pageTitle")}</ContentSheetTitle>
       <Sheet variant="soft">
         <TranslatedFileField
           name={requiredDocumentsForm("identificationDocument")}

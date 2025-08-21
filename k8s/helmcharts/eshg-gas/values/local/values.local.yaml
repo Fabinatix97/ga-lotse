@@ -21,14 +21,10 @@ domains:
     keycloakInternal: keycloak.frankfurt.svc.cluster.local
   clusterIssuer: local-ca
   internalClusterIssuer: local-ca
-  lsdOrgUnit: frankfurt
 
 spring:
   profiles:
     active: "dev, preview-features, health-department-frankfurt"
-
-synapse:
-  enabled: false
 
 businessmodules:
   base:

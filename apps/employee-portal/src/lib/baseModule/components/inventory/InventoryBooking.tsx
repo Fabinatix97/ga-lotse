@@ -31,9 +31,8 @@ import {
   Timeline,
   TimelineEntry,
   TimelineEntryIndicator,
-  formatList,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatDateTime } from "@eshg/lib-portal";
+import { formatDate, formatDateTime, formatList } from "@eshg/lib-portal";
 
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 

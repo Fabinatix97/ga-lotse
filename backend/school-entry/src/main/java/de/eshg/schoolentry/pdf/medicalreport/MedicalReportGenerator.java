@@ -61,7 +61,8 @@ public class MedicalReportGenerator extends AbstractGenerator {
     MedicalReportChild medicalReportChild =
         new MedicalReportChild(
             concat(child.firstName(), child.lastName()),
-            child.dateOfBirth().format(ReportGeneratorConstants.DATE_FORMAT_DE));
+            child.dateOfBirth().format(ReportGeneratorConstants.DATE_FORMAT_DE),
+            child.humanReadableId());
     return new MedicalReportData(
         departmentLogo, departmentAddress, medicalReportChild, request.remark(), request.isVisio());
   }

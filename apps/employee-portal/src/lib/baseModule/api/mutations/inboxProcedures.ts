@@ -3,29 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHandledMutation } from "@eshg/lib-portal";
+import { ApiCreateInboxProcedureRequest } from "@eshg/lib-procedures-api";
+
 import { InboxAwareBusinessModule } from "@/lib/baseModule/components/inboxProcedures/types";
-import { resolveUseCreateInboxProcedure } from "@/lib/baseModule/moduleRegister/useCreateInboxProcedureResolver";
+import { useResolveInboxProcedureApi } from "@/lib/baseModule/moduleRegister/useResolveInboxProcedureApi";
 
 export function useCreateInboxProcedure() {
-  const schoolEntryCreateInboxProcedure =
-    resolveUseCreateInboxProcedure("SCHOOL_ENTRY")();
-  const inspectionCreateInboxProcedure =
-    resolveUseCreateInboxProcedure("INSPECTION")();
-  const travelMedicineCreateInboxProcedure =
-    resolveUseCreateInboxProcedure("TRAVEL_MEDICINE")();
-  const measlesProtectionCreateInboxProcedure =
-    resolveUseCreateInboxProcedure("MEASLES_PROTECTION")();
+  const resolveInboxProcedureApi = useResolveInboxProcedureApi();
 
-  return function (businessModule: InboxAwareBusinessModule) {
-    switch (businessModule) {
-      case "SCHOOL_ENTRY":
-        return schoolEntryCreateInboxProcedure;
-      case "INSPECTION":
-        return inspectionCreateInboxProcedure;
-      case "TRAVEL_MEDICINE":
-        return travelMedicineCreateInboxProcedure;
-      case "MEASLES_PROTECTION":
-        return measlesProtectionCreateInboxProcedure;
-    }
-  };
+  return useHandledMutation({
+    mutationFn: async ({
+      businessModule,
+      request,
+      file,
+    }: {
+      businessModule: InboxAwareBusinessModule;
+      request: ApiCreateInboxProcedureRequest;
+      file?: File;
+    }) =>
+      resolveInboxProcedureApi(businessModule).addInboxProcedure(request, file),
+  });
 }

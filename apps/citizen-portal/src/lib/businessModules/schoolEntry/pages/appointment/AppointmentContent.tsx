@@ -17,7 +17,13 @@ import { Box, Typography, styled } from "@mui/joy";
 import { formatDuration } from "date-fns";
 import { de } from "date-fns/locale";
 
-import { formatDate, formatPersonName, formatTime } from "@eshg/lib-portal";
+import {
+  formatDate,
+  formatPersonName,
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
+  formatTime,
+} from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolEntryProcedure } from "@/lib/businessModules/schoolEntry/api/models/SchoolEntryProcedure";
@@ -34,10 +40,6 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { ScopedInternalLinkButton } from "@/lib/shared/components/scopedLinks";
-import {
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
 
 const StyledList = styled("ul")({
   margin: 0,

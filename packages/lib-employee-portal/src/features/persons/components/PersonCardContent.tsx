@@ -10,9 +10,7 @@ import type {
   ApiAddFacilityFileStateRequestContactAddress,
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
-import { formatDate, formatPersonName } from "@eshg/lib-portal";
-
-import { formatList } from "../../../utils/formatters";
+import { formatDate, formatList, formatPersonName } from "@eshg/lib-portal";
 
 function getAddress(
   address: ApiAddFacilityFileStateRequestContactAddress,

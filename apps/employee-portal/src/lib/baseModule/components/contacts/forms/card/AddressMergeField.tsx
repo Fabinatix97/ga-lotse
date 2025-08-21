@@ -23,9 +23,13 @@ import {
   BaseAddressFormInputs,
   DetailsItem,
   DetailsRow,
-  formatList,
 } from "@eshg/lib-employee-portal";
-import { FieldProps, translateCountry, useBaseField } from "@eshg/lib-portal";
+import {
+  FieldProps,
+  formatList,
+  translateCountry,
+  useBaseField,
+} from "@eshg/lib-portal";
 
 interface AddressSelectOption {
   label: string;

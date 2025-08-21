@@ -7,7 +7,7 @@ import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ApiDiffAddress } from "@eshg/base-api";
-import { translateCountry } from "@eshg/lib-portal";
+import { formatList, translateCountry } from "@eshg/lib-portal";
 
 import {
   BaseAddress,
@@ -16,7 +16,6 @@ import {
   isDomesticAddress,
   isPostboxAddress,
 } from "../../../../../api/models/address";
-import { formatList } from "../../../../../utils/formatters";
 import { SyncFormField } from "../SyncFormField";
 import { DiffArrow, SyncFormBlock, SyncFormSection } from "../SyncFormGrid";
 

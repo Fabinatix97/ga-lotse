@@ -136,7 +136,7 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
         optional(faker, randomListOfEmails(1), 0.4),
         optional(faker, randomListOfPhoneNumbers(1), 0.4),
         optional(faker, BasePopulator::randomAddress, 0.3),
-        optional(faker, BasePopulator::randomAddress, 0.9),
+        null,
         randomYear,
         groupName,
         randomSchoolOrDaycare(faker));
@@ -162,7 +162,7 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
         original.emailAddresses(),
         original.phoneNumbers(),
         original.contactAddress(),
-        original.differentBillingAddress(),
+        null,
         newYear.getValue(),
         original.groupName(),
         original.institutionId());

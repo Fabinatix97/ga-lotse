@@ -16,4 +16,6 @@ public record AppointmentBlockGroupData(
     List<AppointmentTypeDto> types,
     int parallelExaminations,
     LocationDto location,
-    List<AppointmentBlockData> appointmentBlocks) {}
+    List<AppointmentBlockData> appointmentBlocks,
+    Boolean availableForCitizen,
+    Boolean availableForBulkBooking) {}

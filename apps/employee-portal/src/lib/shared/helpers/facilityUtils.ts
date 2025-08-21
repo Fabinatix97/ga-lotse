@@ -12,28 +12,18 @@ import {
 } from "@eshg/base-api";
 import { ApiDataOrigin } from "@eshg/inspection-api";
 import {
-  formatList,
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "@eshg/lib-employee-portal";
-import { mapOptionalValue } from "@eshg/lib-portal";
+import {
+  formatList,
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
+  mapOptionalValue,
+} from "@eshg/lib-portal";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
-
-export function streetAndHouseNumber(address?: {
-  street?: string;
-  houseNumber?: string;
-}) {
-  return formatList([address?.street, address?.houseNumber], " ");
-}
-
-export function postalCodeAndCity(address?: {
-  postalCode?: string;
-  city?: string;
-}) {
-  return formatList([address?.postalCode, address?.city], " ");
-}
 
 export function fullAddress(address?: {
   street?: string;
@@ -42,7 +32,7 @@ export function fullAddress(address?: {
   city?: string;
 }) {
   return formatList(
-    [streetAndHouseNumber(address), postalCodeAndCity(address)],
+    [formatStreetAndHouseNumber(address), formatPostalCodeAndCity(address)],
     ", ",
   );
 }

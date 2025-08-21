@@ -19,6 +19,8 @@ import {
   durationBetweenDatesInMinutes,
   formatDate,
   formatPersonName,
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
   formatTime,
 } from "@eshg/lib-portal";
 import {
@@ -30,10 +32,6 @@ import { useGetDepartmentInfoQuery } from "@/lib/businessModules/travelMedicine/
 import { useTranslation } from "@/lib/i18n/client";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import { InfoSectionGrid } from "@/lib/shared/components/infoSection";
-import {
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
 
 interface AppointmentDetailsMetaInformationProps {
   appointmentDetails: ApiGetAppointmentDetailsResponse;

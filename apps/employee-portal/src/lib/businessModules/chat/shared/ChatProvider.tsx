@@ -9,7 +9,6 @@ import { createContext, useContext, useMemo } from "react";
 import { isNullish, omit } from "remeda";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiChatFeature } from "@eshg/chat-management-api";
 import {
   useGetSelfUser,
   useHasUserRoleCheck,
@@ -17,7 +16,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal";
 
-import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { useGetUserSettings } from "@/lib/businessModules/chat/api/queries/userSettingsApi";
 import { MessageTeaserProvider } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { ChatClientProvider } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -30,8 +28,7 @@ interface ChatProviderContextType {
   userSettings: ChatUserSettings;
   canAccessChat: boolean;
   isSettingsLoading: boolean;
-  isFeatureToggleLoading: boolean;
-  isFeatureToggleSuccess: boolean;
+  isError: boolean;
 }
 
 const ChatContext = createContext<ChatProviderContextType | undefined>(
@@ -53,19 +50,13 @@ export function ChatProvider(props: ChatProviderProps) {
 }
 
 function InnerChatProvider({ children, configuration }: ChatProviderProps) {
-  const {
-    data: featureToggleChatEnabled,
-    isLoading: featureToggleChatEnabledLoading,
-    isSuccess: featureToggleChatEnabledSuccess,
-  } = useIsNewFeatureEnabledUnsuspended(ApiChatFeature.ChatBase);
-
   const { data: selfUser } = useGetSelfUser();
-  const canAccessChat =
-    useHasUserRoleCheck(ApiUserRole.ChatUser) && !!featureToggleChatEnabled;
-  const { data: userSettingsData, isLoading } = useGetUserSettings(
-    selfUser.userId,
-    canAccessChat,
-  );
+  const canAccessChat = useHasUserRoleCheck(ApiUserRole.ChatUser);
+  const {
+    data: userSettingsData,
+    isLoading,
+    isError,
+  } = useGetUserSettings(selfUser.userId, canAccessChat);
 
   // Chat user settings
   const userSettings = useMemo<ChatUserSettings>(
@@ -88,17 +79,9 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
       userSettings,
       canAccessChat,
       isSettingsLoading: isLoading,
-      isFeatureToggleLoading: featureToggleChatEnabledLoading,
-      isFeatureToggleSuccess: featureToggleChatEnabledSuccess,
+      isError,
     }),
-    [
-      configuration,
-      userSettings,
-      canAccessChat,
-      isLoading,
-      featureToggleChatEnabledLoading,
-      featureToggleChatEnabledSuccess,
-    ],
+    [configuration, userSettings, canAccessChat, isLoading, isError],
   );
 
   return (
@@ -143,8 +126,7 @@ function InnerChatProviderMock({ children, configuration }: ChatProviderProps) {
       },
       canAccessChat: false,
       isSettingsLoading: false,
-      isFeatureToggleLoading: false,
-      isFeatureToggleSuccess: true,
+      isError: true,
     }),
     [configuration],
   );

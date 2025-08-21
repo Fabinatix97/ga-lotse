@@ -6,7 +6,7 @@
 "use client";
 
 import { Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { isDefined } from "remeda";
 
 import { FormPlus } from "@eshg/lib-portal";
@@ -68,12 +68,16 @@ export default function CitizenOmsEntryPage() {
     router.push(citizenRoutes.personalArea.index(accessCode));
   }
 
+  const titleId = useId();
+  const stepperTitleId = useId();
   return (
     <PageContent>
       <PageTitle
         titleRef={titleRef}
+        titleId={titleId}
         toolbar={
           <StepCounter
+            stepperTitleId={stepperTitleId}
             stepperTitle={t("common.stepTitle", {
               currentStepIndex: stepIndex + 1,
               totalSteps,
@@ -84,7 +88,7 @@ export default function CitizenOmsEntryPage() {
         {t("common.title")}
       </PageTitle>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        <FormPlus>
+        <FormPlus aria-labelledby={titleId} aria-describedby={stepperTitleId}>
           <AnamnesisWrapper
             stepIndex={stepIndex}
             setStepIndex={setStepIndex}

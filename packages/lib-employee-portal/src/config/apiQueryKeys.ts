@@ -32,3 +32,7 @@ export const fileApiQueryKey = queryKeyFactory(baseQueryKey(["fileApi"]));
 export const publicConfigApiQueryKey = queryKeyFactory(
   baseQueryKey(["publicConfigApi"]),
 );
+
+export const inboxProcedureApiQueryKey = queryKeyFactory(
+  baseQueryKey(["inboxProcedureApi"]),
+);

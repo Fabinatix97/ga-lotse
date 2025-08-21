@@ -25,6 +25,7 @@ public final class PersonMapper {
 
     return new PersonDetailsDto(
         detailsData.version(),
+        detailsData.humanReadableId(),
         detailsData.fileStateId(),
         detailsData.fileStateOutdated(),
         detailsData.title(),

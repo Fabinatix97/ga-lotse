@@ -201,11 +201,6 @@ subprojects {
 
     configurations {
         productionRuntimeClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
-
-        testFixturesCompileClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
-        testFixturesRuntimeClasspath.shouldResolveConsistentlyWith(testFixturesCompileClasspath)
-
-        testCompileClasspath.shouldResolveConsistentlyWith(testFixturesRuntimeClasspath)
         testCompileClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
     }
 

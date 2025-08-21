@@ -25,6 +25,8 @@ import {
   formatDate,
   formatDateToFullReadableString,
   formatPersonName,
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
   formatTime,
   useMultiStepForm,
 } from "@eshg/lib-portal";
@@ -35,11 +37,7 @@ import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
-import {
-  formatDepartmentAddress,
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
+import { formatDepartmentAddress } from "@/lib/shared/formatters/address";
 import { useManualTranslation } from "@/lib/shared/hooks/useManualTranslation";
 
 interface OverviewSectionProps {

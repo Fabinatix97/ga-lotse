@@ -5,6 +5,7 @@
 
 import { Typography } from "@mui/joy";
 import { Formik } from "formik";
+import { useId } from "react";
 
 import {
   FormPlus,
@@ -298,16 +299,20 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
     });
   }
 
+  const titleId = useId();
+  const stepperTitleId = useId();
   return (
     <MultiStepForm<CitizenAnamnesisFormValues> steps={STEPS}>
       {({ Outlet, currentStep, totalSteps, titleRef }) => (
         <>
           <PageTitle
             titleRef={titleRef}
+            titleId={titleId}
             toolbar={
               <StepIndicator
                 currentStep={currentStep}
                 totalSteps={totalSteps}
+                titleId={stepperTitleId}
               />
             }
           >
@@ -315,7 +320,10 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
           </PageTitle>
           <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
             {(formikProps) => (
-              <FormPlus>
+              <FormPlus
+                aria-labelledby={titleId}
+                aria-describedby={stepperTitleId}
+              >
                 <TwoColumnGrid
                   content={<Outlet {...formikProps} />}
                   sidePanel={<CitizenAnamnesisSidePanel child={props.child} />}
@@ -332,9 +340,11 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
 function StepIndicator({
   currentStep,
   totalSteps,
+  titleId,
 }: {
   currentStep: number;
   totalSteps: number;
+  titleId?: string;
 }) {
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
   return (
@@ -342,6 +352,7 @@ function StepIndicator({
       component="span"
       data-testid="multiStepFormIndicator"
       level="h4"
+      id={titleId}
       sx={{
         color: theme.palette.text.tertiary,
       }}

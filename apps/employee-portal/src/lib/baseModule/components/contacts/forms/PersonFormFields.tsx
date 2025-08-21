@@ -5,7 +5,6 @@
 
 import { Divider, Grid } from "@mui/joy";
 
-import { ApiBaseFeature } from "@eshg/base-api";
 import {
   GENDER_OPTIONS,
   InputField,
@@ -16,14 +15,12 @@ import {
   useValidateLength,
 } from "@eshg/lib-portal";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { PersonContactFormValues } from "@/lib/baseModule/components/contacts/types";
 
 const fieldName = createFieldNameMapper<PersonContactFormValues>();
 
 export function PersonFormFields() {
   const validateLength = useValidateLength();
-  const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   return (
     <>
       <Grid xxs={6}>
@@ -63,15 +60,13 @@ export function PersonFormFields() {
           options={GENDER_OPTIONS}
         />
       </Grid>
-      {showChatUsername && (
-        <Grid xxs={12}>
-          <InputField
-            name={fieldName("externalChatUsername")}
-            label="Chat-ID"
-            validate={validateLength(1, 255)}
-          />
-        </Grid>
-      )}
+      <Grid xxs={12}>
+        <InputField
+          name={fieldName("externalChatUsername")}
+          label="Chat-ID"
+          validate={validateLength(1, 255)}
+        />
+      </Grid>
       <Grid xxs={12}>
         <Divider />
       </Grid>

@@ -27,10 +27,6 @@ export const valueEvaluatorApiQueryKey = queryKeyFactory(
   apiQueryKey(["valueEvaluatorApi"]),
 );
 
-export const inboxProcedureApiQueryKey = queryKeyFactory(
-  apiQueryKey(["inboxProcedureApi"]),
-);
-
 export const appointmentStaffApiQueryKey = queryKeyFactory(
   apiQueryKey(["appointtingStaffApi"]),
 );

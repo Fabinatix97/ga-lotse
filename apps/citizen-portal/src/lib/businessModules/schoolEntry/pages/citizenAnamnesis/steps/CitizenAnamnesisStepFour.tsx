@@ -12,7 +12,10 @@ import { LocalBooleanRadioField } from "@/lib/businessModules/schoolEntry/pages/
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function CitizenAnamnesisStepFour() {
@@ -32,7 +35,7 @@ export function CitizenAnamnesisStepFour() {
 
   return (
     <ContentSheet>
-      <Typography level="h2">{t("support.title")}</Typography>
+      <ContentSheetTitle>{t("support.title")}</ContentSheetTitle>
       <Typography level="h3">{t("support.description")}</Typography>
       <LocalBooleanRadioField
         name={promotionTherapyAndAidInfo("visionImpairment")}

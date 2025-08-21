@@ -21,7 +21,9 @@ public record CreateDailyAppointmentBlockGroupRequest(
     List<UUID> physicians,
     List<UUID> mfas,
     List<UUID> consultants,
-    UUID locationId) {
+    UUID locationId,
+    Boolean availableForCitizen,
+    Boolean availableForBulkBooking) {
 
   public CreateDailyAppointmentBlockGroupRequest(
       List<AppointmentTypeDto> types,
@@ -30,6 +32,15 @@ public record CreateDailyAppointmentBlockGroupRequest(
       List<UUID> physicians,
       List<UUID> mfas,
       List<UUID> consultants) {
-    this(types, parallelExaminations, appointmentBlocks, physicians, mfas, consultants, null);
+    this(
+        types,
+        parallelExaminations,
+        appointmentBlocks,
+        physicians,
+        mfas,
+        consultants,
+        null,
+        null,
+        null);
   }
 }

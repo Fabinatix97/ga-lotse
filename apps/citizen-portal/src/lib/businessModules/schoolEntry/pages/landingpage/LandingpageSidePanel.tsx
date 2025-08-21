@@ -63,7 +63,7 @@ function PrivacyPolicyConfirmationForm() {
   );
 
   return (
-    <FormPlus sx={{ display: "contents" }}>
+    <FormPlus aria-label={t("personalArea.title")} sx={{ display: "contents" }}>
       <Stack gap={1}>
         <ConfirmationCheckboxField
           name="confirmPrivacyNotice"

@@ -248,6 +248,7 @@ public class PersonClient {
       Person person, GetPersonFileStateResponse response) {
     return new PersonDetailsData(
         person.getVersion(),
+        response.humanReadableId(),
         response.id(),
         response.outdated(),
         response.title(),

@@ -20,6 +20,7 @@ import java.util.UUID;
 @Schema(name = "PersonDetails")
 public record PersonDetailsDto(
     @NotNull long version,
+    @NotNull String humanReadableId,
     @NotNull UUID fileStateId,
     @NotNull boolean fileStateOutdated,
     @Size(min = 1, max = 119) String title,

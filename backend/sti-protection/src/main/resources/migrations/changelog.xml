@@ -19,5 +19,6 @@
   <include file="migrations/0009_add_employee_person_type.xml"/>
   <include file="migrations/0010_add_meds_abroad_appointment_type.xml"/>
   <include file="migrations/0011_refactor_sti_protection_appointment_standard_duration.xml"/>
+  <include file="migrations/0012_add_appointment_block_flags.xml"/>
 
 </databaseChangeLog>

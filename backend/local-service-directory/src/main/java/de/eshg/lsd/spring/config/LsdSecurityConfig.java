@@ -13,7 +13,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.lsd.keycloak.PermissionRole;
 import de.eshg.lsd.register.api.LsdActorApi;
-import de.eshg.lsd.register.api.LsdOrgUnitApi;
 import de.eshg.rest.service.security.AuthorizationCustomizer;
 import de.eshg.rest.service.security.DefaultEshgSecurityConfig;
 import java.util.List;
@@ -54,8 +53,6 @@ public class LsdSecurityConfig {
               auth.requestMatchers(POST, LsdActorApi.BASE_URL + "/**")
                   .hasRole(PermissionRole.LSD_WRITE_TECH_USER.getKeycloakName());
 
-              auth.requestMatchers(GET, LsdOrgUnitApi.BASE_URL + "/**")
-                  .hasRole(PermissionRole.LSD_READ_TECH_USER.getKeycloakName());
               auth.requestMatchers(
                       GET,
                       "/actuator/health",

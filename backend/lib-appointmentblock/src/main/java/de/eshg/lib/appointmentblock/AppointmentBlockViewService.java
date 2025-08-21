@@ -187,7 +187,9 @@ public class AppointmentBlockViewService {
           appointmentBlockGroup.getConsultants(),
           resolvedUsers,
           block.getAppointments().size(),
-          appointmentBlockBins);
+          appointmentBlockBins,
+          appointmentBlockGroup.isAvailableForCitizen(),
+          appointmentBlockGroup.isAvailableForBulkBooking());
     } else {
       return new AppointmentBlockDto(
           block.getExternalId(),
@@ -199,7 +201,9 @@ public class AppointmentBlockViewService {
           Collections.emptyList(),
           Map.of(),
           block.getAppointments().size(),
-          appointmentBlockBins);
+          appointmentBlockBins,
+          appointmentBlockGroup.isAvailableForCitizen(),
+          appointmentBlockGroup.isAvailableForBulkBooking());
     }
   }
 

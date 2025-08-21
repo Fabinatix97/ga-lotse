@@ -12,9 +12,9 @@ image:
 
 thirdPartyImages:
   kubectl:
-    name: bitnami/kubectl
-    tag: "1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
-    registry: "mirror.gcr.io"
+    name: bitnamisecure/kubectl
+    tag: "1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
+    registry: "docker.io"
     pullPolicy: IfNotPresent
   nginx:
     name: nginx
@@ -66,7 +66,6 @@ domains:
     keycloakInternal: keycloak-central-internal.cs.my-ga-lotse.de
   clusterIssuer: letsencrypt-production
   internalClusterIssuer: letsencrypt-production-internal
-  lsdOrgUnit: central
 
 databaseSecurity:
   enabled: true
@@ -186,9 +185,6 @@ employeeportal:
   enabled: false
 
 citizenportal:
-  enabled: false
-
-synapse:
   enabled: false
 
 svgsanitizer:

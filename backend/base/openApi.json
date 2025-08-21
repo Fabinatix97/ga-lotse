@@ -7403,7 +7403,7 @@
       },
       "BaseFeature" : {
         "type" : "string",
-        "enum" : [ "CHAT_USERNAME", "INBOX" ]
+        "enum" : [ "INBOX" ]
       },
       "BlockingEventsOfCalendar" : {
         "required" : [ "calendarId", "events" ],
@@ -9039,7 +9039,7 @@
         }
       },
       "GetConfigurationResponse" : {
-        "required" : [ "activeModules", "maxFileSize" ],
+        "required" : [ "activeModules", "isOpenDataEnabled", "maxFileSize" ],
         "type" : "object",
         "properties" : {
           "activeModules" : {
@@ -9047,6 +9047,9 @@
             "items" : {
               "$ref" : "#/components/schemas/BusinessModule"
             }
+          },
+          "isOpenDataEnabled" : {
+            "type" : "boolean"
           },
           "maxFileSize" : {
             "type" : "integer",

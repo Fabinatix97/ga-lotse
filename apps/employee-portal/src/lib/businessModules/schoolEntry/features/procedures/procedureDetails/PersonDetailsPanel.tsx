@@ -104,7 +104,11 @@ export function PersonDetailsPanel({
           )
         }
       >
-        <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
+        <CentralFilePersonDetails
+          person={person}
+          columnSx={COLUMN_STYLE}
+          showHumanReadableId={!isCustodian}
+        />
       </DetailsSection>
     </ContentPanel>
   );

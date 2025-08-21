@@ -7,7 +7,7 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { isDefined, isNonNullish } from "remeda";
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { ApiUserRole } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
   CONTACT_CATEGORY_NAMES,
@@ -31,7 +31,6 @@ import {
   getOptionalTitle,
 } from "@eshg/lib-portal";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
@@ -42,8 +41,8 @@ import {
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsItem";
 
 export function ContactDetails({ contact }: { contact: Contact }) {
-  const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseContactsWrite);
+  const hasChatUserRole = useHasUserRoleCheck(ApiUserRole.ChatUser);
   const updateSidebar = useUpdateContactSidebar();
 
   const showEmailPhoneSection =
@@ -97,7 +96,7 @@ export function ContactDetails({ contact }: { contact: Contact }) {
                   />
                 )}
 
-                {showChatUsername && contact.externalChatUsername && (
+                {contact.externalChatUsername && hasChatUserRole && (
                   <>
                     <DetailsItem
                       label="Chat-ID"

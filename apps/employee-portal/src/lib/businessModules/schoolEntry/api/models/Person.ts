@@ -33,6 +33,7 @@ export interface Person {
 }
 
 export interface PersonDetails extends Person {
+  readonly humanReadableId: string;
   readonly fileStateId: string;
   readonly version: number;
   readonly outdated: boolean;
@@ -59,6 +60,7 @@ export function mapPerson(response: PersonProps): Person {
 export function mapPersonDetails(response: ApiPersonDetails): PersonDetails {
   return {
     ...mapPerson(response),
+    humanReadableId: response.humanReadableId,
     fileStateId: response.fileStateId,
     version: response.version,
     outdated: response.fileStateOutdated,

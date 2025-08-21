@@ -58,6 +58,8 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   physicians: [],
   mfas: [],
   location: null,
+  availableForCitizen: true,
+  availableForBulkBooking: true,
 };
 
 function mapFormValues(
@@ -70,6 +72,8 @@ function mapFormValues(
     physicians: values.physicians,
     mfas: values.mfas,
     locationId: mapOptionalValue(values.location)?.id,
+    availableForCitizen: values.availableForCitizen,
+    availableForBulkBooking: values.availableForBulkBooking,
   };
 }
 
@@ -91,6 +95,8 @@ export interface CreateAppointmentBlockGroupValues {
   physicians: string[];
   mfas: string[];
   location: ApiAddContact200Response | null;
+  availableForCitizen: boolean;
+  availableForBulkBooking: boolean;
 }
 
 export function CreateAppointmentBlockGroupForm() {

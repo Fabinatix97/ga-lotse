@@ -35,6 +35,24 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
       @Param("physicianId") UUID physicianId,
       @Param("appointmentBlockEnd") Instant appointmentBlockEnd);
 
+  @Query(
+      "select distinct a from AppointmentBlock a "
+          + "left join fetch a.appointments "
+          + "left join a.appointmentBlockGroup abg "
+          + "left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id "
+          + "where h.type = :appointmentType "
+          + "and (:availableForCitizen is null or abg.availableForCitizen = :availableForCitizen) "
+          + "and (:availableForBulkBooking is null or abg.availableForBulkBooking = :availableForBulkBooking) "
+          + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
+          + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
+  List<AppointmentBlock>
+      findBlockByAvailabilityAndAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
+          @Param("appointmentType") AppointmentType appointmentType,
+          @Param("locationId") UUID locationId,
+          @Param("appointmentBlockEnd") Instant appointmentBlockEnd,
+          @Param("availableForCitizen") Boolean availableForCitizen,
+          @Param("availableForBulkBooking") Boolean availableForBulkBooking);
+
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(
       "select distinct a from AppointmentBlock a "

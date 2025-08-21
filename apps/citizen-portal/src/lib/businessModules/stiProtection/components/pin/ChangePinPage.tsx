@@ -4,6 +4,7 @@
  */
 
 import { Formik, FormikHelpers } from "formik";
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FormPlus, useSnackbar } from "@eshg/lib-portal";
@@ -74,16 +75,18 @@ export function ChangePinPage() {
     }
   }
 
+  const titleId = useId();
   return (
     <PageContent>
       <PageTitle
+        titleId={titleId}
         toolbar={<LogoutButton text={t("translation:common.leave")} />}
       >
         {t("title")}
       </PageTitle>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ values }) => (
-          <FormPlus>
+          <FormPlus aria-labelledby={titleId}>
             {!values.hasSavedPin ? <ChangePinForm /> : <ChangePinConfirm />}
           </FormPlus>
         )}

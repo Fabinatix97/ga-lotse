@@ -59,6 +59,8 @@ function loadLocaleCitizenPortal(language: string, namespace: string) {
   const modulePath =
     moduleName === defaultModule
       ? `baseModule`
-      : `businessModules/${moduleName}`;
+      : firstPart === "shared"
+        ? "shared"
+        : `businessModules/${moduleName}`;
   return import(`../${modulePath}/locales/${language}/${subNamespace}.json`);
 }

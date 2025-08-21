@@ -5,20 +5,19 @@
 
 "use client";
 
-import { useCloseInboxProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/inbox";
-import {
-  useFetchInboxProcedure,
-  useFetchInboxProcedures,
-} from "@/lib/businessModules/measlesProtection/api/queries/inboxProcedures";
+import { ApiBusinessModule } from "@eshg/base-api";
+import { InboxProceduresPage } from "@eshg/lib-employee-portal";
+
+import { useInboxProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { procedureTypes } from "@/lib/businessModules/measlesProtection/shared/constants";
-import { InboxProceduresPage } from "@/lib/shared/components/procedures/inbox/InboxProceduresPage";
 
 export default function MeaslesProtectionInboxProceduresPage() {
+  const inboxProcedureApi = useInboxProcedureApi();
+
   return (
     <InboxProceduresPage
-      useFetchInboxProcedure={useFetchInboxProcedure}
-      useFetchInboxProcedures={useFetchInboxProcedures}
-      useCloseInboxProcedure={useCloseInboxProcedure}
+      inboxProcedureApi={inboxProcedureApi}
+      businessModule={ApiBusinessModule.MeaslesProtection}
       procedureTypes={procedureTypes}
     />
   );

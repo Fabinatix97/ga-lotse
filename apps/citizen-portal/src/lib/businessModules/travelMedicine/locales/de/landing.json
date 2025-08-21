@@ -1,19 +1,5 @@
 {
   "pageTitle": "Reisemedizinische Impfberatung",
-  "contact": {
-    "title": "Kontakt und Erreichbarkeit",
-    "addressSection": {
-      "title": "Adresse"
-    },
-    "contactSection": {
-      "title": "Kontakt",
-      "phoneNumber": "Telefon: {{ phoneNumber }}",
-      "eMail": "E-Mail:"
-    },
-    "openingHoursSection": {
-      "title": "Öffnungszeiten"
-    }
-  },
   "personalArea": {
     "title": "Termin vereinbaren?",
     "information": "Sie haben die Möglichkeit Termine für Impfungen, Folgeimpfungen und Beratungsgespräche mit anschließender Impfung zu vereinbaren.",

@@ -153,8 +153,6 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secrets
                   key: lsd-client-secret
-            - name: ESHG_LSD_ORGUNIT_NAME
-              value: "{{ .Values.domains.lsdOrgUnit }}"
             - name: ESHG_SERVICEDIRECTORY_BASEURL
               value: "http://{{ .Values.domains.centralservices.servicedirectory }}"
             {{- if .Values.lsd.javaToolOptions }}

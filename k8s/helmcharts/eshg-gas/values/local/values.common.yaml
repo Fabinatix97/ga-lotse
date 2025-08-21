@@ -35,7 +35,6 @@ citizenportalauth:
     selfmanaged: true
 
 synapse:
-  enabled: true
   database:
     k8sDeployment: true
 

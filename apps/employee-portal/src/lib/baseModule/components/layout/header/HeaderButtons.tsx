@@ -59,6 +59,7 @@ export function HeaderButtons() {
       }}
     >
       <HeaderIconButton
+        data-testid="header-notifications-button"
         aria-label={`${notificationsCount} Benachrichtigungen`}
         onClick={toggleNotificationsSidebar}
       >
@@ -76,6 +77,7 @@ export function HeaderButtons() {
       )}
 
       <HeaderIconButton
+        data-testid="header-user-button"
         aria-label={`Benutzer (${getPresenceLabel(userPresence)})`}
         sx={{
           backgroundColor: "transparent",

@@ -13,32 +13,27 @@ import { LoadingIndicator } from "@eshg/lib-portal";
 import { Chat } from "@/lib/businessModules/chat/components/Chat";
 import { ChatErrorBoundary } from "@/lib/businessModules/chat/components/ChatErrorBoundary";
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
+import { ChatOfflineMessage } from "@/lib/businessModules/chat/components/ChatOfflineMessage";
 import { DeactivationMessage } from "@/lib/businessModules/chat/components/deactivate/DeactivationMessage";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { InfoPanelProvider } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { PresenceProvider } from "@/lib/businessModules/chat/shared/PresenceProvider";
 
 export default function ChatPage() {
-  const {
-    canAccessChat,
-    userSettings,
-    isSettingsLoading,
-    isFeatureToggleLoading,
-    isFeatureToggleSuccess,
-  } = useChat();
+  const { canAccessChat, userSettings, isSettingsLoading, isError } = useChat();
 
   useLayoutEffect(() => {
-    if (
-      !canAccessChat &&
-      isFeatureToggleSuccess &&
-      !userSettings.accountDeactivated
-    ) {
+    if (!canAccessChat && !userSettings.accountDeactivated) {
       notFound();
     }
-  }, [canAccessChat, isFeatureToggleSuccess, userSettings.accountDeactivated]);
+  }, [canAccessChat, userSettings.accountDeactivated]);
 
-  if (isFeatureToggleLoading || isSettingsLoading) {
+  if (isSettingsLoading) {
     return <LoadingIndicator text="Seite wird geladen…" fullHeight />;
+  }
+
+  if (isError) {
+    return <ChatOfflineMessage />;
   }
 
   if (userSettings.accountDeactivated) {

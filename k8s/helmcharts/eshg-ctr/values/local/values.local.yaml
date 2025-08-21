@@ -16,7 +16,6 @@ domains:
     adminportal: ap.central.svc.cluster.local
     keycloak: keycloak.central.svc.cluster.local
     keycloakInternal: keycloak.central.svc.cluster.local
-  lsdOrgUnit: central
   clusterIssuer: local-ca
   internalClusterIssuer: local-ca
 

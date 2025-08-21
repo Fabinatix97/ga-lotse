@@ -5,25 +5,26 @@
 
 "use client";
 
-import {
-  useCloseInboxProcedure,
-  useCreateInboxProcedure,
-} from "@/lib/businessModules/inspection/api/mutations/inbox";
-import {
-  useFetchInboxProcedure,
-  useFetchInboxProcedures,
-} from "@/lib/businessModules/inspection/api/queries/inboxProcedures";
+import { ApiBusinessModule } from "@eshg/base-api";
+import { InboxProceduresPage } from "@eshg/lib-employee-portal";
+
+import { useInboxProcedureApi } from "@/lib/businessModules/inspection/api/clients";
+import { useInspectionInboxProcedureCreateSidebar } from "@/lib/businessModules/inspection/components/inbox/InspectionInboxProcedureCreateSidebar";
 import { procedureTypes } from "@/lib/businessModules/inspection/shared/constants";
-import { InboxProceduresPage } from "@/lib/shared/components/procedures/inbox/InboxProceduresPage";
 
 export default function InspectionInboxProceduresPage() {
+  const inboxProcedureApi = useInboxProcedureApi();
+  const inspectionInboxProcedureCreateSidebar =
+    useInspectionInboxProcedureCreateSidebar();
+
   return (
     <InboxProceduresPage
+      inboxProcedureApi={inboxProcedureApi}
+      businessModule={ApiBusinessModule.Inspection}
       procedureTypes={procedureTypes}
-      useFetchInboxProcedures={useFetchInboxProcedures}
-      useFetchInboxProcedure={useFetchInboxProcedure}
-      useCloseInboxProcedure={useCloseInboxProcedure}
-      useCreateInboxProcedure={useCreateInboxProcedure}
+      onCreateProcedure={(inboxProcedureId) =>
+        inspectionInboxProcedureCreateSidebar.open({ inboxProcedureId })
+      }
     />
   );
 }

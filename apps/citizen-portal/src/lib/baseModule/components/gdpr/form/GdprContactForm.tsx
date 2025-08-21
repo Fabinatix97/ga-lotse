@@ -84,7 +84,7 @@ export function GdprContactForm() {
       {(formState === "input" || formState === "preview") && (
         <Formik initialValues={{ content: "" }} onSubmit={handleSubmit}>
           {({ isSubmitting, values }) => (
-            <FormPlus>
+            <FormPlus aria-label={t("contact_form.title")}>
               <Stack gap={2}>
                 <AlertSlot />
                 {formState === "input" ? (

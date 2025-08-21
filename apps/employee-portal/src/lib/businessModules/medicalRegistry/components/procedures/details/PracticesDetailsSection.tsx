@@ -13,7 +13,11 @@ import {
   InformationSheet,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
-import { DetailsColumn, isNonEmptyString } from "@eshg/lib-portal";
+import {
+  DetailsColumn,
+  formatStreetAndHouseNumber,
+  isNonEmptyString,
+} from "@eshg/lib-portal";
 import {
   ApiGetProcedure200Response,
   ApiPractice,
@@ -24,7 +28,6 @@ import {
   DetailsCell,
   DetailsCellWrapped,
 } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 
 export function PracticesDetailsSection({
   procedure,
@@ -96,7 +99,7 @@ function PracticeDetails({
               <>
                 <DetailsCellWrapped
                   label={PRACTICE_FIELD_NAME.streetAndHouseNumber}
-                  value={streetAndHouseNumber(address)}
+                  value={formatStreetAndHouseNumber(address)}
                 />
                 <DetailsRow>
                   <DetailsCellWrapped

@@ -25,7 +25,10 @@ import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citize
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { TranslateFn, useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function CitizenAnamnesisStepTwo({
@@ -48,7 +51,7 @@ export function CitizenAnamnesisStepTwo({
 
   return (
     <ContentSheet>
-      <Typography level="h2">{t("additionalInfo.title")}</Typography>
+      <ContentSheetTitle>{t("additionalInfo.title")}</ContentSheetTitle>
       <InputField
         name={additionalChildInfo("responsiblePhysician")}
         label={

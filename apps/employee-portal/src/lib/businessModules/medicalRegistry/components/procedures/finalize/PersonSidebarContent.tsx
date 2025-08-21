@@ -5,8 +5,8 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { SidebarContent, formatList } from "@eshg/lib-employee-portal";
-import { RadioGroupField, formatDate } from "@eshg/lib-portal";
+import { SidebarContent } from "@eshg/lib-employee-portal";
+import { RadioGroupField, formatDate, formatList } from "@eshg/lib-portal";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
 
 import { DraftConfirmInfo } from "@/lib/businessModules/medicalRegistry/api/model/confirmInfo";

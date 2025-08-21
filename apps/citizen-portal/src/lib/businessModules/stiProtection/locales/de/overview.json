@@ -26,22 +26,6 @@
       "notice_info": "Zur Verarbeitung Ihrer Buchung wird Ihre IP-Adresse übermittelt. Die Erhebung der IP-Adresse dient ausschließlich zu technischen Zwecken."
     }
   },
-  "contact": {
-    "title": "Kontakt und Erreichbarkeit",
-    "address_section": {
-      "title": "Adresse"
-    },
-    "opening_hours_section": {
-      "title": "Öffnungs- und Sprechzeiten"
-    },
-    "phone_section": {
-      "title": "Telefon",
-      "number": "Telefon: {{phoneNumber}}"
-    },
-    "email_section": {
-      "title": "E-Mail-Adresse"
-    }
-  },
   "personal_area": {
     "title": "Möchten Sie einen Termin vereinbaren?",
     "information": "Termine für die Beratung und Testung können online vereinbart werden. Termine werden immer zwei Wochen im Voraus freigeschaltet.",

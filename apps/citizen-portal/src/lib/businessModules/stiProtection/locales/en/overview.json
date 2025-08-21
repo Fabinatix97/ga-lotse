@@ -26,22 +26,6 @@
       "notice_info": "Your IP address is transmitted to process your booking. The IP address is collected solely for technical purposes."
     }
   },
-  "contact": {
-    "title": "Contact and Availability",
-    "address_section": {
-      "title": "Address"
-    },
-    "opening_hours_section": {
-      "title": "Opening and Consultation Hours"
-    },
-    "phone_section": {
-      "title": "Phone",
-      "number": "Phone: {{phoneNumber}}"
-    },
-    "email_section": {
-      "title": "Email Address"
-    }
-  },
   "personal_area": {
     "title": "Would you like to make an appointment?",
     "information": "Appointments for consultation and testing can be arranged online. Appointments are always available two weeks in advance.",

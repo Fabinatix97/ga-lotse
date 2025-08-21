@@ -13,6 +13,7 @@ import { useUpdateAppointmentAsCitizen } from "@/lib/businessModules/schoolEntry
 import { UpdateAppointmentContent } from "@/lib/businessModules/schoolEntry/pages/appointment/update-appointment/UpdateAppointmentContent";
 import { UpdateAppointmentSidePanel } from "@/lib/businessModules/schoolEntry/pages/appointment/update-appointment/UpdateAppointmentSidePanel";
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { useScopedRouter } from "@/lib/shared/components/scopedLinks";
 
@@ -26,6 +27,7 @@ interface UpdateAppointmentFormProps {
 }
 
 export function UpdateAppointmentForm(props: UpdateAppointmentFormProps) {
+  const { t } = useTranslation(["schoolEntry/updateAppointment"]);
   const childName = formatPersonName(props.procedure.child);
   const dateOfBirth = formatDate(props.procedure.child.dateOfBirth);
 
@@ -48,7 +50,7 @@ export function UpdateAppointmentForm(props: UpdateAppointmentFormProps) {
       onSubmit={handleSubmit}
     >
       {({ values, isSubmitting, setFieldValue }) => (
-        <FormPlus>
+        <FormPlus aria-label={t("title")}>
           <TwoColumnGrid
             content={
               <UpdateAppointmentContent

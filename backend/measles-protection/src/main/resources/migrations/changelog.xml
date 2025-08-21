@@ -71,5 +71,6 @@
   <include file="migrations/0061_add_meds_abroad_appointment_type.xml"/>
   <include file="migrations/0062_refactor_measles_protection_appointment_standard_duration.xml"/>
   <include file="migrations/0063_statistics.xml"/>
+  <include file="migrations/0064_add_appointment_block_flags.xml"/>
 
 </databaseChangeLog>

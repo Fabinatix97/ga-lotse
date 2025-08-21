@@ -275,6 +275,10 @@ export {
 export { resolveError } from "./errorHandling/errorResolvers";
 
 export {
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
+} from "./formatters/address";
+export {
   formatDate,
   formatDateTime,
   formatTime,
@@ -282,6 +286,7 @@ export {
   formatWeekdayDateTimeRange,
 } from "./formatters/dateTime";
 export { formatFacilityName } from "./formatters/facility";
+export { formatList } from "./formatters/list";
 export { formatCurrency } from "./formatters/numbers";
 export {
   OPTIONAL_FALLBACK_VALUE,

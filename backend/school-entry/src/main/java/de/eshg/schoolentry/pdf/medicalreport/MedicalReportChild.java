@@ -5,4 +5,4 @@
 
 package de.eshg.schoolentry.pdf.medicalreport;
 
-public record MedicalReportChild(String name, String dateOfBirth) {}
+public record MedicalReportChild(String name, String dateOfBirth, String personId) {}

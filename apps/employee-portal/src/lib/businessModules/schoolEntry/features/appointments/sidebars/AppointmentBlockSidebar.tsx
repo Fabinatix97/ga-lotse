@@ -129,6 +129,17 @@ function AppointmentBlockSidebar({
                 <Typography level="body-md">Keine gebuchten Termine</Typography>
               )}
             </DetailsBlock>
+            {(appointmentBlock.availableForCitizen === true ||
+              appointmentBlock.availableForBulkBooking === true) && (
+              <DetailsBlock title="Verfügbar für:">
+                {appointmentBlock.availableForCitizen && (
+                  <Typography> Online-Portal</Typography>
+                )}
+                {appointmentBlock.availableForBulkBooking && (
+                  <Typography> Massenterminvergabe </Typography>
+                )}
+              </DetailsBlock>
+            )}
           </Stack>
 
           {isLimitedView && (

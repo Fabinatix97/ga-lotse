@@ -88,6 +88,7 @@ export function AppointmentDetailsContent() {
     </GridColumnStack>
   );
 }
+
 export function Information() {
   const { person, appointment, concern } = useCitizenProcedure();
   const { t } = useTranslation("stiProtection/appointmentInfo");
@@ -113,10 +114,7 @@ export function Information() {
             locale={code}
           />
         ) : null}
-        <AddressSection
-          department={departmentInfo}
-          localePath="stiProtection/overview"
-        />
+        <AddressSection department={departmentInfo} />
         <InternetSection concern={concern} />
         <ContactSection department={departmentInfo} />
       </InfoSectionGrid>

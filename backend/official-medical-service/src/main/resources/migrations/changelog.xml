@@ -22,4 +22,5 @@
   <include file="migrations/0012_add_meds_abroad_appointment_type.xml"/>
   <include file="migrations/0013_refactor_oms_appointment_standard_duration.xml"/>
   <include file="migrations/0014_add_config.xml"/>
+  <include file="migrations/0015_add_appointment_block_flags.xml"/>
 </databaseChangeLog>

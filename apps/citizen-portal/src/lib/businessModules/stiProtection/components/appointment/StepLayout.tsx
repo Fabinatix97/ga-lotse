@@ -17,6 +17,7 @@ import {
   RefObject,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
 } from "react";
@@ -74,6 +75,7 @@ export function StepLayout<T extends FormDataWithoutConcern>({
 
   const hasBookedAppointment = formData.procedureId !== undefined;
   const hasCreatedAccount = formData.accessCode !== undefined;
+
   async function handleSubmit(values: T) {
     const newValues = await onSubmit(values);
     if (!newValues) {
@@ -109,10 +111,16 @@ export function StepLayout<T extends FormDataWithoutConcern>({
     ...formData,
   };
 
+  const titleId = useId();
+  const stepTitleId = useId();
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      <FormPlus sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <BookAppointmentTitle />
+      <FormPlus
+        aria-labelledby={titleId}
+        aria-describedby={stepTitleId}
+        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+      >
+        <BookAppointmentTitle titleId={titleId} stepTitleId={stepTitleId} />
         <DirtyCheck
           hasBookedAppointment={hasBookedAppointment}
           hasCreatedAccount={hasCreatedAccount}
@@ -169,11 +177,11 @@ function DirtyCheck({
   );
 }
 
-function BookAppointmentTitle() {
+function BookAppointmentTitle(props: { titleId: string; stepTitleId: string }) {
   const { t } = useTranslation("stiProtection/forms");
   const { currentStepIndex, totalSteps } = useStepContext();
   return (
-    <PageTitle>
+    <PageTitle titleId={props.titleId}>
       <Row justifyContent="space-between">
         {t("common.appointment_booking_title")}
         <Row sx={{ alignContent: "center" }}>
@@ -181,6 +189,7 @@ function BookAppointmentTitle() {
             level="h4"
             sx={{ alignContent: "center" }}
             textColor="text.tertiary"
+            id={props.stepTitleId}
           >
             {t("common.current_step", {
               currentStep: currentStepIndex + 1,
@@ -209,9 +218,11 @@ function ConflictError({
         onClick: () => goBack(currentStepIndex),
       };
   const alertRef = useRef<HTMLDivElement>(null);
+
   function scrollToError() {
     alertRef?.current?.scrollIntoView({ behavior: "smooth" });
   }
+
   scrollToErrorRef.current = scrollToError;
   useEffect(() => () => scrollToErrorRef.current?.(), [scrollToErrorRef]);
   if (!hasConflict) {

@@ -14,7 +14,10 @@ import { COUNTRY_CODE_VALUES } from "@/lib/businessModules/schoolEntry/pages/cit
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 import { CitizenAnamnesisInfoAlert } from "./components/CitizenAnamnesisInfoAlert";
@@ -29,7 +32,7 @@ export function CitizenAnamnesisStepOne(props: {
   const migrationBackground = createFieldNameMapper("migrationBackground");
   return (
     <ContentSheet>
-      <Typography level="h2">{t("contact.title")}</Typography>
+      <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
       <CitizenAnamnesisInfoAlert />
       <Typography level="h3">{t("contact.schoolchild")}</Typography>
       <ContactForm

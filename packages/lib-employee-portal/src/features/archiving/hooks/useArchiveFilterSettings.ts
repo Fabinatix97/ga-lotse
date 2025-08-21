@@ -10,7 +10,7 @@ import {
   GetArchivableProceduresRequest,
 } from "@eshg/lib-procedures-api";
 
-import { PROCEDURE_TYPE_NAMES } from "../../../translations/procedures";
+import { buildOptionsFromProcedureTypes } from "../../../utils/mappers";
 import { UseFilterSettings } from "../../filters/hooks/useFilterSettings";
 import { useQueryParamFilterSettings } from "../../filters/hooks/useQueryParamFilterSettings";
 import { FilterDefinition } from "../../filters/types/FilterDefinition";
@@ -115,13 +115,6 @@ function buildArchivingRelevanceFilter(
       .sort()
       .reverse(),
   );
-}
-
-function buildOptionsFromProcedureTypes(procedureTypes: ApiProcedureType[]) {
-  return procedureTypes.map((value) => ({
-    value,
-    label: PROCEDURE_TYPE_NAMES[value],
-  }));
 }
 
 function buildOptionsFromArchivingRelevances(

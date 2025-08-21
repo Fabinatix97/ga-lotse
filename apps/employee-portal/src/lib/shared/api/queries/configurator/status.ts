@@ -62,7 +62,7 @@ export function useGetAllModulesStatuses() {
   const activeModules = [
     ...config.activeModules,
     "BASE",
-    "OPEN_DATA",
+    config.isOpenDataEnabled ? "OPEN_DATA" : undefined,
     config.activeModules.includes("STI_PROTECTION") ? "SEX_WORK" : undefined,
   ];
 

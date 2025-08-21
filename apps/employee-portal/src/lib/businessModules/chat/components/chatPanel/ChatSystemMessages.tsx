@@ -82,7 +82,7 @@ export function ChatSystemMessage({
             return `${systemMessage.userName} ist dem Chat beigetreten.`;
           }
           case Membership.Leave: {
-            return `Sie haben ${systemMessage.userName} entfernt.`;
+            return `${systemMessage.userName} hat die Unterhaltung verlassen.`;
           }
           case Membership.Invite: {
             return `Sie haben ${systemMessage.userName} eine Beitrittseinladung gesendet.`;

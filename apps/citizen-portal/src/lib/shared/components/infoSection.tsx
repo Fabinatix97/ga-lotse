@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Grid, Stack, StackProps, Typography, styled } from "@mui/joy";
+import {
+  Grid,
+  Stack,
+  StackProps,
+  Typography,
+  TypographyProps,
+  styled,
+} from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode, createContext, useContext, useId } from "react";
 
@@ -83,21 +90,21 @@ export function InfoSection(props: InfoSectionProps) {
 
 interface InfoSectionTitleProps extends RequiresChildren {
   "data-testid"?: string;
-  level?: "h2" | "h3";
+  component?: TypographyProps["component"];
   sx?: SxProps;
 }
 
 export function InfoSectionTitle({
   children,
   "data-testid": dataTestId,
-  level = "h3",
+  component = "h3",
   sx,
 }: InfoSectionTitleProps) {
   const titleId = useContext(InfoSectionTitleIdContext);
 
   return (
     <Typography
-      component={level}
+      component={component}
       level="title-md"
       data-testid={dataTestId}
       id={titleId}

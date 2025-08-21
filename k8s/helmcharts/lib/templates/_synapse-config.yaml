@@ -4,7 +4,7 @@
 {{- define "lib.synapseConfig" }}
 ---
 
-{{ if .Values.synapse.enabled }}
+{{ if .Values.businessmodules.chatmanagement.enabled }}
 
 kind: ConfigMap
 apiVersion: v1

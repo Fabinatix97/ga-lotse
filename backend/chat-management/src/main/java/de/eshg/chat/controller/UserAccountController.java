@@ -5,7 +5,6 @@
 
 package de.eshg.chat.controller;
 
-import de.eshg.chat.featuretoggle.ChatFeature;
 import de.eshg.chat.featuretoggle.ChatFeatureToggle;
 import de.eshg.chat.model.dto.BindKeycloakIdRequest;
 import de.eshg.chat.model.dto.DeactivateRequest;
@@ -46,7 +45,6 @@ public class UserAccountController {
   @Transactional
   public ResponseEntity<Void> bindKeycloakId(
       @RequestBody @Valid BindKeycloakIdRequest bindKeycloakIdRequest) {
-    featureToggle.assertNewFeatureIsEnabled(ChatFeature.CHAT_BASE);
     authorizationService.validateIfMxidBelongsToCurrentUser(bindKeycloakIdRequest.matrixUserId());
     String keycloakUserId = CurrentUserHelper.getCurrentUserId().toString();
     synapseClient.bindKeycloakId(bindKeycloakIdRequest.matrixUserId(), keycloakUserId);
@@ -57,7 +55,6 @@ public class UserAccountController {
   @Transactional
   public ResponseEntity<Void> deactivateUserAccount(
       @RequestBody @Valid DeactivateRequest deactivateRequest) {
-    featureToggle.assertNewFeatureIsEnabled(ChatFeature.CHAT_BASE);
     authorizationService.validateIfMxidBelongsToCurrentUser(deactivateRequest.matrixUserId());
     synapseClient.deactivateUserAccount(deactivateRequest.matrixUserId());
     return ResponseEntity.ok().build();

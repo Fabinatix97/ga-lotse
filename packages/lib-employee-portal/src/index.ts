@@ -382,6 +382,9 @@ export { ProcedureLabelsPage } from "./features/procedureLabels/components/Proce
 export { ProgressEntriesPage } from "./features/progressEntries/components/ProgressEntriesPage";
 export { manualProgressEntryTypeNames } from "./features/progressEntries/config/progressEntryTypes";
 
+export { InboxProceduresPage } from "./features/inboxProcedures/components/InboxProceduresPage";
+export { useFetchInboxProcedure } from "./features/inboxProcedures/api/queries";
+
 export { DataTable } from "./features/table/components/DataTable";
 export { TablePage } from "./features/table/components/TablePage";
 export { TableSheet } from "./features/table/components/TableSheet";
@@ -454,7 +457,6 @@ export {
   createCountFormatter,
   formatBoolean,
   formatDurationFromNowUntil,
-  formatList,
   formatSchoolYear,
 } from "./utils/formatters";
 
@@ -487,6 +489,7 @@ export { CustomAppointmentQuickButtons } from "./components/CustomAppointmentQui
 
 export {
   buildOptionFromUser,
+  buildOptionsFromProcedureTypes,
   buildOptionsFromUsers,
   mapToSelectOption,
 } from "./utils/mappers";

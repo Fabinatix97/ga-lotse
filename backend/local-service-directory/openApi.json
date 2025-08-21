@@ -51,25 +51,6 @@
         "summary" : "Inform LSD that actor is still alive",
         "tags" : [ "LsdActor" ]
       }
-    },
-    "/orgUnit/name" : {
-      "get" : {
-        "operationId" : "getName",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            },
-            "description" : "Returns the name of the orgUnit"
-          }
-        },
-        "summary" : "Get the name of the orgUnit",
-        "tags" : [ "LsdOrgUnit" ]
-      }
     }
   },
   "components" : {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Grid, Typography } from "@mui/joy";
+import { Grid } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
@@ -33,7 +33,10 @@ import { SelectionOption } from "@/lib/businessModules/travelMedicine/components
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { CountryField } from "@/lib/shared/components/form/CountryField";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 const changeTypeNamesOptions = buildEnumOptions(CHANGE_TYPE_NAMES);
@@ -86,9 +89,9 @@ export function ProfessionalRegistrationFormStepOne() {
   return (
     <>
       <ContentSheet sx={{ marginBottom: 2 }}>
-        <Typography level="h2">
+        <ContentSheetTitle>
           {t("stepOne.contentSheetOne.pageTitle")}
-        </Typography>
+        </ContentSheetTitle>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <SelectField
@@ -101,9 +104,9 @@ export function ProfessionalRegistrationFormStepOne() {
         </Grid>
       </ContentSheet>
       <ContentSheet>
-        <Typography level="h2">
+        <ContentSheetTitle>
           {t("stepOne.contentSheetTwo.pageTitle")}
-        </Typography>
+        </ContentSheetTitle>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <InputField

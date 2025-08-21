@@ -7,31 +7,27 @@ import { FmdGoodOutlined } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 
 import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
+import {
+  formatPostalCodeAndCity,
+  formatStreetAndHouseNumber,
+} from "@eshg/lib-portal";
 
 import { useTranslation } from "@/lib/i18n/client";
 import {
   InfoSection,
   InfoSectionTitle,
 } from "@/lib/shared/components/infoSection";
-import {
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
 
 interface AddressSectionProps {
   department: ApiGetDepartmentInfoResponse;
-  localePath: string;
 }
 
-export function AddressSection({
-  department,
-  localePath,
-}: Readonly<AddressSectionProps>) {
-  const { t } = useTranslation([`${localePath}`]);
+export function AddressSection({ department }: Readonly<AddressSectionProps>) {
+  const { t } = useTranslation(["shared/addressSection"]);
 
   return (
     <InfoSection icon={<FmdGoodOutlined />}>
-      <InfoSectionTitle>{t("contact.address_section.title")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("title")}</InfoSectionTitle>
       <Typography>
         {department.name}
         <br />

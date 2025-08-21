@@ -25,4 +25,6 @@ public record GetAppointmentBlockGroupDto(
     @NotNull @Size(min = 1) List<AppointmentTypeDto> types,
     @NotNull @Min(1) @Max(10) int parallelExaminations,
     @Valid LocationDto location,
-    @Valid @NotNull @NotEmpty List<GetAppointmentBlockDto> appointmentBlocks) {}
+    @Valid @NotNull @NotEmpty List<GetAppointmentBlockDto> appointmentBlocks,
+    Boolean availableForCitizen,
+    Boolean availableForBulkBooking) {}

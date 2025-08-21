@@ -151,15 +151,16 @@ function DocumentSheet({
     >
       {({ isSubmitting, values }) => {
         const showSubmit = values.files.length > 0 && showAddRemoveButtons;
+        const label = isEmpty(helpText)
+          ? documentType
+          : `${documentType} - ${helpText}`;
 
         return (
-          <FormPlus>
+          <FormPlus aria-label={label}>
             <FileSheetArrayField
               name="files"
               labels={{
-                label: isEmpty(helpText)
-                  ? documentType
-                  : `${documentType} - ${helpText}`,
+                label: label,
                 placeholder: t("documents.files.placeholder"),
                 helperText: t("documents.files.helperText"),
                 inputSummary: (count: number) =>

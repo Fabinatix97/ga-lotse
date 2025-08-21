@@ -42,7 +42,12 @@ def getEslintInputArgs = (ConfigurableFileTree lintedFiles) -> {
   return excludes + includes
 }
 
-def defaultPrettierArgs = ['--no-error-on-unmatched-pattern']
+def prettierCacheFile = "${projectDir}/build/.prettiercache"
+def defaultPrettierArgs = [
+  '--no-error-on-unmatched-pattern',
+  '--cache',
+  "--cache-location=${prettierCacheFile}"
+]
 
 tasks.register('format', PnpmTask) {
   group = 'verification'
@@ -56,7 +61,8 @@ tasks.register('format', PnpmTask) {
   def formattedFiles = getPrettierInputs()
   inputs.files formattedFiles
   outputs.files formattedFiles
-  args = ['prettier', '--write'] + defaultPrettierArgs + getPrettierInputArgs(formattedFiles)
+  outputs.file prettierCacheFile
+  args = ['prettier', '--write', '--list-different'] + defaultPrettierArgs + getPrettierInputArgs(formattedFiles)
 }
 
 tasks.register('formatCheck', PnpmTask) {
@@ -69,7 +75,7 @@ tasks.register('formatCheck', PnpmTask) {
   }
   def formattedFiles = getPrettierInputs()
   inputs.files formattedFiles
-  outputs.upToDateWhen { true }
+  outputs.file prettierCacheFile
   args = ['prettier', '--check'] + defaultPrettierArgs + getPrettierInputArgs(formattedFiles)
 }
 
@@ -78,7 +84,13 @@ def eslintConfigFiles = [
   "${projectDir}/eslint.config.js"
 ]
 
-def defaultEslintArgs = ['--max-warnings=0', '--no-error-on-unmatched-pattern']
+def eslintCacheFile = "${projectDir}/build/.eslintcache"
+def defaultEslintArgs = [
+  '--max-warnings=0',
+  '--no-error-on-unmatched-pattern',
+  '--cache',
+  "--cache-location=${eslintCacheFile}"
+]
 
 tasks.register('lint', PnpmTask) {
   group = 'verification'
@@ -87,7 +99,7 @@ tasks.register('lint', PnpmTask) {
   inputs.files eslintConfigFiles
   def inputFiles = getEslintInputs()
   inputs.files inputFiles
-  outputs.upToDateWhen { true }
+  outputs.file eslintCacheFile
   args = ['eslint'] + defaultEslintArgs + getEslintInputArgs(inputFiles)
 }
 
@@ -98,7 +110,7 @@ tasks.register('lintFix', PnpmTask) {
   inputs.files eslintConfigFiles
   def inputFiles = getEslintInputs()
   inputs.files inputFiles
-  outputs.upToDateWhen { true }
+  outputs.file eslintCacheFile
   args = ['eslint', '--fix'] + defaultEslintArgs + getEslintInputArgs(inputFiles)
 }
 

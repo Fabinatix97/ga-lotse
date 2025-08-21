@@ -9,7 +9,10 @@ import { useMemo } from "react";
 import { isEmpty } from "remeda";
 
 import { ApiBaseFeature, ApiBusinessModule } from "@eshg/base-api";
-import { FormSheet } from "@eshg/lib-employee-portal";
+import {
+  FormSheet,
+  buildOptionsFromProcedureTypes,
+} from "@eshg/lib-employee-portal";
 import {
   OptionalFieldValue,
   SelectField,
@@ -29,7 +32,6 @@ import {
 } from "@/lib/baseModule/moduleRegister/procedureTypesResolver";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
-import { buildOptionsFromProcedureTypes } from "@/lib/shared/components/procedures/helper";
 
 import { ContactForm, ContactValues } from "./ContactForm";
 import {

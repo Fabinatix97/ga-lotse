@@ -17,4 +17,5 @@ public record BaseConfigurationProperties(
     @DefaultValue("204800") long maxMarkdownFileSizeBytes,
     @DefaultValue("500000") long maxLogoSvgFileSizeBytes,
     @DefaultValue("2097152") long maxCsvFileSizeBytes,
-    @NotEmpty @URL String svgSanitizerBaseUrl) {}
+    @NotEmpty @URL String svgSanitizerBaseUrl,
+    @DefaultValue("true") boolean isOpenDataEnabled) {}

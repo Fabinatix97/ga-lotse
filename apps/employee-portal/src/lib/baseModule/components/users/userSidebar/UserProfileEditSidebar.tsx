@@ -7,12 +7,7 @@ import { Divider, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { isDefined } from "remeda";
 
-import {
-  ApiBaseFeature,
-  ApiSalutation,
-  ApiUser,
-  ApiUserGroup,
-} from "@eshg/base-api";
+import { ApiSalutation, ApiUser, ApiUserGroup } from "@eshg/base-api";
 import {
   MultiFormButtonBar,
   SidebarActions,
@@ -32,7 +27,6 @@ import {
 } from "@eshg/lib-portal";
 
 import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
 import { usePhoneNumberValidator } from "@/lib/baseModule/components/users/validation";
@@ -69,7 +63,6 @@ function UserProfileEditSidebar({
   onClose,
 }: UserProfileEditSidebarProps) {
   const phoneNumberValidator = usePhoneNumberValidator();
-  const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   const updateSelfUser = useUpdateSelfUser();
 
   async function handleSubmit(values: UserEditFormInputs) {
@@ -150,7 +143,7 @@ function UserProfileEditSidebar({
                 </>
               )}
 
-              {showChatUsername && selfUser.externalChatUsername && (
+              {selfUser.externalChatUsername && (
                 <>
                   <Divider />
                   <DetailsCell

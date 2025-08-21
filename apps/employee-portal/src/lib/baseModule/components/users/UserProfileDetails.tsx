@@ -10,15 +10,16 @@ import { Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import {
-  ApiBaseFeature,
   ApiSalutation,
   ApiUser,
   ApiUserGroup,
+  ApiUserRole,
 } from "@eshg/base-api";
 import {
   DetailsRow,
   EditButton,
   ResponsiveDivider,
+  useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
   DetailsColumn,
@@ -26,7 +27,6 @@ import {
   SALUTATION_VALUES,
 } from "@eshg/lib-portal";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { useUserProfileEditSidebar } from "@/lib/baseModule/components/users/userSidebar/UserProfileEditSidebar";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
@@ -52,8 +52,8 @@ export function UserProfileDetails({
   groups: ApiUserGroup[];
   isSelf: boolean;
 }) {
-  const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   const updateSidebar = useUserProfileEditSidebar();
+  const hasChatUserRole = useHasUserRoleCheck(ApiUserRole.ChatUser);
 
   return (
     <Sheet
@@ -155,7 +155,7 @@ export function UserProfileDetails({
                 label="Telefonnummer"
                 value={user.phoneNumber}
               />
-              {showChatUsername && user.externalChatUsername && (
+              {user.externalChatUsername && hasChatUserRole && (
                 <>
                   <DetailsCell
                     name="externalChatUsername"

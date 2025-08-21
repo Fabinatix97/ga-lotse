@@ -18,7 +18,10 @@ import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citize
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 import { LocalBooleanRadioField } from "./components/LocalBooleanRadioField";
@@ -36,7 +39,7 @@ export function CitizenAnamnesisStepThree() {
 
   return (
     <ContentSheet>
-      <Typography level="h2">{t("health.title")}</Typography>
+      <ContentSheetTitle>{t("health.title")}</ContentSheetTitle>
       <Typography level="h3">{t("health.development")}</Typography>
       <LocalBooleanRadioField
         name={developmentInfo("developmentConspicuities")}

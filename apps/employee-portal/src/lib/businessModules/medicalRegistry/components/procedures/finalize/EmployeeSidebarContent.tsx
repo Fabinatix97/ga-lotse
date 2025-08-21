@@ -6,8 +6,8 @@
 import { Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { SidebarContent, formatList } from "@eshg/lib-employee-portal";
-import { RadioGroupField, formatDate } from "@eshg/lib-portal";
+import { SidebarContent } from "@eshg/lib-employee-portal";
+import { RadioGroupField, formatDate, formatList } from "@eshg/lib-portal";
 import { ApiEmployeeChangeType } from "@eshg/medical-registry-api";
 
 import {

@@ -6,24 +6,6 @@
     "cancellation": "Falls dieser Termin nicht wahrgenommen werden kann, sollte er rechtzeitig verschoben werden. Dies können Sie hier über das Online-Portal bequem selbst erledigen. Mithilfe des Anmeldecodes auf der Einladung und dem Geburtstag Ihres Kindes erreichen Sie Ihren persönlichen Bereich.",
     "location": "Die Einschulungsuntersuchung findet im Gesundheitsamt in der {{address}} statt. Bitte im Eingangsbereich am Empfang melden und das Einladungsschreiben vorzeigen."
   },
-  "place": {
-    "title": "Wer ist für die Einschulungsuntersuchung zuständig?"
-  },
-  "contact": {
-    "addressSection": {
-      "title": "Adresse"
-    },
-    "openingHoursSection": {
-      "title": "Öffnungs- und Sprechzeiten"
-    },
-    "telefonSection": {
-      "title": "Telefon",
-      "number": "Telefon: {{phoneNumber}}"
-    },
-    "emailSection": {
-      "title": "E-Mail-Adresse"
-    }
-  },
   "personalArea": {
     "title": "Sie haben eine Einladung erhalten?",
     "information": "Um Ihren Termin einsehen zu können, müssen Sie erst folgenden Datenschutzverordnungen zustimmen.",

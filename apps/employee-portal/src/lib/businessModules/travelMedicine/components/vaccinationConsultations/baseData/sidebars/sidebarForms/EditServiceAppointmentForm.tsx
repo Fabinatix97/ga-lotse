@@ -114,7 +114,7 @@ export function EditServiceAppointmentForm(
     } else if (values.bookingType === ApiAppointmentBookingType.UserDefined) {
       if (values.userDefinedAppointmentDate === "") {
         errors.userDefinedAppointmentDate =
-          "Bitte eine Datum und eine Uhrzeit auswählen";
+          "Bitte ein Datum und eine Uhrzeit auswählen";
       }
       if (values.appointmentTypeStandardDuration < 1) {
         errors.appointmentTypeStandardDuration =

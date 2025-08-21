@@ -38,4 +38,6 @@ public record AppointmentBlockDto(
     @NotNull List<UUID> consultants,
     @NotNull @Valid Map<UUID, UserDto> resolvedUsers,
     @NotNull int bookedAppointments,
-    @NotNull @Size(min = 1, max = 10) @Valid List<AppointmentBlockBinDto> appointmentBlockBins) {}
+    @NotNull @Size(min = 1, max = 10) @Valid List<AppointmentBlockBinDto> appointmentBlockBins,
+    Boolean availableForCitizen,
+    Boolean availableForBulkBooking) {}

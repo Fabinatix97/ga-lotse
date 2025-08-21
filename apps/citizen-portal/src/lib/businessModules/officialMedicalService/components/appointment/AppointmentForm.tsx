@@ -198,7 +198,7 @@ function StepperInner({
   return (
     <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {(formikProps) => (
-        <FormPlus>
+        <FormPlus aria-label={t("common.title")}>
           <FormInner>
             <Outlet {...formikProps} />
           </FormInner>

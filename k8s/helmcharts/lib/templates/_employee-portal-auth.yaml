@@ -100,7 +100,7 @@ spec:
               value: "https://{{ .Values.domains.hosts.keycloak}}"
             - name: eshg.keycloak.internal.url
               value: "https://{{ .Values.domains.hosts.keycloakInternal}}"
-            {{ if .Values.synapse.enabled -}}
+            {{ if .Values.businessmodules.chatmanagement.enabled }}
             - name: eshg.synapse.internal.url
               value: "http://synapse{{ .Values.domains.clusterLocalSuffix }}"
             {{- end }}

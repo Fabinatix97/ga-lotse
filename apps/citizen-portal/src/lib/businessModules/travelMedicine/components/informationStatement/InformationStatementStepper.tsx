@@ -6,6 +6,7 @@
 import { Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { useSearchParams } from "next/navigation";
+import { useId } from "react";
 
 import {
   FormPlus,
@@ -116,6 +117,8 @@ export function InformationStatementStepper() {
       createStepFunction(section, sectionIndex),
     );
 
+  const titleId = useId();
+  const stepperTitleId = useId();
   return (
     <MultiStepForm<InformationStatementFormValues> steps={STEPS}>
       {({ Outlet, currentStep, totalSteps, titleRef }) => (
@@ -129,13 +132,18 @@ export function InformationStatementStepper() {
               <MultiStepFormTitle
                 titleRef={titleRef}
                 title={t("header.title")}
+                titleId={titleId}
+                stepperTitleId={stepperTitleId}
                 stepperTitle={t("header.stepText", {
                   currentStepIndex: currentStep,
                   totalSteps: totalSteps,
                 })}
                 withLogoutButton
               />
-              <FormPlus>
+              <FormPlus
+                aria-labelledby={titleId}
+                aria-describedby={stepperTitleId}
+              >
                 {isMobile ? (
                   <OneColumnGrid
                     contentTop={null}

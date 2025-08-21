@@ -7,7 +7,7 @@
 
 import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
-import { RefObject } from "react";
+import { RefObject, useId } from "react";
 
 import {
   FormPlus,
@@ -31,16 +31,22 @@ interface MultiStepFormProps extends RequiresChildren, MultiStepFormTitleProps {
 }
 
 export function MultiStepFormWrapper(props: Readonly<MultiStepFormProps>) {
+  const titleId = useId();
+  const stepperTitleId = useId();
   return (
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
       <Stack gap={2}>
         <MultiStepFormTitle
           titleRef={props.titleRef}
           title={props.title}
+          titleId={titleId}
+          stepperTitleId={stepperTitleId}
           stepperTitle={props.stepperTitle}
           withLogoutButton={props.withLogoutButton}
         />
-        <FormPlus>{props.children}</FormPlus>
+        <FormPlus aria-labelledby={titleId} aria-describedby={stepperTitleId}>
+          {props.children}
+        </FormPlus>
       </Stack>
     </Formik>
   );
@@ -48,12 +54,14 @@ export function MultiStepFormWrapper(props: Readonly<MultiStepFormProps>) {
 
 interface StepCounterProps {
   stepperTitle: string;
+  stepperTitleId?: string;
 }
 
 interface MultiStepFormTitleProps extends StepCounterProps {
   title: string;
   withLogoutButton: boolean;
   titleRef?: RefObject<HTMLDivElement | null>;
+  titleId?: string;
 }
 
 export function StepCounter(props: Readonly<StepCounterProps>) {
@@ -66,6 +74,7 @@ export function StepCounter(props: Readonly<StepCounterProps>) {
         fontWeight: "600",
       }}
       data-testid="step-counter"
+      id={props.stepperTitleId}
     >
       {props.stepperTitle}
     </Typography>
@@ -75,8 +84,10 @@ export function StepCounter(props: Readonly<StepCounterProps>) {
 export function MultiStepFormTitle({
   title,
   stepperTitle,
+  stepperTitleId,
   withLogoutButton,
   titleRef,
+  titleId,
 }: Readonly<MultiStepFormTitleProps>) {
   const isMobile = useIsMobile();
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
@@ -86,6 +97,7 @@ export function MultiStepFormTitle({
   return (
     <PageTitle
       titleRef={titleRef}
+      titleId={titleId}
       toolbar={
         <>
           {!isMobile && <StepCounter stepperTitle={stepperTitle} />}
@@ -95,7 +107,12 @@ export function MultiStepFormTitle({
     >
       <Stack gap={0.5}>
         {title}
-        {isMobile && <StepCounter stepperTitle={stepperTitle} />}
+        {isMobile && (
+          <StepCounter
+            stepperTitleId={stepperTitleId}
+            stepperTitle={stepperTitle}
+          />
+        )}
       </Stack>
     </PageTitle>
   );

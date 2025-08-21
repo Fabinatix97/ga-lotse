@@ -148,9 +148,6 @@ domains:
     # hostname should match (and be a cluster internal only address!)
     keycloak: keycloak-central-internal.cs.my-ga-lotse.de
     keycloakInternal: keycloak-central-internal.cs.my-ga-lotse.de
-  # the org unit (see service mesh) to which the local service directory (lsd) belongs
-  # this must match with the orgUnit name in the actors.import.orgUnit configuration
-  lsdOrgUnit: central
   # cluster issuer for cert manager for public URLs
   clusterIssuer: letsencrypt-prod-issuer
   # cluster issuer for cert manager for internal-only URLs
@@ -423,9 +420,6 @@ domains:
     keycloak: keycloak.frankfurt.my-ga-lotse.de
     # cluster internal accesss via
     keycloakInternal: keycloak-internal.frankfurt.my-ga-lotse.de
-  # the org unit (see service mesh) to which the local service directory (lsd) belongs
-  # this must match with the orgUnit name in the actors.import[].orgUnit name in the ctr configuration
-  lsdOrgUnit: frankfurt
   # cluster issuer for cert manager for public URLs
   clusterIssuer: letsencrypt-prod-issuer
   # cluster issuer for cert manager for internal-only URLs
@@ -521,10 +515,6 @@ citizenportalauth:
 # NextJS server of the employee portal pages (BFF) - has no separate "enabled" toggle
 #citizenportalnextjs:
 
-# synapse server for matrix chat (integrated into employee portal application - no outside access!)
-synapse:
-  enabled: false
-
 # backend service which aggregates audit relevant events from the business modules
 auditlog:
   enabled: true
@@ -579,6 +569,7 @@ businessmodules:
     smtp:
       # This should be false if maildev is used - a real SMTP server is hopefully contacted via TLS
       ssl: false
+      startTls: false
     # overwrite businessmoduleDefaults resource limits (matches default value from values.yaml)
     resources:
       requests:
@@ -634,6 +625,8 @@ businessmodules:
   opendata:
     enabled: true
   chatmanagement:
+    # if this is enabled the synapse matrix server is deployed as well
+    # there are some advanced options for the synapse deployment - see default values.yaml
     enabled: true
   officialmedicalservice:
     enabled: true
@@ -711,6 +704,10 @@ The local deployment already contains two "pre generated" certificates which are
 ## Changelog
 
 ### changes since last version
+
+* Add `startTls` option to the `businessmodules.base.smtp` to configure StartTLS for the used SMTP server
+
+### 2.2.0
 
 * A health department specific spring profile is no longer necessary - all configuration must be done via the configurator.
 

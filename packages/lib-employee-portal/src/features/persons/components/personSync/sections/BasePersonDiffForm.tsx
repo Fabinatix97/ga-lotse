@@ -17,6 +17,7 @@ import {
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
   formatDate,
+  formatList,
   getOptionalTitle,
   translateCountry,
 } from "@eshg/lib-portal";
@@ -26,7 +27,6 @@ import {
   isDomesticAddress,
   isPostboxAddress,
 } from "../../../../../api/models/address";
-import { formatList } from "../../../../../utils/formatters";
 import {
   AddressUnion,
   TypedDifferingFields,

@@ -30,11 +30,11 @@ import {
   SidebarActions,
   SidebarContent,
   SidebarForm,
-  formatList,
 } from "@eshg/lib-employee-portal";
 import {
   DetailsList,
   SALUTATION_VALUES,
+  formatList,
   getOptionalTitle,
 } from "@eshg/lib-portal";
 

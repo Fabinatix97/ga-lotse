@@ -342,7 +342,7 @@ data:
   {{- if .Values.auditlog.enabled }}
   auditlog:             {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "auditlog" 64) }}
   {{- end }}
-  {{- if .Values.synapse.enabled }}
+  {{- if .Values.businessmodules.chatmanagement.enabled }}
   synapse:              {{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "synapse" 64) }}
   {{- end }}
   {{- if .Values.svgsanitizer.enabled }}

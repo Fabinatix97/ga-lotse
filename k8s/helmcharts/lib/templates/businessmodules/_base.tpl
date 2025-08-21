@@ -69,6 +69,8 @@
       name: smtp-secrets
 - name: spring.mail.properties.mail.smtp.ssl.enable
   value: "{{ .Values.businessmodules.base.smtp.ssl }}"
+- name: spring.mail.properties.mail.smtp.starttls.enable
+  value: "{{ .Values.businessmodules.base.smtp.startTls }}"
 - name: eshg.mail.noreply
   value: "{{ .Values.businessmodules.base.noreplyMail }}"
 - name: eshg.keycloak.allow-passwords-for-employees
@@ -108,6 +110,8 @@
   value: "{{ .Values.keycloak.bundId.signingCertificate }}"
 - name: eshg.bund-id.profile
   value: "{{ .Values.keycloak.bundId.profile }}"
+- name: de.eshg.base.is-open-data-enabled
+  value: "{{ .Values.businessmodules.opendata.enabled }}"
 - name: eshg.keycloak.employee-realm.module-client-secrets.auditlog
   valueFrom:
     secretKeyRef:
@@ -223,6 +227,8 @@
       name: smtp-secrets
 - name: eshg.keycloak.smtp.ssl-enabled
   value: "{{ .Values.businessmodules.base.smtp.ssl }}"
+- name: eshg.keycloak.smtp.start-tls
+  value: "{{ .Values.businessmodules.base.smtp.startTls }}"
 - name: eshg.keycloak.smtp.username
   valueFrom:
     secretKeyRef:

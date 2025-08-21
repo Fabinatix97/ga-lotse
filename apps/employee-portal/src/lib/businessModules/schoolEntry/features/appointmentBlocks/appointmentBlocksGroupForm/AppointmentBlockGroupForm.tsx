@@ -14,6 +14,7 @@ import {
   FormSheet,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
+import { CheckboxField } from "@eshg/lib-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
@@ -99,6 +100,14 @@ export function AppointmentBlockGroupForm(
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
               showParallelExaminations
+            />
+          </Stack>
+          <Stack gap={3} direction="row">
+            Verfügbar für
+            <CheckboxField name="availableForCitizen" label="Online-Portal" />
+            <CheckboxField
+              name="availableForBulkBooking"
+              label="Massenterminzuweisung"
             />
           </Stack>
           {props.locationSelectionMode !== ApiLocationSelectionMode.None && (

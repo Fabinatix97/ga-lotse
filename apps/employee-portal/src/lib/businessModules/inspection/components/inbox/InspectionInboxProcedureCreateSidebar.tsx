@@ -6,6 +6,7 @@
 import { useRouter } from "next/navigation";
 
 import {
+  ApiBusinessModule,
   ApiContactType,
   ApiGetReferenceFacilityResponse,
   ApiInboxProcedure,
@@ -14,30 +15,44 @@ import {
 import {
   BaseAddressFormInputs,
   SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useFetchInboxProcedure,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { assertNever, useSnackbar } from "@eshg/lib-portal";
 
+import { useInboxProcedureApi } from "@/lib/businessModules/inspection/api/clients";
 import {
   useAddInspectionFacility,
   useLinkBaseFacility,
 } from "@/lib/businessModules/inspection/api/mutations/facility";
-import { useFetchInboxProcedure } from "@/lib/businessModules/inspection/api/queries/inboxProcedures";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
+
+export function useInspectionInboxProcedureCreateSidebar(): UseSidebarWithFormRefResult<InspectionInboxProcedureCreateSidebarProps> {
+  return useSidebarWithFormRef({
+    component: InspectionInboxProcedureCreateSidebar,
+  });
+}
 
 interface InspectionInboxProcedureCreateSidebarProps
   extends SidebarWithFormRefProps {
   inboxProcedureId: string;
 }
 
-export function InspectionInboxProcedureCreateSidebar({
+function InspectionInboxProcedureCreateSidebar({
   onClose,
   formRef,
   inboxProcedureId,
 }: InspectionInboxProcedureCreateSidebarProps) {
-  const { inboxProcedure } = useFetchInboxProcedure(inboxProcedureId).data;
+  const inboxProcedureApi = useInboxProcedureApi();
+  const { inboxProcedure } = useFetchInboxProcedure(
+    inboxProcedureApi,
+    ApiBusinessModule.Inspection,
+    inboxProcedureId,
+  ).data;
 
   const router = useRouter();
   const snackbar = useSnackbar();

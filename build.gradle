@@ -68,7 +68,7 @@ idea {
     settings {
       compiler {
         javac {
-          javacAdditionalOptions "-parameters"
+          javacAdditionalOptions = "-parameters"
         }
       }
       runConfigurations {

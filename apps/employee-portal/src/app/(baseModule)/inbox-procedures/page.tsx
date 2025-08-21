@@ -42,10 +42,9 @@ export default function InboxPage() {
   const [result, setResult] = useState<ApiInboxProcedure>();
 
   async function onSubmit(values: CreateInboxProcedureValues) {
-    await createInboxProcedure(
-      values.businessModule as InboxAwareBusinessModule,
-    ).mutateAsync(
+    await createInboxProcedure.mutateAsync(
       {
+        businessModule: values.businessModule as InboxAwareBusinessModule,
         request: mapFormValuesToCreateInboxProcedureRequest(values),
         file: mapValuesToFile(values),
       },

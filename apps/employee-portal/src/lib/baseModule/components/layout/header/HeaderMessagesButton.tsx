@@ -42,6 +42,7 @@ export function HeaderMessagesButton() {
 
   return (
     <HeaderIconButton
+      data-testid="header-messages-button"
       aria-label={`${unreadMessagesCount} Chat-Benachrichtigungen`}
       onClick={handleClick}
     >

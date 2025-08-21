@@ -187,9 +187,10 @@
          </#list>
         </div>
       </#if>
-      <div class="sender-label">Aktenzeichen</div>
-      <div>-</div>
-      <div style="font-size: 0.75rem; font-weight: 400; line-height: 1.5em;">(bitte bei Antwort angeben)</div>
+      <#if child.personId??>
+        <div class="sender-label">Personen-ID</div>
+        <div class="sender-data">${child.personId}</div>
+      </#if>
     </td>
   </tr>
 </table>

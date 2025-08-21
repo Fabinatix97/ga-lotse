@@ -378,7 +378,7 @@ FM
 {{- if .Values.auditlog.enabled }},
   { "username": "auditlog{{ .Values.domains.clusterLocalSuffix }}", "password": "{{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "auditlog" 64) | b64dec }}" }
 {{- end }}
-{{- if .Values.synapse.enabled }},
+{{- if .Values.businessmodules.chatmanagement.enabled }},
   { "username": "synapse{{ .Values.domains.clusterLocalSuffix }}", "password": "{{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "synapse" 64) | b64dec }}" }
 {{- end }}
 {{- if .Values.svgsanitizer.enabled }},

@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Sheet, Stack, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { RequiresChildren } from "@eshg/lib-portal";
 
-import { theme } from "@/lib/baseModule/theme/theme";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 
 interface FormSheetProps extends RequiresChildren {
   "data-testid"?: string;
@@ -18,17 +20,9 @@ interface FormSheetProps extends RequiresChildren {
 
 export function FormSheet(props: FormSheetProps) {
   return (
-    <Sheet
-      component="section"
-      sx={{
-        [theme.breakpoints.down("sm")]: {
-          borderRadius: 0,
-        },
-      }}
-      data-testid={props["data-testid"] ?? "form-sheet"}
-    >
-      <Stack gap={3}>{props.children}</Stack>
-    </Sheet>
+    <ContentSheet data-testid={props["data-testid"] ?? "form-sheet"}>
+      {props.children}
+    </ContentSheet>
   );
 }
 

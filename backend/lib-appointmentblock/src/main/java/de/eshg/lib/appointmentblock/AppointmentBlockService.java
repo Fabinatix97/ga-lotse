@@ -170,6 +170,31 @@ public class AppointmentBlockService {
             .findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
                 appointmentType, locationId, physicianId, start);
 
+    return filterAndMapAppointments(latestStart, appointmentType, appointmentBlocks, start);
+  }
+
+  public List<AppointmentDto> getFreeAppointmentsWithAvailability(
+      Instant earliestStart,
+      Instant latestStart,
+      AppointmentType appointmentType,
+      UUID locationId,
+      Boolean availableForCitizen,
+      Boolean availableForBulkBooking) {
+    Instant start = earliestStart == null ? Instant.now(clock) : earliestStart;
+
+    List<AppointmentBlock> appointmentBlocks =
+        appointmentBlockRepository
+            .findBlockByAvailabilityAndAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
+                appointmentType, locationId, start, availableForCitizen, availableForBulkBooking);
+
+    return filterAndMapAppointments(latestStart, appointmentType, appointmentBlocks, start);
+  }
+
+  private List<AppointmentDto> filterAndMapAppointments(
+      Instant latestStart,
+      AppointmentType appointmentType,
+      List<AppointmentBlock> appointmentBlocks,
+      Instant start) {
     return appointmentBlockSlotUtil
         .calculateFreeAppointmentBlockSlotsForType(appointmentBlocks, appointmentType)
         .values()
@@ -201,7 +226,9 @@ public class AppointmentBlockService {
             .toList(),
         appointmentBlockGroup.getParallelExaminations(),
         location,
-        mapAppointmentBlockToData(appointmentBlockGroup, appointmentBlockData));
+        mapAppointmentBlockToData(appointmentBlockGroup, appointmentBlockData),
+        appointmentBlockGroup.isAvailableForCitizen(),
+        appointmentBlockGroup.isAvailableForBulkBooking());
   }
 
   private static List<AppointmentBlockData> mapAppointmentBlockToData(
@@ -273,6 +300,8 @@ public class AppointmentBlockService {
       appointmentBlock.setCalendarEventId(calendarEventId);
       appointmentBlock.setAppointmentBlockStart(createAppointmentBlockRequest.start());
       appointmentBlock.setAppointmentBlockEnd(createAppointmentBlockRequest.end());
+      appointmentBlockGroup.setAvailableForCitizen(request.availableForCitizen());
+      appointmentBlockGroup.setAvailableForBulkBooking(request.availableForBulkBooking());
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 

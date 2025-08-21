@@ -7,7 +7,7 @@
 
 import { differenceInMinutes, startOfMonth } from "date-fns";
 import { Formik } from "formik";
-import { RefObject, Suspense, useEffect, useRef, useState } from "react";
+import { RefObject, Suspense, useEffect, useId, useRef, useState } from "react";
 import { isNullish, prop, sortBy } from "remeda";
 
 import {
@@ -96,9 +96,11 @@ function InnerRebookAppointmentPage({
     });
   }
 
+  const titleId = useId();
   return (
     <PageContent>
       <PageTitle
+        titleId={titleId}
         toolbar={<LogoutButton text={t("translation:common.leave")} />}
       >
         {t("common.appointment_booking_title")}
@@ -108,7 +110,10 @@ function InnerRebookAppointmentPage({
         scrollToErrorRef={scrollToErrorRef}
       />
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <FormPlus sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <FormPlus
+          aria-labelledby={titleId}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
           {sortedAppointments.length > 0 ? (
             <TwoColumnGrid
               content={

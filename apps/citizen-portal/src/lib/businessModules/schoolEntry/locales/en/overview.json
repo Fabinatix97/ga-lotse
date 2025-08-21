@@ -6,24 +6,6 @@
     "cancellation": "If you are unable to attend this appointment, it should be rescheduled in a timely manner. You can conveniently do this yourself here via the online portal. Using the registration code on the invitation and your child's date of birth, you can access your personal area.",
     "location": "The school enrollment examination takes place at the health department at {{address}}. Please report to the reception at the entrance and present the invitation letter."
   },
-  "place": {
-    "title": "Who is responsible for the school enrollment examination?"
-  },
-  "contact": {
-    "addressSection": {
-      "title": "Address"
-    },
-    "openingHoursSection": {
-      "title": "Opening and Consultation Hours"
-    },
-    "telefonSection": {
-      "title": "Phone",
-      "number": "Phone: {{phoneNumber}}"
-    },
-    "emailSection": {
-      "title": "Email Address"
-    }
-  },
   "personalArea": {
     "title": "Have you received an invitation?",
     "information": "To view your appointment, you must first agree to the following data protection regulations.",

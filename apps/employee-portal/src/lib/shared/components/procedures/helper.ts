@@ -7,13 +7,11 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 
 import {
   ApiBusinessModule,
-  ApiProcedureType,
   ApiTaskStatus,
   ApiTaskType,
   ApiUser,
 } from "@eshg/base-api";
 import {
-  PROCEDURE_TYPE_NAMES,
   buildOptionFromUser,
   buildOptionsFromUsers,
 } from "@eshg/lib-employee-portal";
@@ -32,16 +30,6 @@ export function buildOptionsFromBusinessModules(
   businessModules: ApiBusinessModule[],
 ) {
   return businessModules.map(buildOptionFromBusinessModule);
-}
-
-function buildOptionFromProcedureType(procedureType: ApiProcedureType) {
-  return { value: procedureType, label: PROCEDURE_TYPE_NAMES[procedureType] };
-}
-
-export function buildOptionsFromProcedureTypes(
-  procedureTypes: ApiProcedureType[],
-) {
-  return procedureTypes.map(buildOptionFromProcedureType);
 }
 
 function buildOptionFromTaskType(taskType: ApiTaskType) {

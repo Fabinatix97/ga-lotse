@@ -34,7 +34,10 @@ import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/p
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 const professionalTitleNamesOptions = buildEnumOptions(
@@ -79,7 +82,7 @@ export function ProfessionalRegistrationFormStepTwo() {
 
   return (
     <ContentSheet>
-      <Typography level="h2">{t("stepTwo.pageTitle")}</Typography>
+      <ContentSheetTitle>{t("stepTwo.pageTitle")}</ContentSheetTitle>
       {shouldEnableSection("profession", changeType) && (
         <>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>

@@ -17,6 +17,7 @@ import {
   GENDER_VALUES,
   PERSON_FIELD_NAME,
   formatDate,
+  formatStreetAndHouseNumber,
   translateCountry,
 } from "@eshg/lib-portal";
 import {
@@ -31,7 +32,6 @@ import {
   DetailsCell,
   DetailsCellWrapped,
 } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 
 const PROFESSIONAL_FIELD_NAME = {
   ...PERSON_FIELD_NAME,
@@ -123,7 +123,7 @@ export function ProfessionalDetailsSection({
                 <>
                   <DetailsCellWrapped
                     label={PROFESSIONAL_FIELD_NAME.streetAndHouseNumber}
-                    value={streetAndHouseNumber(address)}
+                    value={formatStreetAndHouseNumber(address)}
                   />
                   <DetailsRow>
                     <DetailsCellWrapped

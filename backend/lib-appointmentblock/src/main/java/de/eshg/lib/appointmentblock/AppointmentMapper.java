@@ -30,7 +30,9 @@ public final class AppointmentMapper {
         appointmentBlockGroupData.location(),
         appointmentBlockGroupData.appointmentBlocks().stream()
             .map(AppointmentMapper::mapAppointmentBlockToDto)
-            .toList());
+            .toList(),
+        appointmentBlockGroupData.availableForCitizen(),
+        appointmentBlockGroupData.availableForBulkBooking());
   }
 
   public static GetAppointmentBlockDto mapAppointmentBlockToDto(AppointmentBlockData details) {

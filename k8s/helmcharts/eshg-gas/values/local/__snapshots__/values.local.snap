@@ -1516,7 +1516,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1544,7 +1544,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-auditlog-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1838,7 +1838,7 @@ spec:
             path: ca.crt
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -1866,7 +1866,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-citizen-portal-auth-cache
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2172,7 +2172,7 @@ spec:
           value: "53"
       initContainers:
       - name: waitfor-citizen-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2428,7 +2428,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-citizen-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2675,7 +2675,7 @@ spec:
             path: ca.crt
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -2703,7 +2703,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-employee-portal-auth-cache
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3009,7 +3009,7 @@ spec:
           value: "53"
       initContainers:
       - name: waitfor-employee-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3261,7 +3261,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-employee-portal-auth
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3498,7 +3498,7 @@ spec:
           value: "53"
       initContainers:
       - name: waitfor-keycloak
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3655,7 +3655,7 @@ spec:
         - name: workspace
           mountPath: /ws
       - name: waitfor-keycloak-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3839,7 +3839,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-keycloak
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -3938,8 +3938,6 @@ spec:
             secretKeyRef:
               name: keycloak-client-secrets
               key: lsd-client-secret
-        - name: ESHG_LSD_ORGUNIT_NAME
-          value: "frankfurt"
         - name: ESHG_SERVICEDIRECTORY_BASEURL
           value: "http://service-directory.central.svc.cluster.local"
         - name: ESHG_LSD_KEYCLOAK_IMPORTFILE
@@ -4142,7 +4140,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4170,7 +4168,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-svgsanitizer
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4198,7 +4196,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-base-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4310,6 +4308,8 @@ spec:
               name: smtp-secrets
         - name: spring.mail.properties.mail.smtp.ssl.enable
           value: "false"
+        - name: spring.mail.properties.mail.smtp.starttls.enable
+          value: "false"
         - name: eshg.mail.noreply
           value: "support@ga-lotse.de"
         - name: eshg.keycloak.allow-passwords-for-employees
@@ -4342,6 +4342,8 @@ spec:
           value: ""
         - name: eshg.bund-id.profile
           value: "disabled"
+        - name: de.eshg.base.is-open-data-enabled
+          value: "false"
         - name: eshg.keycloak.employee-realm.module-client-secrets.auditlog
           valueFrom:
             secretKeyRef:
@@ -4456,6 +4458,8 @@ spec:
               key: smtp-port
               name: smtp-secrets
         - name: eshg.keycloak.smtp.ssl-enabled
+          value: "false"
+        - name: eshg.keycloak.smtp.start-tls
           value: "false"
         - name: eshg.keycloak.smtp.username
           valueFrom:
@@ -4688,7 +4692,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4716,7 +4720,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-base
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -4744,7 +4748,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-inspection-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5056,7 +5060,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5084,7 +5088,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-base
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5112,7 +5116,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - name: waitfor-schoolentry-db
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -5420,7 +5424,7 @@ spec:
       dnsPolicy: None
       initContainers:
       - name: waitfor-lsd
-        image: "mirror.gcr.io/bitnami/kubectl:1.33.3@sha256:cd354d5b25562b195b277125439c23e4046902d7f1abc0dc3c75aad04d298c17"
+        image: "docker.io/bitnamisecure/kubectl:1.33.4@sha256:b631dd49c6e80e2524d67e7c1e44cefecde7a7b398d51ab95643969dd6797de1"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
