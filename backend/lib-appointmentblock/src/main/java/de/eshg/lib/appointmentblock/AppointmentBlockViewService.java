@@ -12,6 +12,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockBinDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSlotDto;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlotWithAppointment;
@@ -46,16 +47,19 @@ public class AppointmentBlockViewService {
   private final UserApi userApi;
   private final AbstractAppointmentService<?> appointmentService;
   private final AppointmentRepository appointmentRepository;
+  private final AppointmentBlockService appointmentBlockService;
 
   public AppointmentBlockViewService(
       AppointmentBlockRepository appointmentBlockRepository,
       UserApi userApi,
       AbstractAppointmentService<?> appointmentService,
-      AppointmentRepository appointmentRepository) {
+      AppointmentRepository appointmentRepository,
+      AppointmentBlockService appointmentBlockService) {
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.userApi = userApi;
     this.appointmentService = appointmentService;
     this.appointmentRepository = appointmentRepository;
+    this.appointmentBlockService = appointmentBlockService;
   }
 
   public List<AppointmentBlockDto> findAppointmentBlocksInTimeRange(
@@ -91,12 +95,7 @@ public class AppointmentBlockViewService {
     Set<UUID> allUserIds = new HashSet<>();
     blocks.stream()
         .filter(this::isWithDetails)
-        .forEach(
-            block -> {
-              allUserIds.addAll(block.getAppointmentBlockGroup().getPhysicians());
-              allUserIds.addAll(block.getAppointmentBlockGroup().getMfas());
-              allUserIds.addAll(block.getAppointmentBlockGroup().getConsultants());
-            });
+        .forEach(block -> addAllUserIds(allUserIds, block.getAppointmentBlockGroup()));
     if (allUserIds.isEmpty()) {
       return Map.of();
     }
@@ -104,6 +103,15 @@ public class AppointmentBlockViewService {
     GetUsersResponse getUsersResponse = userApi.getUsersBulk(new GetUsersRequest(allUserIds, true));
     return getUsersResponse.users().stream()
         .collect(Collectors.toMap(UserDto::userId, userDto -> userDto));
+  }
+
+  private void addAllUserIds(Set<UUID> allUserIds, AppointmentBlockGroup appointmentBlockGroup) {
+    allUserIds.addAll(appointmentBlockGroup.getPhysicians());
+    allUserIds.addAll(appointmentBlockGroup.getMfas());
+    allUserIds.addAll(appointmentBlockGroup.getConsultants());
+    if (appointmentBlockGroup.getCreatorId() != null) {
+      allUserIds.add(appointmentBlockGroup.getCreatorId());
+    }
   }
 
   private boolean isWithDetails(AppointmentBlock appointmentBlock) {
@@ -162,9 +170,7 @@ public class AppointmentBlockViewService {
 
     if (isWithDetails(block)) {
       Set<UUID> userIds = new HashSet<>();
-      userIds.addAll(appointmentBlockGroup.getPhysicians());
-      userIds.addAll(appointmentBlockGroup.getMfas());
-      userIds.addAll(appointmentBlockGroup.getConsultants());
+      addAllUserIds(userIds, appointmentBlockGroup);
 
       Map<UUID, UserDto> resolvedUsers =
           allResolvedUsers.entrySet().stream()
@@ -185,8 +191,9 @@ public class AppointmentBlockViewService {
           appointmentBlockGroup.getPhysicians(),
           appointmentBlockGroup.getMfas(),
           appointmentBlockGroup.getConsultants(),
+          appointmentBlockGroup.getCreatorId(),
           resolvedUsers,
-          block.getAppointments().size(),
+          mapToDto(block.getAppointments()),
           appointmentBlockBins,
           appointmentBlockGroup.isAvailableForCitizen(),
           appointmentBlockGroup.isAvailableForBulkBooking());
@@ -199,12 +206,22 @@ public class AppointmentBlockViewService {
           Collections.emptyList(),
           Collections.emptyList(),
           Collections.emptyList(),
+          null,
           Map.of(),
-          block.getAppointments().size(),
+          mapToDto(block.getAppointments()),
           appointmentBlockBins,
           appointmentBlockGroup.isAvailableForCitizen(),
           appointmentBlockGroup.isAvailableForBulkBooking());
     }
+  }
+
+  private List<AppointmentDto> mapToDto(Set<Appointment> appointments) {
+    return appointments.stream()
+        .map(
+            appointment ->
+                new AppointmentDto(
+                    appointment.getAppointmentStart(), appointment.getAppointmentEnd()))
+        .toList();
   }
 
   private static AppointmentBlockBinDto getAppointmentBlockBin(

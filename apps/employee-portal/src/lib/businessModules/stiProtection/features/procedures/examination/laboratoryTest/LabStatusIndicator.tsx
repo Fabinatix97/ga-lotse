@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Sheet, Stack, Typography } from "@mui/joy";
+import { Box, Sheet, Stack, Typography } from "@mui/joy";
 
 import { ApiLabStatus } from "@eshg/sti-protection-api";
 
@@ -36,18 +36,15 @@ export function LabStatusIndicator(props: LabStatusIndicatorProps) {
       <Typography level="h3" mb={3}>
         Labortests Fortschritt
       </Typography>
-      <Stack
-        component="section"
-        gap={1}
-        aria-label="Fortschritsanzeige der Labortests"
-      >
+      <Stack gap={1} aria-label="Fortschritsanzeige der Labortests" role="list">
         {DISPLAYED_STATUS.map((status, index) => (
-          <StatusIndicator
-            key={status}
-            name={LAB_STATUS_VALUES[status]}
-            phase={index + 1}
-            progress={progress}
-          />
+          <Box key={status} display="contents" role="listitem">
+            <StatusIndicator
+              name={LAB_STATUS_VALUES[status]}
+              phase={index + 1}
+              progress={progress}
+            />
+          </Box>
         ))}
       </Stack>
     </Sheet>

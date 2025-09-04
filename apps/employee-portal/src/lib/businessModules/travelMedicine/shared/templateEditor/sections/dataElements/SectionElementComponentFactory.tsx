@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
+
 import { ApiTemplateSectionElement } from "@eshg/travel-medicine-api";
 
 import { TemplateSectionElementProp } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/SectionDataElementList";
@@ -12,7 +14,6 @@ import {
   AnamnesisQuestion,
   createEmptySubTextElement,
 } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/anamnesisQuestion/AnamnesisQuestion";
-import { MainQuestion } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/anamnesisQuestion/MainQuestion";
 
 export class SectionElementComponentFactory {
   private sectionElementsFormikPath;
@@ -24,29 +25,57 @@ export class SectionElementComponentFactory {
   }
 
   public createSectionElementComponents() {
-    return this.sectionProps.sectionElements.map((element, index) => {
-      if (element.anamnesisQuestion) {
-        return this.createAnamnesisQuestionComponent(index, element);
-      } else if (element.textBlock) {
-        return this.createTextBlockComponent(index);
-      } else if (element.confirmation) {
-        return this.createTemplateConfirmationComponent(index);
-      }
-      throw new Error(
-        "Can't create section element component due to faulty ApiTemplateSectionElement value",
-      );
-    });
+    return (
+      <Box display="contents" role="list">
+        {this.sectionProps.sectionElements
+          .map((element, index) => {
+            if (element.anamnesisQuestion) {
+              return this.createAnamnesisQuestionComponent(
+                index,
+                this.sectionProps.sectionElements.length,
+                element,
+                (el) => this.sectionProps.setInputElementRef(el, index),
+              );
+            } else if (element.textBlock) {
+              return this.createTextBlockComponent(
+                index,
+                this.sectionProps.sectionElements.length,
+                (el) => this.sectionProps.setInputElementRef(el, index),
+              );
+            } else if (element.confirmation) {
+              return this.createTemplateConfirmationComponent(
+                index,
+                this.sectionProps.sectionElements.length,
+                (el) => this.sectionProps.setInputElementRef(el, index),
+              );
+            }
+            throw new Error(
+              "Can't create section element component due to faulty ApiTemplateSectionElement value",
+            );
+          })
+          .map((it, index) => (
+            <Box key={index} display="contents" role="listitem">
+              {it}
+            </Box>
+          ))}
+      </Box>
+    );
   }
 
-  private createTextBlockComponent(index: number) {
+  private createTextBlockComponent(
+    index: number,
+    totalAmountOfElements: number,
+    setInputElementRef: (el: HTMLInputElement) => void,
+  ) {
     return (
       <TemplateTextBlock
-        key={index}
         sectionElementFormikPath={this.getTextBlockFormikPath(index)}
         sectionElementDeleteHandler={() =>
           this.sectionProps.sectionElementDeleteHandler(index)
         }
         label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Textblock`}
+        setInputElementRef={setInputElementRef}
+        showDeleteButton={totalAmountOfElements > 1}
       />
     );
   }
@@ -59,15 +88,20 @@ export class SectionElementComponentFactory {
     return `${this.getFormikArrayPath(index)}.textBlock`;
   }
 
-  private createTemplateConfirmationComponent(index: number) {
+  private createTemplateConfirmationComponent(
+    index: number,
+    totalAmountOfElements: number,
+    setInputElementRef: (el: HTMLInputElement) => void,
+  ) {
     return (
       <TemplateConfirmation
-        key={index}
         sectionElementFormikPath={this.getTemplateConfirmationFormikPath(index)}
         sectionElementDeleteHandler={() =>
           this.sectionProps.sectionElementDeleteHandler(index)
         }
         label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Bestätigungsfeld`}
+        setInputElementRef={setInputElementRef}
+        showDeleteButton={totalAmountOfElements > 1}
       />
     );
   }
@@ -78,26 +112,23 @@ export class SectionElementComponentFactory {
 
   private createAnamnesisQuestionComponent(
     index: number,
+    totalAmountOfElements: number,
     sectionElement: ApiTemplateSectionElement,
+    setInputElementRef: (el: HTMLInputElement) => void,
   ) {
     return (
       <AnamnesisQuestion
-        key={index}
         anamnesisFormikPath={this.getAnamnesisFormikPath(index)}
         templateAnamnesisQuestion={sectionElement.anamnesisQuestion!}
         addSubElementHandler={() => this.addAnamnesisSubText(index)}
         removeSubQuestionHandler={() => this.removeAnamnesisSubText(index)}
-        mainQuestion={
-          <MainQuestion
-            elementDataFormikPath={this.getAnamnesisFormikPath(index)}
-            sectionElementDeleteHandler={() =>
-              this.sectionProps.sectionElementDeleteHandler(index)
-            }
-            label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Frage`}
-          />
-        }
         sectionIndex={this.sectionIndex}
         elementIndex={index}
+        setInputElementRef={setInputElementRef}
+        totalAmountOfSectionElements={totalAmountOfElements}
+        sectionElementDeleteHandler={() =>
+          this.sectionProps.sectionElementDeleteHandler(index)
+        }
       />
     );
   }

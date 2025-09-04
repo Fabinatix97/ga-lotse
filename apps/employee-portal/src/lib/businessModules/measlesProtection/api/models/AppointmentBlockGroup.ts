@@ -5,7 +5,13 @@
 
 import { first, last, sumBy } from "remeda";
 
-import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
+import {
+  AppointmentBlock,
+  AppointmentBlockGroup,
+  durationToSecond,
+  mapBaseEntity,
+  secondToISODuration,
+} from "@eshg/lib-employee-portal";
 import { assertNonEmptyArray } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -13,28 +19,11 @@ import {
   ApiGetAppointmentBlockGroup,
 } from "@eshg/measles-protection-api";
 
-import {
-  durationToSecond,
-  secondToISODuration,
-} from "@/lib/shared/helpers/dateTime";
-
-export interface AppointmentBlockMeasles extends BaseEntity {
-  readonly start: Date;
-  readonly end: Date;
-  readonly freeDuration?: string;
-  readonly bookedDuration?: string;
-}
-
-export interface AppointmentBlockGroup extends AppointmentBlockMeasles {
-  readonly types: ApiAppointmentType[];
-  readonly appointmentBlocks: AppointmentBlockMeasles[];
-}
-
 export type AppointmentDurationsMeasles = Record<ApiAppointmentType, number>;
 
 function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
-): AppointmentBlockMeasles {
+): AppointmentBlock {
   return {
     ...mapBaseEntity(response),
     start: response.start,
@@ -46,7 +35,7 @@ function mapAppointmentBlock(
 
 export function mapAppointmentBlockGroup(
   response: ApiGetAppointmentBlockGroup,
-): AppointmentBlockGroup {
+): Omit<AppointmentBlockGroup, "parallelExaminations"> {
   assertNonEmptyArray(response.appointmentBlocks);
 
   const firstAppointmentBlock = first(response.appointmentBlocks);

@@ -6,26 +6,15 @@
 package de.eshg.lsd.keycloak.properties;
 
 import java.time.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "eshg.lsd-keycloak.internal")
-public record LsdInternalKeycloakProperties(
-    String url,
+@ConfigurationProperties(prefix = "eshg.lsd-keycloak.setup")
+public record LsdKeycloakSetupProperties(
     String realmDisplayName,
     AdminUser adminUser,
     AdminClient adminClient,
     Duration eventExpiration,
-    Duration sessionTimeout,
-    boolean lenientPasswordPolicy) {
-
-  private static final Logger log = LoggerFactory.getLogger(LsdInternalKeycloakProperties.class);
-
-  public LsdInternalKeycloakProperties {
-    log.info("Local Service Directory Keycloak internal URL: {}", url);
-  }
-
+    Duration sessionTimeout) {
   public record AdminUser(String user, String password) {}
 
   public record AdminClient(String clientId, String clientSecret) {}

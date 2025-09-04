@@ -7,6 +7,7 @@ package de.eshg.base.config;
 
 import static de.eshg.config.departmentinfo.ConfigAuditLogMapper.getRelevantFieldsForLogging;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.department.CitizenPortalMarkdownName;
 import de.eshg.base.department.EmployeePortalMarkdownName;
 import de.eshg.base.department.MarkdownName;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 @Component
@@ -70,6 +72,13 @@ public class DepartmentConfigurationService
   @Override
   public DepartmentConfiguration getConfig() {
     return super.getConfig();
+  }
+
+  @VisibleForTesting
+  @Transactional
+  public void setInitializedTrue() {
+    DepartmentConfiguration config = getConfig();
+    config.setStreetAndMunicipalityDirectoriesInitialized(true);
   }
 
   public byte[] getLogo() {

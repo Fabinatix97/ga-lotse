@@ -54,7 +54,7 @@
             - name: ESHG_LSDKEYCLOAK_CLIENT_URL
               value: "https://{{ .Values.domains.hosts.keycloakInternal }}"
             - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
-              value: "https://{{ .Values.domains.hosts.keycloak }}/realms/eshg-lsd"
+              value: "https://{{ .Values.domains.hosts.keycloakInternal }}/realms/eshg-lsd"
             - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTID
               value: eshg-actor
             - name: ESHG_LSDKEYCLOAK_CLIENT_CLIENTSECRET
@@ -357,14 +357,16 @@ FM
 
 {{- define "genLsdImport" }}
 [
+  {{- $first := true }}
   {{- range $k, $v := .Values.businessmodules }}
   {{- if $v.enabled }}
   {{- $localHostname := printf "%s%s" $k $.Values.domains.clusterLocalSuffix }}
   {{- $hostName := coalesce $v.host $localHostname }}
-  { "username": "{{ $hostName }}", "password": "{{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" $k 64) | b64dec }}" },
+  {{- if not $first }},{{ end }}
+  {{- $first = false }}
+  { "username": "{{ $hostName }}", "password": "{{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" $k 64) | b64dec }}" }
   {{- end }}
   {{- end }}
-  { "username": "{{ .Values.domains.hosts.lsd }}", "password": "-" }
 {{- if .Values.employeeportal.enabled }},
   { "username": "employee-portal-auth{{ .Values.domains.clusterLocalSuffix }}", "password": "{{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "employeeportalauth" 64) | b64dec }}" },
   { "username": "employee-portal{{ .Values.domains.clusterLocalSuffix }}", "password": "{{ include "getOrCreateSecretValue" (list $ "keycloak-actor-secrets" "employeeportalnextjs" 64) | b64dec }}" },

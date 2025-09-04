@@ -4,13 +4,14 @@
  */
 
 import { Add, Delete } from "@mui/icons-material";
-import { Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray, useFormikContext } from "formik";
-import { Fragment } from "react";
+import { Box, Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+import { Fragment, useRef } from "react";
 
 import { ApiCountryCode } from "@eshg/base-api";
 import { FileField, useGetPublicConfig } from "@eshg/lib-employee-portal";
 import {
+  FieldArrayWithFocus,
   FileType,
   NestedFormProps,
   createFieldNameMapper,
@@ -30,6 +31,7 @@ interface RequiredDocumentsFormProps extends NestedFormProps {
 }
 
 export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
+  const fallbackInputElement = useRef<HTMLElement>(null);
   const values =
     useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
@@ -45,9 +47,9 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
   const changeType = values.generalInformationForm.changeType;
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby="required-docs-title">
       <Grid xxs={12}>
-        <Typography level="h3" component="h2">
+        <Typography level="h3" component="h2" id="required-docs-title">
           Erforderliche Unterlagen
         </Typography>
       </Grid>
@@ -74,6 +76,9 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
 
       <Grid xxs={6}>
         <FileField
+          ref={(el) => {
+            fallbackInputElement.current = el;
+          }}
           name={fieldName("identificationDocument")}
           label="Ausweis / Reisepass als JPG hochladen"
           accept={FileType.Jpeg}
@@ -98,8 +103,12 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
         </>
       )}
 
-      <FieldArray name={fieldName("otherRelevantDocuments")}>
-        {({ push, remove }) => (
+      <FieldArrayWithFocus
+        valueLength={otherRelevantDocuments.length}
+        name={fieldName("otherRelevantDocuments")}
+        fallbackFocusInputElement={fallbackInputElement.current ?? undefined}
+      >
+        {({ push, remove, setInputElementRef }) => (
           <>
             {otherRelevantDocuments.map((values, index) => (
               <Fragment key={index}>
@@ -111,8 +120,15 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
                     sx={{
                       ">:first-child": { flexGrow: 1 },
                     }}
+                    role="group"
+                    aria-label={`Weiteres Dokument ${index + 1}`}
                   >
                     <FileField
+                      ref={(el) => {
+                        if (el) {
+                          setInputElementRef(el, index);
+                        }
+                      }}
                       name={`requiredDocumentsForm.otherRelevantDocuments.${index}`}
                       label="Sonstiges Dokument als JPG hochladen"
                       accept={FileType.Jpeg}
@@ -123,7 +139,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
                       aria-label="Dokument löschen"
                       color="danger"
                       variant="plain"
-                      sx={{ alignSelf: "center" }}
+                      sx={{ alignSelf: "flex-end" }}
                       onClick={() => remove(index)}
                     >
                       <Delete size="xl2" />
@@ -136,8 +152,8 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
             <Grid xxs={6}>
               {otherRelevantDocuments.length < MAX_OTHER_RELEVANT_DOCUMENTS && (
                 <Button
-                  variant="outlined"
-                  endDecorator={<Add />}
+                  variant="plain"
+                  startDecorator={<Add />}
                   onClick={() => push(null)}
                 >
                   Weiteres Dokument hinzufügen
@@ -147,7 +163,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
             <Grid xxl={6} />
           </>
         )}
-      </FieldArray>
-    </>
+      </FieldArrayWithFocus>
+    </Box>
   );
 }

@@ -5,12 +5,14 @@
 
 "use client";
 
+import ModalDialogVariantColorContext from "@mui/joy/ModalDialog/ModalDialogVariantColorContext";
 import { useFormikContext } from "formik";
 import {
   FormHTMLAttributes,
   Ref,
   forwardRef,
   useCallback,
+  useContext,
   useImperativeHandle,
 } from "react";
 
@@ -28,13 +30,21 @@ export type SidebarFormProps = FormHTMLAttributes<HTMLFormElement> &
 export const SidebarForm = forwardRef<SidebarFormHandle, SidebarFormProps>(
   function SidebarForm(props: SidebarFormProps, ref) {
     const { dirty, resetForm: formikResetForm } = useFormikContext();
+    const context = useContext(ModalDialogVariantColorContext);
 
     useSidebarFormHandle(ref, {
       dirty,
       resetForm: formikResetForm,
     });
 
-    return <FormPlus role="form" {...props} sx={{ display: "contents" }} />;
+    return (
+      <FormPlus
+        role="form"
+        aria-labelledby={props["aria-labelledby"] ?? context?.labelledBy}
+        {...props}
+        sx={{ display: "contents" }}
+      />
+    );
   },
 );
 

@@ -4,10 +4,9 @@
  */
 
 import { CreateNewFolder } from "@mui/icons-material";
-import { Button } from "@mui/joy";
-import { FieldArray } from "formik";
+import { Box, Button } from "@mui/joy";
 
-import { useSnackbar } from "@eshg/lib-portal";
+import { FieldArrayWithFocus, useSnackbar } from "@eshg/lib-portal";
 import { ApiTemplateSection } from "@eshg/travel-medicine-api";
 
 import { SectionTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/SectionTitle";
@@ -49,26 +48,35 @@ export function TemplateSectionList(
   }
 
   return (
-    <FieldArray name={sectionsFormikPath} validateOnChange={false}>
-      {({ push, remove }) => (
+    <FieldArrayWithFocus
+      name={sectionsFormikPath}
+      validateOnChange={false}
+      valueLength={props.sections.length}
+    >
+      {({ push, remove, setInputElementRef }) => (
         <>
-          {props.sections.map((section, index) => (
-            <TemplateSection
-              key={index}
-              sectionFormikPath={getSectionPath(index)}
-              sectionElements={section.sectionElements}
-              sectionTitle={
-                <SectionTitle
-                  sectionDeleteHandler={() =>
-                    sectionDeleteHandler(index, remove)
-                  }
+          <Box role="list" display="contents">
+            {props.sections.map((section, index) => (
+              <Box key={index} display="contents" role="listitem">
+                <TemplateSection
                   sectionFormikPath={getSectionPath(index)}
-                  label={`Titel ${index + 1}. Sektion`}
+                  sectionElements={section.sectionElements}
+                  sectionTitle={
+                    <SectionTitle
+                      setInputElementRef={(el) => setInputElementRef(el, index)}
+                      sectionDeleteHandler={() =>
+                        sectionDeleteHandler(index, remove)
+                      }
+                      sectionFormikPath={getSectionPath(index)}
+                      label={`Titel ${index + 1}. Sektion`}
+                      showDeleteSectionButton={props.sections.length > 1}
+                    />
+                  }
+                  sectionIndex={index}
                 />
-              }
-              sectionIndex={index}
-            />
-          ))}
+              </Box>
+            ))}
+          </Box>
           <Button
             startDecorator={<CreateNewFolder />}
             variant="plain"
@@ -79,6 +87,6 @@ export function TemplateSectionList(
           </Button>
         </>
       )}
-    </FieldArray>
+    </FieldArrayWithFocus>
   );
 }

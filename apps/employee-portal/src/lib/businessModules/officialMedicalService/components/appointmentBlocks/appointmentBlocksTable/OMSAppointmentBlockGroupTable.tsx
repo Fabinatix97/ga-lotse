@@ -6,62 +6,45 @@
 "use client";
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { ColumnSort } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import {
-  DataTable,
-  Pagination,
-  TablePage,
-  TableSheet,
+  AppointmentBlockGroupsTable,
+  AppointmentBlockRow,
+  INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   getSortDirection,
   getSortKey,
+  useAppointmentBlockGroupsColumns,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/official-medical-service-api";
 
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentBlocksApi";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
-
-import {
-  getSubRows,
-  toAggregatedAppointmentBlockRow,
-  useAppointmentBlockGroupsColumns,
-} from "./AppointmentBlockGroupTable.columns";
-
-const initialSorting: ColumnSort = {
-  id: "start",
-  desc: false,
-};
 
 interface AppointmentBlockGroupsTableProps {
   controls?: ReactNode;
 }
 
-export function AppointmentBlockGroupsTable(
+export function OMSAppointmentBlockGroupsTablePage(
   props: AppointmentBlockGroupsTableProps,
 ) {
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
     sortDirectionName: "sortDirection",
-    initialSorting: initialSorting,
-  });
-  const COLUMNS = useAppointmentBlockGroupsColumns({
-    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void handleDeleteAppointmentBlock(appointmentBlockId);
-    },
+    initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
 
   const deleteAppointmentBlock = useDeleteAppointmentBlock();
-
   async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
     await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
   }
 
-  const [getAppointmentBlockGroups] = useSuspenseQueries({
+  const [appointmentBlockGroups] = useSuspenseQueries({
     queries: [
       useGetAppointmentBlockGroupsQuery({
         pageNumber: tableControl.paginationProps.pageNumber,
@@ -74,37 +57,22 @@ export function AppointmentBlockGroupsTable(
     ],
   });
 
-  const rows = getAppointmentBlockGroups.data.elements.map(
-    toAggregatedAppointmentBlockRow,
-  );
-
+  const columnHelper = createColumnHelper<AppointmentBlockRow>();
+  const COLUMNS = useAppointmentBlockGroupsColumns({
+    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
+      void handleDeleteAppointmentBlock(appointmentBlockId);
+    },
+    appointmentTypes: APPOINTMENT_TYPES,
+    columnHelper,
+  });
   return (
-    <TablePage
-      fullHeight
+    <AppointmentBlockGroupsTable
       controls={props.controls}
-      data-testid="appointmentBlockGroupsTable"
-    >
-      <TableSheet
-        loading={getAppointmentBlockGroups.isFetching}
-        footer={
-          <Pagination
-            totalCount={getAppointmentBlockGroups.data.totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
-        }
-      >
-        <DataTable
-          data={rows}
-          columns={COLUMNS}
-          noDataComponent={() => (
-            <NoAppointmentBlocksAvailable
-              href={routes.appointmentBlockGroups.new}
-            />
-          )}
-          getSubRows={getSubRows}
-          sorting={tableControl.tableSorting}
-        />
-      </TableSheet>
-    </TablePage>
+      tableControl={tableControl}
+      appointmentBlockGroups={appointmentBlockGroups.data}
+      isLoading={appointmentBlockGroups.isFetching}
+      columns={COLUMNS}
+      newAppointmentBlockRoute={routes.appointmentBlockGroups.new}
+    />
   );
 }

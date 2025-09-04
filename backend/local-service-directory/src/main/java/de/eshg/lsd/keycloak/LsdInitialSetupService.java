@@ -8,7 +8,7 @@ package de.eshg.lsd.keycloak;
 import static de.eshg.lsd.keycloak.LsdInitialSetupService.BEAN_NAME;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.lsd.keycloak.properties.LsdInternalKeycloakProperties;
+import de.eshg.lsd.keycloak.properties.LsdKeycloakSetupProperties;
 import de.eshg.lsd.register.api.LsdClientKeycloakProperties;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
@@ -36,13 +36,12 @@ public class LsdInitialSetupService {
 
   private static final Logger log = LoggerFactory.getLogger(LsdInitialSetupService.class);
 
-  private final LsdInternalKeycloakProperties internalProperties;
+  private final LsdKeycloakSetupProperties setupProperties;
   private final LsdClientKeycloakProperties clientProperties;
 
   public LsdInitialSetupService(
-      LsdInternalKeycloakProperties internalProperties,
-      LsdClientKeycloakProperties clientProperties) {
-    this.internalProperties = internalProperties;
+      LsdKeycloakSetupProperties setupProperties, LsdClientKeycloakProperties clientProperties) {
+    this.setupProperties = setupProperties;
     this.clientProperties = clientProperties;
     Keycloak keycloak = tryCreateKeycloakAdminCliClient();
     if (keycloak != null) {
@@ -63,7 +62,7 @@ public class LsdInitialSetupService {
     }
 
     RealmRepresentation realmRepresentation = new RealmRepresentation();
-    realmRepresentation.setDisplayName(internalProperties.realmDisplayName());
+    realmRepresentation.setDisplayName(setupProperties.realmDisplayName());
     realmRepresentation.setRealm(clientProperties.realm());
     realmRepresentation.setEnabled(true);
 
@@ -78,7 +77,7 @@ public class LsdInitialSetupService {
     ClientsResource clientsResource = realmResource.clients();
 
     ClientRepresentation lsdAdminClient =
-        getClientByClientId(clientsResource, internalProperties.adminClient().clientId())
+        getClientByClientId(clientsResource, setupProperties.adminClient().clientId())
             .map(ClientResource::toRepresentation)
             .orElseGet(() -> tryCreateClient(clientsResource));
 
@@ -133,17 +132,17 @@ public class LsdInitialSetupService {
     try {
       Keycloak keycloak =
           KeycloakBuilder.builder()
-              .serverUrl(internalProperties.url())
+              .serverUrl(clientProperties.url())
               .grantType(OAuth2Constants.PASSWORD)
               .realm("master")
               .clientId("admin-cli")
-              .username(internalProperties.adminUser().user())
-              .password(internalProperties.adminUser().password())
+              .username(setupProperties.adminUser().user())
+              .password(setupProperties.adminUser().password())
               .build();
 
       log.info(
           "Connected to Keycloak on '{}'. Keycloak version: {}",
-          internalProperties.url(),
+          clientProperties.url(),
           keycloak.serverInfo().getInfo().getSystemInfo().getVersion());
 
       return keycloak;
@@ -159,8 +158,8 @@ public class LsdInitialSetupService {
 
   private ClientRepresentation getAdminClientRepresentation() {
     ClientRepresentation client = new ClientRepresentation();
-    client.setClientId(internalProperties.adminClient().clientId());
-    client.setSecret(internalProperties.adminClient().clientSecret());
+    client.setClientId(setupProperties.adminClient().clientId());
+    client.setSecret(setupProperties.adminClient().clientSecret());
     client.setEnabled(true);
     client.setAuthorizationServicesEnabled(false);
     client.setServiceAccountsEnabled(true);

@@ -13,7 +13,7 @@ import {
   useConfirmationDialog,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatTime } from "@eshg/lib-portal";
+import { DetailsList, formatDate, formatTime } from "@eshg/lib-portal";
 import { ApiAppointment } from "@eshg/measles-protection-api";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
@@ -82,31 +82,36 @@ export function AppointmentCard({
         )
       }
     >
-      <Stack spacing={3} alignItems="start" width="100%">
-        {appointment ? (
-          <Stack gap={1} sx={{ flexBasis: "auto" }}>
-            <DetailsItem label="Datum" value={formatDate(appointment.start)} />
-            <DetailsItem
-              label="Zeitraum"
-              value={
-                "Von " +
-                formatTime(appointment.start) +
-                " Uhr bis " +
-                formatTime(appointment.end) +
-                " Uhr"
-              }
-            />
-          </Stack>
-        ) : !procedureClosed ? (
-          <Button
-            variant="plain"
-            startDecorator={<Add />}
-            onClick={() => setAddingAppointment(true)}
-          >
-            Hinzufügen
-          </Button>
-        ) : null}
-      </Stack>
+      <DetailsList>
+        <Stack spacing={3} alignItems="start" width="100%">
+          {appointment ? (
+            <Stack gap={1} sx={{ flexBasis: "auto" }}>
+              <DetailsItem
+                label="Datum"
+                value={formatDate(appointment.start)}
+              />
+              <DetailsItem
+                label="Zeitraum"
+                value={
+                  "Von " +
+                  formatTime(appointment.start) +
+                  " Uhr bis " +
+                  formatTime(appointment.end) +
+                  " Uhr"
+                }
+              />
+            </Stack>
+          ) : !procedureClosed ? (
+            <Button
+              variant="plain"
+              startDecorator={<Add />}
+              onClick={() => setAddingAppointment(true)}
+            >
+              Hinzufügen
+            </Button>
+          ) : null}
+        </Stack>
+      </DetailsList>
     </InfoTile>
   );
 }

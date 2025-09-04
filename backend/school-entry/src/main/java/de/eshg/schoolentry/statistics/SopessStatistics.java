@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.statistics;
 
+import static de.eshg.schoolentry.statistics.SchoolEntryProcedureDataSource.DATE_FORMAT;
+
 import de.eshg.schoolentry.domain.model.ArticulationValue;
 import de.eshg.schoolentry.domain.model.PrimaryLanguageValue;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
@@ -178,6 +180,7 @@ public class SopessStatistics {
       case SPRBP -> getGermanKnowledgePrimaryCarer(procedure.getSopessExaminationResult());
       case FAMSPR -> getFamilyLanguage(procedure.getSopessExaminationResult());
       case SPRDEU -> getGermanKnowledgeChild(procedure.getSopessExaminationResult());
+      case WOHND -> getInGermanySinceAttribute(procedure.getSopessExaminationResult());
       case DYS_S_Z ->
           getSopessExaminationAttribute(
               procedure,
@@ -302,6 +305,17 @@ public class SopessStatistics {
     if (value == null && hasGermanPrimaryLanguage(sopessExaminationResult)) {
       return ChildLanguageKnowledge.VALUE_9.getValue();
     } else return value;
+  }
+
+  private static String getInGermanySinceAttribute(
+      SopessExaminationResult sopessExaminationResult) {
+    if (sopessExaminationResult == null) {
+      return null;
+    }
+    if (sopessExaminationResult.getInGermanySince() == null) {
+      return "";
+    }
+    return sopessExaminationResult.getInGermanySince().format(DATE_FORMAT);
   }
 
   private static <T, E> E getSopessExaminationAttribute(

@@ -41,6 +41,7 @@ export interface CreateProcedureValues {
   initialAppointmentProcedureStepId: string;
   createdByUserType: ApiCreatedByUserType;
 }
+
 const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
 
 interface VaccinationConsultationPageProps {

@@ -5,6 +5,7 @@
 
 import {
   AppointmentBlockApi,
+  AppointmentBlockDefaultAvailabilityApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
   ArchivingApi,
@@ -50,6 +51,11 @@ export function useCountryCodesApi() {
 export function useAppointmentBlockApi() {
   const configuration = useConfiguration();
   return new AppointmentBlockApi(configuration);
+}
+
+export function useAppointmentBlockDefaultAvailabilityApi() {
+  const configuration = useConfiguration();
+  return new AppointmentBlockDefaultAvailabilityApi(configuration);
 }
 
 export function useValueEvaluatorApi() {

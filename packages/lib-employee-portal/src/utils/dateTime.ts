@@ -3,9 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GetWeekOptions, type Locale, getWeek } from "date-fns";
+import {
+  FormatDurationOptions,
+  GetWeekOptions,
+  type Locale,
+  addSeconds,
+  formatDuration,
+  formatISODuration,
+  getWeek,
+  intervalToDuration,
+  secondsToHours,
+} from "date-fns";
 // TODO: do not import all locales statically
 import * as DateLocales from "date-fns/locale";
+import { parse, toSeconds } from "iso8601-duration";
 
 import { isDateString, isTimeString } from "@eshg/lib-portal";
 
@@ -67,4 +78,37 @@ export function toLocalDateTime(date: string, time: string) {
     throw new Error(`Invalid time string '${time}'`);
   }
   return new Date(`${date}T${time}`);
+}
+
+export function formatDurationToHoursAndMinutes(
+  isoDuration: string,
+  options?: FormatDurationOptions,
+) {
+  const duration = parse(isoDuration);
+  const minutes = duration.minutes;
+  const hours = secondsToHours(toSeconds({ ...duration, minutes: 0 }));
+
+  return hours === 0 && minutes === 0
+    ? formatDuration(
+        { minutes: 0 },
+        { zero: true, locale: options?.locale ?? getDateFnsLocale() },
+      )
+    : formatDuration(
+        { hours, minutes },
+        {
+          format: ["hours", "minutes"],
+          locale: options?.locale ?? getDateFnsLocale(),
+        },
+      );
+}
+
+export function durationToSecond(isoDuration: string) {
+  return toSeconds(parse(isoDuration));
+}
+
+export function secondToISODuration(second: number) {
+  const baseline = new Date();
+  return formatISODuration(
+    intervalToDuration({ start: baseline, end: addSeconds(baseline, second) }),
+  );
 }

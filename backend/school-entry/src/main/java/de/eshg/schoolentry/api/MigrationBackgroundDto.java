@@ -6,7 +6,6 @@
 package de.eshg.schoolentry.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
 
 @Schema(name = "MigrationBackground")
 public record MigrationBackgroundDto(
@@ -23,10 +22,8 @@ public record MigrationBackgroundDto(
     @Schema(description = "Country of birth of the second parent", example = "DEU")
         CountryCodeDto countryOfBirthSecondParent,
     @Schema(description = "Boolean that indicates, if the child has migration background")
-        Boolean hasMigrationBackground,
-    @Schema(description = "Date from which the child lives in Germany", example = "2000-01-01")
-        LocalDate inGermanySince) {
+        Boolean hasMigrationBackground) {
   public MigrationBackgroundDto() {
-    this(null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null);
   }
 }

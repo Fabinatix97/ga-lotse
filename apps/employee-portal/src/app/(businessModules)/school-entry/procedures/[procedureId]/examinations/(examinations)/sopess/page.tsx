@@ -12,7 +12,9 @@ import { ContentPanel, ContentPanelTitle } from "@eshg/lib-employee-portal";
 import {
   DisabledFormProvider,
   DynamicPageProps,
+  mapMonthAndYear,
   mapOptionalValue,
+  parseMonthAndYear,
   parseOptionalValue,
   useHandledMutation,
 } from "@eshg/lib-portal";
@@ -111,6 +113,9 @@ function mapToFormValues(
       ),
       germanKnowledgeChild: parseOptionalValue(
         sopessExaminationResult.language.germanKnowledgeChild,
+      ),
+      inGermanySince: parseMonthAndYear(
+        sopessExaminationResult.language.inGermanySince,
       ),
     },
     articulation: {
@@ -255,6 +260,7 @@ function mapLanguage(values: LanguageValues) {
     ),
     familyLanguage: mapOptionalValue(values.familyLanguage),
     germanKnowledgeChild: mapOptionalValue(values.germanKnowledgeChild),
+    inGermanySince: mapMonthAndYear(values.inGermanySince),
   };
 }
 

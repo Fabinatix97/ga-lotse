@@ -46,7 +46,7 @@ public class SchoolEntryProcedureDataSource
   public static final UUID DATA_SOURCE_ID = UUID.fromString("5bee6747-9cbc-423c-a192-ad978d45970c");
   private static final String DATA_SOURCE_NAME = "ESU";
 
-  private static final DateTimeFormatter DATE_FORMAT =
+  static final DateTimeFormatter DATE_FORMAT =
       DateTimeFormatter.ofPattern("MM.yyyy", Locale.GERMANY);
 
   private final AnamnesisStatistics anamnesisStatistics;
@@ -158,7 +158,6 @@ public class SchoolEntryProcedureDataSource
       case KIH ->
           AnamnesisStatistics.getAnamnesisAttribute(procedure, Anamnesis::getNumberOfSiblings);
       case SCHULE -> procedure.getSchoolId();
-      case WOHND -> getInGermanySinceAttribute(procedure);
     };
   }
 
@@ -176,16 +175,5 @@ public class SchoolEntryProcedureDataSource
           .atZone(clock.getZone())
           .format(DATE_FORMAT);
     }
-  }
-
-  private static String getInGermanySinceAttribute(SchoolEntryProcedure procedure) {
-    Anamnesis anamnesis = procedure.getAnamnesis();
-    if (anamnesis == null) {
-      return null;
-    }
-    if (anamnesis.getInGermanySince() == null) {
-      return "";
-    }
-    return anamnesis.getInGermanySince().format(DATE_FORMAT);
   }
 }

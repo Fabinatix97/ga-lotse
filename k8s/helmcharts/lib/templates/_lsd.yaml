@@ -129,19 +129,19 @@ spec:
             - name: SPRING_SSL_BUNDLE_PEM_LSD_KEYSTORE_PRIVATEKEY
               value: /var/run/certs/tls.key
             - name: spring.security.oauth2.resourceserver.jwt.issuer-uri
-              value: "https://{{ .Values.domains.hosts.keycloak }}/realms/eshg-lsd"
+              value: "https://{{ .Values.domains.hosts.keycloakInternal }}/realms/eshg-lsd"
             - name: ESHG_LSD_MAXCERTIFICATESPERACTOR
               value: "{{ mul 2 .Values.replicas.maximum }}"
             - name: ESHG_KEYCLOAK_URL
               value: "https://{{ .Values.domains.hosts.keycloak }}"
             - name: ESHG_KEYCLOAK_INTERNAL_URL
               value: "https://{{ .Values.domains.hosts.keycloakInternal }}"
-            - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINUSER_PASSWORD
+            - name: ESHG_LSDKEYCLOAK_SETUP_ADMINUSER_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: keycloak-admin
                   key: password
-            - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINCLIENT_CLIENTSECRET
+            - name: ESHG_LSDKEYCLOAK_SETUP_ADMINCLIENT_CLIENTSECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-admin
@@ -190,6 +190,7 @@ spec:
               readOnly: true
             {{- end }}
         - name: spatz
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           lifecycle:
             postStart:
               exec:

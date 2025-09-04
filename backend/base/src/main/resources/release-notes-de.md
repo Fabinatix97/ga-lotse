@@ -2,6 +2,21 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 2.5
+_03.09.2025_
+
+Achtzehnter Release der Anwendung GA-Lotse
+
+### Einschulungsuntersuchungen:
+
+* Planung
+  * Neuer Filter "Untersuchung begonnen - Ja / Nein"
+  * Vorbelegung bei Planung der Terminblöcken zur Einbeziehung bei Online-Portalbuchungen sowie Massenterminvergabe konfigurierbar
+  * Paginierung bei Kennungsübersicht
+  * Anpassung Start- und Endzeit bei Terminblöcken
+* Untersuchungstag
+  * Feld "In Deutschland seit" von Anamnese umgezogen zu "S1 SOPESS 2019" 
+
 ## GA-Lotse 2.4
 _20.08.2025_
 

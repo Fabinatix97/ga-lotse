@@ -7,30 +7,35 @@ import {
   FormatDistanceToNowOptions,
   FormatDurationOptions,
   GetWeekOptions,
-  addSeconds,
   format,
   formatDistanceStrict,
   formatDistanceToNow,
   formatDistanceToNowStrict,
-  formatDuration,
   formatISO,
-  formatISODuration,
   getWeek,
-  intervalToDuration,
+  isAfter,
   isBefore,
   isSameDay,
   parse,
-  secondsToHours,
   secondsToMilliseconds,
   secondsToMinutes,
 } from "date-fns";
 import { parse as parseDuration, toSeconds } from "iso8601-duration";
 
-import { getDateFnsLocale } from "@eshg/lib-employee-portal";
-import { TIME_FORMAT, isDateString, isTimeString } from "@eshg/lib-portal";
+import { durationToSecond, getDateFnsLocale } from "@eshg/lib-employee-portal";
+import {
+  DATE_FORMAT,
+  TIME_FORMAT,
+  isDateString,
+  isTimeString,
+} from "@eshg/lib-portal";
 
 export function formatTimeInput(date: Date): string {
   return format(date, TIME_FORMAT);
+}
+
+export function formatDateInput(date: Date): string {
+  return format(date, DATE_FORMAT);
 }
 
 export function isBeforeTime(
@@ -42,6 +47,17 @@ export function isBeforeTime(
   const startDate = parseTime(startTime, referenceStartDate);
   const endDate = parseTime(endTime, referenceEndDate);
   return isBefore(startDate, endDate);
+}
+
+export function isAfterTime(
+  startTime: string,
+  endTime: string,
+  referenceStartDate: Date = new Date(),
+  referenceEndDate: Date = referenceStartDate,
+) {
+  const startDate = parseTime(startTime, referenceStartDate);
+  const endDate = parseTime(endTime, referenceEndDate);
+  return isAfter(startDate, endDate);
 }
 
 export function parseTime(time: string, referenceDate: Date = new Date()) {
@@ -72,39 +88,6 @@ export function formatDurationRounded(
     locale: options?.locale ?? getDateFnsLocale(),
     roundingMethod: "round",
   });
-}
-
-export function formatDurationToHoursAndMinutes(
-  isoDuration: string,
-  options?: FormatDurationOptions,
-) {
-  const duration = parseDuration(isoDuration);
-  const minutes = duration.minutes;
-  const hours = secondsToHours(toSeconds({ ...duration, minutes: 0 }));
-
-  return hours === 0 && minutes === 0
-    ? formatDuration(
-        { minutes: 0 },
-        { zero: true, locale: options?.locale ?? getDateFnsLocale() },
-      )
-    : formatDuration(
-        { hours, minutes },
-        {
-          format: ["hours", "minutes"],
-          locale: options?.locale ?? getDateFnsLocale(),
-        },
-      );
-}
-
-export function durationToSecond(isoDuration: string) {
-  return toSeconds(parseDuration(isoDuration));
-}
-
-export function secondToISODuration(second: number) {
-  const baseline = new Date();
-  return formatISODuration(
-    intervalToDuration({ start: baseline, end: addSeconds(baseline, second) }),
-  );
 }
 
 export function durationToMinutes(isoDuration: string) {

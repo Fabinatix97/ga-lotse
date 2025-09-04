@@ -5,7 +5,6 @@
 
 package de.eshg.lsd.keycloak;
 
-import static de.eshg.lib.keycloak.EmployeeTestUser.DUMMY;
 import static de.eshg.lib.keycloak.KeycloakUserAttribute.DEFAULT_ATTRIBUTE_EMAIL;
 import static de.eshg.lib.keycloak.UserAttributePermissions.ADMIN_ONLY;
 import static de.eshg.lsd.keycloak.PermissionRole.LSD_WRITE_TECH_USER;
@@ -16,7 +15,8 @@ import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.lib.keycloak.KeycloakUserAttribute;
 import de.eshg.lib.keycloak.UsernamePassword;
-import de.eshg.lsd.keycloak.properties.LsdInternalKeycloakProperties;
+import de.eshg.lsd.keycloak.properties.LsdKeycloakSetupProperties;
+import de.eshg.lsd.register.api.LsdClientKeycloakProperties;
 import de.eshg.lsd.service.LsdAttributeKey;
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.core.Response;
@@ -53,9 +53,9 @@ import org.springframework.stereotype.Component;
  * Keycloak.
  */
 @Component
-public class KeycloakProvisioning {
+public class LsdKeycloakProvisioning {
 
-  private static final Logger log = LoggerFactory.getLogger(KeycloakProvisioning.class);
+  private static final Logger log = LoggerFactory.getLogger(LsdKeycloakProvisioning.class);
 
   private static final String ESHG_CLIENT_SCOPE_NAME = "eshg";
   private static final String OPENID_CONNECT = "openid-connect";
@@ -70,18 +70,21 @@ public class KeycloakProvisioning {
   private final Optional<String> importFile;
   private final Integer certificateAttributeMaxCharacters;
   private final LsdKeycloakClient keycloakClient;
-  private final LsdInternalKeycloakProperties lsdInternalKeycloakProperties;
+  private final LsdKeycloakSetupProperties lsdKeycloakSetupProperties;
+  private final LsdClientKeycloakProperties lsdClientKeycloakProperties;
 
-  public KeycloakProvisioning(
+  public LsdKeycloakProvisioning(
       LsdKeycloakClient keycloakClient,
-      LsdInternalKeycloakProperties lsdInternalKeycloakProperties,
+      LsdKeycloakSetupProperties lsdKeycloakSetupProperties,
       @Value("${eshg.lsd-keycloak.importfile:#{null}}") Optional<String> importFile,
       @Value("${eshg.lsd-keycloak.certificate-attribute-max-characters:#{null}}")
-          Integer certificateAttributeMaxCharacters) {
+          Integer certificateAttributeMaxCharacters,
+      LsdClientKeycloakProperties lsdClientKeycloakProperties) {
     this.keycloakClient = keycloakClient;
-    this.lsdInternalKeycloakProperties = lsdInternalKeycloakProperties;
+    this.lsdKeycloakSetupProperties = lsdKeycloakSetupProperties;
     this.importFile = importFile;
     this.certificateAttributeMaxCharacters = certificateAttributeMaxCharacters;
+    this.lsdClientKeycloakProperties = lsdClientKeycloakProperties;
   }
 
   private static void setAttribute(
@@ -205,24 +208,25 @@ public class KeycloakProvisioning {
   }
 
   private void applyRealmAttributes(RealmRepresentation realmRepresentation) {
-    String realmDisplayName = lsdInternalKeycloakProperties.realmDisplayName();
+    String realmDisplayName = lsdKeycloakSetupProperties.realmDisplayName();
     realmRepresentation.setDisplayName(realmDisplayName);
     realmRepresentation.setDisplayNameHtml(realmDisplayName);
     realmRepresentation.setInternationalizationEnabled(true);
     realmRepresentation.setSupportedLocales(SetUtils.orderedSet("de", "en"));
-    realmRepresentation.setPasswordPolicy(getPasswordPolicy());
+    realmRepresentation.setPasswordPolicy("regexPattern([A-Za-z0-9-]{32,})");
     realmRepresentation.setDefaultLocale("de");
     realmRepresentation.setAdminEventsEnabled(true);
     realmRepresentation.setEventsEnabled(true);
     realmRepresentation.setEventsExpiration(
-        lsdInternalKeycloakProperties.eventExpiration().toSeconds());
+        lsdKeycloakSetupProperties.eventExpiration().toSeconds());
     realmRepresentation.setSsoSessionIdleTimeout(
-        (int) lsdInternalKeycloakProperties.sessionTimeout().toSeconds());
+        (int) lsdKeycloakSetupProperties.sessionTimeout().toSeconds());
     realmRepresentation.setBruteForceProtected(true);
     setAttribute(
         realmRepresentation,
         "adminEventsExpiration",
         String.valueOf(Duration.ofDays(7).toSeconds()));
+    setAttribute(realmRepresentation, "frontendUrl", lsdClientKeycloakProperties.url());
   }
 
   private void updateRequiredActions() {
@@ -296,16 +300,6 @@ public class KeycloakProvisioning {
     return Map.of("length", config);
   }
 
-  private String getPasswordPolicy() {
-    if (lsdInternalKeycloakProperties.lenientPasswordPolicy()) {
-      log.warn("Using lenient password policy");
-      return "length(1) and notUsername";
-    } else {
-      log.info("Using strict password policy (24 bytes of base64 encoded data (32 characters))");
-      return "regex([A-Za-z0-9+/]{32})";
-    }
-  }
-
   private void addClient() {
     ClientRepresentation clientRepresentation = new ClientRepresentation();
     clientRepresentation.setClientId(keycloakClient.getClientId());
@@ -340,15 +334,6 @@ public class KeycloakProvisioning {
     keycloakClient.addClientScope(clientScope);
   }
 
-  public void addDummyUser() {
-    keycloakClient.addUser(
-        DUMMY.username(),
-        DUMMY.firstName(),
-        DUMMY.lastName(),
-        DUMMY.password(),
-        List.of(PermissionRole.values()));
-  }
-
   private UsersResource getUsers() {
     return keycloakClient.getRealm().users();
   }
@@ -369,17 +354,5 @@ public class KeycloakProvisioning {
         log.info("Deleted user with id {}", user.getId());
       }
     }
-  }
-
-  public String getRealm() {
-    return keycloakClient.getRealmName();
-  }
-
-  public String getClientId() {
-    return keycloakClient.getClientId();
-  }
-
-  public String getClientSecret() {
-    return keycloakClient.getClientSecret();
   }
 }

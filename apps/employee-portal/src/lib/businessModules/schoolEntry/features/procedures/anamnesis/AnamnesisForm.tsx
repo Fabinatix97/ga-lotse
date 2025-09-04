@@ -152,7 +152,6 @@ export interface MigrationBackgroundValues {
   nationalitySecondParent: OptionalFieldValue<ApiSchoolEntryCountryCode>;
   countryOfBirthSecondParent: OptionalFieldValue<ApiSchoolEntryCountryCode>;
   hasMigrationBackground: OptionalFieldValue<boolean>;
-  inGermanySince: MonthAndYear;
 }
 
 export const TEXT_INPUT_STYLE = {

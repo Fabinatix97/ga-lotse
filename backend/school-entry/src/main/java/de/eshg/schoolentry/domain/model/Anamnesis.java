@@ -99,7 +99,6 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
   private SchoolEntryCountryCode countryOfBirthSecondParent;
 
   private Boolean hasMigrationBackground;
-  private LocalDate inGermanySince;
 
   private Integer numberOfSiblings;
 
@@ -358,14 +357,6 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
 
   public void setHasMigrationBackground(Boolean migrationBackground) {
     this.hasMigrationBackground = migrationBackground;
-  }
-
-  public LocalDate getInGermanySince() {
-    return inGermanySince;
-  }
-
-  public void setInGermanySince(LocalDate inGermanySince) {
-    this.inGermanySince = inGermanySince;
   }
 
   public List<Integer> getSiblingsBirthYears() {

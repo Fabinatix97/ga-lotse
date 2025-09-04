@@ -64,7 +64,7 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus sx={{ height: "100%" }}>
+        <FormPlus sx={{ height: "100%" }} aria-labelledby="rapidtest-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertRapidTestOptions,
@@ -77,7 +77,9 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
           <SidecarFormLayout>
             <Sheet sx={{ padding: 3 }}>
               <Stack gap={3}>
-                <Typography level="h2">Schnelltests</Typography>
+                <Typography level="h2" id="rapidtest-title">
+                  Schnelltests
+                </Typography>
 
                 <Stack gap={3}>
                   <RapidTestWithBooleanResult

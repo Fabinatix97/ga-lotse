@@ -55,6 +55,7 @@ export interface SelectFieldProps<
   renderValue?: RenderValueFunction<TMultiple>;
   className?: string | undefined;
   sx?: SxProps;
+  ref?: (el: HTMLElement | null) => void;
 }
 
 type RenderValueFunction<TMultiple extends boolean> = SelectProps<
@@ -126,6 +127,11 @@ function InnerSelectField<
       disabled={disabled}
     >
       <SelectComponent
+        slotProps={{
+          button: {
+            ref: props.ref,
+          },
+        }}
         name={props.name}
         value={toJoyUiSelectValue<TMultiple>(props.fieldInputValue)}
         // Trigger the validation when the dropdown is closed, acting similar to a blur

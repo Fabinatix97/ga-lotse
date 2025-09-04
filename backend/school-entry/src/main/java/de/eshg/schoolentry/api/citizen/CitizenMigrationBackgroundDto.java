@@ -7,7 +7,6 @@ package de.eshg.schoolentry.api.citizen;
 
 import de.eshg.schoolentry.api.CountryCodeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
 
 @Schema(name = "CitizenMigrationBackground")
 public record CitizenMigrationBackgroundDto(
@@ -22,10 +21,8 @@ public record CitizenMigrationBackgroundDto(
     @Schema(description = "Nationality of the second parent", example = "DEU")
         CountryCodeDto nationalitySecondParent,
     @Schema(description = "Country of birth of the second parent", example = "DEU")
-        CountryCodeDto countryOfBirthSecondParent,
-    @Schema(description = "Date from which the child lives in Germany", example = "2000-01-01")
-        LocalDate inGermanySince) {
+        CountryCodeDto countryOfBirthSecondParent) {
   public CitizenMigrationBackgroundDto() {
-    this(null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null);
   }
 }

@@ -9,7 +9,6 @@ import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
 import de.eshg.lib.statistics.attributes.ContactIdAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
-import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 
 public enum EsuChildAttributes implements EsuAttributes {
@@ -22,13 +21,6 @@ public enum EsuChildAttributes implements EsuAttributes {
           "Kind", "CHILD_CENTRAL_FILE_ID", EsuChildAttributes.CATEGORY_CHILD, true)),
 
   SCHULE(ContactIdAttribute.create("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
-
-  WOHND(
-      TextAttribute.create(
-          "bei Einreise: in Deutschland seit (Neue Variable ab S1_2023)",
-          "WOHND",
-          EsuChildAttributes.CATEGORY_CHILD,
-          true)),
 
   KIH(
       ValueWithOptionsAttribute.create(

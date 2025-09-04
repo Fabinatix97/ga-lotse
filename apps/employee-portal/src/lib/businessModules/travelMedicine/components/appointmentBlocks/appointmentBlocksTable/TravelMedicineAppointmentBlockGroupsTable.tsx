@@ -6,51 +6,40 @@
 "use client";
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { ColumnSort } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import {
-  DataTable,
-  Pagination,
-  TablePage,
-  TableSheet,
+  AppointmentBlockGroupsTable,
+  AppointmentBlockRow,
+  INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   getSortDirection,
   getSortKey,
+  useAppointmentBlockGroupsColumns,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/travel-medicine-api";
 
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/travelMedicine/api/mutations/appointmentBlocks";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
-
-import {
-  getSubRows,
-  toAggregatedAppointmentBlockRow,
-  useAppointmentBlockGroupsColumns,
-} from "./AppointmentBlockGroupsTable.columns";
-
-const initialSorting: ColumnSort = {
-  id: "start",
-  desc: false,
-};
 
 interface AppointmentBlockGroupsTableProps {
   controls?: ReactNode;
 }
 
-export function AppointmentBlockGroupsTable(
+export function TravelMedicineAppointmentBlockGroupsTable(
   props: AppointmentBlockGroupsTableProps,
 ) {
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
     sortDirectionName: "sortDirection",
-    initialSorting: initialSorting,
+    initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
 
-  const [{ data: appointmentBlockGroups }] = useSuspenseQueries({
+  const [{ data: appointmentBlockGroups, isFetching }] = useSuspenseQueries({
     queries: [
       useGetAppointmentBlockGroupsQuery({
         pageNumber: tableControl.paginationProps.pageNumber,
@@ -62,11 +51,6 @@ export function AppointmentBlockGroupsTable(
       }),
     ],
   });
-  const COLUMNS = useAppointmentBlockGroupsColumns({
-    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void handleDeleteAppointmentBlock(appointmentBlockId);
-    },
-  });
 
   const deleteAppointmentBlock = useDeleteAppointmentBlock();
 
@@ -74,36 +58,23 @@ export function AppointmentBlockGroupsTable(
     await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
   }
 
-  const rows = appointmentBlockGroups.elements.map(
-    toAggregatedAppointmentBlockRow,
-  );
+  const columnHelper = createColumnHelper<AppointmentBlockRow>();
+  const COLUMNS = useAppointmentBlockGroupsColumns({
+    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
+      void handleDeleteAppointmentBlock(appointmentBlockId);
+    },
+    appointmentTypes: APPOINTMENT_TYPES,
+    columnHelper,
+  });
 
   return (
-    <TablePage
-      fullHeight
+    <AppointmentBlockGroupsTable
       controls={props.controls}
-      data-testid="appointmentBlockGroupsTable"
-    >
-      <TableSheet
-        footer={
-          <Pagination
-            totalCount={appointmentBlockGroups.totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
-        }
-      >
-        <DataTable
-          data={rows}
-          columns={COLUMNS}
-          noDataComponent={() => (
-            <NoAppointmentBlocksAvailable
-              href={routes.appointmentBlockGroups.new}
-            />
-          )}
-          getSubRows={getSubRows}
-          sorting={tableControl.tableSorting}
-        />
-      </TableSheet>
-    </TablePage>
+      tableControl={tableControl}
+      appointmentBlockGroups={appointmentBlockGroups}
+      isLoading={isFetching}
+      columns={COLUMNS}
+      newAppointmentBlockRoute={routes.appointmentBlockGroups.new}
+    />
   );
 }

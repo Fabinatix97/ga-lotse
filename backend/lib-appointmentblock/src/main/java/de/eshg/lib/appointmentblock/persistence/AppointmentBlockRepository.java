@@ -77,5 +77,9 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
 
   Optional<AppointmentBlock> findByExternalId(UUID uuid);
 
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("from AppointmentBlock a where a.externalId = :externalId")
+  Optional<AppointmentBlock> findByExternalIdForUpdate(UUID externalId);
+
   List<AppointmentBlock> findAllByCalendarEventIdInOrderById(List<UUID> eventIds);
 }

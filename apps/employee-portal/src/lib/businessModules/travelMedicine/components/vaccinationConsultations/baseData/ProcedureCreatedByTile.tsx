@@ -6,6 +6,7 @@
 import { Grid } from "@mui/joy";
 
 import { DetailsItem, DetailsSection } from "@eshg/lib-employee-portal";
+import { DetailsList } from "@eshg/lib-portal";
 import { ApiCreatedByUserType } from "@eshg/travel-medicine-api";
 
 import { translateCreatedByUserType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
@@ -25,14 +26,16 @@ export function ProcedureCreatedByTile(props: Readonly<ProcedureOriginProps>) {
       title="Vorgangsdaten"
       canEdit={false}
     >
-      <Grid xs={12} pl={0} py={0}>
-        <DetailsItem
-          label="Vorgang erstellt von:"
-          value={translateCreatedByUserType(
-            props.initialValues.createdByUserType,
-          )}
-        />
-      </Grid>
+      <DetailsList>
+        <Grid xs={12} pl={0} py={0}>
+          <DetailsItem
+            label="Vorgang erstellt von:"
+            value={translateCreatedByUserType(
+              props.initialValues.createdByUserType,
+            )}
+          />
+        </Grid>
+      </DetailsList>
     </DetailsSection>
   );
 }

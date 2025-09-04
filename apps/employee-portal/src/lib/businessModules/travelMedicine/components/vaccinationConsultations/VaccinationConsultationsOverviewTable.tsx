@@ -9,7 +9,7 @@ import {
   KeyboardArrowLeftOutlined,
   KeyboardArrowRightOutlined,
 } from "@mui/icons-material";
-import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
+import { Box, FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
@@ -162,41 +162,55 @@ export function VaccinationConsultationsOverviewTable(
           justifyContent="space-between"
           flexWrap="wrap"
         >
-          <Stack direction="row" gap={3} alignItems="center">
-            <Stack direction="row" gap={1}>
-              <TextInputClientFilter
-                placeholder="Vorname"
-                type="search"
-                setInputField={setFirstName}
-                sx={{ height: "36px" }}
-              />
-              <TextInputClientFilter
-                placeholder="Nachname"
-                type="search"
-                setInputField={setLastName}
-                sx={{ height: "36px" }}
-              />
-              <TextInputClientFilter
-                placeholder="Geburtsdatum"
-                type="date"
-                setInputField={setDateOfBirth}
-                sx={{ height: "36px" }}
-              />
-            </Stack>
-            <Select
-              multiple
-              aria-description="Mehrfachauswahl möglich"
-              value={status}
-              placeholder="Vorgangsstatus"
-              aria-label="Vorgangsstatus"
-              sx={{
-                width: "200px",
-              }}
-              onChange={(_, value) => setStatus(value)}
+          <Stack
+            direction="row"
+            gap={3}
+            alignItems="center"
+            role="search"
+            aria-label="Vorgänge"
+          >
+            <Box display="contents" role="group" aria-label="Filter">
+              <Stack direction="row" gap={1}>
+                <TextInputClientFilter
+                  placeholder="Vorname"
+                  type="search"
+                  setInputField={setFirstName}
+                  sx={{ height: "36px" }}
+                />
+                <TextInputClientFilter
+                  placeholder="Nachname"
+                  type="search"
+                  setInputField={setLastName}
+                  sx={{ height: "36px" }}
+                />
+                <TextInputClientFilter
+                  placeholder="Geburtsdatum"
+                  type="date"
+                  setInputField={setDateOfBirth}
+                  sx={{ height: "36px" }}
+                />
+              </Stack>
+              <Select
+                multiple
+                aria-description="Mehrfachauswahl möglich"
+                value={status}
+                placeholder="Vorgangsstatus"
+                aria-label="Vorgangsstatus"
+                sx={{
+                  width: "200px",
+                }}
+                onChange={(_, value) => setStatus(value)}
+              >
+                <SelectOptions options={getStatusOptions()} />
+              </Select>
+            </Box>
+            <Stack
+              direction="row"
+              gap={1}
+              flexWrap="wrap"
+              role="group"
+              aria-label="Termin auswählen"
             >
-              <SelectOptions options={getStatusOptions()} />
-            </Select>
-            <Stack direction="row" gap={1} flexWrap="wrap">
               <FormControl key="searchDate" size="md">
                 <Input
                   type="date"
@@ -217,7 +231,7 @@ export function VaccinationConsultationsOverviewTable(
                 variant="outlined"
                 size="md"
                 sx={{ padding: "4px 16px" }}
-                aria-label="Termine heute"
+                aria-label="Heute"
                 onClick={() => {
                   const newDate = new Date();
                   setDayOfAppointmentFilter(toDateString(newDate));
@@ -230,7 +244,7 @@ export function VaccinationConsultationsOverviewTable(
                 color="primary"
                 variant="outlined"
                 size="md"
-                aria-label="Termine vorheriger Tag"
+                aria-label="Vorheriger Tag"
                 onClick={setPrevDay}
               >
                 <KeyboardArrowLeftOutlined size="sm" />
@@ -239,7 +253,7 @@ export function VaccinationConsultationsOverviewTable(
                 color="primary"
                 variant="outlined"
                 size="md"
-                aria-label="Termine nächster Tag"
+                aria-label="Nächster Tag"
                 onClick={setNextDay}
               >
                 <KeyboardArrowRightOutlined size="sm" />

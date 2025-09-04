@@ -9,6 +9,25 @@
     "url" : "http://localhost:8080"
   } ],
   "paths" : {
+    "/appointment-block-availability" : {
+      "get" : {
+        "operationId" : "getDefaultFlags",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailability"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets the default availability flags",
+        "tags" : [ "AppointmentBlockDefaultAvailability" ]
+      }
+    },
     "/appointment-blocks/appointment-block-groups" : {
       "get" : {
         "operationId" : "getAppointmentBlockGroups",
@@ -307,6 +326,42 @@
         },
         "summary" : "Get appointment block",
         "tags" : [ "AppointmentBlock" ]
+      },
+      "put" : {
+        "operationId" : "updateAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update appointment block",
+        "tags" : [ "AppointmentBlock" ]
       }
     },
     "/appointment-types" : {
@@ -408,6 +463,45 @@
           }
         },
         "tags" : [ "ConfigStatus" ]
+      }
+    },
+    "/configuration/appointment-block-availability" : {
+      "get" : {
+        "operationId" : "getConfiguredDefaultFlags",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlockDefaultAvailabilityFlagsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets the default availability flags",
+        "tags" : [ "AppointmentBlockDefaultAvailabilityConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateDefaultFlags",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailability"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Modifies the default availability flags",
+        "tags" : [ "AppointmentBlockDefaultAvailabilityConfig" ]
       }
     },
     "/test-helper/population" : {
@@ -639,8 +733,10 @@
             "type" : "boolean"
           },
           "bookedAppointments" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Appointment"
+            }
           },
           "consultants" : {
             "type" : "array",
@@ -648,6 +744,10 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "creatorId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "end" : {
             "type" : "string",
@@ -707,6 +807,19 @@
           }
         },
         "description" : "A bin represents a single sequence of slots in an appointment block, meaning there are no parallel slots within a bin. Multiple bins can occur within a block."
+      },
+      "AppointmentBlockDefaultAvailability" : {
+        "required" : [ "availableForBulkBooking", "availableForCitizen" ],
+        "type" : "object",
+        "properties" : {
+          "availableForBulkBooking" : {
+            "type" : "boolean"
+          },
+          "availableForCitizen" : {
+            "type" : "boolean"
+          }
+        },
+        "description" : "A request containing the default flags. All flags must be set."
       },
       "AppointmentBlockSlot" : {
         "required" : [ "booked", "end", "start" ],
@@ -934,6 +1047,14 @@
           }
         },
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
+      },
+      "GetAppointmentBlockDefaultAvailabilityFlagsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "defaultFlags" : {
+            "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailability"
+          }
+        }
       },
       "GetAppointmentBlockGroup" : {
         "required" : [ "appointmentBlocks", "id", "parallelExaminations", "types" ],
@@ -1165,6 +1286,24 @@
           },
           "urlPatternFilter" : {
             "type" : "string"
+          }
+        }
+      },
+      "UpdateAppointmentBlockRequest" : {
+        "required" : [ "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
           }
         }
       },

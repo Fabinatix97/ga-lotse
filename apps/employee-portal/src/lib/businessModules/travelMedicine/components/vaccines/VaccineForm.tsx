@@ -7,7 +7,7 @@ import { DeleteOutlined } from "@mui/icons-material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { Ref } from "react";
+import { Ref, useRef } from "react";
 
 import {
   MultiFormButtonBar,
@@ -163,6 +163,8 @@ function inventoryVaccinesSelect(loadings: Readonly<VaccineFormLoadings>) {
 
 export function VaccineForm(props: Readonly<VaccineFormProps>) {
   const validateLength = useValidateLength();
+  const fallbackFocusRef = useRef<HTMLInputElement>(undefined);
+
   return (
     <Formik
       initialValues={props.initialValues}
@@ -194,19 +196,33 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
                 required="Bitte einen Preis angeben"
               />
               <InputField
+                ref={(el) => (fallbackFocusRef.current = el)}
                 name="currentBatchId"
                 label="Aktuelle Chargennummer"
                 validate={validateBatchId}
               />
               <Stack gap={2} rowGap={2}>
-                <FieldArray valueLength={values.offsets.length} name="offsets">
+                <FieldArray
+                  valueLength={values.offsets.length}
+                  name="offsets"
+                  fallbackFocusInputElement={fallbackFocusRef.current}
+                >
                   {({ push, remove, setInputElementRef }) => (
                     <>
                       {values.offsets.map((value, index) => (
-                        <Stack key={index} gap={2} rowGap={2}>
+                        <Stack
+                          key={index}
+                          gap={2}
+                          rowGap={2}
+                          role="group"
+                          aria-labelledby={`impfung-${index}`}
+                        >
                           <Grid container columnSpacing={2} rowGap={2}>
                             <Grid xs={12}>
-                              <Typography level="title-md">
+                              <Typography
+                                level="title-md"
+                                id={`impfung-${index}`}
+                              >
                                 {index + 2}. Impfung
                               </Typography>
                             </Grid>

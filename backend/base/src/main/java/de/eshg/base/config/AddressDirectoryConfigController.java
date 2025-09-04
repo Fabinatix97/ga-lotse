@@ -16,6 +16,9 @@ import static de.eshg.base.config.AddressRegistryMapper.mapToDocument;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.config.api.GetAddressDirectoryConfigResponse;
+import de.eshg.base.street.csv.CsvMapper;
+import de.eshg.base.street.csv.StreetDirectoryCsvEntry;
+import de.eshg.base.street.csv.opencsv.BeansToCsvMapper;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.file.common.FileValidator;
 import de.eshg.rest.service.error.NotFoundException;
@@ -23,6 +26,7 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.coyote.BadRequestException;
 import org.springframework.core.io.ByteArrayResource;
@@ -91,7 +95,7 @@ public class AddressDirectoryConfigController {
     if (!config.isStreetAndMunicipalityDirectoriesInitialized()) {
       throw new NotFoundException("Street directory not initialized");
     }
-    return fileResponse(STREET_DIRECTORY_FILENAME, config.getStreetDirectory().getContent());
+    return fileResponse(STREET_DIRECTORY_FILENAME, migrateStreetDirectoryFile(config));
   }
 
   @GetMapping(MUNICIPALITY_DIRECTORY_FILE_PATH)
@@ -143,5 +147,13 @@ public class AddressDirectoryConfigController {
                 .toString())
         .contentType(CustomMediaTypes.CSV)
         .body(new ByteArrayResource(content));
+  }
+
+  private static byte[] migrateStreetDirectoryFile(DepartmentConfiguration config) {
+    List<StreetDirectoryCsvEntry> streetDirectoryCsvEntries =
+        CsvMapper.csvToBeans(
+            config.getStreetDirectory().getContent(), StreetDirectoryCsvEntry.class);
+    return BeansToCsvMapper.beansToCsv(streetDirectoryCsvEntries, StreetDirectoryCsvEntry.class)
+        .getBytes();
   }
 }

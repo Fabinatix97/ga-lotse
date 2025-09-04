@@ -12,6 +12,7 @@ import { FormFooter, FormStack } from "@eshg/lib-employee-portal";
 import {
   DebouncedTextareaField,
   FormProps,
+  MonthAndYear,
   MutationBundle,
   OptionalFieldValue,
   isEmptyString,
@@ -70,6 +71,7 @@ export interface LanguageValues {
   germanKnowledgePrimaryCarer: OptionalFieldValue<ApiLanguageKnowledgeValue>;
   familyLanguage: OptionalFieldValue<ApiFamilyLanguageValue>;
   germanKnowledgeChild: OptionalFieldValue<ApiGermanKnowledgeValue>;
+  inGermanySince: MonthAndYear;
 }
 
 export interface ArticulationValues {

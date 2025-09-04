@@ -11,6 +11,7 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
 import java.beans.PropertyDescriptor;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -65,6 +66,8 @@ public class SopessExaminationResult extends GenericEntity<Long> implements Vali
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private GermanKnowledgeValue germanKnowledgeChild;
+
+  private LocalDate inGermanySince;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private ArticulationValue lettersSAndZPoints;
@@ -495,5 +498,13 @@ public class SopessExaminationResult extends GenericEntity<Long> implements Vali
     return getPropertiesToValidate()
         .map(prop -> PropertyUtils.read(this, prop))
         .anyMatch(Objects::nonNull);
+  }
+
+  public LocalDate getInGermanySince() {
+    return inGermanySince;
+  }
+
+  public void setInGermanySince(LocalDate inGermanySince) {
+    this.inGermanySince = inGermanySince;
   }
 }

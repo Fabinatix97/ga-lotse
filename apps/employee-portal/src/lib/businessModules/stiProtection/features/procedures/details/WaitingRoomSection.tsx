@@ -76,7 +76,7 @@ export function WaitingRoomSection({
               updateWaitingRoomDetails.mutate(transformToValid(form, procedure))
             }
           >
-            <FormPlus sx={{ display: "contents" }}>
+            <FormPlus sx={{ display: "contents" }} aria-label="Wartezimmer">
               <InputField
                 label="Zusätzliche Info"
                 name="info"

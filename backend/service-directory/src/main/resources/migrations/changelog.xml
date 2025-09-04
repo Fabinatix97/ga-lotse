@@ -14,7 +14,7 @@
   <include file="migrations/0004_remove_actortype_lm.xml"/>
   <include file="migrations/0005_add_staging_status.xml"/>
   <include file="migrations/0006_add_unique_constraint_to_rule.xml"/>
-  <include file="/migrations/0007_add_external_and_miscellaneous_actor_type.xml"/>
+  <include file="migrations/0007_add_external_and_miscellaneous_actor_type.xml"/>
   <include file="migrations/0008_add_manual_cert_bool.xml"/>
   <include file="migrations/0009_correct_staged_entity_relation.xml"/>
   <include file="migrations/0010_remove_previous_certificate.xml"/>

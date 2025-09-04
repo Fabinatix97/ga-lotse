@@ -10,6 +10,7 @@ import { QueryKeyFactory } from "@eshg/lib-portal";
 import { MainContentLayout } from "../../../components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "../../../components/layout/StickyToolbarLayout";
 import { Toolbar } from "../../../components/toolbar/Toolbar";
+import { useTableControl } from "../../table/hooks/useTableControl";
 import { useGetProcedureLabelsQuery } from "../api/queries";
 import { ProcedureLabelClient } from "../types/procedureLabelClient";
 
@@ -23,10 +24,15 @@ interface ProcedureLabelsPageProps {
 }
 
 export function ProcedureLabelsPage(props: ProcedureLabelsPageProps) {
+  const tableControl = useTableControl();
   const getProcedureLabels = useSuspenseQuery(
     useGetProcedureLabelsQuery(
       props.procedureLabelApi,
       props.procedureLabelApiQueryKey,
+      {
+        pageNumber: tableControl.paginationProps.pageNumber,
+        pageSize: tableControl.paginationProps.pageSize,
+      },
     ),
   );
 
@@ -35,6 +41,7 @@ export function ProcedureLabelsPage(props: ProcedureLabelsPageProps) {
       <MainContentLayout>
         <ProcedureLabelsTable
           procedureLabels={getProcedureLabels.data}
+          tableControl={tableControl}
           loading={getProcedureLabels.isFetching}
           procedureLabelApi={props.procedureLabelApi}
           hasReadOnlyProcedureLabels={props.hasReadOnlyProcedureLabels ?? false}

@@ -69,7 +69,10 @@ export function MedicalRegistryEntryOverviewControls(
               />
             )}
             {!isEntrySearch && (
-              <Button onClick={() => props.toggleActivePanel("entrySearch")}>
+              <Button
+                aria-label="Filter verbergen und Suche anzeigen"
+                onClick={() => props.toggleActivePanel("entrySearch")}
+              >
                 Suche
               </Button>
             )}
@@ -77,6 +80,7 @@ export function MedicalRegistryEntryOverviewControls(
             {isEntrySearch && (
               <Button
                 variant="outlined"
+                aria-label="Suche verbergen und Filter anzeigen"
                 onClick={() => props.toggleActivePanel("entrySearch")}
               >
                 Abbrechen

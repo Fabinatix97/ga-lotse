@@ -124,7 +124,7 @@ public class Validator {
     validateDiagnosisFlagsAreSetOnlyIfResponseDoctorLetterIsConfirming(request);
   }
 
-  public static void validateUpdateSopessExaminationResult(SopessExaminationResultDto request) {
+  public void validateUpdateSopessExaminationResult(SopessExaminationResultDto request) {
     validatePoints(
         request,
         SopessExaminationResultDto::getGrossMotorSkills,
@@ -191,6 +191,8 @@ public class Validator {
 
     validateExaminationResultAndResponseDoctorLetterConsistency(
         request, SopessExaminationResultDto::getPsychologicalBehaviorResult);
+
+    validateDateTodayOrPast(request.getLanguage().inGermanySince());
   }
 
   public static void validateUpdateProcedureType(
@@ -517,12 +519,10 @@ public class Validator {
   }
 
   public void validateAnamnesis(AnamnesisDto anamnesis) {
-    validateDateTodayOrPast(anamnesis.migrationBackground().inGermanySince());
     validateDayCareInfoConsistency(anamnesis.daycareAndSchoolInfo());
   }
 
   public void validateCitizenAnamnesis(CitizenAnamnesisDto anamnesis) {
-    validateDateTodayOrPast(anamnesis.migrationBackground().inGermanySince());
     validateDayCareInfoConsistency(anamnesis.daycareAndSchoolInfo());
   }
 

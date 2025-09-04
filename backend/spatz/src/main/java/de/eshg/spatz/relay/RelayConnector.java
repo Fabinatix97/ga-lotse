@@ -29,12 +29,16 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -44,6 +48,7 @@ import org.java_websocket.framing.PingFrame;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.TaskScheduler;
 
 public class RelayConnector extends WebSocketClient {
 
@@ -56,7 +61,8 @@ public class RelayConnector extends WebSocketClient {
   private final URI relayServerUri;
   private final AtomicReference<String> outstandingPingPayload = new AtomicReference<>();
 
-  private final ScheduledExecutorService executorService;
+  private final TaskScheduler taskScheduler;
+  private final ArrayList<Future<?>> scheduledFutures = new ArrayList<>();
 
   private final ThreadLocal<ByteBuffer> threadLocalBuffers = // NOSONAR
       ThreadLocal.withInitial(() -> ByteBuffer.allocate(8192));
@@ -68,7 +74,8 @@ public class RelayConnector extends WebSocketClient {
   public RelayConnector(
       SelfSignedCertificateLatch latch,
       SpatzConfigurationProperties spatzConfigurationProperties,
-      SslBundleFactory sslBundleFactory)
+      SslBundleFactory sslBundleFactory,
+      TaskScheduler taskScheduler)
       throws KeyStoreException {
     super(
         Objects.requireNonNull(
@@ -77,7 +84,7 @@ public class RelayConnector extends WebSocketClient {
     this.latch = latch;
     this.ownSni = getOwnCommonName(spatzConfigurationProperties, sslBundleFactory);
     this.relayServerUri = spatzConfigurationProperties.relay().url();
-    executorService = Executors.newScheduledThreadPool(4);
+    this.taskScheduler = taskScheduler;
     logger.info("started RelayConnector, connecting as SNI {} to {}", ownSni, relayServerUri);
   }
 
@@ -116,8 +123,26 @@ public class RelayConnector extends WebSocketClient {
 
   public void stop(Duration shutdownTimeout) throws InterruptedException, IOException {
     logger.info("stopping RelayConnector");
-    executorService.shutdown();
-    executorService.awaitTermination(shutdownTimeout.toMillis(), TimeUnit.MILLISECONDS);
+    Instant start = Instant.now();
+    for (Future<?> future : scheduledFutures) {
+      future.cancel(false);
+    }
+    for (Future<?> future : scheduledFutures) {
+      try {
+        Duration timeLeft = shutdownTimeout.minus(Duration.between(start, Instant.now()));
+        future.get(Long.max(timeLeft.toMillis(), 0L), TimeUnit.MILLISECONDS);
+      } catch (CancellationException e) {
+        logger.trace("future successfully cancelled", e);
+      } catch (TimeoutException e) {
+        logger.warn("timeout while waiting for shutdown", e);
+      } catch (ExecutionException e) {
+        logger.error("error while waiting for shutdown", e);
+      }
+    }
+    for (Future<?> future : scheduledFutures) {
+      future.cancel(true);
+    }
+    scheduledFutures.clear();
 
     if (serverSocketChannel != null) {
       serverSocketChannel.close();
@@ -134,9 +159,9 @@ public class RelayConnector extends WebSocketClient {
     lastConnectionAttempt = Instant.now();
     super.connect();
 
-    schedulePing();
-    scheduleReconnect();
-    scheduleNioLoop();
+    scheduledFutures.add(schedulePing());
+    scheduledFutures.add(scheduleReconnect());
+    scheduledFutures.add(scheduleNioLoop());
     logger.info("started and connecting to {}", relayServerUri);
   }
 
@@ -144,17 +169,16 @@ public class RelayConnector extends WebSocketClient {
     return selector != null && selector.isOpen();
   }
 
-  private void scheduleNioLoop() {
-    executorService.submit(
+  private ScheduledFuture<?> scheduleNioLoop() {
+    return taskScheduler.scheduleWithFixedDelay(
         () -> {
-          while (!executorService.isShutdown() && !Thread.currentThread().isInterrupted()) {
-            try {
-              nioLoop();
-            } catch (Exception ex) {
-              logger.error("unexpected error while handling incoming socket", ex);
-            }
+          try {
+            nioLoop();
+          } catch (Exception ex) {
+            logger.error("unexpected error while handling incoming socket", ex);
           }
-        });
+        },
+        Duration.ofMillis(1));
   }
 
   private void nioLoop() throws IOException {
@@ -181,8 +205,8 @@ public class RelayConnector extends WebSocketClient {
     }
   }
 
-  private void scheduleReconnect() {
-    executorService.scheduleWithFixedDelay(
+  private ScheduledFuture<?> scheduleReconnect() {
+    return taskScheduler.scheduleWithFixedDelay(
         () -> {
           try {
             doReconnect();
@@ -190,9 +214,8 @@ public class RelayConnector extends WebSocketClient {
             logger.error("unexpected error during reconnect attempt", ex);
           }
         },
-        0,
-        1,
-        TimeUnit.SECONDS);
+        Instant.now(),
+        Duration.ofSeconds(1));
   }
 
   private void doReconnect() {
@@ -219,9 +242,9 @@ public class RelayConnector extends WebSocketClient {
     super.reconnect();
   }
 
-  private void schedulePing() {
+  private ScheduledFuture<?> schedulePing() {
     // Schedule a ping every 20 seconds; assert that pong was received before next ping is sent
-    executorService.scheduleAtFixedRate(
+    return taskScheduler.scheduleAtFixedRate(
         () -> {
           try {
             ping();
@@ -229,9 +252,8 @@ public class RelayConnector extends WebSocketClient {
             logger.error("unexpected error while sending ping", ex);
           }
         },
-        0,
-        20,
-        TimeUnit.SECONDS);
+        Instant.now(),
+        Duration.ofSeconds(20));
   }
 
   private void ping() {

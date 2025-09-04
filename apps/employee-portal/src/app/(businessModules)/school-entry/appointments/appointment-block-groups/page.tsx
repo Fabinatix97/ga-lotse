@@ -14,14 +14,14 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal";
 
-import { AppointmentBlockGroupsTable } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksTable/AppointmentBlockGroupsTable";
+import { SchoolEntryAppointmentBlockGroupsTable } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksTable/SchoolEntryAppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 export default function AppointmentBlockGroupsOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Terminblöcke Übersicht" />}>
       <MainContentLayout fullViewportHeight>
-        <AppointmentBlockGroupsTable
+        <SchoolEntryAppointmentBlockGroupsTable
           controls={
             <ButtonBar
               left={<ToggleFilterButton disabled />}

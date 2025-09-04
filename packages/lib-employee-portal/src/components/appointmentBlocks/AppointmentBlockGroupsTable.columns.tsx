@@ -1,87 +1,32 @@
 /**
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: Apache-2.0
  */
-
-"use client";
 
 import { Delete } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
-import { Row, createColumnHelper } from "@tanstack/react-table";
-import { unique } from "remeda";
-
 import {
-  ActionsMenu,
-  WeekdayCheckboxOption,
-  getWeekdayFromDate,
-  useConfirmationDialog,
-} from "@eshg/lib-employee-portal";
-import { formatDateTime } from "@eshg/lib-portal";
-import { ApiAppointmentType } from "@eshg/measles-protection-api";
+  CellContext,
+  ColumnDef,
+  ColumnHelper,
+  Row,
+  TableOptions,
+} from "@tanstack/react-table";
+import { isDefined } from "remeda";
 
-import {
-  AppointmentBlockGroup,
-  AppointmentBlockMeasles,
-} from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/measlesProtection/shared/constants";
+import { EnumMap, formatDateTime } from "@eshg/lib-portal";
+
+import { useConfirmationDialog } from "../../hooks/useConfirmationDialog";
 import {
   durationToSecond,
   formatCalendarWeek,
   formatCalendarWeekRange,
   formatDurationToHoursAndMinutes,
-} from "@/lib/shared/helpers/dateTime";
+} from "../../utils/dateTime";
+import { ActionsMenu } from "../buttons/ActionsMenu";
 
-interface AppointmentBlockRow {
-  id: string;
-  types: ApiAppointmentType[];
-  start: Date;
-  end: Date;
-  weekdays: WeekdayCheckboxOption["label"][];
-  freeDuration?: string;
-  bookedDuration?: string;
-  subRows?: AppointmentBlockRow[];
-}
-
-export function toAggregatedAppointmentBlockRow(
-  appointmentBlockGroup: AppointmentBlockGroup,
-): AppointmentBlockRow {
-  const daysOfWeek = appointmentBlockGroup.appointmentBlocks.map(
-    (appointmentBlock) => getWeekdayFromDate(appointmentBlock.start),
-  );
-  const uniqueDaysOfWeek = unique(daysOfWeek);
-
-  return {
-    id: appointmentBlockGroup.id,
-    types: appointmentBlockGroup.types,
-    start: appointmentBlockGroup.start,
-    end: appointmentBlockGroup.end,
-    weekdays: uniqueDaysOfWeek,
-    freeDuration: appointmentBlockGroup.freeDuration,
-    bookedDuration: appointmentBlockGroup.bookedDuration,
-    subRows: appointmentBlockGroup.appointmentBlocks.map((appointmentBlock) =>
-      toAppointmentBlockRow(appointmentBlock, appointmentBlockGroup),
-    ),
-  };
-}
-
-function toAppointmentBlockRow(
-  appointmentBlock: AppointmentBlockMeasles,
-  appointmentBlockGroup: AppointmentBlockGroup,
-): AppointmentBlockRow {
-  return {
-    id: appointmentBlock.id,
-    types: appointmentBlockGroup.types,
-    start: appointmentBlock.start,
-    end: appointmentBlock.end,
-    weekdays: [getWeekdayFromDate(appointmentBlock.start)],
-    freeDuration: appointmentBlock.freeDuration,
-    bookedDuration: appointmentBlock.bookedDuration,
-  };
-}
-
-export function getSubRows(appointmentBlockRow: AppointmentBlockRow) {
-  return appointmentBlockRow.subRows;
-}
+import { AppointmentBlockRow } from "./AppointmentBlockGroupsTable";
+import { ApiAppointmentType } from "./types";
 
 function toggleRowExpanded({
   getIsExpanded,
@@ -90,24 +35,30 @@ function toggleRowExpanded({
   toggleExpanded(!getIsExpanded());
 }
 
-const columnHelper = createColumnHelper<AppointmentBlockRow>();
-
 export function useAppointmentBlockGroupsColumns({
   onDeleteAppointmentBlock,
+  columnHelper,
+  additionalColumn,
+  appointmentTypes,
+  showWeekDays,
 }: {
   onDeleteAppointmentBlock: ({
     appointmentBlockId,
   }: {
     appointmentBlockId: string;
   }) => void;
-}) {
+  columnHelper: ColumnHelper<AppointmentBlockRow>;
+  additionalColumn?: ColumnDef<AppointmentBlockRow, string>;
+  appointmentTypes: EnumMap<ApiAppointmentType>;
+  showWeekDays?: boolean;
+}): TableOptions<AppointmentBlockRow>["columns"] {
   const { openConfirmationDialog } = useConfirmationDialog();
 
   return [
     columnHelper.accessor("start", {
       id: "calendarWeek",
       header: "Woche",
-      cell: ({ getValue, row }) => (
+      cell: ({ getValue, row }: CellContext<AppointmentBlockRow, Date>) => (
         <div onClick={() => toggleRowExpanded(row)}>
           {row.depth === 0
             ? formatCalendarWeekRange(row.original.start, row.original.end)
@@ -119,16 +70,19 @@ export function useAppointmentBlockGroupsColumns({
         canNavigate: {
           parentRow: true,
         },
-        width: "120px",
+        width: 120,
       },
     }),
     columnHelper.accessor("types", {
       header: "Art",
-      cell: ({ getValue, row }) =>
+      cell: ({
+        getValue,
+        row,
+      }: CellContext<AppointmentBlockRow, ApiAppointmentType[]>) =>
         row.depth === 0 ? (
           <div onClick={() => toggleRowExpanded(row)}>
             {getValue()
-              .map((type) => APPOINTMENT_TYPES[type])
+              .map((type) => appointmentTypes[type])
               .join(", ")}
           </div>
         ) : undefined,
@@ -137,12 +91,12 @@ export function useAppointmentBlockGroupsColumns({
         canNavigate: {
           parentRow: true,
         },
-        width: "200px",
+        width: 200,
       },
     }),
     columnHelper.accessor("start", {
       header: "Start",
-      cell: ({ getValue, row }) => (
+      cell: ({ getValue, row }: CellContext<AppointmentBlockRow, Date>) => (
         <div onClick={() => toggleRowExpanded(row)}>
           {formatDateTime(getValue())}
         </div>
@@ -152,12 +106,12 @@ export function useAppointmentBlockGroupsColumns({
         canNavigate: {
           parentRow: true,
         },
-        width: "180px",
+        width: 180,
       },
     }),
     columnHelper.accessor("end", {
       header: "Ende",
-      cell: ({ getValue, row }) => (
+      cell: ({ getValue, row }: CellContext<AppointmentBlockRow, Date>) => (
         <div onClick={() => toggleRowExpanded(row)}>
           {formatDateTime(getValue())}
         </div>
@@ -167,36 +121,40 @@ export function useAppointmentBlockGroupsColumns({
         canNavigate: {
           parentRow: true,
         },
-        width: "180px",
+        width: 180,
       },
     }),
-    columnHelper.accessor("weekdays", {
-      header: "Wochentag",
-      cell: ({ getValue, row }) => (
-        <div onClick={() => toggleRowExpanded(row)}>
-          {getValue().map((weekday) => (
-            <Chip
-              key={weekday}
-              size="sm"
-              color="primary"
-              sx={{ "&:not(:last-child)": { mr: "3px" } }}
-            >
-              {weekday}
-            </Chip>
-          ))}
-        </div>
-      ),
-      enableSorting: false,
-      meta: {
-        canNavigate: {
-          parentRow: true,
-        },
-        width: "180px",
-      },
-    }),
+    ...(showWeekDays
+      ? [
+          columnHelper.accessor("weekdays", {
+            header: "Wochentag",
+            cell: ({ getValue, row }) => (
+              <div onClick={() => toggleRowExpanded(row)}>
+                {getValue().map((weekday) => (
+                  <Chip
+                    key={weekday}
+                    size="sm"
+                    color="primary"
+                    sx={{ "&:not(:last-child)": { mr: "3px" } }}
+                  >
+                    {weekday}
+                  </Chip>
+                ))}
+              </div>
+            ),
+            enableSorting: false,
+            meta: {
+              canNavigate: {
+                parentRow: true,
+              },
+              width: 180,
+            },
+          }),
+        ]
+      : []),
     columnHelper.accessor("freeDuration", {
       header: "Verfügbar",
-      cell: ({ getValue, row }) => {
+      cell: ({ getValue, row }: CellContext<AppointmentBlockRow, string>) => {
         const duration = getValue();
         return (
           <Chip
@@ -213,12 +171,12 @@ export function useAppointmentBlockGroupsColumns({
         canNavigate: {
           parentRow: true,
         },
-        width: "140px",
+        width: 170,
       },
     }),
     columnHelper.accessor("bookedDuration", {
       header: "Gebucht",
-      cell: ({ getValue, row }) => {
+      cell: ({ getValue, row }: CellContext<AppointmentBlockRow, string>) => {
         const duration = getValue();
         return (
           <Chip
@@ -235,9 +193,10 @@ export function useAppointmentBlockGroupsColumns({
         canNavigate: {
           parentRow: true,
         },
-        width: "140px",
+        width: 170,
       },
     }),
+    ...(isDefined(additionalColumn) ? [additionalColumn] : []),
     columnHelper.display({
       header: "Aktionen",
       id: "actions",

@@ -6,7 +6,7 @@
 "use client";
 
 import { AddOutlined } from "@mui/icons-material";
-import { Button, Grid } from "@mui/joy";
+import { Box, Button, Grid } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -193,106 +193,109 @@ export function ServicePlanTable({
 
   return (
     <TablePage data-testid="vc-service-plan">
-      <TableSheet
-        title={<TableTitle title="Leistungsplan" />}
-        footer={
-          !isProcedureClosed && (
-            <Grid xs={12}>
-              <Button
-                color="primary"
-                variant="plain"
-                startDecorator={<AddOutlined />}
-                onClick={() => {
-                  addServicePlanSidebar.open({ procedureId: procedureId });
-                }}
-              >
-                Leistung hinzufügen
-              </Button>
-              {hasOpenServices(data) && (
+      <Box display="contents" role="region" aria-label="Leistungsplan">
+        <TableSheet
+          title={<TableTitle title="Leistungsplan" />}
+          footer={
+            !isProcedureClosed && (
+              <Grid xs={12}>
                 <Button
                   color="primary"
                   variant="plain"
                   startDecorator={<AddOutlined />}
-                  onClick={() =>
-                    addServiceAppointmentSidebar.open({
-                      procedureId: procedureId,
-                      isCitizenFollowUp: isCitizenFollowUp(procedureId),
-                    })
-                  }
+                  onClick={() => {
+                    addServicePlanSidebar.open({ procedureId: procedureId });
+                  }}
                 >
-                  Impftermin erstellen
+                  Leistung hinzufügen
                 </Button>
-              )}
-            </Grid>
-          )
-        }
-        hideTable={data.length === 0}
-      >
-        <DataTable
-          data={rows}
-          getSubRows={getSubRows}
-          columns={servicePlanColumns({
-            allPhysicians: allPhysicians,
-            allMedicalAssistants: allMedicalAssistants,
-            isProcedureClosed,
-            isCitizenProcedure:
-              createdByUserType === ApiCreatedByUserType.CitizenPortal,
-            isInitialStep: (procedureStepId) => isInitialStep(procedureStepId),
-            onDeleteService: (serviceId) =>
-              deleteService(procedureId, serviceId),
-            onUnassignService: (serviceId) =>
-              unassignStepToService(procedureId, serviceId),
-            onOpenMedicalHistory: (procedureStepId) =>
-              openMedicalHistory(procedureId, procedureStepId),
-            onOpenCertificatesTab: () => navigateToCertificates(procedureId),
-            onEditServiceAppointment: (procedureStep) =>
-              editServiceAppointmentSidebar.open({
-                procedureId: procedureId,
-                procedureStep: procedureStep,
-                isInitialStep: (procedureStepId) =>
-                  isInitialStep(procedureStepId),
-              }),
-            onAssignService: (serviceId) =>
-              assignServiceSidebar.open({
-                procedureId: procedureId,
-                serviceId: serviceId,
-              }),
-            onServiceApplied: (service) =>
-              serviceAppliedSidebar.open({
-                procedureId: procedureId,
-                storedUsers: currentUsers,
-                setStoredUsers: setCurrentUsers,
-                service: service,
-              }),
-            onOtherServiceApplied: (service) =>
-              otherServiceAppliedSidebar.open({
-                procedureId: procedureId,
-                storedUsers: currentUsers,
-                setStoredUsers: setCurrentUsers,
-                service: service,
-              }),
-            onEditEarliestDate: (procedureStep) =>
-              editEarliestDateSidebar.open({
-                procedureId: procedureId,
-                procedureStep: procedureStep,
-              }),
-            onCancelAppointment: (procedureStepId) =>
-              openConfirmationDialog({
-                title: "Termin absagen?",
-                description:
-                  "Wollen Sie den Termin wirklich absagen? Die zu impfende Person erhält eine Bestätigung per E-Mail.",
-                confirmLabel: "Bestätigen",
-                onConfirm: async () =>
-                  await cancelAppointmentApi.mutateAsync({
-                    procedureStepId: procedureStepId,
-                  }),
-              }),
-          })}
-          striped={false}
-          initialExpanded
-          minWidth={1700}
-        />
-      </TableSheet>
+                {hasOpenServices(data) && (
+                  <Button
+                    color="primary"
+                    variant="plain"
+                    startDecorator={<AddOutlined />}
+                    onClick={() =>
+                      addServiceAppointmentSidebar.open({
+                        procedureId: procedureId,
+                        isCitizenFollowUp: isCitizenFollowUp(procedureId),
+                      })
+                    }
+                  >
+                    Impftermin erstellen
+                  </Button>
+                )}
+              </Grid>
+            )
+          }
+          hideTable={data.length === 0}
+        >
+          <DataTable
+            data={rows}
+            getSubRows={getSubRows}
+            columns={servicePlanColumns({
+              allPhysicians: allPhysicians,
+              allMedicalAssistants: allMedicalAssistants,
+              isProcedureClosed,
+              isCitizenProcedure:
+                createdByUserType === ApiCreatedByUserType.CitizenPortal,
+              isInitialStep: (procedureStepId) =>
+                isInitialStep(procedureStepId),
+              onDeleteService: (serviceId) =>
+                deleteService(procedureId, serviceId),
+              onUnassignService: (serviceId) =>
+                unassignStepToService(procedureId, serviceId),
+              onOpenMedicalHistory: (procedureStepId) =>
+                openMedicalHistory(procedureId, procedureStepId),
+              onOpenCertificatesTab: () => navigateToCertificates(procedureId),
+              onEditServiceAppointment: (procedureStep) =>
+                editServiceAppointmentSidebar.open({
+                  procedureId: procedureId,
+                  procedureStep: procedureStep,
+                  isInitialStep: (procedureStepId) =>
+                    isInitialStep(procedureStepId),
+                }),
+              onAssignService: (serviceId) =>
+                assignServiceSidebar.open({
+                  procedureId: procedureId,
+                  serviceId: serviceId,
+                }),
+              onServiceApplied: (service) =>
+                serviceAppliedSidebar.open({
+                  procedureId: procedureId,
+                  storedUsers: currentUsers,
+                  setStoredUsers: setCurrentUsers,
+                  service: service,
+                }),
+              onOtherServiceApplied: (service) =>
+                otherServiceAppliedSidebar.open({
+                  procedureId: procedureId,
+                  storedUsers: currentUsers,
+                  setStoredUsers: setCurrentUsers,
+                  service: service,
+                }),
+              onEditEarliestDate: (procedureStep) =>
+                editEarliestDateSidebar.open({
+                  procedureId: procedureId,
+                  procedureStep: procedureStep,
+                }),
+              onCancelAppointment: (procedureStepId) =>
+                openConfirmationDialog({
+                  title: "Termin absagen?",
+                  description:
+                    "Wollen Sie den Termin wirklich absagen? Die zu impfende Person erhält eine Bestätigung per E-Mail.",
+                  confirmLabel: "Bestätigen",
+                  onConfirm: async () =>
+                    await cancelAppointmentApi.mutateAsync({
+                      procedureStepId: procedureStepId,
+                    }),
+                }),
+            })}
+            striped={false}
+            initialExpanded
+            minWidth={1700}
+          />
+        </TableSheet>
+      </Box>
     </TablePage>
   );
 }

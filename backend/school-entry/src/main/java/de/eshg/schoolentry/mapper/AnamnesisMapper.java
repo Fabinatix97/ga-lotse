@@ -52,8 +52,7 @@ public class AnamnesisMapper {
             mapToDto(anamnesis.getCountryOfBirthFirstParent()),
             mapToDto(anamnesis.getNationalitySecondParent()),
             mapToDto(anamnesis.getCountryOfBirthSecondParent()),
-            anamnesis.getHasMigrationBackground(),
-            anamnesis.getInGermanySince()),
+            anamnesis.getHasMigrationBackground()),
         new AdditionalChildInfoDto(
             anamnesis.getResponsiblePhysician(),
             anamnesis.getNumberOfSiblings(),
@@ -207,7 +206,6 @@ public class AnamnesisMapper {
     anamnesis.setCountryOfBirthSecondParent(
         mapToDomain(dto.migrationBackground().countryOfBirthSecondParent()));
     anamnesis.setHasMigrationBackground(dto.migrationBackground().hasMigrationBackground());
-    anamnesis.setInGermanySince(dto.migrationBackground().inGermanySince());
     anamnesis.setPersonalConspicuities(dto.personalConspicuities());
     anamnesis.setNote(dto.note());
 
@@ -239,7 +237,6 @@ public class AnamnesisMapper {
         mapToDomain(citizenAnamnesisDto.migrationBackground().countryOfBirthSecondParent()));
     anamnesis.setHasMigrationBackground(
         getMigrationBackground(citizenAnamnesisDto.migrationBackground()));
-    anamnesis.setInGermanySince(citizenAnamnesisDto.migrationBackground().inGermanySince());
     anamnesis.setPreliminaryCourse(citizenAnamnesisDto.preliminaryCourse());
     anamnesis.setChildLanguageScreening(citizenAnamnesisDto.childLanguageScreening());
     anamnesis.setLanguageScreeningConsent(citizenAnamnesisDto.languageScreeningConsent());

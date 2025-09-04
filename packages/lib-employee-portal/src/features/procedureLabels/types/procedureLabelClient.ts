@@ -21,8 +21,14 @@ export interface UpdateProcedureLabelRequest {
   };
 }
 
+export interface GetProcedureLabelsRequest {
+  pageNumber?: number;
+  pageSize?: number;
+}
+
 export interface GetProcedureLabelsResponse {
-  labels: ProcedureLabelResponse[];
+  elements: ProcedureLabelResponse[];
+  totalNumberOfElements: number;
 }
 
 export interface ProcedureLabelClient {
@@ -32,5 +38,7 @@ export interface ProcedureLabelClient {
   updateLabelRaw(
     requestParameters: UpdateProcedureLabelRequest,
   ): Promise<ApiResponse<ProcedureLabelResponse>>;
-  getLabels(): Promise<GetProcedureLabelsResponse>;
+  getLabelsRaw(
+    requestParameters: GetProcedureLabelsRequest,
+  ): Promise<ApiResponse<GetProcedureLabelsResponse>>;
 }

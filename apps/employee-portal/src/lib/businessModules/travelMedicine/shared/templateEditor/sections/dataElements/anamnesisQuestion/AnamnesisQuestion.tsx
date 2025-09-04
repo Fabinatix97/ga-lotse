@@ -5,9 +5,9 @@
 
 import { Add } from "@mui/icons-material";
 import { Box, Button } from "@mui/joy";
-import { FieldArray } from "formik";
-import { ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { FieldArrayWithFocus } from "@eshg/lib-portal";
 import {
   ApiTemplateAnamnesisQuestion,
   ApiTemplateSubElementText,
@@ -15,6 +15,7 @@ import {
 
 import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementBox";
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";
+import { MainQuestion } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/anamnesisQuestion/MainQuestion";
 import { SubMultiSelectList } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/anamnesisQuestion/subElements/SubMultiSelectList";
 import { SubQuestion } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/anamnesisQuestion/subElements/SubQuestion";
 
@@ -30,31 +31,91 @@ interface AnamnesisQuestionProp {
   templateAnamnesisQuestion: ApiTemplateAnamnesisQuestion;
   addSubElementHandler: () => void;
   removeSubQuestionHandler: () => void;
-  mainQuestion: ReactNode;
+  sectionElementDeleteHandler: () => void;
   sectionIndex: number;
   elementIndex: number;
+  setInputElementRef: (el: HTMLInputElement) => void;
+  totalAmountOfSectionElements: number;
 }
 
 export function AnamnesisQuestion({
   anamnesisFormikPath,
   templateAnamnesisQuestion,
   addSubElementHandler,
-  mainQuestion,
   removeSubQuestionHandler,
   sectionIndex,
   elementIndex,
+  setInputElementRef,
+  totalAmountOfSectionElements,
+  sectionElementDeleteHandler,
 }: Readonly<AnamnesisQuestionProp>) {
+  const lastSelectListElementRef = useRef<HTMLInputElement>(undefined);
+  const subElementRef = useRef<HTMLInputElement>(undefined);
+  const fallbackInputElementRef = useRef<HTMLInputElement>(undefined);
+  const removeSubElement = useCallback(() => {
+    removeSubQuestionHandler();
+    (
+      lastSelectListElementRef.current ?? fallbackInputElementRef.current
+    )?.focus();
+  }, [
+    lastSelectListElementRef,
+    removeSubQuestionHandler,
+    fallbackInputElementRef,
+  ]);
+
+  const [subElementAdded, setSubElementAdded] = useState(false);
+  const addSubElement = useCallback(() => {
+    addSubElementHandler();
+    setSubElementAdded(true);
+  }, [addSubElementHandler]);
+
+  useEffect(() => {
+    if (subElementRef.current) {
+      subElementRef.current.focus();
+      setSubElementAdded(false);
+    }
+  }, [subElementAdded]);
+
   const multiSelectElementsFormikPath = `${anamnesisFormikPath}.subElementMultiSelect`;
   return (
-    <DataElementBox data-testid="section-element-question">
+    <DataElementBox
+      data-testid="section-element-question"
+      role="group"
+      aria-label={`${sectionIndex + 1}. Sektion, ${elementIndex + 1}. Sektion, Anamnesefrage`}
+    >
       <DataElementHeading>Anamnesefrage</DataElementHeading>
-      {mainQuestion}
+      <MainQuestion
+        setInputElementRef={(el) => {
+          setInputElementRef(el);
+          fallbackInputElementRef.current = el;
+        }}
+        elementDataFormikPath={anamnesisFormikPath}
+        sectionElementDeleteHandler={sectionElementDeleteHandler}
+        label={`${sectionIndex + 1}. Sektion, ${elementIndex + 1}. Element, Frage`}
+        showDeleteButton={totalAmountOfSectionElements > 1}
+      />
       <Box sx={{ paddingLeft: 4, mt: 2 }}>
-        <FieldArray name={multiSelectElementsFormikPath} validateOnChange>
-          {({ push, remove }) => (
+        <FieldArrayWithFocus
+          name={multiSelectElementsFormikPath}
+          validateOnChange
+          valueLength={templateAnamnesisQuestion.subElementMultiSelect.length}
+          fallbackFocusInputElement={
+            subElementRef.current ?? fallbackInputElementRef.current
+          }
+        >
+          {({ push, remove, setInputElementRef }) => (
             <>
               {templateAnamnesisQuestion.subElementMultiSelect.length > 0 && (
                 <SubMultiSelectList
+                  setInputElementRef={(el, index) => {
+                    if (
+                      index ===
+                      templateAnamnesisQuestion.subElementMultiSelect.length - 1
+                    ) {
+                      lastSelectListElementRef.current = el;
+                    }
+                    setInputElementRef(el, index);
+                  }}
                   multiSelectElementsFormikPath={multiSelectElementsFormikPath}
                   multiSelectElements={
                     templateAnamnesisQuestion.subElementMultiSelect
@@ -66,8 +127,9 @@ export function AnamnesisQuestion({
               )}
               {templateAnamnesisQuestion.subElementText && (
                 <SubQuestion
+                  setInputElementRef={(el) => (subElementRef.current = el)}
                   subElementTextFormikPath={`${anamnesisFormikPath}.subElementText`}
-                  subQuestionDeleteHandler={removeSubQuestionHandler}
+                  subQuestionDeleteHandler={removeSubElement}
                   multiSelectLength={
                     templateAnamnesisQuestion.subElementMultiSelect.length
                   }
@@ -79,7 +141,7 @@ export function AnamnesisQuestion({
                 <Button
                   startDecorator={<Add />}
                   variant="plain"
-                  onClick={addSubElementHandler}
+                  onClick={addSubElement}
                 >
                   Text hinzufügen
                 </Button>
@@ -96,7 +158,7 @@ export function AnamnesisQuestion({
               </Button>
             </>
           )}
-        </FieldArray>
+        </FieldArrayWithFocus>
       </Box>
     </DataElementBox>
   );

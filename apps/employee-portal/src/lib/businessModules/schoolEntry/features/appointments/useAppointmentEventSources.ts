@@ -12,6 +12,8 @@ import { addMinutes, compareAsc } from "date-fns";
 import { useState } from "react";
 import { first, last } from "remeda";
 
+import { ApiAppointment } from "@eshg/school-entry-api";
+
 import {
   useFetchAppointmentBlocks,
   useFetchAppointmentBlocksForSingleDay,
@@ -103,7 +105,7 @@ interface AppointmentBlock {
   id: string;
   start: Date;
   end: Date;
-  bookedAppointments: number;
+  bookedAppointments: ApiAppointment[];
   appointmentBlockBins: {
     appointmentBlockSlots: AppointmentBlockSlot[];
   }[];

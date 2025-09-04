@@ -31,6 +31,8 @@ export function ProcedureLabelAutocomplete(
     useGetProcedureLabelsQuery(
       props.procedureLabelApi,
       props.procedureLabelApiQueryKey,
+      // page size needs to be set - otherwise the default of 25 is used in the backend
+      { pageSize: 1000 },
     ),
   );
 
@@ -43,7 +45,7 @@ export function ProcedureLabelAutocomplete(
       getOptionKey={getEntityId}
       getOptionLabel={getProcedureLabelName}
       isOptionEqualToValue={isSameEntity}
-      options={procedureLabels ?? []}
+      options={procedureLabels?.elements ?? []}
       value={props.value}
       loading={isFetching}
       renderOption={(props, label) => (

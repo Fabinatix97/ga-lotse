@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { PERSON_FIELD_NAME } from "@eshg/lib-portal";
 
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
   ExternalLinkDetailsItem,
   emailHref,
@@ -31,7 +31,7 @@ export function ContactData({ subject }: ContactDataProps) {
         />
       ))}
       {phoneNumbers.map((phoneNumber) => (
-        <DetailsCell
+        <DetailsItem
           key={phoneNumber}
           label={PERSON_FIELD_NAME.phoneNumbers}
           value={phoneNumber}

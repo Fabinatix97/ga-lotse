@@ -60,7 +60,6 @@ interface MigrationBackgroundValues {
   child: {
     nationality: OptionalFieldValue<ApiSchoolEntryCountryCode>;
     countryOfBirth: OptionalFieldValue<ApiSchoolEntryCountryCode>;
-    inGermanySince: MonthAndYear;
   };
   firstParent: {
     nationality: OptionalFieldValue<ApiSchoolEntryCountryCode>;
@@ -170,7 +169,6 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
     child: {
       countryOfBirth: "",
       nationality: "",
-      inGermanySince: { month: null, year: "" },
     },
     firstParent: {
       countryOfBirth: "",
@@ -374,9 +372,6 @@ function mapToRequest(
       ),
       preliminaryCourse: mapOptionalValue(values.preliminaryCourse),
       migrationBackground: {
-        inGermanySince: mapMonthAndYear(
-          values.migrationBackground.child.inGermanySince,
-        ),
         countryOfBirthChild: mapOptionalValue(
           values.migrationBackground.child.countryOfBirth,
         ),

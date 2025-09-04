@@ -100,7 +100,8 @@ public class SchoolInfoLetterValidator {
         Stream.of(
             SopessExaminationResult::getFamilyLanguage,
             SopessExaminationResult::getGermanKnowledgeChild,
-            SopessExaminationResult::getGermanKnowledgePrimaryCarer));
+            SopessExaminationResult::getGermanKnowledgePrimaryCarer,
+            SopessExaminationResult::getInGermanySince));
   }
 
   private static boolean isEyeExaminationIncomplete(SchoolEntryProcedure procedure) {
@@ -156,7 +157,6 @@ public class SchoolInfoLetterValidator {
           anamnesisProperty(Anamnesis::getCountryOfBirthSecondParent),
           anamnesisProperty(Anamnesis::getEarlySupport),
           anamnesisProperty(Anamnesis::getErgotherapy),
-          anamnesisProperty(Anamnesis::getInGermanySince),
           anamnesisProperty(Anamnesis::getIntegrationPlace),
           anamnesisProperty(Anamnesis::getNationalityChild),
           anamnesisProperty(Anamnesis::getNationalityFirstParent),
@@ -317,6 +317,7 @@ public class SchoolInfoLetterValidator {
           sopessExaminationProperty(SopessExaminationResult::getFamilyLanguage),
           sopessExaminationProperty(SopessExaminationResult::getGermanKnowledgeChild),
           sopessExaminationProperty(SopessExaminationResult::getGermanKnowledgePrimaryCarer),
+          sopessExaminationProperty(SopessExaminationResult::getInGermanySince),
           sopessExaminationProperty(SopessExaminationResult::getHandednessValue),
           sopessExaminationProperty(SopessExaminationResult::getNote),
           developmentScreeningProperty(DevelopmentScreening::getBmi),

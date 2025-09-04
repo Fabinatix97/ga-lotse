@@ -94,8 +94,6 @@ public class ManagementServer implements SmartLifecycle {
                                   this.getClass().getSimpleName(),
                                   bindAddress));
               logger.info("started {}, bound to {}", this.getClass().getSimpleName(), bindAddress);
-
-              server.onDispose().block();
             })
         .start();
   }

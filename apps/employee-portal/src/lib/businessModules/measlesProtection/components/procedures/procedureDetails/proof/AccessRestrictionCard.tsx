@@ -7,7 +7,7 @@ import { Add, EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Stack } from "@mui/joy";
 
 import { DetailsItem, useSearchParam } from "@eshg/lib-employee-portal";
-import { formatDate } from "@eshg/lib-portal";
+import { DetailsList, formatDate } from "@eshg/lib-portal";
 import {
   ApiAccessRestriction,
   ApiMeaslesProtectionProcedure,
@@ -68,38 +68,40 @@ export function AccessRestrictionCard({
       <Stack spacing={3} alignItems="start" width="100%">
         {accessRestriction ? (
           <>
-            <Stack gap={3} flexDirection="row">
-              <DetailsItem
-                label={fields.restrictionIssuedDate.label}
-                value={formatDate(accessRestriction.restrictionIssuedDate)}
-              />
-              <DetailsItem
-                label={fields.restrictionStartDate.label}
-                value={formatDate(accessRestriction.restrictionStartDate)}
-              />
-              {accessRestriction.restrictionTerminationDate && (
+            <DetailsList>
+              <Stack gap={3} flexDirection="row">
                 <DetailsItem
-                  label={fields.restrictionTerminationDate.label}
-                  value={formatDate(
-                    accessRestriction.restrictionTerminationDate,
-                  )}
+                  label={fields.restrictionIssuedDate.label}
+                  value={formatDate(accessRestriction.restrictionIssuedDate)}
                 />
-              )}
-            </Stack>
-            {accessRestriction.letters?.map((letter) => (
-              <ProofTabEntry key={letter.externalId}>
-                <DetailsItem label="" value="Anschreiben" />
                 <DetailsItem
-                  label="Empfänger"
-                  value={formatName(
-                    getPersonByIdFromProcedure(letter.recipientId, procedure),
-                  )}
+                  label={fields.restrictionStartDate.label}
+                  value={formatDate(accessRestriction.restrictionStartDate)}
                 />
-                {letter.documentFileId && (
-                  <ProofTabFileCard fileId={letter.documentFileId} />
+                {accessRestriction.restrictionTerminationDate && (
+                  <DetailsItem
+                    label={fields.restrictionTerminationDate.label}
+                    value={formatDate(
+                      accessRestriction.restrictionTerminationDate,
+                    )}
+                  />
                 )}
-              </ProofTabEntry>
-            ))}
+              </Stack>
+              {accessRestriction.letters?.map((letter) => (
+                <ProofTabEntry key={letter.externalId}>
+                  <DetailsItem label="" value="Anschreiben" />
+                  <DetailsItem
+                    label="Empfänger"
+                    value={formatName(
+                      getPersonByIdFromProcedure(letter.recipientId, procedure),
+                    )}
+                  />
+                  {letter.documentFileId && (
+                    <ProofTabFileCard fileId={letter.documentFileId} />
+                  )}
+                </ProofTabEntry>
+              ))}
+            </DetailsList>
             {!procedureClosed && (
               <Button
                 variant="plain"

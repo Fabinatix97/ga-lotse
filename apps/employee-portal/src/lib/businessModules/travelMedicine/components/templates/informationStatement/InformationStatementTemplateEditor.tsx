@@ -163,6 +163,7 @@ export function InformationStatementTemplateEditor(
       {({ isSubmitting, values }) => (
         <FormPlus
           sx={{ height: "100%", overflow: "hidden" }}
+          aria-label="Aufklärungsbogenvorlage erstellen"
           data-testid="information-statement-template-metadata"
         >
           <Box

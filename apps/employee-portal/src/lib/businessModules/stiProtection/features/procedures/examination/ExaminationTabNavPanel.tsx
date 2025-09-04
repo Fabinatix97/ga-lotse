@@ -43,23 +43,31 @@ export function ExaminationTabNavPanel(
 
   return (
     <Stack gap={3}>
-      <SidePanel>
-        <SidePanelTitle component="h3" fontSize="1.25rem">
+      <SidePanel role="navigation" ariaLablledby="tests-panel-title">
+        <SidePanelTitle
+          component="h3"
+          fontSize="1.25rem"
+          id="tests-panel-title"
+        >
           Tests
         </SidePanelTitle>
         <SidePanelNav>
-          {navItems.map((navItem) => (
-            <SidePanelNavLink key={navItem.name} href={navItem.href}>
-              <Stack direction="row" alignItems="center" gap={2}>
-                <Box display="flex" justifyContent="center">
-                  {navItem.icon}
-                </Box>
-                <Box display="flex" justifyContent="center">
-                  {navItem.name}
-                </Box>
-              </Stack>
-            </SidePanelNavLink>
-          ))}
+          <Box display="contents" role="list">
+            {navItems.map((navItem) => (
+              <Box key={navItem.name} display="contents" role="listitem">
+                <SidePanelNavLink href={navItem.href}>
+                  <Stack direction="row" alignItems="center" gap={2}>
+                    <Box display="flex" justifyContent="center">
+                      {navItem.icon}
+                    </Box>
+                    <Box display="flex" justifyContent="center">
+                      {navItem.name}
+                    </Box>
+                  </Stack>
+                </SidePanelNavLink>
+              </Box>
+            ))}
+          </Box>
         </SidePanelNav>
       </SidePanel>
     </Stack>

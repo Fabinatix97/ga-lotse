@@ -10,15 +10,15 @@ def nodeSetupDir = gradleDir.dir('nodejs')
 def pnpmSetupDir = gradleDir.dir('pnpm')
 
 node {
-  version = '22.18.0'
-  pnpmVersion = '10.14.0'
+  version = '22.19.0'
+  pnpmVersion = '10.15.1'
   download = true
   workDir = nodeSetupDir
   pnpmWorkDir = pnpmSetupDir
 }
 
 ext {
-  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:1b2479dd35a99687d6638f5976fd235e26c5b37e8122f786fcd5fe231d63de5b"
+  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:d2166de198f26e17e5a442f537754dd616ab069c47cc57b889310a717e0abbf9"
 }
 
 def cleanDependenciesTask = tasks.register('cleanDependencies', Delete) {

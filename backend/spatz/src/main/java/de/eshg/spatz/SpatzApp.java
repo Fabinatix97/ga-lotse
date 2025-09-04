@@ -19,12 +19,14 @@ import reactor.netty.http.HttpResources;
 import reactor.netty.http.server.HttpRequestDecoderSpec;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.resources.LoopResources;
 
 @SpringBootApplication
 @EnableConfigurationProperties(SpatzConfigurationProperties.class)
 public class SpatzApp {
 
   private static final Logger logger = LoggerFactory.getLogger(SpatzApp.class);
+  private static final LoopResources loopResources = LoopResources.create("spatz-net", 1, 4, true);
 
   @Bean
   HttpServer baseServer(
@@ -61,6 +63,11 @@ public class SpatzApp {
     System.setProperty("jdk.tls.client.protocols", "TLSv1.3");
     System.setProperty("jdk.tls.server.protocols", "TLSv1.3");
     System.setProperty("jdk.tls.server.disableExtensions", "certificate_authorities");
+
+    System.setProperty("reactor.schedulers.defaultPoolSize", "1");
+    System.setProperty("reactor.schedulers.defaultBoundedElasticSize", "1");
+
+    HttpResources.set(loopResources);
 
     SpringApplication.run(SpatzApp.class, args);
   }

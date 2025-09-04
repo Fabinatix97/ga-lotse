@@ -26,6 +26,7 @@ public interface AuthenticationTraits {
     return switch (user) {
       case EmployeeTestUser e -> login(e.getUsernamePassword());
       case CitizenTestUser c -> login(c.getUsernamePassword());
+      case LsdTestUser l -> login(l.getUsernamePassword());
       default -> throw new IllegalStateException("Unexpected value: " + user);
     };
   }

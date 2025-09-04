@@ -4,12 +4,13 @@
  */
 
 import { Add, Delete } from "@mui/icons-material";
-import { Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray, useFormikContext } from "formik";
+import { Box, Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
 import { Fragment } from "react";
 
 import {
   DateField,
+  FieldArrayWithFocus,
   InputField,
   NestedFormProps,
   SelectField,
@@ -46,18 +47,25 @@ export function EmployeesForm(props: NestedFormProps) {
   const employeeFieldName = createFieldNameMapper<EmployeeChangeEntry>();
 
   return (
-    <>
+    <Box display="contents" role="group" aria-labelledby="employee-info-title">
       <Grid xxs={12}>
-        <Typography level="h3" component="h2">
+        <Typography level="h3" component="h2" id="employee-info-title">
           Angaben zu Mitarbeiter:innen
         </Typography>
       </Grid>
-      <FieldArray name={fieldName("employees")}>
-        {({ push, remove }) => (
+      <FieldArrayWithFocus
+        name={fieldName("employees")}
+        valueLength={employees.length}
+      >
+        {({ push, remove, setInputElementRef }) => (
           <>
             {employees.map((_values, index) => (
               <Fragment key={index}>
-                <Grid xxs={6} role="group" aria-label="Mitarbeiter:in">
+                <Grid
+                  xxs={6}
+                  role="group"
+                  aria-label={`Mitarbeiter:in ${index + 1}`}
+                >
                   <Stack direction={{ xxs: "column", md: "row" }} gap={2}>
                     <Stack
                       direction="row"
@@ -67,6 +75,7 @@ export function EmployeesForm(props: NestedFormProps) {
                       alignItems="flex-start"
                     >
                       <InputField
+                        ref={(el) => setInputElementRef(el, index)}
                         name={`${fieldName("employees")}.${index}.${employeeFieldName("firstName")}`}
                         label="Vorname"
                         required={requiredFieldMessage}
@@ -124,18 +133,18 @@ export function EmployeesForm(props: NestedFormProps) {
             ))}
             <Grid xxs={6}>
               <Button
-                variant="outlined"
-                endDecorator={<Add />}
+                variant="plain"
+                startDecorator={<Add />}
                 disabled={!canAddEmployeeEntries}
                 onClick={() => push(buildEmptyEmployeeChangeEntry())}
               >
-                hinzufügen
+                Mitarbeiter:in hinzufügen
               </Button>
             </Grid>
             <Grid xxl={6} />
           </>
         )}
-      </FieldArray>
-    </>
+      </FieldArrayWithFocus>
+    </Box>
   );
 }

@@ -115,6 +115,7 @@ spec:
               mountPath: /var/log/eshg-debug
             {{- end }}
         - name: spatz
+          securityContext: {{- .Values.containerSecurityContext | toYaml | nindent 12 }}
           resources:
           {{- toYaml (default dict .Values.spatz.resources) | nindent 12 }}
           lifecycle:

@@ -10,6 +10,7 @@ import static de.eshg.lib.statistics.util.ConvertToValueOptionHelper.convertToVa
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
+import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.schoolentry.statistics.options.*;
 import java.util.List;
@@ -150,6 +151,13 @@ public enum EsuSopessAttribute implements EsuAttributes {
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
           true,
           convertToValueOptions(ChildLanguageKnowledge.values()))),
+
+  WOHND(
+      TextAttribute.create(
+          "bei Einreise: in Deutschland seit (Neue Variable ab S1_2023)",
+          "WOHND",
+          EsuSopessAttribute.CATEGORY_S1_SOPESS,
+          true)),
 
   DYS_S_Z(
       ValueWithOptionsAttribute.create(

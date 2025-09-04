@@ -13,14 +13,14 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal";
 
-import { AppointmentBlockGroupsTable } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/appointmentBlocksTable/AppointmentBlockGroupsTable";
+import { TravelMedicineAppointmentBlockGroupsTable } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/appointmentBlocksTable/TravelMedicineAppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
 export default function AppointmentBlockGroupsPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Terminblöcke Übersicht" />}>
       <MainContentLayout fullViewportHeight>
-        <AppointmentBlockGroupsTable
+        <TravelMedicineAppointmentBlockGroupsTable
           controls={
             <ButtonBar
               right={

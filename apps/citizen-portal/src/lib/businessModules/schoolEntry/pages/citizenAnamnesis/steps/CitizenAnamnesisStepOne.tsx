@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FormLabel, Grid, Typography } from "@mui/joy";
-import { useId, useMemo } from "react";
+import { Grid, Typography } from "@mui/joy";
+import { useMemo } from "react";
 
 import { SelectField, buildEnumOptions } from "@eshg/lib-portal";
 
@@ -21,7 +21,6 @@ import {
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 import { CitizenAnamnesisInfoAlert } from "./components/CitizenAnamnesisInfoAlert";
-import { CitizenPortalMonthAndYearFields } from "./components/CitizenPortalMonthAndYearFields";
 
 const countryCodeOptions = buildEnumOptions(COUNTRY_CODE_VALUES);
 
@@ -67,8 +66,6 @@ interface ContactFormProps {
 }
 
 function ContactForm(props: ContactFormProps) {
-  const inGermanySinceId = useId();
-
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
   const migrationBackground = createFieldNameMapper("migrationBackground");
   const options: SelectionOption[] = useMemo(
@@ -97,21 +94,6 @@ function ContactForm(props: ContactFormProps) {
           label={`${props.label} ${t("migration.nationality")}`}
         />
       </Grid>
-      {props.for === "child" && (
-        <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
-          <FormLabel
-            sx={{ fontSize: "1rem", fontWeight: "700" }}
-            id={inGermanySinceId}
-          >
-            {t("migration.inGermanySince")}
-          </FormLabel>
-          <CitizenPortalMonthAndYearFields
-            fieldName={migrationBackground("child.inGermanySince")}
-            date={props.values.migrationBackground.child.inGermanySince}
-            aria-labelledby={inGermanySinceId}
-          />
-        </Grid>
-      )}
     </Grid>
   );
 }

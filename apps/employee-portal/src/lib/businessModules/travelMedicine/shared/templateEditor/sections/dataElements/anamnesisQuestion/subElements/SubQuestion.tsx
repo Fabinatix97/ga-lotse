@@ -4,7 +4,7 @@
  */
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { Card, Grid, IconButton, Stack, styled } from "@mui/joy";
+import { Box, Card, Grid, IconButton, Stack, styled } from "@mui/joy";
 import { useId } from "react";
 
 import { InputField } from "@eshg/lib-portal";
@@ -16,53 +16,58 @@ export function SubQuestion({
   subQuestionDeleteHandler,
   multiSelectLength,
   label,
+  setInputElementRef,
 }: Readonly<{
   subElementTextFormikPath: string;
   subQuestionDeleteHandler: () => void;
   multiSelectLength: number;
   label: string;
+  setInputElementRef: (el: HTMLInputElement) => void;
 }>) {
   const detailsId = useId();
   return (
-    <Grid container spacing={1}>
-      <Grid id={detailsId} xs={12}>
-        {multiSelectLength > 0
-          ? `Antwort ${multiSelectLength + 1}: Freifeldtext `
-          : "Textfeld wird nur bei Ja angezeigt"}
-      </Grid>
-      <Grid xs={12}>
-        <Stack direction="row" spacing={1} alignItems="flex-start">
-          <InputField
-            label
-            aria-label={
-              multiSelectLength > 0
-                ? `${label}, Antwort ${multiSelectLength + 1}, Freifeldtext, Label`
-                : `${label}, Label`
-            }
-            aria-details={detailsId}
-            name={`${subElementTextFormikPath}.questionText`}
-            placeholder="Label"
-            sx={{ flex: 1 }}
-            validate={validateLabelText()}
-            data-testid="element-subelement-text"
-          />
-          <Stack alignItems="center" paddingTop="6px">
-            <IconButton
-              aria-label="Entfernen"
-              color="warning"
-              variant="outlined"
-              title="Unterfrage löschen"
-              onClick={subQuestionDeleteHandler}
-            >
-              <DeleteOutlineIcon />
-            </IconButton>
+    <Box display="contents" role="group" aria-label={label}>
+      <Grid container spacing={1}>
+        <Grid id={detailsId} xs={12}>
+          {multiSelectLength > 0
+            ? `Antwort ${multiSelectLength + 1}: Freifeldtext `
+            : "Textfeld wird nur bei Ja angezeigt"}
+        </Grid>
+        <Grid xs={12}>
+          <Stack direction="row" spacing={1} alignItems="flex-start">
+            <InputField
+              ref={setInputElementRef}
+              label
+              aria-label={
+                multiSelectLength > 0
+                  ? `${label}, Antwort ${multiSelectLength + 1}, Freifeldtext, Label`
+                  : `${label}, Label`
+              }
+              aria-details={detailsId}
+              name={`${subElementTextFormikPath}.questionText`}
+              placeholder="Label"
+              sx={{ flex: 1 }}
+              validate={validateLabelText()}
+              data-testid="element-subelement-text"
+            />
+            <Stack alignItems="center" paddingTop="6px">
+              <IconButton
+                aria-label="Entfernen"
+                color="warning"
+                variant="outlined"
+                title="Unterfrage löschen"
+                onClick={subQuestionDeleteHandler}
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+            </Stack>
           </Stack>
-        </Stack>
+        </Grid>
+        <Grid xs={11.63}>
+          <ReadOnlyInputField>Textfeld</ReadOnlyInputField>
+        </Grid>
       </Grid>
-      <Grid xs={11.63}>
-        <ReadOnlyInputField>Textfeld</ReadOnlyInputField>
-      </Grid>
-    </Grid>
+    </Box>
   );
 }
 

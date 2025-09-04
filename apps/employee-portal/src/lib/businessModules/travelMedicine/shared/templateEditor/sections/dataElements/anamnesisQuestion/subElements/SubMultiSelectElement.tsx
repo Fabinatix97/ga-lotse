@@ -5,6 +5,7 @@
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Box, IconButton, Stack } from "@mui/joy";
+import { useId } from "react";
 
 import { InputField } from "@eshg/lib-portal";
 
@@ -15,17 +16,30 @@ export function SubMultiSelectElement({
   multiSelectDeleteHandler,
   subElementIndex,
   label,
+  setInputElementRef,
 }: Readonly<{
   multiSelectElementFormikPath: string;
   multiSelectDeleteHandler: () => void;
   subElementIndex: number;
   label: string;
+  setInputElementRef: (el: HTMLInputElement) => void;
 }>) {
+  const id = useId();
   return (
-    <Stack direction="row" spacing={1} alignItems="flex-start">
-      <Box sx={{ paddingTop: "12px" }}>{`Antwort ${subElementIndex + 1}:`}</Box>
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="flex-start"
+      role="group"
+      aria-label={label}
+    >
+      <Box
+        sx={{ paddingTop: "12px" }}
+        id={id}
+      >{`Antwort ${subElementIndex + 1}:`}</Box>
 
       <InputField
+        ref={setInputElementRef}
         label
         aria-label={label}
         name={`${multiSelectElementFormikPath}.questionText`}

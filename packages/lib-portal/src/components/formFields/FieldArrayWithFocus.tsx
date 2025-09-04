@@ -24,7 +24,8 @@ export type FieldArrayRenderExtendedProps = FieldArrayRenderProps & {
    * this ref needs to be set directly on Input input, use `slotProps`.
    * See `YearField` and `MemoizedInputField` for example
    */
-  setInputElementRef: (element: HTMLInputElement, index: number) => void;
+  setInputElementRef: (element: HTMLElement, index: number) => void;
+  setFallbackElementRef: (element: HTMLElement | null) => void;
 };
 
 interface FieldArrayWithFocusProps
@@ -32,6 +33,7 @@ interface FieldArrayWithFocusProps
   valueLength: number;
   children?: (props: FieldArrayRenderExtendedProps) => ReactNode;
   render?: (props: FieldArrayRenderExtendedProps) => ReactNode;
+  fallbackFocusInputElement?: HTMLElement;
 }
 
 export function FieldArrayWithFocus({
@@ -39,6 +41,7 @@ export function FieldArrayWithFocus({
   children,
   component,
   render,
+  fallbackFocusInputElement,
   ...fieldArrayProps
 }: FieldArrayWithFocusProps) {
   const [actionFlag, setActionFlag] = useState<
@@ -48,17 +51,24 @@ export function FieldArrayWithFocus({
       }
     | undefined
   >(undefined);
-  const inputElements = useRef<HTMLInputElement[]>([]);
+  const inputElements = useRef<HTMLElement[]>([]);
+  const fallbackElement = useRef<HTMLElement | null>(fallbackFocusInputElement);
+
+  useEffect(() => {
+    if (fallbackFocusInputElement) {
+      fallbackElement.current = fallbackFocusInputElement;
+    }
+  }, [fallbackFocusInputElement]);
 
   useEffect(() => {
     function focusNthElement(index: number) {
-      inputElements.current.at(index)?.focus();
+      (inputElements.current.at(index) ?? fallbackElement.current)?.focus();
     }
 
     if (isDefined(actionFlag)) {
       if (actionFlag.action === "add") {
         // if an element is added, focus the newly created last element
-        focusNthElement(valueLength - 1);
+        focusNthElement(actionFlag.onIndex);
         setActionFlag(undefined);
       } else {
         // if an element is removed, focus the next (or last) element
@@ -69,13 +79,14 @@ export function FieldArrayWithFocus({
         setActionFlag(undefined);
       }
     }
-  }, [actionFlag, valueLength]);
+  }, [actionFlag, fallbackFocusInputElement, valueLength]);
 
   return (
     <FieldArray {...fieldArrayProps}>
       {(props) => {
         function remove<X>(index: number): X | undefined {
           setActionFlag({ action: "delete", onIndex: index });
+          inputElements.current.splice(index, 1);
           return props.remove(index);
         }
 
@@ -91,8 +102,10 @@ export function FieldArrayWithFocus({
           ...props,
           remove,
           push,
-          setInputElementRef: (el: HTMLInputElement, index: number) =>
+          setInputElementRef: (el: HTMLElement, index: number) =>
             (inputElements.current[index] = el),
+          setFallbackElementRef: (el: HTMLElement | null) =>
+            (fallbackElement.current = el),
         };
 
         if (isDefined(component)) {

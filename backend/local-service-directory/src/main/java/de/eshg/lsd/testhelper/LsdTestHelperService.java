@@ -8,8 +8,8 @@ package de.eshg.lsd.testhelper;
 import de.eshg.lib.keycloak.UsernamePassword;
 import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
 import de.eshg.libservicedirectoryadminapi.api.testhelper.ServiceDirectoryTestHelperApi;
-import de.eshg.lsd.keycloak.KeycloakProvisioning;
-import de.eshg.lsd.keycloak.properties.LsdInternalKeycloakProperties;
+import de.eshg.lsd.keycloak.LsdKeycloakProvisioning;
+import de.eshg.lsd.register.api.LsdClientKeycloakProperties;
 import de.eshg.testhelper.AccessToken;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperClock;
@@ -41,28 +41,31 @@ import org.springframework.util.Assert;
 public class LsdTestHelperService implements TestHelperService {
 
   private static final Logger log = LoggerFactory.getLogger(LsdTestHelperService.class);
-  private final KeycloakProvisioning keycloakProvisioning;
-  private final LsdInternalKeycloakProperties lsdInternalKeycloakProperties;
+  private final LsdKeycloakProvisioning lsdKeycloakProvisioning;
+  private final LsdClientKeycloakProperties lsdClientKeycloakProperties;
   private final ServiceDirectoryTestHelperApi serviceDirectoryTestHelperClient;
   private final TestRequestInterceptor testRequestInterceptor;
   private final Clock clock;
 
   private final Map<UsernamePassword, AccessToken> cachedAccessTokens = new ConcurrentHashMap<>();
+  private final KeycloakUserTestHelper keycloakUserTestHelper;
 
   public LsdTestHelperService(
-      KeycloakProvisioning keycloakProvisioning,
-      LsdInternalKeycloakProperties lsdInternalKeycloakProperties,
+      LsdKeycloakProvisioning lsdKeycloakProvisioning,
+      LsdClientKeycloakProperties lsdClientKeycloakProperties,
       ServiceDirectoryTestHelperApi serviceDirectoryTestHelperClient,
       TestRequestInterceptor testRequestInterceptor,
       Clock clock,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      KeycloakUserTestHelper keycloakUserTestHelper) {
     environmentConfig.assertIsNotProduction();
     log.warn("Creating {}", getClass().getSimpleName());
     this.serviceDirectoryTestHelperClient = serviceDirectoryTestHelperClient;
     this.testRequestInterceptor = testRequestInterceptor;
     this.clock = clock;
-    this.keycloakProvisioning = keycloakProvisioning;
-    this.lsdInternalKeycloakProperties = lsdInternalKeycloakProperties;
+    this.lsdKeycloakProvisioning = lsdKeycloakProvisioning;
+    this.lsdClientKeycloakProperties = lsdClientKeycloakProperties;
+    this.keycloakUserTestHelper = keycloakUserTestHelper;
   }
 
   @Override
@@ -70,9 +73,9 @@ public class LsdTestHelperService implements TestHelperService {
     cachedAccessTokens.clear();
     serviceDirectoryTestHelperClient.reset();
 
-    keycloakProvisioning.configureRealm();
-    keycloakProvisioning.deleteUsers();
-    keycloakProvisioning.addDummyUser();
+    lsdKeycloakProvisioning.configureRealm();
+    lsdKeycloakProvisioning.deleteUsers();
+    keycloakUserTestHelper.addDefaultusers();
 
     resetInterceptions();
     withTestClock(TestHelperClock::reset);
@@ -139,12 +142,12 @@ public class LsdTestHelperService implements TestHelperService {
   private AccessToken loginUncached(UsernamePassword usernamePassword) {
     try (Keycloak keycloak =
         KeycloakBuilder.builder()
-            .serverUrl(lsdInternalKeycloakProperties.url())
+            .serverUrl(lsdClientKeycloakProperties.url())
             .grantType(OAuth2Constants.PASSWORD)
-            .realm(keycloakProvisioning.getRealm())
+            .realm(lsdClientKeycloakProperties.realm())
             .scope(OAuth2Constants.SCOPE_OPENID)
-            .clientId(keycloakProvisioning.getClientId())
-            .clientSecret(keycloakProvisioning.getClientSecret())
+            .clientId(lsdClientKeycloakProperties.clientId())
+            .clientSecret(lsdClientKeycloakProperties.clientSecret())
             .username(usernamePassword.username())
             .password(usernamePassword.password())
             .build()) {

@@ -12,4 +12,5 @@ export const esuConfigRouterEndpoints: ConfiguratorEndpointName[] = [
   "PRIVACY_NOTICE",
   "PRIVACY_POLICY",
   "APPOINTMENT_STANDARD_DURATION",
+  "APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY",
 ];

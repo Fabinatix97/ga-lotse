@@ -8,16 +8,16 @@ import { Formik, FormikErrors } from "formik";
 import { isDefined } from "remeda";
 
 import {
+  AppointmentBlockGroupFields,
+  AppointmentBlockGroupValues,
   FormButtonBar,
   FormSheet,
+  validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentBlockGroupValues } from "@/lib/shared/components/appointmentBlocks/calculateAppointmentCount";
-import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 

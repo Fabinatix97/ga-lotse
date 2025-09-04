@@ -22,7 +22,9 @@ export interface ProcedureLabelResponse {
   readonly?: boolean;
 }
 
-function mapProcedureLabel(response: ProcedureLabelResponse): ProcedureLabel {
+export function mapProcedureLabel(
+  response: ProcedureLabelResponse,
+): ProcedureLabel {
   return {
     ...mapBaseEntity(response),
     ...mapVersioned(response),

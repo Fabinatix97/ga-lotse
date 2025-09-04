@@ -76,7 +76,7 @@ export function LaboratoryTestExamination(
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus sx={{ height: "100%" }}>
+        <FormPlus sx={{ height: "100%" }} aria-labelledby="labtest-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertLaboratoryTestOptions,
@@ -89,7 +89,9 @@ export function LaboratoryTestExamination(
           <SidecarFormLayout>
             <Sheet sx={{ padding: 3 }}>
               <Stack gap={3}>
-                <Typography level="h2">Labortests</Typography>
+                <Typography level="h2" id="labtest-title">
+                  Labortests
+                </Typography>
                 <SectionGrid sx={{ gridTemplateColumns: "4fr 5f" }}>
                   <InputField name="sampleBarcode" label="Proben-Barcode" />
                 </SectionGrid>

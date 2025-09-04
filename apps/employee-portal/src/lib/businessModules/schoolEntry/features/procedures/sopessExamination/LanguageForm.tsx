@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack, Typography } from "@mui/joy";
+import { FormLabel, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useId } from "react";
 
 import {
+  MonthAndYearFields,
   SoftRequiredSelectField,
   createFieldNameMapper,
 } from "@eshg/lib-portal";
@@ -36,6 +38,7 @@ export function LanguageForm(props: LanguageFormProps) {
   const fieldName = createFieldNameMapper("language");
   const primaryLanguageIsNotGerman =
     props.values.primaryLanguage !== ApiPrimaryLanguageValue.German;
+  const inGermanySinceId = useId();
 
   return (
     <Stack
@@ -80,6 +83,21 @@ export function LanguageForm(props: LanguageFormProps) {
           sx={FIXED_WIDTH_STYLE}
           softRequired
         />
+        <Stack direction="row" gap={2}>
+          <FormLabel
+            id={inGermanySinceId}
+            sx={{ fontSize: "sm", fontWeight: "500" }}
+          >
+            in Deutschland seit
+          </FormLabel>
+          <MonthAndYearFields
+            testId="inGermanySince"
+            fieldName={fieldName("inGermanySince")}
+            date={props.values.inGermanySince}
+            aria-labelledby={inGermanySinceId}
+            softRequired={primaryLanguageIsNotGerman}
+          />
+        </Stack>
       </Stack>
     </Stack>
   );

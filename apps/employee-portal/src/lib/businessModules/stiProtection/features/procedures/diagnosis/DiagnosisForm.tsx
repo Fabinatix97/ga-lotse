@@ -80,7 +80,7 @@ export function DiagnosisForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus sx={{ height: "100%" }}>
+        <FormPlus sx={{ height: "100%" }} aria-labelledby="diagnosis-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertDiagnosisOptions,
@@ -93,7 +93,9 @@ export function DiagnosisForm({
           <SidecarFormLayout>
             <Sheet>
               <Stack gap={5}>
-                <Typography level="h2">Diagnose</Typography>
+                <Typography level="h2" id="diagnosis-title">
+                  Diagnose
+                </Typography>
                 <SectionGrid defaultColumn={1}>
                   <TextareaFieldWithTextTemplates
                     name="results"
@@ -153,9 +155,15 @@ function FindingsSection() {
         aria-label="findings-section-icd-10-codes"
         direction="column"
         rowGap={1}
+        role="list"
       >
         {findings?.map(({ code, originalCode, title }) => (
-          <Stack key={code} direction="row" aria-label="icd-10-code">
+          <Stack
+            key={code}
+            direction="row"
+            aria-label="icd-10-code"
+            role="listitem"
+          >
             <Typography
               aria-label="icd-10-code-id"
               mr={1}
@@ -217,11 +225,13 @@ function AdditionalInfosSidecar() {
 }
 
 const initialMedication: MedicationFormData = { name: "", dose: "", date: "" };
+
 function MedicationsSection({
   remove,
   push,
   form,
   setInputElementRef,
+  setFallbackElementRef,
 }: FieldArrayRenderExtendedProps) {
   const values = form.values as DiagnosisFormData;
 
@@ -273,6 +283,7 @@ function MedicationsSection({
       ))}
       <HiddenIfDisabled>
         <Button
+          ref={setFallbackElementRef}
           sx={{ width: "fit-content" }}
           startDecorator={<Add />}
           variant="plain"

@@ -87,6 +87,7 @@ export function ProceduresTableControls({
                 <>
                   {renderFilterButton()}
                   <Button
+                    aria-label="Filter verbergen und Suche anzeigen"
                     onClick={() => onToggleActiveTableControl("entrySearch")}
                   >
                     Suche
@@ -109,6 +110,7 @@ export function ProceduresTableControls({
                   <Button type="submit">Suchen</Button>
                   <Button
                     variant="outlined"
+                    aria-label="Suche verbergen und Filter anzeigen"
                     onClick={() => {
                       onToggleActiveTableControl("entrySearch");
                       onEntrySearch("");

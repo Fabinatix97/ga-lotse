@@ -9,12 +9,16 @@ import de.eshg.base.SortDirection;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry_;
 import de.eshg.persistence.SpecificationUtil;
 import de.eshg.schoolentry.domain.model.ProcedureLabel;
 import de.eshg.schoolentry.domain.model.ProcedureLabel_;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.util.ProcedureSortKey;
+import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import jakarta.persistence.criteria.*;
 import java.io.Serial;
 import java.time.Instant;
@@ -40,6 +44,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
   private final Boolean hasAppointmentFilter;
   private final ArrayList<UUID> labelFilter;
   private final Boolean isInvitationSentFilter;
+  private final Boolean hasExaminationEditsFilter;
   private final ProcedureSortKey sortKey;
   private final SortDirection sortDirection;
 
@@ -52,6 +57,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       Boolean hasAppointmentFilter,
       ArrayList<UUID> labelFilter,
       Boolean isInvitationSentFilter,
+      Boolean hasExaminationEditsFilter,
       ProcedureSortKey sortKey,
       SortDirection sortDirection) {
     this.procedureStatusFilter = procedureStatusFilter;
@@ -62,6 +68,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
     this.hasAppointmentFilter = hasAppointmentFilter;
     this.labelFilter = labelFilter;
     this.isInvitationSentFilter = isInvitationSentFilter;
+    this.hasExaminationEditsFilter = hasExaminationEditsFilter;
     this.sortKey = sortKey;
     this.sortDirection = sortDirection;
   }
@@ -124,6 +131,32 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       conjunctions.add(
           criteriaBuilder.equal(
               root.get(SchoolEntryProcedure_.isInvitationSent), isInvitationSentFilter));
+    }
+
+    if (hasExaminationEditsFilter != null) {
+      Subquery<SchoolEntryProcedure> subquery = query.subquery(SchoolEntryProcedure.class);
+      Root<SchoolEntryProcedure> subqueryRoot = subquery.correlate(root);
+      ListJoin<SchoolEntryProcedure, ProgressEntry> progressEntryJoin =
+          subqueryRoot.join(SchoolEntryProcedure_.progressEntries);
+      ListJoin<SchoolEntryProcedure, SystemProgressEntry> systemProgressEntryJoin =
+          criteriaBuilder.treat(progressEntryJoin, SystemProgressEntry.class);
+      List<String> examinationProgressEntryTypes =
+          List.of(
+              SchoolEntrySystemProgressEntryType.EYE_EXAMINATION_MODIFIED.toString(),
+              SchoolEntrySystemProgressEntryType.HEARING_TEST_MODIFIED.toString(),
+              SchoolEntrySystemProgressEntryType.SOPESS_EXAMINATION_MODIFIED.toString(),
+              SchoolEntrySystemProgressEntryType.DEVELOPMENT_SCREENING_MODIFIED.toString());
+
+      Predicate predicate =
+          systemProgressEntryJoin
+              .get(SystemProgressEntry_.SYSTEM_PROGRESS_ENTRY_TYPE)
+              .in(examinationProgressEntryTypes);
+      subquery.where(predicate);
+      if (hasExaminationEditsFilter) {
+        conjunctions.add(criteriaBuilder.exists(subquery));
+      } else {
+        conjunctions.add(criteriaBuilder.exists(subquery).not());
+      }
     }
 
     Set<Order> orders = new LinkedHashSet<>();

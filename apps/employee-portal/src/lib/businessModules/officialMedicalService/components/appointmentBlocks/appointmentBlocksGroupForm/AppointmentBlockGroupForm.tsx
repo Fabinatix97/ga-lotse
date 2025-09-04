@@ -9,9 +9,11 @@ import { isDefined } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
+  AppointmentBlockGroupFields,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
+  validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 
@@ -19,8 +21,6 @@ import { AppointmentTypeConfig } from "@/lib/businessModules/officialMedicalServ
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,

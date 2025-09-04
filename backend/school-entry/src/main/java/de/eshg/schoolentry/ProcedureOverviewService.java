@@ -202,6 +202,7 @@ public class ProcedureOverviewService {
                     ? Collections.emptyList()
                     : filterParameters.labelsFilter()),
             filterParameters.isInvitationSentFilter(),
+            filterParameters.hasExaminationEditsFilter(),
             pageSpec.sortKey(),
             pageSpec.direction());
 

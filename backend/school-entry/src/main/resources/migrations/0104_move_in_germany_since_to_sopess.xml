@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1755853946383-1">
+    <addColumn tableName="sopess_examination_result">
+      <column name="in_germany_since" type="date"/>
+    </addColumn>
+    <sql>
+      UPDATE sopess_examination_result
+      SET in_germany_since = (SELECT a.in_germany_since
+                              FROM anamnesis a
+                              WHERE a.procedure_id = sopess_examination_result.procedure_id);
+    </sql>
+    <dropColumn columnName="in_germany_since" tableName="anamnesis"/>
+  </changeSet>
+</databaseChangeLog>

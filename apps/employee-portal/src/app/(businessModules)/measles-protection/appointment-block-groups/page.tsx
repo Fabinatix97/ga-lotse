@@ -14,14 +14,14 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal";
 
-import { AppointmentBlockGroupsTable } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/AppointmentBlockGroupsTable";
+import { MeaslesProtectionAppointmentBlockGroupsTable } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/MeaslesProtectionAppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
 export default function AppointmentBlockGroupsOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Terminblöcke Übersicht" />}>
       <MainContentLayout fullViewportHeight>
-        <AppointmentBlockGroupsTable
+        <MeaslesProtectionAppointmentBlockGroupsTable
           controls={
             <ButtonBar
               left={<ToggleFilterButton disabled />}

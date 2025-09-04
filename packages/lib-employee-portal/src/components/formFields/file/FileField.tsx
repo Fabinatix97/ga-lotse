@@ -68,6 +68,7 @@ export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
   sx?: SxProps;
   readonly?: boolean;
   maxFileSize?: number;
+  ref?: (el: HTMLButtonElement | null) => void;
 }
 
 type FileLabelProps = Pick<FormLabelProps, "htmlFor">;
@@ -134,6 +135,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
         <Stack>
           {renderLabel(props.label, { htmlFor: fileInputId })}
           <UploadButton
+            ref={props.ref}
             activeDragOver={dropState === "copy"}
             error={field.error || dropState === "no-drop"}
             aria-controls={fileInputId}

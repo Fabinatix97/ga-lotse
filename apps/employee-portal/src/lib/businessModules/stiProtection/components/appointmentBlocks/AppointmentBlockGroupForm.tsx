@@ -8,10 +8,13 @@ import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import {
+  AppointmentBlockGroupFields,
+  AppointmentBlockGroupValuesWithDays,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
   NamedUser,
+  validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal";
@@ -23,9 +26,6 @@ import {
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 

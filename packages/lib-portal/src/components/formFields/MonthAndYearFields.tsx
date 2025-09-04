@@ -5,17 +5,20 @@
 
 import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
-import { range } from "remeda";
+import { isDefined, range } from "remeda";
 
 import { toDateString, toUtcDate } from "../../helpers/dateTime";
+import { parseOptionalValue } from "../../helpers/form";
 import { isEmptyString } from "../../helpers/guards";
 import { useMonthAndYearValidationsRules } from "../../hooks/useMonthAndYearValidations";
 import { useTranslation } from "../../i18n/useTranslation";
 import { OptionalFieldValue } from "../../types/form";
+import {
+  SoftRequiredNumberField,
+  SoftRequiredSelectObjectField,
+} from "../form/fieldVariants";
 
 import { HorizontalField } from "./HorizontalField";
-import { NumberField } from "./NumberField";
-import { SelectObjectField } from "./SelectObjectField";
 
 export interface MonthAndYear {
   month: number | null;
@@ -28,6 +31,13 @@ export function mapMonthAndYear(monthAndYear: MonthAndYear) {
         toDateString(new Date(monthAndYear.year, monthAndYear.month, 1)),
       )
     : undefined;
+}
+
+export function parseMonthAndYear(date: Date | undefined): MonthAndYear {
+  return {
+    month: isDefined(date) ? date.getMonth() : null,
+    year: parseOptionalValue(date?.getFullYear()),
+  };
 }
 
 function useGetMonthLabel() {
@@ -49,6 +59,7 @@ export interface MonthAndYearFieldsProps {
   monthValues?: string[];
   testId?: string;
   "aria-labelledby": string;
+  softRequired?: boolean;
 }
 
 export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
@@ -66,7 +77,7 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
       role="group"
       aria-labelledby={props["aria-labelledby"]}
     >
-      <SelectObjectField
+      <SoftRequiredSelectObjectField
         name={`${props.fieldName}.month`}
         label={props.monthLabel ?? t("common.month")}
         options={monthOptions}
@@ -75,8 +86,9 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
         sx={{ width: "170px" }}
         validate={month.validate}
         required={month.required}
+        softRequired={props.softRequired}
       />
-      <NumberField
+      <SoftRequiredNumberField
         name={`${props.fieldName}.year`}
         label={props.yearLabel ?? t("common.year")}
         sx={{ width: "85px" }}
@@ -84,6 +96,7 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
         min={1900}
         validate={year.validate}
         required={year.required}
+        softRequired={props.softRequired}
       />
     </Stack>
   );

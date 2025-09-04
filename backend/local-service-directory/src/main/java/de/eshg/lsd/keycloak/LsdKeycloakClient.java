@@ -11,9 +11,10 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.lsd.exception.ActorNotFoundException;
 import de.eshg.lsd.keycloak.exception.KeycloakException;
-import de.eshg.lsd.keycloak.properties.LsdInternalKeycloakProperties;
+import de.eshg.lsd.keycloak.properties.LsdKeycloakSetupProperties;
 import de.eshg.lsd.keycloak.util.Differ;
 import de.eshg.lsd.register.api.LsdClientKeycloakProperties;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.Response;
@@ -46,35 +47,17 @@ public class LsdKeycloakClient {
   private static final Logger log = LoggerFactory.getLogger(LsdKeycloakClient.class);
   private static final Duration TIMEOUT = Duration.ofSeconds(20);
   private final LsdClientKeycloakProperties lsdClientKeycloakProperties;
+  private final LsdKeycloakSetupProperties lsdKeycloakSetupProperties;
   private final ObjectMapper objectMapper;
-  private final Keycloak keycloak;
+  private Keycloak keycloak;
 
   public LsdKeycloakClient(
       LsdClientKeycloakProperties lsdClientKeycloakProperties,
-      LsdInternalKeycloakProperties lsdInternalKeycloakProperties,
+      LsdKeycloakSetupProperties lsdKeycloakSetupProperties,
       ObjectMapper objectMapper) {
     this.lsdClientKeycloakProperties = lsdClientKeycloakProperties;
+    this.lsdKeycloakSetupProperties = lsdKeycloakSetupProperties;
     this.objectMapper = objectMapper;
-
-    String keycloakUrl = lsdInternalKeycloakProperties.url();
-    try {
-      keycloak =
-          KeycloakBuilder.builder()
-              .serverUrl(keycloakUrl)
-              .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-              .realm(lsdClientKeycloakProperties.realm())
-              .clientId(lsdInternalKeycloakProperties.adminClient().clientId())
-              .clientSecret(lsdInternalKeycloakProperties.adminClient().clientSecret())
-              .resteasyClient(createClientWithTimeout())
-              .build();
-
-      log.info(
-          "Connected to Keycloak on '{}'. Keycloak version: {}",
-          keycloakUrl,
-          keycloak.serverInfo().getInfo().getSystemInfo().getVersion());
-    } catch (Exception e) {
-      throw new KeycloakException("Failed to connect to Keycloak on URL: '" + keycloakUrl + "'", e);
-    }
   }
 
   void updateAuthenticationSettings(Consumer<AuthenticationManagementResource> resourceUpdate) {
@@ -99,9 +82,35 @@ public class LsdKeycloakClient {
         .build();
   }
 
+  @PostConstruct
+  public void init() {
+    String keycloakUrl = lsdClientKeycloakProperties.url();
+    try {
+      keycloak =
+          KeycloakBuilder.builder()
+              .serverUrl(keycloakUrl)
+              .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+              .realm(lsdClientKeycloakProperties.realm())
+              .clientId(lsdKeycloakSetupProperties.adminClient().clientId())
+              .clientSecret(lsdKeycloakSetupProperties.adminClient().clientSecret())
+              .resteasyClient(createClientWithTimeout())
+              .build();
+
+      log.info(
+          "Connected to Keycloak on '{}'. Keycloak version: {}",
+          keycloakUrl,
+          keycloak.serverInfo().getInfo().getSystemInfo().getVersion());
+    } catch (Exception e) {
+      throw new KeycloakException("Failed to connect to Keycloak on URL: '" + keycloakUrl + "'", e);
+    }
+  }
+
   @PreDestroy
   void close() {
-    keycloak.close();
+    if (keycloak != null) {
+      keycloak.close();
+      keycloak = null;
+    }
   }
 
   public RealmResource getRealm() {
@@ -156,6 +165,8 @@ public class LsdKeycloakClient {
           realmName,
           realmConfigDiff);
       getRealm().update(realmRepresentation);
+      close();
+      init();
     }
   }
 

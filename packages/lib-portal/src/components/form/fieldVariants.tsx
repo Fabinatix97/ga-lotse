@@ -14,6 +14,14 @@ import {
 import { HorizontalField } from "../formFields/HorizontalField";
 import { NumberField, NumberFieldProps } from "../formFields/NumberField";
 import { SelectField, SelectFieldProps } from "../formFields/SelectField";
+import {
+  SelectObjectField,
+  SelectObjectFieldProps,
+} from "../formFields/SelectObjectField";
+import {
+  CustomAutocomplete,
+  CustomAutocompleteProps,
+} from "../inputs/CustomAutocomplete";
 
 function withOverridableSoftRequiredProps<
   TProps extends Pick<InputProps, "color">,
@@ -80,6 +88,43 @@ export function SoftRequiredSelectField<
       {...fieldProps}
       component={resolveFieldComponent(orientation)}
       select={softRequired ? SoftRequiredSelect : undefined}
+    />
+  );
+}
+
+interface SoftRequiredSelectObjectFieldProps<
+  TValue extends object | number,
+  TMultiple extends boolean,
+> extends SoftRequiredFieldProps,
+    SelectObjectFieldProps<TValue, TMultiple> {}
+
+export function SoftRequiredSelectObjectField<
+  TValue extends object | number,
+  TMultiple extends boolean = false,
+>(props: SoftRequiredSelectObjectFieldProps<TValue, TMultiple>) {
+  const { orientation, softRequired, ...fieldProps } = props;
+  return (
+    <SelectObjectField
+      {...fieldProps}
+      component={resolveFieldComponent(orientation)}
+      autocomplete={
+        softRequired ? SoftRequiredSelectObject<TValue, TMultiple> : undefined
+      }
+    />
+  );
+}
+
+const StyledAutocomplete = styled(CustomAutocomplete)(
+  SOFT_REQUIRED_STYLES,
+) as typeof CustomAutocomplete;
+
+function SoftRequiredSelectObject<
+  TValue extends NonNullable<unknown>,
+  TMultiple extends boolean,
+>(props: CustomAutocompleteProps<TValue, TMultiple, false, false>) {
+  return (
+    <StyledAutocomplete<TValue, TMultiple, false, false>
+      {...withOverridableSoftRequiredProps(props)}
     />
   );
 }

@@ -130,7 +130,7 @@ metadata:
   namespace: snapshot-ns
 type: Opaque
 data:
-  import.json: ClsKICB7ICJ1c2VybmFtZSI6ICJiYXNlLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImluc3BlY3Rpb24uZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAic2Nob29sZW50cnkuZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAibHNkLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICItIiB9LAogIHsgInVzZXJuYW1lIjogImVtcGxveWVlLXBvcnRhbC1hdXRoLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImVtcGxveWVlLXBvcnRhbC5mcmFua2Z1cnQuc3ZjLmNsdXN0ZXIubG9jYWwiLCAicGFzc3dvcmQiOiAiZml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdCIgfSwKICB7ICJ1c2VybmFtZSI6ICJlcC5mcmFua2Z1cnQuc3ZjLmNsdXN0ZXIubG9jYWwiLCAicGFzc3dvcmQiOiAiZml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdCIgfSwKICB7ICJ1c2VybmFtZSI6ICJjaXRpemVuLXBvcnRhbC1hdXRoLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImNpdGl6ZW4tcG9ydGFsLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImNwLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImF1ZGl0bG9nLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogInN2Z3Nhbml0aXplci5mcmFua2Z1cnQuc3ZjLmNsdXN0ZXIubG9jYWwiLCAicGFzc3dvcmQiOiAiZml4ZWQtc2VjcmV0LWZvci1zbmFwc2hvdCIgfQpd
+  import.json: ClsKICB7ICJ1c2VybmFtZSI6ICJiYXNlLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImluc3BlY3Rpb24uZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAic2Nob29sZW50cnkuZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAiZW1wbG95ZWUtcG9ydGFsLWF1dGguZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAiZW1wbG95ZWUtcG9ydGFsLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImVwLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9LAogIHsgInVzZXJuYW1lIjogImNpdGl6ZW4tcG9ydGFsLWF1dGguZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAiY2l0aXplbi1wb3J0YWwuZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAiY3AuZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAiYXVkaXRsb2cuZnJhbmtmdXJ0LnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAic3Znc2FuaXRpemVyLmZyYW5rZnVydC5zdmMuY2x1c3Rlci5sb2NhbCIsICJwYXNzd29yZCI6ICJmaXhlZC1zZWNyZXQtZm9yLXNuYXBzaG90IiB9Cl0=
 ---
 # Source: ga-lotse-gas/templates/maildev.yaml
 kind: Secret
@@ -3921,12 +3921,12 @@ spec:
           value: "https://keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_KEYCLOAK_INTERNAL_URL
           value: "https://keycloak.frankfurt.svc.cluster.local"
-        - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINUSER_PASSWORD
+        - name: ESHG_LSDKEYCLOAK_SETUP_ADMINUSER_PASSWORD
           valueFrom:
             secretKeyRef:
               name: keycloak-admin
               key: password
-        - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINCLIENT_CLIENTSECRET
+        - name: ESHG_LSDKEYCLOAK_SETUP_ADMINCLIENT_CLIENTSECRET
           valueFrom:
             secretKeyRef:
               name: keycloak-admin
@@ -3961,6 +3961,13 @@ spec:
           mountPath: /var/run/import-data
           readOnly: true
       - name: spatz
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
         lifecycle:
           postStart:
             exec:

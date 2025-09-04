@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
+
 import {
   MainContentLayout,
   StickyToolbarLayout,
@@ -21,7 +23,11 @@ export default async function VaccinationConsultationDetailsLayout(
     <StickyToolbarLayout
       toolbar={<VaccinationConsultationTabNavigationToolbar id={id} />}
     >
-      <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
+      <MainContentLayout fullViewportHeight>
+        <Box display="contents" role="tabpanel">
+          {props.children}
+        </Box>
+      </MainContentLayout>
     </StickyToolbarLayout>
   );
 }

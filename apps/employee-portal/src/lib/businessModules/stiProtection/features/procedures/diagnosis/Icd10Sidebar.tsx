@@ -22,7 +22,13 @@ import {
 import { SxProps } from "@mui/joy/styles/types";
 import { visuallyHidden } from "@mui/utils";
 import { FormikErrors } from "formik";
-import { ChangeEvent, TdHTMLAttributes, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  TdHTMLAttributes,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDebounce } from "use-debounce";
 
 import { ApiIcd10Code } from "@eshg/base-api";
@@ -77,6 +83,8 @@ function StyledTd({
 
 function Icd10Sidebar(props: Icd10SidebarProps) {
   const theme = useTheme();
+  const checkboxRefs = useRef<(HTMLElement | null)[]>([]);
+  const searchRef = useRef<HTMLElement | null>(null);
   const [selectedCodes, setSelectedCodes] = useState<ApiIcd10Code[]>(
     props.initiallySelectedCodes,
   );
@@ -103,15 +111,22 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
     setSelectedCodes(nextCodes);
   }
 
-  function removeFromSelection(removeCode: ApiIcd10Code) {
+  function removeFromSelection(removeCode: ApiIcd10Code, index: number) {
     setSelectedCodes(
       selectedCodes.filter(({ code }) => code !== removeCode.code),
     );
+    if (selectedCodes.length > 0) {
+      if (index === 0) {
+        (checkboxRefs.current[1] ?? searchRef.current)?.focus();
+      } else {
+        (checkboxRefs.current[index - 1] ?? searchRef.current)?.focus();
+      }
+    }
   }
 
-  function toggleSelection(icd10Code: ApiIcd10Code) {
+  function toggleSelection(icd10Code: ApiIcd10Code, index: number) {
     if (selectedCodes.find(({ code }) => code === icd10Code.code)) {
-      removeFromSelection(icd10Code);
+      removeFromSelection(icd10Code, index);
     } else {
       addToSelection(icd10Code);
     }
@@ -157,6 +172,13 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                   </IconButton>
                 )
               }
+              slotProps={{
+                input: {
+                  ref: (el) => {
+                    searchRef.current = el;
+                  },
+                },
+              }}
               onChange={handleChangeSearchInput}
             />
           </FormControl>
@@ -182,10 +204,10 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
               </tr>
             </Box>
             <tbody>
-              {displayedCodes.map((currentRowCode) => (
+              {displayedCodes.map((currentRowCode, index) => (
                 <tr
                   key={currentRowCode.code}
-                  onClick={() => toggleSelection(currentRowCode)}
+                  onClick={() => toggleSelection(currentRowCode, index)}
                 >
                   <StyledTd sx={{ width: "40px", paddingLeft: 0 }}>
                     <Checkbox
@@ -200,6 +222,9 @@ function Icd10Sidebar(props: Icd10SidebarProps) {
                         input: {
                           "aria-label": currentRowCode.originalCode,
                           "aria-describedby": `${currentRowCode.code}-title`,
+                          ref: (el) => {
+                            checkboxRefs.current[index] = el;
+                          },
                         },
                       }}
                     />

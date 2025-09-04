@@ -9,6 +9,10 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import {
+  AppointmentBlockGroupValuesWithDays,
+  emptyAppointmentBlockGroup,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -27,10 +31,6 @@ import {
 } from "@/lib/businessModules/stiProtection/api/queries/appointmentStaff";
 import { getAllAppointmentTypesQuery } from "@/lib/businessModules/stiProtection/api/queries/appointmentTypes";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import {
-  AppointmentBlockGroupValuesWithDays,
-  emptyAppointmentBlockGroup,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import {

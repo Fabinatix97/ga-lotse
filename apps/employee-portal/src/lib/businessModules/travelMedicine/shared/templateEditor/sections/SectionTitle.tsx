@@ -14,14 +14,19 @@ export function SectionTitle({
   sectionDeleteHandler,
   sectionFormikPath,
   label,
+  showDeleteSectionButton,
+  setInputElementRef,
 }: Readonly<{
   sectionDeleteHandler: () => void;
   sectionFormikPath: string;
   label: string;
+  showDeleteSectionButton: boolean;
+  setInputElementRef: (el: HTMLInputElement) => void;
 }>) {
   return (
-    <Stack flex={1} direction="row" spacing={2} sx={{ paddingRight: 1.5 }}>
+    <Stack flex={1} direction="row" spacing={2}>
       <InputField
+        ref={setInputElementRef}
         label
         aria-label={label}
         name={`${sectionFormikPath}.sectionTitle`}
@@ -30,18 +35,20 @@ export function SectionTitle({
         sx={{ flex: 1 }}
         data-testid="section-title"
       />
-      <Stack alignItems="center" paddingTop="6px">
-        <IconButton
-          aria-label="Entfernen"
-          color="warning"
-          variant="outlined"
-          title="Sektion Löschen"
-          data-testid="section-delete-button"
-          onClick={sectionDeleteHandler}
-        >
-          <DeleteOutlineIcon />
-        </IconButton>
-      </Stack>
+      {showDeleteSectionButton && (
+        <Stack alignItems="center" paddingTop="6px">
+          <IconButton
+            aria-label="Entfernen"
+            color="warning"
+            variant="outlined"
+            title="Sektion Löschen"
+            data-testid="section-delete-button"
+            onClick={sectionDeleteHandler}
+          >
+            <DeleteOutlineIcon />
+          </IconButton>
+        </Stack>
+      )}
     </Stack>
   );
 }

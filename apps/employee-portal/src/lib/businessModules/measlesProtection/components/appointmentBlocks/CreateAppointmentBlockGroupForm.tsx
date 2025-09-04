@@ -8,6 +8,11 @@
 import { useRouter } from "next/navigation";
 
 import {
+  AppointmentBlockGroupValues,
+  AppointmentBlockGroupValuesWithDays,
+  emptyAppointmentBlockGroup,
+} from "@eshg/lib-employee-portal";
+import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
@@ -16,11 +21,6 @@ import {
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBlockApi";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import {
-  AppointmentBlockGroupValuesWithDays,
-  emptyAppointmentBlockGroup,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { AppointmentBlockGroupValues } from "@/lib/shared/components/appointmentBlocks/calculateAppointmentCount";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";

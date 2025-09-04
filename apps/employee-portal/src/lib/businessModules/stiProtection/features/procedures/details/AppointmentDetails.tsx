@@ -122,19 +122,19 @@ export function AppointmentDetails({
             striped={false}
           />
         </TablePage>
+        <Stack display="flex" alignItems="flex-start">
+          {onlyIfOpen(
+            <Button
+              variant="plain"
+              aria-label="Termin buchen"
+              startDecorator={<CalendarAddDay />}
+              onClick={() => setIsOpenCreateAppointment(true)}
+            >
+              Termin buchen
+            </Button>,
+          )}
+        </Stack>
       </DetailsSection>
-      <Stack display="flex" alignItems="flex-start">
-        {onlyIfOpen(
-          <Button
-            variant="plain"
-            aria-label="Termin buchen"
-            startDecorator={<CalendarAddDay />}
-            onClick={() => setIsOpenCreateAppointment(true)}
-          >
-            Termin buchen
-          </Button>,
-        )}
-      </Stack>
     </Sheet>
   );
 }

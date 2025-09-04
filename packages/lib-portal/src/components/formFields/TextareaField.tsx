@@ -32,6 +32,7 @@ interface CommonTextareaFieldProps {
   "aria-label"?: string;
   slotProps?: TextareaProps["slotProps"];
   className?: string;
+  ref?: (el: HTMLInputElement) => void;
 }
 
 export interface TextareaFieldProps
@@ -79,6 +80,7 @@ function TextareaControl(props: TextareaControlProps) {
       className={props.className}
     >
       <Textarea
+        ref={props.ref}
         aria-labelledby={props["label-id"]}
         sx={props.sxTextarea}
         name={props.name}

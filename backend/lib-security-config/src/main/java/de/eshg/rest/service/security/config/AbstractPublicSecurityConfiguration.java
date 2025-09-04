@@ -130,6 +130,10 @@ public abstract class AbstractPublicSecurityConfiguration {
         .hasRole(permissionRole);
     requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
         .hasRole(permissionRole);
+    requestMatchers(
+            HttpMethod.GET,
+            BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY_API + "/**")
+        .hasRole(permissionRole);
 
     if (allowUpdateAppointmentType) {
       requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")

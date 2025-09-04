@@ -9,6 +9,8 @@ import { RequiresChildren } from "@eshg/lib-portal";
 
 interface DataElementBoxProps extends RequiresChildren {
   "data-testid"?: string;
+  role?: string;
+  "aria-label"?: string;
 }
 
 export function DataElementBox(props: Readonly<DataElementBoxProps>) {
@@ -24,6 +26,8 @@ export function DataElementBox(props: Readonly<DataElementBoxProps>) {
         background: "var(--background-level-1, #F0F4F8)",
       }}
       data-testid={props["data-testid"]}
+      role={props.role}
+      aria-label={props["aria-label"]}
     >
       {props.children}
     </Box>

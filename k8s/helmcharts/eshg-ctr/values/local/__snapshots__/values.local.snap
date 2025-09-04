@@ -96,7 +96,7 @@ metadata:
   namespace: snapshot-ns
 type: Opaque
 data:
-  import.json: ClsKICB7ICJ1c2VybmFtZSI6ICJjZW50cmFscmVwb3NpdG9yeS5jZW50cmFsLnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0sCiAgeyAidXNlcm5hbWUiOiAibHNkLmNlbnRyYWwuc3ZjLmNsdXN0ZXIubG9jYWwiLCAicGFzc3dvcmQiOiAiLSIgfQpd
+  import.json: ClsKICB7ICJ1c2VybmFtZSI6ICJjZW50cmFscmVwb3NpdG9yeS5jZW50cmFsLnN2Yy5jbHVzdGVyLmxvY2FsIiwgInBhc3N3b3JkIjogImZpeGVkLXNlY3JldC1mb3Itc25hcHNob3QiIH0KXQ==
 ---
 # Source: ga-lotse-ctr/templates/modules.yaml
 apiVersion: v1
@@ -1960,12 +1960,12 @@ spec:
           value: "https://keycloak.central.svc.cluster.local"
         - name: ESHG_KEYCLOAK_INTERNAL_URL
           value: "https://keycloak.central.svc.cluster.local"
-        - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINUSER_PASSWORD
+        - name: ESHG_LSDKEYCLOAK_SETUP_ADMINUSER_PASSWORD
           valueFrom:
             secretKeyRef:
               name: keycloak-admin
               key: password
-        - name: ESHG_LSDKEYCLOAK_INTERNAL_ADMINCLIENT_CLIENTSECRET
+        - name: ESHG_LSDKEYCLOAK_SETUP_ADMINCLIENT_CLIENTSECRET
           valueFrom:
             secretKeyRef:
               name: keycloak-admin
@@ -2000,6 +2000,13 @@ spec:
           mountPath: /var/run/import-data
           readOnly: true
       - name: spatz
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
         lifecycle:
           postStart:
             exec:
@@ -2588,6 +2595,13 @@ spec:
         - name: tmp
           mountPath: /tmp
       - name: spatz
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
         resources:
           limits:
             memory: 512Mi

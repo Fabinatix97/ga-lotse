@@ -9,9 +9,12 @@ import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
+  AppointmentBlockGroupFields,
+  AppointmentLocationSelection,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
+  validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 import { CheckboxField } from "@eshg/lib-portal";
@@ -21,9 +24,6 @@ import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/mod
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentLocationSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentLocationSelection";
-import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
@@ -94,7 +94,11 @@ export function AppointmentBlockGroupForm(
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet gap={5} onSubmit={handleSubmit}>
+        <FormSheet
+          gap={5}
+          aria-label="Neuen Terminblock planen"
+          onSubmit={handleSubmit}
+        >
           <Stack gap={5}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
@@ -102,7 +106,12 @@ export function AppointmentBlockGroupForm(
               showParallelExaminations
             />
           </Stack>
-          <Stack gap={3} direction="row">
+          <Stack
+            gap={3}
+            direction="row"
+            role="group"
+            aria-label="Terminblockverfügbarkeit"
+          >
             Verfügbar für
             <CheckboxField name="availableForCitizen" label="Online-Portal" />
             <CheckboxField
@@ -127,6 +136,7 @@ export function AppointmentBlockGroupForm(
           <Divider />
           <FormButtonBar
             submitLabel="Planen"
+            submitAriaLabel="Terminblock planen"
             submitting={isSubmitting}
             onCancel={routes.appointments.overview}
           />

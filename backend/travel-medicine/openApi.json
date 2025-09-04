@@ -307,6 +307,42 @@
         },
         "summary" : "Get appointment block",
         "tags" : [ "AppointmentBlock" ]
+      },
+      "put" : {
+        "operationId" : "updateAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update appointment block",
+        "tags" : [ "AppointmentBlock" ]
       }
     },
     "/appointment-types" : {
@@ -5415,8 +5451,10 @@
             "type" : "boolean"
           },
           "bookedAppointments" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Appointment"
+            }
           },
           "consultants" : {
             "type" : "array",
@@ -5424,6 +5462,10 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "creatorId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "end" : {
             "type" : "string",
@@ -10380,6 +10422,24 @@
       "TriggerType" : {
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UpdateAppointmentBlockRequest" : {
+        "required" : [ "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        }
       },
       "UpdateAppointmentTypeRequest" : {
         "required" : [ "standardDurationInMinutes" ],

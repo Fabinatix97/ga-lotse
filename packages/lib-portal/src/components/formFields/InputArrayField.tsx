@@ -4,7 +4,7 @@
  */
 
 import { DeleteOutlined as DeleteIcon } from "@mui/icons-material";
-import { FormLabel, IconButton, Stack } from "@mui/joy";
+import { Box, FormLabel, IconButton, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ComponentType, ReactNode } from "react";
 
@@ -57,32 +57,42 @@ export function InputArrayField(props: InputArrayFieldProps) {
       {({ push, remove, setInputElementRef }) => (
         <Stack gap={2}>
           {field.input.value.map((_value, index) => (
-            <FieldComponent
-              ref={(el) => setInputElementRef(el, index)}
+            <Box
               key={index}
-              name={`${props.name}.${index}`}
-              label={<FormLabel>{props.label(index)}</FormLabel>}
-              required={props.required}
-              validate={props.validateEach}
-              component={DecoratedInputField}
-              fieldDecorator={
-                <IconButton
-                  sx={{
-                    display: canRemove ? undefined : "none",
-                  }}
-                  color="danger"
-                  aria-label={t("common.delete")}
-                  disabled={disabled}
-                  onClick={() => {
-                    remove(index);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              }
-              sx={props.sx}
-              disabled={disabled}
-            />
+              display="contents"
+              role="group"
+              aria-labelledby={`${props.name}.${index}`}
+            >
+              <FieldComponent
+                ref={(el) => setInputElementRef(el, index)}
+                name={`${props.name}.${index}`}
+                label={
+                  <Box display="contents" id={`${props.name}.${index}`}>
+                    <FormLabel>{props.label(index)}</FormLabel>
+                  </Box>
+                }
+                required={props.required}
+                validate={props.validateEach}
+                component={DecoratedInputField}
+                fieldDecorator={
+                  <IconButton
+                    sx={{
+                      display: canRemove ? undefined : "none",
+                    }}
+                    color="danger"
+                    aria-label={t("common.delete")}
+                    disabled={disabled}
+                    onClick={() => {
+                      remove(index);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+                sx={props.sx}
+                disabled={disabled}
+              />
+            </Box>
           ))}
           <FormAddMoreButton
             disabled={disabled}

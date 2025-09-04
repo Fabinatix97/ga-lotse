@@ -12,7 +12,8 @@ import {
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
+import { Chip, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isPlainObject } from "remeda";
 
@@ -61,6 +62,9 @@ export function VaccinationConsultationTabNavigationToolbar({
           color={PROCEDURE_STATUS_COLORS[status]}
           size="md"
         >
+          <Typography component="span" sx={visuallyHidden}>
+            Vorgangsstatus:
+          </Typography>
           {procedureStatusNames[status]}
         </Chip>
       }

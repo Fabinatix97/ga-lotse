@@ -16,6 +16,7 @@ import de.eshg.base.calendar.api.GetEventsOfCalendarResponse;
 import de.eshg.base.calendar.api.GetUserCalendarsRequest;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.api.UserCalendar;
+import de.eshg.lib.appointmentblock.api.UpdateAppointmentBlockRequest;
 import de.eshg.lib.appointmentblock.model.CreateAppointmentBlockData;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import java.time.Instant;
@@ -67,6 +68,20 @@ public class CalendarClient {
     log.info("Deleting a business case event in the calendar with ID={}", calendarEventId);
     calendarEventApiClient.deleteBusinessCaseEvent(calendarEventId);
     log.info("Deleted a business case event in the calendar with ID={}", calendarEventId);
+  }
+
+  public void updateEventInCalendarIfExists(
+      AppointmentBlock appointmentBlock, UpdateAppointmentBlockRequest request) {
+    UUID calendarEventId = appointmentBlock.getCalendarEventId();
+    List<UUID> calendarIds =
+        calendarEventApiClient.getBusinessCaseEvent(calendarEventId).event().calendarIds();
+
+    log.info("Updating a business case event in the calendar with ID={}", calendarEventId);
+    calendarEventApiClient.updateBusinessCaseEvent(
+        calendarEventId,
+        new BusinessCaseEventRequest(
+            calendarIds, new EventTimeData(request.start(), request.end(), false)));
+    log.info("Updating a business case event in the calendar with ID={}", calendarEventId);
   }
 
   private List<UserCalendar> getUserCalendarIds(List<UUID> usersForEvent) {

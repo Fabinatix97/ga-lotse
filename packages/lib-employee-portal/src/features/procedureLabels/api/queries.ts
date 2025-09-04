@@ -5,19 +5,25 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { QueryKeyFactory } from "@eshg/lib-portal";
+import { QueryKeyFactory, unwrapRawResponse } from "@eshg/lib-portal";
 
-import { ProcedureLabelClient } from "../types/procedureLabelClient";
+import { mapPaginatedList } from "../../../api/models/PaginatedList";
+import {
+  GetProcedureLabelsRequest,
+  ProcedureLabelClient,
+} from "../types/procedureLabelClient";
 
-import { mapProcedureLabels } from "./models/ProcedureLabel";
+import { mapProcedureLabel } from "./models/ProcedureLabel";
 
 export function useGetProcedureLabelsQuery(
   procedureLabelApi: ProcedureLabelClient,
   procedureLabelApiQueryKey: QueryKeyFactory,
+  request: GetProcedureLabelsRequest,
 ) {
   return queryOptions({
-    queryKey: procedureLabelApiQueryKey(["getLabels"]),
-    queryFn: () => procedureLabelApi.getLabels(),
-    select: (response) => mapProcedureLabels(response.labels),
+    queryKey: procedureLabelApiQueryKey(["getLabels", request]),
+    queryFn: () =>
+      procedureLabelApi.getLabelsRaw(request).then(unwrapRawResponse),
+    select: mapPaginatedList(mapProcedureLabel),
   });
 }

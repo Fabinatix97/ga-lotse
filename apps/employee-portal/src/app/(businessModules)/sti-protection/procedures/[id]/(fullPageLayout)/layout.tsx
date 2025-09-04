@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
+
 import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal";
 
@@ -20,7 +22,9 @@ export default async function StiProtectionProcedureLayout(
 
   return (
     <StickyToolbarLayout toolbar={<ProcedureToolbar procedureId={id} />}>
-      {props.children}
+      <Box display="contents" role="tabpanel">
+        {props.children}
+      </Box>
     </StickyToolbarLayout>
   );
 }

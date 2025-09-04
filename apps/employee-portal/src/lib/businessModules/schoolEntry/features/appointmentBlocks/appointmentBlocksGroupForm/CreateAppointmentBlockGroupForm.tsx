@@ -11,6 +11,10 @@ import { useEffect, useState } from "react";
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import {
+  AppointmentBlockGroupValuesWithDays,
+  emptyAppointmentBlockGroup,
+} from "@eshg/lib-employee-portal";
+import {
   OptionalFieldValue,
   mapOptionalValue,
   mapRequiredValue,
@@ -24,12 +28,14 @@ import {
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
+  useAppointmentBlockDefaultAvailabilityApi,
   useAppointmentTypeApi,
   useConfigApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
 import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
+import { getAppointmentBlockDefaultAvailabilityQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockDefaultAvailabilityApi";
 import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
@@ -37,10 +43,6 @@ import {
 import { getAllAppointmentTypesQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentTypeApi";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import {
-  AppointmentBlockGroupValuesWithDays,
-  emptyAppointmentBlockGroup,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
@@ -110,6 +112,8 @@ export function CreateAppointmentBlockGroupForm() {
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const configApi = useConfigApi();
   const appointmentTypeApi = useAppointmentTypeApi();
+  const appointmentBlockDefaultAvailabilityApi =
+    useAppointmentBlockDefaultAvailabilityApi();
   const userApi = useUserApi();
   const [
     { data: locationSelectionMode },
@@ -118,16 +122,24 @@ export function CreateAppointmentBlockGroupForm() {
     },
     { data: allPhysicians },
     { data: allMfas },
+    { data: defaultAvailabilityFlags },
   ] = useSuspenseQueries({
     queries: [
       getLocationSelectionModeQuery(configApi),
       getAllAppointmentTypesQuery(appointmentTypeApi),
       getAllPhysiciansQuery(userApi),
       getAllMedicalAssistantsQuery(userApi),
+      getAppointmentBlockDefaultAvailabilityQuery(
+        appointmentBlockDefaultAvailabilityApi,
+      ),
     ],
   });
 
-  const initialValues = { ...INITIAL_VALUES, allAppointmentTypes };
+  const initialValues = {
+    ...INITIAL_VALUES,
+    ...defaultAvailabilityFlags,
+    allAppointmentTypes,
+  };
   const [freeStaff, setFreeStaff] = useState<string[]>([]);
   const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
 

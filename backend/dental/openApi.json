@@ -5393,10 +5393,10 @@
         }
       },
       "GetDentalLabelsResponse" : {
-        "required" : [ "labels", "totalNumberOfElements" ],
+        "required" : [ "elements", "totalNumberOfElements" ],
         "type" : "object",
         "properties" : {
-          "labels" : {
+          "elements" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DentalProcedureLabel"

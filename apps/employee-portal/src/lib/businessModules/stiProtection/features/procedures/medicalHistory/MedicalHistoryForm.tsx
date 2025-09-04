@@ -114,7 +114,7 @@ export function MedicalHistoryForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus>
+        <FormPlus aria-labelledby="anamnesis-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertMedicalHistoryOptions,
@@ -122,7 +122,7 @@ export function MedicalHistoryForm({
             }}
           />
           <Sheet sx={{ overflow: "auto", margin: theme.spacing(3) }}>
-            <Typography level="h2" mb={5}>
+            <Typography level="h2" mb={5} id="anamnesis-title">
               {formTitle}
             </Typography>
 

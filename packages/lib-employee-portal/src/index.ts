@@ -42,6 +42,16 @@ export {
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "./components/address/helpers";
+export {
+  type AppointmentBlock,
+  type AppointmentBlockGroup,
+} from "./components/appointmentBlocks/AppointmentBlockGroup";
+export { useAppointmentBlockGroupsColumns } from "./components/appointmentBlocks/AppointmentBlockGroupsTable.columns";
+export {
+  INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
+  type AppointmentBlockRow,
+  AppointmentBlockGroupsTable,
+} from "./components/appointmentBlocks/AppointmentBlockGroupsTable";
 export { AppointmentBlockFieldArrayWithDays } from "./components/appointmentBlocks/AppointmentBlockFieldArrayWithDays";
 export {
   AppointmentBlockFormWithDays,
@@ -52,16 +62,22 @@ export {
   getWeekdayFromDate,
 } from "./components/appointmentBlocks/AppointmentBlockFormWithDays";
 export { AppointmentBlockGroupFields } from "./components/appointmentBlocks/AppointmentBlockGroupFields";
-export { calculateAppointmentsPerBlock } from "./components/appointmentBlocks/calculateAppointmentCount";
 export { AppointmentLocationSelection } from "./components/appointmentBlocks/AppointmentLocationSelection";
+export {
+  calculateAppointmentsPerBlock,
+  getAppointmentDurationInMinutes,
+  type AppointmentBlockGroupValues,
+} from "./components/appointmentBlocks/calculateAppointmentCount";
 export { AppointmentStaffSelection } from "./components/appointmentBlocks/AppointmentStaffSelection";
-export { NoAppointmentBlocksAvailable } from "./components/appointmentBlocks/NoAppointmentBlocksAvailable";
 export { WeekdayCheckboxGroup } from "./components/appointmentBlocks/WeekdayCheckboxGroup";
 export {
   ApiAppointmentType,
   ApiDayOfWeek,
 } from "./components/appointmentBlocks/types";
-export { validateAppointmentBlock } from "./components/appointmentBlocks/validateAppointmentBlock";
+export {
+  validateAppointmentBlock,
+  type ExaminationDurations,
+} from "./components/appointmentBlocks/validateAppointmentBlock";
 export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
 export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
 export {
@@ -451,7 +467,10 @@ export {
   getDateFnsLocale,
   formatCalendarWeek,
   formatCalendarWeekRange,
+  formatDurationToHoursAndMinutes,
+  durationToSecond,
   toLocalDateTime,
+  secondToISODuration,
 } from "./utils/dateTime";
 export {
   createCountFormatter,

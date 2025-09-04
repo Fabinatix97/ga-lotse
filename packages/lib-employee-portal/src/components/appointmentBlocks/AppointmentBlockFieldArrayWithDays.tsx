@@ -39,6 +39,7 @@ export function AppointmentBlockFieldArrayWithDays(
               <FormGroupGrid data-testid="appointmentBlockForm">
                 <AppointmentBlockFormWithDays
                   ref={(el) => setInputElementRef(el, index)}
+                  index={index}
                   name={`appointmentBlocks.${index}`}
                   removeBlock={() => remove(index)}
                   blockCount={props.appointmentBlocks.length}

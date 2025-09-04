@@ -26,6 +26,7 @@ interface FileButtonProps
     | "onDragLeave"
     | "onDragEnd"
     | "aria-describedby"
+    | "ref"
   > {
   activeDragOver?: boolean;
   error: boolean;

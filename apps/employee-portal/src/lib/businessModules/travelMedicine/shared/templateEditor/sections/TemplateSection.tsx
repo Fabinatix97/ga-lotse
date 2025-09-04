@@ -4,10 +4,9 @@
  */
 
 import { Sheet, Stack } from "@mui/joy";
-import { FieldArray } from "formik";
 import { ReactNode } from "react";
 
-import { useSnackbar } from "@eshg/lib-portal";
+import { FieldArrayWithFocus, useSnackbar } from "@eshg/lib-portal";
 import { ApiTemplateSectionElement } from "@eshg/travel-medicine-api";
 
 import { SectionButtonBar } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/SectionButtonBar";
@@ -65,12 +64,14 @@ export function TemplateSection({
       sx={{ marginTop: 3 }}
       aria-label={`${sectionIndex + 1}. Sektion`}
       data-testid="section"
+      role="group"
     >
-      <FieldArray
+      <FieldArrayWithFocus
         name={`${sectionElementsFormikPath}`}
         validateOnChange={false}
+        valueLength={sectionElements.length}
       >
-        {({ push, remove, replace }) => (
+        {({ push, remove, replace, setInputElementRef }) => (
           <Stack direction="row" spacing={2}>
             <Stack
               flex={1}
@@ -82,6 +83,7 @@ export function TemplateSection({
               {sectionTitle}
 
               <SectionDataElementList
+                setInputElementRef={setInputElementRef}
                 sectionElementsFormikPath={`${sectionElementsFormikPath}`}
                 sectionElements={sectionElements}
                 sectionElementDeleteHandler={(index) =>
@@ -104,7 +106,7 @@ export function TemplateSection({
             </Stack>
           </Stack>
         )}
-      </FieldArray>
+      </FieldArrayWithFocus>
     </Sheet>
   );
 }

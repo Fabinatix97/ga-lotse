@@ -12,7 +12,7 @@ import {
   DetailsItem,
   useSearchParam,
 } from "@eshg/lib-employee-portal";
-import { formatDate, useSnackbar } from "@eshg/lib-portal";
+import { DetailsList, formatDate, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiMeaslesProtectionProcedure,
   ApiReportingReason,
@@ -73,35 +73,37 @@ export function AdditionalInfoSection({
   return (
     <Stack rowGap={2}>
       <InfoTile title="Zusatzinfos" name="additionalInfo" controls={editAction}>
-        <Stack gap={1}>
-          <DetailsItem
-            label="Personenstatus"
-            value={
-              procedure.affectedPerson.roleStatus
-                ? roleStatusNames[procedure.affectedPerson.roleStatus]
-                : "-"
-            }
-          />
-          <DetailsItem
-            label="Meldedatum"
-            value={formatDate(procedure.reportData?.reportingDate)}
-          />
-          <DetailsItem
-            label="Meldegrund"
-            value={
-              procedure.reportData?.reportingReason
-                ? reportingReasonNames[procedure.reportData?.reportingReason]
-                : "-"
-            }
-          />
-          {procedure.reportData?.reportingReason ===
-          ApiReportingReason.Other ? (
+        <DetailsList>
+          <Stack gap={1}>
             <DetailsItem
-              label="Kommentar zum Meldegrund"
-              value={procedure.reportData?.commentReportingReason}
+              label="Personenstatus"
+              value={
+                procedure.affectedPerson.roleStatus
+                  ? roleStatusNames[procedure.affectedPerson.roleStatus]
+                  : "-"
+              }
             />
-          ) : null}
-        </Stack>
+            <DetailsItem
+              label="Meldedatum"
+              value={formatDate(procedure.reportData?.reportingDate)}
+            />
+            <DetailsItem
+              label="Meldegrund"
+              value={
+                procedure.reportData?.reportingReason
+                  ? reportingReasonNames[procedure.reportData?.reportingReason]
+                  : "-"
+              }
+            />
+            {procedure.reportData?.reportingReason ===
+            ApiReportingReason.Other ? (
+              <DetailsItem
+                label="Kommentar zum Meldegrund"
+                value={procedure.reportData?.commentReportingReason}
+              />
+            ) : null}
+          </Stack>
+        </DetailsList>
       </InfoTile>
       <Sheet component="section">
         {!procedure.isOpen ? (

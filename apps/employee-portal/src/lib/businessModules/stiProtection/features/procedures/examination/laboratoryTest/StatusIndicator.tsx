@@ -5,6 +5,7 @@
 
 import { CheckCircle, CheckCircleOutlineOutlined } from "@mui/icons-material";
 import { Stack, Typography, styled } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 
 const StatusFulfilled = styled(CheckCircle)(({ theme }) => ({
   fill: theme.colorSchemes.light.palette.success.outlinedColor,
@@ -27,9 +28,12 @@ export function StatusIndicator(props: StatusIndicatorProps) {
   const ariaLabel = `Status: '${name}' ist ${fulfilled ? "erfüllt" : "unerfüllt"}`;
 
   return (
-    <Stack component="section" direction="row" gap={1} aria-label={ariaLabel}>
+    <Stack direction="row" gap={1} aria-label={ariaLabel}>
       <StatusIcon />
-      <Typography>{name}</Typography>
+      <Typography aria-hidden="true">{name}</Typography>
+      <Typography component="span" sx={visuallyHidden}>
+        {ariaLabel}
+      </Typography>
     </Stack>
   );
 }

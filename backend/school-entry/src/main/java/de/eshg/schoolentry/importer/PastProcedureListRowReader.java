@@ -101,7 +101,6 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     anamnesis.setU7a(readBooleanWithUnknown(col, U7A, errorHandler));
     anamnesis.setU8(readBooleanWithUnknown(col, U8, errorHandler));
     anamnesis.setU9(readBooleanWithUnknown(col, U9, errorHandler));
-    anamnesis.setInGermanySince(readInGermanySince(col, errorHandler));
     return anamnesis;
   }
 
@@ -236,6 +235,7 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     sopessExaminationResult.setGermanKnowledgePrimaryCarer(
         readLanguageKnowledgeValue(col, errorHandler));
     sopessExaminationResult.setGermanKnowledgeChild(readGermanKnowledgeValue(col, errorHandler));
+    sopessExaminationResult.setInGermanySince(readInGermanySince(col, errorHandler));
     sopessExaminationResult.setPseudowordPoints(
         readIntegerInRange(col, PSEUDOWORDS, errorHandler, 0, 6, 9));
     sopessExaminationResult.setPrepositionPoints(

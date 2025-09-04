@@ -8,6 +8,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
 import {
+  DetailsItem,
   DetailsRow,
   DetailsSection,
   InformationSheet,
@@ -15,6 +16,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   DetailsColumn,
+  DetailsList,
   formatStreetAndHouseNumber,
   isNonEmptyString,
 } from "@eshg/lib-portal";
@@ -24,10 +26,6 @@ import {
 } from "@eshg/medical-registry-api";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
-import {
-  DetailsCell,
-  DetailsCellWrapped,
-} from "@/lib/shared/components/detailsSection/DetailsCell";
 
 export function PracticesDetailsSection({
   procedure,
@@ -88,61 +86,63 @@ function PracticeDetails({
   return (
     <InformationSheet>
       <DetailsSection data-testid="practice-section" title={title}>
-        <Stack
-          direction={{ md: "row" }}
-          gap={3}
-          divider={<ResponsiveDivider breakpoint="md" />}
-        >
-          <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsCellWrapped label="Name" value={practice.name} />
-            {isDefined(address) && (
-              <>
-                <DetailsCellWrapped
-                  label={PRACTICE_FIELD_NAME.streetAndHouseNumber}
-                  value={formatStreetAndHouseNumber(address)}
-                />
-                <DetailsRow>
-                  <DetailsCellWrapped
-                    label={PRACTICE_FIELD_NAME.postalCode}
-                    value={address.postalCode}
-                  />
-                  <DetailsCellWrapped
-                    label={PRACTICE_FIELD_NAME.city}
-                    value={address.city}
-                    avoidWrap
-                  />
-                </DetailsRow>
-              </>
-            )}
-          </DetailsColumn>
-          {hasContactData && (
+        <DetailsList>
+          <Stack
+            direction={{ md: "row" }}
+            gap={3}
+            divider={<ResponsiveDivider breakpoint="md" />}
+          >
             <DetailsColumn sx={COLUMN_STYLE}>
-              <DetailsCellWrapped
-                label={PRACTICE_FIELD_NAME.openingHours}
-                value={practice.openingHours}
+              <DetailsItem label="Name" value={practice.name} />
+              {isDefined(address) && (
+                <>
+                  <DetailsItem
+                    label={PRACTICE_FIELD_NAME.streetAndHouseNumber}
+                    value={formatStreetAndHouseNumber(address)}
+                  />
+                  <DetailsRow>
+                    <DetailsItem
+                      label={PRACTICE_FIELD_NAME.postalCode}
+                      value={address.postalCode}
+                    />
+                    <DetailsItem
+                      label={PRACTICE_FIELD_NAME.city}
+                      value={address.city}
+                      avoidWrap
+                    />
+                  </DetailsRow>
+                </>
+              )}
+            </DetailsColumn>
+            {hasContactData && (
+              <DetailsColumn sx={COLUMN_STYLE}>
+                <DetailsItem
+                  label={PRACTICE_FIELD_NAME.openingHours}
+                  value={practice.openingHours}
+                />
+                <ContactData subject={practice} />
+                <DetailsItem
+                  label={PRACTICE_FIELD_NAME.website}
+                  value={practice.website}
+                />
+              </DetailsColumn>
+            )}
+            <DetailsColumn sx={COLUMN_STYLE}>
+              <DetailsItem
+                label={PRACTICE_FIELD_NAME.institutionIdentifier}
+                value={practice.institutionIdentifier}
               />
-              <ContactData subject={practice} />
-              <DetailsCellWrapped
-                label={PRACTICE_FIELD_NAME.website}
-                value={practice.website}
+              <DetailsItem
+                label={PRACTICE_FIELD_NAME.establishmentNumber}
+                value={practice.establishmentNumber}
+              />
+              <DetailsItem
+                label={PRACTICE_FIELD_NAME.healthInsuranceAuthorization}
+                value={practice.healthInsuranceAuthorization ? "Ja" : "Nein"}
               />
             </DetailsColumn>
-          )}
-          <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsCellWrapped
-              label={PRACTICE_FIELD_NAME.institutionIdentifier}
-              value={practice.institutionIdentifier}
-            />
-            <DetailsCellWrapped
-              label={PRACTICE_FIELD_NAME.establishmentNumber}
-              value={practice.establishmentNumber}
-            />
-            <DetailsCell
-              label={PRACTICE_FIELD_NAME.healthInsuranceAuthorization}
-              value={practice.healthInsuranceAuthorization ? "Ja" : "Nein"}
-            />
-          </DetailsColumn>
-        </Stack>
+          </Stack>
+        </DetailsList>
       </DetailsSection>
     </InformationSheet>
   );

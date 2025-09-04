@@ -18,14 +18,21 @@ import de.eshg.lib.appointmentblock.api.GetAppointmentBlockGroupsResponse;
 import de.eshg.lib.appointmentblock.api.GetAppointmentBlocksResponse;
 import de.eshg.lib.appointmentblock.api.GetAppointmentsResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
+import de.eshg.lib.appointmentblock.api.UpdateAppointmentBlockRequest;
 import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeHolder;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +40,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -108,6 +116,55 @@ public class AppointmentBlockController {
   @Transactional(readOnly = true)
   public AppointmentBlockDto getAppointmentBlock(
       @PathVariable("appointmentBlockId") UUID appointmentBlockId) {
+    return appointmentBlockViewService.getAppointmentBlock(appointmentBlockId);
+  }
+
+  @Operation(summary = "Update appointment block")
+  @PutMapping("/{appointmentBlockId}")
+  @Transactional()
+  public AppointmentBlockDto updateAppointmentBlock(
+      @PathVariable("appointmentBlockId") UUID appointmentBlockId,
+      @Valid @RequestBody UpdateAppointmentBlockRequest request) {
+
+    AppointmentBlock appointmentBlock =
+        appointmentBlockService.findAppointmentBlockForUpdate(appointmentBlockId);
+    Instant requestedStart = request.start();
+    Instant requestedEnd = request.end();
+
+    if (requestedStart.isBefore(appointmentBlock.getAppointmentBlockStart())
+        || requestedEnd.isAfter(appointmentBlock.getAppointmentBlockEnd())) {
+      throw new BadRequestException(
+          "Start or end are not in the time slot of the appointment block");
+    }
+    if (requestedEnd.isBefore(requestedStart)) {
+      throw new BadRequestException(
+          "AppointmentBlockGroup end time of day must be after start time of day.");
+    }
+
+    Duration appointmentBlockLength = Duration.between(requestedStart, requestedEnd);
+    List<AppointmentTypeHolder> appointmentTypeHolders =
+        appointmentBlock.getAppointmentBlockGroup().getAppointmentTypeHolders();
+    Duration minimalDurationForBlock =
+        appointmentBlockService.calculateShortestDuration(appointmentTypeHolders);
+    if (appointmentBlockLength.compareTo(minimalDurationForBlock) < 0) {
+      throw new BadRequestException(
+          "AppointmentBlockLength must be at least %s".formatted(minimalDurationForBlock));
+    }
+
+    Set<Appointment> appointments = appointmentBlock.getAppointments();
+    if (!appointments.isEmpty()) {
+      Instant earliestBooked =
+          appointments.stream().map(Appointment::getAppointmentStart).sorted().toList().getFirst();
+
+      Instant latestBooked =
+          appointments.stream().map(Appointment::getAppointmentEnd).sorted().toList().getLast();
+
+      if (earliestBooked.isBefore(requestedStart) || latestBooked.isAfter(requestedEnd)) {
+        throw new BadRequestException("Start or end time is during booked appointment");
+      }
+    }
+
+    appointmentBlockService.updateAppointmentBlock(appointmentBlock, request);
     return appointmentBlockViewService.getAppointmentBlock(appointmentBlockId);
   }
 

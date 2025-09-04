@@ -125,7 +125,10 @@ function MergeAffectedPersonSidebar(props: MergeAffectedPersonSidebarProps) {
         inputs={{
           firstName: props.procedure.affectedPerson.firstName,
           lastName: props.procedure.affectedPerson.lastName,
-          dateOfBirth: formatDate(props.procedure.affectedPerson.dateOfBirth),
+          dateOfBirth: formatDate(
+            props.procedure.affectedPerson.dateOfBirth,
+            "en",
+          ),
         }}
         sidebarFormRef={props.formRef}
         title="Person vorhanden"

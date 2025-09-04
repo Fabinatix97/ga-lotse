@@ -16,6 +16,7 @@ import java.time.Duration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.context.LifecycleProperties;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,10 +31,11 @@ public class SpatzRelayConnection implements SmartLifecycle {
       SelfSignedCertificateLatch latch,
       SpatzConfigurationProperties properties,
       SslBundleFactory sslBundleFactory,
+      TaskScheduler taskScheduler,
       LifecycleProperties lifecycleProperties)
       throws KeyStoreException {
     this.properties = properties;
-    connector = new RelayConnector(latch, properties, sslBundleFactory);
+    connector = new RelayConnector(latch, properties, sslBundleFactory, taskScheduler);
     connector.setConnectionLostTimeout(0);
     shutdownTimeout = LifecyclePhases.getShutdownTimeout(lifecycleProperties);
   }

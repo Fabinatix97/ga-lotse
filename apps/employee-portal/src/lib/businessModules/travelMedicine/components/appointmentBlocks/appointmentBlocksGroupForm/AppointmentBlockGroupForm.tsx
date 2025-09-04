@@ -9,9 +9,12 @@ import { isDefined, isEmpty } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
+  AppointmentBlockGroupFields,
+  AppointmentBlockGroupValuesWithDays,
   AppointmentStaffSelection,
   FormButtonBar,
   FormSheet,
+  validateAppointmentBlock,
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal";
@@ -19,9 +22,6 @@ import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 
 function validateForm(values: AppointmentBlockGroupValues) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};

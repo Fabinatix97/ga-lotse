@@ -241,6 +241,7 @@ public class ExaminationResultService {
     toResult.setGermanKnowledgePrimaryCarer(fromResult.getGermanKnowledgePrimaryCarer());
     toResult.setFamilyLanguage(fromResult.getFamilyLanguage());
     toResult.setGermanKnowledgeChild(fromResult.getGermanKnowledgeChild());
+    toResult.setInGermanySince(fromResult.getInGermanySince());
     toResult.setLettersSAndZPoints(fromResult.getLettersSAndZPoints());
     toResult.setFormationSchPoints(fromResult.getFormationSchPoints());
     toResult.setLettersTAndDPoints(fromResult.getLettersTAndDPoints());
@@ -414,7 +415,6 @@ public class ExaminationResultService {
     toAnamnesis.setNationalitySecondParent(fromAnamnesis.getNationalitySecondParent());
     toAnamnesis.setCountryOfBirthSecondParent(fromAnamnesis.getCountryOfBirthSecondParent());
     toAnamnesis.setHasMigrationBackground(fromAnamnesis.getHasMigrationBackground());
-    toAnamnesis.setInGermanySince(fromAnamnesis.getInGermanySince());
     toAnamnesis.setResponsiblePhysician(fromAnamnesis.getResponsiblePhysician());
     toAnamnesis.setNumberOfSiblings(fromAnamnesis.getNumberOfSiblings());
     toAnamnesis.setSiblingsBirthYears(fromAnamnesis.getSiblingsBirthYears());

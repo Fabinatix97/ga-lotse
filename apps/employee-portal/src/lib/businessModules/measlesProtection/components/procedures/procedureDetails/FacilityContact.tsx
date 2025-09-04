@@ -6,7 +6,7 @@
 import { Grid, Stack } from "@mui/joy";
 
 import { DetailsItem } from "@eshg/lib-employee-portal";
-import { Row, SALUTATION_VALUES } from "@eshg/lib-portal";
+import { DetailsList, Row, SALUTATION_VALUES } from "@eshg/lib-portal";
 import { ApiFacilityContactPerson } from "@eshg/measles-protection-api";
 
 import {
@@ -21,27 +21,29 @@ function FacilityContact({ person }: { person: ApiFacilityContactPerson }) {
       title="Kontaktperson der Einrichtung"
       name="facilityContactPerson"
     >
-      <Stack gap={1}>
-        <Row>
-          <DetailsItem
-            label="Anrede"
-            value={person.salutation && SALUTATION_VALUES[person.salutation]}
+      <DetailsList>
+        <Stack gap={1}>
+          <Row>
+            <DetailsItem
+              label="Anrede"
+              value={person.salutation && SALUTATION_VALUES[person.salutation]}
+            />
+            <DetailsItem label="Titel" value={person.title} />
+          </Row>
+          <Row>
+            <DetailsItem label="Vorname" value={person.firstName} />
+            <DetailsItem label="Name" value={person.lastName} />
+          </Row>
+        </Stack>
+        <Stack gap={1}>
+          <ExternalLinkDetailsItem
+            label="E-Mail-Adresse"
+            value={person.emailAddress}
+            href={emailHref}
           />
-          <DetailsItem label="Titel" value={person.title} />
-        </Row>
-        <Row>
-          <DetailsItem label="Vorname" value={person.firstName} />
-          <DetailsItem label="Name" value={person.lastName} />
-        </Row>
-      </Stack>
-      <Stack gap={1}>
-        <ExternalLinkDetailsItem
-          label="E-Mail-Adresse"
-          value={person.emailAddress}
-          href={emailHref}
-        />
-        <DetailsItem label="Telefonnummer" value={person.phoneNumber} />
-      </Stack>
+          <DetailsItem label="Telefonnummer" value={person.phoneNumber} />
+        </Stack>
+      </DetailsList>
     </InfoTile>
   );
 }

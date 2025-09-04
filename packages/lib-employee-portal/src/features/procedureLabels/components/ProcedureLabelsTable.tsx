@@ -8,10 +8,13 @@
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
+import { PaginatedList } from "../../../api/models/PaginatedList";
 import { ButtonBar } from "../../../components/buttons/ButtonBar";
 import { DataTable } from "../../table/components/DataTable";
 import { TablePage } from "../../table/components/TablePage";
 import { TableSheet } from "../../table/components/TableSheet";
+import { Pagination } from "../../table/components/pagination/Pagination";
+import { UseTableControlResult } from "../../table/hooks/useTableControl";
 import { ProcedureLabel } from "../api/models/ProcedureLabel";
 import { ProcedureLabelClient } from "../types/procedureLabelClient";
 import { procedureLabelColumns } from "../utils/procedureLabelsTableColumns";
@@ -20,7 +23,8 @@ import { useCreateProcedureLabelSidebar } from "./CreateProcedureLabelSidebar";
 import { useUpdateProcedureLabelSidebar } from "./UpdateProcedureLabelSidebar";
 
 interface ProcedureLabelsTableProps {
-  procedureLabels: ProcedureLabel[];
+  procedureLabels: PaginatedList<ProcedureLabel>;
+  tableControl: UseTableControlResult;
   loading: boolean;
   procedureLabelApi: ProcedureLabelClient;
   hasReadOnlyProcedureLabels: boolean;
@@ -33,6 +37,7 @@ export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
 
   return (
     <TablePage
+      data-testid="procedureLabelTable"
       controls={
         props.canUserWrite ? (
           <ButtonBar
@@ -53,9 +58,18 @@ export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
         ) : null
       }
     >
-      <TableSheet loading={props.loading}>
+      <TableSheet
+        loading={props.loading}
+        footer={
+          <Pagination
+            loading={props.loading}
+            totalCount={props.procedureLabels.totalNumberOfElements ?? 0}
+            {...props.tableControl.paginationProps}
+          />
+        }
+      >
         <DataTable
-          data={props.procedureLabels}
+          data={props.procedureLabels.elements}
           columns={procedureLabelColumns({
             onEdit: (item) =>
               updateProcedureLabelSidebar.open({

@@ -5,17 +5,13 @@
 
 package de.eshg.lsd.register.api;
 
+import de.eshg.lsd.register.api.KeycloakAccessTokenClient.oAuth2TokenResponse;
 import de.eshg.lsd.register.api.LsdActorApiConfiguration.BearerAuthTokenSupplier;
-import jakarta.ws.rs.WebApplicationException;
 import java.io.Serial;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
+import org.springframework.web.client.RestClient;
 
 @AutoConfiguration
 @EnableConfigurationProperties(LsdKeycloakProperties.class)
@@ -32,22 +29,15 @@ public class KeycloakConfiguration {
 
   @Bean
   @ConditionalOnProperty("eshg.lsd-keycloak.actor.user")
-  public Keycloak keycloak(LsdKeycloakProperties lsdKeycloakProperties) {
-    return KeycloakBuilder.builder()
-        .serverUrl(lsdKeycloakProperties.client().url())
-        .realm(lsdKeycloakProperties.client().realm())
-        .grantType(OAuth2Constants.PASSWORD)
-        .clientId(lsdKeycloakProperties.client().clientId())
-        .clientSecret(lsdKeycloakProperties.client().clientSecret())
-        .username(lsdKeycloakProperties.actor().user())
-        .password(lsdKeycloakProperties.actor().password())
-        .build();
+  public KeycloakAccessTokenClient keycloak(
+      RestClient.Builder restClientBuilder, LsdKeycloakProperties lsdKeycloakProperties) {
+    return new KeycloakAccessTokenClient(restClientBuilder, lsdKeycloakProperties);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  @ConditionalOnBean(Keycloak.class)
-  public BearerAuthTokenSupplier cachingTokenSupplier(Keycloak keycloak) {
+  @ConditionalOnBean(KeycloakAccessTokenClient.class)
+  public BearerAuthTokenSupplier cachingTokenSupplier(KeycloakAccessTokenClient keycloak) {
     AtomicReference<TokenCacheItem> cache = new AtomicReference<>();
     return () -> {
       TokenCacheItem cacheItem = cache.get();
@@ -55,25 +45,19 @@ public class KeycloakConfiguration {
         return cacheItem.token();
       }
 
-      TokenCacheItem newCacheItem = fetchNewToken(keycloak);
+      TokenCacheItem newCacheItem = buildCacheItem(keycloak.getAccessToken());
       cache.set(newCacheItem);
       return newCacheItem.token();
     };
   }
 
-  private static TokenCacheItem fetchNewToken(Keycloak keycloak) {
-    AccessTokenResponse response;
-    try {
-      response = keycloak.tokenManager().getAccessToken();
-    } catch (WebApplicationException e) {
-      throw new KeycloakException("Keycloak get access token request failed", e);
-    }
+  private static TokenCacheItem buildCacheItem(oAuth2TokenResponse response) {
     Assert.isTrue(
-        "Bearer".equals(response.getTokenType()),
-        "Unexpected token type '" + response.getTokenType() + "', expected 'Bearer'");
-    String token = Objects.requireNonNull(response.getToken());
+        "Bearer".equals(response.tokenType()),
+        "Unexpected token type '" + response.tokenType() + "', expected 'Bearer'");
+    String token = Objects.requireNonNull(response.accessToken());
     Instant expiryDate =
-        Instant.now().plusSeconds(response.getExpiresIn()).minus(minimalTokenLifeTime);
+        Instant.now().plusSeconds(response.expiresIn()).minus(minimalTokenLifeTime);
     TokenCacheItem newCacheItem = new TokenCacheItem(token, expiryDate);
     Assert.isTrue(
         tokenLifeTimeAcceptable(newCacheItem),

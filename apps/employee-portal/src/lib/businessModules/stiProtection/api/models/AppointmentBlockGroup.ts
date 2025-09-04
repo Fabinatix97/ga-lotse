@@ -5,34 +5,22 @@
 
 import { first, last, sumBy } from "remeda";
 
-import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
+import {
+  AppointmentBlock,
+  AppointmentBlockGroup,
+  durationToSecond,
+  mapBaseEntity,
+  secondToISODuration,
+} from "@eshg/lib-employee-portal";
 import { assertNonEmptyArray } from "@eshg/lib-portal";
 import {
-  ApiAppointmentType,
   ApiGetAppointmentBlock,
   ApiGetAppointmentBlockGroup,
 } from "@eshg/sti-protection-api";
 
-import {
-  durationToSecond,
-  secondToISODuration,
-} from "@/lib/shared/helpers/dateTime";
-
-export interface AppointmentBlockStiProtection extends BaseEntity {
-  readonly start: Date;
-  readonly end: Date;
-  readonly freeDuration?: string;
-  readonly bookedDuration?: string;
-}
-
-export interface AppointmentBlockGroup extends AppointmentBlockStiProtection {
-  readonly types: ApiAppointmentType[];
-  readonly appointmentBlocks: AppointmentBlockStiProtection[];
-}
-
 function mapAppointmentBlock(
   response: ApiGetAppointmentBlock,
-): AppointmentBlockStiProtection {
+): AppointmentBlock {
   return {
     ...mapBaseEntity(response),
     start: response.start,
@@ -44,7 +32,7 @@ function mapAppointmentBlock(
 
 export function mapAppointmentBlockGroup(
   response: ApiGetAppointmentBlockGroup,
-): AppointmentBlockGroup {
+): Omit<AppointmentBlockGroup, "parallelExaminations"> {
   assertNonEmptyArray(response.appointmentBlocks);
 
   const firstAppointmentBlock = first(response.appointmentBlocks);

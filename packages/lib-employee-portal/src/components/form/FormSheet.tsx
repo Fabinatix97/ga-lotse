@@ -22,6 +22,7 @@ interface FormSheetProps extends RequiresChildren {
   onSubmit?: FormEventHandler<HTMLFormElement>;
   sx?: SxProps;
   gap?: number;
+  "aria-label"?: string;
 }
 
 export function FormSheet(props: FormSheetProps) {

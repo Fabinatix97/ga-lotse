@@ -33,6 +33,8 @@ export function InformationStatementTemplateMetaInfo(
       direction="column"
       spacing={2}
       data-testid="information-statement-template-metadata"
+      role="group"
+      aria-label="Meta-Informationen"
     >
       <InputField
         name="name"

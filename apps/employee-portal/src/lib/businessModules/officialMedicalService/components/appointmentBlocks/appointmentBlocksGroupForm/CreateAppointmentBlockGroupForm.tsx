@@ -10,6 +10,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import {
+  AppointmentBlockGroupValuesWithDays,
+  emptyAppointmentBlockGroup,
+} from "@eshg/lib-employee-portal";
+import {
   OptionalFieldValue,
   isTimeString,
   mapRequiredValue,
@@ -27,10 +31,6 @@ import { useGetAllPhysiciansQuery } from "@/lib/businessModules/officialMedicalS
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentTypeApi";
 import { AppointmentBlockGroupForm } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/AppointmentBlockGroupForm";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import {
-  AppointmentBlockGroupValuesWithDays,
-  emptyAppointmentBlockGroup,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {

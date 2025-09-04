@@ -17,6 +17,7 @@ import {
   mapMonthAndYear,
   mapOptionalDate,
   mapOptionalValue,
+  parseMonthAndYear,
   parseOptionalDate,
   parseOptionalValue,
   useHandledMutation,
@@ -178,14 +179,6 @@ function parseMigrationBackground(migrationBackground: ApiMigrationBackground) {
     hasMigrationBackground: parseOptionalValue(
       migrationBackground.hasMigrationBackground,
     ),
-    inGermanySince: parseMonthAndYear(migrationBackground.inGermanySince),
-  };
-}
-
-function parseMonthAndYear(date: Date | undefined) {
-  return {
-    month: isDefined(date) ? date.getMonth() : null,
-    year: parseOptionalValue(date?.getFullYear()),
   };
 }
 
@@ -532,6 +525,5 @@ function mapMigrationBackground(
       values.countryOfBirthSecondParent,
     ),
     hasMigrationBackground: mapOptionalValue(values.hasMigrationBackground),
-    inGermanySince: mapMonthAndYear(values.inGermanySince),
   };
 }

@@ -13,14 +13,14 @@ import {
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal";
 
-import { AppointmentBlockGroupsTable } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/AppointmentBlockGroupsTable";
+import { StiProtectionAppointmentBlockGroupsTable } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/StiProtectionAppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 export default function AppointmentBlockGroupsOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Terminblöcke Übersicht" />}>
       <MainContentLayout fullViewportHeight>
-        <AppointmentBlockGroupsTable
+        <StiProtectionAppointmentBlockGroupsTable
           controls={
             <ButtonBar
               right={

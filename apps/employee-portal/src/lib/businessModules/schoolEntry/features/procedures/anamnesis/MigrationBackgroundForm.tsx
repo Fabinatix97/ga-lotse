@@ -5,13 +5,11 @@
 
 "use client";
 
-import { FormLabel, Stack, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { useId } from "react";
 
 import {
   HorizontalField,
-  MonthAndYearFields,
   NestedFormProps,
   SetFieldValueHelper,
   SoftRequiredBooleanSelectField,
@@ -26,7 +24,7 @@ import { CountryWithNumberField } from "@/lib/businessModules/schoolEntry/featur
 
 type NationalityValues = keyof Omit<
   MigrationBackgroundValues,
-  "hasMigrationBackground" | "inGermanySince"
+  "hasMigrationBackground"
 >;
 
 const MIGRATION_FIELDS: { name: NationalityValues; label: string }[][] = [
@@ -64,7 +62,6 @@ const FIXED_STYLE: SxProps = {
 };
 
 export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
-  const inGermanySinceId = useId();
   const fieldName = createFieldNameMapper(props.name);
 
   function setHasMigrationBackground(value: boolean) {
@@ -120,15 +117,6 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
   }
 
   function setMigrationBackgroundFields() {
-    void props.setFieldValue(
-      fieldName("inGermanySince.month"),
-      props.dateOfBirth.getMonth(),
-    );
-    void props.setFieldValue(
-      fieldName("inGermanySince.year"),
-      props.dateOfBirth.getFullYear(),
-    );
-
     for (const migrationfield of MIGRATION_FIELDS.flatMap(
       (elements) => elements,
     )) {
@@ -187,20 +175,6 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
             ))}
           </Stack>
         ))}
-      </Stack>
-      <Stack direction="row" gap={2}>
-        <FormLabel
-          id={inGermanySinceId}
-          sx={{ fontSize: "sm", fontWeight: "500" }}
-        >
-          in Deutschland seit
-        </FormLabel>
-        <MonthAndYearFields
-          testId="inGermanySince"
-          fieldName={fieldName("inGermanySince")}
-          date={props.values.inGermanySince}
-          aria-labelledby={inGermanySinceId}
-        />
       </Stack>
     </Stack>
   );

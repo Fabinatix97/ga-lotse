@@ -52,6 +52,8 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
   @OrderColumn
   private List<UUID> consultants;
 
+  private UUID creatorId;
+
   private UUID locationId;
 
   @OneToMany(
@@ -147,5 +149,13 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
   public void addAppointmentBlock(AppointmentBlock appointmentBlock) {
     getAppointmentBlocks().add(appointmentBlock);
     appointmentBlock.setAppointmentBlockGroup(this);
+  }
+
+  public UUID getCreatorId() {
+    return creatorId;
+  }
+
+  public void setCreatorId(UUID userId) {
+    this.creatorId = userId;
   }
 }

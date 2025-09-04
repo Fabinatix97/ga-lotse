@@ -6,19 +6,22 @@
 "use client";
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { ColumnSort } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import {
-  DataTable,
-  Pagination,
-  TablePage,
-  TableSheet,
+  AppointmentBlockGroupsTable,
+  AppointmentBlockRow,
+  INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   getSortDirection,
   getSortKey,
+  useAppointmentBlockGroupsColumns,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { ApiAppointmentBlockSortKey } from "@eshg/school-entry-api";
+import {
+  ApiAppointmentBlockSortKey,
+  ApiLocationSelectionMode,
+} from "@eshg/school-entry-api";
 
 import {
   useAppointmentBlockApi,
@@ -27,30 +30,21 @@ import {
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
 import { getAppointmentBlockGroupsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-
-import {
-  getSubRows,
-  toAggregatedAppointmentBlockRow,
-  useAppointmentBlockColumns,
-} from "./AppointmentBlockGroupsTable.columns";
-
-const initialSorting: ColumnSort = {
-  id: "start",
-  desc: false,
-};
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 interface AppointmentBlockGroupsTableProps {
   controls?: ReactNode;
 }
 
-export function AppointmentBlockGroupsTable(
+export function SchoolEntryAppointmentBlockGroupsTable(
   props: AppointmentBlockGroupsTableProps,
 ) {
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
     sortDirectionName: "sortDirection",
-    initialSorting: initialSorting,
+    initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
 
   const configApi = useConfigApi();
@@ -71,40 +65,32 @@ export function AppointmentBlockGroupsTable(
     });
 
   const deleteAppointmentBlock = useDeleteAppointmentBlock();
-  const columns = useAppointmentBlockColumns({
+  const columnHelper = createColumnHelper<AppointmentBlockRow>();
+  const columns = useAppointmentBlockGroupsColumns({
     onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
       void deleteAppointmentBlock(appointmentBlockId);
     },
-    locationSelectionMode,
+    columnHelper,
+    appointmentTypes: APPOINTMENT_TYPES,
+    additionalColumn:
+      locationSelectionMode !== ApiLocationSelectionMode.None
+        ? columnHelper.accessor("location.name", {
+            header: "Ort",
+            cell: (props) => props.getValue(),
+            enableSorting: false,
+            meta: { width: 220 },
+          })
+        : undefined,
   });
 
-  const rows = getAppointmentBlockGroups.data.elements.map(
-    toAggregatedAppointmentBlockRow,
-  );
-
   return (
-    <TablePage
-      fullHeight
+    <AppointmentBlockGroupsTable
       controls={props.controls}
-      data-testid="appointmentBlockGroupsTable"
-    >
-      <TableSheet
-        loading={getAppointmentBlockGroups.isFetching}
-        footer={
-          <Pagination
-            totalCount={getAppointmentBlockGroups.data.totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
-        }
-      >
-        <DataTable
-          data={rows}
-          columns={columns}
-          getSubRows={getSubRows}
-          sorting={tableControl.tableSorting}
-          minWidth={1000}
-        />
-      </TableSheet>
-    </TablePage>
+      isLoading={getAppointmentBlockGroups.isFetching}
+      appointmentBlockGroups={getAppointmentBlockGroups.data}
+      columns={columns}
+      tableControl={tableControl}
+      newAppointmentBlockRoute={routes.appointments.appointmentBlockGroups.new}
+    />
   );
 }

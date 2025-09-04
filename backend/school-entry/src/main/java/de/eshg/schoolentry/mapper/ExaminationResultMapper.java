@@ -250,6 +250,7 @@ public final class ExaminationResultMapper {
     result.setGermanKnowledgePrimaryCarer(mapToDomain(language.germanKnowledgePrimaryCarer()));
     result.setFamilyLanguage(mapToDomain(language.familyLanguage()));
     result.setGermanKnowledgeChild(mapToDomain(language.germanKnowledgeChild()));
+    result.setInGermanySince(language.inGermanySince());
 
     ArticulationDto articulation = dto.getArticulation();
     result.setLettersSAndZPoints(mapToDomain(articulation.lettersSAndZPoints()));
@@ -454,7 +455,8 @@ public final class ExaminationResultMapper {
             mapToDto(sopessExaminationResult.getPrimaryLanguage()),
             mapToDto(sopessExaminationResult.getGermanKnowledgePrimaryCarer()),
             mapToDto(sopessExaminationResult.getFamilyLanguage()),
-            mapToDto(sopessExaminationResult.getGermanKnowledgeChild())));
+            mapToDto(sopessExaminationResult.getGermanKnowledgeChild()),
+            sopessExaminationResult.getInGermanySince()));
     dto.setArticulation(
         new ArticulationDto(
             mapToDto(sopessExaminationResult.getLettersSAndZPoints()),

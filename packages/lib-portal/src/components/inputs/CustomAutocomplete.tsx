@@ -12,7 +12,7 @@ import { useRef } from "react";
 
 import { LiveAnnouncer } from "../liveAnnouncer/LiveAnnouncer";
 
-type CustomAutocompleteProps<
+export type CustomAutocompleteProps<
   T,
   Multiple extends boolean | undefined,
   DisableClearable extends boolean | undefined,

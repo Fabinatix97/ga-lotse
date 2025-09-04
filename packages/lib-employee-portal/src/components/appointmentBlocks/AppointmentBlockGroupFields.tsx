@@ -38,7 +38,7 @@ export function AppointmentBlockGroupFields(
       <FormGroupGrid>
         <Grid xs={3}>
           <MultiAutocompleteField
-            name="type"
+            name="types"
             label="Art"
             placeholder="auswählen"
             options={props.options}

@@ -48,8 +48,10 @@ export function useDebouncedFieldControl<TValue>(
   );
 
   useEffect(() => {
-    setLiveValue(field.input.value);
-  }, [field.input.value]);
+    if (!debouncedSetValue.isPending()) {
+      setLiveValue(field.input.value);
+    }
+  }, [field.input.value, debouncedSetValue]);
 
   return {
     value: liveValue,

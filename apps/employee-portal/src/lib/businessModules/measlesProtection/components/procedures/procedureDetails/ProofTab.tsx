@@ -6,11 +6,11 @@
 "use client";
 
 import { Add } from "@mui/icons-material";
-import { Button, Grid, Stack } from "@mui/joy";
+import { Box, Button, Grid, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { DetailsItem, useSearchParam } from "@eshg/lib-employee-portal";
-import { Row, formatDate } from "@eshg/lib-portal";
+import { DetailsList, Row, formatDate } from "@eshg/lib-portal";
 import {
   ApiMeaslesProtectionProcedure,
   ApiMonetaryFine,
@@ -161,30 +161,34 @@ function ProofSubmissionsCard({
       name="proofSubmission"
       sx={{ height: "100%" }}
     >
-      <Stack spacing={3} alignItems="start" width="100%">
+      <Stack spacing={3} alignItems="start" width="100%" role="list">
         {proofSubmissions.map((proof) => (
-          <ProofTabEntry key={proof.externalId}>
-            <DetailsItem
-              label="Resultat"
-              value={submissionResultLabels[proof.submissionResult]}
-            />
-            <Row>
-              {proof.submissionResult ===
-              ApiSubmissionResult.TempMedicalAttest ? (
+          <Box key={proof.externalId} display="contents" role="listitem">
+            <DetailsList>
+              <ProofTabEntry>
                 <DetailsItem
-                  label="Frist zum medizinischen Attest"
-                  value={formatDate(proof.medicalAttestDeadline)}
+                  label="Resultat"
+                  value={submissionResultLabels[proof.submissionResult]}
                 />
-              ) : null}
-              <DetailsItem
-                label="Vorlagedatum"
-                value={formatDate(proof.submissionDate)}
-              />
-            </Row>
-            {proof.proofSubmissionDocumentId && (
-              <ProofTabFileCard fileId={proof.proofSubmissionDocumentId} />
-            )}
-          </ProofTabEntry>
+                <Row>
+                  {proof.submissionResult ===
+                  ApiSubmissionResult.TempMedicalAttest ? (
+                    <DetailsItem
+                      label="Frist zum medizinischen Attest"
+                      value={formatDate(proof.medicalAttestDeadline)}
+                    />
+                  ) : null}
+                  <DetailsItem
+                    label="Vorlagedatum"
+                    value={formatDate(proof.submissionDate)}
+                  />
+                </Row>
+                {proof.proofSubmissionDocumentId && (
+                  <ProofTabFileCard fileId={proof.proofSubmissionDocumentId} />
+                )}
+              </ProofTabEntry>
+            </DetailsList>
+          </Box>
         ))}
         {!procedureClosed && (
           <Button variant="plain" startDecorator={<Add />} onClick={onClick}>
@@ -211,13 +215,16 @@ function FineCard({
     <InfoTile title="Bußgeld" name="fine" sx={{ height: "100%" }}>
       <Stack spacing={3} alignItems="start" width="100%">
         {monetaryFines.length > 0 && (
-          <Stack gap={1} sx={{ flexBasis: "auto" }}>
+          <Stack gap={1} sx={{ flexBasis: "auto" }} role="list">
             {monetaryFines.map((fine) => (
-              <DetailsItem
-                key={fine.externalId}
-                label="Erteilungsdatum"
-                value={formatDate(fine.fineIssuedDate)}
-              />
+              <Box key={fine.externalId} display="contents" role="listitem">
+                <DetailsList>
+                  <DetailsItem
+                    label="Erteilungsdatum"
+                    value={formatDate(fine.fineIssuedDate)}
+                  />
+                </DetailsList>
+              </Box>
             ))}
           </Stack>
         )}
@@ -256,26 +263,35 @@ function ProofRequestLetterCard({
       sx={{ height: "100%" }}
     >
       <Stack spacing={3} width="100%" alignItems="start">
-        {proofSubmissionLetters.map((letter, index) => (
-          <ProofTabEntry key={index} rowLayout>
-            <DetailsItem
-              label="Empfänger"
-              value={formatName(
-                getPersonByIdFromProcedure(letter.recipientId, procedure),
-              )}
-            />
-            <DetailsItem
-              label="Versanddatum"
-              value={formatDate(letter.pdf.createdAt)}
-            />
-            <DetailsItem label="Frist" value={formatDate(letter.deadline)} />
+        <Box display="contents" role="list">
+          {proofSubmissionLetters.map((letter, index) => (
+            <Box key={index} display="contents" role="listitem">
+              <DetailsList>
+                <ProofTabEntry rowLayout>
+                  <DetailsItem
+                    label="Empfänger"
+                    value={formatName(
+                      getPersonByIdFromProcedure(letter.recipientId, procedure),
+                    )}
+                  />
+                  <DetailsItem
+                    label="Versanddatum"
+                    value={formatDate(letter.pdf.createdAt)}
+                  />
+                  <DetailsItem
+                    label="Frist"
+                    value={formatDate(letter.deadline)}
+                  />
 
-            <ProofTabFileCard
-              fileId={letter.pdf.fileId}
-              fileData={letter.pdf}
-            />
-          </ProofTabEntry>
-        ))}
+                  <ProofTabFileCard
+                    fileId={letter.pdf.fileId}
+                    fileData={letter.pdf}
+                  />
+                </ProofTabEntry>
+              </DetailsList>
+            </Box>
+          ))}
+        </Box>
         {!procedureClosed && (
           <Button
             variant="plain"

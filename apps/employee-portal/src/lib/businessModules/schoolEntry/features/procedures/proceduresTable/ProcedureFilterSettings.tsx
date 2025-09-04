@@ -40,6 +40,7 @@ export type ProcedureFilters = Pick<
   | "hasAppointmentFilter"
   | "schoolYearFilter"
   | "isInvitationSentFilter"
+  | "hasExaminationEditsFilter"
 > & { labelsFilter?: ProcedureLabel[] };
 
 const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
@@ -50,6 +51,7 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   schoolYearFilter: "Schuljahr",
   labelsFilter: "Kennungen",
   isInvitationSentFilter: "Einladung versandt",
+  hasExaminationEditsFilter: "Untersuchung begonnen",
 };
 
 const SCHOOL_CONTACT = new Set<ApiContactCategory>([ApiContactCategory.School]);
@@ -113,6 +115,36 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                 );
               }}
             />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Untersuchung begonnen</FormLabel>
+            <ResettableSingleSelect
+              value={evaluateBooleanValue(
+                props.filterFormValues.hasExaminationEditsFilter,
+              )}
+              onChange={(_, newValue) => {
+                if (newValue === null) {
+                  return;
+                }
+                props.setFilterFormValue(
+                  "hasExaminationEditsFilter",
+                  evaluateStringAsBoolean(newValue),
+                );
+              }}
+              onResetSelect={() => {
+                props.setFilterFormValue(
+                  "hasExaminationEditsFilter",
+                  undefined,
+                );
+              }}
+            >
+              <SelectOptions
+                options={[
+                  { value: "true", label: "Ja" },
+                  { value: "false", label: "Nein" },
+                ]}
+              />
+            </ResettableSingleSelect>
           </FormControl>
           <FormControl>
             <FormLabel>Termin</FormLabel>

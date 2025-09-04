@@ -157,6 +157,7 @@ export {
   MonthAndYearFields,
   type MonthAndYearFieldsProps,
   mapMonthAndYear,
+  parseMonthAndYear,
 } from "./components/formFields/MonthAndYearFields";
 export { NumberField } from "./components/formFields/NumberField";
 export { PhoneNumberField } from "./components/formFields/PhoneNumberField";
@@ -298,6 +299,7 @@ export { formatPersonName, formatUserName } from "./formatters/person";
 export { assertNever, assertNonEmptyArray } from "./helpers/assertions";
 export { countryOptions, translateCountry } from "./helpers/countryOption";
 export {
+  DATE_FORMAT,
   TIME_FORMAT,
   calculateAge,
   durationBetweenDatesInMinutes,

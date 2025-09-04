@@ -111,7 +111,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   }
 
   private void assignSpecialNeedsLabel(List<CreateProcedureResponse> procedures) {
-    UUID labelId = procedureLabelController.getLabels(null).labels().getFirst().id();
+    UUID labelId = procedureLabelController.getLabels(null).elements().getFirst().id();
     for (CreateProcedureResponse procedure : procedures) {
       ProcedureDetailsDto procedureToUpdate =
           schoolEntryController.getProcedure(procedure.procedureId());
@@ -374,11 +374,14 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   }
 
   private static SopessLanguageDto randomLanguageDto(Faker faker) {
+    LocalDate inGermanySince =
+        LocalDate.now().minusYears(10).minusDays(faker.random().nextInt(400));
     return new SopessLanguageDto(
         randomElement(faker, PrimaryLanguageValueDto.values()),
         randomElement(faker, LanguageKnowledgeValueDto.values()),
         randomElement(faker, FamilyLanguageValueDto.values()),
-        randomElement(faker, GermanKnowledgeValueDto.values()));
+        randomElement(faker, GermanKnowledgeValueDto.values()),
+        inGermanySince);
   }
 
   private static ArticulationDto randomArticulationDto(Faker faker) {
@@ -574,8 +577,6 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   }
 
   private static MigrationBackgroundDto randomMigrationBackgroundDto(Faker faker) {
-    LocalDate inGermanySince =
-        LocalDate.now().minusYears(10).minusDays(faker.random().nextInt(400));
     return new MigrationBackgroundDto(
         randomCountrySchoolEntry(faker),
         randomCountrySchoolEntry(faker),
@@ -583,8 +584,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         randomCountrySchoolEntry(faker),
         randomCountrySchoolEntry(faker),
         randomCountrySchoolEntry(faker),
-        faker.bool().bool(),
-        inGermanySince);
+        faker.bool().bool());
   }
 
   private static de.eshg.schoolentry.api.CountryCodeDto randomCountrySchoolEntry(Faker faker) {

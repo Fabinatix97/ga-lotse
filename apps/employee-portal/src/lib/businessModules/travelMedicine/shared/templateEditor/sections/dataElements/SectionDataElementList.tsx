@@ -16,6 +16,7 @@ export interface TemplateSectionElementProp {
     sectionElement: ApiTemplateSectionElement,
   ) => void;
   sectionIndex: number;
+  setInputElementRef: (el: HTMLInputElement, index: number) => void;
 }
 
 export function SectionDataElementList(

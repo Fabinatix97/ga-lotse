@@ -34,6 +34,7 @@ function createLinkOrButton(
 interface FormButtonBarProps {
   left?: ReactNode | ReactNode[];
   submitLabel: string;
+  submitAriaLabel?: string;
   cancelLabel?: string;
   submitting: boolean;
   submitDisabled?: boolean;
@@ -71,6 +72,7 @@ export function FormButtonBar({
     rightButtons.push(
       <SubmitButton
         key={props.submitLabel}
+        aria-label={props.submitAriaLabel}
         submitting={props.submitting}
         disabled={props.submitDisabled}
         size={props.size}

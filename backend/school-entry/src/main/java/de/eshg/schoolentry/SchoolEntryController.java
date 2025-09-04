@@ -407,7 +407,7 @@ public class SchoolEntryController {
         examinationResultService.findSopessExaminationResultForUpdate(
             procedureId, request.getVersion());
     ProcedureValidator.validateProcedureStatusNotClosed(sopessExaminationResult.getProcedure());
-    Validator.validateUpdateSopessExaminationResult(request);
+    validator.validateUpdateSopessExaminationResult(request);
 
     examinationResultService.updateSopessExaminationResult(
         sopessExaminationResult, ExaminationResultMapper.mapToDomain(request));

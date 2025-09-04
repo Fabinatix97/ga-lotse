@@ -8,6 +8,7 @@ package de.eshg.lib.appointmentblock;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import de.eshg.base.SortDirection;
+import de.eshg.base.user.UserApi;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockPaginationAndSortParameters;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -16,6 +17,7 @@ import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
 import de.eshg.lib.appointmentblock.api.LocationDto;
+import de.eshg.lib.appointmentblock.api.UpdateAppointmentBlockRequest;
 import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
@@ -73,6 +75,7 @@ public class AppointmentBlockService {
   private final AppointmentBlockValidator appointmentBlockValidator;
   private final AppointmentBlockConfig appointmentBlockConfig;
   private final Clock clock;
+  private final UserApi userApi;
 
   public AppointmentBlockService(
       AppointmentBlockGroupRepository appointmentBlockGroupRepository,
@@ -83,7 +86,8 @@ public class AppointmentBlockService {
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       AppointmentBlockValidator appointmentBlockValidator,
       AppointmentBlockConfig appointmentBlockConfig,
-      Clock clock) {
+      Clock clock,
+      UserApi userApi) {
     this.appointmentBlockGroupRepository = appointmentBlockGroupRepository;
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.appointmentStandardDurationService = appointmentStandardDurationService;
@@ -93,6 +97,7 @@ public class AppointmentBlockService {
     this.appointmentBlockValidator = appointmentBlockValidator;
     this.appointmentBlockConfig = appointmentBlockConfig;
     this.clock = clock;
+    this.userApi = userApi;
   }
 
   private void checkForCalendarConflicts(
@@ -107,6 +112,15 @@ public class AppointmentBlockService {
       throw new BadRequestException(
           "Can't create appointment blocks because of calendar event conflicts for physicians or MFAs.");
     }
+  }
+
+  public AppointmentBlock findAppointmentBlockForUpdate(UUID appointmentBlockId) {
+    return appointmentBlockRepository
+        .findByExternalIdForUpdate(appointmentBlockId)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "Appointment block with id " + appointmentBlockId + " not found."));
   }
 
   public PagedAppointmentBlockGroups findFutureAppointmentBlockGroups(
@@ -266,11 +280,7 @@ public class AppointmentBlockService {
                 })
             .toList();
 
-    Duration shortestDuration =
-        appointmentTypeHolders.stream()
-            .map(AppointmentTypeHolder::getSlotDuration)
-            .reduce((d1, d2) -> d1.compareTo(d2) < 0 ? d1 : d2)
-            .orElseThrow();
+    Duration shortestDuration = calculateShortestDuration(appointmentTypeHolders);
     appointmentBlockValidator.validateStartAndEndTimes(
         request.appointmentBlocks(), shortestDuration);
     appointmentBlockValidator.validateTechnicalGroups(
@@ -300,8 +310,6 @@ public class AppointmentBlockService {
       appointmentBlock.setCalendarEventId(calendarEventId);
       appointmentBlock.setAppointmentBlockStart(createAppointmentBlockRequest.start());
       appointmentBlock.setAppointmentBlockEnd(createAppointmentBlockRequest.end());
-      appointmentBlockGroup.setAvailableForCitizen(request.availableForCitizen());
-      appointmentBlockGroup.setAvailableForBulkBooking(request.availableForBulkBooking());
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 
@@ -312,6 +320,13 @@ public class AppointmentBlockService {
         appointmentBlockGroup.getAppointmentBlocks().stream()
             .map(AppointmentBlock::getExternalId)
             .toList());
+  }
+
+  Duration calculateShortestDuration(List<AppointmentTypeHolder> appointmentTypeHolders) {
+    return appointmentTypeHolders.stream()
+        .map(AppointmentTypeHolder::getSlotDuration)
+        .reduce((d1, d2) -> d1.compareTo(d2) < 0 ? d1 : d2)
+        .orElseThrow();
   }
 
   private List<UUID> getUserIdsForEvent(
@@ -335,7 +350,7 @@ public class AppointmentBlockService {
     return new ArrayList<>(usersForEvent);
   }
 
-  private static AppointmentBlockGroup buildAppointmentBlockGroup(
+  private AppointmentBlockGroup buildAppointmentBlockGroup(
       CreateDailyAppointmentBlockGroupRequest request,
       List<AppointmentTypeHolder> appointmentTypeHolders) {
     AppointmentBlockGroup appointmentBlockGroup = new AppointmentBlockGroup();
@@ -344,7 +359,10 @@ public class AppointmentBlockService {
     appointmentBlockGroup.setMfas(request.mfas());
     appointmentBlockGroup.setPhysicians(request.physicians());
     appointmentBlockGroup.setConsultants(request.consultants());
+    appointmentBlockGroup.setCreatorId(userApi.getSelfUser().userId());
     appointmentBlockGroup.setLocationId(request.locationId());
+    appointmentBlockGroup.setAvailableForCitizen(request.availableForCitizen());
+    appointmentBlockGroup.setAvailableForBulkBooking(request.availableForBulkBooking());
     return appointmentBlockGroup;
   }
 
@@ -429,5 +447,15 @@ public class AppointmentBlockService {
     if (appointmentBlocks.isEmpty()) {
       appointmentBlockGroupRepository.delete(appointmentBlockGroup);
     }
+  }
+
+  public AppointmentBlock updateAppointmentBlock(
+      AppointmentBlock appointmentBlock, UpdateAppointmentBlockRequest request) {
+    calendarClient.updateEventInCalendarIfExists(appointmentBlock, request);
+
+    appointmentBlock.setAppointmentBlockStart(request.start());
+    appointmentBlock.setAppointmentBlockEnd(request.end());
+
+    return appointmentBlock;
   }
 }

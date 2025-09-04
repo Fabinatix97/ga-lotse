@@ -5,6 +5,7 @@
 
 "use client";
 
+import { Box } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 import { ApiUserRole } from "@eshg/base-api";
@@ -52,7 +53,11 @@ export function MeaslesProtectionProcedureLayout({
         />
       }
     >
-      <MainContentLayout>{children}</MainContentLayout>
+      <MainContentLayout>
+        <Box display="contents" role="tabpanel">
+          {children}
+        </Box>
+      </MainContentLayout>
     </StickyToolbarLayout>
   );
 }

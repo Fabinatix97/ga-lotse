@@ -60,7 +60,7 @@ export function ConsultationForm({
       onSubmit={onSubmit}
     >
       {({ values }) => (
-        <FormPlus>
+        <FormPlus aria-labelledby="consultation-title">
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
               mutationOptions: upsertConsultationOptions,
@@ -73,7 +73,7 @@ export function ConsultationForm({
 
           <SidecarFormLayout>
             <Sheet>
-              <Typography level="h2" mb={5}>
+              <Typography level="h2" mb={5} id="consultation-title">
                 Konsultation
               </Typography>
 
