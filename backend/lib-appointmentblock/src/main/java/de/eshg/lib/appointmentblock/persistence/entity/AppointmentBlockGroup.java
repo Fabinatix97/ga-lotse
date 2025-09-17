@@ -35,8 +35,6 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
   @OrderBy
   private final List<AppointmentTypeHolder> appointmentTypeHolders = new ArrayList<>();
 
-  private int parallelExaminations;
-
   @ElementCollection
   @Column(name = "physician_id", nullable = false)
   @OrderColumn
@@ -100,14 +98,6 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
     return appointmentTypeHolders.stream()
         .map(AppointmentTypeHolder::getType)
         .collect(Collectors.toCollection(TreeSet::new));
-  }
-
-  public int getParallelExaminations() {
-    return parallelExaminations;
-  }
-
-  public void setParallelExaminations(int parallelExaminations) {
-    this.parallelExaminations = parallelExaminations;
   }
 
   public List<UUID> getPhysicians() {

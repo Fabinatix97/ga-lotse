@@ -6,7 +6,7 @@
 import { Metadata, ResolvingMetadata } from "next";
 import * as v from "valibot";
 
-import { DynamicLayoutProps, RouteParams } from "@eshg/lib-portal";
+import { DynamicLayoutProps } from "@eshg/lib-portal";
 
 import { AppLayout } from "@/lib/baseModule/components/layout/AppLayout";
 import { BaseTranslation, baseTranslations } from "@/lib/baseModule/locales";
@@ -16,7 +16,10 @@ const RouteParamsSchema = v.object({
   lang: v.picklist(supportedLanguages),
 });
 
-export default async function Layout(props: DynamicLayoutProps) {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type RouteParams = { lang: string };
+
+export default async function Layout(props: DynamicLayoutProps<RouteParams>) {
   const { lang } = await parseRouteParams(props.params);
 
   return <AppLayout lang={lang}>{props.children}</AppLayout>;

@@ -18,7 +18,7 @@ import {
 } from "../../stores/examination/types";
 
 import { ToothNumber } from "./ToothNumber";
-import { QUADRANT_SPACING, SR_ONLY_STYLES } from "./styles";
+import { SR_ONLY_STYLES } from "./styles";
 import { ToothButton } from "./toothIconButtons";
 import {
   MainResultField,
@@ -100,16 +100,7 @@ const CELL_RENDERER: Record<RowType, CellRenderer> = {
   previousResults: ({ tooth }) => <PreviousResultsList tooth={tooth} />,
 };
 
-interface TableGridProps {
-  isMirrored: boolean;
-}
-
-const TableGrid = styled("table", {
-  shouldForwardProp: (propName) => propName !== "isMirrored",
-})<TableGridProps>(({ theme, isMirrored }) => ({
-  alignSelf: isMirrored ? "flex-end" : "flex-start",
-  marginTop: theme.spacing(isMirrored ? 0 : QUADRANT_SPACING),
-  marginBottom: theme.spacing(isMirrored ? QUADRANT_SPACING : 0),
+const TableGrid = styled("table")(({ theme }) => ({
   "th, td": {
     textAlign: "center",
     padding: theme.spacing(1),
@@ -164,7 +155,7 @@ export function QuadrantForm(props: QuadrantFormProps) {
   const lastVisibleRowIndex = rows.findLastIndex(isVisibleRow);
 
   return (
-    <TableGrid role="grid" isMirrored={isMirrored} aria-labelledby={titleId}>
+    <TableGrid role="grid" aria-labelledby={titleId}>
       <tbody>
         {rows.map((row, rowIndex) => (
           <tr

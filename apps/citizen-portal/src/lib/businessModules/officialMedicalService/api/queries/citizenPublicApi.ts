@@ -7,11 +7,13 @@ import { queryOptions, useQueryClient } from "@tanstack/react-query";
 
 import {
   SEMI_STATIC_QUERY_OPTIONS,
+  durationToMinutes,
   isDateCurrentDateOrGreater,
 } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   type ApiGetFreeAppointmentsResponse,
+  ApiOmsAppointmentStandardDurations,
 } from "@eshg/official-medical-service-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
@@ -19,14 +21,30 @@ import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalS
 import { mapToConcernApiList } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { useLang } from "@/lib/i18n/useLang";
 
-export function useGetAllAppointmentTypesQuery() {
+export function useGetAppointmentStandardDurationsQuery() {
   const citizenPublicApi = useCitizenPublicApi();
+
   return queryOptions({
-    queryKey: citizenPublicApiQueryKey(["getAppointmentTypesForCitizen"]),
-    queryFn: () => citizenPublicApi.getAppointmentTypesForCitizen(),
-    select: (response) => response.appointmentTypeConfigDtos ?? [],
+    queryKey: citizenPublicApiQueryKey([
+      "getAppointmentStandardDurationsForCitizen",
+    ]),
+    queryFn: () => citizenPublicApi.getAppointmentStandardDurationsForCitizen(),
+    select: mapAppointmentDurationConfig,
     refetchOnWindowFocus: false,
   });
+}
+
+function mapAppointmentDurationConfig(
+  response: ApiOmsAppointmentStandardDurations,
+): Partial<Record<ApiAppointmentType, number>> {
+  return {
+    [ApiAppointmentType.OfficialMedicalServiceShort]: durationToMinutes(
+      response.officialMedicalServiceShort,
+    ),
+    [ApiAppointmentType.OfficialMedicalServiceLong]: durationToMinutes(
+      response.officialMedicalServiceLong,
+    ),
+  };
 }
 
 export function useGetDepartmentInfoQuery() {

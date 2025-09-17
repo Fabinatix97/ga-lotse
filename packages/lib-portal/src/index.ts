@@ -256,6 +256,9 @@ export {
   useSnackbar,
 } from "./components/snackbar/SnackbarProvider";
 export { ThemeRegistry } from "./components/themeRegistry/ThemeRegistry";
+export { UnstyledTabs } from "./components/unstyledTab/UnstyledTabs";
+export { UnstyledTabList } from "./components/unstyledTab/UnstyledTabList";
+export { UnstyledTabPanel } from "./components/unstyledTab/UnstyledTabPanel";
 
 export { apiMiddlewares } from "./config/apiMiddlewares";
 
@@ -303,6 +306,8 @@ export {
   TIME_FORMAT,
   calculateAge,
   durationBetweenDatesInMinutes,
+  durationToSecond,
+  durationToMinutes,
   formatDateToFullReadableString,
   formatDateToYear,
   isAdult,

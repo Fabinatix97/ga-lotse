@@ -18,7 +18,7 @@ public final class MeaslesProtectionPublicSecurityConfig
   MeaslesProtectionPublicSecurityConfig() {
     super("measles-protection");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.MEASLES_PROTECTION_ADMIN, true);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.MEASLES_PROTECTION_ADMIN);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.MEASLES_PROTECTION_ADMIN,
         ModuleLeaderRole.MEASLES_PROTECTION_LEADER);

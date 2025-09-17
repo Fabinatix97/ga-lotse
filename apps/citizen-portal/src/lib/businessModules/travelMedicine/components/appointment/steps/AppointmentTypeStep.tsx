@@ -9,12 +9,9 @@ import { TOptions } from "i18next";
 import { ReactNode, useState } from "react";
 
 import { Alert, RadioGroupField } from "@eshg/lib-portal";
-import {
-  ApiAppointmentType,
-  ApiAppointmentTypeConfig,
-} from "@eshg/travel-medicine-api";
+import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
-import { useGetAllAppointmentTypesForCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
+import { useGetAppointmentStandardDurations } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import {
   FormSheet,
@@ -27,18 +24,10 @@ import { useDepartmentContext } from "@/lib/businessModules/travelMedicine/compo
 import { useTranslation } from "@/lib/i18n/client";
 
 function handleModalText(
-  allAppointmentTypesForCitizen: ApiAppointmentTypeConfig[],
+  standardDurations: Partial<Record<ApiAppointmentType, number>>,
   modalTitle: string,
   t: (key: string | string[], tOptions?: TOptions) => string,
 ): ReactNode {
-  const vaccinationStandardDuration = allAppointmentTypesForCitizen.find(
-    (type) => type.appointmentTypeDto === ApiAppointmentType.Vaccination,
-  )!.standardDurationInMinutes;
-
-  const consultationStandardDuration = allAppointmentTypesForCitizen.find(
-    (type) => type.appointmentTypeDto === ApiAppointmentType.Consultation,
-  )!.standardDurationInMinutes;
-
   if (
     modalTitle === t("appointmentTypeFormContent.fields.vaccination.modalTitle")
   ) {
@@ -47,7 +36,10 @@ function handleModalText(
         <Typography>
           {t(
             "appointmentTypeFormContent.fields.vaccination.modalTextParagraph1",
-            { appointmentDuration: vaccinationStandardDuration },
+            {
+              appointmentDuration:
+                standardDurations[ApiAppointmentType.Vaccination],
+            },
           )}
         </Typography>
         <Typography>
@@ -66,7 +58,10 @@ function handleModalText(
         <Typography>
           {t(
             "appointmentTypeFormContent.fields.consultation.modalTextParagraph1",
-            { appointmentDuration: consultationStandardDuration },
+            {
+              appointmentDuration:
+                standardDurations[ApiAppointmentType.Consultation],
+            },
           )}
         </Typography>
         <Typography>
@@ -104,8 +99,8 @@ export function AppointmentTypeStep() {
     void setFieldValue("appointment", undefined);
   }
 
-  const allAppointmentTypesForCitizen =
-    useGetAllAppointmentTypesForCitizen().data;
+  const appointmentStandardDurationsForCitizen =
+    useGetAppointmentStandardDurations().data;
 
   return (
     <>
@@ -224,7 +219,7 @@ export function AppointmentTypeStep() {
         open={isOpen}
         onClose={() => setIsOpen((isOpen) => !isOpen)}
       >
-        {handleModalText(allAppointmentTypesForCitizen, modalTitle, t)}
+        {handleModalText(appointmentStandardDurationsForCitizen, modalTitle, t)}
       </InfoModal>
     </>
   );

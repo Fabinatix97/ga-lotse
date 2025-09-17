@@ -3,11 +3,10 @@
 
 package de.eshg.frontend
 
-import com.github.gradle.node.pnpm.task.PnpmTask
 import org.gradle.api.Task
 import org.gradle.api.tasks.Input
 
-abstract class PlaywrightTask extends PnpmTask {
+abstract class PlaywrightTask extends PnpmTaskWithNpmDependencies {
 
     @Input
     List<String> additionalArgs = []

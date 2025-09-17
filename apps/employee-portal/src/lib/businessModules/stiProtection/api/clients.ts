@@ -5,7 +5,6 @@
 
 import {
   AppointmentBlockApi,
-  AppointmentTypeApi,
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
@@ -17,6 +16,7 @@ import {
   MedicalHistoryDocumentApi,
   ProcedureApi,
   ProgressEntryApi,
+  StiProtectionAppointmentStandardDurationApi,
   StiProtectionProcedureApi,
   TextTemplateApi,
   WaitingRoomApi,
@@ -71,9 +71,9 @@ export function useAppointmentBlockApi() {
   return new AppointmentBlockApi(config);
 }
 
-export function useAppointmentTypeApi() {
-  const config = useConfiguration();
-  return new AppointmentTypeApi(config);
+export function useAppointmentStandardDurationsApi() {
+  const configuration = useConfiguration();
+  return new StiProtectionAppointmentStandardDurationApi(configuration);
 }
 
 export function useArchivingApi() {

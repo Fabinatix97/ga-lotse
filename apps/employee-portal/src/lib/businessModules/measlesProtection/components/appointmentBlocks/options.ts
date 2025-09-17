@@ -8,10 +8,12 @@ import { ApiAppointmentType } from "@eshg/measles-protection-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/measlesProtection/shared/constants";
 
-const SUPPORTED_APPOINTMENT_TYPES: string[] = [
+export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.ProofSubmission,
 ];
 
 export const APPOINTMENT_TYPE_OPTIONS = buildEnumOptions(
   APPOINTMENT_TYPES,
-).filter((option) => SUPPORTED_APPOINTMENT_TYPES.includes(option.value));
+).filter((option) =>
+  SUPPORTED_APPOINTMENT_TYPES.includes(option.value as ApiAppointmentType),
+);

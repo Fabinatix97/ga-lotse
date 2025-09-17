@@ -5,6 +5,8 @@
 
 import { queryKeyFactory } from "@eshg/lib-portal";
 
+import { officialMedicalServiceApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
+
 export const measlesProtectionApiQueryKey = queryKeyFactory([
   "measlesProtection",
 ]);
@@ -17,6 +19,6 @@ export const appointmentBlockApiQueryKey = queryKeyFactory(
   measlesProtectionApiQueryKey(["appointmentBlockApi"]),
 );
 
-export const appointmentTypeApiQueryKey = queryKeyFactory(
-  measlesProtectionApiQueryKey(["appointmentTypeApi"]),
+export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["appointmentStandardDurationApi"]),
 );

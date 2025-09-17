@@ -11,6 +11,7 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
+import { isDefined } from "remeda";
 
 import {
   DetailsColumn,
@@ -20,7 +21,7 @@ import {
 } from "@eshg/lib-portal";
 import { ApiGetCitizenProcedureDetailsResponse } from "@eshg/official-medical-service-api";
 
-import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -50,14 +51,13 @@ export function BookAppointmentSidePanel({
     en: procedure.concern.nameEn,
   });
 
-  const [{ data: appointmentTypes }] = useSuspenseQueries({
-    queries: [useGetAllAppointmentTypesQuery()],
+  const [{ data: appointmentStandardDurations }] = useSuspenseQueries({
+    queries: [useGetAppointmentStandardDurationsQuery()],
   });
 
-  const appointmentTypeConfig = appointmentTypes.find(
-    (type) =>
-      type.appointmentTypeDto === procedure.appointment?.appointmentType,
-  );
+  const appointmentDuration = isDefined(procedure.appointment?.appointmentType)
+    ? appointmentStandardDurations[procedure.appointment?.appointmentType]
+    : undefined;
 
   return (
     <ContentSheet data-testid="overview">
@@ -68,7 +68,7 @@ export function BookAppointmentSidePanel({
             label={t("sidePanel.concernAndDuration", {
               context: "label",
             })}
-            value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentTypeConfig?.standardDurationInMinutes })}`}
+            value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentDuration })}`}
             icon={<MedicalServicesOutlined />}
             hiddenLabel
           />

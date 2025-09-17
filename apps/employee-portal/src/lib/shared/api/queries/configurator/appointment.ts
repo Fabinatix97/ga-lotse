@@ -6,22 +6,27 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 
+import { durationToMinutes } from "@eshg/lib-portal";
+
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 import { configuratorApiQueryKey } from "@/lib/shared/api/queries/configurator/apiQueryKey";
-import { durationToMinutes } from "@/lib/shared/helpers/dateTime";
 
 export function useGetAppointmentStandardDurations<TResponse, TFormModel>(
   module: ConfiguratorModuleName,
   apiHook: () => {
-    getStandardDurations: () => Promise<TResponse>;
+    getStandardDurationsConfig: () => Promise<TResponse>;
   },
   responseMapper: (response: TResponse) => TFormModel,
 ) {
   const api = apiHook();
 
   const result = useSuspenseQuery({
-    queryKey: configuratorApiQueryKey([module, api, "getStandardDurations"]),
-    queryFn: () => api.getStandardDurations(),
+    queryKey: configuratorApiQueryKey([
+      module,
+      api,
+      "getStandardDurationsConfig",
+    ]),
+    queryFn: () => api.getStandardDurationsConfig(),
     select: responseMapper,
   });
   return result.data;

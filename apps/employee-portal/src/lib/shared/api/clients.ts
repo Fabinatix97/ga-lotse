@@ -27,15 +27,15 @@ import {
   Configuration as LibStatisticsConfiguration,
   StatisticsProcedureReferenceApi,
 } from "@eshg/lib-statistics-api";
-import { MeaslesProtectionAppointmentStandardDurationApi } from "@eshg/measles-protection-api";
+import { MeaslesProtectionAppointmentStandardDurationConfigApi } from "@eshg/measles-protection-api";
 import {
-  OmsAppointmentStandardDurationApi,
+  OmsAppointmentStandardDurationConfigApi,
   OmsConfigApi,
 } from "@eshg/official-medical-service-api";
 import { OpenDataConfigApi } from "@eshg/opendata-api";
 import {
   AppointmentBlockDefaultAvailabilityConfigApi,
-  SchoolEntryAppointmentStandardDurationApi,
+  SchoolEntryAppointmentStandardDurationConfigApi,
   SchoolEntryLibConfigApi,
 } from "@eshg/school-entry-api";
 import {
@@ -45,11 +45,11 @@ import {
   StiConsultationConfigStatusApi,
   StiConsultationDepartmentInfoConfigApi,
   StiConsultationOpeningHoursApi,
-  StiProtectionAppointmentStandardDurationApi,
+  StiProtectionAppointmentStandardDurationConfigApi,
 } from "@eshg/sti-protection-api";
 import {
   NotificationConfigApi,
-  TravelMedicineAppointmentStandardDurationApi,
+  TravelMedicineAppointmentStandardDurationConfigApi,
 } from "@eshg/travel-medicine-api";
 
 import { useConfiguration } from "@/lib/baseModule/api/clients";
@@ -221,9 +221,9 @@ export function useDepartmentConfigurationApi() {
   return new DepartmentConfigurationApi(configuration);
 }
 
-export function useSchoolEntryAppointmentStandardDurationApi() {
+export function useSchoolEntryAppointmentStandardDurationConfigApi() {
   const configuration = useSchoolEntryConfiguration();
-  return new SchoolEntryAppointmentStandardDurationApi(configuration);
+  return new SchoolEntryAppointmentStandardDurationConfigApi(configuration);
 }
 
 export function useSchoolEntryAppointmentBlockDefaultAvailabilityApi() {
@@ -231,24 +231,26 @@ export function useSchoolEntryAppointmentBlockDefaultAvailabilityApi() {
   return new AppointmentBlockDefaultAvailabilityConfigApi(configuration);
 }
 
-export function useTravelMedicineAppointmentStandardDurationApi() {
+export function useTravelMedicineAppointmentStandardDurationConfigApi() {
   const configuration = useTravelMedicineConfiguration();
-  return new TravelMedicineAppointmentStandardDurationApi(configuration);
+  return new TravelMedicineAppointmentStandardDurationConfigApi(configuration);
 }
 
-export function useMeaslesProtectionAppointmentStandardDurationApi() {
+export function useMeaslesProtectionAppointmentStandardDurationConfigApi() {
   const configuration = useMeaslesProtectionConfiguration();
-  return new MeaslesProtectionAppointmentStandardDurationApi(configuration);
+  return new MeaslesProtectionAppointmentStandardDurationConfigApi(
+    configuration,
+  );
 }
 
-export function useOmsAppointmentStandardDurationApi() {
+export function useOmsAppointmentStandardDurationConfigApi() {
   const configuration = useOmsConfiguration();
-  return new OmsAppointmentStandardDurationApi(configuration);
+  return new OmsAppointmentStandardDurationConfigApi(configuration);
 }
 
-export function useStiProtectionAppointmentStandardDurationApi() {
+export function useStiProtectionAppointmentStandardDurationConfigApi() {
   const configuration = useStiProtectionConfiguration();
-  return new StiProtectionAppointmentStandardDurationApi(configuration);
+  return new StiProtectionAppointmentStandardDurationConfigApi(configuration);
 }
 
 export function useOpenDataConfigApi() {

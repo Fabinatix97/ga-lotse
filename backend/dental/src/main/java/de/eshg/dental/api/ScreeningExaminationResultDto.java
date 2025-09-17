@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-@Schema(name = ScreeningExaminationResultDto.SCHEMA_NAME)
+@Schema(name = ScreeningExaminationResultDto.SCHEMA_NAME, allOf = ExaminationResultDto.class)
 public record ScreeningExaminationResultDto(
     Boolean fluorideVarnishApplied,
     OralHygieneStatusDto oralHygieneStatus,

@@ -24,7 +24,7 @@ public class TravelMedicineAppointmentStandardDurationMapper {
     return domain;
   }
 
-  private static TravelMedicineAppointmentStandardDurationsDto
+  public static TravelMedicineAppointmentStandardDurationsDto
       mapToTravelMedicineAppointmentStandardDurationsDto(
           TravelMedicineAppointmentStandardDuration domain) {
     return new TravelMedicineAppointmentStandardDurationsDto(

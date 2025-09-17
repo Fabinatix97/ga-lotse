@@ -5,7 +5,7 @@
 
 "use client";
 
-import { Grid } from "@mui/joy";
+import { Grid, Stack } from "@mui/joy";
 import { memo, useEffect, useState } from "react";
 
 import { ApiGender } from "@eshg/base-api";
@@ -84,6 +84,7 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
   const note = <NoteFormSection />;
 
   const isLowerResolution = useIsBreakpointDown("xl");
+  const isLowestResolution = useIsBreakpointDown("sm");
   useCollapseSidenavOnMount();
 
   if (!(isScreening || isFluoridation)) {
@@ -123,6 +124,19 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
     />
   );
   const instructionValues = <InstructionValuesSection />;
+
+  if (isLowestResolution) {
+    return (
+      <Stack gap={3}>
+        <MemoizedFullDentitionFormSection />
+        {additionalInformation}
+        {showChildDetails && childDetails}
+        {automatedValues}
+        {note}
+        {instructionValues}
+      </Stack>
+    );
+  }
 
   if (isLowerResolution) {
     return (

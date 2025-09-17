@@ -5,22 +5,24 @@
 
 package de.eshg.travelmedicine.citizenpublic;
 
+import static de.eshg.travelmedicine.config.TravelMedicineAppointmentStandardDurationMapper.mapToTravelMedicineAppointmentStandardDurationsDto;
+
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.config.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
-import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
-import de.eshg.lib.appointmentblock.api.GetAppointmentTypesResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
+import de.eshg.travelmedicine.config.TravelMedicineAppointmentStandardDurationService;
+import de.eshg.travelmedicine.config.TravelMedicineAppointmentStandardDurationsDto;
 import de.eshg.travelmedicine.disease.DiseaseService;
 import de.eshg.travelmedicine.disease.api.GetDiseasesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationService;
@@ -51,10 +53,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CitizenPublicController {
 
   public static final String BASE_URL = BaseUrls.TravelMedicine.CITIZEN_PUBLIC_CONTROLLER;
+  public static final String APPOINTMENT_STANDARD_DURATIONS_URL = "/appointment-standard-duration";
 
   private final DiseaseService diseaseService;
   private final AppointmentBlockService appointmentBlockService;
-  private final AppointmentTypeService appointmentTypeService;
+  private final TravelMedicineAppointmentStandardDurationService appointmentStandardDurationService;
   private final VaccinationConsultationService vaccinationConsultationService;
   private final DepartmentInfoConfigService departmentInfoService;
   private final OpeningHoursService openingHoursService;
@@ -64,7 +67,7 @@ public class CitizenPublicController {
   public CitizenPublicController(
       DiseaseService diseaseService,
       AppointmentBlockService appointmentBlockService,
-      AppointmentTypeService appointmentTypeService,
+      TravelMedicineAppointmentStandardDurationService appointmentStandardDurationService,
       VaccinationConsultationService vaccinationConsultationService,
       DepartmentInfoConfigService departmentInfoService,
       OpeningHoursService openingHoursService,
@@ -72,7 +75,7 @@ public class CitizenPublicController {
       Clock clock) {
     this.diseaseService = diseaseService;
     this.appointmentBlockService = appointmentBlockService;
-    this.appointmentTypeService = appointmentTypeService;
+    this.appointmentStandardDurationService = appointmentStandardDurationService;
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.departmentInfoService = departmentInfoService;
     this.openingHoursService = openingHoursService;
@@ -107,11 +110,12 @@ public class CitizenPublicController {
     return new GetFreeAppointmentsResponse(appointments);
   }
 
-  @Operation(summary = "Gets all Appointment Types")
-  @GetMapping("/appointment-types")
+  @Operation(summary = "Get standard durations for travel medicine appointments for citizen")
+  @GetMapping(APPOINTMENT_STANDARD_DURATIONS_URL)
   @Transactional(readOnly = true)
-  public GetAppointmentTypesResponse getAppointmentTypesForCitizen() {
-    return appointmentTypeService.getAppointmentTypes();
+  public TravelMedicineAppointmentStandardDurationsDto getAppointmentStandardDurationsForCitizen() {
+    return mapToTravelMedicineAppointmentStandardDurationsDto(
+        appointmentStandardDurationService.getConfig());
   }
 
   @PostMapping("/vaccination-consultations")

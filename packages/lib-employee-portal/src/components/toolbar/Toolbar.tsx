@@ -33,7 +33,7 @@ const TitleStack = styled(Stack)(({ theme }) => ({
 }));
 
 export interface ToolbarProps {
-  title: string;
+  title: string | ReactNode;
   backButton?: ReactNode;
   afterTitle?: ReactNode;
 }
@@ -56,9 +56,12 @@ export function Toolbar(props: ToolbarProps) {
     >
       {backButton}
       <TitleStack direction="row">
-        <Typography ref={titleRef} component="h1" level="h2" tabIndex={-1}>
-          {title}
-        </Typography>
+        {typeof title === "string" && (
+          <Typography ref={titleRef} component="h1" level="h2" tabIndex={-1}>
+            {title}
+          </Typography>
+        )}
+        {typeof title === "object" && title}
         {afterTitle}
       </TitleStack>
     </ToolbarStack>

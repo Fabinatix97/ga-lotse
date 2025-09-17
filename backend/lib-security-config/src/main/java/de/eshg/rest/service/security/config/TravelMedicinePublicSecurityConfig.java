@@ -15,7 +15,7 @@ public final class TravelMedicinePublicSecurityConfig extends AbstractPublicSecu
   TravelMedicinePublicSecurityConfig() {
     super("travel-medicine");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN, true);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN, ModuleLeaderRole.TRAVEL_MEDICINE_LEADER);
     grantAccessToConfiguration();

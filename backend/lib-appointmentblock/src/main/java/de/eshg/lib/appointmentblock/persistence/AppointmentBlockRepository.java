@@ -23,11 +23,11 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
   @Query(
       "select distinct a from AppointmentBlock a "
           + "left join fetch a.appointments "
-          + "left join a.appointmentBlockGroup abg "
-          + "left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id "
+          + "left join fetch a.appointmentBlockGroup abg "
+          + "left join fetch abg.appointmentTypeHolders h "
           + "where h.type = :appointmentType "
-          + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
-          + "and (:physicianId is null or :physicianId member of a.appointmentBlockGroup.physicians) "
+          + "and (:locationId is null or abg.locationId = :locationId) "
+          + "and (:physicianId is null or :physicianId member of abg.physicians) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
   List<AppointmentBlock> findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
       @Param("appointmentType") AppointmentType appointmentType,
@@ -38,12 +38,12 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
   @Query(
       "select distinct a from AppointmentBlock a "
           + "left join fetch a.appointments "
-          + "left join a.appointmentBlockGroup abg "
-          + "left join AppointmentTypeHolder h on h.appointmentBlockGroup.id = abg.id "
+          + "left join fetch a.appointmentBlockGroup abg "
+          + "left join fetch abg.appointmentTypeHolders h "
           + "where h.type = :appointmentType "
           + "and (:availableForCitizen is null or abg.availableForCitizen = :availableForCitizen) "
           + "and (:availableForBulkBooking is null or abg.availableForBulkBooking = :availableForBulkBooking) "
-          + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
+          + "and (:locationId is null or abg.locationId = :locationId) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
   List<AppointmentBlock>
       findBlockByAvailabilityAndAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(

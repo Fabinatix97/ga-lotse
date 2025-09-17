@@ -1,7 +1,6 @@
 // Copyright 2025 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
-import com.github.gradle.node.pnpm.task.PnpmTask
 import de.eshg.frontend.FindUnusedValidationFiles
 import de.eshg.frontend.PnpmTaskWithProjectDependencies
 

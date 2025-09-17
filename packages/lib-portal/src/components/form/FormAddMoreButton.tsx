@@ -8,8 +8,10 @@ import { Button, ButtonProps } from "@mui/joy";
 
 type FormAddMoreButtonProps = Omit<
   ButtonProps,
-  "color" | "variant" | "size" | "sx" | "startDecorator"
->;
+  "color" | "variant" | "size" | "sx" | "startDecorator" | "ref"
+> & {
+  ref?: (el: HTMLElement | null) => void;
+};
 
 export function FormAddMoreButton(props: FormAddMoreButtonProps) {
   return (

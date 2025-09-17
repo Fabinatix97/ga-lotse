@@ -9,7 +9,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiGetTravelMedicineAppointmentStandardDurationsResponse } from "@eshg/travel-medicine-api";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useTravelMedicineAppointmentStandardDurationApi } from "@/lib/shared/api/clients";
+import { useTravelMedicineAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
@@ -73,7 +73,7 @@ function mapValues(
 
 function useUpdateTravelMedicineAppointmentStandardDuration() {
   return useUpdateAppointmentStandardDuration(
-    useTravelMedicineAppointmentStandardDurationApi,
+    useTravelMedicineAppointmentStandardDurationConfigApi,
     mapValues,
   );
 }
@@ -91,7 +91,7 @@ function mapResponse(
 function useGetTravelMedicineStandardDurations() {
   return useGetAppointmentStandardDurations(
     ConfiguratorModuleName.TravelMedicine,
-    useTravelMedicineAppointmentStandardDurationApi,
+    useTravelMedicineAppointmentStandardDurationConfigApi,
     mapResponse,
   );
 }

@@ -5,5 +5,3 @@
 
 export const appBarHeightMobile = "3.5rem"; // 56px
 export const appBarHeightDesktop = "4.5rem"; // 72px
-
-export const mainLayoutMarginBottom = "24px";

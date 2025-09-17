@@ -31,6 +31,7 @@ import de.topobyte.osm4j.pbf.seq.PbfIterator;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -43,6 +44,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -365,10 +368,7 @@ public class WebSearchService {
 
     // Read data from URL
     // Example: https://download.geofabrik.de/europe/germany/hessen-latest.osm.pbf
-    URL url = new URI(webSearch.getBasicURL()).toURL();
-    log.info("Parsing {} ...", url);
-
-    try (InputStream input = url.openStream()) {
+    try (InputStream input = openStreamWithHttpsUpgrade(webSearch.getBasicURL())) {
       // For the moment we assume the data to be in OSM PBF format, so we use the PbfIterator
       // For OSM XML data, we would use OsmXmlIterator(input, false).
       PbfIterator iterator = new PbfIterator(input, false);
@@ -384,10 +384,41 @@ public class WebSearchService {
         }
       }
       int size = result.size();
-      log.info("Parsing {} complete. Processed {} nodes. Found {} facilities.", url, nodes, size);
+      log.info(
+          "Parsing {} complete. Processed {} nodes. Found {} facilities.",
+          webSearch.getBasicURL(),
+          nodes,
+          size);
     }
 
     return result;
+  }
+
+  private static InputStream openStreamWithHttpsUpgrade(String urlString)
+      throws IOException, URISyntaxException {
+    if (urlString.startsWith("http://") && !urlString.startsWith("http://localhost")) {
+      log.info("Upgrading {} to https", urlString);
+      urlString = urlString.replace("http://", "https://");
+    }
+
+    URL url = new URI(urlString).toURL();
+    log.info("Parsing {} ...", url);
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+    // Manual redirect logic since Java's HttpUrlConnection won't follow redirects with protocol
+    // downgrade
+    if (HttpStatus.valueOf(connection.getResponseCode()).is3xxRedirection()) {
+      String location = connection.getHeaderField(HttpHeaders.LOCATION);
+      if (location == null) {
+        throw new RuntimeException(
+            "Redirect (%d) without location header".formatted(connection.getResponseCode()));
+      }
+      log.info("Redirected to {}", location);
+      return openStreamWithHttpsUpgrade(location);
+    }
+
+    return connection.getInputStream();
   }
 
   private void handleOsmNode(WebSearch webSearch, OsmNode node, List<WebSearchEntry> result) {

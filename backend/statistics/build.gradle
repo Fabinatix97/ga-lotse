@@ -21,6 +21,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation 'org.apache.poi:poi:latest.release'
     implementation 'org.apache.poi:poi-ooxml:latest.release'
+    // explicitly tell gradle to use the latest release of commons-compress (currently 1.28.0),
+    // because otherwise gradle chooses the version from poi-ooxml`s dependencies (currently 1.27.1)
+    // which is not compatible with the current version of tika 3.2.2 (e.g. https://issues.apache.org/jira/browse/TIKA-4469 )
+    implementation 'org.apache.commons:commons-compress:latest.release'
 
     // arx + dependencies
     implementation files('lib/org/deidentifier/arx/libarx-3.9.1-min.jar')

@@ -8,11 +8,13 @@ import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 
-const SUPPORTED_APPOINTMENT_TYPES: string[] = [
+export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.Consultation,
   ApiAppointmentType.Vaccination,
 ];
 
 export const APPOINTMENT_TYPE_OPTIONS = buildEnumOptions<ApiAppointmentType>(
   APPOINTMENT_TYPES,
-).filter((option) => SUPPORTED_APPOINTMENT_TYPES.includes(option.value));
+).filter((option) =>
+  SUPPORTED_APPOINTMENT_TYPES.includes(option.value as ApiAppointmentType),
+);

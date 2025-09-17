@@ -15,13 +15,13 @@ export interface AppointmentLocation {
 export interface AppointmentBlock extends BaseEntity {
   readonly start: Date;
   readonly end: Date;
+  readonly parallelExaminations?: number;
   readonly freeDuration?: string;
   readonly bookedDuration?: string;
 }
 
 export interface AppointmentBlockGroup extends AppointmentBlock {
   readonly types: ApiAppointmentType[];
-  readonly parallelExaminations?: number;
   readonly appointmentBlocks: AppointmentBlock[];
   readonly location?: AppointmentLocation;
 }

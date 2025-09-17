@@ -23,7 +23,10 @@ import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
-function validateForm(values: AppointmentBlockGroupValues) {
+function validateForm(
+  values: AppointmentBlockGroupValues,
+  standardDurations: Partial<Record<ApiAppointmentType, number>>,
+) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};
 
   const appointmentBlockErrors = validateFieldArray(
@@ -32,7 +35,7 @@ function validateForm(values: AppointmentBlockGroupValues) {
       validateAppointmentBlock(
         values.types,
         appointmentBlock,
-        values.allAppointmentTypes,
+        standardDurations,
       ),
   );
   if (isDefined(appointmentBlockErrors)) {
@@ -52,6 +55,7 @@ function validateForm(values: AppointmentBlockGroupValues) {
 interface AppointmentBlockGroupFormProps {
   initialValues: AppointmentBlockGroupValues;
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
+  standardDurations: Partial<Record<ApiAppointmentType, number>>;
   allMedicalAssistants: ApiUser[];
   allPhysicians: ApiUser[];
   blockedStaff: string[];
@@ -63,7 +67,6 @@ export interface AppointmentBlockGroupValues {
   types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
-  allAppointmentTypes: Record<string, number>;
   mfas: string[];
   physicians: string[];
 }
@@ -86,7 +89,7 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) => validateForm(values)}
+      validate={(values) => validateForm(values, props.standardDurations)}
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

@@ -26,7 +26,6 @@ public final class AppointmentMapper {
     return new GetAppointmentBlockGroupDto(
         appointmentBlockGroupData.externalId(),
         appointmentBlockGroupData.types(),
-        appointmentBlockGroupData.parallelExaminations(),
         appointmentBlockGroupData.location(),
         appointmentBlockGroupData.appointmentBlocks().stream()
             .map(AppointmentMapper::mapAppointmentBlockToDto)
@@ -43,6 +42,7 @@ public final class AppointmentMapper {
         details.appointmentBlock().getExternalId(),
         details.start(),
         details.end(),
+        details.parallelExaminations(),
         details.freeDuration() == null ? null : details.freeDuration().toString(),
         details.bookedDuration().toString());
   }

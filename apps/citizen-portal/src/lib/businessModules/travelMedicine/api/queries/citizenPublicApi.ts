@@ -5,8 +5,11 @@
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import { SEMI_STATIC_QUERY_OPTIONS } from "@eshg/lib-portal";
-import { ApiAppointmentType } from "@eshg/travel-medicine-api";
+import { SEMI_STATIC_QUERY_OPTIONS, durationToMinutes } from "@eshg/lib-portal";
+import {
+  ApiAppointmentType,
+  ApiTravelMedicineAppointmentStandardDurations,
+} from "@eshg/travel-medicine-api";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/apiQueryKeys";
@@ -19,16 +22,26 @@ export function useGetAllDiseasesCitizen() {
   });
 }
 
-export function useGetAllAppointmentTypesForCitizen() {
+export function useGetAppointmentStandardDurations() {
   const citizenPublicApi = useCitizenPublicApi();
   return useSuspenseQuery({
-    queryKey: citizenPublicApiQueryKey(["getAppointmentTypesForCitizen"]),
-    queryFn: () => citizenPublicApi.getAppointmentTypesForCitizen(),
-    select: (response) => response.appointmentTypeConfigDtos ?? [],
+    queryKey: citizenPublicApiQueryKey([
+      "getAppointmentStandardDurationsForCitizen",
+    ]),
+    queryFn: () => citizenPublicApi.getAppointmentStandardDurationsForCitizen(),
+    select: mapAppointmentDurationConfig,
     refetchOnWindowFocus: false,
   });
 }
 
+function mapAppointmentDurationConfig(
+  response: ApiTravelMedicineAppointmentStandardDurations,
+): Partial<Record<ApiAppointmentType, number>> {
+  return {
+    [ApiAppointmentType.Consultation]: durationToMinutes(response.consultation),
+    [ApiAppointmentType.Vaccination]: durationToMinutes(response.vaccination),
+  };
+}
 export function useGetFreeAppointmentsForCitizen(
   appointmentType: ApiAppointmentType,
   earliestDate?: Date,

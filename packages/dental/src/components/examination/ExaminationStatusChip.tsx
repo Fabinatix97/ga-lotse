@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip, ChipProps } from "@mui/joy";
+import { Chip, ChipProps, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 
 import { ExaminationStatus } from "../../api/models/ExaminationStatus";
 import { EXAMINATION_STATUS } from "../../translations/examination";
@@ -16,11 +17,17 @@ const examinationStatusColors: Record<ExaminationStatus, ChipProps["color"]> = {
 
 interface ExaminationStatusChipProps {
   status: ExaminationStatus;
+  invisibleStatusLabel?: boolean;
 }
 
 export function ExaminationStatusChip(props: ExaminationStatusChipProps) {
   return (
     <Chip color={examinationStatusColors[props.status]}>
+      {props.invisibleStatusLabel && (
+        <Typography component="span" sx={visuallyHidden}>
+          Status:
+        </Typography>
+      )}
       {EXAMINATION_STATUS[props.status]}
     </Chip>
   );

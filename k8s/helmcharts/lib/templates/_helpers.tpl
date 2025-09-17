@@ -206,15 +206,6 @@
     {{- end }}
 {{- end }}
 
-{{- define "getBootstrapEnabled" -}}
-    {{- $bootstrapEnabled := not (.Values.isSnapshot) -}}
-    {{- $existingConfigMap := (lookup "v1" "ConfigMap" .Release.Namespace "keycloak-bootstrap") -}}
-    {{- if and $existingConfigMap (index $existingConfigMap.data "bootstrapEnabled") -}}
-        {{- $bootstrapEnabled = (eq $existingConfigMap.data.bootstrapEnabled "true") -}}
-    {{- end -}}
-    {{- $bootstrapEnabled -}}
-{{- end -}}
-
 {{- define "truncateWithHash" -}}
   {{- $name := . -}}
   {{- if gt (len $name) 63 -}}

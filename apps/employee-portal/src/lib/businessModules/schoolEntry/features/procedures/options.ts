@@ -84,16 +84,18 @@ export const GERMAN_KNOWLEDGE_OPTIONS = buildEnumOptions(
   true,
 );
 
-const SUPPORTED_APPOINTMENT_TYPES: string[] = [
-  ApiAppointmentType.RegularExamination,
+export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.CanChild,
   ApiAppointmentType.EntryLevel,
+  ApiAppointmentType.RegularExamination,
   ApiAppointmentType.SpecialNeeds,
 ];
 
 export const APPOINTMENT_TYPE_OPTIONS = buildEnumOptions(
   APPOINTMENT_TYPES,
-).filter((option) => SUPPORTED_APPOINTMENT_TYPES.includes(option.value));
+).filter((option) =>
+  SUPPORTED_APPOINTMENT_TYPES.includes(option.value as ApiAppointmentType),
+);
 
 export const DISABILITY_TYPE_OPTIONS = buildEnumOptions(
   DISABILITY_TYPE_VALUES,

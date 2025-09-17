@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="5371549068775-1">
+    <addColumn tableName="appointment_block">
+      <column name="parallel_examinations" type="integer"/>
+    </addColumn>
+    <sql>
+      update appointment_block
+      set parallel_examinations = (
+        select abg.parallel_examinations
+        from appointment_block_group abg
+        where abg.id = appointment_block.appointment_block_group_id
+      );
+    </sql>
+    <addNotNullConstraint tableName="appointment_block"
+      columnName="parallel_examinations"
+      columnDataType="integer" validate="true"/>
+    <dropColumn tableName="appointment_block_group" columnName="parallel_examinations"/>
+  </changeSet>
+</databaseChangeLog>

@@ -41,6 +41,7 @@ export function DentalProphylaxisSessionDetailsPage() {
             <ProphylaxisSessionStatusChip
               status={prophylaxisSessionStatus}
               data-testid="status-chip"
+              invisibleStatusLabel
             />
           }
         />

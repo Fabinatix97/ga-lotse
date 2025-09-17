@@ -171,7 +171,7 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
             />
             <ScreeningField />
             <FluoridationField />
-            <Typography component="h3" level="title-sm">
+            <Typography component="h2" level="title-sm">
               Durchführende Personen
             </Typography>
             <UserField

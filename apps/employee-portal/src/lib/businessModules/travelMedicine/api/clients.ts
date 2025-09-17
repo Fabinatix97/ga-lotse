@@ -5,7 +5,6 @@
 
 import {
   AppointmentBlockApi,
-  AppointmentTypeApi,
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
@@ -20,6 +19,7 @@ import {
   ProcedureApi,
   ProcedureStepApi,
   ProgressEntryApi,
+  TravelMedicineAppointmentStandardDurationApi,
   UnusedBaseInventoryVaccineApi,
   VaccinationConsultationApi,
   VaccineApi,
@@ -48,8 +48,9 @@ export function useAppointmentBlockApi() {
   return new AppointmentBlockApi(useConfiguration());
 }
 
-export function useAppointmentTypeApi() {
-  return new AppointmentTypeApi(useConfiguration());
+export function useAppointmentStandardDurationsApi() {
+  const configuration = useConfiguration();
+  return new TravelMedicineAppointmentStandardDurationApi(configuration);
 }
 
 export function useInformationStatementTemplateApi() {

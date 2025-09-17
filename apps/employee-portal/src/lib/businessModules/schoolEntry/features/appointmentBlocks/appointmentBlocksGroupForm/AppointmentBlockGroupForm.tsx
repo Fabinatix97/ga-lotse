@@ -5,7 +5,7 @@
 
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { isDefined, isEmpty, mapToObj } from "remeda";
+import { isDefined, isEmpty } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
@@ -18,32 +18,28 @@ import {
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 import { CheckboxField } from "@eshg/lib-portal";
-import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
+import {
+  ApiAppointmentType,
+  ApiLocationSelectionMode,
+} from "@eshg/school-entry-api";
 
-import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 function validateForm(
   values: CreateAppointmentBlockGroupValues,
-  appointmentTypes: AppointmentTypeConfig[],
+  standardDurations: Partial<Record<ApiAppointmentType, number>>,
 ) {
   const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
-  const examinationDurations = mapToObj(
-    appointmentTypes,
-    (appointmentTypeConfig) => [
-      appointmentTypeConfig.appointmentTypeDto,
-      appointmentTypeConfig.standardDurationInMinutes,
-    ],
-  );
+
   const appointmentBlockErrors = validateFieldArray(
     values.appointmentBlocks,
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
         appointmentBlock,
-        examinationDurations,
+        standardDurations,
       ),
   );
   if (isDefined(appointmentBlockErrors)) {
@@ -63,7 +59,7 @@ function validateForm(
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
-  allAppointmentTypes: AppointmentTypeConfig[];
+  standardDurations: Partial<Record<ApiAppointmentType, number>>;
   allPhysicians: ApiUser[];
   allMfas: ApiUser[];
   blockedStaff: string[];
@@ -90,7 +86,7 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) => validateForm(values, props.allAppointmentTypes)}
+      validate={(values) => validateForm(values, props.standardDurations)}
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

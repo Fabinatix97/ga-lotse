@@ -52,6 +52,7 @@ export function RowSelectionTableToolbar(props: RowSelectionTableToolbarProps) {
         <Typography
           level="body-sm"
           data-testid="selectedIndicator"
+          role="status"
           aria-live="polite"
           aria-atomic="true"
         >

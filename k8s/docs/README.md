@@ -653,7 +653,7 @@ limitReqZone:
 
 ### Initial Bootstrapping of a Health Department Instance
 
-The first deployment will create a config map named `keycloak-bootstrap` with a single value `bootstrapEnabled = true`. Additionally, the following values need to be set correctly in the values file:
+On first deployment the following values need to be set correctly in the values file:
 
 ```yaml
 businessmodules:
@@ -663,39 +663,11 @@ businessmodules:
       username: keycloak-username-of-the-admin
 ```
 
-When the base module starts it will use the temporary bootstrap keycloak admin to create a client for itself. Additionally, it creates an admin account which will be used by the health department admin to further configure the instance. Access to this account needs to be claimed via the email sent automatically by keycloak to the specified email address (`businessmodules.base.setupAdmin.email`). Please note: The link in the email is only valid for twelve hours! However, restarting the base module will send new invitation emails as long as the setup admin was not created (i.e. the link was not used).
+When the base module starts it will use the temporary bootstrap keycloak admin to create a client for itself before deleting the temporary admin. Additionally, it creates an admin account which will be used by the health department admin to further configure the instance. Access to this account needs to be claimed via the email sent automatically by keycloak to the specified email address (`businessmodules.base.setupAdmin.email`). Please note: The link in the email is only valid for 72 hours! However, restarting the base module will send new invitation emails as long as the setup admin was not created (i.e. the link was not used).
 
-When all pods are up and running, and it was confirmed that keycloak was able to send out the admin account activation email, the base module has successfully configured keycloak and the bootstrap admin account must be disabled, by manually setting the `bootstrapEnabled` property in the config map to `false` directly on the cluster. Afterward, the base module needs to be restarted.
+When the admin account for the health department employee has been successfully created, the `email` and `username` property should be removed from the values file. This change can be delivered with the next regular deployment.
 
-When the admin account for the health department employee has been successfully created, the `email` and `username` property should also be removed from the values file, but this change can be delivered with the next regular deployment.
-
-```shell
-kubectl --namespace <HEALTH_DEPARTMENT_NAMESPACE> patch configmaps/keycloak-bootstrap -p '{ "data": { "bootstrapEnabled": "false" } }'
-```
-
-_replace <HEALTH_DEPARTMENT_NAMESPACE> by the actual health department's namespace_
-
-**Attention**: This will disable the keycloak bootstrap admin and is not easily reversible! If you lost access to keycloak please refer to the ga-lotse-documentation for the [recovery process](https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation/-/blob/main/operations-manual/keycloak-master-realm-administration/use-cases/recover-admin.adoc)!
-
-The `email` and `username` values from the base module configuration can be removed from the values file (this can wait until the next regular update / deployment).
-
-#### Manual migration for instances with completed bootstrapping
-
-Create this config map in the target namespace, the `release-namespace` property needs to be adjusted, the property `release-name` maybe as well.
-
-```yaml
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  annotations:
-    meta.helm.sh/release-name: eshg
-    meta.helm.sh/release-namespace: <my-namespace>
-  name: keycloak-bootstrap
-  labels:
-    app.kubernetes.io/managed-by: Helm
-data:
-  bootstrapEnabled: "false"
-```
+If you lost access to keycloak please refer to the ga-lotse-documentation for the [recovery process](https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation/-/blob/main/operations-manual/keycloak-master-realm-administration/use-cases/recover-admin.adoc).
 
 ### Admin Portal Certificates
 

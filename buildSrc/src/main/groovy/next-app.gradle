@@ -5,6 +5,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.github.gradle.node.pnpm.task.PnpmTask
 import com.github.gradle.node.task.NodeTask
+import de.eshg.frontend.PnpmTaskWithNpmDependencies
 import de.eshg.frontend.PnpmTaskWithProjectDependencies
 
 plugins {
@@ -89,7 +90,7 @@ tasks.register('build') {
   dependsOn 'assemble'
 }
 
-tasks.register('analyzeBundle', PnpmTask) {
+tasks.register('analyzeBundle', PnpmTaskWithNpmDependencies) {
   dependsOn 'prepareEnvironment'
   inputs.files fileTree(srcDir)
 

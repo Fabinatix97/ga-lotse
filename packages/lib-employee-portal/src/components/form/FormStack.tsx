@@ -20,6 +20,7 @@ export function FormStack(props: FormStackProps) {
       component={FormPlus}
       gap={props.dense ? 2 : 3}
       divider={props.divider}
+      aria-label={props["aria-label"]}
     >
       {props.children}
     </Stack>

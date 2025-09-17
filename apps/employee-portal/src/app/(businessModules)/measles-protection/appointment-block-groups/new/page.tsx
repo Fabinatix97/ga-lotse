@@ -12,15 +12,10 @@ import {
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
-import { useGetAppointmentDurations } from "@/lib/businessModules/measlesProtection/api/queries/appointmentTypeApi";
 import { CreateAppointmentBlockGroupForm } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/CreateAppointmentBlockGroupForm";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
 export default function NewAppointmentBlockGroupsPage() {
-  const {
-    data: { appointmentTypeConfigs: appointmentDurationsMeasles },
-  } = useGetAppointmentDurations();
-
   return (
     <StickyToolbarLayout
       toolbar={
@@ -33,9 +28,7 @@ export default function NewAppointmentBlockGroupsPage() {
       }
     >
       <MainContentLayout>
-        <CreateAppointmentBlockGroupForm
-          appointmentDurationsMeasles={appointmentDurationsMeasles}
-        />
+        <CreateAppointmentBlockGroupForm />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

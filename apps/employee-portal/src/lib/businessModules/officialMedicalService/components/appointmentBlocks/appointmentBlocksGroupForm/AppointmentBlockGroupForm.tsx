@@ -9,6 +9,7 @@ import { isDefined } from "remeda";
 
 import { ApiUser } from "@eshg/base-api";
 import {
+  ApiAppointmentType,
   AppointmentBlockGroupFields,
   AppointmentStaffSelection,
   FormButtonBar,
@@ -17,7 +18,6 @@ import {
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 
-import { AppointmentTypeConfig } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
@@ -47,8 +47,8 @@ function validateForm(
 interface AppointmentBlockGroupFormProps {
   initialValues: CreateAppointmentBlockGroupValues;
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
+  standardDuration: Partial<Record<ApiAppointmentType, number>>;
   allPhysicians: ApiUser[];
-  allAppointmentTypes: AppointmentTypeConfig[];
   blockedStaff: string[];
   freeStaff: string[];
   validateAvailability: (values: CreateAppointmentBlockGroupValues) => void;
@@ -62,16 +62,11 @@ export function AppointmentBlockGroupForm(
     firstName: option.firstName,
     lastName: option.lastName,
   }));
-  const appointmentTypesRecord: Record<string, number> = {};
-  props.allAppointmentTypes.forEach(
-    (currentType) =>
-      (appointmentTypesRecord[currentType.appointmentTypeDto] =
-        currentType.standardDurationInMinutes),
-  );
+
   return (
     <Formik
       initialValues={props.initialValues}
-      validate={(values) => validateForm(values, appointmentTypesRecord)}
+      validate={(values) => validateForm(values, props.standardDuration)}
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

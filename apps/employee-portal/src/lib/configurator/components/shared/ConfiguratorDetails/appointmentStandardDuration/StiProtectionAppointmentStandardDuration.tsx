@@ -12,7 +12,7 @@ import {
 } from "@eshg/sti-protection-api";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useStiProtectionAppointmentStandardDurationApi } from "@/lib/shared/api/clients";
+import { useStiProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
@@ -77,25 +77,25 @@ function mapValues(values: StiProtectionAppointmentStandardDurationFormValues) {
   };
 }
 
-function useStandardizedAppointmentDurationApi() {
-  const api = useStiProtectionAppointmentStandardDurationApi();
+function useStandardizedAppointmentDurationConfigApi() {
+  const api = useStiProtectionAppointmentStandardDurationConfigApi();
   function updateStandardDurations(
     params: ApiHivStiConsultationAppointmentStandardDurations,
   ) {
     return api.updateHivStiConsultationAppointmentStandardDurations(params);
   }
-  function getStandardDurations() {
-    return api.getHivStiConsultationAppointmentStandardDurations();
+  function getStandardDurationsConfig() {
+    return api.getHivStiConsultationAppointmentStandardDurationsConfig();
   }
   return {
     updateStandardDurations,
-    getStandardDurations,
+    getStandardDurationsConfig,
   };
 }
 
 function useUpdateStiProtectionAppointmentStandardDuration() {
   return useUpdateAppointmentStandardDuration(
-    useStandardizedAppointmentDurationApi,
+    useStandardizedAppointmentDurationConfigApi,
     mapValues,
   );
 }
@@ -113,7 +113,7 @@ function mapResponse(
 function useGetStiProtectionStandardDurations() {
   return useGetAppointmentStandardDurations(
     ConfiguratorModuleName.StiProtection,
-    useStandardizedAppointmentDurationApi,
+    useStandardizedAppointmentDurationConfigApi,
     mapResponse,
   );
 }

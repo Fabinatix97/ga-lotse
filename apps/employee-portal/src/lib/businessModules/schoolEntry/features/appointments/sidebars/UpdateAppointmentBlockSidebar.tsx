@@ -7,7 +7,7 @@ import { Grid, Stack, Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { Ref } from "react";
-import { mapToObj, unique } from "remeda";
+import { unique } from "remeda";
 
 import {
   FormButtonBar,
@@ -20,12 +20,14 @@ import {
   getAppointmentDurationInMinutes,
   toLocalDateTime,
 } from "@eshg/lib-employee-portal";
-import { ApiAppointmentBlock } from "@eshg/school-entry-api";
+import {
+  ApiAppointmentBlock,
+  ApiAppointmentType,
+} from "@eshg/school-entry-api";
 
-import { useAppointmentTypeApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
+import { useAppointmentStandardDurationsApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useUpdateAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
-import { getAllAppointmentTypesQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentTypeApi";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import {
   formatDateInput,
   formatTimeInput,
@@ -52,9 +54,9 @@ export function UpdateAppointmentBlockSidebar(
 ) {
   const { appointmentBlock, onCancel } = props;
   const updateAppointmentBlock = useUpdateAppointmentBlock();
-  const appointmentTypeApi = useAppointmentTypeApi();
-  const { data: allAppointmentTypes } = useSuspenseQuery(
-    getAllAppointmentTypesQuery(appointmentTypeApi),
+  const standardDurationApi = useAppointmentStandardDurationsApi();
+  const { data: standardDurations } = useSuspenseQuery(
+    useGetAppointmentStandardDurationsQuery(standardDurationApi),
   );
 
   async function handleUpdate(values: UpdateAppointmentBlockValues) {
@@ -110,7 +112,7 @@ export function UpdateAppointmentBlockSidebar(
                         value,
                         values.startTime,
                         appointmentBlock,
-                        allAppointmentTypes.appointmentTypeConfigs,
+                        standardDurations,
                       )
                     }
                   />
@@ -155,7 +157,7 @@ function validateAppointmentEndTime(
   value: string,
   startTime: string,
   appointmentBlock: ApiAppointmentBlock,
-  appointmentTypes: AppointmentTypeConfig[],
+  standardDurations: Partial<Record<ApiAppointmentType, number>>,
 ) {
   if (!isAfterTime(value, startTime)) {
     return "Die Endzeit muss nach der Startzeit liegen.";
@@ -176,13 +178,6 @@ function validateAppointmentEndTime(
     }
   }
 
-  const examinationDurations = mapToObj(
-    appointmentTypes,
-    (appointmentTypeConfig) => [
-      appointmentTypeConfig.appointmentTypeDto,
-      appointmentTypeConfig.standardDurationInMinutes,
-    ],
-  );
   if (
     appointmentBlock.types.every(
       (type) =>
@@ -190,14 +185,14 @@ function validateAppointmentEndTime(
           type,
           parseTime(startTime, appointmentBlock.start),
           parseTime(value, appointmentBlock.end),
-          examinationDurations,
+          standardDurations,
         ) === 0,
     )
   ) {
     const appointmentDurationInMinutes =
       unique(
         appointmentBlock.types.map((type) =>
-          getAppointmentDurationInMinutes(type, examinationDurations),
+          getAppointmentDurationInMinutes(type, standardDurations),
         ),
       ).join(", ") + " Minuten";
     return `Die Dauer ist nicht teilbar durch die Terminlängen: ${appointmentDurationInMinutes}.`;

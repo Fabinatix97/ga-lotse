@@ -134,7 +134,9 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
               procedureLabelApiQueryKey={childApiQueryKey}
             />
             <Divider />
-            <Typography>Einverständnis zur Fluoridierung</Typography>
+            <Typography component="h2">
+              Einverständnis zur Fluoridierung
+            </Typography>
             <Stack direction="row" gap={2} flexWrap="wrap">
               <BooleanSelectField
                 name="fluoridationConsent.consented"

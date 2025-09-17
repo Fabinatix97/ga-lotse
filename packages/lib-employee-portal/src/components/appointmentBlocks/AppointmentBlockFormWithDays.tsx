@@ -6,7 +6,15 @@
 import { Delete } from "@mui/icons-material";
 import { Box, Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { addDays, eachDayOfInterval, getDay, max, min } from "date-fns";
+import {
+  addDays,
+  eachDayOfInterval,
+  endOfDay,
+  getDay,
+  isPast,
+  max,
+  min,
+} from "date-fns";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { isDefined, isEmpty, unique } from "remeda";
@@ -16,6 +24,7 @@ import {
   EnumMap,
   NestedFormProps,
   createFieldNameMapper,
+  isDateString,
   validateTodayOrFutureDate,
 } from "@eshg/lib-portal";
 
@@ -93,6 +102,7 @@ export function AppointmentBlockFormWithDays(
 ) {
   const fieldName = createFieldNameMapper(props.name);
   const daysOfWeekFieldName = fieldName("daysOfWeek");
+  const endDateFieldName = fieldName("endDate");
   const daysOfWeekOptions = WEEKDAY_CHECKBOX_OPTIONS.filter(
     ({ disabled }) => !disabled,
   );
@@ -142,11 +152,20 @@ export function AppointmentBlockFormWithDays(
               validate={validateTodayOrFutureDate(
                 "Das Datum liegt in der Vergangenheit.",
               )}
+              onChange={(value) => {
+                if (
+                  isDateString(value) &&
+                  !isPast(endOfDay(value)) &&
+                  isEmpty(appointmentBlock?.endDate)
+                ) {
+                  void setFieldValue(endDateFieldName, value);
+                }
+              }}
             />
           </Grid>
           <Grid xs={2} sx={dateTimeFieldStyle}>
             <DateField
-              name={fieldName("endDate")}
+              name={endDateFieldName}
               label="Enddatum"
               required="Bitte ein Enddatum angeben."
               validate={validateTodayOrFutureDate(

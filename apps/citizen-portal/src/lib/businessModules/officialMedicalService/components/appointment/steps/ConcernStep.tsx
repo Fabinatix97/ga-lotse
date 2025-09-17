@@ -13,7 +13,7 @@ import { Alert, RadioGroupField, isNonEmptyString } from "@eshg/lib-portal";
 import { ApiConcern } from "@eshg/official-medical-service-api";
 
 import {
-  useGetAllAppointmentTypesQuery,
+  useGetAppointmentStandardDurationsQuery,
   useGetConcerns,
 } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
@@ -32,7 +32,7 @@ export function ConcernStep() {
   const { setFieldValue, values } = useFormikContext<AppointmentFormValues>();
 
   const [{ data }, { data: appointmentTypes }] = useSuspenseQueries({
-    queries: [useGetConcerns(), useGetAllAppointmentTypesQuery()],
+    queries: [useGetConcerns(), useGetAppointmentStandardDurationsQuery()],
   });
 
   const numberOfCategories = [
@@ -47,10 +47,9 @@ export function ConcernStep() {
           await setFieldValue("concern", {
             index: values.concern.index,
             appointmentType: tmp.appointmentType,
-            standardDurationInMinutes: appointmentTypes
-              .filter((item) => item.appointmentTypeDto === tmp.appointmentType)
-              .map((i) => i.standardDurationInMinutes)
-              .toString(),
+            standardDurationInMinutes: isDefined(tmp.appointmentType)
+              ? appointmentTypes[tmp.appointmentType]
+              : undefined,
             categoryNameDe: tmp.categoryNameDe,
             categoryNameEn: tmp.categoryNameEn,
             highPriority: tmp.highPriority,

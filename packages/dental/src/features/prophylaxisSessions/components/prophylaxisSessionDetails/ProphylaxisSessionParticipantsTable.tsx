@@ -241,8 +241,17 @@ export function ProphylaxisSessionParticipantsTable() {
       }
     >
       <Divider />
-      <Stack direction="row" gap={3} alignItems="center" flexWrap="wrap">
-        <Typography level="title-md">Filter:</Typography>
+      <Stack
+        direction="row"
+        gap={3}
+        alignItems="center"
+        flexWrap="wrap"
+        role="group"
+        aria-labelledby="filter-label"
+      >
+        <Typography id="filter-label" level="title-md">
+          Filter:
+        </Typography>
         <ParticipantFilter
           name="gender"
           label="Geschlecht"
@@ -253,7 +262,6 @@ export function ProphylaxisSessionParticipantsTable() {
             name="fluoridationConsentGiven"
             label="Fluoridierungseinverständnis"
             filters={FLUORIDATION_CONSENT_FILTERS}
-            sx={{ marginLeft: { xxs: 0, xl: 5 } }}
           />
         )}
       </Stack>

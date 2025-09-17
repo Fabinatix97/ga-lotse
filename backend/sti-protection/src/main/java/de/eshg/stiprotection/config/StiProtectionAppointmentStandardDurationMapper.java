@@ -27,13 +27,13 @@ public class StiProtectionAppointmentStandardDurationMapper {
             : null);
   }
 
-  private static SexWorkAppointmentStandardDurationsDto mapToSexWorkAppointmentStandardDurationsDto(
+  public static SexWorkAppointmentStandardDurationsDto mapToSexWorkAppointmentStandardDurationsDto(
       StiProtectionAppointmentStandardDuration domain) {
     return new SexWorkAppointmentStandardDurationsDto(
         domain.getResultsReview(), domain.getSexWorkConsultation());
   }
 
-  private static HivStiConsultationAppointmentStandardDurationsDto
+  public static HivStiConsultationAppointmentStandardDurationsDto
       mapToHivStiConsultationAppointmentStandardDurationsDto(
           StiProtectionAppointmentStandardDuration domain) {
     return new HivStiConsultationAppointmentStandardDurationsDto(

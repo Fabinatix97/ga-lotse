@@ -13,5 +13,6 @@ public record AppointmentBlockData(
     AppointmentBlock appointmentBlock,
     Instant start,
     Instant end,
+    int parallelExaminations,
     Duration freeDuration,
     Duration bookedDuration) {}

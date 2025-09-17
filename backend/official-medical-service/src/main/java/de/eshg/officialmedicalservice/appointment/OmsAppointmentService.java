@@ -12,7 +12,6 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.lib.appointmentblock.AbstractAppointmentService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
-import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
@@ -27,6 +26,7 @@ import de.eshg.officialmedicalservice.appointment.persistence.entity.Appointment
 import de.eshg.officialmedicalservice.appointment.persistence.entity.BookingState;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.BookingType;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
+import de.eshg.officialmedicalservice.config.OmsAppointmentStandardDurationService;
 import de.eshg.officialmedicalservice.notification.NotificationService;
 import de.eshg.officialmedicalservice.person.PersonClient;
 import de.eshg.officialmedicalservice.person.PersonMapper;
@@ -61,7 +61,7 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
   private final ProgressEntryService progressEntryService;
   private final PersonClient personClient;
   private final NotificationService notificationService;
-  private final AppointmentTypeService appointmentTypeService;
+  private final OmsAppointmentStandardDurationService appointmentStandardDurationService;
 
   private static final List<AppointmentTypeDto> supportedAppointmentTypes =
       List.of(OFFICIAL_MEDICAL_SERVICE_SHORT, OFFICIAL_MEDICAL_SERVICE_LONG);
@@ -78,7 +78,7 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
       ProgressEntryService progressEntryService,
       PersonClient personClient,
       NotificationService notificationService,
-      AppointmentTypeService appointmentTypeService) {
+      OmsAppointmentStandardDurationService appointmentStandardDurationService) {
     this.clock = clock;
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsAppointmentRepository = omsAppointmentRepository;
@@ -87,7 +87,7 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
     this.progressEntryService = progressEntryService;
     this.personClient = personClient;
     this.notificationService = notificationService;
-    this.appointmentTypeService = appointmentTypeService;
+    this.appointmentStandardDurationService = appointmentStandardDurationService;
   }
 
   @Override
@@ -146,14 +146,10 @@ public class OmsAppointmentService extends AbstractAppointmentService<OmsAppoint
       progressEntryService.createProgressEntryForAddingSelfBookingAppointment(procedure);
       if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
           && procedure.isSendEmailNotifications()) {
-        long duration =
-            appointmentTypeService.getAppointmentTypes().appointmentTypeConfigDtos().stream()
-                .filter(type -> type.appointmentTypeDto() == request.appointmentType())
-                .findFirst()
-                .orElseThrow()
-                .standardDurationInMinutes();
         notificationService.notifyNewAppointmentSelfBooking(
-            affectedPersonDto, duration + " Minuten");
+            affectedPersonDto,
+            appointmentStandardDurationService.getStandardDuration(appointmentType).toMinutes()
+                + " Minuten");
       }
     }
 

@@ -32,7 +32,6 @@ export function ProphylaxisSessionExaminationLayout(
 ) {
   const { participant } = props;
   const router = useRouter();
-  const prophylaxisSessionId = useProphylaxisSessionStore((state) => state.id);
   const dateOfExamination = useProphylaxisSessionStore(
     (state) => state.dateAndTime,
   );
@@ -73,7 +72,6 @@ export function ProphylaxisSessionExaminationLayout(
     <StickyToolbarLayout
       toolbar={
         <ProphylaxisSessionExaminationToolbar
-          prophylaxisSessionId={prophylaxisSessionId}
           participant={participant}
           status={participant.status}
           onBackClicked={examinationNavigation.gotoOverview}

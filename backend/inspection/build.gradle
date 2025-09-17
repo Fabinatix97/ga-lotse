@@ -27,8 +27,6 @@ dependencies {
     implementation 'de.topobyte:osm4j-pbf:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
-    implementation 'org.apache.poi:poi:latest.release'
-    implementation 'org.apache.poi:poi-ooxml:latest.release'
     implementation 'com.google.guava:guava:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'

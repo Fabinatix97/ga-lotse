@@ -21,16 +21,42 @@ interface TableSheetProps extends RequiresChildren {
   loading?: boolean;
   hideTable?: boolean;
   title?: ReactNode;
+  invertTitleAndContentDomOrder?: boolean;
   footer?: ReactNode;
   "aria-label"?: string;
+  role?: string;
 }
 
 export function TableSheet(props: TableSheetProps): ReactElement {
   return (
-    <StyledSheet aria-label={props["aria-label"]}>
-      <Stack flex={1} overflow="auto">
-        {props.title}
-        {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}
+    <StyledSheet role={props.role} aria-label={props["aria-label"]}>
+      <Stack
+        flex={1}
+        overflow="auto"
+        flexDirection={
+          props.invertTitleAndContentDomOrder ? "column-reverse" : "column"
+        }
+      >
+        {props.invertTitleAndContentDomOrder && (
+          <>
+            {props.hideTable ? (
+              <Box flex={1} overflow="auto" />
+            ) : (
+              props.children
+            )}
+            {props.title}
+          </>
+        )}
+        {!props.invertTitleAndContentDomOrder && (
+          <>
+            {props.title}
+            {props.hideTable ? (
+              <Box flex={1} overflow="auto" />
+            ) : (
+              props.children
+            )}
+          </>
+        )}
       </Stack>
       {props.footer}
       {props.loading && <LoadingOverlay zIndex={zIndexTable} />}

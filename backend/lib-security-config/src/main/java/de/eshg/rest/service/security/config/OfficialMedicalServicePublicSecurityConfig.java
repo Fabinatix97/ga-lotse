@@ -16,8 +16,7 @@ public class OfficialMedicalServicePublicSecurityConfig
   OfficialMedicalServicePublicSecurityConfig() {
     super("official-medical-service");
 
-    grantAccessToLibAppointmentBlockUrls(
-        EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN, false);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN,
         ModuleLeaderRole.OFFICIAL_MEDICAL_SERVICE_LEADER);

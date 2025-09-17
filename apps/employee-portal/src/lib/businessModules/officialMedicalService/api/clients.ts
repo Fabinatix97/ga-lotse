@@ -5,7 +5,6 @@
 
 import {
   AppointmentBlockApi,
-  AppointmentTypeApi,
   ApprovalRequestApi,
   ArchivingApi,
   ConcernApi,
@@ -14,6 +13,7 @@ import {
   FileApi,
   GdprValidationTaskApi,
   OmsAppointmentApi,
+  OmsAppointmentStandardDurationApi,
   OmsDocumentApi,
   OmsFileApi,
   ProcedureApi,
@@ -34,8 +34,9 @@ export function useAppointmentBlockApi() {
   return new AppointmentBlockApi(useConfiguration());
 }
 
-export function useAppointmentTypeApi() {
-  return new AppointmentTypeApi(useConfiguration());
+export function useAppointmentStandardDurationsApi() {
+  const configuration = useConfiguration();
+  return new OmsAppointmentStandardDurationApi(configuration);
 }
 
 export function useProgressEntryApi() {

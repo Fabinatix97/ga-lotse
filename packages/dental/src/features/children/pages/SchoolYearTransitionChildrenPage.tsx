@@ -147,6 +147,7 @@ export function SchoolYearTransitionChildrenPage(
           <TablePage data-testid="childrenTable" fullHeight>
             <TableSheet
               loading={isFetching}
+              invertTitleAndContentDomOrder
               title={
                 <SchoolYearTransitionChildrenTableTitle
                   rowSelection={rowSelection}
@@ -154,6 +155,8 @@ export function SchoolYearTransitionChildrenPage(
                   institutionName={institution.name}
                 />
               }
+              role="group"
+              aria-label="Kinder"
             >
               <DataTable
                 data={childrenForTransition}

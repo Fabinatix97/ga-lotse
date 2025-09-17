@@ -5,6 +5,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.github.gradle.node.pnpm.task.PnpmTask
 import org.apache.commons.codec.digest.DigestUtils
+import de.eshg.frontend.PnpmTaskWithNpmDependencies
 
 plugins {
   id 'node'
@@ -58,7 +59,7 @@ tasks.register('tsc', PnpmTask) {
   args = ['tsc']
 }
 
-tasks.register('assemble', PnpmTask) {
+tasks.register('assemble', PnpmTaskWithNpmDependencies) {
   dependsOn tsc
   args = ['vite', 'build']
 
@@ -66,7 +67,6 @@ tasks.register('assemble', PnpmTask) {
     include '**/*'
   })
   inputs.file('vite.config.ts')
-  inputs.file('package.json')
   inputs.file('tsconfig.json')
 
   outputs.dir(layout.buildDirectory.dir('dist'))

@@ -27,7 +27,14 @@ interface ResultInputFieldProps {
 }
 
 export function ResultInputField(props: ResultInputFieldProps) {
-  const { field, result, toothContext, setResultAction, ...inputProps } = props;
+  const {
+    field,
+    result,
+    toothContext,
+    setResultAction,
+    isTabFocusable,
+    ...inputProps
+  } = props;
   const isMainResultField = field === "mainResultField";
   const InputComponent = isMainResultField ? SoftRequiredInput : Input;
   const fieldContext: ElementContext = {
@@ -47,7 +54,7 @@ export function ResultInputField(props: ResultInputFieldProps) {
       slotProps={{
         input: {
           ref: elementRef,
-          tabIndex: props.isTabFocusable ? 0 : -1,
+          tabIndex: isTabFocusable ? 0 : -1,
           "aria-invalid": result.isInvalid,
         },
       }}

@@ -18,9 +18,10 @@ import {
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
 
+import { useAppointmentStandardDurationsApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useAddProcedureStep } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
-import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentStandardDurations";
 import { useGetAllAssignableServicesQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import {
   AddServiceAppointmentForm,
@@ -43,26 +44,21 @@ function AddServiceAppointmentSidebar(
   props: Readonly<AddServiceAppointmentSidebarProps>,
 ) {
   const addProcedure = useAddProcedureStep();
+  const standardDurationApi = useAppointmentStandardDurationsApi();
 
   const [
-    { data: allAppointmentTypes },
+    { data: standardDurations },
     { data: allAssignableServices },
     { data: freeConsultationBlockAppointments },
     { data: freeVaccinationBlockAppointments },
   ] = useSuspenseQueries({
     queries: [
-      useGetAllAppointmentTypesQuery(),
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
       useGetAllAssignableServicesQuery(props.procedureId),
       useGetFreeAppointmentsQuery(ApiAppointmentType.Consultation),
       useGetFreeAppointmentsQuery(ApiAppointmentType.Vaccination),
     ],
   });
-
-  const vaccinationStandardDuration = allAppointmentTypes
-    ? allAppointmentTypes.appointmentTypeConfigs.find(
-        (type) => type.appointmentTypeDto === ApiAppointmentType.Vaccination,
-      )!.standardDurationInMinutes
-    : "";
 
   function createUseAddProcedureRequest(
     values: AddServiceAppointmentFormValues,
@@ -117,7 +113,8 @@ function AddServiceAppointmentSidebar(
     bookingType: "" as ApiAppointmentBookingType,
     blockAppointment: undefined,
     userDefinedAppointmentDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-    appointmentTypeStandardDuration: vaccinationStandardDuration as number,
+    appointmentTypeStandardDuration:
+      standardDurations[ApiAppointmentType.Vaccination],
     appointmentType: "" as ApiAppointmentType,
     earliestDate: format(new Date(), "yyyy-MM-dd"),
   };

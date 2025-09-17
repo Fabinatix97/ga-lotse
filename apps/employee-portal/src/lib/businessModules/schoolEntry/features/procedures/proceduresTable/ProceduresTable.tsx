@@ -39,7 +39,13 @@ import {
   useRowSelection,
   useSyncRowSelection,
 } from "@eshg/lib-employee-portal";
-import { formatDate, formatWeekdayDateTime } from "@eshg/lib-portal";
+import {
+  UnstyledTabList,
+  UnstyledTabPanel,
+  UnstyledTabs,
+  formatDate,
+  formatWeekdayDateTime,
+} from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiSchoolEntryProcedureSortKey,
@@ -58,9 +64,6 @@ import {
   PROCEDURE_TYPES,
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { UnstyledTabList } from "@/lib/shared/components/unstyledTab/UnstyledTabList";
-import { UnstyledTabPanel } from "@/lib/shared/components/unstyledTab/UnstyledTabPanel";
-import { UnstyledTabs } from "@/lib/shared/components/unstyledTab/UnstyledTabs";
 
 import {
   ProcedureFilterSettings,

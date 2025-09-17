@@ -14,8 +14,13 @@ import { DynamicLayoutProps } from "@eshg/lib-portal";
 import { ProcedureToolbar } from "@/lib/businessModules/schoolEntry/features/procedures/ProcedureToolbar";
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type SchoolEntryProcedureRouteParams = {
+  procedureId: string;
+};
+
 export default async function SchoolEntryProcedureLayout(
-  props: DynamicLayoutProps,
+  props: DynamicLayoutProps<SchoolEntryProcedureRouteParams>,
 ) {
   const params = await props.params;
   const { procedureId } = v.parse(

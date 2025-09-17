@@ -21,6 +21,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * @param bootstrapAdmin bootstrap admin user created by Keycloak on its first launch used with the
+ *     admin-cli client to create the {@link #adminClient}
+ * @param adminClient client created by the base module on its first launch for itself used for all
+ *     further interactions with Keycloak, including creation of and updates to realms, users,
+ *     roles, other clients, ...
+ * @param setupAdmin admin created by the base module for a human Keycloak admin
+ */
 @Validated
 @ConfigurationProperties(prefix = "eshg.keycloak")
 public record KeycloakProperties(
@@ -212,7 +220,7 @@ public record KeycloakProperties(
   public record Internal(@NotBlank String url) {}
 
   public record BootstrapAdmin(
-      @NotBlank String user, @NotBlank String password, @NotNull Boolean enabled) {}
+      @NotBlank String user, @NotBlank String password, @NotNull Boolean keepEnabled) {}
 
   public record AdminClient(@NotBlank String clientId, @NotBlank String clientSecret) {
     public String getKeycloakClientId() {

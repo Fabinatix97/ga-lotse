@@ -6,18 +6,6 @@
 
 {{ if .Values.keycloak.enabled }}
 
-{{- $bootstrapEnabled := (include "getBootstrapEnabled" .) }}
-
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: keycloak-bootstrap
-  namespace: {{ .Release.Namespace }}
-data:
-  bootstrapEnabled: "{{ $bootstrapEnabled }}"
-
----
-
 {{ include "lib.database" (list "keycloak" .Values.keycloak.database .) }}
 
 kind: Service
@@ -165,7 +153,6 @@ spec:
           resources:
           {{- toYaml (default dict .Values.keycloak.resources) | nindent 12 }}
           env:
-            {{- if eq $bootstrapEnabled "true" }}
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
               value: admin
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
@@ -173,7 +160,6 @@ spec:
                 secretKeyRef:
                   key: password
                   name: keycloak-admin
-            {{- end }}
             - name: KC_PROXY_HEADERS
               value: xforwarded
             - name: KC_HOSTNAME

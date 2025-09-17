@@ -123,13 +123,7 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
       onSubmit={(formValues) => handleChange(formValues)}
     >
       {({ resetForm }) => (
-        <Stack
-          gap={2}
-          role={props.role}
-          sx={{ display: props.isHidden ? "none" : undefined }}
-          component="section"
-          aria-label="Suchpanel"
-        >
+        <Stack gap={2} sx={{ display: props.isHidden ? "none" : undefined }}>
           {props.allowPersonIdSearch && (
             <Alert
               color="primary"
@@ -145,7 +139,12 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
               }
             />
           )}
-          <SearchFormSheet id={props.id} data-testid="personSearch">
+          <SearchFormSheet
+            id={props.id}
+            data-testid="personSearch"
+            isSearchForm
+            aria-label="Personen"
+          >
             {props.allowPersonIdSearch ? (
               <Stack gap={2} marginBottom={2}>
                 <Stack direction="row" gap={3}>

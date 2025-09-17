@@ -8,11 +8,10 @@ import { first, last, sumBy } from "remeda";
 import {
   AppointmentBlock,
   AppointmentBlockGroup,
-  durationToSecond,
   mapBaseEntity,
   secondToISODuration,
 } from "@eshg/lib-employee-portal";
-import { assertNonEmptyArray } from "@eshg/lib-portal";
+import { assertNonEmptyArray, durationToSecond } from "@eshg/lib-portal";
 import {
   ApiGetAppointmentBlock,
   ApiGetAppointmentBlockGroup,
@@ -25,6 +24,7 @@ function mapAppointmentBlock(
     ...mapBaseEntity(response),
     start: response.start,
     end: response.end,
+    parallelExaminations: response.parallelExaminations,
     freeDuration: response.freeDuration,
     bookedDuration: response.bookedDuration,
   };
@@ -51,7 +51,6 @@ export function mapAppointmentBlockGroup(
   return {
     ...mapBaseEntity(response),
     types: response.types,
-    parallelExaminations: response.parallelExaminations,
     start: firstAppointmentBlock.start,
     end: lastAppointmentBlock.end,
     freeDuration: aggregatedFreeDuration,

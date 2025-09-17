@@ -191,7 +191,7 @@ export function SchoolYearTransitionBasePage(
               );
             }}
           >
-            <FormPlus>
+            <FormPlus isSearchForm aria-label={props.titleSuffix}>
               <Stack direction="row" alignItems="end" gap={3}>
                 <InputField
                   label="Suche"

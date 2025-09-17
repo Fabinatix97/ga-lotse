@@ -36,6 +36,7 @@ export function MainLayout<THeaderProps extends NavigationProps>({
   return (
     <Box
       sx={{
+        flex: 1,
         display: "flex",
         flexDirection: "column",
         height: "100%",

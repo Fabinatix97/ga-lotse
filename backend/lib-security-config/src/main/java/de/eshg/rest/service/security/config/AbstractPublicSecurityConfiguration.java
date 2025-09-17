@@ -19,6 +19,7 @@ import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.PermissionRole;
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.FourEyesLibrary;
+import de.eshg.rest.service.security.config.BaseUrls.LibAppointmentBlock;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary.Gdpr;
 import java.util.Arrays;
@@ -124,8 +125,7 @@ public abstract class AbstractPublicSecurityConfiguration {
     }
   }
 
-  protected void grantAccessToLibAppointmentBlockUrls(
-      PermissionRole permissionRole, boolean allowUpdateAppointmentType) {
+  protected void grantAccessToLibAppointmentBlockUrls(PermissionRole permissionRole) {
     requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
         .hasRole(permissionRole);
     requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
@@ -134,16 +134,8 @@ public abstract class AbstractPublicSecurityConfiguration {
             HttpMethod.GET,
             BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY_API + "/**")
         .hasRole(permissionRole);
-
-    if (allowUpdateAppointmentType) {
-      requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-          .hasRole(permissionRole);
-      requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-          .hasRole(permissionRole);
-    } else {
-      requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-          .hasRole(permissionRole);
-    }
+    requestMatchers(GET, LibAppointmentBlock.APPOINTMENT_STANDARD_DURATION_INFO_API)
+        .hasRole(permissionRole);
   }
 
   protected void grantAccessToLibProceduresUrls(

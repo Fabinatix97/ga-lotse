@@ -14,11 +14,10 @@ import {
 } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
-import { EnumMap, formatDateTime } from "@eshg/lib-portal";
+import { EnumMap, durationToSecond, formatDateTime } from "@eshg/lib-portal";
 
 import { useConfirmationDialog } from "../../hooks/useConfirmationDialog";
 import {
-  durationToSecond,
   formatCalendarWeek,
   formatCalendarWeekRange,
   formatDurationToHoursAndMinutes,

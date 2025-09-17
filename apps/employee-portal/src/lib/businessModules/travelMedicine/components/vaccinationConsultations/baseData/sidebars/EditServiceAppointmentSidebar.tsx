@@ -16,9 +16,10 @@ import {
   PatchAppointmentRequest,
 } from "@eshg/travel-medicine-api";
 
+import { useAppointmentStandardDurationsApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { usePatchAppointment } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
-import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentStandardDurations";
 import { useGetProcedureStepServicesQuery } from "@/lib/businessModules/travelMedicine/api/queries/procedureSteps";
 import {
   EditServiceAppointmentForm,
@@ -43,15 +44,16 @@ function EditServiceAppointmentSidebar(
   props: Readonly<EditServiceAppointmentSidebarProps>,
 ) {
   const patchProcedure = usePatchAppointment();
+  const standardDurationApi = useAppointmentStandardDurationsApi();
 
   const [
-    { data: allAppointmentTypes },
+    { data: standardDurations },
     { data: procedureStepServices },
     { data: freeConsultationBlockAppointments },
     { data: freeVaccinationBlockAppointments },
   ] = useSuspenseQueries({
     queries: [
-      useGetAllAppointmentTypesQuery(),
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
       useGetProcedureStepServicesQuery(
         props.procedureStep.procedureStepId ?? "",
       ),
@@ -59,12 +61,6 @@ function EditServiceAppointmentSidebar(
       useGetFreeAppointmentsQuery(ApiAppointmentType.Vaccination),
     ],
   });
-
-  const vaccinationStandardDuration = allAppointmentTypes
-    ? allAppointmentTypes.appointmentTypeConfigs.find(
-        (type) => type.appointmentTypeDto === ApiAppointmentType.Vaccination,
-      )!.standardDurationInMinutes
-    : "";
 
   function createUsePatchAppointmentRequest(
     values: EditServiceAppointmentFormValues,
@@ -109,7 +105,8 @@ function EditServiceAppointmentSidebar(
       blockAppointment: undefined,
       appointmentType: procedureStep.appointmentType,
       userDefinedAppointmentDate: mapDateTimeToInput(new Date(), false),
-      appointmentTypeStandardDuration: vaccinationStandardDuration as number,
+      appointmentTypeStandardDuration:
+        standardDurations[ApiAppointmentType.Vaccination],
       appointmentDate: procedureStep.appointment,
       earliestDate: procedureStep.earliestDate,
     };

@@ -19,6 +19,10 @@ dependencies {
 
     implementation 'org.apache.poi:poi:latest.release'
     implementation 'org.apache.poi:poi-ooxml:latest.release'
+    // explicitly tell gradle to use the latest release of commons-compress (currently 1.28.0),
+    // because otherwise gradle chooses the version from poi-ooxml`s dependencies (currently 1.27.1)
+    // which is not compatible with the current version of tika 3.2.2 (e.g. https://issues.apache.org/jira/browse/TIKA-4469 )
+    implementation 'org.apache.commons:commons-compress:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'

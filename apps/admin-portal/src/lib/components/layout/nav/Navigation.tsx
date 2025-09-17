@@ -115,6 +115,7 @@ export function Navigation() {
           xxs: `calc(100vh - ${headerHeightMobile})`,
           sm: `calc(100vh - ${headerHeightDesktop})`,
         },
+        overflowY: "auto",
         width: navigationSidebarOpen ? "300px" : "58px",
         padding: navigationSidebarOpen
           ? theme.spacing(5, 3, 3, 3)

@@ -8,6 +8,8 @@ package de.eshg.lib.appointmentblock.api;
 import de.eshg.base.user.api.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
@@ -32,6 +34,7 @@ public record AppointmentBlockDto(
             description = "Time at which the appointment block ends.",
             example = "2016-01-01T01:45:00.123456+01:00")
         Instant end,
+    @NotNull @Min(1) @Max(10) int parallelExaminations,
     @NotNull List<AppointmentTypeDto> types,
     @NotNull List<UUID> physicians,
     @NotNull List<UUID> mfas,

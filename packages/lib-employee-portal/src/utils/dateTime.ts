@@ -102,10 +102,6 @@ export function formatDurationToHoursAndMinutes(
       );
 }
 
-export function durationToSecond(isoDuration: string) {
-  return toSeconds(parse(isoDuration));
-}
-
 export function secondToISODuration(second: number) {
   const baseline = new Date();
   return formatISODuration(

@@ -5,6 +5,7 @@
 
 package de.eshg.officialmedicalservice.citizenpublic;
 
+import static de.eshg.officialmedicalservice.config.OmsAppointmentStandardDurationMapper.mapToOmsAppointmentStandardDurationsDto;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
@@ -13,15 +14,15 @@ import de.eshg.config.departmentinfo.OpeningHoursService;
 import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.config.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
-import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
-import de.eshg.lib.appointmentblock.api.GetAppointmentTypesResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.officialmedicalservice.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.officialmedicalservice.concern.ConcernService;
+import de.eshg.officialmedicalservice.config.OmsAppointmentStandardDurationService;
+import de.eshg.officialmedicalservice.config.api.OmsAppointmentStandardDurationsDto;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.procedure.api.GetConcernsResponse;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
@@ -60,7 +61,7 @@ public class CitizenPublicController {
   public static final String PRIVACY_NOTICE_URL = "/privacy-notice";
   public static final String PRIVACY_POLICY_URL = "/privacy-policy";
   public static final String CONCERNS_URL = "/concerns";
-  public static final String APPOINTMENT_TYPES_URL = "/appointment-types";
+  public static final String APPOINTMENT_STANDARD_DURATIONS_URL = "/appointment-standard-duration";
   public static final String LANDING_URL = "/landing";
   public static final String VALIDATE_FILES_URL = "/validate-files";
 
@@ -70,7 +71,7 @@ public class CitizenPublicController {
   private final AppointmentBlockService appointmentBlockService;
   private final Clock clock;
   private final ConcernService concernService;
-  private final AppointmentTypeService appointmentTypeService;
+  private final OmsAppointmentStandardDurationService appointmentStandardDurationService;
   private final PrivacyDocumentService privacyDocumentService;
   private final OmsDocumentService omsDocumentService;
 
@@ -81,7 +82,7 @@ public class CitizenPublicController {
       AppointmentBlockService appointmentBlockService,
       Clock clock,
       ConcernService concernService,
-      AppointmentTypeService appointmentTypeService,
+      OmsAppointmentStandardDurationService appointmentStandardDurationService,
       PrivacyDocumentService privacyDocumentService,
       OmsDocumentService omsDocumentService) {
     this.openingHoursService = openingHoursService;
@@ -90,7 +91,7 @@ public class CitizenPublicController {
     this.appointmentBlockService = appointmentBlockService;
     this.clock = clock;
     this.concernService = concernService;
-    this.appointmentTypeService = appointmentTypeService;
+    this.appointmentStandardDurationService = appointmentStandardDurationService;
     this.privacyDocumentService = privacyDocumentService;
     this.omsDocumentService = omsDocumentService;
   }
@@ -171,11 +172,14 @@ public class CitizenPublicController {
     return concernService.getConcernsVisibleInOnlinePortal();
   }
 
-  @Operation(summary = "Gets all Appointment Types")
-  @GetMapping(path = APPOINTMENT_TYPES_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(
+      summary = "Get standard durations for official medical service appointments for citizen")
+  @GetMapping(
+      path = APPOINTMENT_STANDARD_DURATIONS_URL,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional(readOnly = true)
-  public GetAppointmentTypesResponse getAppointmentTypesForCitizen() {
-    return appointmentTypeService.getAppointmentTypes();
+  public OmsAppointmentStandardDurationsDto getAppointmentStandardDurationsForCitizen() {
+    return mapToOmsAppointmentStandardDurationsDto(appointmentStandardDurationService.getConfig());
   }
 
   @Operation(summary = "Validate files")

@@ -6,7 +6,6 @@
 import {
   AppointmentBlockApi,
   AppointmentBlockDefaultAvailabilityApi,
-  AppointmentTypeApi,
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
@@ -18,6 +17,7 @@ import {
   ProcedureLabelApi,
   ProgressEntryApi,
   SchoolEntryApi,
+  SchoolEntryAppointmentStandardDurationApi,
   SchoolEntryConfigApi,
   SchoolEntryCountryCodesApi,
   SchoolEntryFeatureTogglesApi,
@@ -56,6 +56,11 @@ export function useAppointmentBlockApi() {
 export function useAppointmentBlockDefaultAvailabilityApi() {
   const configuration = useConfiguration();
   return new AppointmentBlockDefaultAvailabilityApi(configuration);
+}
+
+export function useAppointmentStandardDurationsApi() {
+  const configuration = useConfiguration();
+  return new SchoolEntryAppointmentStandardDurationApi(configuration);
 }
 
 export function useValueEvaluatorApi() {
@@ -101,11 +106,6 @@ export function useFileApi() {
 export function useApprovalRequestApi() {
   const configuration = useConfiguration();
   return new ApprovalRequestApi(configuration);
-}
-
-export function useAppointmentTypeApi() {
-  const configuration = useConfiguration();
-  return new AppointmentTypeApi(configuration);
 }
 
 export function useArchivingApi() {

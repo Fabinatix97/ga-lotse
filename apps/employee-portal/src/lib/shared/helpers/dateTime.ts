@@ -18,11 +18,10 @@ import {
   isSameDay,
   parse,
   secondsToMilliseconds,
-  secondsToMinutes,
 } from "date-fns";
 import { parse as parseDuration, toSeconds } from "iso8601-duration";
 
-import { durationToSecond, getDateFnsLocale } from "@eshg/lib-employee-portal";
+import { getDateFnsLocale } from "@eshg/lib-employee-portal";
 import {
   DATE_FORMAT,
   TIME_FORMAT,
@@ -88,10 +87,6 @@ export function formatDurationRounded(
     locale: options?.locale ?? getDateFnsLocale(),
     roundingMethod: "round",
   });
-}
-
-export function durationToMinutes(isoDuration: string) {
-  return secondsToMinutes(durationToSecond(isoDuration));
 }
 
 export function formatDateRangeNumeric(start: Date, end: Date) {

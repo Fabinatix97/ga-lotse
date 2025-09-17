@@ -352,15 +352,6 @@ data:
   env: |
     PUBLIC_BACKEND_SERVICE_DIRECTORY_URL=https://ap.central.svc.cluster.local
 ---
-# Source: ga-lotse-ctr/templates/keycloak.yaml
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: keycloak-bootstrap
-  namespace: snapshot-ns
-data:
-  bootstrapEnabled: "false"
----
 # Source: ga-lotse-ctr/templates/pdf-converter-portal-config.yaml
 kind: ConfigMap
 apiVersion: v1
@@ -1769,6 +1760,13 @@ spec:
             cpu: 10m
             memory: 256Mi
         env:
+        - name: KC_BOOTSTRAP_ADMIN_USERNAME
+          value: admin
+        - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: keycloak-admin
         - name: KC_PROXY_HEADERS
           value: xforwarded
         - name: KC_HOSTNAME

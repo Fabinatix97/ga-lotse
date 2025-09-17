@@ -13,12 +13,12 @@ export const appointmentBlockApiQueryKey = queryKeyFactory(
   officialMedicalServiceApiQueryKey(["appointmentBlockApi"]),
 );
 
-export const appointmentTypesApiQueryKey = queryKeyFactory(
-  officialMedicalServiceApiQueryKey(["appointmentTypesApi"]),
+export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
+  officialMedicalServiceApiQueryKey(["appointmentStandardDurationApi"]),
 );
 
 export const appointmentStaffApiQueryKey = queryKeyFactory(
-  officialMedicalServiceApiQueryKey(["appointtingStaffApi"]),
+  officialMedicalServiceApiQueryKey(["appointmentStaffApi"]),
 );
 
 export const employeeOmsProcedureApiQueryKey = queryKeyFactory(

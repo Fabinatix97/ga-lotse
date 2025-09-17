@@ -12,7 +12,7 @@ import {
 } from "@eshg/sti-protection-api";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useStiProtectionAppointmentStandardDurationApi } from "@/lib/shared/api/clients";
+import { useStiProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
@@ -36,8 +36,8 @@ export function SexWorkAppointmentStandardDuration() {
       moduleName={ConfiguratorModuleName.sexWork}
       endpointName={SEX_WORK_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME}
       fields={fields}
-      queryHook={useGetSexWorkStandardDurations}
-      updateHook={useUpdateSexWorkAppointmentStandardDuration}
+      queryHook={useGetSexWorkStandardDurationsConfig}
+      updateHook={useUpdateSexWorkAppointmentStandardDurationConfig}
     />
   );
 }
@@ -76,25 +76,25 @@ function mapValues(values: SexWorkAppointmentStandardDurationFormValues) {
   };
 }
 
-function useStandardizedAppointmentDurationApi() {
-  const api = useStiProtectionAppointmentStandardDurationApi();
+function useStandardizedAppointmentDurationConfigApi() {
+  const api = useStiProtectionAppointmentStandardDurationConfigApi();
   function updateStandardDurations(
     params: ApiSexWorkAppointmentStandardDurations,
   ) {
     return api.updateSexWorkAppointmentStandardDurations(params);
   }
-  function getStandardDurations() {
-    return api.getSexWorkAppointmentStandardDurations();
+  function getStandardDurationsConfig() {
+    return api.getSexWorkAppointmentStandardDurationsConfig();
   }
   return {
     updateStandardDurations,
-    getStandardDurations,
+    getStandardDurationsConfig,
   };
 }
 
-function useUpdateSexWorkAppointmentStandardDuration() {
+function useUpdateSexWorkAppointmentStandardDurationConfig() {
   return useUpdateAppointmentStandardDuration(
-    useStandardizedAppointmentDurationApi,
+    useStandardizedAppointmentDurationConfigApi,
     mapValues,
   );
 }
@@ -109,10 +109,10 @@ function mapResponse(
   };
 }
 
-function useGetSexWorkStandardDurations() {
+function useGetSexWorkStandardDurationsConfig() {
   return useGetAppointmentStandardDurations(
     ConfiguratorModuleName.sexWork,
-    useStandardizedAppointmentDurationApi,
+    useStandardizedAppointmentDurationConfigApi,
     mapResponse,
   );
 }

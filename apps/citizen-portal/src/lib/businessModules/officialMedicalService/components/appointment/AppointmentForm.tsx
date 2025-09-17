@@ -66,7 +66,7 @@ export interface AppointmentFormValues {
   > & {
     index: string;
     appointmentType: OptionalFieldValue<ApiAppointmentType>;
-    standardDurationInMinutes: string;
+    standardDurationInMinutes: OptionalFieldValue<number>;
   };
   appointment?: ApiAppointment;
   confirmOnlineServices: boolean;

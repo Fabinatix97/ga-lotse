@@ -30,6 +30,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import jakarta.annotation.PreDestroy;
+import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.Response;
 import java.time.Duration;
@@ -44,6 +45,7 @@ import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -96,7 +98,8 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
   }
 
   @SuppressWarnings("this-escape")
-  public RealmBoundKeycloakClient(
+  @VisibleForTesting
+  RealmBoundKeycloakClient(
       KeycloakProperties keycloakProperties, String realmName, boolean isClient) {
     this.realmName = realmName;
     this.provisionTestUsers = keycloakProperties.provisionTestUsers();
@@ -130,6 +133,24 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
           keycloak.serverInfo().getInfo().getSystemInfo().getVersion());
     } catch (Exception e) {
       throw new KeycloakException("Failed to connect to Keycloak on URL: '" + keycloakUrl + "'", e);
+    }
+  }
+
+  public static RealmBoundKeycloakClient createMasterAdminClient(
+      KeycloakProperties keycloakProperties) {
+    try {
+      return new RealmBoundKeycloakClient(keycloakProperties, "master");
+    } catch (KeycloakException keycloakException) {
+      if (ExceptionUtils.indexOfType(keycloakException, NotAuthorizedException.class) == -1) {
+        throw keycloakException;
+      }
+      // Keycloak didn't accept our client credentials. Retry after creating the client in case this
+      // is the first start.
+      try (RealmBoundKeycloakClient boostrapClient =
+          new RealmBoundKeycloakClient(keycloakProperties, "master", false)) {
+        BootstrapKeycloakProvisioning.registerClient(boostrapClient, keycloakProperties);
+      }
+      return new RealmBoundKeycloakClient(keycloakProperties, "master");
     }
   }
 
@@ -201,7 +222,7 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
     return getGroupResource(id);
   }
 
-  protected Client createClientWithTimeout() {
+  protected static Client createClientWithTimeout() {
     return new ResteasyClientBuilderImpl()
         .connectTimeout(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)
         .readTimeout(TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)

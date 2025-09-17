@@ -345,87 +345,42 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
-    "/appointment-types" : {
+    "/appointment-standard-duration/hiv-sti-consultation" : {
       "get" : {
-        "operationId" : "getAppointmentTypes",
+        "operationId" : "getHivStiConsultationAppointmentStandardDurations",
         "responses" : {
           "200" : {
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetAppointmentTypesResponse"
+                  "$ref" : "#/components/schemas/HivStiConsultationAppointmentStandardDurations"
                 }
               }
             },
-            "description" : "OK"
+            "description" : "A response containing the standard durations."
           }
         },
-        "summary" : "Gets all Appointment Types",
-        "tags" : [ "AppointmentType" ]
+        "summary" : "Get standard durations for hiv/sti consultation appointments",
+        "tags" : [ "StiProtectionAppointmentStandardDuration" ]
       }
     },
-    "/appointment-types/{id}" : {
+    "/appointment-standard-duration/sex-work" : {
       "get" : {
-        "operationId" : "getOneAppointmentType",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+        "operationId" : "getSexWorkAppointmentStandardDurations",
         "responses" : {
           "200" : {
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AppointmentTypeConfig"
+                  "$ref" : "#/components/schemas/SexWorkAppointmentStandardDurations"
                 }
               }
             },
-            "description" : "OK"
+            "description" : "A response containing the standard durations."
           }
         },
-        "summary" : "Gets one Appointment Type by ID",
-        "tags" : [ "AppointmentType" ]
-      },
-      "put" : {
-        "operationId" : "updateAppointmentType",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UpdateAppointmentTypeRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AppointmentTypeConfig"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Modifies an existing Appointment Type",
-        "tags" : [ "AppointmentType" ]
+        "summary" : "Get standard durations for sex work consultation appointments",
+        "tags" : [ "StiProtectionAppointmentStandardDuration" ]
       }
     },
     "/approval-requests/{approvalRequestId}" : {
@@ -1117,7 +1072,7 @@
     },
     "/configuration/appointment-standard-duration/hiv-sti-consultation" : {
       "get" : {
-        "operationId" : "getHivStiConsultationAppointmentStandardDurations",
+        "operationId" : "getHivStiConsultationAppointmentStandardDurationsConfig",
         "responses" : {
           "200" : {
             "content" : {
@@ -1131,7 +1086,7 @@
           }
         },
         "summary" : "Get standard durations for hiv/sti consultation appointments",
-        "tags" : [ "StiProtectionAppointmentStandardDuration" ]
+        "tags" : [ "StiProtectionAppointmentStandardDurationConfig" ]
       },
       "put" : {
         "operationId" : "updateHivStiConsultationAppointmentStandardDurations",
@@ -1151,12 +1106,12 @@
           }
         },
         "summary" : "Update the standard durations for hiv/sti consultation appointments",
-        "tags" : [ "StiProtectionAppointmentStandardDuration" ]
+        "tags" : [ "StiProtectionAppointmentStandardDurationConfig" ]
       }
     },
     "/configuration/appointment-standard-duration/sex-work" : {
       "get" : {
-        "operationId" : "getSexWorkAppointmentStandardDurations",
+        "operationId" : "getSexWorkAppointmentStandardDurationsConfig",
         "responses" : {
           "200" : {
             "content" : {
@@ -1170,7 +1125,7 @@
           }
         },
         "summary" : "Get standard durations for sex work consultation appointments",
-        "tags" : [ "StiProtectionAppointmentStandardDuration" ]
+        "tags" : [ "StiProtectionAppointmentStandardDurationConfig" ]
       },
       "put" : {
         "operationId" : "updateSexWorkAppointmentStandardDurations",
@@ -1190,7 +1145,7 @@
           }
         },
         "summary" : "Update the standard durations for sex work consultation appointments",
-        "tags" : [ "StiProtectionAppointmentStandardDuration" ]
+        "tags" : [ "StiProtectionAppointmentStandardDurationConfig" ]
       }
     },
     "/configuration/sex-work" : {
@@ -4650,7 +4605,7 @@
         "description" : "Appointment of a procedure."
       },
       "AppointmentBlock" : {
-        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "physicians", "resolvedUsers", "start", "types" ],
+        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "start", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlockBins" : {
@@ -4702,6 +4657,12 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
           },
           "physicians" : {
             "type" : "array",
@@ -4824,24 +4785,6 @@
       "AppointmentType" : {
         "type" : "string",
         "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION" ]
-      },
-      "AppointmentTypeConfig" : {
-        "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
-        "type" : "object",
-        "properties" : {
-          "appointmentTypeDto" : {
-            "$ref" : "#/components/schemas/AppointmentType"
-          },
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "standardDurationInMinutes" : {
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -6293,7 +6236,7 @@
         }
       },
       "GetAppointmentBlock" : {
-        "required" : [ "end", "id", "start" ],
+        "required" : [ "end", "id", "parallelExaminations", "start" ],
         "type" : "object",
         "properties" : {
           "bookedDuration" : {
@@ -6316,6 +6259,12 @@
             "format" : "uuid",
             "example" : "UUID_1"
           },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
           "start" : {
             "type" : "string",
             "description" : "Time at which the appointment block starts.",
@@ -6326,7 +6275,7 @@
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
       },
       "GetAppointmentBlockGroup" : {
-        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "types" ],
+        "required" : [ "appointmentBlocks", "id", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -6350,12 +6299,6 @@
           },
           "location" : {
             "$ref" : "#/components/schemas/AppointmentLocation"
-          },
-          "parallelExaminations" : {
-            "maximum" : 10,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32"
           },
           "types" : {
             "maxItems" : 2147483647,
@@ -6391,18 +6334,6 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AppointmentBlock"
-            }
-          }
-        }
-      },
-      "GetAppointmentTypesResponse" : {
-        "required" : [ "appointmentTypeConfigDtos" ],
-        "type" : "object",
-        "properties" : {
-          "appointmentTypeConfigDtos" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AppointmentTypeConfig"
             }
           }
         }
@@ -9336,17 +9267,6 @@
             "description" : "Duration of the appointment in minutes.",
             "format" : "int32",
             "example" : 30
-          }
-        }
-      },
-      "UpdateAppointmentTypeRequest" : {
-        "required" : [ "standardDurationInMinutes" ],
-        "type" : "object",
-        "properties" : {
-          "standardDurationInMinutes" : {
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int64"
           }
         }
       },

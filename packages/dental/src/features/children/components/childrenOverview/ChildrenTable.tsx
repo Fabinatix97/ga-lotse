@@ -33,7 +33,12 @@ import {
   useSyncRowSelection,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { formatDate, useToggleableState } from "@eshg/lib-portal";
+import {
+  UnstyledTabList,
+  UnstyledTabPanel,
+  UnstyledTabs,
+  formatDate,
+} from "@eshg/lib-portal";
 
 import { routes } from "../../../../config/routes";
 import { useDentalApi } from "../../../../contexts/dental";
@@ -58,8 +63,6 @@ const initialSorting: ColumnSort = {
 };
 
 export function ChildrenTable() {
-  const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
-
   const personSearch = usePersonSearch();
 
   const tableControl = useTableControl({
@@ -123,6 +126,7 @@ export function ChildrenTable() {
     clearFilterValues();
     personSearch.setValues(formValues);
   }
+
   const { rowSelection, rowSelectionProps } = useRowSelection<Child>({
     toggleSelectProps: {
       ariaLabelSelectRow: "Kind auswählen",
@@ -135,86 +139,105 @@ export function ChildrenTable() {
   useSyncRowSelection(rowSelectionProps, children.data.elements);
 
   return (
-    <TablePage
-      fullHeight
-      controls={
-        <ButtonBar
-          left={[
-            <ToggleFilterButton
-              {...filterButtonProps}
-              key="filterButton"
-              isFilterVisible={activePanel === "filters"}
-              onClick={() => toggleActivePanel("filters")}
-            />,
-            <TogglePersonSearchButton
-              {...personSearch.buttonProps}
-              key="personSearchButton"
-              expanded={activePanel === "personSearch"}
-              onClick={() => toggleActivePanel("personSearch")}
-            />,
-          ]}
-          right={[
-            <CreateChildButton key="createChild" />,
-            <ImportChildrenButton key="importChildren" />,
-            <ExportChildDataButton key="exportChildData" />,
-            <SchoolYearTransitionButton key="schoolYearTransition" />,
-          ]}
-          alignItems="flex-end"
-          invertDomOrder
-        />
-      }
-      search={
-        activePanel === "personSearch" && (
-          <PersonSearchForm
-            {...personSearch.formProps}
-            allowPartialSearch
-            onChange={handleChangePersonSearch}
-          />
-        )
-      }
-      filterSettings={
-        activePanel === "filters" && (
-          <ChildrenFilterSettings
-            filterFormValues={filterFormValues}
-            setFilterFormValue={setFilterFormValue}
-            deleteFilterValue={deleteFilterValue}
-            clearFilterValues={clearFilterValues}
-            filterSettingsSheetProps={filterSettingsSheetProps}
-            activeFilters={activeFilters}
-          />
-        )
-      }
-      data-testid="childrenTable"
-    >
-      <TableSheet
-        title={
-          <ChildrenTableTitle
-            childrenData={children.data.elements}
-            rowSelection={rowSelection}
-          />
-        }
-        loading={children.isFetching}
-        footer={
-          <Pagination
-            totalCount={children.data.totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
-        }
-      >
-        <DataTable
-          data={children.data.elements}
-          columns={COLUMNS}
-          rowSelectionProps={rowSelectionProps}
-          sorting={tableControl.tableSorting}
-          enableSortingRemoval={false}
-          minWidth={1250}
-          rowNavigation={{
-            focusColumnAccessorKey: "lastName",
-            route: (row) => routes.children.byId(row.original.id).details,
-          }}
-        />
-      </TableSheet>
-    </TablePage>
+    <UnstyledTabs<PanelName> initialValue={null}>
+      {({ currentValue, internalTabListFunction }) => (
+        <TablePage
+          fullHeight
+          controls={
+            <ButtonBar
+              left={
+                <UnstyledTabList<PanelName>
+                  tabListItems={[
+                    {
+                      component: (
+                        <ToggleFilterButton
+                          {...filterButtonProps}
+                          isFilterVisible={currentValue === "filters"}
+                        />
+                      ),
+                      value: "filters",
+                    },
+                    {
+                      component: (
+                        <TogglePersonSearchButton
+                          {...personSearch.buttonProps}
+                          expanded={currentValue === "personSearch"}
+                        />
+                      ),
+                      value: "personSearch",
+                    },
+                  ]}
+                  internalTabListFunction={internalTabListFunction}
+                />
+              }
+              right={[
+                <CreateChildButton key="createChild" />,
+                <ImportChildrenButton key="importChildren" />,
+                <ExportChildDataButton key="exportChildData" />,
+                <SchoolYearTransitionButton key="schoolYearTransition" />,
+              ]}
+              alignItems="flex-end"
+              invertDomOrder
+            />
+          }
+          search={
+            currentValue === "personSearch" && (
+              <UnstyledTabPanel<PanelName> value="personSearch">
+                <PersonSearchForm
+                  {...personSearch.formProps}
+                  allowPartialSearch
+                  onChange={handleChangePersonSearch}
+                />
+              </UnstyledTabPanel>
+            )
+          }
+          filterSettings={
+            currentValue === "filters" && (
+              <UnstyledTabPanel<PanelName> value="filters">
+                <ChildrenFilterSettings
+                  filterFormValues={filterFormValues}
+                  setFilterFormValue={setFilterFormValue}
+                  deleteFilterValue={deleteFilterValue}
+                  clearFilterValues={clearFilterValues}
+                  filterSettingsSheetProps={filterSettingsSheetProps}
+                  activeFilters={activeFilters}
+                />
+              </UnstyledTabPanel>
+            )
+          }
+          data-testid="childrenTable"
+        >
+          <TableSheet
+            title={
+              <ChildrenTableTitle
+                childrenData={children.data.elements}
+                rowSelection={rowSelection}
+              />
+            }
+            loading={children.isFetching}
+            footer={
+              <Pagination
+                totalCount={children.data.totalNumberOfElements}
+                {...tableControl.paginationProps}
+              />
+            }
+          >
+            <DataTable
+              data={children.data.elements}
+              columns={COLUMNS}
+              rowSelectionProps={rowSelectionProps}
+              sorting={tableControl.tableSorting}
+              enableSortingRemoval={false}
+              minWidth={1250}
+              rowNavigation={{
+                focusColumnAccessorKey: "lastName",
+                route: (row) => routes.children.byId(row.original.id).details,
+              }}
+            />
+          </TableSheet>
+        </TablePage>
+      )}
+    </UnstyledTabs>
   );
 }
 

@@ -8,7 +8,6 @@
 import { Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { mainLayoutMarginBottom } from "@/lib/components/layout/theme/sizes";
 import { theme } from "@/lib/components/layout/theme/theme";
 
 export function Content({ children }: Readonly<PropsWithChildren>) {
@@ -19,7 +18,6 @@ export function Content({ children }: Readonly<PropsWithChildren>) {
       flex="1"
       minWidth="0"
       sx={{
-        marginBottom: mainLayoutMarginBottom,
         paddingBlock: theme.spacing(3),
         marginInline: theme.spacing(3),
       }}

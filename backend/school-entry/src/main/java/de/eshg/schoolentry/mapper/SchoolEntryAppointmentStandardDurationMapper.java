@@ -29,7 +29,7 @@ public class SchoolEntryAppointmentStandardDurationMapper {
     return domain;
   }
 
-  private static SchoolEntryAppointmentStandardDurationsDto
+  public static SchoolEntryAppointmentStandardDurationsDto
       mapToSchoolEntryAppointmentStandardDurationsDto(
           SchoolEntryAppointmentStandardDuration domain) {
     return new SchoolEntryAppointmentStandardDurationsDto(

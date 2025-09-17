@@ -36,6 +36,8 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
   @Column(nullable = false)
   private Instant appointmentBlockEnd;
 
+  private int parallelExaminations;
+
   @ManyToOne(optional = false)
   @JoinColumn(name = "appointment_block_group_id")
   private AppointmentBlockGroup appointmentBlockGroup;
@@ -63,6 +65,14 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
 
   public void setAppointmentBlockEnd(Instant appointmentBlockEnd) {
     this.appointmentBlockEnd = appointmentBlockEnd;
+  }
+
+  public int getParallelExaminations() {
+    return parallelExaminations;
+  }
+
+  public void setParallelExaminations(int parallelExaminations) {
+    this.parallelExaminations = parallelExaminations;
   }
 
   public void setCalendarEventId(UUID calendarEventId) {

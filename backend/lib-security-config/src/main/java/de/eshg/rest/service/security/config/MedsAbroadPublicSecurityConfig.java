@@ -17,7 +17,7 @@ public final class MedsAbroadPublicSecurityConfig extends AbstractPublicSecurity
   MedsAbroadPublicSecurityConfig() {
     super("meds-abroad");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.MEDS_ABROAD_ADMIN, true);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.MEDS_ABROAD_ADMIN);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.MEDS_ABROAD_ADMIN, ModuleLeaderRole.MEDS_ABROAD_LEADER);
     grantAccessToConfiguration();

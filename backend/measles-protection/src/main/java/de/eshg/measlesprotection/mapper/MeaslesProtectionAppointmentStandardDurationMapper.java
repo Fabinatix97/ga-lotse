@@ -29,7 +29,7 @@ public class MeaslesProtectionAppointmentStandardDurationMapper {
     return domain;
   }
 
-  private static MeaslesProtectionAppointmentStandardDurationsDto
+  public static MeaslesProtectionAppointmentStandardDurationsDto
       mapToMeaslesProtectionAppointmentStandardDurationsDto(
           MeaslesProtectionAppointmentStandardDuration domain) {
     return new MeaslesProtectionAppointmentStandardDurationsDto(domain.getProofSubmission());

@@ -23,12 +23,16 @@ export const appointmentBlockApiQueryKey = queryKeyFactory(
   apiQueryKey(["appointmentBlockApi"]),
 );
 
+export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
+  apiQueryKey(["appointmentStandardDurationApi"]),
+);
+
 export const valueEvaluatorApiQueryKey = queryKeyFactory(
   apiQueryKey(["valueEvaluatorApi"]),
 );
 
 export const appointmentStaffApiQueryKey = queryKeyFactory(
-  apiQueryKey(["appointtingStaffApi"]),
+  apiQueryKey(["appointmentStaffApi"]),
 );
 
 export const configApiQueryKey = queryKeyFactory(apiQueryKey(["configApi"]));

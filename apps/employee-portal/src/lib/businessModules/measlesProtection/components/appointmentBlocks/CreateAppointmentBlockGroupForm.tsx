@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import {
@@ -18,15 +19,16 @@ import {
   ApiCreateDailyAppointmentBlockGroupRequest,
 } from "@eshg/measles-protection-api";
 
-import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBlockApi";
+import { useGetAppointmentStandardDurationQuery } from "@/lib/businessModules/measlesProtection/api/queries/appointmentStandardConfiguration";
+import { SUPPORTED_APPOINTMENT_TYPES } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: AppointmentBlockGroupValues = {
-  types: [ApiAppointmentType.ProofSubmission],
+  types: SUPPORTED_APPOINTMENT_TYPES,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
 };
 
@@ -52,16 +54,13 @@ function mapFormValues(
   };
 }
 
-interface CreateAppointmentBlockGroupFormProps {
-  appointmentDurationsMeasles: AppointmentDurationsMeasles;
-}
-
-export function CreateAppointmentBlockGroupForm({
-  appointmentDurationsMeasles,
-}: Readonly<CreateAppointmentBlockGroupFormProps>) {
+export function CreateAppointmentBlockGroupForm() {
   const router = useRouter();
   const createDailyAppointmentBlocksForGroup =
     useCreateDailyAppointmentBlocksForGroup();
+  const { data: standardDurations } = useSuspenseQuery(
+    useGetAppointmentStandardDurationQuery(),
+  );
 
   async function handleSubmit(values: AppointmentBlockGroupValues) {
     const appointmentBlockGroupValues = mapFormValues(values);
@@ -77,7 +76,7 @@ export function CreateAppointmentBlockGroupForm({
 
   return (
     <AppointmentBlockGroupForm
-      appointmentDurationsMeasles={appointmentDurationsMeasles}
+      appointmentDurationsMeasles={standardDurations}
       initialValues={INITIAL_VALUES}
       onSubmit={async (values) => {
         await handleSubmit(values);

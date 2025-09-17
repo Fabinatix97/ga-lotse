@@ -28,13 +28,14 @@ import {
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentBlocksApi";
 import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
 import { useGetAllPhysiciansQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStaffApi";
-import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentTypeApi";
+import { useGetAppointmentStandardDurationQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStandardDurationsApi";
 import { AppointmentBlockGroupForm } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/AppointmentBlockGroupForm";
+import { SUPPORTED_APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
-  types: [],
+  types: SUPPORTED_APPOINTMENT_TYPES,
   parallelExaminations: 1,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
   physicians: [],
@@ -81,16 +82,14 @@ export function CreateAppointmentBlockGroupForm() {
   const validateDailyAppointmentBlocksForGroup =
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
 
-  const [
-    { data: allPhysicians },
-    {
-      data: { appointmentTypeConfigs: allAppointmentTypes },
-    },
-  ] = useSuspenseQueries({
-    queries: [useGetAllPhysiciansQuery(), useGetAllAppointmentTypesQuery()],
-  });
+  const [{ data: allPhysicians }, { data: standardDurations }] =
+    useSuspenseQueries({
+      queries: [
+        useGetAllPhysiciansQuery(),
+        useGetAppointmentStandardDurationQuery(),
+      ],
+    });
 
-  const initialValues = { ...INITIAL_VALUES, allAppointmentTypes };
   const [freeStaff, setFreeStaff] = useState<string[]>([]);
   const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
 
@@ -131,9 +130,9 @@ export function CreateAppointmentBlockGroupForm() {
 
   return (
     <AppointmentBlockGroupForm
-      initialValues={initialValues}
+      initialValues={INITIAL_VALUES}
+      standardDuration={standardDurations}
       allPhysicians={allPhysicians}
-      allAppointmentTypes={allAppointmentTypes}
       validateAvailability={validateAvailability}
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}

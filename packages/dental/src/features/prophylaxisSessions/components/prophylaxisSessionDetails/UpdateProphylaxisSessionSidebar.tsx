@@ -133,7 +133,7 @@ function UpdateProphylaxisSessionSidebar(
             />
             <ScreeningField screeningDisabled={hasExaminationResults} />
             <FluoridationField disabled={hasExaminationResults} />
-            <Typography component="h3" level="title-sm">
+            <Typography component="h2" level="title-sm">
               Durchführende Personen
             </Typography>
             <UserField

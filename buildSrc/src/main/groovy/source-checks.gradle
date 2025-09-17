@@ -1,9 +1,9 @@
 // Copyright 2025 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
-import com.github.gradle.node.pnpm.task.PnpmTask
 import de.eshg.frontend.IncludesAndExcludes
 import de.eshg.frontend.TypescriptDefaults
+import de.eshg.frontend.PnpmTaskWithNpmDependencies
 
 plugins {
   id 'workspace-package'
@@ -49,7 +49,7 @@ def defaultPrettierArgs = [
   "--cache-location=${prettierCacheFile}"
 ]
 
-tasks.register('format', PnpmTask) {
+tasks.register('format', PnpmTaskWithNpmDependencies) {
   group = 'verification'
   dependsOn rootProject.tasks.installDependencies
   mustRunAfter 'compile', 'lintFix'
@@ -65,7 +65,7 @@ tasks.register('format', PnpmTask) {
   args = ['prettier', '--write', '--list-different'] + defaultPrettierArgs + getPrettierInputArgs(formattedFiles)
 }
 
-tasks.register('formatCheck', PnpmTask) {
+tasks.register('formatCheck', PnpmTaskWithNpmDependencies) {
   group = 'verification'
   dependsOn rootProject.tasks.installDependencies
   inputs.file "${rootDir}/.editorconfig"
@@ -92,7 +92,7 @@ def defaultEslintArgs = [
   "--cache-location=${eslintCacheFile}"
 ]
 
-tasks.register('lint', PnpmTask) {
+tasks.register('lint', PnpmTaskWithNpmDependencies) {
   group = 'verification'
   dependsOn 'prepareEnvironment'
   dependsOn 'compile'
@@ -103,7 +103,7 @@ tasks.register('lint', PnpmTask) {
   args = ['eslint'] + defaultEslintArgs + getEslintInputArgs(inputFiles)
 }
 
-tasks.register('lintFix', PnpmTask) {
+tasks.register('lintFix', PnpmTaskWithNpmDependencies) {
   group = 'verification'
   dependsOn 'prepareEnvironment'
   dependsOn 'compile'

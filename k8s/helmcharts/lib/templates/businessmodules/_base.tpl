@@ -1,7 +1,5 @@
 {{- define "module.base.container" }}
 
-{{- $bootstrapEnabled := (include "getBootstrapEnabled" .) }}
-
 {{- $setupAdminEnabled := false }}
 {{- if and (not (.Values.businessmodules.base.setupAdmin).username) (not (.Values.businessmodules.base.setupAdmin).email) }}
   {{- $setupAdminEnabled = false }}
@@ -9,10 +7,6 @@
   {{- $setupAdminEnabled = true }}
 {{- else }}
   {{- fail "setupAdmin needs an email and username property!" }}
-{{- end }}
-
-{{- if and (eq $bootstrapEnabled "true") (eq $setupAdminEnabled false) }}
-  {{- fail "If bootstrapAdmin is enabled setupAdmin must be enabled as well. Set username and email of businessmodules.base.setupAdmin" }}
 {{- end }}
 
 {{- if not .Values.businessmoduleDefaults.database.selfmanaged }}
@@ -75,18 +69,13 @@
   value: "{{ .Values.businessmodules.base.noreplyMail }}"
 - name: eshg.keycloak.allow-passwords-for-employees
   value: "{{ .Values.businessmodules.base.allowEmployeePasswords }}"
-{{- if eq $bootstrapEnabled "true" }}
 - name: eshg.keycloak.bootstrap-admin.password
   valueFrom:
     secretKeyRef:
       key: password
       name: keycloak-admin
-{{- end }}
-- name: eshg.keycloak.bootstrap-admin.enabled
-  valueFrom:
-    configMapKeyRef:
-      name: keycloak-bootstrap
-      key: bootstrapEnabled
+- name: eshg.keycloak.bootstrap-admin.keep-enabled
+  value: "{{ .Values.businessmodules.base.bootstrapAdmin.keepEnabled }}"
 - name: eshg.keycloak.admin-client.client-secret
   valueFrom:
     secretKeyRef:

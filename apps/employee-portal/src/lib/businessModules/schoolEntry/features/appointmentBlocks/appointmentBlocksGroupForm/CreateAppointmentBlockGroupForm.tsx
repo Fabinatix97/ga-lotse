@@ -29,10 +29,9 @@ import {
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
   useAppointmentBlockDefaultAvailabilityApi,
-  useAppointmentTypeApi,
+  useAppointmentStandardDurationsApi,
   useConfigApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
-import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
 import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import { getAppointmentBlockDefaultAvailabilityQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockDefaultAvailabilityApi";
@@ -40,23 +39,18 @@ import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
-import { getAllAppointmentTypesQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentTypeApi";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
+import { SUPPORTED_APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
-  types: [
-    ApiAppointmentType.CanChild,
-    ApiAppointmentType.EntryLevel,
-    ApiAppointmentType.RegularExamination,
-    ApiAppointmentType.SpecialNeeds,
-  ],
+  types: SUPPORTED_APPOINTMENT_TYPES,
   parallelExaminations: 1,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
-  allAppointmentTypes: [],
   physicians: [],
   mfas: [],
   location: null,
@@ -93,7 +87,6 @@ export interface CreateAppointmentBlockGroupValues {
   types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
-  allAppointmentTypes: AppointmentTypeConfig[];
   physicians: string[];
   mfas: string[];
   location: ApiAddContact200Response | null;
@@ -111,22 +104,21 @@ export function CreateAppointmentBlockGroupForm() {
   const validateAppointmentBlockGroup =
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const configApi = useConfigApi();
-  const appointmentTypeApi = useAppointmentTypeApi();
+  const userApi = useUserApi();
   const appointmentBlockDefaultAvailabilityApi =
     useAppointmentBlockDefaultAvailabilityApi();
-  const userApi = useUserApi();
+  const standardDurationApi = useAppointmentStandardDurationsApi();
+
   const [
     { data: locationSelectionMode },
-    {
-      data: { appointmentTypeConfigs: allAppointmentTypes },
-    },
+    { data: standardDurations },
     { data: allPhysicians },
     { data: allMfas },
     { data: defaultAvailabilityFlags },
   ] = useSuspenseQueries({
     queries: [
       getLocationSelectionModeQuery(configApi),
-      getAllAppointmentTypesQuery(appointmentTypeApi),
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
       getAllPhysiciansQuery(userApi),
       getAllMedicalAssistantsQuery(userApi),
       getAppointmentBlockDefaultAvailabilityQuery(
@@ -138,7 +130,6 @@ export function CreateAppointmentBlockGroupForm() {
   const initialValues = {
     ...INITIAL_VALUES,
     ...defaultAvailabilityFlags,
-    allAppointmentTypes,
   };
   const [freeStaff, setFreeStaff] = useState<string[]>([]);
   const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
@@ -178,7 +169,7 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={initialValues}
-      allAppointmentTypes={allAppointmentTypes}
+      standardDurations={standardDurations}
       allPhysicians={allPhysicians}
       allMfas={allMfas}
       validateAvailability={validateAvailability}

@@ -7,7 +7,7 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   AppointmentBlockGroupValuesWithDays,
@@ -15,21 +15,22 @@ import {
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal";
 import {
-  ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
 } from "@eshg/sti-protection-api";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
-import { useAppointmentTypeApi } from "@/lib/businessModules/stiProtection/api/clients";
-import { mapAppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
+import { useAppointmentStandardDurationsApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
 import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import {
   getAllConsultantsQuery,
   getAllPhysiciansQuery,
 } from "@/lib/businessModules/stiProtection/api/queries/appointmentStaff";
-import { getAllAppointmentTypesQuery } from "@/lib/businessModules/stiProtection/api/queries/appointmentTypes";
+import {
+  useGetHivAppointmentStandardDurationsQuery,
+  useGetSexWorkAppointmentStandardDurationsQuery,
+} from "@/lib/businessModules/stiProtection/api/queries/appointmentStandardDuration";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
@@ -38,11 +39,11 @@ import {
   AppointmentBlockGroupValues,
   StiProtectionAppointmentValues,
 } from "./AppointmentBlockGroupForm";
+import { SUPPORTED_APPOINTMENT_TYPES } from "./options";
 
 const INITIAL_VALUES: StiProtectionAppointmentValues = {
-  types: [ApiAppointmentType.HivStiConsultation],
+  types: SUPPORTED_APPOINTMENT_TYPES,
   appointmentBlocks: [emptyAppointmentBlockGroup()],
-  allAppointmentTypes: [],
   physicians: [],
   consultants: [],
   parallelExaminations: 1,
@@ -75,7 +76,7 @@ export function CreateAppointmentBlockGroupForm() {
   const router = useRouter();
   const snackbar = useSnackbar();
   const userApi = useUserApi();
-  const appointmentTypeApi = useAppointmentTypeApi();
+  const appointmentStandardDurationApi = useAppointmentStandardDurationsApi();
   const createDailyAppointmentBlocksForGroup =
     useCreateDailyAppointmentBlocksForGroup();
 
@@ -87,28 +88,22 @@ export function CreateAppointmentBlockGroupForm() {
   const validateAppointmentBlockGroup =
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const [
-    {
-      data: { appointmentTypeConfigs: allAppointmentTypesData },
-    },
+    { data: standardDurationsHiv },
+    { data: standardDurationsSexWork },
     { data: allPhysicians },
     { data: allConsultants },
   ] = useSuspenseQueries({
     queries: [
-      getAllAppointmentTypesQuery(appointmentTypeApi),
+      useGetHivAppointmentStandardDurationsQuery(
+        appointmentStandardDurationApi,
+      ),
+      useGetSexWorkAppointmentStandardDurationsQuery(
+        appointmentStandardDurationApi,
+      ),
       getAllPhysiciansQuery(userApi),
       getAllConsultantsQuery(userApi),
     ],
   });
-
-  const allAppointmentTypes = useMemo(
-    () => allAppointmentTypesData.map(mapAppointmentTypeConfig),
-    [allAppointmentTypesData],
-  );
-  const initialValues = {
-    ...INITIAL_VALUES,
-    allAppointmentTypes: allAppointmentTypesData,
-  };
-
   useEffect(() => {
     if (validateAppointmentBlockGroup.data) {
       const result = validateAppointmentBlockGroup.data;
@@ -149,8 +144,11 @@ export function CreateAppointmentBlockGroupForm() {
 
   return (
     <AppointmentBlockGroupForm
-      initialValues={initialValues}
-      appointmentTypes={allAppointmentTypes}
+      initialValues={INITIAL_VALUES}
+      standardDurations={{
+        ...standardDurationsHiv,
+        ...standardDurationsSexWork,
+      }}
       freeStaff={freeStaff}
       blockedStaff={blockedStaff}
       consultants={allConsultants}

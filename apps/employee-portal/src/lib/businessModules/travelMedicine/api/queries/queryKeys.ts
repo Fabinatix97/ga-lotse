@@ -11,8 +11,8 @@ export const appointmentBlockApiQueryKey = queryKeyFactory(
   apiQueryKey(["appointmentBlockApi"]),
 );
 
-export const appointmentTypesApiQueryKey = queryKeyFactory(
-  apiQueryKey(["appointmentTypesApi"]),
+export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
+  apiQueryKey(["appointmentStandardDurationApi"]),
 );
 
 export const informationStatementTemplateApiQueryKey = queryKeyFactory(

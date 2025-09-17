@@ -468,7 +468,6 @@ export {
   formatCalendarWeek,
   formatCalendarWeekRange,
   formatDurationToHoursAndMinutes,
-  durationToSecond,
   toLocalDateTime,
   secondToISODuration,
 } from "./utils/dateTime";

@@ -107,8 +107,7 @@ public class AppointmentBlockSlotUtil {
             .toList();
 
     List<List<AppointmentBlockSlotWithAppointment>> binsWithBookedSlots = new ArrayList<>();
-    int parallelExaminations =
-        appointmentBlock.getAppointmentBlockGroup().getParallelExaminations();
+    int parallelExaminations = appointmentBlock.getParallelExaminations();
     for (int i = 0; i < parallelExaminations; i++) {
       binsWithBookedSlots.add(new ArrayList<>());
     }
@@ -238,7 +237,7 @@ public class AppointmentBlockSlotUtil {
         Duration.between(
                 appointmentBlock.getAppointmentBlockStart(),
                 appointmentBlock.getAppointmentBlockEnd())
-            .multipliedBy(appointmentBlock.getAppointmentBlockGroup().getParallelExaminations());
+            .multipliedBy(appointmentBlock.getParallelExaminations());
     Duration bookedDuration =
         appointmentBlock.getAppointments().stream()
             .map(
@@ -252,6 +251,7 @@ public class AppointmentBlockSlotUtil {
         appointmentBlock,
         appointmentBlock.getAppointmentBlockStart(),
         appointmentBlock.getAppointmentBlockEnd(),
+        appointmentBlock.getParallelExaminations(),
         totalDuration.compareTo(bookedDuration) < 0 ? null : totalDuration.minus(bookedDuration),
         bookedDuration);
   }

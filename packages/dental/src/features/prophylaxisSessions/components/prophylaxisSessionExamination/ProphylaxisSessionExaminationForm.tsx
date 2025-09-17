@@ -22,7 +22,7 @@ export function ProphylaxisSessionExaminationForm(
   return (
     <FormikProvider value={props.form}>
       <MainContentLayout fullViewportHeight>
-        <FormPlus>{props.children}</FormPlus>
+        <FormPlus aria-label="Untersuchung">{props.children}</FormPlus>
       </MainContentLayout>
     </FormikProvider>
   );

@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@cyclonedx/cdxgen": "11.4.4",
+    "@cyclonedx/cdxgen": "11.6.0",
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",
     "@eslint/js": "catalog:eslint",

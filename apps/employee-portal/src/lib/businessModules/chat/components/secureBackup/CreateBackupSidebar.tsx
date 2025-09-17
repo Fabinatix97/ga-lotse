@@ -6,7 +6,7 @@
 import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
+import { AuthDict, IAuthData } from "matrix-js-sdk";
 import {
   CryptoApi,
   GeneratedSecretStorageKey,
@@ -50,7 +50,7 @@ const initialValues = {
 
 type InitialValues = typeof initialValues;
 
-type MakeRequest = (authData: AuthDict | null) => Promise<UIAResponse<void>>;
+type MakeRequest = (authData: AuthDict | null) => Promise<void>;
 
 export interface SSOAuthModalValues {
   makeRequest: MakeRequest;

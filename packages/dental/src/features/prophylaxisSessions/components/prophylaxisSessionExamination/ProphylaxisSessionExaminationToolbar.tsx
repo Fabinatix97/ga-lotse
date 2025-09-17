@@ -5,21 +5,17 @@
 
 "use client";
 
-import { MedicalServicesOutlined } from "@mui/icons-material";
-
 import {
   PersonToolbarHeader,
-  TabNavigationToolbar,
+  Toolbar,
   ToolbarBackButton,
 } from "@eshg/lib-employee-portal";
 
 import { ExaminationStatus } from "../../../../api/models/ExaminationStatus";
 import { ExaminationStatusChip } from "../../../../components/examination/ExaminationStatusChip";
-import { routes } from "../../../../config/routes";
 import { ProphylaxisSessionExamination } from "../../api/models/ProphylaxisSessionExamination";
 
 interface ProphylaxisSessionExaminationToolbarProps {
-  prophylaxisSessionId: string;
   participant: ProphylaxisSessionExamination;
   status: ExaminationStatus;
   onBackClicked: () => void;
@@ -29,19 +25,12 @@ export function ProphylaxisSessionExaminationToolbar(
   props: ProphylaxisSessionExaminationToolbarProps,
 ) {
   return (
-    <TabNavigationToolbar
-      header={<PersonToolbarHeader person={props.participant} showAge />}
-      items={[
-        {
-          tabButtonName: "Untersuchung",
-          href: routes.prophylaxisSessions
-            .byId(props.prophylaxisSessionId)
-            .examinations.byExaminationId(props.participant.examinationId),
-          decorator: <MedicalServicesOutlined />,
-        },
-      ]}
+    <Toolbar
+      title={<PersonToolbarHeader person={props.participant} showAge />}
       backButton={<ToolbarBackButton onClick={props.onBackClicked} />}
-      afterTabs={<ExaminationStatusChip status={props.status} />}
+      afterTitle={
+        <ExaminationStatusChip invisibleStatusLabel status={props.status} />
+      }
     />
   );
 }

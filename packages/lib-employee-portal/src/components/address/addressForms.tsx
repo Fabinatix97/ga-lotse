@@ -46,6 +46,7 @@ export interface BaseAddressFormInputs {
 interface AddressFormProps extends Partial<NestedFormProps> {
   type: BaseAddressType;
   canChooseType?: boolean;
+  ref?: (el: HTMLElement) => void;
 }
 
 export function ContactAddressForm(props: AddressFormProps) {
@@ -196,10 +197,12 @@ function CommonAddressFields({
   type,
   canChooseType = true,
   fieldName,
+  ref,
 }: {
   type: BaseAddressType;
   canChooseType?: boolean;
   fieldName: (key: keyof BaseAddressFormInputs) => string;
+  ref?: (el: HTMLElement) => void;
 }) {
   const validateLength = useValidateLength();
   const ctx = useFormikContext<BaseAddressFormInputs>();
@@ -213,6 +216,7 @@ function CommonAddressFields({
       {canChooseType && (
         <Grid xxs={12}>
           <SelectField
+            ref={(el) => el && ref?.(el)}
             options={typeOptions}
             name={fieldName("type")}
             label="Art"

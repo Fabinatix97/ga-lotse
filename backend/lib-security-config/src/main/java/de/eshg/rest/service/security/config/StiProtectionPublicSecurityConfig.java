@@ -5,11 +5,13 @@
 
 package de.eshg.rest.service.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PUT;
 
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
+import de.eshg.rest.service.security.config.BaseUrls.LibAppointmentBlock;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +19,14 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
   StiProtectionPublicSecurityConfig() {
     super("sti-protection");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_ADMIN, true);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_ADMIN);
+    requestMatchers(GET, LibAppointmentBlock.APPOINTMENT_STANDARD_DURATION_INFO_API + "/sex-work")
+        .hasRole(EmployeePermissionRole.STI_PROTECTION_ADMIN);
+    requestMatchers(
+            GET,
+            LibAppointmentBlock.APPOINTMENT_STANDARD_DURATION_INFO_API + "/hiv-sti-consultation")
+        .hasRole(EmployeePermissionRole.STI_PROTECTION_ADMIN);
+
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.STI_PROTECTION_ADMIN, ModuleLeaderRole.STI_PROTECTION_LEADER);
     grantAccessToConfiguration();

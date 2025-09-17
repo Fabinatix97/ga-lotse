@@ -9,7 +9,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiGetSchoolEntryAppointmentStandardDurationsResponse } from "@eshg/school-entry-api";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useSchoolEntryAppointmentStandardDurationApi } from "@/lib/shared/api/clients";
+import { useSchoolEntryAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
@@ -85,7 +85,7 @@ function mapValues(values: SchoolEntryAppointmentStandardDurationFormValues) {
 
 function useUpdateSchoolEntryAppointmentStandardDuration() {
   return useUpdateAppointmentStandardDuration(
-    useSchoolEntryAppointmentStandardDurationApi,
+    useSchoolEntryAppointmentStandardDurationConfigApi,
     mapValues,
   );
 }
@@ -107,7 +107,7 @@ function mapResponse(
 function useGetSchoolEntryStandardDurations() {
   return useGetAppointmentStandardDurations(
     ConfiguratorModuleName.SchoolEntry,
-    useSchoolEntryAppointmentStandardDurationApi,
+    useSchoolEntryAppointmentStandardDurationConfigApi,
     mapResponse,
   );
 }

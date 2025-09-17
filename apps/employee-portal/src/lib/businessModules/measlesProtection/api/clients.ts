@@ -7,7 +7,6 @@ import {
   AccessRestrictionApi,
   AppointmentBlockApi,
   AppointmentBookingApi,
-  AppointmentTypeApi,
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
@@ -15,6 +14,7 @@ import {
   FileApi,
   GdprValidationTaskApi,
   InboxProcedureApi,
+  MeaslesProtectionAppointmentStandardDurationApi,
   MeaslesProtectionFeatureTogglesApi,
   MonetaryFineApi,
   ProcedureApi,
@@ -93,9 +93,9 @@ export function useAppointmentBlockApi() {
   return new AppointmentBlockApi(configuration);
 }
 
-export function useAppointmentTypeApi() {
+export function useAppointmentStandardDurationsApi() {
   const configuration = useConfiguration();
-  return new AppointmentTypeApi(configuration);
+  return new MeaslesProtectionAppointmentStandardDurationApi(configuration);
 }
 
 export function useInboxProcedureApi() {

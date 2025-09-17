@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip, ChipProps } from "@mui/joy";
+import { Chip, ChipProps, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 
 import { ApiProphylaxisStatus } from "@eshg/dental-api";
 
@@ -20,6 +21,7 @@ const prophylaxisStatusColors: Record<
 interface ProphylaxisSessionStatusChipProps {
   status: ApiProphylaxisStatus;
   "data-testid"?: string;
+  invisibleStatusLabel?: boolean;
 }
 
 export function ProphylaxisSessionStatusChip(
@@ -31,6 +33,11 @@ export function ProphylaxisSessionStatusChip(
       color={prophylaxisStatusColors[props.status]}
       data-testid={props["data-testid"]}
     >
+      {props.invisibleStatusLabel && (
+        <Typography component="span" sx={visuallyHidden}>
+          Status:
+        </Typography>
+      )}
       {PROPHYLAXIS_STATUS[props.status]}
     </Chip>
   );

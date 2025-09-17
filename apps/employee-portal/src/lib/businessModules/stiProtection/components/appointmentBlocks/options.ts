@@ -8,15 +8,17 @@ import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 
-const SUPPORTED_APPOINTMENT_TYPES = [
+export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.HivStiConsultation,
   ApiAppointmentType.ResultsReview,
   ApiAppointmentType.SexWork,
-] as string[];
+];
 
 export const APPOINTMENT_TYPE_OPTIONS = buildEnumOptions(
   APPOINTMENT_TYPES,
-).filter((option) => SUPPORTED_APPOINTMENT_TYPES.includes(option.value));
+).filter((option) =>
+  SUPPORTED_APPOINTMENT_TYPES.includes(option.value as ApiAppointmentType),
+);
 
 type AppointmentOption = SelectOption<ApiAppointmentType, string>;
 

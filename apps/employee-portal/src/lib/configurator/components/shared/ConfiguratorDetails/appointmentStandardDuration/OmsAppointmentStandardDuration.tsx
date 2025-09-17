@@ -9,7 +9,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiGetOmsAppointmentStandardDurationsResponse } from "@eshg/official-medical-service-api";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useOmsAppointmentStandardDurationApi } from "@/lib/shared/api/clients";
+import { useOmsAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
@@ -33,7 +33,7 @@ export function OmsAppointmentStandardDuration() {
       moduleName={ConfiguratorModuleName.OfficialMedicalService}
       endpointName={OMS_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME}
       fields={fields}
-      queryHook={useGetOmsStandardDurations}
+      queryHook={useGetOmsStandardDurationsConfig}
       updateHook={useUpdateOmsAppointmentStandardDuration}
     />
   );
@@ -74,7 +74,7 @@ function mapValues(values: OmsAppointmentStandardDurationFormValues) {
 
 function useUpdateOmsAppointmentStandardDuration() {
   return useUpdateAppointmentStandardDuration(
-    useOmsAppointmentStandardDurationApi,
+    useOmsAppointmentStandardDurationConfigApi,
     mapValues,
   );
 }
@@ -93,10 +93,10 @@ function mapResponse(
   };
 }
 
-function useGetOmsStandardDurations() {
+function useGetOmsStandardDurationsConfig() {
   return useGetAppointmentStandardDurations(
     ConfiguratorModuleName.OfficialMedicalService,
-    useOmsAppointmentStandardDurationApi,
+    useOmsAppointmentStandardDurationConfigApi,
     mapResponse,
   );
 }

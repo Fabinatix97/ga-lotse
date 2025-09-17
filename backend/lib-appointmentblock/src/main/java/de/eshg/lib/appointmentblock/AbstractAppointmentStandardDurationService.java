@@ -6,7 +6,6 @@
 package de.eshg.lib.appointmentblock;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.util.MapUtils;
 import de.eshg.config.AuditLogWriter;
 import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
@@ -74,30 +73,12 @@ public abstract class AbstractAppointmentStandardDurationService<T extends BaseE
     return super.getConfig();
   }
 
-  /**
-   * This method is only needed by the {@link AppointmentTypeService} and should be removed when the
-   * {@link AppointmentTypeService} is deleted
-   */
   public Map<AppointmentType, Duration> getStandardDurations() {
     T config = getConfig();
     return appointmentDurationInfos.entrySet().stream()
         .collect(
             StreamUtil.toLinkedHashMap(
                 Entry::getKey, e -> e.getValue().entityGetter().apply(config)));
-  }
-
-  /**
-   * This method is only needed by the {@link AppointmentTypeService} and should be removed when the
-   * {@link AppointmentTypeService} is deleted
-   */
-  public void updateStandardDuration(AppointmentType appointmentType, Duration durationUpdate) {
-    T config = getConfig();
-    AppointmentDurationInfo<T> info = appointmentDurationInfos.get(appointmentType);
-    auditLogWriter.writeChangeViaLegacyGUIToAuditLog(
-        "appointmentStandardDuration",
-        MapUtils.orderedMapOf(info.name(), info.entityGetter().apply(config).toString()),
-        MapUtils.orderedMapOf(info.name(), durationUpdate.toString()));
-    info.entitySetter().accept(config, durationUpdate);
   }
 
   protected ConfigurationStatus toConfigStatus(boolean initialized) {

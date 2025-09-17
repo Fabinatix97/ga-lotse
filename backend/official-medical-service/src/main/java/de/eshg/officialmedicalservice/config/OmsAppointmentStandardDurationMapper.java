@@ -13,7 +13,7 @@ public class OmsAppointmentStandardDurationMapper {
 
   private OmsAppointmentStandardDurationMapper() {}
 
-  static GetOmsAppointmentStandardDurationsResponse mapToDto(
+  public static GetOmsAppointmentStandardDurationsResponse mapToDto(
       OmsAppointmentStandardDuration domain) {
 
     return new GetOmsAppointmentStandardDurationsResponse(
@@ -27,7 +27,7 @@ public class OmsAppointmentStandardDurationMapper {
     return domain;
   }
 
-  private static OmsAppointmentStandardDurationsDto mapToOmsAppointmentStandardDurationsDto(
+  public static OmsAppointmentStandardDurationsDto mapToOmsAppointmentStandardDurationsDto(
       OmsAppointmentStandardDuration domain) {
     return new OmsAppointmentStandardDurationsDto(
         domain.getOfficialMedicalServiceShort(), domain.getOfficialMedicalServiceLong());

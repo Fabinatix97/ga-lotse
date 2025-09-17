@@ -13,8 +13,6 @@ import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.AppointmentBlockValidator;
 import de.eshg.lib.appointmentblock.AppointmentBlockViewService;
-import de.eshg.lib.appointmentblock.AppointmentTypeController;
-import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
 import de.eshg.lib.appointmentblock.contact.AppointmentBlockLibraryContactsMergedHandler;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
@@ -38,8 +36,6 @@ import org.springframework.context.annotation.Import;
   AppointmentBlockViewService.class,
   AppointmentBlockSlotUtil.class,
   AppointmentBlockValidator.class,
-  AppointmentTypeController.class,
-  AppointmentTypeService.class,
   CalendarClient.class,
   AppointmentBlockGroupsPopulator.class,
   AppointmentBlockLibraryContactsMergedHandler.class,

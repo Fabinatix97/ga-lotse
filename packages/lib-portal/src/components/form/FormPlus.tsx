@@ -101,6 +101,7 @@ interface FormPlusOptions {
   "aria-label"?: string;
   "aria-labelledby"?: string;
   "aria-describedby"?: string;
+  isSearchForm?: boolean;
 }
 
 /* Formik <Form> wrapper that utilizes useScrollToError()
@@ -124,7 +125,7 @@ export function FormPlus({
       {...props}
       ref={formRef}
       noValidate
-      role="form"
+      role={props.isSearchForm ? "search" : "form"}
       aria-label={props["aria-label"]}
       aria-labelledby={props["aria-labelledby"]}
       aria-describedby={props["aria-describedby"]}

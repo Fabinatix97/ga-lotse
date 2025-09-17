@@ -3,10 +3,9 @@
 
 package de.eshg.frontend
 
-import com.github.gradle.node.pnpm.task.PnpmTask
 import org.gradle.api.Task
 
-abstract class PnpmTaskWithProjectDependencies extends PnpmTask {
+abstract class PnpmTaskWithProjectDependencies extends PnpmTaskWithNpmDependencies {
 
     @Override
     Task configure(Closure closure) {

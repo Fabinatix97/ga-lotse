@@ -3,11 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack, Typography, TypographyProps, styled } from "@mui/joy";
+import {
+  Box,
+  Divider,
+  Stack,
+  Typography,
+  TypographyProps,
+  styled,
+} from "@mui/joy";
 import { useId } from "react";
 
-import { ButtonLink, RequiresChildren } from "@eshg/lib-portal";
+import {
+  ButtonLink,
+  RequiresChildren,
+  useIsBreakpointDown,
+} from "@eshg/lib-portal";
 
+import {
+  isInLowerJaw,
+  isInUpperJaw,
+} from "../../stores/examination/actions/utils";
 import { QuadrantNumber } from "../../stores/examination/types";
 import { QUADRANT_NAMES } from "../../translations/examination";
 import {
@@ -25,38 +40,66 @@ const QuadrantDivider = styled(Divider)(({ theme }) => ({
 }));
 
 export function FullDentitionFormSection() {
-  const q1TitleId = useId();
-  const q2TitleId = useId();
-  const q3TitleId = useId();
-  const q4TitleId = useId();
+  const isMobile = useDetentionFormMediaQuery();
 
   return (
     <ExaminationSection
       title="Gesamtgebiss"
       titleComponent={FullDentitionHeader}
     >
-      <JawHeaderRow>
-        <QuadrantTitle id={q1TitleId} quadrantNumber="Q1" />
-        <QuadrantTitle id={q2TitleId} quadrantNumber="Q2" />
-      </JawHeaderRow>
       <Stack
         direction="column"
         divider={<QuadrantDivider aria-hidden="true" />}
+        gap={isMobile ? QUADRANT_SPACING : 0}
+        overflow="scroll"
       >
         <JawRow>
-          <QuadrantForm quadrantNumber="Q1" titleId={q1TitleId} />
-          <QuadrantForm quadrantNumber="Q2" titleId={q2TitleId} />
+          <Quadrant quadrantNumber="Q1" />
+          <Quadrant quadrantNumber="Q2" />
         </JawRow>
-        <JawRow reverse>
-          <QuadrantForm quadrantNumber="Q3" titleId={q3TitleId} />
-          <QuadrantForm quadrantNumber="Q4" titleId={q4TitleId} />
+        <JawRow reverse={!isMobile}>
+          <Quadrant quadrantNumber="Q3" />
+          <Quadrant quadrantNumber="Q4" />
         </JawRow>
       </Stack>
-      <JawHeaderRow reverse>
-        <QuadrantTitle id={q3TitleId} quadrantNumber="Q3" />
-        <QuadrantTitle id={q4TitleId} quadrantNumber="Q4" />
-      </JawHeaderRow>
     </ExaminationSection>
+  );
+}
+
+function Quadrant(props: { quadrantNumber: QuadrantNumber }) {
+  const titleId = useId();
+  const isMobile = useDetentionFormMediaQuery();
+
+  const titleAlignSelf =
+    props.quadrantNumber === "Q2" || props.quadrantNumber === "Q3"
+      ? "flex-end"
+      : "flex-start";
+  const formAlignSelf =
+    props.quadrantNumber === "Q1" || props.quadrantNumber === "Q4"
+      ? "flex-end"
+      : "flex-start";
+  const reverse = !isMobile && isInLowerJaw(props.quadrantNumber);
+  const isUpperJaw = isInUpperJaw(props.quadrantNumber);
+
+  return (
+    <Stack
+      flex={1}
+      gap={2}
+      direction={reverse ? "column-reverse" : "column"}
+      sx={{
+        marginTop: isMobile || isUpperJaw ? 0 : QUADRANT_SPACING,
+        marginBottom: !isMobile && isUpperJaw ? QUADRANT_SPACING : 0,
+      }}
+    >
+      <QuadrantTitle
+        alignSelf={isMobile ? "center" : titleAlignSelf}
+        id={titleId}
+        quadrantNumber={props.quadrantNumber}
+      />
+      <Box alignSelf={isMobile ? "center" : formAlignSelf}>
+        <QuadrantForm quadrantNumber={props.quadrantNumber} titleId={titleId} />
+      </Box>
+    </Stack>
   );
 }
 
@@ -68,15 +111,13 @@ function FullDentitionHeader(props: ExaminationTitleProps) {
       <Typography id={props.titleId} level="h2">
         {props.children}
       </Typography>
-      <Stack
-        direction="row"
-        flexGrow={1}
-        justifyContent="space-between"
-        flexWrap="wrap"
+      <ButtonLink
+        sx={{ marginLeft: "auto" }}
+        onClick={findingsOverviewSidebar.open}
       >
-        <ButtonLink onClick={findingsOverviewSidebar.open}>
-          Befundwerte?
-        </ButtonLink>
+        Befundwerte?
+      </ButtonLink>
+      <Stack direction="row" flexGrow={1} justifyContent="center">
         <FullDentitionLegend />
       </Stack>
     </Stack>
@@ -85,18 +126,6 @@ function FullDentitionHeader(props: ExaminationTitleProps) {
 
 interface ReversableContainerProps extends RequiresChildren {
   reverse?: boolean;
-}
-
-function JawHeaderRow(props: ReversableContainerProps) {
-  return (
-    <Stack
-      direction={props.reverse ? "row-reverse" : "row"}
-      gap={3}
-      justifyContent="space-between"
-    >
-      {props.children}
-    </Stack>
-  );
 }
 
 interface QuadrantTitleProps extends Pick<TypographyProps, "id" | "alignSelf"> {
@@ -117,16 +146,34 @@ function QuadrantTitle(props: QuadrantTitleProps) {
 }
 
 function JawRow(props: ReversableContainerProps) {
+  const isMobile = useDetentionFormMediaQuery();
   return (
     <Stack
-      direction={props.reverse ? "row-reverse" : "row"}
+      direction={
+        isMobile
+          ? props.reverse
+            ? "column-reverse"
+            : "column"
+          : props.reverse
+            ? "row-reverse"
+            : "row"
+      }
       gap={3}
       flexWrap="wrap"
-      alignItems="flex-start"
+      alignItems="center"
       justifyContent="center"
-      divider={<QuadrantDivider orientation="vertical" aria-hidden="true" />}
+      divider={
+        <QuadrantDivider
+          orientation={isMobile ? "horizontal" : "vertical"}
+          aria-hidden="true"
+        />
+      }
     >
       {props.children}
     </Stack>
   );
+}
+
+function useDetentionFormMediaQuery() {
+  return useIsBreakpointDown("xl");
 }

@@ -238,7 +238,6 @@ public class AppointmentBlockService {
         appointmentBlockGroup.getTypes().stream()
             .map(type -> MappingUtil.mapEnum(AppointmentTypeDto.class, type))
             .toList(),
-        appointmentBlockGroup.getParallelExaminations(),
         location,
         mapAppointmentBlockToData(appointmentBlockGroup, appointmentBlockData),
         appointmentBlockGroup.isAvailableForCitizen(),
@@ -310,6 +309,7 @@ public class AppointmentBlockService {
       appointmentBlock.setCalendarEventId(calendarEventId);
       appointmentBlock.setAppointmentBlockStart(createAppointmentBlockRequest.start());
       appointmentBlock.setAppointmentBlockEnd(createAppointmentBlockRequest.end());
+      appointmentBlock.setParallelExaminations(request.parallelExaminations());
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 
@@ -355,7 +355,6 @@ public class AppointmentBlockService {
       List<AppointmentTypeHolder> appointmentTypeHolders) {
     AppointmentBlockGroup appointmentBlockGroup = new AppointmentBlockGroup();
     appointmentBlockGroup.setAppointmentTypeHolders(appointmentTypeHolders);
-    appointmentBlockGroup.setParallelExaminations(request.parallelExaminations());
     appointmentBlockGroup.setMfas(request.mfas());
     appointmentBlockGroup.setPhysicians(request.physicians());
     appointmentBlockGroup.setConsultants(request.consultants());

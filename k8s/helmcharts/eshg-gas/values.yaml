@@ -304,6 +304,8 @@ businessmodules:
     smtp:
       ssl: false
       startTls: false
+    bootstrapAdmin:
+      keepEnabled: false
     resources:
       requests:
         cpu: 10m

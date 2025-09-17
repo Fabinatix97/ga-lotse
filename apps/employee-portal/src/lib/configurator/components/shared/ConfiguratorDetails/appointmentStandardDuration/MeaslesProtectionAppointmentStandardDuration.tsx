@@ -9,7 +9,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiGetMeaslesProtectionAppointmentStandardDurationsResponse } from "@eshg/measles-protection-api";
 
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
-import { useMeaslesProtectionAppointmentStandardDurationApi } from "@/lib/shared/api/clients";
+import { useMeaslesProtectionAppointmentStandardDurationConfigApi } from "@/lib/shared/api/clients";
 import {
   mapDurationValue,
   useUpdateAppointmentStandardDuration,
@@ -35,7 +35,7 @@ export function MeaslesProtectionAppointmentStandardDuration() {
         MEASLES_PROTECTION_APPOINTMENT_STANDARD_DURATION_ENDPOINT_NAME
       }
       fields={fields}
-      queryHook={useGetMeaslesProtectionStandardDurations}
+      queryHook={useGetMeaslesProtectionStandardDurationsConfig}
       updateHook={useUpdateMeaslesProtectionAppointmentStandardDuration}
     />
   );
@@ -68,7 +68,7 @@ function mapValues(
 
 function useUpdateMeaslesProtectionAppointmentStandardDuration() {
   return useUpdateAppointmentStandardDuration(
-    useMeaslesProtectionAppointmentStandardDurationApi,
+    useMeaslesProtectionAppointmentStandardDurationConfigApi,
     mapValues,
   );
 }
@@ -82,10 +82,10 @@ function mapResponse(
   };
 }
 
-function useGetMeaslesProtectionStandardDurations() {
+function useGetMeaslesProtectionStandardDurationsConfig() {
   return useGetAppointmentStandardDurations(
     ConfiguratorModuleName.MeaslesProtection,
-    useMeaslesProtectionAppointmentStandardDurationApi,
+    useMeaslesProtectionAppointmentStandardDurationConfigApi,
     mapResponse,
   );
 }

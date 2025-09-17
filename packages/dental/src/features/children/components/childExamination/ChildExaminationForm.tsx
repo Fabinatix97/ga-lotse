@@ -75,7 +75,7 @@ export function ChildExaminationForm(props: ChildExaminationFormProps) {
 
   return (
     <FormikProvider value={form}>
-      <FormStack onSubmit={form.handleSubmit}>
+      <FormStack aria-label="Untersuchungen" onSubmit={form.handleSubmit}>
         {props.children}
         <FormFooter isSubmitting={form.isSubmitting} />
       </FormStack>

@@ -1,13 +1,12 @@
 // Copyright 2025 cronn GmbH
 // SPDX-License-Identifier: Apache-2.0
 
-import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.PnpmTaskWithNpmDependencies
 
-tasks.register('checkProjectReferences', PnpmTask) {
+tasks.register('checkProjectReferences', PnpmTaskWithNpmDependencies) {
   group = 'maintenance'
   dependsOn rootProject.tasks.installDependencies
   inputs.dir "${rootDir}/.meta-updater"
-  inputs.file "${rootDir}/pnpm-workspace.yaml"
   subprojects {
     if (file("${projectDir}/package.json").exists() && file("${projectDir}/tsconfig.json").exists()) {
       inputs.file "${projectDir}/package.json"
@@ -21,11 +20,10 @@ tasks.register('checkProjectReferences', PnpmTask) {
   args = ['meta-updater', '--test']
 }
 
-tasks.register('updateProjectReferences', PnpmTask) {
+tasks.register('updateProjectReferences', PnpmTaskWithNpmDependencies) {
   group = 'maintenance'
   dependsOn rootProject.tasks.installDependencies
   inputs.dir "${rootDir}/.meta-updater"
-  inputs.file "${rootDir}/pnpm-workspace.yaml"
   subprojects {
     if (file("${projectDir}/package.json").exists() && file("${projectDir}/tsconfig.json").exists()) {
       inputs.file "${projectDir}/package.json"

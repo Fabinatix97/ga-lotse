@@ -5,7 +5,7 @@
 
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { isDefined, isEmpty, mapToObj } from "remeda";
+import { isDefined, isEmpty } from "remeda";
 
 import {
   AppointmentBlockGroupFields,
@@ -18,13 +18,8 @@ import {
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal";
-import {
-  ApiAppointmentType,
-  ApiAppointmentTypeConfig,
-  ApiUser,
-} from "@eshg/sti-protection-api";
+import { ApiAppointmentType, ApiUser } from "@eshg/sti-protection-api";
 
-import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
@@ -33,7 +28,6 @@ export interface AppointmentBlockGroupValues {
   types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
-  allAppointmentTypes: AppointmentTypeConfig[];
   consultants: string[];
   physicians: string[];
   locationId: OptionalFieldValue<string>;
@@ -42,7 +36,6 @@ export interface AppointmentBlockGroupValues {
 export interface StiProtectionAppointmentValues {
   types: ApiAppointmentType[];
   parallelExaminations: OptionalFieldValue<number>;
-  allAppointmentTypes: ApiAppointmentTypeConfig[];
   physicians: string[];
   mfas?: string[];
   locationId: OptionalFieldValue<string>;
@@ -52,23 +45,17 @@ export interface StiProtectionAppointmentValues {
 
 function validateForm(
   values: StiProtectionAppointmentValues,
-  appointmentTypes: AppointmentTypeConfig[],
+  standardDurations: Partial<Record<ApiAppointmentType, number>>,
 ) {
   const errors: FormikErrors<StiProtectionAppointmentValues> = {};
-  const appointmentDurations = mapToObj(
-    appointmentTypes,
-    (appointmentTypeConfig) => [
-      appointmentTypeConfig.appointmentTypeDto,
-      appointmentTypeConfig.standardDurationInMinutes,
-    ],
-  );
+
   const appointmentBlockErrors = validateFieldArray(
     values.appointmentBlocks,
     (appointmentBlock) =>
       validateAppointmentBlock(
         values.types,
         appointmentBlock,
-        appointmentDurations,
+        standardDurations,
       ),
   );
   if (isDefined(appointmentBlockErrors)) {
@@ -96,7 +83,7 @@ function userToOption(user: ApiUser): NamedUser {
 interface AppointmentBlockGroupFormProps {
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
   validateAvailability: (values: StiProtectionAppointmentValues) => void;
-  appointmentTypes: AppointmentTypeConfig[];
+  standardDurations: Partial<Record<ApiAppointmentType, number>>;
   blockedStaff: string[];
   freeStaff: string[];
   initialValues: StiProtectionAppointmentValues;
@@ -107,12 +94,12 @@ interface AppointmentBlockGroupFormProps {
 export function AppointmentBlockGroupForm({
   onSubmit,
   validateAvailability,
-  appointmentTypes,
   blockedStaff,
   freeStaff,
   initialValues,
   consultants = [],
   physicians = [],
+  standardDurations,
 }: Readonly<AppointmentBlockGroupFormProps>) {
   const physicianOptions = physicians.map(userToOption);
   const consultantOptions = consultants.map(userToOption);
@@ -120,7 +107,7 @@ export function AppointmentBlockGroupForm({
   return (
     <Formik
       initialValues={initialValues}
-      validate={(values) => validateForm(values, appointmentTypes)}
+      validate={(values) => validateForm(values, standardDurations)}
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (

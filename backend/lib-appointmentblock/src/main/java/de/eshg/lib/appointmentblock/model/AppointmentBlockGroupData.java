@@ -14,7 +14,6 @@ public record AppointmentBlockGroupData(
     Long internalId,
     UUID externalId,
     List<AppointmentTypeDto> types,
-    int parallelExaminations,
     LocationDto location,
     List<AppointmentBlockData> appointmentBlocks,
     Boolean availableForCitizen,

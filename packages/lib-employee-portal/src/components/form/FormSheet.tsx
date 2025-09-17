@@ -23,6 +23,7 @@ interface FormSheetProps extends RequiresChildren {
   sx?: SxProps;
   gap?: number;
   "aria-label"?: string;
+  isSearchForm?: boolean;
 }
 
 export function FormSheet(props: FormSheetProps) {

@@ -19,8 +19,8 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'
     implementation 'io.projectreactor.netty:reactor-netty-core'
     implementation 'io.projectreactor.netty:reactor-netty-http'
-    implementation 'io.github.hakky54:sslcontext-kickstart:latest.release'
-    implementation 'io.github.hakky54:sslcontext-kickstart-for-netty:latest.release'
+    implementation 'io.github.hakky54:ayza:latest.release'
+    implementation 'io.github.hakky54:ayza-for-netty:latest.release'
     implementation 'dnsjava:dnsjava:latest.release'
     implementation 'org.java-websocket:Java-WebSocket:latest.release'
 

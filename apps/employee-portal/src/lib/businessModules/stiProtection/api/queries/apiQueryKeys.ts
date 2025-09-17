@@ -19,8 +19,8 @@ export const proceduresQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["procedures"]),
 );
 
-export const appointmentTypesApiQueryKey = queryKeyFactory(
-  stiProtectionApiQueryKey(["appointmentTypes"]),
+export const appointmentStandardDurationApiQueryKey = queryKeyFactory(
+  stiProtectionApiQueryKey(["appointmentStandardDuration"]),
 );
 
 export const textTemplateApiQueryKey = queryKeyFactory(

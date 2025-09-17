@@ -32,18 +32,15 @@ import org.keycloak.representations.userprofile.config.UPAttributeRequired;
 import org.keycloak.representations.userprofile.config.UPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 @Component(BEAN_NAME)
-@DependsOn(BootstrapKeycloakProvisioning.BEAN_NAME)
 public class MasterKeycloakProvisioning implements AutoCloseable {
   public static final String BEAN_NAME = "masterKeycloakProvisioning";
 
   private static final Logger log = LoggerFactory.getLogger(MasterKeycloakProvisioning.class);
   private final KeycloakProperties keycloakProperties;
-  private final BootstrapKeycloakProvisioning bootstrapKeycloakProvisioning;
-  private final RealmBoundKeycloakClient keycloakClient;
+  private RealmBoundKeycloakClient keycloakClient;
 
   private static final String CUSTOM_MASTER_BROWSER_FLOW_ALIAS = "keycloak admin login flow";
   private static final String PASSWORD_POLICY =
@@ -57,10 +54,7 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
           "specialChars(1)",
           "maxAuthAge(0)");
 
-  public MasterKeycloakProvisioning(
-      BootstrapKeycloakProvisioning bootstrapKeycloakProvisioning, KeycloakProperties properties) {
-    this.bootstrapKeycloakProvisioning = bootstrapKeycloakProvisioning;
-    this.keycloakClient = new RealmBoundKeycloakClient(properties, "master");
+  public MasterKeycloakProvisioning(KeycloakProperties properties) {
     this.keycloakProperties = properties;
   }
 
@@ -70,7 +64,8 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
 
   @PostConstruct
   void provisionMasterRealm() {
-    this.bootstrapKeycloakProvisioning.registerClient(this.keycloakClient);
+    this.keycloakClient = RealmBoundKeycloakClient.createMasterAdminClient(this.keycloakProperties);
+    BootstrapKeycloakProvisioning.registerClient(this.keycloakClient, this.keycloakProperties);
     refreshClientAccessToken();
 
     configureRealm();
@@ -87,7 +82,7 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
       initializeSetupAdmin(
           keycloakProperties.setupAdmin().username(), keycloakProperties.setupAdmin().email());
     }
-    if (!this.keycloakProperties.bootstrapAdmin().enabled()) {
+    if (!this.keycloakProperties.bootstrapAdmin().keepEnabled()) {
       removeTemporaryAdminUsers();
     }
   }
@@ -204,7 +199,7 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
                         "Could not find client '%s' in master realm"
                             .formatted(ADMIN_CLI_CLIENT_ID)));
     ClientRepresentation representation = adminCli.toRepresentation();
-    representation.setEnabled(this.keycloakProperties.bootstrapAdmin().enabled());
+    representation.setEnabled(this.keycloakProperties.bootstrapAdmin().keepEnabled());
     adminCli.update(representation);
   }
 

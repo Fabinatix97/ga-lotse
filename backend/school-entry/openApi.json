@@ -364,87 +364,23 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
-    "/appointment-types" : {
+    "/appointment-standard-duration" : {
       "get" : {
-        "operationId" : "getAppointmentTypes",
+        "operationId" : "getStandardDurations",
         "responses" : {
           "200" : {
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetAppointmentTypesResponse"
+                  "$ref" : "#/components/schemas/SchoolEntryAppointmentStandardDurations"
                 }
               }
             },
-            "description" : "OK"
+            "description" : "A response containing the standard durations."
           }
         },
-        "summary" : "Gets all Appointment Types",
-        "tags" : [ "AppointmentType" ]
-      }
-    },
-    "/appointment-types/{id}" : {
-      "get" : {
-        "operationId" : "getOneAppointmentType",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AppointmentTypeConfig"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Gets one Appointment Type by ID",
-        "tags" : [ "AppointmentType" ]
-      },
-      "put" : {
-        "operationId" : "updateAppointmentType",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UpdateAppointmentTypeRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AppointmentTypeConfig"
-                }
-              }
-            },
-            "description" : "OK"
-          }
-        },
-        "summary" : "Modifies an existing Appointment Type",
-        "tags" : [ "AppointmentType" ]
+        "summary" : "Get the standard durations for school entry appointments",
+        "tags" : [ "SchoolEntryAppointmentStandardDuration" ]
       }
     },
     "/approval-requests/{approvalRequestId}" : {
@@ -1008,7 +944,7 @@
     },
     "/configuration/appointment-standard-duration" : {
       "get" : {
-        "operationId" : "getStandardDurations",
+        "operationId" : "getStandardDurationsConfig",
         "responses" : {
           "200" : {
             "content" : {
@@ -1022,7 +958,7 @@
           }
         },
         "summary" : "Get the standard durations for school entry appointments",
-        "tags" : [ "SchoolEntryAppointmentStandardDuration" ]
+        "tags" : [ "SchoolEntryAppointmentStandardDurationConfig" ]
       },
       "put" : {
         "operationId" : "updateStandardDurations",
@@ -1042,7 +978,7 @@
           }
         },
         "summary" : "Update the standard durations for school entry appointments",
-        "tags" : [ "SchoolEntryAppointmentStandardDuration" ]
+        "tags" : [ "SchoolEntryAppointmentStandardDurationConfig" ]
       }
     },
     "/configuration/department-info" : {
@@ -5364,7 +5300,7 @@
         }
       },
       "AppointmentBlock" : {
-        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "physicians", "resolvedUsers", "start", "types" ],
+        "required" : [ "appointmentBlockBins", "bookedAppointments", "consultants", "end", "id", "mfas", "parallelExaminations", "physicians", "resolvedUsers", "start", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlockBins" : {
@@ -5416,6 +5352,12 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
           },
           "physicians" : {
             "type" : "array",
@@ -5523,24 +5465,6 @@
       "AppointmentType" : {
         "type" : "string",
         "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG", "MEDS_ABROAD_CERTIFICATION" ]
-      },
-      "AppointmentTypeConfig" : {
-        "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
-        "type" : "object",
-        "properties" : {
-          "appointmentTypeDto" : {
-            "$ref" : "#/components/schemas/AppointmentType"
-          },
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "standardDurationInMinutes" : {
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
       },
       "ApprovalRequest" : {
         "required" : [ "approvalRequestId", "createdAt", "createdBy", "operation", "reason", "status" ],
@@ -7113,7 +7037,7 @@
         }
       },
       "GetAppointmentBlock" : {
-        "required" : [ "end", "id", "start" ],
+        "required" : [ "end", "id", "parallelExaminations", "start" ],
         "type" : "object",
         "properties" : {
           "bookedDuration" : {
@@ -7136,6 +7060,12 @@
             "format" : "uuid",
             "example" : "UUID_1"
           },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
           "start" : {
             "type" : "string",
             "description" : "Time at which the appointment block starts.",
@@ -7154,7 +7084,7 @@
         }
       },
       "GetAppointmentBlockGroup" : {
-        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "types" ],
+        "required" : [ "appointmentBlocks", "id", "types" ],
         "type" : "object",
         "properties" : {
           "appointmentBlocks" : {
@@ -7178,12 +7108,6 @@
           },
           "location" : {
             "$ref" : "#/components/schemas/AppointmentLocation"
-          },
-          "parallelExaminations" : {
-            "maximum" : 10,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32"
           },
           "types" : {
             "maxItems" : 2147483647,
@@ -7219,18 +7143,6 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AppointmentBlock"
-            }
-          }
-        }
-      },
-      "GetAppointmentTypesResponse" : {
-        "required" : [ "appointmentTypeConfigDtos" ],
-        "type" : "object",
-        "properties" : {
-          "appointmentTypeConfigDtos" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AppointmentTypeConfig"
             }
           }
         }
@@ -10609,17 +10521,6 @@
             "description" : "Time at which the appointment block starts.",
             "format" : "date-time",
             "example" : "2016-01-01T01:00:00.123456+01:00"
-          }
-        }
-      },
-      "UpdateAppointmentTypeRequest" : {
-        "required" : [ "standardDurationInMinutes" ],
-        "type" : "object",
-        "properties" : {
-          "standardDurationInMinutes" : {
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int64"
           }
         }
       },

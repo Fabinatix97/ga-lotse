@@ -5,6 +5,7 @@
 
 import { DeleteOutlined } from "@mui/icons-material";
 import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
+import { useEffect, useRef, useState } from "react";
 import { isNonNullish } from "remeda";
 
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
@@ -80,6 +81,25 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
 ) {
   const validateLength = useValidateLength();
   const fieldName = createFieldNameMapper<DefaultPersonFormValues>();
+  const contactAddressFormRef = useRef<HTMLElement>(null);
+  const addContactAddressRef = useRef<HTMLElement>(null);
+  const [focusContactAddressForm, setFocusContactAddressForm] = useState(false);
+  const [focusAddContactAddressForm, setFocusAddContactAddressForm] =
+    useState(false);
+
+  useEffect(() => {
+    if (focusContactAddressForm && contactAddressFormRef.current) {
+      contactAddressFormRef.current.focus();
+      setFocusContactAddressForm(false);
+    }
+  }, [focusContactAddressForm]);
+
+  useEffect(() => {
+    if (focusAddContactAddressForm && addContactAddressRef.current) {
+      addContactAddressRef.current.focus();
+      setFocusAddContactAddressForm(false);
+    }
+  }, [focusAddContactAddressForm]);
 
   return (
     <>
@@ -191,13 +211,14 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
                     aria-label="Kontaktadresse entfernen"
                     sx={{ alignSelf: "flex-end" }}
                     color="danger"
-                    onClick={() =>
-                      props.setFieldValue(
+                    onClick={() => {
+                      void props.setFieldValue(
                         fieldName("contactAddress"),
                         undefined,
                         false,
-                      )
-                    }
+                      );
+                      setFocusAddContactAddressForm(true);
+                    }}
                   >
                     <DeleteOutlined />
                   </IconButton>
@@ -205,6 +226,7 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
               </Stack>
               <Grid container spacing={2}>
                 <ContactAddressForm
+                  ref={(el) => (contactAddressFormRef.current = el)}
                   name={fieldName("contactAddress")}
                   type={props.values.contactAddress.type}
                   canChooseType={props.canChooseAddressType}
@@ -213,13 +235,15 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
             </Box>
           ) : (
             <FormAddMoreButton
-              onClick={() =>
-                props.setFieldValue(
+              ref={(el) => (addContactAddressRef.current = el)}
+              onClick={() => {
+                void props.setFieldValue(
                   fieldName("contactAddress"),
                   createEmptyAddress(),
                   false,
-                )
-              }
+                );
+                setFocusContactAddressForm(true);
+              }}
             >
               Kontaktadresse hinzufügen
             </FormAddMoreButton>
