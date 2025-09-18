@@ -76,6 +76,7 @@ export function ChildrenTable() {
     filterValues,
     filterFormValues,
     setFilterFormValue,
+    setFilterFormValues,
     deleteFilterValue,
     clearFilterValues,
     filterButtonProps,
@@ -103,6 +104,8 @@ export function ChildrenTable() {
     procedureLabelsFilter: filterValues.procedureLabelsFilter?.map(
       (label) => label.id,
     ),
+    excludedProcedureLabelsFilter:
+      filterValues.excludedProcedureLabelsFilter?.map((label) => label.id),
     ...personSearch.searchParams,
   });
 
@@ -197,6 +200,7 @@ export function ChildrenTable() {
                 <ChildrenFilterSettings
                   filterFormValues={filterFormValues}
                   setFilterFormValue={setFilterFormValue}
+                  setFilterFormValues={setFilterFormValues}
                   deleteFilterValue={deleteFilterValue}
                   clearFilterValues={clearFilterValues}
                   filterSettingsSheetProps={filterSettingsSheetProps}

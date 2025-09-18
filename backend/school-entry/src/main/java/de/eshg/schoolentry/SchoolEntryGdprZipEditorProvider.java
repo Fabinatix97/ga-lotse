@@ -6,7 +6,6 @@
 package de.eshg.schoolentry;
 
 import de.eshg.domain.model.serialization.ZipEditor;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup_;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock_;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
 import de.eshg.lib.procedure.domain.model.Procedure_;
@@ -53,22 +52,19 @@ public class SchoolEntryGdprZipEditorProvider extends AbstractGdprZipEditorProvi
                 SchoolEntryProcedure_.DEVELOPMENT_SCREENING_RESULT))
         .andThen(
             removeFieldFromPath(
-                AppointmentBlockGroup_.PHYSICIANS,
+                AppointmentBlock_.PHYSICIANS,
                 SchoolEntryProcedure_.APPOINTMENT,
-                Appointment_.APPOINTMENT_BLOCK,
-                AppointmentBlock_.APPOINTMENT_BLOCK_GROUP))
+                Appointment_.APPOINTMENT_BLOCK))
         .andThen(
             removeFieldFromPath(
-                AppointmentBlockGroup_.MFAS,
+                AppointmentBlock_.MFAS,
                 SchoolEntryProcedure_.APPOINTMENT,
-                Appointment_.APPOINTMENT_BLOCK,
-                AppointmentBlock_.APPOINTMENT_BLOCK_GROUP))
+                Appointment_.APPOINTMENT_BLOCK))
         .andThen(
             removeFieldFromPath(
-                AppointmentBlockGroup_.CONSULTANTS,
+                AppointmentBlock_.CONSULTANTS,
                 SchoolEntryProcedure_.APPOINTMENT,
-                Appointment_.APPOINTMENT_BLOCK,
-                AppointmentBlock_.APPOINTMENT_BLOCK_GROUP))
+                Appointment_.APPOINTMENT_BLOCK))
         .andThen(
             removeArrayEntriesWithValues(
                 Procedure_.PROGRESS_ENTRIES,

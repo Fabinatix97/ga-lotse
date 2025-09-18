@@ -157,8 +157,8 @@ catalogs:
       specifier: 4.10.2
       version: 4.10.2
     '@cronn/playwright-file-snapshots':
-      specifier: 0.15.0
-      version: 0.15.0
+      specifier: 0.19.0
+      version: 0.19.0
     '@playwright/test':
       specifier: 1.55.0
       version: 1.55.0
@@ -194,8 +194,8 @@ catalogs:
       version: 7.1.4
   vitest:
     '@cronn/vitest-file-snapshots':
-      specifier: 0.13.0
-      version: 0.13.0
+      specifier: 0.14.0
+      version: 0.14.0
     '@vitejs/plugin-react':
       specifier: 5.0.2
       version: 5.0.2
@@ -797,7 +797,7 @@ importers:
     devDependencies:
       '@cronn/vitest-file-snapshots':
         specifier: catalog:vitest
-        version: 0.13.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))
+        version: 0.14.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))
       '@eshg/lib-vitest':
         specifier: workspace:*
         version: link:../../packages/lib-vitest
@@ -912,7 +912,7 @@ importers:
         version: 4.10.2(playwright-core@1.55.0)
       '@cronn/playwright-file-snapshots':
         specifier: catalog:playwright
-        version: 0.15.0(@playwright/test@1.55.0)(yaml@2.8.1)
+        version: 0.19.0(@playwright/test@1.55.0)(yaml@2.8.1)
       '@eshg/auditlog-api':
         specifier: workspace:*
         version: link:../packages/auditlog-api
@@ -1089,7 +1089,7 @@ importers:
     devDependencies:
       '@cronn/vitest-file-snapshots':
         specifier: catalog:vitest
-        version: 0.13.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))
+        version: 0.14.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))
       '@eshg/lib-vitest':
         specifier: workspace:*
         version: link:../lib-vitest
@@ -1580,7 +1580,7 @@ importers:
     devDependencies:
       '@cronn/vitest-file-snapshots':
         specifier: catalog:vitest
-        version: 0.13.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))
+        version: 0.14.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))
       '@eshg/lib-vitest':
         specifier: workspace:*
         version: link:../lib-vitest
@@ -2400,19 +2400,19 @@ packages:
     resolution: {integrity: sha512-LxEoOpNQwpanfplnyGtYRGuH9r4A0YecTkURUvbDYNcAb2g9ER2OQfjGNdpWE27uObrXUpATSYhljgTQ/TCRsA==}
     engines: {node: '>=22', pnpm: '>=10'}
 
-  '@cronn/lib-file-snapshots@0.14.0':
-    resolution: {integrity: sha512-F2tP8XH+eAe0FOsEFrVU7ZphT1Z2tRFj9t3bjgWIxJMxpbrw2cO/NXhDZBIRx5BtPd6czrx8RRoaOK68uy+ACQ==}
+  '@cronn/lib-file-snapshots@0.15.0':
+    resolution: {integrity: sha512-nDRcuHpgtPHsGwGwrgPCRiIAwBJtqFYxbigxnVcwyvkJlKrCOOVcmEmNde0cdwkx86JvklIy6K6hH6i8lTyyvQ==}
     engines: {node: '>=22.18', pnpm: '>=10'}
 
-  '@cronn/playwright-file-snapshots@0.15.0':
-    resolution: {integrity: sha512-5MYACDbz+CcP4+z/1VJgoEtPdaPD4wdjQJtS9VDKLRneKy699MsDLqQPtzR0A6c4YflLN3IQohQeDuFtMLaUDA==}
+  '@cronn/playwright-file-snapshots@0.19.0':
+    resolution: {integrity: sha512-XArBfzMJxqROQ9oTyF7CUmIwXao6QIwMamrBo6H2Ec7hDAyueAjkfzAzCW0IR5sFrb6VK9uNztOEsIrqiqpggg==}
     engines: {node: '>=22.18', pnpm: '>=10'}
     peerDependencies:
       '@playwright/test': ^1.55
       yaml: ^2
 
-  '@cronn/vitest-file-snapshots@0.13.0':
-    resolution: {integrity: sha512-0KSNEp78fzv3y88CsiBwNac7SjiuBteMSLL4YbPYojxgLLJ9Gz0gCI76rqusEzrZSkoXo8bwNWmXwJpFF7ifWw==}
+  '@cronn/vitest-file-snapshots@0.14.0':
+    resolution: {integrity: sha512-Hga5NimFpSbw87+Ihmjw16o9HViUB42KN7iybwIbVeGRKsVJt02xbP4i74EEIpisSJPT3++6ZKZ5UGoFjXXlpw==}
     engines: {node: '>=22.18', pnpm: '>=10'}
     peerDependencies:
       vitest: ^3.2
@@ -5811,6 +5811,10 @@ packages:
   find-root@1.1.0:
     resolution: {integrity: sha512-NKfW6bec6GfKc0SGx1e07QZY9PE99u0Bft/0rzSD5k3sO/vwkVUpDUKVm5Gpp5Ue3YfShPFTX2070tDs5kB9Ng==}
 
+  find-up-simple@1.0.1:
+    resolution: {integrity: sha512-afd4O7zpqHeRyg4PfDQsXmlDe2PfdHtJt6Akt8jOWaApLOZk5JXs6VMR29lz03pRe9mpykrRCYIYxaJYcfpncQ==}
+    engines: {node: '>=18'}
+
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
     engines: {node: '>=8'}
@@ -7290,6 +7294,10 @@ packages:
   pac-resolver@7.0.1:
     resolution: {integrity: sha512-5NPgf87AT2STgwa2ntRMr45jTKrYBGkVU36yT0ig/n/GMAa3oPqhZfIQ2kMEimReg0+t9kZViDVZ83qfVUlckg==}
     engines: {node: '>= 14'}
+
+  package-directory@8.1.0:
+    resolution: {integrity: sha512-qHKRW0pw3lYdZMQVkjDBqh8HlamH/LCww2PH7OWEp4Qrt3SFeYMNpnJrQzlSnGrDD5zGR51XqBh7FnNCdVNEHA==}
+    engines: {node: '>=18'}
 
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
@@ -9822,17 +9830,18 @@ snapshots:
 
   '@cronn/k6-scenario-builder@1.0.0': {}
 
-  '@cronn/lib-file-snapshots@0.14.0': {}
+  '@cronn/lib-file-snapshots@0.15.0': {}
 
-  '@cronn/playwright-file-snapshots@0.15.0(@playwright/test@1.55.0)(yaml@2.8.1)':
+  '@cronn/playwright-file-snapshots@0.19.0(@playwright/test@1.55.0)(yaml@2.8.1)':
     dependencies:
-      '@cronn/lib-file-snapshots': 0.14.0
+      '@cronn/lib-file-snapshots': 0.15.0
       '@playwright/test': 1.55.0
+      package-directory: 8.1.0
       yaml: 2.8.1
 
-  '@cronn/vitest-file-snapshots@0.13.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))':
+  '@cronn/vitest-file-snapshots@0.14.0(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
-      '@cronn/lib-file-snapshots': 0.14.0
+      '@cronn/lib-file-snapshots': 0.15.0
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.0)(terser@5.40.0)(tsx@4.20.5)(yaml@2.8.1)
 
   '@cyclonedx/cdxgen-plugins-bin-darwin-amd64@1.6.12':
@@ -13843,6 +13852,8 @@ snapshots:
 
   find-root@1.1.0: {}
 
+  find-up-simple@1.0.1: {}
+
   find-up@4.1.0:
     dependencies:
       locate-path: 5.0.0
@@ -15524,6 +15535,10 @@ snapshots:
     dependencies:
       degenerator: 5.0.1
       netmask: 2.0.2
+
+  package-directory@8.1.0:
+    dependencies:
+      find-up-simple: 1.0.1
 
   package-json-from-dist@1.0.1: {}
 

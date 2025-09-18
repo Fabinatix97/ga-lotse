@@ -34,7 +34,7 @@ import {
 } from "@eshg/official-medical-service-api";
 import { OpenDataConfigApi } from "@eshg/opendata-api";
 import {
-  AppointmentBlockDefaultAvailabilityConfigApi,
+  AppointmentBlockAvailabilityConfigApi,
   SchoolEntryAppointmentStandardDurationConfigApi,
   SchoolEntryLibConfigApi,
 } from "@eshg/school-entry-api";
@@ -226,9 +226,9 @@ export function useSchoolEntryAppointmentStandardDurationConfigApi() {
   return new SchoolEntryAppointmentStandardDurationConfigApi(configuration);
 }
 
-export function useSchoolEntryAppointmentBlockDefaultAvailabilityApi() {
+export function useSchoolEntryAppointmentBlockAvailabilityApi() {
   const configuration = useSchoolEntryConfiguration();
-  return new AppointmentBlockDefaultAvailabilityConfigApi(configuration);
+  return new AppointmentBlockAvailabilityConfigApi(configuration);
 }
 
 export function useTravelMedicineAppointmentStandardDurationConfigApi() {

@@ -42,6 +42,14 @@ actors:
           - centralrepository
         skipActors: []
 
+spatz:
+  javaToolOptions: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 384Mi
+
 spring:
   profiles:
     active: "dev, preview-features"

@@ -4,8 +4,8 @@
  */
 
 import {
+  DefaultError,
   queryOptions,
-  useQuery,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { addDays, startOfDay } from "date-fns";
@@ -14,8 +14,10 @@ import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiCreateDailyAppointmentBlockGroupRequest,
+  type ApiValidateAppointmentBlockGroupResponse,
   AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
+  UpdateAppointmentBlockRequest,
 } from "@eshg/school-entry-api";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
@@ -40,33 +42,58 @@ export function getAppointmentBlockGroupsQuery(
   });
 }
 
-export function useValidateDailyAppointmentBlocksForGroup(
-  request: ApiCreateDailyAppointmentBlockGroupRequest | null,
+export function getValidateDailyAppointmentBlocksForGroupQuery(
+  appointmentBlockApi: AppointmentBlockApi,
+  request: ApiCreateDailyAppointmentBlockGroupRequest,
 ) {
-  const appointmentBlockApi = useAppointmentBlockApi();
-  return useQuery({
+  return queryOptions<
+    ApiValidateAppointmentBlockGroupResponse,
+    DefaultError,
+    ApiValidateAppointmentBlockGroupResponse,
+    readonly unknown[]
+  >({
     queryKey: appointmentBlockApiQueryKey([
       "validateDailyAppointmentBlocksForGroup",
       request,
     ]),
     queryFn: () =>
-      request !== null
-        ? appointmentBlockApi.validateDailyAppointmentBlocksForGroup(request)
-        : Promise.reject(new Error("Request is not defined")),
-    enabled: request !== null,
+      appointmentBlockApi.validateDailyAppointmentBlocksForGroup(request),
   });
 }
 
-export function useGetAppointmentBlock(appointmentBlockId: string) {
-  const appointmentBlockApi = useAppointmentBlockApi();
-  const result = useSuspenseQuery({
+export function getValidateUpdateAppointmentBlockQuery(
+  appointmentBlockApi: AppointmentBlockApi,
+  request: UpdateAppointmentBlockRequest,
+) {
+  return queryOptions<
+    ApiValidateAppointmentBlockGroupResponse,
+    DefaultError,
+    ApiValidateAppointmentBlockGroupResponse,
+    readonly unknown[]
+  >({
+    queryKey: appointmentBlockApiQueryKey([
+      "validateUpdateAppointmentBlock",
+      request,
+    ]),
+    queryFn: () =>
+      appointmentBlockApi.validateUpdateAppointmentBlock(
+        request.appointmentBlockId,
+        request.apiUpdateAppointmentBlockRequest,
+      ),
+  });
+}
+
+export function getAppointmentBlockQuery(
+  appointmentBlockApi: AppointmentBlockApi,
+  appointmentBlockId: string,
+) {
+  return queryOptions({
     queryKey: appointmentBlockApiQueryKey([
       "getAppointmentBlock",
       appointmentBlockId,
     ]),
     queryFn: () => appointmentBlockApi.getAppointmentBlock(appointmentBlockId),
   });
-  return result.data;
 }
 
 export function useGetAppointment(appointmentId: number) {

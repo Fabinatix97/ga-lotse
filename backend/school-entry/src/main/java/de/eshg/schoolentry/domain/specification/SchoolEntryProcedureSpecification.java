@@ -43,6 +43,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
   private final Instant dayOfAppointmentFilter;
   private final Boolean hasAppointmentFilter;
   private final ArrayList<UUID> labelFilter;
+  private final ArrayList<UUID> excludedLabelFilter;
   private final Boolean isInvitationSentFilter;
   private final Boolean hasExaminationEditsFilter;
   private final ProcedureSortKey sortKey;
@@ -56,6 +57,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       Instant dayOfAppointmentFilter,
       Boolean hasAppointmentFilter,
       ArrayList<UUID> labelFilter,
+      ArrayList<UUID> excludedLabelFilter,
       Boolean isInvitationSentFilter,
       Boolean hasExaminationEditsFilter,
       ProcedureSortKey sortKey,
@@ -67,6 +69,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
     this.dayOfAppointmentFilter = dayOfAppointmentFilter;
     this.hasAppointmentFilter = hasAppointmentFilter;
     this.labelFilter = labelFilter;
+    this.excludedLabelFilter = excludedLabelFilter;
     this.isInvitationSentFilter = isInvitationSentFilter;
     this.hasExaminationEditsFilter = hasExaminationEditsFilter;
     this.sortKey = sortKey;
@@ -124,6 +127,18 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
             subqueryRoot.join(SchoolEntryProcedure_.labels);
         subquery.where(criteriaBuilder.equal(labelJoin.get(ProcedureLabel_.externalId), labelId));
         conjunctions.add(criteriaBuilder.exists(subquery));
+      }
+    }
+
+    if (excludedLabelFilter != null) {
+      for (UUID excludedLabelId : excludedLabelFilter) {
+        Subquery<SchoolEntryProcedure> subquery = query.subquery(SchoolEntryProcedure.class);
+        Root<SchoolEntryProcedure> subqueryRoot = subquery.correlate(root);
+        ListJoin<SchoolEntryProcedure, ProcedureLabel> labelJoin =
+            subqueryRoot.join(SchoolEntryProcedure_.labels);
+        subquery.where(
+            criteriaBuilder.equal(labelJoin.get(ProcedureLabel_.externalId), excludedLabelId));
+        conjunctions.add(criteriaBuilder.not(criteriaBuilder.exists(subquery)));
       }
     }
 

@@ -131,8 +131,7 @@ public abstract class AbstractPublicSecurityConfiguration {
     requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
         .hasRole(permissionRole);
     requestMatchers(
-            HttpMethod.GET,
-            BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY_API + "/**")
+            HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_AVAILABILITY_API + "/**")
         .hasRole(permissionRole);
     requestMatchers(GET, LibAppointmentBlock.APPOINTMENT_STANDARD_DURATION_INFO_API)
         .hasRole(permissionRole);

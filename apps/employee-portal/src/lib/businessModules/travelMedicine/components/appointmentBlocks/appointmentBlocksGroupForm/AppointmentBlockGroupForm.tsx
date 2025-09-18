@@ -20,6 +20,9 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
+import { useAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/clients";
+import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
+import { mapFormValues } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
@@ -58,9 +61,6 @@ interface AppointmentBlockGroupFormProps {
   standardDurations: Partial<Record<ApiAppointmentType, number>>;
   allMedicalAssistants: ApiUser[];
   allPhysicians: ApiUser[];
-  blockedStaff: string[];
-  freeStaff: string[];
-  validateAvailability: (values: AppointmentBlockGroupValues) => void;
 }
 
 export interface AppointmentBlockGroupValues {
@@ -74,6 +74,8 @@ export interface AppointmentBlockGroupValues {
 export function AppointmentBlockGroupForm(
   props: Readonly<AppointmentBlockGroupFormProps>,
 ) {
+  const appointmentApi = useAppointmentBlockApi();
+
   const physicianOptions = props.allPhysicians.map((option) => ({
     userId: option.userId,
     firstName: option.firstName,
@@ -93,7 +95,7 @@ export function AppointmentBlockGroupForm(
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet gap={5} onSubmit={handleSubmit}>
+        <FormSheet gap={5} aria-label="Terminblock" onSubmit={handleSubmit}>
           <Stack gap={5}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
@@ -105,9 +107,13 @@ export function AppointmentBlockGroupForm(
             <AppointmentStaffSelection
               physicianOptions={physicianOptions}
               medicalAssistantOptions={medicalAssistantsOptions}
-              freeStaff={props.freeStaff}
-              blockedStaff={props.blockedStaff}
-              validateAvailability={() => props.validateAvailability(values)}
+              validateAppointmentBlocks={() => mapFormValues(values)}
+              getCheckAvailabilityQuery={() =>
+                getValidateDailyAppointmentBlocksForGroupQuery(
+                  appointmentApi,
+                  mapFormValues(values),
+                )
+              }
             />
           </Stack>
           <Divider />

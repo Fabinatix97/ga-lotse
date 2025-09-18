@@ -57,7 +57,8 @@ abstract class BuildInContainer extends DockerExistingImage {
         Bind.parse("${outputDir}:/build/dist:rw")
       )
     containerCommand.withWorkingDir('/')
-    containerCommand.withCmd('./build.sh')
+    def wasmDebug = project.findProperty('wasm-debug') ?: 'false'
+    containerCommand.withCmd('/usr/bin/env', "DEBUG=$wasmDebug", 'sh', '/build.sh')
     CreateContainerResponse container = containerCommand.exec()
     getLogger().quiet("Created container with ID '${container.id}'.")
     return container

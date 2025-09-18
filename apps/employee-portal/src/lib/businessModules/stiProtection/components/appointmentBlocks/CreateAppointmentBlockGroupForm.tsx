@@ -7,13 +7,11 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@eshg/lib-employee-portal";
-import { useSnackbar } from "@eshg/lib-portal";
 import {
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
@@ -22,7 +20,6 @@ import {
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useAppointmentStandardDurationsApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
-import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import {
   getAllConsultantsQuery,
   getAllPhysiciansQuery,
@@ -74,19 +71,11 @@ export function mapFormValues(
 
 export function CreateAppointmentBlockGroupForm() {
   const router = useRouter();
-  const snackbar = useSnackbar();
   const userApi = useUserApi();
   const appointmentStandardDurationApi = useAppointmentStandardDurationsApi();
   const createDailyAppointmentBlocksForGroup =
     useCreateDailyAppointmentBlocksForGroup();
 
-  const [validateRequest, setValidateRequest] =
-    useState<ApiCreateDailyAppointmentBlockGroupRequest | null>(null);
-  const [freeStaff, setFreeStaff] = useState<string[]>([]);
-  const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
-
-  const validateAppointmentBlockGroup =
-    useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const [
     { data: standardDurationsHiv },
     { data: standardDurationsSexWork },
@@ -104,31 +93,6 @@ export function CreateAppointmentBlockGroupForm() {
       getAllConsultantsQuery(userApi),
     ],
   });
-  useEffect(() => {
-    if (validateAppointmentBlockGroup.data) {
-      const result = validateAppointmentBlockGroup.data;
-      setFreeStaff(result.userIdsWithoutEventConflicts);
-      setBlockedStaff(result.userIdsWithEventConflicts);
-    }
-  }, [validateAppointmentBlockGroup]);
-
-  function validateAvailability(values: StiProtectionAppointmentValues) {
-    try {
-      mapFormValues(values);
-    } catch {
-      snackbar.notification(
-        "Bitte Terminblöcke für die Validierung konfigurieren",
-      );
-      return;
-    }
-    if (values.physicians.length === 0 && values.consultants.length === 0) {
-      snackbar.notification(
-        "Bitte mindestens einen Arzt/eine Ärztin oder ein:e Berater:in für die Validierung auswählen",
-      );
-      return;
-    }
-    setValidateRequest(mapFormValues(values));
-  }
 
   async function handleSubmit(values: AppointmentBlockGroupValues) {
     const appointmentBlockGroupValues = mapFormValues(values);
@@ -149,11 +113,8 @@ export function CreateAppointmentBlockGroupForm() {
         ...standardDurationsHiv,
         ...standardDurationsSexWork,
       }}
-      freeStaff={freeStaff}
-      blockedStaff={blockedStaff}
       consultants={allConsultants}
       physicians={allPhysicians}
-      validateAvailability={validateAvailability}
       onSubmit={async (values) => {
         await handleSubmit(values);
       }}

@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 import de.cronn.commons.lang.StreamUtil;
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
+import de.eshg.base.centralfile.api.person.PersonDetails;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.icd10.Icd10CodeApi;
 import de.eshg.base.icd10.api.FindIcd10CodesRequest;
@@ -97,6 +98,16 @@ public class Validator {
     }
   }
 
+  static void validateFiltersConsistent(ProcedureFilterParameters filterParameters) {
+    if (filterParameters != null) {
+      if (CollectionUtils.containsAny(
+          filterParameters.labelsFilter(), filterParameters.excludedLabelsFilter())) {
+        throw new BadRequestException(
+            "At least one label is contained in the labels filter and in the excludedLabels filter at the same time.");
+      }
+    }
+  }
+
   public void validateSchoolYear(Year schoolYear) {
     if (schoolYear == null) {
       return;
@@ -112,6 +123,13 @@ public class Validator {
     if (childData.address() == null) {
       throw new BadRequestException(
           "Appointment cannot be updated because child address is missing.");
+    }
+  }
+
+  public void validatePersonHasContactAddress(PersonDetails person) {
+    if (person.contactAddress() == null) {
+      throw new BadRequestException(
+          "Appointment cannot be updated because custodian contact address is missing.");
     }
   }
 

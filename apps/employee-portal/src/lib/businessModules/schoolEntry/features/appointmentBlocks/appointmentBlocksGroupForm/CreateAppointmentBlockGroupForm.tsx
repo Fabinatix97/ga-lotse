@@ -7,7 +7,6 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import {
@@ -18,7 +17,6 @@ import {
   OptionalFieldValue,
   mapOptionalValue,
   mapRequiredValue,
-  useSnackbar,
 } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -33,7 +31,6 @@ import {
   useConfigApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
-import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import { getAppointmentBlockDefaultAvailabilityQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockDefaultAvailabilityApi";
 import {
   getAllMedicalAssistantsQuery,
@@ -58,7 +55,7 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   availableForBulkBooking: true,
 };
 
-function mapFormValues(
+export function mapFormValues(
   values: CreateAppointmentBlockGroupValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
@@ -95,14 +92,9 @@ export interface CreateAppointmentBlockGroupValues {
 }
 
 export function CreateAppointmentBlockGroupForm() {
-  const snackbar = useSnackbar();
   const router = useRouter();
   const createDailyAppointmentBlockGroup =
     useCreateDailyAppointmentBlocksForGroup();
-  const [validateRequest, setValidateRequest] =
-    useState<ApiCreateDailyAppointmentBlockGroupRequest | null>(null);
-  const validateAppointmentBlockGroup =
-    useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const configApi = useConfigApi();
   const userApi = useUserApi();
   const appointmentBlockDefaultAvailabilityApi =
@@ -131,34 +123,6 @@ export function CreateAppointmentBlockGroupForm() {
     ...INITIAL_VALUES,
     ...defaultAvailabilityFlags,
   };
-  const [freeStaff, setFreeStaff] = useState<string[]>([]);
-  const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
-
-  function validateAvailability(values: CreateAppointmentBlockGroupValues) {
-    try {
-      mapFormValues(values);
-    } catch {
-      snackbar.notification(
-        "Bitte Terminblöcke für die Validierung konfigurieren",
-      );
-      return;
-    }
-    if (values.physicians.length === 0 && values.mfas.length === 0) {
-      snackbar.notification(
-        "Bitte mindestens einen Arzt/eine Ärztin oder ein:e MFA für die Validierung auswählen",
-      );
-      return;
-    }
-    setValidateRequest(mapFormValues(values));
-  }
-
-  useEffect(() => {
-    if (validateAppointmentBlockGroup.data) {
-      const result = validateAppointmentBlockGroup.data;
-      setFreeStaff(result.userIdsWithoutEventConflicts);
-      setBlockedStaff(result.userIdsWithEventConflicts);
-    }
-  }, [validateAppointmentBlockGroup]);
 
   async function handleSubmit(values: CreateAppointmentBlockGroupValues) {
     await createDailyAppointmentBlockGroup.mutateAsync(mapFormValues(values), {
@@ -172,9 +136,6 @@ export function CreateAppointmentBlockGroupForm() {
       standardDurations={standardDurations}
       allPhysicians={allPhysicians}
       allMfas={allMfas}
-      validateAvailability={validateAvailability}
-      freeStaff={freeStaff}
-      blockedStaff={blockedStaff}
       locationSelectionMode={locationSelectionMode}
       onSubmit={handleSubmit}
     />

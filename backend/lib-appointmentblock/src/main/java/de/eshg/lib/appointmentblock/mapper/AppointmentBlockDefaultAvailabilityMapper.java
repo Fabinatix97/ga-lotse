@@ -5,8 +5,8 @@
 
 package de.eshg.lib.appointmentblock.mapper;
 
-import de.eshg.lib.appointmentblock.api.AppointmentBlockDefaultAvailabilityDto;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockDefaultAvailabilityConfig;
+import de.eshg.lib.appointmentblock.api.UpdateAppointmentBlockAvailabilityRequest;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockAvailabilityConfig;
 
 public class AppointmentBlockDefaultAvailabilityMapper {
 
@@ -14,12 +14,17 @@ public class AppointmentBlockDefaultAvailabilityMapper {
     /* static mapper class */
   }
 
-  public static AppointmentBlockDefaultAvailabilityConfig mapToDomain(
-      AppointmentBlockDefaultAvailabilityDto dto) {
-    AppointmentBlockDefaultAvailabilityConfig domain =
-        new AppointmentBlockDefaultAvailabilityConfig();
-    domain.setAvailableForCitizen(dto.availableForCitizen());
-    domain.setAvailableForBulkBooking(dto.availableForBulkBooking());
+  public static AppointmentBlockAvailabilityConfig mapToDomain(
+      UpdateAppointmentBlockAvailabilityRequest dto) {
+    AppointmentBlockAvailabilityConfig domain = new AppointmentBlockAvailabilityConfig();
+    domain.setAvailableForCitizen(dto.defaultFlags().availableForCitizen());
+    domain.setAvailableForBulkBooking(dto.defaultFlags().availableForBulkBooking());
+    domain.setBulkCreateAppointmentsMinLeadTime(
+        dto.leadTimes().bulkCreateAppointmentsMinLeadTime());
+    domain.setCitizenFreeAppointmentsMinLeadTime(
+        dto.leadTimes().citizenFreeAppointmentsMinLeadTime());
+    domain.setCitizenFreeAppointmentsMaxLeadTime(
+        dto.leadTimes().citizenFreeAppointmentsMaxLeadTime());
     return domain;
   }
 }

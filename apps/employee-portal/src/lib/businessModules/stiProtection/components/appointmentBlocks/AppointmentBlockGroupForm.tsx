@@ -20,6 +20,9 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal";
 import { ApiAppointmentType, ApiUser } from "@eshg/sti-protection-api";
 
+import { useAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/clients";
+import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
+import { mapFormValues } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/CreateAppointmentBlockGroupForm";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
@@ -82,10 +85,7 @@ function userToOption(user: ApiUser): NamedUser {
 
 interface AppointmentBlockGroupFormProps {
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
-  validateAvailability: (values: StiProtectionAppointmentValues) => void;
   standardDurations: Partial<Record<ApiAppointmentType, number>>;
-  blockedStaff: string[];
-  freeStaff: string[];
   initialValues: StiProtectionAppointmentValues;
   consultants: ApiUser[];
   physicians: ApiUser[];
@@ -93,14 +93,13 @@ interface AppointmentBlockGroupFormProps {
 
 export function AppointmentBlockGroupForm({
   onSubmit,
-  validateAvailability,
-  blockedStaff,
-  freeStaff,
   initialValues,
   consultants = [],
   physicians = [],
   standardDurations,
 }: Readonly<AppointmentBlockGroupFormProps>) {
+  const appointmentBlockApi = useAppointmentBlockApi();
+
   const physicianOptions = physicians.map(userToOption);
   const consultantOptions = consultants.map(userToOption);
 
@@ -111,7 +110,7 @@ export function AppointmentBlockGroupForm({
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet gap={5} onSubmit={handleSubmit}>
+        <FormSheet gap={5} aria-label="Terminblock" onSubmit={handleSubmit}>
           <Stack gap={4}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
@@ -120,11 +119,15 @@ export function AppointmentBlockGroupForm({
           </Stack>
           <Stack gap={4}>
             <AppointmentStaffSelection
-              blockedStaff={blockedStaff}
-              freeStaff={freeStaff}
               consultantOptions={consultantOptions}
               physicianOptions={physicianOptions}
-              validateAvailability={() => validateAvailability(values)}
+              validateAppointmentBlocks={() => mapFormValues(values)}
+              getCheckAvailabilityQuery={() =>
+                getValidateDailyAppointmentBlocksForGroupQuery(
+                  appointmentBlockApi,
+                  mapFormValues(values),
+                )
+              }
             />
           </Stack>
           <Divider />

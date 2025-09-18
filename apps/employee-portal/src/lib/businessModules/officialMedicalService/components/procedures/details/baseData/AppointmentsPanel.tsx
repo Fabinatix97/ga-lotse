@@ -33,24 +33,7 @@ export function AppointmentsPanel({
   );
 
   return (
-    <InfoTile
-      title="Termine"
-      name="appointments"
-      data-testid="appointments"
-      footer={
-        !isProcedureFinalized(procedure) &&
-        !procedureHasOpenAppointments(procedure) && (
-          <Button
-            variant="plain"
-            sx={{ justifyContent: "start", width: "fit-content" }}
-            startDecorator={<CalendarAddDay />}
-            onClick={openSidebar}
-          >
-            Termin hinzufügen
-          </Button>
-        )
-      }
-    >
+    <InfoTile title="Termine" name="appointments" data-testid="appointments">
       <>
         {isProcedureFinalized(procedure) && isEmpty(procedure.appointments) && (
           <Typography data-testid="no-appointments-text">
@@ -58,6 +41,17 @@ export function AppointmentsPanel({
           </Typography>
         )}
         <AppointmentsTable procedure={procedure} />
+        {!isProcedureFinalized(procedure) &&
+          !procedureHasOpenAppointments(procedure) && (
+            <Button
+              variant="plain"
+              sx={{ justifyContent: "start", width: "fit-content" }}
+              startDecorator={<CalendarAddDay />}
+              onClick={openSidebar}
+            >
+              Termin hinzufügen
+            </Button>
+          )}
       </>
     </InfoTile>
   );

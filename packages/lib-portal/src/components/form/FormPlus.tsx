@@ -111,6 +111,7 @@ export function FormPlus({
   children,
   scrollToError = true,
   revalidateOnLanguageChange = true,
+  isSearchForm,
   ...props
 }: Omit<FormikFormProps, "autoComplete" | "noValidate" | "ref" | "style"> &
   FormPlusOptions) {
@@ -125,7 +126,7 @@ export function FormPlus({
       {...props}
       ref={formRef}
       noValidate
-      role={props.isSearchForm ? "search" : "form"}
+      role={isSearchForm ? "search" : "form"}
       aria-label={props["aria-label"]}
       aria-labelledby={props["aria-labelledby"]}
       aria-describedby={props["aria-describedby"]}

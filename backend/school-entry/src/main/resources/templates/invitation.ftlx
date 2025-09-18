@@ -6,6 +6,7 @@
 <#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
 <#-- @ftlvariable name="child" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="custodian" type="de.eshg.schoolentry.pdf.Address" -->
 <#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.invitation.InvitationExamination" -->
 <#-- @ftlvariable name="invitationInfo" type="de.eshg.schoolentry.pdf.invitation.InvitationInfo" -->
 <#-- @ftlvariable name="accentColorHex" type="java.lang.String" -->
@@ -176,14 +177,17 @@
   <tr class="letterhead">
     <td valign="top" class="receiver">
       <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
+      <#assign recipient = (custodian?has_content)?then(custodian, child)>
+      <#if !custodian??>
       <span>An die Personensorgeberechtigten des Kindes</span>
+      </#if>
       <div class="address">
-        <div>${child.name}</div>
-        <div>${child.street}</div>
-        <#if child.addressAddition??>
-          <div>${child.addressAddition}</div>
+        <div>${recipient.name}</div>
+        <div>${recipient.street}</div>
+        <#if recipient.addressAddition??>
+          <div>${recipient.addressAddition}</div>
         </#if>
-        <div>${child.zipCode} ${child.city}</div>
+        <div>${recipient.zipCode} ${recipient.city}</div>
       </div>
     </td>
     <td valign="top" class="sender">

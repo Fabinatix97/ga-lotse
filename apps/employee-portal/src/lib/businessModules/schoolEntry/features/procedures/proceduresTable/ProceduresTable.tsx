@@ -92,6 +92,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
     filterValues,
     filterFormValues,
     setFilterFormValue,
+    setFilterFormValues,
     deleteFilterValue,
     clearFilterValues,
     filterButtonProps,
@@ -166,6 +167,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
                 <ProcedureFilterSettings
                   filterFormValues={filterFormValues}
                   setFilterFormValue={setFilterFormValue}
+                  setFilterFormValues={setFilterFormValues}
                   deleteFilterValue={deleteFilterValue}
                   clearFilterValues={clearFilterValues}
                   filterSettingsSheetProps={filterSettingsSheetProps}
@@ -368,6 +370,9 @@ function mapProceduresQueryParams(
   return {
     ...filterValues,
     labelsFilter: filterValues.labelsFilter?.map((label) => label.id),
+    excludedLabelsFilter: filterValues.excludedLabelsFilter?.map(
+      (label) => label.id,
+    ),
     ...paginationParams,
   };
 }

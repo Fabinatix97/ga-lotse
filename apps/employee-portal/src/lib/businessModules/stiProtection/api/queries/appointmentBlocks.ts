@@ -3,13 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  DefaultError,
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlockGroupRequest,
+  type ApiValidateAppointmentBlockGroupResponse,
+  AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/sti-protection-api";
 
@@ -55,19 +62,21 @@ export function useGetFreeAppointments(request: GetFreeAppointmentsArgs) {
   });
 }
 
-export function useValidateDailyAppointmentBlocksForGroup(
-  request: ApiCreateDailyAppointmentBlockGroupRequest | null,
+export function getValidateDailyAppointmentBlocksForGroupQuery(
+  appointmentBlockApi: AppointmentBlockApi,
+  request: ApiCreateDailyAppointmentBlockGroupRequest,
 ) {
-  const appointmentBlockApi = useAppointmentBlockApi();
-
-  return useQuery({
+  return queryOptions<
+    ApiValidateAppointmentBlockGroupResponse,
+    DefaultError,
+    ApiValidateAppointmentBlockGroupResponse,
+    readonly unknown[]
+  >({
     queryKey: appointmentBlockApiQueryKey([
       "validateDailyAppointmentBlocksForGroup",
       request,
     ]),
     queryFn: () =>
-      request !== null
-        ? appointmentBlockApi.validateDailyAppointmentBlocksForGroup(request)
-        : null,
+      appointmentBlockApi.validateDailyAppointmentBlocksForGroup(request),
   });
 }

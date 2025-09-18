@@ -22,6 +22,14 @@ domains:
   clusterIssuer: local-ca
   internalClusterIssuer: local-ca
 
+spatz:
+  javaToolOptions: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 384Mi
+
 spring:
   profiles:
     active: "dev, preview-features, health-department-frankfurt"

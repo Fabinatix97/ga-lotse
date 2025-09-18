@@ -18,7 +18,12 @@ import {
   validateFieldArray,
 } from "@eshg/lib-employee-portal";
 
-import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
+import { useAppointmentBlockApi } from "@/lib/businessModules/officialMedicalService/api/clients";
+import { getValidateDailyAppointmentBlocksForGroupQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
+import {
+  CreateAppointmentBlockGroupValues,
+  mapFormValues,
+} from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 
@@ -49,14 +54,13 @@ interface AppointmentBlockGroupFormProps {
   onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
   standardDuration: Partial<Record<ApiAppointmentType, number>>;
   allPhysicians: ApiUser[];
-  blockedStaff: string[];
-  freeStaff: string[];
-  validateAvailability: (values: CreateAppointmentBlockGroupValues) => void;
 }
 
 export function AppointmentBlockGroupForm(
   props: Readonly<AppointmentBlockGroupFormProps>,
 ) {
+  const appointmentApi = useAppointmentBlockApi();
+
   const physicianOptions = props.allPhysicians.map((option) => ({
     userId: option.userId,
     firstName: option.firstName,
@@ -70,7 +74,7 @@ export function AppointmentBlockGroupForm(
       onSubmit={props.onSubmit}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet gap={5} onSubmit={handleSubmit}>
+        <FormSheet gap={5} aria-label="Terminblock" onSubmit={handleSubmit}>
           <Stack gap={5}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
@@ -82,9 +86,13 @@ export function AppointmentBlockGroupForm(
             <AppointmentStaffSelection
               physicianOptions={physicianOptions}
               physicianRequired="Es muss mindestens ein Arzt/eine Ärztin ausgewählt sein."
-              freeStaff={props.freeStaff}
-              blockedStaff={props.blockedStaff}
-              validateAvailability={() => props.validateAvailability(values)}
+              validateAppointmentBlocks={() => mapFormValues(values)}
+              getCheckAvailabilityQuery={() =>
+                getValidateDailyAppointmentBlocksForGroupQuery(
+                  appointmentApi,
+                  mapFormValues(values),
+                )
+              }
             />
           </Stack>
           <Divider />

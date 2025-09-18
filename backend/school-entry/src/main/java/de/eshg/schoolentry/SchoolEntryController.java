@@ -137,6 +137,7 @@ public class SchoolEntryController {
 
     Validator.validateOnlyOneOfSearchAndFilterParametersAndHumanReadableIdAreSet(
         filterParameters, searchParameters, humanReadablePersonId);
+    Validator.validateFiltersConsistent(filterParameters);
     ProcedureValidator.validatePartialSearchParameters(searchParameters);
     PagedProcedures pagedProcedures =
         procedureOverviewService.getProcedures(

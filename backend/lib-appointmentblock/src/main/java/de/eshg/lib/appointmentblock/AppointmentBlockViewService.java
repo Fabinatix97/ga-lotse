@@ -93,9 +93,7 @@ public class AppointmentBlockViewService {
 
   private Map<UUID, UserDto> getResolvedUsers(List<AppointmentBlock> blocks) {
     Set<UUID> allUserIds = new HashSet<>();
-    blocks.stream()
-        .filter(this::isWithDetails)
-        .forEach(block -> addAllUserIds(allUserIds, block.getAppointmentBlockGroup()));
+    blocks.stream().filter(this::isWithDetails).forEach(block -> addAllUserIds(allUserIds, block));
     if (allUserIds.isEmpty()) {
       return Map.of();
     }
@@ -105,12 +103,12 @@ public class AppointmentBlockViewService {
         .collect(Collectors.toMap(UserDto::userId, userDto -> userDto));
   }
 
-  private void addAllUserIds(Set<UUID> allUserIds, AppointmentBlockGroup appointmentBlockGroup) {
-    allUserIds.addAll(appointmentBlockGroup.getPhysicians());
-    allUserIds.addAll(appointmentBlockGroup.getMfas());
-    allUserIds.addAll(appointmentBlockGroup.getConsultants());
-    if (appointmentBlockGroup.getCreatorId() != null) {
-      allUserIds.add(appointmentBlockGroup.getCreatorId());
+  private void addAllUserIds(Set<UUID> allUserIds, AppointmentBlock appointmentBlock) {
+    allUserIds.addAll(appointmentBlock.getPhysicians());
+    allUserIds.addAll(appointmentBlock.getMfas());
+    allUserIds.addAll(appointmentBlock.getConsultants());
+    if (appointmentBlock.getAppointmentBlockGroup().getCreatorId() != null) {
+      allUserIds.add(appointmentBlock.getAppointmentBlockGroup().getCreatorId());
     }
   }
 
@@ -170,7 +168,7 @@ public class AppointmentBlockViewService {
 
     if (isWithDetails(block)) {
       Set<UUID> userIds = new HashSet<>();
-      addAllUserIds(userIds, appointmentBlockGroup);
+      addAllUserIds(userIds, block);
 
       Map<UUID, UserDto> resolvedUsers =
           allResolvedUsers.entrySet().stream()
@@ -189,9 +187,9 @@ public class AppointmentBlockViewService {
           block.getAppointmentBlockEnd(),
           block.getParallelExaminations(),
           appointmentTypes,
-          appointmentBlockGroup.getPhysicians(),
-          appointmentBlockGroup.getMfas(),
-          appointmentBlockGroup.getConsultants(),
+          block.getPhysicians(),
+          block.getMfas(),
+          block.getConsultants(),
           appointmentBlockGroup.getCreatorId(),
           resolvedUsers,
           mapToDto(block.getAppointments()),

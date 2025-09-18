@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack } from "@mui/joy";
+import { Box, Divider, Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 import { ReactNode, useEffect } from "react";
 import { isDefined } from "remeda";
@@ -51,6 +51,7 @@ import {
 
 import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Location } from "@/lib/businessModules/schoolEntry/api/models/Location";
+import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useUpdateProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
@@ -73,6 +74,8 @@ interface UpdateProcedureValues {
   procedureLabels: ProcedureLabel[];
   appointment: SelectObjectFieldValue<ApiAppointment, false>;
   isInvitationSent: boolean;
+  changeRecipient: boolean;
+  recipient: PersonDetails | null;
   school: Location | null;
   location: Location | null;
   isDeceased: boolean;
@@ -101,6 +104,7 @@ function mapValues(
           : values.procedureType,
       appointment: values.appointment ?? undefined,
       isInvitationSent: values.isInvitationSent,
+      custodianId: values.recipient?.fileStateId,
       schoolId: values.school?.id ?? undefined,
       locationId: values.location?.id ?? undefined,
       isDeceased: values.isDeceased,
@@ -116,6 +120,10 @@ function getAppointmentLabel(appointment: Appointment) {
   return formatWeekdayDateTimeRange(appointment.start, appointment.end);
 }
 
+function getPersonDetailsLabel(personDetails: PersonDetails) {
+  return `${personDetails.firstName} ${personDetails.lastName}`;
+}
+
 function useUpdateProcedureForm(
   procedure: ProcedureDetails,
   onSuccess: () => void,
@@ -127,6 +135,8 @@ function useUpdateProcedureForm(
       procedureLabels: procedure.labels,
       appointment: procedure.appointment ?? null,
       isInvitationSent: procedure.isInvitationSent,
+      changeRecipient: false,
+      recipient: null,
       school: procedure.school ?? null,
       location: procedure.location ?? null,
       isDeceased: procedure.isDeceased,
@@ -166,6 +176,10 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
   });
   const freeAppointments = getFreeAppointments.data ?? [];
   const hasNoFreeAppointments = freeAppointments.length === 0;
+
+  const filteredRecipients = procedure.custodians.filter(
+    (person) => person.contactAddress !== undefined,
+  );
 
   // clear appointment when school or location changes
   const schoolChanged = useHasChanged(values.school);
@@ -230,6 +244,36 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
                 void setFieldValue("isInvitationSent", false)
               }
             />
+            {values.appointment !== null && filteredRecipients.length > 0 && (
+              <>
+                <Alert
+                  message="Der Einladungsbrief wird standardmäßig an die Adresse des Kindes adressiert."
+                  color="primary"
+                />
+                <CheckboxField
+                  name="changeRecipient"
+                  label="Abweichender Einladungsadressat"
+                  onChange={(event) => {
+                    if (!event.target.checked) {
+                      void setFieldValue("recipient", null);
+                    }
+                  }}
+                />
+                {values.changeRecipient && (
+                  <Box marginLeft={4}>
+                    <SelectObjectField
+                      name="recipient"
+                      label="Abweichender Einladungsadressat"
+                      options={filteredRecipients}
+                      getOptionLabel={getPersonDetailsLabel}
+                      onValueChanged={() =>
+                        void setFieldValue("isInvitationSent", false)
+                      }
+                    />
+                  </Box>
+                )}
+              </>
+            )}
             {displayWarningWhen(isMissingChildAddress, {
               title: "Adresse fehlt",
               message:
@@ -275,12 +319,14 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
               }}
             />
             {values.isDeceased && (
-              <DateField
-                name="deceased"
-                label="am"
-                component={HorizontalField}
-                validate={validatePastOrTodayDate}
-              />
+              <Box marginLeft={4}>
+                <DateField
+                  name="deceased"
+                  label="am"
+                  component={HorizontalField}
+                  validate={validatePastOrTodayDate}
+                />
+              </Box>
             )}
           </Stack>
         </SidebarContent>

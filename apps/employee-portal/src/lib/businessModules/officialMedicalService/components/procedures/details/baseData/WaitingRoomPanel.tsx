@@ -65,7 +65,7 @@ export function WaitingRoomPanel({
       >
         {({ isSubmitting, handleSubmit, setFieldValue }) => {
           return (
-            <FormStack onSubmit={handleSubmit}>
+            <FormStack aria-label="Wartezimmer" onSubmit={handleSubmit}>
               <TextareaField
                 name="info"
                 label="Zusätzliche Info"

@@ -22,6 +22,7 @@ import {
   FormAddMoreButton,
   InputField,
   RadioGroupField,
+  useToggleFocus,
 } from "@eshg/lib-portal";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -52,6 +53,17 @@ interface AddDocumentFormProps {
 }
 
 export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
+  const {
+    ref1: documentTypeEnRef,
+    ref2: addDocumentTypeTransRef,
+    toggle: toggleDocumentType,
+  } = useToggleFocus(false);
+  const {
+    ref1: helpTextEnRef,
+    ref2: addHelpTextTransRef,
+    toggle: toggleHelpText,
+  } = useToggleFocus(false);
+
   async function handleChange(
     values: AddDocumentFormValues,
     newType: string,
@@ -104,6 +116,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                 />
                 {isDefined(values.documentTypeEn) ? (
                   <InputField
+                    ref={(el) => (documentTypeEnRef.current = el)}
                     name="documentTypeEn"
                     label="Dokumentenart (EN)"
                     endDecorator={
@@ -112,6 +125,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                         aria-label="Dokumentenart (EN) entfernen"
                         onClick={async () => {
                           await setFieldValue("documentTypeEn", undefined);
+                          toggleDocumentType();
                         }}
                       >
                         <Delete />
@@ -120,8 +134,12 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                   />
                 ) : (
                   <FormAddMoreButton
+                    ref={(el) => (addDocumentTypeTransRef.current = el)}
                     aria-label="Dokument Übersetzen"
-                    onClick={() => setFieldValue("documentTypeEn", "", false)}
+                    onClick={() => {
+                      void setFieldValue("documentTypeEn", "", false);
+                      toggleDocumentType();
+                    }}
                   >
                     Übersetzung ergänzen
                   </FormAddMoreButton>
@@ -131,6 +149,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                 <InputField name="helpTextDe" label="Hilfstext" />
                 {isDefined(values.helpTextEn) ? (
                   <InputField
+                    ref={(el) => (helpTextEnRef.current = el)}
                     name="helpTextEn"
                     label="Hilfstext (EN)"
                     endDecorator={
@@ -139,6 +158,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                         aria-label="Hilfstext (EN) entfernen"
                         onClick={async () => {
                           await setFieldValue("helpTextEn", undefined);
+                          toggleHelpText();
                         }}
                       >
                         <Delete />
@@ -147,8 +167,12 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                   />
                 ) : (
                   <FormAddMoreButton
+                    ref={(el) => (addHelpTextTransRef.current = el)}
                     aria-label="Hilfstext Übersetzen"
-                    onClick={() => setFieldValue("helpTextEn", "", false)}
+                    onClick={() => {
+                      void setFieldValue("helpTextEn", "", false);
+                      toggleHelpText();
+                    }}
                   >
                     Übersetzung ergänzen
                   </FormAddMoreButton>

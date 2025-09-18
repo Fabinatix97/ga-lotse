@@ -4,7 +4,7 @@
  */
 
 import { CircularProgress, FormControl, FormLabel } from "@mui/joy";
-import { useEffect } from "react";
+import { isEmpty } from "remeda";
 
 import { GetChildrenRequest } from "@eshg/dental-api";
 import {
@@ -16,9 +16,10 @@ import {
   ResettableSingleSelect,
   SearchInstitutionFilter,
   SetDictionaryFilterFn,
+  SetDictionaryFiltersFn,
   mapToSelectOption,
 } from "@eshg/lib-employee-portal";
-import { SelectOption, SelectOptions, useHasChanged } from "@eshg/lib-portal";
+import { SelectOption, SelectOptions } from "@eshg/lib-portal";
 
 import { useSearchInstitutionGroupsQuery } from "../../../../api/queries/groups";
 import { ProcedureLabelFilter } from "../../../../components/procedureLabels/ProcedureLabelFilter";
@@ -27,7 +28,11 @@ import { SCHOOL_OR_DAYCARE_CONTACT } from "../../../../config/contacts";
 export type ChildrenFilters = Pick<
   GetChildrenRequest,
   "institutionIdFilter"
-> & { procedureLabelsFilter?: ProcedureLabel[]; groupFilter?: GroupFilter };
+> & {
+  procedureLabelsFilter?: ProcedureLabel[];
+  excludedProcedureLabelsFilter?: ProcedureLabel[];
+  groupFilter?: GroupFilter;
+};
 
 type GroupFilter = GroupNameFilter | NoGroupFilter;
 
@@ -44,6 +49,7 @@ const FILTER_NAMES: Record<keyof ChildrenFilters, string> = {
   groupFilter: "Gruppe",
   institutionIdFilter: "Einrichtung",
   procedureLabelsFilter: "Kennungen",
+  excludedProcedureLabelsFilter: "Ohne Kennungen",
 };
 
 const NO_GROUP_VALUE = "[noGroup]";
@@ -73,6 +79,10 @@ interface ChildrenFilterSettingsProps {
     keyof ChildrenFilters,
     ChildrenFilters
   >;
+  setFilterFormValues: SetDictionaryFiltersFn<
+    keyof ChildrenFilters,
+    ChildrenFilters
+  >;
   deleteFilterValue: (key: keyof ChildrenFilters) => void;
   clearFilterValues: () => void;
   filterSettingsSheetProps: FilterSettingsSheetProps;
@@ -93,15 +103,21 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
 
   const groupOptions = resolveGroupFilterOptions();
 
-  const shouldClearGroupName = useHasChanged(
-    props.filterFormValues.institutionIdFilter,
-  );
-  useEffect(() => {
-    if (shouldClearGroupName) {
-      props.setFilterFormValue("groupFilter", undefined);
-    }
-  }, [shouldClearGroupName, props, props.deleteFilterValue]);
-
+  function setLabelFilterFormValues(
+    labelsValues: ProcedureLabel[],
+    excludedLabelsValues: ProcedureLabel[],
+  ) {
+    props.setFilterFormValues([
+      {
+        name: "procedureLabelsFilter",
+        value: isEmpty(labelsValues) ? undefined : labelsValues,
+      },
+      {
+        name: "excludedProcedureLabelsFilter",
+        value: isEmpty(excludedLabelsValues) ? undefined : excludedLabelsValues,
+      },
+    ]);
+  }
   return (
     <FilterSettingsSheet {...props.filterSettingsSheetProps}>
       <FilterSettingsContent
@@ -123,7 +139,10 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
             institutionId={props.filterFormValues.institutionIdFilter}
             categories={SCHOOL_OR_DAYCARE_CONTACT}
             onChange={(institutionId) => {
-              props.setFilterFormValue("institutionIdFilter", institutionId);
+              props.setFilterFormValues([
+                { name: "institutionIdFilter", value: institutionId },
+                { name: "groupFilter", value: undefined },
+              ]);
             }}
           />
         </FormControl>
@@ -160,11 +179,37 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
           label={FILTER_NAMES.procedureLabelsFilter}
           values={props.filterFormValues.procedureLabelsFilter}
           onChange={(newValue: ProcedureLabel[]) => {
-            const filterValue = newValue.length > 0 ? newValue : undefined;
-            props.setFilterFormValue("procedureLabelsFilter", filterValue);
+            const filteredExcludedProcedureLabels = removeAllLabel(
+              props.filterFormValues.excludedProcedureLabelsFilter ?? [],
+              newValue,
+            );
+            setLabelFilterFormValues(
+              newValue,
+              filteredExcludedProcedureLabels ?? [],
+            );
+          }}
+        />
+        <ProcedureLabelFilter
+          label={FILTER_NAMES.excludedProcedureLabelsFilter}
+          values={props.filterFormValues.excludedProcedureLabelsFilter}
+          onChange={(newValue: ProcedureLabel[]) => {
+            const filteredProcedureLabels = removeAllLabel(
+              props.filterFormValues.procedureLabelsFilter ?? [],
+              newValue,
+            );
+            setLabelFilterFormValues(filteredProcedureLabels ?? [], newValue);
           }}
         />
       </FilterSettingsContent>
     </FilterSettingsSheet>
+  );
+}
+
+function removeAllLabel(
+  labels: ProcedureLabel[],
+  labelsToRemove: ProcedureLabel[],
+): ProcedureLabel[] {
+  return labels.filter(
+    (label) => !labelsToRemove.map((label) => label.id).includes(label.id),
   );
 }

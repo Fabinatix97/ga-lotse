@@ -4,7 +4,7 @@
  */
 
 import { Close, InsertLinkOutlined, SearchOutlined } from "@mui/icons-material";
-import { Button, List, ListItem, Stack, Typography, styled } from "@mui/joy";
+import { Button, List, ListItem, Stack, styled } from "@mui/joy";
 import { Formik, FormikState } from "formik";
 import {
   AriaRole,
@@ -53,7 +53,7 @@ const SearchFormSheet = styled(FormSheet)(({ theme }) => ({
   },
   "& > .MuiButton-root": {
     flexGrow: 1,
-    maxWidth: "200px",
+    maxWidth: "210px",
     margin: theme.spacing(3, 0),
   },
   [theme.breakpoints.down("md")]: {
@@ -128,14 +128,14 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
             <Alert
               color="primary"
               message={
-                <Typography>
+                <>
                   Möchten Sie auch geschlossene Vorgänge durchsuchen, benötigen
                   Sie
                   <List marker="disc" component="ul">
                     <ListItem>Vorname + Nachname + Geburtsdatum</ListItem>
                     <ListItem>oder Personen-ID.</ListItem>
                   </List>
-                </Typography>
+                </>
               }
             />
           )}

@@ -45,6 +45,7 @@ class ChildSpecification implements Specification<Child> {
   private final String groupNameFilter;
   private final Boolean noGroupFilter;
   private final ArrayList<UUID> procedureLabelFilter;
+  private final ArrayList<UUID> excludedProcedureLabelFilter;
 
   public ChildSpecification(
       ChildFilterParameters filterParameters,
@@ -56,6 +57,8 @@ class ChildSpecification implements Specification<Child> {
     sortKey = paginationAndSortParameters.sortKeyOrFallback(ChildSortKey.ID);
     sortDirection = paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC);
     procedureLabelFilter = (ArrayList<UUID>) filterParameters.procedureLabelsFilter();
+    excludedProcedureLabelFilter =
+        (ArrayList<UUID>) filterParameters.excludedProcedureLabelsFilter();
   }
 
   static ChildPageSpec toPageSpec(
@@ -106,6 +109,18 @@ class ChildSpecification implements Specification<Child> {
         subquery.where(
             cb.equal(procedureLabelJoin.get(ProcedureLabel_.externalId), procedureLabel));
         conjunctions.add(cb.exists(subquery));
+      }
+    }
+
+    if (excludedProcedureLabelFilter != null) {
+      for (UUID procedureLabel : excludedProcedureLabelFilter) {
+        Subquery<Child> subquery = query.subquery(Child.class);
+        Root<Child> subqueryRoot = subquery.correlate(root);
+        ListJoin<Child, ProcedureLabel> procedureLabelJoin =
+            subqueryRoot.join(Child_.procedureLabels);
+        subquery.where(
+            cb.equal(procedureLabelJoin.get(ProcedureLabel_.externalId), procedureLabel));
+        conjunctions.add(cb.not(cb.exists(subquery)));
       }
     }
 

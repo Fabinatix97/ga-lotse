@@ -14,8 +14,9 @@ import {
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { Alert, formatUserName } from "@eshg/lib-portal";
-import { ApiAppointmentBlock } from "@eshg/school-entry-api";
+import { ApiAppointment, ApiAppointmentBlock } from "@eshg/school-entry-api";
 
+import { calculateMaxParallelBookings } from "@/lib/businessModules/schoolEntry/api/models/AppointmentBlockGroup";
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
@@ -118,6 +119,14 @@ export function DisplayAppointmentBlockSidebar(
                 <Typography level="body-md">Keine gebuchten Termine</Typography>
               )}
             </DetailsBlock>
+
+            <DetailsBlock title="Parallele Untersuchungen:">
+              <ParallelExaminationsCount
+                bookedAppointments={appointmentBlock.bookedAppointments}
+                parallelExaminations={appointmentBlock.parallelExaminations}
+              />
+            </DetailsBlock>
+
             {(appointmentBlock.availableForCitizen === true ||
               appointmentBlock.availableForBulkBooking === true) && (
               <DetailsBlock title="Verfügbar für:">
@@ -203,5 +212,34 @@ function DetailsBlock(
         {props.children}
       </Stack>
     </Stack>
+  );
+}
+
+function ParallelExaminationsCount({
+  bookedAppointments,
+  parallelExaminations,
+}: {
+  bookedAppointments: ApiAppointment[];
+  parallelExaminations: number;
+}) {
+  const parallelBookings = calculateMaxParallelBookings(bookedAppointments);
+  const examinationsMessage =
+    parallelBookings === 1
+      ? "parallele Untersuchung"
+      : "parallele Untersuchungen";
+  return (
+    <Typography level="body-md">
+      <Typography fontWeight="bold">{parallelExaminations}</Typography>{" "}
+      {examinationsMessage}
+      <br />
+      {parallelBookings === 1 ? (
+        "Keine Termine parallel gebucht"
+      ) : (
+        <>
+          maximal <Typography fontWeight="bold">{parallelBookings}</Typography>{" "}
+          Termine parallel gebucht
+        </>
+      )}
+    </Typography>
   );
 }

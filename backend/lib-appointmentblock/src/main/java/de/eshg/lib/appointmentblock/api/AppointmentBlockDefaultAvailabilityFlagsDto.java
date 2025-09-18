@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(
-    name = "AppointmentBlockDefaultAvailability",
-    description = "Default availability flags for the appointment bock creation UI")
-public record AppointmentBlockDefaultAvailabilityDto(
+    name = "AppointmentBlockDefaultAvailabilityFlags",
+    description = "Default availability flags for the appointment block creation UI")
+public record AppointmentBlockDefaultAvailabilityFlagsDto(
     @NotNull boolean availableForCitizen, @NotNull boolean availableForBulkBooking) {}

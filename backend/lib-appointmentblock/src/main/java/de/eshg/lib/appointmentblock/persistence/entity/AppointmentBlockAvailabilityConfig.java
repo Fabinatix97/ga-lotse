@@ -14,13 +14,19 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @DataSensitivity(SensitivityLevel.PUBLIC)
-public class AppointmentBlockDefaultAvailabilityConfig extends BaseEntity implements Initializable {
+public class AppointmentBlockAvailabilityConfig extends BaseEntity implements Initializable {
 
   @NotNull private boolean initialized = false;
 
   @NotNull private boolean availableForCitizen = true;
 
   @NotNull private boolean availableForBulkBooking = true;
+
+  @NotNull private int bulkCreateAppointmentsMinLeadTime = 28;
+
+  @NotNull private int citizenFreeAppointmentsMinLeadTime = 14;
+
+  @NotNull private int citizenFreeAppointmentsMaxLeadTime = 42;
 
   @Override
   public boolean isInitialized() {
@@ -46,5 +52,29 @@ public class AppointmentBlockDefaultAvailabilityConfig extends BaseEntity implem
 
   public void setAvailableForBulkBooking(boolean availableForBulkBooking) {
     this.availableForBulkBooking = availableForBulkBooking;
+  }
+
+  public int getCitizenFreeAppointmentsMaxLeadTime() {
+    return citizenFreeAppointmentsMaxLeadTime;
+  }
+
+  public void setCitizenFreeAppointmentsMaxLeadTime(int citizenFreeAppointmentsMaxLeadTime) {
+    this.citizenFreeAppointmentsMaxLeadTime = citizenFreeAppointmentsMaxLeadTime;
+  }
+
+  public int getCitizenFreeAppointmentsMinLeadTime() {
+    return citizenFreeAppointmentsMinLeadTime;
+  }
+
+  public void setCitizenFreeAppointmentsMinLeadTime(int citizenFreeAppointmentsMinLeadTime) {
+    this.citizenFreeAppointmentsMinLeadTime = citizenFreeAppointmentsMinLeadTime;
+  }
+
+  public int getBulkCreateAppointmentsMinLeadTime() {
+    return bulkCreateAppointmentsMinLeadTime;
+  }
+
+  public void setBulkCreateAppointmentsMinLeadTime(int bulkCreateAppointmentsMinLeadTime) {
+    this.bulkCreateAppointmentsMinLeadTime = bulkCreateAppointmentsMinLeadTime;
   }
 }

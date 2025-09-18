@@ -27,7 +27,15 @@ public final class CollectionUtils {
     return Sets.difference(set1, set2);
   }
 
+  public static <T> List<T> difference(List<T> list1, List<T> list2) {
+    return List.copyOf(Sets.difference(Set.copyOf(list1), Set.copyOf(list2)));
+  }
+
   public static <T> Set<T> union(Set<T> set1, Set<T> set2) {
     return Sets.union(set1, set2);
+  }
+
+  public static <T> List<T> union(List<T> list1, List<T> list2) {
+    return List.copyOf(Sets.union(Set.copyOf(list1), Set.copyOf(list2)));
   }
 }

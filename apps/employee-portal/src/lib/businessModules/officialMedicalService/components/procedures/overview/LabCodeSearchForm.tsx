@@ -34,7 +34,7 @@ const SearchFormSheet = styled(FormSheet)(({ theme }) => ({
   },
   "& > .MuiButton-root": {
     flexGrow: 1,
-    maxWidth: "200px",
+    maxWidth: "210px",
     margin: theme.spacing(3, 0),
   },
   [theme.breakpoints.down("md")]: {
@@ -69,7 +69,12 @@ export function LabCodeSearchForm(props: LabCodeSearchFormProps) {
     >
       {({ resetForm }) => (
         <>
-          <SearchFormSheet id={props.id} data-testid="labCodeSearchSearch">
+          <SearchFormSheet
+            id={props.id}
+            isSearchForm
+            aria-label="Laborcode"
+            data-testid="labCodeSearchSearch"
+          >
             <InputField
               label="Laborcode"
               name="labCode"

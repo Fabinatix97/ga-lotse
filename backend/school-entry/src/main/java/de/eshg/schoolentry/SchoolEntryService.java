@@ -13,6 +13,7 @@ import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.lib.appointmentblock.AppointmentBlockAvailabilityService;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
@@ -29,12 +30,11 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.client.PersonClient;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.domain.repository.*;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
-import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonId;
+import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonIdAndCustodian;
 import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
@@ -68,7 +68,7 @@ public class SchoolEntryService {
   private final AppointmentBlockService appointmentBlockService;
   private final AppointmentBlockConfig appointmentBlockConfig;
   private final Clock clock;
-  private final SchoolEntryProperties schoolEntryProperties;
+  private final AppointmentBlockAvailabilityService appointmentBlockAvailabilityService;
   private final LabelService labelService;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
   private final InvitationGenerator invitationGenerator;
@@ -87,7 +87,7 @@ public class SchoolEntryService {
       AppointmentBlockService appointmentBlockService,
       AppointmentBlockConfig appointmentBlockConfig,
       Clock clock,
-      SchoolEntryProperties schoolEntryProperties,
+      AppointmentBlockAvailabilityService appointmentBlockAvailabilityService,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
       InvitationGenerator invitationGenerator,
       Validator validator,
@@ -103,7 +103,7 @@ public class SchoolEntryService {
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentBlockConfig = appointmentBlockConfig;
     this.clock = clock;
-    this.schoolEntryProperties = schoolEntryProperties;
+    this.appointmentBlockAvailabilityService = appointmentBlockAvailabilityService;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
     this.invitationGenerator = invitationGenerator;
     this.validator = validator;
@@ -556,10 +556,18 @@ public class SchoolEntryService {
 
   public void updateAppointment(
       Instant start, Instant end, SchoolEntryProcedure procedure, AppointmentType appointmentType) {
+    updateAppointment(start, end, procedure, appointmentType, null);
+  }
 
-    ChildDataWithPersonId childDataWithPersonId =
-        personClient.fetchChildDataWithPersonId(procedure);
-    validator.validateChildHasAddress(childDataWithPersonId.childData());
+  public void updateAppointment(
+      Instant start,
+      Instant end,
+      SchoolEntryProcedure procedure,
+      AppointmentType appointmentType,
+      UUID custodianId) {
+
+    ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian =
+        personClient.fetchChildDataWithPersonIdAndRecipientAddress(procedure, custodianId);
 
     UUID locationId = getAppointmentLocation(procedure);
     if (appointmentBlockConfig.getLocationSelectionMode() != LocationSelectionMode.NONE
@@ -573,13 +581,14 @@ public class SchoolEntryService {
     String accessCode = citizenAccessCodeUser.accessCode();
     Pdf invitation =
         invitationGenerator.generateInvitation(
-            accessCode, childDataWithPersonId, start, getAppointmentLocation(procedure));
+            accessCode,
+            childDataWithPersonIdAndCustodian,
+            start,
+            getAppointmentLocation(procedure));
     progressEntryUtil.addProgressEntry(
         procedure,
         APPOINTMENT_MODIFIED,
-        "Termin %s zu Vorgang zugewiesen"
-            .formatted(
-                start.atZone(clock.getZone()).format(ReportGeneratorConstants.DATE_FORMAT_DE)),
+        getAppointmentChangeDescription(start, custodianId),
         invitation,
         SchoolEntryKeyDocumentType.INVITATION);
 
@@ -592,6 +601,18 @@ public class SchoolEntryService {
     procedure.getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION).updateDueAt(start);
 
     schoolEntryProcedureRepository.flush();
+  }
+
+  private String getAppointmentChangeDescription(Instant start, UUID custodianId) {
+    String changeDescription =
+        "Termin %s zu Vorgang zugewiesen"
+            .formatted(
+                start.atZone(clock.getZone()).format(ReportGeneratorConstants.DATE_FORMAT_DE));
+    if (custodianId == null) {
+      return changeDescription;
+    } else {
+      return changeDescription + " und an PSB adressiert";
+    }
   }
 
   public void removeAppointment(SchoolEntryProcedure procedure) {
@@ -644,7 +665,11 @@ public class SchoolEntryService {
         } else {
           Instant now = Instant.now(clock);
           Instant earliestStart =
-              now.plus(schoolEntryProperties.getBulkCreateAppointmentsMinLeadTime());
+              now.plus(
+                  Duration.ofDays(
+                      appointmentBlockAvailabilityService
+                          .getDefaultLeadTimes()
+                          .bulkCreateAppointmentsMinLeadTime()));
           AppointmentType appointmentType = computeAppointmentType(procedure, null, null);
 
           List<AppointmentDto> freeAppointments =
@@ -717,14 +742,20 @@ public class SchoolEntryService {
       removeAppointment(procedure);
     }
     if (appointment != null
-        && hasAppointmentChanged(procedure, appointment.start(), appointment.end())) {
+        && (hasAppointmentChanged(procedure, appointment.start(), appointment.end())
+            || request.custodianId() != null)) {
       if (procedure.hasBeenClosed()) {
         throw new BadRequestException(
             "An appointment cannot be updated, when the procedure has been closed before.");
       }
       AppointmentType appointmentType =
           computeAppointmentType(procedure, requestedType, requestedLabelIds);
-      updateAppointment(appointment.start(), appointment.end(), procedure, appointmentType);
+      updateAppointment(
+          appointment.start(),
+          appointment.end(),
+          procedure,
+          appointmentType,
+          request.custodianId());
     }
 
     updateIsInvitationSent(

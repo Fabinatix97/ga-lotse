@@ -11,7 +11,8 @@ import {
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
+import { Chip, Typography } from "@mui/joy";
+import { visuallyHidden } from "@mui/utils";
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
@@ -48,6 +49,9 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
           color={PROCEDURE_STATUS_COLORS[procedureHeader.status]}
           size="md"
         >
+          <Typography component="span" sx={visuallyHidden}>
+            Status:
+          </Typography>
           {procedureStatusNames[procedureHeader.status]}
         </Chip>
       }

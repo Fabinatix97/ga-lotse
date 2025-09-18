@@ -345,6 +345,44 @@
         "tags" : [ "AppointmentBlock" ]
       }
     },
+    "/appointment-blocks/{appointmentBlockId}/validate" : {
+      "put" : {
+        "operationId" : "validateUpdateAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Validate for appointment block update",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
     "/appointment-standard-duration/hiv-sti-consultation" : {
       "get" : {
         "operationId" : "getHivStiConsultationAppointmentStandardDurations",
@@ -9233,14 +9271,41 @@
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
       },
       "UpdateAppointmentBlockRequest" : {
-        "required" : [ "end", "start" ],
+        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "start" ],
         "type" : "object",
         "properties" : {
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
           "end" : {
             "type" : "string",
             "description" : "Time at which the appointment block ends.",
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "start" : {
             "type" : "string",

@@ -10,12 +10,9 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.OrderColumn;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,21 +31,6 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
       orphanRemoval = true)
   @OrderBy
   private final List<AppointmentTypeHolder> appointmentTypeHolders = new ArrayList<>();
-
-  @ElementCollection
-  @Column(name = "physician_id", nullable = false)
-  @OrderColumn
-  private List<UUID> physicians;
-
-  @ElementCollection
-  @Column(name = "mfa_id", nullable = false)
-  @OrderColumn
-  private List<UUID> mfas;
-
-  @ElementCollection
-  @Column(name = "consultant_id", nullable = false)
-  @OrderColumn
-  private List<UUID> consultants;
 
   private UUID creatorId;
 
@@ -98,30 +80,6 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
     return appointmentTypeHolders.stream()
         .map(AppointmentTypeHolder::getType)
         .collect(Collectors.toCollection(TreeSet::new));
-  }
-
-  public List<UUID> getPhysicians() {
-    return physicians;
-  }
-
-  public void setPhysicians(List<UUID> physicians) {
-    this.physicians = physicians;
-  }
-
-  public List<UUID> getMfas() {
-    return mfas;
-  }
-
-  public void setMfas(List<UUID> mfas) {
-    this.mfas = mfas;
-  }
-
-  public List<UUID> getConsultants() {
-    return consultants;
-  }
-
-  public void setConsultants(List<UUID> consultants) {
-    this.consultants = consultants;
   }
 
   public UUID getLocationId() {

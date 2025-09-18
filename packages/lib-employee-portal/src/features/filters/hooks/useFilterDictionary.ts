@@ -20,6 +20,13 @@ export type SetDictionaryFilterFn<
   typeof useFilterDictionary<TKey, TFilters>
 >["setFilterFormValue"];
 
+export type SetDictionaryFiltersFn<
+  TKey extends string,
+  TFilters extends FilterDictionary<TKey>,
+> = ReturnType<
+  typeof useFilterDictionary<TKey, TFilters>
+>["setFilterFormValues"];
+
 export function usePersistentFilterDictionary<
   TKey extends string,
   TFilters extends FilterDictionary<TKey>,
@@ -89,6 +96,23 @@ export function useFilterDictionary<
     });
   }
 
+  function setFilterFormValues(
+    newValues: { name: TKey; value: TFilters[TKey] }[],
+  ) {
+    updateState({
+      filterFormValues: newValues.reduce(
+        (acc, { name, value }) => {
+          return {
+            ...acc,
+            [name]: value,
+          };
+        },
+        { ...state.filterFormValues },
+      ),
+      isDirty: true,
+    });
+  }
+
   function deleteFilterValue(name: TKey) {
     updateAndApplyStateDeferred({
       filterValues: { ...state.filterValues, [name]: undefined },
@@ -137,6 +161,7 @@ export function useFilterDictionary<
     filterValues: state.filterValues,
     filterFormValues: state.filterFormValues,
     setFilterFormValue,
+    setFilterFormValues,
     deleteFilterValue,
     clearFilterValues,
     filterButtonProps,

@@ -1550,10 +1550,10 @@ spec:
               - /wait-for-containerstart.sh
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features"
@@ -1573,6 +1573,8 @@ spec:
           value: "10.43.0.10"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_0
           value: "service-directory.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.central.svc.cluster.local"
         imagePullPolicy: Always
@@ -2012,10 +2014,10 @@ spec:
               - /wait-for-containerstart.sh
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features"
@@ -2043,6 +2045,8 @@ spec:
           value: "service-directory.central.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_1
           value: "lsd.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.central.svc.cluster.local"
         ports:
@@ -2315,10 +2319,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features"
@@ -2374,6 +2378,8 @@ spec:
           value: "lsd.central.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.central.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -2602,10 +2608,10 @@ spec:
           readOnlyRootFilesystem: true
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         lifecycle:
           postStart:
             exec:
@@ -2632,6 +2638,8 @@ spec:
           value: "10.43.0.10"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_0
           value: "service-directory.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.central.svc.cluster.local"
         ports:
@@ -2844,10 +2852,10 @@ spec:
       - name: spatz
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features"
@@ -2869,6 +2877,8 @@ spec:
           value: "10.43.0.10"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_0
           value: "service-directory.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.central.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1

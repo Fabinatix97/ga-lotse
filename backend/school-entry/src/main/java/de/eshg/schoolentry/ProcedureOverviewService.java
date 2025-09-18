@@ -201,6 +201,10 @@ public class ProcedureOverviewService {
                 filterParameters.labelsFilter() == null
                     ? Collections.emptyList()
                     : filterParameters.labelsFilter()),
+            new ArrayList<>(
+                filterParameters.excludedLabelsFilter() == null
+                    ? Collections.emptyList()
+                    : filterParameters.excludedLabelsFilter()),
             filterParameters.isInvitationSentFilter(),
             filterParameters.hasExaminationEditsFilter(),
             pageSpec.sortKey(),

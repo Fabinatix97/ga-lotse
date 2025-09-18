@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { first, last, sumBy } from "remeda";
+import { first, isEmpty, last, prop, sortBy, sumBy } from "remeda";
 
 import {
   AppointmentBlock,
@@ -13,6 +13,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { assertNonEmptyArray, durationToSecond } from "@eshg/lib-portal";
 import {
+  ApiAppointment,
   ApiGetAppointmentBlock,
   ApiGetAppointmentBlockGroup,
 } from "@eshg/school-entry-api";
@@ -58,4 +59,29 @@ function mapAppointmentBlock(
     freeDuration: response.freeDuration,
     bookedDuration: response.bookedDuration,
   };
+}
+
+export function calculateMaxParallelBookings(
+  appointments: ApiAppointment[],
+): number {
+  if (isEmpty(appointments)) {
+    return 0;
+  }
+  const appointmentsSortedByStart = sortBy(appointments, prop("start"));
+  const appointmentsSortedByEnd = sortBy(appointments, prop("end"));
+  let max_concurrency = 0;
+  let current_concurrency = 0;
+  for (const appointment of appointmentsSortedByStart) {
+    current_concurrency += 1;
+    const now = appointment.start;
+    while (
+      !isEmpty(appointmentsSortedByEnd) &&
+      first(appointmentsSortedByEnd)!.end <= now
+    ) {
+      appointmentsSortedByEnd.shift();
+      current_concurrency -= 1;
+    }
+    max_concurrency = Math.max(max_concurrency, current_concurrency);
+  }
+  return max_concurrency;
 }

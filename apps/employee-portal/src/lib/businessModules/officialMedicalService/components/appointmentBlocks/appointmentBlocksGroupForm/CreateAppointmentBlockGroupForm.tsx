@@ -7,7 +7,6 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import {
   AppointmentBlockGroupValuesWithDays,
@@ -17,7 +16,6 @@ import {
   OptionalFieldValue,
   isTimeString,
   mapRequiredValue,
-  useSnackbar,
 } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -26,7 +24,6 @@ import {
 } from "@eshg/official-medical-service-api";
 
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentBlocksApi";
-import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
 import { useGetAllPhysiciansQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStaffApi";
 import { useGetAppointmentStandardDurationQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentStandardDurationsApi";
 import { AppointmentBlockGroupForm } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/AppointmentBlockGroupForm";
@@ -41,7 +38,7 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   physicians: [],
 };
 
-function mapFormValues(
+export function mapFormValues(
   values: CreateAppointmentBlockGroupValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
@@ -73,14 +70,9 @@ export interface CreateAppointmentBlockGroupValues {
 }
 
 export function CreateAppointmentBlockGroupForm() {
-  const snackbar = useSnackbar();
   const router = useRouter();
   const createDailyAppointmentBlocksForGroup =
     useCreateDailyAppointmentBlocksForGroup();
-  const [validateRequest, setValidateRequest] =
-    useState<ApiCreateDailyAppointmentBlockGroupRequest | null>(null);
-  const validateDailyAppointmentBlocksForGroup =
-    useValidateDailyAppointmentBlocksForGroup(validateRequest);
 
   const [{ data: allPhysicians }, { data: standardDurations }] =
     useSuspenseQueries({
@@ -89,35 +81,6 @@ export function CreateAppointmentBlockGroupForm() {
         useGetAppointmentStandardDurationQuery(),
       ],
     });
-
-  const [freeStaff, setFreeStaff] = useState<string[]>([]);
-  const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
-
-  function validateAvailability(values: CreateAppointmentBlockGroupValues) {
-    try {
-      mapFormValues(values);
-    } catch {
-      snackbar.notification(
-        "Bitte Terminblöcke für die Validierung konfigurieren",
-      );
-      return;
-    }
-    if (values.physicians.length === 0) {
-      snackbar.notification(
-        "Bitte mindestens einen Arzt/eine Ärztin für die Validierung auswählen",
-      );
-      return;
-    }
-    setValidateRequest(mapFormValues(values));
-  }
-
-  useEffect(() => {
-    if (validateDailyAppointmentBlocksForGroup.data) {
-      const result = validateDailyAppointmentBlocksForGroup.data;
-      setFreeStaff(result.userIdsWithoutEventConflicts);
-      setBlockedStaff(result.userIdsWithEventConflicts);
-    }
-  }, [validateDailyAppointmentBlocksForGroup]);
 
   async function handleSubmit(values: CreateAppointmentBlockGroupValues) {
     await createDailyAppointmentBlocksForGroup.mutateAsync(
@@ -133,9 +96,6 @@ export function CreateAppointmentBlockGroupForm() {
       initialValues={INITIAL_VALUES}
       standardDuration={standardDurations}
       allPhysicians={allPhysicians}
-      validateAvailability={validateAvailability}
-      freeStaff={freeStaff}
-      blockedStaff={blockedStaff}
       onSubmit={handleSubmit}
     />
   );

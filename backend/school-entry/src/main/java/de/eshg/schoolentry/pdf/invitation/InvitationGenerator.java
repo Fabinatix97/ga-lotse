@@ -8,6 +8,7 @@ package de.eshg.schoolentry.pdf.invitation;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
+import de.eshg.base.centralfile.api.person.PersonDetails;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.contact.ContactClient;
@@ -35,6 +36,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -88,7 +90,7 @@ public class InvitationGenerator extends AbstractGenerator {
   @VisibleForTesting
   InvitationData buildInvitationData(
       String accessCode,
-      ChildDataWithPersonId childDataWithPersonId,
+      ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian,
       Instant appointmentStart,
       UUID locationId) {
     String url = buildQrCodeUrl(accessCode);
@@ -109,31 +111,11 @@ public class InvitationGenerator extends AbstractGenerator {
       examinationExecutionLocation = departmentAddress;
     }
 
-    ChildData child = childDataWithPersonId.childData();
-    AddressDto address = child.address();
-    Address childAddress =
-        switch (address) {
-          case DomesticAddressDto domesticAddress ->
-              new Address(
-                  concat(child.firstName(), child.lastName()),
-                  concat(domesticAddress.street(), domesticAddress.houseNumber()),
-                  address.postalCode(),
-                  address.city(),
-                  null,
-                  null,
-                  domesticAddress.addressAddition(),
-                  null);
-          case PostboxAddressDto postboxAddress ->
-              new Address(
-                  concat(child.firstName(), child.lastName()),
-                  "Postfach " + postboxAddress.postbox(),
-                  address.postalCode(),
-                  address.city(),
-                  null,
-                  null,
-                  null,
-                  null);
-        };
+    ChildData child = childDataWithPersonIdAndCustodian.childData();
+
+    Address childAddress = buildAddress(child.address(), child.firstName(), child.lastName());
+    Address custodianAddress =
+        getCustodianAddressIfExists(childDataWithPersonIdAndCustodian.custodian());
 
     ZonedDateTime zonedAppointmentStart = appointmentStart.atZone(clock.getZone());
 
@@ -153,11 +135,46 @@ public class InvitationGenerator extends AbstractGenerator {
         departmentLogo,
         departmentAddress,
         childAddress,
-        childDataWithPersonId.personId(),
+        custodianAddress,
+        childDataWithPersonIdAndCustodian.personId(),
         examination,
         invitationInfo,
         schoolEntryConfigService.getPdfDocumentAccentColor(),
         "#EBEBEB");
+  }
+
+  private Address getCustodianAddressIfExists(PersonDetails custodian) {
+    if (custodian == null) {
+      return null;
+    }
+
+    return buildAddress(custodian.contactAddress(), custodian.firstName(), custodian.lastName());
+  }
+
+  private static @NotNull Address buildAddress(
+      AddressDto address, String firstName, String lastName) {
+    return switch (address) {
+      case DomesticAddressDto domesticAddress ->
+          new Address(
+              concat(firstName, lastName),
+              concat(domesticAddress.street(), domesticAddress.houseNumber()),
+              address.postalCode(),
+              address.city(),
+              null,
+              null,
+              domesticAddress.addressAddition(),
+              null);
+      case PostboxAddressDto postboxAddress ->
+          new Address(
+              concat(firstName, lastName),
+              "Postfach " + postboxAddress.postbox(),
+              address.postalCode(),
+              address.city(),
+              null,
+              null,
+              null,
+              null);
+    };
   }
 
   private String buildQrCodeUrl(String accessCode) {
@@ -180,11 +197,11 @@ public class InvitationGenerator extends AbstractGenerator {
 
   public Pdf generateInvitation(
       String accessCode,
-      ChildDataWithPersonId childDataWithPersonId,
+      ChildDataWithPersonIdAndCustodian childDataWithPersonIdAndCustodian,
       Instant start,
       UUID locationId) {
     InvitationData invitationData =
-        buildInvitationData(accessCode, childDataWithPersonId, start, locationId);
+        buildInvitationData(accessCode, childDataWithPersonIdAndCustodian, start, locationId);
     return generateInvitation(invitationData);
   }
 

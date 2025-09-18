@@ -13,6 +13,7 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.lib.appointmentblock.AppointmentBlockAvailabilityService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
@@ -26,13 +27,13 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.api.citizen.AppointmentAddressDto;
 import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.mapper.AnamnesisMapper;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -49,28 +50,28 @@ public class SchoolEntryCitizenService {
   private static final Logger log = LoggerFactory.getLogger(SchoolEntryCitizenService.class);
 
   private final Clock clock;
-  private final SchoolEntryProperties.Citizens citizensProperties;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final SchoolEntryService schoolEntryService;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final AppointmentBlockAvailabilityService appointmentBlockAvailabilityService;
   private final ProgressEntryUtil progressEntryUtil;
   private final DepartmentInfoConfigService departmentInfoConfigService;
   private final ContactClient contactClient;
 
   public SchoolEntryCitizenService(
       Clock clock,
-      SchoolEntryProperties schoolEntryProperties,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       SchoolEntryService schoolEntryService,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      AppointmentBlockAvailabilityService appointmentBlockAvailabilityService,
       ProgressEntryUtil progressEntryUtil,
       DepartmentInfoConfigService departmentInfoConfigService,
       ContactClient contactClient) {
     this.clock = clock;
-    this.citizensProperties = schoolEntryProperties.getCitizens();
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.schoolEntryService = schoolEntryService;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.appointmentBlockAvailabilityService = appointmentBlockAvailabilityService;
     this.progressEntryUtil = progressEntryUtil;
     this.departmentInfoConfigService = departmentInfoConfigService;
     this.contactClient = contactClient;
@@ -94,8 +95,18 @@ public class SchoolEntryCitizenService {
 
   List<AppointmentDto> getFreeAppointments(SchoolEntryProcedure schoolEntryProcedure) {
     Instant now = Instant.now(clock);
-    Instant earliestStart = now.plus(citizensProperties.freeAppointmentsMinLeadTime());
-    Instant latestStart = now.plus(citizensProperties.freeAppointmentsMaxLeadTime());
+    Instant earliestStart =
+        now.plus(
+            Duration.ofDays(
+                appointmentBlockAvailabilityService
+                    .getDefaultLeadTimes()
+                    .citizenFreeAppointmentsMinLeadTime()));
+    Instant latestStart =
+        now.plus(
+            Duration.ofDays(
+                appointmentBlockAvailabilityService
+                    .getDefaultLeadTimes()
+                    .citizenFreeAppointmentsMaxLeadTime()));
 
     AppointmentType appointmentType;
     try {

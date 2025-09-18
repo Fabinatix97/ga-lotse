@@ -21,13 +21,14 @@ import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
+import de.eshg.schoolentry.Validator;
 import de.eshg.schoolentry.api.CreatePersonDto;
 import de.eshg.schoolentry.api.UpdatePersonRequest;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.mapper.PersonMapper;
-import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonId;
+import de.eshg.schoolentry.pdf.invitation.ChildDataWithPersonIdAndCustodian;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import java.util.*;
@@ -54,10 +55,13 @@ public class PersonClient {
   private final PersonApi personApi;
   private final Map<UUID, GetPersonFileStateResponse> personCache = new ConcurrentHashMap<>();
   private final ProgressEntryUtil progressEntryUtil;
+  private final Validator validator;
 
-  public PersonClient(PersonApi personApi, ProgressEntryUtil progressEntryUtil) {
+  public PersonClient(
+      PersonApi personApi, ProgressEntryUtil progressEntryUtil, Validator validator) {
     this.personApi = personApi;
     this.progressEntryUtil = progressEntryUtil;
+    this.validator = validator;
   }
 
   public List<ProcedureIds> createPersonsInCentralFile(
@@ -310,9 +314,28 @@ public class PersonClient {
     return procedures.stream().map(procedure -> extractChildData(procedure, personsById));
   }
 
-  public ChildDataWithPersonId fetchChildDataWithPersonId(SchoolEntryProcedure procedure) {
+  public ChildDataWithPersonIdAndCustodian fetchChildDataWithPersonIdAndRecipientAddress(
+      SchoolEntryProcedure procedure, UUID custodianId) {
     GetPersonFileStateResponse response = getPersonFileState(procedure.getChildIdFromCentralFile());
-    return new ChildDataWithPersonId(getChildData(response), response.humanReadableId());
+
+    ChildData childData = getChildData(response);
+    validator.validateChildHasAddress(childData);
+
+    if (custodianId == null) {
+      return new ChildDataWithPersonIdAndCustodian(childData, response.humanReadableId(), null);
+    }
+
+    procedure
+        .getCustodians()
+        .filter(p -> custodianId.equals(p.getCentralFileStateId()))
+        .findFirst()
+        .orElseThrow(
+            () -> new BadRequestException("Unknown custodian id %s".formatted(custodianId)));
+
+    GetPersonFileStateResponse custodian = getPersonFileState(custodianId);
+    validator.validatePersonHasContactAddress(custodian);
+
+    return new ChildDataWithPersonIdAndCustodian(childData, response.humanReadableId(), custodian);
   }
 
   public ChildData fetchChildData(SchoolEntryProcedure procedure) {

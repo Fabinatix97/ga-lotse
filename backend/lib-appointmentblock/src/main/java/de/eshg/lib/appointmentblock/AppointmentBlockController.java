@@ -151,6 +151,20 @@ public class AppointmentBlockController {
           "AppointmentBlockLength must be at least %s".formatted(minimalDurationForBlock));
     }
 
+    int parallelExaminations = request.parallelExaminations();
+    if (parallelExaminations > appointmentBlock.getParallelExaminations()) {
+      throw new BadRequestException(
+          "parallelExaminations must be smaller or equal to %s"
+              .formatted(appointmentBlock.getParallelExaminations()));
+    }
+
+    int maxParallelBookings =
+        AppointmentBlockSlotUtil.calculateMaxParallelBookings(appointmentBlock);
+    if (parallelExaminations < maxParallelBookings) {
+      throw new BadRequestException(
+          "parallelExaminations must be at least %s".formatted(maxParallelBookings));
+    }
+
     Set<Appointment> appointments = appointmentBlock.getAppointments();
     if (!appointments.isEmpty()) {
       Instant earliestBooked =
@@ -166,6 +180,17 @@ public class AppointmentBlockController {
 
     appointmentBlockService.updateAppointmentBlock(appointmentBlock, request);
     return appointmentBlockViewService.getAppointmentBlock(appointmentBlockId);
+  }
+
+  @Operation(summary = "Validate for appointment block update")
+  @PutMapping("/{appointmentBlockId}/validate")
+  @Transactional()
+  public ValidateAppointmentBlockGroupResponse validateUpdateAppointmentBlock(
+      @PathVariable("appointmentBlockId") UUID appointmentBlockId,
+      @Valid @RequestBody UpdateAppointmentBlockRequest request) {
+    AppointmentBlock appointmentBlock =
+        appointmentBlockService.findAppointmentBlockForUpdate(appointmentBlockId);
+    return appointmentBlockService.validateUpdateAppointmentBlock(appointmentBlock, request);
   }
 
   @Operation(summary = "Get appointments in a certain time range (one month)")

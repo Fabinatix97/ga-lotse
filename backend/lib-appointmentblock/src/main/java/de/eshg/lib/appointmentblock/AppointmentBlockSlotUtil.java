@@ -125,6 +125,35 @@ public class AppointmentBlockSlotUtil {
     return binsWithBookedSlots;
   }
 
+  static int calculateMaxParallelBookings(AppointmentBlock appointmentBlock) {
+    Set<Appointment> appointments = appointmentBlock.getAppointments();
+    if (appointments.isEmpty()) {
+      return 0;
+    }
+    List<Appointment> appointmentsSortedByStartAscending =
+        appointments.stream()
+            .sorted(Comparator.comparing(Appointment::getAppointmentStart))
+            .toList();
+    List<Appointment> appointmentsSortedByEndDescending =
+        appointments.stream()
+            .sorted(Comparator.comparing(Appointment::getAppointmentEnd).reversed())
+            .collect(Collectors.toCollection(() -> new ArrayList<>(appointments.size())));
+    int max_concurrency = 0;
+    int current_concurrency = 0;
+    for (Appointment appointment : appointmentsSortedByStartAscending) {
+      current_concurrency += 1;
+      Instant now = appointment.getAppointmentStart();
+      while (!appointmentsSortedByEndDescending.isEmpty()
+          && !appointmentsSortedByEndDescending.getLast().getAppointmentEnd().isAfter(now)) {
+        appointmentsSortedByEndDescending.removeLast();
+        current_concurrency -= 1;
+      }
+      Assert.isTrue(current_concurrency >= 0, "Less than 0 concurrent bookings");
+      max_concurrency = Math.max(max_concurrency, current_concurrency);
+    }
+    return max_concurrency;
+  }
+
   public void updateAppointment(
       AppointmentType appointmentType,
       UUID locationId,
@@ -206,7 +235,7 @@ public class AppointmentBlockSlotUtil {
           appointmentBlockStream.sorted(
               Comparator.comparing(
                   block -> {
-                    List<UUID> physicians = block.getAppointmentBlockGroup().getPhysicians();
+                    List<UUID> physicians = block.getPhysicians();
                     return physicians.contains(physicianId) ? physicians.size() : Integer.MAX_VALUE;
                   }));
     }

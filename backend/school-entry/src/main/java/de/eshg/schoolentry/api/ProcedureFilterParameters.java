@@ -17,5 +17,6 @@ public record ProcedureFilterParameters(
     LocalDate dayOfAppointmentFilter,
     Boolean hasAppointmentFilter,
     List<UUID> labelsFilter,
+    List<UUID> excludedLabelsFilter,
     Boolean isInvitationSentFilter,
     Boolean hasExaminationEditsFilter) {}

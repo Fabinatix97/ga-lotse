@@ -4,8 +4,8 @@
  */
 
 import {
+  DefaultError,
   queryOptions,
-  useQuery,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
@@ -14,6 +14,8 @@ import { unwrapRawResponse } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlockGroupRequest,
+  type ApiValidateAppointmentBlockGroupResponse,
+  AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/official-medical-service-api";
 
@@ -38,19 +40,21 @@ export function useGetAppointmentBlockGroupsQuery(
   });
 }
 
-export function useValidateDailyAppointmentBlocksForGroup(
-  data: ApiCreateDailyAppointmentBlockGroupRequest | null,
+export function getValidateDailyAppointmentBlocksForGroupQuery(
+  appointmentApi: AppointmentBlockApi,
+  data: ApiCreateDailyAppointmentBlockGroupRequest,
 ) {
-  const appointmentApi = useAppointmentBlockApi();
-  return useQuery({
+  return queryOptions<
+    ApiValidateAppointmentBlockGroupResponse,
+    DefaultError,
+    ApiValidateAppointmentBlockGroupResponse,
+    readonly unknown[]
+  >({
     queryKey: appointmentBlockApiQueryKey([
       "validateDailyAppointmentBlocksForGroup",
       data,
     ]),
-    queryFn: () =>
-      data !== null
-        ? appointmentApi.validateDailyAppointmentBlocksForGroup(data)
-        : null,
+    queryFn: () => appointmentApi.validateDailyAppointmentBlocksForGroup(data),
   });
 }
 

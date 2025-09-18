@@ -75,5 +75,7 @@
   <include file="migrations/0065_add_creator_to_appointment_block_group.xml"/>
   <include file="migrations/0066_add_appointment_block_default_availability.xml" />
   <include file="migrations/0067_move_parallel_examinations_to_appointment_block.xml"/>
+  <include file="migrations/0068_add_lead_times_to_appointment_availability.xml"/>
+  <include file="migrations/0069_move_team_to_appointment_block.xml"/>
 
 </databaseChangeLog>

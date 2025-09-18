@@ -18,10 +18,10 @@ public final class BaseUrls {
         DepartmentInfoLibrary.CONFIGURATION_API + "/appointment-standard-duration";
     public static final String APPOINTMENT_STANDARD_DURATION_INFO_API =
         "/appointment-standard-duration";
-    public static final String APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY_API =
+    public static final String APPOINTMENT_BLOCK_AVAILABILITY_API =
         "/appointment-block-availability";
-    public static final String APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY_CONFIG_API =
-        DepartmentInfoLibrary.CONFIGURATION_API + APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY_API;
+    public static final String APPOINTMENT_BLOCK_AVAILABILITY_CONFIG_API =
+        DepartmentInfoLibrary.CONFIGURATION_API + APPOINTMENT_BLOCK_AVAILABILITY_API;
 
     private LibAppointmentBlock() {}
   }

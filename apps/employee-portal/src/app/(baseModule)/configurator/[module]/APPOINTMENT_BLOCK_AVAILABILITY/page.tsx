@@ -10,12 +10,12 @@ import { use } from "react";
 import { ToolbarBackButton } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal";
 
-import { SchoolEntryAppointmentBlockDefaultAvailability } from "@/lib/configurator/components/shared/ConfiguratorDetails/SchoolEntryAppointmentBlockDefaultAvailability";
+import { SchoolEntryAppointmentBlockAvailability } from "@/lib/configurator/components/shared/ConfiguratorDetails/SchoolEntryAppointmentBlockAvailability";
 import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
 import { resolveConfiguratorRoute } from "@/lib/configurator/shared/routes";
 import { ConfiguratorModuleName } from "@/lib/configurator/shared/types";
 
-export default function SchoolEntryAppointmentBlockDefaultAvailabilityConfiguratorPagePage(
+export default function SchoolEntryAppointmentBlockAvailabilityConfiguratorPage(
   props: DynamicPageProps<{
     module: ConfiguratorModuleName;
   }>,
@@ -31,7 +31,7 @@ export default function SchoolEntryAppointmentBlockDefaultAvailabilityConfigurat
         />
       }
     >
-      <SchoolEntryAppointmentBlockDefaultAvailability module={module} />
+      <SchoolEntryAppointmentBlockAvailability module={module} />
     </ConfiguratorLayout>
   );
 }

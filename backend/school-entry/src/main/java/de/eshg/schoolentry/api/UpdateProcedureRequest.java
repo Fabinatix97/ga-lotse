@@ -19,8 +19,35 @@ public record UpdateProcedureRequest(
     @NotNull List<UUID> procedureLabels,
     @Valid AppointmentDto appointment,
     @NotNull boolean isInvitationSent,
+    UUID custodianId,
     UUID schoolId,
     UUID locationId,
     @NotNull boolean isDeceased,
     LocalDate deceased,
-    @Min(1900) Integer schoolYear) {}
+    @Min(1900) Integer schoolYear) {
+
+  public UpdateProcedureRequest(
+      @NotNull long version,
+      @NotNull ProcedureTypeDto procedureType,
+      @NotNull List<UUID> procedureLabels,
+      @Valid AppointmentDto appointment,
+      @NotNull boolean isInvitationSent,
+      UUID schoolId,
+      UUID locationId,
+      @NotNull boolean isDeceased,
+      LocalDate deceased,
+      @Min(1900) Integer schoolYear) {
+    this(
+        version,
+        procedureType,
+        procedureLabels,
+        appointment,
+        isInvitationSent,
+        null,
+        schoolId,
+        locationId,
+        isDeceased,
+        deceased,
+        schoolYear);
+  }
+}

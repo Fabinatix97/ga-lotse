@@ -9,39 +9,65 @@ import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
-@DataSensitivity(SensitivityLevel.PUBLIC)
 @Table(indexes = @Index(columnList = "appointment_block_group_id"))
 public class AppointmentBlock extends BaseEntityWithExternalId {
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false, unique = true)
   private UUID calendarEventId;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)
   private Instant appointmentBlockStart;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)
   private Instant appointmentBlockEnd;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   private int parallelExaminations;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ElementCollection
+  @Column(name = "physician_id", nullable = false)
+  @OrderColumn
+  private List<UUID> physicians;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ElementCollection
+  @Column(name = "mfa_id", nullable = false)
+  @OrderColumn
+  private List<UUID> mfas;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ElementCollection
+  @Column(name = "consultant_id", nullable = false)
+  @OrderColumn
+  private List<UUID> consultants;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @ManyToOne(optional = false)
   @JoinColumn(name = "appointment_block_group_id")
   private AppointmentBlockGroup appointmentBlockGroup;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToMany(mappedBy = Appointment_.APPOINTMENT_BLOCK)
   @OrderBy
   @BatchSize(size = 100)
@@ -73,6 +99,30 @@ public class AppointmentBlock extends BaseEntityWithExternalId {
 
   public void setParallelExaminations(int parallelExaminations) {
     this.parallelExaminations = parallelExaminations;
+  }
+
+  public List<UUID> getPhysicians() {
+    return physicians;
+  }
+
+  public void setPhysicians(List<UUID> physicians) {
+    this.physicians = physicians;
+  }
+
+  public List<UUID> getMfas() {
+    return mfas;
+  }
+
+  public void setMfas(List<UUID> mfas) {
+    this.mfas = mfas;
+  }
+
+  public List<UUID> getConsultants() {
+    return consultants;
+  }
+
+  public void setConsultants(List<UUID> consultants) {
+    this.consultants = consultants;
   }
 
   public void setCalendarEventId(UUID calendarEventId) {

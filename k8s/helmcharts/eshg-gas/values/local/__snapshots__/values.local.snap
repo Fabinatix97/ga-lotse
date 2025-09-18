@@ -1699,10 +1699,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -1758,6 +1758,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -1973,10 +1975,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -2032,6 +2034,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -2288,10 +2292,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -2351,6 +2355,8 @@ spec:
           value: "citizen-portal.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_4
           value: "citizen-portal-auth.frankfurt.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         volumeMounts:
@@ -2541,10 +2547,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -2600,6 +2606,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         volumeMounts:
@@ -2810,10 +2818,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -2869,6 +2877,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -3121,10 +3131,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -3184,6 +3194,8 @@ spec:
           value: "employee-portal.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_4
           value: "employee-portal-auth.frankfurt.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         volumeMounts:
@@ -3380,10 +3392,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -3439,6 +3451,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         volumeMounts:
@@ -3973,10 +3987,10 @@ spec:
               - /wait-for-containerstart.sh
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -4004,6 +4018,8 @@ spec:
           value: "service-directory.central.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_1
           value: "lsd.frankfurt.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         ports:
@@ -4571,10 +4587,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -4630,6 +4646,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -4940,10 +4958,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -4999,6 +5017,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -5308,10 +5328,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -5367,6 +5387,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_1
@@ -5540,10 +5562,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            memory: 512Mi
+            memory: 384Mi
           requests:
             cpu: 10m
-            memory: 64Mi
+            memory: 256Mi
         env:
         - name: spring.profiles.active
           value: "dev, preview-features, health-department-frankfurt"
@@ -5599,6 +5621,8 @@ spec:
           value: "lsd.frankfurt.svc.cluster.local"
         - name: ESHG_SPATZ_DNS_STATICHOSTS_2
           value: "relay-server.central.svc.cluster.local"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx128M -Xss256k -Dreactor.schedulers.reactor.schedulers.defaultBoundedElasticQueueSize=5000"
         - name: ESHG_SPATZ_DNS_FORWARDREQUESTALLOWLIST_0
           value: "keycloak.frankfurt.svc.cluster.local"
         volumeMounts:

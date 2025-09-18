@@ -384,6 +384,17 @@
           }
         }, {
           "in" : "query",
+          "name" : "excludedProcedureLabelsFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "in" : "query",
           "name" : "sortKey",
           "required" : false,
           "schema" : {

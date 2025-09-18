@@ -12,21 +12,25 @@ import de.eshg.base.calendar.api.DetailedEvent;
 import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsRequest;
 import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsResponse;
-import de.eshg.base.calendar.api.GetEventsOfCalendarResponse;
 import de.eshg.base.calendar.api.GetUserCalendarsRequest;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.api.UserCalendar;
+import de.eshg.base.util.CollectionUtils;
 import de.eshg.lib.appointmentblock.api.UpdateAppointmentBlockRequest;
 import de.eshg.lib.appointmentblock.model.CreateAppointmentBlockData;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 @Component
 public class CalendarClient {
@@ -55,26 +59,42 @@ public class CalendarClient {
   }
 
   public void removeEventInCalendarIfExists(AppointmentBlock appointmentBlock) {
-    UUID calendarId = calendarApiClient.getCurrentUserCalendar().calendarId();
-    GetEventsOfCalendarResponse eventsOfCalendar =
-        calendarEventApiClient.getEventsOfCalendar(
-            calendarId,
-            appointmentBlock.getAppointmentBlockStart(),
-            appointmentBlock.getAppointmentBlockEnd());
     UUID calendarEventId = appointmentBlock.getCalendarEventId();
-    if (eventsOfCalendar.events().stream().noneMatch(event -> event.id().equals(calendarEventId))) {
+    log.info("Deleting a business case event in the calendar with ID={}", calendarEventId);
+    try {
+      calendarEventApiClient.deleteBusinessCaseEvent(calendarEventId);
+    } catch (NotFound notFound) {
+      log.error(
+          "Could not delete a business case event in the calendar with ID={}",
+          calendarEventId,
+          notFound);
       return;
     }
-    log.info("Deleting a business case event in the calendar with ID={}", calendarEventId);
-    calendarEventApiClient.deleteBusinessCaseEvent(calendarEventId);
     log.info("Deleted a business case event in the calendar with ID={}", calendarEventId);
   }
 
   public void updateEventInCalendarIfExists(
-      AppointmentBlock appointmentBlock, UpdateAppointmentBlockRequest request) {
+      AppointmentBlock appointmentBlock,
+      UpdateAppointmentBlockRequest request,
+      List<UUID> usersToRemove,
+      List<UUID> usersToAdd) {
     UUID calendarEventId = appointmentBlock.getCalendarEventId();
     List<UUID> calendarIds =
         calendarEventApiClient.getBusinessCaseEvent(calendarEventId).event().calendarIds();
+
+    if (!usersToRemove.isEmpty() || !usersToAdd.isEmpty()) {
+      calendarIds = new ArrayList<>(calendarIds);
+
+      List<UUID> userChanges = CollectionUtils.union(usersToRemove, usersToAdd);
+      List<UserCalendar> userCalendars = getUserCalendarIds(userChanges);
+      Map<UUID, UUID> calendarsByUser =
+          userCalendars.stream()
+              .collect(Collectors.toMap(UserCalendar::userId, UserCalendar::calendarId));
+      usersToRemove.stream()
+          .flatMap(mapToCalendarIfExists(calendarsByUser))
+          .forEach(calendarIds::remove);
+      usersToAdd.stream().flatMap(mapToCalendarIfExists(calendarsByUser)).forEach(calendarIds::add);
+    }
 
     log.info("Updating a business case event in the calendar with ID={}", calendarEventId);
     calendarEventApiClient.updateBusinessCaseEvent(
@@ -82,6 +102,18 @@ public class CalendarClient {
         new BusinessCaseEventRequest(
             calendarIds, new EventTimeData(request.start(), request.end(), false)));
     log.info("Updating a business case event in the calendar with ID={}", calendarEventId);
+  }
+
+  private static Function<UUID, Stream<UUID>> mapToCalendarIfExists(
+      Map<UUID, UUID> calendarsByUser) {
+    return (userId) -> {
+      var calendarId = calendarsByUser.get(userId);
+      if (calendarId == null) {
+        log.warn("No calendar found for user with ID={}", userId);
+        return Stream.empty();
+      }
+      return Stream.of(calendarId);
+    };
   }
 
   private List<UserCalendar> getUserCalendarIds(List<UUID> usersForEvent) {

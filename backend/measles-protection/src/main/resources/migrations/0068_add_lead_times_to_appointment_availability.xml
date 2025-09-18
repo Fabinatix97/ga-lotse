@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1757315521364-1">
+    <renameTable oldTableName="appointment_block_default_availability_config"
+                 newTableName="appointment_block_availability_config"/>
+    <addColumn tableName="appointment_block_availability_config">
+      <column name="bulk_create_appointments_min_lead_time" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="appointment_block_availability_config">
+      <column name="citizen_free_appointments_min_lead_time" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="appointment_block_availability_config">
+      <column name="citizen_free_appointments_max_lead_time" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

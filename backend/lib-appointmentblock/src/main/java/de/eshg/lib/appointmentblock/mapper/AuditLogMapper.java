@@ -5,7 +5,7 @@
 
 package de.eshg.lib.appointmentblock.mapper;
 
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockDefaultAvailabilityConfig;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockAvailabilityConfig;
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
 
@@ -16,11 +16,20 @@ public class AuditLogMapper {
   }
 
   public static SequencedMap<String, String> getRelevantFieldsForLogging(
-      AppointmentBlockDefaultAvailabilityConfig config) {
+      AppointmentBlockAvailabilityConfig config) {
     LinkedHashMap<String, String> relevantFields = new LinkedHashMap<>();
     relevantFields.put("availableForCitizen", String.valueOf(config.getAvailableForCitizen()));
     relevantFields.put(
         "availableForBulkBooking", String.valueOf(config.getAvailableForBulkBooking()));
+    relevantFields.put(
+        "bulkCreateAppointmentsMinLeadTime",
+        String.valueOf(config.getBulkCreateAppointmentsMinLeadTime()));
+    relevantFields.put(
+        "citizenFreeAppointmentsMinLeadTime",
+        String.valueOf(config.getCitizenFreeAppointmentsMinLeadTime()));
+    relevantFields.put(
+        "citizenFreeAppointmentsMaxLeadTime",
+        String.valueOf(config.getCitizenFreeAppointmentsMaxLeadTime()));
     return relevantFields;
   }
 }

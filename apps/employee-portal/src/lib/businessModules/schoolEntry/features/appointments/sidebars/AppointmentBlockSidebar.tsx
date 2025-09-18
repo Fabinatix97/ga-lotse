@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
 import {
@@ -11,7 +12,13 @@ import {
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 
-import { useGetAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
+import { useUserApi } from "@/lib/baseModule/api/clients";
+import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { getAppointmentBlockQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
+import {
+  getAllMedicalAssistantsQuery,
+  getAllPhysiciansQuery,
+} from "@/lib/businessModules/schoolEntry/api/queries/appointmentStaff";
 import { DisplayAppointmentBlockSidebar } from "@/lib/businessModules/schoolEntry/features/appointments/sidebars/DisplayAppointmentBlockSidebar";
 import { UpdateAppointmentBlockSidebar } from "@/lib/businessModules/schoolEntry/features/appointments/sidebars/UpdateAppointmentBlockSidebar";
 
@@ -35,8 +42,19 @@ function AppointmentBlockSidebar({
   formRef,
 }: AppointmentBlockSidebarProps) {
   const [state, setState] = useState<SidebarMode>("display");
-
-  const appointmentBlock = useGetAppointmentBlock(appointmentBlockId);
+  const appointmentBlockApi = useAppointmentBlockApi();
+  const userApi = useUserApi();
+  const [
+    { data: appointmentBlock },
+    { data: allPhysicians },
+    { data: allMfas },
+  ] = useSuspenseQueries({
+    queries: [
+      getAppointmentBlockQuery(appointmentBlockApi, appointmentBlockId),
+      getAllPhysiciansQuery(userApi),
+      getAllMedicalAssistantsQuery(userApi),
+    ],
+  });
 
   if (state === "display") {
     return (
@@ -52,6 +70,8 @@ function AppointmentBlockSidebar({
     return (
       <UpdateAppointmentBlockSidebar
         appointmentBlock={appointmentBlock}
+        allPhysicians={allPhysicians}
+        allMfas={allMfas}
         refetchEvents={refetchEvents}
         formRef={formRef}
         onCancel={() => setState("display")}

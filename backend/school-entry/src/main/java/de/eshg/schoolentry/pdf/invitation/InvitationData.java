@@ -12,6 +12,7 @@ public record InvitationData(
     DepartmentLogo departmentLogo,
     Address office,
     Address child,
+    Address custodian,
     String personId,
     InvitationExamination examination,
     InvitationInfo invitationInfo,

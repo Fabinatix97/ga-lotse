@@ -14,4 +14,5 @@ public record ChildFilterParameters(
     UUID institutionIdFilter,
     String groupNameFilter,
     Boolean noGroupFilter,
-    List<UUID> procedureLabelsFilter) {}
+    List<UUID> procedureLabelsFilter,
+    List<UUID> excludedProcedureLabelsFilter) {}

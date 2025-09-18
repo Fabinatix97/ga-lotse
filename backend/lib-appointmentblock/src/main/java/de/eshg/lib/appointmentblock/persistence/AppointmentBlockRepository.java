@@ -27,7 +27,7 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
           + "left join fetch abg.appointmentTypeHolders h "
           + "where h.type = :appointmentType "
           + "and (:locationId is null or abg.locationId = :locationId) "
-          + "and (:physicianId is null or :physicianId member of abg.physicians) "
+          + "and (:physicianId is null or :physicianId member of a.physicians) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
   List<AppointmentBlock> findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
       @Param("appointmentType") AppointmentType appointmentType,

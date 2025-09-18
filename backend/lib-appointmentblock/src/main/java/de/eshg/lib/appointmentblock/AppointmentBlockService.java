@@ -9,6 +9,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 import de.eshg.base.SortDirection;
 import de.eshg.base.user.UserApi;
+import de.eshg.base.util.CollectionUtils;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockPaginationAndSortParameters;
 import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -293,7 +294,11 @@ public class AppointmentBlockService {
     }
 
     List<UUID> usersForEvent =
-        getUserIdsForEvent(request.physicians(), request.mfas(), request.consultants());
+        getUserIdsForEvent(
+            request.physicians(),
+            request.mfas(),
+            request.consultants(),
+            CurrentUserHelper.getCurrentUserId());
     checkForCalendarConflicts(usersForEvent, appointmentBlocks);
 
     AppointmentBlockGroup appointmentBlockGroup =
@@ -310,6 +315,9 @@ public class AppointmentBlockService {
       appointmentBlock.setAppointmentBlockStart(createAppointmentBlockRequest.start());
       appointmentBlock.setAppointmentBlockEnd(createAppointmentBlockRequest.end());
       appointmentBlock.setParallelExaminations(request.parallelExaminations());
+      appointmentBlock.setPhysicians(request.physicians());
+      appointmentBlock.setMfas(request.mfas());
+      appointmentBlock.setConsultants(request.consultants());
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 
@@ -330,7 +338,7 @@ public class AppointmentBlockService {
   }
 
   private List<UUID> getUserIdsForEvent(
-      List<UUID> physicians, List<UUID> mfas, List<UUID> consultants) {
+      List<UUID> physicians, List<UUID> mfas, List<UUID> consultants, UUID creatorId) {
     Set<UUID> usersForEvent = new HashSet<>();
     if (physicians != null) {
       usersForEvent.addAll(physicians);
@@ -342,7 +350,7 @@ public class AppointmentBlockService {
       usersForEvent.addAll(consultants);
     }
     if (appointmentBlockConfig.isCreateAppointmentBlockForCurrentUser()) {
-      usersForEvent.add(CurrentUserHelper.getCurrentUserId());
+      usersForEvent.add(creatorId);
     }
     if (usersForEvent.isEmpty()) {
       throw new BadRequestException("At least one user for event is needed.");
@@ -355,9 +363,6 @@ public class AppointmentBlockService {
       List<AppointmentTypeHolder> appointmentTypeHolders) {
     AppointmentBlockGroup appointmentBlockGroup = new AppointmentBlockGroup();
     appointmentBlockGroup.setAppointmentTypeHolders(appointmentTypeHolders);
-    appointmentBlockGroup.setMfas(request.mfas());
-    appointmentBlockGroup.setPhysicians(request.physicians());
-    appointmentBlockGroup.setConsultants(request.consultants());
     appointmentBlockGroup.setCreatorId(userApi.getSelfUser().userId());
     appointmentBlockGroup.setLocationId(request.locationId());
     appointmentBlockGroup.setAvailableForCitizen(request.availableForCitizen());
@@ -406,7 +411,11 @@ public class AppointmentBlockService {
   public ValidateAppointmentBlockGroupResponse validateDailyAppointmentBlocksForGroup(
       CreateDailyAppointmentBlockGroupRequest request) {
     List<UUID> usersForEvent =
-        getUserIdsForEvent(request.physicians(), request.mfas(), request.consultants());
+        getUserIdsForEvent(
+            request.physicians(),
+            request.mfas(),
+            request.consultants(),
+            CurrentUserHelper.getCurrentUserId());
     if (usersForEvent.isEmpty()) {
       return new ValidateAppointmentBlockGroupResponse(
           Collections.emptyList(), Collections.emptyList());
@@ -448,13 +457,73 @@ public class AppointmentBlockService {
     }
   }
 
-  public AppointmentBlock updateAppointmentBlock(
+  public void updateAppointmentBlock(
       AppointmentBlock appointmentBlock, UpdateAppointmentBlockRequest request) {
-    calendarClient.updateEventInCalendarIfExists(appointmentBlock, request);
+    UserChange userChange = getUserChange(appointmentBlock, request);
+    List<CreateAppointmentBlockData> appointmentBlocks =
+        createAppointmentBlockData(appointmentBlock);
+
+    checkForCalendarConflicts(userChange.usersToAdd, appointmentBlocks);
+
+    calendarClient.updateEventInCalendarIfExists(
+        appointmentBlock, request, userChange.usersToRemove, userChange.usersToAdd);
 
     appointmentBlock.setAppointmentBlockStart(request.start());
     appointmentBlock.setAppointmentBlockEnd(request.end());
-
-    return appointmentBlock;
+    appointmentBlock.setParallelExaminations(request.parallelExaminations());
+    appointmentBlock.setPhysicians(request.physicians());
+    appointmentBlock.setMfas(request.mfas());
+    appointmentBlock.setConsultants(request.consultants());
   }
+
+  public ValidateAppointmentBlockGroupResponse validateUpdateAppointmentBlock(
+      AppointmentBlock appointmentBlock, UpdateAppointmentBlockRequest request) {
+    UserChange userChange = getUserChange(appointmentBlock, request);
+    List<CreateAppointmentBlockData> appointmentBlocks =
+        createAppointmentBlockData(appointmentBlock);
+
+    List<UUID> userIdsWithEventConflicts =
+        userChange.usersToAdd.isEmpty()
+            ? List.of()
+            : calendarClient.getUserIdsWithEventConflicts(userChange.usersToAdd, appointmentBlocks);
+    List<UUID> userIdsWithoutEventConflicts = new ArrayList<>(userChange.newUsers);
+    userIdsWithoutEventConflicts.removeAll(userIdsWithEventConflicts);
+    return new ValidateAppointmentBlockGroupResponse(
+        userIdsWithEventConflicts, userIdsWithoutEventConflicts);
+  }
+
+  private UserChange getUserChange(
+      AppointmentBlock appointmentBlock, UpdateAppointmentBlockRequest request) {
+    appointmentBlockValidator.validateTechnicalGroups(
+        CollectionUtils.difference(request.physicians(), appointmentBlock.getPhysicians()),
+        CollectionUtils.difference(request.mfas(), appointmentBlock.getMfas()),
+        CollectionUtils.difference(request.consultants(), appointmentBlock.getConsultants()));
+
+    List<UUID> oldUsers =
+        getUserIdsForEvent(
+            appointmentBlock.getPhysicians(),
+            appointmentBlock.getMfas(),
+            appointmentBlock.getConsultants(),
+            appointmentBlock.getAppointmentBlockGroup().getCreatorId());
+
+    List<UUID> newUsers =
+        getUserIdsForEvent(
+            request.physicians(),
+            request.mfas(),
+            request.consultants(),
+            appointmentBlock.getAppointmentBlockGroup().getCreatorId());
+
+    return new UserChange(
+        CollectionUtils.difference(oldUsers, newUsers),
+        CollectionUtils.difference(newUsers, oldUsers),
+        newUsers);
+  }
+
+  private List<CreateAppointmentBlockData> createAppointmentBlockData(AppointmentBlock block) {
+    return List.of(
+        new CreateAppointmentBlockData(
+            block.getAppointmentBlockStart(), block.getAppointmentBlockEnd()));
+  }
+
+  private record UserChange(List<UUID> usersToRemove, List<UUID> usersToAdd, List<UUID> newUsers) {}
 }

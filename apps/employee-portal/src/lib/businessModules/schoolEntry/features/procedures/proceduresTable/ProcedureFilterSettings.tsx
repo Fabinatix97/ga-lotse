@@ -19,6 +19,7 @@ import {
   SchoolYearAutocomplete,
   SearchInstitutionFilter,
   SetDictionaryFilterFn,
+  SetDictionaryFiltersFn,
 } from "@eshg/lib-employee-portal";
 import {
   SelectOptions,
@@ -41,7 +42,9 @@ export type ProcedureFilters = Pick<
   | "schoolYearFilter"
   | "isInvitationSentFilter"
   | "hasExaminationEditsFilter"
-> & { labelsFilter?: ProcedureLabel[] };
+> & { labelsFilter?: ProcedureLabel[] } & {
+  excludedLabelsFilter?: ProcedureLabel[];
+};
 
 const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   procedureTypeFilter: "Art",
@@ -50,6 +53,7 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   hasAppointmentFilter: "Termin",
   schoolYearFilter: "Schuljahr",
   labelsFilter: "Kennungen",
+  excludedLabelsFilter: "Ohne Kennungen",
   isInvitationSentFilter: "Einladung versandt",
   hasExaminationEditsFilter: "Untersuchung begonnen",
 };
@@ -63,6 +67,10 @@ function getFilterLabel(filterValue: ActiveFilter<keyof ProcedureFilters>) {
 interface ProcedureFilterSettingsProps {
   filterFormValues: ProcedureFilters;
   setFilterFormValue: SetDictionaryFilterFn<
+    keyof ProcedureFilters,
+    ProcedureFilters
+  >;
+  setFilterFormValues: SetDictionaryFiltersFn<
     keyof ProcedureFilters,
     ProcedureFilters
   >;
@@ -82,6 +90,22 @@ function evaluateStringAsBoolean(value: string) {
 
 export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
   const labelApi = useLabelApi();
+
+  function setLabelFilterFormValues(
+    labelsValues: ProcedureLabel[],
+    excludedLabelsValues: ProcedureLabel[],
+  ) {
+    props.setFilterFormValues([
+      {
+        name: "labelsFilter",
+        value: isEmpty(labelsValues) ? undefined : labelsValues,
+      },
+      {
+        name: "excludedLabelsFilter",
+        value: isEmpty(excludedLabelsValues) ? undefined : excludedLabelsValues,
+      },
+    ]);
+  }
 
   return (
     <OverlayBoundary>
@@ -249,15 +273,44 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
               procedureLabelApi={labelApi}
               procedureLabelApiQueryKey={schoolEntryApiQueryKey}
               onChange={(newValue) => {
-                props.setFilterFormValue(
-                  "labelsFilter",
-                  isEmpty(newValue) ? undefined : newValue,
+                const filteredExcludedLabels = removeAllLabel(
+                  props.filterFormValues.excludedLabelsFilter ?? [],
+                  newValue,
                 );
+                setLabelFilterFormValues(
+                  newValue,
+                  filteredExcludedLabels ?? [],
+                );
+              }}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Ohne Kennungen</FormLabel>
+            <ProcedureLabelAutocomplete
+              name="excludedLabels"
+              value={props.filterFormValues.excludedLabelsFilter ?? []}
+              procedureLabelApi={labelApi}
+              procedureLabelApiQueryKey={schoolEntryApiQueryKey}
+              onChange={(newValue) => {
+                const filteredLabels = removeAllLabel(
+                  props.filterFormValues.labelsFilter ?? [],
+                  newValue,
+                );
+                setLabelFilterFormValues(filteredLabels ?? [], newValue);
               }}
             />
           </FormControl>
         </FilterSettingsContent>
       </FilterSettingsSheet>
     </OverlayBoundary>
+  );
+}
+
+function removeAllLabel(
+  labels: ProcedureLabel[],
+  labelsToRemove: ProcedureLabel[],
+): ProcedureLabel[] {
+  return labels.filter(
+    (label) => !labelsToRemove.map((label) => label.id).includes(label.id),
   );
 }

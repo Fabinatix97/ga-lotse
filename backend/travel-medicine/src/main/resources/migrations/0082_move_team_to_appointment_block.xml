@@ -1,0 +1,92 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="7240777959111-1">
+    <createTable tableName="appointment_block_physicians">
+      <column name="appointment_block_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="physician_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="physicians_order" type="integer">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="appointment_block_physicians"
+      columnNames="appointment_block_id, physicians_order"
+      constraintName="pk_appointment_block_physicians"/>
+    <addForeignKeyConstraint baseTableName="appointment_block_physicians"
+      baseColumnNames="appointment_block_id"
+      constraintName="fk_appointment_block_physicians_appointment_block"
+      referencedTableName="appointment_block"
+      referencedColumnNames="id"/>
+    <sql>
+      insert into appointment_block_physicians (appointment_block_id, physician_id, physicians_order)
+      select ab.id, abgp.physician_id, abgp.physicians_order
+      from appointment_block_group_physicians abgp
+             inner join appointment_block ab on ab.appointment_block_group_id = abgp.appointment_block_group_id;
+    </sql>
+    <dropTable tableName="appointment_block_group_physicians"/>
+
+    <createTable tableName="appointment_block_mfas">
+      <column name="appointment_block_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mfa_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mfas_order" type="integer">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="appointment_block_mfas"
+      columnNames="appointment_block_id, mfas_order"
+      constraintName="pk_appointment_block_mfas"/>
+    <addForeignKeyConstraint baseTableName="appointment_block_mfas"
+      baseColumnNames="appointment_block_id"
+      constraintName="fk_appointment_block_mfas_appointment_block"
+      referencedTableName="appointment_block"
+      referencedColumnNames="id"/>
+    <sql>
+      insert into appointment_block_mfas (appointment_block_id, mfa_id, mfas_order)
+      select ab.id, abgp.mfa_id, abgp.mfas_order
+      from appointment_block_group_mfas abgp
+             inner join appointment_block ab on ab.appointment_block_group_id = abgp.appointment_block_group_id;
+    </sql>
+    <dropTable tableName="appointment_block_group_mfas"/>
+
+    <createTable tableName="appointment_block_consultants">
+      <column name="appointment_block_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="consultant_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+      <column name="consultants_order" type="integer">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="appointment_block_consultants"
+      columnNames="appointment_block_id, consultants_order"
+      constraintName="pk_appointment_block_consultants"/>
+    <addForeignKeyConstraint baseTableName="appointment_block_consultants"
+      baseColumnNames="appointment_block_id"
+      constraintName="fk_appointment_block_consultants_appointment_block"
+      referencedTableName="appointment_block"
+      referencedColumnNames="id"/>
+    <sql>
+      insert into appointment_block_consultants (appointment_block_id, consultant_id, consultants_order)
+      select ab.id, abgp.consultant_id, abgp.consultants_order
+      from appointment_block_group_consultants abgp
+             inner join appointment_block ab on ab.appointment_block_group_id = abgp.appointment_block_group_id;
+    </sql>
+    <dropTable tableName="appointment_block_group_consultants"/>
+  </changeSet>
+</databaseChangeLog>

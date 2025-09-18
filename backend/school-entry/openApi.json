@@ -17,7 +17,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailability"
+                  "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailabilityFlags"
                 }
               }
             },
@@ -361,6 +361,44 @@
           }
         },
         "summary" : "Update appointment block",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}/validate" : {
+      "put" : {
+        "operationId" : "validateUpdateAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Validate for appointment block update",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -905,29 +943,29 @@
     },
     "/configuration/appointment-block-availability" : {
       "get" : {
-        "operationId" : "getConfiguredDefaultFlags",
+        "operationId" : "getConfiguredAvailability",
         "responses" : {
           "200" : {
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetAppointmentBlockDefaultAvailabilityFlagsResponse"
+                  "$ref" : "#/components/schemas/GetAppointmentBlockAvailabilityResponse"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "summary" : "Gets the default availability flags",
-        "tags" : [ "AppointmentBlockDefaultAvailabilityConfig" ]
+        "summary" : "Gets the default availability",
+        "tags" : [ "AppointmentBlockAvailabilityConfig" ]
       },
       "put" : {
-        "operationId" : "updateDefaultFlags",
+        "operationId" : "updateAvailability",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailability"
+                "$ref" : "#/components/schemas/UpdateAppointmentBlockAvailabilityRequest"
               }
             }
           },
@@ -938,8 +976,8 @@
             "description" : "OK"
           }
         },
-        "summary" : "Modifies the default availability flags",
-        "tags" : [ "AppointmentBlockDefaultAvailabilityConfig" ]
+        "summary" : "Modifies the default availability",
+        "tags" : [ "AppointmentBlockAvailabilityConfig" ]
       }
     },
     "/configuration/appointment-standard-duration" : {
@@ -2937,6 +2975,17 @@
         }, {
           "in" : "query",
           "name" : "labelsFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "excludedLabelsFilter",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -5399,7 +5448,7 @@
         },
         "description" : "A bin represents a single sequence of slots in an appointment block, meaning there are no parallel slots within a bin. Multiple bins can occur within a block."
       },
-      "AppointmentBlockDefaultAvailability" : {
+      "AppointmentBlockDefaultAvailabilityFlags" : {
         "required" : [ "availableForBulkBooking", "availableForCitizen" ],
         "type" : "object",
         "properties" : {
@@ -5410,7 +5459,7 @@
             "type" : "boolean"
           }
         },
-        "description" : "A request containing the default flags. All flags must be set."
+        "description" : "Default availability flags for the appointment block creation UI"
       },
       "AppointmentBlockSlot" : {
         "required" : [ "booked", "end", "start" ],
@@ -6297,6 +6346,25 @@
         "type" : "string",
         "enum" : [ "GRANTED", "DENIED" ]
       },
+      "DefaultLeadTimeForAppointmentCreation" : {
+        "required" : [ "bulkCreateAppointmentsMinLeadTime", "citizenFreeAppointmentsMaxLeadTime", "citizenFreeAppointmentsMinLeadTime" ],
+        "type" : "object",
+        "properties" : {
+          "bulkCreateAppointmentsMinLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "citizenFreeAppointmentsMaxLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "citizenFreeAppointmentsMinLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "description" : "Default lead time in days for the appointment creation UI"
+      },
       "DefaultPopulationResponse" : {
         "type" : "object",
         "properties" : {
@@ -7075,11 +7143,14 @@
         },
         "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
       },
-      "GetAppointmentBlockDefaultAvailabilityFlagsResponse" : {
+      "GetAppointmentBlockAvailabilityResponse" : {
         "type" : "object",
         "properties" : {
           "defaultFlags" : {
-            "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailability"
+            "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailabilityFlags"
+          },
+          "leadTimes" : {
+            "$ref" : "#/components/schemas/DefaultLeadTimeForAppointmentCreation"
           }
         }
       },
@@ -10506,15 +10577,54 @@
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
       },
-      "UpdateAppointmentBlockRequest" : {
-        "required" : [ "end", "start" ],
+      "UpdateAppointmentBlockAvailabilityRequest" : {
         "type" : "object",
         "properties" : {
+          "defaultFlags" : {
+            "$ref" : "#/components/schemas/AppointmentBlockDefaultAvailabilityFlags"
+          },
+          "leadTimes" : {
+            "$ref" : "#/components/schemas/DefaultLeadTimeForAppointmentCreation"
+          }
+        },
+        "description" : "A request containing the availability flags and lead times."
+      },
+      "UpdateAppointmentBlockRequest" : {
+        "required" : [ "consultants", "end", "mfas", "parallelExaminations", "physicians", "start" ],
+        "type" : "object",
+        "properties" : {
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
           "end" : {
             "type" : "string",
             "description" : "Time at which the appointment block ends.",
             "format" : "date-time",
             "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "start" : {
             "type" : "string",
@@ -10650,6 +10760,10 @@
         "properties" : {
           "appointment" : {
             "$ref" : "#/components/schemas/Appointment"
+          },
+          "custodianId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "deceased" : {
             "type" : "string",

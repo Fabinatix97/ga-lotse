@@ -18,7 +18,6 @@ import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
-import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.stiprotection.persistence.Appointments;
@@ -167,13 +166,12 @@ public class AppointmentService extends AbstractAppointmentService<StiProtection
 
   private List<UUID> getUserIdsFromAppointment(Appointment appointment) {
     validateAppointmentBlockGroup(appointment);
-    AppointmentBlockGroup appointmentBlockGroup =
-        appointment.getAppointmentBlock().getAppointmentBlockGroup();
+    AppointmentBlock appointmentBlock = appointment.getAppointmentBlock();
 
     List<UUID> userIds =
         Stream.concat(
-                appointmentBlockGroup.getPhysicians().stream(),
-                appointmentBlockGroup.getConsultants().stream())
+                appointmentBlock.getPhysicians().stream(),
+                appointmentBlock.getConsultants().stream())
             .toList();
 
     if (CollectionUtils.isEmpty(userIds)) {

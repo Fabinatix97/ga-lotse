@@ -34,7 +34,12 @@ import {
   useQueryParamStateProvider,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import { optionsFromRecord, useToggleableState } from "@eshg/lib-portal";
+import {
+  UnstyledTabList,
+  UnstyledTabPanel,
+  UnstyledTabs,
+  optionsFromRecord,
+} from "@eshg/lib-portal";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
   ApiUser,
@@ -116,7 +121,6 @@ function createFilterDefinitions(
 export function ProceduresOverviewTable(
   props: Readonly<ProceduresOverviewTableProps>,
 ) {
-  const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
@@ -204,92 +208,116 @@ export function ProceduresOverviewTable(
   }
 
   return (
-    <TablePage
-      fullHeight
-      controls={
-        <ButtonBar
-          left={[
-            <ToggleFilterButton
-              {...filterSettings.filterButtonProps}
-              key="filterButton"
-              isFilterVisible={activePanel === "filters"}
-              onClick={() => toggleActivePanel("filters")}
-            />,
-            <TogglePersonSearchButton
-              {...personSearch.buttonProps}
-              key="personSearchButton"
-              expanded={activePanel === "personSearch"}
-              onClick={() => toggleActivePanel("personSearch")}
-            />,
-            <ToggleLabCodeSearchButton
-              {...labCodeSearch.buttonProps}
-              key="labCodeSearchButton"
-              expanded={activePanel === "labCodeSearch"}
-              onClick={() => toggleActivePanel("labCodeSearch")}
-            />,
-          ]}
-          right={props.buttons}
-          alignItems="flex-end"
-          invertDomOrder
-        />
-      }
-      data-testid="procedures-table"
-      search={
-        <>
-          {activePanel === "personSearch" && (
-            <PersonSearchForm
-              {...personSearch.formProps}
-              allowPartialSearch
-              disablePartialSearchAlert
-              allowPersonIdSearch
-              onChange={handleChangePersonSearch}
-              onReset={handleResetPersonSearch}
+    <UnstyledTabs<PanelName> initialValue={null}>
+      {({ currentValue, internalTabListFunction }) => (
+        <TablePage
+          fullHeight
+          controls={
+            <ButtonBar
+              left={
+                <UnstyledTabList<PanelName>
+                  tabListItems={[
+                    {
+                      component: (
+                        <ToggleFilterButton
+                          {...filterSettings.filterButtonProps}
+                          isFilterVisible={currentValue === "filters"}
+                        />
+                      ),
+                      value: "filters",
+                    },
+                    {
+                      component: (
+                        <TogglePersonSearchButton
+                          {...personSearch.buttonProps}
+                          expanded={currentValue === "personSearch"}
+                        />
+                      ),
+                      value: "personSearch",
+                    },
+                    {
+                      component: (
+                        <ToggleLabCodeSearchButton
+                          {...labCodeSearch.buttonProps}
+                          expanded={currentValue === "labCodeSearch"}
+                        />
+                      ),
+                      value: "labCodeSearch",
+                    },
+                  ]}
+                  internalTabListFunction={internalTabListFunction}
+                />
+              }
+              right={props.buttons}
+              alignItems="flex-end"
+              invertDomOrder
             />
-          )}
-          {activePanel === "labCodeSearch" && (
-            <LabCodeSearchForm
-              {...labCodeSearch.formProps}
-              onChange={handleChangeLabCodeSearch}
-              onReset={handleResetLabCodeSearch}
-            />
-          )}
-        </>
-      }
-      filterSettings={
-        activePanel === "filters" && (
-          <FilterSettingsSheet
-            {...filterSettings.filterSettingsSheetProps}
-            filterSettingsVisible
+          }
+          data-testid="procedures-table"
+          search={
+            <>
+              {currentValue === "personSearch" && (
+                <UnstyledTabPanel<PanelName> value="personSearch">
+                  <PersonSearchForm
+                    {...personSearch.formProps}
+                    allowPartialSearch
+                    disablePartialSearchAlert
+                    allowPersonIdSearch
+                    onChange={handleChangePersonSearch}
+                    onReset={handleResetPersonSearch}
+                  />
+                </UnstyledTabPanel>
+              )}
+              {currentValue === "labCodeSearch" && (
+                <UnstyledTabPanel<PanelName> value="labCodeSearch">
+                  <LabCodeSearchForm
+                    {...labCodeSearch.formProps}
+                    onChange={handleChangeLabCodeSearch}
+                    onReset={handleResetLabCodeSearch}
+                  />
+                </UnstyledTabPanel>
+              )}
+            </>
+          }
+          filterSettings={
+            currentValue === "filters" && (
+              <UnstyledTabPanel<PanelName> value="filters">
+                <FilterSettingsSheet
+                  {...filterSettings.filterSettingsSheetProps}
+                  filterSettingsVisible
+                >
+                  <FilterSettings {...filterSettings.filterSettingsProps} />
+                </FilterSettingsSheet>
+              </UnstyledTabPanel>
+            )
+          }
+        >
+          <TableSheet
+            loading={procedures.isFetching}
+            footer={
+              <Pagination
+                totalCount={procedures.data.totalNumberOfElements}
+                {...tableControl.paginationProps}
+              />
+            }
           >
-            <FilterSettings {...filterSettings.filterSettingsProps} />
-          </FilterSettingsSheet>
-        )
-      }
-    >
-      <TableSheet
-        loading={procedures.isFetching}
-        footer={
-          <Pagination
-            totalCount={procedures.data.totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
-        }
-      >
-        <DataTable
-          data={procedures.data.elements}
-          columns={procedureOverviewTableColumns(
-            procedures.data.medicalOpinionLeadTime,
-          )}
-          sorting={tableControl.tableSorting}
-          enableSortingRemoval={false}
-          rowNavigation={{
-            route: (row) => routes.procedures.byId(row.original.id).details,
-            focusColumnAccessorKey: "lastName",
-          }}
-          minWidth={780}
-        />
-      </TableSheet>
-    </TablePage>
+            <DataTable
+              data={procedures.data.elements}
+              columns={procedureOverviewTableColumns(
+                procedures.data.medicalOpinionLeadTime,
+              )}
+              sorting={tableControl.tableSorting}
+              enableSortingRemoval={false}
+              rowNavigation={{
+                route: (row) => routes.procedures.byId(row.original.id).details,
+                focusColumnAccessorKey: "lastName",
+              }}
+              minWidth={780}
+            />
+          </TableSheet>
+        </TablePage>
+      )}
+    </UnstyledTabs>
   );
 }
 

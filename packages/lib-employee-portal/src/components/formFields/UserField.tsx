@@ -67,6 +67,11 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
     }
   }
 
+  const optionsByUserId = Object.fromEntries(
+    props.options.map((o) => [o.userId, o]),
+  );
+  const unknownUser = { firstName: "Unbekannter", lastName: "Benutzer" };
+
   return (
     <BaseField
       label={props.label}
@@ -81,8 +86,8 @@ export function UserField(props: Readonly<StaffUserFieldProps>) {
         selectOnFocus
         filterSelectedOptions
         name={props.name}
-        value={props.options.filter((option) =>
-          field.input.value.includes(option.userId),
+        value={field.input.value.map(
+          (userId) => optionsByUserId[userId] ?? { ...unknownUser, userId },
         )}
         disableClearable={field.required}
         filterOptions={(options, params) => {

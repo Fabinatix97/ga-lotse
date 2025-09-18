@@ -109,7 +109,7 @@ export function MedicalOpinionStatusPanel({
         >
           {({ isSubmitting, handleSubmit, values }) => {
             return (
-              <FormStack onSubmit={handleSubmit}>
+              <FormStack aria-label="Gutachtenstatus" onSubmit={handleSubmit}>
                 <SelectField
                   label="Status"
                   name="medicalOpinionStatus"

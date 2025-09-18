@@ -279,6 +279,7 @@ export {
 } from "./features/filters/components/filterSettings/ToggleFilterButton";
 export {
   type SetDictionaryFilterFn,
+  type SetDictionaryFiltersFn,
   usePersistentFilterDictionary,
   useFilterDictionary,
 } from "./features/filters/hooks/useFilterDictionary";

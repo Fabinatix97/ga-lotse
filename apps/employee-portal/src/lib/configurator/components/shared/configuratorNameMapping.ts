@@ -53,7 +53,7 @@ export function getTabNamesByEndpointName(
       return "Datenschutzerklärung PDF";
     case "APPOINTMENT_STANDARD_DURATION":
       return "Standard-Termindauer";
-    case "APPOINTMENT_BLOCK_DEFAULT_AVAILABILITY":
+    case "APPOINTMENT_BLOCK_AVAILABILITY":
       return "Standard Terminblock-Verfügbarkeit";
     case "OFFICIAL_MEDICAL_SERVICE":
       return "Fachliche Einstellungen";
