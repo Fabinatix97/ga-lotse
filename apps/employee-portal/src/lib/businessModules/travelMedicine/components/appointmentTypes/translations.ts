@@ -3,27 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { APPOINTMENT_TYPES } from "@eshg/lib-employee-portal";
 import { EnumMap } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
   ApiCreatedByUserType,
 } from "@eshg/travel-medicine-api";
-
-export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
-  [ApiAppointmentType.Consultation]: "Beratung",
-  [ApiAppointmentType.Vaccination]: "Impfung",
-  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
-  [ApiAppointmentType.CanChild]: "Kann-Kinder",
-  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
-  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
-  [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
-  [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
-  [ApiAppointmentType.SexWork]: "Sexarbeit",
-  [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
-  [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
-  [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
-  [ApiAppointmentType.MedsAbroadCertification]: "Beglaubigung",
-};
 
 const CREATED_BY_USER_TYPES: EnumMap<ApiCreatedByUserType> = {
   [ApiCreatedByUserType.Employee]: "Mitarbeiter",

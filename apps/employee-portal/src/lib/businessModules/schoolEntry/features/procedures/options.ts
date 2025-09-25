@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { APPOINTMENT_TYPES } from "@eshg/lib-employee-portal";
 import { buildEnumOptions } from "@eshg/lib-portal";
 import {
   ApiAppointmentType,
@@ -11,7 +12,6 @@ import {
 
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
 import {
-  APPOINTMENT_TYPES,
   ARTICULATION_VALUES,
   BOOLEAN_WITH_UNKNOWN_VALUES,
   COUNTRY_CODE_VALUES,

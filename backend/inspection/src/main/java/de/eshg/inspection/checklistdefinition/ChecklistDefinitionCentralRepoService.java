@@ -5,21 +5,18 @@
 
 package de.eshg.inspection.checklistdefinition;
 
+import static de.eshg.centralrepository.client.JsonToResourceHelper.createResourceWithSizeForJsonString;
 import static de.eshg.inspection.checklistdefinition.mapper.CentralRepositoryMapper.createMetadataResponse;
 import static de.eshg.inspection.checklistdefinition.mapper.CentralRepositoryMapper.getObjectName;
 import static de.eshg.inspection.checklistdefinition.mapper.CentralRepositoryMapper.isChecklist;
 import static de.eshg.inspection.checklistdefinition.mapper.CentralRepositoryMapper.prepareCentralRepoCld;
-import static de.eshg.inspection.checklistdefinition.mapper.CentralRepositoryMapper.setJsonContent;
-import static de.eshg.inspection.checklistdefinition.mapper.CentralRepositoryMapper.setMetadata;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS;
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 import static de.eshg.rest.service.security.CurrentUserHelper.currentUserHasNoRole;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.centralrepository.client.CentralRepositoryRestClient;
+import de.eshg.centralrepository.client.JsonToResourceHelper.ResourceStream;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoResponse;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoUpdateRequest;
@@ -38,8 +35,9 @@ import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionRep
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeRepository;
-import de.eshg.lib.centralrepository.api.ContentRequestDto;
+import de.eshg.lib.centralrepository.CentralRepositoryApi;
 import de.eshg.lib.centralrepository.api.MetadataListResponseDto;
+import de.eshg.lib.centralrepository.api.MetadataRequestDto;
 import de.eshg.lib.centralrepository.api.MetadataResponseDto;
 import de.eshg.lib.centralrepository.api.VersionFilterType;
 import de.eshg.rest.service.error.BadRequestException;
@@ -47,14 +45,14 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
@@ -76,20 +74,19 @@ public class ChecklistDefinitionCentralRepoService {
   private static final String ERROR_MESSAGE_DELETE = "Failed to delete entry in central repository";
   public static final String NON_EXPANDABLE = "@nonExpandable";
 
-  private final CentralRepositoryRestClient centralRepositoryRestClient;
+  private final CentralRepositoryApi centralRepositoryApi;
   private final ChecklistDefinitionService checklistDefinitionService;
   private final ChecklistDefinitionRepository checklistDefinitionRepository;
   private final ObjectMapper objectMapper;
-  private final PrettyPrinter minimalPrettyPrinter = new MinimalPrettyPrinter();
   private final ObjectTypeRepository objectTypeRepository;
 
   public ChecklistDefinitionCentralRepoService(
-      CentralRepositoryRestClient centralRepositoryRestClient,
+      CentralRepositoryApi centralRepositoryApi,
       ChecklistDefinitionService checklistDefinitionService,
       ChecklistDefinitionRepository checklistDefinitionRepository,
       ObjectMapper objectMapper,
       ObjectTypeRepository objectTypeRepository) {
-    this.centralRepositoryRestClient = centralRepositoryRestClient;
+    this.centralRepositoryApi = centralRepositoryApi;
     this.checklistDefinitionService = checklistDefinitionService;
     this.checklistDefinitionRepository = checklistDefinitionRepository;
     this.objectMapper = objectMapper;
@@ -149,11 +146,10 @@ public class ChecklistDefinitionCentralRepoService {
   }
 
   GetNewestChecklistDefinitionsCentralRepoResponse getNewestChecklistDefinitions() {
-    ResponseEntity<MetadataListResponseDto> centralMetadataResponse =
-        centralRepositoryRestClient.getMetadataOfVersionsWithModuleAndObjectName(
-            MODULE_NAME, OBJECT_NAME_ALL, VersionFilterType.NEWEST);
+    MetadataListResponseDto responseBody =
+        centralRepositoryApi.getMetadataOfVersionsWithModuleAndObjectName(
+            MODULE_NAME, OBJECT_NAME_ALL, VersionFilterType.NEWEST, null, null, null);
 
-    MetadataListResponseDto responseBody = centralMetadataResponse.getBody();
     if (responseBody == null) {
       throw new IllegalStateException(ERROR_MESSAGE_EMPTY_BODY);
     }
@@ -193,13 +189,12 @@ public class ChecklistDefinitionCentralRepoService {
     ChecklistDefinitionDto centralRepoCld =
         getCentralRepoChecklistDefinition(
             request.repositoryID(), request.repositoryVersion(), request.isCoreChecklist());
-    ResponseEntity<MetadataResponseDto> metadataResponse =
-        centralRepositoryRestClient.getMetadataOfOneVersion(
+    MetadataResponseDto metaData =
+        centralRepositoryApi.getMetadataOfOneVersion(
             MODULE_NAME,
             getObjectName(request.isCoreChecklist()),
             request.repositoryID(),
             request.repositoryVersion());
-    MetadataResponseDto metaData = metadataResponse.getBody();
     if (metaData == null) {
       throw new IllegalStateException(ERROR_MESSAGE_EMPTY_BODY);
     }
@@ -229,19 +224,30 @@ public class ChecklistDefinitionCentralRepoService {
       ChecklistDefinitionCentralRepoRequest request,
       ChecklistDefinitionDto checklistDefinitionDto,
       List<String> tags) {
-    MultiValueMap<String, Object> parts =
-        createMultiValueBody(
-            checklistDefinitionDto,
+    String objectName = getObjectName(checklistDefinitionDto.coreChecklist());
+
+    MetadataRequestDto metadata =
+        new MetadataRequestDto(
+            checklistDefinitionDto.objectType().name(),
+            checklistDefinitionDto.name(),
             tags,
             request.description(),
             request.changeLog(),
             request.contact());
 
-    ResponseEntity<MetadataResponseDto> metadataResponse;
+    ResourceStream resource =
+        createResourceWithSizeForJsonString(checklistDefinitionDto, objectMapper);
+
+    MetadataResponseDto metadataResponse;
     try {
       metadataResponse =
-          centralRepositoryRestClient.createEntry(
-              MODULE_NAME, getObjectName(checklistDefinitionDto.coreChecklist()), parts);
+          centralRepositoryApi.createEntry(
+              MODULE_NAME,
+              objectName,
+              metadata,
+              APPLICATION_JSON_VALUE,
+              resource.size(),
+              resource.stream());
     } catch (HttpClientErrorException.Unauthorized unauthorized) {
       logger.error(ERROR_MESSAGE_NOT_ALLOWED, unauthorized);
       throw new BadRequestException(ErrorCode.UNAUTHORIZED, ERROR_MESSAGE_NOT_ALLOWED);
@@ -250,7 +256,7 @@ public class ChecklistDefinitionCentralRepoService {
       throw new BadRequestException(ERROR_MESSAGE_FAILED);
     }
 
-    return Optional.ofNullable(metadataResponse.getBody())
+    return Optional.ofNullable(metadataResponse)
         .orElseThrow(() -> new IllegalStateException(ERROR_MESSAGE_EMPTY_BODY));
   }
 
@@ -276,23 +282,32 @@ public class ChecklistDefinitionCentralRepoService {
 
     List<String> tags = cldv.isExpandable() ? null : Collections.singletonList(NON_EXPANDABLE);
 
-    MultiValueMap<String, Object> parts =
-        createMultiValueBody(
-            checklistDefinitionDto,
+    String objectName = getObjectName(checklistDefinitionDto.coreChecklist());
+
+    MetadataRequestDto metadata =
+        new MetadataRequestDto(
+            checklistDefinitionDto.objectType().name(),
+            checklistDefinitionDto.name(),
             tags,
             request.description(),
             request.changeLog(),
             request.contact());
 
-    ResponseEntity<MetadataResponseDto> metadataResponse;
+    ResourceStream resource =
+        createResourceWithSizeForJsonString(checklistDefinitionDto, objectMapper);
+
+    MetadataResponseDto metadataResponse;
     try {
       metadataResponse =
-          centralRepositoryRestClient.createNewVersionForEntry(
+          centralRepositoryApi.createNewVersionForEntry(
               MODULE_NAME,
-              getObjectName(checklistDefinitionDto.coreChecklist()),
+              objectName,
               repositoryId,
               repositoryVersion,
-              parts);
+              metadata,
+              APPLICATION_JSON_VALUE,
+              resource.size(),
+              resource.stream());
     } catch (HttpClientErrorException.Unauthorized unauthorized) {
       logger.error(ERROR_MESSAGE_NOT_ALLOWED, unauthorized);
       throw new BadRequestException(ErrorCode.UNAUTHORIZED, ERROR_MESSAGE_NOT_ALLOWED);
@@ -305,24 +320,18 @@ public class ChecklistDefinitionCentralRepoService {
           ErrorCode.CONFLICT, "Entry with newer version already exists in central repository");
     }
 
-    return Optional.ofNullable(metadataResponse.getBody())
+    return Optional.ofNullable(metadataResponse)
         .orElseThrow(() -> new IllegalStateException(ERROR_MESSAGE_EMPTY_BODY));
   }
 
   private ChecklistDefinitionDto getCentralRepoChecklistDefinition(
       long centralRepoId, int centralRepoVersion, boolean isCoreChecklist) {
-    ContentRequestDto contentResponse;
+    ResponseEntity<Resource> contentResponse;
     try {
       contentResponse =
-          centralRepositoryRestClient
-              .getContentOfOneVersion(
-                  MODULE_NAME,
-                  getObjectName(isCoreChecklist),
-                  centralRepoId,
-                  centralRepoVersion,
-                  ContentRequestDto.class)
-              .getBody();
-      if (contentResponse == null) {
+          centralRepositoryApi.getContentOfOneVersion(
+              MODULE_NAME, getObjectName(isCoreChecklist), centralRepoId, centralRepoVersion);
+      if (contentResponse == null || contentResponse.getBody() == null) {
         throw new IllegalStateException(ERROR_MESSAGE_EMPTY_BODY);
       }
     } catch (HttpClientErrorException.BadRequest badRequest) {
@@ -330,9 +339,9 @@ public class ChecklistDefinitionCentralRepoService {
       throw new BadRequestException(ERROR_MESSAGE_GET_CONTENT);
     }
 
-    try {
+    try (InputStream inputStream = contentResponse.getBody().getInputStream()) {
       ChecklistDefinitionDto centralRepoCld =
-          objectMapper.readValue(contentResponse.jsonContent(), ChecklistDefinitionDto.class);
+          objectMapper.readValue(inputStream, ChecklistDefinitionDto.class);
       ObjectType objectType =
           objectTypeRepository
               .findByName(centralRepoCld.objectType().name())
@@ -351,38 +360,17 @@ public class ChecklistDefinitionCentralRepoService {
 
   private void deleteInCentralRepository(DeleteChecklistDefinitionCentralRepoRequest request) {
     try {
+      String objectName = getObjectName(request.isCoreChecklist());
       if (request.repositoryVersion() == null) {
-        centralRepositoryRestClient.setEntryAsDeleted(
-            MODULE_NAME, getObjectName(request.isCoreChecklist()), request.repositoryID());
+        centralRepositoryApi.setEntryAsDeleted(MODULE_NAME, objectName, request.repositoryID());
       } else {
-        centralRepositoryRestClient.setOneVersionOfAnEntryAsDeleted(
-            MODULE_NAME,
-            getObjectName(request.isCoreChecklist()),
-            request.repositoryID(),
-            request.repositoryVersion());
+        centralRepositoryApi.setOneVersionOfAnEntryAsDeleted(
+            MODULE_NAME, objectName, request.repositoryID(), request.repositoryVersion());
       }
     } catch (HttpClientErrorException.BadRequest badRequest) {
       logger.error(ERROR_MESSAGE_DELETE, badRequest);
       throw new BadRequestException(ERROR_MESSAGE_DELETE);
     }
-  }
-
-  private MultiValueMap<String, Object> createMultiValueBody(
-      ChecklistDefinitionDto checklistDefinitionDto,
-      List<String> tags,
-      String description,
-      String changeLog,
-      String contact) {
-    MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
-    try {
-      String jsonContent =
-          objectMapper.writer(minimalPrettyPrinter).writeValueAsString(checklistDefinitionDto);
-      setMetadata(parts, checklistDefinitionDto, tags, description, changeLog, contact);
-      setJsonContent(parts, jsonContent);
-    } catch (JsonProcessingException e) {
-      throw new IllegalStateException("Failed to convert content to JSON", e);
-    }
-    return parts;
   }
 
   private ChecklistDefinition retrieveCld(UUID cldId) {

@@ -100,6 +100,8 @@ saveExact: true
 # do not use symlinks because they cause issues on Windows system
 # see https://github.com/vercel/next.js/issues/50803
 nodeLinker: "hoisted"
+minimumReleaseAge: 1440
+strictDepBuilds: true
 ignoredBuiltDependencies:
   - esbuild
   - sharp

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
@@ -19,9 +20,11 @@ import {
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/measles-protection-api";
 
-import { useDeleteAppointmentBlock } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBlockApi";
-import { useGetAppointmentBlockGroups } from "@/lib/businessModules/measlesProtection/api/queries/appointmentBlockApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/measlesProtection/shared/constants";
+import { useAppointmentBlockApi } from "@/lib/businessModules/measlesProtection/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/measlesProtection/api/mapAppointmentBlockApi";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
+import { useGetAppointmentBlockGroupsOptions } from "@/lib/businessModules/measlesProtection/api/queries/appointmentBlockApi";
+import { useGetAppointmentStandardDurationQuery } from "@/lib/businessModules/measlesProtection/api/queries/appointmentStandardConfiguration";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 
 interface AppointmentBlockGroupsTableProps {
@@ -37,28 +40,32 @@ export function MeaslesProtectionAppointmentBlockGroupsTable(
     sortDirectionName: "sortDirection",
     initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
-  const appointmentBlockGroups = useGetAppointmentBlockGroups({
-    pageNumber: tableControl.paginationProps.pageNumber,
-    pageSize: tableControl.paginationProps.pageSize,
-    sortKey: getSortKey<ApiAppointmentBlockSortKey>(tableControl.tableSorting),
-    sortDirection: getSortDirection(tableControl.tableSorting),
-  });
 
-  const deleteAppointmentBlock = useDeleteAppointmentBlock();
+  const [appointmentBlockGroups, { data: standardDurations }] =
+    useSuspenseQueries({
+      queries: [
+        useGetAppointmentBlockGroupsOptions({
+          pageNumber: tableControl.paginationProps.pageNumber,
+          pageSize: tableControl.paginationProps.pageSize,
+          sortKey: getSortKey<ApiAppointmentBlockSortKey>(
+            tableControl.tableSorting,
+          ),
+          sortDirection: getSortDirection(tableControl.tableSorting),
+        }),
+        useGetAppointmentStandardDurationQuery(),
+      ],
+    });
 
-  async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
-    await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
-  }
-
+  const appointmentBlockApi = useAppointmentBlockApi();
   const columnHelper = createColumnHelper<AppointmentBlockRow>();
   const COLUMNS = useAppointmentBlockGroupsColumns({
-    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void handleDeleteAppointmentBlock(appointmentBlockId);
-    },
-    appointmentTypes: APPOINTMENT_TYPES,
+    appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
+    appointmentBlockApiQueryKey,
+    standardDurations,
     columnHelper,
     showWeekDays: true,
   });
+
   return (
     <AppointmentBlockGroupsTable
       controls={props.controls}

@@ -5,14 +5,19 @@
 
 package de.eshg.centralrepository.client;
 
+import de.eshg.lib.centralrepository.CentralRepositoryApi;
 import de.eshg.rest.client.BearerAuthInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
+import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @AutoConfiguration
 @EnableConfigurationProperties(CentralRepositoryClientProperties.class)
@@ -20,8 +25,10 @@ import org.springframework.web.client.RestClient;
 public class CentralRepositoryClientAutoConfiguration {
 
   @Bean
-  CentralRepositoryRestClient centralRepositoryRestClient(
-      RestClient.Builder restClientBuilder, CentralRepositoryClientProperties properties) {
+  CentralRepositoryApi centralRepositoryApi(
+      RestClient.Builder restClientBuilder,
+      CentralRepositoryClientProperties properties,
+      ConversionService conversionService) {
 
     restClientBuilder
         .baseUrl(properties.getServiceUrl())
@@ -33,6 +40,14 @@ public class CentralRepositoryClientAutoConfiguration {
           new CertSubjectForwardingInterceptor(properties.getMockCertSubjectCn()));
     }
 
-    return new CentralRepositoryRestClient(restClientBuilder.build());
+    RestClient restClient = restClientBuilder.build();
+
+    RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
+
+    return HttpServiceProxyFactory.builderFor(restClientAdapter)
+        .conversionService(conversionService)
+        .customArgumentResolver(new SimpleModelAttributeArgumentResolver(conversionService))
+        .build()
+        .createClient(CentralRepositoryApi.class);
   }
 }

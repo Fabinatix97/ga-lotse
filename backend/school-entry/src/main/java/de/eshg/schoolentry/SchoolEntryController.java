@@ -47,9 +47,9 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
@@ -534,7 +534,7 @@ public class SchoolEntryController {
   }
 
   private static void validateCompletenessForSchoolInfoLetter(SchoolEntryProcedure procedure) {
-    Set<RequiredProcedureArea> incompleteAreas =
+    Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> incompleteAreas =
         SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
     if (!incompleteAreas.isEmpty()) {
       throw new BadRequestException(
@@ -587,7 +587,7 @@ public class SchoolEntryController {
     if (procedure.getSchoolInfoLetter() == null) {
       throw new BadRequestException("No school info letter found");
     }
-    if (SchoolInfoLetterValidator.isDetailsIncomplete(procedure)) {
+    if (!SchoolInfoLetterValidator.validateDetails(procedure).isEmpty()) {
       throw new BadRequestException("Procedure details are incomplete.");
     }
   }
@@ -615,10 +615,11 @@ public class SchoolEntryController {
       @PathVariable("procedureId") UUID procedureId) {
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
 
-    Set<RequiredProcedureArea> incompleteAreas =
+    Map<RequiredProcedureArea, EnumSet<ProcedureProperty>> incompleteAreas =
         SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
 
-    return new ValidateRequiredProcedureDataResponse(new ArrayList<>(incompleteAreas));
+    return new ValidateRequiredProcedureDataResponse(
+        new ArrayList<>(incompleteAreas.keySet()), incompleteAreas);
   }
 
   @GetMapping("/waiting-room-procedures")

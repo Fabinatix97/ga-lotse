@@ -5,7 +5,6 @@
 
 import { EnumMap } from "@eshg/lib-portal";
 import {
-  ApiAppointmentType,
   ApiArticulationValue,
   ApiBooleanWithUnknown,
   ApiDisabilityType,
@@ -170,22 +169,6 @@ export const GERMAN_KNOWLEDGE_VALUES: EnumMap<ApiGermanKnowledgeValue> = {
     "4 flüssig mit leichten Fehlern",
   [ApiGermanKnowledgeValue.Faultless]: "5 fehlerfrei",
   [ApiGermanKnowledgeValue.Unknown]: "9 unbekannt",
-};
-
-export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
-  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
-  [ApiAppointmentType.CanChild]: "Kann-Kinder",
-  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
-  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
-  [ApiAppointmentType.Consultation]: "Beratung",
-  [ApiAppointmentType.Vaccination]: "Impfung",
-  [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
-  [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
-  [ApiAppointmentType.SexWork]: "Sexarbeit",
-  [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
-  [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
-  [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
-  [ApiAppointmentType.MedsAbroadCertification]: "Beglaubigung",
 };
 
 export const DISABILITY_TYPE_VALUES: EnumMap<ApiDisabilityType> = {

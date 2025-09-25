@@ -5,12 +5,12 @@
 
 package de.eshg.statistics.centralrepository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
+import static de.eshg.centralrepository.client.JsonToResourceHelper.createResourceWithSizeForJsonString;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.centralrepository.client.CentralRepositoryRestClient;
-import de.eshg.lib.centralrepository.api.ContentRequestDto;
+import de.eshg.centralrepository.client.JsonToResourceHelper.ResourceStream;
+import de.eshg.lib.centralrepository.CentralRepositoryApi;
 import de.eshg.lib.centralrepository.api.MetadataListResponseDto;
 import de.eshg.lib.centralrepository.api.MetadataRequestDto;
 import de.eshg.lib.centralrepository.api.MetadataResponseDto;
@@ -26,18 +26,15 @@ import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateFromRepositor
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesFromRepositoryResponse;
 import de.eshg.statistics.centralrepository.dto.evaluationtemplate.RepoEvaluationTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
@@ -49,16 +46,15 @@ public class StatisticsCentralRepositoryService {
       LoggerFactory.getLogger(StatisticsCentralRepositoryService.class);
 
   private final EvaluationTemplateService evaluationTemplateService;
-  private final CentralRepositoryRestClient centralRepositoryRestClient;
+  private final CentralRepositoryApi centralRepositoryApi;
   private final ObjectMapper objectMapper;
-  private final PrettyPrinter minimalPrettyPrinter = new MinimalPrettyPrinter();
 
   public StatisticsCentralRepositoryService(
       EvaluationTemplateService evaluationTemplateService,
-      CentralRepositoryRestClient centralRepositoryRestClient,
+      CentralRepositoryApi centralRepositoryApi,
       ObjectMapper objectMapper) {
     this.evaluationTemplateService = evaluationTemplateService;
-    this.centralRepositoryRestClient = centralRepositoryRestClient;
+    this.centralRepositoryApi = centralRepositoryApi;
     this.objectMapper = objectMapper;
   }
 
@@ -68,81 +64,63 @@ public class StatisticsCentralRepositoryService {
     EvaluationTemplate evaluationTemplate =
         evaluationTemplateService.getEvaluationTemplateInternal(request.templateId());
 
-    MultiValueMap<String, Object> parts =
-        createMultiValueBody(
-            RepoMapper.mapToRepo(evaluationTemplate, request.name(), request.description()),
-            request.changelog(),
-            request.contact());
+    RepoEvaluationTemplate repoEvaluationTemplate =
+        RepoMapper.mapToRepo(evaluationTemplate, request.name(), request.description());
+
+    MetadataRequestDto metadataRequestDto =
+        RepoMapper.mapToMetaData(repoEvaluationTemplate, request.changelog(), request.contact());
+
+    ResourceStream resource =
+        createResourceWithSizeForJsonString(repoEvaluationTemplate, objectMapper);
 
     MetadataResponseDto metadataResponseDto =
-        callCentralRepositoryGetBody(
-            () -> centralRepositoryRestClient.createEntry(MODULE_NAME, EVALUATION_TEMPLATE, parts));
+        callCentralRepository(
+            () ->
+                centralRepositoryApi.createEntry(
+                    MODULE_NAME,
+                    EVALUATION_TEMPLATE,
+                    metadataRequestDto,
+                    APPLICATION_JSON_VALUE,
+                    resource.size(),
+                    resource.stream()));
 
     return RepoMapper.mapFromMetaData(metadataResponseDto);
   }
 
-  private MultiValueMap<String, Object> createMultiValueBody(
-      RepoEvaluationTemplate evaluationTemplate, String changelog, String contact) {
-    MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
-    String jsonContent;
-    try {
-      jsonContent =
-          objectMapper.writer(minimalPrettyPrinter).writeValueAsString(evaluationTemplate);
-    } catch (JsonProcessingException e) {
-      throw new IllegalStateException("Failed to convert content to JSON", e);
-    }
-    setMetaData(parts, RepoMapper.mapToMetaData(evaluationTemplate, changelog, contact));
-    setJsonContent(parts, jsonContent);
-    return parts;
-  }
-
-  private static void setMetaData(
-      MultiValueMap<String, Object> parts, MetadataRequestDto metadataRequest) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    parts.add("metadata", new HttpEntity<>(metadataRequest, headers));
-  }
-
-  private static void setJsonContent(MultiValueMap<String, Object> parts, String jsonContent) {
-    ContentRequestDto contentRequest =
-        new ContentRequestDto(MediaType.APPLICATION_JSON_VALUE, jsonContent, null);
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    parts.add("content", new HttpEntity<>(contentRequest, headers));
-  }
-
   public GetEvaluationTemplatesFromRepositoryResponse getEvaluationTemplatesFromRepository() {
     MetadataListResponseDto metadataListResponseDto =
-        callCentralRepositoryGetBody(
+        callCentralRepository(
             () ->
-                centralRepositoryRestClient.getMetadataOfVersionsWithModuleAndObjectName(
-                    MODULE_NAME, EVALUATION_TEMPLATE, VersionFilterType.ALL));
+                centralRepositoryApi.getMetadataOfVersionsWithModuleAndObjectName(
+                    MODULE_NAME, EVALUATION_TEMPLATE, VersionFilterType.ALL, null, null, null));
     return RepoMapper.mapFromMetaData(metadataListResponseDto);
   }
 
   public EvaluationTemplateDetailsFromRepository getEvaluationTemplateFromRepository(
       long id, int version) {
     MetadataResponseDto metadataResponseDto =
-        callCentralRepositoryGetBody(
+        callCentralRepository(
             () ->
-                centralRepositoryRestClient.getMetadataOfOneVersion(
+                centralRepositoryApi.getMetadataOfOneVersion(
                     MODULE_NAME, EVALUATION_TEMPLATE, id, version));
     RepoEvaluationTemplate repoEvaluationTemplate = getRepoEvaluationTemplate(id, version);
     return RepoMapper.mapToDetails(metadataResponseDto, repoEvaluationTemplate);
   }
 
   public RepoEvaluationTemplate getRepoEvaluationTemplate(long id, int version) {
-    ContentRequestDto contentRequestDto =
-        callCentralRepositoryGetBody(
+    ResponseEntity<Resource> response =
+        callCentralRepository(
             () ->
-                centralRepositoryRestClient.getContentOfOneVersion(
-                    MODULE_NAME, EVALUATION_TEMPLATE, id, version, ContentRequestDto.class));
+                centralRepositoryApi.getContentOfOneVersion(
+                    MODULE_NAME, EVALUATION_TEMPLATE, id, version));
+    if (response.getBody() == null) {
+      throw new IllegalStateException("Central repository response body was empty");
+    }
 
     RepoEvaluationTemplate repoEvaluationTemplate;
-    try {
-      repoEvaluationTemplate =
-          objectMapper.readValue(contentRequestDto.jsonContent(), RepoEvaluationTemplate.class);
-    } catch (JsonProcessingException e) {
+    try (InputStream inputStream = response.getBody().getInputStream()) {
+      repoEvaluationTemplate = objectMapper.readValue(inputStream, RepoEvaluationTemplate.class);
+    } catch (IOException e) {
       throw new IllegalStateException("Failed to read content from repo", e);
     }
     return repoEvaluationTemplate;
@@ -150,15 +128,11 @@ public class StatisticsCentralRepositoryService {
 
   public void deleteEvaluationTemplateFromRepository(long id, int version) {
     callCentralRepository(
-        () ->
-            centralRepositoryRestClient.setOneVersionOfAnEntryAsDeleted(
-                MODULE_NAME, EVALUATION_TEMPLATE, id, version));
-  }
-
-  private <T> T callCentralRepositoryGetBody(Supplier<ResponseEntity<T>> supplier) {
-    ResponseEntity<T> responseEntity = callCentralRepository(supplier);
-    return Optional.ofNullable(responseEntity.getBody())
-        .orElseThrow(() -> new IllegalStateException("Central repository response body was empty"));
+        () -> {
+          centralRepositoryApi.setOneVersionOfAnEntryAsDeleted(
+              MODULE_NAME, EVALUATION_TEMPLATE, id, version);
+          return null;
+        });
   }
 
   private <R> R callCentralRepository(Supplier<R> supplier) {

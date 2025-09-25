@@ -13,6 +13,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeHolder;
 import de.eshg.rest.service.error.BadRequestException;
 import java.time.Duration;
@@ -138,20 +139,43 @@ public class AppointmentBlockSlotUtil {
         appointments.stream()
             .sorted(Comparator.comparing(Appointment::getAppointmentEnd).reversed())
             .collect(Collectors.toCollection(() -> new ArrayList<>(appointments.size())));
-    int max_concurrency = 0;
-    int current_concurrency = 0;
+    int maxConcurrency = 0;
+    int currentConcurrency = 0;
     for (Appointment appointment : appointmentsSortedByStartAscending) {
-      current_concurrency += 1;
+      currentConcurrency += 1;
       Instant now = appointment.getAppointmentStart();
       while (!appointmentsSortedByEndDescending.isEmpty()
           && !appointmentsSortedByEndDescending.getLast().getAppointmentEnd().isAfter(now)) {
         appointmentsSortedByEndDescending.removeLast();
-        current_concurrency -= 1;
+        currentConcurrency -= 1;
       }
-      Assert.isTrue(current_concurrency >= 0, "Less than 0 concurrent bookings");
-      max_concurrency = Math.max(max_concurrency, current_concurrency);
+      Assert.isTrue(currentConcurrency >= 0, "Less than 0 concurrent bookings");
+      maxConcurrency = Math.max(maxConcurrency, currentConcurrency);
     }
-    return max_concurrency;
+    return maxConcurrency;
+  }
+
+  public void assignAdHocAppointment(
+      AppointmentType appointmentType,
+      EntityWithAppointment entityWithAppointment,
+      Instant appointmentStart,
+      Instant appointmentEnd,
+      AppointmentBlockGroup adHocAppointmentBlockGroup) {
+    Appointment currentAppointment = entityWithAppointment.getAppointment();
+    if (appointmentIsUnchanged(
+        appointmentType, appointmentStart, appointmentEnd, currentAppointment)) {
+      return;
+    }
+
+    removeAppointmentFromBlockIfExists(currentAppointment);
+
+    Appointment newAppointment =
+        getNewAppointment(appointmentType, appointmentStart, appointmentEnd);
+    Set<AppointmentBlock> appointmentBlocks = adHocAppointmentBlockGroup.getAppointmentBlocks();
+    Assert.isTrue(appointmentBlocks.size() == 1, "Only one appointment block is allowed");
+    AppointmentBlock newAppointmentBlock = appointmentBlocks.stream().findFirst().orElseThrow();
+
+    addAppointmentToBlock(entityWithAppointment, newAppointmentBlock, newAppointment);
   }
 
   public void updateAppointment(
@@ -161,33 +185,55 @@ public class AppointmentBlockSlotUtil {
       EntityWithAppointment entityWithAppointment,
       Instant appointmentStart,
       Instant appointmentEnd) {
-    Appointment newAppointment = new Appointment();
-    newAppointment.setAppointmentStart(appointmentStart);
-    newAppointment.setAppointmentEnd(appointmentEnd);
-    newAppointment.setType(appointmentType);
-
     Appointment currentAppointment = entityWithAppointment.getAppointment();
-    if (currentAppointment != null) {
-      if (currentAppointment.getAppointmentStart().equals(appointmentStart)
-          && currentAppointment.getAppointmentEnd().equals(appointmentEnd)
-          && currentAppointment.getType().equals(appointmentType)) {
-        return;
-      }
+    if (appointmentIsUnchanged(
+        appointmentType, appointmentStart, appointmentEnd, currentAppointment)) return;
+    removeAppointmentFromBlockIfExists(currentAppointment);
 
-      AppointmentBlock currentAppointmentBlock = currentAppointment.getAppointmentBlock();
-      boolean removed = currentAppointmentBlock.getAppointments().remove(currentAppointment);
-      Assert.isTrue(removed, "Failed to remove current appointment");
-    }
-
+    Appointment newAppointment =
+        getNewAppointment(appointmentType, appointmentStart, appointmentEnd);
     AppointmentBlock newAppointmentBlock =
         findSuitableAppointmentBlock(
             appointmentType, locationId, physicianId, appointmentStart, appointmentEnd);
 
+    addAppointmentToBlock(entityWithAppointment, newAppointmentBlock, newAppointment);
+  }
+
+  private static void removeAppointmentFromBlockIfExists(Appointment currentAppointment) {
+    if (currentAppointment != null) {
+      AppointmentBlock currentAppointmentBlock = currentAppointment.getAppointmentBlock();
+      boolean removed = currentAppointmentBlock.getAppointments().remove(currentAppointment);
+      Assert.isTrue(removed, "Failed to remove current appointment");
+    }
+  }
+
+  private static boolean appointmentIsUnchanged(
+      AppointmentType appointmentType,
+      Instant appointmentStart,
+      Instant appointmentEnd,
+      Appointment currentAppointment) {
+    return currentAppointment != null
+        && (currentAppointment.getAppointmentStart().equals(appointmentStart)
+            && currentAppointment.getAppointmentEnd().equals(appointmentEnd)
+            && currentAppointment.getType().equals(appointmentType));
+  }
+
+  private static Appointment getNewAppointment(
+      AppointmentType appointmentType, Instant appointmentStart, Instant appointmentEnd) {
+    Appointment newAppointment = new Appointment();
+    newAppointment.setAppointmentStart(appointmentStart);
+    newAppointment.setAppointmentEnd(appointmentEnd);
+    newAppointment.setType(appointmentType);
+    return newAppointment;
+  }
+
+  private static void addAppointmentToBlock(
+      EntityWithAppointment entityWithAppointment,
+      AppointmentBlock newAppointmentBlock,
+      Appointment newAppointment) {
     boolean added = newAppointmentBlock.getAppointments().add(newAppointment);
     Assert.isTrue(added, "Failed to add new appointment");
-
     newAppointment.setAppointmentBlock(newAppointmentBlock);
-
     entityWithAppointment.setAppointment(newAppointment);
   }
 

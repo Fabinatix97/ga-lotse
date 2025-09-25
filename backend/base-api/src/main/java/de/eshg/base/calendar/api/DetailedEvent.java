@@ -14,6 +14,8 @@ import java.util.UUID;
 public record DetailedEvent(
     @NotNull UUID id,
     @NotNull @Size(min = 1) List<UUID> calendarIds,
+    @Valid @NotNull List<UserCalendar> userCalenders,
+    @Valid @NotNull List<ResourceCalendar> resourceCalendars,
     @NotNull EventTypeDto type,
     UUID lastModifiedByUserId,
     @Valid @NotNull EventMetaData metaData,
@@ -23,6 +25,13 @@ public record DetailedEvent(
   @Override
   public DetailedEvent copyWithMetadata(EventMetaData metaData) {
     return new DetailedEvent(
-        this.id, this.calendarIds, this.type, this.lastModifiedByUserId, metaData, this.timeData);
+        this.id,
+        this.calendarIds,
+        this.userCalenders,
+        this.resourceCalendars,
+        this.type,
+        this.lastModifiedByUserId,
+        metaData,
+        this.timeData);
   }
 }

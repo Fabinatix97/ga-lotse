@@ -16,19 +16,12 @@ import de.eshg.inspection.checklistdefinition.api.GetChecklistDefinitionCentralR
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinition;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
-import de.eshg.lib.centralrepository.api.ContentRequestDto;
-import de.eshg.lib.centralrepository.api.MetadataRequestDto;
 import de.eshg.lib.centralrepository.api.MetadataResponseDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.util.MultiValueMap;
 
 public final class CentralRepositoryMapper {
 
@@ -68,34 +61,6 @@ public final class CentralRepositoryMapper {
 
   public static String getObjectName(boolean isCoreChecklist) {
     return isCoreChecklist ? OBJECT_NAME_CORE_CHECKLIST : OBJECT_NAME_CHECKLIST;
-  }
-
-  public static void setMetadata(
-      MultiValueMap<String, Object> parts,
-      ChecklistDefinitionDto checklistDefinitionDto,
-      List<String> tags,
-      String description,
-      String changeLog,
-      String contact) {
-    MetadataRequestDto metadataRequest =
-        new MetadataRequestDto(
-            checklistDefinitionDto.objectType().name(),
-            checklistDefinitionDto.name(),
-            tags,
-            description,
-            changeLog,
-            contact);
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    parts.add("metadata", new HttpEntity<>(metadataRequest, headers));
-  }
-
-  public static void setJsonContent(MultiValueMap<String, Object> parts, String jsonContent) {
-    ContentRequestDto contentRequest =
-        new ContentRequestDto(MediaType.APPLICATION_JSON_VALUE, jsonContent, null);
-    HttpHeaders headers2 = new HttpHeaders();
-    headers2.setContentType(MediaType.APPLICATION_JSON);
-    parts.add("content", new HttpEntity<>(contentRequest, headers2));
   }
 
   public static ChecklistDefinitionCentralRepoMetadata createMetadataResponse(

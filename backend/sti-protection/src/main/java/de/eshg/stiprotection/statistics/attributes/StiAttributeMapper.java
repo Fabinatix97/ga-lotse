@@ -24,7 +24,7 @@ public class StiAttributeMapper {
             c ->
                 switch (c) {
                   case HIV_STI_CONSULTATION ->
-                      new ValueOptionInternal(c.name(), "HIV-STI Beratung", false);
+                      new ValueOptionInternal(c.name(), "HIV-STI-Beratung", false);
                   case SEX_WORK -> new ValueOptionInternal(c.name(), "Sexarbeit", false);
                 })
         .toList();

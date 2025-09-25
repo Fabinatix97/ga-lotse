@@ -13,6 +13,7 @@ import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.lib.appointmentblock.AbstractAppointmentStandardDurationService;
 import de.eshg.lib.appointmentblock.AppointmentBlockAvailabilityService;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
@@ -21,6 +22,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.LocationDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockConfig;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
@@ -67,6 +69,7 @@ public class SchoolEntryService {
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final AppointmentBlockService appointmentBlockService;
   private final AppointmentBlockConfig appointmentBlockConfig;
+  private final AbstractAppointmentStandardDurationService<?> appointmentStandardDurationService;
   private final Clock clock;
   private final AppointmentBlockAvailabilityService appointmentBlockAvailabilityService;
   private final LabelService labelService;
@@ -86,6 +89,7 @@ public class SchoolEntryService {
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       AppointmentBlockService appointmentBlockService,
       AppointmentBlockConfig appointmentBlockConfig,
+      AbstractAppointmentStandardDurationService<?> appointmentStandardDurationService,
       Clock clock,
       AppointmentBlockAvailabilityService appointmentBlockAvailabilityService,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
@@ -102,6 +106,7 @@ public class SchoolEntryService {
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentBlockConfig = appointmentBlockConfig;
+    this.appointmentStandardDurationService = appointmentStandardDurationService;
     this.clock = clock;
     this.appointmentBlockAvailabilityService = appointmentBlockAvailabilityService;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
@@ -556,12 +561,13 @@ public class SchoolEntryService {
 
   public void updateAppointment(
       Instant start, Instant end, SchoolEntryProcedure procedure, AppointmentType appointmentType) {
-    updateAppointment(start, end, procedure, appointmentType, null);
+    updateAppointment(start, end, false, procedure, appointmentType, null);
   }
 
   public void updateAppointment(
       Instant start,
       Instant end,
+      boolean createAdHocAppointment,
       SchoolEntryProcedure procedure,
       AppointmentType appointmentType,
       UUID custodianId) {
@@ -574,8 +580,21 @@ public class SchoolEntryService {
         && locationId == null) {
       throw new BadRequestException("Appointment location is missing at procedure.");
     }
-    appointmentBlockSlotUtil.updateAppointment(
-        appointmentType, locationId, null, procedure, start, end);
+    if (createAdHocAppointment) {
+      Duration standardDuration =
+          appointmentStandardDurationService.getStandardDuration(appointmentType);
+      Instant appointmentEnd = start.plus(standardDuration);
+
+      AppointmentBlockGroup adHocAppointmentBlockGroup =
+          appointmentBlockService.createAdHocAppointmentBlockGroup(
+              appointmentType, locationId, start, appointmentEnd);
+
+      appointmentBlockSlotUtil.assignAdHocAppointment(
+          appointmentType, procedure, start, appointmentEnd, adHocAppointmentBlockGroup);
+    } else {
+      appointmentBlockSlotUtil.updateAppointment(
+          appointmentType, locationId, null, procedure, start, end);
+    }
 
     CitizenAccessCodeUserDto citizenAccessCodeUser = createOrGetCitizenAccessCodeUser(procedure);
     String accessCode = citizenAccessCodeUser.accessCode();
@@ -753,6 +772,7 @@ public class SchoolEntryService {
       updateAppointment(
           appointment.start(),
           appointment.end(),
+          Boolean.TRUE.equals(request.createAdHocAppointment()),
           procedure,
           appointmentType,
           request.custodianId());

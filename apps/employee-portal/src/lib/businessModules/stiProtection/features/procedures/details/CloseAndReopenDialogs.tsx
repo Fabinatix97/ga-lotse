@@ -6,7 +6,10 @@
 import { Typography, styled } from "@mui/joy";
 import { useState } from "react";
 
-import { ConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  APPOINTMENT_TYPES,
+  ConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
@@ -18,7 +21,6 @@ import {
   useReopenProcedure,
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";

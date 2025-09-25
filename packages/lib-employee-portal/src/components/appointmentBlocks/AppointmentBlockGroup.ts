@@ -7,6 +7,11 @@ import { BaseEntity } from "../../api/models/BaseEntity";
 
 import { ApiAppointmentType } from "./types";
 
+export interface Appointment {
+  start: Date;
+  end: Date;
+}
+
 export interface AppointmentLocation {
   id: string;
   name: string;
@@ -18,6 +23,10 @@ export interface AppointmentBlock extends BaseEntity {
   readonly parallelExaminations?: number;
   readonly freeDuration?: string;
   readonly bookedDuration?: string;
+  readonly bookedAppointments?: Appointment[];
+  readonly mfas?: string[];
+  readonly physicians?: string[];
+  readonly consultants?: string[];
 }
 
 export interface AppointmentBlockGroup extends AppointmentBlock {

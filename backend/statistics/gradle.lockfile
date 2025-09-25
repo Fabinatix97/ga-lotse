@@ -86,7 +86,6 @@ jakarta.enterprise:jakarta.enterprise.lang-model:4.1.0=compileClasspath,testComp
 jakarta.inject:jakarta.inject-api:2.0.1=annotationProcessor,compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 jakarta.interceptor:jakarta.interceptor-api:2.2.0=compileClasspath,testCompileClasspath
 jakarta.persistence:jakarta.persistence-api:3.1.0=annotationProcessor,compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
-jakarta.servlet:jakarta.servlet-api:6.0.0=productionRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
 jakarta.transaction:jakarta.transaction-api:2.0.1=annotationProcessor,compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 jakarta.validation:jakarta.validation-api:3.0.2=annotationProcessor,compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 jakarta.xml.bind:jakarta.xml.bind-api:4.0.2=annotationProcessor,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath

@@ -20,9 +20,14 @@ import {
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/travel-medicine-api";
 
-import { useDeleteAppointmentBlock } from "@/lib/businessModules/travelMedicine/api/mutations/appointmentBlocks";
+import {
+  useAppointmentBlockApi,
+  useAppointmentStandardDurationsApi,
+} from "@/lib/businessModules/travelMedicine/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/mapAppointmentBlockApi";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentStandardDurations";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
 interface AppointmentBlockGroupsTableProps {
@@ -38,8 +43,13 @@ export function TravelMedicineAppointmentBlockGroupsTable(
     sortDirectionName: "sortDirection",
     initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
+  const standardDurationApi = useAppointmentStandardDurationsApi();
+  const appointmentBlockApi = useAppointmentBlockApi();
 
-  const [{ data: appointmentBlockGroups, isFetching }] = useSuspenseQueries({
+  const [
+    { data: appointmentBlockGroups, isFetching },
+    { data: standardDurations },
+  ] = useSuspenseQueries({
     queries: [
       useGetAppointmentBlockGroupsQuery({
         pageNumber: tableControl.paginationProps.pageNumber,
@@ -49,21 +59,15 @@ export function TravelMedicineAppointmentBlockGroupsTable(
         ),
         sortDirection: getSortDirection(tableControl.tableSorting),
       }),
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
     ],
   });
 
-  const deleteAppointmentBlock = useDeleteAppointmentBlock();
-
-  async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
-    await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
-  }
-
   const columnHelper = createColumnHelper<AppointmentBlockRow>();
   const COLUMNS = useAppointmentBlockGroupsColumns({
-    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void handleDeleteAppointmentBlock(appointmentBlockId);
-    },
-    appointmentTypes: APPOINTMENT_TYPES,
+    appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
+    appointmentBlockApiQueryKey,
+    standardDurations,
     columnHelper,
   });
 

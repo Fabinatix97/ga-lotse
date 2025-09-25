@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import java.sql.Blob;
+import java.sql.SQLException;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -34,12 +35,17 @@ public class VersionedEntryContent {
       orphanRemoval = true)
   private VersionedEntryMetadata metadata;
 
-  /** The content will be stored in this, or if not JSON, in the other content field. */
+  /**
+   * The content will be stored in this column if it is JSON, otherwise in {@code contentBinary}.
+   */
   @Column
   @JdbcTypeCode(SqlTypes.JSON)
   private String contentJson;
 
-  @Column @Lob private Blob contentBinary;
+  @Column
+  @Lob
+  @JdbcTypeCode(SqlTypes.BLOB)
+  private Blob contentBinary;
 
   public VersionedEntryContent(VersionedEntryMetadata metadata, Blob contentBinary) {
     this.contentBinary = contentBinary;
@@ -85,5 +91,13 @@ public class VersionedEntryContent {
   public void setContentBinary(Blob binary) {
     contentJson = null;
     contentBinary = binary;
+  }
+
+  public long getContentBinaryLength() {
+    try {
+      return contentBinary.length();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

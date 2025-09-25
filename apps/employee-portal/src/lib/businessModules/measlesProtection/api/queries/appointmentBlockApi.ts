@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
@@ -14,11 +14,11 @@ import { mapAppointmentBlockGroup } from "@/lib/businessModules/measlesProtectio
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
 
-export function useGetAppointmentBlockGroups(
+export function useGetAppointmentBlockGroupsOptions(
   request: GetAppointmentBlockGroupsRequest,
 ) {
   const appointmentBlockApi = useAppointmentBlockApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: appointmentBlockApiQueryKey([
       "getAppointmentBlockGroups",
       request,

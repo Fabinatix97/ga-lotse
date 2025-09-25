@@ -13,6 +13,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { assertNonEmptyArray, durationToSecond } from "@eshg/lib-portal";
 import {
+  ApiAppointmentBlock,
   ApiAppointmentType,
   ApiGetAppointmentBlock,
   ApiGetAppointmentBlockGroup,
@@ -31,6 +32,20 @@ function mapAppointmentBlock(
     end: response.end,
     freeDuration: response.freeDuration,
     bookedDuration: response.bookedDuration,
+  };
+}
+
+export function mapApiAppointmentBlock(
+  response: ApiAppointmentBlock,
+): AppointmentBlock {
+  return {
+    ...mapBaseEntity(response),
+    start: response.start,
+    end: response.end,
+    bookedAppointments: response.bookedAppointments,
+    mfas: response.mfas,
+    physicians: response.physicians,
+    consultants: response.consultants,
   };
 }
 

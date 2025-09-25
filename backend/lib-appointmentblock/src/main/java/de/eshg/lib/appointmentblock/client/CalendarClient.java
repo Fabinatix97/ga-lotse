@@ -12,6 +12,7 @@ import de.eshg.base.calendar.api.DetailedEvent;
 import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsRequest;
 import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsResponse;
+import de.eshg.base.calendar.api.GetBusinessCaseEventResponse;
 import de.eshg.base.calendar.api.GetUserCalendarsRequest;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.api.UserCalendar;
@@ -139,6 +140,14 @@ public class CalendarClient {
         .filter(e -> !e.events().isEmpty())
         .map(e -> calendarUserMap.get(e.calendarId()))
         .toList();
+  }
+
+  public List<UUID> getUserIdsFromEventId(UUID eventId) {
+    GetBusinessCaseEventResponse businessCaseEvent =
+        calendarEventApiClient.getBusinessCaseEvent(eventId);
+    return businessCaseEvent.event().userCalenders().stream()
+        .map(UserCalendar::userId)
+        .collect(Collectors.toList());
   }
 
   private TimeRange mapToTimeRange(CreateAppointmentBlockData appointmentBlock) {

@@ -9,7 +9,6 @@ import { DefaultColorPalette } from "@mui/joy/styles/types";
 import { EnumMap } from "@eshg/lib-portal";
 import {
   ApiAppointmentStatus,
-  ApiAppointmentType,
   ApiConcern,
   ApiExamination,
   ApiGender,
@@ -57,24 +56,8 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
 };
 
 export const CONCERN_VALUES: EnumMap<ApiConcern> = {
-  [ApiConcern.HivStiConsultation]: "HIV-STI Beratung",
+  [ApiConcern.HivStiConsultation]: "HIV-STI-Beratung",
   [ApiConcern.SexWork]: "Sexarbeit",
-};
-
-export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
-  [ApiAppointmentType.CanChild]: "Kann-Kinder",
-  [ApiAppointmentType.Consultation]: "Beratung",
-  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
-  [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
-  [ApiAppointmentType.HivStiConsultation]: "HIV-STI Beratung",
-  [ApiAppointmentType.SexWork]: "Sexarbeit",
-  [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
-  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
-  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
-  [ApiAppointmentType.Vaccination]: "Impfung",
-  [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
-  [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
-  [ApiAppointmentType.MedsAbroadCertification]: "Beglaubigung",
 };
 
 export const APPOINTMENT_STATUS: EnumMap<ApiAppointmentStatus> = {

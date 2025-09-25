@@ -3,13 +3,13 @@
 
 plugins {
     id "eshg.java-lib"
+    id "java-test-fixtures"
 }
 
 dependencies {
     api project(':lib-central-repository-api')
 
     implementation project(':rest-client-commons')
-    implementation project(':test-helper-commons-spring')
 
     implementation 'org.springframework.boot:spring-boot'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { APPOINTMENT_TYPES } from "@eshg/lib-employee-portal";
 import { buildEnumOptions } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
-
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 
 export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.Consultation,

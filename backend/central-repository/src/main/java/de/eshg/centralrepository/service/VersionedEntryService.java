@@ -11,7 +11,6 @@ import de.eshg.centralrepository.persistence.entity.VersionedEntryContent;
 import de.eshg.centralrepository.persistence.entity.VersionedEntryMetadata;
 import de.eshg.centralrepository.persistence.repository.VersionedEntryContentRepository;
 import de.eshg.centralrepository.persistence.repository.VersionedEntryMetadataRepository;
-import de.eshg.lib.centralrepository.api.ContentRequestDto;
 import de.eshg.lib.centralrepository.api.MetadataRequestDto;
 import de.eshg.lib.centralrepository.api.MetadataResponseDto;
 import de.eshg.lib.centralrepository.api.VersionFilterType;
@@ -19,22 +18,23 @@ import de.eshg.lib.servicedirectory.ServiceDirectoryApi;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
@@ -42,51 +42,48 @@ public class VersionedEntryService {
   private static final Logger log = LoggerFactory.getLogger(VersionedEntryService.class);
 
   private final VersionedEntryMetadataRepository metadataRepo;
-
   private final VersionedEntryContentRepository contentRepo;
-
   private final ServiceDirectoryApi serviceDirectoryApi;
-
+  private final PlatformTransactionManager transactionManager;
   private final Clock clock;
 
   public VersionedEntryService(
       VersionedEntryMetadataRepository metadataRepo,
       VersionedEntryContentRepository contentRepo,
       ServiceDirectoryApi serviceDirectoryApi,
+      PlatformTransactionManager transactionManager,
       Clock clock) {
     this.metadataRepo = metadataRepo;
     this.contentRepo = contentRepo;
     this.serviceDirectoryApi = serviceDirectoryApi;
+    this.transactionManager = transactionManager;
     this.clock = clock;
   }
 
-  @Transactional(readOnly = true)
-  public void transferContentTo(IdVersionPK pk, OutputStream outputStream) {
+  public record GetContentResponse(long contentLength, String contentType, Resource resource) {}
+
+  public GetContentResponse getContent(String moduleName, String objectName, IdVersionPK pk) {
+    VersionedEntryMetadata metadataDomain = getMetadataDomain(moduleName, objectName, pk);
+    String contentType = metadataDomain.getContentType();
     VersionedEntryContent content = contentRepo.findFirstByMetadataPk(pk);
 
-    try {
-      if (content.getContentJson() != null) {
-        try (OutputStreamWriter writer =
-            new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-          writer.write(content.getContentJson());
-        }
-      } else {
-        Blob blob = content.getContentBinary();
-        blob.getBinaryStream().transferTo(outputStream);
-      }
-    } catch (SQLException | IOException e) {
-      throw new IllegalStateException(e);
+    if (content.getContentJson() != null) {
+      byte[] bytes = content.getContentJson().getBytes(StandardCharsets.UTF_8);
+      int contentLength = bytes.length;
+      ByteArrayResource resource = new ByteArrayResource(bytes);
+      return new GetContentResponse(contentLength, contentType, resource);
+    } else if (content.getContentBinary() != null) {
+      Blob blob = content.getContentBinary();
+      long contentLength = content.getContentBinaryLength();
+      BlobInputStreamResource resource = new BlobInputStreamResource(transactionManager, blob);
+      return new GetContentResponse(contentLength, contentType, resource);
+    } else {
+      throw new IllegalStateException("both contentJson and contentBinary are null");
     }
   }
 
-  @Transactional(readOnly = true)
   public MetadataResponseDto getMetadata(String moduleName, String objectName, IdVersionPK pk) {
     return VersionedEntryMapper.mapToApi(getMetadataDomain(moduleName, objectName, pk));
-  }
-
-  @Transactional(readOnly = true)
-  public String getContentType(String moduleName, String objectName, IdVersionPK pk) {
-    return getMetadataDomain(moduleName, objectName, pk).getContentType();
   }
 
   private VersionedEntryMetadata getMetadataDomain(
@@ -118,7 +115,6 @@ public class VersionedEntryService {
     }
   }
 
-  @Transactional(readOnly = true)
   public List<MetadataResponseDto> getMetadataOfVersions(
       String moduleName,
       String objectName,
@@ -126,6 +122,10 @@ public class VersionedEntryService {
       String tags,
       String category,
       boolean deleted) {
+    if (objectName.equals("*")) {
+      objectName = null; // null values will be ignored in the query
+    }
+
     List<VersionedEntryMetadata> result;
 
     if (VersionFilterType.NEWEST.equals(versions)) {
@@ -137,7 +137,6 @@ public class VersionedEntryService {
     return VersionedEntryMapper.mapToApi(result);
   }
 
-  @Transactional(readOnly = true)
   public List<MetadataResponseDto> getMetadataOfVersionsWithId(
       String moduleName, String objectName, Long id, VersionFilterType versions, boolean deleted) {
     List<VersionedEntryMetadata> result;
@@ -156,12 +155,14 @@ public class VersionedEntryService {
     return VersionedEntryMapper.mapToApi(result);
   }
 
-  @Transactional
   public MetadataResponseDto createEntry(
       String moduleName,
       String objectName,
       MetadataRequestDto metaDataRequestDto,
-      ContentRequestDto contentRequestDto) {
+      String mediaType,
+      long size,
+      InputStreamResource file)
+      throws IOException {
     IdVersionPK idVersionPK = new IdVersionPK(metadataRepo.getNextPkId(), 1);
     VersionedEntryMetadata metadata = VersionedEntryMapper.mapToDomain(metaDataRequestDto);
 
@@ -170,7 +171,7 @@ public class VersionedEntryService {
     metadata.setObjectName(objectName);
     setCreatedFields(metadata);
 
-    VersionedEntryContent content = createContent(contentRequestDto, metadata);
+    VersionedEntryContent content = createContent(file, mediaType, size, metadata);
     VersionedEntryContent savedEntry = contentRepo.save(content);
     return VersionedEntryMapper.mapToApi(savedEntry.getMetadata());
   }
@@ -196,27 +197,33 @@ public class VersionedEntryService {
   }
 
   private static VersionedEntryContent createContent(
-      ContentRequestDto contentRequestDto, VersionedEntryMetadata metadata) {
+      InputStreamResource file, String mediaType, long size, VersionedEntryMetadata metadata)
+      throws IOException {
     VersionedEntryContent content = new VersionedEntryContent();
     content.setMetadata(metadata);
 
-    metadata.setContentType(contentRequestDto.contentType());
-    if (MediaType.APPLICATION_JSON_VALUE.equals(contentRequestDto.contentType())) {
-      content.setContentJson(contentRequestDto.jsonContent());
+    metadata.setContentType(mediaType);
+
+    if (MediaType.APPLICATION_JSON_VALUE.equals(mediaType)) {
+      String json = new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+      content.setContentJson(json);
     } else {
-      content.setContentBinary(contentRequestDto.blobContent());
+      Blob blob = BlobProxy.generateProxy(file.getInputStream(), size);
+      content.setContentBinary(blob);
     }
     return content;
   }
 
-  @Transactional
   public MetadataResponseDto createNewVersionOfEntry(
       String moduleName,
       String objectName,
       Long id,
       Integer basedOnVersion,
       MetadataRequestDto metaDataRequestDto,
-      ContentRequestDto contentRequestDto) {
+      String mediaType,
+      long size,
+      InputStreamResource file)
+      throws IOException {
     // verify non-deleted basedOnVersion with the specified module and object name exists
     getMetadataDomain(moduleName, objectName, new IdVersionPK(id, basedOnVersion));
 
@@ -228,10 +235,10 @@ public class VersionedEntryService {
     newMetadata.setPk(newPk);
     newMetadata.setModuleName(moduleName);
     newMetadata.setObjectName(objectName);
-    newMetadata.setContentType(contentRequestDto.contentType());
+    newMetadata.setContentType(mediaType);
     VersionedEntryMapper.setDomainFromApi(newMetadata, metaDataRequestDto);
 
-    VersionedEntryContent newContent = createContent(contentRequestDto, newMetadata);
+    VersionedEntryContent newContent = createContent(file, mediaType, size, newMetadata);
     VersionedEntryContent newContentFromDb = contentRepo.save(newContent);
     return VersionedEntryMapper.mapToApi(newContentFromDb.getMetadata());
   }
@@ -249,7 +256,6 @@ public class VersionedEntryService {
     return new IdVersionPK(id, basedOnVersion + 1);
   }
 
-  @Transactional
   public MetadataResponseDto createNewVersionOnlyChangingMetadataOfEntry(
       String moduleName,
       String objectName,
@@ -295,7 +301,6 @@ public class VersionedEntryService {
     return content;
   }
 
-  @Transactional
   public void setEntryAsDeleted(String moduleName, String objectName, Long id) {
     setAsDeleted(moduleName, objectName, id, null);
   }
@@ -311,7 +316,6 @@ public class VersionedEntryService {
     }
   }
 
-  @Transactional
   public void setOneVersionOfAnEntryAsDeleted(
       String moduleName, String objectName, Long id, Integer version) {
     setAsDeleted(moduleName, objectName, id, version);

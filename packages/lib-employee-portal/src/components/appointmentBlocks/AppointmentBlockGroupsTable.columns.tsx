@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import {
   CellContext,
@@ -14,17 +14,25 @@ import {
 } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
-import { EnumMap, durationToSecond, formatDateTime } from "@eshg/lib-portal";
+import {
+  QueryKeyFactory,
+  durationToSecond,
+  formatDateTime,
+} from "@eshg/lib-portal";
 
+import { AppointmentBlockApi } from "../../api/AppointmentBlockApi";
+import { useDeleteAppointmentBlock } from "../../api/mutations/appointmentBlock";
 import { useConfirmationDialog } from "../../hooks/useConfirmationDialog";
 import {
   formatCalendarWeek,
   formatCalendarWeekRange,
   formatDurationToHoursAndMinutes,
 } from "../../utils/dateTime";
-import { ActionsMenu } from "../buttons/ActionsMenu";
+import { ActionsItem, ActionsMenu } from "../buttons/ActionsMenu";
 
 import { AppointmentBlockRow } from "./AppointmentBlockGroupsTable";
+import { useUpdateAppointmentBlockSidebar } from "./UpdateAppointmentBlockSidebar";
+import { APPOINTMENT_TYPES } from "./translations";
 import { ApiAppointmentType } from "./types";
 
 function toggleRowExpanded({
@@ -35,23 +43,23 @@ function toggleRowExpanded({
 }
 
 export function useAppointmentBlockGroupsColumns({
-  onDeleteAppointmentBlock,
+  appointmentBlockApi,
+  appointmentBlockApiQueryKey,
+  standardDurations,
   columnHelper,
   additionalColumn,
-  appointmentTypes,
   showWeekDays,
 }: {
-  onDeleteAppointmentBlock: ({
-    appointmentBlockId,
-  }: {
-    appointmentBlockId: string;
-  }) => void;
+  appointmentBlockApi: AppointmentBlockApi;
+  appointmentBlockApiQueryKey: QueryKeyFactory;
+  standardDurations: Partial<Record<ApiAppointmentType, number>>;
   columnHelper: ColumnHelper<AppointmentBlockRow>;
   additionalColumn?: ColumnDef<AppointmentBlockRow, string>;
-  appointmentTypes: EnumMap<ApiAppointmentType>;
   showWeekDays?: boolean;
 }): TableOptions<AppointmentBlockRow>["columns"] {
   const { openConfirmationDialog } = useConfirmationDialog();
+  const updateAppointmentBlockSidebar = useUpdateAppointmentBlockSidebar();
+  const deleteAppointmentBlock = useDeleteAppointmentBlock(appointmentBlockApi);
 
   return [
     columnHelper.accessor("start", {
@@ -81,7 +89,7 @@ export function useAppointmentBlockGroupsColumns({
         row.depth === 0 ? (
           <div onClick={() => toggleRowExpanded(row)}>
             {getValue()
-              .map((type) => appointmentTypes[type])
+              .map((type) => APPOINTMENT_TYPES[type])
               .join(", ")}
           </div>
         ) : undefined,
@@ -199,37 +207,51 @@ export function useAppointmentBlockGroupsColumns({
     columnHelper.display({
       header: "Aktionen",
       id: "actions",
-      cell: ({
-        row: {
-          depth,
-          original: { id: appointmentBlockId, bookedDuration },
-        },
-      }) =>
-        depth !== 0 &&
-        durationToSecond(bookedDuration ?? "") === 0 && (
-          <ActionsMenu
-            actionItems={[
-              {
-                label: "Terminblock löschen",
-                color: "danger",
-                startDecorator: <Delete color="danger" />,
-                onClick: () => {
-                  openConfirmationDialog({
-                    title: "Terminblock löschen?",
-                    description:
-                      "Möchten Sie den Terminblock wirklich löschen? Es sind keine bereits gebuchten Termine betroffen.",
-                    confirmLabel: "Terminblock löschen",
-                    color: "danger",
-                    onConfirm: () =>
-                      onDeleteAppointmentBlock({
-                        appointmentBlockId,
-                      }),
-                  });
+      cell: ({ row: { depth, original } }) => {
+        return (
+          depth !== 0 && (
+            <ActionsMenu
+              actionItems={[
+                {
+                  label: "Terminblock bearbeiten",
+                  startDecorator: <Edit />,
+                  onClick: () => {
+                    updateAppointmentBlockSidebar.open({
+                      appointmentBlockId: original.id,
+                      appointmentBlockApi,
+                      appointmentBlockApiQueryKey,
+                      appointmentTypes: original.types,
+                      standardDurations,
+                    });
+                  },
                 },
-              },
-            ]}
-          />
-        ),
+                ...(durationToSecond(original.bookedDuration ?? "") === 0
+                  ? [
+                      {
+                        label: "Terminblock löschen",
+                        color: "danger",
+                        startDecorator: <Delete color="danger" />,
+                        onClick: () => {
+                          openConfirmationDialog({
+                            title: "Terminblock löschen?",
+                            description:
+                              "Möchten Sie den Terminblock wirklich löschen? Es sind keine bereits gebuchten Termine betroffen.",
+                            confirmLabel: "Terminblock löschen",
+                            color: "danger",
+                            onConfirm: () =>
+                              void deleteAppointmentBlock.mutateAsync({
+                                appointmentBlockId: original.id,
+                              }),
+                          });
+                        },
+                      } as ActionsItem,
+                    ]
+                  : []),
+              ]}
+            />
+          )
+        );
+      },
       meta: {
         width: 96,
         cellStyle: "button",

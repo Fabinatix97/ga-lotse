@@ -14,6 +14,7 @@ import { DefaultColorPalette } from "@mui/joy/styles/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import {
+  APPOINTMENT_TYPES,
   ActionsItem,
   ActionsMenu,
   DataTable,
@@ -31,7 +32,6 @@ import {
   useCloseAppointment,
   useWithdrawAppointment,
 } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";
 import { useAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/AppointmentSidebar";
 import { useCancelAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/baseData/CancelAppointmentSidebar";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";

@@ -19,16 +19,14 @@ import {
   SidebarForm,
   SidebarFormHandle,
   TimeField,
+  formatTimeInput,
+  isBeforeTime,
+  parseTime,
 } from "@eshg/lib-employee-portal";
 import { DateField, toDateString } from "@eshg/lib-portal";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import {
-  formatTimeInput,
-  isBeforeTime,
-  parseTime,
-  toLocalDateTime,
-} from "@/lib/shared/helpers/dateTime";
+import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 interface AppointmentSidebarProps {
   open: boolean;

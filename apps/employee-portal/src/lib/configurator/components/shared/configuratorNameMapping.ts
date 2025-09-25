@@ -15,7 +15,7 @@ export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
   MEASLES_PROTECTION: "Masernschutz",
   MEDICAL_REGISTRY: "Medizinalaufsicht",
   MEDS_ABROAD: "Reisen mit BtM",
-  STI_PROTECTION: "HIV-STI Beratung",
+  STI_PROTECTION: "HIV-STI-Beratung",
   SEX_WORK: "Sexarbeit",
   OFFICIAL_MEDICAL_SERVICE: "Amtsärztliche Dienste",
   OPEN_DATA: "Open Data",

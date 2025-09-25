@@ -67,7 +67,7 @@ sonar {
 //CAUTION: run ./gradlew wrapper (twice) after changes to this task!
 //See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
 wrapper {
-    gradleVersion = "8.14.3"
+    gradleVersion = "9.1.0"
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -80,11 +80,7 @@ allprojects {
 
     dependencies {
         components.all { ComponentMetadataDetails details ->
-            // Explicitly allow Milestone versions for commons-fileupload2 artifacts until the final version is released
-            if (details.id.name.startsWith('commons-fileupload2')) {
-                // Explicit return to avoid an IntelliJ IDEA warning
-                return
-            } else if (details.id.version =~ /(?i).+([-.])(CANDIDATE|RC|BETA|ALPHA|CR\d+|M\d+).*/) {
+            if (details.id.version =~ /(?i).+([-.])(CANDIDATE|RC|BETA|ALPHA|CR\d+|M\d+).*/) {
                 details.status = 'milestone'
                 // Explicit return to avoid an IntelliJ IDEA warning
                 return

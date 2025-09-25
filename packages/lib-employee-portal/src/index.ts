@@ -13,6 +13,7 @@ export {
   mapPaginatedList,
 } from "./api/models/PaginatedList";
 export { type Versioned, mapVersioned } from "./api/models/Versioned";
+export { type AppointmentBlockApi } from "./api/AppointmentBlockApi";
 export {
   type BaseAddress,
   type BaseAddressType,
@@ -68,12 +69,14 @@ export {
   getAppointmentDurationInMinutes,
   type AppointmentBlockGroupValues,
 } from "./components/appointmentBlocks/calculateAppointmentCount";
+export { calculateMaxParallelBookings } from "./components/appointmentBlocks/calculateMaxParallelBookings";
 export { AppointmentStaffSelection } from "./components/appointmentBlocks/AppointmentStaffSelection";
 export { WeekdayCheckboxGroup } from "./components/appointmentBlocks/WeekdayCheckboxGroup";
 export {
   ApiAppointmentType,
   ApiDayOfWeek,
 } from "./components/appointmentBlocks/types";
+export { APPOINTMENT_TYPES } from "./components/appointmentBlocks/translations";
 export {
   validateAppointmentBlock,
   type ExaminationDurations,
@@ -471,6 +474,11 @@ export {
   formatDurationToHoursAndMinutes,
   toLocalDateTime,
   secondToISODuration,
+  formatDateInput,
+  formatTimeInput,
+  isBeforeTime,
+  isAfterTime,
+  parseTime,
 } from "./utils/dateTime";
 export {
   createCountFormatter,

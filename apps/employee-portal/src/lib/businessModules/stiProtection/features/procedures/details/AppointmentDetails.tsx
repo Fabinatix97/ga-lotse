@@ -8,6 +8,7 @@ import { Button, Chip, Sheet, Stack } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import {
+  APPOINTMENT_TYPES,
   ActionsItem,
   ActionsMenu,
   DataTable,
@@ -29,7 +30,6 @@ import {
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import {
   APPOINTMENT_STATUS,
-  APPOINTMENT_TYPES,
   appointmentStatusColor,
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";

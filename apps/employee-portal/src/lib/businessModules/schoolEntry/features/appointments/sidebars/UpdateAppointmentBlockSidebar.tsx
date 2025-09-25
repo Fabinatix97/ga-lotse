@@ -18,7 +18,13 @@ import {
   SidebarFormHandle,
   TimeField,
   calculateAppointmentsPerBlock,
+  calculateMaxParallelBookings,
+  formatDateInput,
+  formatTimeInput,
   getAppointmentDurationInMinutes,
+  isAfterTime,
+  isBeforeTime,
+  parseTime,
   toLocalDateTime,
 } from "@eshg/lib-employee-portal";
 import { NumberField, OptionalFieldValue } from "@eshg/lib-portal";
@@ -32,17 +38,9 @@ import {
   useAppointmentBlockApi,
   useAppointmentStandardDurationsApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
-import { calculateMaxParallelBookings } from "@/lib/businessModules/schoolEntry/api/models/AppointmentBlockGroup";
 import { useUpdateAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
 import { getValidateUpdateAppointmentBlockQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
-import {
-  formatDateInput,
-  formatTimeInput,
-  isAfterTime,
-  isBeforeTime,
-  parseTime,
-} from "@/lib/shared/helpers/dateTime";
 
 interface UpdateAppointmentBlockProps {
   appointmentBlock: ApiAppointmentBlock;

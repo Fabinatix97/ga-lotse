@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
@@ -19,9 +20,17 @@ import {
 } from "@eshg/lib-employee-portal";
 import { ApiAppointmentBlockSortKey } from "@eshg/sti-protection-api";
 
-import { useDeleteAppointmentBlock } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
-import { useGetAppointmentBlockGroups } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
+import {
+  useAppointmentBlockApi,
+  useAppointmentStandardDurationsApi,
+} from "@/lib/businessModules/stiProtection/api/clients";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/mapAppointmentBlockApi";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
+import {
+  useGetHivAppointmentStandardDurationsQuery,
+  useGetSexWorkAppointmentStandardDurationsQuery,
+} from "@/lib/businessModules/stiProtection/api/queries/appointmentStandardDuration";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 interface AppointmentBlockGroupsTableProps {
@@ -37,25 +46,38 @@ export function StiProtectionAppointmentBlockGroupsTable(
     sortDirectionName: "sortDirection",
     initialSorting: INITIAL_SORTING_APPOINTMENT_BLOCK_GROUPS,
   });
-  const appointmentBlockGroups = useGetAppointmentBlockGroups({
-    pageNumber: tableControl.paginationProps.pageNumber,
-    pageSize: tableControl.paginationProps.pageSize,
-    sortKey: getSortKey<ApiAppointmentBlockSortKey>(tableControl.tableSorting),
-    sortDirection: getSortDirection(tableControl.tableSorting),
+
+  const appointmentStandardDurationApi = useAppointmentStandardDurationsApi();
+  const appointmentBlockApi = useAppointmentBlockApi();
+
+  const [
+    appointmentBlockGroups,
+    { data: standardDurationsHiv },
+    { data: standardDurationsSexWork },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetAppointmentBlockGroupsQuery({
+        pageNumber: tableControl.paginationProps.pageNumber,
+        pageSize: tableControl.paginationProps.pageSize,
+        sortKey: getSortKey<ApiAppointmentBlockSortKey>(
+          tableControl.tableSorting,
+        ),
+        sortDirection: getSortDirection(tableControl.tableSorting),
+      }),
+      useGetHivAppointmentStandardDurationsQuery(
+        appointmentStandardDurationApi,
+      ),
+      useGetSexWorkAppointmentStandardDurationsQuery(
+        appointmentStandardDurationApi,
+      ),
+    ],
   });
 
-  const deleteAppointmentBlock = useDeleteAppointmentBlock();
-
-  async function handleDeleteAppointmentBlock(appointmentBlockId: string) {
-    await deleteAppointmentBlock.mutateAsync({ appointmentBlockId });
-  }
-
   const columnHelper = createColumnHelper<AppointmentBlockRow>();
-  const appointmentBlockGroupsColumns = useAppointmentBlockGroupsColumns({
-    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void handleDeleteAppointmentBlock(appointmentBlockId);
-    },
-    appointmentTypes: APPOINTMENT_TYPES,
+  const columns = useAppointmentBlockGroupsColumns({
+    appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
+    appointmentBlockApiQueryKey,
+    standardDurations: { ...standardDurationsHiv, ...standardDurationsSexWork },
     columnHelper,
     showWeekDays: true,
   });
@@ -65,7 +87,7 @@ export function StiProtectionAppointmentBlockGroupsTable(
       controls={props.controls}
       isLoading={appointmentBlockGroups.isFetching}
       appointmentBlockGroups={appointmentBlockGroups.data}
-      columns={appointmentBlockGroupsColumns}
+      columns={columns}
       tableControl={tableControl}
       newAppointmentBlockRoute={routes.appointmentBlockGroups.new}
     />

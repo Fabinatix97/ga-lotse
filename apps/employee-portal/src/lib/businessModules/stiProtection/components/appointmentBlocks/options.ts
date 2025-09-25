@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { APPOINTMENT_TYPES } from "@eshg/lib-employee-portal";
 import { SelectOption, buildEnumOptions } from "@eshg/lib-portal";
 import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
-
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 
 export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.HivStiConsultation,

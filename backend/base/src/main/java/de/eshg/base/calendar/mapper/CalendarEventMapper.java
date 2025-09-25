@@ -14,10 +14,13 @@ import de.eshg.base.calendar.api.EventMetaData;
 import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.EventTypeDto;
 import de.eshg.base.calendar.api.EventWithTimeData;
+import de.eshg.base.calendar.api.ResourceCalendar;
+import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.base.calendar.persistence.entity.Calendar;
 import de.eshg.base.calendar.persistence.entity.CalendarEvent;
 import de.eshg.base.calendar.persistence.entity.EventType;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public final class CalendarEventMapper {
@@ -65,9 +68,24 @@ public final class CalendarEventMapper {
 
   public static DetailedEvent mapToDetailedEvent(
       CalendarEventData calendarEventData, boolean mapWithSubject) {
+
+    List<UserCalendar> userCalendars =
+        calendarEventData.getCalendars().stream()
+            .filter(cd -> Objects.nonNull(cd.getUserId()))
+            .map(cd -> new UserCalendar(cd.getExternalId(), cd.getUserId()))
+            .toList();
+
+    List<ResourceCalendar> resourceCalendars =
+        calendarEventData.getCalendars().stream()
+            .filter(cd -> Objects.nonNull(cd.getResourceId()))
+            .map(cd -> new ResourceCalendar(cd.getExternalId(), cd.getResourceId()))
+            .toList();
+
     return new DetailedEvent(
         calendarEventData.getExternalId(),
         calendarEventData.getCalendars().stream().map(CalendarData::getExternalId).toList(),
+        userCalendars,
+        resourceCalendars,
         mapToEventTypeDto(calendarEventData.getEventType()),
         calendarEventData.getLastModifiedByUserId(),
         getEventMetaData(calendarEventData, mapWithSubject),

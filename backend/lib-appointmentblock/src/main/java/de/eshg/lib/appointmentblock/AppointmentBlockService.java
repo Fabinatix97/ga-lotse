@@ -5,6 +5,7 @@
 
 package de.eshg.lib.appointmentblock;
 
+import static de.eshg.lib.appointmentblock.AppointmentTypeMapper.toInterfaceType;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import de.eshg.base.SortDirection;
@@ -17,6 +18,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
+import de.eshg.lib.appointmentblock.api.DayOfWeekDto;
 import de.eshg.lib.appointmentblock.api.LocationDto;
 import de.eshg.lib.appointmentblock.api.UpdateAppointmentBlockRequest;
 import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
@@ -261,6 +263,47 @@ public class AppointmentBlockService {
 
   public CreateAppointmentBlockGroupResponse createDailyAppointmentBlocksForGroup(
       CreateDailyAppointmentBlockGroupRequest request) {
+    AppointmentBlockGroup appointmentBlockGroup =
+        createDailyAppointmentBlocksForGroup(request, false);
+
+    return new CreateAppointmentBlockGroupResponse(
+        appointmentBlockGroup.getExternalId(),
+        appointmentBlockGroup.getAppointmentBlocks().stream()
+            .map(AppointmentBlock::getExternalId)
+            .toList());
+  }
+
+  public AppointmentBlockGroup createAdHocAppointmentBlockGroup(
+      AppointmentType appointmentType,
+      UUID locationId,
+      Instant appointmentStart,
+      Instant appointmentEnd) {
+    appointmentBlockValidator.validateStartAndEndIsSameDayForAdHocAppointments(
+        appointmentStart, appointmentEnd);
+    appointmentBlockValidator.validateAdHocAppointmentDuration(
+        appointmentStandardDurationService.getStandardDuration(appointmentType),
+        appointmentStart,
+        appointmentEnd);
+
+    CreateDailyAppointmentBlockGroupRequest request =
+        new CreateDailyAppointmentBlockGroupRequest(
+            List.of(toInterfaceType(appointmentType)),
+            1,
+            List.of(
+                new CreateDailyAppointmentBlockDto(
+                    appointmentStart, appointmentEnd, DayOfWeekDto.allDays())),
+            null,
+            null,
+            null,
+            locationId,
+            null,
+            null);
+
+    return createDailyAppointmentBlocksForGroup(request, true);
+  }
+
+  private AppointmentBlockGroup createDailyAppointmentBlocksForGroup(
+      CreateDailyAppointmentBlockGroupRequest request, boolean forAdHocAppointment) {
     appointmentBlockValidator.validateNumberOfAppointmentBlocks(request);
 
     Set<AppointmentType> requestedTypes =
@@ -287,19 +330,15 @@ public class AppointmentBlockService {
         request.physicians(), request.mfas(), request.consultants());
     appointmentBlockValidator.validateLocation(request.locationId());
 
-    List<CreateAppointmentBlockData> appointmentBlocks = createAppointmentBlockData(request);
+    List<CreateAppointmentBlockData> appointmentBlocks =
+        createAppointmentBlockData(request, forAdHocAppointment);
 
     if (appointmentBlocks.isEmpty()) {
       throw new BadRequestException("There is no block in the time period with given weekdays.");
     }
 
     List<UUID> usersForEvent =
-        getUserIdsForEvent(
-            request.physicians(),
-            request.mfas(),
-            request.consultants(),
-            CurrentUserHelper.getCurrentUserId());
-    checkForCalendarConflicts(usersForEvent, appointmentBlocks);
+        getAndCheckUserIdsForEvent(request, appointmentBlocks, forAdHocAppointment);
 
     AppointmentBlockGroup appointmentBlockGroup =
         buildAppointmentBlockGroup(request, appointmentTypeHolders);
@@ -321,13 +360,25 @@ public class AppointmentBlockService {
       appointmentBlockGroup.addAppointmentBlock(appointmentBlock);
     }
 
-    appointmentBlockGroupRepository.save(appointmentBlockGroup);
+    return appointmentBlockGroupRepository.save(appointmentBlockGroup);
+  }
 
-    return new CreateAppointmentBlockGroupResponse(
-        appointmentBlockGroup.getExternalId(),
-        appointmentBlockGroup.getAppointmentBlocks().stream()
-            .map(AppointmentBlock::getExternalId)
-            .toList());
+  private List<UUID> getAndCheckUserIdsForEvent(
+      CreateDailyAppointmentBlockGroupRequest request,
+      List<CreateAppointmentBlockData> appointmentBlocks,
+      boolean forAdHocAppointment) {
+    if (forAdHocAppointment) {
+      return List.of(CurrentUserHelper.getCurrentUserId());
+    }
+
+    List<UUID> usersForEvent =
+        getUserIdsForEvent(
+            request.physicians(),
+            request.mfas(),
+            request.consultants(),
+            CurrentUserHelper.getCurrentUserId());
+    checkForCalendarConflicts(usersForEvent, appointmentBlocks);
+    return usersForEvent;
   }
 
   Duration calculateShortestDuration(List<AppointmentTypeHolder> appointmentTypeHolders) {
@@ -339,6 +390,15 @@ public class AppointmentBlockService {
 
   private List<UUID> getUserIdsForEvent(
       List<UUID> physicians, List<UUID> mfas, List<UUID> consultants, UUID creatorId) {
+    return getUserIdsForEvent(physicians, mfas, consultants, creatorId, null);
+  }
+
+  private List<UUID> getUserIdsForEvent(
+      List<UUID> physicians,
+      List<UUID> mfas,
+      List<UUID> consultants,
+      UUID creatorId,
+      UUID eventId) {
     Set<UUID> usersForEvent = new HashSet<>();
     if (physicians != null) {
       usersForEvent.addAll(physicians);
@@ -349,6 +409,11 @@ public class AppointmentBlockService {
     if (consultants != null) {
       usersForEvent.addAll(consultants);
     }
+
+    if (eventId != null) {
+      usersForEvent.addAll(calendarClient.getUserIdsFromEventId(eventId));
+    }
+
     if (appointmentBlockConfig.isCreateAppointmentBlockForCurrentUser()) {
       usersForEvent.add(creatorId);
     }
@@ -372,15 +437,20 @@ public class AppointmentBlockService {
 
   private List<CreateAppointmentBlockData> createAppointmentBlockData(
       CreateDailyAppointmentBlockGroupRequest request) {
+    return createAppointmentBlockData(request, false);
+  }
+
+  private List<CreateAppointmentBlockData> createAppointmentBlockData(
+      CreateDailyAppointmentBlockGroupRequest request, boolean forAdHocAppointment) {
     return request.appointmentBlocks().stream()
-        .map(this::createDailyAppointmentBlocks)
+        .map(block -> createDailyAppointmentBlocks(block, forAdHocAppointment))
         .flatMap(Collection::stream)
         .toList();
   }
 
   private List<CreateAppointmentBlockData> createDailyAppointmentBlocks(
-      CreateDailyAppointmentBlockDto block) {
-    if (block.start().isBefore(Instant.now(clock))) {
+      CreateDailyAppointmentBlockDto block, boolean forAdHocAppointment) {
+    if (!forAdHocAppointment && block.start().isBefore(Instant.now(clock))) {
       throw new BadRequestException("Start of first appointment block must be in the future.");
     }
     ZonedDateTime start = block.start().atZone(clock.getZone());
@@ -504,7 +574,8 @@ public class AppointmentBlockService {
             appointmentBlock.getPhysicians(),
             appointmentBlock.getMfas(),
             appointmentBlock.getConsultants(),
-            appointmentBlock.getAppointmentBlockGroup().getCreatorId());
+            appointmentBlock.getAppointmentBlockGroup().getCreatorId(),
+            appointmentBlock.getCalendarEventId());
 
     List<UUID> newUsers =
         getUserIdsForEvent(

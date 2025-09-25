@@ -13,55 +13,13 @@ import {
   formatDistanceToNowStrict,
   formatISO,
   getWeek,
-  isAfter,
-  isBefore,
   isSameDay,
-  parse,
   secondsToMilliseconds,
 } from "date-fns";
 import { parse as parseDuration, toSeconds } from "iso8601-duration";
 
 import { getDateFnsLocale } from "@eshg/lib-employee-portal";
-import {
-  DATE_FORMAT,
-  TIME_FORMAT,
-  isDateString,
-  isTimeString,
-} from "@eshg/lib-portal";
-
-export function formatTimeInput(date: Date): string {
-  return format(date, TIME_FORMAT);
-}
-
-export function formatDateInput(date: Date): string {
-  return format(date, DATE_FORMAT);
-}
-
-export function isBeforeTime(
-  startTime: string,
-  endTime: string,
-  referenceStartDate: Date = new Date(),
-  referenceEndDate: Date = referenceStartDate,
-) {
-  const startDate = parseTime(startTime, referenceStartDate);
-  const endDate = parseTime(endTime, referenceEndDate);
-  return isBefore(startDate, endDate);
-}
-
-export function isAfterTime(
-  startTime: string,
-  endTime: string,
-  referenceStartDate: Date = new Date(),
-  referenceEndDate: Date = referenceStartDate,
-) {
-  const startDate = parseTime(startTime, referenceStartDate);
-  const endDate = parseTime(endTime, referenceEndDate);
-  return isAfter(startDate, endDate);
-}
-
-export function parseTime(time: string, referenceDate: Date = new Date()) {
-  return parse(time, TIME_FORMAT, referenceDate);
-}
+import { isDateString, isTimeString } from "@eshg/lib-portal";
 
 /**
  * Creates a local dateTime from a date and time string

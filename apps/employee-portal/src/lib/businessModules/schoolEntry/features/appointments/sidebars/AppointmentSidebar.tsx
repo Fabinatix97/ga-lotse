@@ -8,6 +8,7 @@ import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import {
+  APPOINTMENT_TYPES,
   ButtonBar,
   DrawerProps,
   SidebarActions,
@@ -18,7 +19,6 @@ import {
 import { InternalLinkButton } from "@eshg/lib-portal";
 
 import { useGetAppointment } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 export function useAppointmentSidebar(): UseSidebarResult<AppointmentSidebarProps> {

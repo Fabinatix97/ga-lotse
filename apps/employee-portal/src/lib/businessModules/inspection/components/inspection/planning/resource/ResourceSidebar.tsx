@@ -24,6 +24,8 @@ import {
   SidebarForm,
   SidebarWithFormRefProps,
   TimeField,
+  formatTimeInput,
+  parseTime,
   useSidebarWithFormRef,
   validateTodayOrFutureDate,
 } from "@eshg/lib-employee-portal";
@@ -41,11 +43,7 @@ import { resourceTypeNames } from "@/lib/baseModule/components/resources/constan
 import { useAddResource } from "@/lib/businessModules/inspection/api/mutations/resources";
 import { useGetResourcesWithEvents } from "@/lib/businessModules/inspection/api/queries/resources";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
-import {
-  formatTimeInput,
-  parseTime,
-  toLocalDateTime,
-} from "@/lib/shared/helpers/dateTime";
+import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 interface DateTimeInputs {
   date: string;

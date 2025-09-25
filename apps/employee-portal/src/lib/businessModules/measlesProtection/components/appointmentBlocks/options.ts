@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { APPOINTMENT_TYPES } from "@eshg/lib-employee-portal";
 import { buildEnumOptions } from "@eshg/lib-portal";
 import { ApiAppointmentType } from "@eshg/measles-protection-api";
-
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/measlesProtection/shared/constants";
 
 export const SUPPORTED_APPOINTMENT_TYPES: ApiAppointmentType[] = [
   ApiAppointmentType.ProofSubmission,

@@ -9,10 +9,10 @@ import { useFormikContext } from "formik";
 import { ReactNode, useId } from "react";
 import { isString } from "remeda";
 
+import { APPOINTMENT_TYPES } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES, ifDefined, mapOptionalValue } from "@eshg/lib-portal";
 import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import {
   concernToAppointmentType,
   getPropertyIf,

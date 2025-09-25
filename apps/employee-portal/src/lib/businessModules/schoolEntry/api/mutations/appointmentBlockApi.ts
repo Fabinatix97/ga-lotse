@@ -8,6 +8,7 @@ import { MutationOptions, useMutation } from "@tanstack/react-query";
 import { useHandledMutation, useSnackbar } from "@eshg/lib-portal";
 import {
   ApiCreateDailyAppointmentBlockGroupRequest,
+  ApiUpdateAppointmentBlockRequest,
   DeleteAppointmentBlockRequest,
   UpdateAppointmentBlockRequest,
 } from "@eshg/school-entry-api";
@@ -54,10 +55,19 @@ export function useDeleteAppointmentBlock() {
 }
 
 export function useUpdateAppointmentBlock() {
+  const mutationOptions = useUpdateAppointmentBlockOptions();
+  return useHandledMutation(mutationOptions);
+}
+
+export function useUpdateAppointmentBlockOptions(): MutationOptions<
+  ApiUpdateAppointmentBlockRequest,
+  Error,
+  UpdateAppointmentBlockRequest
+> {
   const appointmentBlockGroupsApi = useAppointmentBlockApi();
   const snackbar = useSnackbar();
 
-  return useHandledMutation({
+  return {
     mutationFn: ({
       appointmentBlockId,
       apiUpdateAppointmentBlockRequest,
@@ -69,5 +79,5 @@ export function useUpdateAppointmentBlock() {
     onSuccess: () => {
       snackbar.confirmation("Der Terminblock wurde erfolgreich bearbeitet.");
     },
-  });
+  };
 }

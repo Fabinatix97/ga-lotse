@@ -20,6 +20,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,21 @@ public class AppointmentBlockValidator {
   void validateNumberOfAppointmentBlocks(CreateDailyAppointmentBlockGroupRequest request) {
     if (request.appointmentBlocks().size() > 5) {
       throw new BadRequestException("Number of AppointmentBlocks must be at most 5. ");
+    }
+  }
+
+  void validateStartAndEndIsSameDayForAdHocAppointments(Instant start, Instant end) {
+    LocalDate startDate = start.atZone(clock.getZone()).toLocalDate();
+    LocalDate endDate = end.atZone(clock.getZone()).toLocalDate();
+    if (!startDate.isEqual(endDate)) {
+      throw new BadRequestException("Ad-hoc appointments do not span days!");
+    }
+  }
+
+  void validateAdHocAppointmentDuration(Duration duration, Instant start, Instant end) {
+    if (!end.equals(start.plus(duration))) {
+      throw new BadRequestException(
+          "Ad-hoc appointment duration must match the standard duration of the appointment type");
     }
   }
 

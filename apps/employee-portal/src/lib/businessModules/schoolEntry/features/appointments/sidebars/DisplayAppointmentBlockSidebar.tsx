@@ -8,17 +8,17 @@ import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { AriaRole, PropsWithChildren, useId } from "react";
 
 import {
+  APPOINTMENT_TYPES,
   ButtonBar,
   SidebarActions,
   SidebarContent,
+  calculateMaxParallelBookings,
   useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { Alert, formatUserName } from "@eshg/lib-portal";
 import { ApiAppointment, ApiAppointmentBlock } from "@eshg/school-entry-api";
 
-import { calculateMaxParallelBookings } from "@/lib/businessModules/schoolEntry/api/models/AppointmentBlockGroup";
 import { useDeleteAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 
 interface DisplayAppointmentBlockProps {
   appointmentBlock: ApiAppointmentBlock;

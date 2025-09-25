@@ -7896,7 +7896,7 @@
         }
       },
       "DetailedEvent" : {
-        "required" : [ "calendarIds", "id", "metaData", "timeData", "type" ],
+        "required" : [ "calendarIds", "id", "metaData", "resourceCalendars", "timeData", "type", "userCalenders" ],
         "type" : "object",
         "properties" : {
           "calendarIds" : {
@@ -7919,11 +7919,23 @@
           "metaData" : {
             "$ref" : "#/components/schemas/EventMetaData"
           },
+          "resourceCalendars" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ResourceCalendar"
+            }
+          },
           "timeData" : {
             "$ref" : "#/components/schemas/EventTimeData"
           },
           "type" : {
             "$ref" : "#/components/schemas/EventType"
+          },
+          "userCalenders" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCalendar"
+            }
           }
         }
       },

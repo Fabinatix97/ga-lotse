@@ -8,17 +8,26 @@ import {
   GetWeekOptions,
   type Locale,
   addSeconds,
+  format,
   formatDuration,
   formatISODuration,
   getWeek,
   intervalToDuration,
+  isAfter,
+  isBefore,
+  parse,
   secondsToHours,
 } from "date-fns";
 // TODO: do not import all locales statically
 import * as DateLocales from "date-fns/locale";
-import { parse, toSeconds } from "iso8601-duration";
+import { parse as parseDuration, toSeconds } from "iso8601-duration";
 
-import { isDateString, isTimeString } from "@eshg/lib-portal";
+import {
+  DATE_FORMAT,
+  TIME_FORMAT,
+  isDateString,
+  isTimeString,
+} from "@eshg/lib-portal";
 
 /**
  * Gets the default date-fns Locale based on the user's browser settings
@@ -84,7 +93,7 @@ export function formatDurationToHoursAndMinutes(
   isoDuration: string,
   options?: FormatDurationOptions,
 ) {
-  const duration = parse(isoDuration);
+  const duration = parseDuration(isoDuration);
   const minutes = duration.minutes;
   const hours = secondsToHours(toSeconds({ ...duration, minutes: 0 }));
 
@@ -107,4 +116,38 @@ export function secondToISODuration(second: number) {
   return formatISODuration(
     intervalToDuration({ start: baseline, end: addSeconds(baseline, second) }),
   );
+}
+
+export function formatTimeInput(date: Date): string {
+  return format(date, TIME_FORMAT);
+}
+
+export function formatDateInput(date: Date): string {
+  return format(date, DATE_FORMAT);
+}
+
+export function isBeforeTime(
+  startTime: string,
+  endTime: string,
+  referenceStartDate: Date = new Date(),
+  referenceEndDate: Date = referenceStartDate,
+) {
+  const startDate = parseTime(startTime, referenceStartDate);
+  const endDate = parseTime(endTime, referenceEndDate);
+  return isBefore(startDate, endDate);
+}
+
+export function isAfterTime(
+  startTime: string,
+  endTime: string,
+  referenceStartDate: Date = new Date(),
+  referenceEndDate: Date = referenceStartDate,
+) {
+  const startDate = parseTime(startTime, referenceStartDate);
+  const endDate = parseTime(endTime, referenceEndDate);
+  return isAfter(startDate, endDate);
+}
+
+export function parseTime(time: string, referenceDate: Date = new Date()) {
+  return parse(time, TIME_FORMAT, referenceDate);
 }

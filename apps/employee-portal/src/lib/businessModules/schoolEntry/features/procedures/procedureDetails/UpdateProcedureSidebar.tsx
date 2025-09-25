@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Box, Divider, Stack } from "@mui/joy";
+import { Box, Divider, Radio, Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 import { ReactNode, useEffect } from "react";
 import { isDefined } from "remeda";
@@ -19,8 +19,10 @@ import {
   SidebarContent,
   SidebarForm,
   SidebarWithFormRefProps,
+  TimeField,
   UseSidebarWithFormRefResult,
   getEntityId,
+  parseTime,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import {
@@ -30,9 +32,11 @@ import {
   DateField,
   HorizontalField,
   OptionalFieldValue,
+  RadioGroupField,
   SelectField,
   SelectObjectField,
   SelectObjectFieldValue,
+  formatTime,
   formatWeekdayDateTimeRange,
   isEmptyString,
   mapOptionalValue,
@@ -69,10 +73,20 @@ export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateP
   });
 }
 
+const AppointmentSelectionType = {
+  Block: "block",
+  AdHoc: "adhoc",
+} as const;
+
+type AppointmentSelectionType =
+  (typeof AppointmentSelectionType)[keyof typeof AppointmentSelectionType];
+
 interface UpdateProcedureValues {
   procedureType: ApiSchoolEntryProcedureType;
   procedureLabels: ProcedureLabel[];
   appointment: SelectObjectFieldValue<ApiAppointment, false>;
+  appointmentSelectionType: AppointmentSelectionType;
+  adHocTime: string;
   isInvitationSent: boolean;
   changeRecipient: boolean;
   recipient: PersonDetails | null;
@@ -92,6 +106,7 @@ interface UpdateProcedureSidebarProps extends SidebarWithFormRefProps {
 function mapValues(
   values: UpdateProcedureValues,
   procedure: ProcedureDetails,
+  locationSelectionMode: ApiLocationSelectionMode,
 ): UpdateProcedureRequest {
   return {
     procedureId: procedure.id,
@@ -102,7 +117,7 @@ function mapValues(
         isDraft(procedure.type) && isEmptyString(values.procedureType)
           ? procedure.type
           : values.procedureType,
-      appointment: values.appointment ?? undefined,
+      ...mapValuesToAppointment(values, procedure, locationSelectionMode),
       isInvitationSent: values.isInvitationSent,
       custodianId: values.recipient?.fileStateId,
       schoolId: values.school?.id ?? undefined,
@@ -116,6 +131,28 @@ function mapValues(
   };
 }
 
+function mapValuesToAppointment(
+  values: UpdateProcedureValues,
+  procedure: ProcedureDetails,
+  locationSelectionMode: ApiLocationSelectionMode,
+) {
+  if (values.appointmentSelectionType === AppointmentSelectionType.Block) {
+    return { appointment: values.appointment ?? undefined };
+  } else {
+    if (
+      !isDefined(procedure.child.contactAddress) ||
+      isAdHocAppointmentForbidden(values, locationSelectionMode)
+    ) {
+      return {};
+    }
+    const date = parseTime(values.adHocTime);
+    return {
+      appointment: { start: date, end: date },
+      createAdHocAppointment: true,
+    };
+  }
+}
+
 function getAppointmentLabel(appointment: Appointment) {
   return formatWeekdayDateTimeRange(appointment.start, appointment.end);
 }
@@ -126,6 +163,7 @@ function getPersonDetailsLabel(personDetails: PersonDetails) {
 
 function useUpdateProcedureForm(
   procedure: ProcedureDetails,
+  locationSelectionMode: ApiLocationSelectionMode,
   onSuccess: () => void,
 ) {
   const updateProcedure = useUpdateProcedure(procedure.id);
@@ -134,12 +172,16 @@ function useUpdateProcedureForm(
       procedureType: procedure.type,
       procedureLabels: procedure.labels,
       appointment: procedure.appointment ?? null,
+      adHocTime: formatTime(
+        new Date(Math.round(Date.now() / 300_000) * 300_000),
+      ),
       isInvitationSent: procedure.isInvitationSent,
       changeRecipient: false,
       recipient: null,
       school: procedure.school ?? null,
       location: procedure.location ?? null,
       isDeceased: procedure.isDeceased,
+      appointmentSelectionType: AppointmentSelectionType.Block,
       deceased: isDefined(procedure.deceased)
         ? toDateString(procedure.deceased)
         : "",
@@ -147,10 +189,26 @@ function useUpdateProcedureForm(
       hasBeenClosed: procedure.hasBeenClosed,
     },
     onSubmit: (values) =>
-      updateProcedure.mutateAsync(mapValues(values, procedure), {
-        onSuccess,
-      }),
+      updateProcedure.mutateAsync(
+        mapValues(values, procedure, locationSelectionMode),
+        {
+          onSuccess,
+        },
+      ),
   });
+}
+
+function isAdHocAppointmentForbidden(
+  values: UpdateProcedureValues,
+  locationSelectionMode: ApiLocationSelectionMode,
+) {
+  return (
+    !values.procedureType ||
+    isDraft(values.procedureType) ||
+    (isSchoolSelectionMode(locationSelectionMode) && values.school === null) ||
+    (isHealthDepartmentSelectionMode(locationSelectionMode) &&
+      values.location === null)
+  );
 }
 
 function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
@@ -164,7 +222,9 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
 
   const isMissingChildAddress = !isDefined(procedure.child.contactAddress);
 
-  const form = useUpdateProcedureForm(procedure, () => props.onClose(true));
+  const form = useUpdateProcedureForm(procedure, locationSelectionMode, () =>
+    props.onClose(true),
+  );
   const { values, isSubmitting, setFieldValue } = form;
 
   const getFreeAppointments = useGetFreeAppointmentsForProcedureUnsuspended({
@@ -192,6 +252,10 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
       void setFieldValue("appointment", null);
     }
   }, [clearAppointment, setFieldValue]);
+
+  function resetIsInvitationSent() {
+    void setFieldValue("isInvitationSent", false);
+  }
 
   return (
     <FormikProvider value={form}>
@@ -228,52 +292,83 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
               />
             )}
             <Divider />
-            <SelectObjectField
-              name="appointment"
-              label="Termin"
-              options={freeAppointments}
-              getOptionLabel={getAppointmentLabel}
-              loading={getFreeAppointments.isFetching}
-              disabled={hasNoFreeAppointments || isMissingChildAddress}
-              placeholder={
-                hasNoFreeAppointments
-                  ? "Keine freien Termine verfügbar."
-                  : undefined
-              }
-              onValueChanged={() =>
-                void setFieldValue("isInvitationSent", false)
-              }
-            />
-            {values.appointment !== null && filteredRecipients.length > 0 && (
-              <>
-                <Alert
-                  message="Der Einladungsbrief wird standardmäßig an die Adresse des Kindes adressiert."
-                  color="primary"
-                />
-                <CheckboxField
-                  name="changeRecipient"
-                  label="Abweichender Einladungsadressat"
-                  onChange={(event) => {
-                    if (!event.target.checked) {
-                      void setFieldValue("recipient", null);
+            <RadioGroupField
+              name="appointmentSelectionType"
+              orientation="vertical"
+            >
+              <Radio
+                value={AppointmentSelectionType.Block}
+                label="Termin planen"
+              />
+              {values.appointmentSelectionType ===
+                AppointmentSelectionType.Block && (
+                <Box marginLeft={4} marginTop={1}>
+                  <SelectObjectField
+                    name="appointment"
+                    label="Termin"
+                    options={freeAppointments}
+                    getOptionLabel={getAppointmentLabel}
+                    loading={getFreeAppointments.isFetching}
+                    disabled={hasNoFreeAppointments || isMissingChildAddress}
+                    placeholder={
+                      hasNoFreeAppointments
+                        ? "Keine freien Termine verfügbar."
+                        : undefined
                     }
-                  }}
-                />
-                {values.changeRecipient && (
-                  <Box marginLeft={4}>
-                    <SelectObjectField
-                      name="recipient"
-                      label="Abweichender Einladungsadressat"
-                      options={filteredRecipients}
-                      getOptionLabel={getPersonDetailsLabel}
-                      onValueChanged={() =>
-                        void setFieldValue("isInvitationSent", false)
+                    onValueChanged={resetIsInvitationSent}
+                  />
+                </Box>
+              )}
+              <Radio
+                value={AppointmentSelectionType.AdHoc}
+                label="Termin zu sofort buchen"
+              />
+              {values.appointmentSelectionType ===
+                AppointmentSelectionType.AdHoc && (
+                <Box marginLeft={4} marginTop={1}>
+                  <TimeField
+                    name="adHocTime"
+                    disabled={
+                      isMissingChildAddress ||
+                      isAdHocAppointmentForbidden(values, locationSelectionMode)
+                    }
+                    label="Heute um"
+                    onChange={resetIsInvitationSent}
+                  />
+                </Box>
+              )}
+            </RadioGroupField>
+            {(values.appointment !== null ||
+              values.appointmentSelectionType ===
+                AppointmentSelectionType.AdHoc) &&
+              filteredRecipients.length > 0 && (
+                <>
+                  <Alert
+                    message="Der Einladungsbrief wird standardmäßig an die Adresse des Kindes adressiert."
+                    color="primary"
+                  />
+                  <CheckboxField
+                    name="changeRecipient"
+                    label="Abweichender Einladungsadressat"
+                    onChange={(event) => {
+                      if (!event.target.checked) {
+                        void setFieldValue("recipient", null);
                       }
-                    />
-                  </Box>
-                )}
-              </>
-            )}
+                    }}
+                  />
+                  {values.changeRecipient && (
+                    <Box marginLeft={4}>
+                      <SelectObjectField
+                        name="recipient"
+                        label="Abweichender Einladungsadressat"
+                        options={filteredRecipients}
+                        getOptionLabel={getPersonDetailsLabel}
+                        onValueChanged={resetIsInvitationSent}
+                      />
+                    </Box>
+                  )}
+                </>
+              )}
             {displayWarningWhen(isMissingChildAddress, {
               title: "Adresse fehlt",
               message:

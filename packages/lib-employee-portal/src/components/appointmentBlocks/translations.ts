@@ -1,10 +1,11 @@
 /**
  * Copyright 2025 cronn GmbH
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { EnumMap } from "@eshg/lib-portal";
-import { ApiAppointmentType } from "@eshg/official-medical-service-api";
+
+import { ApiAppointmentType } from "./types";
 
 export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",

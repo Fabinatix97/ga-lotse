@@ -141,7 +141,7 @@ Der `objectName` kann hier und **nur hier** auch `*` sein, um alle Einträge mit
 POST repo/versioned/{moduleName}/{objectName}
 ```
 
-Benötigt einen HTTP Multipart Request mit JSON-Objekt der Metadaten als ersten Teil und den Inhalt des Eintrags (z.B. Checkliste oder Zip-Datei) als zweiten Teil. Dabei muss der `Content-Type` für beide Teile gesetzt sein.
+Benötigt einen HTTP Multipart Request mit JSON-Objekt der Metadaten als ersten Teil und den Inhalt des Eintrags (z.B. Checkliste oder Zip-Datei) als zweiten Teil. Dabei muss der `Content-Type` und die `Content-Disposition` für beide Teile gesetzt sein. Für den Metadaten-Teil muss die `Content-Disposition` den Namen "metadata" haben, und für den Inhalt den Namen "content". Wenn diese beiden Namen in der `Content-Disposition` fehlen, wird der Request abgelehnt.
 
 **Beispiel**:
 
@@ -152,7 +152,7 @@ POST repo/versioned/inspection/checklist`
 Content-Type: multipart/form-data; boundary=07758748-62b8-4c4f-87ca-cb443b5d93ba
 
 --07758748-62b8-4c4f-87ca-cb443b5d93ba
-Content-Disposition: form-data
+Content-Disposition: form-data; name="metadata"
 Content-Type: application/json
 
 {
@@ -161,7 +161,7 @@ Content-Type: application/json
 }
 
 --07758748-62b8-4c4f-87ca-cb443b5d93ba
-Content-Disposition: form-data
+Content-Disposition: form-data; name="content"
 Content-Type: application/json
 
 {
@@ -200,7 +200,7 @@ Im Folgenden muss `XXX` mit dem "common name" eines Actors, der in der Service D
 
 Und hier ein weiteres Beispiel mit JSON direkt angegeben:
 
-`curl -X POST --header "x-eshg-cert-subject: CN=XXX" -v -F 'command={"category":"Ambulante medizinische Einrichtung","name":"Arztpraxen Checklist"};type=application/json' -F 'content={"is_clean":"boolean"};type=application/json' http://localhost:8091/versioned/inspection/checklist`
+`curl -X POST --header "x-eshg-cert-subject: CN=XXX" -v -F 'metadata={"category":"Ambulante medizinische Einrichtung","name":"Arztpraxen Checklist"};type=application/json' -F 'content={"is_clean":"boolean"};type=application/json' http://localhost:8091/versioned/inspection/checklist`
 
 ### Neue Version eines Eintrags (quasi UPDATE)
 ```http request

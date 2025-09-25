@@ -25,12 +25,14 @@ import {
 
 import {
   useAppointmentBlockApi,
+  useAppointmentStandardDurationsApi,
   useConfigApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
-import { useDeleteAppointmentBlock } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
+import { mapAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/mapAppointmentBlockApi";
+import { appointmentBlockApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { getAppointmentBlockGroupsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
+import { useGetAppointmentStandardDurationsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentStandardDuration";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 interface AppointmentBlockGroupsTableProps {
@@ -49,29 +51,33 @@ export function SchoolEntryAppointmentBlockGroupsTable(
 
   const configApi = useConfigApi();
   const appointmentBlockApi = useAppointmentBlockApi();
-  const [{ data: locationSelectionMode }, getAppointmentBlockGroups] =
-    useSuspenseQueries({
-      queries: [
-        getLocationSelectionModeQuery(configApi),
-        getAppointmentBlockGroupsQuery(appointmentBlockApi, {
-          pageNumber: tableControl.paginationProps.pageNumber,
-          pageSize: tableControl.paginationProps.pageSize,
-          sortKey: getSortKey<ApiAppointmentBlockSortKey>(
-            tableControl.tableSorting,
-          ),
-          sortDirection: getSortDirection(tableControl.tableSorting),
-        }),
-      ],
-    });
+  const standardDurationApi = useAppointmentStandardDurationsApi();
 
-  const deleteAppointmentBlock = useDeleteAppointmentBlock();
+  const [
+    { data: locationSelectionMode },
+    getAppointmentBlockGroups,
+    { data: standardDurations },
+  ] = useSuspenseQueries({
+    queries: [
+      getLocationSelectionModeQuery(configApi),
+      getAppointmentBlockGroupsQuery(appointmentBlockApi, {
+        pageNumber: tableControl.paginationProps.pageNumber,
+        pageSize: tableControl.paginationProps.pageSize,
+        sortKey: getSortKey<ApiAppointmentBlockSortKey>(
+          tableControl.tableSorting,
+        ),
+        sortDirection: getSortDirection(tableControl.tableSorting),
+      }),
+      useGetAppointmentStandardDurationsQuery(standardDurationApi),
+    ],
+  });
+
   const columnHelper = createColumnHelper<AppointmentBlockRow>();
   const columns = useAppointmentBlockGroupsColumns({
-    onDeleteAppointmentBlock: ({ appointmentBlockId }) => {
-      void deleteAppointmentBlock(appointmentBlockId);
-    },
+    appointmentBlockApi: mapAppointmentBlockApi(appointmentBlockApi),
+    appointmentBlockApiQueryKey,
+    standardDurations,
     columnHelper,
-    appointmentTypes: APPOINTMENT_TYPES,
     additionalColumn:
       locationSelectionMode !== ApiLocationSelectionMode.None
         ? columnHelper.accessor("location.name", {

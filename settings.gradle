@@ -5,8 +5,6 @@ rootProject.name = 'ga-lotse-code'
 
 includeBuild 'backend'
 
-include 'e2e'
-include 'performance-test'
 include 'k8s'
 
 // include all projects under '/apps' and '/packages' as project
@@ -23,4 +21,3 @@ allProjects.each {
     project(":${packageName}").projectDir = file(packagePath)
   }
 }
-

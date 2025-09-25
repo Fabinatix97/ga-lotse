@@ -57,7 +57,7 @@ const fields: StandardDurationField<StiProtectionAppointmentStandardDurationForm
   [
     {
       name: FormNames.CONSULTATION,
-      label: "Termindauer HIV-STI Beratung in Minuten",
+      label: "Termindauer HIV-STI-Beratung in Minuten",
     },
     {
       name: FormNames.RESULTS_REVIEW,

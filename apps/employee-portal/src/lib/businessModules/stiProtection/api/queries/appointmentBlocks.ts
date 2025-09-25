@@ -3,12 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  DefaultError,
-  queryOptions,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { DefaultError, queryOptions, useQuery } from "@tanstack/react-query";
 
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal";
@@ -25,12 +20,12 @@ import { mapAppointmentBlockGroup } from "@/lib/businessModules/stiProtection/ap
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
 
-export function useGetAppointmentBlockGroups(
+export function useGetAppointmentBlockGroupsQuery(
   request: GetAppointmentBlockGroupsRequest,
 ) {
   const appointmentBlockApi = useAppointmentBlockApi();
 
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: appointmentBlockApiQueryKey(["appointmentBlockGroups", request]),
     queryFn: () =>
       appointmentBlockApi

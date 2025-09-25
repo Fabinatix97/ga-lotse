@@ -12,21 +12,24 @@ import de.eshg.lib.centralrepository.api.MetadataResponseDto;
 import de.eshg.lib.centralrepository.api.VersionFilterType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-@HttpExchange(value = VersionedEntryApi.BASE_URL)
-public interface VersionedEntryApi {
+@HttpExchange(value = CentralRepositoryApi.BASE_URL)
+public interface CentralRepositoryApi {
   String BASE_URL = "/versioned";
 
   @GetExchange("{moduleName}/{objectName}/{id}/{version}/content")
@@ -35,7 +38,7 @@ public interface VersionedEntryApi {
       responseCode = "200",
       description =
           "Returns the content of the specified version, which has the supplied names and id")
-  ResponseEntity<StreamingResponseBody> getContentOfOneVersion(
+  ResponseEntity<Resource> getContentOfOneVersion(
       @PathVariable("moduleName") String moduleName,
       @PathVariable("objectName") String objectName,
       @PathVariable("id") Long id,
@@ -93,11 +96,11 @@ public interface VersionedEntryApi {
       @PathVariable("moduleName") String moduleName,
       @PathVariable("objectName") String objectName,
       @RequestParam(name = "versions", defaultValue = "ALL") VersionFilterType versions,
-      @RequestParam(name = "deleted", defaultValue = "false") boolean deleted,
+      @RequestParam(name = "deleted", defaultValue = "false") Boolean deleted,
       @RequestParam(name = "tags", required = false) String tags,
       @RequestParam(name = "category", required = false) String category);
 
-  @PostExchange("{moduleName}/{objectName}")
+  @PostExchange(value = "{moduleName}/{objectName}")
   @Operation(summary = "Create entry and get the metadata for the created entry")
   @ApiResponse(
       responseCode = "200",
@@ -105,9 +108,12 @@ public interface VersionedEntryApi {
   MetadataResponseDto createEntry(
       @PathVariable("moduleName") String moduleName,
       @PathVariable("objectName") String objectName,
-      @ParameterObject @InlineParameterObject @Valid HttpServletRequest servletRequest);
+      @InlineParameterObject @ParameterObject @Valid MetadataRequestDto metadata,
+      @RequestHeader(HttpHeaders.CONTENT_TYPE) @NotNull String contentType,
+      @RequestHeader(HttpHeaders.CONTENT_LENGTH) long contentLength,
+      @RequestBody @Valid InputStreamResource content);
 
-  @PostExchange("{moduleName}/{objectName}/{id}/{basedOnVersion}")
+  @PostExchange(value = "{moduleName}/{objectName}/{id}/{basedOnVersion}")
   @Operation(summary = "Create new version and get the metadata for it")
   @ApiResponse(responseCode = "200", description = "Returns the metadata for the new version")
   MetadataResponseDto createNewVersionForEntry(
@@ -115,7 +121,10 @@ public interface VersionedEntryApi {
       @PathVariable("objectName") String objectName,
       @PathVariable("id") Long id,
       @PathVariable("basedOnVersion") Integer expectedVersion,
-      @ParameterObject @InlineParameterObject @Valid HttpServletRequest servletRequest);
+      @InlineParameterObject @ParameterObject @Valid MetadataRequestDto metadata,
+      @RequestHeader(HttpHeaders.CONTENT_TYPE) @NotNull String contentType,
+      @RequestHeader(HttpHeaders.CONTENT_LENGTH) long contentLength,
+      @RequestBody @Valid InputStreamResource content);
 
   @PostExchange("{moduleName}/{objectName}/{id}/{basedOnVersion}/metadata")
   @Operation(
